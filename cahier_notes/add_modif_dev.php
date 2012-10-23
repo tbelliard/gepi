@@ -67,6 +67,8 @@ if (getSettingValue("active_carnets_notes")!='y') {
     die("Le module n'est pas activé.");
 }
 
+$msg="";
+
 isset($id_retour);
 $id_retour = isset($_POST["id_retour"]) ? $_POST["id_retour"] : (isset($_GET["id_retour"]) ? $_GET["id_retour"] : NULL);
 isset($id_devoir);
@@ -313,6 +315,22 @@ if (isset($_POST['ok'])) {
     }
 
 	$tmp_coef=isset($_POST['coef']) ? $_POST['coef'] : 0;
+	if((preg_match("/^[0-9]*$/", $coef))||(preg_match("/^[0-9]*\.[0-9]$/", $tmp_coef))) {
+		// Le coef a le bon format
+		//$msg.="Le coefficient proposé $tmp_coef est valide.<br />";
+	}
+	elseif(preg_match("/^[0-9]*\.[0-9]*$/", $tmp_coef)) {
+		$msg.="Le coefficient ne peut avoir plus d'un chiffre après la virgule. Le coefficient va être tronqué.<br />";
+	}
+	elseif(preg_match("/^[0-9]*,[0-9]*$/", $tmp_coef)) {
+		$msg.="Correction du séparateur des décimales dans le coefficient de $tmp_coef en ";
+		$tmp_coef=preg_replace("/,/", ".", $tmp_coef);
+		$msg.=$tmp_coef."<br />";
+	}
+	else {
+		$msg.="Le coefficient proposé $tmp_coef est invalide. Mise à 1.0 du coefficient.<br />";
+		$tmp_coef="1.0";
+	}
 	$reg = mysql_query("UPDATE cn_devoirs SET coef='".$tmp_coef."' WHERE id='$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
@@ -322,6 +340,19 @@ if (isset($_POST['ok'])) {
 	}
 
 	$note_sur=isset($_POST['note_sur']) ? $_POST['note_sur'] : getSettingValue("referentiel_note");
+	if((preg_match("/^[0-9]*$/", $note_sur))||(preg_match("/^[0-9]*\.[0-9]*$/", $note_sur))) {
+		// Le note_sur a le bon format
+		//$msg.="Le référentiel proposé $note_sur est valide.<br />";
+	}
+	elseif(preg_match("/^[0-9]*,[0-9]*$/", $note_sur)) {
+		$msg.="Correction du séparateur des décimales dans le référentiel de $note_sur en ";
+		$note_sur=preg_replace("/,/", ".", $note_sur);
+		$msg.=$note_sur."<br />";
+	}
+	else {
+		$msg.="Le référentiel proposé $note_sur est invalide. Mise à ".getSettingValue("referentiel_note")." du référentiel.<br />";
+		$note_sur=getSettingValue("referentiel_note");
+	}
 	$reg = mysql_query("UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
@@ -513,6 +544,11 @@ if ($id_devoir)  {
     $description = "";
     $new_devoir = 'yes';
     $coef = getPref($_SESSION['login'], 'cn_default_coef', '1.0');
+    if((!preg_match("/[0-9]*/", $coef))&&(!preg_match("/[0-9]*\.[0-9]*/", $coef))) {
+    	$coef="1.0";
+    	savePref($_SESSION['login'], 'cn_default_coef', '1.0');
+    	$msg.="Correction de la valeur par défaut du coefficient.<br />";
+	}
     $note_sur = getSettingValue("referentiel_note");
     $ramener_sur_referentiel = "F";
     $display_parents = "1";
@@ -658,7 +694,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Coefficient:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" />\n";
+		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -676,7 +712,7 @@ if($interface_simplifiee=="y"){
 		if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 			echo "<tr>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold;'>Note sur : </td>\n";
-	   		echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" /></td>\n";
+	   		echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold; vertical-align: top;'>Ramener la note sur ".getSettingValue("referentiel_note")."<br />lors du calcul de la moyenne : </td>\n";
@@ -702,7 +738,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
+		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"";
 		if($aff_date_ele_resp!='y'){
 			echo " onchange=\"document.getElementById('date_ele_resp').value=document.getElementById('display_date').value\"";
@@ -724,7 +760,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'date_ele_resp' id='date_ele_resp' size='10' value = \"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
+		echo "<input type='text' name = 'date_ele_resp' id='date_ele_resp' size='10' value = \"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 		echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -814,7 +850,7 @@ else{
 
 	echo "<h3 class='gepi'>Coefficient de l'évaluation</h3>\n";
 	echo "<table summary='Ponderation'><tr><td>Valeur de la pondération dans le calcul de la moyenne (si 0, la note de l'évaluation n'intervient pas dans le calcul de la moyenne) : </td>";
-	echo "<td><input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,0,10);\" /></td></tr></table>\n";
+	echo "<td><input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr></table>\n";
 
 	//====================================
 	// Note autre que sur 20
@@ -822,7 +858,7 @@ else{
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 	    echo "<h3 class='gepi'>Notation</h3>\n";
 	    echo "<table summary='Referentiel'><tr><td>Note sur : </td>";
-	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" /></td></tr>\n";
+	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr>\n";
 	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <br />";
 		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />";
 		echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />";
@@ -860,13 +896,13 @@ else{
 
 	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de l'évaluation (format jj/mm/aaaa) : </h3>
 	<b>Remarque</b> : c'est cette date qui est prise en compte pour l'édition des relevés de notes à différentes périodes de l'année.
-	<input type='text' name = 'display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
+	<input type='text' name = 'display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
 	echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 
 
 	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de visibilité de l'évaluation pour les élèves et responsables (format jj/mm/aaaa) : </h3>
 	<b>Remarque</b> : Cette date permet de ne rendre la note visible qu'une fois que le devoir est corrigé en classe.
-	<input type='text' name='date_ele_resp' id='date_ele_resp' size='10' value=\"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
+	<input type='text' name='date_ele_resp' id='date_ele_resp' size='10' value=\"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
 	echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 
 	//====================================

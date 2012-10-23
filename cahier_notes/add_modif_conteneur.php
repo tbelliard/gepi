@@ -169,7 +169,24 @@ if (isset($_POST['ok'])) {
     }
 
     if (isset($_POST['coef'])) {
-        $reg = mysql_query("UPDATE cn_conteneurs SET coef = '" . $_POST['coef'] . "' WHERE id = '$id_conteneur'");
+    	$tmp_coef=$_POST['coef'];
+		if((preg_match("/^[0-9]*$/", $coef))||(preg_match("/^[0-9]*\.[0-9]$/", $tmp_coef))) {
+			// Le coef a le bon format
+			//$msg.="Le coefficient proposé $tmp_coef est valide.<br />";
+		}
+		elseif(preg_match("/^[0-9]*\.[0-9]*$/", $tmp_coef)) {
+			$msg.="Le coefficient ne peut avoir plus d'un chiffre après la virgule. Le coefficient va être tronqué.<br />";
+		}
+		elseif(preg_match("/^[0-9]*,[0-9]$/", $tmp_coef)) {
+			$msg.="Correction du séparateur des décimales dans le coefficient de $tmp_coef en ";
+			$tmp_coef=preg_replace("/,/", ".", $tmp_coef);
+			$msg.=$tmp_coef."<br />";
+		}
+		else {
+			$msg.="Le coefficient proposé $tmp_coef est invalide. Mise à 1.0 du coefficient.<br />";
+			$tmp_coef="1.0";
+		}
+        $reg = mysql_query("UPDATE cn_conteneurs SET coef = '" . $tmp_coef . "' WHERE id = '$id_conteneur'");
         if (!$reg)  $reg_ok = "no";
     } else {
         $reg = mysql_query("UPDATE cn_conteneurs SET coef = '0' WHERE id = '$id_conteneur'");
@@ -679,7 +696,7 @@ else{
 			}
 		}
 		echo "<br /><i>(si 0, la moyenne de <b>$nom_court</b> n'intervient pas dans le calcul de la moyenne du carnet de note)</i>.</td>";
-		echo "<td><input type='text' name = 'coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" /></td></tr></table>\n";
+		echo "<td><input type='text' name = 'coef' id = 'coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr></table>\n";
 	}
 
 
@@ -836,7 +853,7 @@ else{
 	echo "<h3 class='gepi'>Pondération</h3>\n";
 	echo "<table>\n<tr><td>";
 	echo "Pour chaque élève, le coefficient de la meilleure note de <b>$nom_court</b> augmente ou diminue de : &nbsp;</td>\n";
-	echo "<td><input type='text' name='ponderation' id='ponderation' size='4' value = \"".$ponderation."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" /></td></tr>\n</table>\n";
+	echo "<td><input type='text' name='ponderation' id='ponderation' size='4' value = \"".$ponderation."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient de la meilleure note à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr>\n</table>\n";
 
 	if ($parent != 0) {
 		//s'il s'agit d'une boite à l'intérieur du conteneur principal, on laisse la possibilité d'afficher la note de la boite sur le bulletin.
