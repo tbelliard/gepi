@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -65,7 +65,7 @@ if (isset($_POST['is_posted'])) {
 				$temp = "case_".$id_classe;
 				if (isset($_POST[$temp])) {
 					$k = '1';
-					While ($k < $per+1) {
+					while ($k < $per+1) {
 						$temp2 = "nb_".$per."_".$k;
 						if ($_POST[$temp2] != '') {
 							$register = mysql_query("UPDATE periodes SET nom_periode='".$_POST[$temp2]."' where (id_classe='".$id_classe."' and num_periode='".$k."')");
@@ -405,6 +405,27 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
+					if((isset($_POST['change_visibilite']))&&(isset($_POST['matiere_modif_visibilite_enseignement']))&&($_POST['matiere_modif_visibilite_enseignement']!="")) {
+						$matiere_modif_visibilite_enseignement=$_POST['matiere_modif_visibilite_enseignement'];
+						$modif_enseignement_visibilite=isset($_POST['modif_enseignement_visibilite']) ? $_POST['modif_enseignement_visibilite'] : array();
+
+						$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_visibilite_enseignement."';";
+						//echo "$sql<br />";
+						$res_grp_vis=mysql_query($sql);
+						while($lig_grp_vis=mysql_fetch_object($res_grp_vis)) {
+							for($loop=0;$loop<count($tab_domaines);$loop++) {
+								$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='$lig_grp_vis->id_groupe' AND domaine='$tab_domaines[$loop]';";
+								$menage=mysql_query($sql);
+								if(!in_array($tab_domaines[$loop], $modif_enseignement_visibilite)) {
+									$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$lig_grp_vis->id_groupe', domaine='$tab_domaines[$loop]', visible='n';";
+									$insert=mysql_query($sql);
+									if(!$insert) {
+										$msg.="<br />Erreur lors de l'enregistrement de la non-visibilité du groupe n°$lig_grp_vis->id_groupe sur ".$tab_domaines[$loop];
+									}
+								}
+							}
+						}
+					}
 
 					//====================================
 				}
@@ -668,7 +689,7 @@ while ($per < $max_periode) {
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold;"-->
 	<td>
-	<input type='checkbox' name='change_coef' id='change_coef' value='y' /> Passer les coefficients de tous les enseignements à&nbsp;:
+	<input type='checkbox' name='change_coef' id='change_coef' value='y' /><label for='change_coef'> Passer les coefficients de tous les enseignements à</label>&nbsp;:
 	</td>
 	<td>
 	<select name='coef_enseignements' onchange="document.getElementById('change_coef').checked=true">
@@ -683,12 +704,58 @@ while ($per < $max_periode) {
 </tr>
 </table>
 
+<?php
+	$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
+	$res_mat=mysql_query($sql);
+	if(mysql_num_rows($res_mat)>0) {
+		echo "<table border='0'>
+	<tr>
+		<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
+		<td valign='top' rowspan='2'>
+			<input type='checkbox' name='change_visibilite' id='change_visibilite' value='y' /><label for='change_visibilite'> Modifier la visibilité des enseignements de</label>&nbsp;:
+		</td>
+		<td colspan='2'>
+			<select name='matiere_modif_visibilite_enseignement' id='matiere_modif_visibilite_enseignement' onchange=\"document.getElementById('change_visibilite').checked=true;\">\n";
+			echo "			<option value=''>---</option>\n";
+			while($lig_mat=mysql_fetch_object($res_mat)) {
+				echo "			<option value='$lig_mat->matiere'>".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+			}
+			echo "	</select>
+		</td>
+	</tr>
+	<tr>
+		<td valign='top'>Visibilité&nbsp;: </td>
+		<td>
+			<table class='boireaus'>
+				<tr>\n";
+			for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+				echo "<th title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
+				echo $tab_domaines_sigle[$loop];
+				echo "</th>\n";
+			}
+			echo "</tr>\n";
+			echo "<tr class='lig-1'>\n";
+			for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+				echo "<td title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
+				echo "<input type='checkbox' name='modif_enseignement_visibilite[]' value='$tab_domaines[$loop]' checked />\n";
+				echo "</td>\n";
+			}
+			echo "
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>\n";
+	}
+?>
+
+
 <table border='0'>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold; vertical-align:top;"-->
 	<td style="vertical-align:top;">
-	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /> Créer un enseignement de&nbsp;:
+	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /><label for='creer_enseignement'> Créer un enseignement de</label>&nbsp;:
 	</td>
 	<?php
 		$sql="SELECT DISTINCT matiere,nom_complet FROM matieres ORDER BY nom_complet,matiere;";
@@ -1122,4 +1189,11 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <center><input type='submit' name='enregistrer2' value='Enregistrer' /></center>
 <input type=hidden name='is_posted' value="yes" />
 </form>
+
+<p><br /></p>
+
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Les cases ne sont pas cochées par défaut.<br />
+Comme vous pouvez modifier la liste des classes concernées par le paramétrage par lots, il n'est pas possible de pré-cocher l'état actuel du paramétrage des classes.<br />
+Tout ce que vous cocherez correspondra aux modifications que vous souhaitez apporter.</p>
+
 <?php require("../lib/footer.inc.php");?>
