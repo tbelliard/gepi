@@ -12,7 +12,7 @@
 */
 
 	$debug_extract="n";
-	$debug_ele_login="ahnjinwon";
+	$debug_ele_login="toto";
 	$debug_id_groupe=237;
 
 	//========================================
@@ -67,6 +67,12 @@
 	$tab_rn_formule=isset($_POST['rn_formule']) ? $_POST['rn_formule'] : array();
 
 	$tab_rn_adr_resp=isset($_POST['rn_adr_resp']) ? $_POST['rn_adr_resp'] : array();
+	if(count($tab_rn_adr_resp)>count($tab_id_classe)/2) {
+		savePref($_SESSION['login'], "pref_rn_adr_resp", "y");
+	}
+	else {
+		savePref($_SESSION['login'], "pref_rn_adr_resp", "n");
+	}
 
 	// Bloc observation sur la droite pour le relevé PDF:
 	$tab_rn_bloc_obs=isset($_POST['rn_bloc_obs']) ? $_POST['rn_bloc_obs'] : array();

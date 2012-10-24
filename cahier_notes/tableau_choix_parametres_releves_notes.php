@@ -223,10 +223,14 @@
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td style='text-align:left;'>Afficher le bloc adresse du responsable de l'élève\n";
 		echo "</td>\n";
+		$chaine_coche_rn_adr_resp="";
+		if(getPref($_SESSION['login'], 'pref_rn_adr_resp', "")=="y") {
+			$chaine_coche_rn_adr_resp=" checked";
+		}
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
 			echo "<label for='rn_adr_resp_".$i."' class='invisible'>Afficher l'adresse</label> 
-					<input type='checkbox' name='rn_adr_resp[$i]' id='rn_adr_resp_".$i."' size='2' value='y' />\n";
+					<input type='checkbox' name='rn_adr_resp[$i]' id='rn_adr_resp_".$i."' size='2' value='y'".$chaine_coche_rn_adr_resp." />\n";
 			echo "</td>\n";
 		}
 		echo "<td>\n";
