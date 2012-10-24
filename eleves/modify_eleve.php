@@ -1788,13 +1788,13 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	echo "<td><div class='norme'>";	
 	echo "Jour  <input type='text' name='date_sortie_jour' id='date_sortie_jour' size='2' onchange='changement();' value=\"";
 	if (isset($eleve_date_sortie_jour) and ($eleve_date_sortie_jour!="00") ) {echo $eleve_date_sortie_jour;}
-	echo "\" onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off' />";
+	echo "\" onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off'  title=\"Vous pouvez modifier le jour de sortie à l'aide des flèches Up et Down du pavé de direction.\" />";
 	echo " Mois  <input type='text' name='date_sortie_mois' id='date_sortie_mois' size='2' onchange='changement();' value=\"";
 	if (isset($eleve_date_sortie_mois) and ($eleve_date_sortie_mois!="00")) {echo $eleve_date_sortie_mois;}
-	echo "\" onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off' />";
+	echo "\" onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off'  title=\"Vous pouvez modifier le mois de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
 	echo " Année <input type='text' name='date_sortie_annee' id='date_sortie_annee' size='4' onchange='changement();' value=\"";
 	if (isset($eleve_date_sortie_annee) and ($eleve_date_sortie_annee!="0000")) {echo $eleve_date_sortie_annee;}
-	echo "\" onKeyDown='clavier_2(this.id,event,2000,2100);' AutoComplete='off' />";
+	echo "\" onKeyDown='clavier_2(this.id,event,2000,2100);' AutoComplete='off'  title=\"Vous pouvez modifier l'année de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
 
 	echo "<a href='javascript:date_sortie_aujourdhui()' title=\"Aujourd'hui\"><img src='../images/disabled.png' width='20' height='20' title=\"Aujourd'hui\" /></a>\n";
 	echo "<script type='text/javascript'>
@@ -2111,15 +2111,15 @@ if (!(isset($eleve_sexe))) {$eleve_sexe="M";}
 
 echo "Jour <input type='text' name='birth_day' id='birth_day' size='2' onchange='changement();' value='";
 if (isset($eleve_naissance_jour)) {echo $eleve_naissance_jour;}
-echo "' onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off' />";
+echo "' onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off' title=\"Vous pouvez modifier le jour de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
 
 echo " Mois <input type='text' name='birth_month' id='birth_month' size='2' onchange='changement();' value='";
 if (isset($eleve_naissance_mois)) {echo $eleve_naissance_mois;}
-echo "' onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off' />";
+echo "' onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off' title=\"Vous pouvez modifier le mois de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
 
 echo " Année <input type='text' name='birth_year' id='birth_year' size='2' onchange='changement();' value='";
 if (isset($eleve_naissance_annee)) {echo $eleve_naissance_annee;}
-echo "' onKeyDown='clavier_2(this.id,event,1970,2100);' AutoComplete='off' />";
+echo "' onKeyDown='clavier_2(this.id,event,1970,2100);' AutoComplete='off' title=\"Vous pouvez modifier l'année de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
 
 
 if(getSettingValue('ele_lieu_naissance')=='y') {
