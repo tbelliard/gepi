@@ -277,6 +277,11 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='min') {
 			$temp1=my_strtolower($temp1);
 		}
 
+		// Suppression des _,-,. multiples
+		$temp1=preg_replace("/_{2,}/", "_", $temp1);
+		$temp1=preg_replace("/\.{2,}/", ".", $temp1);
+		$temp1=preg_replace("/\-{2,}/", "-", $temp1);
+
 		$login_user = $temp1;
 
 		//==========================
@@ -4211,7 +4216,7 @@ function enregistre_infos_actions($titre,$texte,$destinataire,$mode) {
 		$tab_dest=array($destinataire);
 	}
 
-	$sql="INSERT INTO infos_actions SET titre='".addslashes($titre)."', description='".addslashes($texte)."', date=NOW();";
+	$sql="INSERT INTO infos_actions SET titre='".mysql_real_escape_string($titre)."', description='".mysql_real_escape_string($texte)."', date=NOW();";
 	$insert=mysql_query($sql);
 	if(!$insert) {
 		return FALSE;
@@ -4234,24 +4239,39 @@ function enregistre_infos_actions($titre,$texte,$destinataire,$mode) {
 /**
  * Supprime une action à effectuer de la base
  *
- * @param type $id_info Id de l'action a effacer de la base
+ * @param type $id_info Id de l'action à effacer de la base
+ * @param type $_login   Login concerné par l'action à effacer de la base
+ * @param type $_statut  Statut concerné par l'action à effacer de la base
+ * (on peut fournir login ou statut)
+ *
  * @return boolean TRUE si l'action a été effacée de la base 
  */
-function del_info_action($id_info) {
+function del_info_action($id_info, $_login="", $_statut="") {
 	// Dans le cas des infos destinées à un statut... c'est le premier qui supprime qui vire pour tout le monde?
 	// S'il s'agit bien de loguer des actions à effectuer... elle ne doit être effectuée qu'une fois.
 	// Ou alors il faudrait ajouter des champs pour marquer les actions comme effectuées et n'afficher par défaut que les actions non effectuées
 
-	$sql="SELECT 1=1 FROM infos_actions_destinataires WHERE id_info='$id_info' AND ((nature='statut' AND valeur='".$_SESSION['statut']."') OR (nature='individu' AND valeur='".$_SESSION['login']."'));";
+	if($_SESSION['statut']=="administrateur") {
+		$sql="SELECT 1=1 FROM infos_actions_destinataires WHERE id_info='$id_info';";
+	}
+	else {
+		$_login=$_SESSION['login'];
+		$_statut=$_SESSION['statut'];
+
+		$sql="SELECT 1=1 FROM infos_actions_destinataires WHERE id_info='$id_info' AND ((nature='statut' AND valeur='".$_statut."') OR (nature='individu' AND valeur='".$_login."'));";
+	}
+	//echo "$sql<br />";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
 		$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$id_info';";
+		//echo "$sql<br />";
 		$del=mysql_query($sql);
 		if(!$del) {
 			return FALSE;
 		}
 		else {
 			$sql="DELETE FROM infos_actions WHERE id='$id_info';";
+			//echo "$sql<br />";
 			$del=mysql_query($sql);
 			if(!$del) {
 				return FALSE;
@@ -5934,5 +5954,24 @@ function is_responsable($login_eleve, $login_resp="", $pers_id="") {
 		}
 	}
 	return $retour;
+}
+
+// http://www.siteduzero.com/tutoriel-3-56199-les-captchas-textuels.html
+function captchaMath()
+{
+	$n1 = mt_rand(0,10);
+	$n2 = mt_rand(0,10);
+	$nbrFr = array('zero','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix');
+	$resultat = $n1 + $n2;
+	$phrase = $nbrFr[$n1] .' plus '.$nbrFr[$n2];
+	
+	return array($resultat, $phrase);	
+}
+
+function captcha()
+{
+	list($resultat, $phrase) = captchaMath();
+	$_SESSION['captcha'] = $resultat;
+	return $phrase;
 }
 ?>

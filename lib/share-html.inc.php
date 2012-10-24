@@ -1392,7 +1392,7 @@ function affiche_infos_actions() {
 	$sql="SELECT ia.* FROM infos_actions ia, infos_actions_destinataires iad WHERE
 	ia.id=iad.id_info AND
 	((iad.nature='individu' AND iad.valeur='".$_SESSION['login']."') OR
-	(iad.nature='statut' AND iad.valeur='".$_SESSION['statut']."'));";
+	(iad.nature='statut' AND iad.valeur='".$_SESSION['statut']."')) ORDER BY date;";
     
 	$res=mysql_query($sql);
 	$chaine_id="";
@@ -1403,7 +1403,8 @@ function affiche_infos_actions() {
 			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 			echo "</div>\n";
 
-			if($_SESSION['statut']=='administrateur') {
+			//if($_SESSION['statut']=='administrateur') {
+			if(acces("/gestion/gestion_infos_actions.php", $_SESSION['statut'])) {
 				echo "<div style='float:right; width: 1em; margin-right:0.5em;'>\n";
 				echo "<a href=\"gestion/gestion_infos_actions.php\"><span id='img_pliage_conteneur'><img src='images/disabled.png' width='16' height='16' /></span></a>";
 				echo "</div>\n";
@@ -1429,7 +1430,7 @@ function affiche_infos_actions() {
 					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
 					echo "</div>\n";
 
-					echo nl2br($lig->description);
+					echo preg_replace("/\\\\n/","<br />",nl2br($lig->description));
 				echo "</div>\n";
 			echo "</div>\n";
 			if($cpt_id>0) {$chaine_id.=", ";}
