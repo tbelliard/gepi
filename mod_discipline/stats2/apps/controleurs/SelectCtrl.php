@@ -107,26 +107,32 @@ class SelectCtrl extends Controleur {
   }
 
   private function test_edt_active() {
-    if(! $this->objet_periodes->is_EDT_active())
+    if(! $this->objet_periodes->is_EDT_active()) {
       if($_SESSION['statut']=='administrateur') {
          $page_redir="../../accueil_modules.php";
       }
       else {
          $page_redir="../index.php";
       }
-      echo"<script type='text/javascript'>alert('Activez le module EDT pour les administrateurs puis renseignez les périodes du calendrier en admin');
-               document.location.href='$page_redir'</script>";
+      echo"<script type='text/javascript'>
+      alert('Activez le module EDT pour les administrateurs puis renseignez les périodes du calendrier en admin');
+      document.location.href='$page_redir';
+</script>";
+    }
   }
   private function test_db_periodes_calendrier() {
-    if(! $this->objet_periodes->is_periodes_renseignees())
+    if(! $this->objet_periodes->is_periodes_renseignees()) {
       if($_SESSION['statut']=='administrateur') {
          $page_redir="../../edt_organisation/edt_calendrier.php";
       }
       else {
          $page_redir="../index.php";
       }
-      echo"<script type='text/javascript'>alert('Renseignez les périodes du calendrier en admin');
-               document.location.href='$page_redir'</script>";
+      echo"<script type='text/javascript'>
+      alert('Renseignez les périodes du calendrier en admin');
+      document.location.href='$page_redir';
+</script>";
+    }
   }
 
   private function set_stats_periode_selected() {
