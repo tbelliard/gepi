@@ -1478,6 +1478,7 @@ function crer_tableau_jaj($tableau)
 			$tableau_de_donnees[$i2]['id'] = $i2;
 			$tableau_de_donnees[$i2]['login'] = $tableau[$i]['login'];
 			$tableau_de_donnees[$i2]['classe'] = $tableau[$i]['classe'];
+			$tableau_de_donnees[$i2]['id_classe'] = $tableau[$i]['id_classe'];
 			$tableau_de_donnees[$i2]['jour'] = jour_sem_sql($tableau[$i]['date_debut']);
 			$tableau_de_donnees[$i2]['date'] = $tableau[$i]['date_debut'];
 			$tableau_de_donnees[$i2]['heure_debut'] = $tableau[$i]['heure_debut'];
@@ -1498,6 +1499,7 @@ function crer_tableau_jaj($tableau)
 				$tableau_de_donnees[$i2]['id'] = $i2;
 				$tableau_de_donnees[$i2]['login'] = $tableau[$i]['login'];
 				$tableau_de_donnees[$i2]['classe'] = $tableau[$i]['classe'];
+				$tableau_de_donnees[$i2]['id_classe'] = $tableau[$i]['id_classe'];
 				$tableau_de_donnees[$i2]['jour'] = jour_sem_sql($jour_passe);
 				$tableau_de_donnees[$i2]['date'] = $jour_passe;
 				if($jour_passe != $tableau[$i]['date_debut'] and $jour_passe != $tableau[$i]['date_fin'])
@@ -2178,7 +2180,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 	$joursem =  aff_jour($jour, $mois, $annee);
 
 	// on compte le nombre de jour trouvé qui soit ouvert
-		$requete_nb = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."horaires_etablissement
+	$sql="SELECT count(*) FROM ".$prefix_base."horaires_etablissement
 							WHERE jour_horaire_etablissement = '".$joursem."'
 							AND ouvert_horaire_etablissement = '1'
 							AND
@@ -2186,7 +2188,9 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 						          OR '".$a_heure."' BETWEEN ouverture_horaire_etablissement AND fermeture_horaire_etablissement
 						          OR ouverture_horaire_etablissement BETWEEN '".$de_heure."' AND '".$a_heure."'
 						          OR fermeture_horaire_etablissement BETWEEN '".$de_heure."' AND '".$a_heure."'
-					      		)"),0);
+					      		)";
+	//echo "0 : $sql<br />";
+	$requete_nb = mysql_result(mysql_query($sql),0);
 
 	// ensuit on vérifie qu'une table edt_calendrier existe
 	$table_edt_calendrier = 'non';
@@ -2205,7 +2209,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 
 	if ( $table_edt_calendrier === 'oui' )
 	{
-		$requete_nb_calendrier_1 = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_calendrier
+		$sql="SELECT count(*) FROM ".$prefix_base."edt_calendrier
 							WHERE etabferme_calendrier = '0'
 							AND classe_concerne_calendrier = ''
 							AND
@@ -2213,12 +2217,14 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 							  OR '".$fin_calendrier_ts_gmt."' BETWEEN debut_calendrier_ts AND fin_calendrier_ts
 						       	  OR debut_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$debut_calendrier_ts_gmt."'
 						       	  OR fin_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
-							)"),0);
+							)";
+		//echo "1 : $sql<br />";
+		$requete_nb_calendrier_1 = mysql_result(mysql_query($sql),0);
 	}
 	// on fait de même si c'est pour une classe est précisé
 	if ( $table_edt_calendrier === 'oui' and $classe_select != '' )
 	{
-		$requete_nb_calendrier_2 = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_calendrier
+		$sql="SELECT count(*) FROM ".$prefix_base."edt_calendrier
 							WHERE etabferme_calendrier = '0'
 							AND
 							( classe_concerne_calendrier LIKE '".$classe_select.";%;'
@@ -2231,8 +2237,19 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 							  OR '".$fin_calendrier_ts_gmt."' BETWEEN debut_calendrier_ts AND fin_calendrier_ts
 						       	  OR debut_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
 						       	  OR fin_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
-							)"),0);
+							)";
+		//echo "2 : $sql<br />";
+		$requete_nb_calendrier_2 = mysql_result(mysql_query($sql),0);
 	}
+
+	/*
+	// DEBUG
+	echo "<pre>
+\$requete_nb=$requete_nb
+\$requete_nb_calendrier_1=$requete_nb_calendrier_1
+\$requete_nb_calendrier_2=$requete_nb_calendrier_2
+</pre>";
+	*/
 
 	if ( $requete_nb != '0' and $requete_nb_calendrier_1 === '0' and $requete_nb_calendrier_2 === '0' ) { $ouvert = 'oui'; } else { $ouvert = 'non'; }
 	return($ouvert);
@@ -2400,6 +2417,10 @@ function nb_total_demijournee_absence($identifiant, $du_date, $au_date, $classe_
 			       	OR a_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
 				)
 			    ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve ASC";
+
+				//DEBUG
+				//echo "\$requete=$requete<br />";
+
                 $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
                 while ( $donnee = mysql_fetch_array($execution))
 		{
@@ -2412,13 +2433,55 @@ function nb_total_demijournee_absence($identifiant, $du_date, $au_date, $classe_
 				$heure_de_select = $donnee['d_heure_absence_eleve'];
 				$heure_a_select = $donnee['a_heure_absence_eleve'];
 
-				if ( !isset($tableau_base[$date_selection]['matin']) ) { $tableau_base[$date_selection]['matin'] = 'non'; }
-				if ( !isset($tableau_base[$date_selection]['apresmidi']) ) { $tableau_base[$date_selection]['apresmidi'] = 'non'; }
+				if ( !isset($tableau_base[$date_selection]) ) {
+					$tableau_base[$date_selection]['matin'] = 'non';
+					$tableau_base[$date_selection]['apresmidi'] = 'non';
+				}
+				else {
+					if ( !isset($tableau_base[$date_selection]['matin']) ) { $tableau_base[$date_selection]['matin'] = 'non'; }
+					if ( !isset($tableau_base[$date_selection]['apresmidi']) ) { $tableau_base[$date_selection]['apresmidi'] = 'non'; }
+				}
 
-				if ( $heure_de_select < $heure_de_coupure and $heure_a_select <= $heure_de_coupure and $tableau_base[$date_selection]['matin'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 1; $tableau_base[$date_selection]['matin'] = 'oui'; }
-				elseif ( $heure_de_select < $heure_de_coupure and $heure_a_select > $heure_de_coupure and $tableau_base[$date_selection]['matin'] != 'oui' and $tableau_base[$date_selection]['apresmidi'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 2; $tableau_base[$date_selection]['matin'] = 'oui'; $tableau_base[$date_selection]['apresmidi'] = 'oui'; }
-				elseif ( $heure_de_select >= $heure_de_coupure and $heure_a_select > $heure_de_coupure and $tableau_base[$date_selection]['apresmidi'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 1; $tableau_base[$date_selection]['apresmidi'] = 'oui'; }
+				/*
+				// DEBUG
+				echo "<pre>
+\$heure_de_select=$heure_de_select
+\$heure_de_coupure=$heure_de_coupure
+\$heure_a_select=$heure_a_select
+\$tableau_base[$date_selection]['matin']=".$tableau_base[$date_selection]['matin']."
+\$tableau_base[$date_selection]['apresmidi']=".$tableau_base[$date_selection]['apresmidi']."
+\$nb_demi_journee=$nb_demi_journee
+etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select)=".etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select)."
+</pre>";
+				*/
+
+				if ( $heure_de_select < $heure_de_coupure and $heure_a_select <= $heure_de_coupure and $tableau_base[$date_selection]['matin'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { 
+					$nb_demi_journee = $nb_demi_journee + 1;
+					$tableau_base[$date_selection]['matin'] = 'oui';
+				}
+				elseif ( $heure_de_select < $heure_de_coupure and $heure_a_select > $heure_de_coupure and $tableau_base[$date_selection]['matin'] != 'oui' and $tableau_base[$date_selection]['apresmidi'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) {
+					$nb_demi_journee = $nb_demi_journee + 2;
+					$tableau_base[$date_selection]['matin'] = 'oui'; $tableau_base[$date_selection]['apresmidi'] = 'oui'; 
+				}
+				elseif ( $heure_de_select >= $heure_de_coupure and $heure_a_select > $heure_de_coupure and $tableau_base[$date_selection]['apresmidi'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) {
+					$nb_demi_journee = $nb_demi_journee + 1;
+					$tableau_base[$date_selection]['apresmidi'] = 'oui';
+				}
 			}
+
+			/*
+			// DEBUG
+			if(!isset($date_selection)) {
+				echo "date_selection n'est pas définie.<br />";
+			}
+			else {
+				echo "<pre>
+				\$nb_demi_journee=$nb_demi_journee
+				\$tableau_base[$date_selection]['matin']=".$tableau_base[$date_selection]['matin']."
+				\$tableau_base[$date_selection]['apresmidi']=".$tableau_base[$date_selection]['apresmidi']."
+				</pre>";
+			}
+			*/
 
 			// la date du et au ne sont pas identique
 			$date_selection = ''; $date_suivante = '';
@@ -2444,8 +2507,14 @@ function nb_total_demijournee_absence($identifiant, $du_date, $au_date, $classe_
 			 	{
 					$date_selection = $jour_passe;
 
-					if ( !isset($tableau_base[$date_selection]['matin']) ) { $tableau_base[$date_selection]['matin'] = 'non'; }
-					if ( !isset($tableau_base[$date_selection]['apresmidi']) ) { $tableau_base[$date_selection]['apresmidi'] = 'non'; }
+					if ( !isset($tableau_base[$date_selection]) ) {
+						$tableau_base[$date_selection]['matin'] = 'non';
+						$tableau_base[$date_selection]['apresmidi'] = 'non';
+					}
+					else {
+						if ( !isset($tableau_base[$date_selection]['matin']) ) { $tableau_base[$date_selection]['matin'] = 'non'; }
+						if ( !isset($tableau_base[$date_selection]['apresmidi']) ) { $tableau_base[$date_selection]['apresmidi'] = 'non'; }
+					}
 
 					// connaitre à l'avance la date suivant
 					$tab_date = explode('-', $jour_passe);
