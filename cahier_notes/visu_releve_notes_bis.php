@@ -691,11 +691,11 @@ elseif(!isset($choix_periode)) {
 ?>
 <script type="text/javascript">
 	//<![CDATA[
-	getElementById('formulaire').setAttribute( "autocomplete", "off" );
+	document.getElementById('formulaire').setAttribute( "autocomplete", "off" );
 	////]]>
 </script>
-	
-	
+
+
 <?php
 	echo "<p><br /></p>\n";
 

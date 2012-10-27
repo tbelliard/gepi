@@ -168,14 +168,14 @@ if (isset($_POST['is_posted'])) {
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
+					if($_POST['rn_sign_nblig_'.$per]!="") {
+						if(mb_strlen(my_ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
 
-					if(mb_strlen(my_ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
-
-					if (isset($_POST['rn_sign_nblig_'.$per])) {
-						$register = mysql_query("UPDATE classes SET rn_sign_nblig='".$_POST['rn_sign_nblig_'.$per]."' where id='".$id_classe."'");
-						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						if (isset($_POST['rn_sign_nblig_'.$per])) {
+							$register = mysql_query("UPDATE classes SET rn_sign_nblig='".$_POST['rn_sign_nblig_'.$per]."' where id='".$id_classe."'");
+							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
 					}
-
 
 					if (isset($_POST['rn_formule_'.$per])) {
 						if ($_POST['rn_formule_'.$per]!='') {
