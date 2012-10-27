@@ -639,6 +639,8 @@ elseif(!isset($choix_periode)) {
 		echo "<th>Choix</th>\n";
 		for($j=1;$j<=$max_per;$j++) {
 			if(!in_array($j,$tab_periode_exclue)) {
+				// Problème: Si on clique sur la case, elle change deux fois d'état
+				//echo "<td style='background-color:lightgreen;' onclick=\"alterne_coche('tab_periode_num_$j')\">";
 				echo "<td style='background-color:lightgreen;'>";
 				//echo "<label for='choix_periode' style='cursor: pointer;'><input type=\"radio\" name=\"periode\" value='$j' /></label>\n";
 				echo "<span style='cursor: pointer;'>
@@ -692,10 +694,21 @@ elseif(!isset($choix_periode)) {
 <script type="text/javascript">
 	//<![CDATA[
 	document.getElementById('formulaire').setAttribute( "autocomplete", "off" );
+
+	function alterne_coche(id) {
+		if(document.getElementById(id)) {
+			if(document.getElementById(id).checked==true) {
+				document.getElementById(id).checked=false;
+			}
+			else {
+				document.getElementById(id).checked=true;
+			}
+		}
+	}
 	////]]>
 </script>
-
-
+	
+	
 <?php
 	echo "<p><br /></p>\n";
 
@@ -1009,7 +1022,7 @@ if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
     echo "document.getElementById('div_param_releve').style.display='none';";
 } else {
     echo "document.getElementById('div_param_releve').style.display='';";
-};
+}
 
 echo "	////]]>";
 echo "</script>\n";

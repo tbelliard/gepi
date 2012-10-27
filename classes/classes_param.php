@@ -168,6 +168,7 @@ if (isset($_POST['is_posted'])) {
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
+
 					if($_POST['rn_sign_nblig_'.$per]!="") {
 						if(mb_strlen(my_ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
 
@@ -216,6 +217,18 @@ if (isset($_POST['is_posted'])) {
 						if ($_POST['ects_code_parcours_'.$per]!='') {
 							$register = mysql_query("UPDATE classes SET ects_code_parcours='".$_POST['ects_code_parcours_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
+					}
+
+					// 20121027
+					//$tab_param=array('rn_aff_classe_nom');
+					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs');
+					for($loop=0;$loop<count($tab_param);$loop++) {
+						if (isset($_POST[$tab_param[$loop].'_'.$per])) {
+							if ($_POST[$tab_param[$loop].'_'.$per]!='') {
+								$register = saveParamClasse($id_classe, $tab_param[$loop], $_POST[$tab_param[$loop].'_'.$per]);
+								if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+							}
 						}
 					}
 
@@ -901,6 +914,14 @@ while ($per < $max_periode) {
 </tr>
 </table>
 
+<style type='text/css'>
+tr:hover {
+	background-color:white;
+}
+td {
+	vertical-align:top;
+}
+</style>
 <br />
 <table border='0'>
 <tr>
@@ -934,7 +955,7 @@ while ($per < $max_periode) {
 	<td>
 		<table style='border: 1px solid black;'>
 		<tr>
-			<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
+			<td style='width: auto; vertical-align:middle;'>Catégorie</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Priorité d'affichage</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Afficher la moyenne sur le bulletin</td>
 		</tr>
 		<?php
 		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
@@ -1061,6 +1082,22 @@ while ($per < $max_periode) {
 	<h2><b>Paramètres des relevés de notes&nbsp;: </b></h2>
 	</td>
 </tr>
+
+<!-- ================================================================= -->
+<!-- 20121027 -->
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Affichage du nom de la classe sur le relevé&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="1" name="rn_aff_classe_nom_<?php echo $per;?>" id="rn_aff_classe_nom_1" onchange='changement()' /><label for='rn_aff_classe_nom_1' style='cursor: pointer;'>Nom long</label><br />
+		<input type="radio" value="2" name="rn_aff_classe_nom_<?php echo $per;?>" id="rn_aff_classe_nom_2" onchange='changement()' /><label for='rn_aff_classe_nom_2' style='cursor: pointer;'>Nom court</label><br />
+		<input type="radio" value="3" name="rn_aff_classe_nom_<?php echo $per;?>" id="rn_aff_classe_nom_3" onchange='changement()' /><label for='rn_aff_classe_nom_3' style='cursor: pointer;'>Nom court (Nom long)</label><br />
+	</td>
+</tr>
+<!-- ================================================================= -->
+
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">Afficher le nom des devoirs&nbsp;:</td>
@@ -1136,8 +1173,108 @@ while ($per < $max_periode) {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">Nombre de lignes pour la signature&nbsp;:</td>
-	<td><input type="text" name="rn_sign_nblig_<?php echo $per;?>" value="" size="3" /></td>
+	<td><input type="text" name="rn_sign_nblig_<?php echo $per;?>" value="" size="3" /> (<em>par défaut, c'est 3</em>)</td>
 </tr>
+
+<!-- ================================================================= -->
+<!-- 20121027 -->
+<!-- A MODIFIER EN CAS DE MODE CNIL STRICT -->
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Afficher l'appréciation/commentaire du professeur<br />(<em>sous réserve d'autorisation par le professeur dans les paramètres du devoir</em>)&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_app_<?php echo $per;?>" id="rn_app_y" onchange='changement()' /><label for='rn_app_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_app_<?php echo $per;?>" id="rn_app_n" onchange='changement()' /><label for='rn_app_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Avec la moyenne de la classe pour chaque devoir&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_moy_classe_<?php echo $per;?>" id="rn_moy_classe_y" onchange='changement()' /><label for='rn_moy_classe_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_moy_classe_<?php echo $per;?>" id="rn_moy_classe_n" onchange='changement()' /><label for='rn_moy_classe_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Avec les moyennes min/classe/max de chaque devoir&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_moy_min_max_classe_<?php echo $per;?>" id="rn_moy_min_max_classe_y" onchange='changement()' /><label for='rn_moy_min_max_classe_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_moy_min_max_classe_<?php echo $per;?>" id="rn_moy_min_max_classe_n" onchange='changement()' /><label for='rn_moy_min_max_classe_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Avec retour à la ligne après chaque devoir si on affiche le nom du devoir ou le commentaire&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_retour_ligne_<?php echo $per;?>" id="rn_retour_ligne_y" onchange='changement()' /><label for='rn_retour_ligne_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="y" name="rn_retour_ligne_<?php echo $per;?>" id="rn_retour_ligne_n" onchange='changement()' /><label for='rn_retour_ligne_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+
+<?php
+	$titre_infobulle="Rapport taille polices\n";
+	$texte_infobulle="<p>Pour que la liste des devoirs tienne dans la cellule, on réduit la taille de la police.<br />Pour que cela reste lisible, vous pouvez fixer ici une taille minimale en dessous de laquelle ne pas descendre.</p><br /><p>Si la taille minimale ne suffit toujours pas à permettre l'affichage dans la cellule, on supprime les retours à la ligne.</p><br /><p>Et cela ne suffit toujours pas, le texte est tronqué (<em>dans ce cas, un relevé HTML pourra permettre l'affichage (les hauteurs de cellules s'adaptent à la quantité de texte... L'inconvénient&nbsp;: Une matière peut paraître plus importante qu'une autre par la place qu'elle occupe)</em>).</p>\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('a_propos_rapport_tailles_polices',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+?>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Rapport taille_standard / taille_minimale_de_police (<em>relevé PDF</em>) <?php
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_rapport_tailles_polices','y',100,-50);\" onmouseout=\"cacher_div('a_propos_rapport_tailles_polices');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
+	?>&nbsp;:
+	</td>
+	<td><input type="text" name="rn_rapport_standard_min_font_<?php echo $per;?>" size="3" value="" onchange='changement()' /> (<em>par défaut, c'est 3</em>)</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Afficher le bloc adresse du responsable de l'élève&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_adr_resp_<?php echo $per;?>" id="rn_adr_resp_y" onchange='changement()' /><label for='rn_adr_resp_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_adr_resp_<?php echo $per;?>" id="rn_adr_resp_n" onchange='changement()' /><label for='rn_adr_resp_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<?php
+	$titre_infobulle="Bloc observations en PDF\n";
+	$texte_infobulle="<p>Le bloc observations est affiché si une des conditions suivantes est remplie&nbsp;:</p>\n";
+	$texte_infobulle.="<ul>\n";
+	$texte_infobulle.="<li>La case Bloc observations est cochée.</li>\n";
+	$texte_infobulle.="<li>Une des cases signature est cochée.</li>\n";
+	$texte_infobulle.="</ul>\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('a_propos_bloc_observations',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+?>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Afficher le bloc observations (<em>relevé PDF</em>) <?php
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_bloc_observations','y',100,-50);\"  onmouseout=\"cacher_div('a_propos_bloc_observations');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
+	?>&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_bloc_obs_<?php echo $per;?>" id="rn_bloc_obs_y" onchange='changement()' /><label for='rn_bloc_obs_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_bloc_obs_<?php echo $per;?>" id="rn_bloc_obs_n" onchange='changement()' /><label for='rn_bloc_obs_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+<!-- ================================================================= -->
+
+
 
 <?php
 if ($gepiSettings['active_mod_ects'] == "y") {

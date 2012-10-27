@@ -2,12 +2,14 @@
 	/*
 	*/
 
+	$tab_param_classe=array();
 	echo "<table class='boireaus' border='1' summary='Tableau des items'>\n";
 	echo "<tr>\n";
 	//echo "<th width='30%'>Item</th>\n";
 	echo "<th>Item</th>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<th>".get_class_from_id($tab_id_classe[$i])."</th>\n";
+		$tab_param_classe[$i]=getAllParamClasse($tab_id_classe[$i]);
 	}
 	echo "<th>\n";
 	echo "<a href=\"javascript:ToutCocher()\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:ToutDeCocher()\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
@@ -60,11 +62,23 @@
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<td>\n";
 		echo "<label for='rn_aff_classe_nom_".$i."_1' class='invisible'>Nom long</label>
-		<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_1' value='1' checked='checked' /><br />\n";
+		<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_1' value='1' ";
+		if((!isset($tab_param_classe[$i]['rn_aff_classe_nom']))||($tab_param_classe[$i]['rn_aff_classe_nom']=='1')) {
+			echo "checked='checked' ";
+		}
+		echo "/><br />\n";
 		echo "<label for='rn_aff_classe_nom_".$i."_2' class='invisible'>Nom long</label>
-		<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_2' value='2' /><br />\n";
+		<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_2' value='2' ";
+		if((isset($tab_param_classe[$i]['rn_aff_classe_nom']))&&($tab_param_classe[$i]['rn_aff_classe_nom']=='2')) {
+			echo "checked='checked' ";
+		}
+		echo "/><br />\n";
 		echo "<label for='rn_aff_classe_nom_".$i."_3' class='invisible'>Nom long</label>
-		<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_3' value='3' />\n";
+		<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_3' value='3' ";
+		if((isset($tab_param_classe[$i]['rn_aff_classe_nom']))&&($tab_param_classe[$i]['rn_aff_classe_nom']=='3')) {
+			echo "checked='checked' ";
+		}
+		echo "/>\n";
 		echo "</td>\n";
 	}
 
@@ -120,7 +134,11 @@
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<td>\n";
 		echo "<label for='rn_app_".$i."' class='invisible'>Avec l'appréciation</label>
-				<input type='checkbox' name='rn_app[$i]' id='rn_app_".$i."' size='2' value='y' />\n";
+				<input type='checkbox' name='rn_app[$i]' id='rn_app_".$i."' size='2' value='y' ";
+		if((isset($tab_param_classe[$i]['rn_app']))&&($tab_param_classe[$i]['rn_app']=='y')) {
+			echo "checked ";
+		}
+		echo "/>\n";
 		echo "</td>\n";
 	}
 
@@ -141,7 +159,11 @@
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
 			echo "<label for='rn_moy_classe_".$i."' class='invisible'>Avec la moyenne de la classe</label>
-				<input type='checkbox' name='rn_moy_classe[$i]' id='rn_moy_classe_".$i."' size='2' value='y' />\n";
+				<input type='checkbox' name='rn_moy_classe[$i]' id='rn_moy_classe_".$i."' size='2' value='y' ";
+			if((isset($tab_param_classe[$i]['rn_moy_classe']))&&($tab_param_classe[$i]['rn_moy_classe']=='y')) {
+				echo "checked ";
+			}
+			echo "/>\n";
 			echo "</td>\n";
 		}
 	
@@ -157,7 +179,11 @@
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
 			echo "<label for='rn_moy_min_max_classe_".$i."' class='invisible'>Avec les moyennes min/classe/max</label> 
-					<input type='checkbox' name='rn_moy_min_max_classe[$i]' id='rn_moy_min_max_classe_".$i."' size='2' value='y' />\n";
+					<input type='checkbox' name='rn_moy_min_max_classe[$i]' id='rn_moy_min_max_classe_".$i."' size='2' value='y' ";
+			if((isset($tab_param_classe[$i]['rn_moy_min_max_classe']))&&($tab_param_classe[$i]['rn_moy_min_max_classe']=='y')) {
+				echo "checked ";
+			}
+			echo "/>\n";
 			echo "</td>\n";
 		}
 	
@@ -168,12 +194,12 @@
 
 	//}
 	//=================================
-
+	/*
 	$rn_retour_ligne_defaut="y";
 	if((isset($_SESSION['pref_rn_retour_ligne']))&&(($_SESSION['pref_rn_retour_ligne']=='y')||($_SESSION['pref_rn_retour_ligne']=='n'))) {
 		$rn_retour_ligne_defaut=$_SESSION['pref_rn_retour_ligne'];
 	}
-
+	*/
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td style='text-align:left;'>Avec retour à la ligne après chaque devoir si on affiche le nom du devoir ou le commentaire\n";
@@ -182,7 +208,10 @@
 		echo "<td>\n";
 		echo "<label for='rn_retour_ligne_".$i."' class='invisible'>Avec retour à la ligne</label> 
 					<input type='checkbox' name='rn_retour_ligne[$i]' id='rn_retour_ligne_".$i."' size='2' value='y' ";
-		if($rn_retour_ligne_defaut=='y') {echo "checked='checked' ";}
+		//if($rn_retour_ligne_defaut=='y') {echo "checked='checked' ";}
+		if((isset($tab_param_classe[$i]['rn_retour_ligne']))&&($tab_param_classe[$i]['rn_retour_ligne']=='y')) {
+			echo "checked ";
+		}
 		echo "/>\n";
 		echo "</td>\n";
 	}
@@ -191,6 +220,7 @@
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	/*
 	if(isset($_SESSION['pref_rn_rapport_standard_min_font'])) {
 		$rn_rapport_standard_min_font_defaut=$_SESSION['pref_rn_rapport_standard_min_font'];
 	}
@@ -198,12 +228,19 @@
 		$rn_rapport_standard_min_font_defaut=getSettingValue('rn_rapport_standard_min_font_defaut');
 		$rn_rapport_standard_min_font_defaut=(($rn_rapport_standard_min_font_defaut!='')&&(preg_match("/^[0-9.]*$/",$rn_rapport_standard_min_font_defaut))&&($rn_rapport_standard_min_font_defaut>0)) ? $rn_rapport_standard_min_font_defaut : 3;
 	}
+	*/
+
+	$rn_rapport_standard_min_font_defaut=getSettingValue('rn_rapport_standard_min_font_defaut');
+	$rn_rapport_standard_min_font_defaut=(($rn_rapport_standard_min_font_defaut!='')&&(preg_match("/^[0-9.]*$/",$rn_rapport_standard_min_font_defaut))&&($rn_rapport_standard_min_font_defaut>0)) ? $rn_rapport_standard_min_font_defaut : 3;
 
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td style='text-align:left;'>Rapport taille_standard / taille_minimale_de_police (<em>relevé PDF avec cell_ajustee()</em>)<br />(<em>Si pour que les notes tiennent dans la cellule, il faut réduire davantage la police, on supprime les retours à la ligne.</em>)\n";
 	echo "</td>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
+		if((isset($tab_param_classe[$i]['rn_rapport_standard_min_font']))&&(preg_match("/^[0-9.]*$/", $tab_param_classe[$i]['rn_rapport_standard_min_font']))&&($tab_param_classe[$i]['rn_rapport_standard_min_font']>0)) {
+			$rn_rapport_standard_min_font_defaut=$tab_param_classe[$i]['rn_rapport_standard_min_font'];
+		}
 		echo "<td>\n";
 		echo "<label for='rn_rapport_standard_min_font_".$i."' class='invisible'>Rapport taille</label> 
 					<input type='text' name='rn_rapport_standard_min_font[$i]' id='rn_rapport_standard_min_font_".$i."' size='2' value='".$rn_rapport_standard_min_font_defaut."' />\n";
@@ -223,14 +260,21 @@
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td style='text-align:left;'>Afficher le bloc adresse du responsable de l'élève\n";
 		echo "</td>\n";
+		/*
 		$chaine_coche_rn_adr_resp="";
 		if(getPref($_SESSION['login'], 'pref_rn_adr_resp', "")=="y") {
 			$chaine_coche_rn_adr_resp=" checked";
 		}
+		*/
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
 			echo "<label for='rn_adr_resp_".$i."' class='invisible'>Afficher l'adresse</label> 
-					<input type='checkbox' name='rn_adr_resp[$i]' id='rn_adr_resp_".$i."' size='2' value='y'".$chaine_coche_rn_adr_resp." />\n";
+					<input type='checkbox' name='rn_adr_resp[$i]' id='rn_adr_resp_".$i."' size='2' value='y' ";
+					//$chaine_coche_rn_adr_resp." ";
+			if((isset($tab_param_classe[$i]['rn_adr_resp']))&&($tab_param_classe[$i]['rn_adr_resp']=='y')) {
+				echo "checked ";
+			}
+			echo "/>\n";
 			echo "</td>\n";
 		}
 		echo "<td>\n";
@@ -258,7 +302,11 @@
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
 			echo "<label for='rn_bloc_obs_".$i."' class='invisible'>bloc observations</label> 
-					<input type='checkbox' name='rn_bloc_obs[$i]' id='rn_bloc_obs_".$i."' size='2' value='y' />\n";
+					<input type='checkbox' name='rn_bloc_obs[$i]' id='rn_bloc_obs_".$i."' size='2' value='y' ";
+			if((isset($tab_param_classe[$i]['rn_bloc_obs']))&&($tab_param_classe[$i]['rn_bloc_obs']=='y')) {
+				echo "checked ";
+			}
+			echo "/>\n";
 			echo "</td>\n";
 		}
 		echo "<td>\n";

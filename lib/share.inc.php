@@ -2265,6 +2265,69 @@ function savePref($login,$item,$valeur){
 }
 
 /**
+ * Renvoie l'ensemle des paramètres d'une classe en interrogeant la table classes_param
+ *
+ * @param string $id_classe Identifiant de la classe
+ * @return array Tableau associatif des paramètres name=>value
+ */
+function getAllParamClasse($id_classe) {
+	$sql="SELECT * FROM classes_param WHERE id_classe='$id_classe' ORDER BY name;";
+	$res_param=mysql_query($sql);
+
+	$tab_param=array();
+	if(mysql_num_rows($res_param)>0){
+		while($ligne=mysql_fetch_object($res_param)) {
+			$tab_param[$ligne->name]=$ligne->value;
+		}
+	}
+
+	return $tab_param;
+}
+
+/**
+ * Renvoie les paramètres d'une classe pour un item en interrogeant la table classes_param
+ *
+ * @param string $id_classe Identifiant de la classe
+ * @param string $item Item recherché
+ * @param string $default Valeur par défaut
+ * @return string La valeur de l'item
+ */
+function getParamClasse($id_classe,$item,$default) {
+	$sql="SELECT value FROM classes_param WHERE id_classe='$id_classe' AND name='$item'";
+	$res_param=mysql_query($sql);
+
+	if(mysql_num_rows($res_param)>0){
+		$ligne=mysql_fetch_object($res_param);
+		return $ligne->value;
+	}
+	else{
+		return $default;
+	}
+}
+
+/**
+ * Enregistre les paramètres d'une classe pour un item dans la table classes_param
+ *
+ * @param string $id_classe Identifiant de la classe
+ * @param string $item Item recherché
+ * @param string $valeur Valeur à enregistrer
+ * @return boolean TRUE si tout c'est bien passé
+ */
+function saveParamClasse($id_classe,$item,$valeur) {
+	$sql="SELECT value FROM classes_param WHERE id_classe='$id_classe' AND name='$item'";
+	$res_param=mysql_query($sql);
+
+	if(mysql_num_rows($res_param)>0){
+		$sql="UPDATE classes_param SET value='$valeur' WHERE id_classe='$id_classe' AND name='$item';";
+	}
+	else{
+		$sql="INSERT INTO classes_param SET id_classe='$id_classe', name='$item', value='$valeur';";
+	}
+	$res=mysql_query($sql);
+	if($res) {return TRUE;} else {return FALSE;}
+}
+
+/**
  * Position horizontale initiale pour permettre un affichage sans superposition
  *
  * @global int $GLOBALS['$posDiv_infobulle']

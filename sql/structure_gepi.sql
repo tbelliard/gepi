@@ -784,3 +784,12 @@ date_debut DATETIME NOT NULL ,
 date_fin DATETIME NOT NULL
 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+CREATE TABLE classes_param (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_classe smallint(6) NOT NULL,
+name varchar(100) NOT NULL,
+value varchar(255) NOT NULL,
+PRIMARY KEY (id),
+UNIQUE KEY id_classe_-_name (id_classe,name)
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
+
