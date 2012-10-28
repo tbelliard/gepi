@@ -635,6 +635,12 @@ if (isset($pers_id)) {
 	//echo "$sql<br />\n";
 	$res_resp=mysql_query($sql);
 
+	if(mysql_num_rows($res_resp)==0) {
+		echo "<p style='color:red'><strong>Erreur&nbsp;:</strong> Aucun responsable n'est (<em>plus</em>) associé au n°$pers_id dans la table 'resp_pers'.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	$lig_pers=mysql_fetch_object($res_resp);
 
 	$resp_login_tmp=$lig_pers->login;
