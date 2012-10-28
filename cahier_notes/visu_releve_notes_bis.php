@@ -2,7 +2,7 @@
 /*
 *
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -44,6 +44,11 @@ if (mysql_num_rows($res_test)==0) {
 }
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
+	die();
+}
+
+if(($_SESSION['statut']=='autre')&&(!acces("/cahier_notes/visu_releve_notes_bis.php", $_SESSION['statut']))) {
+	header("Location: ../accueil.php?msg=Acces_non_autorise");
 	die();
 }
 
@@ -329,6 +334,9 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 						(r.resp_legal='1' OR r.resp_legal='2') AND
 						c.id=jec.id_classe AND
 						jec.login=e.login);";
+	}
+	elseif($_SESSION['statut']=='autre') {
+		$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe";
 	}
 	else {
 		echo "<p>Vous n'êtes pas autorisé à accéder aux relevés de notes des élèves.</p>\n";
@@ -1153,6 +1161,18 @@ echo "</script>\n";
 							jec.id_classe='".$tab_id_classe[$i]."' AND
 							(r.resp_legal='1' OR r.resp_legal='2') AND
 							jec.login=e.login);";
+		}
+		elseif($_SESSION['statut'] == 'autre') {
+			$sql="SELECT DISTINCT e.* FROM eleves e,
+							j_eleves_classes jec
+				WHERE jec.login=e.login AND
+							jec.id_classe='".$tab_id_classe[$i]."'
+				ORDER BY e.nom,e.prenom;";
+		}
+		else {
+			echo "<p style='color:red'>La recherche de la liste des élèves n'est pas possible pour vos statut et autorisations???</p>\n";
+			require("../lib/footer.inc.php");
+			die();
 		}
 		//echo "$sql<br />";
 

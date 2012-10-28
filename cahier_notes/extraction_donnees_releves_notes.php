@@ -429,6 +429,9 @@
 					elseif ($_SESSION['statut'] == 'secours') {
 						$autorisation_acces='y';
 					}
+					elseif(($_SESSION['statut'] == 'autre') AND (acces("/cahier_notes/visu_releve_notes_bis.php", $_SESSION['statut'] == 'autre'))) {
+						$autorisation_acces='y';
+					}
 
 					if($autorisation_acces=='y') {
 
