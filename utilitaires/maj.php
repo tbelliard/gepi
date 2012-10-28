@@ -4,7 +4,7 @@
  * 
  * $Id$
  *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL,
  * @package General
  * @subpackage mise_a jour
@@ -174,6 +174,9 @@ if (($resultat_session == '0') and ($valid != 'yes')) {
 				</fieldset>
 			</div>
 		</form>
+		<script type="text/javascript">
+			document.getElementById("login").focus();
+		</script>
 	</body>
 </html>
 ');
