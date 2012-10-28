@@ -3694,6 +3694,8 @@ else{
 			// On recherche dans tempo2 la liste des ELE_ID correspondant à modif ou new
 			// Et on remplit/met à jour 'eleves' avec les enregistrements correspondants de temp_gep_import2
 
+			enregistre_log_maj_sconet("<p class='bold'>Parcours des ajouts/modifications élèves</p>");
+
 			$erreur=0;
 			$cpt=0;
 			$sql="SELECT DISTINCT t.* FROM temp_gep_import2 t, tempo2 t2 WHERE t.ELE_ID=t2.col2 AND t2.col1='modif'";
@@ -3790,7 +3792,9 @@ else{
 						info_debug($sql);
 						$update=mysql_query($sql);
 						if($update){
-							$texte.="\n<span style='color:darkgreen;'>";
+							$texte.="\n<a href='../eleves/modify_eleve.php?eleve_login=$login_eleve' target='_blank'><span style='color:darkgreen;'>";
+							$texte.="$lig->ELEPRE $lig->ELENOM";
+							$texte.="</span></a>";
 
 							if(getSettingValue('mode_email_ele')!="mon_compte") {
 								$sql="UPDATE utilisateurs SET email='$lig->MEL' WHERE statut='eleve' AND login IN (SELECT login FROM eleves WHERE ele_id='$lig->ELE_ID');";
@@ -3800,11 +3804,11 @@ else{
 						}
 						else{
 							$texte.="\n<span style='color:red;'>";
+							$texte.="$lig->ELEPRE $lig->ELENOM";
+							$texte.="</span>";
 							$erreur++;
 						}
 						//echo "$sql<br />\n";
-						$texte.="$lig->ELEPRE $lig->ELENOM";
-						$texte.="</span>";
 
 						$sql="UPDATE j_eleves_regime SET doublant='$doublant'";
 						if("$regime"!="ERR"){
@@ -3848,7 +3852,10 @@ else{
 							info_debug($sql);
 							$update=mysql_query($sql);
 							if($update){
-								$texte.="\n<span style='color:darkgreen;'>";
+
+								$texte.="\n<a href='../eleves/modify_eleve.php?eleve_login=$login_eleve' target='_blank'><span style='color:darkgreen;'>";
+								$texte.="$lig->ELEPRE $lig->ELENOM";
+								$texte.="</span></a>";
 
 								if(getSettingValue('mode_email_ele')!="mon_compte") {
 									$sql="UPDATE utilisateurs SET email='$lig->MEL' WHERE statut='eleve' AND login IN (SELECT login FROM eleves WHERE ele_id='$lig->ELE_ID');";
@@ -3857,11 +3864,11 @@ else{
 							}
 							else{
 								$texte.="\n<span style='color:red;'>";
+								$texte.="$lig->ELEPRE $lig->ELENOM";
+								$texte.="</span>";
 								$erreur++;
 							}
 							//echo "$sql<br />\n";
-							$texte.="$lig->ELEPRE $lig->ELENOM";
-							$texte.="</span>";
 
 							$sql="UPDATE j_eleves_regime SET doublant='$doublant'";
 							if("$regime"!="ERR"){
@@ -4149,7 +4156,9 @@ else{
 								info_debug($sql);
 								$insert=mysql_query($sql);
 								if($insert){
-									$texte.="\n<span style='color:blue;'>";
+									$texte.="\n<a href='../eleves/modify_eleve.php?eleve_login=$login_eleve' target='_blank'><span style='color:blue;'>";
+									$texte.="$lig->ELEPRE $lig->ELENOM";
+									$texte.="</span></a>";
 
 									if($nb_comptes_eleves>0) {
 										$info_action_titre="Nouvel élève&nbsp;: ".remplace_accents(stripslashes($lig->ELENOM)." ".stripslashes($lig->ELEPRE))." ($login_eleve)";
@@ -4161,11 +4170,11 @@ else{
 								}
 								else{
 									$texte.="\n<span style='color:red;'>";
+									$texte.="$lig->ELEPRE $lig->ELENOM";
+									$texte.="</span>";
 									$erreur++;
 								}
 								//echo "$sql<br />\n";
-								$texte.="$lig->ELEPRE $lig->ELENOM";
-								$texte.="</span>";
 		
 		
 								$sql="INSERT INTO j_eleves_regime SET doublant='$doublant',
@@ -4518,7 +4527,7 @@ else{
 					if(mysql_num_rows($res_ele)>0){
 						$lig_ele=mysql_fetch_object($res_ele);
 
-						$texte.="Affectation de $lig_ele->prenom $lig_ele->nom ";
+						$texte.="Affectation de <a href='../eleves/modify_eleve.php?eleve_login=$login_eleve[$i]' target='_blank'>$lig_ele->prenom $lig_ele->nom</a> ";
 
 						//if(is_int($id_classe[$i])){
 						if(is_numeric($id_classe[$i])){
@@ -5894,7 +5903,7 @@ else{
 
 				$login_resp=$_POST['login_resp'];
 
-				echo "<p class='bold'>Parcours des modifications de login demandées...</p>\n";
+				$texte="<p class='bold'>Parcours des modifications de login demandées...</p>\n";
 				foreach($login_resp as $key => $value) {
 					// On commence par vider le login pour éviter des collisions
 					$sql="UPDATE resp_pers SET login='' WHERE pers_id='".$key."';";
@@ -5903,49 +5912,58 @@ else{
 
 				foreach($login_resp as $key => $value) {
 					if($value!='') {
-						echo "Mise à jour du login du responsable n°$key vers $value&nbsp;: ";
+						$texte.="Mise à jour du login du responsable n°<a href='modify_resp.php?pers_id=$key' target='_blank'>$key</a> (".civ_nom_prenom_from_pers_id($key).") vers <a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$value' target='_blank'>$value</a>&nbsp;: ";
 						// Vérification
 						$sql="SELECT rp.* FROM resp_pers WHERE login='$value';";
-						$test==mysql_query($sql);
+						$test=mysql_query($sql);
 						if(mysql_num_rows($test)==0) {
 							$sql="UPDATE resp_pers SET login='$value' WHERE pers_id='".$key."';";
 							$update=mysql_query($sql);
 							if($update) {
-								echo "<span style='color:green'>SUCCES</span>";
+								$texte.="<span style='color:green'>SUCCES</span>";
 							}
 							else {
-								echo "<span style='color:red'>ECHEC</span>";
+								$texte.="<span style='color:red'>ECHEC</span>";
 							}
-							echo "<br />\n";
+							$texte.="<br />\n";
 						}
 						else {
-							echo "<br /><span style='color:red'>Le login $value est déjà attribué à un autre utilisateur.</span><br />\n";
+							$texte.="<br /><span style='color:red'>Le login $value est déjà attribué à un autre utilisateur.</span><br />\n";
 						}
+
 					}
 					else {
-						echo "Le login du responsable n°$key est vide.<br />\n";
+						$texte.="Le login du responsable n°<a href='modify_resp.php?pers_id=$key' target='_blank'>$key</a> (".civ_nom_prenom_from_pers_id($key).") est vide.<br />\n";
 					}
 				}
 
-				require("../lib/footer.inc.php");
-				die();
+				echo $texte;
+				enregistre_log_maj_sconet($texte);
+
+				//require("../lib/footer.inc.php");
+				//die();
 			}
 
 			if(isset($_POST['suppr'])) {
 				check_token(false);
 
-				echo "<p class='bold'>Parcours des modifications demandées...</p>\n";
+				$texte="<p class='bold'>Parcours des modifications demandées...</p>\n";
+				echo $texte;
+				enregistre_log_maj_sconet($texte);
 
 				$nb_incertitudes=0;
 				$suppr=$_POST['suppr'];
 				$conserver=isset($_POST['conserver']) ? $_POST['conserver'] : array();
 
 				for($loop=0;$loop<count($suppr);$loop++) {
+					$texte="";
 					$sql="SELECT * FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
 					$res_rp=mysql_query($sql);
 					if(mysql_num_rows($res_rp)==0) {
 						// On ne devrait pas arriver là
-						echo "<span style='color:red'>Le responsable n°".$suppr[$loop]." proposé à la suppression n'existe pas.</span><br />";
+						$texte.="<span style='color:red'>Le responsable n°".$suppr[$loop]." proposé à la suppression n'existe pas.</span><br />";
+						echo $texte;
+						enregistre_log_maj_sconet($texte);
 					}
 					else {
 						// Chercher les homonymes.
@@ -5954,7 +5972,7 @@ else{
 						$res_rp2=mysql_query($sql);
 						if(mysql_num_rows($res_rp2)==0) {
 							// On ne devrait pas arriver là... si: si on a supprimé les précédents homonymes dans le même submit
-							echo "Le responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>) proposé à la suppression n'a pas ou plus d'homonyme.<br />Suppression&nbsp;: \n";
+							$texte.="Le responsable n°<a href='modify_resp.php?pers_id=".$suppr[$loop]."' target='_blank'>".$suppr[$loop]."</a> (<em>$lig_rp->nom $lig_rp->prenom</em>) proposé à la suppression n'a pas ou plus d'homonyme.<br />Suppression&nbsp;: \n";
 
 							$sql="DELETE FROM utilisateurs WHERE statut='responsable' ANT login IN (SELECT login FROM resp_pers WHERE pers_id='".$suppr[$loop]."');";
 							$menage=mysql_query($sql);
@@ -5962,17 +5980,20 @@ else{
 							$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
 							$menage=mysql_query($sql);
 							if($menage) {
-								echo "<span style='color:green'>SUCCES</span>";
+								$texte.="<span style='color:green'>SUCCES</span>";
 							}
 							else {
-								echo "<span style='color:red'>ECHEC</span>";
+								$texte.="<span style='color:red'>ECHEC</span>";
 							}
-							echo "<br />\n";
+							$texte.="<br />\n";
+
+							echo $texte;
+							enregistre_log_maj_sconet($texte);
 						}
 						else {
 
 							if((!isset($conserver[$lig_rp->pers_id]))||($conserver[$lig_rp->pers_id]=='')) {
-								echo "Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
+								$texte.="Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
 
 								$sql="DELETE FROM utilisateurs WHERE statut='responsable' ANT login IN (SELECT login FROM resp_pers WHERE pers_id='".$suppr[$loop]."');";
 								$menage=mysql_query($sql);
@@ -5980,12 +6001,15 @@ else{
 								$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
 								$menage=mysql_query($sql);
 								if($menage) {
-									echo "<span style='color:green'>SUCCES</span>";
+									$texte.="<span style='color:green'>SUCCES</span>";
 								}
 								else {
-									echo "<span style='color:red'>ECHEC</span>";
+									$texte.="<span style='color:red'>ECHEC</span>";
 								}
-								echo "<br />\n";
+								$texte.="<br />\n";
+
+								echo $texte;
+								enregistre_log_maj_sconet($texte);
 							}
 							else {
 								// Le login du compte qui va être supprimé, doit être conservé.
@@ -5994,12 +6018,18 @@ else{
 								$sql="SELECT statut FROM utilisateurs WHERE login='".$conserver[$lig_rp->pers_id]."';";
 								$test=mysql_query($sql);
 								if(mysql_num_rows($test)==0) {
-									echo "<span style='color:red'>Le login proposé ".$conserver[$lig_rp->pers_id]." n'existe pas.</span><br />";
+									$texte.="<span style='color:red'>Le login proposé ".$conserver[$lig_rp->pers_id]." n'existe pas.</span><br />";
+
+									echo $texte;
+									enregistre_log_maj_sconet($texte);
 								}
 								else {
 									$statut_test=mysql_result($test, 0, "statut");
 									if($statut_test!='responsable') {
-										echo "<span style='color:red'>Le login proposé ".$conserver[$lig_rp->pers_id]." n'est pas un compte 'responsable', mais '$statut_test'.</span><br />";
+										$texte.="<span style='color:red'>Le login proposé ".$conserver[$lig_rp->pers_id]." n'est pas un compte 'responsable', mais '$statut_test'.</span><br />";
+
+										echo $texte;
+										enregistre_log_maj_sconet($texte);
 									}
 									else {
 
@@ -6021,32 +6051,39 @@ else{
 										}
 
 										if(($nb_resp_conserves==1)&&(!isset($conserver[$tab_homonymes[0]['pers_id']]))) {
-											echo "Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
+											$texte.="Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
 											$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
 											$menage=mysql_query($sql);
 											if($menage) {
-												echo "<span style='color:green'>SUCCES</span>";
+												$texte.="<span style='color:green'>SUCCES</span>";
 											}
 											else {
-												echo "<span style='color:red'>ECHEC</span>";
+												$texte.="<span style='color:red'>ECHEC</span>";
 											}
-											echo "<br />\n";
+											$texte.="<br />\n";
 
-											echo "$lig_rp->nom $lig_rp->prenom&nbsp;: Mise à jour du compte d'utilisateur de l'homonyme conservé (".$tab_homonymes[0]['pers_id'].") vers ".$conserver[$lig_rp->pers_id]."&nbsp;: ";
+											$texte.="$lig_rp->nom $lig_rp->prenom&nbsp;: Mise à jour du compte d'utilisateur de l'homonyme conservé (<a href='modify_resp.php?pers_id=".$tab_homonymes[0]['pers_id']."' target='_blank'>".$tab_homonymes[0]['pers_id']."</a>) vers <a href='../utilisateurs/edit_responsable.php?critere_recherche_login=".$conserver[$lig_rp->pers_id]."' target='_blank'>".$conserver[$lig_rp->pers_id]."</a>&nbsp;: ";
 											$sql="UPDATE resp_pers SET login='".$conserver[$lig_rp->pers_id]."' WHERE pers_id='".$tab_homonymes[0]['pers_id']."';";
 											$update=mysql_query($sql);
 											if($update) {
-												echo "<span style='color:green'>SUCCES</span>";
+												$texte.="<span style='color:green'>SUCCES</span>";
 											}
 											else {
-												echo "<span style='color:red'>ECHEC</span>";
+												$texte.="<span style='color:red'>ECHEC</span>";
 											}
-											echo "<br />\n";
+											$texte.="<br />\n";
+
+											echo $texte;
+											enregistre_log_maj_sconet($texte);
 										}
 										else {
 											// Incertitude:
-											echo "<div id='incertitude_".$nb_incertitudes."'>\n";
-											echo "<span style='color:red'>Il y a une incertitude sur ce qu'il convient d'effectuer pour $lig_rp->nom $lig_rp->prenom</span><br />";
+											$texte.="<div id='incertitude_".$nb_incertitudes."'>\n";
+											$texte.="<span style='color:red'>Il y a une incertitude sur ce qu'il convient d'effectuer pour $lig_rp->nom $lig_rp->prenom</span><br />";
+
+											echo $texte;
+											enregistre_log_maj_sconet($texte);
+
 											echo "<form action='".$_SERVER['PHP_SELF']."' id='form_incertitude".$nb_incertitudes."' target='_blank' method='post'>\n";
 											echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 											echo "<input type='hidden' name='step' value='13a' />\n";
@@ -6075,16 +6112,20 @@ else{
 											echo "<script type='text/javascript'>document.getElementById('incertitude_submit_".$nb_incertitudes."').style.display='none';</script>\n";
 
 											// Il faut supprimer le responsable pour ne pas se retrouver à imposer deux resp_pers avec un même login (non vide)
-											echo "Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
+											$texte="Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
 											$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
 											$menage=mysql_query($sql);
 											if($menage) {
-												echo "<span style='color:green'>SUCCES</span>";
+												$texte.="<span style='color:green'>SUCCES</span>";
 											}
 											else {
-												echo "<span style='color:red'>ECHEC</span>";
+												$texte.="<span style='color:red'>ECHEC</span>";
 											}
-											echo "<br />\n";
+											$texte.="<br />\n";
+
+											echo $texte;
+											enregistre_log_maj_sconet($texte);
+
 											echo "</div>\n";
 											$nb_incertitudes++;
 										}
@@ -6438,6 +6479,9 @@ else{
 				echo "<ul>
 <li>Lors du dédoublonnage dans Sconet, il peut arriver que le responsable conservé (pers_id) ne soit pas celui qui a été pris en compte dans Gepi pour la distribution des comptes d'utilisateurs aux parents.<br />Il faut alors recoller les morceaux dans Gepi.</li>
 <li>Si un seul enregistrement subsiste dans Sconet/Siècle pour un responsable, il est recommandé de conserver dans Gepi ce responsable et de lui affecter l'ancien login si le responsable disposait d'un compte pour se connecter dans Gepi.</li>
+<li>Cocher la case 'Conserver le login' ne présente d'intérêt que si vous supprimez la personne associée.<br />
+Dans ce cas, le doublon restant prendra le login de celui qui a été coché à la suppression.<br />
+Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez pas la colonne 'Conserver'.</li>
 <li>Si un ancien responsable (<em>présent dans la base Gepi</em>) et un nouveau responsable (<em>présent dans Sconet/Siècle et proposé ici à l'importation dans Gepi</em>) sont tous les deux associés à des élèves dans la colonne XML (<em>Sconet/Siècle</em>), alors vous ne devriez supprimer ni l'un, ni l'autre, mais faire le ménage dans Sconet/Siècle pour ne pas conserver ces doublons.</li>
 </ul>\n";
 
@@ -7738,7 +7782,7 @@ else{
 
 
 			if(isset($_POST['rapprocher_pers_id'])) {
-				echo "<p class='bold'>Prise en compte des modifications&nbsp;:</p>\n";
+				$texte="<p class='bold'>Prise en compte des modifications&nbsp;:</p>\n";
 				$rapprocher_pers_id=$_POST['rapprocher_pers_id'];
 				for($loop=0;$loop<count($rapprocher_pers_id);$loop++) {
 					$tab=explode("|", $rapprocher_pers_id[$loop]);
@@ -7751,40 +7795,42 @@ else{
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)>0) {
 							$lig=mysql_fetch_object($res);
-							echo "<span style='color:red'>Le pers_id n°$nouveau_pers_id est déjà attribué à $lig->nom $lig->prenom.</span><br />\n";
+							$texte.="<span style='color:red'>Le pers_id n°<a href='modify_resp.php?pers_id=$nouveau_pers_id' target='_blank'>$nouveau_pers_id</a> est déjà attribué à $lig->nom $lig->prenom.</span><br />\n";
 						}
 						else {
 							$sql="SELECT * FROM resp_pers WHERE pers_id='$ancien_pers_id';";
 							$res=mysql_query($sql);
 							if(mysql_num_rows($res)>0) {
 								$lig=mysql_fetch_object($res);
-
-								echo "Mise à jour de la responsabilité pour $lig->nom $lig->prenom (<em>$ancien_pers_id&gt;$nouveau_pers_id</em>)&nbsp;: ";
+								$texte.="Mise à jour de la responsabilité pour $lig->nom $lig->prenom (<em>$ancien_pers_id&gt;<a href='modify_resp.php?pers_id=$nouveau_pers_id' target='_blank'>$nouveau_pers_id</a></em>)&nbsp;: ";
 								$sql="UPDATE responsables2 SET pers_id='$nouveau_pers_id' WHERE pers_id='$ancien_pers_id';";
 								$update=mysql_query($sql);
 								if($update) {
-									echo "<span style='color:green'>SUCCES</span>";
+									$texte.="<span style='color:green'>SUCCES</span>";
 								}
 								else {
-									echo "<span style='color:red'>ECHEC</span>";
+									$texte.="<span style='color:red'>ECHEC</span>";
 								}
-								echo "<br />\n";
+								$texte.="<br />\n";
 
-								echo "Mise à jour de l'identité dans resp_pers pour $lig->nom $lig->prenom (<em>$ancien_pers_id&gt;$nouveau_pers_id</em>)&nbsp;: ";
+								$texte.="Mise à jour de l'identité dans resp_pers pour $lig->nom $lig->prenom (<em>$ancien_pers_id&gt;<a href='modify_resp.php?pers_id=$nouveau_pers_id' target='_blank'>$nouveau_pers_id</a></em>)&nbsp;: ";
 								$sql="UPDATE resp_pers SET pers_id='$nouveau_pers_id' WHERE pers_id='$ancien_pers_id';";
 								$update=mysql_query($sql);
 								if($update) {
-									echo "<span style='color:green'>SUCCES</span>";
+									$texte.="<span style='color:green'>SUCCES</span>";
 								}
 								else {
-									echo "<span style='color:red'>ECHEC</span>";
+									$texte.="<span style='color:red'>ECHEC</span>";
 								}
-								echo "<br />\n";
+								$texte.="<br />\n";
 							}
 						}
 					}
 				}
-				echo "<p><br /></p>\n";
+				$texte.="<p><br /></p>\n";
+
+				echo $texte;
+				enregistre_log_maj_sconet($texte);
 			}
 
 
@@ -7994,7 +8040,14 @@ else{
 
 				//echo "<span style='color:red'>Ajouter une colonne 'Prendre le pers_id du nouveau'<br />Tester quand même si les anciens sont aussi dans temp_resp_pers_import... si oui, il n'y a pas lieu de proposer la modif... sauf si le resp n'est plus associé à aucun élève</span><br />";
 
-				echo "<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Si les responsables n'ont pas de compte d'utilisateur pour se connecter dans Gepi, cette phase ne présente pas franchement d'intérêt.<br />L'objectif est ici d'éviter de changer le responsable qui dispose déjà d'un compte d'utilisateur.<br />Un nouveau login pourrait sinon être généré.</p>\n";
+				echo "<br /><p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+				<ul>
+				<li>On recherche ici si les responsables détectés comme nouveaux sont bien des nouveaux.<br />
+				Pour cela, on recherche les autres responsables associés aux mêmes élèves que les nouveaux.<br />
+				Si les deux responsables légaux d'un enfant ne sont pas ajoutés en même temps dans la base, il peut arriver que l'on vous propose ici des doublons qui n'en sont pas.<br />
+				Vous les reconnaitrez facilement sauf si les époux sont de parfaits homonymes (<em>nom et prénom</em>)</li>
+				<li>Si les responsables n'ont pas de compte d'utilisateur pour se connecter dans Gepi, cette phase ne présente pas franchement d'intérêt.<br />L'objectif est ici d'éviter de changer le responsable qui dispose déjà d'un compte d'utilisateur.<br />Un nouveau login pourrait sinon être généré.</li>
+				</ul>\n";
 
 				echo "</fieldset>\n";
 				echo "</form>\n";
@@ -8971,6 +9024,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 			//echo "<p>On doit parcourir 'tempo2' en recherchant 'pers_id_confirm'.</p>\n";
 
+			enregistre_log_maj_sconet("<p class='bold'>Ajout et/ou modifications de responsables&nbsp;:</p>");
+
 			$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id_confirm';";
 			info_debug($sql);
 			$res1=mysql_query($sql);
@@ -9020,7 +9075,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							info_debug($sql);
 							$insert=mysql_query($sql);
 							if($insert){
-								$texte.="\n<span style='color:blue;'>";
+								$texte.="\n<a href='modify_resp.php?pers_id=".$lig1->col2."' target='_blank'><span style='color:blue;'>";
+								$texte.="$lig->prenom $lig->nom";
+								$texte.="</span></a>";
 
 								if($nb_comptes_resp>0) {
 									$sql="SELECT 1=1 FROM temp_responsables2_import WHERE pers_id='".$lig1->col2."' AND (resp_legal='1' OR resp_legal='2');";
@@ -9036,10 +9093,11 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							}
 							else{
 								$texte.="\n<span style='color:red;'>";
+								$texte.="$lig->prenom $lig->nom";
+								$texte.="</span>";
+
 								$erreur++;
 							}
-							$texte.="$lig->prenom $lig->nom";
-							$texte.="</span>";
 						}
 						else{
 							$sql="UPDATE resp_pers SET nom='".mysql_real_escape_string(my_strtoupper($lig->nom))."',
@@ -9088,7 +9146,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							info_debug($sql);
 							$update=mysql_query($sql);
 							if($update){
-								$texte.="\n<span style='color:darkgreen;'>";
+								$texte.="\n<a href='modify_resp.php?pers_id=".$lig1->col2."' target='_blank'><span style='color:darkgreen;'>";
+								$texte.="$lig->prenom $lig->nom";
+								$texte.="</span></a>";
 
 								if(getSettingValue('mode_email_resp')=='sconet') {
 									$sql="UPDATE utilisateurs SET email='".mysql_real_escape_string($lig->mel)."' WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2');";
@@ -9099,11 +9159,11 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							else{
 								info_debug("ERREUR sur l'update");
 								$texte.="\n<span style='color:red;'>";
+								$texte.="$lig->prenom $lig->nom";
+								$texte.="</span>";
 								$erreur++;
 							}
 							//echo "$sql<br />\n";
-							$texte.="$lig->prenom $lig->nom";
-							$texte.="</span>";
 
 							if((isset($update_utilisateurs))&&(!$update_utilisateurs)) {$texte.=" <span style='color:red;'>Erreur lors de la mise à jour du mail du compte utilisateur.</span><br />\n";}
 
@@ -9667,6 +9727,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$sql="DELETE FROM responsables2 WHERE WHERE pers_id='$pers_id';";
 						info_debug($sql);
 						$nettoyage=mysql_query($sql);
+
+						if($nettoyage) {enregistre_log_maj_sconet("Suppression des responsabilités pour le responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).").<br />");}
+
 					}
 				}
 
@@ -9794,6 +9857,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 																resp_legal='$resp_legal';";
 								info_debug($sql);
 								$insert=mysql_query($sql);
+								if($insert) {enregistre_log_maj_sconet("Enregistrement de la responsabilité du responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).") en tant que responsable légal $resp_legal de l'élève n°$ele_id (".get_nom_prenom_eleve_from_ele_id($ele_id).").<br />");}
 							}
 							else{
 								// Cas de resp_legal=0
@@ -9803,6 +9867,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 																resp_legal='$resp_legal';";
 								info_debug($sql);
 								$insert=mysql_query($sql);
+								if($insert) {enregistre_log_maj_sconet("Enregistrement de la responsabilité du responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).") en tant que responsable légal $resp_legal de l'élève n°$ele_id (".get_nom_prenom_eleve_from_ele_id($ele_id).").<br />");}
 							}
 						}
 					}
@@ -9873,6 +9938,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 																resp_legal='$resp_legal';";
 								info_debug($sql);
 								$insert=mysql_query($sql);
+								if($insert) {enregistre_log_maj_sconet("Enregistrement de la responsabilité du responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).") en tant que responsable légal $resp_legal de l'élève n°$ele_id (".get_nom_prenom_eleve_from_ele_id($ele_id).").<br />");}
 
 							}
 							else{
@@ -9883,6 +9949,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 																resp_legal='$resp_legal';";
 								info_debug($sql);
 								$update=mysql_query($sql);
+								if($update) {enregistre_log_maj_sconet("Mise à jour de la responsabilité du responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).") en tant que responsable légal $resp_legal de l'élève n°$ele_id (".get_nom_prenom_eleve_from_ele_id($ele_id).").<br />");}
 							}
 						}
 					}
@@ -10458,6 +10525,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$sql="DELETE FROM responsables2 WHERE pers_id='$lig_nett->pers_id' AND ele_id='$lig_nett->ele_id';";
 						info_debug($sql);
 						$nettoyage=mysql_query($sql);
+
+						if($nettoyage) {enregistre_log_maj_sconet("Suppression de responsabilité sans élève associé pour le responsable n°<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>$lig_nett->pers_id</a> (".civ_nom_prenom_from_pers_id($lig_nett->pers_id).") en tant que responsable légal $resp_legal de l'élève n°$lig_nett->ele_id.<br />");}
+
 						flush();
 						$cpt_nett++;
 					}
