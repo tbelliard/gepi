@@ -3405,6 +3405,37 @@ function get_nom_prenom_eleve($login_ele,$mode='simple') {
 }
 
 /**
+ * Renvoie le nom et le prénom d'un élève
+ *
+ * @param string $ele_id ele_id de l'élève
+ * @param string $mode si 'avec_classe' on retourne aussi la(les) classe(s)
+ * @return string 
+ * @see civ_nom_prenom()
+ * @see get_class_from_ele_login()
+ * @see casse_mot()
+ */
+function get_nom_prenom_eleve_from_ele_id($ele_id, $mode='simple') {
+	$sql="SELECT login, nom,prenom FROM eleves WHERE ele_id='$ele_id';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		return "Elève inconnu ($ele_id)";
+	}
+	else {
+		$lig=mysql_fetch_object($res);
+
+		$ajout="";
+		if($mode=='avec_classe') {
+			$tmp_tab_clas=get_class_from_ele_login($lig->login);
+			if((isset($tmp_tab_clas['liste']))&&($tmp_tab_clas['liste']!='')) {
+				$ajout=" (".$tmp_tab_clas['liste'].")";
+			}
+		}
+
+		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').$ajout;
+	}
+}
+
+/**
  * Retourne une commune à partir de son code insee
  * 
  * $mode :
@@ -3457,6 +3488,8 @@ function get_commune($code_commune_insee,$mode){
  *
  * @param string $login Login de l'utilisateur recherché
  * @param string $mode si 'prenom' inverse le nom et le prénom
+ * @param string $avec_statut avec affichage ou non du statut entre parenthèses
+ *
  * @return string civilite nom prénom de l'utilisateur
  */
 function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
@@ -3489,6 +3522,34 @@ function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 			else {
 				$retour.=" ($lig_user->statut)";
 			}
+		}
+	}
+	return $retour;
+}
+
+/**
+ * Renvoie civilite nom prénom d'un responsable
+ *
+ * @param string $pers_id pers_id de l'utilisateur recherché
+ * @param string $mode si 'prenom' inverse le nom et le prénom
+ *
+ * @return string civilite nom prénom de l'utilisateur
+ */
+function civ_nom_prenom_from_pers_id($pers_id,$mode='prenom') {
+	$retour="";
+	$sql="SELECT nom,prenom,civilite FROM resp_pers WHERE pers_id='$pers_id';";
+	$res_user=mysql_query($sql);
+	if (mysql_num_rows($res_user)>0) {
+		$lig_user=mysql_fetch_object($res_user);
+		if($lig_user->civilite!="") {
+			$retour.=$lig_user->civilite." ";
+		}
+		if($mode=='prenom') {
+			$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
+		}
+		else {
+			// Initiale
+			$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
 		}
 	}
 	return $retour;
@@ -5638,7 +5699,10 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv", $nom_var="cpt_ping", $taille=10, $intervalle_temps=10) {
 	global $gepiPath;
 
-	echo "<div id='retour_ping' style='width:".$taille."px; height:".$taille."px; background-color:red; border:1px solid black; float:left; margin:1px; display:none;' title=\"Témoin de réponse du serveur: Un test est effectué toutes les $intervalle_temps secondes. Si le témoin se maintient au rouge, c'est que le serveur n'est pas joignable.\"></div>\n";
+	echo "<div id='retour_ping' style='width:".$taille."px; height:".$taille."px; background-color:red; border:1px solid black; float:left; margin:1px; display:none;' title=\"Témoin de réponse du serveur: Un test est effectué toutes les $intervalle_temps secondes.
+Si le témoin se maintient au rouge, c'est que le serveur n'est pas joignable.
+Vous devriez dans ce cas (pour vous prémunir d'une perte de ce qui a été saisi et pas encore enregistré), copier dans un Bloc-notes tout ce qui n'a pas encore été enregistré.
+Provoquer l'enregistrement/validation des données vers le serveur risque de se solder par un échec (si le serveur est indisponible, il ne recevra pas ce que vous enverrez et tout sera perdu).\"></div>\n";
 
 	echo "<script type='text/javascript'>
 	var $nom_var=0;
