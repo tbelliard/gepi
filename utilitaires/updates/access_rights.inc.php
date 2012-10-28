@@ -919,6 +919,18 @@ autre='F',
 description='Mise à jour Sconet',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/responsables/consult_maj_sconet.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Consultation des compte-renduds de mise à jour Sconet',
+statut='';";
+
 $tab_req[]="INSERT INTO droits SET id='/mod_discipline/mod_discipline_extraction_ooo.php',
 administrateur='V',
 professeur='F',
