@@ -358,7 +358,15 @@ if((isset($id_classe))&&(isset($num_periode))) {
 	echo "<a name='synthese'></a>\n";
 	echo "<p><b>Saisie de la synthèse pour le groupe classe en période $num_periode&nbsp;:</b>";
 	// 20121101: Mettre une infobulle CNIL
-	echo " <a href='#' onclick=\"afficher_div('div_explication_cnil','y',10,-40);return false;\" onmouseover=\"delais_afficher_div('div_explication_cnil','y',10,-40, $delais_affichage_infobulle, $largeur_survol_infobulle, $hauteur_survol_infobulle);\"><img src='../images/info.png' width='20' height='20' title='CNIL : Règles de bon usage' /></a>";
+	echo " <a href='#' onclick=\"afficher_div('div_explication_cnil','y',10,-40);return false;\" onmouseover=\"delais_afficher_div('div_explication_cnil','y',10,-40, $delais_affichage_infobulle, $largeur_survol_infobulle, $hauteur_survol_infobulle);\"><img src='../images/info.png' width='20' height='20' title='CNIL : Règles de bon usage' /></a>&nbsp;&nbsp;";
+
+	if(getSettingAOui('GepiAccesBulletinSimpleClasseEleve')) {
+		echo "&nbsp;<img src='../images/icons/trombinoscope.png' width='16' height='16' title=\"L'appréciation sur le groupe-classe est visible des élèves\" alt=\"Appréciation sur le groupe-classe visible des élèves\" />\n";
+	}
+	if(getSettingAOui('GepiAccesBulletinSimpleClasseResp')) {
+		echo "&nbsp;<img src='../images/group16.png' width='16' height='16' title=\"L'appréciation sur le groupe-classe est visible des parents\" />\n";
+	}
+
 	echo "<br />\n";
 	echo "<textarea class='wrap' name=\"no_anti_inject_synthese\" rows='5' cols='60' onchange=\"changement()\"";
 	echo ">".stripslashes($synthese)."</textarea>\n";

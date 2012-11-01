@@ -524,6 +524,14 @@ if ($insert_mass_appreciation_type=="y") {
 	echo "<tr>\n";
 	echo "<th width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></th>\n";
 	echo "<th>\n";
+
+	if(getSettingAOui('GepiAccesBulletinSimpleClasseEleve')) {
+		echo "<div style='float:right; width:16px;margin-right:5px;'><img src='../images/icons/trombinoscope.png' width='16' height='16' title=\"L'appréciation sur le groupe-classe est visible des élèves\" alt=\"Appréciation sur le groupe-classe visible des élèves\" /></div>\n";
+	}
+	if(getSettingAOui('GepiAccesBulletinSimpleClasseResp')) {
+		echo "<div style='float:right; width:16px;margin-right:5px;'><img src='../images/group16.png' width='16' height='16' title=\"L'appréciation sur le groupe-classe est visible des parents\" /></div>\n";
+	}
+
 	echo "<div align=\"center\"><b>Synthèse de classe</b>\n";
 
 	//===============================================
