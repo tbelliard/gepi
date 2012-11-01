@@ -3,7 +3,7 @@
  * Ajouter, modifier un conteneur
  * 
 *
-*  @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*  @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * @package Carnet_de_notes
  * @subpackage Conteneur
@@ -536,7 +536,7 @@ if($interface_simplifiee=="y"){
 
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<input type='text' name = 'coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" />\n";
+			echo "<input type='text' name = 'coef' id = 'coef' size='4' value = \"".$coef."\" onkeydown=\"clavier_2(this.id,event,0,10);\" onfocus=\"javascript:this.select()\" autocomplete=\"off\" />\n";
 			
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -717,61 +717,61 @@ else{
 		}
 		if($i>1){
 			echo "<table>\n<tr>";
-			echo "<td>";
-			echo "la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes des ";
+			echo "<td style='padding-left:3em; vertical-align:top;'>";
+			echo "<label for='mode_2'>la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes des ";
 			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s ";
 			echo " $chaine_sous_cont";
 			echo "en tenant compte des options dans ces ";
-			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s.";
-			echo "</td><td><input type='radio' name='mode' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
+			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label>";
+			echo "</td><td style='vertical-align:top;'><input type='radio' name='mode' id='mode_2' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
 			echo "</tr>\n";
 
 			echo "<tr>";
-			echo "<td>";
-			echo "la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b> et dans les ";
+			echo "<td style='padding-left:3em; vertical-align:top;'>";
+			echo "<label for='mode_1'>la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b> et dans les ";
 			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s";
 			echo " $chaine_sous_cont";
 			echo "sans tenir compte des options définies dans ces ";
-			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s.";
+			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label>";
 		}
 		else{
 			if(getSettingValue("gepi_denom_boite_genre")=='f'){
 				echo "<table>\n<tr>";
-				echo "<td>";
-				echo "la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes de la ";
+				echo "<td style='padding-left:3em; vertical-align:top;'>";
+				echo "<label for='mode_2'>la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes de la ";
 				echo my_strtolower(getSettingValue("gepi_denom_boite"));
 				echo " $chaine_sous_cont";
 				echo "en tenant compte des options dans cette ";
-				echo my_strtolower(getSettingValue("gepi_denom_boite"));
-				echo "</td><td><input type='radio' name='mode' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
+				echo my_strtolower(getSettingValue("gepi_denom_boite"))."</label>";
+				echo "</td><td style='vertical-align:top;'><input type='radio' name='mode' id='mode_2' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
 				echo "</tr>\n";
 
 				echo "<tr>";
-				echo "<td>";
-				echo "la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b> et dans la ";
+				echo "<td style='padding-left:3em; vertical-align:top;'>";
+				echo "<label for='mode_1'>la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b> et dans la ";
 				echo my_strtolower(getSettingValue("gepi_denom_boite"));
 				echo " $chaine_sous_cont";
 				echo "sans tenir compte des options définies dans cette ";
-				echo my_strtolower(getSettingValue("gepi_denom_boite"));
+				echo my_strtolower(getSettingValue("gepi_denom_boite"))."</label>";
 			}
 			else{
 				echo "<table>\n<tr>";
-				echo "<td>";
-				echo "la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes du ".my_strtolower(getSettingValue("gepi_denom_boite"));
+				echo "<td style='padding-left:3em; vertical-align:top;'>";
+				echo "<label for='mode_2'>la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes du ".my_strtolower(getSettingValue("gepi_denom_boite"));
 				echo " $chaine_sous_cont";
-				echo "en tenant compte des options dans ce ".my_strtolower(getSettingValue("gepi_denom_boite")).".";
-				echo "</td><td><input type='radio' name='mode' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
+				echo "en tenant compte des options dans ce ".my_strtolower(getSettingValue("gepi_denom_boite")).".</label>";
+				echo "</td><td style='vertical-align:top;'><input type='radio' name='mode' id='mode_2' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
 				echo "</tr>\n";
 
 				echo "<tr>";
-				echo "<td>";
-				echo "la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b>";
+				echo "<td style='padding-left:3em; vertical-align:top;'>";
+				echo "<label for='mode_1'>la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b>";
 				echo " et dans le ".my_strtolower(getSettingValue("gepi_denom_boite"))."";
 				echo " $chaine_sous_cont";
-				echo "sans tenir compte des options définies dans ce ".my_strtolower(getSettingValue("gepi_denom_boite")).".";
+				echo "sans tenir compte des options définies dans ce ".my_strtolower(getSettingValue("gepi_denom_boite")).".</label>";
 			}
 		}
-		echo "</td><td><input type='radio' name='mode' value='1' "; if ($mode=='1') echo "checked"; echo " /></td>";
+		echo "</td><td style='vertical-align:top;'><input type='radio' name='mode' id='mode_1' value='1' "; if ($mode=='1') echo "checked"; echo " /></td>";
 		echo "</tr>\n</table>\n";
 	}
 
@@ -906,6 +906,16 @@ echo "<input type=hidden name=id_retour value='$id_retour' />\n";
 
 echo "<p style='text-align:center;'><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 echo "</form>\n";
+
+if ($nb_sous_cont != 0) {
+	echo "<p><br /></p>
+<p>NOTES&nbsp;:<p>
+<div style='margin-left:5em;'>";
+include("explication_moyenne_boites.php");
+echo "</div>";
+
+}
+
 /**
  * Pied de page
  */

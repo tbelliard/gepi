@@ -794,6 +794,27 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 		$message_cn="<p style='color:red'>".$message_cn."</p>";
 	}
 
+	$cnBoitesModeMoy=isset($_POST['cnBoitesModeMoy']) ? $_POST['cnBoitesModeMoy'] : "";
+	if($cnBoitesModeMoy=="") {
+		$msg.="Vous n'avez pas choisi le mode de calcul par défaut de la moyenne dans le cas où vous créez des ".getSettingValue('gepi_denom_boite')."s.<br />";
+		$message_cn.="<span style='color:red'>Vous n'avez pas choisi le mode de calcul par défaut de la moyenne dans le cas où vous créez des ".getSettingValue('gepi_denom_boite')."s.</span><br />";
+	}
+	else {
+		if(($cnBoitesModeMoy==1)||($cnBoitesModeMoy==2)) {
+			if(!savePref($_SESSION['login'],'cnBoitesModeMoy',$cnBoitesModeMoy)) {
+				$msg.="Erreur lors de l'enregistrement de 'cnBoitesModeMoy'<br />\n";
+				$message_cn.="<span style='color:red'>Erreur lors de l'enregistrement de 'cnBoitesModeMoy'.</span><br />";
+			}
+			else {
+				$nb_reg++;
+			}
+		}
+		else {
+			$msg.="Le mode de calcul par défaut de la moyenne choisi dans le cas où vous créez des ".getSettingValue('gepi_denom_boite')."s est invalide.<br />\n";
+			$message_cn.="<span style='color:red'>Le mode de calcul par défaut de la moyenne choisi dans le cas où vous créez des ".getSettingValue('gepi_denom_boite')."s est invalide.</span><br />\n";
+		}
+	}
+
 	$msg.="$nb_reg enregistrement(s) effectué(s).<br />";
 	$message_cn.="<p style='color:green'>$nb_reg enregistrement(s) effectué(s).</p>";
 }
@@ -1739,6 +1760,28 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 
 	echo "</table>\n";
 	echo "</div>\n";
+
+	$cnBoitesModeMoy=getPref($_SESSION['login'], 'cnBoitesModeMoy', '');
+	echo "<p><br /></p>
+<a name='cnBoitesModeMoy'></a>
+<p>Mode de calcul <strong title='Vous pourrez effectuer un autre choix pour certains carnets de notes en suivant le lien Configuration dans votre carnet de notes.'>par défaut</strong> des moyennes de carnets de notes dans le cas où vous créez des ".getSettingValue("gepi_denom_boite")."s&nbsp;:</p>
+<div style='margin-left:3em;'>
+
+<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_1' value='1' ";
+	if($cnBoitesModeMoy=='1') {echo "checked ";}
+	echo "/><label for='cnBoitesModeMoy_1'>la moyenne s'effectue sur toutes les notes contenues à la racine et dans les ".my_strtolower(getSettingValue("gepi_denom_boite"))."s sans tenir compte des options définies dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label><br />
+
+<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_2' value='2' ";
+	if($cnBoitesModeMoy=='2') {echo "checked ";}
+	echo "/><label for='cnBoitesModeMoy_2'>la moyenne s'effectue sur toutes les notes contenues à la racine et sur les moyennes des ".my_strtolower(getSettingValue("gepi_denom_boite"))."s en tenant compte des options dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label><br />
+
+<p style='margin-left:2em;'><em>Explication&nbsp;:</em></p>
+<div style='margin-left:7em;'>";
+	include("../cahier_notes/explication_moyenne_boites.php");
+	echo "</div>
+</div>
+
+<p><br /></p>\n";
 
 	echo "<p style='text-align:center;'>\n";
 	echo "<input type='submit' name='Valider' value='Enregistrer' />\n";

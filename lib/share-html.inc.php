@@ -161,6 +161,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 		$id_parent = mysql_result($appel_conteneurs, 0, 'parent');
 		$id_racine = mysql_result($appel_conteneurs, 0, 'id_racine');
 		$nom_conteneur = mysql_result($appel_conteneurs, 0, 'nom_court');
+		$modeBoiteMoy = mysql_result($appel_conteneurs, 0, 'mode');
 		echo "<li>\n";
 		echo htmlspecialchars($nom_conteneur);
 		if ($ver_periode <= 1) {
@@ -172,6 +173,19 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 		if($ponderation_cont!='0.0') {
 			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée d'un coefficient +$ponderation_cont";
 			echo " - <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
+		}
+
+		$sql="SELECT mode FROM cn_conteneurs WHERE id_racine='$id_conteneur';";
+		$res_nb_conteneurs=mysql_query($sql);
+		if(mysql_num_rows($res_nb_conteneurs)>1) {
+			echo " - <a href='add_modif_conteneur.php?id_conteneur=$id_conteneur&mode_navig=retour_index' title=\"";
+			if($modeBoiteMoy==1) {
+				echo "la moyenne s'effectue sur toutes les notes contenues à la racine et dans les ".my_strtolower(getSettingValue("gepi_denom_boite"))."s sans tenir compte des options définies dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.";
+			}
+			else {
+				echo "la moyenne s'effectue sur toutes les notes contenues à la racine et sur les moyennes des ".my_strtolower(getSettingValue("gepi_denom_boite"))."s en tenant compte des options dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.";
+			}
+			echo "\">Mode Moy.: $modeBoiteMoy</a>";
 		}
 
 		$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
@@ -294,7 +308,9 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					$coef=mysql_result($appel_conteneurs, $i, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
 					if($display_bulletin==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='$gepi_denom_boite visible sur le bulletin' alt='$gepi_denom_boite visible sur le bulletin' />";}
-					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='$gepi_denom_boite non visible sur le bulletin' alt='$gepi_denom_boite non visible sur le bulletin' />\n";}
+					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title=\"".ucfirst($gepi_denom_boite)." non visible sur le bulletin.
+Cela ne signifie pas que les notes ne sont pas prises en compte dans le calcul de la moyenne.
+En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('gepi_denom_boite_genre')=='f') ? "tte" : "")." ".$gepi_denom_boite." dans le bulletin.\" alt='".ucfirst($gepi_denom_boite)." non visible sur le bulletin.' />\n";}
 					echo "</i>)";
 
 					$ponderation_cont=mysql_result($appel_conteneurs, $i, 'ponderation');

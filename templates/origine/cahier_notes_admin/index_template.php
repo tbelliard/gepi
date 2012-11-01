@@ -3,7 +3,7 @@
 /*
 * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -205,6 +205,35 @@
 		Notes uniquement sur le référentiel par défaut
 	  </label>
 	</fieldset>
+
+	<h2>
+	  Mode de calcul de la moyenne du carnet de notes :
+	</h2>
+	<p>
+	  Mode de calcul de la moyenne du CN dans le cas où des <?php echo getSettingValue('gepi_denom_boite');?>s sont créé<?php if(getSettingValue('gepi_denom_boite_genre')=='f') {echo "e";}?>s : 
+
+<?php
+		$cnBoitesModeMoy=getSettingValue('cnBoitesModeMoy');
+		echo "<p><br /></p>
+<p>Mode de calcul <strong title='Vous pourrez effectuer un autre choix pour certains carnets de notes en suivant le lien Configuration dans votre carnet de notes.'>par défaut</strong> des moyennes de carnets de notes dans le cas où vous créez des ".getSettingValue("gepi_denom_boite")."s&nbsp;:</p>
+<div style='margin-left:3em;'>
+
+<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_1' value='1' ";
+		if($cnBoitesModeMoy=='1') {echo "checked ";}
+		echo "/><label for='cnBoitesModeMoy_1'>la moyenne s'effectue sur toutes les notes contenues à la racine et dans les ".my_strtolower(getSettingValue("gepi_denom_boite"))."s sans tenir compte des options définies dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label><br />
+
+<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_2' value='2' ";
+		if($cnBoitesModeMoy=='2') {echo "checked ";}
+		echo "/><label for='cnBoitesModeMoy_2'>la moyenne s'effectue sur toutes les notes contenues à la racine et sur les moyennes des ".my_strtolower(getSettingValue("gepi_denom_boite"))."s en tenant compte des options dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label><br />
+
+<p style='margin-left:2em;'><em>Explication&nbsp;:</em></p>
+<div style='margin-left:7em;'>";
+		include("../cahier_notes/explication_moyenne_boites.php");
+		echo "</div>
+</div>
+
+<p><br /></p>\n";
+?>
 
 	<h2>
 	  Évaluation par compétence

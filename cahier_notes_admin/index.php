@@ -9,7 +9,7 @@
  * $_POST['is_posted']
  * 
  *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 
  * @package Carnet_de_notes
  * @subpackage administration
@@ -94,6 +94,18 @@ if(isset($_POST['is_posted'])) {
 	if (isset($_POST['note_autre_que_sur_referentiel'])) {
 		if (!saveSetting("note_autre_que_sur_referentiel", $_POST['note_autre_que_sur_referentiel'])) {
 			$msg .= "Erreur lors de l'enregistrement de note_autre_que_sur_referentiel !";
+		}
+	}
+
+	$cnBoitesModeMoy=isset($_POST['cnBoitesModeMoy']) ? $_POST['cnBoitesModeMoy'] : "";
+	if($cnBoitesModeMoy!="") {
+		if(($cnBoitesModeMoy==1)||($cnBoitesModeMoy==2)) {
+			if(!saveSetting('cnBoitesModeMoy', $cnBoitesModeMoy)) {
+				$msg.="Erreur lors de l'enregistrement de 'cnBoitesModeMoy'<br />\n";
+			}
+		}
+		else {
+			$msg.="Le mode de calcul par défaut de la moyenne choisi dans le cas où vous créez des ".getSettingValue('gepi_denom_boite')."s est invalide.<br />\n";
 		}
 	}
 
