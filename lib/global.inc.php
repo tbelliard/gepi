@@ -245,4 +245,12 @@ $tab_domaines_texte=array('Bulletins', 'Cahiers de Notes', 'Cahiers de Textes');
 // Une sécurité... il suffit de passer la variable $style_screen_ajout à 'n' pour désactiver le fichier CSS style_screen_ajout.css et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
 $style_screen_ajout='y';
 
+$message_cnil_bons_usages="* En conformité avec la CNIL, les utilisateurs s'engagent à ne faire figurer dans Gepi que des commentaires respectueux des élèves, responsables et personnels.<br />";
+$message_cnil_bons_usages.="<br />";
+$message_cnil_bons_usages.="Veillez donc à respecter les préconisations suivantes&nbsp;:<br />";
+$message_cnil_bons_usages.="<strong>Règle n° 1 :</strong> Avoir à l'esprit, quand on renseigne ces zones commentaires, que la personne qui est concernée peut exercer son droit d'accès et lire ces commentaires !<br />";
+$message_cnil_bons_usages.="<strong>Règle n° 2 :</strong> Rédiger des commentaires purement objectifs et jamais excessifs ou insultants.<br />";
+$message_cnil_bons_usages.="<br />";
+$message_cnil_bons_usages.="Pour plus de détails, consultez <a href='http://www.cnil.fr/la-cnil/actualite/article/article/zones-bloc-note-et-commentaires-les-bons-reflexes-pour-ne-pas-deraper/' target='_blank'>l'article de la CNIL</a>?<br /><br />";
+
 ?>
