@@ -477,16 +477,40 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		echo "</table>\n";
 	} else {
+		// Accès parent ou élève
 		echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
+
+		if($_SESSION['statut']=='responsable') {
+			$quels_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
+						"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
+						"e.ele_id = re.ele_id AND " .
+						"re.pers_id = r.pers_id AND " .
+						"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2') AND e.login!='$login_eleve')");
+			while ($current_eleve = mysql_fetch_object($quels_eleves)) {
+				echo " | <a href='".$_SERVER['PHP_SELF']."?login_eleve=".$current_eleve->login."' title=\"Accéder au bulletin simplifié de ".$current_eleve->prenom." ".$current_eleve->nom."\">".$current_eleve->prenom." ".$current_eleve->nom."</a>";
+			}
+		}
+		echo "</p>\n";
 
 		$eleve = mysql_query("SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
 		$prenom_eleve = mysql_result($eleve, 0, "prenom");
 		$nom_eleve = mysql_result($eleve, 0, "nom");
 
-		echo "<p class='grand'>".ucfirst($gepiSettings['denomination_eleve'])." : ".$prenom_eleve." ".$nom_eleve."</p>\n";
+		echo "<p class='grand'>".casse_mot($gepiSettings['denomination_eleve'],'majf')." : ".$prenom_eleve." ".$nom_eleve."</p>\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
-		echo "<input type=\"hidden\" name=\"choix_edit\" value=\"2\" />\n";
+
 		echo "<input type=\"hidden\" name=\"login_eleve\" value=\"".$login_eleve."\" />\n";
+
+		// 20121101: Si le droit est donné, permettre d'accéder au bulletin de la classe
+		if((($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesBulletinSimpleClasseResp')))||
+			(($_SESSION['statut']=='eleve')&&(getSettingAOui('GepiAccesBulletinSimpleClasseEleve')))) {
+			echo "<p>Afficher<br />\n";
+			echo "<input type=\"radio\" name=\"choix_edit\" id=\"choix_edit_2\" value=\"2\" checked /><label for='choix_edit_2'>Le bulletin simplifié de ".$prenom_eleve." ".$nom_eleve."</label><br />\n";
+			echo "<input type=\"radio\" name=\"choix_edit\" id=\"choix_edit_4\" value=\"4\" /><label for='choix_edit_4'>Le bulletin simplifié des appréciations sur le groupe-classe</label><br /><br />\n";
+		}
+		else {
+			echo "<input type=\"hidden\" name=\"choix_edit\" value=\"2\" />\n";
+		}
 	}
 	echo "<p>Choisissez la(les) période(s) : </p>\n";
 	include "../lib/periodes.inc.php";

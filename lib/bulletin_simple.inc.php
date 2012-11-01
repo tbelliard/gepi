@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
 $delais_apres_cloture=getSettingValue('delais_apres_cloture');
 //echo "\$delais_apres_cloture=$delais_apres_cloture<br />";
