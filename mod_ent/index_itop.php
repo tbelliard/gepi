@@ -80,6 +80,264 @@ function formate_date2($chaine, $from, $to) {
 $sql="DELETE FROM sso_table_correspondance WHERE login_gepi='' OR login_sso='';";
 $menage=mysql_query($sql);
 
+if((isset($_POST['temoin_suhosin_1']))&&(!isset($_POST['temoin_suhosin_2']))) {
+	$msg.="Il semble que certaines variables n'ont pas été transmises.<br />Cela peut arriver lorsqu'on tente de transmettre (<em>cocher trop de cases</em>) trop de variables.<br />Vous devriez tenter de cocher moins de cases et vous y prendre en plusieurs fois.<br />";
+}
+
+if(isset($_POST['recherche'])) {
+	check_token();
+
+	$nom_rech=isset($_POST['nom_rech']) ? $_POST['nom_rech'] : "";
+	$prenom_rech=isset($_POST['prenom_rech']) ? $_POST['prenom_rech'] : "";
+
+	$nom_rech=preg_replace("/[^A-Za-z\-]/","%",$nom_rech);
+	$prenom_rech=preg_replace("/[^A-Za-z\-]/","%",$prenom_rech);
+
+	if(($nom_rech!="")||($prenom_rech!="")) {
+
+		if($_POST['recherche']=='recherche_eleve') {
+
+			$sql="SELECT login,nom,prenom,naissance FROM eleves WHERE nom LIKE '%".$nom_rech."%' AND prenom LIKE '%".$prenom_rech."%';";
+
+			$res=@mysql_query($sql);
+
+			if(mysql_num_rows($res)==0){
+				$chaine="Aucun résultat retourné.";
+			}
+			else {
+				$chaine="<table class='boireaus'>";
+				$chaine.="<tr style='background-color: white;'>";
+
+				$chaine.="<th>";
+				$chaine.="Nom";
+				$chaine.="</th>";
+
+				$chaine.="<th>";
+				$chaine.="Prenom";
+				$chaine.="</th>";
+
+				$chaine.="<th>";
+				$chaine.="Naissance";
+				$chaine.="</th>";
+
+				$chaine.="<th>";
+				$chaine.="Classe";
+				$chaine.="</th>";
+
+				$chaine.="<th>";
+				$chaine.="Login";
+				$chaine.="</th>";
+
+				$chaine.="</tr>";
+
+				$alt=-1;
+				while($lig=mysql_fetch_object($res)){
+					//$chaine.="<tr>";
+
+					$alt=$alt*(-1);
+					$chaine.="<tr style='background-color:";
+					if($alt==1){
+						$chaine.="silver";
+					}
+					else{
+						$chaine.="white";
+					}
+					$chaine.="; text-align: center;'>";
+
+					$chaine.="<td>";
+					$chaine.="$lig->nom";
+					$chaine.="</td>";
+
+					$chaine.="<td>";
+					$chaine.="$lig->prenom";
+					$chaine.="</td>";
+
+					$chaine.="<td>";
+					$chaine.=formate_date($lig->naissance);
+					$chaine.="</td>";
+
+					$chaine.="<td>";
+					if($lig->login!=""){
+						$tmp_tab_class=get_class_from_ele_login($lig->login);
+						if(isset($tmp_tab_class['liste_nbsp'])) {
+							$chaine.=$tmp_tab_class['liste_nbsp'];
+						}
+					}
+					$chaine.="</td>";
+
+					$chaine.="<td>";
+					if($lig->login!=""){
+						$chaine.="<a href='#' onClick=\"document.getElementById(document.getElementById('login_recherche').value).value='$lig->login';cacher_div('div_search');return false;\">$lig->login</a>";
+					}
+					else{
+						$chaine.="<span style='color:red'>Non renseigné</span>";
+					}
+					$chaine.="</td>";
+
+					$chaine.="</tr>";
+				}
+				$chaine.="</table>";
+				//$chaine.="$sql";
+			}
+			echo $chaine;
+		}
+		elseif($_POST['recherche']=='recherche_responsable') {
+
+			$sql="SELECT login,nom,prenom,pers_id FROM resp_pers WHERE nom LIKE '%".$nom_rech."%' AND prenom LIKE '%".$prenom_rech."%';";
+
+			$res=@mysql_query($sql);
+
+			if(mysql_num_rows($res)==0){
+				$chaine="Aucun résultat retourné.";
+			}
+			else {
+				$chaine="<table class='boireaus'>";
+				$chaine.="<tr style='background-color: white;'>";
+
+				$chaine.="<th>";
+				$chaine.="Nom";
+				$chaine.="</th>";
+
+				$chaine.="<th>";
+				$chaine.="Prenom";
+				$chaine.="</th>";
+
+				$chaine.="<th>";
+				$chaine.="Resp.de";
+				$chaine.="</th>";
+
+				$chaine.="<th>";
+				$chaine.="Login";
+				$chaine.="</th>";
+
+				$chaine.="</tr>";
+
+				$alt=-1;
+				while($lig=mysql_fetch_object($res)){
+					//$chaine.="<tr>";
+
+					$alt=$alt*(-1);
+					$chaine.="<tr style='background-color:";
+					if($alt==1){
+						$chaine.="silver";
+					}
+					else{
+						$chaine.="white";
+					}
+					$chaine.="; text-align: center;'>";
+
+					$chaine.="<td>";
+					$chaine.="$lig->nom";
+					$chaine.="</td>";
+
+					$chaine.="<td>";
+					$chaine.="$lig->prenom";
+					$chaine.="</td>";
+
+					$chaine.="<td style='font-size:x-small'>";
+					$tmp_tab_ele=get_enfants_from_pers_id($lig->pers_id,'avec_classe');
+					$cpt_ele=0;
+					for($loop=0;$loop<count($tmp_tab_ele);$loop++) {
+						if($cpt_ele>0) {
+							$chaine.=", ";
+						}
+						$chaine.=$tmp_tab_ele[$loop];
+					}
+					$chaine.="</td>";
+
+					$chaine.="<td>";
+					if($lig->login!=""){
+						$chaine.="<a href='#' onClick=\"document.getElementById(document.getElementById('login_recherche').value).value='$lig->login';cacher_div('div_search');return false;\">$lig->login</a>";
+					}
+					else{
+						$chaine.="<span style='color:red'>Non renseigné</span>";
+					}
+					$chaine.="</td>";
+
+					$chaine.="</tr>";
+				}
+				$chaine.="</table>";
+				//$chaine.="$sql";
+			}
+			echo $chaine;
+		}
+		elseif($_POST['recherche']=='recherche_personnel') {
+
+			$sql="SELECT login,nom,prenom,statut FROM utilisateurs WHERE nom LIKE '%".$nom_rech."%' AND prenom LIKE '%".$prenom_rech."%';";
+
+			$res=@mysql_query($sql);
+
+			if(mysql_num_rows($res)==0){
+				$chaine="Aucun résultat retourné.";
+			}
+			else {
+				$chaine="<table class='boireaus'>";
+				$chaine.="<tr style='background-color: white;'>";
+
+				$chaine.="<th>";
+				$chaine.="Nom";
+				$chaine.="</th>";
+
+				$chaine.="<th>";
+				$chaine.="Prenom";
+				$chaine.="</th>";
+
+				$chaine.="<th>";
+				$chaine.="Statut";
+				$chaine.="</th>";
+
+				$chaine.="<th>";
+				$chaine.="Login";
+				$chaine.="</th>";
+
+				$chaine.="</tr>";
+
+				$alt=-1;
+				while($lig=mysql_fetch_object($res)){
+					//$chaine.="<tr>";
+
+					$alt=$alt*(-1);
+					$chaine.="<tr style='background-color:";
+					if($alt==1){
+						$chaine.="silver";
+					}
+					else{
+						$chaine.="white";
+					}
+					$chaine.="; text-align: center;'>";
+
+					$chaine.="<td>";
+					$chaine.="$lig->nom";
+					$chaine.="</td>";
+
+					$chaine.="<td>";
+					$chaine.="$lig->prenom";
+					$chaine.="</td>";
+
+					$chaine.="<td style='font-size:x-small'>";
+					$chaine.=$lig->statut;
+					$chaine.="</td>";
+
+					$chaine.="<td>";
+					if($lig->login!=""){
+						$chaine.="<a href='#' onClick=\"document.getElementById(document.getElementById('login_recherche').value).value='$lig->login';cacher_div('div_search');return false;\">$lig->login</a>";
+					}
+					else{
+						$chaine.="<span style='color:red'>Non renseigné</span>";
+					}
+					$chaine.="</td>";
+
+					$chaine.="</tr>";
+				}
+				$chaine.="</table>";
+				//$chaine.="$sql";
+			}
+			echo $chaine;
+		}
+	}
+	die();
+}
+
 if(isset($_POST['enregistrement_eleves'])) {
 	check_token();
 
@@ -646,13 +904,44 @@ $titre_page = "ENT ITOP : Rapprochement";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-//echo "<p style='color:red'>REVOIR la page lien de Retour. Il faudrait que mod_ent/index.php soit une page commune pour pointer vers les divers rappochements selon les ENT (enregistrer un paramètre quelque part pour ne pas changer accidentellement de type d'ENT).</p>";
+if($msg!="") {
+	echo "<div style='position:absolute; top:100px; left:20px; width:18px;'><a href='#lien_retour'><img src='../images/down.png' width='18' height='18' title='Passer les messages' /></a></div>\n";
+}
+
+$module_suhosin_actif="n";
+$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+if($suhosin_post_max_totalname_length!='') {
+	$module_suhosin_actif="y";
+}
 
 //debug_var();
 
-echo "<p class='bold'>
-<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+?>
 
+<script type="text/javascript" language="JavaScript">
+
+	function recherche_utilisateur(statut) {
+		// Ce n'est pas tout à fait le statut, mais 'eleve', 'responsable' ou 'personnel'
+		recherche="recherche_"+statut;
+		nom_rech=document.getElementById('nom_rech').value;
+		prenom_rech=document.getElementById('prenom_rech').value;
+		csrf_alea=document.getElementById('csrf_alea').value
+
+		new Ajax.Updater($('div_resultat'),"<?php echo $_SERVER['PHP_SELF']?>",{method: 'post',
+		parameters: {
+			nom_rech: nom_rech,
+			prenom_rech: prenom_rech,
+			recherche: recherche,
+			csrf_alea: csrf_alea
+		}});
+	}
+
+</script>
+
+<?php
+
+echo "<a name='lien_retour'></a><p class='bold'>
+<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 if(!isset($mode)) {
 	echo "
@@ -665,12 +954,10 @@ if(!isset($mode)) {
 <ul>
 	<li><a href='".$_SERVER['PHP_SELF']."?mode=import_eleves'>Importer un CSV élèves</a></li>
 	<li><a href='".$_SERVER['PHP_SELF']."?mode=import_responsables'>Importer un CSV responsables</a></li>
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=import_personnels'>Importer un CSV personnels de l'établissement</a> <span style='color:red'>A TESTER</span></li>
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=import_personnels'>Importer un CSV personnels de l'établissement</a></li>
 </ul>
 <p> ou consulter&nbsp;:</p>
 <ul>";
-
-
 
 	$sql="SELECT e.*, s.* FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login ORDER BY e.nom, e.prenom LIMIT 1;";
 	$res=mysql_query($sql);
@@ -702,7 +989,7 @@ if(!isset($mode)) {
 	}
 	else {
 		echo "
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_personnels'>Consulter les associations personnels</a> <span style='color:red'>A TESTER</span></li>";
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_personnels'>Consulter les associations personnels</a></li>";
 	}
 
 	echo "
@@ -712,14 +999,18 @@ if(!isset($mode)) {
 <br />
 <p style='color:red'>A FAIRE : Détecter et permettre de supprimer des associations pour des élèves,... qui ne sont plus dans le CSV.</p>
 \n";
+
+	if($module_suhosin_actif=="y") {
+		echo "<p><em>NOTE&nbsp;:</em> Le module PHP <span style='color:red'>Suhosin</span> est actif.<br />Il peut perturber l'enregistrement des associations lorsqu'un grand nombre de champs est envoyé.<br />Vous devrez peut-être soumettre plusieurs fois les mêmes fichiers CSV pour enregistrer par tranches les associations.</p>";
+	}
+
 	require("../lib/footer.inc.php");
 	die();
 }
 
 //==================================================================================
 if($mode=="saisie_manuelle") {
-		echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+		echo " | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
 </p>
 
 <h2>Rapprochement des comptes ENT ITOP/GEPI</h2>
@@ -734,7 +1025,6 @@ if($mode=="saisie_manuelle") {
 	<input type='submit' value='Valider' />
 </form>
 
-<p style='color:red'>A FAIRE : Ajouter un dispositf de recherche de login contenant telle chaine,...</p>
 ";
 	require("../lib/footer.inc.php");
 	die();
@@ -743,26 +1033,39 @@ if($mode=="saisie_manuelle") {
 //==================================================================================
 if($mode=="import_eleves") {
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+		echo " | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+</p>";
 
 	if(!isset($csv_file)) {
 		echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
-</p>
-
 <h2>Rapprochement des comptes ENT ITOP/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
 	".add_token_field()."
 	<input type='hidden' name='mode' value='import_eleves' />
 	<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />
+	<input type=\"checkbox\" id=\"exclure_classes_anormales\" name=\"exclure_classes_anormales\" value=\"y\" checked /><label for='exclure_classes_anormales'>Exclure les classes nommées BASE_20XXXXXX (<em>plus précisément contenant la chaine 'BASE_20'</em>)</label><br />
 	<input type='submit' value='Envoyer' />
 </form>
 
-<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
-Guid;Nom;Prénom;Profil;Classes;Groupe;Naissance<br />
-f73d0f72-0958-4b8f-85f7-a58a96d95220;DISSOIR;Alain;National_1;0310000Z$1L1;16/06/1987<br />
-...
-</p>\n";
+<p><br /></p>
+
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
+	Guid;Nom;Prénom;Profil;Classes;Groupe;Naissance<br />
+	f73d0f72-0958-4b8f-85f7-a58a96d95220;DISSOIR;Alain;National_1;0310000Z$1L1;16/06/1987<br />
+	...</li>
+	<li>Il peut arriver que le CSV fourni contienne des élèves de l'année précédente.<br />
+	La classe est alors par exemple&nbsp;: BASE_2011-2012<br />
+	Proposer d'effectuer un rapprochement pour des élèves qui ne sont plus là n'est pas souhaitable.<br />
+	Vous pouvez aussi avoir un même élève qui apparaît avec deux lignes dans le fichier&nbsp;:<br />
+	Une ligne avec le GUID de l'année passée et associé à une classe BASE_20XX-20XX<br />
+	et une ligne avec le GUID de cette année (<em>c'est celui qu'il faut retenir</em>).</li>
+	<li>Il est recommandé d'envoyer deux fois le même CSV.<br />
+	La première fois pour prendre en compte les élèves correctement identifiés.<br />
+	La deuxième pour voir quels élèves du CSV n'ont pas été associés à un login Gepi.</li>
+</ul>\n";
 	}
 	else {
 		check_token(false);
@@ -778,16 +1081,35 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;DISSOIR;Alain;National_1;0310000Z$1L1;16/06
 		$sql="TRUNCATE tempo2;";
 		$menage=mysql_query($sql);
 
-		echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
-</p>
+		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom à rechercher...</p>
+<form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
+".add_token_field(true)."
+<input type='hidden' name='login_recherche' id='login_recherche' value='' />
+<table border='0' summary='Recherche'>
+	<tr>
+		<th>Nom: </th>
+		<td><input type='text' name='nom_rech' id='nom_rech' value='' onBlur='recherche_utilisateur(\"eleve\")' /></td>
+		<td rowspan='2'><input type='button' name='chercher' value='Chercher' onClick='recherche_utilisateur(\"eleve\")' /></td>
+	</tr>
+	<tr>
+		<th>Prénom: </th>
+		<td><input type='text' name='prenom_rech' id='prenom_rech' value='' onBlur='recherche_utilisateur(\"eleve\")' /></td>
+	</tr>
+</table>
+</form>
 
+<div id='div_resultat' style='margin: 1px;'></div>
+
+","",32,0,"y","y","n","n");
+
+		echo "
 <h2>Rapprochement des comptes élèves ENT ITOP/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
 ".add_token_field()."
 <input type='hidden' name='mode' value='import_eleves' />
 <input type='hidden' name='enregistrement_eleves' value='y' />
+<input type='hidden' name='temoin_suhosin_1' value='eleve' />
 
 <table class='boireaus'>
 	<tr>
@@ -834,7 +1156,7 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;DISSOIR;Alain;National_1;0310000Z$1L1;16/06
 					if(mysql_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
 					}
-					else {
+					elseif((!isset($_POST['exclure_classes_anormales']))||(!preg_match("/BASE_20/", $tab[4]))) {
 						$naissance=(isset($tab[5])) ? $tab[5] : "";
 						if(!preg_match("#[0-9]{2}/[0-9]{2}/[0-9]{4}#", $naissance)) {$naissance="";}
 
@@ -843,8 +1165,8 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;DISSOIR;Alain;National_1;0310000Z$1L1;16/06
 	<tr class='lig$alt white_hover'>
 		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' /></td>
 		<td><label for='ligne_$cpt'>".$tab[0]."</label></td>
-		<td><label for='ligne_$cpt'>".$tab[1]."</label></td>
-		<td><label for='ligne_$cpt'>".$tab[2]."</label></td>
+		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$tab[1]."</span></label></td>
+		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[2]."</span></label></td>
 		<td><label for='ligne_$cpt'>".$tab[3]."</label></td>
 		<td><label for='ligne_$cpt'>".preg_replace("/".getSettingValue('gepiSchoolRne')."\\$/", "", $tab[4])."</label></td>
 		<td><label for='ligne_$cpt'>".$naissance."</label></td>";
@@ -876,6 +1198,16 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;DISSOIR;Alain;National_1;0310000Z$1L1;16/06
 
 							echo "
 			<span id='saisie_$cpt'></span>
+
+			<a href='#' onClick=\"document.getElementById('nom_rech').value=document.getElementById('nom_$cpt').innerHTML;
+									document.getElementById('prenom_rech').value=document.getElementById('prenom_$cpt').innerHTML;
+									document.getElementById('login_recherche').value='login_$cpt';
+									document.getElementById('div_resultat').innerHTML='';
+									afficher_div('div_search','y',-400,20);
+									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
+									return false;\">
+				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
+			</a>
 		</td>
 	</tr>
 ";
@@ -904,18 +1236,48 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;DISSOIR;Alain;National_1;0310000Z$1L1;16/06
 				$chaine_options
 			</select>
 			</span>
+
+			<a href='#' onClick=\"document.getElementById('nom_rech').value=document.getElementById('nom_$cpt').innerHTML;
+									document.getElementById('prenom_rech').value=document.getElementById('prenom_$cpt').innerHTML;
+									document.getElementById('login_recherche').value='login_$cpt';
+									document.getElementById('div_resultat').innerHTML='';
+									afficher_div('div_search','y',-400,20);
+									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
+									return false;\">
+				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
+			</a>
 		</td>
 	</tr>
 ";
 							}
 							else {
 								echo "
-		<td>
-			<input type='text' name='login_$cpt' id='login_$cpt' value=\"\" onchange=\"if(document.getElementById('login_$cpt').value!='') {document.getElementById('ligne_$cpt').checked=true;} else{document.getElementById('ligne_$cpt').checked=false;}\" />
+		<td>";
+								if($module_suhosin_actif!="y") {
+									echo "
+			<input type='text' name='login_$cpt' id='login_$cpt' value=\"\" onchange=\"if(document.getElementById('login_$cpt').value!='') {document.getElementById('ligne_$cpt').checked=true;} else{document.getElementById('ligne_$cpt').checked=false;}\" />";
+								}
+								else {
+									echo "
+			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>";
+								}
+
+								// On renseigne le formulaire de recherche avec le nom et le prénom:
+								// ...
+								// On fait le nettoyage pour ne pas laisser les traces d'une précédente requête:
+								echo "
+			<a href='#' onClick=\"document.getElementById('nom_rech').value=document.getElementById('nom_$cpt').innerHTML;
+									document.getElementById('prenom_rech').value=document.getElementById('prenom_$cpt').innerHTML;
+									document.getElementById('login_recherche').value='login_$cpt';
+									document.getElementById('div_resultat').innerHTML='';
+									afficher_div('div_search','y',-400,20);
+									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
+									return false;\">
+				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
+			</a>
 		</td>
 	</tr>
 ";
-								// A FAIRE: Mettre un dispositif de recherche comme dans mod_annees_anterieures
 							}
 						}
 
@@ -932,6 +1294,7 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;DISSOIR;Alain;National_1;0310000Z$1L1;16/06
 
 		echo "
 </table>
+<input type='hidden' name='temoin_suhosin_2' value='eleve' />
 <input type='submit' value='Enregistrer' />
 </form>
 ";
@@ -1004,6 +1367,7 @@ if($mode=="consult_eleves") {
 	<p>Les rapprochements enregistrés sont les suivants&nbsp;:</p>
 	".add_token_field()."
 	<input type='hidden' name='mode' value='consult_eleves' />
+	<input type='hidden' name='temoin_suhosin_1' value='eleve' />
 
 	<table class='boireaus'>
 		<tr>
@@ -1048,9 +1412,8 @@ if($mode=="consult_eleves") {
 
 	echo "
 	</table>
-
+	<input type='hidden' name='temoin_suhosin_2' value='eleve' />
 </form>
-
 
 <script type='text/javascript'>
 	document.getElementById('tout_cocher_decocher').style.display='';
@@ -1095,6 +1458,8 @@ if($mode=="import_responsables") {
 	<input type='submit' value='Envoyer' />
 </form>
 
+<p><br /></p>
+
 <p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
 ﻿Guid;Nom;Prénom;Profil;Classes;Groupe;Guid_Enfant1;Guid_Enfant2;Guid_Enfant3<br />
 f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8f-85f7-a58a96d95220<br />
@@ -1115,6 +1480,27 @@ f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8
 		$sql="TRUNCATE tempo2;";
 		$menage=mysql_query($sql);
 
+		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'resp_pers'","","<p>Saisir une portion du nom à rechercher...</p>
+<form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
+".add_token_field(true)."
+<input type='hidden' name='login_recherche' id='login_recherche' value='' />
+<table border='0' summary='Recherche'>
+	<tr>
+		<th>Nom: </th>
+		<td><input type='text' name='nom_rech' id='nom_rech' value='' onBlur='recherche_utilisateur(\"responsable\")' /></td>
+		<td rowspan='2'><input type='button' name='chercher' value='Chercher' onClick='recherche_utilisateur(\"responsable\")' /></td>
+	</tr>
+	<tr>
+		<th>Prénom: </th>
+		<td><input type='text' name='prenom_rech' id='prenom_rech' value='' onBlur='recherche_utilisateur(\"responsable\")' /></td>
+	</tr>
+</table>
+</form>
+
+<div id='div_resultat' style='margin: 1px;'></div>
+
+","",32,0,"y","y","n","n");
+
 		echo "
  | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
 </p>
@@ -1125,6 +1511,7 @@ f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8
 ".add_token_field()."
 <input type='hidden' name='mode' value='import_responsables' />
 <input type='hidden' name='enregistrement_responsables' value='y' />
+<input type='hidden' name='temoin_suhosin_1' value='responsable' />
 
 <table class='boireaus'>
 	<tr>
@@ -1178,8 +1565,8 @@ f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8
 	<tr class='lig$alt white_hover'>
 		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' /></td>
 		<td><label for='ligne_$cpt'>".$tab[0]."</label></td>
-		<td><label for='ligne_$cpt'>".$tab[1]."</label></td>
-		<td><label for='ligne_$cpt'>".$tab[2]."</label></td>
+		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$tab[1]."</span></label></td>
+		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[2]."</span></label></td>
 		<td><label for='ligne_$cpt'>".$tab[3]."</label></td>
 		<td><label for='ligne_$cpt'>".(isset($tab[4])?$tab[4]:"")."</label></td>
 		<td><label for='ligne_$cpt'>";
@@ -1261,8 +1648,29 @@ f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8
 
 						if(count($tab_resp)==0) {
 							echo "
-		<td>
-			<input type='text' name='login_$cpt' id='login_$cpt' value=\"\" onchange=\"if(document.getElementById('login_$cpt').value!='') {document.getElementById('ligne_$cpt').checked=true;} else{document.getElementById('ligne_$cpt').checked=false;}\" />
+		<td>";
+								if($module_suhosin_actif!="y") {
+									echo "
+			<input type='text' name='login_$cpt' id='login_$cpt' value=\"\" onchange=\"if(document.getElementById('login_$cpt').value!='') {document.getElementById('ligne_$cpt').checked=true;} else{document.getElementById('ligne_$cpt').checked=false;}\" />";
+								}
+								else {
+									echo "
+			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>";
+								}
+
+								// On renseigne le formulaire de recherche avec le nom et le prénom:
+								// ...
+								// On fait le nettoyage pour ne pas laisser les traces d'une précédente requête:
+								echo "
+			<a href='#' onClick=\"document.getElementById('nom_rech').value=document.getElementById('nom_$cpt').innerHTML;
+									document.getElementById('prenom_rech').value=document.getElementById('prenom_$cpt').innerHTML;
+									document.getElementById('login_recherche').value='login_$cpt';
+									document.getElementById('div_resultat').innerHTML='';
+									afficher_div('div_search','y',-400,20);
+									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
+									return false;\">
+				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
+			</a>
 		</td>
 	</tr>
 ";
@@ -1273,6 +1681,16 @@ f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8
 			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>
 			".$tab_resp[0]['login']."
 			<span id='saisie_$cpt'></span>
+
+			<a href='#' onClick=\"document.getElementById('nom_rech').value=document.getElementById('nom_$cpt').innerHTML;
+									document.getElementById('prenom_rech').value=document.getElementById('prenom_$cpt').innerHTML;
+									document.getElementById('login_recherche').value='login_$cpt';
+									document.getElementById('div_resultat').innerHTML='';
+									afficher_div('div_search','y',-400,20);
+									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
+									return false;\">
+				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
+			</a>
 		</td>
 	</tr>
 ";
@@ -1292,6 +1710,16 @@ f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8
 				$chaine_options
 			</select>
 			</span>
+
+			<a href='#' onClick=\"document.getElementById('nom_rech').value=document.getElementById('nom_$cpt').innerHTML;
+									document.getElementById('prenom_rech').value=document.getElementById('prenom_$cpt').innerHTML;
+									document.getElementById('login_recherche').value='login_$cpt';
+									document.getElementById('div_resultat').innerHTML='';
+									afficher_div('div_search','y',-400,20);
+									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
+									return false;\">
+				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
+			</a>
 		</td>
 	</tr>
 ";
@@ -1310,6 +1738,7 @@ f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8
 
 		echo "
 </table>
+<input type='hidden' name='temoin_suhosin_2' value='responsable' />
 <input type='submit' value='Enregistrer' />
 </form>
 ";
@@ -1362,7 +1791,7 @@ Ajouter une variable en fin de formulaire pour détecter les pb de transmission 
 if($mode=="consult_responsables") {
 	echo "
  | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
- | <a href='".$_SERVER['PHP_SELF']."?mode=import_responsables'>Importer un CSV élève</a>
+ | <a href='".$_SERVER['PHP_SELF']."?mode=import_responsables'>Importer un CSV responsable</a>
 </p>
 
 <h2>Rapprochement actuels des comptes responsables ENT ITOP/GEPI</h2>
@@ -1382,6 +1811,7 @@ if($mode=="consult_responsables") {
 	<p>Les rapprochements enregistrés sont les suivants&nbsp;:</p>
 	".add_token_field()."
 	<input type='hidden' name='mode' value='consult_responsables' />
+	<input type='hidden' name='temoin_suhosin_1' value='responsable' />
 
 	<table class='boireaus'>
 		<tr>
@@ -1430,7 +1860,7 @@ if($mode=="consult_responsables") {
 
 	echo "
 	</table>
-
+	<input type='hidden' name='temoin_suhosin_2' value='responsable' />
 </form>
 
 
@@ -1477,6 +1907,8 @@ if($mode=="import_personnels") {
 	<input type='submit' value='Envoyer' />
 </form>
 
+<p><br /></p>
+
 <p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
 Guid;Nom;Prénom;Profil;Classes;Groupe<br />
 f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
@@ -1497,6 +1929,27 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
 		$sql="TRUNCATE tempo2;";
 		$menage=mysql_query($sql);
 
+		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'utilisateurs'","","<p>Saisir une portion du nom à rechercher...</p>
+<form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
+".add_token_field(true)."
+<input type='hidden' name='login_recherche' id='login_recherche' value='' />
+<table border='0' summary='Recherche'>
+	<tr>
+		<th>Nom: </th>
+		<td><input type='text' name='nom_rech' id='nom_rech' value='' onBlur='recherche_utilisateur(\"personnel\")' /></td>
+		<td rowspan='2'><input type='button' name='chercher' value='Chercher' onClick='recherche_utilisateur(\"personnel\")' /></td>
+	</tr>
+	<tr>
+		<th>Prénom: </th>
+		<td><input type='text' name='prenom_rech' id='prenom_rech' value='' onBlur='recherche_utilisateur(\"personnel\")' /></td>
+	</tr>
+</table>
+</form>
+
+<div id='div_resultat' style='margin: 1px;'></div>
+
+","",32,0,"y","y","n","n");
+
 		echo "
  | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
 </p>
@@ -1507,6 +1960,7 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
 ".add_token_field()."
 <input type='hidden' name='mode' value='import_personnels' />
 <input type='hidden' name='enregistrement_personnels' value='y' />
+<input type='hidden' name='temoin_suhosin_1' value='personnel' />
 
 <table class='boireaus'>
 	<tr>
@@ -1553,8 +2007,8 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
 	<tr class='lig$alt white_hover'>
 		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' /></td>
 		<td><label for='ligne_$cpt'>".$tab[0]."</label></td>
-		<td><label for='ligne_$cpt'>".$tab[1]."</label></td>
-		<td><label for='ligne_$cpt'>".$tab[2]."</label></td>
+		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$tab[1]."</span></label></td>
+		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[2]."</span></label></td>
 		<td><label for='ligne_$cpt'>".$tab[3]."</label></td>";
 
 						$sql="SELECT * FROM utilisateurs WHERE nom='".mysql_real_escape_string($tab[1])."' AND prenom='".mysql_real_escape_string($tab[2])."' AND statut!='eleve' AND statut!='responsable' ORDER BY statut;";
@@ -1568,6 +2022,16 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
 			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>
 			$lig->login
 			<span id='saisie_$cpt'></span>
+
+			<a href='#' onClick=\"document.getElementById('nom_rech').value=document.getElementById('nom_$cpt').innerHTML;
+									document.getElementById('prenom_rech').value=document.getElementById('prenom_$cpt').innerHTML;
+									document.getElementById('login_recherche').value='login_$cpt';
+									document.getElementById('div_resultat').innerHTML='';
+									afficher_div('div_search','y',-400,20);
+									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
+									return false;\">
+				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
+			</a>
 		</td>
 	</tr>
 ";
@@ -1592,14 +2056,45 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
 				$chaine_options
 			</select>
 			</span>
+
+			<a href='#' onClick=\"document.getElementById('nom_rech').value=document.getElementById('nom_$cpt').innerHTML;
+									document.getElementById('prenom_rech').value=document.getElementById('prenom_$cpt').innerHTML;
+									document.getElementById('login_recherche').value='login_$cpt';
+									document.getElementById('div_resultat').innerHTML='';
+									afficher_div('div_search','y',-400,20);
+									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
+									return false;\">
+				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
+			</a>
 		</td>
 	</tr>
 ";
 							}
 							else {
 								echo "
-		<td>
-			<input type='text' name='login_$cpt' id='login_$cpt' value=\"\" onchange=\"if(document.getElementById('login_$cpt').value!='') {document.getElementById('ligne_$cpt').checked=true;} else{document.getElementById('ligne_$cpt').checked=false;}\" />
+		<td>";
+								if($module_suhosin_actif!="y") {
+									echo "
+			<input type='text' name='login_$cpt' id='login_$cpt' value=\"\" onchange=\"if(document.getElementById('login_$cpt').value!='') {document.getElementById('ligne_$cpt').checked=true;} else{document.getElementById('ligne_$cpt').checked=false;}\" />";
+								}
+								else {
+									echo "
+			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>";
+								}
+
+								// On renseigne le formulaire de recherche avec le nom et le prénom:
+								// ...
+								// On fait le nettoyage pour ne pas laisser les traces d'une précédente requête:
+								echo "
+			<a href='#' onClick=\"document.getElementById('nom_rech').value=document.getElementById('nom_$cpt').innerHTML;
+									document.getElementById('prenom_rech').value=document.getElementById('prenom_$cpt').innerHTML;
+									document.getElementById('login_recherche').value='login_$cpt';
+									document.getElementById('div_resultat').innerHTML='';
+									afficher_div('div_search','y',-400,20);
+									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
+									return false;\">
+				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
+			</a>
 		</td>
 	</tr>
 ";
@@ -1620,6 +2115,7 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
 
 		echo "
 </table>
+<input type='hidden' name='temoin_suhosin_2' value='personnel' />
 <input type='submit' value='Enregistrer' />
 </form>
 ";
@@ -1671,7 +2167,7 @@ Ajouter une variable en fin de formulaire pour détecter les pb de transmission 
 if($mode=="consult_personnels") {
 	echo "
  | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
- | <a href='".$_SERVER['PHP_SELF']."?mode=import_personnels'>Importer un CSV élève</a>
+ | <a href='".$_SERVER['PHP_SELF']."?mode=import_personnels'>Importer un CSV personnels</a>
 </p>
 
 <h2>Rapprochement actuels des comptes de personnels ENT ITOP/GEPI</h2>
@@ -1691,6 +2187,7 @@ if($mode=="consult_personnels") {
 	<p>Les rapprochements enregistrés sont les suivants&nbsp;:</p>
 	".add_token_field()."
 	<input type='hidden' name='mode' value='consult_personnels' />
+	<input type='hidden' name='temoin_suhosin_1' value='personnel' />
 
 	<table class='boireaus'>
 		<tr>
@@ -1730,7 +2227,7 @@ if($mode=="consult_personnels") {
 
 	echo "
 	</table>
-
+	<input type='hidden' name='temoin_suhosin_2' value='personnel' />
 </form>
 
 
