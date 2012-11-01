@@ -444,7 +444,14 @@ if (isset($_POST['import_sacoche'])) {
 require('cc_lib.php');
 
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-$message_cnil_commentaires="* En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (<em>note et commentaire portés sur la copie, ...</em>).";
+
+$message_cnil_commentaires="* En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (<em>note et commentaire portés sur la copie, ...</em>).<br />";
+$message_cnil_commentaires.="<br />";
+$message_cnil_commentaires.="Veillez donc à respecter les préconisations suivantes&nbsp;:<br />";
+$message_cnil_commentaires.="<strong>Règle n° 1 :</strong> Avoir à l'esprit, quand on renseigne ces zones commentaires, que la personne qui est concernée peut exercer son droit d'accès et lire ces commentaires !<br />";
+$message_cnil_commentaires.="<strong>Règle n° 2 :</strong> Rédiger des commentaires purement objectifs et jamais excessifs ou insultants.<br />";
+$message_cnil_commentaires.="<br />";
+$message_cnil_commentaires.="Pour plus de détails, consultez <a href='http://www.cnil.fr/la-cnil/actualite/article/article/zones-bloc-note-et-commentaires-les-bons-reflexes-pour-ne-pas-deraper/' target='_blank'>l'article de la CNIL</a>?<br /><br />";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des notes";
     /**
@@ -455,6 +462,17 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 unset($_SESSION['chemin_retour']);
+
+//===============================================
+$tabdiv_infobulle[]=creer_div_infobulle('div_explication_cnil',"Commentaire","",$message_cnil_commentaires,"",30,0,'y','y','n','n');
+// Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()
+// Hauteur de la bande testée pour la position de la souris:
+$hauteur_survol_infobulle=20;
+// Largeur de la bande testée pour la position de la souris:
+$largeur_survol_infobulle=100;
+// Délais en ms avant affichage:
+$delais_affichage_infobulle=500;
+//===============================================
 
 ?>
 <script type="text/javascript" language=javascript>
@@ -1253,7 +1271,9 @@ while ($i < $nb_dev) {
 		}
 
 		if ((($nocomment[$i]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$i] == $id_devoir)) {
-			echo "<td class=cn  valign='top'><center><span title=\"$message_cnil_commentaires\">Commentaire&nbsp;*</span>\n";
+			//echo "<td class=cn  valign='top'><center><span title=\"$message_cnil_commentaires\">Commentaire&nbsp;*</span>\n";
+			echo "<td class=cn  valign='top'><center><a href='#' onclick=\"afficher_div('div_explication_cnil','y',10,-40);return false;\" onmouseover=\"delais_afficher_div('div_explication_cnil','y',10,-40, $delais_affichage_infobulle, $largeur_survol_infobulle, $hauteur_survol_infobulle);\">Commentaire&nbsp;*</a>\n";
+
 			echo "</center></td>\n";
 			$header_pdf[] = "Commentaire";
 			$w_pdf[] = $w3;
