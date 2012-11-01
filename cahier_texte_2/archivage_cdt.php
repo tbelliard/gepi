@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
 * This file is part of GEPI.
 *
@@ -191,7 +191,7 @@ else {
 
 		//$sql="INSERT INTO tempo2 SELECT id,name FROM groupes;";
 		// On ne retient que les groupes associés à des classes... les autres sont des scories qui devraient être supprimées par un Nettoyage de la base
-		$sql="INSERT INTO tempo2 SELECT id,name FROM groupes WHERE id IN (SELECT DISTINCT id_groupe FROM j_groupes_classes);";
+		$sql="INSERT INTO tempo2 SELECT id,name FROM groupes WHERE id IN (SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_texte' AND visible='n'));";
 		$res=mysql_query($sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors de l'insertion de la liste des groupes dans la table 'tempo2'.</p>\n";
@@ -322,7 +322,29 @@ else {
 						'style_telephone.css',
 						'style_telephone_login.css');
 		for($i=0;$i<count($tab_styles);$i++) {
-			copy("../css/".$tab_styles[$i],$dossier_css."/".$tab_styles[$i]);
+			if(file_exists("../css/".$tab_styles[$i])) {
+				copy("../css/".$tab_styles[$i],$dossier_css."/".$tab_styles[$i]);
+			}
+		}
+
+		if(!file_exists($dossier_annee."/images")) {
+			$res=mkdir($dossier_annee."/images");
+		}
+		if(file_exists($dossier_annee."/images")) {
+			$tab_img=array("add.png", "chercher.png", "close16.png","trash.png");
+			for($i=0;$i<count($tab_img);$i++) {
+				copy("../images/icons/".$tab_img[$i],$dossier_annee."/images/".$tab_img[$i]);
+			}
+		}
+
+		if(!file_exists($dossier_annee."/js")) {
+			$res=mkdir($dossier_annee."/js");
+		}
+		if(file_exists($dossier_annee."/js")) {
+			$tab_js=array("position.js", "brainjar_drag.js");
+			for($i=0;$i<count($tab_js);$i++) {
+				copy("../lib/".$tab_js[$i],$dossier_annee."/js/".$tab_js[$i]);
+			}
 		}
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
@@ -354,6 +376,11 @@ else {
 
 		//$nom_fichier=array();
 
+		function corrige_nom_fichier($chaine) {
+			//return preg_replace('/[^A-Za-z0-9\.-]/','_',preg_replace('/&/','et',unhtmlentities(remplace_accents($chaine,'all'))));
+			return preg_replace("/_$/", "", preg_replace("/_{2,}/", "_", preg_replace('/[^A-Za-z0-9\.\-]/','_',remplace_accents(preg_replace('/&/','et',unhtmlentities($chaine)),'all'))));
+		}
+
 		$sql="SELECT * FROM tempo2 LIMIT $largeur_tranche;";
 		$res_grp=mysql_query($sql);
 		if(mysql_num_rows($res_grp)>0) {
@@ -372,14 +399,15 @@ else {
 				$description_groupe=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['description'],'all')));
 				$classlist_string_groupe=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['classlist_string'],'all')));
 				*/
-				$nom_groupe=preg_replace('/[^A-Za-z0-9\.-]/','_',preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['name'],'all'))));
-				$description_groupe=preg_replace('/[^A-Za-z0-9\.-]/','_',preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['description'],'all'))));
-				$classlist_string_groupe=preg_replace('/[^A-Za-z0-9\.-]/','_',preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['classlist_string'],'all'))));
+				$nom_groupe=corrige_nom_fichier($current_group['name']);
+				$description_groupe=corrige_nom_fichier($current_group['description']);
+				$classlist_string_groupe=corrige_nom_fichier($current_group['classlist_string']);
 				$nom_page_html_groupe=strtr($id_groupe."_".$nom_groupe."_".$description_groupe."_".$classlist_string_groupe.".$extension","/","_");
 
-
-				$nom_complet_matiere=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['matiere']['nom_complet'],'all')));
-				$nom_enseignement=preg_replace('/&/','et',unhtmlentities(remplace_accents($nom_groupe." (".$description_groupe.")",'all')));
+				//$nom_complet_matiere=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['matiere']['nom_complet'],'all')));
+				//$nom_enseignement=preg_replace('/&/','et',unhtmlentities(remplace_accents($nom_groupe." (".$description_groupe.")",'all')));
+				$nom_complet_matiere=preg_replace("/_$/", "", preg_replace("/_{2,}/", "_", remplace_accents(preg_replace('/&/','et',unhtmlentities($current_group['matiere']['nom_complet'])),'all')));
+				$nom_enseignement=preg_replace("/_$/", "", preg_replace("/_{2,}/", "_", remplace_accents(preg_replace('/&/','et',unhtmlentities($nom_groupe." (".$description_groupe.")")),'all')));
 
 
 				$nom_detaille_groupe=$current_group['name']." (<i>".$current_group['description']." en (".$current_group['classlist_string'].")</i>)";
