@@ -45,6 +45,7 @@ if (isset($_POST['is_posted'])) {
 	check_token();
 	$msg = '';
 	$reg_ok = '';
+	$nb_reg_ok=0;
 	// Première boucle sur le nombre de periodes
 	$per = 0;
 	while ($per < $max_periode) {
@@ -262,6 +263,9 @@ if (isset($_POST['is_posted'])) {
 								if(!$update_coef) {
 									$msg .= "<br />Une erreur s'est produite lors de la mise à jour des coefficients pour la classe $id_classe.";
 								}
+								else {
+									$nb_reg_ok++;
+								}
 							}
 						}
 					}
@@ -278,6 +282,9 @@ if (isset($_POST['is_posted'])) {
 							$res=mysql_query($sql);
 							if(!$res) {
 								$msg.="<br />Erreur lors de la programmation du recalcul des rangs pour la classe ".get_nom_classe($id_classe).".";
+							}
+							else {
+								$nb_reg_ok++;
 							}
 						}
 						else {
@@ -403,6 +410,9 @@ if (isset($_POST['is_posted'])) {
 										if(!$res_coef) {
 											$msg .= "<br />Erreur lors de la mise à jour du coefficient du groupe n°$create pour la classe n°$id_classe.";
 										}
+										else {
+											$nb_reg_ok++;
+										}
 									}
 
 									for($loop=0;$loop<count($nouvel_enseignement_non_visible);$loop++) {
@@ -410,6 +420,9 @@ if (isset($_POST['is_posted'])) {
 										$insert=mysql_query($sql);
 										if(!$insert) {
 											$msg .= "<br />Erreur lors de la mise à jour de la non visibilité de ".$nouvel_enseignement_non_visible[$loop]." du groupe n°$create pour la classe n°$id_classe.";
+										}
+										else {
+											$nb_reg_ok++;
 										}
 									}
 								}
@@ -435,7 +448,102 @@ if (isset($_POST['is_posted'])) {
 									if(!$insert) {
 										$msg.="<br />Erreur lors de l'enregistrement de la non-visibilité du groupe n°$lig_grp_vis->id_groupe sur ".$tab_domaines[$loop];
 									}
+									else {
+										$nb_reg_ok++;
+									}
 								}
+							}
+						}
+					}
+
+					/*
+					$_POST['change_coef2']=	y
+					$_POST['coef_enseignements2']=	3
+					$_POST['matiere_modif_coef']=	MATHS
+					$_POST['modif_enseignement_visibilite2']=	bulletins|y
+					*/
+
+					if((isset($_POST['change_coef2']))&&(isset($_POST['coef_enseignements2']))&&($_POST['coef_enseignements2']!="")&&(is_numeric($_POST['coef_enseignements2']))&&(isset($_POST['matiere_modif_coef']))&&($_POST['matiere_modif_coef']!="")) {
+						$modif_enseignement_visibilite2=isset($_POST['modif_enseignement_visibilite2']) ? $_POST['modif_enseignement_visibilite2'] : "";
+						$coef_enseignements2=$_POST['coef_enseignements2'];
+						$matiere_modif_coef=$_POST['matiere_modif_coef'];
+
+						if($modif_enseignement_visibilite2!="") {
+							$tmp_tab_vis=explode("|", $modif_enseignement_visibilite2);
+							if(isset($tmp_tab_vis[1])) {
+								if($matiere_modif_coef=='___Tous_les_enseignements___') {
+									if($tmp_tab_vis[1]=='y') {
+										$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+									else {
+										$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+
+									$res_modif_coef=mysql_query($sql);
+									if(!$res_modif_coef) {
+										$msg.="Erreur lors de la requête<br />$sql<br />";
+									}
+									else {
+										$nb_reg_ok++;
+									}
+
+								}
+								else {
+									/*
+									if($tmp_tab_vis[1]=='y') {
+										$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe') AND id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+									else {
+										$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe') AND id_groupe IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+									*/
+									if($tmp_tab_vis[1]=='y') {
+										$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe' AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+									else {
+										$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe' AND jgc.id_groupe IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+									$res_grp_modif_coef=mysql_query($sql);
+									if(mysql_num_rows($res_grp_modif_coef)>0) {
+										while($lig_grp_modif_coef=mysql_fetch_object($res_grp_modif_coef)) {
+											$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe='$lig_grp_modif_coef->id_groupe';";
+											$res_modif_coef=mysql_query($sql);
+											if(!$res_modif_coef) {
+												$msg.="Erreur lors de la requête<br />$sql<br />";
+											}
+											else {
+												$nb_reg_ok++;
+											}
+										}
+									}
+								}
+								/*
+								$res_modif_coef=mysql_query($sql);
+								if(!$res_modif_coef) {
+									$msg.="Erreur lors de la requête<br />$sql<br />";
+								}
+								else {
+									$nb_reg_ok++;
+								}
+								*/
+							}
+							else {
+								$msg.="Mode de visibilité ou non choisi inattendu pour les enseignements dont vous souhaitez modifier le coefficient.<br />";
+							}
+						}
+						else {
+							if($matiere_modif_coef=='___Tous_les_enseignements___') {
+								$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe';";
+							}
+							else {
+								$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe');";
+							}
+							$res_modif_coef=mysql_query($sql);
+							if(!$res_modif_coef) {
+								$msg.="Erreur lors de la requête<br />$sql<br />";
+							}
+							else {
+								$nb_reg_ok++;
 							}
 						}
 					}
@@ -448,13 +556,18 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if ($reg_ok=='') {
-		$message_enregistrement = "Aucune modification n'a été effectuée !";
+		if($nb_reg_ok==0) {
+			$message_enregistrement = "Aucune modification n'a été effectuée !";
+		}
+		else {
+			$message_enregistrement = "$nb_reg_ok modification(s) effectuée(s) !";
+		}
 		$affiche_message = 'yes';
 	} else if ($reg_ok=='yes') {
 		$message_enregistrement = "Les modifications ont été effectuées avec succès.";
 		$affiche_message = 'yes';
 	} else {
-		$message_enregistrement = "Il y a eu un problème lors de l'enregistrement des modification.";
+		$message_enregistrement = "Il y a eu un problème lors de l'enregistrement des modifications.";
 		$affiche_message = 'yes';
 	}
 }
@@ -463,8 +576,8 @@ if (isset($_POST['is_posted'])) {
 $titre_page = "Gestion des classes - Paramétrage des classes par lots";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-
-If ($max_periode <= 0) {
+//debug_var();
+if($max_periode <= 0) {
 echo "Aucune classe comportant des périodes n'a été définie.";
 die();
 }
@@ -697,7 +810,7 @@ while ($per < $max_periode) {
 <br />
 
 <h2><b>Enseignements</b></h2>
-<table border='0'>
+<table border='0' cellspacing='0'>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold;"-->
@@ -708,7 +821,7 @@ while ($per < $max_periode) {
 	<select name='coef_enseignements' onchange="document.getElementById('change_coef').checked=true">
 	<?php
 	echo "<option value=''>---</option>\n";
-	for($i=0;$i<10;$i++){
+	for($i=0;$i<20;$i++){
 		echo "<option value='$i'>$i</option>\n";
 	}
 	?>
@@ -721,7 +834,75 @@ while ($per < $max_periode) {
 	$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
 	$res_mat=mysql_query($sql);
 	if(mysql_num_rows($res_mat)>0) {
-		echo "<table border='0'>
+?>
+<table border='0' cellspacing='0'>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<!--td style="font-weight: bold;"-->
+	<td>
+	<input type='checkbox' name='change_coef2' id='change_coef2' value='y' /><label for='change_coef2'> Forcer à </label>
+	<select name='coef_enseignements2' id='coef_enseignements2' onchange="if((document.getElementById('matiere_modif_coef').selectedIndex==0)||(document.getElementById('coef_enseignements2').selectedIndex==0)) {document.getElementById('change_coef2').checked=false} else {document.getElementById('change_coef2').checked=true}">
+	<?php
+		echo "<option value=''>---</option>\n";
+		for($i=0;$i<20;$i++){
+			echo "<option value='$i'>$i</option>\n";
+		}
+	?>
+	</select>
+	<label for='change_coef2'> les coefficients des enseignements de </label>
+	<select name='matiere_modif_coef' id='matiere_modif_coef' onchange="if((document.getElementById('matiere_modif_coef').selectedIndex==0)||(document.getElementById('coef_enseignements2').selectedIndex==0)) {document.getElementById('change_coef2').checked=false} else {document.getElementById('change_coef2').checked=true}">
+		<option value=''>---</option>
+		<option value='___Tous_les_enseignements___'>Tous les enseignements</option>
+	<?php
+		while($lig_mat=mysql_fetch_object($res_mat)) {
+			echo "		<option value='$lig_mat->matiere'>".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+		}
+	?>
+	</select>
+	</td>
+	<td>
+		<table class='boireaus' cellspacing='0'>
+			<?php
+				echo "<tr>\n";
+				echo "<th><input type='radio' name='modif_enseignement_visibilite2' value='' title='Ne pas tenir compte de la visibilité ou non des enseignements pour modifier leur coefficient' checked /></th>\n";
+				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+					echo "<th title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
+					echo $tab_domaines_sigle[$loop];
+					echo "</th>\n";
+				}
+
+				echo "</tr>\n";
+				echo "<tr class='lig-1'>\n";
+				echo "<th>visibles sur </th>";
+				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+					echo "<td title=\"visibles sur ".$tab_domaines_texte[$loop]."\">\n";
+					echo "<input type='radio' name='modif_enseignement_visibilite2' value='$tab_domaines[$loop]|y' />\n";
+					echo "</td>\n";
+				}
+				echo "</tr>\n";
+				echo "<tr class='lig1'>\n";
+				echo "<th>invisibles sur </th>";
+				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+					echo "<td title=\"invisibles sur ".$tab_domaines_texte[$loop]."\">\n";
+					echo "<input type='radio' name='modif_enseignement_visibilite2' value='$tab_domaines[$loop]|n' />\n";
+					echo "</td>\n";
+				}
+				echo "</tr>\n";
+			?>
+		</table>
+	</td>
+</tr>
+</table>
+<?php
+}
+?>
+
+
+<?php
+	$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
+	$res_mat=mysql_query($sql);
+	if(mysql_num_rows($res_mat)>0) {
+		echo "<table border='0' cellspacing='0'>
 	<tr>
 		<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
 		<td valign='top' rowspan='2'>
@@ -739,7 +920,7 @@ while ($per < $max_periode) {
 	<tr>
 		<td valign='top'>Visibilité&nbsp;: </td>
 		<td>
-			<table class='boireaus'>
+			<table class='boireaus' cellspacing='0'>
 				<tr>\n";
 			for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
 				echo "<th title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
@@ -763,7 +944,7 @@ while ($per < $max_periode) {
 ?>
 
 
-<table border='0'>
+<table border='0' cellspacing='0'>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold; vertical-align:top;"-->
@@ -795,7 +976,7 @@ while ($per < $max_periode) {
 			echo "<td>\n";
 			echo "<select name='coef_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;\">";
 			echo "<option value=''>---</option>\n";
-			for($i=0;$i<10;$i++){
+			for($i=0;$i<20;$i++){
 				echo "<option value='$i'>$i</option>\n";
 			}
 			echo "</select>\n";
@@ -907,7 +1088,7 @@ while ($per < $max_periode) {
 	$tabdiv_infobulle[]=creer_div_infobulle('recalcul_rang',$titre,"",$texte,"",25,0,'y','y','n','n');
 ?>
 
-<table border='0'>
+<table border='0' cellspacing='0'>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td><input type='checkbox' name='forcer_recalcul_rang' id='forcer_recalcul_rang' value='y' /><label for='forcer_recalcul_rang'>Forcer le recalcul des rangs</label> <a href='#' onclick="afficher_div('recalcul_rang','y',-100,20);return false;"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Forcer le recalcul des rangs' title='Forcer le recalcul des rangs' /></a>.</td>
@@ -923,7 +1104,7 @@ td {
 }
 </style>
 <br />
-<table border='0'>
+<table border='0' cellspacing='0'>
 <tr>
 	<td colspan='3'>
 	<h2><b>Paramètres généraux&nbsp;: </b></h2>
