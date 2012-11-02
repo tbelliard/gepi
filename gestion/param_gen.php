@@ -1595,7 +1595,8 @@ if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
 			<span class='small'>
 				Conformément à l'article 16 de la loi 78-17 du 6 janvier 1978, dite loi informatique et liberté, cette 
 				installation de GEPI doit faire l'objet d'une déclaration de traitement automatisé d'informations nominatives 
-				de la CNIL. Si ce n'est pas encore le cas, laissez libre le champ ci-contre
+				de la CNIL. Si ce n'est pas encore le cas, laissez libre le champ ci-contre<br />
+				<a href='http://www.sylogix.org/projects/gepi/wiki/Declaration_cnil' target='_blank'>Voir wiki</a>
 			</span>
 		</span>
 		<span class="cellTab plusPetit">
