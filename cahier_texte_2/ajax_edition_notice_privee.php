@@ -352,6 +352,9 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 </td>
 </tr>
 </table>
+
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Il ne faut pas saisir en notice privée d'informations concernant des élèves en particulier.<br />
+Comme ces notices ne sont pas rattachées à un élève en particulier, il n'est pas possible d'assurer simplement le droit d'accès des parents/élèves à leurs données si elles sont inscrites en Notices privées.</p>
 <?php echo "</form>";
 echo "</fieldset>";
 
