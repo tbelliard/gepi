@@ -350,7 +350,7 @@ if(isset($_POST['enregistrement_eleves'])) {
 	}
 	else {
 		$ligne_tempo2=array();
-		$sql="SELECT * FROM tempo2;";
+		$sql="SELECT * FROM tempo2_sso;";
 		$res=mysql_query($sql);
 		while($lig=mysql_fetch_object($res)) {
 			$ligne_tempo2[$lig->col1]=$lig->col2;
@@ -485,7 +485,7 @@ if(isset($_POST['enregistrement_responsables'])) {
 	}
 	else {
 		$ligne_tempo2=array();
-		$sql="SELECT * FROM tempo2;";
+		$sql="SELECT * FROM tempo2_sso;";
 		$res=mysql_query($sql);
 		while($lig=mysql_fetch_object($res)) {
 			$ligne_tempo2[$lig->col1]=$lig->col2;
@@ -592,6 +592,7 @@ if(isset($_POST['enregistrement_responsables'])) {
 									}
 									else {
 										$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.login!='';";
+										//echo "$sql<br />";
 										$res_resp=mysql_query($sql);
 										if(mysql_num_rows($res_resp)>0) {
 											while($lig_resp=mysql_fetch_object($res_resp)) {
@@ -612,7 +613,11 @@ if(isset($_POST['enregistrement_responsables'])) {
 									}
 								}
 							}
-
+							/*
+							echo "<pre>";
+							print_r($tab_resp);
+							echo "</pre>";
+							*/
 							if(count($tab_resp)==1) {
 								// Un seul responsable correspond
 								$lig=mysql_fetch_object($res);
@@ -680,7 +685,7 @@ if(isset($_POST['enregistrement_personnels'])) {
 	}
 	else {
 		$ligne_tempo2=array();
-		$sql="SELECT * FROM tempo2;";
+		$sql="SELECT * FROM tempo2_sso;";
 		$res=mysql_query($sql);
 		while($lig=mysql_fetch_object($res)) {
 			$ligne_tempo2[$lig->col1]=$lig->col2;
@@ -770,6 +775,9 @@ if(isset($_POST['enregistrement_personnels'])) {
 									$nb_reg++;
 								}
 							}
+						}
+						elseif(mysql_num_rows($res)==0) {
+							$msg.="Aucun enregistrement dans la table 'utilisateurs' pour ".$tab[1]." ".$tab[2]." !<br />\n";
 						}
 						else {
 							// On ne doit pas arriver là
@@ -916,6 +924,8 @@ if($suhosin_post_max_totalname_length!='') {
 }
 
 //debug_var();
+$sql="CREATE TABLE IF NOT EXISTS tempo2_sso ( col1 varchar(100) NOT NULL default '', col2 TEXT NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+$create_table=mysql_query($sql);
 
 ?>
 
@@ -960,7 +970,8 @@ if(!isset($mode)) {
 <p> ou consulter&nbsp;:</p>
 <ul>";
 
-	$sql="SELECT e.*, s.* FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login ORDER BY e.nom, e.prenom LIMIT 1;";
+	//$sql="SELECT e.*, s.* FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login ORDER BY e.nom, e.prenom LIMIT 1;";
+	$sql="SELECT 1=1 FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
 		echo "
@@ -968,10 +979,11 @@ if(!isset($mode)) {
 	}
 	else {
 		echo "
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_eleves'>Consulter les associations élèves</a></li>";
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_eleves'>Consulter les associations élèves</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
-	$sql="SELECT rp.*, s.* FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login ORDER BY rp.nom, rp.prenom LIMIT 1;";
+	//$sql="SELECT rp.*, s.* FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login ORDER BY rp.nom, rp.prenom LIMIT 1;";
+	$sql="SELECT 1=1 FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
 		echo "
@@ -979,10 +991,11 @@ if(!isset($mode)) {
 	}
 	else {
 		echo "
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_responsables'>Consulter les associations responsables</a></li>";
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_responsables'>Consulter les associations responsables</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
-	$sql="SELECT u.*, s.* FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable' LIMIT 1;";
+	//$sql="SELECT u.*, s.* FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable' LIMIT 1;";
+	$sql="SELECT 1=1 FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
 		echo "
@@ -990,7 +1003,7 @@ if(!isset($mode)) {
 	}
 	else {
 		echo "
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_personnels'>Consulter les associations personnels</a></li>";
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_personnels'>Consulter les associations personnels</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
 	echo "
@@ -1090,7 +1103,7 @@ if($mode=="import_eleves") {
 			die();
 		}
 
-		$sql="TRUNCATE tempo2;";
+		$sql="TRUNCATE tempo2_sso;";
 		$menage=mysql_query($sql);
 
 		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom à rechercher...</p>
@@ -1117,7 +1130,7 @@ if($mode=="import_eleves") {
 		echo "
 <h2>Rapprochement des comptes élèves ENT ITOP/GEPI</h2>
 
-<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
+<form action='".$_SERVER['PHP_SELF']."' method='post' name='form_import' enctype='multipart/form-data'>
 ".add_token_field()."
 <input type='hidden' name='mode' value='import_eleves' />
 <input type='hidden' name='enregistrement_eleves' value='y' />
@@ -1192,7 +1205,7 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 						$alt=$alt*(-1);
 						echo "
 	<tr class='lig$alt white_hover'$style_css>
-		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' />$ancre_doublon_ou_pas</td>
+		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" />$ancre_doublon_ou_pas</td>
 		<td><label for='ligne_$cpt'>".$tab[0]."</label></td>
 		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$tab[1]."</span></label></td>
 		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[2]."</span></label></td>
@@ -1311,7 +1324,7 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							}
 						}
 
-						$sql="INSERT INTO tempo2 SET col1='$cpt', col2='".mysql_real_escape_string($ligne)."';";
+						$sql="INSERT INTO tempo2_sso SET col1='$cpt', col2='".mysql_real_escape_string($ligne)."';";
 						$insert=mysql_query($sql);
 						if(!$insert) {
 							echo "<span style='color:red'>ERREUR</span>";
@@ -1325,7 +1338,8 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 		echo "
 </table>
 <input type='hidden' name='temoin_suhosin_2' value='eleve' />
-<input type='submit' value='Enregistrer' />
+<input type='submit' id='bouton_submit_import' value='Enregistrer' />
+<input type='button' id='bouton_button_import' value='Enregistrer' style='display:none;' onclick='verif_puis_submit()' />
 </form>
 ";
 
@@ -1353,11 +1367,14 @@ Veuillez contrôler manuellement s'il s'agit ou non de doublons&nbsp;:<br />";
 
 <script type='text/javascript'>
 	document.getElementById('tout_cocher_decocher').style.display='';
+	document.getElementById('bouton_button_import').style.display='';
+	document.getElementById('bouton_submit_import').style.display='none';
 
 	function tout_cocher() {
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('ligne_'+i)) {
 				document.getElementById('ligne_'+i).checked=true;
+				change_graisse(i);
 			}
 		}
 	}
@@ -1366,6 +1383,7 @@ Veuillez contrôler manuellement s'il s'agit ou non de doublons&nbsp;:<br />";
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('ligne_'+i)) {
 				document.getElementById('ligne_'+i).checked=false;
+				change_graisse(i);
 			}
 		}
 	}
@@ -1373,6 +1391,37 @@ Veuillez contrôler manuellement s'il s'agit ou non de doublons&nbsp;:<br />";
 	function ajout_champ_saisie_login(num) {
 		if(document.getElementById('saisie_'+num)) {
 			document.getElementById('saisie_'+num).innerHTML='<input type=\"text\" name=\"login_'+num+'\" id=\"login_'+num+'\" value=\"\" onchange=\"if(document.getElementById(\'login_'+num+'\').value!=\'\') {document.getElementById(\'ligne_'+num+'\').checked=true;} else {document.getElementById(\'ligne_'+num+'\').checked=false;}\" />';
+		}
+	}
+
+	function verif_puis_submit() {
+		temoin='n';
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				if(document.getElementById('ligne_'+i).checked==true) {
+					temoin='y';
+					break;
+				}
+			}
+		}
+		if(temoin=='y') {
+			document.forms['form_import'].submit();
+		}
+		else {
+			alert('Vous n avez rien coché!?');
+		}
+	}
+
+	function change_graisse(num) {
+		if((document.getElementById('ligne_'+num))&&(document.getElementById('nom_'+num))&&(document.getElementById('prenom_'+num))) {
+			if(document.getElementById('ligne_'+num).checked==true) {
+				document.getElementById('nom_'+num).style.fontWeight='bold';
+				document.getElementById('prenom_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('nom_'+num).style.fontWeight='normal';
+				document.getElementById('prenom_'+num).style.fontWeight='normal';
+			}
 		}
 	}
 </script>
@@ -1441,7 +1490,7 @@ if($mode=="consult_eleves") {
 		$alt=$alt*(-1);
 		echo "
 		<tr class='lig$alt white_hover'>
-			<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value=\"$lig->login\" /></td>
+			<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value=\"$lig->login\" onchange=\"change_graisse($cpt)\" /></td>
 			<td><label for='suppr_$cpt'>$lig->login_sso</label></td>
 			<td><label for='suppr_$cpt'>$lig->login</label></td>
 			<td><label for='suppr_$cpt'>";
@@ -1461,8 +1510,8 @@ if($mode=="consult_eleves") {
 			echo $lig_u->auth_mode;
 		}
 		echo "</label></td>
-			<td><label for='suppr_$cpt'>$lig->nom</label></td>
-			<td><label for='suppr_$cpt'>$lig->prenom</label></td>
+			<td><label for='suppr_$cpt'><span id='nom_$cpt'>$lig->nom</span></label></td>
+			<td><label for='suppr_$cpt'><span id='prenom_$cpt'>$lig->prenom</span></label></td>
 			<td><label for='suppr_$cpt'>$classe</label></td>
 			<td><label for='suppr_$cpt'>".formate_date($lig->naissance)."</label></td>
 			<td><a href='".$_SERVER['PHP_SELF']."?login_gepi=$lig->login_gepi&amp;login_sso=$lig->login_sso&amp;mode=saisie_manuelle'><img src='../images/edit16.png' width='16' height='16' title=\"Corriger l'association\" /></label></td>
@@ -1483,6 +1532,7 @@ if($mode=="consult_eleves") {
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('suppr_'+i)) {
 				document.getElementById('suppr_'+i).checked=true;
+				change_graisse(i);
 			}
 		}
 	}
@@ -1491,6 +1541,20 @@ if($mode=="consult_eleves") {
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('suppr_'+i)) {
 				document.getElementById('suppr_'+i).checked=false;
+				change_graisse(i);
+			}
+		}
+	}
+
+	function change_graisse(num) {
+		if((document.getElementById('suppr_'+num))&&(document.getElementById('nom_'+num))&&(document.getElementById('prenom_'+num))) {
+			if(document.getElementById('suppr_'+num).checked==true) {
+				document.getElementById('nom_'+num).style.fontWeight='bold';
+				document.getElementById('prenom_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('nom_'+num).style.fontWeight='normal';
+				document.getElementById('prenom_'+num).style.fontWeight='normal';
 			}
 		}
 	}
@@ -1522,11 +1586,16 @@ if($mode=="import_responsables") {
 
 <p><br /></p>
 
-<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
-﻿Guid;Nom;Prénom;Profil;Classes;Groupe;Guid_Enfant1;Guid_Enfant2;Guid_Enfant3<br />
-f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8f-85f7-a58a96d95220<br />
-...
-</p>\n";
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
+	﻿Guid;Nom;Prénom;Profil;Classes;Groupe;Guid_Enfant1;Guid_Enfant2;Guid_Enfant3<br />
+	f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8f-85f7-a58a96d95220<br />
+	...</li>
+	<li>Il est recommandé d'envoyer une première fois le CSV, d'enregistrer les associations correctement détectées (<em>en contrôlant tout de même les éventuels doublons repérés</em>).<br />
+	Puis, envoyer à nouveau le même fichier pour traiter les indéterminés restants.<br />
+	Le deuxième envoi permet aussi de repérer ce qui n'a pas été enregistré au premier envoi.</li>
+</ul>\n";
 	}
 	else {
 		check_token(false);
@@ -1539,7 +1608,7 @@ f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8
 			die();
 		}
 
-		$sql="TRUNCATE tempo2;";
+		$sql="TRUNCATE tempo2_sso;";
 		$menage=mysql_query($sql);
 
 		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'resp_pers'","","<p>Saisir une portion du nom à rechercher...</p>
@@ -1566,7 +1635,7 @@ f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8
 		echo "
 <h2>Rapprochement des comptes responsables ENT ITOP/GEPI</h2>
 
-<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
+<form action='".$_SERVER['PHP_SELF']."' method='post' name='form_import' enctype='multipart/form-data'>
 ".add_token_field()."
 <input type='hidden' name='mode' value='import_responsables' />
 <input type='hidden' name='enregistrement_responsables' value='y' />
@@ -1812,7 +1881,7 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 ";
 						}
 
-						$sql="INSERT INTO tempo2 SET col1='$cpt', col2='".mysql_real_escape_string($ligne)."';";
+						$sql="INSERT INTO tempo2_sso SET col1='$cpt', col2='".mysql_real_escape_string($ligne)."';";
 						$insert=mysql_query($sql);
 						if(!$insert) {
 							echo "<span style='color:red'>ERREUR</span>";
@@ -1826,7 +1895,9 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 		echo "
 </table>
 <input type='hidden' name='temoin_suhosin_2' value='responsable' />
-<input type='submit' value='Enregistrer' />
+<input type='submit' id='bouton_submit_import' value='Enregistrer' />
+<input type='button' id='bouton_button_import' value='Enregistrer' style='display:none;' onclick='verif_puis_submit()' />
+
 </form>
 ";
 
@@ -1856,6 +1927,8 @@ Ajouter une variable en fin de formulaire pour détecter les pb de transmission 
 
 <script type='text/javascript'>
 	document.getElementById('tout_cocher_decocher').style.display='';
+	document.getElementById('bouton_button_import').style.display='';
+	document.getElementById('bouton_submit_import').style.display='none';
 
 	function change_graisse(num) {
 		if((document.getElementById('ligne_'+num))&&(document.getElementById('nom_'+num))&&(document.getElementById('prenom_'+num))) {
@@ -1903,6 +1976,25 @@ Ajouter une variable en fin de formulaire pour détecter les pb de transmission 
 			document.getElementById('saisie_'+num).innerHTML='<input type=\"text\" name=\"login_'+num+'\" id=\"login_'+num+'\" value=\"\" onchange=\"if(document.getElementById(\'login_'+num+'\').value!=\'\') {document.getElementById(\'ligne_'+num+'\').checked=true;} else {document.getElementById(\'ligne_'+num+'\').checked=false;}\" />';
 		}
 	}
+
+	function verif_puis_submit() {
+		temoin='n';
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				if(document.getElementById('ligne_'+i).checked==true) {
+					temoin='y';
+					break;
+				}
+			}
+		}
+		if(temoin=='y') {
+			document.forms['form_import'].submit();
+		}
+		else {
+			alert('Vous n avez rien coché!?');
+		}
+	}
+
 </script>
 ";
 		// En fin d'enregistrement, renvoyer vers consult_eleves pour afficher les associations
@@ -1974,7 +2066,7 @@ if($mode=="consult_responsables") {
 		$alt=$alt*(-1);
 		echo "
 		<tr class='lig$alt white_hover'>
-			<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value=\"$lig->login\" /></td>
+			<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value=\"$lig->login\" onchange=\"change_graisse($cpt)\" /></td>
 			<td><label for='suppr_$cpt'>$lig->login_sso</label></td>
 			<td><label for='suppr_$cpt'>$lig->login</label></td>
 			<td><label for='suppr_$cpt'>";
@@ -1994,8 +2086,8 @@ if($mode=="consult_responsables") {
 			echo $lig_u->auth_mode;
 		}
 		echo "</label></td>
-			<td><label for='suppr_$cpt'>$lig->nom</label></td>
-			<td><label for='suppr_$cpt'>$lig->prenom</label></td>
+			<td><label for='suppr_$cpt'><span id='nom_$cpt'>$lig->nom</span></label></td>
+			<td><label for='suppr_$cpt'><span id='prenom_$cpt'>$lig->prenom</span></label></td>
 			<td><label for='suppr_$cpt'>$chaine_ele</label></td>
 			<td><a href='".$_SERVER['PHP_SELF']."?login_gepi=$lig->login_gepi&amp;login_sso=$lig->login_sso&amp;mode=saisie_manuelle'><img src='../images/edit16.png' width='16' height='16' title=\"Corriger l'association\" /></label></td>
 		</tr>
@@ -2011,6 +2103,8 @@ if($mode=="consult_responsables") {
 
 <script type='text/javascript'>
 	document.getElementById('tout_cocher_decocher').style.display='';
+	document.getElementById('bouton_button_import').style.display='';
+	document.getElementById('bouton_submit_import').style.display='none';
 
 	function tout_cocher() {
 		for(i=0;i<$cpt;i++) {
@@ -2024,6 +2118,19 @@ if($mode=="consult_responsables") {
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('suppr_'+i)) {
 				document.getElementById('suppr_'+i).checked=false;
+			}
+		}
+	}
+
+	function change_graisse(num) {
+		if((document.getElementById('suppr_'+num))&&(document.getElementById('nom_'+num))&&(document.getElementById('prenom_'+num))) {
+			if(document.getElementById('suppr_'+num).checked==true) {
+				document.getElementById('nom_'+num).style.fontWeight='bold';
+				document.getElementById('prenom_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('nom_'+num).style.fontWeight='normal';
+				document.getElementById('prenom_'+num).style.fontWeight='normal';
 			}
 		}
 	}
@@ -2054,11 +2161,16 @@ if($mode=="import_personnels") {
 
 <p><br /></p>
 
-<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
-Guid;Nom;Prénom;Profil;Classes;Groupe<br />
-f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
-...
-</p>\n";
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li> Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
+	Guid;Nom;Prénom;Profil;Classes;Groupe<br />
+	f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
+	...</li>
+	<li>Il est recommandé d'envoyer une première fois le CSV, d'enregistrer les associations correctement détectées (<em>en contrôlant tout de même les éventuels doublons repérés</em>).<br />
+	Puis, envoyer à nouveau le même fichier pour traiter les indéterminés restants.<br />
+	Le deuxième envoi permet aussi de repérer ce qui n'a pas été enregistré au premier envoi.</li>
+</ul>\n";
 	}
 	else {
 		check_token(false);
@@ -2071,7 +2183,7 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
 			die();
 		}
 
-		$sql="TRUNCATE tempo2;";
+		$sql="TRUNCATE tempo2_sso;";
 		$menage=mysql_query($sql);
 
 		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'utilisateurs'","","<p>Saisir une portion du nom à rechercher...</p>
@@ -2098,7 +2210,7 @@ f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
 		echo "
 <h2>Rapprochement des comptes de personnels ENT ITOP/GEPI</h2>
 
-<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
+<form action='".$_SERVER['PHP_SELF']."' method='post' name='form_import' enctype='multipart/form-data'>
 ".add_token_field()."
 <input type='hidden' name='mode' value='import_personnels' />
 <input type='hidden' name='enregistrement_personnels' value='y' />
@@ -2165,7 +2277,7 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 						$alt=$alt*(-1);
 						echo "
 	<tr class='lig$alt white_hover'$style_css>
-		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' />$ancre_doublon_ou_pas</td>
+		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" />$ancre_doublon_ou_pas</td>
 		<td><label for='ligne_$cpt'>".$tab[0]."</label></td>
 		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$tab[1]."</span></label></td>
 		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[2]."</span></label></td>
@@ -2262,7 +2374,7 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							}
 						}
 
-						$sql="INSERT INTO tempo2 SET col1='$cpt', col2='".mysql_real_escape_string($ligne)."';";
+						$sql="INSERT INTO tempo2_sso SET col1='$cpt', col2='".mysql_real_escape_string($ligne)."';";
 						$insert=mysql_query($sql);
 						if(!$insert) {
 							echo "<span style='color:red'>ERREUR</span>";
@@ -2276,7 +2388,8 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 		echo "
 </table>
 <input type='hidden' name='temoin_suhosin_2' value='personnel' />
-<input type='submit' value='Enregistrer' />
+<input type='submit' id='bouton_submit_import' value='Enregistrer' />
+<input type='button' id='bouton_button_import' value='Enregistrer' style='display:none;' onclick='verif_puis_submit()' />
 </form>
 ";
 
@@ -2293,7 +2406,7 @@ Veuillez contrôler manuellement s'il s'agit ou non de doublons&nbsp;:<br />";
 		echo "<p>$cpt ligne(s) affichée(s).</p>\n";
 
 		if($cpt_deja_enregistres>0) {
-			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=consult_eleves'>$cpt_deja_enregistres association(s) personnel(s) déjà enregistrée(s)</a>.<br />\n";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=consult_personnels'>$cpt_deja_enregistres association(s) personnel(s) déjà enregistrée(s)</a>.<br />\n";
 		}
 		else {
 			echo "<p>Aucune association de compte personnel n'est encore enregistrée.<br />\n";
@@ -2305,11 +2418,14 @@ Ajouter une variable en fin de formulaire pour détecter les pb de transmission 
 
 <script type='text/javascript'>
 	document.getElementById('tout_cocher_decocher').style.display='';
+	document.getElementById('bouton_button_import').style.display='';
+	document.getElementById('bouton_submit_import').style.display='none';
 
 	function tout_cocher() {
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('ligne_'+i)) {
 				document.getElementById('ligne_'+i).checked=true;
+				change_graisse(i);
 			}
 		}
 	}
@@ -2318,6 +2434,7 @@ Ajouter une variable en fin de formulaire pour détecter les pb de transmission 
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('ligne_'+i)) {
 				document.getElementById('ligne_'+i).checked=false;
+				change_graisse(i);
 			}
 		}
 	}
@@ -2325,6 +2442,37 @@ Ajouter une variable en fin de formulaire pour détecter les pb de transmission 
 	function ajout_champ_saisie_login(num) {
 		if(document.getElementById('saisie_'+num)) {
 			document.getElementById('saisie_'+num).innerHTML='<input type=\"text\" name=\"login_'+num+'\" id=\"login_'+num+'\" value=\"\" onchange=\"if(document.getElementById(\'login_'+num+'\').value!=\'\') {document.getElementById(\'ligne_'+num+'\').checked=true;} else {document.getElementById(\'ligne_'+num+'\').checked=false;}\" />';
+		}
+	}
+
+	function verif_puis_submit() {
+		temoin='n';
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				if(document.getElementById('ligne_'+i).checked==true) {
+					temoin='y';
+					break;
+				}
+			}
+		}
+		if(temoin=='y') {
+			document.forms['form_import'].submit();
+		}
+		else {
+			alert('Vous n avez rien coché!?');
+		}
+	}
+
+	function change_graisse(num) {
+		if((document.getElementById('ligne_'+num))&&(document.getElementById('nom_'+num))&&(document.getElementById('prenom_'+num))) {
+			if(document.getElementById('ligne_'+num).checked==true) {
+				document.getElementById('nom_'+num).style.fontWeight='bold';
+				document.getElementById('prenom_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('nom_'+num).style.fontWeight='normal';
+				document.getElementById('prenom_'+num).style.fontWeight='normal';
+			}
 		}
 	}
 </script>
@@ -2389,7 +2537,7 @@ if($mode=="consult_personnels") {
 		$alt=$alt*(-1);
 		echo "
 		<tr class='lig$alt white_hover'>
-			<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value=\"$lig->login\" /></td>
+			<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value=\"$lig->login\" onchange=\"change_graisse($cpt)\" /></td>
 			<td><label for='suppr_$cpt'>$lig->login_sso</label></td>
 			<td><label for='suppr_$cpt'>$lig->login</label></td>
 			<td><label for='suppr_$cpt'>";
@@ -2409,8 +2557,8 @@ if($mode=="consult_personnels") {
 			echo $lig_u->auth_mode;
 		}
 		echo "</label></td>
-			<td><label for='suppr_$cpt'>$lig->nom</label></td>
-			<td><label for='suppr_$cpt'>$lig->prenom</label></td>
+			<td><label for='suppr_$cpt'><span id='nom_$cpt'>$lig->nom</label></span></td>
+			<td><label for='suppr_$cpt'><span id='prenom_$cpt'>$lig->prenom</span></label></td>
 			<td><label for='suppr_$cpt'>$lig->statut</label></td>
 			<td><a href='".$_SERVER['PHP_SELF']."?login_gepi=$lig->login_gepi&amp;login_sso=$lig->login_sso&amp;mode=saisie_manuelle'><img src='../images/edit16.png' width='16' height='16' title=\"Corriger l'association\" /></label></td>
 		</tr>
@@ -2431,6 +2579,7 @@ if($mode=="consult_personnels") {
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('suppr_'+i)) {
 				document.getElementById('suppr_'+i).checked=true;
+				change_graisse(i);
 			}
 		}
 	}
@@ -2439,6 +2588,20 @@ if($mode=="consult_personnels") {
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('suppr_'+i)) {
 				document.getElementById('suppr_'+i).checked=false;
+				change_graisse(i);
+			}
+		}
+	}
+
+	function change_graisse(num) {
+		if((document.getElementById('suppr_'+num))&&(document.getElementById('nom_'+num))&&(document.getElementById('prenom_'+num))) {
+			if(document.getElementById('suppr_'+num).checked==true) {
+				document.getElementById('nom_'+num).style.fontWeight='bold';
+				document.getElementById('prenom_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('nom_'+num).style.fontWeight='normal';
+				document.getElementById('prenom_'+num).style.fontWeight='normal';
 			}
 		}
 	}
