@@ -1302,7 +1302,9 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 								}
 								else {
 									echo "
-			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>";
+			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>
+
+			<span id='saisie_$cpt'></span>";
 								}
 
 								// On renseigne le formulaire de recherche avec le nom et le prénom:
@@ -1805,7 +1807,9 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 								}
 								else {
 									echo "
-			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>";
+			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>
+
+			<span id='saisie_$cpt'></span>";
 								}
 
 								// On renseigne le formulaire de recherche avec le nom et le prénom:
@@ -2351,7 +2355,9 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 								}
 								else {
 									echo "
-			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>";
+			<div style='float:right; width:16px'><a href='javascript:ajout_champ_saisie_login($cpt)' title='Ajouter un champ de saisie de login'><img src='../images/icons/wizard.png' /></a></div>
+
+			<span id='saisie_$cpt'></span>";
 								}
 
 								// On renseigne le formulaire de recherche avec le nom et le prénom:
