@@ -2373,7 +2373,17 @@ function releve_pdf($tab_rel,$i) {
 			if(($releve_affiche_mail=='y')&&($gepiSchoolEmail!='')) {
 				$pdf->Cell(90,5, $gepiSchoolEmail,0,2,'');
 			}
-	
+
+			// Si on affiche tout (logo, adresse, tel, mail) l'adresse mail peut chevaucher le titre "Relevé de notes..."
+			$Y_courant=$pdf->GetY();
+			// DEBUG:
+			//$pdf->SetXY(60,10);
+			//$pdf->Cell(90,5, $Y_courant." - ".$Y_cadre_note,0,2,'');
+			if($Y_courant>$Y_cadre_note) {
+				$hauteur_cadre_note_global-=$Y_courant-$Y_cadre_note;
+				$Y_cadre_note=$Y_courant;
+			}
+
 			// BLOC ADRESSE DES PARENTS
 			// Nom des variables à revoir
 			//if($active_bloc_adresse_parent==='1' and $nb_releve_par_page==='1') {
