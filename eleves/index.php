@@ -231,77 +231,6 @@ if (empty($_POST['total_photo']) and empty($_GET['total_photo'])) { $total_photo
 if (empty($_FILES['photo'])) { $photo = ""; } else { $photo = $_FILES['photo']; }
 if (empty($_POST['quiestce'])) { $quiestce = ""; } else { $quiestce = $_POST['quiestce']; }
 
-function ImageFlip($imgsrc, $type)
-	{
-	//source de cette fonction : http://www.developpez.net/forums/showthread.php?t=54169
-	$width = imagesx($imgsrc);
-	$height = imagesy($imgsrc);
-
-	$imgdest = imagecreatetruecolor($width, $height);
-
-	switch( $type ) {
-		// mirror wzgl. osi
-		case IMAGE_FLIP_HORIZONTAL:
-			for( $y=0 ; $y<$height ; $y++ )
-				imagecopy($imgdest, $imgsrc, 0, $height-$y-1, 0, $y, $width, 1);
-			break;
-
-		case IMAGE_FLIP_VERTICAL:
-			for( $x=0 ; $x<$width ; $x++ )
-				imagecopy($imgdest, $imgsrc, $width-$x-1, 0, $x, 0, 1, $height);
-			break;
-
-		case IMAGE_FLIP_BOTH:
-			for( $x=0 ; $x<$width ; $x++ )
-				imagecopy($imgdest, $imgsrc, $width-$x-1, 0, $x, 0, 1, $height);
-
-			$rowBuffer = imagecreatetruecolor($width, 1);
-			for( $y=0 ; $y<($height/2) ; $y++ )
-				{
-				imagecopy($rowBuffer, $imgdest  , 0, 0, 0, $height-$y-1, $width, 1);
-				imagecopy($imgdest  , $imgdest  , 0, $height-$y-1, 0, $y, $width, 1);
-				imagecopy($imgdest  , $rowBuffer, 0, $y, 0, 0, $width, 1);
-				}
-
-			imagedestroy( $rowBuffer );
-			break;
-	}
-
-	return( $imgdest );
-}
-
-function ImageRotateRightAngle( $imgSrc, $angle )
-{
-	//source de cette fonction : http://www.developpez.net/forums/showthread.php?t=54169
-	$angle = min( ( (int)(($angle+45) / 90) * 90), 270 );
-	if( $angle == 0 )
-	return( $imgSrc );
-	$srcX = imagesx( $imgSrc );
-	$srcY = imagesy( $imgSrc );
-
-	switch( $angle )
-	{
-		case 90:
-		$imgDest = imagecreatetruecolor( $srcY, $srcX );
-		for( $x=0; $x<$srcX; $x++ )
-		for( $y=0; $y<$srcY; $y++ )
-		imagecopy($imgDest, $imgSrc, $srcY-$y-1, $x, $x, $y, 1, 1);
-		break;
-
-		case 180:
-		$imgDest = ImageFlip( $imgSrc, IMAGE_FLIP_BOTH );
-		break;
-
-		case 270:
-		$imgDest = imagecreatetruecolor( $srcY, $srcX );
-		for( $x=0; $x<$srcX; $x++ )
-		for( $y=0; $y<$srcY; $y++ )
-		imagecopy($imgDest, $imgSrc, $y, $srcX-$x-1, $x, $y, 1, 1);
-		break;
-	}
-
-		return( $imgDest );
-}
 
 
 function deplacer_fichier_upload($source, $dest) {
@@ -352,26 +281,11 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 					$cpt_photos_mises_en_place++;
 					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 						// si le redimensionnement des photos est activé on redimensionne
-	
-						$source = imagecreatefromjpeg($rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg"); // La photo est la source
-	
-						if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
-						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
-	
-						//rotation de l'image si choix différent de rien
-						//if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
-	
-						// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
-						$largeur_source = imagesx($source);
-						$hauteur_source = imagesy($source);
-						$largeur_destination = imagesx($destination);
-						$hauteur_destination = imagesy($destination);
-	
-						// On crée la miniature
-						imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
-						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
-						// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-						imagejpeg($destination, $rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg",100);
+							if (getSettingValue("active_module_trombinoscopes_rt")!='')
+								$redim_OK=redim_photo($rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg",getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"),getSettingValue("active_module_trombinoscopes_rt"));
+							else
+								$redim_OK=redim_photo($rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg",getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
+						if (!$redim_OK) $msg .= " Echec du redimensionnement de la photo.";
 					}
 				}
 			}

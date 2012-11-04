@@ -51,31 +51,6 @@ $msg = '';
 $journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
 $duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
 
-// pour module trombinoscope
-$photo_largeur_max=150;
-$photo_hauteur_max=150;
-
-function redimensionne_image($photo) {
-	global $photo_largeur_max, $photo_hauteur_max;
-
-	// prendre les informations sur l'image
-	$info_image=getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur=$info_image[0];
-	$hauteur=$info_image[1];
-
-	// calcule le ratio de redimensionnement
-	$ratio_l=$largeur/$photo_largeur_max;
-	$ratio_h=$hauteur/$photo_hauteur_max;
-	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
-
-	// définit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur=round($largeur/$ratio);
-	$nouvelle_hauteur=round($hauteur/$ratio);
-
-	return array($nouvelle_largeur, $nouvelle_hauteur);
-}
-
 // fonction de sécuritée
 // uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
 // autoriser la validation de formulaire $uid_post===$_SESSION['uid_prime']
@@ -468,6 +443,14 @@ check_token();
 									$res_copy=copy("$source_file" , "$dest_file");
 									if($res_copy){
 										$msg = "Mise en place de la photo effectuée.";
+										if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+											// si le redimensionnement des photos est activé on redimensionne
+											if (getSettingValue("active_module_trombinoscopes_rt")!='')
+												$redim_OK=redim_photo($dest_file,getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"),getSettingValue("active_module_trombinoscopes_rt"));
+											else
+												$redim_OK=redim_photo($dest_file,getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
+											if (!$redim_OK) $msg .= " Echec du redimensionnement de la photo.";
+										}
 									}
 									else{
 										$msg = "Erreur lors de la mise en place de la photo.";
@@ -761,7 +744,8 @@ if(getSettingValue("active_module_trombinoscopes")=='y'){
 			$temoin_photo="oui";
 			//echo "<td>\n";
 			echo "<div align='center'>\n";
-			$dimphoto=redimensionne_image($photo);
+			// la photo sera réduite si nécessaire
+			$dimphoto=dimensions_affichage_photo($photo,getSettingValue('l_max_aff_trombinoscopes'),getSettingValue('h_max_aff_trombinoscopes'));
 			echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
 			//echo "</td>\n";
 			//echo "<br />\n";
