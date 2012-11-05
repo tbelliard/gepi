@@ -112,8 +112,10 @@ include("menu_plugins.inc.php");
 
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php" '.insert_confirm_abandon().'>Comptes Resp.légaux</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php" '.insert_confirm_abandon().'>Comptes Elèves</a></li>'."\n";
-        $menus .= '                <li><a href="'.$gepiPath.'/mod_sso_table/index.php" '.insert_confirm_abandon().'>Correspondances identifiants SSO</a></li>'."\n";
-		$menus .= '            </ul>'."\n";		
+		if(getSettingAOui('use_ent')) {
+			$menus .= '                <li><a href="'.$gepiPath.'/mod_sso_table/index.php" '.insert_confirm_abandon().'>Correspondances identifiants SSO</a></li>'."\n";
+		}
+		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
 		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/eleves/index.php" '.insert_confirm_abandon().'>Elèves</a>'."\n";
