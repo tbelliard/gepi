@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -377,8 +377,11 @@ aff_time();
 	echo "</blockquote>\n";
 	echo "</form>\n";
 
-
 	echo "<p><br /></p>\n";
+
+	//========================================================
+	include("change_auth_mode.inc.php");
+	//========================================================
 
 	echo "<p><b>Liste des comptes responsables existants</b> :</p>\n";
 	echo "<blockquote>\n";
@@ -584,7 +587,11 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		echo "</td>\n";
 
 		echo "<td>";
-		echo $current_parent->auth_mode;
+			echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$current_parent->login."&amp;auth_mode_user=".$current_parent->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$current_parent->login', '$current_parent->auth_mode') ;return false;\">";
+			echo "<span id='auth_mode_$current_parent->login'>";
+			echo $current_parent->auth_mode;
+			echo "</span>";
+			echo "</a>";
 		echo "</td>\n";
 
 		echo "<td>";
