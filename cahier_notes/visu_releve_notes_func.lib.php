@@ -138,6 +138,7 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 		
 				// Si une "Note" doit être affichée
 				if ($affiche_note != '') {
+					//$retour.="<span style='color:red'>".$tab_rel['rn_app']."-".$tab_rel['rn_nomdev']."-".$retour_a_la_ligne."</span>";
 					if ($tiret == "yes") {
 						if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
 							$retour.="<br />";
@@ -262,6 +263,7 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 				}
 				*/
 				$affiche_note = "";
+
 				if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 					if($use_cell_ajustee!="n") {$affiche_note.="<b>";}
 					$affiche_note.=$eleve_statut;
@@ -280,7 +282,7 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 				//	$affiche_note = "";
 				//}
 				//==========================================
-		
+
 				// Nom du devoir ou pas
 				if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
 					if ($affiche_note=="") {
@@ -295,9 +297,12 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 		
 				// Si une "Note" doit être affichée
 				if ($affiche_note != '') {
+					// $tiret : A-t-on au moins une note déjà affichée?
 					if ($tiret == "yes") {
 						if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
 							$retour.="\n";
+							// Pour faire un décalage après le retour à la ligne:
+							$retour.="  ";
 						}
 						else {
 							$retour.=" - ";
@@ -489,6 +494,9 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		$active_module_trombinoscopes;
 
 		global $tab_devoirs_affiches_en_sous_conteneur;
+
+		// Pour être pris en compte dans les boites/conteneurs:
+		global $retour_a_la_ligne;
 
 		$debug_releve="n";
 		$debug_ele_login="ahnjinwon";
@@ -1830,6 +1838,9 @@ function releve_pdf($tab_rel,$i) {
 
 		global $tab_devoirs_affiches_en_sous_conteneur;
 
+		// Pour être pris en compte dans les boites/conteneurs:
+		global $retour_a_la_ligne;
+
 		// Pour retourner à la ligne entre les devoirs dans le cas où le nom ou l'appréciation du devoir est demandée:
 		$retour_a_la_ligne="y";
 
@@ -2362,7 +2373,17 @@ function releve_pdf($tab_rel,$i) {
 			if(($releve_affiche_mail=='y')&&($gepiSchoolEmail!='')) {
 				$pdf->Cell(90,5, $gepiSchoolEmail,0,2,'');
 			}
-	
+
+			// Si on affiche tout (logo, adresse, tel, mail) l'adresse mail peut chevaucher le titre "Relevé de notes..."
+			$Y_courant=$pdf->GetY();
+			// DEBUG:
+			//$pdf->SetXY(60,10);
+			//$pdf->Cell(90,5, $Y_courant." - ".$Y_cadre_note,0,2,'');
+			if($Y_courant>$Y_cadre_note) {
+				$hauteur_cadre_note_global-=$Y_courant-$Y_cadre_note;
+				$Y_cadre_note=$Y_courant;
+			}
+
 			// BLOC ADRESSE DES PARENTS
 			// Nom des variables à revoir
 			//if($active_bloc_adresse_parent==='1' and $nb_releve_par_page==='1') {
@@ -2910,6 +2931,11 @@ function releve_pdf($tab_rel,$i) {
 													}
 					
 													if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='v') {
+
+														if($tab_rel['rn_nomdev']=='y') {
+															$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].": ";
+														}
+
 														if($use_cell_ajustee!="n") {$chaine_notes.="<b>";}
 														if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='') {
 															$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut'];
@@ -2918,11 +2944,13 @@ function releve_pdf($tab_rel,$i) {
 															$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['note'];
 														}
 														if($use_cell_ajustee!="n") {$chaine_notes.="</b>";}
-							
+
+														/*
 														if($tab_rel['rn_nomdev']=='y') {
 															$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
 														}
-								
+														*/
+
 														if($tab_rel['rn_datedev']=='y') {
 															$chaine_notes.=" (".formate_date($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['date']).")";
 														}
@@ -3014,6 +3042,10 @@ function releve_pdf($tab_rel,$i) {
 									}
 	
 									if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='v') {
+										if($tab_rel['rn_nomdev']=='y') {
+											$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].": ";
+										}
+
 										if($use_cell_ajustee!="n") {$chaine_notes.="<b>";}
 										if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='') {
 											$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut'];
@@ -3022,11 +3054,11 @@ function releve_pdf($tab_rel,$i) {
 											$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['note'];
 										}
 										if($use_cell_ajustee!="n") {$chaine_notes.="</b>";}
-			
+										/*
 										if($tab_rel['rn_nomdev']=='y') {
 											$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
 										}
-				
+										*/
 										if($tab_rel['rn_datedev']=='y') {
 											$chaine_notes.=" (".formate_date($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['date']).")";
 										}
