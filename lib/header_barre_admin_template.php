@@ -83,6 +83,7 @@ include("menu_plugins.inc.php");
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/config_prefs.php" '.insert_confirm_abandon().'>Interface Profs</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_couleurs.php" '.insert_confirm_abandon().'>Couleurs</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_ordre_item.php" '.insert_confirm_abandon().'>Ordre des menus</a></li>'."\n";
+		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Maintenance</a>'."\n";
@@ -90,7 +91,17 @@ include("menu_plugins.inc.php");
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/accueil_sauve.php" '.insert_confirm_abandon().'>Sauvegardes</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/maj.php" '.insert_confirm_abandon().'>Mise à jour de la base</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/clean_tables.php" '.insert_confirm_abandon().'>Nettoyage de la base</a></li>'."\n";
-		$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_base.php" '.insert_confirm_abandon().'>Effacer la base</a></li>'."\n";
+		if(!getSettingAOui('gepi_en_production')) {
+			$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_base.php" '.insert_confirm_abandon().'>Effacer la base</a></li>'."\n";
+		}
+		else {
+			$menus .= '    <li><span title="Effacer la base : Choix désactivé sur un Gepi en production.
+                           Votre Gepi est paramétré comme un Gepi en production :
+                           On ne vide normalement pas la base sur un Gepi en production.
+                           Si votre Gepi est un Gepi de test, vous pouvez modifier ce
+                           paramétrage dans
+                                Gestion générale/Configuration générale.">Effacer la base</span></li>'."\n";
+		}
 		$menus .= '    <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#purge" '.insert_confirm_abandon().'>Effacer les photos</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/gestion_temp_dir.php" '.insert_confirm_abandon().'>Dossiers temp.</a></li>'."\n";
 		$menus .= '</ul>'."\n";
@@ -102,6 +113,11 @@ include("menu_plugins.inc.php");
 		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/utilisateurs/index.php" '.insert_confirm_abandon().'>Utilisateurs</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/index.php?mode=personnels" '.insert_confirm_abandon().'>Comptes Personnels</a></li>'."\n";
+
+		if (getSettingValue("statuts_prives") == "y") {
+			$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/creer_statut.php" '.insert_confirm_abandon().'>Statuts personnalisés</a></li>'."\n";
+		}
+
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php" '.insert_confirm_abandon().'>Comptes Resp.légaux</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php" '.insert_confirm_abandon().'>Comptes Elèves</a></li>'."\n";
 		if(getSettingAOui('use_ent')) {
@@ -147,7 +163,21 @@ include("menu_plugins.inc.php");
 		$menus .= '        <li><a href="'.$gepiPath.'/aid/index.php" '.insert_confirm_abandon().'>AID</a></li>'."\n";
 
 		$menus .= '        <li><a href="'.$gepiPath.'/etablissements/index.php" '.insert_confirm_abandon().'>Etablissements</a></li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/gestion/gestion_base_test.php" '.insert_confirm_abandon().'>Données de tests</a></li>'."\n";
+		if(!getSettingAOui('gepi_en_production')) {
+			$menus .= '        <li><a href="'.$gepiPath.'/gestion/gestion_base_test.php" '.insert_confirm_abandon().'>Données de tests</a></li>'."\n";
+		}
+		else {
+			$menus .= '    <li><span title="Données de test : Choix désactivé sur un Gepi en production.
+                               Les données de test ajoutent des enregistrements dans la
+                               base pour pouvoir tester Gepi sans remplir soi-même la base.
+                           
+                               Votre Gepi est paramétré comme un Gepi en production :
+                               Normalement, on n ajoute pas dans la base des données
+                               de test sur un Gepi en production.
+                               Si votre Gepi est un Gepi de test, vous pouvez modifier ce
+                               paramétrage dans
+                                    Gestion générale/Configuration générale.">Données de tests</span></li>'."\n";
+		}
 		$menus .= '  </ul>'."\n";
 		$menus .= '</li>'."\n";
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Modules</a>'."\n";
@@ -201,6 +231,7 @@ include("menu_plugins.inc.php");
 		$gepi_denom_mention=getSettingValue('gepi_denom_mention');
 		if($gepi_denom_mention=='') {$gepi_denom_mention="mention";}
 		$menus .= '      <li><a href="'.$gepiPath.'/saisie/saisie_mentions.php" '.insert_confirm_abandon().'>'.ucfirst($gepi_denom_mention).'s</a></li>'."\n";
+		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
 		$menus .= '    </ul>'."\n";		
 		$menus .= '  </li>'."\n";
 		if(getSettingAOui('active_notanet')) {
