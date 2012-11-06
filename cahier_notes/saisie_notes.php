@@ -1076,9 +1076,9 @@ foreach ($liste_eleves as $eleve) {
 			$mess_comment[$i][$k] = "<td class='cn' bgcolor='$couleur_devoirs'>";
 			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N"){
 				if ((isset($appreciations_import[$current_displayed_line])) and  ($appreciations_import[$current_displayed_line] != '')) {
-                                        $eleve_comment = $appreciations_import[$current_displayed_line];
-                                }
-                                $mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=60 class='wrap' onchange=\"changement()\"";
+					$eleve_comment = $appreciations_import[$current_displayed_line];
+				}
+				$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=60 class='wrap' onchange=\"changement()\"";
 
 				if(getSettingValue("gepi_pmv")!="n"){
 					$mess_comment[$i][$k] .= " onfocus=\"";
@@ -1532,7 +1532,12 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 		}
 		echo "</td>\n";
 		if(($nocomment[$k]=='no')&&($_SESSION['affiche_comment'] == 'yes')) {
-			echo "<td>&nbsp;</td>\n";
+			if($id_devoir>0) {
+				echo "<td><a href='javascript:vider_commentaires()'><img src='../images/icons/trash.png' width='16' height='16' title='Vider les commentaires' alt='Vider les commentaires' /></a></td>\n";
+			}
+			else {
+				echo "<td>&nbsp;</td>\n";
+			}
 		}
 	}
 	if($id_devoir==0) {
@@ -1736,7 +1741,6 @@ while($i < $nombre_lignes) {
 }
 $nombre_lignes=$i;
 
-// AJOUT: boireaus 20080607
 // Génération de l'infobulle pour $tab_graph_moy[]
 if($id_devoir==0) {
 	$graphe_serie="";
@@ -1993,6 +1997,16 @@ if((isset($id_devoir))&&($id_devoir!=0)) {
 
 	function affiche_photo(photo,nom_prenom) {
  		document.getElementById('div_photo_eleve').innerHTML='<img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom;
+	}
+
+	function vider_commentaires() {
+		if(confirm('Êtes-vous sûr de vouloir vider les commentaires ?')) {
+			for(i=110;i<".(100+$num_id).";i++) {
+				if(document.getElementById('n'+i)) {
+					document.getElementById('n'+i).value='';
+				}
+			}
+		}
 	}
 </script>\n";
 }
