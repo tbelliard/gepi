@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -410,7 +410,11 @@ else {
 <input type='hidden' name='order_by' value='<?php echo $order_by; ?>' />
 </form>
 
-
+<?php
+//========================================================
+include("change_auth_mode.inc.php");
+//========================================================
+?>
 
 <form enctype="multipart/form-data" action="index.php" name="form2" method="post">
 <?php
@@ -492,6 +496,7 @@ while ($i < $nombreligne){
     // rajout trombinoscope
     $user_civilite = mysql_result($calldata, $i, "civilite");
     // fin de rajout trombinoscope
+    $user_auth_mode = mysql_result($calldata, $i, "auth_mode");
     $user_statut = mysql_result($calldata, $i, "statut");
     $user_login = mysql_result($calldata, $i, "login");
     $user_pwd = mysql_result($calldata, $i, "password");
@@ -512,6 +517,7 @@ while ($i < $nombreligne){
     // ajout pour le trombinoscope
     $col[$i]['civ'] = $user_civilite;
     // fin ajout
+    $col[$i]['auth_mode'] = $user_auth_mode;
 
 	//echo "<p>Contrôle des matières de $user_login: <br />\n";
     $call_matieres = mysql_query("SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
@@ -692,7 +698,16 @@ while ($i < $nombreligne){
 	    echo "<tr class='lig$alt' style='background-color: slategray'>\n";
 	}
 
-	echo "<td><p class='small'><span class='bold'>{$col[$i][1]}</span></p>\n";
+	echo "<td><p class='small'><span class='bold'>{$col[$i][1]}</span>";
+	echo "<br />";
+
+	echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$user_login."&amp;auth_mode_user=".$user_auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$user_login', '$user_auth_mode') ;return false;\">";
+	echo "<span id='auth_mode_$user_login' title='Auth_mode de $user_login : $user_auth_mode' style='font-size:x-small;'>";
+	echo $user_auth_mode;
+	echo "</span>";
+	echo "</a>";
+
+	echo "</p>\n";
 	if (getSettingValue("active_module_trombino_pers")=='y') {
 		$codephoto = md5(mb_strtolower($col[$i][1]));
 		$photo = $rep_photos.$codephoto.'.jpg';

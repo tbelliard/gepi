@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -52,8 +52,25 @@ if(strstr($_SERVER['HTTP_REFERER'],"eleves/index.php")) {$_SESSION['retour_apres
 $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-echo "<p class=bold>";
-echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<p class='bold'>
+<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if(acces("/responsables/consult_maj_sconet.php", $_SESSION['statut'])) {
+	$acces="n";
+	if($_SESSION['statut']=='administrateur') {
+		$acces="y";
+	}
+	elseif(($_SESSION['statut']!='scolarite')&&(getSettingAOui('GepiAccesMajSconetScol'))) {
+		$acces="y";
+	}
+
+	if($acces=='y') {
+		$sql="SELECT 1=1 FROM log_maj_sconet LIMIT 1;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			echo " | <a href=\"consult_maj_sconet.php\">Consulter le compte-rendu des dernières mises à jour</a>";
+		}
+	}
+}
 echo "</p>\n";
 
 /*
@@ -65,8 +82,10 @@ echo "</ul>\n";
 echo "<p><br /></p>\n";
 */
 
-echo "<p><a href='maj_import3.php'>Mise à jour des données élèves/responsables à l'aide des fichiers XML de Sconet/STS</a>.</p>\n";
-echo "<p><br /></p>\n";
+echo "<h2>Mise à jour d'après Sconet/Siècle</h2>
+
+<p><a href='maj_import3.php'>Mise à jour des données élèves/responsables à l'aide des fichiers XML de Sconet/STS</a>.</p>
+<p><br /></p>\n";
 
 //==================================
 // RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente

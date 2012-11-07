@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
 * This file is part of GEPI.
 *
@@ -87,10 +87,59 @@ require_once("'.$pref_arbo.'/entete.php");
 <!--[if IE 7]>
 <link title='bandeau' rel='stylesheet' type='text/css' href='$pref_arbo/css/bandeau_r01_ie7.css' media='screen' />
 <![endif]-->
-<link rel='stylesheet' type='text/css' href='$pref_arbo/style_screen_ajout.css' />\n";
+<link rel='stylesheet' type='text/css' href='$pref_arbo/style_screen_ajout.css' />
+<script type='text/javascript' src='$pref_arbo/js/brainjar_drag.js'></script>
+<script type='text/javascript' src='$pref_arbo/js/position.js'></script>
+<script type='text/javascript'>
+	function ajouter_contenu_notice_a_ma_selection(id) {
+		if(document.getElementById(id)) {
+			document.getElementById('archive_selection_notices_contenu_notices').innerHTML=document.getElementById('archive_selection_notices_contenu_notices').innerHTML+'<br />'+document.getElementById(id).innerHTML;
+		}
+	}
+
+	function afficher_contenu_selection() {
+		afficher_div('archive_selection_notices', 'y',10,10);
+	}
+</script>\n";
 		$entete.="<title>$titre</title>\n";
 		$entete.="</head>\n";
 		$entete.="<body>\n";
+
+		$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index: 1;";
+		$style_bar="color: #ffffff; cursor: move; font-weight: bold; padding: 0px;";
+		$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;";
+
+		$id='archive_selection_notices';
+		$largeur="30em";
+		$hauteur="10";
+		$hauteur_unite="em";
+
+		$div="<div id='$id' class='infobulle_corps' style='$style_box width: ".$largeur."; height: ".$hauteur.$hauteur_unite."; top:0px; left:0px; display:none;'>\n";
+			// Barre de titre:
+			$div.="<div class='infobulle_entete' style='$style_bar width: ".$largeur."' onmousedown=\"dragStart(event, '$id')\">\n";
+
+				$div.="<div style='$style_close'><a href=\"javascript:cacher_div('$id')\">";
+					$div.="<img src='../images/close16.png' width='16' height='16' alt='Fermer' title='Fermer' />";
+				$div.="</a></div>\n";
+
+				$div.="<div style='$style_close'><a href=\"#\" onclick=\"document.getElementById('".$id."_contenu_notices').innerHTML='';return false;\">";
+					$div.="<img src='../images/trash.png' width='16' height='16' alt='Vider la sélection' title='Vider la sélection' />";
+				$div.="</a></div>\n";
+
+				$div.="<span style='padding-left: 1px;'>Votre sélection</span>\n";
+			$div.="</div>\n";
+
+			$div.="<div id='".$id."_contenu_corps'>";
+				$hauteur_hors_titre=$hauteur-1; // Le calcul n'est correct que dans le cas où l'unité est 'em'
+				$div.="<div style='width: ".$largeur."; height: ".$hauteur_hors_titre.$hauteur_unite."; overflow: auto;'>\n";
+					$div.="<div style='padding-left: 1px;' id='".$id."_contenu_notices'>\n";
+					$div.="</div>\n";
+				$div.="</div>\n";
+			$div.="</div>\n";
+
+		$div.="</div>\n";
+
+		$entete.=$div;
 
 		return $entete;
 	}
@@ -99,6 +148,16 @@ require_once("'.$pref_arbo.'/entete.php");
 	function html_pied_de_page() {
 		$pied_de_page="";
 		// A FAIRE
+
+		$pied_de_page.="<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
+
+<script type='text/javascript'>
+	var ele=document.getElementById('EmSize');
+	var em2px=ele.offsetLeft
+	//alert('1em == '+em2px+'px');
+
+	temporisation_chargement='ok';
+</script>\n";
 
 		$pied_de_page.="</body>\n";
 		$pied_de_page.="</html>\n";
@@ -126,18 +185,23 @@ require_once("'.$pref_arbo.'/entete.php");
 				$html.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
 				if(isset($tab_dev[$tab_dates[$k]])) {
 					foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
-						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
-						$adj=my_affiche_docs_joints($value['id_ct'],"t");
-						if($adj!='') {
-							$html.="<div style='border: 1px dashed black'>\n";
-							$html.=$adj;
-							$html.="</div>\n";
+						// A VOIR: PB avec les bordures.
+						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
+							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_t_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/chercher.png' width='16' height='16' /></a></div>\n";
+							$html.="<div id='contenu_notice_t_".$value['id_ct']."'>\n";
+								$html.=$value['contenu'];
+								$adj=my_affiche_docs_joints($value['id_ct'],"t");
+								if($adj!='') {
+									$html.="<div style='border: 1px dashed black'>\n";
+									$html.=$adj;
+									$html.="</div>\n";
 	
-							if($dossier_documents!='') {
-								$tab_documents_joints=my_tab_docs_joints($value['id_ct'],"t");
-								my_transfert_docs_joints($tab_documents_joints,$dossier_documents,$mode);
-							}
-						}
+									if($dossier_documents!='') {
+										$tab_documents_joints=my_tab_docs_joints($value['id_ct'],"t");
+										my_transfert_docs_joints($tab_documents_joints,$dossier_documents,$mode);
+									}
+								}
+							$html.="</div>\n";
 						$html.="</div>\n";
 					}
 				}
@@ -152,18 +216,22 @@ require_once("'.$pref_arbo.'/entete.php");
 				$html.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
 				if(isset($tab_notices[$tab_dates[$k]])) {
 					foreach($tab_notices[$tab_dates[$k]] as $key => $value) {
-						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
-						$adj=my_affiche_docs_joints($value['id_ct'],"c");
-						if($adj!='') {
-							$html.="<div style='border: 1px dashed black'>\n";
-							$html.=$adj;
-							$html.="</div>\n";
+						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
+							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_c_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/chercher.png' width='16' height='16' /></a></div>\n";
+							$html.="<div id='contenu_notice_c_".$value['id_ct']."'>\n";
+								$html.=$value['contenu'];
+								$adj=my_affiche_docs_joints($value['id_ct'],"c");
+								if($adj!='') {
+									$html.="<div style='border: 1px dashed black'>\n";
+									$html.=$adj;
+									$html.="</div>\n";
 	
-							if($dossier_documents!='') {
-								$tab_documents_joints=my_tab_docs_joints($value['id_ct'],"c");
-								my_transfert_docs_joints($tab_documents_joints,$dossier_documents,$mode);
-							}
-						}
+									if($dossier_documents!='') {
+										$tab_documents_joints=my_tab_docs_joints($value['id_ct'],"c");
+										my_transfert_docs_joints($tab_documents_joints,$dossier_documents,$mode);
+									}
+								}
+							$html.="</div>\n";
 						$html.="</div>\n";
 					}
 				}

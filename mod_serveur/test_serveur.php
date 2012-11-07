@@ -6,7 +6,7 @@
  *
  *
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -83,10 +83,12 @@ echo '
 
 /* ======= Affichage des paramètres ============= */
 
-
+$OS=PHP_OS." - ".@php_uname();
+if($OS==" - ") {$OS="indéterminé";}
 
 echo '
 	<h4>Les données de base de votre serveur web :</h4>
+	<p>OS serveur&nbsp;: '.$OS.'</p>
 	<p'.$style_register.'>Le register_globals est à '.$test->secureServeur().'.</p>
 	<p>Le serveur web est '.$test->version_serveur().'</p>
 	<p>Encodage '.$charset['toutes'].' -> encodage par défaut : '.$charset['defaut'].'.</p>';

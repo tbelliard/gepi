@@ -541,9 +541,9 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
     echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 }
 
+$mode_generation_login_eleve=getSettingValue('mode_generation_login_eleve');
 $longmax_login_eleve=getSettingValue('longmax_login_eleve');
 if($longmax_login_eleve=="") {
-	$mode_generation_login_eleve=getSettingValue('mode_generation_login_eleve');
 	if(!check_format_login($mode_generation_login_eleve)) {
 		echo "<p style='color:red'>Le format de login élève est invalide.<br />Veuillez définir le format dans <a href='../gestion/param_gen.php'>Configuration générale</a></p>\n";
 
@@ -602,7 +602,7 @@ echo "<td>\n";
 		    echo " /></td>\n";
 		} else {
 		    echo "<td>Identifiant GEPI * : </td>
-		    <td><input type='text' name='reg_login' id='reg_login' size='20' value=\"\" maxlength='".$longmax_login_eleve."' /> (<i>max.$longmax_login_eleve caractères</i>)</td>\n";
+		    <td><input type='text' name='reg_login' id='reg_login' size='20' value=\"\" maxlength='".$longmax_login_eleve."' /> (<i title=\"La longueur maximale est conditionnée par le format de login choisi\ndans Gestion générale/Configuration générale.\nSi vous avez choisi un format $mode_generation_login_eleve cela fait $longmax_login_eleve caractères.\">max.$longmax_login_eleve caractères</i>)</td>\n";
 		}
 		?>
 	</tr>
@@ -725,10 +725,21 @@ if (!(isset($eleve_sexe))) {$eleve_sexe="M";}
 <label for='reg_sexeM' style='cursor: pointer;'><input type='radio' name='reg_sexe' id='reg_sexeM' value=M <?php if ($eleve_sexe == "M") { echo "CHECKED" ;} ?> /> Masculin</label>
 <label for='reg_sexeF' style='cursor: pointer;'><input type='radio' name='reg_sexe' id='reg_sexeF' value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> /> Féminin</label>
 </div></td><td><div class='norme'>
-Date de naissance (respecter format 00/00/0000) : <br />
-Jour <input type='text' name='birth_day' id='birth_day' size='2' value=<?php if (isset($eleve_naissance_jour)) echo $eleve_naissance_jour;?> />
-Mois<input type='text' name='birth_month' id='birth_month' size='2' value=<?php if (isset($eleve_naissance_mois)) echo $eleve_naissance_mois;?> />
-Année<input type='text' name='birth_year' id='birth_year' size='4' value=<?php if (isset($eleve_naissance_annee)) echo $eleve_naissance_annee;?> />
+Date de naissance (<em>respecter format 00/00/0000</em>)&nbsp;: <br />
+<?php
+
+echo "Jour <input type='text' name='birth_day' id='birth_day' size='2' onchange='changement();' value='";
+if (isset($eleve_naissance_jour)) {echo $eleve_naissance_jour;}
+echo "' onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off' title=\"Vous pouvez modifier le jour de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
+
+echo " Mois <input type='text' name='birth_month' id='birth_month' size='2' onchange='changement();' value='";
+if (isset($eleve_naissance_mois)) {echo $eleve_naissance_mois;}
+echo "' onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off' title=\"Vous pouvez modifier le mois de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
+
+echo " Année <input type='text' name='birth_year' id='birth_year' size='2' onchange='changement();' value='";
+if (isset($eleve_naissance_annee)) {echo $eleve_naissance_annee;}
+echo "' onKeyDown='clavier_2(this.id,event,1970,2100);' AutoComplete='off' title=\"Vous pouvez modifier l'année de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
+?>
 </div></td></tr>
 </table></center>
 

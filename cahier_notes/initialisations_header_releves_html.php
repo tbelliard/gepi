@@ -37,6 +37,10 @@
 
 .boireaus td {
 	text-align:left;
+}
+
+.uneligne td {
+	text-align:left;
 }\n";
 
 	// Récupération des variables du bloc adresses:

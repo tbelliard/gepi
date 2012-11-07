@@ -21,11 +21,23 @@ Bulletins :
   fermeture de période.
 - Possibilité d'insérer un fichier de signature
   (bulletins PDF et HTML).
+- Possibilité de donner, aux parents et aux élèves, l'accès au bulletin
+  simplifié des appreciations sur le groupe-classe.
+
+Carnets de notes:
+- Possibilité de définir un mode par défaut pour le calcul de la moyenne dans le
+  cas où des boites/conteneurs/sous-matières sont créés.
+
+Relevés de notes:
+- Prise en compte au niveau du paramétrage des classes en admin des choix
+  d'affichage ou non des moyennes de classe, bloc adresse responsable,...
 
 Cahiers de textes :
 - Possibilité d'inclure les documents joints dans l'export ZIP.
 - Possibilité d'insérer des liens vers un visionneur GeoGebra.
 - Possibilité de limiter l'accès des profs aux CDT de leurs seules classes.
+- Archivage: ajout d'un dispositif de sélection de notices dans l'archive
+  produite.
 
 Abs2 :
 - Possibilité de cocher les absences sur le plan de classe.
@@ -39,6 +51,7 @@ Emplois du temps :
 Discipline :
 - Possibilité de définir ses propres types de sanctions de types retenue,
   exclusion ou travail.
+- Possibilité de préciser le matériel à apporter lors d'une retenue.
 
 Gestion:
 - Possibilité de masquer certains groupes dans les Cahiers de textes
@@ -47,10 +60,19 @@ Gestion:
   descriptions sont identiques.
 - Possibilité pour les comptes scolarité de réinitialiser les mots de passe 
   des responsables d'élèves (sous réserve de donner le droit)
-- Ajout de précautions pour l'accès aux choix sensibles 'Effacer la base' et 'Données de test'.
-- Possibilité pour l'admin de supprimer par signalements lots les actions en attente.
+- Ajout de précautions pour l'accès aux choix sensibles 'Effacer la base' et 
+  'Données de test'.
+- Possibilité pour l'admin de supprimer par lots les actions en 
+  attente.
 - Possibilité de faire la mise à jour d'après Sconet en compte scolarité
   (sous réserve de donner le droit dans Gestion des droits).
+- Possibilité de modifier par lots la visibilité des enseignements de telle 
+  matière.
+- Options de connexion: Dispositif pour permettre à un responsable de demander
+  un compte/mot de passe ou de récupérer un compte/mot de passe (cela répond à 
+  un besoin complémentaire de la Récupération de mot de passe qui, elle, 
+  nécessite de connaitre le login et d'avoir renseigné l'adresse mail dans 
+  Gérer mon compte)
 
 
 Gepi-1.6.1 (10/06/2012)

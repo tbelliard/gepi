@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -1009,6 +1009,13 @@ $texteItem="a accès à ses bulletins simplifiés<br />";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+
+$titreItem='GepiAccesBulletinSimpleClasseEleve';
+$texteItem="a accès au bulletin simplifié du groupe-classe";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
 $titreItem='GepiAccesGraphEleve';
 $texteItem="a accès à la visualisation graphique de ses résultats<br />";
 $texteItem.= "<em>";
@@ -1193,6 +1200,13 @@ $texteItem.= "</em>";
 
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+$titreItem='GepiAccesBulletinSimpleClasseResp';
+$texteItem="a accès au bulletin simplifié du groupe-classe des élèves dont il est responsable";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 
 $titreItem='GepiAccesGraphParent';
 $texteItem="a accès à la visualisation graphique des résultats des ".$gepiSettings['denomination_eleves']." dont il est responsable<br />";

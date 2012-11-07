@@ -224,7 +224,7 @@ if ($action == 'modifier') {
                       if (!empty ($result)){
                         $query_maj = mysql_query("UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'");
                       }else{
-                        $query2_maj = mysql_query("INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise[$m][$i]."','".$vf."')");
+                        $query_maj = mysql_query("INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise[$m][$i]."','".$vf."')");
                       }
 
                       if (!$query_maj) {
