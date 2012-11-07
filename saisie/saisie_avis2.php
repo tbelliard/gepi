@@ -161,7 +161,7 @@ if (isset($_POST['is_posted'])) {
 			c.periode = '".$periode_num."'
 			) ORDER BY nom,prenom";
 		}
-		echo "$sql<br />";
+		//echo "$sql<br />";
 		$appel_donnees_eleves = mysql_query($sql);
 		$nb_eleve = mysql_num_rows($appel_donnees_eleves);
 		$current_eleve_login = @mysql_result($appel_donnees_eleves, $ind_eleve_login_suiv, "login");
