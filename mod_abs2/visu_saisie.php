@@ -315,49 +315,53 @@ echo 'Traitement : ';
 echo '</td><td style="background-color:#ebedb5;" colspan="2">';
 $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
 $total_traitements_modifiable = 0;
+$tab_traitements_deja_affiches=array();
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-    //si c'est un traitement créé par un prof on va afficher une select box de modification si possible
-    echo "<nobr>";
-    if ($utilisateur->getStatut() == 'professeur' && $traitement->getUtilisateurId() == $utilisateur->getPrimaryKey() && $traitement->getModifiable()) {
-	$total_traitements_modifiable = $total_traitements_modifiable + 1;
-	$type_autorises->getFirst();
-	echo $traitement->getDescription().' : ';
-	if ($type_autorises->count() != 0) {
-		echo '<input type="hidden" name="id_traitement[';
-		echo ($total_traitements_modifiable - 1);
-		echo ']" value="'.$traitement->getId().'"/>';
-		echo ("<select name=\"type_traitement[");
-		echo ($total_traitements_modifiable - 1);
-		echo ("]\">");
-		echo "<option value='-1'></option>\n";
-		foreach ($type_autorises as $type) {
-		    //$type = new AbsenceEleveTypeStatutAutorise();
-			echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
-			if ($type->getAbsenceEleveType()->getId() == $traitement->getATypeId()) {
-			    echo "selected";
+	if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+		//si c'est un traitement créé par un prof on va afficher une select box de modification si possible
+		echo "<nobr>";
+		if ($utilisateur->getStatut() == 'professeur' && $traitement->getUtilisateurId() == $utilisateur->getPrimaryKey() && $traitement->getModifiable()) {
+		$total_traitements_modifiable = $total_traitements_modifiable + 1;
+		$type_autorises->getFirst();
+		echo $traitement->getDescription().' : ';
+		if ($type_autorises->count() != 0) {
+			echo '<input type="hidden" name="id_traitement[';
+			echo ($total_traitements_modifiable - 1);
+			echo ']" value="'.$traitement->getId().'"/>';
+			echo ("<select name=\"type_traitement[");
+			echo ($total_traitements_modifiable - 1);
+			echo ("]\">");
+			echo "<option value='-1'></option>\n";
+			foreach ($type_autorises as $type) {
+				//$type = new AbsenceEleveTypeStatutAutorise();
+				echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
+				if ($type->getAbsenceEleveType()->getId() == $traitement->getATypeId()) {
+					echo "selected";
+				}
+				echo ">";
+				echo $type->getAbsenceEleveType()->getNom();
+				echo "</option>\n";
 			}
-			echo ">";
-			echo $type->getAbsenceEleveType()->getNom();
-			echo "</option>\n";
+			echo "</select>";
+			echo '<button dojoType="dijit.form.Button" type="submit" name="modifier_type" value="vrai">Mod. le type</button>';
 		}
-		echo "</select>";
-		echo '<button dojoType="dijit.form.Button" type="submit" name="modifier_type" value="vrai">Mod. le type</button>';
+		}else {
+		if ($utilisateur->getStatut() != 'professeur') {
+			echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$id_saisie."";
+		    if($menu){
+		            echo"&menu=false";
+		        } 
+		    echo"' style='display: block; height: 100%;'> ";
+			echo $traitement->getDescription();
+			echo "</a>";
+		} else {
+			echo $traitement->getDescription();
+		}
+		}
+		echo "</nobr>";
+		echo "<br/><br/>";
+		$tab_traitements_deja_affiches[]=$traitement->getId();
 	}
-    }else {
-	if ($utilisateur->getStatut() != 'professeur') {
-	    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$id_saisie."";
-        if($menu){
-                echo"&menu=false";
-            } 
-        echo"' style='display: block; height: 100%;'> ";
-	    echo $traitement->getDescription();
-	    echo "</a>";
-	} else {
-	    echo $traitement->getDescription();
-	}
-    }
-    echo "</nobr>";
-    echo "<br/><br/>";
 }
 //on autorise un ajout rapide seulement si il n'y a aucun traitement rapidement modifiable
 if ($total_traitements_modifiable == 0 && $utilisateur->getStatut() == 'professeur') {
