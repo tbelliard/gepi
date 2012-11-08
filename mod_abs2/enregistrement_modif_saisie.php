@@ -271,11 +271,10 @@ function modif_type ($saisie, $utilisateur) {
 	    if ($type->isStatutAutorise($utilisateur->getStatut())) {
 		//on va creer un traitement avec le type d'absence associé
 		$traitement = new AbsenceEleveTraitement();
-		$traitement->addAbsenceEleveSaisie($saisie);
 		$traitement->setAbsenceEleveType($type);
 		$traitement->setUtilisateurProfessionnel($utilisateur);
-		$traitement->save();
 		$saisie->addAbsenceEleveTraitement($traitement);
+		$traitement->save();
 	    } else {
 		$message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	    }
