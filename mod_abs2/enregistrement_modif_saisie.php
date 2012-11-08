@@ -205,38 +205,40 @@ $saisie->setFinAbs($date_fin);
 modif_type($saisie, $utilisateur);
 
 if ($saisie->validate()) {
-    $total_traitements = isset($_POST["total_traitements"]) ? $_POST["total_traitements"] :(isset($_GET["total_traitements"]) ? $_GET["total_traitements"] :0);
-    if($total_traitements>0) {
-        $saisie->save();
-    }
-    $message_enregistrement .= 'Modification enregistrée';
-    if ($saisie->getEleve() != null) {
-    	$saisie->getEleve()->clearAbsenceEleveSaisiesParJour();
-    	$saisie->getEleve()->clearAbsenceEleveSaisies();
-    }
+	/*
+	$total_traitements = isset($_POST["total_traitements"]) ? $_POST["total_traitements"] :(isset($_GET["total_traitements"]) ? $_GET["total_traitements"] :0);
+	if($total_traitements>0) {
+	*/
+	$saisie->save();
+	//}
+	$message_enregistrement .= 'Modification enregistrée';
+	if ($saisie->getEleve() != null) {
+		$saisie->getEleve()->clearAbsenceEleveSaisiesParJour();
+		$saisie->getEleve()->clearAbsenceEleveSaisies();
+	}
 } else {
-    $no_br = true;
-    $error_message = "\n";
-    foreach ($saisie->getValidationFailures() as $failure) {
-    	$message_enregistrement .= $failure->getMessage();
-    	if ($no_br) {
-    	    $no_br = false;
-    	} else {
-    	    $message_enregistrement .= '<br/>';
-    	}
-    }
-    $saisie->reload();
+	$no_br = true;
+	$error_message = "\n";
+	foreach ($saisie->getValidationFailures() as $failure) {
+		$message_enregistrement .= $failure->getMessage();
+		if ($no_br) {
+			$no_br = false;
+		} else {
+			$message_enregistrement .= '<br/>';
+		}
+	}
+	$saisie->reload();
 }
 
 include("visu_saisie.php");
 
 function modif_type ($saisie, $utilisateur) {
-    $total_traitements = isset($_POST["total_traitements"]) ? $_POST["total_traitements"] :(isset($_GET["total_traitements"]) ? $_GET["total_traitements"] :0);
-    $ajout_type_absence = isset($_POST["ajout_type_absence"]) ? $_POST["ajout_type_absence"] :(isset($_GET["ajout_type_absence"]) ? $_GET["ajout_type_absence"] :null);
-    $message_enregistrement = '';
+	$total_traitements = isset($_POST["total_traitements"]) ? $_POST["total_traitements"] :(isset($_GET["total_traitements"]) ? $_GET["total_traitements"] :0);
+	$ajout_type_absence = isset($_POST["ajout_type_absence"]) ? $_POST["ajout_type_absence"] :(isset($_GET["ajout_type_absence"]) ? $_GET["ajout_type_absence"] :null);
+	$message_enregistrement = '';
 	for($i=0; $i<$total_traitements; $i++) {
 
-		// on teste si on a un traitement a modifer
+		// on teste si on a un traitement a modifier
 		if (!(isset($_POST['id_traitement'][$i]) || $_POST['id_traitement'][$i] == -1) ) {
 			//$message_enregistrement .= "Probleme avec l'id traitement : ".$_POST['id_traitement'][$i]."<br/>";
 			continue;
@@ -255,7 +257,7 @@ function modif_type ($saisie, $utilisateur) {
 			continue;
 		}
 
-		//on test si on a un traitement a modifer
+		//on test si on a un traitement a modifier
 		$type = AbsenceEleveTypeQuery::create()->findPk($_POST['type_traitement'][$i]);
 		if ($type == null) {
 			$message_enregistrement .= "Impossible de supprimer un type.<br/>";
@@ -275,11 +277,10 @@ function modif_type ($saisie, $utilisateur) {
 			if ($type->isStatutAutorise($utilisateur->getStatut())) {
 				//on va creer un traitement avec le type d'absence associé
 				$traitement = new AbsenceEleveTraitement();
-				$traitement->addAbsenceEleveSaisie($saisie);
 				$traitement->setAbsenceEleveType($type);
 				$traitement->setUtilisateurProfessionnel($utilisateur);
-				$traitement->save();
 				$saisie->addAbsenceEleveTraitement($traitement);
+				$traitement->save();
 			} else {
 				$message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 			}
