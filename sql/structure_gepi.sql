@@ -790,6 +790,6 @@ id_classe smallint(6) NOT NULL,
 name varchar(100) NOT NULL,
 value varchar(255) NOT NULL,
 PRIMARY KEY (id),
-UNIQUE KEY id_classe_-_name (id_classe,name)
+UNIQUE KEY id_classe_name (id_classe,name)
 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
