@@ -161,6 +161,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 		$id_parent = mysql_result($appel_conteneurs, 0, 'parent');
 		$id_racine = mysql_result($appel_conteneurs, 0, 'id_racine');
 		$nom_conteneur = mysql_result($appel_conteneurs, 0, 'nom_court');
+		$modeBoiteMoy = mysql_result($appel_conteneurs, 0, 'mode');
 		echo "<li>\n";
 		echo htmlspecialchars($nom_conteneur);
 		if ($ver_periode <= 1) {
@@ -172,6 +173,19 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 		if($ponderation_cont!='0.0') {
 			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée d'un coefficient +$ponderation_cont";
 			echo " - <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
+		}
+
+		$sql="SELECT mode FROM cn_conteneurs WHERE id_racine='$id_conteneur';";
+		$res_nb_conteneurs=mysql_query($sql);
+		if(mysql_num_rows($res_nb_conteneurs)>1) {
+			echo " - <a href='add_modif_conteneur.php?id_conteneur=$id_conteneur&mode_navig=retour_index' title=\"";
+			if($modeBoiteMoy==1) {
+				echo "la moyenne s'effectue sur toutes les notes contenues à la racine et dans les ".my_strtolower(getSettingValue("gepi_denom_boite"))."s sans tenir compte des options définies dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.";
+			}
+			else {
+				echo "la moyenne s'effectue sur toutes les notes contenues à la racine et sur les moyennes des ".my_strtolower(getSettingValue("gepi_denom_boite"))."s en tenant compte des options dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.";
+			}
+			echo "\">Mode Moy.: $modeBoiteMoy</a>";
 		}
 
 		$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
@@ -294,7 +308,9 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					$coef=mysql_result($appel_conteneurs, $i, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
 					if($display_bulletin==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='$gepi_denom_boite visible sur le bulletin' alt='$gepi_denom_boite visible sur le bulletin' />";}
-					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='$gepi_denom_boite non visible sur le bulletin' alt='$gepi_denom_boite non visible sur le bulletin' />\n";}
+					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title=\"".ucfirst($gepi_denom_boite)." non visible sur le bulletin.
+Cela ne signifie pas que les notes ne sont pas prises en compte dans le calcul de la moyenne.
+En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('gepi_denom_boite_genre')=='f') ? "tte" : "")." ".$gepi_denom_boite." dans le bulletin.\" alt='".ucfirst($gepi_denom_boite)." non visible sur le bulletin.' />\n";}
 					echo "</i>)";
 
 					$ponderation_cont=mysql_result($appel_conteneurs, $i, 'ponderation');
@@ -1251,7 +1267,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 <li>Les lignes en <span style='color:black; font-weight:bold;'>noir</span> signalent une <span style='color:black; font-weight:bold;'>session close normalement</span>.</li>
 <li>Les lignes en <span style='color:green; font-weight:bold;'>vert</span> indiquent les <span style='color:green; font-weight:bold;'>sessions en cours</span> (<em>cela peut correspondre à une connexion actuellement close mais pour laquelle vous ne vous êtes pas déconnecté correctement</em>).</li>
 </ul>
-<table class='col' style='width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;' cellpadding='5' cellspacing='0' summary='Connexions'>
+<table class='boireaus' style='width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;' cellpadding='5' cellspacing='0' summary='Connexions'>
 	<tr>
 		<th class='col'>Début session</th>
 		<th class='col'>Fin session</th>
@@ -1262,6 +1278,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 
 	$res = sql_query($sql);
 	if ($res) {
+		$alt=1;
 		for ($i = 0; ($row = sql_row($res, $i)); $i++)
 		{
 			$annee_b = mb_substr($row[0],0,4);
@@ -1296,10 +1313,11 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 
 			}
 
-			echo "<tr>\n";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt white_hover'>\n";
 			echo "<td class=\"col\">".$temp1.$date_debut.$temp2."</td>\n";
-			if ($row[4] == 2) {
-				echo "<td class=\"col\">".$temp1."Tentative de connexion<br />avec mot de passe erroné.".$temp2."</td>\n";
+			if ($row[4] == 4) {
+				echo "<td class=\"col\">".$temp1.$date_fin."<br />Tentative de connexion<br />avec mot de passe erroné.".$temp2."</td>\n";
 			}
 			else {
 				echo "<td class=\"col\">".$temp1.$date_fin.$temp2."</td>\n";
@@ -1390,7 +1408,7 @@ function affiche_infos_actions() {
 	$sql="SELECT ia.* FROM infos_actions ia, infos_actions_destinataires iad WHERE
 	ia.id=iad.id_info AND
 	((iad.nature='individu' AND iad.valeur='".$_SESSION['login']."') OR
-	(iad.nature='statut' AND iad.valeur='".$_SESSION['statut']."'));";
+	(iad.nature='statut' AND iad.valeur='".$_SESSION['statut']."')) ORDER BY date;";
     
 	$res=mysql_query($sql);
 	$chaine_id="";
@@ -1401,7 +1419,8 @@ function affiche_infos_actions() {
 			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 			echo "</div>\n";
 
-			if($_SESSION['statut']=='administrateur') {
+			//if($_SESSION['statut']=='administrateur') {
+			if(acces("/gestion/gestion_infos_actions.php", $_SESSION['statut'])) {
 				echo "<div style='float:right; width: 1em; margin-right:0.5em;'>\n";
 				echo "<a href=\"gestion/gestion_infos_actions.php\"><span id='img_pliage_conteneur'><img src='images/disabled.png' width='16' height='16' /></span></a>";
 				echo "</div>\n";
@@ -1427,7 +1446,7 @@ function affiche_infos_actions() {
 					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
 					echo "</div>\n";
 
-					echo nl2br($lig->description);
+					echo preg_replace("/\\\\n/","<br />",nl2br($lig->description));
 				echo "</div>\n";
 			echo "</div>\n";
 			if($cpt_id>0) {$chaine_id.=", ";}

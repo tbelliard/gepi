@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -382,6 +382,12 @@ echo "</form>\n";
 
 echo "<p><br /></p>\n";
 
+
+//========================================================
+include("change_auth_mode.inc.php");
+//========================================================
+
+
 echo "<p><b>Liste des comptes élèves existants</b> :</p>\n";
 echo "<blockquote>\n";
 
@@ -447,7 +453,7 @@ echo "<br />\n";
 <!--table border="1"-->
 <table class='boireaus' border='1' summary="Liste des comptes existants">
 <tr>
-	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Actions</th><th>Classe</th>
+	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Mode auth.</th><th>Actions</th><th>Classe</th>
 </tr>
 <?php
 //$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut = 'eleve' ORDER BY nom,prenom");
@@ -507,6 +513,15 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 			}
 			echo "</a>\n";
 		echo "</td>\n";
+
+		echo "<td>\n";
+			echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$current_eleve->login."&amp;auth_mode_user=".$current_eleve->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$current_eleve->login', '$current_eleve->auth_mode') ;return false;\">";
+			echo "<span id='auth_mode_$current_eleve->login'>";
+			echo $current_eleve->auth_mode;
+			echo "</span>";
+			echo "</a>";
+		echo "</td>\n";
+
 		echo "<td>\n";
 		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login.add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>\n";
 

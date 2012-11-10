@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -45,6 +45,7 @@ if (isset($_POST['is_posted'])) {
 	check_token();
 	$msg = '';
 	$reg_ok = '';
+	$nb_reg_ok=0;
 	// Première boucle sur le nombre de periodes
 	$per = 0;
 	while ($per < $max_periode) {
@@ -65,7 +66,7 @@ if (isset($_POST['is_posted'])) {
 				$temp = "case_".$id_classe;
 				if (isset($_POST[$temp])) {
 					$k = '1';
-					While ($k < $per+1) {
+					while ($k < $per+1) {
 						$temp2 = "nb_".$per."_".$k;
 						if ($_POST[$temp2] != '') {
 							$register = mysql_query("UPDATE periodes SET nom_periode='".$_POST[$temp2]."' where (id_classe='".$id_classe."' and num_periode='".$k."')");
@@ -169,13 +170,14 @@ if (isset($_POST['is_posted'])) {
 					}
 
 
-					if(mb_strlen(my_ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
+					if($_POST['rn_sign_nblig_'.$per]!="") {
+						if(mb_strlen(my_ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
 
-					if (isset($_POST['rn_sign_nblig_'.$per])) {
-						$register = mysql_query("UPDATE classes SET rn_sign_nblig='".$_POST['rn_sign_nblig_'.$per]."' where id='".$id_classe."'");
-						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						if (isset($_POST['rn_sign_nblig_'.$per])) {
+							$register = mysql_query("UPDATE classes SET rn_sign_nblig='".$_POST['rn_sign_nblig_'.$per]."' where id='".$id_classe."'");
+							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
 					}
-
 
 					if (isset($_POST['rn_formule_'.$per])) {
 						if ($_POST['rn_formule_'.$per]!='') {
@@ -219,6 +221,18 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
+					// 20121027
+					//$tab_param=array('rn_aff_classe_nom');
+					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs');
+					for($loop=0;$loop<count($tab_param);$loop++) {
+						if (isset($_POST[$tab_param[$loop].'_'.$per])) {
+							if ($_POST[$tab_param[$loop].'_'.$per]!='') {
+								$register = saveParamClasse($id_classe, $tab_param[$loop], $_POST[$tab_param[$loop].'_'.$per]);
+								if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+							}
+						}
+					}
+
 					// On enregistre les infos relatives aux catégories de matières
 					$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 					while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
@@ -249,6 +263,9 @@ if (isset($_POST['is_posted'])) {
 								if(!$update_coef) {
 									$msg .= "<br />Une erreur s'est produite lors de la mise à jour des coefficients pour la classe $id_classe.";
 								}
+								else {
+									$nb_reg_ok++;
+								}
 							}
 						}
 					}
@@ -265,6 +282,9 @@ if (isset($_POST['is_posted'])) {
 							$res=mysql_query($sql);
 							if(!$res) {
 								$msg.="<br />Erreur lors de la programmation du recalcul des rangs pour la classe ".get_nom_classe($id_classe).".";
+							}
+							else {
+								$nb_reg_ok++;
 							}
 						}
 						else {
@@ -390,6 +410,9 @@ if (isset($_POST['is_posted'])) {
 										if(!$res_coef) {
 											$msg .= "<br />Erreur lors de la mise à jour du coefficient du groupe n°$create pour la classe n°$id_classe.";
 										}
+										else {
+											$nb_reg_ok++;
+										}
 									}
 
 									for($loop=0;$loop<count($nouvel_enseignement_non_visible);$loop++) {
@@ -398,6 +421,9 @@ if (isset($_POST['is_posted'])) {
 										if(!$insert) {
 											$msg .= "<br />Erreur lors de la mise à jour de la non visibilité de ".$nouvel_enseignement_non_visible[$loop]." du groupe n°$create pour la classe n°$id_classe.";
 										}
+										else {
+											$nb_reg_ok++;
+										}
 									}
 								}
 							}
@@ -405,6 +431,122 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
+					if((isset($_POST['change_visibilite']))&&(isset($_POST['matiere_modif_visibilite_enseignement']))&&($_POST['matiere_modif_visibilite_enseignement']!="")) {
+						$matiere_modif_visibilite_enseignement=$_POST['matiere_modif_visibilite_enseignement'];
+						$modif_enseignement_visibilite=isset($_POST['modif_enseignement_visibilite']) ? $_POST['modif_enseignement_visibilite'] : array();
+
+						$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_visibilite_enseignement."';";
+						//echo "$sql<br />";
+						$res_grp_vis=mysql_query($sql);
+						while($lig_grp_vis=mysql_fetch_object($res_grp_vis)) {
+							for($loop=0;$loop<count($tab_domaines);$loop++) {
+								$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='$lig_grp_vis->id_groupe' AND domaine='$tab_domaines[$loop]';";
+								$menage=mysql_query($sql);
+								if(!in_array($tab_domaines[$loop], $modif_enseignement_visibilite)) {
+									$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$lig_grp_vis->id_groupe', domaine='$tab_domaines[$loop]', visible='n';";
+									$insert=mysql_query($sql);
+									if(!$insert) {
+										$msg.="<br />Erreur lors de l'enregistrement de la non-visibilité du groupe n°$lig_grp_vis->id_groupe sur ".$tab_domaines[$loop];
+									}
+									else {
+										$nb_reg_ok++;
+									}
+								}
+							}
+						}
+					}
+
+					/*
+					$_POST['change_coef2']=	y
+					$_POST['coef_enseignements2']=	3
+					$_POST['matiere_modif_coef']=	MATHS
+					$_POST['modif_enseignement_visibilite2']=	bulletins|y
+					*/
+
+					if((isset($_POST['change_coef2']))&&(isset($_POST['coef_enseignements2']))&&($_POST['coef_enseignements2']!="")&&(is_numeric($_POST['coef_enseignements2']))&&(isset($_POST['matiere_modif_coef']))&&($_POST['matiere_modif_coef']!="")) {
+						$modif_enseignement_visibilite2=isset($_POST['modif_enseignement_visibilite2']) ? $_POST['modif_enseignement_visibilite2'] : "";
+						$coef_enseignements2=$_POST['coef_enseignements2'];
+						$matiere_modif_coef=$_POST['matiere_modif_coef'];
+
+						if($modif_enseignement_visibilite2!="") {
+							$tmp_tab_vis=explode("|", $modif_enseignement_visibilite2);
+							if(isset($tmp_tab_vis[1])) {
+								if($matiere_modif_coef=='___Tous_les_enseignements___') {
+									if($tmp_tab_vis[1]=='y') {
+										$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+									else {
+										$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+
+									$res_modif_coef=mysql_query($sql);
+									if(!$res_modif_coef) {
+										$msg.="Erreur lors de la requête<br />$sql<br />";
+									}
+									else {
+										$nb_reg_ok++;
+									}
+
+								}
+								else {
+									/*
+									if($tmp_tab_vis[1]=='y') {
+										$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe') AND id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+									else {
+										$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe') AND id_groupe IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+									*/
+									if($tmp_tab_vis[1]=='y') {
+										$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe' AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+									else {
+										$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe' AND jgc.id_groupe IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
+									}
+									$res_grp_modif_coef=mysql_query($sql);
+									if(mysql_num_rows($res_grp_modif_coef)>0) {
+										while($lig_grp_modif_coef=mysql_fetch_object($res_grp_modif_coef)) {
+											$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe='$lig_grp_modif_coef->id_groupe';";
+											$res_modif_coef=mysql_query($sql);
+											if(!$res_modif_coef) {
+												$msg.="Erreur lors de la requête<br />$sql<br />";
+											}
+											else {
+												$nb_reg_ok++;
+											}
+										}
+									}
+								}
+								/*
+								$res_modif_coef=mysql_query($sql);
+								if(!$res_modif_coef) {
+									$msg.="Erreur lors de la requête<br />$sql<br />";
+								}
+								else {
+									$nb_reg_ok++;
+								}
+								*/
+							}
+							else {
+								$msg.="Mode de visibilité ou non choisi inattendu pour les enseignements dont vous souhaitez modifier le coefficient.<br />";
+							}
+						}
+						else {
+							if($matiere_modif_coef=='___Tous_les_enseignements___') {
+								$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe';";
+							}
+							else {
+								$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe');";
+							}
+							$res_modif_coef=mysql_query($sql);
+							if(!$res_modif_coef) {
+								$msg.="Erreur lors de la requête<br />$sql<br />";
+							}
+							else {
+								$nb_reg_ok++;
+							}
+						}
+					}
 
 					//====================================
 				}
@@ -414,13 +556,18 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if ($reg_ok=='') {
-		$message_enregistrement = "Aucune modification n'a été effectuée !";
+		if($nb_reg_ok==0) {
+			$message_enregistrement = "Aucune modification n'a été effectuée !";
+		}
+		else {
+			$message_enregistrement = "$nb_reg_ok modification(s) effectuée(s) !";
+		}
 		$affiche_message = 'yes';
 	} else if ($reg_ok=='yes') {
 		$message_enregistrement = "Les modifications ont été effectuées avec succès.";
 		$affiche_message = 'yes';
 	} else {
-		$message_enregistrement = "Il y a eu un problème lors de l'enregistrement des modification.";
+		$message_enregistrement = "Il y a eu un problème lors de l'enregistrement des modifications.";
 		$affiche_message = 'yes';
 	}
 }
@@ -429,8 +576,8 @@ if (isset($_POST['is_posted'])) {
 $titre_page = "Gestion des classes - Paramétrage des classes par lots";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-
-If ($max_periode <= 0) {
+//debug_var();
+if($max_periode <= 0) {
 echo "Aucune classe comportant des périodes n'a été définie.";
 die();
 }
@@ -663,18 +810,18 @@ while ($per < $max_periode) {
 <br />
 
 <h2><b>Enseignements</b></h2>
-<table border='0'>
+<table border='0' cellspacing='0'>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold;"-->
 	<td>
-	<input type='checkbox' name='change_coef' id='change_coef' value='y' /> Passer les coefficients de tous les enseignements à&nbsp;:
+	<input type='checkbox' name='change_coef' id='change_coef' value='y' /><label for='change_coef'> Passer les coefficients de tous les enseignements à</label>&nbsp;:
 	</td>
 	<td>
 	<select name='coef_enseignements' onchange="document.getElementById('change_coef').checked=true">
 	<?php
 	echo "<option value=''>---</option>\n";
-	for($i=0;$i<10;$i++){
+	for($i=0;$i<20;$i++){
 		echo "<option value='$i'>$i</option>\n";
 	}
 	?>
@@ -683,12 +830,126 @@ while ($per < $max_periode) {
 </tr>
 </table>
 
-<table border='0'>
+<?php
+	$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
+	$res_mat=mysql_query($sql);
+	if(mysql_num_rows($res_mat)>0) {
+?>
+<table border='0' cellspacing='0'>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<!--td style="font-weight: bold;"-->
+	<td>
+	<input type='checkbox' name='change_coef2' id='change_coef2' value='y' /><label for='change_coef2'> Forcer à </label>
+	<select name='coef_enseignements2' id='coef_enseignements2' onchange="if((document.getElementById('matiere_modif_coef').selectedIndex==0)||(document.getElementById('coef_enseignements2').selectedIndex==0)) {document.getElementById('change_coef2').checked=false} else {document.getElementById('change_coef2').checked=true}">
+	<?php
+		echo "<option value=''>---</option>\n";
+		for($i=0;$i<20;$i++){
+			echo "<option value='$i'>$i</option>\n";
+		}
+	?>
+	</select>
+	<label for='change_coef2'> les coefficients des enseignements de </label>
+	<select name='matiere_modif_coef' id='matiere_modif_coef' onchange="if((document.getElementById('matiere_modif_coef').selectedIndex==0)||(document.getElementById('coef_enseignements2').selectedIndex==0)) {document.getElementById('change_coef2').checked=false} else {document.getElementById('change_coef2').checked=true}">
+		<option value=''>---</option>
+		<option value='___Tous_les_enseignements___'>Tous les enseignements</option>
+	<?php
+		while($lig_mat=mysql_fetch_object($res_mat)) {
+			echo "		<option value='$lig_mat->matiere'>".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+		}
+	?>
+	</select>
+	</td>
+	<td>
+		<table class='boireaus' cellspacing='0'>
+			<?php
+				echo "<tr>\n";
+				echo "<th><input type='radio' name='modif_enseignement_visibilite2' value='' title='Ne pas tenir compte de la visibilité ou non des enseignements pour modifier leur coefficient' checked /></th>\n";
+				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+					echo "<th title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
+					echo $tab_domaines_sigle[$loop];
+					echo "</th>\n";
+				}
+
+				echo "</tr>\n";
+				echo "<tr class='lig-1'>\n";
+				echo "<th>visibles sur </th>";
+				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+					echo "<td title=\"visibles sur ".$tab_domaines_texte[$loop]."\">\n";
+					echo "<input type='radio' name='modif_enseignement_visibilite2' value='$tab_domaines[$loop]|y' />\n";
+					echo "</td>\n";
+				}
+				echo "</tr>\n";
+				echo "<tr class='lig1'>\n";
+				echo "<th>invisibles sur </th>";
+				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+					echo "<td title=\"invisibles sur ".$tab_domaines_texte[$loop]."\">\n";
+					echo "<input type='radio' name='modif_enseignement_visibilite2' value='$tab_domaines[$loop]|n' />\n";
+					echo "</td>\n";
+				}
+				echo "</tr>\n";
+			?>
+		</table>
+	</td>
+</tr>
+</table>
+<?php
+}
+?>
+
+
+<?php
+	$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
+	$res_mat=mysql_query($sql);
+	if(mysql_num_rows($res_mat)>0) {
+		echo "<table border='0' cellspacing='0'>
+	<tr>
+		<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
+		<td valign='top' rowspan='2'>
+			<input type='checkbox' name='change_visibilite' id='change_visibilite' value='y' /><label for='change_visibilite'> Modifier la visibilité des enseignements de</label>&nbsp;:
+		</td>
+		<td colspan='2'>
+			<select name='matiere_modif_visibilite_enseignement' id='matiere_modif_visibilite_enseignement' onchange=\"document.getElementById('change_visibilite').checked=true;\">\n";
+			echo "			<option value=''>---</option>\n";
+			while($lig_mat=mysql_fetch_object($res_mat)) {
+				echo "			<option value='$lig_mat->matiere'>".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+			}
+			echo "	</select>
+		</td>
+	</tr>
+	<tr>
+		<td valign='top'>Visibilité&nbsp;: </td>
+		<td>
+			<table class='boireaus' cellspacing='0'>
+				<tr>\n";
+			for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+				echo "<th title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
+				echo $tab_domaines_sigle[$loop];
+				echo "</th>\n";
+			}
+			echo "</tr>\n";
+			echo "<tr class='lig-1'>\n";
+			for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+				echo "<td title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
+				echo "<input type='checkbox' name='modif_enseignement_visibilite[]' value='$tab_domaines[$loop]' checked />\n";
+				echo "</td>\n";
+			}
+			echo "
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>\n";
+	}
+?>
+
+
+<table border='0' cellspacing='0'>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold; vertical-align:top;"-->
 	<td style="vertical-align:top;">
-	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /> Créer un enseignement de&nbsp;:
+	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /><label for='creer_enseignement'> Créer un enseignement de</label>&nbsp;:
 	</td>
 	<?php
 		$sql="SELECT DISTINCT matiere,nom_complet FROM matieres ORDER BY nom_complet,matiere;";
@@ -715,7 +976,7 @@ while ($per < $max_periode) {
 			echo "<td>\n";
 			echo "<select name='coef_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;\">";
 			echo "<option value=''>---</option>\n";
-			for($i=0;$i<10;$i++){
+			for($i=0;$i<20;$i++){
 				echo "<option value='$i'>$i</option>\n";
 			}
 			echo "</select>\n";
@@ -827,15 +1088,23 @@ while ($per < $max_periode) {
 	$tabdiv_infobulle[]=creer_div_infobulle('recalcul_rang',$titre,"",$texte,"",25,0,'y','y','n','n');
 ?>
 
-<table border='0'>
+<table border='0' cellspacing='0'>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td><input type='checkbox' name='forcer_recalcul_rang' id='forcer_recalcul_rang' value='y' /><label for='forcer_recalcul_rang'>Forcer le recalcul des rangs</label> <a href='#' onclick="afficher_div('recalcul_rang','y',-100,20);return false;"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Forcer le recalcul des rangs' title='Forcer le recalcul des rangs' /></a>.</td>
 </tr>
 </table>
 
+<style type='text/css'>
+tr:hover {
+	background-color:white;
+}
+td {
+	vertical-align:top;
+}
+</style>
 <br />
-<table border='0'>
+<table border='0' cellspacing='0'>
 <tr>
 	<td colspan='3'>
 	<h2><b>Paramètres généraux&nbsp;: </b></h2>
@@ -867,7 +1136,7 @@ while ($per < $max_periode) {
 	<td>
 		<table style='border: 1px solid black;'>
 		<tr>
-			<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
+			<td style='width: auto; vertical-align:middle;'>Catégorie</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Priorité d'affichage</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Afficher la moyenne sur le bulletin</td>
 		</tr>
 		<?php
 		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
@@ -994,6 +1263,22 @@ while ($per < $max_periode) {
 	<h2><b>Paramètres des relevés de notes&nbsp;: </b></h2>
 	</td>
 </tr>
+
+<!-- ================================================================= -->
+<!-- 20121027 -->
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Affichage du nom de la classe sur le relevé&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="1" name="rn_aff_classe_nom_<?php echo $per;?>" id="rn_aff_classe_nom_1" onchange='changement()' /><label for='rn_aff_classe_nom_1' style='cursor: pointer;'>Nom long</label><br />
+		<input type="radio" value="2" name="rn_aff_classe_nom_<?php echo $per;?>" id="rn_aff_classe_nom_2" onchange='changement()' /><label for='rn_aff_classe_nom_2' style='cursor: pointer;'>Nom court</label><br />
+		<input type="radio" value="3" name="rn_aff_classe_nom_<?php echo $per;?>" id="rn_aff_classe_nom_3" onchange='changement()' /><label for='rn_aff_classe_nom_3' style='cursor: pointer;'>Nom court (Nom long)</label><br />
+	</td>
+</tr>
+<!-- ================================================================= -->
+
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">Afficher le nom des devoirs&nbsp;:</td>
@@ -1069,8 +1354,108 @@ while ($per < $max_periode) {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">Nombre de lignes pour la signature&nbsp;:</td>
-	<td><input type="text" name="rn_sign_nblig_<?php echo $per;?>" value="" size="3" /></td>
+	<td><input type="text" name="rn_sign_nblig_<?php echo $per;?>" value="" size="3" /> (<em>par défaut, c'est 3</em>)</td>
 </tr>
+
+<!-- ================================================================= -->
+<!-- 20121027 -->
+<!-- A MODIFIER EN CAS DE MODE CNIL STRICT -->
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Afficher l'appréciation/commentaire du professeur<br />(<em>sous réserve d'autorisation par le professeur dans les paramètres du devoir</em>)&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_app_<?php echo $per;?>" id="rn_app_y" onchange='changement()' /><label for='rn_app_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_app_<?php echo $per;?>" id="rn_app_n" onchange='changement()' /><label for='rn_app_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Avec la moyenne de la classe pour chaque devoir&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_moy_classe_<?php echo $per;?>" id="rn_moy_classe_y" onchange='changement()' /><label for='rn_moy_classe_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_moy_classe_<?php echo $per;?>" id="rn_moy_classe_n" onchange='changement()' /><label for='rn_moy_classe_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Avec les moyennes min/classe/max de chaque devoir&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_moy_min_max_classe_<?php echo $per;?>" id="rn_moy_min_max_classe_y" onchange='changement()' /><label for='rn_moy_min_max_classe_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_moy_min_max_classe_<?php echo $per;?>" id="rn_moy_min_max_classe_n" onchange='changement()' /><label for='rn_moy_min_max_classe_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Avec retour à la ligne après chaque devoir si on affiche le nom du devoir ou le commentaire&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_retour_ligne_<?php echo $per;?>" id="rn_retour_ligne_y" onchange='changement()' /><label for='rn_retour_ligne_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="y" name="rn_retour_ligne_<?php echo $per;?>" id="rn_retour_ligne_n" onchange='changement()' /><label for='rn_retour_ligne_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+
+<?php
+	$titre_infobulle="Rapport taille polices\n";
+	$texte_infobulle="<p>Pour que la liste des devoirs tienne dans la cellule, on réduit la taille de la police.<br />Pour que cela reste lisible, vous pouvez fixer ici une taille minimale en dessous de laquelle ne pas descendre.</p><br /><p>Si la taille minimale ne suffit toujours pas à permettre l'affichage dans la cellule, on supprime les retours à la ligne.</p><br /><p>Et cela ne suffit toujours pas, le texte est tronqué (<em>dans ce cas, un relevé HTML pourra permettre l'affichage (les hauteurs de cellules s'adaptent à la quantité de texte... L'inconvénient&nbsp;: Une matière peut paraître plus importante qu'une autre par la place qu'elle occupe)</em>).</p>\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('a_propos_rapport_tailles_polices',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+?>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Rapport taille_standard / taille_minimale_de_police (<em>relevé PDF</em>) <?php
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_rapport_tailles_polices','y',100,-50);\" onmouseout=\"cacher_div('a_propos_rapport_tailles_polices');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
+	?>&nbsp;:
+	</td>
+	<td><input type="text" name="rn_rapport_standard_min_font_<?php echo $per;?>" size="3" value="" onchange='changement()' /> (<em>par défaut, c'est 3</em>)</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Afficher le bloc adresse du responsable de l'élève&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_adr_resp_<?php echo $per;?>" id="rn_adr_resp_y" onchange='changement()' /><label for='rn_adr_resp_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_adr_resp_<?php echo $per;?>" id="rn_adr_resp_n" onchange='changement()' /><label for='rn_adr_resp_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<?php
+	$titre_infobulle="Bloc observations en PDF\n";
+	$texte_infobulle="<p>Le bloc observations est affiché si une des conditions suivantes est remplie&nbsp;:</p>\n";
+	$texte_infobulle.="<ul>\n";
+	$texte_infobulle.="<li>La case Bloc observations est cochée.</li>\n";
+	$texte_infobulle.="<li>Une des cases signature est cochée.</li>\n";
+	$texte_infobulle.="</ul>\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('a_propos_bloc_observations',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+?>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Afficher le bloc observations (<em>relevé PDF</em>) <?php
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_bloc_observations','y',100,-50);\"  onmouseout=\"cacher_div('a_propos_bloc_observations');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
+	?>&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_bloc_obs_<?php echo $per;?>" id="rn_bloc_obs_y" onchange='changement()' /><label for='rn_bloc_obs_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_bloc_obs_<?php echo $per;?>" id="rn_bloc_obs_n" onchange='changement()' /><label for='rn_bloc_obs_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+<!-- ================================================================= -->
+
+
 
 <?php
 if ($gepiSettings['active_mod_ects'] == "y") {
@@ -1122,4 +1507,11 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <center><input type='submit' name='enregistrer2' value='Enregistrer' /></center>
 <input type=hidden name='is_posted' value="yes" />
 </form>
+
+<p><br /></p>
+
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Les cases ne sont pas cochées par défaut.<br />
+Comme vous pouvez modifier la liste des classes concernées par le paramétrage par lots, il n'est pas possible de pré-cocher l'état actuel du paramétrage des classes.<br />
+Tout ce que vous cocherez correspondra aux modifications que vous souhaitez apporter.</p>
+
 <?php require("../lib/footer.inc.php");?>

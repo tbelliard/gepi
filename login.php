@@ -188,14 +188,22 @@ $test = 'templates/accueil_externe.php' ;
 		//$tbs_message_class = "message";
 		$tbs_message[] =array("classe"=>"","texte" => "Afin d'utiliser Gepi, vous devez vous identifier.");
 	}
-	
+
 //==================================
 //	Mot de passe oublié
 	$tbs_password_recovery = "";
 	if (getSettingValue("enable_password_recovery") == "yes") {
 		$tbs_password_recovery = "recover_password.php";
-	}	
-	
+	}
+
+
+//==================================
+//	Demande de compte/mot de passe
+	$tbs_demande_compte_mdp = "";
+	if (getSettingAOui("GepiResp_obtenir_compte_et_motdepasse")) {
+		$tbs_demande_compte_mdp = "obtenir_compte_et_motdepasse.php";
+	}
+
 //==================================
 //	authentification unique
 	$tbs_SSO_lien = "";

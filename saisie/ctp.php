@@ -72,7 +72,8 @@ function insere_cmt(num) {
 function div_comm_type() {
 	//alert('document.getElementById(\'focus_courant\').value='+document.getElementById('focus_courant').value)
 	if(document.getElementById('focus_courant').value!='') {
-		afficher_div('div_commtype','y',10,-200);
+		//afficher_div('div_commtype','y',10,-200);
+		afficher_div('div_commtype','y',-100,-250);
 	}
 }
 </script>\n";

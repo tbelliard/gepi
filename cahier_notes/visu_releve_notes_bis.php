@@ -2,7 +2,7 @@
 /*
 *
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -44,6 +44,11 @@ if (mysql_num_rows($res_test)==0) {
 }
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
+	die();
+}
+
+if(($_SESSION['statut']=='autre')&&(!acces("/cahier_notes/visu_releve_notes_bis.php", $_SESSION['statut']))) {
+	header("Location: ../accueil.php?msg=Acces_non_autorise");
 	die();
 }
 
@@ -329,6 +334,9 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 						(r.resp_legal='1' OR r.resp_legal='2') AND
 						c.id=jec.id_classe AND
 						jec.login=e.login);";
+	}
+	elseif($_SESSION['statut']=='autre') {
+		$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe";
 	}
 	else {
 		echo "<p>Vous n'êtes pas autorisé à accéder aux relevés de notes des élèves.</p>\n";
@@ -639,6 +647,8 @@ elseif(!isset($choix_periode)) {
 		echo "<th>Choix</th>\n";
 		for($j=1;$j<=$max_per;$j++) {
 			if(!in_array($j,$tab_periode_exclue)) {
+				// Problème: Si on clique sur la case, elle change deux fois d'état
+				//echo "<td style='background-color:lightgreen;' onclick=\"alterne_coche('tab_periode_num_$j')\">";
 				echo "<td style='background-color:lightgreen;'>";
 				//echo "<label for='choix_periode' style='cursor: pointer;'><input type=\"radio\" name=\"periode\" value='$j' /></label>\n";
 				echo "<span style='cursor: pointer;'>
@@ -691,7 +701,18 @@ elseif(!isset($choix_periode)) {
 ?>
 <script type="text/javascript">
 	//<![CDATA[
-	getElementById('formulaire').setAttribute( "autocomplete", "off" );
+	document.getElementById('formulaire').setAttribute( "autocomplete", "off" );
+
+	function alterne_coche(id) {
+		if(document.getElementById(id)) {
+			if(document.getElementById(id).checked==true) {
+				document.getElementById(id).checked=false;
+			}
+			else {
+				document.getElementById(id).checked=true;
+			}
+		}
+	}
 	////]]>
 </script>
 	
@@ -1009,7 +1030,7 @@ if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
     echo "document.getElementById('div_param_releve').style.display='none';";
 } else {
     echo "document.getElementById('div_param_releve').style.display='';";
-};
+}
 
 echo "	////]]>";
 echo "</script>\n";
@@ -1140,6 +1161,18 @@ echo "</script>\n";
 							jec.id_classe='".$tab_id_classe[$i]."' AND
 							(r.resp_legal='1' OR r.resp_legal='2') AND
 							jec.login=e.login);";
+		}
+		elseif($_SESSION['statut'] == 'autre') {
+			$sql="SELECT DISTINCT e.* FROM eleves e,
+							j_eleves_classes jec
+				WHERE jec.login=e.login AND
+							jec.id_classe='".$tab_id_classe[$i]."'
+				ORDER BY e.nom,e.prenom;";
+		}
+		else {
+			echo "<p style='color:red'>La recherche de la liste des élèves n'est pas possible pour vos statut et autorisations???</p>\n";
+			require("../lib/footer.inc.php");
+			die();
 		}
 		//echo "$sql<br />";
 

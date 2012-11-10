@@ -3,7 +3,7 @@
  * Ajouter, modifier un conteneur
  * 
 *
-*  @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*  @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * @package Carnet_de_notes
  * @subpackage Conteneur
@@ -169,7 +169,24 @@ if (isset($_POST['ok'])) {
     }
 
     if (isset($_POST['coef'])) {
-        $reg = mysql_query("UPDATE cn_conteneurs SET coef = '" . $_POST['coef'] . "' WHERE id = '$id_conteneur'");
+    	$tmp_coef=$_POST['coef'];
+		if((preg_match("/^[0-9]*$/", $coef))||(preg_match("/^[0-9]*\.[0-9]$/", $tmp_coef))) {
+			// Le coef a le bon format
+			//$msg.="Le coefficient proposé $tmp_coef est valide.<br />";
+		}
+		elseif(preg_match("/^[0-9]*\.[0-9]*$/", $tmp_coef)) {
+			$msg.="Le coefficient ne peut avoir plus d'un chiffre après la virgule. Le coefficient va être tronqué.<br />";
+		}
+		elseif(preg_match("/^[0-9]*,[0-9]$/", $tmp_coef)) {
+			$msg.="Correction du séparateur des décimales dans le coefficient de $tmp_coef en ";
+			$tmp_coef=preg_replace("/,/", ".", $tmp_coef);
+			$msg.=$tmp_coef."<br />";
+		}
+		else {
+			$msg.="Le coefficient proposé $tmp_coef est invalide. Mise à 1.0 du coefficient.<br />";
+			$tmp_coef="1.0";
+		}
+        $reg = mysql_query("UPDATE cn_conteneurs SET coef = '" . $tmp_coef . "' WHERE id = '$id_conteneur'");
         if (!$reg)  $reg_ok = "no";
     } else {
         $reg = mysql_query("UPDATE cn_conteneurs SET coef = '0' WHERE id = '$id_conteneur'");
@@ -519,7 +536,7 @@ if($interface_simplifiee=="y"){
 
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<input type='text' name = 'coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" />\n";
+			echo "<input type='text' name = 'coef' id = 'coef' size='4' value = \"".$coef."\" onkeydown=\"clavier_2(this.id,event,0,10);\" onfocus=\"javascript:this.select()\" autocomplete=\"off\" />\n";
 			
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -679,7 +696,7 @@ else{
 			}
 		}
 		echo "<br /><i>(si 0, la moyenne de <b>$nom_court</b> n'intervient pas dans le calcul de la moyenne du carnet de note)</i>.</td>";
-		echo "<td><input type='text' name = 'coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" /></td></tr></table>\n";
+		echo "<td><input type='text' name = 'coef' id = 'coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr></table>\n";
 	}
 
 
@@ -700,61 +717,61 @@ else{
 		}
 		if($i>1){
 			echo "<table>\n<tr>";
-			echo "<td>";
-			echo "la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes des ";
+			echo "<td style='padding-left:3em; vertical-align:top;'>";
+			echo "<label for='mode_2'>la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes des ";
 			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s ";
 			echo " $chaine_sous_cont";
 			echo "en tenant compte des options dans ces ";
-			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s.";
-			echo "</td><td><input type='radio' name='mode' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
+			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label>";
+			echo "</td><td style='vertical-align:top;'><input type='radio' name='mode' id='mode_2' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
 			echo "</tr>\n";
 
 			echo "<tr>";
-			echo "<td>";
-			echo "la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b> et dans les ";
+			echo "<td style='padding-left:3em; vertical-align:top;'>";
+			echo "<label for='mode_1'>la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b> et dans les ";
 			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s";
 			echo " $chaine_sous_cont";
 			echo "sans tenir compte des options définies dans ces ";
-			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s.";
+			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label>";
 		}
 		else{
 			if(getSettingValue("gepi_denom_boite_genre")=='f'){
 				echo "<table>\n<tr>";
-				echo "<td>";
-				echo "la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes de la ";
+				echo "<td style='padding-left:3em; vertical-align:top;'>";
+				echo "<label for='mode_2'>la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes de la ";
 				echo my_strtolower(getSettingValue("gepi_denom_boite"));
 				echo " $chaine_sous_cont";
 				echo "en tenant compte des options dans cette ";
-				echo my_strtolower(getSettingValue("gepi_denom_boite"));
-				echo "</td><td><input type='radio' name='mode' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
+				echo my_strtolower(getSettingValue("gepi_denom_boite"))."</label>";
+				echo "</td><td style='vertical-align:top;'><input type='radio' name='mode' id='mode_2' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
 				echo "</tr>\n";
 
 				echo "<tr>";
-				echo "<td>";
-				echo "la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b> et dans la ";
+				echo "<td style='padding-left:3em; vertical-align:top;'>";
+				echo "<label for='mode_1'>la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b> et dans la ";
 				echo my_strtolower(getSettingValue("gepi_denom_boite"));
 				echo " $chaine_sous_cont";
 				echo "sans tenir compte des options définies dans cette ";
-				echo my_strtolower(getSettingValue("gepi_denom_boite"));
+				echo my_strtolower(getSettingValue("gepi_denom_boite"))."</label>";
 			}
 			else{
 				echo "<table>\n<tr>";
-				echo "<td>";
-				echo "la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes du ".my_strtolower(getSettingValue("gepi_denom_boite"));
+				echo "<td style='padding-left:3em; vertical-align:top;'>";
+				echo "<label for='mode_2'>la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes du ".my_strtolower(getSettingValue("gepi_denom_boite"));
 				echo " $chaine_sous_cont";
-				echo "en tenant compte des options dans ce ".my_strtolower(getSettingValue("gepi_denom_boite")).".";
-				echo "</td><td><input type='radio' name='mode' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
+				echo "en tenant compte des options dans ce ".my_strtolower(getSettingValue("gepi_denom_boite")).".</label>";
+				echo "</td><td style='vertical-align:top;'><input type='radio' name='mode' id='mode_2' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
 				echo "</tr>\n";
 
 				echo "<tr>";
-				echo "<td>";
-				echo "la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b>";
+				echo "<td style='padding-left:3em; vertical-align:top;'>";
+				echo "<label for='mode_1'>la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b>";
 				echo " et dans le ".my_strtolower(getSettingValue("gepi_denom_boite"))."";
 				echo " $chaine_sous_cont";
-				echo "sans tenir compte des options définies dans ce ".my_strtolower(getSettingValue("gepi_denom_boite")).".";
+				echo "sans tenir compte des options définies dans ce ".my_strtolower(getSettingValue("gepi_denom_boite")).".</label>";
 			}
 		}
-		echo "</td><td><input type='radio' name='mode' value='1' "; if ($mode=='1') echo "checked"; echo " /></td>";
+		echo "</td><td style='vertical-align:top;'><input type='radio' name='mode' id='mode_1' value='1' "; if ($mode=='1') echo "checked"; echo " /></td>";
 		echo "</tr>\n</table>\n";
 	}
 
@@ -836,7 +853,7 @@ else{
 	echo "<h3 class='gepi'>Pondération</h3>\n";
 	echo "<table>\n<tr><td>";
 	echo "Pour chaque élève, le coefficient de la meilleure note de <b>$nom_court</b> augmente ou diminue de : &nbsp;</td>\n";
-	echo "<td><input type='text' name='ponderation' id='ponderation' size='4' value = \"".$ponderation."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" /></td></tr>\n</table>\n";
+	echo "<td><input type='text' name='ponderation' id='ponderation' size='4' value = \"".$ponderation."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient de la meilleure note à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr>\n</table>\n";
 
 	if ($parent != 0) {
 		//s'il s'agit d'une boite à l'intérieur du conteneur principal, on laisse la possibilité d'afficher la note de la boite sur le bulletin.
@@ -889,6 +906,16 @@ echo "<input type=hidden name=id_retour value='$id_retour' />\n";
 
 echo "<p style='text-align:center;'><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 echo "</form>\n";
+
+if ($nb_sous_cont != 0) {
+	echo "<p><br /></p>
+<p>NOTES&nbsp;:<p>
+<div style='margin-left:5em;'>";
+include("explication_moyenne_boites.php");
+echo "</div>";
+
+}
+
 /**
  * Pied de page
  */

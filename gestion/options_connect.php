@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -21,10 +21,6 @@
  */
 
 // Begin standart header
-
-$titre_page = "Options de connexion";
-
-
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -46,6 +42,7 @@ if (!checkAccess()) {
     die();
 }
 
+$msg="";
 
 // Enregistrement de la durée de conservation des données
 
@@ -53,9 +50,9 @@ if (isset($_POST['duree'])) {
 	check_token();
 
     if (!saveSetting(("duree_conservation_logs"), $_POST['duree'])) {
-        $msg = "Erreur lors de l'enregistrement de la durée de conservation des connexions !";
+        $msg.= "Erreur lors de l'enregistrement de la durée de conservation des connexions !<br />";
     } else {
-        $msg = "La durée de conservation des connexions a été enregistrée.<br />Le changement sera pris en compte après la prochaine connexion à GEPI.";
+        $msg.= "La durée de conservation des connexions a été enregistrée.<br />Le changement sera pris en compte après la prochaine connexion à GEPI.<br />";
     }
 }
 
@@ -203,15 +200,11 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 	}
 }
 
-
-
 // Load settings
 
 if (!loadSettings()) {
     die("Erreur chargement settings");
 }
-
-
 
 // Suppression du journal de connexion
 
@@ -221,9 +214,9 @@ if (isset($_POST['valid_sup_logs']) ) {
     $sql = "delete from log where END < now()";
     $res = sql_query($sql);
     if ($res) {
-       $msg = "La suppression des entrées dans le journal de connexion a été effectuée.";
+       $msg.= "La suppression des entrées dans le journal de connexion a été effectuée.<br />";
     } else {
-       $msg = "Il y a eu un problème lors de la suppression des entrées dans le journal de connexion.";
+       $msg.= "Il y a eu un problème lors de la suppression des entrées dans le journal de connexion.<br />";
     }
 }
 
@@ -239,9 +232,9 @@ if (isset($_POST['valid_chgt_mdp'])) {
 
     $res = sql_query($sql);
     if ($res) {
-       $msg = "La demande de changement obligatoire de mot de passe a été enregistrée.";
+       $msg.= "La demande de changement obligatoire de mot de passe a été enregistrée.<br />";
     } else {
-       $msg = "Il y a eu un problème lors de l'enregistrement de la demande de changement obligatoire de mot de passe.";
+       $msg.= "Il y a eu un problème lors de l'enregistrement de la demande de changement obligatoire de mot de passe.<br />";
     }
 }
 
@@ -251,14 +244,80 @@ if (isset($_POST['enable_password_recovery'])) {
 	check_token();
 
     if (!saveSetting("enable_password_recovery", $_POST['enable_password_recovery'])) {
-        $msg = "Il y a eu un problème lors de l'enregistrement du paramètre d'activation/désactivation de la procédure de récupération automatisée des mots de passe.";
+        $msg.= "Il y a eu un problème lors de l'enregistrement du paramètre d'activation/désactivation de la procédure de récupération automatisée des mots de passe.<br />";
     } else {
-        $msg = "L'enregistrement du paramètre d'activation/désactivation de la procédure de récupération automatisée des mots de passe a été effectué avec succès.";
+        $msg.= "L'enregistrement du paramètre d'activation/désactivation de la procédure de récupération automatisée des mots de passe a été effectué avec succès.<br />";
     }
 }
 
+
+if (isset($_POST['GepiResp_obtenir_compte_et_motdepasse'])) {
+	check_token();
+
+    if (!saveSetting("GepiResp_obtenir_compte_et_motdepasse", $_POST['GepiResp_obtenir_compte_et_motdepasse'])) {
+        $msg.= "Il y a eu un problème lors de l'enregistrement du paramètre d'activation/désactivation de la procédure de demande de compte/mot de passe.<br />";
+    } else {
+        $msg.= "L'enregistrement du paramètre d'activation/désactivation de la procédure de demande de compte/mot de passe a été effectué avec succès.<br />";
+    }
+
+	if (isset($_POST['SendMail_obtenir_compte_et_motdepasse'])) {
+		if (!saveSetting("SendMail_obtenir_compte_et_motdepasse", $_POST['SendMail_obtenir_compte_et_motdepasse'])) {
+		    $msg.= "Il y a eu un problème lors de l'enregistrement du paramètre d'envoi de mail dans la procédure de demande de compte/mot de passe.<br />";
+		} else {
+		    $msg.= "L'enregistrement du paramètre d'envoi de mail dans la procédure de demande de compte/mot de passe a été effectué avec succès.<br />";
+		}
+	}
+
+	if (isset($_POST['DestMail_obtenir_compte_et_motdepasse'])) {
+		if (!saveSetting("DestMail_obtenir_compte_et_motdepasse", $_POST['DestMail_obtenir_compte_et_motdepasse'])) {
+		    $msg.= "Il y a eu un problème lors de l'enregistrement du paramètre destinataire du mail dans la procédure de demande de compte/mot de passe.<br />";
+		} else {
+		    $msg.= "L'enregistrement du paramètre destinataire du dans la procédure de demande de compte/mot de passe a été effectué avec succès.<br />";
+		}
+	}
+
+	if (isset($_POST['RegBaseAdm_obtenir_compte_et_motdepasse'])) {
+		$RegBaseAdm_obtenir_compte_et_motdepasse="yes";
+	}
+	else {
+		$RegBaseAdm_obtenir_compte_et_motdepasse="no";
+	}
+	if (!saveSetting("RegBaseAdm_obtenir_compte_et_motdepasse", $RegBaseAdm_obtenir_compte_et_motdepasse)) {
+	    $msg.= "Il y a eu un problème lors de l'enregistrement du paramètre RegBaseAdm_obtenir_compte_et_motdepasse.<br />";
+	} else {
+	    $msg.= "L'enregistrement du paramètre RegBaseAdm_obtenir_compte_et_motdepasse a été effectué avec succès.<br />";
+	}
+
+	if (isset($_POST['RegBaseScol_obtenir_compte_et_motdepasse'])) {
+		$RegBaseScol_obtenir_compte_et_motdepasse="yes";
+	}
+	else {
+		$RegBaseScol_obtenir_compte_et_motdepasse="no";
+	}
+	if (!saveSetting("RegBaseScol_obtenir_compte_et_motdepasse", $RegBaseScol_obtenir_compte_et_motdepasse)) {
+	    $msg.= "Il y a eu un problème lors de l'enregistrement du paramètre RegBaseScol_obtenir_compte_et_motdepasse.<br />";
+	} else {
+	    $msg.= "L'enregistrement du paramètre RegBaseScol_obtenir_compte_et_motdepasse a été effectué avec succès.<br />";
+	}
+
+	if (isset($_POST['RegBaseCpe_obtenir_compte_et_motdepasse'])) {
+		$RegBaseCpe_obtenir_compte_et_motdepasse="yes";
+	}
+	else {
+		$RegBaseCpe_obtenir_compte_et_motdepasse="no";
+	}
+	if (!saveSetting("RegBaseCpe_obtenir_compte_et_motdepasse", $RegBaseCpe_obtenir_compte_et_motdepasse)) {
+	    $msg.= "Il y a eu un problème lors de l'enregistrement du paramètre RegBaseCpe_obtenir_compte_et_motdepasse.<br />";
+	} else {
+	    $msg.= "L'enregistrement du paramètre RegBaseCpe_obtenir_compte_et_motdepasse a été effectué avec succès.<br />";
+	}
+}
+
 // End standart header
+//=====================================
+$titre_page = "Options de connexion";
 require_once("../lib/header.inc.php");
+//=====================================
 isset($mode_navig);
 $mode_navig = isset($_POST["mode_navig"]) ? $_POST["mode_navig"] : (isset($_GET["mode_navig"]) ? $_GET["mode_navig"] : NULL);
 if ($mode_navig == 'accueil') {
@@ -286,6 +345,57 @@ echo " /> <label for='label_2b' style='cursor: pointer;'>Activer la procédure a
 
 echo "<center><input type=\"submit\" value=\"Valider\" /></center>\n";
 echo "</form>\n";
+
+echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
+
+//
+// Activation/désactivation de la procédure de demande de compte/mot de passe
+//
+echo "<h3 class='gepi'>Demande de compte et mot de passe</h3>\n";
+echo "<form action=\"options_connect.php\" method=\"post\">\n";
+echo add_token_field();
+echo "<p>Permettre aux responsables de demander ou récupérer un compte/mot de passe.<br />\n";
+echo "<input type='radio' name='GepiResp_obtenir_compte_et_motdepasse' value='no' id='GepiResp_obtenir_compte_et_motdepasse_no'";
+if (!getSettingAOui("GepiResp_obtenir_compte_et_motdepasse")) echo " checked ";
+echo " /> <label for='GepiResp_obtenir_compte_et_motdepasse_no' style='cursor: pointer;'>Désactiver l'accès au formulaire de demande de compte/mot de passe pour les responsables</label>\n";
+
+echo "<br /><input type='radio' name='GepiResp_obtenir_compte_et_motdepasse' value='yes' id='GepiResp_obtenir_compte_et_motdepasse_yes'";
+if (getSettingAOui("GepiResp_obtenir_compte_et_motdepasse")) echo " checked ";
+echo " /> <label for='GepiResp_obtenir_compte_et_motdepasse_yes' style='cursor: pointer;'>Activer l'accès au formulaire de demande de compte/mot de passe pour les responsables</label></p>\n";
+
+echo "<br />
+<p>Envoyer un courriel à l'adresse suivante quand un responsable formule une demande&nbsp;:<br />
+<input type='radio' name='SendMail_obtenir_compte_et_motdepasse' value='no' id='SendMail_obtenir_compte_et_motdepasse_no'";
+if (!getSettingAOui("SendMail_obtenir_compte_et_motdepasse")) echo " checked ";
+echo " /> <label for='SendMail_obtenir_compte_et_motdepasse_no' style='cursor: pointer;'>Non</label>
+<br /><input type='radio' name='SendMail_obtenir_compte_et_motdepasse' value='yes' id='SendMail_obtenir_compte_et_motdepasse_yes'";
+if (getSettingAOui("SendMail_obtenir_compte_et_motdepasse")) echo " checked ";
+echo " /> <label for='SendMail_obtenir_compte_et_motdepasse_yes' style='cursor: pointer;'>Oui</label><br />
+à destination de <input type='text' name='DestMail_obtenir_compte_et_motdepasse' value='";
+if(getSettingValue('DestMail_obtenir_compte_et_motdepasse')!='') {echo getSettingValue('DestMail_obtenir_compte_et_motdepasse');} else {echo getSettingValue('gepiSchoolEmail');}
+echo "' /></p>\n";
+
+echo "<br />
+<p>Enregistrer la demande dans la base et la faire apparaitre en page d'accueil pour le/les statuts suivants&nbsp;:<br />
+<input type='checkbox' name='RegBaseAdm_obtenir_compte_et_motdepasse' value='yes' id='RegBaseAdm_obtenir_compte_et_motdepasse'";
+if (getSettingAOui("RegBaseAdm_obtenir_compte_et_motdepasse")) echo " checked ";
+echo " /> <label for='RegBaseAdm_obtenir_compte_et_motdepasse' style='cursor: pointer;'>administrateur</label>
+<br />
+<input type='checkbox' name='RegBaseScol_obtenir_compte_et_motdepasse' value='yes' id='RegBaseScol_obtenir_compte_et_motdepasse'";
+if (getSettingAOui("RegBaseScol_obtenir_compte_et_motdepasse")) echo " checked ";
+echo " /> <label for='RegBaseScol_obtenir_compte_et_motdepasse' style='cursor: pointer;'>scolarité</label>
+<br />
+<input type='checkbox' name='RegBaseCpe_obtenir_compte_et_motdepasse' value='yes' id='RegBaseCpe_obtenir_compte_et_motdepasse'";
+if (getSettingAOui("RegBaseCpe_obtenir_compte_et_motdepasse")) echo " checked ";
+echo " /> <label for='RegBaseCpe_obtenir_compte_et_motdepasse' style='cursor: pointer;'>cpe</label>
+</p>\n";
+
+echo "<center><input type=\"submit\" value=\"Valider\" /></center>\n";
+echo "</form>\n";
+
+echo "<p style='text-indent:-5em; margin-left:5em;'><em>NOTES&nbsp;:</em> Le responsable dispose en page de login d'un lien pour remplir un formulaire avec nom, prénom, email et indication sur le nom, prénom et classe d'un des enfants.<br />
+Le document doit être imprimé et déposé à l'Administration pour finaliser la demande.<br />
+Cette précaution est destinée à éviter des usurpations d'identité.</p>\n";
 
 echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
 

@@ -1,7 +1,7 @@
 <?php
 /* $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -189,6 +189,7 @@ class class_page_accueil_autre {
 				WHERE (ds.nom_fichier='".$chemin."'
 				  AND ds.id_statut=du.id_statut
 				  AND du.login_user='".$this->loginUtilisateur."');" ;
+	//echo "$sql<br />";
 	$result=mysql_query($sql);
 	if (!$result) {
 	  return FALSE;
@@ -335,8 +336,13 @@ class class_page_accueil_autre {
 			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes,
 				".$this->gepiSettings['denomination_eleve']." par ".$this->gepiSettings['denomination_eleve'].",
 				  classe par classe.");
-
 	  $this->creeNouveauItem("/cahier_notes/visu_releve_notes.php",
+			  "Visualisation et impression des relevés de notes",
+			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes,
+				".$this->gepiSettings['denomination_eleve']." par ".$this->gepiSettings['denomination_eleve'].",
+				  classe par classe.");
+		// Le cas suivant n'est pas encore géré... les requêtes en statut autre ne sont pas gérées dans visu_releve_notes_bis.php
+	  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_bis.php",
 			  "Visualisation et impression des relevés de notes",
 			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes,
 				".$this->gepiSettings['denomination_eleve']." par ".$this->gepiSettings['denomination_eleve'].",

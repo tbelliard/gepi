@@ -2,7 +2,7 @@
 /*
  * $Id : $
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -634,6 +634,111 @@ if(!isset($id_classe)){
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
+
+
+	$page="consultation_annee_anterieure.php";
+
+	$Recherche_sans_js=isset($_POST['Recherche_sans_js']) ? $_POST['Recherche_sans_js'] : (isset($_GET['Recherche_sans_js']) ? $_GET['Recherche_sans_js'] : NULL);
+
+	if(!isset($Recherche_sans_js)) {
+		//=============================================
+		// Formulaire pour navigateur SANS Javascript:
+		echo "<noscript>
+		<br />
+	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
+		<p>
+		Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' value='' />
+		<input type='hidden' name='page' value='$page' />
+		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
+		</p>
+	</form>
+
+	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
+		<p>
+		Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' value='' />
+		<input type='hidden' name='page' value='$page' />
+		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
+		</p>
+	</form>
+
+</noscript>\n";
+		//=============================================
+
+		// Portion d'AJAX:
+		echo "<script type='text/javascript'>
+
+	function cherche_eleves(type) {
+		rech_nom_ou_prenom=document.getElementById('rech_'+type).value;
+
+		//var url = 'liste_eleves.php';
+		var url = '../eleves/liste_eleves.php';
+		var myAjax = new Ajax.Request(
+			url,
+			{
+				method: 'post',
+				postBody: 'rech_'+type+'='+rech_nom_ou_prenom+'&page=$page',
+				onComplete: affiche_eleves
+			});
+
+	}
+
+	function affiche_eleves(xhr) {
+		if (xhr.status == 200) {
+			document.getElementById('liste_eleves').innerHTML = xhr.responseText;
+		}
+		else {
+			document.getElementById('liste_eleves').innerHTML = xhr.status;
+		}
+	}
+
+	function affichage_et_action(type) {
+		if(document.getElementById('rech_'+type).value=='') {
+			document.getElementById('Recherche_'+type).style.display='none';
+		}
+		else {
+			document.getElementById('Recherche_'+type).style.display='';
+			cherche_eleves(type);
+		}
+	}
+</script>\n";
+
+		// DIV avec formulaire pour navigateur AVEC Javascript:
+		echo "<div id='recherche_avec_js' style='display:none;'>\n";
+		echo "<br />\n";
+
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('nom');return false;\" method='post' name='formulaire'>";
+		echo "<p>\n";
+		echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' onchange=\"affichage_et_action('nom')\" />\n";
+		echo "<input type='hidden' name='page' value='$page' />\n";
+		echo "<input type='button' name='Recherche' id='Recherche_nom' value='Rechercher' onclick=\"cherche_eleves('nom')\" />\n";
+		echo "</p>\n";
+		echo "</form>\n";
+
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('prenom');return false;\" method='post' name='formulaire'>";
+		echo "<p>\n";
+		echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onchange=\"affichage_et_action('prenom')\" />\n";
+		echo "<input type='hidden' name='page' value='$page' />\n";
+		echo "<input type='button' name='Recherche' id='Recherche_prenom' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
+		echo "</p>\n";
+		echo "</form>\n";
+
+		echo "<div id='liste_eleves'></div>\n";
+
+		echo "</div>\n";
+		echo "<script type='text/javascript'>
+document.getElementById('recherche_avec_js').style.display='';
+
+affichage_et_action('nom');
+affichage_et_action('prenom');
+
+if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').focus();}
+</script>\n";
+	}
+	else {
+		// On ne passe ici que si JavaScript est désactivé
+		include("../eleves/recherche_eleve.php");
+	}
+
 }
 else {
 	if($_SESSION['statut']=='responsable') {

@@ -676,38 +676,17 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 										$res_copy=copy("$source_file" , "$dest_file");
 										if($res_copy){
 											$msg.="Mise en place de la photo effectuée.";
+											if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+												// si le redimensionnement des photos est activé on redimensionne
+												if (getSettingValue("active_module_trombinoscopes_rt")!='')
+													$redim_OK=redim_photo($dest_file,getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"),getSettingValue("active_module_trombinoscopes_rt"));
+												else
+													$redim_OK=redim_photo($dest_file,getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
+												if (!$redim_OK) $msg .= " Echec du redimensionnement de la photo.";
+											}
 										}
 										else{
 											$msg.="Erreur lors de la mise en place de la photo.";
-										}
-
-										if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-											// si le redimensionnement des photos est activé on redimenssionne
-											$source = imagecreatefromjpeg($dest_file); // La photo est la source
-
-											if (getSettingValue("active_module_trombinoscopes_rt")=='') {
-												$destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
-											} // On crée la miniature vide
-
-											if (getSettingValue("active_module_trombinoscopes_rt")!='') {
-												$destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes"));
-											} // On crée la miniature vide
-
-											// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
-											$largeur_source = imagesx($source);
-											$hauteur_source = imagesy($source);
-											$largeur_destination = imagesx($destination);
-											$hauteur_destination = imagesy($destination);
-
-											// On crée la miniature
-											imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
-											if (getSettingValue("active_module_trombinoscopes_rt")!='') {
-												$degrees = getSettingValue("active_module_trombinoscopes_rt");
-												// $destination = imagerotate($destination,$degrees);
-												$destination = ImageRotateRightAngle($destination,$degrees);
-											}
-											// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-											imagejpeg($destination, $dest_file,100);
 										}
 									}
 									else{
@@ -1612,31 +1591,6 @@ echo "<td>\n";
 echo "<table cellpadding='5' summary='Infos 1'>\n";
 echo "<tr>\n";
 
-$photo_largeur_max=150;
-$photo_hauteur_max=150;
-
-function redimensionne_image($photo){
-	global $photo_largeur_max, $photo_hauteur_max;
-
-	// prendre les informations sur l'image
-	$info_image=getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur=$info_image[0];
-	$hauteur=$info_image[1];
-
-	// calcule le ratio de redimensionnement
-	$ratio_l=$largeur/$photo_largeur_max;
-	$ratio_h=$hauteur/$photo_hauteur_max;
-	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
-
-	// définit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur=round($largeur/$ratio);
-	$nouvelle_hauteur=round($hauteur/$ratio);
-
-	return array($nouvelle_largeur, $nouvelle_hauteur);
-}
-
-
 if (isset($eleve_login)) {
 	echo "<th style='text-align:left;'>Identifiant GEPI * : </th>
 	<td>";
@@ -1788,13 +1742,13 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	echo "<td><div class='norme'>";	
 	echo "Jour  <input type='text' name='date_sortie_jour' id='date_sortie_jour' size='2' onchange='changement();' value=\"";
 	if (isset($eleve_date_sortie_jour) and ($eleve_date_sortie_jour!="00") ) {echo $eleve_date_sortie_jour;}
-	echo "\" onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off' />";
+	echo "\" onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off'  title=\"Vous pouvez modifier le jour de sortie à l'aide des flèches Up et Down du pavé de direction.\" />";
 	echo " Mois  <input type='text' name='date_sortie_mois' id='date_sortie_mois' size='2' onchange='changement();' value=\"";
 	if (isset($eleve_date_sortie_mois) and ($eleve_date_sortie_mois!="00")) {echo $eleve_date_sortie_mois;}
-	echo "\" onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off' />";
+	echo "\" onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off'  title=\"Vous pouvez modifier le mois de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
 	echo " Année <input type='text' name='date_sortie_annee' id='date_sortie_annee' size='4' onchange='changement();' value=\"";
 	if (isset($eleve_date_sortie_annee) and ($eleve_date_sortie_annee!="0000")) {echo $eleve_date_sortie_annee;}
-	echo "\" onKeyDown='clavier_2(this.id,event,2000,2100);' AutoComplete='off' />";
+	echo "\" onKeyDown='clavier_2(this.id,event,2000,2100);' AutoComplete='off'  title=\"Vous pouvez modifier l'année de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
 
 	echo "<a href='javascript:date_sortie_aujourdhui()' title=\"Aujourd'hui\"><img src='../images/disabled.png' width='20' height='20' title=\"Aujourd'hui\" /></a>\n";
 	echo "<script type='text/javascript'>
@@ -1902,7 +1856,8 @@ if(isset($reg_no_gep)){
 			$temoin_photo="oui";
 			//echo "<td>\n";
 			echo "<div align='center'>\n";
-			$dimphoto=redimensionne_image($photo);
+			// la photo sera réduite si nécessaire
+			$dimphoto=dimensions_affichage_photo($photo,getSettingValue('l_max_aff_trombinoscopes'),getSettingValue('h_max_aff_trombinoscopes'));
 			//echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
 			echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border: 3px solid #FFFFFF;" alt="" />';
 			//echo "</td>\n";
@@ -1920,14 +1875,14 @@ if(isset($reg_no_gep)){
 		echo "<div align='center'>\n";
 		//echo "<span id='lien_photo' style='font-size:xx-small;'>";
 		echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;'>";
-		echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';document.getElementById('lien_photo').style.display='none';return false;\">";
+		echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';document.getElementById('lien_photo').style.display='';return false;\">";
 		if($temoin_photo=="oui"){
 			//echo "Modifier le fichier photo</a>\n";
 			echo "Modifier le fichier photo</a>\n";
 		}
 		else{
-			//echo "Envoyer un fichier photo</a>\n";
-			echo "Envoyer<br />un fichier<br />photo</a>\n";
+			echo "Envoyer un fichier photo</a>\n";
+			//echo "Envoyer<br />un fichier<br />photo</a>\n";
 		}
 		//echo "</span>\n";
 		echo "</div>\n";
@@ -2111,15 +2066,15 @@ if (!(isset($eleve_sexe))) {$eleve_sexe="M";}
 
 echo "Jour <input type='text' name='birth_day' id='birth_day' size='2' onchange='changement();' value='";
 if (isset($eleve_naissance_jour)) {echo $eleve_naissance_jour;}
-echo "' onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off' />";
+echo "' onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off' title=\"Vous pouvez modifier le jour de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
 
 echo " Mois <input type='text' name='birth_month' id='birth_month' size='2' onchange='changement();' value='";
 if (isset($eleve_naissance_mois)) {echo $eleve_naissance_mois;}
-echo "' onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off' />";
+echo "' onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off' title=\"Vous pouvez modifier le mois de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
 
 echo " Année <input type='text' name='birth_year' id='birth_year' size='2' onchange='changement();' value='";
 if (isset($eleve_naissance_annee)) {echo $eleve_naissance_annee;}
-echo "' onKeyDown='clavier_2(this.id,event,1970,2100);' AutoComplete='off' />";
+echo "' onKeyDown='clavier_2(this.id,event,1970,2100);' AutoComplete='off' title=\"Vous pouvez modifier l'année de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
 
 
 if(getSettingValue('ele_lieu_naissance')=='y') {

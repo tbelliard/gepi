@@ -277,6 +277,11 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='min') {
 			$temp1=my_strtolower($temp1);
 		}
 
+		// Suppression des _,-,. multiples
+		$temp1=preg_replace("/_{2,}/", "_", $temp1);
+		$temp1=preg_replace("/\.{2,}/", ".", $temp1);
+		$temp1=preg_replace("/\-{2,}/", "-", $temp1);
+
 		$login_user = $temp1;
 
 		//==========================
@@ -1656,7 +1661,7 @@ function vider_dir($dir){
 function ensure_utf8($str, $from_encoding = null) {
     if ($str === null || $str === '') {
         return $str;
-    } else if ($from_encoding == null && check_utf8($str)) {
+    } else if ($from_encoding == null && detect_utf8($str)) {
 	    return $str;
 	}
 	
@@ -1667,16 +1672,35 @@ function ensure_utf8($str, $from_encoding = null) {
     }
 	$result = null;
     if ($encoding !== false && $encoding != null) {
-        if ($result == null && function_exists('mb_convert_encoding')) {
+        if (function_exists('mb_convert_encoding')) {
             $result = mb_convert_encoding($str, 'UTF-8', $encoding);
         }
     }
-	if ($result === null || !check_utf8($result)) {
+	if ($result === null || !detect_utf8($result)) {
 	    throw new Exception('Impossible de convertir la chaine vers l\'utf8');
 	}
 	return $result;
 }
 
+
+/**
+ * Cette méthode prend une chaîne de caractères et teste si elle ne contient que 
+ * de l'ASCII 7 bits ou si elle contient au moins une suite d'octets codant un
+ * caractère en UTF8
+ * @param string $str La chaine à tester
+ * @return boolean
+ */
+function detect_utf8 ($str) {
+	// Inspiré de http://w3.org/International/questions/qa-forms-utf-8.html
+	return preg_match('%^(?:[\x09\x0A\x0D\x20-\x7E])*$%xs', $str) | // ASCII
+		preg_match('#[\xC2-\xDF][\x80-\xBF]#', $str) | // non-overlong 2-byte
+		preg_match('#\xE0[\xA0-\xBF][\x80-\xBF]#', $str) | // excluding overlongs
+		preg_match('#[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}#', $str) | // straight 3-byte
+		preg_match('#\xED[\x80-\x9F][\x80-\xBF]#', $str) | // excluding surrogates
+		preg_match('#\xF0[\x90-\xBF][\x80-\xBF]{2}#', $str) | // planes 1-3
+		preg_match('#[\xF1-\xF3][\x80-\xBF]{3}#', $str) | // planes 4-15
+		preg_match('# \xF4[\x80-\x8F][\x80-\xBF]{2}#', $str) ; // plane 16
+ }
 
 /**
  * Cette méthode prend une chaîne de caractères et teste si elle est bien encodée en UTF-8
@@ -1685,7 +1709,11 @@ function ensure_utf8($str, $from_encoding = null) {
  * @return boolean
  */
 function check_utf8 ($str) {
-    if (mb_strlen($str) < 1000) {
+    // Longueur maximale de la chaîne pour éviter un stack overflow
+	// dans le test à base d'expression régulière
+	$long_max=1000;
+	if (substr(PHP_OS,0,3) == 'WIN') $long_max=300; // dans le cas de Window$
+    if (mb_strlen($str) < $long_max) {
     // From http://w3.org/International/questions/qa-forms-utf-8.html
     $preg_match_result = 1 == preg_match('%^(?:
           [\x09\x0A\x0D\x20-\x7E]            # ASCII
@@ -1736,7 +1764,7 @@ function check_utf8 ($str) {
  */
 function detect_encoding($str) {
     //on commence par vérifier si c'est de l'utf8
-    if (check_utf8($str)) {
+    if (detect_utf8($str)) {
         return 'UTF-8';
     }
     
@@ -2231,6 +2259,69 @@ function savePref($login,$item,$valeur){
 	}
 	else{
 		$sql="INSERT INTO preferences SET login='$login', name='$item', value='$valeur';";
+	}
+	$res=mysql_query($sql);
+	if($res) {return TRUE;} else {return FALSE;}
+}
+
+/**
+ * Renvoie l'ensemle des paramètres d'une classe en interrogeant la table classes_param
+ *
+ * @param string $id_classe Identifiant de la classe
+ * @return array Tableau associatif des paramètres name=>value
+ */
+function getAllParamClasse($id_classe) {
+	$sql="SELECT * FROM classes_param WHERE id_classe='$id_classe' ORDER BY name;";
+	$res_param=mysql_query($sql);
+
+	$tab_param=array();
+	if(mysql_num_rows($res_param)>0){
+		while($ligne=mysql_fetch_object($res_param)) {
+			$tab_param[$ligne->name]=$ligne->value;
+		}
+	}
+
+	return $tab_param;
+}
+
+/**
+ * Renvoie les paramètres d'une classe pour un item en interrogeant la table classes_param
+ *
+ * @param string $id_classe Identifiant de la classe
+ * @param string $item Item recherché
+ * @param string $default Valeur par défaut
+ * @return string La valeur de l'item
+ */
+function getParamClasse($id_classe,$item,$default) {
+	$sql="SELECT value FROM classes_param WHERE id_classe='$id_classe' AND name='$item'";
+	$res_param=mysql_query($sql);
+
+	if(mysql_num_rows($res_param)>0){
+		$ligne=mysql_fetch_object($res_param);
+		return $ligne->value;
+	}
+	else{
+		return $default;
+	}
+}
+
+/**
+ * Enregistre les paramètres d'une classe pour un item dans la table classes_param
+ *
+ * @param string $id_classe Identifiant de la classe
+ * @param string $item Item recherché
+ * @param string $valeur Valeur à enregistrer
+ * @return boolean TRUE si tout c'est bien passé
+ */
+function saveParamClasse($id_classe,$item,$valeur) {
+	$sql="SELECT value FROM classes_param WHERE id_classe='$id_classe' AND name='$item'";
+	$res_param=mysql_query($sql);
+
+	if(mysql_num_rows($res_param)>0){
+		$sql="UPDATE classes_param SET value='$valeur' WHERE id_classe='$id_classe' AND name='$item';";
+	}
+	else{
+		$sql="INSERT INTO classes_param SET id_classe='$id_classe', name='$item', value='$valeur';";
 	}
 	$res=mysql_query($sql);
 	if($res) {return TRUE;} else {return FALSE;}
@@ -3314,6 +3405,37 @@ function get_nom_prenom_eleve($login_ele,$mode='simple') {
 }
 
 /**
+ * Renvoie le nom et le prénom d'un élève
+ *
+ * @param string $ele_id ele_id de l'élève
+ * @param string $mode si 'avec_classe' on retourne aussi la(les) classe(s)
+ * @return string 
+ * @see civ_nom_prenom()
+ * @see get_class_from_ele_login()
+ * @see casse_mot()
+ */
+function get_nom_prenom_eleve_from_ele_id($ele_id, $mode='simple') {
+	$sql="SELECT login, nom,prenom FROM eleves WHERE ele_id='$ele_id';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		return "Elève inconnu ($ele_id)";
+	}
+	else {
+		$lig=mysql_fetch_object($res);
+
+		$ajout="";
+		if($mode=='avec_classe') {
+			$tmp_tab_clas=get_class_from_ele_login($lig->login);
+			if((isset($tmp_tab_clas['liste']))&&($tmp_tab_clas['liste']!='')) {
+				$ajout=" (".$tmp_tab_clas['liste'].")";
+			}
+		}
+
+		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').$ajout;
+	}
+}
+
+/**
  * Retourne une commune à partir de son code insee
  * 
  * $mode :
@@ -3366,6 +3488,8 @@ function get_commune($code_commune_insee,$mode){
  *
  * @param string $login Login de l'utilisateur recherché
  * @param string $mode si 'prenom' inverse le nom et le prénom
+ * @param string $avec_statut avec affichage ou non du statut entre parenthèses
+ *
  * @return string civilite nom prénom de l'utilisateur
  */
 function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
@@ -3398,6 +3522,34 @@ function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 			else {
 				$retour.=" ($lig_user->statut)";
 			}
+		}
+	}
+	return $retour;
+}
+
+/**
+ * Renvoie civilite nom prénom d'un responsable
+ *
+ * @param string $pers_id pers_id de l'utilisateur recherché
+ * @param string $mode si 'prenom' inverse le nom et le prénom
+ *
+ * @return string civilite nom prénom de l'utilisateur
+ */
+function civ_nom_prenom_from_pers_id($pers_id,$mode='prenom') {
+	$retour="";
+	$sql="SELECT nom,prenom,civilite FROM resp_pers WHERE pers_id='$pers_id';";
+	$res_user=mysql_query($sql);
+	if (mysql_num_rows($res_user)>0) {
+		$lig_user=mysql_fetch_object($res_user);
+		if($lig_user->civilite!="") {
+			$retour.=$lig_user->civilite." ";
+		}
+		if($mode=='prenom') {
+			$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
+		}
+		else {
+			// Initiale
+			$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
 		}
 	}
 	return $retour;
@@ -3697,6 +3849,100 @@ function efface_photos($photos) {
 	return ("Erreur lors de la création de l'archive.") ;
   }
 
+}
+
+/**
+ * Redimensionne un fichier photo JPG en conservant son ratio d'origine
+ * Si les dimensions du fichier source sont plus petites que celles du
+ * fichier destination alors le fichier source est inclus dans le fichier
+ * destination afin de ne pas perdre en qualité suite à un agrandissement
+ * de la photo
+ *
+ * @param string $file_source fichier à redimensionner
+ * @param integer $largeur_destination largeur à obtenir
+ * @param integer $$hauteur_destination hauteur à obtenir
+ * @param integer $angle_rotation rotation à appliquer à l'image (facultatif)
+ * @return true si redimensionnement OK, false sinon ou si inutile de redimenssionner
+ */
+function redim_photo($file_source,$largeur_destination,$hauteur_destination,$angle_rotation=0)
+	{
+	if (!is_file($file_source)) return false;
+	$source=imagecreatefromjpeg($file_source);
+	if ($source===false) return false;
+
+	if ($angle_rotation!=0) $source=imagerotate($source,-$angle_rotation,0xFFFFFF);
+	if ($source===false) return false;
+
+	$destination=imagecreatetruecolor($largeur_destination,$hauteur_destination);
+	if ($destination===false) return false;
+	$blanc=imagecolorallocate($destination,0xFF,0xFF,0xFF);
+	if ($blanc===false) return false;
+
+	if (!imagefill($destination,0,0,$blanc)) return false;
+
+	$largeur_source=imagesx($source);
+	if ($largeur_source===false) return false;
+	$hauteur_source=imagesy($source);
+	if ($hauteur_source===false) return false;
+	if ($largeur_source==0 || $hauteur_source==0 || ($largeur_source==$largeur_destination && $hauteur_source==$hauteur_destination)) return false;
+
+	$ratio_lh_source=$largeur_source/$hauteur_source;
+	$ratio_lh_destination=$largeur_destination/$hauteur_destination;
+	
+	if ($ratio_lh_source<$ratio_lh_destination)
+		{
+		$dest_l=(int)($hauteur_destination*$ratio_lh_source);
+		if ($dest_l>$largeur_source) $dest_l=$largeur_source;
+		$dest_x=(int)(($largeur_destination-$dest_l)/2);
+		$dest_h=$hauteur_destination;
+		if ($dest_h>$hauteur_source) $dest_h=$hauteur_source;
+		$dest_y=(int)(($hauteur_destination-$dest_h)/2);
+		}
+	else
+		{
+		$dest_h=(int)($largeur_destination/$ratio_lh_source);
+		if ($dest_h>$hauteur_source) $dest_h=$hauteur_source;
+		$dest_y=(int)(($hauteur_destination-$dest_h)/2);
+		$dest_l=$largeur_destination;
+		if ($dest_l>$largeur_source) $dest_l=$largeur_source;
+		$dest_x=(int)(($largeur_destination-$dest_l)/2);
+		}
+
+	if (!imagecopyresampled($destination,$source,$dest_x,$dest_y,0,0,$dest_l,$dest_h,$largeur_source,$hauteur_source)) return false;
+
+	if (!imagejpeg($destination, $file_source,100)) return false;
+	imagedestroy($destination);
+	return true;
+	}
+
+/**
+ * Calcule les dimensions pour afficher une photo
+ * dans un cadre de dimensions largeur_max X hauteur_max
+ * en conservant le ratio initial
+ *
+ * @param string $photo L'adresse de la photo
+ * @param integer $largeur_max Largeur du cadre
+ * @param integer $hauteur_max Hauteur du cadre
+ * @return array Les nouvelles dimensions de l'image (largeur, hauteur)
+ */
+function dimensions_affichage_photo($photo,$photo_largeur_max, $photo_hauteur_max) {
+
+	// prendre les informations sur l'image
+	$info_image=getimagesize($photo);
+	// largeur et hauteur de l'image d'origine
+	$largeur=$info_image[0];
+	$hauteur=$info_image[1];
+
+	// calcule le ratio de redimensionnement
+	$ratio_l=$largeur/$photo_largeur_max;
+	$ratio_h=$hauteur/$photo_hauteur_max;
+	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
+
+	// définit largeur et hauteur pour la nouvelle image
+	$nouvelle_largeur=round($largeur/$ratio);
+	$nouvelle_hauteur=round($hauteur/$ratio);
+
+	return array($nouvelle_largeur, $nouvelle_hauteur);
 }
 
 /**********************************************************************************************
@@ -4188,7 +4434,7 @@ function enregistre_infos_actions($titre,$texte,$destinataire,$mode) {
 		$tab_dest=array($destinataire);
 	}
 
-	$sql="INSERT INTO infos_actions SET titre='".addslashes($titre)."', description='".addslashes($texte)."', date=NOW();";
+	$sql="INSERT INTO infos_actions SET titre='".mysql_real_escape_string($titre)."', description='".mysql_real_escape_string($texte)."', date=NOW();";
 	$insert=mysql_query($sql);
 	if(!$insert) {
 		return FALSE;
@@ -4211,24 +4457,39 @@ function enregistre_infos_actions($titre,$texte,$destinataire,$mode) {
 /**
  * Supprime une action à effectuer de la base
  *
- * @param type $id_info Id de l'action a effacer de la base
+ * @param type $id_info Id de l'action à effacer de la base
+ * @param type $_login   Login concerné par l'action à effacer de la base
+ * @param type $_statut  Statut concerné par l'action à effacer de la base
+ * (on peut fournir login ou statut)
+ *
  * @return boolean TRUE si l'action a été effacée de la base 
  */
-function del_info_action($id_info) {
+function del_info_action($id_info, $_login="", $_statut="") {
 	// Dans le cas des infos destinées à un statut... c'est le premier qui supprime qui vire pour tout le monde?
 	// S'il s'agit bien de loguer des actions à effectuer... elle ne doit être effectuée qu'une fois.
 	// Ou alors il faudrait ajouter des champs pour marquer les actions comme effectuées et n'afficher par défaut que les actions non effectuées
 
-	$sql="SELECT 1=1 FROM infos_actions_destinataires WHERE id_info='$id_info' AND ((nature='statut' AND valeur='".$_SESSION['statut']."') OR (nature='individu' AND valeur='".$_SESSION['login']."'));";
+	if($_SESSION['statut']=="administrateur") {
+		$sql="SELECT 1=1 FROM infos_actions_destinataires WHERE id_info='$id_info';";
+	}
+	else {
+		$_login=$_SESSION['login'];
+		$_statut=$_SESSION['statut'];
+
+		$sql="SELECT 1=1 FROM infos_actions_destinataires WHERE id_info='$id_info' AND ((nature='statut' AND valeur='".$_statut."') OR (nature='individu' AND valeur='".$_login."'));";
+	}
+	//echo "$sql<br />";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
 		$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$id_info';";
+		//echo "$sql<br />";
 		$del=mysql_query($sql);
 		if(!$del) {
 			return FALSE;
 		}
 		else {
 			$sql="DELETE FROM infos_actions WHERE id='$id_info';";
+			//echo "$sql<br />";
 			$del=mysql_query($sql);
 			if(!$del) {
 				return FALSE;
@@ -5532,7 +5793,10 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv", $nom_var="cpt_ping", $taille=10, $intervalle_temps=10) {
 	global $gepiPath;
 
-	echo "<div id='retour_ping' style='width:".$taille."px; height:".$taille."px; background-color:red; border:1px solid black; float:left; margin:1px; display:none;' title=\"Témoin de réponse du serveur: Un test est effectué toutes les $intervalle_temps secondes. Si le témoin se maintient au rouge, c'est que le serveur n'est pas joignable.\"></div>\n";
+	echo "<div id='retour_ping' style='width:".$taille."px; height:".$taille."px; background-color:red; border:1px solid black; float:left; margin:1px; display:none;' title=\"Témoin de réponse du serveur: Un test est effectué toutes les $intervalle_temps secondes.
+Si le témoin se maintient au rouge, c'est que le serveur n'est pas joignable.
+Vous devriez dans ce cas (pour vous prémunir d'une perte de ce qui a été saisi et pas encore enregistré), copier dans un Bloc-notes tout ce qui n'a pas encore été enregistré.
+Provoquer l'enregistrement/validation des données vers le serveur risque de se solder par un échec (si le serveur est indisponible, il ne recevra pas ce que vous enverrez et tout sera perdu).\"></div>\n";
 
 	echo "<script type='text/javascript'>
 	var $nom_var=0;
@@ -5911,5 +6175,24 @@ function is_responsable($login_eleve, $login_resp="", $pers_id="") {
 		}
 	}
 	return $retour;
+}
+
+// http://www.siteduzero.com/tutoriel-3-56199-les-captchas-textuels.html
+function captchaMath()
+{
+	$n1 = mt_rand(0,10);
+	$n2 = mt_rand(0,10);
+	$nbrFr = array('zero','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix');
+	$resultat = $n1 + $n2;
+	$phrase = $nbrFr[$n1] .' plus '.$nbrFr[$n2];
+	
+	return array($resultat, $phrase);	
+}
+
+function captcha()
+{
+	list($resultat, $phrase) = captchaMath();
+	$_SESSION['captcha'] = $resultat;
+	return $phrase;
 }
 ?>

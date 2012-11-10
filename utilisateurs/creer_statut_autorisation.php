@@ -24,7 +24,8 @@ $autorise[0] = array('/accueil.php',
 				'/gestion/contacter_admin.php',
 				'/gestion/info_gepi.php');
 // droits spécifiques sur les pages relatives aux droits possibles
-$autorise[1] = array('/cahier_notes/visu_releve_notes.php');
+//$autorise[1] = array('/cahier_notes/visu_releve_notes.php');
+$autorise[1] = array('/cahier_notes/visu_releve_notes_bis.php');
 $autorise[2] = array('/prepa_conseil/index3.php', '/prepa_conseil/edit_limite.php');
 $autorise[3] = array('/mod_absences/gestion/voir_absences_viescolaire.php',
 						'/mod_absences/gestion/bilan_absences_quotidien.php',

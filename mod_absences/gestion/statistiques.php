@@ -51,6 +51,8 @@ $titre_page = "Gestion des absences";
 require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
         // voir numero d'erreur = 2047 toutes les erreurs
         //echo(error_reporting());
 
@@ -73,7 +75,7 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
         return($nombre);
  }
 
-// Variable prédéfinit
+// Variable prédéfinie
 	$date_ce_jour = date('d/m/Y');
 	$date_ce_jour_sql = date('Y-m-d');
 	$annee_scolaire = annee_en_cours_t($date_ce_jour_sql);
@@ -93,7 +95,7 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 	$cpt_donnees = '0';
 	$donnee_select = '';
 
-// Variable non définit
+// Variable non définie
 	if (empty($_GET['classe']) and empty($_POST['classe'])) { $classe[0] = ''; }
 	   else { if (isset($_GET['classe'])) { $classe = $_GET['classe']; } if (isset($_POST['classe'])) { $classe = $_POST['classe']; } }
 	if (empty($_GET['eleve']) and empty($_POST['eleve'])) { $eleve[0] = ''; }
@@ -183,24 +185,24 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 	// si on ne demande pas d'incorporer les longues absences
 	if(empty($long_absence) and $long_absence != '1')
 	 { $long_absence_cocher = "d_date_absence_eleve = a_date_absence_eleve"; }
-     
+
 // Requete SQL
-	// élève non sélectionné, classe non sélectionné
+	// élève non sélectionné, classe non sélectionnée
 	 if($eleve_selectionne === '' and $classe_selectionne === '')
 	 { $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$type_selectionne." AND ".$justification_selectionne." AND ".$long_absence_cocher." AND c.id = ec.id_classe AND ec.login = ae.eleve_absence_eleve GROUP BY id_absence_eleve ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC"; }
 	
-	// Classe sélectionné, élève non sélectionné
+	// Classe sélectionnée, élève non sélectionné
 	 if($eleve_selectionne === '' and $classe_selectionne != '')
 	 { $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$classe_selectionne." AND ".$type_selectionne." AND ".$justification_selectionne." AND ".$long_absence_cocher." AND c.id = ec.id_classe AND ec.login = ae.eleve_absence_eleve GROUP BY id_absence_eleve ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC"; }
 
-	// élèves sélectionné, classe sélectionné
+	// élèves sélectionné, classe sélectionnée
 	 if($eleve_selectionne != '' and $classe_selectionne != '')
 	 { $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$eleve_selectionne." AND ".$type_selectionne." AND ".$justification_selectionne." AND ".$long_absence_cocher." AND c.id = ec.id_classe AND ec.login = ae.eleve_absence_eleve GROUP BY id_absence_eleve ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC"; }
 
-	     $i = '0';             
-             $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
-	     // compte les données
-	     $cpt_donnees = mysql_num_rows($execution_komenti);
+	$i = '0';
+	$execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
+	// compte les données
+	$cpt_donnees = mysql_num_rows($execution_komenti);
 
 	// vérification s'il contient des données
 	if ( $cpt_donnees != '0' ) {
@@ -210,17 +212,28 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 			$tableau[$i]['id'] = $i;
 			$tableau[$i]['login'] = $donnee_base['eleve_absence_eleve'];
 			$tableau[$i]['classe'] = $donnee_base['nom_complet'];
+			$tableau[$i]['id_classe'] = $donnee_base['id'];
 			$tableau[$i]['date_debut'] = $donnee_base['d_date_absence_eleve'];
 			$tableau[$i]['date_fin'] = $donnee_base['a_date_absence_eleve'];
 			$tableau[$i]['heure_debut'] = $donnee_base['d_heure_absence_eleve'];
 			$tableau[$i]['heure_fin'] = $donnee_base['a_heure_absence_eleve'];
 			$i = $i + 1;
 		} 
+
+		/*
+		echo "<pre>";
+		echo "\$cpt_donnees=$cpt_donnees<br />";
+		print_r($tableau);
+		echo "</pre>";
+		*/
+		
 	    $tab = crer_tableau_jaj($tableau);
 		// en cas d'erreur pour affiché les informations
-		//	echo '<pre>';
-		//	print_r($tab);
-		//	echo '</pre>';
+		/*
+		echo '<pre>';
+		print_r($tab);
+		echo '</pre>';
+		*/
 	}
 
 
@@ -275,19 +288,34 @@ if($echelle_y === 'D') {
 			$mois = $tab_date[1];
 			$annee = $tab_date[0];
 
-		$classe_eleve = $tab[$i]['classe'];
+		//$classe_eleve = $tab[$i]['classe'];
+		$classe_eleve = $tab[$i]['id_classe'];
 		$eleve_eleve = qui_eleve($tab[$i]['login']);
+
+		/*
+		echo "<br /><p>\$eleve_eleve=$eleve_eleve le ".$tab[$i]['date']."<br />
+		\$echelle_x=$echelle_x<br />";
+		*/
 
 		// les données
 			// par mois
 			if($echelle_x === 'M') {
 				if(empty($donnee_select[$annee.'-'.$mois])) { $donnee_select[$annee.'-'.$mois] = '0'; }
 				$donnee_select[$annee.'-'.$mois] = $donnee_select[$annee.'-'.$mois] + nb_total_demijournee_absence($tab[$i]['login'], date_fr($tab[$i]['date']), date_fr($tab[$i]['date']), $classe_eleve);
+				/*
+				//DEBUG
+				echo "nb_total_demijournee_absence(".$tab[$i]['login'].", date_fr(".$tab[$i]['date']."), date_fr(".$tab[$i]['date']."), $classe_eleve)=nb_total_demijournee_absence(".$tab[$i]['login'].", ".date_fr($tab[$i]['date']).", ".date_fr($tab[$i]['date']).", $classe_eleve)=".nb_total_demijournee_absence($tab[$i]['login'], date_fr($tab[$i]['date']), date_fr($tab[$i]['date']), $classe_eleve)."<br />";
+				echo "\$donnee_select[$annee.'-'.$mois]=".$donnee_select[$annee.'-'.$mois]."<br />";
+				*/
 			}
 			// par jour
 			if($echelle_x === 'J') {
 				if(empty($donnee_select[$annee.'-'.$mois.'-'.$jour])) { $donnee_select[$annee.'-'.$mois.'-'.$jour] = '0'; }
 				$donnee_select[$annee.'-'.$mois.'-'.$jour] = $donnee_select[$annee.'-'.$mois.'-'.$jour] + nb_total_demijournee_absence($tab[$i]['login'], date_fr($tab[$i]['date']), date_fr($tab[$i]['date']), $classe_eleve);
+				/*
+				//DEBUG
+				echo "\$donnee_select[$annee.'-'.$mois.'-'.$jour]=".$donnee_select[$annee.'-'.$mois.'-'.$jour]."<br />";
+				*/
 			}
 			// par heure (période)
 			if($echelle_x === 'P') {
@@ -296,11 +324,19 @@ if($echelle_y === 'D') {
 			if($echelle_x === 'C') {
 				if(empty($donnee_select[$classe_eleve])) { $donnee_select[$classe_eleve] = '0'; }
 				$donnee_select[$classe_eleve] = $donnee_select[$classe_eleve] + nb_total_demijournee_absence($tab[$i]['login'], date_fr($tab[$i]['date']), date_fr($tab[$i]['date']), $classe_eleve);
+				/*
+				//DEBUG
+				echo "\$donnee_select[$classe_eleve]=".$donnee_select[$classe_eleve]."<br />";
+				*/
 			}
 			// par élève
 			if($echelle_x === 'E') {
 				if(empty($donnee_select[$eleve_eleve])) { $donnee_select[$eleve_eleve] = '0'; }
 				$donnee_select[$eleve_eleve] = $donnee_select[$eleve_eleve] + nb_total_demijournee_absence($tab[$i]['login'], date_fr($tab[$i]['date']), date_fr($tab[$i]['date']), $classe_eleve);
+				/*
+				//DEBUG
+				echo "\$donnee_select[$eleve_eleve]=".$donnee_select[$eleve_eleve]."<br />";
+				*/
 			}
 	   }		
 	$i = $i + 1;
@@ -642,11 +678,28 @@ if($echelle_y === 'E') {
 		<?php /* DIV contenant le graphique */ ?>
 		<div>
 
-	<?php if ( $cpt_donnees != '0' and $donnee_select != '') { ?>
-		<?php $_SESSION['donnee_e'] = ''; $_SESSION['donnee_e'] = $donnee_select; ?>
+	<?php
+		if ( $cpt_donnees != '0' and $donnee_select != '') {
+			// DEBUG
+			/*
+			echo "<pre>";
+			print_r($donnee_select);
+			echo "</pre>";
+			*/
+			if($echelle_x=="C") {
+				$tmp_tab=$donnee_select;
+				unset($donnee_select);
+				foreach($tmp_tab as $key => $value) {
+					$donnee_select[get_class_from_id($key)]=$value;
+				}
+			}
+
+			$_SESSION['donnee_e'] = '';
+			$_SESSION['donnee_e'] = $donnee_select;
+		?>
 			<img src="../lib/graph_<?php echo $type_graphique; ?>.php?echelle_x=<?php echo $echelle_x; ?>&amp;echelle_y=<?php echo $echelle_y; ?>&amp;donnee_label=<?php echo $donnee_label; ?>&amp;donnee_titre[0]=<?php echo $donnee_titre[0]; ?>" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/>
 			<?php /* <a href="graph_<?php echo $type_graphique; ?>.php?echelle_x=<?php echo $echelle_x; ?>&amp;echelle_y=<?php echo $echelle_y; ?>&amp;donnee_label=<?php echo $donnee_label; ?>&amp;donnee_titre[0]=<?php echo $donnee_titre[0]; ?>" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/>fdfdfdf</a> */ ?>
-	<?php } else { ?>Aucune donnée correspondant à votre rechercher n'a été trouvée<?php } ?>
+	<?php } else { ?>Aucune donnée correspondant à votre recherche n'a été trouvée<?php } ?>
 		</div>
 
 	<?php if ( $cpt_donnees != '0' and $donnee_select != '') { ?>
@@ -655,6 +708,13 @@ if($echelle_y === 'E') {
 			<?php 
 				// donner d'entête du tableau
 				$entete_tableau = array_keys($_SESSION['donnee_e']);
+				/*
+				$tmp_entete_tableau=$entete_tableau;
+				unset($entete_tableau);
+				foreach($tmp_entete_tableau as $key => $value) {
+					$entete_tableau[get_class_from_id($key)]=$value;
+				}
+				*/
 					if ( $echelle_x === 'M' ) {
 						$entete_tableau_recharge = $entete_tableau;
 						$i = 0;
@@ -721,16 +781,29 @@ if($echelle_y === 'E') {
 				$valeur = explode('.',$cpt_ligne);
 				// s'il y a des chiffres après la virgule alors on rajoute une ligne
 				if(!empty($valeur[1]) and $valeur[1] != '0') { $cpt_tableau = $valeur[0] + 1; } else { $cpt_tableau = $valeur[0]; }
+
 			$i_tableau = '0';
-				$ia_passe = '0'; $ib_passe = '0';
+			$ia_passe = '0';
+			$ib_passe = '0';
 			while ($i_tableau < $cpt_tableau) { ?>
 			<table style="width: 550px;  border: 1px solid #000000;" border="0" cellpadding="0" cellspacing="1">
 			   <tr class="entete_tableau_absence">
-				<?php	$ia = '0';
-					while ($ia < $cpt_total_par_ligne) { ?>
-						<?php if(!empty($entete_tableau[$ia_passe])) { ?><td style="width: 25%; color: #FFFFFF;"><?php echo $entete_tableau[$ia_passe]; ?></td><?php } ?>
-						<?php if(empty($entete_tableau[$ia_passe])) { ?><td style="width: 25%; color: #FFFFFF;">&nbsp;</td><?php } ?>
-				<?php $ia = $ia + 1; $ia_passe = $ia_passe + 1; } ?>
+				<?php
+					$ia = '0';
+					while ($ia < $cpt_total_par_ligne) { 
+						if(!empty($entete_tableau[$ia_passe])) {
+							echo "<td style=\"width: 25%; color: #FFFFFF;\">";
+							echo $entete_tableau[$ia_passe];
+							//echo get_class_from_id($entete_tableau[$ia_passe]);
+							echo "</td>";
+						}
+						if(empty($entete_tableau[$ia_passe])) {
+							echo "<td style=\"width: 25%; color: #FFFFFF;\">&nbsp;</td>\n";
+						}
+						$ia = $ia + 1;
+						$ia_passe = $ia_passe + 1;
+					}
+				?>
 			   </tr>
 			   <tr>
 				<?php   $ib = '0';

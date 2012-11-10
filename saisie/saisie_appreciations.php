@@ -1033,8 +1033,33 @@ echo "<tr>\n";
 echo "<th width=\"200\"><div align=\"center\">&nbsp;</div></th>\n";
 echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
 echo "<th>\n";
-echo "<div style='float:right; width:16;'><a href='javascript:affichage_div_photo();'><img src='../images/icons/wizard.png' width='16' height='16' alt='Afficher les quartiles et éventuellement la photo élève' title='Afficher la photo élève pendant la saisie' /></a></div>\n";
+
+echo "<div style='float:right; width:16px;'><a href='javascript:affichage_div_photo();'><img src='../images/icons/wizard.png' width='16' height='16' alt='Afficher les quartiles et éventuellement la photo élève' title='Afficher la photo élève pendant la saisie' /></a></div>\n";
+
+
+if(getSettingAOui('GepiAccesBulletinSimpleClasseEleve')) {
+	echo "<div style='float:right; width:16px;margin-right:5px;'><img src='../images/icons/trombinoscope.png' width='16' height='16' title=\"L'appréciation sur le groupe-classe est visible des élèves\" alt=\"Appréciation sur le groupe-classe visible des élèves\" /></div>\n";
+}
+if(getSettingAOui('GepiAccesBulletinSimpleClasseResp')) {
+	echo "<div style='float:right; width:16px;margin-right:5px;'><img src='../images/group16.png' width='16' height='16' title=\"L'appréciation sur le groupe-classe est visible des parents\" /></div>\n";
+}
+
 echo "<div align=\"center\"><b>Appréciation sur le groupe/classe</b>\n";
+
+//===============================================
+$tabdiv_infobulle[]=creer_div_infobulle('div_explication_cnil',"Saisies et CNIL","",$message_cnil_bons_usages,"",30,0,'y','y','n','n');
+// Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()
+// Hauteur de la bande testée pour la position de la souris:
+$hauteur_survol_infobulle=20;
+// Largeur de la bande testée pour la position de la souris:
+$largeur_survol_infobulle=100;
+// Délais en ms avant affichage:
+$delais_affichage_infobulle=500;
+//===============================================
+
+// 20121101: Mettre une infobulle CNIL
+echo " <a href='#' onclick=\"afficher_div('div_explication_cnil','y',10,-40);return false;\" onmouseover=\"delais_afficher_div('div_explication_cnil','y',10,-40, $delais_affichage_infobulle, $largeur_survol_infobulle, $hauteur_survol_infobulle);\"><img src='../images/info.png' width='20' height='20' title='CNIL : Règles de bon usage' /></a>";
+
 echo "</div></th>\n";
 echo "</tr>\n";
 //=================================================

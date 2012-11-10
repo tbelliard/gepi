@@ -12,7 +12,7 @@
 */
 
 	$debug_extract="n";
-	$debug_ele_login="ahnjinwon";
+	$debug_ele_login="toto";
 	$debug_id_groupe=237;
 
 	//========================================
@@ -67,7 +67,14 @@
 	$tab_rn_formule=isset($_POST['rn_formule']) ? $_POST['rn_formule'] : array();
 
 	$tab_rn_adr_resp=isset($_POST['rn_adr_resp']) ? $_POST['rn_adr_resp'] : array();
-
+	/*
+	if(count($tab_rn_adr_resp)>count($tab_id_classe)/2) {
+		savePref($_SESSION['login'], "pref_rn_adr_resp", "y");
+	}
+	else {
+		savePref($_SESSION['login'], "pref_rn_adr_resp", "n");
+	}
+	*/
 	// Bloc observation sur la droite pour le relevé PDF:
 	$tab_rn_bloc_obs=isset($_POST['rn_bloc_obs']) ? $_POST['rn_bloc_obs'] : array();
 	
@@ -214,11 +221,11 @@
 			$tab_releve[$id_classe][$periode_num]['rn_moy_classe']=isset($tab_rn_moy_classe[$loop_classe]) ? "y" : "n";
 
 			$tab_releve[$id_classe][$periode_num]['rn_retour_ligne']=isset($tab_rn_retour_ligne[$loop_classe]) ? "y" : "n";
-			$_SESSION['pref_rn_retour_ligne']=$tab_releve[$id_classe][$periode_num]['rn_retour_ligne'];
+			//$_SESSION['pref_rn_retour_ligne']=$tab_releve[$id_classe][$periode_num]['rn_retour_ligne'];
 
 			$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font']=((isset($tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]!='')&&(preg_match("/^[0-9.]*$/",$tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]>0)) ? $tab_rn_rapport_standard_min_font[$loop_classe] : 3;
 
-			$_SESSION['pref_rn_rapport_standard_min_font']=$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font'];
+			//$_SESSION['pref_rn_rapport_standard_min_font']=$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font'];
 
 			// Informations sur la période
 			if ($choix_periode=="intervalle") {
@@ -420,6 +427,9 @@
 					}
 					// Si c'est un compte secours
 					elseif ($_SESSION['statut'] == 'secours') {
+						$autorisation_acces='y';
+					}
+					elseif(($_SESSION['statut'] == 'autre') AND (acces("/cahier_notes/visu_releve_notes_bis.php", $_SESSION['statut'] == 'autre'))) {
 						$autorisation_acces='y';
 					}
 

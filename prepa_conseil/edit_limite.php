@@ -122,11 +122,38 @@ if ($_SESSION['statut'] == "eleve" AND my_strtoupper($_SESSION['login']) != my_s
 }
 
 // Et encore une : si on a un reponsable ou un élève, alors seul l'édition pour un élève seul est autorisée
-if (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $choix_edit != "2") {
-    tentative_intrusion(3, "Tentative (élève ou parent) de changement du mode de visualisation d'un bulletin simplifié (le mode imposé est la visualisation pour un seul élève)");
-    echo "N'essayez pas de tricher...\n";
-    require("../lib/footer.inc.php");
-	die();
+if ($_SESSION['statut'] == "responsable" AND $choix_edit != "2") {
+	if((!getSettingAOui('GepiAccesBulletinSimpleClasseResp'))||($choix_edit != "4")) {
+		tentative_intrusion(3, "Tentative parent de changement du mode de visualisation d'un bulletin simplifié (le mode imposé est la visualisation pour un seul élève)");
+		echo "N'essayez pas de tricher...\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	else {
+		// Récupérer l'id_classe:
+		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='".$login_eleve."' ORDER BY periode DESC LIMIT 1;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$id_classe=mysql_result($res, 0, "id_classe");
+		}
+	}
+}
+
+if ($_SESSION['statut'] == "eleve" AND $choix_edit != "2") {
+	if((!getSettingAOui('GepiAccesBulletinSimpleClasseEleve'))||($choix_edit != "4")) {
+		tentative_intrusion(3, "Tentative élève de changement du mode de visualisation d'un bulletin simplifié (le mode imposé est la visualisation pour un seul élève)");
+		echo "N'essayez pas de tricher...\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	else {
+		// Récupérer l'id_classe:
+		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='".$login_eleve."' ORDER BY periode DESC LIMIT 1;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$id_classe=mysql_result($res, 0, "id_classe");
+		}
+	}
 }
 
 if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {

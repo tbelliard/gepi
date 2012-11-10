@@ -262,5 +262,28 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'classes_param' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'classes_param';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE classes_param (
+										id int(11) NOT NULL AUTO_INCREMENT,
+										id_classe smallint(6) NOT NULL,
+										name varchar(100) NOT NULL,
+										value varchar(255) NOT NULL,
+										PRIMARY KEY (id),
+										UNIQUE KEY id_classe_name (id_classe,name)
+										) CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
 ?>

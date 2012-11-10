@@ -905,7 +905,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisir_groupe_plan.php', 'F'
 
 $tab_req[] = "INSERT INTO droits VALUES ( '/matieres/matiere_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');";
 
-$tab_req[] = "INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');";
+$tab_req[] = "INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');";
 
 $tab_req[] = "INSERT INTO droits SET id='/responsables/maj_import3.php',
 administrateur='V',
@@ -917,6 +917,18 @@ responsable='F',
 secours='F',
 autre='F',
 description='Mise à jour Sconet',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/responsables/consult_maj_sconet.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Consultation des compte-renduds de mise à jour Sconet',
 statut='';";
 
 $tab_req[]="INSERT INTO droits SET id='/mod_discipline/mod_discipline_extraction_ooo.php',

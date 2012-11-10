@@ -507,7 +507,7 @@ foreach ($results as $eleve) {
     echo "<tr style='background-color :$background_couleur'>\n";
 
     //donnees id
-    echo '<td>';
+    echo '<td title="Identifiant id_eleve">';
     echo $eleve->getId();
     echo '</td>';
 
@@ -517,7 +517,8 @@ foreach ($results as $eleve) {
     echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
     echo "</a>";
     if ($utilisateur->getAccesFicheEleve($eleve)) {
-        echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
+        //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
+        echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences&amp;quitter_la_page=y' target='_blank'>";
         //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
         echo ' (voir fiche)';
         echo "</a>";
@@ -542,10 +543,15 @@ foreach ($results as $eleve) {
     $query_eleve_hydration->joinWith('Eleve.AbsenceEleveSaisie', Criteria::LEFT_JOIN);
     $query_eleve_hydration->useAbsenceEleveSaisieQuery()->filterByDeletedAt(null)->endUse();
     $eleve_saisie_hydrated = $query_eleve_hydration->find()->getFirst();
-    echo $eleve_saisie_hydrated->getAbsenceEleveSaisies()->count();
-    echo " saisie";
-    if ($eleve_saisie_hydrated->getAbsenceEleveSaisies()->count() > 1) {
-        echo "s";
+    // Ajout d'un test: Il y avait plantage sur la recherche:
+    //    Manquement obligation présence : <vide>
+    //    Justification : SANS JUSTIFICATION
+    if($eleve_saisie_hydrated) {
+        echo $eleve_saisie_hydrated->getAbsenceEleveSaisies()->count();
+        echo " saisie";
+        if ($eleve_saisie_hydrated->getAbsenceEleveSaisies()->count() > 1) {
+            echo "s";
+        }
     }
     echo '</td>';
 
@@ -553,13 +559,18 @@ foreach ($results as $eleve) {
     $justif_col = new PropelObjectCollection();
     $motif_col = new PropelObjectCollection();
     $manque = false;
-    foreach ($eleve_saisie_hydrated->getAbsenceEleveSaisies() as $saisie) {
-        foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-            $type_col->add($traitement->getAbsenceEleveType());
-            $justif_col->add($traitement->getAbsenceEleveJustification());
-            $motif_col->add($traitement->getAbsenceEleveMotif());
+    // Ajout d'un test: Il y avait plantage sur la recherche:
+    //    Manquement obligation présence : <vide>
+    //    Justification : SANS JUSTIFICATION
+    if($eleve_saisie_hydrated) {
+        foreach ($eleve_saisie_hydrated->getAbsenceEleveSaisies() as $saisie) {
+            foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+                $type_col->add($traitement->getAbsenceEleveType());
+                $justif_col->add($traitement->getAbsenceEleveJustification());
+                $motif_col->add($traitement->getAbsenceEleveMotif());
+            }
+            $manque = $manque || $saisie->getManquementObligationPresence();
         }
-        $manque = $manque || $saisie->getManquementObligationPresence();
     }
 
     //donnees type
