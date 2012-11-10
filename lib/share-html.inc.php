@@ -2305,4 +2305,53 @@ function get_infos_derniere_maj_sconet() {
 	return $retour;
 }
 
+
+/** Retourne le lien HTML pour un histogramme des notes passées en paramètre
+ *  et génère le DIV infobulle du graphe SVG.
+ *
+ * @param array $tab_graph_note : Le tableau des notes
+ * @param string $titre : Titre de l'infobulle
+ * @param string $id : Identifiant de l'infobulle
+ *
+ * @return string Retourne le lien
+ */
+function retourne_html_histogramme_svg($tab_graph_note, $titre, $id, $nb_tranches=5, $note_sur=20, $graphe_largeurTotale=200, $graphe_hauteurTotale=150, $graphe_taille_police=3, $graphe_epaisseur_traits=2) {
+	global $tabdiv_infobulle;
+
+	$retour="";
+
+	$graphe_serie="";
+	if(isset($tab_graph_note)) {
+		for($l=0;$l<count($tab_graph_note);$l++) {
+			if($l>0) {$graphe_serie.="|";}
+			$graphe_serie.=$tab_graph_note[$l];
+		}
+	}
+
+	$texte="<div align='center'><object data='../lib/graphe_svg.php?";
+	$texte.="serie=$graphe_serie";
+	$texte.="&amp;note_sur_serie=$note_sur";
+	$texte.="&amp;nb_tranches=$nb_tranches";
+	$texte.="&amp;titre=Repartition_des_notes";
+	$texte.="&amp;v_legend1=Notes";
+	$texte.="&amp;v_legend2=Effectif";
+	$texte.="&amp;largeurTotale=$graphe_largeurTotale";
+	$texte.="&amp;hauteurTotale=$graphe_hauteurTotale";
+	$texte.="&amp;taille_police=$graphe_taille_police";
+	$texte.="&amp;epaisseur_traits=$graphe_epaisseur_traits";
+	$texte.="'";
+	$texte.=" width='$graphe_largeurTotale' height='$graphe_hauteurTotale'";
+	$texte.=" type=\"image/svg+xml\"></object></div>\n";
+
+	$tabdiv_infobulle[]=creer_div_infobulle($id,$titre,"",$texte,"",14,0,'y','y','n','n');
+
+	$retour.=" <a href='#' onmouseover=\"delais_afficher_div('$id','y',-100,20,1500,10,10);\"";
+	$retour.=" onclick=\"afficher_div('$id','y',-100,20);return false;\"";
+	$retour.=">";
+	$retour.="<img src='../images/icons/histogramme.png' alt=\"$titre\" />";
+	$retour.="</a>";
+
+	return $retour;
+}
+
 ?>

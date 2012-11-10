@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -1071,9 +1071,9 @@ $alt=1;
 while ($k < $nb_periode) {
 	$alt=$alt*(-1);
 	if ($current_group["classe"]["ver_periode"]["all"][$k] == 0) {
-		echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
+		echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span><span id='span_repartition_notes_$k'></span></td>\n";
 	} else {
-		echo "<tr class='lig$alt'><td>$nom_periode[$k]</td>\n";
+		echo "<tr class='lig$alt'><td>$nom_periode[$k]<span id='span_repartition_notes_$k'></span></td>\n";
 	}
 	echo $mess[$k];
 	$k++;
@@ -1101,6 +1101,9 @@ if($_SESSION['statut']=="secours") {
 }
 */
 //=================================
+
+// Tableau des notes pour chaque période
+$tab_per_notes=array();
 
 $prev_classe = null;
 //=========================
@@ -1243,6 +1246,7 @@ foreach ($liste_eleves as $eleve_login) {
 			} else {
 				if ($eleve_note != '') {
 					$note .= $eleve_note;
+					$tab_per_notes[$k][]=$eleve_note;
 				} else {
 					$note .= "&nbsp;";
 				}
@@ -1629,8 +1633,20 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 </form>
 
 <?php
+	for($loop=1;$loop<$nb_periode;$loop++) {
+		$histogramme="";
 
+		if((isset($tab_per_notes[$loop]))&&(count($tab_per_notes[$loop])>0)) {
+			$histogramme=retourne_html_histogramme_svg($tab_per_notes[$loop], "Repartition P$loop", "repartition_p$loop");
 
+			if($histogramme!="") {
+				//echo $histogramme;
+				echo "<script type='text/javascript'>
+	if(document.getElementById('span_repartition_notes_$loop')) {document.getElementById('span_repartition_notes_$loop').innerHTML='<br />".addslashes($histogramme)."';}
+</script>\n";
+			}
+		}
+	}
 
 echo "<script type='text/javascript'>
 

@@ -73,7 +73,6 @@ if ($_SESSION['statut'] != "secours") {
 }
 
 
-
 if (isset($is_posted) and ($is_posted == 'yes')) {
 	check_token();
 
@@ -336,71 +335,8 @@ $_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
 echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Imprimer</a>";
 
 //=========================
-// AJOUT: boireaus 20071108
 echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a>";
 //=========================
-
-
-
-
-
-/*
-// =================================
-// AJOUT: boireaus
-// Pour proposer de passer à la classe suivante ou à la précédente
-//$sql="SELECT id, classe FROM classes ORDER BY classe";
-if($_SESSION['statut']=='secours'){
-	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
-}
-else
-*/
-
-/*
-if($_SESSION['statut']=='professeur'){
-	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
-
-
-    $tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
-    //$tab_groups = get_groups_for_prof($_SESSION["login"]);
-
-	if(!empty($tab_groups)) {
-		$id_grp_prec=0;
-		$id_grp_suiv=0;
-		$temoin_tmp=0;
-		//foreach($tab_groups as $tmp_group) {
-		for($loop=0;$loop<count($tab_groups);$loop++) {
-			if($tab_groups[$loop]['id']==$current_group["id"]){
-				$temoin_tmp=1;
-				if(isset($tab_groups[$loop+1])){
-					$id_grp_suiv=$tab_groups[$loop+1]['id'];
-				}
-				else{
-					$id_grp_suiv=0;
-				}
-			}
-			if($temoin_tmp==0){
-				$id_grp_prec=$tab_groups[$loop]['id'];
-			}
-		}
-		// =================================
-
-		if(isset($id_grp_prec)){
-			if($id_grp_prec!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_cn=$periode_cn";
-				echo "'>Enseignement précédent</a>";
-			}
-		}
-		if(isset($id_grp_suiv)){
-			if($id_grp_suiv!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_cn=$periode_cn";
-				echo "'>Enseignement suivant</a>";
-				}
-		}
-	}
-	// =================================
-}
-echo "</p>";
-*/
 
 if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
@@ -606,7 +542,8 @@ function verifcol(num_id){
 //=============================================================
 
 
-
+// Tableau des notes pour chaque période
+$tab_per_notes=array();
 
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\"post\" name=\"saisie\">\n";
 echo add_token_field();
@@ -635,10 +572,10 @@ echo add_token_field();
 	echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus' summary='Saisie'>\n";
 	//echo "<table border='1' cellspacing='2' cellpadding='1'>\n";
 	echo "<tr>\n";
-	echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=nom' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nom Prénom</a></b></td>\n";
+	echo "<th><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=nom' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nom Prénom</a></b></th>\n";
 
 	if ($multiclasses) {
-		echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe</a></b></td>";
+		echo "<th><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe</a></b></th>";
 	}
 	$i = 1;
 	while ($i < $nb_periode) {
@@ -683,8 +620,8 @@ echo add_token_field();
 	}
 	echo "</tr>\n";
 
-	echo "<tr>\n<td>&nbsp;</td>\n";
-	if ($multiclasses) {echo "<td>&nbsp;</td>\n";}
+	echo "<tr>\n<th>&nbsp;</th>\n";
+	if ($multiclasses) {echo "<th>&nbsp;</th>\n";}
 
 	$i = 1;
 	while ($i < $nb_periode) {
@@ -701,15 +638,20 @@ echo add_token_field();
 					}
 				}
 				echo "</td>\n";
-				echo "<td bgcolor=\"$couleur_fond\" style='text-align:center;'>Bulletin</td>\n";
+				echo "<td bgcolor=\"$couleur_fond\" style='text-align:center;'>Bulletin<span id='span_bull_per_$i'></span></td>\n";
 			} else {
 				//echo "<td>&nbsp;</td>\n";
-				echo "<td style='text-align:center;'>Carnet<br />de notes</td><td style='text-align:center;'>Bulletin</td>\n";
+				echo "<th style='text-align:center;'>Carnet<br />de notes</th><th style='text-align:center;'>Bulletin<span id='span_bull_per_$i'></span></th>\n";
 			}
 		} else {
-			echo "<td style='text-align:center;' colspan='2'";
-			if ($periode_cn == $i) {echo " bgcolor='$couleur_fond'";}
-			echo "><b>".ucfirst($gepiClosedPeriodLabel)."</b></td>\n";
+			if ($periode_cn == $i) {
+				echo "<td colspan='2' style='text-align:center;";
+				echo " background-color:$couleur_fond;";
+				echo "'><b>".ucfirst($gepiClosedPeriodLabel)."</b><span id='span_bull_per_$i'></span></td>\n";
+			}
+			else {
+				echo "<th colspan='2'><b>".ucfirst($gepiClosedPeriodLabel)."</b><span id='span_bull_per_$i'></span></th>\n";
+			}
 		}
 		$i++;
 	}
@@ -781,6 +723,10 @@ foreach ($liste_eleves as $eleve_login) {
 			$eleve_statut = @mysql_result($note_query, 0, "statut");
 			$eleve_note = @mysql_result($note_query, 0, "note");
 			$eleve_login_t[$k] = $eleve_login."_t".$k;
+
+			if (($eleve_statut == '')&&($eleve_note!="")) {
+				$tab_per_notes[$k][]=$eleve_note;
+			}
 
 			//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N") {
 			if ((($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N")&&($_SESSION['statut']!='secours'))||
@@ -987,14 +933,14 @@ foreach ($liste_eleves as $eleve_login) {
 
 echo "<tr>\n";
 if ($multiclasses) {
-	echo "<td colspan='2'>";
+	echo "<th colspan='2'>";
 } else {
-	echo "<td>";
+	echo "<th>";
 }
 
 echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 
-echo "Moyennes :</td>\n";
+echo "Moyennes :</th>\n";
 
 $k='1';
 $temp = '';
@@ -1056,10 +1002,144 @@ while ($k < $nb_periode) {
 			echo "<td ".$temp.">&nbsp;</td>\n";
 		}
 	}
-$k++;
+
+	$k++;
 }
 ?>
 </tr>
+<?php
+
+	if(count($tab_per_notes)>0) {
+		echo "<tr>\n";
+		echo "<th>Min. :</th>\n";
+		for($loop=1;$loop<$nb_periode;$loop++) {
+			/*
+			if((isset($tab_per_notes[$loop]))&&(count($tab_per_notes[$loop])>0)) {
+				$tab_m[$loop]=calcule_moy_mediane_quartiles($tab_per_note[$loop]);
+			}
+			*/
+
+			// Colonne CN
+			if (($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||
+				(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))) {
+				if ($periode_cn == $loop) {
+					echo "<td bgcolor=\"$couleur_moy_cn\"></td>\n";
+					$temp = "bgcolor=\"$couleur_fond\"";
+				}
+				else{
+					echo "<td></td>\n";
+					$temp = "";
+				}
+			} else {
+				$temp = " colspan='2'";
+				if($periode_cn == $loop){
+					$temp.=" bgcolor='$couleur_fond'";
+				}
+			}
+
+			// Colonne Bull
+			echo "<td";
+			if (($is_posted=='bascule') and (($periode_cn == $loop) and
+				(($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))))) {
+				echo ">";
+			} else {
+				echo " ".$temp.">";
+			}
+			if((isset($tab_per_notes[$loop]))&&(count($tab_per_notes[$loop])>0)) {
+				echo min($tab_per_notes[$loop]);
+			}
+			echo "</td>\n";
+		}
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<th>Max. :</th>\n";
+		for($loop=1;$loop<$nb_periode;$loop++) {
+			/*
+			if((isset($tab_per_notes[$loop]))&&(count($tab_per_notes[$loop])>0)) {
+				$tab_m[$loop]=calcule_moy_mediane_quartiles($tab_per_note[$loop]);
+			}
+			*/
+
+			// Colonne CN
+			if (($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||
+				(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))) {
+				if ($periode_cn == $loop) {
+					echo "<td bgcolor=\"$couleur_moy_cn\"></td>\n";
+					$temp = "bgcolor=\"$couleur_fond\"";
+				}
+				else{
+					echo "<td></td>\n";
+					$temp = "";
+				}
+			} else {
+				$temp = " colspan='2'";
+				if($periode_cn == $loop){
+					$temp.=" bgcolor='$couleur_fond'";
+				}
+			}
+
+			// Colonne Bull
+			echo "<td";
+			if (($is_posted=='bascule') and (($periode_cn == $loop) and
+				(($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))))) {
+				echo ">";
+			} else {
+				echo " ".$temp.">";
+			}
+			if((isset($tab_per_notes[$loop]))&&(count($tab_per_notes[$loop])>0)) {
+				echo max($tab_per_notes[$loop]);
+			}
+			echo "</td>\n";
+		}
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<th>Répartition&nbsp;:</th>\n";
+		for($loop=1;$loop<$nb_periode;$loop++) {
+			$histogramme="";
+			if((isset($tab_per_notes[$loop]))&&(count($tab_per_notes[$loop])>0)) {
+				$histogramme=retourne_html_histogramme_svg($tab_per_notes[$loop], "Repartition P$loop", "repartition_p$loop");
+			}
+
+			// Colonne CN
+			if (($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||
+				(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))) {
+				if ($periode_cn == $loop) {
+					echo "<td bgcolor=\"$couleur_moy_cn\"></td>\n";
+					$temp = "bgcolor=\"$couleur_fond\"";
+				}
+				else{
+					echo "<td></td>\n";
+					$temp = "";
+				}
+			} else {
+				$temp = " colspan='2'";
+				if($periode_cn == $loop){
+					$temp.=" bgcolor='$couleur_fond'";
+				}
+			}
+
+			// Colonne Bull
+			echo "<td";
+			if (($is_posted=='bascule') and (($periode_cn == $loop) and
+				(($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))))) {
+				echo ">";
+			} else {
+				echo " ".$temp.">";
+			}
+
+			if($histogramme!="") {
+				echo $histogramme;
+				echo "<script type='text/javascript'>
+	if(document.getElementById('span_bull_per_$loop')) {document.getElementById('span_bull_per_$loop').innerHTML='<br />".addslashes($histogramme)."';}
+</script>\n";
+			}
+			echo "</td>\n";
+		}
+		echo "<tr>\n";
+	}
+?>
 </table>
 <?php
 
