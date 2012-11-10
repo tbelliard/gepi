@@ -530,6 +530,32 @@ class GepiDataPopulator
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
 
+        //on ajoute des cours
+        $edtCours = new EdtEmplacementCours();
+        $edtCours->setGroupe($groupe_math);
+        $edtCours->setDuree(2);
+        $edtCours->setIdDefiniePeriode(4);
+        $edtCours->setJourSemaine('vendredi');
+        $edtCours->setHeuredebDec(0);
+        $edtCours->setUtilisateurProfessionnel($lebesgue_prof);
+        $edtCours->save();
+        $edtCours = new EdtEmplacementCours();
+        $edtCours->setGroupe($groupe_math);
+        $edtCours->setDuree(2);
+        $edtCours->setIdDefiniePeriode(1);
+        $edtCours->setJourSemaine('jeudi');
+        $edtCours->setHeuredebDec(0);
+        $edtCours->setUtilisateurProfessionnel($lebesgue_prof);
+        $edtCours->save();
+        $edtCours = new EdtEmplacementCours();
+        $edtCours->setAidDetails($aid_1);
+        $edtCours->setDuree(2);
+        $edtCours->setIdDefiniePeriode(4);
+        $edtCours->setJourSemaine('vendredi');
+        $edtCours->setHeuredebDec(0);
+        $edtCours->setUtilisateurProfessionnel($newton_prof);
+        $edtCours->save();
+
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();
         
