@@ -106,12 +106,11 @@ class CvsentCtrl extends Controleur {
             $data->cree_table_import();
 
             $this->fic = fopen($file, 'r');
+            $this->fic =skip_bom_utf8($this->fic);
             $statut = 'eleve';
             while (($this->ligne = fgetcsv($this->fic, 1024, ";")) !== FALSE) {
              foreach($this->ligne as &$value){
-                 if(!mb_check_encoding($value, "UTF-8")){
-                     $value= utf8_encode($value);
-                 }
+                     $value= ensure_utf8($value);
              }
              
                 // On charge la table temporaire
