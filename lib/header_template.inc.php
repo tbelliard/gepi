@@ -685,4 +685,3 @@ if(isset($_SESSION['statut'])) {
 //debug_var();
 
 ?>
-
