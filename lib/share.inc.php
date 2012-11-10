@@ -1606,6 +1606,18 @@ function volume_dir($dir){
 }
 
 /**
+ * Cette fonction supprime le BOM éventuel d'un fichier encodé en UTF-8 
+ * 
+ * @param handle $handle Le pointeur de fichier à tester
+ * @return handle Le pointeur de fichier replacé au début si détection du BOM
+ */
+function skip_bom_utf8($handle)  {
+    if (fread($handle,3)!="\xEF\xBB\xBF")
+        rewind($handle);
+    return ($handle);   
+}
+
+/**
  * Supprime les fichiers d'un dossier
  *
  * @param string $dir le répertoire à vider
