@@ -4643,7 +4643,7 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 			// valeurs par défaut
 			$date_debut=$t_appel;
 			$date_fin=$t_appel + 3600*24*7;
-			$date_decompte=$date_fin;		
+			$date_decompte=$date_fin;
 		}
 	$r_sql="INSERT INTO `messages` values('','".addslashes($texte)."','".$date_debut."','".$date_fin."','".$_SESSION['login']."','_','".$login_destinataire."','".$date_decompte."')";
 	$retour=mysql_query($r_sql)?true:false;
@@ -4651,7 +4651,7 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 		{
 		$id_message=mysql_insert_id();
 		$contenu='
-		<form method="POST" action="accueil.php" name="f_suppression_message">
+		<form method="POST" action="#" name="f_suppression_message">
 		<input type="hidden" name="supprimer_message" value="'.$id_message.'">
 		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
 		</form>'.addslashes($texte);
