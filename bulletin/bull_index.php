@@ -446,8 +446,19 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	// FORMULAIRE POUR LE RETOUR AU CHOIX DES PERIODES
 	echo "\n<!-- Formulaire de retour au choix des périodes -->\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form_retour'>\n";
+	$temoin_periode_non_close="n";
+	$tab_per_non_close=array();
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<input type='hidden' name='tab_id_classe[$i]' value='".$tab_id_classe[$i]."' />\n";
+		//if($temoin_periode_non_close=="n") {
+		for($j=0;$j<count($tab_periode_num);$j++) {
+			$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$tab_id_classe[$i]."' AND verouiller='N' AND num_periode='".$tab_periode_num[$j]."';";
+			$test_per=mysql_query($sql);
+			if(mysql_num_rows($test_per)>0) {
+				$tab_per_non_close[$tab_id_classe[$i]][]=$tab_periode_num[$j];
+				$temoin_periode_non_close="y";
+			}
+		}
 	}
 	for($j=0;$j<count($tab_periode_num);$j++) {
 		echo "<input type='hidden' name='tab_periode_num[$j]' value='".$tab_periode_num[$j]."' />\n";
@@ -455,6 +466,9 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "</form>\n";
 	//===========================
 
+	if($temoin_periode_non_close=="y") {
+		echo "<br /><p style='text-indent:-7em; margin-left:7em;'><strong style='color:red; text-decoration:blink;'>ATTENTION&nbsp;:</strong> Les saisies ne sont pas closes (<em>période encore ouverte en saisie</em>).<br />Cela signifie que les notes et appréciations peuvent encore changer.<br />Les bulletins vont être marqués d'une indication comme quoi la période n'est pas close.<br />Vous ne devriez pas imprimer ces bulletins.<br />Vous pouvez tester l'affichage pour ajuster les paramètres d'impression, mais vous devriez verrouiller la période avec un compte 'scolarité' avant d'imprimer les bulletins.</p><br />\n";
+	}
 
 	//echo "<p class='bold'>Sélection des élèves:</p>\n";
 	echo "<p class='bold'>Sélection des élèves et paramètres:</p>\n";
@@ -941,7 +955,11 @@ function ToutDeCocher() {
 			//echo "<th>Période $j</th>\n";
 			$sql="SELECT nom_periode FROM periodes WHERE id_classe='".$tab_id_classe[$i]."' AND num_periode='".$tab_periode_num[$j]."';";
 			$res_per=mysql_query($sql);
-			echo "<th>\n";
+			echo "<th";
+			if((isset($tab_per_non_close[$tab_id_classe[$i]]))&&(in_array($tab_periode_num[$j], $tab_per_non_close[$tab_id_classe[$i]]))) {
+				echo " style='background-color:red' title='Période non close. Vous ne devriez pas imprimer ces bulletins.'";
+			}
+			echo ">\n";
 			$lig_per=mysql_fetch_object($res_per);
 
 			echo "<input type='hidden' name='tab_periode_num[$j]' value='".$tab_periode_num[$j]."' />\n";
@@ -951,7 +969,7 @@ function ToutDeCocher() {
 				echo $lig_per->nom_periode;
 			}
 			else {
-				echo "<span style='color:red'>X</span>";
+				echo "<span style='color:orange' title='Nom de période inconnu???'>X</span>";
 			}
 
 			echo "<br />\n";
