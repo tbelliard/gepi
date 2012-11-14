@@ -54,7 +54,15 @@ table.uneligne {
 	font-size: 8pt;
 
 	text-align:left;
-}\n";
+}
+
+.uneligne .lig1 {
+	background-color: papayawhip;
+}
+.uneligne .lig-1 {
+	background-color: honeydew;
+}
+\n";
 
 	// Récupération des variables du bloc adresses:
 	// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
@@ -123,6 +131,9 @@ table.uneligne {
 
 	$releve_col_hauteur=getSettingValue("releve_col_hauteur") ? getSettingValue("releve_col_hauteur") : 0;
 	$releve_largeurtableau=getSettingValue("releve_largeurtableau") ? getSettingValue("releve_largeurtableau") : 800;
+	if(($releve_largeurtableau=="")||(!is_numeric($releve_largeurtableau))||($releve_largeurtableau<=0)) {
+		$releve_largeurtableau=800;
+	}
 	$releve_col_matiere_largeur=getSettingValue("releve_col_matiere_largeur") ? getSettingValue("releve_col_matiere_largeur") : 150;
 
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi") ? getSettingValue("gepi_prof_suivi") : "professeur principal";

@@ -498,6 +498,8 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		// Pour être pris en compte dans les boites/conteneurs:
 		global $retour_a_la_ligne;
 
+		global $rn_couleurs_alternees;
+
 		$debug_releve="n";
 		$debug_ele_login="ahnjinwon";
 		$debug_id_groupe=237;
@@ -516,6 +518,10 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		$retour_a_la_ligne=$tab_rel['rn_retour_ligne'];
 	}
 
+	//echo "\$releve_largeurtableau=$releve_largeurtableau<br />";
+	//if(!isset($releve_largeurtableau)) {
+	//	$releve_largeurtableau="100%";
+	//}
 
 	/*
 	$affiche_categories
@@ -1159,23 +1165,26 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		}
 
 		// On initialise le tableau :
-
 		$larg_tab = $releve_largeurtableau;
 		$larg_col1 = $releve_col_matiere_largeur;
 		$larg_col2 = $larg_tab - $larg_col1;
 		//echo "<table width=\"$larg_tab\" class='boireaus' border=1 cellspacing=3 cellpadding=3>\n";
-        echo "<div class='center'>\n";
-		echo "<table width=\"$larg_tab\"$releve_class_bordure border='1' cellspacing='3' cellpadding='3'";
-		echo "summary=\"Tableau des notes\" ";
+		echo "<div class='center'>\n";
+		echo "<table width=\"$larg_tab\"$releve_class_bordure border='1' cellspacing='3' cellpadding='3' ";
+		echo "summary=\"Tableau des notes\"";
+		if((isset($rn_couleurs_alternees))&&($rn_couleurs_alternees=="y")) {
+			echo " style='background-color:white;'";
+		}
 		echo ">\n";
 		echo "<tr>\n";
-		echo "<td style=\"width: ".$larg_col1."px\" class='releve'><b>Matière</b><br /><i>Professeur</i></td>\n";
-		echo "<td style=\"width: ".$larg_col2."px\" class='releve'>Notes sur 20</td>\n";
+		echo "<th style=\"width: ".$larg_col1."px\" class='releve'><b>Matière</b><br /><i>Professeur</i></th>\n";
+		echo "<th style=\"width: ".$larg_col2."px\" class='releve'>Notes sur 20</th>\n";
 		echo "</tr>\n";
 
 		// Boucle groupes
 		$j = 0;
 		$prev_cat_id = null;
+		$alt=1;
 		if((isset($tab_rel['eleve'][$i]['groupe']))&&(count($tab_rel['eleve'][$i]['groupe'])>0)) {
 			while ($j < count($tab_rel['eleve'][$i]['groupe'])) {
 	
@@ -1199,8 +1208,14 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 							echo "</tr>\n";
 						}
 					}
-		
-					echo "<tr>\n";
+
+					$alt=$alt*(-1);
+					if((isset($rn_couleurs_alternees))&&($rn_couleurs_alternees=="y")) {
+						echo "<tr class='lig$alt'>\n";
+					}
+					else {
+						echo "<tr>\n";
+					}
 					echo "<td class='releve'>\n";
 					echo "<b>".($tab_rel['eleve'][$i]['groupe'][$j]['matiere_nom_complet'])."</b>";
 					//echo $tab_rel['eleve'][$i]['groupe'][$j]['id_groupe'];

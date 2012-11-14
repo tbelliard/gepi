@@ -837,11 +837,11 @@ class class_page_accueil {
 
 	if ($condition) {
 		if ($this->statutUtilisateur == "responsable") {
-		  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_bis.php",
+		  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_ter.php",
 				  "Relevés de notes",
 				  "Permet de consulter les relevés de notes des ".$this->gepiSettings['denomination_eleves']." dont vous êtes le ".$this->gepiSettings['denomination_responsable'].".");
 		} else {
-		  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_bis.php",
+		  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_ter.php",
 				  "Relevés de notes",
 				  "Permet de consulter vos relevés de notes détaillés.");
 		}

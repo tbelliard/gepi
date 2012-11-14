@@ -1646,7 +1646,7 @@ else {
 			}
 			//==============================
 
-			if($mode_bulletin!="pdf") {
+			if(($mode_bulletin!="pdf")&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 				echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
 				echo "<h2>Classe de ".$classe."</h2>\n";
 				if($periode_num=="intervalle") {
@@ -1667,7 +1667,7 @@ else {
 			}
 			else {
 
-				if($mode_bulletin!="pdf") {
+				if(($mode_bulletin!="pdf")&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 					//+++++++++++++++++++++++++++++++++++
 					// A FAIRE: Il faudrait afficher l'effectif des élèves choisis faisant partie de la classe/période...
 					echo "<p>".count($tab_releve[$id_classe][$periode_num]['eleve'])." élève(s) sélectionné(s) dans cette classe (<em>pour cette période</em>).</p>\n";
@@ -1718,10 +1718,14 @@ else {
 										releve_html($tab_releve[$id_classe][$periode_num],$rg[$i],-1);
 
 										$chaine_info_deux_releves="";
-										if(($un_seul_bull_par_famille=="non")&&($nb_releves>1)) {$chaine_info_deux_releves=".<br /><span style='color:red'>Plusieurs relevés pour une même famille&nbsp: les adresses des deux responsables diffèrent.</span><br /><span style='color:red'>Si vous ne souhaitez pas de deuxième relevé, pensez à cocher la case 'Un seul relevé par famille'.</span>";}
+										if(($un_seul_bull_par_famille=="non")&&($nb_releves>1)&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+											$chaine_info_deux_releves=".<br /><span style='color:red'>Plusieurs relevés pour une même famille&nbsp: les adresses des deux responsables diffèrent.</span><br /><span style='color:red'>Si vous ne souhaitez pas de deuxième relevé, pensez à cocher la case 'Un seul relevé par famille'.</span>";
+										}
 
-										echo "<div class='espacement_bulletins'><div align='center'>Espacement (<em>non imprimé</em>) entre les relevés".$chaine_info_deux_releves."</div></div>\n";
-	
+										if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+											echo "<div class='espacement_bulletins'><div align='center'>Espacement (<em>non imprimé</em>) entre les relevés".$chaine_info_deux_releves."</div></div>\n";
+										}
+
 										flush();
 									}
 									else {

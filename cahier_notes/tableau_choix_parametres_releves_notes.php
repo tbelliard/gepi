@@ -352,6 +352,13 @@
 		echo "<input type='text' name='chaine_coef' id='chaine_coef' size='5' value='$chaine_coef' />\n";
 		echo "</p>\n";
 
+		echo "<p>\n";
+		echo "<input type='checkbox' name='rn_couleurs_alternees' id='rn_couleurs_alternees' size='5' value='y' ";
+		if(getPref($_SESSION['login'], "rn_couleurs_alternees", "n")=="y") {echo "checked ";}
+		echo "/> \n";
+		echo "<label for='rn_couleurs_alternees'>Afficher des couleurs alternées pour les lignes de matières</label>\n";
+		echo "</p>\n";
+
 		//echo "<p>Formule à afficher en bas de page (<em>relevé HTML</em>):</p>\n";
 		echo "<p>Formule à afficher en bas de page&nbsp;: \n";
 

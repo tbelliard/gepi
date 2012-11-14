@@ -54,19 +54,19 @@
 
 	// Récupération des paramètres
 	// Les valeurs des tableaux peuvent ne pas être affectées si aucune case n'est cochée
-	$tab_rn_nomdev=isset($_POST['rn_nomdev']) ? $_POST['rn_nomdev'] : array();
-	$tab_rn_toutcoefdev=isset($_POST['rn_toutcoefdev']) ? $_POST['rn_toutcoefdev'] : array();
-	$tab_rn_coefdev_si_diff=isset($_POST['rn_coefdev_si_diff']) ? $_POST['rn_coefdev_si_diff'] : array();
-	$tab_rn_datedev=isset($_POST['rn_datedev']) ? $_POST['rn_datedev'] : array();
-	$tab_rn_app=isset($_POST['rn_app']) ? $_POST['rn_app'] : array();
-	$tab_rn_sign_chefetab=isset($_POST['rn_sign_chefetab']) ? $_POST['rn_sign_chefetab'] : array();
-	$tab_rn_sign_pp=isset($_POST['rn_sign_pp']) ? $_POST['rn_sign_pp'] : array();
-	$tab_rn_sign_resp=isset($_POST['rn_sign_resp']) ? $_POST['rn_sign_resp'] : array();
+	$tab_rn_nomdev=isset($_POST['rn_nomdev']) ? $_POST['rn_nomdev'] : (isset($tab_rn_nomdev) ? $tab_rn_nomdev : array());
+	$tab_rn_toutcoefdev=isset($_POST['rn_toutcoefdev']) ? $_POST['rn_toutcoefdev'] : (isset($tab_rn_toutcoefdev) ? $tab_rn_toutcoefdev : array());
+	$tab_rn_coefdev_si_diff=isset($_POST['rn_coefdev_si_diff']) ? $_POST['rn_coefdev_si_diff'] : (isset($tab_rn_coefdev_si_diff) ? $tab_rn_coefdev_si_diff : array());
+	$tab_rn_datedev=isset($_POST['rn_datedev']) ? $_POST['rn_datedev'] : (isset($tab_rn_datedev) ? $tab_rn_datedev : array());
+	$tab_rn_app=isset($_POST['rn_app']) ? $_POST['rn_app'] : (isset($tab_rn_app) ? $tab_rn_app : array());
+	$tab_rn_sign_chefetab=isset($_POST['rn_sign_chefetab']) ? $_POST['rn_sign_chefetab'] : (isset($tab_rn_sign_chefetab) ? $tab_rn_sign_chefetab : array());
+	$tab_rn_sign_pp=isset($_POST['rn_sign_pp']) ? $_POST['rn_sign_pp'] : (isset($tab_rn_sign_pp) ? $tab_rn_sign_pp : array());
+	$tab_rn_sign_resp=isset($_POST['rn_sign_resp']) ? $_POST['rn_sign_resp'] : (isset($tab_rn_sign_resp) ? $tab_rn_sign_resp : array());
 	// Les deux suivants doivent être affectés (éventuellement avec des chaines vides)
-	$tab_rn_sign_nblig=isset($_POST['rn_sign_nblig']) ? $_POST['rn_sign_nblig'] : array();
-	$tab_rn_formule=isset($_POST['rn_formule']) ? $_POST['rn_formule'] : array();
+	$tab_rn_sign_nblig=isset($_POST['rn_sign_nblig']) ? $_POST['rn_sign_nblig'] :(isset($tab_rn_sign_nblig) ? $tab_rn_sign_nblig :  array());
+	$tab_rn_formule=isset($_POST['rn_formule']) ? $_POST['rn_formule'] : (isset($tab_rn_formule) ? $tab_rn_formule : array());
 
-	$tab_rn_adr_resp=isset($_POST['rn_adr_resp']) ? $_POST['rn_adr_resp'] : array();
+	$tab_rn_adr_resp=isset($_POST['rn_adr_resp']) ? $_POST['rn_adr_resp'] : (isset($tab_rn_adr_resp) ? $tab_rn_adr_resp : array());
 	/*
 	if(count($tab_rn_adr_resp)>count($tab_id_classe)/2) {
 		savePref($_SESSION['login'], "pref_rn_adr_resp", "y");
@@ -76,19 +76,22 @@
 	}
 	*/
 	// Bloc observation sur la droite pour le relevé PDF:
-	$tab_rn_bloc_obs=isset($_POST['rn_bloc_obs']) ? $_POST['rn_bloc_obs'] : array();
+	$tab_rn_bloc_obs=isset($_POST['rn_bloc_obs']) ? $_POST['rn_bloc_obs'] : (isset($tab_rn_bloc_obs) ? $tab_rn_bloc_obs : array());
 	
-	$tab_rn_bloc_abs2=isset($_POST['rn_abs_2']) ? $_POST['rn_abs_2'] : array();
+	$tab_rn_bloc_abs2=isset($_POST['rn_abs_2']) ? $_POST['rn_abs_2'] : (isset($tab_rn_bloc_abs2) ? $tab_rn_bloc_abs2 : array());
 
-	$tab_rn_aff_classe_nom=isset($_POST['rn_aff_classe_nom']) ? $_POST['rn_aff_classe_nom'] : array();
+	$tab_rn_aff_classe_nom=isset($_POST['rn_aff_classe_nom']) ? $_POST['rn_aff_classe_nom'] : (isset($tab_rn_aff_classe_nom) ? $tab_rn_aff_classe_nom : array());
 
-	$tab_rn_moy_min_max_classe=isset($_POST['rn_moy_min_max_classe']) ? $_POST['rn_moy_min_max_classe'] : array();
-	$tab_rn_moy_classe=isset($_POST['rn_moy_classe']) ? $_POST['rn_moy_classe'] : array();
+	$tab_rn_moy_min_max_classe=isset($_POST['rn_moy_min_max_classe']) ? $_POST['rn_moy_min_max_classe'] : (isset($tab_rn_moy_min_max_classe) ? $tab_rn_moy_min_max_classe : array());
+	$tab_rn_moy_classe=isset($_POST['rn_moy_classe']) ? $_POST['rn_moy_classe'] : (isset($tab_rn_moy_classe) ? $tab_rn_moy_classe : array());
 
-	$tab_rn_retour_ligne=isset($_POST['rn_retour_ligne']) ? $_POST['rn_retour_ligne'] : array();
-	$tab_rn_rapport_standard_min_font=isset($_POST['rn_rapport_standard_min_font']) ? $_POST['rn_rapport_standard_min_font'] : array();
+	$tab_rn_retour_ligne=isset($_POST['rn_retour_ligne']) ? $_POST['rn_retour_ligne'] : (isset($tab_rn_retour_ligne) ? $tab_rn_retour_ligne : array());
+	$tab_rn_rapport_standard_min_font=isset($_POST['rn_rapport_standard_min_font']) ? $_POST['rn_rapport_standard_min_font'] : (isset($tab_rn_rapport_standard_min_font) ? $tab_rn_rapport_standard_min_font : array());
 
-	$chaine_coef=isset($_POST['chaine_coef']) ? $_POST['chaine_coef'] : "";
+	$chaine_coef=isset($_POST['chaine_coef']) ? $_POST['chaine_coef'] : (isset($chaine_coef) ? $chaine_coef : "");
+
+	$rn_couleurs_alternees=isset($_POST['rn_couleurs_alternees']) ? $_POST['rn_couleurs_alternees'] : (isset($rn_couleurs_alternees) ? $rn_couleurs_alternees : "n");
+	savePref($_SESSION['login'], "rn_couleurs_alternees", $rn_couleurs_alternees);
 
 	//+++++++++++++++++++++++++++++++++++
 	// A FAIRE
@@ -251,6 +254,11 @@
 			else {
 				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : array();
 			}
+
+			if((count($tab_selection_eleves)==0)&&(isset($ele_login))&&($ele_login!='')) {
+				$tab_selection_eleves[]=$ele_login;
+			}
+
 			$tab_releve[$id_classe][$periode_num]['selection_eleves']=$tab_selection_eleves;
 
 
