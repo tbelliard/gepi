@@ -206,6 +206,10 @@ elseif($_SESSION['statut']=='responsable') {
 		$cpt_ele++;
 	}
 
+	if($cpt_ele==1) {
+		$ele_login=$tab_login[0];
+	}
+
 	if(isset($ele_login)) {
 		$indice_eleve_courant="";
 		// Lien vers autre élève
@@ -290,7 +294,6 @@ elseif($_SESSION['statut']=='responsable') {
 		require("../lib/footer.inc.php");
 		die();
 	}
-
 }
 //=========================
 
