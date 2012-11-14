@@ -1614,6 +1614,26 @@ function volume_dir($dir){
 }
 
 /**
+ * Cette fonction supprime le BOM éventuel d'un fichier encodé en UTF-8
+ * A appeler immédiatement après ouverture du fichier
+ * Exemple :
+ * $handle=fopen("....");
+ * skip_bom_uf8($handle)
+ *
+ * @param handle $h_file : Le pointeur de fichier à tester
+ * @return boolean : true si pas de BOM ou si BOM sauté, false dans les autres cas 
+ */
+function skip_bom_uf8($h_file)
+	{
+	if (ftell($h_file)!=0) return false;
+	$bytes=fread($h_file,3);
+	if ($bytes===false) return false;
+	if ($bytes!="\xEF\xBB\xBF") return rewind($h_file);
+	return true;
+	}
+
+
+/**
  * Supprime les fichiers d'un dossier
  *
  * @param string $dir le répertoire à vider
@@ -4826,7 +4846,7 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 			// valeurs par défaut
 			$date_debut=$t_appel;
 			$date_fin=$t_appel + 3600*24*7;
-			$date_decompte=$date_fin;		
+			$date_decompte=$date_fin;
 		}
 	$r_sql="INSERT INTO `messages` values('','".addslashes($texte)."','".$date_debut."','".$date_fin."','".$_SESSION['login']."','_','".$login_destinataire."','".$date_decompte."')";
 	$retour=mysql_query($r_sql)?true:false;

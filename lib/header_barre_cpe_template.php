@@ -98,10 +98,10 @@ if ($barre_plugin!="") {
 					$menus .= '   <ul class="niveau2">'."\n";
 					$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte/see_all.php"'.insert_confirm_abandon().'>Consultation CDT</a></li>'."\n";
 				}
+				$menus .= '     <li><a href="'.$gepiPath.'/documents/archives/index.php"'.insert_confirm_abandon().'>Archives CDT</a></li>'."\n";
+				$menus .= '   </ul>'."\n";
+				$menus .= '</li>'."\n";
 			}
-			$menus .= '     <li><a href="'.$gepiPath.'/documents/archives/index.php"'.insert_confirm_abandon().'>Archives CDT</a></li>'."\n";
-			$menus .= '   </ul>'."\n";
-			$menus .= '</li>'."\n";
 		}
 		//=======================================================
 

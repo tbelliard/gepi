@@ -106,7 +106,7 @@ class CvsentCtrl extends Controleur {
             $data->cree_table_import();
 
             $this->fic = fopen($file, 'r');
-            $this->fic =skip_bom_utf8($this->fic);
+            skip_bom_utf8($this->fic);
             $statut = 'eleve';
             while (($this->ligne = fgetcsv($this->fic, 1024, ";")) !== FALSE) {
              foreach($this->ligne as &$value){
