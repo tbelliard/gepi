@@ -1169,8 +1169,8 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		echo "summary=\"Tableau des notes\" ";
 		echo ">\n";
 		echo "<tr>\n";
-		echo "<td style=\"width: $larg_col1\" class='releve'><b>Matière</b><br /><i>Professeur</i></td>\n";
-		echo "<td style=\"width: $larg_col2\" class='releve'>Notes sur 20</td>\n";
+		echo "<td style=\"width: ".$larg_col1."px\" class='releve'><b>Matière</b><br /><i>Professeur</i></td>\n";
+		echo "<td style=\"width: ".$larg_col2."px\" class='releve'>Notes sur 20</td>\n";
 		echo "</tr>\n";
 
 		// Boucle groupes
