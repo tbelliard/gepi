@@ -135,6 +135,7 @@ table.uneligne {
 		$releve_largeurtableau=800;
 	}
 	$releve_col_matiere_largeur=getSettingValue("releve_col_matiere_largeur") ? getSettingValue("releve_col_matiere_largeur") : 150;
+	$releve_col_moyenne_largeur=getSettingValue("releve_col_moyenne_largeur") ? getSettingValue("releve_col_moyenne_largeur") : 30;
 
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi") ? getSettingValue("gepi_prof_suivi") : "professeur principal";
 

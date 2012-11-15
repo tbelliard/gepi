@@ -223,7 +223,7 @@ if (isset($_POST['is_posted'])) {
 
 					// 20121027
 					//$tab_param=array('rn_aff_classe_nom');
-					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs');
+					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
 					for($loop=0;$loop<count($tab_param);$loop++) {
 						if (isset($_POST[$tab_param[$loop].'_'.$per])) {
 							if ($_POST[$tab_param[$loop].'_'.$per]!='') {
@@ -1368,6 +1368,19 @@ td {
 	<td>
 		<input type="radio" value="y" name="rn_app_<?php echo $per;?>" id="rn_app_y" onchange='changement()' /><label for='rn_app_y' style='cursor: pointer;'>Oui</label> 
 		<input type="radio" value="n" name="rn_app_<?php echo $per;?>" id="rn_app_n" onchange='changement()' /><label for='rn_app_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Avec la colonne moyenne (<em title="Moyenne du carnet de notes :
+Notez que tant que la période n'est pas close, cette moyenne peut évoluer
+(ajout de notes, modifications de coefficients,...)">du CN</em>) de l'élève&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_col_moy_<?php echo $per;?>" id="rn_col_moy_y" onchange='changement()' /><label for='rn_col_moy_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_col_moy_<?php echo $per;?>" id="rn_col_moy_n" onchange='changement()' /><label for='rn_col_moy_n' style='cursor: pointer;'>Non</label>
 	</td>
 </tr>
 

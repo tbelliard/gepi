@@ -35,13 +35,13 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes_ter.php';";
 $res_test=mysql_query($sql);
 if (mysql_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes_ter.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F','F', 'Relevé de notes : accès parents et élèves', '1');";
 	$res_insert=mysql_query($sql);
 }
+
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -377,11 +377,37 @@ $tab_rn_adr_resp[0]="n";
 $tab_rn_bloc_obs[0]="n";
 $tab_rn_bloc_abs2[0]="n";
 
-$tab_rn_moy_min_max_classe[0]="y";
-$tab_rn_moy_classe[0]="n";
+//echo getSettingValue('GepiAccesColMoyReleveEleve');
+if(($_SESSION['statut']=='eleve')&&(getSettingAOui('GepiAccesColMoyReleveEleve'))||
+($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesColMoyReleveParent'))) {
+	$tab_rn_col_moy[0]="y";
+}
+else {
+	$tab_rn_col_moy[0]="n";
+}
+//echo $tab_rn_col_moy[0];
+
+if(($_SESSION['statut']=='eleve')&&(getSettingAOui('GepiAccesMoyMinClasseMaxReleveEleve'))||
+($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesMoyMinClasseMaxReleveParent'))) {
+	$tab_rn_moy_min_max_classe[0]="y";
+	$tab_rn_moy_classe[0]="n";
+}
+elseif(($_SESSION['statut']=='eleve')&&(getSettingAOui('GepiAccesMoyClasseReleveEleve'))||
+($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesMoyClasseReleveParent'))) {
+	$tab_rn_moy_min_max_classe[0]="n";
+	$tab_rn_moy_classe[0]="y";
+}
+else {
+	$tab_rn_moy_min_max_classe[0]="n";
+	$tab_rn_moy_classe[0]="n";
+}
 
 $tab_rn_retour_ligne[0]="y";
 $tab_rn_rapport_standard_min_font[0]=3;
+
+$tab_rn_sign_chefetab[0]="n";
+$tab_rn_sign_pp[0]="n";
+$tab_rn_sign_resp[0]="n";
 
 $chaine_coef="coef:";
 

@@ -146,7 +146,7 @@ if (isset($_POST['ok'])) {
 			$reg_ok = 'no';
 		}
 	}
-	
+
 	if (isset($_POST['releve_col_matiere_largeur'])) {
 	
 		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_col_matiere_largeur'])) || $_POST['releve_col_matiere_largeur'] < 1) {
@@ -157,7 +157,17 @@ if (isset($_POST['ok'])) {
 			$reg_ok = 'no';
 		}
 	}
-	
+
+	if (isset($_POST['releve_col_moyenne_largeur'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_col_moyenne_largeur'])) || $_POST['releve_col_moyenne_largeur'] < 1) {
+			$_POST['releve_col_moyenne_largeur'] = 30;
+		}
+		if (!saveSetting("releve_col_moyenne_largeur", $_POST['releve_col_moyenne_largeur'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_col_moyenne_largeur !";
+			$reg_ok = 'no';
+		}
+	}
+
 	if (isset($_POST['releve_ecart_entete'])) {
 	
 		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_ecart_entete']))) {
@@ -318,7 +328,16 @@ if (isset($_POST['ok'])) {
 			$reg_ok = 'no';
 		}
 	}
-	
+
+	/*
+	if (isset($_POST['releve_avec_moyenne'])) {
+		if (!saveSetting("releve_avec_moyenne", $_POST['releve_avec_moyenne'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_avec_moyenne !";
+			$reg_ok = 'no';
+		}
+	}
+	*/
+
 	if (isset($_POST['releve_mention_doublant'])) {
 	
 		if (!saveSetting("releve_mention_doublant", $_POST['releve_mention_doublant'])) {
@@ -621,6 +640,21 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
+        <label for='releve_col_moyenne_largeur' style='cursor: pointer;'>Largeur de la deuxième colonne (moyenne) en pixels&nbsp;:</label><br />
+        <span class="small">(sous réserve que la colonne moyenne du carnet de notes soit affichée)</span>
+        </td>
+        <td><input type="text" name="releve_col_moyenne_largeur" id="releve_col_moyenne_largeur" size="20" value="<?php
+		if(getSettingValue("releve_col_moyenne_largeur")!=""){
+			echo(getSettingValue("releve_col_moyenne_largeur"));
+		}
+		else{
+			echo "30";
+		}
+		?>" onKeyDown="clavier_2(this.id,event,0,2000);" />
+        </td>
+    </tr>
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
         <label for='releve_col_hauteur' style='cursor: pointer;'>Hauteur minimale des lignes en pixels ("0" si automatique)&nbsp;:</label><br />
         <span class="small">(Si le contenu d'une cellule est tel que la hauteur fixée ci-dessus est insuffisante, la hauteur de la ligne sera dimensionnée par le navigateur lui-même.)</span>
         </td>
@@ -819,7 +853,7 @@ echo add_token_field();
 ?>
 <h3>Informations devant figurer sur le relevé de notes</h3>
 <table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des informations devant figurer sur le relevé de notes">
-<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher le nom court de la classe&nbsp;:
         </td>

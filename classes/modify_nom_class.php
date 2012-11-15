@@ -99,6 +99,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (!isset($rn_rapport_standard_min_font)) $rn_rapport_standard_min_font = 3;
 	if (!isset($rn_adr_resp)) $rn_adr_resp = 'n';
 	if (!isset($rn_bloc_obs)) $rn_bloc_obs = 'n';
+	if (!isset($rn_col_moy)) $rn_col_moy = 'n';
 	// =========================
 
 	if (isset($id_classe)) {
@@ -169,7 +170,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -260,7 +261,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -451,6 +452,8 @@ if (isset($id_classe)) {
 	$rn_sign_pp=mysql_result($call_nom_class, 0, 'rn_sign_pp');
 	$rn_sign_resp=mysql_result($call_nom_class, 0, 'rn_sign_resp');
 	$rn_sign_nblig=mysql_result($call_nom_class, 0, 'rn_sign_nblig');
+
+	$rn_col_moy=mysql_result($call_nom_class, 0, 'rn_col_moy');
 	// =========================
 	$rn_abs_2=mysql_result($call_nom_class, 0, 'rn_abs_2');
 	//=========================
@@ -463,7 +466,7 @@ if (isset($id_classe)) {
 	// =========================
 	// 20121027
 	// Paramètres enregistrés dans la table 'classes_param':
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
@@ -497,11 +500,13 @@ if (isset($id_classe)) {
 	$rn_sign_pp='n';
 	$rn_sign_resp='n';
 	$rn_sign_nblig=3;
+
+	$rn_col_moy="n";
 	// =========================
 	$rn_abs_2='n';
 	// =========================
 	// 20121027
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
@@ -887,6 +892,16 @@ Afficher une case pour la signature du chef d'établissement
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
+		<label for='rn_col_moy' style='cursor: pointer;'>Avec la colonne moyenne (<em title="Moyenne du carnet de notes :
+Notez que tant que la période n'est pas close, cette moyenne peut évoluer
+(ajout de notes, modifications de coefficients,...)">du CN</em>) de l'élève&nbsp;:</label>
+	</td>
+	<td><input type="checkbox" value="y" name="rn_col_moy" id="rn_col_moy"  <?php   if ($rn_col_moy=="y") echo " checked='checked ' "; ?>  onchange='changement()' /></td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
 		<label for='rn_moy_classe' style='cursor: pointer;'>Avec la moyenne de la classe pour chaque devoir&nbsp;:</label>
 	</td>
 	<td><input type="checkbox" value="y" name="rn_moy_classe" id="rn_moy_classe"  <?php   if ($rn_moy_classe=="y") echo " checked='checked ' "; ?>  onchange='changement()' /></td>
@@ -926,7 +941,7 @@ Afficher une case pour la signature du chef d'établissement
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
-		<label for='rn_app' style='cursor: pointer;'>Afficher le bloc adresse du responsable de l'élève&nbsp;:</label>
+		<label for='rn_adr_resp' style='cursor: pointer;'>Afficher le bloc adresse du responsable de l'élève&nbsp;:</label>
 	</td>
 	<td><input type="checkbox" value="y" name="rn_adr_resp" id="rn_adr_resp"  <?php   if ($rn_adr_resp=="y") echo " checked='checked ' "; ?>  onchange='changement()' /></td>
 </tr>
@@ -943,7 +958,7 @@ Afficher une case pour la signature du chef d'établissement
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
-		<label for='rn_app' style='cursor: pointer;'>Afficher le bloc observations (<em>relevé PDF</em>) <?php
+		<label for='rn_bloc_obs' style='cursor: pointer;'>Afficher le bloc observations (<em>relevé PDF</em>) <?php
 		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_bloc_observations','y',100,-50);\"  onmouseout=\"cacher_div('a_propos_bloc_observations');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
 	?>&nbsp;:</label>
 	</td>

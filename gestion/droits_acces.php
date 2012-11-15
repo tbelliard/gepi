@@ -929,8 +929,23 @@ $texteItem="a accès à ses relevés de notes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesColMoyReleveEleve';
+$texteItem="a accès à la colonne moyenne du carnet de notes.<br />Notez que tant que la période n'est pas close, cette moyenne peut évoluer (<em>ajout de notes, modifications de coefficients,...</em>).";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesOptionsReleveEleve';
-$texteItem="a accès aux options du relevés de notes (<em>nom court, coef, date des devoirs, ...</em>)";
+$texteItem="a accès au tableau des options du relevés de notes (<em>nom court, coef, date des devoirs, ...</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMoyClasseReleveEleve';
+$texteItem="a accès à la moyenne de la classe pour chaque devoir";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMoyMinClasseMaxReleveEleve';
+$texteItem="a accès aux moyennes min/classe/max de chaque devoir";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1121,8 +1136,23 @@ $texteItem="a accès aux relevés de notes des ".$gepiSettings['denomination_ele
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesColMoyReleveParent';
+$texteItem="a accès à la colonne moyenne du carnet de notes.<br />Notez que tant que la période n'est pas close, cette moyenne peut évoluer (<em>ajout de notes, modifications de coefficients,...</em>).";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesOptionsReleveParent';
-$texteItem="a accès aux options du relevés de notes (<em>nom court, coef, date des devoirs,...</em>)";
+$texteItem="a accès au tableau des options du relevés de notes (<em>nom court, coef, date des devoirs,...</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMoyClasseReleveParent';
+$texteItem="a accès à la moyenne de la classe pour chaque devoir";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMoyMinClasseMaxReleveParent';
+$texteItem="a accès aux moyennes min/classe/max de chaque devoir";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
