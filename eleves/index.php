@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -1717,8 +1717,9 @@ if(isset($quelles_classes)) {
 		echo "<td><p><a href='../classes/eleve_options.php?login_eleve=".$eleve_login."&amp;id_classe=$eleve_id_classe&amp;quitter_la_page=y' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p></td>\n";
 		//$csv.=";";
 
-		echo "<td><p>$eleve_profsuivi_nom $eleve_profsuivi_prenom</p></td>\n";
-		$csv.="$eleve_profsuivi_nom_csv $eleve_profsuivi_prenom;";
+		$info_pp=casse_mot($eleve_profsuivi_nom,"maj")." ".casse_mot($eleve_profsuivi_prenom,"majf2");
+		echo "<td><p>$info_pp</p></td>\n";
+		$csv.="$info_pp;";
 
 		//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		if($_SESSION['statut']=="administrateur") {
