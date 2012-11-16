@@ -96,6 +96,36 @@ if(isset($_POST['action'])) {
 		}
 		if($cpt_reg>0) {$msg.=$cpt_reg." compte(s) passés au mode d'authentification ".$_POST['auth_mode']."<br />";}
 	}
+	elseif($_POST['action']=="reset_passwords") {
+
+		//header("Location:reset_passwords.php?u_login=$u_login&mode_impression=html".add_token_in_url(false));
+		//die();
+
+		// Remplir une chaine avec formulaire pour provoquer un POST dans un autre onglet en présentant ça comme une demande de confirmation
+		// Faire pareil pour la suppression de comptes
+		$chaine_form_confirm="
+<form action='reset_passwords.php' method='post' id='form_aff' target='_blank'>
+	<fieldset style='border:1px solid white; background-image: url(\"../images/background/opacite50.png\");'>
+		<p style='color:red'>Confirmation requise&nbsp;:</p>
+		<p>Vous avez demandé à réinitialiser les mots de passe pour&nbsp;:<br />
+		<input type='hidden' name='csrf_alea' value='".$_POST['csrf_alea']."' />
+		<input type='hidden' name='mode_impression' value='html' />
+";
+		for($loop=0;$loop<count($u_login);$loop++) {
+			if($loop>0) {$chaine_form_confirm.=", ";}
+			$chaine_form_confirm.="		<input type='hidden' name='u_login[]' value='".$u_login[$loop]."' />\n";
+			$chaine_form_confirm.=civ_nom_prenom($u_login[$loop]);
+		}
+		$chaine_form_confirm.="
+		</p>
+		<p><input type='submit' value='Confirmer cette opération' /></p>
+	</fieldset>
+</form>
+<br />";
+	}
+
+	// https://127.0.0.1/steph/gepi_git_trunk/lib/confirm_query.php?liste_cible=autretc&action=del_utilisateur&chemin_retour=%2Fsteph%2Fgepi_git_trunk%2Futilisateurs%2Findex.php%3Fmode%3Dpersonnels&csrf_alea=NDt97L9MTpx603Ntq1Zxq611eSNNEz6pA9ZU9cX5
+
 }
 
 //**************** EN-TETE *****************************
@@ -111,8 +141,13 @@ require_once("../lib/header.inc.php");
 </p>
 
 <?php
+
+if(isset($chaine_form_confirm)) {
+	echo $chaine_form_confirm;
+}
+
 echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_aff'>
-	<fieldset style='border:1px solid white;'>
+	<fieldset style='border:1px solid white; background-image: url(\"../images/background/opacite50.png\");'>
 		<ul>
 			<li style='list-style-type:none; display:inline; margin-right:2em;'>Afficher les comptes</li>
 			<li style='list-style-type:none; display:inline; margin-right:2em;'><input type='checkbox' name='aff_etat[]' id='aff_statut_actif' value='actif' ".(in_array("actif", $aff_etat) ? "checked" : "")."/><label for='aff_statut_actif'>actifs</label></li>
@@ -137,7 +172,7 @@ echo "
 <br />
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' id='formulaire'>
-<fieldset style='border:1px solid white;'>
+<fieldset style='border:1px solid white; background-image: url(\"../images/background/opacite50.png\");'>
 	".add_token_field()."
 	<p><span class='bold'>Action&nbsp;:</span> Pour les utilisateurs cochés ci-dessous, appliquer l'action suivante&nbsp;:<br />
 
@@ -161,9 +196,9 @@ echo "
 		</select>
 		<br />
 
-	<input type='radio' name='action' id='action_reset_password' value='reset_password' /><label for='action_reset_password'>Réinitialiser le mot de passe</label><span style='color:red'> Non encore implémenté</span><br />
+	<input type='radio' name='action' id='action_reset_passwords' value='reset_passwords' /><label for='action_reset_passwords'>Réinitialiser le mot de passe</label><!--span style='color:red'> Non encore implémenté</span--><br />
 
-	<input type='radio' name='action' id='action_supprimer' value='supprimer' /><label for='action_supprimer'>Supprimer le compte<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<em>ATTENTION&nbsp;: Opération irréversible&nbsp;!</em>)</label><span style='color:red'> Non encore implémenté</span><br />
+	<!--input type='radio' name='action' id='action_supprimer' value='supprimer' /><label for='action_supprimer'>Supprimer le compte<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<em>ATTENTION&nbsp;: Opération irréversible&nbsp;!</em>)</label><span style='color:red'> Non encore implémenté</span><br /-->
 
 	</p>\n";
 
