@@ -42,6 +42,7 @@ if (!checkAccess()) {
 }
 
 $export_statut=isset($_GET['export_statut']) ? $_GET['export_statut'] : "";
+$avec_adresse=isset($_GET['avec_adresse']) ? $_GET['avec_adresse'] : "n";
 
 $tab_statut=array('professeur', 'administrateur', 'scolarite', 'cpe', 'secours', 'autre', 'responsable', 'eleve', 'personnels');
 
@@ -106,6 +107,19 @@ while($j< $nombre_lignes) {
 		}
 
 		$fd.=";".$user_statut;
+
+		if($avec_adresse=='y') {
+			$sql="SELECT * FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
+			$res_adr=mysql_query($sql);
+			if(mysql_num_rows($res_adr)==0) {
+				$fd.=";".";".";".";".";".";".";";
+			}
+			else {
+				$lig_adr=mysql_fetch_object($res_adr);
+				$fd.=";".strtr($lig_adr->adr1,";",",").";".strtr($lig_adr->adr2,";",",").";".strtr($lig_adr->adr3,";",",").";".strtr($lig_adr->adr4,";",",").";".strtr($lig_adr->cp,";",",").";".strtr($lig_adr->commune,";",",").";".strtr($lig_adr->pays,";",",");
+				
+			}
+		}
 	}
 	$fd.=";\n";
 	$j++;
