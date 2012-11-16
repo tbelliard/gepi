@@ -125,14 +125,14 @@ if (isFiltreRechercheParam('filter_manqement_obligation')) {
 }
 if (isFiltreRechercheParam('filter_motif')) {
     if (getFiltreRechercheParam('filter_motif') == 'SANS') {
-        $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByAMotifId(null)->endUse()->endUse()->endUse();
+        $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery('a', 'left join')->useAbsenceEleveTraitementQuery('b', 'left join')->filterByAMotifId(null)->endUse()->endUse()->endUse();
     } else {
         $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByAMotifId(getFiltreRechercheParam('filter_motif'))->endUse()->endUse()->endUse();
     }
 }
 if (isFiltreRechercheParam('filter_justification')) {
     if (getFiltreRechercheParam('filter_justification') == 'SANS') {
-        $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByAJustificationId(null)->endUse()->endUse()->endUse();
+        $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery('c', 'left join')->useAbsenceEleveTraitementQuery('d', 'left join')->filterByAJustificationId(null)->endUse()->endUse()->endUse();
     } else {
         $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByAJustificationId(getFiltreRechercheParam('filter_justification'))->endUse()->endUse()->endUse();
     }
