@@ -79,15 +79,20 @@ if ($barre_plugin!="") {
 					$menus .= '   <ul class="niveau2">'."\n";
 					$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte/see_all.php"'.insert_confirm_abandon().'>Consultation CDT</a></li>'."\n";
 				}
-			}
-			if(getSettingValue('GepiAccesCdtVisa')=='yes') {
-				$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php"'.insert_confirm_abandon().'>Visa c. de textes</a></li>'."\n";
-			}
-			if((getSettingAOui('GepiAccesCdtScol'))||(getSettingAOui('GepiAccesCdtScolRestreint'))) {
+				if(getSettingValue('GepiAccesCdtVisa')=='yes') {
+					$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php"'.insert_confirm_abandon().'>Visa c. de textes</a></li>'."\n";
+				}
 				$menus .= '     <li><a href="'.$gepiPath.'/documents/archives/index.php"'.insert_confirm_abandon().'>Archives CDT</a></li>'."\n";
+				$menus .= '   </ul>'."\n";
+				$menus .= '</li>'."\n";
 			}
-			$menus .= '   </ul>'."\n";
-			$menus .= '</li>'."\n";
+			elseif(getSettingValue('GepiAccesCdtVisa')=='yes') {
+				$menus .= '<li class="li_inline">&nbsp;CDT'."\n";
+				$menus .= '   <ul class="niveau2">'."\n";
+				$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php"'.insert_confirm_abandon().'>Visa c. de textes</a></li>'."\n";
+				$menus .= '   </ul>'."\n";
+				$menus .= '</li>'."\n";
+			}
 		}
 		//=======================================================
 
