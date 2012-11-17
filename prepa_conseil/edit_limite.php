@@ -335,9 +335,9 @@ if ($choix_edit != '2') {
 				"WHERE (" .
 				"jec.id_classe='$id_classe' AND " .
 				"e.login = jeg.login AND " .
-				"jeg.login = p.login AND " .
-				"p.professeur = '".$login_prof."'" .
-				"p.login = jec.login AND " .
+				"jeg.login = jep.login AND " .
+				"jep.professeur = '".$login_prof."' AND " .
+				"jep.login = jec.login AND " .
 				"jeg.id_groupe = jgp.id_groupe AND " .
 				"jgp.login = '".$_SESSION['login']."') " .
 				"ORDER BY e.nom,e.prenom");
@@ -357,12 +357,12 @@ if ($choix_edit != '2') {
 	    } else {
 			// On a alors $choix_edit==3
 	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
-	        		"FROM eleves e, j_eleves_classes c, j_eleves_professeurs p " .
+	        		"FROM eleves e, j_eleves_classes c, j_eleves_professeurs jep " .
 	        		"WHERE (" .
 	        		"c.id_classe='$id_classe' AND " .
 	        		"e.login = c.login AND " .
-	        		"p.login=c.login AND " .
-	        		"p.professeur='$login_prof'" .
+	        		"jep.login=c.login AND " .
+	        		"jep.professeur='$login_prof'" .
 	        		") ORDER BY e.nom,e.prenom");
 		}
 	}

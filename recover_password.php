@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -411,7 +411,7 @@ Cette adresse doit être déjà associée à votre compte au sein de Gepi.
 </div>
 <div id="login_footer">
 <a href="http://gepi.mutualibre.org">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
-Copyright &copy; 2001-2008
+Copyright &copy; 2001-2013
 </div>
 </div>
 </body>
