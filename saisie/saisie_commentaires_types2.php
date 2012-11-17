@@ -80,7 +80,7 @@
 
 			//echo "<div id='commentaire_type' style=' background-color: lightgreen; border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; height: 100px; overflow: auto;'>\n";
 			//echo "<div id='commentaire_type' style='background-color: lightgreen; border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; height: 10em 5px; width: 400px;'>\n";
-			echo "<div id='commentaire_type' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; height: 10em 5px; width: 400px;'>\n";
+			echo "<div id='commentaire_type' class='boireaus infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; height: 10em 5px; width: 400px;'>\n";
 			//echo "<div id='commentaire_type' style=\"background-image: url('../images/background/opacite80.png'); border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; height: 10em 5px; width: 400px;\">\n";
 
 			//echo "<div style='background-color: orange; color: #ffffff; cursor: move; font-weight: bold; padding: 0px;'  onmousedown=\"dragStart(event, 'commentaire_type')\">\n";
@@ -94,9 +94,11 @@
 
 			echo "<div style='height: 9em; overflow: auto;'>\n";
 			$cpt=0;
+			$alt=1;
 			//echo "Commentaires-types: <select name='ajout_commentaire_type' id='ajout_commentaire_type'>\n";
 			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
-				echo "<div style='border: 1px solid black; margin: 1px; padding: 1px;'";
+				$alt=$alt*(-1);
+				echo "<div class='lig$alt' style='border: 1px solid black; margin: 1px; padding: 1px;'";
 
 				if(preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])){
 					echo " onClick=\"textarea_courant=document.getElementById('textarea_courant').value;document.getElementById(textarea_courant).value=document.getElementById(textarea_courant).value+document.getElementById('commentaire_type_'+$cpt).value;changement();document.getElementById('commentaire_type').style.display='none'; document.getElementById(textarea_courant).focus();\"";
