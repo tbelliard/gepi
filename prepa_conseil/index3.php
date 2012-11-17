@@ -199,7 +199,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") == "yes") {
 		// C'est un prof et l'accès "a accès aux bulletins simples des élèves de toutes les classes" est donné
-		$sql="SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.* FROM classes c ORDER BY c.classe";
 	}
 	//elseif(($_SESSION['statut'] == 'cpe')&&(getSettingValue("GepiAccesReleveCpe")=='yes')){
 	elseif($_SESSION['statut'] == 'cpe' OR $_SESSION['statut'] == 'autre'){
@@ -254,7 +254,6 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 } else if (!isset($choix_edit)) {
 	// ====================
-	// boireaus 20071207
 	// Je ne saisis pas bien comment $choix_edit peut être affecté sans register_globals=on
 	// Nulle part la variable n'a l'air récupérée en POST ou autre...
 	// ====================
@@ -262,6 +261,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 		//echo " | <a href = \"index3.php\">Choisir une autre classe</a> ";
 
+		// =================================
+		// Formulaire de choix de la classe précédente/suivante
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
 		echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
@@ -271,9 +272,6 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 		}
 		elseif($_SESSION['statut']=='professeur'){
-
-			//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
-
 			if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
 				$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 			}
@@ -309,32 +307,6 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 
 		}
-		//echo "$sql<br />\n";
-		/*
-		$res_class_tmp=mysql_query($sql);
-		if(mysql_num_rows($res_class_tmp)>0){
-			$id_class_prec=0;
-			$id_class_suiv=0;
-			$temoin_tmp=0;
-			while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-				if($lig_class_tmp->id==$id_classe){
-					$temoin_tmp=1;
-					if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-						$id_class_suiv=$lig_class_tmp->id;
-					}
-					else{
-						$id_class_suiv=0;
-					}
-				}
-				if($temoin_tmp==0){
-					$id_class_prec=$lig_class_tmp->id;
-				}
-			}
-			if(mysql_num_rows($res_class_tmp)>1){
-				echo " | <a href = \"index3.php\">Choisir une autre classe</a> ";
-			}
-		}
-		*/
 
 		$chaine_options_classes="";
 
@@ -381,6 +353,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		//fin ajout lien classe précédente / classe suivante
 
 		echo "</form>\n";
+		// =================================
 
 
 		$classe_eleve = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
@@ -395,7 +368,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 		echo "/></td>\n";
 		echo "<td><label for='choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiés de tous les ".$gepiSettings['denomination_eleves']." de la classe";
-		if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
+		if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe))) {
+			// Tous les élèves vont être affichés
+		}
+		elseif ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
 			echo " (uniquement les ".$gepiSettings['denomination_eleves']." que j'ai en cours)";
 		}
 		echo "</label></td></tr>\n";
@@ -440,7 +416,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
 
 		//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
-		if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
+		if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe))) {
+			// Tous les élèves vont être affichés
+			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom, prenom";
+		}
+		elseif ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
 			$sql="SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
@@ -451,7 +431,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				"jgp.login = '".$_SESSION['login']."') " .
 				"ORDER BY e.nom,e.prenom";
 		} else {
-			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom";
+			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom, prenom";
 		}
 		//echo "$sql<br />\n";
 		$call_eleve = mysql_query($sql);

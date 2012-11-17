@@ -201,21 +201,44 @@ elseif($_SESSION['statut']=="professeur"){
 		//echo "$sql_classes<br />";
 
 		if(isset($id_classe)){
-			$sql_ele="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,
-											j_eleves_professeurs jep
-								WHERE jep.id_classe='$id_classe' AND
-										jep.login=e.login AND
-										jep.professeur='".$_SESSION['login']."'
-								ORDER BY e.nom,e.prenom";
+			if(getSettingAOui('GepiAccesPPTousElevesDeLaClasse')) {
+				$sql_ele="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e, j_eleves_classes jec
+									WHERE jec.id_classe='$id_classe' AND
+											jec.login=e.login
+									ORDER BY e.nom,e.prenom";
+			}
+			else {
+				$sql_ele="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,
+												j_eleves_professeurs jep
+									WHERE jep.id_classe='$id_classe' AND
+											jep.login=e.login AND
+											jep.professeur='".$_SESSION['login']."'
+									ORDER BY e.nom,e.prenom";
+			}
 			//echo "$sql_ele<br />";
 		}
 
-		// On vérifie qu'il n'y a pas tentative d'intrusion illicite:
+		// On vérifie qu'il n'y a pas tentative d'accès illicite:
 		if(isset($logineleve)){
-			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND
-															login='$logineleve';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0){
+
+			$acces_pp="n";
+			if(is_pp($_SESSION['login'], "", $logineleve)) {
+				$acces_pp="y";
+			}
+			elseif(getSettingAOui('GepiAccesPPTousElevesDeLaClasse')) {
+				$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$logineleve' ORDER BY periode,classe;";
+				$res_class=mysql_query($sql);
+				if(mysql_num_rows($res_class)>0){
+					while($lig_tmp=mysql_fetch_object($res_class)){
+						if(is_pp($_SESSION['login'], $lig_tmp->id_classe)) {
+							$acces_pp="y";
+							break;
+						}
+					}
+				}
+			}
+
+			if($acces_pp=="y"){
 				// A DEGAGER
 				// A VOIR: Comment enregistrer une tentative d'accès illicite?
 				//echo "$sql<br />";

@@ -269,33 +269,100 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 	$cpt_photo = 0;
 	while($cpt_photo < $total_photo)
 	{
+
+		//echo "\$quiestce[$cpt_photo]=".$quiestce[$cpt_photo]."<br />";
 		if((isset($_FILES['photo']['type'][$cpt_photo]))&&($_FILES['photo']['type'][$cpt_photo] != ""))
 		{
-			$sav_photo = isset($_FILES["photo"]) ? $_FILES["photo"] : NULL;
-			if (!isset($sav_photo['tmp_name'][$cpt_photo]) or ($sav_photo['tmp_name'][$cpt_photo] =='')) {
-				$msg.="Erreur de téléchargement niveau 1 (<i>photo n°$cpt_photo</i>).<br />";
-			} else if (!file_exists($sav_photo['tmp_name'][$cpt_photo])) {
-				$msg.="Erreur de téléchargement niveau 2 (<i>photo n°$cpt_photo</i>).<br />";
-			} else if (my_strtolower($sav_photo['type'][$cpt_photo])!="image/jpeg") {
-				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."&nbsp;: ".$sav_photo['type'][$cpt_photo]."</i>)<br />";
-			} else if (!(preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo]) || preg_match('/jpeg$/i',$sav_photo['name'][$cpt_photo]))) {
-				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."</i>)<br />";
-			} else {
-				$dest = $rep_photos;
-				$n = 0;
-				//$msg.="\$rep_photos=$rep_photos<br />";
-				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg")) {
-					$msg.="Problème de transfert : le fichier n°$cpt_photo n'a pas pu être transféré sur le répertoire photos/eleves/<br />";
+			unset($login_eleve);
+			$acces_upload_photo="y";
+			if(($_SESSION['statut']=='cpe')&&(!getSettingAOui('CpeAccesUploadPhotosEleves'))) {
+				$acces_upload_photo="n";
+			}
+			elseif(($_SESSION['statut']=='professeur')&&(!getSettingAOui('GepiAccesGestPhotoElevesProfP'))) {
+				$acces_upload_photo="n";
+			}
+			elseif($_SESSION['statut']=='professeur') {
+				// Les PP ont accès à l'upload de photo de leurs élèves
+
+				// Le prof est-il PP de cet élève ou de la classe de cet élève
+				// Récupérer le login et la classe de l'élève
+				$sql="SELECT login FROM eleves WHERE elenoet='".$quiestce[$cpt_photo]."';";
+				$res_login=mysql_query($sql);
+				if(mysql_num_rows($res_login)==0) {
+					$msg.="Anomalie : Impossible de trouver le login de l'élève dont l'ELENOET est ".$quiestce[$cpt_photo]."<br />";
+					$acces_upload_photo="n";
+				}
+				else {
+					$login_eleve=mysql_result($res_login, 0, "login");
+
+					if(!is_pp($_SESSION['login'], "", $login_eleve)) {
+						// Le prof n'est pas PP de cet élève en particulier
+						// A-t-il accès à tous les élèves de la classe dont-il est PP?
+						if(!getSettingAOui('GepiAccesPPTousElevesDeLaClasse')) {
+							$acces_upload_photo="n";
+						}
+						else {
+							$acces_upload_photo="n";
+
+							// On cherche alors la classe de l'élève
+							$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$login_eleve' ORDER BY periode,classe;";
+							$res_class=mysql_query($sql);
+							if(mysql_num_rows($res_class)>0){
+								while($lig_tmp=mysql_fetch_object($res_class)){
+									if(is_pp($_SESSION['login'], $lig_tmp->id_classe)) {
+										$acces_upload_photo="y";
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if($acces_upload_photo!="y") {
+				if(!isset($login_eleve)) {
+					$sql="SELECT login FROM eleves WHERE elenoet='".$quiestce[$cpt_photo]."';";
+					$res_login=mysql_query($sql);
+					if(mysql_num_rows($res_login)==0) {
+						$msg.="Anomalie : Impossible de trouver le login de l'élève dont l'ELENOET est ".$quiestce[$cpt_photo]."<br />";
+					}
+					else {
+						$login_eleve=mysql_result($res_login, 0, "login");
+						$msg.="Vous n'avez pas le droit d'uploader la photo pour ".civ_nom_prenom($login_eleve)."<br />";
+					}
+				}
+				else {
+					$msg.="Vous n'avez pas le droit d'uploader la photo pour ".civ_nom_prenom($login_eleve)."<br />";
+				}
+			}
+			else {
+				$sav_photo = isset($_FILES["photo"]) ? $_FILES["photo"] : NULL;
+				if (!isset($sav_photo['tmp_name'][$cpt_photo]) or ($sav_photo['tmp_name'][$cpt_photo] =='')) {
+					$msg.="Erreur de téléchargement niveau 1 (<i>photo n°$cpt_photo</i>).<br />";
+				} else if (!file_exists($sav_photo['tmp_name'][$cpt_photo])) {
+					$msg.="Erreur de téléchargement niveau 2 (<i>photo n°$cpt_photo</i>).<br />";
+				} else if (my_strtolower($sav_photo['type'][$cpt_photo])!="image/jpeg") {
+					$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."&nbsp;: ".$sav_photo['type'][$cpt_photo]."</i>)<br />";
+				} else if (!(preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo]) || preg_match('/jpeg$/i',$sav_photo['name'][$cpt_photo]))) {
+					$msg.="Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."</i>)<br />";
 				} else {
-					//$msg = "Téléchargement réussi.";
-					$cpt_photos_mises_en_place++;
-					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-						// si le redimensionnement des photos est activé on redimensionne
-							if (getSettingValue("active_module_trombinoscopes_rt")!='')
-								$redim_OK=redim_photo($rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg",getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"),getSettingValue("active_module_trombinoscopes_rt"));
-							else
-								$redim_OK=redim_photo($rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg",getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
-						if (!$redim_OK) $msg .= " Echec du redimensionnement de la photo.";
+					$dest = $rep_photos;
+					$n = 0;
+					//$msg.="\$rep_photos=$rep_photos<br />";
+					if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg")) {
+						$msg.="Problème de transfert : le fichier n°$cpt_photo n'a pas pu être transféré sur le répertoire photos/eleves/<br />";
+					} else {
+						//$msg = "Téléchargement réussi.";
+						$cpt_photos_mises_en_place++;
+						if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+							// si le redimensionnement des photos est activé on redimensionne
+								if (getSettingValue("active_module_trombinoscopes_rt")!='')
+									$redim_OK=redim_photo($rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg",getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"),getSettingValue("active_module_trombinoscopes_rt"));
+								else
+									$redim_OK=redim_photo($rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg",getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
+							if (!$redim_OK) $msg .= " Echec du redimensionnement de la photo.";
+						}
 					}
 				}
 			}
@@ -1112,14 +1179,25 @@ if(isset($quelles_classes)) {
 		)
 		ORDER BY $order_type");
 		*/
-		$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_professeurs jep, j_eleves_regime jer
-		WHERE (
-		jep.login=e.login AND
-		jer.login=e.login AND
-		jep.professeur='".$_SESSION['login']."' AND
-		jep.id_classe='$quelles_classes'
-		)
-		ORDER BY $order_type;";
+		if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $quelles_classes))) {
+			$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_regime jer, j_eleves_professeurs jep
+			WHERE (
+			jep.login=e.login AND
+			jer.login=e.login AND
+			jep.id_classe='$quelles_classes'
+			)
+			ORDER BY $order_type;";
+		}
+		else {
+			$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_professeurs jep, j_eleves_regime jer
+			WHERE (
+			jep.login=e.login AND
+			jer.login=e.login AND
+			jep.professeur='".$_SESSION['login']."' AND
+			jep.id_classe='$quelles_classes'
+			)
+			ORDER BY $order_type;";
+		}
 		$calldata = mysql_query($sql);
 
 		echo "<p align='center'>Liste des élèves de la classe choisie.</p>\n";
@@ -1566,11 +1644,11 @@ if(isset($quelles_classes)) {
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
 		if($_SESSION['statut']=="professeur") {
 			if (getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes') {
-				echo "<th><p><input type='submit' value='Télécharger les photos' name='bouton1' /></th>\n";
+				echo "<th><p><input type='submit' value='Téléverser les photos' name='bouton1' /></th>\n";
 			}
 		}
 		else{
-			echo "<th><p><input type='submit' value='Télécharger les photos' name='bouton1' /></th>\n";
+			echo "<th><p><input type='submit' value='Téléverser les photos' name='bouton1' /></th>\n";
 		}
 	}
 	//$csv.=";";
@@ -1667,7 +1745,8 @@ if(isset($quelles_classes)) {
 		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='autre')||
 			(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
 			(($_SESSION['statut']=='cpe')&&(is_cpe($_SESSION['login'],'',$eleve_login)))||
-			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$eleve_login))&&(getSettingAOui('GepiAccesGestElevesProfP')))) {
+			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$eleve_login))&&(getSettingAOui('GepiAccesGestElevesProfP')))||
+			((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $quelles_classes)))) {
 			echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
 			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
 			echo "'>$eleve_nom $eleve_prenom</a>";

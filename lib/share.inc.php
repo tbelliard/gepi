@@ -4299,13 +4299,14 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
  * $login_eleve : login de l'élève à tester (si vide, on teste juste si le prof est PP 
  * (éventuellement pour la classe si id_classe est non vide))
  * 
- * @param type $login_prof login de l'utilisateur à tester
- * @param type $id_classe identifiant de la classe
- * @param type $login_eleve login de l'élève
+ * @param type string $login_prof login de l'utilisateur à tester
+ * @param type integer $id_classe identifiant de la classe
+ * @param type string $login_eleve login de l'élève
  * @return boolean 
  */
-function is_pp($login_prof,$id_classe="",$login_eleve="") {
+function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="") {
 	$retour=FALSE;
+
 	if($login_eleve=='') {
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE ";
 		if($id_classe!="") {$sql.="id_classe='$id_classe' AND ";}

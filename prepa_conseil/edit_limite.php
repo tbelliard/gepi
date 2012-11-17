@@ -334,9 +334,11 @@ if ($choix_edit == '2') {
 	bulletin($tab_moy,$login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,$couleur_alterne);
 }
 
+//echo "choix_edit=$choix_edit<br />";
 if ($choix_edit != '2') {
 	// Si on arrive là, on n'est ni élève, ni responsable
 
+	unset($sql);
 	//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 	if ($_SESSION['statut'] == "professeur" AND
 	getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes" AND
@@ -346,7 +348,7 @@ if ($choix_edit != '2') {
 	    //if ($choix_edit == '1') {
 	    if (($choix_edit == '1')||(!isset($login_prof))) {
 			// On a alors $choix_edit==1 ou $choix_edit==4
-	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
+	        $sql="SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
 				"jec.id_classe='$id_classe' AND " .
@@ -354,20 +356,31 @@ if ($choix_edit != '2') {
 				"jeg.login = jec.login AND " .
 				"jeg.id_groupe = jgp.id_groupe AND " .
 				"jgp.login = '".$_SESSION['login']."') " .
-				"ORDER BY e.nom,e.prenom");
+				"ORDER BY e.nom,e.prenom";
 	    } else {
 			// On a alors $choix_edit==3 uniquement les élèves du professeur principal $login_prof
-	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
-				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp, j_eleves_professeurs jep " .
-				"WHERE (" .
-				"jec.id_classe='$id_classe' AND " .
-				"e.login = jeg.login AND " .
-				"jeg.login = jep.login AND " .
-				"jep.professeur = '".$login_prof."' AND " .
-				"jep.login = jec.login AND " .
-				"jeg.id_groupe = jgp.id_groupe AND " .
-				"jgp.login = '".$_SESSION['login']."') " .
-				"ORDER BY e.nom,e.prenom");
+			if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe))) {
+				// Tous les élèves vont être affichés
+				$sql="SELECT DISTINCT e.* " .
+					"FROM eleves e, j_eleves_classes jec " .
+					"WHERE (" .
+					"jec.id_classe='$id_classe' AND " .
+					"jec.login=e.login) ".
+					"ORDER BY e.nom,e.prenom";
+			}
+			else {
+				$sql="SELECT DISTINCT e.* " .
+					"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp, j_eleves_professeurs jep " .
+					"WHERE (" .
+					"jec.id_classe='$id_classe' AND " .
+					"e.login = jeg.login AND " .
+					"jeg.login = jep.login AND " .
+					"jep.professeur = '".$login_prof."' AND " .
+					"jep.login = jec.login AND " .
+					"jeg.id_groupe = jgp.id_groupe AND " .
+					"jgp.login = '".$_SESSION['login']."') " .
+					"ORDER BY e.nom,e.prenom";
+				}
 	    }
 	} else {
 	    // On sélectionne sans restriction
@@ -375,24 +388,32 @@ if ($choix_edit != '2') {
 	    //if ($choix_edit == '1') {
 	    if (($choix_edit == '1')||(!isset($login_prof))) {
 			// On a alors $choix_edit==1 ou $choix_edit==4
-	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
+	        $sql="SELECT DISTINCT e.* " .
 	        		"FROM eleves e, j_eleves_classes c " .
 	        		"WHERE (" .
 	        		"c.id_classe='$id_classe' AND " .
 	        		"e.login = c.login" .
-	        		") ORDER BY e.nom,e.prenom");
+	        		") ORDER BY e.nom,e.prenom";
 	    } else {
 			// On a alors $choix_edit==3
-	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
+	        $sql="SELECT DISTINCT e.* " .
 	        		"FROM eleves e, j_eleves_classes c, j_eleves_professeurs jep " .
 	        		"WHERE (" .
 	        		"c.id_classe='$id_classe' AND " .
 	        		"e.login = c.login AND " .
 	        		"jep.login=c.login AND " .
 	        		"jep.professeur='$login_prof'" .
-	        		") ORDER BY e.nom,e.prenom");
+	        		") ORDER BY e.nom,e.prenom";
 		}
 	}
+
+	if(!isset($sql)) {
+		echo "<p style='color:red'>Aucune liste d'élèves n'a été extraite.<br />Êtes-vous bine autorisé à vous trouver ici&nbsp;?</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	//echo "$sql<br />";
+	$appel_liste_eleves = mysql_query($sql);
 
     $nombre_eleves = mysql_num_rows($appel_liste_eleves);
 

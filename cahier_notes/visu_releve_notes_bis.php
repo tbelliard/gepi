@@ -1134,14 +1134,33 @@ echo "</script>\n";
 			// On fait le filtrage des élèves plus bas dans le cas du prof
 		}
 		elseif(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiAccesReleveProfP")=="yes")) {
-			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND id_classe='".$tab_id_classe[$i]."' LIMIT 1;";
-			$test_acces=mysql_query($sql);
-			if(mysql_num_rows($test_acces)>0) {
-				$sql="SELECT DISTINCT e.* FROM eleves e,
-								j_eleves_classes jec
-					WHERE jec.login=e.login AND
+			if(is_pp($_SESSION['login'], $tab_id_classe[$i])) {
+				if(getSettingAOui('GepiAccesPPTousElevesDeLaClasse')) {
+					// Le prof est PP de la classe, on lui donne l'accès à tous les élèves de la classe
+					$sql="SELECT DISTINCT e.* FROM eleves e,
+									j_eleves_classes jec
+						WHERE jec.login=e.login AND
+									jec.id_classe='".$tab_id_classe[$i]."'
+						ORDER BY e.nom,e.prenom;";
+				}
+				else {
+					// Le prof est PP d'au moins une partie des élèves de la classe
+					$sql="SELECT DISTINCT e.* FROM eleves e,
+									j_eleves_classes jec,
+									j_eleves_professeurs jep
+						WHERE jec.login=e.login AND
+								jec.login=jep.login AND
+								jep.professeur='".$_SESSION['login']."' AND
 								jec.id_classe='".$tab_id_classe[$i]."'
-					ORDER BY e.nom,e.prenom;";
+						ORDER BY e.nom,e.prenom;";
+					$test_acces=mysql_query($sql);
+					if(mysql_num_rows($test_acces)==0) {
+						// On pourrait mettre un tentative_intrusion()
+						echo "<p>Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." de cette classe, donc pas autorisé à accéder aux relevés de notes de ces élèves.</p>\n";
+						require("../lib/footer.inc.php");
+						die();
+					}
+				}
 			}
 			else {
 				// On pourrait mettre un tentative_intrusion()

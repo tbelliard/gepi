@@ -296,6 +296,12 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 // DROITS PROFESSEUR PRINCIPAL
 
 $statutItem="professeur_principal";
+
+$titreItem='GepiAccesPPTousElevesDeLaClasse';
+$texteItem="dans le cas où il y a plusieurs '".getSettingValue('gepi_prof_suivi')."' dans la classe, donner les mêmes droits à chaque '".getSettingValue('gepi_prof_suivi')." sur l'ensemble des élèves de la classe<br />(<em>sinon un élève n'est associé qu'à un seul ".getSettingValue('gepi_prof_suivi')."</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiRubConseilProf';
 $texteItem="peut saisir les avis du conseil de classe pour sa classe";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))

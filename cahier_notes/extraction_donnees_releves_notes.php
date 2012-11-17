@@ -401,9 +401,23 @@
 							if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
 						}
 						elseif (getSettingValue("GepiAccesReleveProfP") == "yes") {
-							$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND login='".$current_eleve_login[$i]."';";
-							$verif=mysql_query($sql);
-							if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
+							if(is_pp($_SESSION['login'], $id_classe)) {
+								if(getSettingAOui('GepiAccesPPTousElevesDeLaClasse')) {
+									// Le prof est PP de la classe, on lui donne l'accès à tous les élèves de la classe
+									$autorisation_acces='y';
+								}
+								else {
+									// Le prof est PP d'au moins une partie des élèves de la classe
+									// L'est-il de l'élève courant?
+									$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND login='".$current_eleve_login[$i]."';";
+									$verif=mysql_query($sql);
+									if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
+								}
+							}
+							else {
+								// Le prof n'est pas PP dans cette classe
+								$autorisation_acces='n';
+							}
 						}
 						else {
 							// Ou juste:
