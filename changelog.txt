@@ -23,6 +23,8 @@ Bulletins :
   (bulletins PDF et HTML).
 - Possibilité de donner, aux parents et aux élèves, l'accès au bulletin
   simplifié des appreciations sur le groupe-classe.
+- Affichage de l'indication comme quoi les appréciations sont visibles
+  ou non des parents à une date donnée.
 
 Carnets de notes:
 - Possibilité de définir un mode par défaut pour le calcul de la moyenne dans le
@@ -73,6 +75,9 @@ Gestion:
   un besoin complémentaire de la Récupération de mot de passe qui, elle, 
   nécessite de connaitre le login et d'avoir renseigné l'adresse mail dans 
   Gérer mon compte)
+- Dans le cas où il y a plusieurs professeurs principaux dans une classe,
+  possibilité de donner les mêmes droits à tous les PP de la classe sur 
+  l'ensemble des élèves de la classe.
 
 
 Gepi-1.6.1 (10/06/2012)

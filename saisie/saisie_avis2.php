@@ -918,6 +918,53 @@ if (isset($fiche)) {
 
 	</form>
 	<?php
+
+		if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
+		(getSettingAOui('GepiAccesGraphParent'))||
+		(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
+		(getSettingAOui('GepiAccesGraphEleve'))) {
+
+			$date_du_jour=strftime("%d/%m/%Y");
+			// Si les parents ont accès aux bulletins ou graphes,... on va afficher un témoin
+			$tab_acces_app_classe=array();
+			// L'accès est donné à la même date pour parents et responsables.
+			// On teste seulement pour les parents
+			$date_ouverture_acces_app_classe=array();
+			$tab_acces_app_classe[$id_classe]=acces_appreciations($periode_num, $periode_num, $id_classe, 'responsable');
+
+			$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
+			if($acces_app_ele_resp=='manuel') {
+				$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
+			}
+			elseif($acces_app_ele_resp=='date') {
+				$chaine_date_ouverture_acces_app_classe="";
+				for($loop=0;$loop<count($date_ouverture_acces_app_classe);$loop++) {
+					if($loop>0) {
+						$chaine_date_ouverture_acces_app_classe.=", ";
+					}
+					$chaine_date_ouverture_acces_app_classe.=$date_ouverture_acces_app_classe[$loop];
+				}
+				if($chaine_date_ouverture_acces_app_classe=="") {$chaine_date_ouverture_acces_app_classe="Aucune date n'est encore précisée.
+			Peut-être devriez-vous en poser la question à l'administration de l'établissement.";}
+				$msg_acces_app_ele_resp="Les appréciations seront visibles soit à une date donnée (".$chaine_date_ouverture_acces_app_classe.").";
+			}
+			elseif($acces_app_ele_resp=='periode_close') {
+				$delais_apres_cloture=getSettingValue('delais_apres_cloture');
+				$msg_acces_app_ele_resp="Les appréciations seront visibles ".$delais_apres_cloture." jour(s) après la clôture de la période.";
+			}
+			else{
+				$msg_acces_app_ele_resp="???";
+			}
+
+			if($tab_acces_app_classe[$id_classe][$periode_num]=="y") {
+				echo "<p>A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." sont visibles des parents/élèves.</p>\n";
+			}
+			else {
+				echo "<p>A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." ne sont pas encore visibles des parents/élèves.<br />$msg_acces_app_ele_resp</p>\n";
+			}
+		}
+
+
 		echo "<script type='text/javascript'>
 	if(document.getElementById('no_anti_inject_current_eleve_login_ap')) {
 		//alert('1')

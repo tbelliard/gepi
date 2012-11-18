@@ -1102,6 +1102,44 @@ if($_SESSION['statut']=="secours") {
 */
 //=================================
 
+//=================================
+// 20121118
+$date_du_jour=strftime("%d/%m/%Y");
+// Si les parents ont accès aux bulletins ou graphes,... on va afficher un témoin
+$tab_acces_app_classe=array();
+foreach($current_group["classes"]["list"] as $key => $value) {
+	// L'accès est donné à la même date pour parents et responsables.
+	// On teste seulement pour les parents
+	$date_ouverture_acces_app_classe=array();
+	$tab_acces_app_classe[$value]=acces_appreciations(1, count($current_group["periodes"]), $value, 'responsable');
+}
+
+
+$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
+if($acces_app_ele_resp=='manuel') {
+	$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
+}
+elseif($acces_app_ele_resp=='date') {
+	$chaine_date_ouverture_acces_app_classe="";
+	for($loop=0;$loop<count($date_ouverture_acces_app_classe);$loop++) {
+		if($loop>0) {
+			$chaine_date_ouverture_acces_app_classe.=", ";
+		}
+		$chaine_date_ouverture_acces_app_classe.=$date_ouverture_acces_app_classe[$loop];
+	}
+	if($chaine_date_ouverture_acces_app_classe=="") {$chaine_date_ouverture_acces_app_classe="Aucune date n'est encore précisée.
+Peut-être devriez-vous en poser la question à l'administration de l'établissement.";}
+	$msg_acces_app_ele_resp="Les appréciations seront visibles soit à une date donnée (".$chaine_date_ouverture_acces_app_classe.").";
+}
+elseif($acces_app_ele_resp=='periode_close') {
+	$delais_apres_cloture=getSettingValue('delais_apres_cloture');
+	$msg_acces_app_ele_resp="Les appréciations seront visibles ".$delais_apres_cloture." jour(s) après la clôture de la période.";
+}
+else{
+	$msg_acces_app_ele_resp="???";
+}
+//=================================
+
 // Tableau des notes pour chaque période
 $tab_per_notes=array();
 
@@ -1566,6 +1604,26 @@ foreach ($liste_eleves as $eleve_login) {
 				//	echo $nom_periode[$k];
 				//}
 				echo "</span>\n";
+
+				// 20121118
+				// Si les parents ont l'accès aux bulletins, graphes,... on affiche s'ils ont l'accès aux appréciations à ce jour
+				if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
+				(getSettingAOui('GepiAccesGraphParent'))||
+				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
+				(getSettingAOui('GepiAccesGraphEleve'))) {
+					if($tab_acces_app_classe[$eleve_id_classe][$k]=="y") {
+						echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
+					}
+					else {
+						/*
+						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour.") les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+Les appréciations seront visibles soit à une date donnée, soit N jours après la clôture de la période $k, soit après une intervention manuelle d'un compte de statut 'scolarité' selon le paramétrage choisi.\" />";
+						*/
+						echo " <img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+$msg_acces_app_ele_resp\" />";
+					}
+				}
+
 				echo "</td>\n";
 			}
 			else {
@@ -1585,6 +1643,25 @@ foreach ($liste_eleves as $eleve_login) {
 				//else {
 				//	echo $nom_periode[$k];
 				//}
+
+				// 20121118
+				// Si les parents ont l'accès aux bulletins, graphes,... on affiche s'ils ont l'accès aux appréciations à ce jour
+				if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
+				(getSettingAOui('GepiAccesGraphParent'))||
+				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
+				(getSettingAOui('GepiAccesGraphEleve'))) {
+					if($tab_acces_app_classe[$eleve_id_classe][$k]=="y") {
+						echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
+					}
+					else {
+						/*
+						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour.") les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+Les appréciations seront visibles soit à une date donnée, soit N jours après la clôture de la période $k, soit après une intervention manuelle d'un compte de statut 'scolarité' selon le paramétrage choisi.\" />";
+						*/
+						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+$msg_acces_app_ele_resp\" />";
+					}
+				}
 
 				echo "</td>\n";
 			}

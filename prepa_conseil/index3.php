@@ -359,6 +359,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$classe_eleve = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
 		$nom_classe = mysql_result($classe_eleve, 0, "classe");
 		echo "<p class='grand'>Classe de $nom_classe</p>\n";
+		echo "<p>Afficher&nbsp;:</p>\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 		echo "<table summary='Choix des élèves'>\n";
 		echo "<tr>\n";
@@ -456,6 +457,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "</label></td></tr>\n";
 
 		echo "</table>\n";
+
 	} else {
 		// Accès parent ou élève
 		echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
@@ -602,6 +604,65 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	echo "<br /><br /><center><input type=submit value=Valider /></center>\n";
 	echo "</form>\n";
+
+	//=================================
+	// 20121118
+	if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')&&
+	((getSettingAOui('GepiAccesBulletinSimpleParent'))||
+	(getSettingAOui('GepiAccesGraphParent'))||
+	(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
+	(getSettingAOui('GepiAccesGraphEleve')))) {
+		echo "<p><em>Note&nbsp;:</em> ";
+
+		$date_du_jour=strftime("%d/%m/%Y");
+		// Si les parents ont accès aux bulletins ou graphes,... on va afficher un témoin
+		$tab_acces_app_classe=array();
+		// L'accès est donné à la même date pour parents et responsables.
+		// On teste seulement pour les parents
+		$date_ouverture_acces_app_classe=array();
+		$tab_acces_app_classe[$id_classe]=acces_appreciations(1, $nb_periode, $id_classe, 'responsable');
+
+		$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
+		if($acces_app_ele_resp=='manuel') {
+			$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
+		}
+		elseif($acces_app_ele_resp=='date') {
+			$chaine_date_ouverture_acces_app_classe="";
+			for($loop=0;$loop<count($date_ouverture_acces_app_classe);$loop++) {
+				if($loop>0) {
+					$chaine_date_ouverture_acces_app_classe.=", ";
+				}
+				$chaine_date_ouverture_acces_app_classe.=$date_ouverture_acces_app_classe[$loop];
+			}
+			if($chaine_date_ouverture_acces_app_classe=="") {$chaine_date_ouverture_acces_app_classe="Aucune date n'est encore précisée.
+		Peut-être devriez-vous en poser la question à l'administration de l'établissement.";}
+			$msg_acces_app_ele_resp="Les appréciations seront visibles soit à une date donnée (".$chaine_date_ouverture_acces_app_classe.").";
+		}
+		elseif($acces_app_ele_resp=='periode_close') {
+			$delais_apres_cloture=getSettingValue('delais_apres_cloture');
+			$msg_acces_app_ele_resp="Les appréciations seront visibles ".$delais_apres_cloture." jour(s) après la clôture de la période.";
+		}
+		else{
+			$msg_acces_app_ele_resp="???";
+		}
+
+		echo "A la date du jour (".$date_du_jour.")&nbsp;:</p>\n";
+		echo "<ul>\n";
+		foreach($tab_acces_app_classe[$id_classe] as $periode_num => $value) {
+			echo "<li> les appréciations de la période ".$periode_num." ";
+			if($value=="y") {
+				echo "sont visibles des parents/élèves.";
+			}
+			else {
+				echo "ne sont pas encore visibles des parents/élèves.<br />";
+				echo $msg_acces_app_ele_resp;
+			}
+			echo "</li>\n";
+		}
+		echo "</ul>\n";
+	}
+	//=================================
+
 }
 require("../lib/footer.inc.php");
 ?>

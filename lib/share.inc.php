@@ -6227,4 +6227,115 @@ function captcha()
 	$_SESSION['captcha'] = $resultat;
 	return $phrase;
 }
+
+/** Fonction destinée à retourner un tableau des ouvertures par période en 
+ *  consultation parent/élève pour telle classe sur telle à telle période
+ *
+ * @param integer $periode1  La première période à tester
+ * @param integer $periode2  La dernière période à tester
+ * @param integer $id_classe L'identifiant de la classe à tester
+ * @param string $statut     Le statut 'responsable' ou 'eleve'
+ *                           Si le statut est vide, on prend le statut de 
+ *                           l'utilisateur connecté.
+ *
+ * @return array Tableau avec les numéros de période en indice et 'y' ou 'n' 
+ *               selon que les appréciations sont ou non accessibles
+ */
+function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
+	global $delais_apres_cloture;
+	global $date_ouverture_acces_app_classe;
+
+	if($delais_apres_cloture==="") {
+		$delais_apres_cloture=getSettingValue('delais_apres_cloture');
+	}
+
+	$tab_acces_app=array();
+
+	if($statut=="") {
+		$statut=$_SESSION['statut'];
+	}
+
+	if(($statut=='eleve')||($statut=='responsable')) {
+		for($i=$periode1;$i<=$periode2;$i++) {
+			$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
+												statut='".$statut."' AND
+												periode='$i';";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			if($res) {
+				if(mysql_num_rows($res)>0) {
+					$lig=mysql_fetch_object($res);
+					//echo "\$lig->acces=$lig->acces<br />";
+					if($lig->acces=="y") {
+						$tab_acces_app[$i]="y";
+					}
+					elseif($lig->acces=="date") {
+						//echo "<p>Période $i: Date limite: $lig->date<br />";
+						$tab_date=explode("-",$lig->date);
+						$timestamp_limite=mktime(0,0,0,$tab_date[1],$tab_date[2],$tab_date[0]);
+						//echo "$timestamp_limite<br />";
+						$timestamp_courant=time();
+						//echo "$timestamp_courant<br />";
+
+						$date_ouverture_acces_app_classe[$i]=$lig->date;
+
+						if($timestamp_courant>$timestamp_limite){
+							$tab_acces_app[$i]="y";
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+					}
+					elseif($lig->acces=="d") {
+						$sql="SELECT verouiller,UNIX_TIMESTAMP(date_verrouillage) AS date_verrouillage FROM periodes WHERE id_classe='$id_classe' AND num_periode='$i';";
+						//echo "$sql<br />";
+						$res_dv=mysql_query($sql);
+
+						if(mysql_num_rows($res_dv)>0) {
+							$lig_dv=mysql_fetch_object($res_dv);
+
+							if($lig_dv->verouiller!='O') {
+								$tab_acces_app[$i]="n";
+							}
+							else {
+								$timestamp_limite=$lig_dv->date_verrouillage+$delais_apres_cloture*24*3600;
+								$timestamp_courant=time();
+								//echo "\$timestamp_limite=$timestamp_limite<br />";
+								//echo "\$timestamp_courant=$timestamp_courant<br />";
+
+								if($timestamp_courant>$timestamp_limite){
+									$tab_acces_app[$i]="y";
+								}
+								else {
+									$tab_acces_app[$i]="n";
+								}
+								//echo "\$tab_acces_app[$i]=$tab_acces_app[$i]<br />";
+							}
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+					}
+					else {
+						$tab_acces_app[$i]="n";
+					}
+				}
+				else {
+					$tab_acces_app[$i]="n";
+				}
+			}
+			else {
+				$tab_acces_app[$i]="n";
+			}
+		}
+	}
+	else {
+		// Pas de limitations d'accès pour les autres statuts.
+		for($i=$periode1;$i<=$periode2;$i++) {
+			$tab_acces_app[$i]="y";
+		}
+	}
+	return $tab_acces_app;
+}
+
 ?>
