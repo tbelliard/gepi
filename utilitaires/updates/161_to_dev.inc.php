@@ -285,5 +285,13 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;->Modification du type du champ 'cp' de la table 'etablissements' de 'int' en 'varchar'<br />";
+$query = mysql_query("ALTER TABLE etablissements CHANGE cp cp VARCHAR( 10 ) NOT NULL;");
+if ($query) {
+		$result .= msj_ok();
+} else {
+		$result .= msj_erreur();
+}
+
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
 ?>
