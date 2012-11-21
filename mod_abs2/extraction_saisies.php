@@ -189,6 +189,8 @@ if ($affichage != null && $affichage != '') {
 }
 
 if ($affichage == 'html') {
+	$alt=1;
+
 	$saisie_col = $saisie_query->find();
     echo '<table style="border:1px solid">';
     $precedent_eleve_id = null;
@@ -207,14 +209,24 @@ if ($affichage == 'html') {
 	    //on affiche une nouvelle ligne
 	    echo '<tr style="border:1px solid">';
 	    echo '<td style="border:1px solid; vertical-align:top">';
+	    echo '<a href="../eleves/visu_eleve.php?ele_login='.$saisie->getEleve()->getLogin().'&amp;onglet=absences&amp;quitter_la_page=y" target="_blank" title="Voir la fiche élève">';
 	    echo $saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom().' '.$saisie->getEleve()->getClasseNom();
+	    echo '</a>';
 	    echo '</td>';
 	    echo '<td style="border:1px solid">';
-	    echo '<table>';
+	    echo '<table cellspacing="0" width="100%">';
 	}
-	echo '<tr>';
+
+	$tmp_tab=explode(" ", $saisie->getDateDescription());
+	if((!isset($jour_precedent))||($tmp_tab[2]!=$jour_precedent)) {
+		$alt=$alt*(-1);
+		$jour_precedent=$tmp_tab[2];
+	}
+	echo '<tr class="lig'.$alt.'">';
 	echo '<td>';
+	echo '<a href="visu_saisie.php?id_saisie='.$saisie->getId().'">';
 	echo $saisie->getDateDescription();
+	echo '</a>';
 	echo '</td>';
 	echo '<td>';
 	echo $saisie->getTypesDescription();

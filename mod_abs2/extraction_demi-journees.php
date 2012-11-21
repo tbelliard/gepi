@@ -182,7 +182,15 @@ if ($affichage != null && $affichage != '') {
     $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
     if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui se sont pas synchronisés
 		if ($eleve_col->count()>150) {
-			echo 'Il semble que vous demandez des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administrateur de remplir la table d\'agrégation.';
+			echo 'Il semble que vous demandez des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée.<br />Veuillez faire une demande pour moins d\'élèves ou';
+			if(getSettingAOui('AccesCpeAgregationAbs2')) {
+				echo ' <a href="./admin/admin_table_agregation.php" title="ATTENTION : Cette opération est lourde.
+                     Elle peut enliser le serveur, perturber les 
+                     saisies le temps qu\'elle s\'achève.">remplir la table d\'agrégation</a>.';
+			}
+			else {
+				echo ' demander à votre administrateur de remplir la table d\'agrégation.';
+			}
 			if (ob_get_contents()) {
 				ob_flush();
 			}
@@ -207,7 +215,7 @@ if ($affichage != null && $affichage != '') {
 
 if ($affichage == 'html') {
     echo 'Total élèves : '.$eleve_col->count();
-    echo '<table class="sortable resizable" style="border-width:1px; border-style:outset">';
+    echo '<table class="sortable resizable boireaus" style="border-width:1px; border-style:outset">';
     $precedent_eleve_id = null;
     echo '<thead>';
     echo '<tr>';
@@ -221,7 +229,7 @@ if ($affichage == 'html') {
     echo '</th>';
 
     echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
-    echo 'nbre de demi-journées d\'absence';
+    echo 'Nbre de demi-journées d\'absence';
     echo '</th>';
 
     echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
@@ -238,8 +246,10 @@ if ($affichage == 'html') {
     $nb_demijournees = 0;
     $nb_nonjustifiees = 0;
     $nb_retards = 0;
+    $alt=1;
     foreach ($eleve_col as $eleve) {
-	    echo '<tr>';
+	    $alt=$alt*(-1);
+	    echo '<tr class="lig'.$alt.' white_hover">';
 	    
 	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getNom().' '.$eleve->getPrenom();
