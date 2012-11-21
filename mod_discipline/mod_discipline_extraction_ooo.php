@@ -58,22 +58,71 @@ if (!checkAccess()) {
 	die();
 }
 
-include_once('../mod_ooo/lib/lib_mod_ooo.php'); //les fonctions
-$nom_fichier_modele_ooo =''; //variable a initialiser a blanc pour inclure le fichier suivant et eviter une notice. Pour les autres inclusions, cela est inutile.
+include_once('../mod_ooo/lib/lib_mod_ooo.php'); // les fonctions
+$nom_fichier_modele_ooo =''; // variable a initialiser a blanc pour inclure le fichier suivant et eviter une notice. Pour les autres inclusions, cela est inutile.
 include_once('../mod_ooo/lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
+
+if((isset($mode))&&($mode=="choix")) {
+	//**************** EN-TETE *******************************
+	$titre_page = "Extraction discipline";
+	require_once("../lib/header.inc.php");
+	//**************** FIN EN-TETE ****************************
+
+	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+
+echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>
+	<fieldset id='infosPerso' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>
+		<legend style='border: 1px solid grey; background-color: white; '>Choix de l'extraction</legend>
+
+		<p>Extraire les incidents&nbsp;:<br />
+		<select name='id_classe_incident'>
+			<option value='' selected='true'>Toutes classes confondues</option>";
+$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
+$res=mysql_query($sql);
+while($lig=mysql_fetch_object($res)) {
+	echo "
+			<option value='$lig->id'>$lig->classe ($lig->nom_complet)</option>";
+}
+echo "
+		</select><br />
+		Uniquement les incidents concernant (<em>pas nécessairement en responsable</em>) l'élève suivant&nbsp;:<br />
+		<select name='protagoniste_incident'>
+			<option value='' selected='true'>Tous élèves confondus</option>";
+$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login ORDER BY e.nom, e.prenom;";
+$res=mysql_query($sql);
+while($lig=mysql_fetch_object($res)) {
+	echo "
+			<option value='$lig->login'>".casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2")."</option>";
+}
+echo "
+		</select>
+		</p>
+
+		<input type='submit' value='Extraire' />
+	</fieldset>
+</form>\n";
+
+/*
+		<input type='checkbox' name='' id='' value='' /><label for=''> </label><br />
+*/
+
+	require("../lib/footer.inc.php");
+	die();
+}
+
 
 $path='../mod_ooo/'.$nom_dossier_modele_a_utiliser;
 
 require_once("../mod_discipline/sanctions_func_lib.php");
 
-$id_classe_incident="";
+$id_classe_incident=isset($_POST['id_classe_incident']) ? $_POST['id_classe_incident'] : (isset($_GET['id_classe_incident']) ? $_GET['id_classe_incident'] : "");
 $chaine_criteres="";
 $date_incident="";
 $heure_incident="";
 $nature_incident="---";
-$protagoniste_incident="";
+$protagoniste_incident=isset($_POST['protagoniste_incident']) ? $_POST['protagoniste_incident'] : (isset($_GET['protagoniste_incident']) ? $_GET['protagoniste_incident'] : "");
 $declarant_incident="---";
 $incidents_clos="y";
 

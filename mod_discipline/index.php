@@ -754,7 +754,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 
 
 	$nouveauItem = new itemGeneral();
-	$nouveauItem->chemin='/mod_discipline/mod_discipline_extraction_ooo.php';
+	$nouveauItem->chemin='/mod_discipline/mod_discipline_extraction_ooo.php?mode=choix';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Extraction ODS" ;
