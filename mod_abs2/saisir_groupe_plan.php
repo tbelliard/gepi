@@ -489,6 +489,9 @@ if ($current_creneau == null) {
 $tab_regimes=array();
 $tab_regimes_eleves=array();
 $tab_types_abs_regimes=array();
+// 20121121
+$tab_types_autorises=array();
+$tab_id_types_autorises=array();
 $afficheEleve = array();
 $elv = 0;
 foreach($eleve_col as $eleve) {
@@ -661,6 +664,16 @@ foreach($eleve_col as $eleve) {
 				$afficheEleve[$elv]['type_autorises'][$i] = array();
 				foreach ($type_autorises as $type) {
 					$afficheEleve[$elv]['type_autorises'][$i][]= array('type'=>$type->getId(), 'nom'=>$type->getNom(), 'modeInterface'=>$type->getModeInterface());
+					// 20121121
+					if(!in_array($type->getId(), $tab_id_types_autorises)) {
+						$tab_types_autorises[]=array('type'=>$type->getId(), 'nom'=>$type->getNom(), 'modeInterface'=>$type->getModeInterface(), 'manquement'=>$type->getManquementObligationPresence());
+						$tab_id_types_autorises[]=$type->getId();
+						/*
+						echo "<hr /><pre>";
+						print_r($type);
+						echo "</pre>";
+						*/
+					}
 				}
 			}
 		}
@@ -1132,6 +1145,17 @@ if ($eleve_col->isEmpty()) {
 			<div style='clear:both;'></div>
 
 			<?php
+
+				// 20121121
+				echo "<p id='p_choix_type' class='center' style='display:none'><span title='Type de saisie.
+Sans type, on laisse la Vie scolaire préciser le type.
+Pour vous, cet élève est juste non présent sans autre précision.'>Type&nbsp;:</span> <select name='type_courant' id='type_courant' onchange='modif_type_courant()'>
+	<option value='-1'>---</option>\n";
+				foreach($tab_types_autorises as $key => $value) {
+					echo "	<option value='".$value['type']."'>".$value['nom']."</option>\n";
+				}
+				echo "</select></p>\n";
+
 				$sql="SELECT * FROM t_plan_de_classe WHERE id_groupe='".$id_groupe."' AND login_prof='".$_SESSION['login']."';";
 				$test_pdc=mysql_query($sql);
 				if(mysql_num_rows($test_pdc)==0) {
@@ -1223,6 +1247,7 @@ echo "</pre>";
 
 					echo "<input type=\"hidden\" 
 							   name=\"type_absence_eleve[".$eleve['position']."]\" 
+							   id=\"type_absence_eleve_".$eleve['position']."\" 
 							   value=\"-1\" />\n";
 
 					echo "<input type=\"hidden\" 
@@ -1291,7 +1316,20 @@ if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers
 
 <?php
 if(isset($compteur_eleve)) {
+	$chaine_manquement="";
+	foreach($tab_types_autorises as $key=>$value) {
+		if($value['manquement']=='FAUX') {$chaine_manquement.="	tab_type_manquement[".$value['type']."]=false;\n";} else {$chaine_manquement.="	tab_type_manquement[".$value['type']."]=true;\n";}
+	}
+
 	echo "<script type='text/javascript'>
+	// 20121121
+	var type_courant='-1';
+	var title_type_courant='Saisie sans type. Elève non présent, sans autre précision.';
+
+	var tab_type_manquement=new Array();
+	tab_type_manquement[-1]=true;
+	$chaine_manquement
+
 	var etat_tout_cocher=false;
 	function cocher_div_abs(num) {
 		id_check_ele='active_absence_eleve_'+num;
@@ -1306,7 +1344,21 @@ if(isset($compteur_eleve)) {
 					}
 				}
 				else {
-					document.getElementById(id_div).style.backgroundColor='red';
+					id_type_abs_ele='type_absence_eleve_'+num;
+					if(document.getElementById(id_type_abs_ele)) {
+						//alert(type_courant);
+						document.getElementById(id_type_abs_ele).value=type_courant;
+					}
+
+					// On adapte la couleur en fonction du Manquement ou non à l'obligation de présence
+					if(tab_type_manquement[type_courant]==false) {
+						couleur='yellow';
+					}
+					else {
+						couleur='red';
+					}
+
+					document.getElementById(id_div).style.backgroundColor=couleur;
 					if(document.getElementById(id_photo)) {
 						document.getElementById(id_photo).style.opacity=0.2;
 					}
@@ -1315,6 +1367,12 @@ if(isset($compteur_eleve)) {
 		}
 	}
 
+	if(document.getElementById('p_choix_type')) {document.getElementById('p_choix_type').style.display='';}
+
+	function modif_type_courant() {
+		type_courant=document.getElementById('type_courant').value;
+		//alert(type_courant);
+	}
 </script>\n";
 }
 
