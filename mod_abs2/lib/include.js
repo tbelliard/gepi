@@ -129,16 +129,24 @@ function postform(the_form){
 
 function click_active_absence(elv) {
 	if (document.getElementById("active_absence_eleve_"+elv).checked) {
-		document.getElementById("label_active_absence_eleve_"+elv).className='policeRouge';
+		if(document.getElementById("label_active_absence_eleve_"+elv)) {
+			document.getElementById("label_active_absence_eleve_"+elv).className='policeRouge';
+		}
 		//document.getElementById("label_nom_prenom_eleve_"+elv).className='policeRouge';
-		document.getElementById("label_nom_prenom_eleve_"+elv).style.color='red';
+		if(document.getElementById("label_nom_prenom_eleve_"+elv)) {
+			document.getElementById("label_nom_prenom_eleve_"+elv).style.color='red';
+		}
 		if(document.getElementById("img_photo_eleve_"+elv)) {
 			document.getElementById("img_photo_eleve_"+elv).className='trombine bord_rouge';
 		}
 	} else {
-		document.getElementById("label_active_absence_eleve_"+elv).className='policeBlack';
+		if(document.getElementById("label_active_absence_eleve_"+elv)) {
+			document.getElementById("label_active_absence_eleve_"+elv).className='policeBlack';
+		}
 		//document.getElementById("label_nom_pren_eleve_"+elv).className='policeBlack';
-		document.getElementById("label_nom_prenom_eleve_"+elv).style.color='black';
+		if(document.getElementById("label_nom_prenom_eleve_"+elv)) {
+			document.getElementById("label_nom_prenom_eleve_"+elv).style.color='black';
+		}
 		if(document.getElementById("img_photo_eleve_"+elv)) {
 			document.getElementById("img_photo_eleve_"+elv).className='trombine sans_bord';
 		}
