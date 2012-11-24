@@ -9,6 +9,21 @@
 	require_once("../lib/initialisations.inc.php");
 	//send_file_download_headers("Content-type:image/png", "image.png", "inline");
 
+	// Resume session
+	$resultat_session = $session_gepi->security_check();
+	if ($resultat_session == 'c') {
+		header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+		die();
+	} else if ($resultat_session == '0') {
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+	if (!checkAccess()) {
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
 	header("Content-type:image/png");
 	
 	// Récupération des valeurs:
@@ -124,9 +139,19 @@
 	for($i=1;$i<=count($mattmp);$i++){
 		$matiere[$i]=$mattmp[$i-1];
 
-		$call_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
-		$matiere_nom_long[$i] = mysql_result($call_matiere, "0", "nom_complet");
-
+		if(!preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_-]{1,19}$/", $matiere[$i])) {
+			$matiere[$i]=preg_replace("/[^A-Za-z0-9_-]/", "",$matiere[$i]);
+			$matiere_nom_long[$i]=$matiere[$i];
+		}
+		else {
+			$call_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
+			if(mysql_num_rows($call_matiere)>0) {
+				$matiere_nom_long[$i] = mysql_result($call_matiere, "0", "nom_complet");
+			}
+			else {
+				$matiere_nom_long[$i]=$matiere[$i];
+			}
+		}
 		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere[$i]=".$matiere[$i]."\n");
 	}
 
@@ -150,11 +175,17 @@
 
 
 	$eleve1=$_GET['v_legend1'];
-	$sql="SELECT * FROM eleves WHERE login='$eleve1'";
+	$eleve1=preg_replace("/[^A-Za-z0-9_.-]/", "", $eleve1);
+	$sql="SELECT * FROM eleves WHERE login='$eleve1';";
 	$resultat_infos_eleve1=mysql_query($sql);
-	$ligne=mysql_fetch_object($resultat_infos_eleve1);
-	//$nom_eleve1=$ligne->nom." ".$ligne->prenom;
-	$nom_eleve[1]=$ligne->nom." ".$ligne->prenom;
+	if(mysql_num_rows($resultat_infos_eleve1)>0) {
+		$ligne=mysql_fetch_object($resultat_infos_eleve1);
+		//$nom_eleve1=$ligne->nom." ".$ligne->prenom;
+		$nom_eleve[1]=$ligne->nom." ".$ligne->prenom;
+	}
+	else {
+		$nom_eleve[1]=$eleve1;
+	}
 	if($periode!=''){
 		$nom_eleve[1]=$nom_eleve[1]." ($periode)";
 	}
@@ -227,11 +258,17 @@
 					$nom_eleve[2]="Moyennes maximales";
 				break;
 			default:
+				$eleve2=preg_replace("/[^A-Za-z0-9_.-]/", "", $eleve2);
 				$sql="SELECT * FROM eleves WHERE login='$eleve2'";
 				$resultat_infos_eleve2=mysql_query($sql);
-				$ligne=mysql_fetch_object($resultat_infos_eleve2);
-				//$nom_eleve2=$ligne->nom." ".$ligne->prenom;
-				$nom_eleve[2]=$ligne->nom." ".$ligne->prenom;
+				if(mysql_num_rows($resultat_infos_eleve2)>0) {
+					$ligne=mysql_fetch_object($resultat_infos_eleve2);
+					//$nom_eleve2=$ligne->nom." ".$ligne->prenom;
+					$nom_eleve[2]=$ligne->nom." ".$ligne->prenom;
+				}
+				else {
+					$nom_eleve[2]=$eleve2;
+				}
 				break;
 		}
 		$nom_eleve[2]=remplace_accents($nom_eleve[2],'simple');
