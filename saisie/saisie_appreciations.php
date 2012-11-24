@@ -1389,17 +1389,17 @@ foreach ($liste_eleves as $eleve_login) {
 						}
 
 						if($conteneur_precedent!=$snnote['nom_court_conteneur']) {
-							$liste_notes_detaillees.="<p><b>".$snnote['nom_court_conteneur']."&nbsp;:</b> <br />";
+							$liste_notes_detaillees.="<p><strong>".$snnote['nom_court_conteneur']."&nbsp;:</strong> <br />";
 							$conteneur_precedent=$snnote['nom_court_conteneur'];
 						}
 
 						//if ($liste_notes_detaillees!='') {$liste_notes_detaillees.=", ";}
 						$liste_notes_detaillees.=$snnote['nom_court']."&nbsp;: ";
-						$liste_notes_detaillees.=$snnote['note'];
+						$liste_notes_detaillees.="<strong>".$snnote['note'];
 						if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
 							$liste_notes_detaillees.= "/".$snnote['note_sur'];
 						}
-						$liste_notes_detaillees.=" (coef&nbsp;".$snnote['coef'].")";
+						$liste_notes_detaillees.="</strong> (coef&nbsp;".$snnote['coef'].")";
 						$liste_notes_detaillees.=" (".formate_date($snnote['date']).")<br />";
 					}
 				}
