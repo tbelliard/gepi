@@ -724,6 +724,7 @@ if (isset($fiche)) {
 		}
 
 		if($eleve_trouve=="y") {
+			/*
 			for($j=0;$j<count($tab_moy['current_group']);$j++) {
 				$current_group=$tab_moy['current_group'][$j];
 
@@ -748,6 +749,35 @@ if (isset($fiche)) {
 					}
 				}
 			}
+			*/
+
+			$compteur_groupes_eleve=0;
+			for($j=0;$j<count($tab_moy['current_group']);$j++) {
+				$current_group=$tab_moy['current_group'][$j];
+
+				if(in_array($current_eleve_login, $current_group["eleves"][$loop]["list"])) {
+					$current_group=$tab_moy['current_group'][$j];
+
+					if($compteur_groupes_eleve>0) {
+						$graphe_chaine_etiquette.="|";
+						$graphe_chaine_temp_classe.="|";
+						$graphe_chaine_seriemin.="|";
+						$graphe_chaine_seriemax.="|";
+						$graphe_chaine_temp_eleve.="|";
+					}
+
+					$graphe_chaine_etiquette.=$current_group["matiere"]["matiere"];
+					$graphe_chaine_temp_classe.=$tab_moy['periodes'][$loop]['current_classe_matiere_moyenne'][$j];
+					$graphe_chaine_seriemin.=$tab_moy['periodes'][$loop]['moy_min_classe_grp'][$j];
+					$graphe_chaine_seriemax.=$tab_moy['periodes'][$loop]['moy_max_classe_grp'][$j];
+
+					if(isset($tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i])) {
+						$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+					}
+					$compteur_groupes_eleve++;
+				}
+			}
+
 
 			$graphe_chaine_mgen_eleve=number_format($tab_moy['periodes'][$loop]['moy_gen_eleve'][$i],1);
 			$graphe_chaine_mgen_classe=number_format($tab_moy['periodes'][$loop]['moy_generale_classe'],1);
@@ -839,7 +869,7 @@ if (isset($fiche)) {
 
 		echo "<td valign='top'>\n";
 		//echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
-		echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\"";
+		echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\" onclick=\"afficher_div('photo_$current_eleve_login','y',-100,20); return false;\"";
 		echo ">";
 		echo "<img src='../images/icons/buddy.png' alt='$current_eleve_nom $current_eleve_prenom' />";
 		echo "</a>";
