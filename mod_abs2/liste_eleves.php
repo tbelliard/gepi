@@ -132,7 +132,7 @@ if (isFiltreRechercheParam('filter_motif')) {
 }
 if (isFiltreRechercheParam('filter_justification')) {
     if (getFiltreRechercheParam('filter_justification') == 'SANS') {
-        $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery('d', 'left join')->filterByAJustificationId(null)->endUse()->endUse()->endUse();
+        $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery('ab', 'left join')->useAbsenceEleveTraitementQuery('ad', 'left join')->filterByAJustificationId(null)->endUse()->endUse()->endUse();
     } else {
         $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByAJustificationId(getFiltreRechercheParam('filter_justification'))->endUse()->endUse()->endUse();
     }
