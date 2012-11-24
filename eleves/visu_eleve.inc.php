@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1126,7 +1126,10 @@ Patientez pendant l'extraction des données... merci.
 					echo "<table class='boireaus' summary='Infos compte élève'>\n";
 					echo "<tr class='lig-1'><th style='text-align: left;'>Compte&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['login']."</td></tr>";
 					echo "<tr class='lig1'><th style='text-align: left;'>Etat&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['etat']."</td></tr>";
-					echo "<tr class='lig-1'><th style='text-align: left;'>Authentication&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['auth_mode']."</td></tr>";
+					echo "<tr class='lig-1'><th style='text-align: left;'>Authentication&nbsp;:</th><td title=\"Gepi permet selon les configurations plusieurs modes d'authentification:
+- gepi : Authentification sur la base mysql de Gepi,
+- sso : Authentification CAS ou LCS assurée par une autre machine,
+- ldap : Authentification en recherchant la correspondance login/mot_de_passe dans un annuaire LDAP.\">".$tab_ele['compte_utilisateur']['auth_mode']."</td></tr>";
 
 					echo "</table>\n";
 				echo "</div>\n";
@@ -1326,7 +1329,12 @@ Patientez pendant l'extraction des données... merci.
 
 							if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
 								echo "<br />\n";
+								echo "<span title=\"Gepi permet selon les configurations plusieurs modes d'authentification:
+- gepi : Authentification sur la base mysql de Gepi,
+- sso : Authentification CAS ou LCS assurée par une autre machine,
+- ldap : Authentification en recherchant la correspondance login/mot_de_passe dans un annuaire LDAP.\">";
 								echo "Auth.: ".$tab_ele['resp'][$i]['auth_mode'];
+								echo "</span>";
 							}
 							echo "</td></tr>\n";
 						}
@@ -1733,6 +1741,123 @@ Patientez pendant l'extraction des données... merci.
 
 						//bulletin($ele_login,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,'y');
 						bulletin($tab_moy,$ele_login,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,'y');
+
+
+						if(acces('/visualisation/draw_graphe.php', $_SESSION['statut'])) {
+							// Si on donne un jour un accès à cette page pour les parents/élèves, il faudra ajouter des filtres
+							//============================================================
+							// Graphes
+
+							unset($graphe_chaine_etiquette);
+							unset($graphe_chaine_temp);
+							unset($graphe_chaine_mgen);
+
+							for($loop=$periode1;$loop<=$periode2;$loop++) {
+								$graphe_chaine_etiquette="";
+								$graphe_chaine_temp_eleve="";
+								$graphe_chaine_temp_classe="";
+								$graphe_chaine_mgen_eleve="";
+								$graphe_chaine_mgen_classe="";
+								$graphe_chaine_seriemin="";
+								$graphe_chaine_seriemax="";
+
+								// Recherche de l'indice de l'élève:
+								$eleve_trouve="n";
+								for($i=0;$i<count($tab_moy['periodes'][$loop]['current_eleve_login']);$i++) {
+									if($tab_moy['periodes'][$loop]['current_eleve_login'][$i]==$ele_login) {
+										$eleve_trouve="y";
+										break;
+									}
+								}
+
+								if($eleve_trouve=="y") {
+									$compteur_groupes_eleve=0;
+									for($j=0;$j<count($tab_moy['current_group']);$j++) {
+										$current_group=$tab_moy['current_group'][$j];
+
+										if(in_array($ele_login, $current_group["eleves"][$loop]["list"])) {
+											$current_group=$tab_moy['current_group'][$j];
+
+											if($compteur_groupes_eleve>0) {
+												$graphe_chaine_etiquette.="|";
+												$graphe_chaine_temp_classe.="|";
+												$graphe_chaine_seriemin.="|";
+												$graphe_chaine_seriemax.="|";
+												$graphe_chaine_temp_eleve.="|";
+											}
+											/*
+											if($graphe_chaine_etiquette!="") {$graphe_chaine_etiquette.="|";}
+											$graphe_chaine_etiquette.=$current_group["matiere"]["matiere"];
+
+											if($graphe_chaine_temp_classe!="") {$graphe_chaine_temp_classe.="|";}
+											$graphe_chaine_temp_classe.=$tab_moy['periodes'][$loop]['current_classe_matiere_moyenne'][$j];
+
+											if($graphe_chaine_seriemin!="") {$graphe_chaine_seriemin.="|";}
+											$graphe_chaine_seriemin.=$tab_moy['periodes'][$loop]['moy_min_classe_grp'][$j];
+
+											if($graphe_chaine_seriemax!="") {$graphe_chaine_seriemax.="|";}
+											$graphe_chaine_seriemax.=$tab_moy['periodes'][$loop]['moy_max_classe_grp'][$j];
+
+											if($graphe_chaine_temp_eleve!="") {$graphe_chaine_temp_eleve.="|";}
+											*/
+
+											$graphe_chaine_etiquette.=$current_group["matiere"]["matiere"];
+											$graphe_chaine_temp_classe.=$tab_moy['periodes'][$loop]['current_classe_matiere_moyenne'][$j];
+											$graphe_chaine_seriemin.=$tab_moy['periodes'][$loop]['moy_min_classe_grp'][$j];
+											$graphe_chaine_seriemax.=$tab_moy['periodes'][$loop]['moy_max_classe_grp'][$j];
+
+											if(isset($tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i])) {
+												$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+											}
+											$compteur_groupes_eleve++;
+										}
+									}
+
+									$graphe_chaine_mgen_eleve=number_format($tab_moy['periodes'][$loop]['moy_gen_eleve'][$i],1);
+									$graphe_chaine_mgen_classe=number_format($tab_moy['periodes'][$loop]['moy_generale_classe'],1);
+
+
+									$graphe_chaine_periode[$loop]=
+									"temp1=".$graphe_chaine_temp_eleve."&amp;".
+									"temp2=".$graphe_chaine_temp_classe."&amp;".
+									"etiquette=".$graphe_chaine_etiquette."&amp;".
+									"titre=Graphe&amp;".
+									"v_legend1=".$ele_login."&amp;".
+									"v_legend2=moyclasse&amp;".
+									"compteur=0&amp;".
+									"nb_series=2&amp;".
+									"id_classe=".$id_classe."&amp;".
+									"largeur_graphe=600&amp;".
+									"hauteur_graphe=400&amp;".
+									"taille_police=4&amp;".
+									"epaisseur_traits=2&amp;".
+									"epaisseur_croissante_traits_periodes=non&amp;".
+									"tronquer_nom_court=4&amp;".
+									"temoin_image_escalier=oui&amp;".
+									"seriemin=".$graphe_chaine_seriemin."&amp;".
+									"seriemax=".$graphe_chaine_seriemax."&amp;".
+									"mgen1=".$graphe_chaine_mgen_eleve."&amp;".
+									"mgen2=".$graphe_chaine_mgen_classe;
+								}
+							}
+
+							for($loop=$periode1;$loop<=$periode2;$loop++) {
+								$titre_infobulle=$tab_ele['nom']." ".$tab_ele['prenom']." (Période $loop)";
+
+								$texte_infobulle="<div align='center'>\n";
+								$texte_infobulle.="<img src='../visualisation/draw_graphe.php?".$graphe_chaine_periode[$loop]."' width='600' height='400' alt=\"".$tab_ele['nom']." ".$tab_ele['prenom']." (Période $loop)\" title=\"".$tab_ele['nom']." ".$tab_ele['prenom']." (Période $loop)\" />";
+								$texte_infobulle.="<br />\n";
+								$texte_infobulle.="</div>\n";
+
+								$tabdiv_infobulle[]=creer_div_infobulle('graphe_periode_'.$loop.'_'.$ele_login,$titre_infobulle,"",$texte_infobulle,"",'610px','410px','y','y','n','n');
+
+								echo "<a href='../visualisation/draw_graphe.php?".
+								$graphe_chaine_periode[$loop].
+								"' onclick=\"afficher_div('graphe_periode_".$loop."_".$ele_login."','y',20,20); return false;\" target='_blank'>Graphe période ".$loop."</a>";
+							}
+							echo "<br />\n";
+							//============================================================
+						}
 
 						echo "</div>\n";
 					}
