@@ -186,6 +186,7 @@ include("menu_plugins.inc.php");
 		$menus .= '    <ul class="niveau3">'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/cahier_texte_admin/index.php" '.insert_confirm_abandon().'>Cahier de textes</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/cahier_notes_admin/index.php" '.insert_confirm_abandon().'>Carnets de notes</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/index_admin.php" '.insert_confirm_abandon().'>Bulletins</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_absences/admin/index.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_abs2/admin/index.php" '.insert_confirm_abandon().'>Absences 2</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/edt_organisation/edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";

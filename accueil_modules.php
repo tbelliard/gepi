@@ -314,7 +314,19 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
-	
+
+// Bulletins
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/bulletin/index_admin.php';	
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->choix_icone('active_bulletins') ;	
+		$nouveauItem->titre="Bulletins" ;
+		$nouveauItem->expli="Pour gérer le module bulletins" ;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+
 // Absences
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_absences/admin/index.php';	

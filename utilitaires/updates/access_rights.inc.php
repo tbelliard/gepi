@@ -949,6 +949,8 @@ $tab_req[]="INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes_ter.php'
 
 $tab_req[]="INSERT INTO droits VALUES ('/utilisateurs/modif_par_lots.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Personnels : Traitements par lots', '1');";
 
+$tab_req[]="INSERT INTO droits VALUES ('/bulletin/index_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Bulletins : Activation du module bulletins', '1');";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

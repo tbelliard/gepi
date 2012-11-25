@@ -99,63 +99,65 @@ if ($barre_plugin!="") {
 		if(getSettingValue("active_carnets_notes") == 'y'){
 			//=======================================================
 			// Bulletins
-			$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
-			$menus .= '   <ul class="niveau2">'."\n";
+			if (getSettingValue("active_bulletins") == "y") {
+				$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
+				$menus .= '   <ul class="niveau2">'."\n";
 	
-			$menus .= '     <li class="plus">Avis conseil classe'."\n";
-			$menus .= '            <ul class="niveau3">'."\n";
-			if(getSettingValue('GepiRubConseilScol')=='yes') {
-				$menus .= '                <li><a href="'.$gepiPath.'/saisie/saisie_avis.php"'.insert_confirm_abandon().'>Saisie des avis Conseil</a></li>'."\n";
+				$menus .= '     <li class="plus">Avis conseil classe'."\n";
+				$menus .= '            <ul class="niveau3">'."\n";
+				if(getSettingValue('GepiRubConseilScol')=='yes') {
+					$menus .= '                <li><a href="'.$gepiPath.'/saisie/saisie_avis.php"'.insert_confirm_abandon().'>Saisie des avis Conseil</a></li>'."\n";
+				}
+				if(getSettingValue('CommentairesTypesScol')=='yes') {
+					$menus .= '                <li><a href="'.$gepiPath.'/saisie/commentaires_types.php"'.insert_confirm_abandon().'>Commentaires-types</a></li>'."\n";
+				}
+				$menus .= '                <li><a href="'.$gepiPath.'/saisie/impression_avis.php"'.insert_confirm_abandon().'>Impression avis PDF</a></li>'."\n";
+				$menus .= '            </ul>'."\n";
+				$menus .= '     </li>'."\n";
+	
+				$menus .= '     <li class="plus">Vérif. et accès'."\n";
+				$menus .= '            <ul class="niveau3">'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verif_bulletins.php"'.insert_confirm_abandon().'>Vérif. remplissage bull</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verrouillage.php"'.insert_confirm_abandon().'>Verrouillage périodes</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/autorisation_exceptionnelle_saisie_app.php"'.insert_confirm_abandon().'>Autorisation exceptionnelle de remplissage</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès resp/ele appréciations</a></li>'."\n";
+				$menus .= '            </ul>'."\n";
+				$menus .= '     </li>'."\n";
+	
+	
+				$menus .= '     <li class="plus">Bulletins'."\n";
+				$menus .= '            <ul class="niveau3">'."\n";
+				if(getSettingValue('GepiScolImprBulSettings')=='yes') {
+					$menus .= '                <li><a href="'.$gepiPath.'/bulletin/param_bull.php"'.insert_confirm_abandon().'>Param. impression bull</a></li>'."\n";
+				}
+				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/bull_index.php"'.insert_confirm_abandon().'>Impression bulletins</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a></li>'."\n";
+				$menus .= '            </ul>'."\n";
+				$menus .= '     </li>'."\n";
+	
+				$menus .= '     <li class="plus">Moyennes'."\n";
+				$menus .= '            <ul class="niveau3">'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index1.php"'.insert_confirm_abandon().'>Mes moyennes et app.</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index2.php"'.insert_confirm_abandon().'>Moyennes une classe</a></li>'."\n";
+				$menus .= '            </ul>'."\n";
+				$menus .= '     </li>'."\n";
+	
+				$menus .= '     <li class="plus"><a href="'.$gepiPath.'/visualisation/index.php"'.insert_confirm_abandon().'>Outils graphiques</a>'."\n";
+				$menus .= '            <ul class="niveau3">'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php?type_graphe=courbe"'.insert_confirm_abandon().'>Courbe</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php?type_graphe=etoile"'.insert_confirm_abandon().'>Etoile</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/visualisation/eleve_classe.php"'.insert_confirm_abandon().'>Elève/classe</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/visualisation/eleve_eleve.php"'.insert_confirm_abandon().'>Elève/élève</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/visualisation/evol_eleve.php"'.insert_confirm_abandon().'>Evol. élève année</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/visualisation/evol_eleve_classe.php"'.insert_confirm_abandon().'>Evol. élève/classe année</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/visualisation/stats_classe.php"'.insert_confirm_abandon().'>Evol. moyennes classes</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/visualisation/classe_classe.php"'.insert_confirm_abandon().'>Classe/classe</a></li>'."\n";
+				$menus .= '            </ul>'."\n";
+				$menus .= '     </li>'."\n";
+	
+				$menus .= '   </ul>'."\n";
+				$menus .= '</li>'."\n";
 			}
-			if(getSettingValue('CommentairesTypesScol')=='yes') {
-				$menus .= '                <li><a href="'.$gepiPath.'/saisie/commentaires_types.php"'.insert_confirm_abandon().'>Commentaires-types</a></li>'."\n";
-			}
-			$menus .= '                <li><a href="'.$gepiPath.'/saisie/impression_avis.php"'.insert_confirm_abandon().'>Impression avis PDF</a></li>'."\n";
-			$menus .= '            </ul>'."\n";
-			$menus .= '     </li>'."\n";
-	
-			$menus .= '     <li class="plus">Vérif. et accès'."\n";
-			$menus .= '            <ul class="niveau3">'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verif_bulletins.php"'.insert_confirm_abandon().'>Vérif. remplissage bull</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verrouillage.php"'.insert_confirm_abandon().'>Verrouillage périodes</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/autorisation_exceptionnelle_saisie_app.php"'.insert_confirm_abandon().'>Autorisation exceptionnelle de remplissage</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès resp/ele appréciations</a></li>'."\n";
-			$menus .= '            </ul>'."\n";
-			$menus .= '     </li>'."\n";
-	
-	
-			$menus .= '     <li class="plus">Bulletins'."\n";
-			$menus .= '            <ul class="niveau3">'."\n";
-			if(getSettingValue('GepiScolImprBulSettings')=='yes') {
-				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/param_bull.php"'.insert_confirm_abandon().'>Param. impression bull</a></li>'."\n";
-			}
-			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/bull_index.php"'.insert_confirm_abandon().'>Impression bulletins</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a></li>'."\n";
-			$menus .= '            </ul>'."\n";
-			$menus .= '     </li>'."\n";
-	
-			$menus .= '     <li class="plus">Moyennes'."\n";
-			$menus .= '            <ul class="niveau3">'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index1.php"'.insert_confirm_abandon().'>Mes moyennes et app.</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index2.php"'.insert_confirm_abandon().'>Moyennes une classe</a></li>'."\n";
-			$menus .= '            </ul>'."\n";
-			$menus .= '     </li>'."\n";
-	
-			$menus .= '     <li class="plus"><a href="'.$gepiPath.'/visualisation/index.php"'.insert_confirm_abandon().'>Outils graphiques</a>'."\n";
-			$menus .= '            <ul class="niveau3">'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php?type_graphe=courbe"'.insert_confirm_abandon().'>Courbe</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php?type_graphe=etoile"'.insert_confirm_abandon().'>Etoile</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/eleve_classe.php"'.insert_confirm_abandon().'>Elève/classe</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/eleve_eleve.php"'.insert_confirm_abandon().'>Elève/élève</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/evol_eleve.php"'.insert_confirm_abandon().'>Evol. élève année</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/evol_eleve_classe.php"'.insert_confirm_abandon().'>Evol. élève/classe année</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/stats_classe.php"'.insert_confirm_abandon().'>Evol. moyennes classes</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/classe_classe.php"'.insert_confirm_abandon().'>Classe/classe</a></li>'."\n";
-			$menus .= '            </ul>'."\n";
-			$menus .= '     </li>'."\n";
-	
-			$menus .= '   </ul>'."\n";
-			$menus .= '</li>'."\n";
 			//=======================================================
 	
 			//=======================================================

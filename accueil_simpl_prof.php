@@ -82,6 +82,10 @@ $pref_accueil_liste_pdf=getPref($_SESSION['login'],'accueil_liste_pdf',"y");
 
 $pref_accueil_infobulles=getPref($_SESSION['login'],'accueil_infobulles',"y");
 
+if(!getSettingAOui('active_bulletins')) {
+	$pref_accueil_bull="n";
+	$pref_accueil_visu="n";
+}
 
 // On ne propose pas les colonnes si le module est désactivé
 if($active_cahiers_texte=='n') {$pref_accueil_ct="n";}

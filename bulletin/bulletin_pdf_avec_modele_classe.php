@@ -48,6 +48,11 @@ if (!checkAccess()) {
 	die();
 }
 
+if(!getSettingAOui('active_bulletins')) {
+	header("Location: ../accueil.php?msg=Module_inactif");
+	die();
+}
+
 //================================
 
 //================================

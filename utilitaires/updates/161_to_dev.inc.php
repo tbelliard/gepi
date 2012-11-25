@@ -293,5 +293,21 @@ if ($query) {
 		$result .= msj_erreur();
 }
 
+$result .= "<strong>Bulletins :</strong><br />";
+$result .= "&nbsp;->Prise en compte du module Bulletins : ";
+$test = sql_query1("SELECT 1=1 FROM setting WHERE name='active_bulletins';");
+if ($test == -1) {
+	$result_inter = traite_requete("INSERT INTO setting SET name='active_bulletins', value='y';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Prise en compte déjà effectuée.");
+}
+$result .= "<br />";
+
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
 ?>

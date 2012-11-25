@@ -728,7 +728,7 @@ var tab_per_cn=new Array();\n";
     $empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
     //echo "</ul>\n";
     if ($empty == 'yes') echo "<p><b>Actuellement, aucune évaluation.</b> Vous devez créer au moins une évaluation.</p>\n";
-    if ($empty != 'yes') {
+    if (($empty != 'yes')&&(getSettingAOui('active_bulletins'))) {
 		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
 		$test_jgv=mysql_query($sql);
 		if(mysql_num_rows($test_jgv)==0) {

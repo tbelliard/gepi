@@ -38,6 +38,11 @@ if (!checkAccess()) {
 	die();
 }
 
+if(!getSettingAOui('active_bulletins')) {
+	header("Location: ../accueil.php?msg=Module_inactif");
+	die();
+}
+
 //Initialisation
 unset($id_classe);
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id_classe"]) ? $_GET["id_classe"] : NULL);

@@ -41,6 +41,11 @@ if (!checkAccess()) {
 	die();
 }
 
+if(!getSettingAOui('active_bulletins')) {
+	header("Location: ../accueil.php?msg=Module_inactif");
+	die();
+}
+
 //Initialisation
 //$id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] :  NULL;
 //$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] :  NULL;

@@ -44,6 +44,10 @@ if (!checkAccess()) {
     die();
 }
 
+if(!getSettingAOui('active_bulletins')) {
+	header("Location: ../accueil.php?msg=Module_inactif");
+	die();
+}
 
 // Ebauche de liste des variables reçues:
 // $choix_edit correspond au choix de ce qui doit être affiché:

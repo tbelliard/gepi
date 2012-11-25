@@ -25,7 +25,6 @@
 $variables_non_protegees = 'yes';
 
 // Begin standart header
-$titre_page = "Paramètres de configuration des bulletins scolaires HTML";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -50,6 +49,13 @@ $reg_ok = 'yes';
 $msg = '';
 $bgcolor = "#DEDEDE";
 
+
+if(getSettingAOui('active_bulletins')) {
+	$titre_page = "Paramètres de configuration des bulletins scolaires HTML";
+}
+else {
+	$titre_page = "Paramètres bloc adresse responsables";
+}
 
 
 // Tableau des couleurs HTML:
@@ -381,15 +387,17 @@ if (isset($_POST['is_posted'])) {
 	}
 	
 	if (isset($_POST['ok'])) {
-	
-		if (isset($_POST['page_garde_imprime'])) {
-			$temp = 'yes';
-		} else {
-			$temp = 'no';
-		}
-		if (!saveSetting("page_garde_imprime", $temp)) {
-			$msg .= "Erreur lors de l'enregistrement de page_garde_imprime !";
-			$reg_ok = 'no';
+
+		if(getSettingAOui('active_bulletins')) {
+			if (isset($_POST['page_garde_imprime'])) {
+				$temp = 'yes';
+			} else {
+				$temp = 'no';
+			}
+			if (!saveSetting("page_garde_imprime", $temp)) {
+				$msg .= "Erreur lors de l'enregistrement de page_garde_imprime !";
+				$reg_ok = 'no';
+			}
 		}
 	}
 	
@@ -791,13 +799,20 @@ function SetDefaultValues(nb){
 change='no';
 </script>
 
+<?php
+if(!getSettingAOui('active_bulletins')) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil </a></p>\n";
+}
+else {
+?>
 <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>
 | <!--a href="./index.php"> Imprimer les bulletins au format HTML</a-->
 <a href="./bull_index.php"> Imprimer les bulletins</a>
 | <a href="./param_bull_pdf.php"> Paramètres d'impression des bulletins PDF</a>
 </p>
-
 <?php
+}
+
 if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
 {
     die("Droits insuffisants pour effectuer cette opération");
@@ -808,6 +823,8 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 <form name="formulaire" action="param_bull.php" method="post" style="width: 100%;">
 <?php
 echo add_token_field();
+
+if(getSettingAOui('active_bulletins')) {
 ?>
 <input type='hidden' name='is_posted' value='y' />
 <H3>Mise en page du bulletin scolaire</H3>
@@ -1642,14 +1659,14 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 </table>
 <hr />
 
-
-
-
 <center><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></center>
 
-
-
 <hr />
+
+<?php
+} // Fin test getSettingAOui('active_bulletins')
+?>
+
 <a name='bloc_adresse'></a>
 <H3>Bloc adresse</H3>
 <center><table border="1" cellpadding="10" width="90%" summary='Bloc adresse'><tr><td>
@@ -1716,6 +1733,11 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'é
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td colspan="2"><i>Tenez compte de la marge haute d'impression pour calculer l'espace entre le bord haut de la feuille et le bloc adresse</i></td>
     </tr>
+
+<?php
+if(getSettingAOui('active_bulletins')) {
+?>
+
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <label for='addressblock_padding_text' style='cursor: pointer;'>Espace vertical en mm entre le bloc "adresse" et le bloc des résultats :</label>
@@ -1723,6 +1745,11 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'é
         <td><input type="text" name="addressblock_padding_text" id="addressblock_padding_text" size="20" value="<?php echo(getSettingValue("addressblock_padding_text")); ?>" onKeyDown="clavier_2(this.id,event,0,150);" />
         </td>
     </tr>
+
+<?php
+} // Fin test getSettingAOui('active_bulletins')
+?>
+
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <label for='addressblock_length' style='cursor: pointer;'>Longueur en mm du bloc "adresse" :</label>
@@ -1745,6 +1772,11 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'é
         <td><input type="text" name="addressblock_font_size" id="addressblock_font_size" size="20" value="<?php echo $addressblock_font_size; ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
+
+<?php
+if(getSettingAOui('active_bulletins')) {
+?>
+
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <label for='addressblock_logo_etab_prop' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement :</label>
@@ -1791,6 +1823,11 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'é
         <td><input type="text" name="bull_ecart_bloc_nom" id="bull_ecart_bloc_nom" size="20" value="<?php echo $bull_ecart_bloc_nom; ?>" onKeyDown="clavier_2(this.id,event,0,20);" />
         </td>
     </tr>
+
+<?php
+} // Fin test getSettingAOui('active_bulletins')
+?>
+
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <font color='red'>Activer l'affichage des bordures pour comprendre la présentation avec bloc "adresse"</font> :<br />
@@ -1808,13 +1845,18 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'é
         </td>
     </tr>
 </table>
-<hr />
 
-
+<?php
+if(getSettingAOui('active_bulletins')) {
+	echo "<hr />";
+}
+?>
 
 <center><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></center>
 
-
+<?php
+if(getSettingAOui('active_bulletins')) {
+?>
 
 <hr />
 <H3>Page de garde</H3>
@@ -1883,6 +1925,11 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre c
 
 <hr />
 <p style="text-align: center;"><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></p>
+
+<?php
+} // Fin test getSettingAOui('active_bulletins')
+?>
+
 </form>
 
 <?php require("../lib/footer.inc.php");
