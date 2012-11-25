@@ -132,7 +132,21 @@ if (isFiltreRechercheParam('filter_motif')) {
 }
 if (isFiltreRechercheParam('filter_justification')) {
     if (getFiltreRechercheParam('filter_justification') == 'SANS') {
-        $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery('ab', 'left join')->useAbsenceEleveTraitementQuery('ad', 'left join')->filterByAJustificationId(null)->endUse()->endUse()->endUse();
+        //on commence par filter certain élèves
+        $query_clone = clone $query;
+        $array_eleve_id = $query_clone->distinct()->select('Id')->find();
+        
+        //on filtre les saisies pour trouver celles qui ne sont pas justifiées
+        $absences_saisie_query1 = new AbsenceEleveSaisieQuery();
+        $absences_saisie_query1->where('AbsenceEleveSaisie.EleveId IN ?', $array_eleve_id)->useJTraitementSaisieEleveQuery('ab', 'left join')->useAbsenceEleveTraitementQuery('ad', 'left join')->endUse()->endUse()
+                ->groupBy('Id')->withColumn('count(ad.a_justification_id)', 'nbJustif');
+        $absences_saisie_query = new AbsenceEleveSaisieQuery();
+        $absences_saisie_query->addSelectQuery($absences_saisie_query1, 'justif')->where('justif.nbJustif = 0')->where('justif.EleveId IN ?', $array_eleve_id);
+        $absences_saisie_query->distinct()->select('Id');
+        $array_absence_id = $absences_saisie_query->find();
+        
+        //on filtre la requete principale avec les saisies précédentes
+        $query->useAbsenceEleveSaisieQuery()->where('AbsenceEleveSaisie.Id IN ?', $array_absence_id)->endUse();
     } else {
         $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByAJustificationId(getFiltreRechercheParam('filter_justification'))->endUse()->endUse()->endUse();
     }
