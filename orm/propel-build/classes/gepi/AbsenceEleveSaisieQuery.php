@@ -46,10 +46,10 @@ class AbsenceEleveSaisieQuery extends BaseAbsenceEleveSaisieQuery {
 	/**
 	 * Filtre la requete sur les saisies qui montre un manquement à l'obligation de presence de la part de l'eleve
 	 * Ce filtre peut provoquer des bug sur les requetes complexes. Il est alors possible d'utiliser le code suivant :
-	 * $saisie_col = AbsenceEleveSaisieQuery::create()->filtreXXX()->filterByManquementObligationPresence()->setFormatter(ModelCriteria::FORMAT_ARRAY)->find();
+	 * $saisie_col = AbsenceEleveSaisieQuery::create()->filterXXX()->filterByManquementObligationPresence()->select('Id')->find();
 	 * $eleve_col = $query
 	 *	    ->useAbsenceEleveSaisieQuery()
-	 *	    ->filterById($saisie_col->toKeyValue('Id', 'Id'))
+	 *	    ->where('AbsenceEleveSaisie.Id in ?',saisie_col)
 	 *
 	 * @param     boolean $value
 	 *
