@@ -118,7 +118,11 @@ if (isFiltreRechercheParam('filter_type')) {
 }
 if (isFiltreRechercheParam('filter_manqement_obligation')) {
     if (getFiltreRechercheParam('filter_manqement_obligation')=='y') {
-        $saisie_manque_col = AbsenceEleveSaisieQuery::create()->filterByManquementObligationPresence()->select('Id')->find()->toKeyValue('Id', 'Id');
+        //on commence par filter certain élèves
+        $query_clone = clone $query;
+        $array_eleve_id = $query_clone->distinct()->select('Id')->find();
+        
+        $saisie_manque_col = AbsenceEleveSaisieQuery::create()->where('AbsenceEleveSaisie.EleveId IN ?', $array_eleve_id)->filterByManquementObligationPresence()->select('Id')->find()->toKeyValue('Id', 'Id');
         $query->useAbsenceEleveSaisieQuery()->filterById($saisie_manque_col)->endUse();
     }
     unset($saisie_manque_col);
