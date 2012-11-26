@@ -292,6 +292,61 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 				$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 				$cpt_sous_menu++;
 
+				//========================================================
+				// AID
+				// Pour un professeur, on n'appelle que les aid qui sont sur un bulletin
+				$tmp_call_data = mysql_query("SELECT * FROM aid_config
+										  WHERE display_bulletin = 'y'
+										  OR bull_simplifie = 'y'
+										  ORDER BY nom");
+				$tmp_nb_aid = mysql_num_rows($tmp_call_data);
+				$tmp_cpt_aid=0;
+				$tmp_nb_aid_a_afficher=0;
+				while ($tmp_cpt_aid < $tmp_nb_aid) {
+					$tmp_indice_aid = @mysql_result($tmp_call_data, $tmp_cpt_aid, "indice_aid");
+					$sql="SELECT * FROM j_aid_utilisateurs
+					WHERE (id_utilisateur = '".$_SESSION['login']."'
+					AND indice_aid = '".$tmp_indice_aid."')";
+					//echo "$sql<br />";
+					$tmp_call_prof = mysql_query($sql);
+					$tmp_nb_result = mysql_num_rows($tmp_call_prof);
+					if (($tmp_nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
+						$tmp_nom_aid = @mysql_result($tmp_call_data, $tmp_cpt_aid, "nom");
+
+						$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom";
+						//echo "$sql<br />";
+						$tmp_call_prof_aid = mysql_query($sql);
+						$tmp_nombre_aid = mysql_num_rows($tmp_call_prof_aid);
+						if ($tmp_nombre_aid>0) {
+
+							if($tmp_nb_aid_a_afficher==0) {
+								//$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/saisie_aid.php' , "texte"=>"AID");
+								$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>"AID");
+								$tmp_sous_menu2=array();
+								$cpt_sous_menu2=0;
+							}
+
+							$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/saisie/saisie_aid.php?indice_aid=".$tmp_indice_aid;
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (saisie)";
+							$cpt_sous_menu2++;
+
+							$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/prepa_conseil/visu_aid.php?indice_aid=".$tmp_indice_aid;
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (visualisation)";
+							$cpt_sous_menu2++;
+
+							$tmp_nb_aid_a_afficher++;
+
+						}
+					}
+					$tmp_cpt_aid++;
+				}
+
+				if($tmp_nb_aid_a_afficher>0) {
+					$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+					$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+					$cpt_sous_menu++;
+				}
+				//========================================================
 
 				// Mes moyennes et appréciations
 				$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/prepa_conseil/index1.php' , "texte"=>"Mes moyennes et appréciations");
