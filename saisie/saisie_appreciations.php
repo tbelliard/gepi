@@ -1523,6 +1523,7 @@ foreach ($liste_eleves as $eleve_login) {
 		echo "</tr>\n";
 		*/
 
+		echo "<a name='saisie_app_$eleve_login'></a>";
 		echo "<table width=\"750\" class='boireaus' cellspacing=\"2\" cellpadding=\"5\" summary=\"Tableau de $eleve_nom $eleve_prenom\">\n";
 		echo "<tr>\n";
 		//echo "<th width=\"200\">\n";
@@ -1790,8 +1791,15 @@ echo "<script type='text/javascript'>
 			message=message+document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode).innerHTML;
 		}
 		//alert('document.getElementById(\'appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode+').innerHTML');
-		message=message+'\\n================================\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
 
+		message=message+'\\n================================\\n'
+";
+		if(getSettingValue('url_racine_gepi')!="") {
+			echo "		message=message+'Après connexion dans Gepi, l\'adresse pour corriger est \\n".getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe='+id_groupe+'#saisie_app_'+eleve_login;\n";
+			echo "		message=message+'\\n'";
+		}
+		echo "
+		message=message+'\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
 
 		//alert('message='+message);
 
