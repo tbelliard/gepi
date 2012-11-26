@@ -597,6 +597,61 @@ function info_eleve($ele_login) {
 				$cpt++;
 			}
 		}
+
+		// Récup infos responsables resp_legal=0
+		$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+										resp_adr ra,
+										responsables2 r
+					WHERE r.ele_id='".$tab_ele['ele_id']."' AND
+							r.resp_legal='0' AND
+							r.pers_id=rp.pers_id AND
+							rp.adr_id=ra.adr_id
+					ORDER BY resp_legal;";
+		$res_resp=mysql_query($sql);
+		//echo "$sql<br />";
+		if(mysql_num_rows($res_resp)>0) {
+			//$cpt=0;
+			while($lig_resp=mysql_fetch_object($res_resp)) {
+				$tab_ele['resp'][$cpt]=array();
+
+				$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
+
+				$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
+				$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
+				$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
+				$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
+				$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
+				$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
+				$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
+				$tab_ele['resp'][$cpt]['mel']=$lig_resp->mel;
+
+				$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
+				$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
+				$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
+				$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
+				$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
+				$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
+				$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
+
+				$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
+
+				$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+				/*
+				//echo "\$lig_resp->login=".$lig_resp->login."<br />";
+				if($lig_resp->login!="") {
+					$sql="SELECT etat, auth_mode FROM utilisateurs WHERE login='".$lig_resp->login."';";
+					//echo "$sql<br />";
+					$res_u=mysql_query($sql);
+					if(mysql_num_rows($res_u)>0) {
+						$lig_u=mysql_fetch_object($res_u);
+						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
+						$tab_ele['resp'][$cpt]['auth_mode']=$lig_u->auth_mode;
+					}
+				}
+				*/
+				$cpt++;
+			}
+		}
 	}
 
 	if(($active_cahiers_texte=="y")&&($acces_cdt=='y')) {
