@@ -653,7 +653,7 @@ echo "		}
 
 if($num_resp==0){
 	echo "<div style='text-align:center;'>\n";
-	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display=''; document.getElementById('val_rech').focus(); return false;\">Chercher</a>\n";
+	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display=''; document.getElementById('val_rech').focus(); return false;\" title='Chercher un responsable'><img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' />&nbsp;Chercher</a>\n";
 	echo "<div id='div_rech' align='center'>\n";
 	echo "<table border='0' summary='Recherche'><tr><td>les personnnes dont le \n";
 	echo "<input type='hidden' name='champ_rech' value='resp0' />\n";
@@ -727,7 +727,7 @@ if($num_resp==0){
 }
 else{
 	echo "<div style='text-align:center;'>\n";
-	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display=''; document.getElementById('val_rech').focus(); return false;\">Chercher</a>\n";
+	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display=''; document.getElementById('val_rech').focus(); return false;\" title='Chercher un responsable'><img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' />&nbsp;Chercher</a>\n";
 	echo "<div id='div_rech' align='center'>\n";
 	echo "<table border='0' summary='Recherche'><tr><td>parmi les </td>\n";
 	echo "<td>\n";
