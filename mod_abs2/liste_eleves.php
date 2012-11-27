@@ -118,21 +118,39 @@ if (isFiltreRechercheParam('filter_type')) {
 }
 if (isFiltreRechercheParam('filter_manqement_obligation')) {
     if (getFiltreRechercheParam('filter_manqement_obligation')=='y') {
-        $saisie_manque_col = AbsenceEleveSaisieQuery::create()->filterByManquementObligationPresence()->select('Id')->find()->toKeyValue('Id', 'Id');
+        //on commence par filter certain élèves
+        $query_clone = clone $query;
+        $array_eleve_id = $query_clone->distinct()->select('Id')->find();
+        
+        $saisie_manque_col = AbsenceEleveSaisieQuery::create()->where('AbsenceEleveSaisie.EleveId IN ?', $array_eleve_id)->filterByManquementObligationPresence()->select('Id')->find()->toKeyValue('Id', 'Id');
         $query->useAbsenceEleveSaisieQuery()->filterById($saisie_manque_col)->endUse();
     }
     unset($saisie_manque_col);
 }
 if (isFiltreRechercheParam('filter_motif')) {
     if (getFiltreRechercheParam('filter_motif') == 'SANS') {
-        $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery('a', 'left join')->useAbsenceEleveTraitementQuery('b', 'left join')->filterByAMotifId(null)->endUse()->endUse()->endUse();
+        $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery('b', 'left join')->filterByAMotifId(null)->endUse()->endUse()->endUse();
     } else {
         $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByAMotifId(getFiltreRechercheParam('filter_motif'))->endUse()->endUse()->endUse();
     }
 }
 if (isFiltreRechercheParam('filter_justification')) {
     if (getFiltreRechercheParam('filter_justification') == 'SANS') {
-        $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery('c', 'left join')->useAbsenceEleveTraitementQuery('d', 'left join')->filterByAJustificationId(null)->endUse()->endUse()->endUse();
+        //on commence par filter certain élèves
+        $query_clone = clone $query;
+        $array_eleve_id = $query_clone->distinct()->select('Id')->find();
+        
+        //on filtre les saisies pour trouver celles qui ne sont pas justifiées
+        $absences_saisie_query1 = new AbsenceEleveSaisieQuery();
+        $absences_saisie_query1->where('AbsenceEleveSaisie.EleveId IN ?', $array_eleve_id)->useJTraitementSaisieEleveQuery('ab', 'left join')->useAbsenceEleveTraitementQuery('ad', 'left join')->endUse()->endUse()
+                ->groupBy('Id')->withColumn('count(ad.a_justification_id)', 'nbJustif');
+        $absences_saisie_query = new AbsenceEleveSaisieQuery();
+        $absences_saisie_query->addSelectQuery($absences_saisie_query1, 'justif')->where('justif.nbJustif = 0')->where('justif.EleveId IN ?', $array_eleve_id);
+        $absences_saisie_query->distinct()->select('Id');
+        $array_absence_id = $absences_saisie_query->find();
+        
+        //on filtre la requete principale avec les saisies précédentes
+        $query->useAbsenceEleveSaisieQuery()->where('AbsenceEleveSaisie.Id IN ?', $array_absence_id)->endUse();
     } else {
         $query->useAbsenceEleveSaisieQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByAJustificationId(getFiltreRechercheParam('filter_justification'))->endUse()->endUse()->endUse();
     }
@@ -183,6 +201,8 @@ if (getFiltreRechercheParam('order') == "asc_id") {
 }
 
 $query->distinct();
+$reuse_later_query = clone $query;
+
 $eleves_col = $query->paginate($page_number, $item_per_page);
 $nb_pages = (floor($eleves_col->getNbResults() / $item_per_page) + 1);
 if ($page_number > $nb_pages) {
@@ -539,10 +559,10 @@ foreach ($results as $eleve) {
     echo '</td>';
 
     //date saisie
-    echo '<td colspan="2">';
-    $query_eleve_hydration = clone $query;
+    echo '<td colspan=2>';
+    $query_eleve_hydration = clone $reuse_later_query;
     $query_eleve_hydration->filterById($eleve->getId());
-    $query_eleve_hydration->joinWith('Eleve.AbsenceEleveSaisie', Criteria::LEFT_JOIN);
+    $query_eleve_hydration->joinWith('Eleve.AbsenceEleveSaisie', 'LEFT JOIN')->joinWith('AbsenceEleveSaisie.JTraitementSaisieEleve', 'LEFT JOIN')->joinWith('JTraitementSaisieEleve.AbsenceEleveTraitement', 'LEFT JOIN');
     $query_eleve_hydration->useAbsenceEleveSaisieQuery()->filterByDeletedAt(null)->endUse();
     $eleve_saisie_hydrated = $query_eleve_hydration->find()->getFirst();
     // Ajout d'un test: Il y avait plantage sur la recherche:

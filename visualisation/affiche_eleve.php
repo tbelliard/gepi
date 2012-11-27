@@ -1342,7 +1342,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<input type='radio' name='affiche_mgen' id='affiche_mgen_oui' value='oui'$checked /><label for='affiche_mgen_oui' style='cursor: pointer;'> Oui </label>/";
 			if($affiche_mgen!='oui') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<label for='affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_mgen' id='affiche_mgen_non' value='non'$checked /></td></tr>\n";
+			echo "<label for='affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_mgen' id='affiche_mgen_non' value='non'$checked />";
+
+			$sql="SELECT DISTINCT coef FROM j_groupes_classes WHERE id_classe='$id_classe' AND coef!='0.0';";
+			$test_coef_non_nul=mysql_query($sql);
+			if(mysql_num_rows($test_coef_non_nul)==0) {
+				echo " <img src='../images/icons/ico_attention.png' width='22' height='19' alt='Tous les coefficients sont nuls' title='Tous les coefficients sont nuls. Aucun calcul de moyenne générale ne sera possible.' />\n";
+			}
+
+			echo "</td></tr>\n";
 
 			//if($affiche_minmax=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			//echo "<tr valign='top'><td><label for='affiche_minmax' style='cursor: pointer;'>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</label></td><td><input type='checkbox' name='affiche_minmax' id='affiche_minmax' value='oui'$checked /></td></tr>\n";
@@ -1814,6 +1822,13 @@ function eleve_suivant() {
 	//======================================================================
 	//======================================================================
 	//======================================================================
+
+
+	$sql="SELECT DISTINCT coef FROM j_groupes_classes WHERE id_classe='$id_classe' AND coef!='0.0';";
+	$test_coef_non_nul=mysql_query($sql);
+	if(mysql_num_rows($test_coef_non_nul)==0) {
+		$affiche_mgen="non";
+	}
 
 	//========================
 	// PARAMETRES D'AFFICHAGE
@@ -4536,45 +4551,47 @@ function complete_textarea_avis(num) {
 
 
 //===========================================================
-echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+if(isset($eleve1)) {
+	echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
 
-	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
-		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
-		echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
-		echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
-		echo "</a>\n";
-		echo "</div>\n";
+		echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
+			echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+			echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
+			echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+			echo "</a>\n";
+			echo "</div>\n";
 
-		echo "<div id='titre_entete_bull_simp'>";
-		echo "Bulletin simplifié de $prenom1 $nom1 ";
-		if($choix_periode=='periode') {
-			echo "en période $num_periode_choisie";
-		}
-		else {
-			echo "de la période 1 à la $nb_periode";
-		}
+			echo "<div id='titre_entete_bull_simp'>";
+			echo "Bulletin simplifié de $prenom1 $nom1 ";
+			if($choix_periode=='periode') {
+				echo "en période $num_periode_choisie";
+			}
+			else {
+				echo "de la période 1 à la $nb_periode";
+			}
+			echo "</div>\n";
 		echo "</div>\n";
-	echo "</div>\n";
 	
-	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #000000; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
-	if($acces_bull_simp=="y") {
-		if($choix_periode=='periode') {
-			$periode1=$num_periode_choisie;
-			$periode2=$num_periode_choisie;
+		echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #000000; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+		if($acces_bull_simp=="y") {
+			if($choix_periode=='periode') {
+				$periode1=$num_periode_choisie;
+				$periode2=$num_periode_choisie;
+			}
+			else {
+				$periode1=1;
+				$periode2=$nb_periode;
+			}
+			$choix_edit=2;
+			$login_eleve=$eleve1;
+			$inclusion_depuis_graphes="y";
+			include "../lib/bulletin_simple.inc.php";
+			include("../saisie/edit_limite.inc.php");
 		}
-		else {
-			$periode1=1;
-			$periode2=$nb_periode;
-		}
-		$choix_edit=2;
-		$login_eleve=$eleve1;
-		$inclusion_depuis_graphes="y";
-		include "../lib/bulletin_simple.inc.php";
-		include("../saisie/edit_limite.inc.php");
-	}
-	echo "</div>\n";
+		echo "</div>\n";
 
-echo "</div>\n";
+	echo "</div>\n";
+}
 
 echo "<script type='text/javascript'>
 	// <![CDATA[
