@@ -223,7 +223,16 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 	if($_SESSION['statut']=='professeur') {
 		echo "<a href='index.php'>Retour</a>";
 	}
-	elseif(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
+	elseif($_SESSION['statut']=='scolarite') {
+		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+		if(getSettingAOui('GepiScolImprBulSettings')) {
+			echo " | ";
+			echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+		}
+		echo " | ";
+		echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
+	}
+	elseif($_SESSION['statut']=='administrateur') {
 		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
 		echo " | ";
 		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
