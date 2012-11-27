@@ -613,14 +613,21 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 			$msg.="La civilité choisie n'est pas valide.";
 		}
 		else {
-			$sql="UPDATE utilisateurs SET civilite='".$_POST['reg_civilite']."' WHERE login='".$_SESSION['login']."';";
-			$update=mysql_query($sql);
-			if(!$update) {
-				$msg.="Erreur lors de la mise à jour de la civilité.";
-			}
-			else {
-				$msg.="Civilité mise à jour.";
-				$no_modif="no";
+			$sql="SELECT civilite FROM utilisateurs WHERE login='".$_SESSION['login']."';";
+			$res_civ=mysql_query($sql);
+			if(mysql_num_rows($res_civ)>0) {
+				$tmp_civ=mysql_result($res_civ, 0, "civilite");
+				if($tmp_civ!=$_POST['reg_civilite']) {
+					$sql="UPDATE utilisateurs SET civilite='".$_POST['reg_civilite']."' WHERE login='".$_SESSION['login']."';";
+					$update=mysql_query($sql);
+					if(!$update) {
+						$msg.="Erreur lors de la mise à jour de la civilité.";
+					}
+					else {
+						$msg.="Civilité mise à jour.";
+						$no_modif="no";
+					}
+				}
 			}
 		}
 	}
