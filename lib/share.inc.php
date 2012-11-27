@@ -2904,50 +2904,52 @@ function mail_connexion() {
 		if (mysql_num_rows($res_user)>0) {
 			$lig_user=mysql_fetch_object($res_user);
 
-			$adresse_ip = $_SERVER['REMOTE_ADDR'];
-			$date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
+			if(check_mail($lig_user->email)) {
+				$adresse_ip = $_SERVER['REMOTE_ADDR'];
+				$date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
 
-			if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
-				$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
-			}
-			else if($active_hostbyaddr == "no_local") {
-				if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
-					$result_hostbyaddr = "";
+				if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
+					$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
 				}
-				else{
-					$tabip=explode(".",$adresse_ip);
-					if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+				else if($active_hostbyaddr == "no_local") {
+					if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
 						$result_hostbyaddr = "";
 					}
 					else{
-						$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+						$tabip=explode(".",$adresse_ip);
+						if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+							$result_hostbyaddr = "";
+						}
+						else{
+							$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+						}
 					}
 				}
-			}
-			else{
-				$result_hostbyaddr = "";
-			}
+				else{
+					$result_hostbyaddr = "";
+				}
 
-			$message = "** Mail connexion Gepi **\n\n";
-			$message .= "\n";
-			$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
-			$message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
-			$message .= "Login                   : ".$user_login."\n";
-			$message .= "Date                    : ".$date."\n";
-			$message .= "Origine de la connexion : ".$adresse_ip."\n";
-			if($result_hostbyaddr!="") {
-				$message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
-			}
-			$message .= "\n";
-			$message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
-			$message .= "\n";
-			$message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
+				$message = "** Mail connexion Gepi **\n\n";
+				$message .= "\n";
+				$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
+				$message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
+				$message .= "Login                   : ".$user_login."\n";
+				$message .= "Date                    : ".$date."\n";
+				$message .= "Origine de la connexion : ".$adresse_ip."\n";
+				if($result_hostbyaddr!="") {
+					$message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
+				}
+				$message .= "\n";
+				$message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
+				$message .= "\n";
+				$message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
 
-			// On envoie le mail
-			//fdebug_mail_connexion("\$message=$message\n====================\n");
-			$destinataire=$lig_user->email;
-			$sujet="GEPI : Connexion $date";
-			envoi_mail($sujet, $message, $destinataire);
+				// On envoie le mail
+				//fdebug_mail_connexion("\$message=$message\n====================\n");
+				$destinataire=$lig_user->email;
+				$sujet="GEPI : Connexion $date";
+				envoi_mail($sujet, $message, $destinataire);
+			}
 		}
 	}
 }
