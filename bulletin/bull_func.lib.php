@@ -1916,7 +1916,14 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$largeur_dispo=$longeur_cadre_adresse;
 				$h_cell=$hauteur_cadre_adresse;
 
-				cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT','C','L',0.3,1);
+				if ( $tab_modele_pdf["cadre_adresse"][$classe_id] != 0 ) {
+					$bordure_cadre_adresse_resp='LRBT';
+				}
+				else {
+					$bordure_cadre_adresse_resp='';
+				}
+
+				cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,$bordure_cadre_adresse_resp,'C','L',0.3,1);
 			}
 		}
 
