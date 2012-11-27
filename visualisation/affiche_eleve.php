@@ -1260,7 +1260,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<input type='radio' name='affiche_mgen' id='affiche_mgen_oui' value='oui'$checked /><label for='affiche_mgen_oui' style='cursor: pointer;'> Oui </label>/";
 			if($affiche_mgen!='oui') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<label for='affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_mgen' id='affiche_mgen_non' value='non'$checked /></td></tr>\n";
+			echo "<label for='affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_mgen' id='affiche_mgen_non' value='non'$checked />";
+
+			$sql="SELECT DISTINCT coef FROM j_groupes_classes WHERE id_classe='$id_classe' AND coef!='0.0';";
+			$test_coef_non_nul=mysql_query($sql);
+			if(mysql_num_rows($test_coef_non_nul)==0) {
+				echo " <img src='../images/icons/ico_attention.png' width='22' height='19' alt='Tous les coefficients sont nuls' title='Tous les coefficients sont nuls. Aucun calcul de moyenne générale ne sera possible.' />\n";
+			}
+
+			echo "</td></tr>\n";
 
 			//if($affiche_minmax=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			//echo "<tr valign='top'><td><label for='affiche_minmax' style='cursor: pointer;'>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</label></td><td><input type='checkbox' name='affiche_minmax' id='affiche_minmax' value='oui'$checked /></td></tr>\n";
@@ -1724,6 +1732,13 @@ function eleve_suivant() {
 	//======================================================================
 	//======================================================================
 	//======================================================================
+
+
+	$sql="SELECT DISTINCT coef FROM j_groupes_classes WHERE id_classe='$id_classe' AND coef!='0.0';";
+	$test_coef_non_nul=mysql_query($sql);
+	if(mysql_num_rows($test_coef_non_nul)==0) {
+		$affiche_mgen="non";
+	}
 
 	//========================
 	// PARAMETRES D'AFFICHAGE
