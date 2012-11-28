@@ -251,7 +251,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
 
     // * affichage du nombre de connecté *
     // compte le nombre d'enregistrement dans la table
-	$sql = "SELECT login FROM log WHERE END > now()";
+	$sql = "SELECT u.login FROM log l, utilisateurs u WHERE u.login=l.login AND l.END > now() ORDER BY u.statut, u.nom, u.prenom;";
 	$res = sql_query($sql);
 	$afficheAccueil->nb_connect = sql_count($res);
 	if(mysql_num_rows($res)>1) {
