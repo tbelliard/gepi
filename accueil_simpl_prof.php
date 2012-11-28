@@ -600,7 +600,15 @@ $tab_liste_infobulles=array();
 for($i=0;$i<count($groups);$i++){
 
 	echo "<tr valign='top'>\n";
-	echo "<td>".htmlspecialchars($groups[$i]['description'])."</td>\n";
+	//if(count($groups[$i]["profs"]["list"])>1) {
+		echo "<td title=\"".$groups[$i]["profs"]["proflist_string"]."\">";
+	/*
+	}
+	else {
+		echo "<td>";
+	}
+	*/
+	echo htmlspecialchars($groups[$i]['description'])."</td>\n";
 
 	//echo "<td>".htmlspecialchars($groups[$i]['classlist_string'])."</td>\n";
 	echo "<td>\n";
