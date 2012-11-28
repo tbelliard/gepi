@@ -47,6 +47,9 @@ if (!$_SESSION["login"]) {
 // Fonction générant le menu Plugins
 include("tbs_menu_plugins.inc.php");
 
+$nom_ou_description_groupe_barre_h=getPref($_SESSION['login'], "nom_ou_description_groupe_barre_h", "name");
+//echo "nom_ou_description_groupe_barre_h=$nom_ou_description_groupe_barre_h<br />";
+
 $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light"))?"yes":"no";
 
 	//=======================================================
@@ -126,7 +129,12 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 			$test_grp_visib=mysql_query($sql);
 			if(mysql_num_rows($test_grp_visib)==0) {
 				$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir=';
-				$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+				if($nom_ou_description_groupe_barre_h=='name') {
+					$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+				}
+				else {
+					$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+				}
 				$cpt_sous_menu++;
 			}
 		}
@@ -160,7 +168,12 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 		foreach($mes_groupes as $tmp_group) {
 			if((!isset($tmp_group["visibilite"]["cahier_notes"]))||($tmp_group["visibilite"]["cahier_notes"]=='y')) {
 				$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'];
-				$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+				if($nom_ou_description_groupe_barre_h=='name') {
+					$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+				}
+				else {
+					$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+				}
 				if($utiliserMenuBarreLight=="no") {
 					$tmp_sous_menu2=array();
 					$cpt_sous_menu2=0;
@@ -227,8 +240,13 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 				foreach($mes_groupes as $tmp_group) {
 					if((!isset($tmp_group["visibilite"]["bulletins"]))||($tmp_group["visibilite"]["bulletins"]=='y')) {
 						$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/saisie/index.php?id_groupe='.$tmp_group['id'];
-						$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
-		
+						if($nom_ou_description_groupe_barre_h=='name') {
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+						}
+						else {
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+						}
+
 						if($utiliserMenuBarreLight=="no") {
 							$tmp_sous_menu3=array();
 							$cpt_sous_menu3=0;
@@ -264,7 +282,12 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 				foreach($mes_groupes as $tmp_group) {
 					if((!isset($tmp_group["visibilite"]["bulletins"]))||($tmp_group["visibilite"]["bulletins"]=='y')) {
 						$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/saisie/index.php?id_groupe='.$tmp_group['id'];
-						$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+						if($nom_ou_description_groupe_barre_h=='name') {
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+						}
+						else {
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+						}
 	
 						if($utiliserMenuBarreLight=="no") {
 							$tmp_sous_menu3=array();
@@ -355,7 +378,12 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 				foreach($mes_groupes as $tmp_group) {
 					if((!isset($tmp_group["visibilite"]["bulletins"]))||($tmp_group["visibilite"]["bulletins"]=='y')) {
 						$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/prepa_conseil/index1.php?id_groupe='.$tmp_group['id'];
-						$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+						if($nom_ou_description_groupe_barre_h=='name') {
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+						}
+						else {
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+						}
 						$cpt_sous_menu2++;
 					}
 				}
@@ -506,7 +534,12 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 		$cpt_sous_menu2=0;
 		foreach($mes_groupes as $tmp_group) {
 			$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/mod_trombinoscopes/trombino_pdf.php?classe=&amp;groupe='.$tmp_group['id'].'&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline=';
-			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+			if($nom_ou_description_groupe_barre_h=='name') {
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+			}
+			else {
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+			}
 			$cpt_sous_menu2++;
 		}
 
