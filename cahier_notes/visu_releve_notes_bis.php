@@ -227,10 +227,23 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 	echo "<p class='bold'>";
 	if($_SESSION['statut']=='professeur') {
 		echo "<a href='index.php'>Retour</a>";
+		if(getSettingAOui('GepiProfImprRelSettings')) {
+			echo " | ";
+			echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+		}
 	}
 	elseif($_SESSION['statut']=='scolarite') {
 		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
-		if(getSettingAOui('GepiScolImprBulSettings')) {
+		if(getSettingAOui('GepiScolImprRelSettings')) {
+			echo " | ";
+			echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+		}
+		echo " | ";
+		echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+		if(getSettingAOui('GepiCpeImprRelSettings')) {
 			echo " | ";
 			echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
 		}
@@ -238,6 +251,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 		echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
 	}
 	elseif($_SESSION['statut']=='administrateur') {
+		// Normalement, l'administrateur n'a pas accès aux relevés de notes...
 		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
 		echo " | ";
 		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";

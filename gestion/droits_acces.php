@@ -351,6 +351,11 @@ $texteItem="a accès aux relevés des classes dont il est ".getSettingValue("gep
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiProfImprRelSettings';
+$texteItem="a accès au paramétrage de l'impression des relevés de notes HTML";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -446,6 +451,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesReleveScol';
 $texteItem="a accès à tous les relevés de notes de toutes les classes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiScolImprRelSettings';
+$texteItem="a accès au paramétrage de l'impression des relevés de notes HTML";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -654,6 +664,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesReleveCpeTousEleves';
 $texteItem="a accès à tous les relevés de notes de toutes les classes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiCpeImprRelSettings';
+$texteItem="a accès au paramétrage de l'impression des relevés de notes HTML";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
