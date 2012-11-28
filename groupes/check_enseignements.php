@@ -218,13 +218,44 @@ require_once("../lib/header.inc.php");
 
 echo "<p class='bold'>\n";
 echo "<a href=\"../classes/index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
-
 echo "</p>\n";
+/*
+$sql="SELECT display_mat_cat FROM classes WHERE id='".$_id_classe."';";
+$res=mysql_query($sql);
+if(mysql_num_rows($res)>0) {
+	$display_mat_cat=mysql_result($res,0,"display_mat_cat");
+}
+*/
+if(!isset($_GET['tri'])) {
+	//$tri='priorite';
+	//$d_apres_categories=$display_mat_cat;
+	$d_apres_categories="auto";
+	$option_tri="";
+	echo "<p class='bold'>Les enseignements sont triés pour chaque classe individuellement selon le paramétrage de la classe<br />(<em style='font-size:x-small'>par catégorie si vous avez choisi d'utiliser les catégories de matières pour la classe (dans Gestion des classes/Telle_classe Paramètres),<br />et sinon par priorités (telles que définies dans Gestion des classes/Telle_classe Enseignements)</em>).</p>";
+}
+elseif($_GET['tri']=='priorite') {
+	$tri='priorite';
+	$d_apres_categories="n";
+	$option_tri="&amp;tri=$tri";
+	echo "<p class='bold'>Vous avez demandé à afficher pour toutes les classes, les enseignements d'après leurs priorités<br />(<em style='font-size:x-small'>telles que définies dans Gestion des classes/Telle_classe Enseignements</em>).</p>";
+}
+else {
+	$tri='categorie';
+	$d_apres_categories="y";
+	$option_tri="&amp;tri=$tri";
+	echo "<p class='bold'>Vous avez demandé à afficher pour toutes les classes, les enseignements d'après leurs catégories<br />(<em style='font-size:x-small'>telles que définies dans Gestion des classes/Telle_classe Enseignements</em>).</p>";
+}
+
+echo "<p>Pour toutes les classes, afficher les enseignements <a href='".$_SERVER['PHP_SELF']."?tri=priorite' title='Les priorités sont définies dans Gestion des classes/Telle_classe Enseignements'>par ordre de priorité</a>,<br />
+<a href='".$_SERVER['PHP_SELF']."?tri=categorie' title='ATTENTION : Les enseignements qui ne sont dans aucune catégorie ne seront pas affichés.'>par catégorie</a><br />
+ou <a href='".$_SERVER['PHP_SELF']."'>utiliser le paramétrage par défaut de la classe</a>.</p>\n";
+
+echo "<br />";
 
 echo "<p><a href='".$_SERVER['PHP_SELF']."?'>Ne rien griser</a>,<br />
-<a href='".$_SERVER['PHP_SELF']."?griser_cn=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_cn=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans les carnets de notes,<br />
-<a href='".$_SERVER['PHP_SELF']."?griser_bull=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_bull=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans les bulletins,<br />
-<a href='".$_SERVER['PHP_SELF']."?griser_cn=y&amp;griser_bull=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_cn=y&amp;masquer_bull=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans un des domaines (<em>carnets de notes, bulletins et/ou cahiers de textes</em>).</p>\n";
+<a href='".$_SERVER['PHP_SELF']."?griser_cn=y$option_tri'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_cn=y$option_tri'>masquer</a> les lignes d'enseignements n'apparaissant pas dans les carnets de notes,<br />
+<a href='".$_SERVER['PHP_SELF']."?griser_bull=y$option_tri'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_bull=y$option_tri'>masquer</a> les lignes d'enseignements n'apparaissant pas dans les bulletins,<br />
+<a href='".$_SERVER['PHP_SELF']."?griser_cn=y&amp;griser_bull=y$option_tri'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_cn=y&amp;masquer_bull=y$option_tri'>masquer</a> les lignes d'enseignements n'apparaissant pas dans un des domaines (<em>carnets de notes, bulletins et/ou cahiers de textes</em>).</p>\n";
 
 $griser_cn=isset($_GET['griser_cn']) ? $_GET['griser_cn'] : "n";
 $griser_bull=isset($_GET['griser_bull']) ? $_GET['griser_bull'] : "n";
@@ -233,8 +264,8 @@ $masquer_cn=isset($_GET['masquer_cn']) ? $_GET['masquer_cn'] : "n";
 $masquer_bull=isset($_GET['masquer_bull']) ? $_GET['masquer_bull'] : "n";
 $masquer_cdt=isset($_GET['masquer_cdt']) ? $_GET['masquer_cdt'] : "n";
 
-$option_grisage="&amp;griser_cn=$griser_cn&amp;griser_bull=$griser_bull&amp;griser_cdt=$griser_cdt";
-$option_masquage="&amp;masquer_cn=$masquer_cn&amp;masquer_bull=$masquer_bull&amp;masquer_cdt=$masquer_cdt";
+$option_grisage="&amp;griser_cn=$griser_cn&amp;griser_bull=$griser_bull&amp;griser_cdt=$griser_cdt$option_tri";
+$option_masquage="&amp;masquer_cn=$masquer_cn&amp;masquer_bull=$masquer_bull&amp;masquer_cdt=$masquer_cdt$option_tri";
 
 $sql="SELECT id, classe FROM classes ORDER BY classe;";
 $res_classe=mysql_query($sql);
@@ -323,7 +354,8 @@ while($lig_classe=mysql_fetch_object($res_classe)) {
 	echo "<a name='classe_".$lig_classe->classe."'></a>\n";
 	echo "<p class='bold'>Classe de $lig_classe->classe</p>\n";
 	echo "<div style='margin-left:2em;'>\n";
-	$groups = get_groups_for_class($lig_classe->id,"","n");
+	//$groups = get_groups_for_class($lig_classe->id,"","n");
+	$groups = get_groups_for_class($lig_classe->id,"",$d_apres_categories);
 	if(count($groups)==0){
 		echo "<p style='color:red'>Aucun enseignement n'a été trouvé.</p>\n";
 	}
