@@ -1559,7 +1559,7 @@ foreach ($liste_eleves as $eleve_login) {
 		echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
 		echo "<th>\n";
 
-		echo "<div align=\"center\"><b>$eleve_nom $eleve_prenom</b>\n";
+		echo "<div align=\"center\"><b><a href='../eleves/visu_eleve.php?ele_login=$eleve_login' target='_blank' title=\"Voir la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">$eleve_nom $eleve_prenom</a></b>\n";
 
 		//==========================
 		// AJOUT: boireaus 20071115
