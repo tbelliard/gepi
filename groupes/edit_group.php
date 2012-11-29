@@ -390,13 +390,39 @@ if ($mode == "groupe") {
 } elseif ($mode == "regroupement") {
 	echo "<h3>Modifier le regroupement</h3>\n";
 }
+
+$message_nom_sur_bulletin1="";
+$message_nom_sur_bulletin2="";
+$message_nom_sur_bulletin3="";
+$choix_nom_sur_bulletin1="";
+$choix_nom_sur_bulletin2="";
+$choix_nom_sur_bulletin3="";
+if(getSettingValue('bul_rel_nom_matieres')=='nom_complet_matiere') {
+	$choix_nom_sur_bulletin3="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est votre choix.\" />";
+	$message_nom_sur_bulletin3="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est le nom complet de la matière qui apparait sur les bulletins.
+C'est le paramétrage que vous avez effectué dans Gestion générale/Configuration générale.
+Ce paramétrage est global, commun à toutes les classes.\" />";
+}
+elseif(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
+	$choix_nom_sur_bulletin1="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est votre choix.\" />";
+	$message_nom_sur_bulletin1="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est le nom court de l'enseignement (groupe dans le vocabulaire Gepi) qui apparait sur les bulletins.
+C'est le paramétrage que vous avez effectué dans Gestion générale/Configuration générale.
+Ce paramétrage est global, commun à toutes les classes.\" />";
+}
+elseif(getSettingValue('bul_rel_nom_matieres')=='description_groupe') {
+	$choix_nom_sur_bulletin2="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est votre choix.\" />";
+	$message_nom_sur_bulletin2="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est la description de l'enseignement (groupe dans le vocabulaire Gepi) qui apparait sur les bulletins.
+C'est le paramétrage que vous avez effectué dans Gestion générale/Configuration générale.
+Ce paramétrage est global, commun à toutes les classes.\" />";
+}
+
 ?>
 <form enctype="multipart/form-data" action="edit_group.php" method="post">
 <div style="width: 95%;">
 <div style="width: 45%; float: left;">
-<p>Nom court : <input type='text' size='30' name='groupe_nom_court' value = "<?php echo $reg_nom_groupe; ?>" onchange="changement()" /></p>
+<p>Nom court : <input type='text' size='30' name='groupe_nom_court' value = "<?php echo $reg_nom_groupe; ?>" onchange="changement()" /><?php echo $message_nom_sur_bulletin1;?></p>
 
-<p>Nom complet : <input type='text' size='50' name='groupe_nom_complet' value = "<?php echo $reg_nom_complet; ?>" onchange="changement()" /></p>
+<p>Nom complet : <input type='text' size='50' name='groupe_nom_complet' value = "<?php echo $reg_nom_complet; ?>" onchange="changement()" /><?php echo $message_nom_sur_bulletin2;?></p>
 
 <?php
 
@@ -640,7 +666,8 @@ for ($i=0;$i<$nb_mat;$i++) {
 	//echo ">" . html_entity_decode($nom_matiere) . "</option>\n";
 	//echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
 }
-echo "</select>\n";
+echo "</select>";
+echo $message_nom_sur_bulletin3;
 echo "</p>\n";
 
 //=================================================
@@ -813,6 +840,21 @@ echo "</div>\n";
 echo "</div>\n";
 
 echo "</form>\n";
+
+echo "<div style='clear:both;'></div>
+<hr />
+<p><br /></p>
+<div>
+	<p><em>NOTE&nbsp;:</em> Le nom qui apparait dans la colonne matières des bulletins peut être&nbsp;:</p>
+	<div style='margin-left:4em;'>
+		<ul>
+			<li>le nom complet de la matière$choix_nom_sur_bulletin3</li>
+			<li>le nom court de l'enseignement (<em>groupe dans le vocabulaire Gepi</em>)$choix_nom_sur_bulletin1</li>
+			<li>la description de l'enseignement (<em>groupe dans le vocabulaire Gepi</em>)$choix_nom_sur_bulletin2</li>
+		</ul>
+		<p>Ce paramétrage peut être effectué dans la page <a href='../gestion/param_gen.php#bul_rel_nom_matieres'>Gestion générale/Configuration générale</a>.</p>
+	</div>
+</div>\n";
 
 require("../lib/footer.inc.php");
 ?>
