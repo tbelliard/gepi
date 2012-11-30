@@ -105,6 +105,16 @@ foreach ($utilisateur->getGroupes() as $group) {
 	if(mysql_num_rows($test_grp_visib)==0) {
 		echo "<option id='colonne_gauche_select_group_option_".$group->getId()."' value='".$group->getId()."'";
 		if ($current_group->getId() == $group->getId()) echo " SELECTED ";
+
+		echo " title=\"".$group->getName()." - ".$group->getDescriptionAvecClasses()." (";
+		$cpt_prof=0;
+		foreach($group->getProfesseurs() as $prof) {
+			if($cpt_prof>0) {echo ", ";}
+			echo casse_mot($prof->getNom(),"maj")." ".casse_mot($prof->getPrenom(),"majf2");
+			$cpt_prof++;
+		}
+		echo ").\"";
+
 		echo ">";
 		echo $group->getDescriptionAvecClasses();
 		echo "</option>\n";
