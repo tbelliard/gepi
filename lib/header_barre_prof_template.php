@@ -147,6 +147,12 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 		$tmp_sous_menu[$cpt_sous_menu]['texte']="Consultation des cahiers de textes";
 		$cpt_sous_menu++;
 
+		if(getSettingValue('GepiCahierTexteVersion')==2) {
+			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte_2/consultation2.php';
+			$tmp_sous_menu[$cpt_sous_menu]['texte']="Consultation CDT semaine";
+			$cpt_sous_menu++;
+		}
+
 		$tmp_sous_menu[$cpt_sous_menu]['lien']='/documents/archives/index.php';
 		$tmp_sous_menu[$cpt_sous_menu]['texte']="Mes archives CDT";
 		$cpt_sous_menu++;
@@ -447,6 +453,36 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 					$cpt_sous_menu++;
 				}
 
+				if((getSettingAOui('GepiProfImprBul'))&&(is_pp($_SESSION['login']))) {
+					$tab_pp=get_tab_ele_clas_pp($_SESSION['login']);
+					if(count($tab_pp)>0) {
+						$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/bulletin/bull_index.php' , "texte"=>"Imprimer bulletins");
+						$tmp_sous_menu2=array();
+						$cpt_sous_menu2=0;
+						for($loop=0;$loop<count($tab_pp['id_classe']);$loop++) {
+							$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/bulletin/bull_index.php?tab_id_classe[0]='.$tab_pp['id_classe'][$loop];
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tab_pp['classe'][$loop];
+
+							$sql="SELECT * FROM periodes WHERE id_classe='".$tab_pp['id_classe'][$loop]."' ORDER BY num_periode;";
+							$res_per=mysql_query($sql);
+							if(mysql_num_rows($res_per)>0) {
+								$tmp_sous_menu3=array();
+								$cpt_sous_menu3=0;
+								while($lig_per=mysql_fetch_object($res_per)) {
+									$tmp_sous_menu3[$cpt_sous_menu3]['lien']='/bulletin/bull_index.php?tab_id_classe[0]='.$tab_pp['id_classe'][$loop]."&amp;tab_periode_num[0]=".$lig_per->num_periode."&amp;choix_periode_num=fait";
+									$tmp_sous_menu3[$cpt_sous_menu3]['texte']=$lig_per->nom_periode;
+									$cpt_sous_menu3++;
+								}
+								$tmp_sous_menu2[$cpt_sous_menu2]['sous_menu']=$tmp_sous_menu3;
+								$tmp_sous_menu2[$cpt_sous_menu2]['niveau_sous_menu']=4;
+							}
+							$cpt_sous_menu2++;
+						}
+						$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+						$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+						$cpt_sous_menu++;
+					}
+				}
 
 				// Visualisation graphique des bulletins
 				$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/visualisation/affiche_eleve.php' , "texte"=>"Graphes");
