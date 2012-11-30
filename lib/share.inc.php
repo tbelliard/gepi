@@ -4326,6 +4326,38 @@ function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="") {
 }
 
 /**
+ * Récupère le tableau des classes/élèves dont un utilisateur est prof principal (gepi_prof_suivi)
+ * 
+ * @param type string $login_prof login de l'utilisateur à tester
+ *
+ * @return array Tableau d'indices ['login'][] et ['id_classe'][] et ['classe'][]
+ */
+function get_tab_ele_clas_pp($login_prof) {
+	$tab=array();
+	$tab['login']=array();
+	$tab['id_classe']=array();
+
+	$sql="SELECT DISTINCT jep.login FROM j_eleves_professeurs jep, eleves e, j_eleves_classes jec, classes c WHERE jep.professeur='$login_prof' AND jep.login=e.login AND jec.login=e.login AND jec.id_classe=c.id ORDER BY c.classe, e.nom, e.prenom;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab['login'][]=$lig->login;
+		}
+	}
+
+	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE jep.professeur='$login_prof' AND jep.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab['id_classe'][]=$lig->id_classe;
+			$tab['classe'][]=$lig->classe;
+		}
+	}
+
+	return $tab;
+}
+
+/**
  *Vérifie si un utilisateur est cpe de l'élève choisi ou de la classe choisie
  * 
  * $login_eleve : login de l'élève à tester (si vide, on teste juste si le cpe 
