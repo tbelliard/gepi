@@ -25,6 +25,8 @@ Bulletins :
   simplifié des appreciations sur le groupe-classe.
 - Affichage de l'indication comme quoi les appréciations sont visibles
   ou non des parents à une date donnée.
+- Envoi des mails de proposition de correction aux comptes scolarité
+  en plus des comptes secours.
 
 Carnets de notes:
 - Possibilité de définir un mode par défaut pour le calcul de la moyenne dans le
@@ -33,6 +35,10 @@ Carnets de notes:
 Relevés de notes:
 - Prise en compte au niveau du paramétrage des classes en admin des choix
   d'affichage ou non des moyennes de classe, bloc adresse responsable,...
+- Possibilité d'afficher une colonne Moyenne du carnet de notes
+  Possibilité d'autoriser ou non les parents/élèves à voir cette colonne
+  (qui donne une info à un instant T, mais qui peut donner une fausse impression
+  (le prof peut ajouter des devoirs par la suite, modifier les coefficients,...))
 
 Cahiers de textes :
 - Possibilité d'inclure les documents joints dans l'export ZIP.
@@ -42,7 +48,10 @@ Cahiers de textes :
   produite.
 
 Abs2 :
-- Possibilité de cocher les absences sur le plan de classe.
+- Possibilité de cocher les absences, retards, infirmerie,... sur le plan de 
+  classe sous réserve d'avoir créé son plan de classe dans le module Trombinoscope.
+- Ajout de liens (sur des élèves, sur des saisies,...) pour passer plus vite
+  à des informations associées.
 
 Emplois du temps :
 - Possibilité de restreindre l'accès prof aux EDT des autres profs.
@@ -78,7 +87,21 @@ Gestion:
 - Dans le cas où il y a plusieurs professeurs principaux dans une classe,
   possibilité de donner les mêmes droits à tous les PP de la classe sur 
   l'ensemble des élèves de la classe.
+- Possibilité de choisir si on souhaite afficher le nom court du groupe 
+  ou sa description dans la barre de menu horizontale (en prof) et dans le CDT2.
+- Ajout d'explications à divers endroits pour répondre à des questions 
+  fréquentes sur la liste de diffusion.
+- Ajout d'un droit distincts des droits pour les paramètres des bulletins pour
+  accéder aux paramètres des relevés HTML.
 
+Divers:
+- Affichage des AID dans le choix Bulletins de la barre de menu horizontale prof
+  et sur la page d'accueil simplifiée prof.
+- Ajouts divers dans les barres de menu horizontales.
+- Ajout de l'affichage des graphes dans l'onglet Bulletin des fiches de 
+  consultation des infos concernant un élève.
+- Affichage des responsables non légaux dans l'onglet responsables de la page
+  Consult.élève.
 
 Gepi-1.6.1 (10/06/2012)
 ===========================

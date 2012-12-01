@@ -339,7 +339,8 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 				
 							if($envoi_mail_actif=='y') {
 								$email_destinataires="";
-								$sql="select email from utilisateurs where statut='secours' AND email!='';";
+								//$sql="select email from utilisateurs where statut='secours' AND email!='';";
+								$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
 								$req=mysql_query($sql);
 								if(mysql_num_rows($req)>0) {
 									$lig_u=mysql_fetch_object($req);
