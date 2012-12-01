@@ -606,11 +606,18 @@ require_once("../lib/header.inc.php");
 										$res_ele=mysql_query($sql);
 										if(mysql_num_rows($res_ele)>0){
 											while($lig_tmp=mysql_fetch_object($res_ele)){
-												$sql="DELETE FROM absences WHERE login='$lig_tmp->login' AND periode='$num_periode';";
-												$res_menage=mysql_query($sql);
-	
-												$sql="INSERT INTO absences SET login='$lig_tmp->login', periode='$num_periode', nb_absences='0', non_justifie='0', nb_retards='0';";
-												$res_ini=mysql_query($sql);
+												//$sql="DELETE FROM absences WHERE login='$lig_tmp->login' AND periode='$num_periode';";
+												//$res_menage=mysql_query($sql);
+												$sql="SELECT 1=1 FROM absences WHERE login='$lig_tmp->login' AND periode='$num_periode';";
+												$test_abs=mysql_query($sql);
+												if(mysql_num_rows($test_abs)==0) {
+													$sql="INSERT INTO absences SET login='$lig_tmp->login', periode='$num_periode', nb_absences='0', non_justifie='0', nb_retards='0';";
+													$res_ini=mysql_query($sql);
+												}
+												else {
+													$sql="UPDATE absences SET nb_absences='0', non_justifie='0', nb_retards='0' WHERE login='$lig_tmp->login' AND periode='$num_periode';";
+													$res_ini=mysql_query($sql);
+												}
 											}
 										}
 									}
