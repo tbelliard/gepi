@@ -143,13 +143,22 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					} else {
 					$msg .= "La classe a bien été modifiée.";
 			}
+
 			// On enregistre les infos relatives aux catégories de matières
+			$tab_priorites_categories=array();
+			$temoin_pb_ordre_categories="n";
 			$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 			while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 				$reg_priority = $_POST['priority_'.$row["id"]];
 				if (isset($_POST['moyenne_'.$row["id"]])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
 				if (!is_numeric($reg_priority)) $reg_priority = 0;
 				if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
+
+				if(in_array($reg_priority, $tab_priorites_categories)) {
+					$temoin_pb_ordre_categories="y";
+					$reg_priority=max($tab_priorites_categories)+1;
+				}
+				$tab_priorites_categories[]=$reg_priority;
 
 				//$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
 
@@ -166,6 +175,9 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				if (!$res) {
 					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
 				}
+			}
+			if($temoin_pb_ordre_categories=="y") {
+				$msg.="<br /><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Des mesures ont été prises pour imposer des ordres différents, mais il se peut que l'ordre ne vous convienne pas.<br />\n";
 			}
 
 			// =========================
@@ -222,6 +234,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			$id_classe = mysql_insert_id();
 
 			// On enregistre les infos relatives aux catégories de matières
+			$tab_priorites_categories=array();
+			$temoin_pb_ordre_categories="n";
 			$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 			while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 				$reg_priority = $_POST['priority_'.$row["id"]];
@@ -229,11 +243,21 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				if (!is_numeric($reg_priority)) $reg_priority = 0;
 				if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
 
+				if(in_array($reg_priority, $tab_priorites_categories)) {
+					$temoin_pb_ordre_categories="y";
+					$reg_priority=max($tab_priorites_categories)+1;
+				}
+				$tab_priorites_categories[]=$reg_priority;
+
 				$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
 
 				if (!$res) {
 					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
 				}
+			}
+
+			if($temoin_pb_ordre_categories=="y") {
+				$msg.="<br /><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Des mesures ont été prises pour imposer des ordres différents, mais il se peut que l'ordre ne vous convienne pas.<br />\n";
 			}
 
 			$sql="SELECT login FROM utilisateurs WHERE etat='actif' AND statut='scolarite';";
@@ -453,7 +477,7 @@ if (isset($id_classe)) {
 	$rn_sign_resp=mysql_result($call_nom_class, 0, 'rn_sign_resp');
 	$rn_sign_nblig=mysql_result($call_nom_class, 0, 'rn_sign_nblig');
 
-	$rn_col_moy=mysql_result($call_nom_class, 0, 'rn_col_moy');
+	//$rn_col_moy=mysql_result($call_nom_class, 0, 'rn_col_moy');
 	// =========================
 	$rn_abs_2=mysql_result($call_nom_class, 0, 'rn_abs_2');
 	//=========================
@@ -509,8 +533,11 @@ if (isset($id_classe)) {
 	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
-		$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
-		echo "";
+		/*
+			$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
+			echo "";
+		*/
+		$$tmp_name="n";
 	}
 	if($rn_aff_classe_nom=="") {$rn_aff_classe_nom=1;}
 	if($rn_rapport_standard_min_font=="") {$rn_rapport_standard_min_font=3;}
