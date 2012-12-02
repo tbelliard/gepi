@@ -512,6 +512,12 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 			<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
 		</tr>
 		<?php
+		$max_priority_cat=0;
+		$get_max_cat = mysql_query("SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
+		if(mysql_num_rows($get_max_cat)>0) {
+			$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
+		}
+
 		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 		while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 			// Pour la catégorie, on récupère les infos déjà enregistrées pour la classe
@@ -532,7 +538,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 			echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
 			echo "<td style='padding: 5px; text-align: center;'>\n";
 					echo "<select name='priority_".$row["id"]."' size='1' onchange='changement()'>\n";
-					for ($i=0;$i<11;$i++) {
+					for ($i=0;$i<max(100,$max_priority_cat);$i++) {
 						echo "<option value='$i'";
 						if ($current_priority == $i) echo " SELECTED";
 						echo ">$i</option>\n";
