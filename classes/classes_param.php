@@ -749,6 +749,10 @@ while ($per < $max_periode) {
 
 
 		?>
+		<p style='text-indent:-6em; margin-left:6em;'><em>Remarque&nbsp;:</em> Les modifications ne concernent que les cases cochées ci-dessus.<br />
+		Aucune modification n'est apportée aux champs laissés vides ci-dessous.</p>
+		<br />
+
 		<p class='bold'>Pour la ou les classe(s) sélectionnée(s) ci-dessus&nbsp;: </p>
 		<p>Aucune modification ne sera apportée aux champs laissés vides</p>
 
