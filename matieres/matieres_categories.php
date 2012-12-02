@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -194,7 +194,10 @@ if (isset($_GET['action'])) {
     // On a une action : soit on ajoute soit on édite soit on delete
     ?>
     <p class=bold><a href="matieres_categories.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-    <?php
+
+
+
+<?php
     if ($_GET['action'] == "add") {
         // On ajoute une catégorie
         // On affiche le formulaire d'ajout
@@ -255,8 +258,28 @@ if (isset($_GET['action'])) {
 } else {
     // Pas d'action. On affiche la liste des rubriques
     ?>
-    <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="matieres_categories.php?action=add">Ajouter une catégorie</a></p>
-    <p><em>Remarque&nbsp;:</em> la catégorie par défaut ne peut pas être supprimée. Elle est automatiquement associée aux matières existantes et aux nouvelles matières, et pour tous les groupes. Vous pouvez la renommer (<em>Autres, Hors catégories, etc.</em>), mais laissez toujours un nom générique.</p>
+    <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="matieres_categories.php?action=add">Ajouter une catégorie</a></p>
+    <p style='text-indent:-6em;padding-left:6em;'><em>Remarque&nbsp;:</em> la catégorie par défaut ne peut pas être supprimée. Elle est automatiquement associée aux matières existantes et aux nouvelles matières, et pour tous les groupes. Vous pouvez la renommer (<em>Autres, Hors catégories, etc.</em>), mais laissez toujours un nom générique.</p>
+
+	<?php
+		$tab_priorites_categories=array();
+		$temoin_pb_ordre_categories="n";
+		$sql="select * from matieres_categories;";
+		$res_cat=mysql_query($sql);
+		if(mysql_num_rows($res_cat)>0) {
+			while($lig_cat=mysql_fetch_object($res_cat)) {
+				$current_priority=$lig_cat->priority;
+				if(in_array($current_priority, $tab_priorites_categories)) {
+					$temoin_pb_ordre_categories="y";
+				}
+				$tab_priorites_categories[]=$current_priority;
+			}
+		}
+
+		if($temoin_pb_ordre_categories=="y") {
+			echo "<p style='color:red; text-indent:-6em;padding-left:6em;'><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Vous devriez corriger.</p>\n";
+		}
+	?>
 
     <table class='boireaus' width='100%' border='1' cellpadding='5' summary='Tableau des catégories'>
 <tr>
