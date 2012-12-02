@@ -183,10 +183,7 @@ if ($notifications_col->haveToPaginate()) {
 }
 echo "Voir ";
 echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
-echo "par page|  Nombre d'enregistrements : ";
-echo $notifications_col->count();
-
-echo "&nbsp;&nbsp;&nbsp;";
+echo "par page&nbsp;&nbsp;&nbsp;";
 ?>    <div id="action_bouton" dojoType="dijit.form.DropDownButton" style="display: inline">
 	<span>Action</span>
 	<div dojoType="dijit.Menu" style="display: inline">

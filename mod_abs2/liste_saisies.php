@@ -252,8 +252,6 @@ if ($order == "asc_id") {
 }
 
 $query->distinct();
-$query_count_eleve = clone $query;
-$total_eleve = $query_count_eleve->groupByEleveId()->count();
 
 $saisies_col = $query->paginate($page_number, $item_per_page);
 
@@ -274,10 +272,7 @@ if ($saisies_col->haveToPaginate()) {
 }
 echo "Voir ";
 echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
-echo "par page |  Nbre de saisies : ";
-echo $saisies_col->count();
-echo " | Nbre d'élèves : ".$total_eleve;
-echo "&nbsp;&nbsp;&nbsp;";
+echo "par page&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y">Réinitialiser les filtres</button> ';
 echo '<input type="checkbox" name="filter_saisies_supprimees"  onchange="submit()" value="y"';
@@ -326,7 +321,7 @@ if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {
 	echo '<br />';
 	//echo '<nobr>';
 	echo '<span style="white-space: nowrap;"> ';
-	echo 'Entre : <input size="13" id="filter_date_suppression_saisie_debut_plage" name="filter_date_suppression_saisie_debut_plage" value="';
+	echo 'Entre : <input size="7" id="filter_date_suppression_saisie_debut_plage" name="filter_date_suppression_saisie_debut_plage" value="';
 	if (isFiltreRechercheParam('filter_date_suppression_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_suppression_saisie_debut_plage');}
 	echo '" />&nbsp;';
 	echo '<img id="trigger_filter_date_suppression_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
@@ -346,7 +341,7 @@ if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {
 	echo '<br />';
 	//echo '<nobr>';
 	echo '<span style="white-space: nowrap;"> ';
-	echo 'Et : <input size="13" id="filter_date_suppression_saisie_fin_plage" name="filter_date_suppression_saisie_fin_plage" value="';
+	echo 'Et : <input size="7" id="filter_date_suppression_saisie_fin_plage" name="filter_date_suppression_saisie_fin_plage" value="';
 	if (isFiltreRechercheParam('filter_date_suppression_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_suppression_saisie_fin_plage');}
 	echo '" />&nbsp;';
 	echo '<img id="trigger_filter_date_suppression_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
@@ -386,8 +381,9 @@ if (getFiltreRechercheParam('filter_marqueur_appel') == 'y') {echo "checked='che
 echo '/>Marque d\'appel</nobr>';
 echo '</th>';
 
-//en tete filtre classe
 echo '<th>';
+//en tete filtre classe
+echo '<div>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Classe';
@@ -410,10 +406,10 @@ foreach (ClasseQuery::create()->orderByNom()->orderByNomComplet()->distinct()->f
 	echo "</option>\n";
 }
 echo "</select>";
-echo '</th>';
+echo '</div>';
 
 //en tete filtre groupe
-echo '<th>';
+echo '<div>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Groupe';
@@ -436,10 +432,10 @@ foreach ($utilisateur->getGroupes() as $group) {
 	echo "</option>\n";
 }
 echo "</select>";
-echo '</th>';
+echo '</div>';
 
 //en tete filtre aid
-echo '<th>';
+echo '<div>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'AID';
@@ -462,6 +458,7 @@ foreach ($utilisateur->getAidDetailss() as $aid) {
 	echo "</option>\n";
 }
 echo "</select>";
+echo '</div>';
 echo '</th>';
 
 //en tete filtre creneaux
@@ -506,7 +503,7 @@ echo '</span>';
 echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Entre : <input size="13" id="filter_date_debut_saisie_debut_plage" name="filter_date_debut_saisie_debut_plage" value="';
+echo 'Entre : <input size="7" id="filter_date_debut_saisie_debut_plage" name="filter_date_debut_saisie_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_debut_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_debut_saisie_debut_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_debut_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
@@ -526,7 +523,7 @@ echo '
 echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Et : <input size="13" id="filter_date_debut_saisie_fin_plage" name="filter_date_debut_saisie_fin_plage" value="';
+echo 'Et : <input size="7" id="filter_date_debut_saisie_fin_plage" name="filter_date_debut_saisie_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_debut_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_debut_saisie_fin_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_debut_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
@@ -561,7 +558,7 @@ echo '</span>';
 echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Entre : <input size="13" id="filter_date_fin_saisie_debut_plage" name="filter_date_fin_saisie_debut_plage" value="';
+echo 'Entre : <input size="7" id="filter_date_fin_saisie_debut_plage" name="filter_date_fin_saisie_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_fin_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_fin_saisie_debut_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_fin_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
@@ -581,7 +578,7 @@ echo '
 echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Et : <input size="13" id="filter_date_fin_saisie_fin_plage" name="filter_date_fin_saisie_fin_plage" value="';
+echo 'Et : <input size="7" id="filter_date_fin_saisie_fin_plage" name="filter_date_fin_saisie_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_fin_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_fin_saisie_fin_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_fin_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
@@ -657,7 +654,7 @@ echo '</span>';
 echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Entre : <input size="13" id="filter_date_creation_saisie_debut_plage" name="filter_date_creation_saisie_debut_plage" value="';
+echo 'Entre : <input size="7" id="filter_date_creation_saisie_debut_plage" name="filter_date_creation_saisie_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_creation_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_creation_saisie_debut_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
@@ -677,7 +674,7 @@ echo '
 echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Et : <input size="13" id="filter_date_creation_saisie_fin_plage" name="filter_date_creation_saisie_fin_plage" value="';
+echo 'Et : <input size="7" id="filter_date_creation_saisie_fin_plage" name="filter_date_creation_saisie_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_creation_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_creation_saisie_fin_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
@@ -813,43 +810,22 @@ foreach ($results as $saisie) {
     echo '</td>';
 
     echo '<td>';
-    //echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getClasse() != null) {
-	//$classe = new Classe();
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
-    
+        echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
 	echo $saisie->getClasse()->getNom();
-    echo "</a>";
-    } else {
-	echo "&nbsp;";
+        echo "</a>";
     }
-    //echo "</a>";
-    echo '</td>';
 
-    echo '<td>';
-    //echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getGroupe() != null) {
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
-    
-	//$groupe = new Groupe();
+        echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
 	echo $saisie->getGroupe()->getNameAvecClasses();
-    echo "</a>";
-    } else {
-	echo "&nbsp;";
+        echo "</a>";
     }
-    //echo "</a>";
-    echo '</td>';
-
-    echo '<td>';
-    //echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    
     if ($saisie->getAidDetails() != null) {
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-
-	//$groupe = new Groupe();
+        echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
 	echo $saisie->getAidDetails()->getNom();
-    echo "</a>";
-    } else {
-	echo "&nbsp;";
+        echo "</a>";
     }
     echo '</td>';
 
