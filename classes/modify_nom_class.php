@@ -598,7 +598,8 @@ td {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
-		Paramétrage des catégories de matière pour cette classe (uniquement si case ci-dessus cochée)
+		Paramétrage des catégories de matière pour cette classe<br />
+		(<em>cet ordre n'est pris en compte dans les bulletins HTML que si case ci-dessus cochée<br />En revanche, pour les bulletins PDF, l'ordre est pris en compte si vous choisissez un modèle avec affichage des catégories de matières<em>)
 	</td>
 	<td>
 		<table style='border: 1px solid black;'>
@@ -606,6 +607,8 @@ td {
 			<td style='width: auto; vertical-align:middle;'>Catégorie</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Priorité d'affichage</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Afficher la moyenne sur le bulletin</td>
 		</tr>
 		<?php
+		$tab_priorites_categories=array();
+		$temoin_pb_ordre_categories="n";
 		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 		while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 			// Pour la catégorie, on récupère les infos déjà enregistrées pour la classe
@@ -621,6 +624,10 @@ td {
 				$current_priority = $infos->priority;
 				$current_affiche_moyenne = $infos->affiche_moyenne;
 			}
+			if(in_array($current_priority, $tab_priorites_categories)) {
+				$temoin_pb_ordre_categories="y";
+			}
+			$tab_priorites_categories[]=$current_priority;
 
 			echo "<tr>\n";
 			echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
@@ -640,6 +647,11 @@ td {
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
+
+		if($temoin_pb_ordre_categories=="y") {
+			echo "<tr><td colspan='3' style='color:red; text-indent:-6em;padding-left:6em;'><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.</td></tr>\n";
+		}
+
 		?>
 		</table>
 	</td>
