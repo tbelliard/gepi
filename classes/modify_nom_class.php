@@ -149,17 +149,18 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			$temoin_pb_ordre_categories="n";
 			$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 			while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+				//echo $row['nom_court']." : ";
 				$reg_priority = $_POST['priority_'.$row["id"]];
 				if (isset($_POST['moyenne_'.$row["id"]])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
 				if (!is_numeric($reg_priority)) $reg_priority = 0;
 				if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
-
+				//echo "$reg_priority -&gt; ";
 				if(in_array($reg_priority, $tab_priorites_categories)) {
 					$temoin_pb_ordre_categories="y";
 					$reg_priority=max($tab_priorites_categories)+1;
 				}
 				$tab_priorites_categories[]=$reg_priority;
-
+				//echo "$reg_priority<br />";
 				//$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
 
 				$res_test=mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')");
@@ -167,11 +168,13 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 				if ($test == 0) {
 					// Pas d'entrée... on créé
-					$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
+					$sql="INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "';";
 				} else {
 					// Entrée existante, on met à jour
-					$res = mysql_query("UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
+					$sql="UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "');";
 				}
+				//echo "$sql<br />";
+				$res = mysql_query($sql);
 				if (!$res) {
 					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
 				}
@@ -634,29 +637,33 @@ td {
 			<td style='width: auto; vertical-align:middle;'>Catégorie</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Priorité d'affichage</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Afficher la moyenne sur le bulletin</td>
 		</tr>
 		<?php
-		$tab_priorites_categories=array();
-		$temoin_pb_ordre_categories="n";
-
 		$max_priority_cat=0;
 		$get_max_cat = mysql_query("SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
 		if(mysql_num_rows($get_max_cat)>0) {
 			$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
 		}
 
+		$tab_priorites_categories=array();
+		$temoin_pb_ordre_categories="n";
 		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 		while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 			// Pour la catégorie, on récupère les infos déjà enregistrées pour la classe
 			if (isset($id_classe)) {
-				$infos = mysql_fetch_object(mysql_query("SELECT priority, affiche_moyenne FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] ."' and classe_id = '" . $id_classe . "')"));
+				$sql="SELECT priority, affiche_moyenne FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] ."' and classe_id = '" . $id_classe . "');";
+				//echo "$sql<br />";
+				$res_cat_classe=mysql_query($sql);
+				$infos = mysql_fetch_object($res_cat_classe);
 			} else {
 				$infos = false;
 			}
+
 			if (!$infos) {
 				$current_priority = $row["priority"];
 				$current_affiche_moyenne = "0";
 			} else {
 				$current_priority = $infos->priority;
 				$current_affiche_moyenne = $infos->affiche_moyenne;
+				//echo $row["nom_court"]." -&gt; $current_priority<br />";
 			}
 			if(in_array($current_priority, $tab_priorites_categories)) {
 				$temoin_pb_ordre_categories="y";
