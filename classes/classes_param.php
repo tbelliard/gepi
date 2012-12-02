@@ -220,6 +220,7 @@ if (isset($_POST['is_posted'])) {
 					}
 
 					// On enregistre les infos relatives aux catégories de matières
+					$nb_modif_priorite=0;
 					$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 					while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 						$reg_priority = $_POST['priority_'.$row["id"].'_'.$per];
@@ -236,6 +237,9 @@ if (isset($_POST['is_posted'])) {
 						}
 						if (!$res) {
 							$msg .= "<br />Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
+						}
+						else {
+							$nb_modif_priorite++;
 						}
 					}
 
@@ -360,13 +364,17 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
-	if ($reg_ok=='') {
+	if (($reg_ok=='')&&($nb_modif_priorite==0)) {
 		$message_enregistrement = "Aucune modification n'a été effectuée !";
+		$affiche_message = 'yes';
+	} elseif(($reg_ok=='')&&($nb_modif_priorite>0)) {
+		$message_enregistrement = "Les modifications ont été effectuées avec succès.";
 		$affiche_message = 'yes';
 	} else if ($reg_ok=='yes') {
 		$message_enregistrement = "Les modifications ont été effectuées avec succès.";
 		$affiche_message = 'yes';
-	} else {
+	}
+	else {
 		$message_enregistrement = "Il y a eu un problème lors de l'enregistrement des modification.";
 		$affiche_message = 'yes';
 	}
