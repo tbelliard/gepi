@@ -235,12 +235,21 @@ if (isset($_POST['is_posted'])) {
 
 					// On enregistre les infos relatives aux catégories de matières
 					$nb_modif_priorite=0;
+					$tab_priorites_categories=array();
+					$temoin_pb_ordre_categories="n";
 					$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 					while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 						$reg_priority = $_POST['priority_'.$row["id"].'_'.$per];
 						if (isset($_POST['moyenne_'.$row["id"].'_'.$per])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
 						if (!is_numeric($reg_priority)) $reg_priority = 0;
 						if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
+
+						if(in_array($reg_priority, $tab_priorites_categories)) {
+							$temoin_pb_ordre_categories="y";
+							$reg_priority=max($tab_priorites_categories)+1;
+						}
+						$tab_priorites_categories[]=$reg_priority;
+
 						$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
 						if ($test == 0) {
 							// Pas d'entrée... on créé
@@ -255,6 +264,9 @@ if (isset($_POST['is_posted'])) {
 						else {
 							$nb_modif_priorite++;
 						}
+					}
+					if($temoin_pb_ordre_categories=="y") {
+						$msg.="<br /><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Des mesures ont été prises pour imposer des ordres différents, mais il se peut que l'ordre ne vous convienne pas.<br />\n";
 					}
 
 
@@ -1115,6 +1127,7 @@ td {
 <table border='0' cellspacing='0'>
 <tr>
 	<td colspan='3'>
+	<a name='parametres_generaux'></a>
 	<h2><b>Paramètres généraux&nbsp;: </b></h2>
 	</td>
 </tr>
