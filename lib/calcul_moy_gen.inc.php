@@ -613,7 +613,7 @@ while ($i < $nombre_eleves) {
 			$moy_cat_eleve[$i][$cat] = "-";
 		}
 
-		if($current_eleve_login[$i]==$ele_login_debug) {
+		if((isset($current_eleve_login[$i]))&&($current_eleve_login[$i]==$ele_login_debug)) {
 			$lignes_debug.="\$moy_cat_eleve[$i][$cat]=".$moy_cat_eleve[$i][$cat]."<br />";
 		}
 	}

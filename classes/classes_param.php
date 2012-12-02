@@ -234,6 +234,7 @@ if (isset($_POST['is_posted'])) {
 					}
 
 					// On enregistre les infos relatives aux catégories de matières
+					$nb_modif_priorite=0;
 					$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 					while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 						$reg_priority = $_POST['priority_'.$row["id"].'_'.$per];
@@ -250,6 +251,9 @@ if (isset($_POST['is_posted'])) {
 						}
 						if (!$res) {
 							$msg .= "<br />Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
+						}
+						else {
+							$nb_modif_priorite++;
 						}
 					}
 
@@ -556,11 +560,11 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if ($reg_ok=='') {
-		if($nb_reg_ok==0) {
+		if(($nb_reg_ok==0)&&($nb_modif_priorite==0)) {
 			$message_enregistrement = "Aucune modification n'a été effectuée !";
 		}
 		else {
-			$message_enregistrement = "$nb_reg_ok modification(s) effectuée(s) !";
+			$message_enregistrement = ($nb_reg_ok+$nb_modif_priorite)." modification(s) effectuée(s) !";
 		}
 		$affiche_message = 'yes';
 	} else if ($reg_ok=='yes') {
@@ -1143,6 +1147,11 @@ td {
 			<td style='width: auto; vertical-align:middle;'>Catégorie</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Priorité d'affichage</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Afficher la moyenne sur le bulletin</td>
 		</tr>
 		<?php
+		$max_priority_cat=0;
+		$get_max_cat = mysql_query("SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
+		if(mysql_num_rows($get_max_cat)>0) {
+			$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
+		}
 		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 		while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 			$current_priority = $row["priority"];
@@ -1152,7 +1161,7 @@ td {
 			echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
 			echo "<td style='padding: 5px; text-align: center;'>\n";
 			echo "<select name='priority_".$row["id"]."_".$per."' size='1'>\n";
-			for ($i=0;$i<11;$i++) {
+			for ($i=0;$i<max(100,$max_priority_cat);$i++) {
 				echo "<option value='$i'";
 				//if ($current_priority == $i) echo " SELECTED";
 				echo ">$i</option>\n";
