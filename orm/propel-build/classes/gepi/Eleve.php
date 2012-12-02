@@ -1110,7 +1110,7 @@ class Eleve extends BaseEleve {
 	        }
     		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
     		    $contra = false;
-                    //on va vérifier si il n'y a pas une saisie contradictoire simultanée
+                    //on va vérifier si il n'y a pas une autre saisie englobante (et contradictoire pour ce decompte)
                     foreach ($abs_saisie_col_2 as $saisie_contra) {
                     if ($saisie_contra->getEleveId() != $this->getId()) {
                         continue;
@@ -1245,7 +1245,7 @@ class Eleve extends BaseEleve {
 	        if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && !$saisie->getJustifiee()) {
 		    $contra = false;
 		    if (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y') {
-			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
+			//on va vérifier si il n'y a pas une autre saisie englobante (et contradictoire pour ce decompte)
 			foreach ($abs_saisie_col_2 as $saisie_contra) {
     	        if ($saisie_contra->getEleveId() != $this->getId()) {
     	            continue;
@@ -1333,7 +1333,7 @@ class Eleve extends BaseEleve {
 	        }
 	        if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
 			    $contra = false;
-	    		//on va vérifier si il n'y a pas une saisie contradictoire simultanée
+	    		//on va vérifier si il n'y a pas une autre saisie englobante (et contradictoire pour ce decompte)
 				foreach ($abs_saisie_col_2 as $saisie_contra) {
         	        if ($saisie_contra->getEleveId() != $this->getId()) {
         	            continue;
