@@ -395,7 +395,7 @@ if ($modifiable  || ($saisie->getCommentaire() != null && $saisie->getCommentair
 }
 
 echo '<tr><td>';
-echo 'Saisie le : ';
+echo 'Enregistré le : ';
 echo '</td><td colspan="2">';
 echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getCreatedAt('U')));
 echo ' par '.  $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.mb_substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
@@ -438,6 +438,22 @@ if (!$saisies_conflit_col->isEmpty()) {
 	echo $saisie_conflit->getId();
 	echo "</a>";
 	if (!$saisies_conflit_col->isLast()) {
+	    echo ' - ';
+	}
+    }
+    echo '</td></tr>';
+}
+$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+if (!$saisies_englobante_col->isEmpty()) {
+    echo '<tr><td>';
+    echo 'La saisie est englobée par : ';
+    echo '</td><td colspan="2">';
+    foreach ($saisies_englobante_col as $saisies_englobante) {
+	echo "<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style=''> ";
+	echo $saisies_englobante->getDateDescription();
+        echo ' '.$saisies_englobante->getTypesTraitements();
+	echo "</a>";
+	if (!$saisies_englobante_col->isLast()) {
 	    echo ' - ';
 	}
     }

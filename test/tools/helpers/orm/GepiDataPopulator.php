@@ -556,6 +556,21 @@ class GepiDataPopulator
         $edtCours->setUtilisateurProfessionnel($newton_prof);
         $edtCours->save();
 
+        //on va peupler des saisies englobantes
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-02 08:00:00');
+        $saisie_1->setFinAbs('2011-06-02 09:00:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-02 07:00:00');
+        $saisie_1->setFinAbs('2011-06-02 10:00:00');
+        $saisie_1->save();
+
+
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();
         

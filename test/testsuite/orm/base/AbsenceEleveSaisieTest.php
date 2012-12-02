@@ -533,4 +533,11 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         $saisie->save();
     }
 
+    public function testgetAbsenceEleveSaisiesEnglobantes()
+    {
+        $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-02')->getFirst();
+        $saisie_englobante = $saisie->getAbsenceEleveSaisiesEnglobantes();
+        $this->assertEquals($saisie_englobante->count(),1);
+    }
 }
