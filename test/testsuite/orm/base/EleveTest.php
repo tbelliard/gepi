@@ -219,6 +219,17 @@ class EleveTest extends GepiEmptyTestBase
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
 		$this->assertEquals(0,$demi_j_col->count());
 
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-08-30 00:00:00'),new DateTime('2010-10-03 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-06 23:59:59'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-07 00:00:00'),new DateTime('2010-10-09 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-10 00:00:00'),new DateTime('2010-10-12 23:59:59'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-13 00:00:00'),new DateTime('2010-10-14 23:59:59'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-15 00:00:00'),new DateTime('2010-10-16 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-17 00:00:00'),new DateTime('2010-10-17 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'))->count());
+                $this->assertEquals(2,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-19 00:00:00'),new DateTime('2010-10-20 23:59:59'))->count());
+                $this->assertEquals(8,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-21 00:00:00'),new DateTime('2010-12-02 00:00:00'))->count());
+                $this->assertEquals(14,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
 	}
 	
 	public function testGetDemiJourneesNonJustifieesAbsenceParCollection() {
@@ -239,7 +250,17 @@ class EleveTest extends GepiEmptyTestBase
 		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsenceParCollection($saisie_col);
 		$this->assertEquals(0,$demi_j_col->count());
 
-		$this->assertEquals(13,$florence_eleve->getDemiJourneesNonJustifieesAbsenceParPeriode(1)->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-08-30 00:00:00'),new DateTime('2010-10-03 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-06 23:59:59'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-07 00:00:00'),new DateTime('2010-10-09 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-10 00:00:00'),new DateTime('2010-10-12 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-13 00:00:00'),new DateTime('2010-10-14 23:59:59'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-15 00:00:00'),new DateTime('2010-10-16 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-17 00:00:00'),new DateTime('2010-10-17 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'))->count());
+                $this->assertEquals(2,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-19 00:00:00'),new DateTime('2010-10-20 23:59:59'))->count());
+                $this->assertEquals(8,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-21 00:00:00'),new DateTime('2010-12-02 00:00:00'))->count());
+                $this->assertEquals(13,$florence_eleve->getDemiJourneesNonJustifieesAbsenceParPeriode(1)->count());
 	}
 
 	public function testGetRetards() {
