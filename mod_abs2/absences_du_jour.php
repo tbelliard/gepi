@@ -65,6 +65,10 @@ if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
     include('creation_traitement.php');
 }
 
+if (isset($_POST["creation_notification"])) {
+    include('creation_notification.php');
+}
+
 //récupération des paramètres de la requète
 //contrairement aux autres pages, on ne recupere pas les parametres dans la session
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] : NULL);
@@ -422,6 +426,7 @@ $eleve_col = $query
 <?php if ($eleve_col->count() != 0) { ?>
 			<form dojoType="dijit.form.Form" jsId="creer_traitement" id="creer_traitement" name="creer_traitement" method="post" action="./absences_du_jour.php">
 			<input type="hidden" id="creation_traitement" name="creation_traitement" value="no"/>
+			<input type="hidden" id="creation_notification" name="creation_notification" value="no"/>
 			<input type="hidden" id="ajout_traitement" name="ajout_traitement" value="no"/>
 			<input type="hidden" id="id_traitement" name="id_traitement" value=""/>
 			<p>
@@ -430,6 +435,9 @@ $eleve_col = $query
 			    <div dojoType="dijit.Menu" style="display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
 				    Créer un nouveau traitement
+				</button>
+				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
+				    Créer une nouvelle notification
 				</button>
 			<?php
 			$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
@@ -445,6 +453,12 @@ $eleve_col = $query
 			<div dojoType="dijit.form.DropDownButton" style="display: inline">
 			    <span>Ajouter au traitement (popup)</span>
 			    <div dojoType="dijit.Menu" style="display: inline">				
+				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
+				    Créer un nouveau traitement
+				</button>
+				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
+				    Créer une nouvelle notification
+				</button>
 			<?php
 			$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 			if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
@@ -634,6 +648,9 @@ $eleve_col = $query
 			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
 				    Créer un nouveau traitement
 				</button>';
+                            echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
+                                Créer une nouvelle notification
+                            </button>';
 			echo '</div></div><br/>';
 
 			echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
@@ -655,6 +672,9 @@ $eleve_col = $query
 			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
 				    Créer un nouveau traitement (fenêtre)
 				 </button>';
+                            echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
+                                Créer une nouvelle notification (fenêtre)
+                            </button>';
 			echo '</div></div><br/>';
 
             echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
@@ -676,6 +696,9 @@ $eleve_col = $query
 			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
 				    Créer un nouveau traitement (popup)
 				 </button>';
+                            echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
+                                Créer une nouvelle notification (popup)
+                            </button>';
 			echo '</div></div>';
 			echo '</td>';
 			echo "</tr>";
