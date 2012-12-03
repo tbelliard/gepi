@@ -556,7 +556,7 @@ class GepiDataPopulator
         $edtCours->setUtilisateurProfessionnel($newton_prof);
         $edtCours->save();
 
-        //on va peupler des saisies englobantes
+        //on va peupler des saisies englobantes ou identiques
         $saisie_1 = new AbsenceEleveSaisie();
         $saisie_1->setEleve($florence_eleve);
         $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
@@ -569,7 +569,89 @@ class GepiDataPopulator
         $saisie_1->setDebutAbs('2011-06-02 07:00:00');
         $saisie_1->setFinAbs('2011-06-02 10:00:00');
         $saisie_1->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_1);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
 
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-03 08:00:00');
+        $saisie_1->setFinAbs('2011-06-03 09:00:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-03 08:00:00');
+        $saisie_1->setFinAbs('2011-06-03 09:00:00');
+        $saisie_1->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_1);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-06 08:00:00');
+        $saisie_1->setFinAbs('2011-06-06 09:00:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-06 08:00:00');
+        $saisie_1->setFinAbs('2011-06-06 09:30:00');
+        $saisie_1->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_1);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-06 08:00:00');
+        $saisie_1->setFinAbs('2011-06-06 10:00:00');
+        $saisie_1->save();
+
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-07 08:00:00');
+        $saisie_1->setFinAbs('2011-06-07 09:00:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-07 08:00:00');
+        $saisie_1->setFinAbs('2011-06-07 10:00:00');
+        $saisie_1->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_1);
+        $traitement->setAbsenceEleveJustification(AbsenceEleveJustificationQuery::create()->filterByNom('Courrier familial')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-08 08:00:00');
+        $saisie_1->setFinAbs('2011-06-08 09:00:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-08 08:00:00');
+        $saisie_1->setFinAbs('2011-06-08 09:00:00');
+        $saisie_1->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_1);
+        $traitement->setAbsenceEleveJustification(AbsenceEleveJustificationQuery::create()->filterByNom('Courrier familial')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
 
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();

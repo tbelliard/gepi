@@ -1109,20 +1109,29 @@ class Eleve extends BaseEleve {
 	            continue;
 	        }
     		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-    		    $contra = false;
-                    //on va vérifier si il n'y a pas une autre saisie englobante (et contradictoire pour ce decompte)
+                    //on va vérifier dans la même liste de saisies si il n'y a pas une autre saisie englobante et contradictoire à celle-ci
+		    $contra = false;
                     foreach ($abs_saisie_col_2 as $saisie_contra) {
-                    if ($saisie_contra->getEleveId() != $this->getId()) {
-                        continue;
-                    }
-                        if ($saisie_contra->getId() != $saisie->getId()
-                                && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-                                && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-                                && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
-                                //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-                                && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
-                            $contra = true;
-                            break;
+                        if ($saisie_contra->getId() == $saisie->getId()) continue;//c'est la meme saisie donc on a rien de spécial à faire
+                        if ($saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue; //la saisie contradictoire est marquée erreur de saisie donc on a rien à faire
+                        if (($saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') < $saisie_contra->getFinAbs('U'))
+                                || ($saisie->getDebutAbs('U') > $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')))
+                        {
+                            //on a une saisie strictement plus large
+                            if ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence()) {
+                                //on est contré par une saisie plus large qui n'est pas un manquement de présence
+                                $contra = true;
+                                break;
+                            }
+                            continue;
+                        }
+                        if ($saisie->getDebutAbs('U') == $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') == $saisie_contra->getFinAbs('U')) {
+                            //on a des saisies identiques au niveau des dates
+                            if ($saisie_contra->getRetard() || (!$saisie_contra->getManquementObligationPresence() && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y')) {
+                                //on a une saisie qui contre le manquement à l'obligation de présence
+                                $contra = true;
+                                break;
+                            }
                         }
                     }
                     if (!$contra) {
@@ -1243,28 +1252,40 @@ class Eleve extends BaseEleve {
 	            continue;
 	        }
 	        if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && !$saisie->getJustifiee()) {
+                    //on va vérifier dans la même liste de saisies si il n'y a pas une autre saisie englobante et contradictoire à celle-ci
 		    $contra = false;
-		    if (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y') {
-			//on va vérifier si il n'y a pas une autre saisie englobante (et contradictoire pour ce decompte)
-			foreach ($abs_saisie_col_2 as $saisie_contra) {
-    	        if ($saisie_contra->getEleveId() != $this->getId()) {
-    	            continue;
-    	        }
-			    if ($saisie_contra->getId() != $saisie->getId()
-				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
-				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence() || $saisie_contra->getJustifiee())) {
-				$contra = true;
-				break;
-			    }
-			}
-		    }
-		    if (!$contra) {
-			$abs_saisie_col_filtre->append($saisie);
-		    }
-		}
+                    foreach ($abs_saisie_col_2 as $saisie_contra) {
+                        if ($saisie_contra->getId() == $saisie->getId()) continue;//c'est la meme saisie donc on a rien de spécial à faire
+                        if ($saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue; //la saisie contradictoire est marquée erreur de saisie donc on a rien à faire
+                        if (($saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') < $saisie_contra->getFinAbs('U'))
+                                || ($saisie->getDebutAbs('U') > $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')))
+                        {
+                            //on a une saisie strictement plus large
+                            if ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence() || $saisie_contra->getJustifiee()) {
+                                //on est contré par une saisie plus large qui est justifiée ou qui n'est pas un manquement de présence
+                                $contra = true;
+                                break;
+                            }
+                            continue;
+                        }
+                        if ($saisie->getDebutAbs('U') == $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') == $saisie_contra->getFinAbs('U')) {
+                            //on a des saisies identiques au niveau des dates
+                            if ($saisie_contra->getRetard() || (!$saisie_contra->getManquementObligationPresence() && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y')) {
+                                //on a une saisie qui contre le manquement à l'obligation de présence
+                                $contra = true;
+                                break;
+                            }
+                            if ($saisie_contra->getJustifiee() && getSettingValue("abs2_saisie_multi_type_non_justifiee")=='n') {
+                                //on a une saisie qui contre car elle est justifié
+                                $contra = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!$contra) {
+                        $abs_saisie_col_filtre->append($saisie);
+                    }
+                }
 	    }
 
 	    if ($date_fin != null) {
