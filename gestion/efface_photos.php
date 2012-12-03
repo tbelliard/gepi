@@ -22,6 +22,7 @@
  */
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+require_once("../lib/share-trombinoscope.inc.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
