@@ -653,6 +653,32 @@ class GepiDataPopulator
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
 
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-09 08:00:00');
+        $saisie_1->setFinAbs('2011-06-09 08:10:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-09 08:00:00');
+        $saisie_1->setFinAbs('2011-06-09 08:15:00');
+        $saisie_1->save();
+
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-10 08:00:00');
+        $saisie_1->setFinAbs('2011-06-10 08:10:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-10 08:00:00');
+        $saisie_1->setFinAbs('2011-06-10 08:10:00');
+        $saisie_1->save();
+
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();
         
