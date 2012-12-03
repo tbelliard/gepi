@@ -1,6 +1,6 @@
 <?php
 /**
- * Ajouter, modifier un devoir dans une évaluation cumule
+ * Ajouter, modifier un devoir dans une évaluation cumul
  * 
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
@@ -110,7 +110,8 @@ else {
 	$nom_court = "CC";
 	$nom_complet = ucfirst($nom_cc)." n°";
 	$description = "";
-	$precision="s1";
+	//$precision="s1";
+	$precision=getPref($_SESSION['login'], 'eval_cumul_precision', 's1');
 }
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
@@ -130,6 +131,8 @@ if (isset($_POST['is_posted'])) {
 	if(!my_ereg("^(s1|s5|se|p1|p5|pe)$", $precision)) {
 		$msg.="Précision '$precision' invalide; Elle a été remplacée par 's1'.";
 	}
+
+	savePref($_SESSION['login'], 'eval_cumul_precision', $precision);
 
 	if(!isset($id_dev)) {
 		$sql="INSERT INTO cc_dev SET id_groupe='$id_groupe', nom_court='$nom_court', nom_complet='$nom_complet', description='$description', arrondir='$precision';";
