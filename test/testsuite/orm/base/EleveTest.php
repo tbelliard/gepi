@@ -295,8 +295,19 @@ class EleveTest extends GepiEmptyTestBase
 		$saisie_col->getFirst()->clearAllReferences();
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(1,$retard_col->count());
-		
-		$this->assertEquals(6,$florence_eleve->getRetardsParPeriode(1)->count());
+                
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-08-30 00:00:00'),new DateTime('2010-10-03 23:59:59'))->count());
+                $this->assertEquals(4,$florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-06 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-07 00:00:00'),new DateTime('2010-10-09 23:59:59'))->count());
+                $this->assertEquals(2,$florence_eleve->getRetards(new DateTime('2010-10-10 00:00:00'),new DateTime('2010-10-12 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-13 00:00:00'),new DateTime('2010-10-14 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-15 00:00:00'),new DateTime('2010-10-16 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-17 00:00:00'),new DateTime('2010-10-17 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-19 00:00:00'),new DateTime('2010-10-20 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-21 00:00:00'),new DateTime('2010-12-02 00:00:00'))->count());
+                
+                $this->assertEquals(6,$florence_eleve->getRetardsParPeriode(1)->count());
 		
 		//Retard saisi alors que l'élève a quitté l'établissement
 		saveSetting('abs2_retard_critere_duree',30);
