@@ -162,6 +162,12 @@ if(!isset($id_groupe)) {
 	echo "<p><input type='submit' name='Valider' value='Valider' /></p>\n";
 	echo "</form>\n";
 
+	echo "<p><br /></p>\n";
+	echo "<p style='margin-left:4em; text-indent:-4em;'><em>NOTES&nbsp;:</em> Dans la page qui va s'ouvrir, vous pourrez déplacer les photos en cliquant sur l'entête de la photo (<em>la ligne de titre qui contient le nom ou le prénom,...</em>).<br />Vous pourrez une fois les photos positionnées, enregistrer cette position.";
+	if ((getSettingValue("active_module_absence_professeur")=='y')&&(getSettingValue("active_module_absence")=='2')) {
+		echo "<br />Vous pourrez aussi effectuer la saisie des absences sur le plan de classe.<br />Dans la page de saisie des absences pour un groupe (<em>Onglet Saisir groupe</em>), vous trouverez la page de saisie sur le plan de classe (<em>si le plan de classe existe</em>) en suivant le lien sur l'icone <img src='../images/icons/trombino.png' width='20' height='20' alt='Icone trombi' />.";
+	}
+	echo "</p>\n";
 
 	require("../lib/footer.inc.php");
 	die();
