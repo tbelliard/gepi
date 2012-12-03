@@ -147,7 +147,7 @@ class EleveTest extends GepiEmptyTestBase
 		
 	}
 
-	public function testGetAbsColDecompteDemiJournee() {
+	public function testgetAbsenceEleveSaisies() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
@@ -168,13 +168,11 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals(1,$demi_j_col->count());
 		$this->assertEquals("2010-10-01 00:00:00",$demi_j_col->getFirst()->format("Y-m-d H:i:s"));
 
-		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
-		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
@@ -255,7 +253,6 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals(1,$demi_j_col->count());
 		$this->assertEquals("2010-10-01 00:00:00",$demi_j_col->getFirst()->format("Y-m-d H:i:s"));
 
-		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
@@ -310,11 +307,9 @@ class EleveTest extends GepiEmptyTestBase
 		$saisie_col = $florence_eleve->getRetards(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
 		$this->assertEquals(0,$saisie_col->count());
 
-		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		$saisie_col = $florence_eleve->getRetards(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
 		$this->assertEquals(0,$saisie_col->count());
 
-		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
@@ -330,7 +325,6 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals(6,$florence_eleve->getRetardsParPeriode(1)->count());
 		
 		//Retard saisi alors que l'élève a quitté l'établissement
-		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		saveSetting('abs2_retard_critere_duree',30);
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(1,$retard_col->count());
@@ -352,11 +346,9 @@ class EleveTest extends GepiEmptyTestBase
 		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 
-		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 
-		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		saveSetting('abs2_retard_critere_duree',20);
 		$saisie_col->getFirst()->clearAllReferences();
 		$manguement_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
@@ -373,28 +365,22 @@ class EleveTest extends GepiEmptyTestBase
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
 	    
-	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-	    AbsenceAgregationDecompteQuery::create()->deleteAll();
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59'));
 	    $this->assertEquals(11,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    
-	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-09-01 00:00:00'),new DateTime('2010-09-02 23:59:59'));//ce test ne se terminait pas
 	    $this->assertEquals(5,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    
-	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
 	    $florence_eleve->updateAbsenceAgregationTable(null,new DateTime('2010-10-05 23:59:59'));
 	    $this->assertEquals(11,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 
 	    
-	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59'));
 	    $this->assertEquals(11,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    
-	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
 	    $this->assertEquals(31,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
@@ -406,7 +392,6 @@ class EleveTest extends GepiEmptyTestBase
 	    $demi_journee =  AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->filterByNonJustifiee(false)->findOne();
 	    $this->assertEquals('2010-10-14 00:00:00', $demi_journee->getDateDemiJounee('Y-m-d H:i:s'));
 
-	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-09-01 00:00:00'),new DateTime('2010-09-02 23:59:59'));
 	    $this->assertEquals(5,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
@@ -467,12 +452,10 @@ class EleveTest extends GepiEmptyTestBase
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59'));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59')));
 	    
-	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
 	    $florence_eleve->updateAbsenceAgregationTable();
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    	    
-	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
@@ -577,12 +560,10 @@ class EleveTest extends GepiEmptyTestBase
 	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59'));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59')));
 	    
-	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
 	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable();
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    	    
-	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
 	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
