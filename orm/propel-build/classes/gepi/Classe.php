@@ -79,7 +79,7 @@ class Classe extends BaseClasse {
 	 */
 	public function getEdtEmplacementCourssPeriodeCalendrierActuelle($v = 'now'){
 		if ( getSettingValue("autorise_edt_tous") != 'y') {
-        	return null;
+                return new PropelObjectCollection();
         }
         
 		$query = EdtEmplacementCoursQuery::create()->filterByGroupe($this->getGroupes())
