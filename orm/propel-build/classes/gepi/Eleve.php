@@ -1336,53 +1336,54 @@ class Eleve extends BaseEleve {
 	 */
 	public function getRetards($date_debut=null, $date_fin = null) {
 
-		if (($date_fin != null) && ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin->format('U'))) {
-			$date_fin = $this->getDateSortie(null);
-		}
-		
-	    $abs_saisie_col = $this->getAbsenceEleveSaisies($date_debut, $date_fin);
-	    if ($abs_saisie_col->isEmpty()) {
-			return new PropelCollection();
-	    }
-
-	    $result = new PropelCollection();
-	    $abs_saisie_col_2 = clone $abs_saisie_col;
-	    //on va faire le décompte officiel des retard
-	    foreach ($abs_saisie_col as $saisie) {
-	        if ($saisie->getEleveId() != $this->getId()) {
-	            continue;
-	        }
-	        if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-			    $contra = false;
-	    		//on va vérifier si il n'y a pas une autre saisie englobante (et contradictoire pour ce decompte)
-				foreach ($abs_saisie_col_2 as $saisie_contra) {
-        	        if ($saisie_contra->getEleveId() != $this->getId()) {
-        	            continue;
-        	        }
-				    if ($saisie_contra->getId() != $saisie->getId()
-					    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-					    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-					    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
-                                                                //on a une saisie plus large
-								$contra = true;
-								break;
-					}
-			    }
-			    if (!$contra) {
-					$result->append($saisie);
-			    }
-			}
-	    }
-	    
-	    //on va enlever les retards qui sont sur des périodes non ouvertes de l'établissement
-        require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
-        $result_final = new PropelCollection();
-        foreach ($result as $saisie) {
-            if (EdtHelper::isJourneeOuverte($saisie->getDebutAbs(null))
-                && EdtHelper::isHoraireOuvert($saisie->getDebutAbs(null))) {
-                $result_final->append($saisie);
+            if (($date_fin != null) && ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin->format('U'))) {
+                $date_fin = $this->getDateSortie(null);
             }
-        }
+
+            $abs_saisie_col = $this->getAbsenceEleveSaisies($date_debut, $date_fin);
+            if ($abs_saisie_col->isEmpty()) {
+                return new PropelCollection();
+            }
+
+            $result = new PropelCollection();
+            $abs_saisie_col_2 = clone $abs_saisie_col;
+            //on va faire le décompte officiel des retard
+            foreach ($abs_saisie_col as $saisie) {
+                if ($saisie->getEleveId() != $this->getId()) {
+                    continue;
+                }
+                if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
+                    $contra = false;
+                    //on va vérifier si il n'y a pas une autre saisie englobante (et contradictoire pour ce decompte)
+                    foreach ($abs_saisie_col_2 as $saisie_contra) {
+                        if ($saisie_contra->getEleveId() != $this->getId()) {
+                            continue;
+                        }
+                        if ($saisie_contra->getId() != $saisie->getId()
+                                && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+                                && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+                                && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE())
+                        {
+                            //on a une saisie plus large
+                            $contra = true;
+                            break;
+                        }
+                    }
+                    if (!$contra) {
+                        $result->append($saisie);
+                    }
+                }
+            }
+
+            //on va enlever les retards qui sont sur des périodes non ouvertes de l'établissement
+            require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
+            $result_final = new PropelCollection();
+            foreach ($result as $saisie) {
+                if (EdtHelper::isJourneeOuverte($saisie->getDebutAbs(null))
+                    && EdtHelper::isHoraireOuvert($saisie->getDebutAbs(null))) {
+                    $result_final->append($saisie);
+                }
+            }
 	    return $result_final;
 	}
 
