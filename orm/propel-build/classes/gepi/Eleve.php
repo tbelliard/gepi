@@ -880,6 +880,56 @@ class Eleve extends BaseEleve {
 	    return $this->getAbsenceEleveSaisiesFilterByDate($dt, $dt_fin_creneau);
 	}
 
+        /**
+	 *
+	 * Retourne une liste de saisies type retard pour le creneau et le jour donné.
+	 *
+	 * @param      EdtCreneau $edtcreneau
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 *
+         * @return PropelColection AbsenceEleveSaisie[]
+	 */
+	public function getRetardsDuCreneau($edtcreneau = null, $v = 'now') {
+	    if ($edtcreneau == null) {
+		$edtcreneau = EdtCreneauPeer::retrieveEdtCreneauActuel($v);
+	    }
+
+	    if (!($edtcreneau instanceof EdtCreneau)) {
+		throw new PropelException('Le premier argument doit etre de la classe EdtCreneau');
+	    }
+
+	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+	    // -- which is unexpected, to say the least.
+	    //$dt = new DateTime();
+	    if ($v === null || $v === '') {
+		    $dt = null;
+	    } elseif ($v instanceof DateTime) {
+		    $dt = clone $v;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($v)) { // if it's a unix timestamp
+				    $dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt = new DateTime($v);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+		    }
+	    }
+
+	    $dt->setTime($edtcreneau->getHeuredebutDefiniePeriode('H'), $edtcreneau->getHeuredebutDefiniePeriode('i'), 0);
+	    $dt_fin_creneau = clone $dt;
+	    $dt_fin_creneau->setTime($edtcreneau->getHeurefinDefiniePeriode('H'), $edtcreneau->getHeurefinDefiniePeriode('i'), 0);
+
+	    return $this->getRetards($dt, $dt_fin_creneau);
+	}
+
   	/**
 	 *
 	 * Retourne une liste de saisie dont la periode de temps coincide avec les dates passees en paremetre (methode optimisee)

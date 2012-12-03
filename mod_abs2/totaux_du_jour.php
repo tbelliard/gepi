@@ -257,17 +257,10 @@ $eleve_col = $query
             }else{
                 $saisies_du_creneau=$eleve->getAbsenceEleveSaisiesDuCreneauByLieu($creneau,$id_lieu, $dt_date_absence_eleve);
             }
-            $retard=false;
-            $decompte=false;
-            foreach($saisies_du_creneau as $saisie){
-                if ($saisie->getRetard()) {
-                    $retard=true;                    
-                }else{
-                  $decompte=true;
-                }
-            }
-            if($retard) $nbre_total_retards++;
-            if($decompte){
+
+            if(!$eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve)->isEmpty()) $nbre_total_retards++;
+
+            if(!$saisies_du_creneau->isEmpty()){
                $decompte_du_creneau++;
                switch($regime) {
                    case 'd/p':
