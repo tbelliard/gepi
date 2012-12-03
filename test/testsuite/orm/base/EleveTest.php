@@ -158,18 +158,24 @@ class EleveTest extends GepiEmptyTestBase
 		$saisie_col = $michel_eleve->getAbsenceEleveSaisies();
 		$this->assertEquals(0,$saisie_col->count());
 				
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
+		$this->assertEquals(1,$saisie_col->count());
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
+		$this->assertEquals(1,$saisie_col->count());
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$this->assertEquals(1,$saisie_col->count());
+		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-24 00:00:00'),new DateTime('2010-11-7 23:59:59'));
+		$this->assertEquals(1,$saisie_col->count());
+		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
 	}
 	
 	public function testGetDemiJourneesAbsence() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
-		$this->assertEquals(1,$saisie_col->count());
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
 		$this->assertEquals(1,$demi_j_col->count());
 		$this->assertEquals("2010-10-01 00:00:00",$demi_j_col->getFirst()->format("Y-m-d H:i:s"));
 
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
-		$this->assertEquals(1,$saisie_col->count());
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
@@ -185,33 +191,20 @@ class EleveTest extends GepiEmptyTestBase
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 		
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-19 00:00:00'),new DateTime('2010-10-19 23:59:59'));
-		$this->assertEquals(1,$saisie_col->count());
-		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-19 00:00:00'),new DateTime('2010-10-19 23:59:59'));
 		$this->assertEquals(2,$demi_j_col->count());
 		
 		# Absence 20 du jeudi 28-10 au mardi 2-11-2011 1 seule saisie
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-24 00:00:00'),new DateTime('2010-11-7 23:59:59'));
-		$this->assertEquals(1,$saisie_col->count());
-		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-24 00:00:00'),new DateTime('2010-11-7 23:59:59'));
 		$this->assertEquals(8,$demi_j_col->count());
 		# La première semaine on ne doit avoir que 4 demi-journées d'absences
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-24 00:00:00'),new DateTime('2010-10-30 23:59:59'));
-		$this->assertEquals(1,$saisie_col->count());
-		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-24 00:00:00'),new DateTime('2010-10-30 23:59:59'));
 		$this->assertEquals(4,$demi_j_col->count());	# période bornée -> 4 demi-journées
 		# La deuxième semaine on ne doit avoir que 4 demi-journées d'absences
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-31 00:00:00'),new DateTime('2010-11-7 23:59:59'));
-		$this->assertEquals(1,$saisie_col->count());
-		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-31 00:00:00'),new DateTime('2010-11-7 23:59:59'));
 		$this->assertEquals(4,$demi_j_col->count());
 
                 #test de saisies englobant d'autres saisies
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-05-31 00:00:00'),new DateTime('2011-05-31 23:59:59'));
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-05-31 00:00:00'),new DateTime('2011-05-31 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
@@ -227,38 +220,29 @@ class EleveTest extends GepiEmptyTestBase
                 $this->assertEquals(8,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-21 00:00:00'),new DateTime('2010-12-02 00:00:00'))->count());
                 $this->assertEquals(14,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
 
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-06-02 00:00:00'),new DateTime('2011-06-02 23:59:59'));
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-02 00:00:00'),new DateTime('2011-06-02 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
                 saveSetting('abs2_saisie_multi_type_sans_manquement','y');
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_sans_manquement','n');
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
 
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-06-06 00:00:00'),new DateTime('2011-06-06 23:59:59'));
                 $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-06 00:00:00'),new DateTime('2011-06-06 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
 	}
 	
 	public function testGetDemiJourneesNonJustifieesAbsence() {
                 $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
-		$this->assertEquals(1,$saisie_col->count());
 		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
 		$this->assertEquals(1,$demi_j_col->count());
 		$this->assertEquals("2010-10-01 00:00:00",$demi_j_col->getFirst()->format("Y-m-d H:i:s"));
 
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
-		$this->assertEquals(1,$saisie_col->count());
 		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-05-31 00:00:00'),new DateTime('2011-05-31 23:59:59'));
 		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-05-31 00:00:00'),new DateTime('2011-05-31 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
@@ -274,29 +258,23 @@ class EleveTest extends GepiEmptyTestBase
                 $this->assertEquals(8,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-21 00:00:00'),new DateTime('2010-12-02 00:00:00'))->count());
                 $this->assertEquals(13,$florence_eleve->getDemiJourneesNonJustifieesAbsenceParPeriode(1)->count());
 
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-06-02 00:00:00'),new DateTime('2011-06-02 23:59:59'));
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-02 00:00:00'),new DateTime('2011-06-02 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
                 saveSetting('abs2_saisie_multi_type_sans_manquement','y');
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_sans_manquement','n');
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
 
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-06-07 00:00:00'),new DateTime('2011-06-07 23:59:59'));
                 $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-06-07 00:00:00'),new DateTime('2011-06-07 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
 
                 saveSetting('abs2_saisie_multi_type_non_justifiee','n');
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-06-08 00:00:00'),new DateTime('2011-06-08 23:59:59'));
                 $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-06-08 00:00:00'),new DateTime('2011-06-08 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_non_justifiee','y');
-                $saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2011-06-08 00:00:00'),new DateTime('2011-06-08 23:59:59'));
                 $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-06-08 00:00:00'),new DateTime('2011-06-08 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_non_justifiee','n');//n par défaut
@@ -304,15 +282,11 @@ class EleveTest extends GepiEmptyTestBase
 
 	public function testGetRetards() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisie_col = $florence_eleve->getRetards(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
-		$this->assertEquals(0,$saisie_col->count());
 
-		$saisie_col = $florence_eleve->getRetards(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
+                $saisie_col = $florence_eleve->getRetards(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
 		$this->assertEquals(0,$saisie_col->count());
 
 		$saisie_col = $florence_eleve->getAbsenceEleveSaisies(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
-		$this->assertEquals(1,$saisie_col->count());
-		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
 		saveSetting('abs2_retard_critere_duree',20);
 		$saisie_col->getFirst()->clearAllReferences();
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
