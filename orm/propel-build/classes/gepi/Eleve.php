@@ -1107,8 +1107,8 @@ class Eleve extends BaseEleve {
 
         /**
 	 *
-	 * Renvoi une collection filtrée de saisies qui montrent un manquement à l'obligation de présence.
-         * Une saisie qui est contré par une saisie de présence n'est pas retournée.
+	 * Renvoi une collection filtrée de saisies qui montrent un manquement à l'obligation de présence pour le décompte des demi-journées.
+         * Une saisie qui est contré par une saisie de présence n'est pas dans la liste de retour.
 	 *
 	 * @param      DateTime $dateDebut
 	 * @param      DateTime $dateFin
@@ -1117,7 +1117,7 @@ class Eleve extends BaseEleve {
 	 * @return     PropelObjectCollection
 	 *
 	 */
-	public function  getAbsenceEleveSaisiesManquementObligationPresence($dateDebut = null, $dateFin = null, $non_justifiee = false) {
+	public function  getAbsenceEleveSaisiesDecompteDemiJournees($dateDebut = null, $dateFin = null, $non_justifiee = false) {
  	    $abs_saisie_col = $this->getAbsenceEleveSaisies($dateDebut, $dateFin);
 	    //on filtre les saisie qu'on ne veut pas compter
 	    $abs_saisie_col_filtre = new PropelCollection();
@@ -1177,7 +1177,7 @@ class Eleve extends BaseEleve {
 	 * @return PropelCollection DateTime[]
 	 */
 	public function getDemiJourneesAbsence($date_debut = null, $date_fin = null) {
-	    $abs_saisie_col_filtrees = $this->getAbsenceEleveSaisiesManquementObligationPresence($date_debut, $date_fin, $non_justifiee = false);
+	    $abs_saisie_col_filtrees = $this->getAbsenceEleveSaisiesDecompteDemiJournees($date_debut, $date_fin, $non_justifiee = false);
             if ($date_fin != null) {
                 $date_fin_iteration = clone $date_fin;
             } else {
@@ -1227,7 +1227,7 @@ class Eleve extends BaseEleve {
 	 * @return PropelCollection DateTime[]
 	 */
 	public function getDemiJourneesNonJustifieesAbsence($date_debut = null, $date_fin = null) {
-	    $abs_saisie_col_filtrees = $this->getAbsenceEleveSaisiesManquementObligationPresence($date_debut, $date_fin, true);
+	    $abs_saisie_col_filtrees = $this->getAbsenceEleveSaisiesDecompteDemiJournees($date_debut, $date_fin, true);
 
 	    if ($date_fin != null) {
 		$date_fin_iteration = clone $date_fin;
@@ -1433,7 +1433,7 @@ class Eleve extends BaseEleve {
 	    $dt_fin_creneau = clone $dt;
 	    $dt_fin_creneau->setTime($edtcreneau->getHeurefinDefiniePeriode('H'), $edtcreneau->getHeurefinDefiniePeriode('i'), 0);
 
-	    return $this->getAbsenceEleveSaisiesManquementObligationPresence($dt, $dt_fin_creneau);
+	    return $this->getAbsenceEleveSaisiesDecompteDemiJournees($dt, $dt_fin_creneau);
 	}
 
         /**

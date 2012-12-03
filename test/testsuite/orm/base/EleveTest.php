@@ -347,23 +347,23 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals(0,$retard_col->count());
                 }
 
-	public function testGetAbsenceEleveSaisiesManquementObligationPresence() {
+	public function testgetAbsenceEleveSaisiesDecompteDemiJournees() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesManquementObligationPresence(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesManquementObligationPresence(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		saveSetting('abs2_retard_critere_duree',20);
 		$saisie_col->getFirst()->clearAllReferences();
-		$manguement_col = $florence_eleve->getAbsenceEleveSaisiesManquementObligationPresence(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$manguement_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(1,$manguement_col->count());
 		saveSetting('abs2_retard_critere_duree',30);
 		$manguement_col->getFirst()->clearAllReferences();
-		$manguement_col = $florence_eleve->getAbsenceEleveSaisiesManquementObligationPresence(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$manguement_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(0,$manguement_col->count());
 				
 	}
