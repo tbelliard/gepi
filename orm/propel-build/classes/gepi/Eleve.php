@@ -1180,7 +1180,7 @@ class Eleve extends BaseEleve {
  	    $abs_saisie_col = $this->getAbsenceEleveSaisies($dateDebut, $dateFin);
 	    //on filtre les saisie qu'on ne veut pas compter
 	    $abs_saisie_col_filtre = new PropelCollection();
-	    $abs_saisie_col_2 = clone $abs_saisie_col;
+	    $abs_saisie_englobante = clone $abs_saisie_col;
 	    foreach ($abs_saisie_col as $saisie) {
 	        if ($saisie->getEleveId() != $this->getId()) {
 	            continue;
@@ -1188,7 +1188,7 @@ class Eleve extends BaseEleve {
     		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && (!$non_justifiee || !$saisie->getJustifiee())) {
                     //on va vérifier dans la même liste de saisies si il n'y a pas une autre saisie englobante et contradictoire à celle-ci
 		    $contra = false;
-                    foreach ($abs_saisie_col_2 as $saisie_contra) {
+                    foreach ($abs_saisie_englobante as $saisie_contra) {
                         if ($saisie_contra->getId() == $saisie->getId()) continue;//c'est la meme saisie donc on a rien de spécial à faire
                         if ($saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue; //la saisie contradictoire est marquée erreur de saisie donc on a rien à faire
                         if (($saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') < $saisie_contra->getFinAbs('U'))
@@ -1218,7 +1218,10 @@ class Eleve extends BaseEleve {
                     }
                     if (!$contra) {
     			$abs_saisie_col_filtre->append($saisie);
-    		    }
+    		    } else {
+                        //on retire la saisie contrée de la liste de test des saisise possiblement englobante
+                        $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie_contra));
+                    }
     		}
 	    }
             return $abs_saisie_col_filtre;
@@ -1346,7 +1349,7 @@ class Eleve extends BaseEleve {
             }
 
             $result = new PropelCollection();
-            $abs_saisie_col_2 = clone $abs_saisie_col;
+            $abs_saisie_englobante = clone $abs_saisie_col;
             //on va faire le décompte officiel des retard
             foreach ($abs_saisie_col as $saisie) {
                 if ($saisie->getEleveId() != $this->getId()) {
@@ -1355,7 +1358,7 @@ class Eleve extends BaseEleve {
                 if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
                     $contra = false;
                     //on va vérifier si il n'y a pas une autre saisie englobante (et contradictoire pour ce decompte)
-                    foreach ($abs_saisie_col_2 as $saisie_contra) {
+                    foreach ($abs_saisie_englobante as $saisie_contra) {
                         if ($saisie_contra->getEleveId() != $this->getId()) {
                             continue;
                         }
@@ -1371,6 +1374,9 @@ class Eleve extends BaseEleve {
                     }
                     if (!$contra) {
                         $result->append($saisie);
+                    } else {
+                        //on retire la saisie contrée de la liste de test des saisise possiblement englobante
+                        $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie_contra));
                     }
                 }
             }
