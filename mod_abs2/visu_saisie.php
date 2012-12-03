@@ -359,7 +359,7 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 		}
 		}
 		echo "</nobr>";
-		echo "<br/><br/>";
+		echo "<br/>";
 		$tab_traitements_deja_affiches[]=$traitement->getId();
 	}
 }
@@ -381,6 +381,37 @@ if ($total_traitements_modifiable == 0 && $utilisateur->getStatut() == 'professe
 echo '<input type="hidden" name="total_traitements" value="'.$total_traitements_modifiable.'"/>';
 
 echo '</td></tr>';
+
+echo '<tr><td>';
+echo 'Notification : ';
+echo '</td><td>';
+echo '<table style="background-color:#c7e3ec;">';
+foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
+    echo '<tr><td>';
+    echo "<a href='visu_notification.php?id_notification=".$notification->getId()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo"' style='display: block; height: 100%;'> ";
+    if ($notification->getDateEnvoi() != null) {
+	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getDateEnvoi('U')));
+    } else {
+	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
+    }
+    if ($notification->getTypeNotification() != null) {
+	echo ', type : '.$notification->getTypeNotification();
+    }
+    echo ', statut : '.$notification->getStatutEnvoi();
+    echo "</a>";
+    echo '</td></tr>';
+}
+}
+echo '</td></tr>';
+echo '</table>';
+echo '</td></tr>';
+
+echo '<tr><td>';
 
 if ($modifiable  || ($saisie->getCommentaire() != null && $saisie->getCommentaire() != "")) {
     echo '<tr><td>';
@@ -475,6 +506,9 @@ if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") 
     echo '<button dojoType="dijit.form.Button" type="submit" name="creation_traitement" value="oui"';
     if ($saisie->getDeletedAt() != null) echo 'disabled';
     echo '>Traiter la saisie</button>';
+    echo '<button dojoType="dijit.form.Button" type="submit" name="creation_notification" value="oui"';
+    if ($saisie->getDeletedAt() != null) echo 'disabled';
+    echo '>Notifier la saisie</button>';
     echo '</td></tr>';
 }
 
