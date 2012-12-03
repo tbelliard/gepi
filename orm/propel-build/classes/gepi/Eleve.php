@@ -1069,93 +1069,9 @@ class Eleve extends BaseEleve {
 	}
 
 
-	/**
-	 *
-	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
-	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
-	 * Pour l'apres midi la date est 23/05/2010 à 12:30
-	 *
-	 * @param      DateTime $date_debut
-	 * @param      DateTime $date_fin
-	 *
-	 * @return PropelCollection DateTime[]
-	 */
-	public function getDemiJourneesAbsence($date_debut=null, $date_fin = null) {
-        $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
-        return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
-    }
-
-	/**
-	 *
-	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
-	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
-	 * Pour l'apres midi la date est 23/05/2010 à 12:30
-     * Il faut en entré une collection de saisies ordonnée par date de debut
-	 *
-	 * @param      PropelObjectCollection $abs_saisie_col collection de saisies d'absence ordonne par date de début
-	 *
-	 * @return PropelCollection DateTime[]
-	 */
-	public function getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut=null, $date_fin=null) {
-	    if ($abs_saisie_col->isEmpty()) {
-		return new PropelCollection();
-	    }
-	    
-	    //on filtre les saisie qu'on ne veut pas compter
-	    $abs_saisie_col_filtre = new PropelCollection();
-	    $abs_saisie_col_2 = clone $abs_saisie_col;
-	    foreach ($abs_saisie_col as $saisie) {
-	        if ($saisie->getEleveId() != $this->getId()) {
-	            continue;
-	        }
-    		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-                    //on va vérifier dans la même liste de saisies si il n'y a pas une autre saisie englobante et contradictoire à celle-ci
-		    $contra = false;
-                    foreach ($abs_saisie_col_2 as $saisie_contra) {
-                        if ($saisie_contra->getId() == $saisie->getId()) continue;//c'est la meme saisie donc on a rien de spécial à faire
-                        if ($saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue; //la saisie contradictoire est marquée erreur de saisie donc on a rien à faire
-                        if (($saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') < $saisie_contra->getFinAbs('U'))
-                                || ($saisie->getDebutAbs('U') > $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')))
-                        {
-                            //on a une saisie strictement plus large
-                            if ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence()) {
-                                //on est contré par une saisie plus large qui n'est pas un manquement de présence
-                                $contra = true;
-                                break;
-                            }
-                            continue;
-                        }
-                        if ($saisie->getDebutAbs('U') == $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') == $saisie_contra->getFinAbs('U')) {
-                            //on a des saisies identiques au niveau des dates
-                            if ($saisie_contra->getRetard() || (!$saisie_contra->getManquementObligationPresence() && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y')) {
-                                //on a une saisie qui contre le manquement à l'obligation de présence
-                                $contra = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!$contra) {
-    			$abs_saisie_col_filtre->append($saisie);
-    		    }
-    		}
-	    }
-        if ($date_fin != null) {
-            $date_fin_iteration = clone $date_fin;
-        } else {
-            $date_fin_iteration = null;
-        }
-        if ($this->getDateSortie() != null && ($date_fin_iteration == null || $this->getDateSortie('U') < $date_fin_iteration->format('U'))) {
-            $date_fin_iteration = $this->getDateSortie(null);
-			$date_fin_iteration->modify('-1 minute');
-        }
-
-	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
-	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
-	}
-
         /**
 	 *
-	 * Retourne une collection contenant les saisies des absences à prendre en compte dans les decomptes de demi-journées
+	 * Retourne une collection brute de saisies contenant les absences à prendre en compte dans les decomptes de demi-journées
 	 * entre deux dates
 	 *
 	 * @param      DateTime $date_debut
@@ -1186,6 +1102,94 @@ class Eleve extends BaseEleve {
 		$_REQUEST[$request_query_hash] = $abs_saisie_col;
 	    }
 	    return $abs_saisie_col;
+	}
+
+
+        /**
+	 *
+	 * Renvoi une collection filtrée de saisies qui montrent un manquement à l'obligation de présence.
+         * Une saisie qui est contré par une saisie de présence n'est pas retournée.
+	 *
+	 * @param      DateTime $dateDebut
+	 * @param      DateTime $dateFin
+	 * @param      Boolean $non_justifiee
+         * Si $non_justifiee est à false on renvoi toutes les saisies, si c'est à true on ne renvoi que les saisies non justifiée
+	 * @return     PropelObjectCollection
+	 *
+	 */
+	public function  getAbsenceEleveSaisiesManquementObligationPresence($dateDebut = null, $dateFin = null, $non_justifiee = false) {
+ 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($dateDebut, $dateFin);
+	    //on filtre les saisie qu'on ne veut pas compter
+	    $abs_saisie_col_filtre = new PropelCollection();
+	    $abs_saisie_col_2 = clone $abs_saisie_col;
+	    foreach ($abs_saisie_col as $saisie) {
+	        if ($saisie->getEleveId() != $this->getId()) {
+	            continue;
+	        }
+    		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && (!$non_justifiee || !$saisie->getJustifiee())) {
+                    //on va vérifier dans la même liste de saisies si il n'y a pas une autre saisie englobante et contradictoire à celle-ci
+		    $contra = false;
+                    foreach ($abs_saisie_col_2 as $saisie_contra) {
+                        if ($saisie_contra->getId() == $saisie->getId()) continue;//c'est la meme saisie donc on a rien de spécial à faire
+                        if ($saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue; //la saisie contradictoire est marquée erreur de saisie donc on a rien à faire
+                        if (($saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') < $saisie_contra->getFinAbs('U'))
+                                || ($saisie->getDebutAbs('U') > $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')))
+                        {
+                            //on a une saisie strictement plus large
+                            if ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence() || ($non_justifiee && $saisie_contra->getJustifiee())) {
+                                //on est contré par une saisie plus large qui n'est pas un manquement de présence ou qui est justifiée (selon un parametre)
+                                $contra = true;
+                                break;
+                            }
+                            continue;
+                        }
+                        if ($saisie->getDebutAbs('U') == $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') == $saisie_contra->getFinAbs('U')) {
+                            //on a des saisies identiques au niveau des dates
+                            if ($saisie_contra->getRetard() || (!$saisie_contra->getManquementObligationPresence() && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y')) {
+                                //on a une saisie qui contre le manquement à l'obligation de présence
+                                $contra = true;
+                                break;
+                            }
+                            if ($non_justifiee && $saisie_contra->getJustifiee() && getSettingValue("abs2_saisie_multi_type_non_justifiee")=='n') {
+                                //on a une saisie qui contre car elle est justifié
+                                $contra = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!$contra) {
+    			$abs_saisie_col_filtre->append($saisie);
+    		    }
+    		}
+	    }
+            return $abs_saisie_col_filtre;
+        }
+
+	/**
+	 *
+	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
+	 *
+	 * @param      DateTime $date_debut
+	 * @param      DateTime $date_fin
+	 *
+	 * @return PropelCollection DateTime[]
+	 */
+	public function getDemiJourneesAbsence($date_debut = null, $date_fin = null) {
+	    $abs_saisie_col_filtrees = $this->getAbsenceEleveSaisiesManquementObligationPresence($date_debut, $date_fin, $non_justifiee = false);
+            if ($date_fin != null) {
+                $date_fin_iteration = clone $date_fin;
+            } else {
+                $date_fin_iteration = null;
+            }
+            if ($this->getDateSortie() != null && ($date_fin_iteration == null || $this->getDateSortie('U') < $date_fin_iteration->format('U'))) {
+                $date_fin_iteration = $this->getDateSortie(null);
+                            $date_fin_iteration->modify('-1 minute');
+            }
+
+	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
+	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtrees, $date_debut, $date_fin_iteration);
 	}
 
 	/**
@@ -1222,71 +1226,8 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection DateTime[]
 	 */
-	public function getDemiJourneesNonJustifieesAbsence($date_debut=null, $date_fin = null) {
-	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
-	    return ($this->getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
-	}
-	
-	/**
-	 *
-	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence non justifiees
-	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
-	 * Pour l'apres midi la date est 23/05/2010 à 12:30
-	 *
-	 * @param      PropelObjectCollection $abs_saisie_col collection de saisies d'absence ordonne par date de début
-	 * @param      DateTime $date_debut
-	 * @param      DateTime $date_fin
-	 *
-	 * @return PropelCollection DateTime[]
-	 */
-	public function getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut=null,$date_fin=null) {
-	    if ($abs_saisie_col->isEmpty()) {
-			return new PropelCollection();
-	    }
-
-	    //on filtre les saisie qu'on ne veut pas compter
-	    $abs_saisie_col_filtre = new PropelCollection();
-	    $abs_saisie_col_2 = clone $abs_saisie_col;
-	    foreach ($abs_saisie_col as $saisie) {
-	        if ($saisie->getEleveId() != $this->getId()) {
-	            continue;
-	        }
-	        if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && !$saisie->getJustifiee()) {
-                    //on va vérifier dans la même liste de saisies si il n'y a pas une autre saisie englobante et contradictoire à celle-ci
-		    $contra = false;
-                    foreach ($abs_saisie_col_2 as $saisie_contra) {
-                        if ($saisie_contra->getId() == $saisie->getId()) continue;//c'est la meme saisie donc on a rien de spécial à faire
-                        if ($saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue; //la saisie contradictoire est marquée erreur de saisie donc on a rien à faire
-                        if (($saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') < $saisie_contra->getFinAbs('U'))
-                                || ($saisie->getDebutAbs('U') > $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')))
-                        {
-                            //on a une saisie strictement plus large
-                            if ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence() || $saisie_contra->getJustifiee()) {
-                                //on est contré par une saisie plus large qui est justifiée ou qui n'est pas un manquement de présence
-                                $contra = true;
-                                break;
-                            }
-                            continue;
-                        }
-                        if ($saisie->getDebutAbs('U') == $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') == $saisie_contra->getFinAbs('U')) {
-                            //on a des saisies identiques au niveau des dates
-                            if ($saisie_contra->getRetard() || (!$saisie_contra->getManquementObligationPresence() && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y')) {
-                                //on a une saisie qui contre le manquement à l'obligation de présence
-                                $contra = true;
-                                break;
-                            }
-                            if ($saisie_contra->getJustifiee() && getSettingValue("abs2_saisie_multi_type_non_justifiee")=='n') {
-                                //on a une saisie qui contre car elle est justifié
-                                $contra = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!$contra) {
-                        $abs_saisie_col_filtre->append($saisie);
-                    }
-                }
-	    }
+	public function getDemiJourneesNonJustifieesAbsence($date_debut = null, $date_fin = null) {
+	    $abs_saisie_col_filtrees = $this->getAbsenceEleveSaisiesManquementObligationPresence($date_debut, $date_fin, true);
 
 	    if ($date_fin != null) {
 		$date_fin_iteration = clone $date_fin;
@@ -1300,7 +1241,7 @@ class Eleve extends BaseEleve {
             }
 
 	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
-	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
+	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtrees, $date_debut, $date_fin_iteration);
 	}
 
  	/**
@@ -1444,47 +1385,6 @@ class Eleve extends BaseEleve {
 	    return $this->collPeriodeNotes;
 	}
 
-
-	/**
-	 *
-	 * Renvoi une collection de saisies qui montrent un manquement à l'obligation de présence.
-         * Une saisie qui est contré par une saisie de présence n'est pas retournée.
-	 *
-	 * @param      DateTime $dateDebut
-	 * @param      DateTime $dateFin
-	 * @return     PropelObjectCollection
-	 *
-	 */
-	public function  getAbsenceEleveSaisiesManquementObligationPresence($dateDebut = null, $dateFin = null) {
- 	    $abs_saisie_col = $this->getAbsenceEleveSaisiesFilterByDate($dateDebut, $dateFin);
-	    //on filtre les saisie qu'on ne veut pas compter
-	    $abs_saisie_col_filtre = new PropelCollection();
-	    $abs_saisie_col_2 = clone $abs_saisie_col;
-	    foreach ($abs_saisie_col as $saisie) {
-		if ($saisie->getManquementObligationPresence()) {
-		    $contra = false;
-		    if (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y') {
-			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
-			foreach ($abs_saisie_col_2 as $saisie_contra) {
-			    if ($saisie_contra->getId() != $saisie->getId()
-				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
-				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-				    && (!$saisie_contra->getManquementObligationPresence())) {
-				$contra = true;
-				break;
-			    }
-			}
-		    }
-		    if (!$contra) {
-                        //on a une saisie qui est en manquement et qui n'est pas contrée
-			$abs_saisie_col_filtre->append($saisie);
-		    }
-		}
-	    }
-            return $abs_saisie_col_filtre;
-        }
 
    	/**
 	 *
