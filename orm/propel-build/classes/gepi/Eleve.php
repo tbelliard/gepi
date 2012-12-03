@@ -1069,6 +1069,65 @@ class Eleve extends BaseEleve {
 	}
 
 
+	/**
+	 *
+	 * Retourne la liste de toutes les période de notes pour lesquelles l'eleve a ete affecte
+	 *
+	 *
+	 * @return PropelObjectCollection PeriodeNote[]
+	 */
+	public function getPeriodeNotes() {
+	    if(null === $this->collPeriodeNotes) {
+		    if ($this->isNew() && null === $this->collPeriodeNotes) {
+			    // return empty collection
+			    $this->initPeriodeNotes();
+		    } else {
+			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode ORDER by periodes.NUM_PERIODE";
+			    $con = Propel::getConnection(null, Propel::CONNECTION_READ);
+			    $stmt = $con->prepare($sql);
+			    $stmt->execute();
+
+			    $formatter = new PropelObjectFormatter();
+			    $formatter->setDbName(PeriodeNotePeer::DATABASE_NAME);
+			    $formatter->setClass('PeriodeNote');
+			    $formatter->setPeer('PeriodeNotePeer');
+			    $formatter->setAsColumns(array());
+			    $formatter->setHasLimit(false);
+			    $this->collPeriodeNotes = $formatter->format($stmt);
+			    
+//			    $collPeriodeNotes = PeriodeNoteQuery::create()->useClasseQuery()->useJEleveClasseQuery()->filterByEleve($this)->endUse()->endUse()
+//				    ->where('j_eleves_classes.periode = periodes.num_periode')
+//				    ->setComment('log pour sql manuel')
+//				    ->distinct()->find();
+//			    $this->collPeriodeNotes = $collPeriodeNotes;
+		    }
+	    }
+	    return $this->collPeriodeNotes;
+	}
+
+	/**
+	 *
+	 * Hydrate la collection des pÃ©riodes de notes (il faut une requete adÃ©quate : EleveQuery->joinWithPeriodeNotes()
+	 *
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     Boolean
+	 *
+	 */
+	public function hydratePeriodeNotes() {
+	    $this->initPeriodeNotes();
+	    foreach ($this->getJEleveClasses() as $JEleveClasses) {
+		if ($JEleveClasses->getClasse() != null && $JEleveClasses->getClasse()->getProtectedCollPeriodeNote() != null) {
+		    foreach ($JEleveClasses->getClasse()->getProtectedCollPeriodeNote() as $periode_note) {
+			if ($periode_note->getNumPeriode() == $JEleveClasses->getPeriode()) {
+			    $this->collPeriodeNotes->add($periode_note);
+			    break;
+			}
+		    }
+		}
+	    }
+	}
+
         /**
 	 *
 	 * Retourne une collection brute de saisies contenant les absences à prendre en compte dans les decomptes de demi-journées
@@ -1349,43 +1408,6 @@ class Eleve extends BaseEleve {
 	    return $this->getRetards($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
 
-	/**
-	 *
-	 * Retourne la liste de toutes les période de notes pour lesquelles l'eleve a ete affecte
-	 *
-	 *
-	 * @return PropelObjectCollection PeriodeNote[]
-	 */
-	public function getPeriodeNotes() {
-	    if(null === $this->collPeriodeNotes) {
-		    if ($this->isNew() && null === $this->collPeriodeNotes) {
-			    // return empty collection
-			    $this->initPeriodeNotes();
-		    } else {
-			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode ORDER by periodes.NUM_PERIODE";
-			    $con = Propel::getConnection(null, Propel::CONNECTION_READ);
-			    $stmt = $con->prepare($sql);
-			    $stmt->execute();
-
-			    $formatter = new PropelObjectFormatter();
-			    $formatter->setDbName(PeriodeNotePeer::DATABASE_NAME);
-			    $formatter->setClass('PeriodeNote');
-			    $formatter->setPeer('PeriodeNotePeer');
-			    $formatter->setAsColumns(array());
-			    $formatter->setHasLimit(false);
-			    $this->collPeriodeNotes = $formatter->format($stmt);
-			    
-//			    $collPeriodeNotes = PeriodeNoteQuery::create()->useClasseQuery()->useJEleveClasseQuery()->filterByEleve($this)->endUse()->endUse()
-//				    ->where('j_eleves_classes.periode = periodes.num_periode')
-//				    ->setComment('log pour sql manuel')
-//				    ->distinct()->find();
-//			    $this->collPeriodeNotes = $collPeriodeNotes;
-		    }
-	    }
-	    return $this->collPeriodeNotes;
-	}
-
-
    	/**
 	 *
 	 * Retourne une liste d'absence qui montrent un manquement à l'obligation de présence pour le creneau et le jour donné.
@@ -1539,29 +1561,6 @@ class Eleve extends BaseEleve {
 
 	    //rien n'a ete saisie (aucun cours a cette heure), en renvoi non present par defaut
 	    return false;
-	}
-
-	/**
-	 *
-	 * Hydrate la collection des pÃ©riodes de notes (il faut une requete adÃ©quate : EleveQuery->joinWithPeriodeNotes()
-	 *
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
-	 * @return     Boolean
-	 *
-	 */
-	public function hydratePeriodeNotes() {
-	    $this->initPeriodeNotes();
-	    foreach ($this->getJEleveClasses() as $JEleveClasses) {
-		if ($JEleveClasses->getClasse() != null && $JEleveClasses->getClasse()->getProtectedCollPeriodeNote() != null) {
-		    foreach ($JEleveClasses->getClasse()->getProtectedCollPeriodeNote() as $periode_note) {
-			if ($periode_note->getNumPeriode() == $JEleveClasses->getPeriode()) {
-			    $this->collPeriodeNotes->add($periode_note);
-			    break;
-			}
-		    }
-		}
-	    }
 	}
 
 	/**
