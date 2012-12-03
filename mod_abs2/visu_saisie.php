@@ -449,7 +449,7 @@ if (!$saisies_englobante_col->isEmpty()) {
     echo 'La saisie est englobée par : ';
     echo '</td><td colspan="2">';
     foreach ($saisies_englobante_col as $saisies_englobante) {
-	echo "<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style=''> ";
+	echo "<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'> ";
 	echo $saisies_englobante->getDateDescription();
         echo ' '.$saisies_englobante->getTypesTraitements();
 	echo "</a>";
