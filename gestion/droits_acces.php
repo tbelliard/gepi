@@ -770,6 +770,18 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 //+++++++++++++++++++++++++++
+
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='CpeResetPassResp';
+$texteItem="peut réinitialiser les mots de passe des comptes de statut responsable";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+//+++++++++++++++++++++++++++
 /*
 
 // Inutile: Pour le moment, le CPE n'a pas accès aux fiches responsables (seulement aux infos via Consultation d'un élève)
