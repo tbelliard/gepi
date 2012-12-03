@@ -484,7 +484,7 @@ $eleve_col = $query
     $tab_eleve_id=array();
     foreach($eleve_col as $eleve) {        
 	$compteur = $compteur + 1;
-        $regime_eleve=EleveRegimeDoublantQuery::create()->findPk($eleve->getlogin())->getRegime();
+        $regime_eleve=$eleve->getEleveRegimeDoublant();
 		//$eleve = new Eleve();
 			$traitement_col = new PropelCollection();//liste des traitements pour afficher des boutons 'ajouter au traitement'
 
