@@ -1337,6 +1337,23 @@ Patientez pendant l'extraction des données... merci.
 								echo "</span>";
 							}
 							echo "</td></tr>\n";
+
+							if(($_SESSION['statut']=='administrateur')||
+								(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassResp')))||
+								(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeResetPassResp')))
+							) {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Dépannage :</th><td>";
+								if($_SESSION['statut']=="administrateur") {
+									echo affiche_actions_compte($tab_ele['resp'][$i]['login']);
+									echo "<br />\n";
+								}
+
+								if(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut'])) {
+									echo affiche_reinit_password($tab_ele['resp'][$i]['login']);
+								}
+								echo "</td></tr>\n";
+							}
 						}
 
 						if($tab_ele['resp'][$i]['adr1']!='') {
