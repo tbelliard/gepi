@@ -1418,7 +1418,7 @@ class Eleve extends BaseEleve {
 	 *
  	 * @return PropelColection AbsenceEleveSaisie[]
 	 */
-	public function getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($edtcreneau = null, $v = 'now') {
+	public function getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($edtcreneau = null, $v = 'now') {
 	    if ($edtcreneau == null) {
 		$edtcreneau = EdtCreneauPeer::retrieveEdtCreneauActuel($v);
 	    }

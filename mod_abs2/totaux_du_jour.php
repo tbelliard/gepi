@@ -252,7 +252,7 @@ $eleve_col = $query
         foreach($eleve_col as $eleve){
             $regime=$eleve->getEleveRegimeDoublant()->getRegime();
             if ($filtre_actif=='manquement') {
-                 $saisies_du_creneau=$eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $dt_date_absence_eleve);
+                 $saisies_du_creneau=$eleve->getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($creneau, $dt_date_absence_eleve);
             }else{
                 $saisies_du_creneau=$eleve->getAbsenceEleveSaisiesDuCreneauByLieu($creneau,$id_lieu, $dt_date_absence_eleve);
             }
