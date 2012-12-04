@@ -1614,26 +1614,6 @@ function volume_dir($dir){
 }
 
 /**
- * Cette fonction supprime le BOM éventuel d'un fichier encodé en UTF-8
- * A appeler immédiatement après ouverture du fichier
- * Exemple :
- * $handle=fopen("....");
- * skip_bom_uf8($handle)
- *
- * @param handle $h_file : Le pointeur de fichier à tester
- * @return boolean : true si pas de BOM ou si BOM sauté, false dans les autres cas 
- */
-function skip_bom_uf8($h_file)
-	{
-	if (ftell($h_file)!=0) return false;
-	$bytes=fread($h_file,3);
-	if ($bytes===false) return false;
-	if ($bytes!="\xEF\xBB\xBF") return rewind($h_file);
-	return true;
-	}
-
-
-/**
  * Supprime les fichiers d'un dossier
  *
  * @param string $dir le répertoire à vider
@@ -1668,16 +1648,23 @@ function vider_dir($dir){
 }
 
 /**
- * Cette fonction supprime le BOM éventuel d'un fichier encodé en UTF-8 
- * 
- * @param handle $handle Le pointeur de fichier à tester
- * @return handle Le pointeur de fichier replacé au début si détection du BOM
+ * Cette fonction supprime le BOM éventuel d'un fichier encodé en UTF-8
+ * A appeler immédiatement après ouverture du fichier
+ * Exemple :
+ * $handle=fopen("....");
+ * skip_bom_uf8($handle)
+ *
+ * @param handle $h_file : Le pointeur de fichier à tester
+ * @return boolean : true si pas de BOM ou si BOM sauté, false dans les autres cas 
  */
-function skip_bom_utf8($handle)  {
-    if (fread($handle,3)!="\xEF\xBB\xBF")
-        rewind($handle);
-    return ($handle);   
-}
+function skip_bom_uf8($h_file)
+	{
+	if (ftell($h_file)!=0) return false;
+	$bytes=fread($h_file,3);
+	if ($bytes===false) return false;
+	if ($bytes!="\xEF\xBB\xBF") return rewind($h_file);
+	return true;
+	}
 
 /**
  * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien retournée en UTF-8
