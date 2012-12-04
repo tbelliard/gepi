@@ -50,6 +50,7 @@ $niveau_arbo = 1;
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+require_once("../lib/share-trombinoscope.inc.php");
 
 // Resume session
 

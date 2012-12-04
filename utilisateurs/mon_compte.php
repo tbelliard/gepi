@@ -20,40 +20,12 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+require_once("../lib/share-trombinoscope.inc.php");
 
 // On teste si on affiche le message de changement de mot de passe
 if (isset($_GET['change_mdp'])) $affiche_message = 'yes';

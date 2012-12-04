@@ -27,6 +27,7 @@ $variables_non_protegees = 'yes';
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 require_once("../lib/initialisations.inc.php");
+require_once("../lib/share-trombinoscope.inc.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();

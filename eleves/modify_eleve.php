@@ -22,6 +22,7 @@
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+require_once("../lib/share-trombinoscope.inc.php");
 
 unset($reg_login);
 $reg_login = isset($_POST["reg_login"]) ? $_POST["reg_login"] : NULL;
