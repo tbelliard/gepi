@@ -5187,7 +5187,7 @@ function acces_ele_disc($login_ele) {
 /**
  * Renvoie un tableau des responsables d'un élève
  * 
- * $tab[indice] = array('login','nom','prenom','civilite','designation'=>civilite nom prenom)
+ * $tab[indice] = array('login','nom','prenom','civilite','designation'=>civilite nom prenom, 'pers_id')
  *
  * @param string $ele_login Login de l'élève
  * @return array Le tableau
@@ -5209,6 +5209,8 @@ function get_resp_from_ele_login($ele_login) {
 			$tab[$cpt]['civilite']=$lig->civilite;
 
 			$tab[$cpt]['designation']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
+
+			$tab[$cpt]['pers_id']=$lig->pers_id;
 
 			$cpt++;
 		}
@@ -6169,6 +6171,26 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
 		}
 	}
 	return $tab_acces_app;
+}
+
+
+/** Fonction destinée à tester si les responsables légaux habitent à des adresses distinctes
+ *
+ * @param string $login_eleve Login de l'élève
+ *
+ * @return boolean true/false
+ */
+function responsables_adresses_separees($login_eleve) {
+	$retour=false;
+
+	$sql="SELECT DISTINCT adr1, adr2, adr3, adr4, cp, commune, pays FROM resp_adr ra, resp_pers rp, responsables2 r, eleves e WHERE ra.adr_id=rp.adr_id AND r.pers_id=rp.pers_id AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
+	//echo "$sql<br />";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>1) {
+		$retour=true;
+	}
+
+	return $retour;
 }
 
 ?>

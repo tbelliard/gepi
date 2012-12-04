@@ -1429,11 +1429,24 @@ if(isset($id_incident) ) {
                         ||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
                     echo "<td id='td_retenue_$cpt'>";
                     if ($lig->qualite=='Responsable') { //une retenue seulement pour un responsable !
+                        if(responsables_adresses_separees($lig->login)) {
+                            $tmp_tab_resp=get_resp_from_ele_login($lig->login);
+                            for($loop_resp=0;$loop_resp<count($tmp_tab_resp);$loop_resp++) {
+                                if($loop_resp>0) {echo "&nbsp;";}
+?>
+            <a href='../mod_ooo/retenue.php?mode=module_discipline&amp;id_incident=<?php echo $id_incident; ?>&amp;ele_login=<?php echo $lig->login."&amp;pers_id=".$tmp_tab_resp[$loop_resp]['pers_id'].add_token_in_url(); ?>' title="Imprimer la retenue pour <?php echo $tmp_tab_resp[$loop_resp]['designation'];?>">
+                <img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' />
+            </a>
+<?php
+                            }
+                        }
+                        else {
 ?>
             <a href='../mod_ooo/retenue.php?mode=module_discipline&amp;id_incident=<?php echo $id_incident; ?>&amp;ele_login=<?php echo $lig->login.add_token_in_url(); ?>' title='Imprimer la retenue'>
                 <img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' />
             </a>
 <?php
+                        }
                     }
 ?>
         </td>

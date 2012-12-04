@@ -1070,7 +1070,19 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						
 						echo "<td>";
 						if ($gepiSettings['active_mod_ooo'] == 'y') { //impression avec mod_ooo
-							echo "<a href='../mod_ooo/retenue.php?mode=module_retenue&amp;id_incident=$id_incident&amp;id_sanction=$lig_sanction->id_sanction&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
+							//echo "<a href='../mod_ooo/retenue.php?mode=module_retenue&amp;id_incident=$id_incident&amp;id_sanction=$lig_sanction->id_sanction&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
+
+							if(responsables_adresses_separees($lig->login)) {
+								$tmp_tab_resp=get_resp_from_ele_login($lig->login);
+								for($loop_resp=0;$loop_resp<count($tmp_tab_resp);$loop_resp++) {
+									if($loop_resp>0) {echo "&nbsp;";}
+									echo "<a href='../mod_ooo/retenue.php?mode=module_retenue&amp;id_incident=$id_incident&amp;id_sanction=$lig_sanction->id_sanction&amp;ele_login=$lig->login&amp;pers_id=".$tmp_tab_resp[$loop_resp]['pers_id'].add_token_in_url()."' title=\"Imprimer la retenue pour ".$tmp_tab_resp[$loop_resp]['designation']."\"><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
+								}
+							}
+							else {
+								echo "<a href='../mod_ooo/retenue.php?mode=module_retenue&amp;id_incident=$id_incident&amp;id_sanction=$lig_sanction->id_sanction&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
+							}
+
 						}
 						else {
 							echo "-";
