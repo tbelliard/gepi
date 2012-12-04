@@ -502,7 +502,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 	$date=date("Ymd_Hi");
 	$nom_fich='Trombino_';
-	if(isset($groupe)) {
+	if((isset($groupe))&&($groupe!=0)) {
 		$tab_champs=array('matieres', 'classes');
 		$tmp_group=get_group($groupe, $tab_champs);
 		$nom_fich.=$tmp_group['name']."_-_";
