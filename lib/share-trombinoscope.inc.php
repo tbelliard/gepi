@@ -205,6 +205,7 @@ function dimensions_affichage_photo($photo,$photo_largeur_max, $photo_hauteur_ma
  * @param integer $hauteur_max Hauteur du cadre
  * @return array Les nouvelles dimensions de l'image (largeur, hauteur)
  */
+/*
 function dimensions_affichage_photo($photo,$photo_largeur_max, $photo_hauteur_max) {
 
 	// prendre les informations sur l'image
@@ -224,5 +225,5 @@ function dimensions_affichage_photo($photo,$photo_largeur_max, $photo_hauteur_ma
 
 	return array($nouvelle_largeur, $nouvelle_hauteur);
 }
-
+*/
 ?>
