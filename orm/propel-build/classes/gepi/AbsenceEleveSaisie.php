@@ -1209,5 +1209,24 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	public function getAlreadyInSave() {
 		return $this->alreadyInSave;
 	}
-	
+
+	/**
+	 *
+	 * Renvoi une collection de saisies englobant celle ci
+	 *
+	 * @return     AbsenceEleveLieu
+	 *
+	 */
+	public function  getAbsenceEleveSaisiesEnglobantes() {
+            if ($this->getEleveId() == null) {
+                return new PropelCollection();
+            }
+
+            $query = AbsenceEleveSaisieQuery::create();
+            $query->filterById($this->getId(), Criteria::NOT_EQUAL);
+            $query->filterByEleveId($this->getEleveId());
+            $query->filterByDebutAbs($this->getDebutAbs(), Criteria::LESS_EQUAL);
+            $query->filterByFinAbs($this->getFinAbs(), Criteria::GREATER_EQUAL);
+            return $query->find();
+        }
 } // AbsenceEleveSaisie

@@ -229,7 +229,8 @@ include('menu_bilans.inc.php');
         if ($affichage) {
           // On traite alors pour chaque créneau
           foreach ($creneau_col as $creneau) {
-            $abs_col = $eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $dt_date_absence_eleve);
+            $abs_col = $eleve->getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($creneau, $dt_date_absence_eleve);
+            $abs_col->addCollection($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve));
             $tab_heure = explode(":", $creneau->getHeuredebutDefiniePeriode());
             $date_actuelle_heure_creneau = clone $dt_date_absence_eleve;
             $date_actuelle_heure_creneau->setTime($tab_heure[0], $tab_heure[1], $tab_heure[2]);
@@ -377,7 +378,8 @@ include('menu_bilans.inc.php');
               $tab_heure = explode(":", $creneau->getHeuredebutDefiniePeriode());
               $date_actuelle_heure_creneau = clone $date_actuelle;
               $date_actuelle_heure_creneau->setTime($tab_heure[0], $tab_heure[1], $tab_heure[2]);
-              $abs_col = $eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $date_actuelle);
+              $abs_col = $eleve->getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($creneau, $date_actuelle);
+              $abs_col->addCollection($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve));
               if ($abs_col->isEmpty() || !EdtHelper::isEtablissementOuvert($date_actuelle_heure_creneau)) {
       ?>
                 <td></td>

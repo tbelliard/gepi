@@ -63,11 +63,11 @@ if(($_SESSION['statut']=='cpe')||
 
     echo "<li><a href='bilan_individuel.php' ";
     if($onglet_abs=='bilan_individuel.php') {echo "class='current' ";}
-    echo "title='Bilan individuel'>Bilan individuel</a></li>\n";
+    echo "title='Bilan individuel'>Bilan indiv.</a></li>\n";
 	
     echo "<li><a href='statistiques.php' ";
     if($onglet_abs=='statistiques.php') {echo "class='current' ";}
-    echo 'title="Taux d\'absentéisme">Taux d\'absent.</a></li>';
+    echo 'title="Taux d\'absentéisme">Taux</a></li>';
     
 	
     echo "<li><a href='stat_justifications.php' ";
@@ -76,7 +76,7 @@ if(($_SESSION['statut']=='cpe')||
 
     echo "<li><a href='liste_eleves.php' ";
     if($onglet_abs=='liste_eleves.php') {echo "class='current' ";}
-    echo "title='Liste des élèves'>Liste élèves</a></li>\n";
+    echo "title='Liste des élèves'>Èlèves</a></li>\n";
 
     echo "</ul>\n";
 

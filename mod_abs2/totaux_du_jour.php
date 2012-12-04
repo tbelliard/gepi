@@ -115,7 +115,7 @@ if ($filtre_actif == "manquement") {
 }
 $saisie_col = $saisie_query->find();
 $query = EleveQuery::create()->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC)
-    ->innerJoinWith('Eleve.EleveRegimeDoublant')
+    ->leftJoinWith('Eleve.EleveRegimeDoublant')
 	->useAbsenceEleveSaisieQuery()
 	->filterById($saisie_col->toKeyValue('Id', 'Id'))
 	->endUse();
@@ -250,23 +250,17 @@ $eleve_col = $query
         $nb_int =0;
         $nb_ext =0;
         foreach($eleve_col as $eleve){
-            $regime=$eleve->getEleveRegimeDoublant()->getRegime();
+            if ($eleve->getEleveRegimeDoublant() != null) $regime=$eleve->getEleveRegimeDoublant()->getRegime();
+            else $regime='ext.'; //ext par défaut si il n'y a rien dans la base
             if ($filtre_actif=='manquement') {
-                 $saisies_du_creneau=$eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $dt_date_absence_eleve);
+                 $saisies_du_creneau=$eleve->getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($creneau, $dt_date_absence_eleve);
             }else{
                 $saisies_du_creneau=$eleve->getAbsenceEleveSaisiesDuCreneauByLieu($creneau,$id_lieu, $dt_date_absence_eleve);
             }
-            $retard=false;
-            $decompte=false;
-            foreach($saisies_du_creneau as $saisie){
-                if ($saisie->getRetard()) {
-                    $retard=true;                    
-                }else{
-                  $decompte=true;
-                }
-            }
-            if($retard) $nbre_total_retards++;
-            if($decompte){
+
+            if(!$eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve)->isEmpty()) $nbre_total_retards++;
+
+            if(!$saisies_du_creneau->isEmpty()){
                $decompte_du_creneau++;
                switch($regime) {
                    case 'd/p':

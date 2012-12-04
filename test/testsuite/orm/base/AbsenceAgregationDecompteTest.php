@@ -216,9 +216,9 @@ class AbsenceAgregationDecompteTest extends GepiEmptyTestBase
 	    foreach (EleveQuery::create()->find() as $eleve) {
             $eleve->updateAbsenceAgregationTable();
 	    }
-	    $this->assertEquals(6,AbsenceAgregationDecompteQuery::create()->countRetards());
+	    $this->assertEquals(6,AbsenceAgregationDecompteQuery::create()->filterByDateIntervalle(new DateTime('2010-10-01 00:00:00'),new DateTime('2011-06-06 23:59:59'))->countRetards());
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-	    $this->assertEquals(6,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->countRetards());
+	    $this->assertEquals(6,AbsenceAgregationDecompteQuery::create()->filterByDateIntervalle(new DateTime('2010-10-01 00:00:00'),new DateTime('2011-06-06 23:59:59'))->filterByEleve($florence_eleve)->countRetards());
 	}
 
 }

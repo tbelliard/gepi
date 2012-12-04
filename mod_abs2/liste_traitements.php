@@ -93,33 +93,6 @@ if (isFiltreRechercheParam('filter_eleve')) {
 	    ->filterByNomOrPrenomLike(getFiltreRechercheParam('filter_eleve'))
 	    ->endUse()->endUse()->endUse();
 }
-if (isFiltreRechercheParam('filter_classe')) {
-    $query->useJTraitementSaisieEleveQuery()->endUse();
-    $query->leftJoin('JTraitementSaisieEleve.AbsenceEleveSaisie');
-    $query->leftJoin('AbsenceEleveSaisie.Eleve');
-    $query->leftJoin('Eleve.JEleveClasse');
-    $query->condition('cond1', 'JEleveClasse.IdClasse = ?', getFiltreRechercheParam('filter_classe'));
-    $query->condition('cond2', 'AbsenceEleveSaisie.IdClasse = ?', getFiltreRechercheParam('filter_classe'));
-    $query->where(array('cond1', 'cond2'), 'or');
-}
-if (isFiltreRechercheParam('filter_groupe')) {
-    $query->useJTraitementSaisieEleveQuery()->endUse();
-    $query->leftJoin('JTraitementSaisieEleve.AbsenceEleveSaisie');
-    $query->leftJoin('AbsenceEleveSaisie.Eleve');
-    $query->leftJoin('Eleve.JEleveGroupe');
-    $query->condition('cond1', 'JEleveGroupe.IdGroupe = ?', getFiltreRechercheParam('filter_groupe'));
-    $query->condition('cond2', 'AbsenceEleveSaisie.IdGroupe = ?', getFiltreRechercheParam('filter_groupe'));
-    $query->where(array('cond1', 'cond2'), 'or');
-}
-if (isFiltreRechercheParam('filter_aid')) {
-    $query->useJTraitementSaisieEleveQuery()->endUse();
-    $query->leftJoin('JTraitementSaisieEleve.AbsenceEleveSaisie');
-    $query->leftJoin('AbsenceEleveSaisie.Eleve');
-    $query->leftJoin('Eleve.JAidEleves');
-    $query->condition('cond1', 'JAidEleves.IdAid = ?', getFiltreRechercheParam('filter_aid'));
-    $query->condition('cond2', 'AbsenceEleveSaisie.IdAid = ?', getFiltreRechercheParam('filter_aid'));
-    $query->where(array('cond1', 'cond2'), 'or');
-}
 if (isFiltreRechercheParam('filter_type')) {
     if (getFiltreRechercheParam('filter_type') == 'SANS') {
 	$query->filterByATypeId(null);
@@ -332,10 +305,7 @@ if ($traitements_col->haveToPaginate()) {
 }
 echo "Voir ";
 echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
-echo "par page|  Nombre d'enregistrements : ";
-echo $traitements_col->count();
-
-echo "&nbsp;&nbsp;&nbsp;";
+echo "par page&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y" >Reinitialiser les filtres</button> ';
 echo '<button type="submit" name="affichage" value="tableur" >Exporter au format ods</button> ';
@@ -409,32 +379,6 @@ echo '<span style="white-space: nowrap;"> ';
 echo 'Saisies';
 echo '</span>';
 //echo '</nobr>';
-echo '</th>';
-
-//en tete filtre classe
-echo '<th>';
-echo '<span style="white-space: nowrap;"> ';
-//echo '<nobr>';
-echo 'Classe';
-echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
-if ($order == "asc_classe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_classe" onclick="this.form.order.value = this.value"/>';
-echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
-if ($order == "des_classe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_classe" onclick="this.form.order.value = this.value"/>';
-echo '</span>';
-//echo '</nobr>';
-echo '<br />';
-echo ("<select name=\"filter_classe\" onchange='submit()'>");
-echo "<option value=''></option>\n";
-foreach (ClasseQuery::create()->orderByNom()->orderByNomComplet()->distinct()->find() as $classe) {
-	echo "<option value='".$classe->getId()."'";
-	if (getFiltreRechercheParam('filter_classe') === (string) $classe->getId()) echo " selected='selected' ";
-	echo ">";
-	echo $classe->getNom();
-	echo "</option>\n";
-}
-echo "</select>";
 echo '</th>';
 
 //en tete type d'absence
@@ -763,28 +707,6 @@ foreach ($results as $traitement) {
     if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
 	echo "</table>";
     }
-    echo '</td>';
-
-    //donnees classe
-    echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo "' style='display: block; height: 100%; color: #330033'> ";
-    $classe_col = new PropelObjectCollection();
-    foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
-	if ($saisie->getClasse() != null) {
-	    $classe_col->add($saisie->getClasse());
-	}
-    }
-    foreach ($classe_col as $classe) {
-	echo $classe->getNom();
-    }
-    if ($classe_col->isEmpty() != null) {
-	echo "&nbsp;";
-    }
-    echo "</a>";
     echo '</td>';
 
     //donnees type

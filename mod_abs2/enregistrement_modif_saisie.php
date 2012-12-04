@@ -90,6 +90,45 @@ if ( isset($_POST["creation_traitement"])) {
     $traitement->save();
     header("Location: ./visu_traitement.php?id_traitement=".$traitement->getId().'&menu='.$menu);
     die();
+} elseif ( isset($_POST["creation_notification"])) {
+    //on charge les traitements
+    $saisie->getAbsenceEleveTraitements();
+
+    $traitement = new AbsenceEleveTraitement();
+    $traitement->setUtilisateurProfessionnel($utilisateur);
+    $traitement->addAbsenceEleveSaisie($saisie);
+    $traitement->save();
+    $notification = new AbsenceEleveNotification();
+    $notification->setUtilisateurProfessionnel($utilisateur);
+    $notification->setAbsenceEleveTraitement($traitement);
+
+    //on met le type courrier par défaut
+    $notification->setTypeNotification(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER);
+
+    $responsable_eleve1 = null;
+    $responsable_eleve2 = null;
+    foreach ($traitement->getResponsablesInformationsSaisies() as $responsable_information) {
+        if ($responsable_information->getNiveauResponsabilite() == '1') {
+            $responsable_eleve1 = $responsable_information->getResponsableEleve();
+        } else if ($responsable_information->getNiveauResponsabilite() == '2') {
+            $responsable_eleve2 = $responsable_information->getResponsableEleve();
+        }
+    }
+    if ($responsable_eleve1 != null) {
+        $notification->setEmail($responsable_eleve1->getMel());
+        $notification->setTelephone($responsable_eleve1->getTelPort());
+        $notification->setAdresseId($responsable_eleve1->getAdresseId());
+        $notification->addResponsableEleve($responsable_eleve1);
+    }
+    if ($responsable_eleve2 != null) {
+        if ($responsable_eleve1 == null
+                || $responsable_eleve2->getAdresseId() == $responsable_eleve1->getAdresseId()) {
+            $notification->addResponsableEleve($responsable_eleve2);
+        }
+    }
+    $notification->save();
+    header("Location: ./visu_notification.php?id_notification=".$notification->getId().'&menu='.$menu);
+    die();
 } elseif ( isset($_POST["modifier_type"])) {
     $message_enregistrement .= modif_type($saisie, $utilisateur);
     if ($message_enregistrement == '') {
