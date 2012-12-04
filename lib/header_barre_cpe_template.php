@@ -67,6 +67,20 @@ if ($barre_plugin!="") {
 	
 	if ($_SESSION['statut'] == "cpe") {
 
+		$tmp_liste_classes_cpe=array();
+		$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe;";
+		$res_tmp_liste_classes_cpe=mysql_query($sql);
+		if(mysql_num_rows($res_tmp_liste_classes_cpe)>0) {
+			$tmp_cpt_classes_cpe=0;
+			while($lig_tmp_liste_classes_cpe=mysql_fetch_object($res_tmp_liste_classes_cpe)) {
+				$tmp_liste_classes_cpe[$tmp_cpt_classes_cpe]=array();
+				$tmp_liste_classes_cpe[$tmp_cpt_classes_cpe]['id']=$lig_tmp_liste_classes_cpe->id;
+				$tmp_liste_classes_cpe[$tmp_cpt_classes_cpe]['classe']=$lig_tmp_liste_classes_cpe->classe;
+				$tmp_liste_classes_cpe[$tmp_cpt_classes_cpe]['nom_complet']=$lig_tmp_liste_classes_cpe->nom_complet;
+				$tmp_cpt_classes_cpe++;
+			}
+		}
+
 		$menus = null;
 
 		if (getSettingValue("active_module_absence") == 'y') {
@@ -169,14 +183,22 @@ if ($barre_plugin!="") {
 		//=======================================================
 
 		//=======================================================
-		// Gestion
+		// Elèves
 		$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Élèves</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consultation élève</a></li>'."\n";
 		if (getSettingAOui('GepiAccesTouteFicheEleveCpe')) {
 			$menus .= '       <li><a href="'.$gepiPath.'/eleves/index.php"'.insert_confirm_abandon().'>Gestion fiches élèves</a></li>'."\n";
 		}
-		$menus .= '       <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
+		if(getSettingValue('active_module_trombinoscopes')=='y') {
+			$menus .= '       <li class="plus"><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscopes</a>'."\n";
+			$menus .= '            <ul class="niveau3">'."\n";
+			for($loop=0;$loop<count($tmp_liste_classes_cpe);$loop++) {
+				$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe='.$tmp_liste_classes_cpe[$loop]['id'].'&amp;groupe=&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline="'.insert_confirm_abandon().'>'.$tmp_liste_classes_cpe[$loop]['classe'].' ('.$tmp_liste_classes_cpe[$loop]['nom_complet'].')</a></li>'."\n";
+			}
+			$menus .= '            </ul>'."\n";
+			$menus .= '       </li>'."\n";
+		}
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================

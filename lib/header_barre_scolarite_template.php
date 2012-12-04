@@ -63,6 +63,20 @@ if ($barre_plugin!="") {
 
 	if ($_SESSION['statut'] == "scolarite") {
 
+		$tmp_liste_classes_scol=array();
+		$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe;";
+		$res_tmp_liste_classes_scol=mysql_query($sql);
+		if(mysql_num_rows($res_tmp_liste_classes_scol)>0) {
+			$tmp_cpt_classes_scol=0;
+			while($lig_tmp_liste_classes_scol=mysql_fetch_object($res_tmp_liste_classes_scol)) {
+				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]=array();
+				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]['id']=$lig_tmp_liste_classes_scol->id;
+				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]['classe']=$lig_tmp_liste_classes_scol->classe;
+				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]['nom_complet']=$lig_tmp_liste_classes_scol->nom_complet;
+				$tmp_cpt_classes_scol++;
+			}
+		}
+
 		$menus = null;
 
 		//=======================================================
@@ -181,6 +195,17 @@ if ($barre_plugin!="") {
 		//$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import2.php"'.insert_confirm_abandon().'>Mise à jour Sconet</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consultation elève</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès appréciations</a></li>'."\n";
+
+		if(getSettingValue('active_module_trombinoscopes')=='y') {
+			$menus .= '       <li class="plus"><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscopes</a>'."\n";
+			$menus .= '            <ul class="niveau4">'."\n";
+			for($loop=0;$loop<count($tmp_liste_classes_scol);$loop++) {
+				$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe='.$tmp_liste_classes_scol[$loop]['id'].'&amp;groupe=&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline="'.insert_confirm_abandon().'>'.$tmp_liste_classes_scol[$loop]['classe'].' ('.$tmp_liste_classes_scol[$loop]['nom_complet'].')</a></li>'."\n";
+			}
+			$menus .= '            </ul>'."\n";
+			$menus .= '       </li>'."\n";
+		}
+
 		$menus .= '            </ul>'."\n";
 		$menus .= '       </li>'."\n";
 		$menus .= '       <li class="plus"><a href="'.$gepiPath.'/responsables/index.php"'.insert_confirm_abandon().'>Responsables</a>'."\n";
@@ -203,7 +228,15 @@ if ($barre_plugin!="") {
 		$menus .= '       <li><a href="'.$gepiPath.'/mod_ooo/publipostage_ooo.php"'.insert_confirm_abandon().'>Publipostage OOo</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Impression PDF listes</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Export CSV listes</a></li>'."\n";
-		$menus .= '       <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
+		if(getSettingValue('active_module_trombinoscopes')=='y') {
+			$menus .= '       <li class="plus"><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscopes</a>'."\n";
+			$menus .= '            <ul class="niveau3">'."\n";
+			for($loop=0;$loop<count($tmp_liste_classes_scol);$loop++) {
+				$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe='.$tmp_liste_classes_scol[$loop]['id'].'&amp;groupe=&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline="'.insert_confirm_abandon().'>'.$tmp_liste_classes_scol[$loop]['classe'].' ('.$tmp_liste_classes_scol[$loop]['nom_complet'].')</a></li>'."\n";
+			}
+			$menus .= '            </ul>'."\n";
+			$menus .= '       </li>'."\n";
+		}
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================
