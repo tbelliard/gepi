@@ -722,7 +722,7 @@ echo "<td valign='top'>\n";
 	if(isset($pers_id)){
 		echo " (<i>n°$pers_id</i>)";
 
-		$sql="SELECT u.login, u.email FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
+		$sql="SELECT u.login, u.email, u.auth_mode FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
 		$test_compte=mysql_query($sql);
 		if(mysql_num_rows($test_compte)>0) {
 			$compte_resp_existe="y";
@@ -730,6 +730,7 @@ echo "<td valign='top'>\n";
 
 			$resp_login=$lig_resp_login->login;
 			$resp_u_email=$lig_resp_login->email;
+			$resp_auth_mode=$lig_resp_login->auth_mode;
 
 			if($_SESSION['statut']=='administrateur') {
 				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a></em>)";
@@ -940,7 +941,7 @@ echo "</table>\n";
 
 //==============================================
 // Infos compte utilisateur
-if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login))&&
+if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login))&&(isset($resp_auth_mode))&&
 	(
 		($_SESSION['statut']=="administrateur")||
 		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassResp')))||
@@ -953,7 +954,9 @@ if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login)
 		echo "<br />\n";
 	}
 
-	if(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut'])) {
+	if((($resp_auth_mode=='gepi')||
+	(($resp_auth_mode=='ldap')&&($gepiSettings['ldap_write_access'] == "yes")))&&
+	(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut']))) {
 		echo affiche_reinit_password($resp_login);
 	}
 	echo "</div>\n";

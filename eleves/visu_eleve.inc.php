@@ -1342,18 +1342,27 @@ Patientez pendant l'extraction des données... merci.
 								(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassResp')))||
 								(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeResetPassResp')))
 							) {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Dépannage :</th><td>";
 								if($_SESSION['statut']=="administrateur") {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Dépannage :</th><td>";
 									echo affiche_actions_compte($tab_ele['resp'][$i]['login']);
-									echo "<br />\n";
+									if(($tab_ele['resp'][$i]['auth_mode']=='gepi')||
+										(($tab_ele['resp'][$i]['auth_mode']=='ldap')&&($gepiSettings['ldap_write_access'] == "yes"))) {
+										echo "<br />\n";
+										echo affiche_reinit_password($tab_ele['resp'][$i]['login']);
+									}
+									echo "</td></tr>\n";
 								}
-
-								if(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut'])) {
+								elseif((($tab_ele['resp'][$i]['auth_mode']=='gepi')||
+								(($tab_ele['resp'][$i]['auth_mode']=='ldap')&&($gepiSettings['ldap_write_access'] == "yes")))&&
+								(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut']))) {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Dépannage :</th><td>";
 									echo affiche_reinit_password($tab_ele['resp'][$i]['login']);
+									echo "</td></tr>\n";
 								}
-								echo "</td></tr>\n";
 							}
+
 						}
 
 						if($tab_ele['resp'][$i]['adr1']!='') {
