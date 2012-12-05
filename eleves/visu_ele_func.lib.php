@@ -814,28 +814,36 @@ function redimensionne_image_releve($photo){
 	//global $releve_photo_largeur_max, $releve_photo_hauteur_max;
 	global $photo_largeur_max, $photo_hauteur_max;
 
+	$nouvelle_largeur=$photo_largeur_max;
+	$nouvelle_hauteur=$photo_hauteur_max;
 	// prendre les informations sur l'image
 	$info_image=getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur=$info_image[0];
-	$hauteur=$info_image[1];
+	if(!$info_image) {
+		echo "<span style='color:red'>Erreur sur $photo</span>";
+	}
+	else {
+		// largeur et hauteur de l'image d'origine
+		$largeur=$info_image[0];
+		$hauteur=$info_image[1];
 
-	// calcule le ratio de redimensionnement
-	//$ratio_l=$largeur/$releve_photo_largeur_max;
-	//$ratio_h=$hauteur/$releve_photo_hauteur_max;
-	//$ratio_l=$largeur/$bull_photo_largeur_max;
-	//$ratio_h=$hauteur/$bull_photo_hauteur_max;
-	$ratio_l=$largeur/$photo_largeur_max;
-	$ratio_h=$hauteur/$photo_hauteur_max;
-	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
+		// calcule le ratio de redimensionnement
+		//$ratio_l=$largeur/$releve_photo_largeur_max;
+		//$ratio_h=$hauteur/$releve_photo_hauteur_max;
+		//$ratio_l=$largeur/$bull_photo_largeur_max;
+		//$ratio_h=$hauteur/$bull_photo_hauteur_max;
+		$ratio_l=$largeur/$photo_largeur_max;
+		$ratio_h=$hauteur/$photo_hauteur_max;
+		$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur=round($largeur/$ratio);
-	$nouvelle_hauteur=round($hauteur/$ratio);
+		// définit largeur et hauteur pour la nouvelle image
+		$nouvelle_largeur=round($largeur/$ratio);
+		$nouvelle_hauteur=round($hauteur/$ratio);
 
-	//fich_debug("photo=$photo\nlargeur=$largeur\nhauteur=$hauteur\nratio_l=$ratio_l\nratio_h=$ratio_h\nratio=$ratio\nnouvelle_largeur=$nouvelle_largeur\nnouvelle_hauteur=$nouvelle_hauteur\n===============\n");
+		//fich_debug("photo=$photo\nlargeur=$largeur\nhauteur=$hauteur\nratio_l=$ratio_l\nratio_h=$ratio_h\nratio=$ratio\nnouvelle_largeur=$nouvelle_largeur\nnouvelle_hauteur=$nouvelle_hauteur\n===============\n");
 
+	}
 	return array($nouvelle_largeur, $nouvelle_hauteur);
+
 }
 
 //echo "\$releve_photo_largeur_max=$releve_photo_largeur_max<br />";
