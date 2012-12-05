@@ -25,7 +25,22 @@
 	}
 
 	header("Content-type:image/png");
-	
+
+	$avec_moy_classe="y";
+	if((isset($_GET['avec_moy_classe']))&&($_GET['avec_moy_classe']=="n")) {
+		$avec_moy_classe="n";
+	}
+
+	if((($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseEleve')))||
+	(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseResp')))) {
+		$avec_moy_classe="n";
+	}
+
+	if($avec_moy_classe=="n") {
+		if(isset($_GET['seriemin'])) {unset($_GET['seriemin']);}
+		if(isset($_GET['seriemax'])) {unset($_GET['seriemax']);}
+	}
+
 	// Récupération des valeurs:
 	//$nb_data = $_GET['nb_data'];
 	$nb_series= $_GET['nb_series'];
@@ -248,14 +263,23 @@
 			case 'moyclasse':
 					//$nom_eleve2="Moyennes de la classe";
 					$nom_eleve[2]="Moyennes de la classe";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
 				break;
 			case 'moymin':
 					//$nom_eleve2="Moyennes minimales";
 					$nom_eleve[2]="Moyennes minimales";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
 				break;
 			case 'moymax':
 					//$nom_eleve2="Moyennes maximales";
 					$nom_eleve[2]="Moyennes maximales";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
 				break;
 			default:
 				$eleve2=preg_replace("/[^A-Za-z0-9_.-]/", "", $eleve2);
@@ -629,12 +653,14 @@
 		writinfo('/tmp/infos_graphe.txt','a+',"\$largeur_texte=$largeur_texte\n");
 
 		for($k=1;$k<=$nb_series_bis;$k++){
-			$ytmp=$ytmp+15;
-			$largeur_texte = mb_strlen(nf($moyenne[$k][$i])) * ImageFontWidth($taille_police);
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				$ytmp=$ytmp+15;
+				$largeur_texte = mb_strlen(nf($moyenne[$k][$i])) * ImageFontWidth($taille_police);
 
-			$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
-			writinfo('/tmp/infos_graphe.txt','a+',"imagettftext($img, ".($taille_police*$rapport_imageString_imagettftext).", 0, ".($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2)).", ".($ytmp+10).", $couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, ".nf($moyenne[$k][$i]).")\n");
-            imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i]));
+				$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
+				writinfo('/tmp/infos_graphe.txt','a+',"imagettftext($img, ".($taille_police*$rapport_imageString_imagettftext).", 0, ".($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2)).", ".($ytmp+10).", $couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, ".nf($moyenne[$k][$i]).")\n");
+		        imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i]));
+			}
 		}
 		//===========================================================================
 
@@ -661,13 +687,15 @@
 		$cpt_tmp=0;
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
-			$ytmp=$ytmp+15;
-			$largeur_texte = mb_strlen(nf($mgen[$k])) * ImageFontWidth($taille_police);
-            imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $mgen[$k]);
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				$ytmp=$ytmp+15;
+				$largeur_texte = mb_strlen(nf($mgen[$k])) * ImageFontWidth($taille_police);
+		        imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $mgen[$k]);
 
-			if($mgen[$k]!="-"){
-				$total_tmp=$total_tmp+$mgen[$k];
-				$cpt_tmp++;
+				if($mgen[$k]!="-"){
+					$total_tmp=$total_tmp+$mgen[$k];
+					$cpt_tmp++;
+				}
 			}
 		}
 
@@ -767,49 +795,50 @@
 		$couleureleve[$k]
 		);
 
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			//Placement des points de la courbe:
+			for($i=1;$i<$nbMat+1;$i++){
+				$x1=$x[$i];
+				// C'est eleve_classe.php qui envoye 0 quand il n'y a pas de note... A CHANGER...
+				//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+				if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+					$y1=round($hauteurMoy+$hauteur-$moyenne[$k][$i]*$hauteur/20);
+					imageFilledRectangle($img,$x1-2,$y1-2,$x1+2,$y1+2,$couleureleve[$k]);
 
-		//Placement des points de la courbe:
-		for($i=1;$i<$nbMat+1;$i++){
-			$x1=$x[$i];
-			// C'est eleve_classe.php qui envoye 0 quand il n'y a pas de note... A CHANGER...
-			//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
-			if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
-				$y1=round($hauteurMoy+$hauteur-$moyenne[$k][$i]*$hauteur/20);
-				imageFilledRectangle($img,$x1-2,$y1-2,$x1+2,$y1+2,$couleureleve[$k]);
+					$ycourbe[$k][$i]=$y1;
+				}
+				else{
+					$ycourbe[$k][$i]=-1;
+				}
+			}
 
-				$ycourbe[$k][$i]=$y1;
+			//Tracé de la courbe:
+			//$x_prec[0]=-1;
+			//$y_prec[0]=-1;
+			imagesetthickness($img,$epaisseur);
+			for($i=1;$i<$nbMat;$i++){
+				$x1=$x[$i];
+				$x2=$x[$i+1];
+				if(($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+1]!=-1)){
+					//$x_prec[$y+1]=$x2;
+					//$y_prec[$y+1]=$ycourbe[$k][$i+1];
+					imageLine($img,$x1,$ycourbe[$k][$i],$x2,$ycourbe[$k][$i+1],$couleureleve[$k]);
+				}
+				elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
+					/*
+					// imageDashedLine() est bugguée... on peut récupérer des hachures de 8mm de hauteur pour 2mm de large
+					imagesetthickness($img,1);
+					imageDashedLine($img,$x[$i+2],$ycourbe[$k][$i+2],$x1,$ycourbe[$k][$i],$couleureleve[$k]);
+					imagesetthickness($img,$epaisseur);
+					*/
+					imagesetstyle($img, $style_pointille);
+					imageLine($img,$x1,$ycourbe[$k][$i],$x[$i+2],$ycourbe[$k][$i+2],IMG_COLOR_STYLED);
+					imagesetstyle($img, $style_plein);
+				}
 			}
-			else{
-				$ycourbe[$k][$i]=-1;
+			if($epaisseur_croissante_traits_periodes=='oui') {
+				$epaisseur+=1;
 			}
-		}
-
-		//Tracé de la courbe:
-		//$x_prec[0]=-1;
-		//$y_prec[0]=-1;
-		imagesetthickness($img,$epaisseur);
-		for($i=1;$i<$nbMat;$i++){
-			$x1=$x[$i];
-			$x2=$x[$i+1];
-			if(($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+1]!=-1)){
-				//$x_prec[$y+1]=$x2;
-				//$y_prec[$y+1]=$ycourbe[$k][$i+1];
-				imageLine($img,$x1,$ycourbe[$k][$i],$x2,$ycourbe[$k][$i+1],$couleureleve[$k]);
-			}
-			elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
-				/*
-				// imageDashedLine() est bugguée... on peut récupérer des hachures de 8mm de hauteur pour 2mm de large
-				imagesetthickness($img,1);
-				imageDashedLine($img,$x[$i+2],$ycourbe[$k][$i+2],$x1,$ycourbe[$k][$i],$couleureleve[$k]);
-				imagesetthickness($img,$epaisseur);
-				*/
-				imagesetstyle($img, $style_pointille);
-				imageLine($img,$x1,$ycourbe[$k][$i],$x[$i+2],$ycourbe[$k][$i+2],IMG_COLOR_STYLED);
-				imagesetstyle($img, $style_plein);
-			}
-		}
-		if($epaisseur_croissante_traits_periodes=='oui') {
-			$epaisseur+=1;
 		}
 	}
 

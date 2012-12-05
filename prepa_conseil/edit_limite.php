@@ -184,6 +184,16 @@ $choix_edit == "2") {
 	}
 }
 
+$affiche_colonne_moy_classe="y";
+if((($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseEleve')))||
+(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseResp')))) {
+	$affiche_colonne_moy_classe="n";
+}
+if((isset($_POST['pas_de_colonne_moy_classe']))&&($_POST['pas_de_colonne_moy_classe']=='y')) {
+	$affiche_colonne_moy_classe="n";
+}
+//echo "\$affiche_colonne_moy_classe=$affiche_colonne_moy_classe<br />";
+
 // debug_var();
 // On a passé les barrières, on passe au traitement
 

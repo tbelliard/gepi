@@ -606,6 +606,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	echo " />\n";
 
+	if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+		echo "<br />\n";
+		echo "<label for='pas_de_colonne_moy_classe' style='cursor:pointer;'>\n";
+		echo "Ne pas afficher la colonne Moyenne de la classe&nbsp;: \n";
+		echo "</label>\n";
+		echo "<input type=\"checkbox\" name=\"pas_de_colonne_moy_classe\" id=\"pas_de_colonne_moy_classe\" value='y' ";
+		echo " />\n";
+	}
 
 	echo "<br /><br /><center><input type=submit value=Valider /></center>\n";
 	echo "</form>\n";
@@ -625,7 +633,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// L'accès est donné à la même date pour parents et responsables.
 		// On teste seulement pour les parents
 		$date_ouverture_acces_app_classe=array();
-		$tab_acces_app_classe[$id_classe]=acces_appreciations(1, $nb_periode, $id_classe, 'responsable');
+		$tab_acces_app_classe[$id_classe]=acces_appreciations(1, $nb_periode-1, $id_classe, 'responsable');
 
 		$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 		if($acces_app_ele_resp=='manuel') {
@@ -650,6 +658,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		else{
 			$msg_acces_app_ele_resp="???";
 		}
+
+		/*
+		echo "<pre>";
+		print_r($tab_acces_app_classe);
+		echo "</pre>";
+		*/
 
 		echo "A la date du jour (".$date_du_jour.")&nbsp;:</p>\n";
 		echo "<ul>\n";

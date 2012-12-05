@@ -24,6 +24,21 @@
 	echo '<?xml version="1.0" encoding="utf-8"?>';
 	echo "\n";
 
+	$avec_moy_classe="y";
+	if((isset($_GET['avec_moy_classe']))&&($_GET['avec_moy_classe']=="n")) {
+		$avec_moy_classe="n";
+	}
+
+	if((($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseEleve')))||
+	(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseResp')))) {
+		$avec_moy_classe="n";
+	}
+
+	if($avec_moy_classe=="n") {
+		if(isset($_GET['seriemin'])) {unset($_GET['seriemin']);}
+		if(isset($_GET['seriemax'])) {unset($_GET['seriemax']);}
+	}
+
 	// On précise de ne pas traiter les données avec la fonction anti_inject
 	$traite_anti_inject = 'no';
 	// En quoi cela consiste-t-il?
@@ -48,7 +63,6 @@
 		$mgen[$i]=isset($_GET['mgen'.$i]) ? $_GET['mgen'.$i] : "";
 	}
 
-
 	function writinfo($chemin,$type,$chaine){
 		//$debug=1;
 		$debug=0;
@@ -58,8 +72,6 @@
 			fclose($fich);
 		}
 	}
-
-
 
 	// Conversion de composantes RVB en portion de chaine couleur HTML
 
@@ -271,14 +283,23 @@
 			case 'moyclasse':
 					//$nom_eleve2="Moyennes de la classe";
 					$nom_eleve[2]="Moyennes de la classe";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
 				break;
 			case 'moymin':
 					//$nom_eleve2="Moyennes minimales";
 					$nom_eleve[2]="Moyennes minimales";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
 				break;
 			case 'moymax':
 					//$nom_eleve2="Moyennes maximales";
 					$nom_eleve[2]="Moyennes maximales";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
 				break;
 			default:
 				$sql="SELECT * FROM eleves WHERE login='$eleve2'";
@@ -295,7 +316,7 @@
 		}
 		$nom_eleve[2]=remplace_accents($nom_eleve[2],'simple');
 	}
-
+	//$nom_eleve[2]=$avec_moy_classe;
 
 	writinfo('/tmp/infos_graphe.txt','a+',"\nAvant seriemin, seriemax,...\n");
 
@@ -746,21 +767,23 @@
 		writinfo('/tmp/infos_graphe.txt','a+',"\$largeur_texte=$largeur_texte\n");
 
 		for($k=1;$k<=$nb_series_bis;$k++){
-			$ytmp=$ytmp+15;
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				$ytmp=$ytmp+15;
 
-			$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
-			$image_func_str = "imagettftext(\$img, ".($taille_police*5).", 0, $tmp, $ytmp, .$couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, $moyenne[$k][$i])\n";
-			writinfo('/tmp/infos_graphe.txt','a+',$image_func_str);
+				$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
+				$image_func_str = "imagettftext(\$img, ".($taille_police*5).", 0, $tmp, $ytmp, .$couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, $moyenne[$k][$i])\n";
+				writinfo('/tmp/infos_graphe.txt','a+',$image_func_str);
 
-			//$largeur_texte=30;	// A REVOIR... COMMENT LE CALCULER EN SVG?
-			//$largeur_texte=0;	// A REVOIR... COMMENT LE CALCULER EN SVG?
-			$largeur_texte = mb_strlen($moyenne[$k][$i]) * $l_txt_px;
+				//$largeur_texte=30;	// A REVOIR... COMMENT LE CALCULER EN SVG?
+				//$largeur_texte=0;	// A REVOIR... COMMENT LE CALCULER EN SVG?
+				$largeur_texte = mb_strlen($moyenne[$k][$i]) * $l_txt_px;
 
-			$xtext=round($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2));
-			//$ytext=$ytmp;
-			$ytext=$ytmp+$fontsizetext;
-			//$fontsizetext=Floor($taille_police*3.5);
-			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$moyenne[$k][$i]."</text>\n";
+				$xtext=round($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2));
+				//$ytext=$ytmp;
+				$ytext=$ytmp+$fontsizetext;
+				//$fontsizetext=Floor($taille_police*3.5);
+				echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$moyenne[$k][$i]."</text>\n";
+			}
 		}
 		//===========================================================================
 
@@ -815,20 +838,22 @@
 		$cpt_tmp=0;
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
-			$ytmp=$ytmp+15;
-			$largeur_texte = mb_strlen(nf($mgen[$k])) * $l_txt_px;
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				$ytmp=$ytmp+15;
+				$largeur_texte = mb_strlen(nf($mgen[$k])) * $l_txt_px;
 
-			$xtext=$x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
-			//$ytext=$ytmp;
-			$ytext=$ytmp+$fontsizetext;
-			//$fontsizetext=Floor($taille_police*3.5);
-			//echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$mgen[$k]."</text>\n";
-			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".nf($mgen[$k])."</text>\n";
+				$xtext=$x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
+				//$ytext=$ytmp;
+				$ytext=$ytmp+$fontsizetext;
+				//$fontsizetext=Floor($taille_police*3.5);
+				//echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$mgen[$k]."</text>\n";
+				echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".nf($mgen[$k])."</text>\n";
 
 
-			if($mgen[$k]!="-"){
-				$total_tmp=$total_tmp+$mgen[$k];
-				$cpt_tmp++;
+				if($mgen[$k]!="-"){
+					$total_tmp=$total_tmp+$mgen[$k];
+					$cpt_tmp++;
+				}
 			}
 		}
 
@@ -922,44 +947,46 @@
 
 	//for($k=1;$k<=$nb_series;$k++){
 	for($k=1;$k<=$nb_series_bis;$k++){
-		echo "\n<!-- Courbe de la série $k -->\n";
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			echo "\n<!-- Courbe de la série $k -->\n";
 
-		//Placement des points de la courbe:
-		for($i=1;$i<$nbMat+1;$i++){
-			$x1=$x[$i];
-			// C'est eleve_classe.php qui envoye 0 quand il n'y a pas de note... A CHANGER...
-			//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
-			if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
-				$y1=round($hauteurMoy+$hauteur-$moyenne[$k][$i]*$hauteur/20);
-				//imageFilledRectangle($img,$x1-2,$y1-2,$x1+2,$y1+2,$couleureleve[$k]);
+			//Placement des points de la courbe:
+			for($i=1;$i<$nbMat+1;$i++){
+				$x1=$x[$i];
+				// C'est eleve_classe.php qui envoye 0 quand il n'y a pas de note... A CHANGER...
+				//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+				if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+					$y1=round($hauteurMoy+$hauteur-$moyenne[$k][$i]*$hauteur/20);
+					//imageFilledRectangle($img,$x1-2,$y1-2,$x1+2,$y1+2,$couleureleve[$k]);
 
-				$xtmp1=$x1-2;
-				$ytmp1=$y1-2;
-				//echo "<rect x=\"$xtmp1\" y=\"$ytmp1\" width=\"4\" height=\"4\" style=\"fill:".$couleureleve[$k]."; stroke-width:1; stroke:black\" />";
-				echo "<rect x=\"$xtmp1\" y=\"$ytmp1\" width=\"4\" height=\"4\" style=\"fill:".$couleureleve[$k].";\" />";
+					$xtmp1=$x1-2;
+					$ytmp1=$y1-2;
+					//echo "<rect x=\"$xtmp1\" y=\"$ytmp1\" width=\"4\" height=\"4\" style=\"fill:".$couleureleve[$k]."; stroke-width:1; stroke:black\" />";
+					echo "<rect x=\"$xtmp1\" y=\"$ytmp1\" width=\"4\" height=\"4\" style=\"fill:".$couleureleve[$k].";\" />";
 
-				$ycourbe[$k][$i]=$y1;
+					$ycourbe[$k][$i]=$y1;
+				}
+				else{
+					$ycourbe[$k][$i]=-1;
+				}
 			}
-			else{
-				$ycourbe[$k][$i]=-1;
-			}
-		}
 
-		//Tracé de la courbe:
-		for($i=1;$i<$nbMat;$i++){
-			$x1=$x[$i];
-			$x2=$x[$i+1];
-			if(($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+1]!=-1)){
-				//imageLine($img,$x1,$ycourbe[$k][$i],$x2,$ycourbe[$k][$i+1],$couleureleve[$k]);
+			//Tracé de la courbe:
+			for($i=1;$i<$nbMat;$i++){
+				$x1=$x[$i];
+				$x2=$x[$i+1];
+				if(($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+1]!=-1)){
+					//imageLine($img,$x1,$ycourbe[$k][$i],$x2,$ycourbe[$k][$i+1],$couleureleve[$k]);
 
-				$xtmp1=$x1;
-				$ytmp1=$ycourbe[$k][$i];
-				$xtmp2=$x2;
-				$ytmp2=$ycourbe[$k][$i+1];
-				echo "<line x1=\"$xtmp1\" y1=\"$ytmp1\" x2=\"$xtmp2\" y2=\"$ytmp2\" style=\"stroke:".$couleureleve[$k]."; stroke-width:$epaisseur_traits\"/>\n";
-			}
-			elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
-				echo "<line x1=\"".$x[$i]."\" y1=\"".$ycourbe[$k][$i]."\" x2=\"".$x[$i+2]."\" y2=\"".$ycourbe[$k][$i+2]."\" style='stroke:".$couleureleve[$k]."; stroke-dasharray:4, 4; stroke-width:$epaisseur_traits'/>\n";
+					$xtmp1=$x1;
+					$ytmp1=$ycourbe[$k][$i];
+					$xtmp2=$x2;
+					$ytmp2=$ycourbe[$k][$i+1];
+					echo "<line x1=\"$xtmp1\" y1=\"$ytmp1\" x2=\"$xtmp2\" y2=\"$ytmp2\" style=\"stroke:".$couleureleve[$k]."; stroke-width:$epaisseur_traits\"/>\n";
+				}
+				elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
+					echo "<line x1=\"".$x[$i]."\" y1=\"".$ycourbe[$k][$i]."\" x2=\"".$x[$i+2]."\" y2=\"".$ycourbe[$k][$i+2]."\" style='stroke:".$couleureleve[$k]."; stroke-dasharray:4, 4; stroke-width:$epaisseur_traits'/>\n";
+				}
 			}
 		}
 	}

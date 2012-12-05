@@ -1194,3 +1194,5 @@ INSERT INTO droits SET id='/responsables/consult_maj_sconet.php',administrateur=
 INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes_ter.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F','F', 'Relevé de notes : accès parents et élèves', '1');
 INSERT INTO droits VALUES ('/utilisateurs/modif_par_lots.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Personnels : Traitements par lots', '1');
 INSERT INTO droits VALUES ('/bulletin/index_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Bulletins : Activation du module bulletins', '1');
+INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseResp', value='y';
+INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseEleve', value='y';

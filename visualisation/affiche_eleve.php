@@ -122,7 +122,8 @@ if(isset($_POST['valider_raz_param'])) {
 'graphe_taille_police',
 'graphe_temoin_image_escalier',
 'graphe_pointille',
-'graphe_tronquer_nom_court');
+'graphe_tronquer_nom_court',
+'affiche_moy_classe');
 	for($loop=0;$loop<count($champ_aff);$loop++) {
 		$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name='$champ_aff[$loop]';";
 		$del=mysql_query($sql);
@@ -143,6 +144,8 @@ taille_police
 epaisseur_traits
 temoin_image_escalier
 tronquer_nom_court
+
+affiche_moy_classe
 */
 
 	if(isset($_POST['save_params'])) {
@@ -193,6 +196,9 @@ tronquer_nom_court
 			if(isset($_POST['graphe_pointille'])) {save_params_graphe('graphe_pointille',$_POST['graphe_pointille']);}
 			else{save_params_graphe('graphe_pointille','yes');}
 
+			if(isset($_POST['affiche_moy_classe'])) {save_params_graphe('graphe_affiche_moy_classe',$_POST['affiche_moy_classe']);}
+			else{save_params_graphe('graphe_affiche_moy_classe','non');}
+
 			if($msg=='') {
 				$msg="Paramètres enregistrés.";
 			}
@@ -208,8 +214,10 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['affiche_photo'])) {savePref($_SESSION['login'],'graphe_affiche_photo',$_POST['affiche_photo']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_photo','non');}
 	if(isset($_POST['largeur_imposee_photo'])) {savePref($_SESSION['login'],'graphe_largeur_imposee_photo',$_POST['largeur_imposee_photo']);}
+
 	if(isset($_POST['affiche_mgen'])) {savePref($_SESSION['login'],'graphe_affiche_mgen',$_POST['affiche_mgen']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_mgen','non');}
+
 	if(isset($_POST['affiche_minmax'])) {savePref($_SESSION['login'],'graphe_affiche_minmax',$_POST['affiche_minmax']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_minmax','non');}
 	if(isset($_POST['affiche_moy_annuelle'])) {savePref($_SESSION['login'],'graphe_affiche_moy_annuelle',$_POST['affiche_moy_annuelle']);}
@@ -239,6 +247,9 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['click_plutot_que_survol_aff_app'])) {savePref($_SESSION['login'],'graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
 	if(isset($_POST['graphe_pointille'])) {savePref($_SESSION['login'],'graphe_pointille',$_POST['graphe_pointille']);}
+
+	if(isset($_POST['affiche_moy_classe'])) {savePref($_SESSION['login'],'graphe_affiche_moy_classe',$_POST['affiche_moy_classe']);}
+	else{savePref($_SESSION['login'],'graphe_affiche_moy_classe','non');}
 
 	if($msg=='') {
 		$msg.="Préférences personnelles enregistrées.";
@@ -999,6 +1010,24 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
+	if(isset($_POST['affiche_moy_classe'])) {
+		$affiche_moy_classe=$_POST['affiche_moy_classe'];
+	}
+	else{
+		$pref_affiche_moy_classe=getPref($_SESSION['login'],'graphe_affiche_moy_classe','');
+		if(($pref_affiche_moy_classe=='oui')||($pref_affiche_moy_classe=='non')) {
+			$affiche_moy_classe=$pref_affiche_moy_classe;
+		}
+		else {
+			if(getSettingValue('graphe_affiche_moy_classe')) {
+				$affiche_moy_classe=getSettingValue('graphe_affiche_moy_classe');
+			}
+			else{
+				$affiche_moy_classe="non";
+			}
+		}
+	}
+
 	if(isset($_POST['affiche_minmax'])) {
 		$affiche_minmax=$_POST['affiche_minmax'];
 	}
@@ -1335,8 +1364,20 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<p><b>Moyennes et périodes</b></p>\n";
 			echo "<blockquote>\n";
 
-			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<table border='0' summary='Paramètres'>\n";
+
+			//===========================
+			// 20121204
+			if($affiche_moy_classe=='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<tr valign='top'><td>Afficher la moyenne de la classe:</td><td>";
+			if($affiche_moy_classe=='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<input type='radio' name='affiche_moy_classe' id='affiche_moy_classe_oui' value='oui'$checked /><label for='affiche_moy_classe_oui' style='cursor: pointer;'> Oui </label>/";
+			if($affiche_moy_classe!='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='affiche_moy_classe_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_moy_classe' id='affiche_moy_classe_non' value='non'$checked />";
+			echo "</td></tr>\n";
+			//===========================
+
+			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			//echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne générale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
 			echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td>";
 			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
@@ -1349,7 +1390,6 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			if(mysql_num_rows($test_coef_non_nul)==0) {
 				echo " <img src='../images/icons/ico_attention.png' width='22' height='19' alt='Tous les coefficients sont nuls' title='Tous les coefficients sont nuls. Aucun calcul de moyenne générale ne sera possible.' />\n";
 			}
-
 			echo "</td></tr>\n";
 
 			//if($affiche_minmax=='oui') {$checked=" checked='yes'";} else {$checked="";}
@@ -1777,16 +1817,22 @@ function eleve_suivant() {
 		echo "<p>Eleve : ".$prenom_eleve . " " .$nom_eleve."</p>\n";
 		echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
 		echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";
-		echo "et <select name='eleve2'>\n";
-		if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
-		if(!isset($eleve2)) {$selected=" selected='yes'";}
-		echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
-		if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='moymax'$selected>Moyenne max.</option>\n";
-		if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
-		echo "</select>\n";
-		echo "<br />\n";
+		if($affiche_moy_classe=='non') {
+			// La valeur/masquage sera forcée dans la page draw_graphe*.php
+			echo "<input type='hidden' name='eleve2' value='moyclasse'/>\n";
+		}
+		else {
+			echo "et <select name='eleve2'>\n";
+			if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
+			if(!isset($eleve2)) {$selected=" selected='yes'";}
+			echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
+			if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymax'$selected>Moyenne max.</option>\n";
+			if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+			echo "</select>\n";
+			echo "<br />\n";
+		}
 		echo "<input type='submit' name='choix_eleves' value='Afficher' style='margin-bottom: 3px;'/><br />\n";
 	}
 
@@ -1852,17 +1898,23 @@ function eleve_suivant() {
 	//Ajout Eric 11/12/10
 	echo "<input type='hidden' name='graphe_affiche_deroulant_appreciations' value='$graphe_affiche_deroulant_appreciations' />\n";
 	echo "<input type='hidden' name='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' />\n";
-	
+
+	echo "<input type='hidden' name='affiche_moy_classe' value='$affiche_moy_classe' />\n";
+
 	echo "<input type='hidden' name='parametrer_affichage' value='' />\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.<br />\n";
 
+	if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+	(($_SESSION['statut']=='eleve')&&(getSettingAOui('GepiAccesGraphParamEleve')))||
+	(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphParamParent')))) {
+		echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.<br />\n";
+
+		echo "<hr width='150' />\n";
+	}
 
 
 	//======================================================================
 	//======================================================================
 	//======================================================================
-
-	echo "<hr width='150' />\n";
 
 	echo "<script type='text/javascript'>
 	function fct_desactivation_infobulle() {
@@ -3064,6 +3116,9 @@ function eleve_suivant() {
 						//echo "'>";
 						//echo "&amp;temoin_imageps=$temoin_imageps";
 						echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+						if($affiche_moy_classe!='oui') {
+							echo "&amp;avec_moy_classe=n";
+						}
 						echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
 						echo "usemap='#imagemap' ";
 						echo "/>\n";
@@ -3169,6 +3224,9 @@ function eleve_suivant() {
 						//echo "'>";
 						//echo "&amp;temoin_imageps=$temoin_imageps";
 						echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+						if($affiche_moy_classe!='oui') {
+							echo "&amp;avec_moy_classe=n";
+						}
 
 						echo "'";
 
@@ -3223,6 +3281,9 @@ function eleve_suivant() {
 					//echo "'>";
 					//echo "&amp;temoin_imageps=$temoin_imageps";
 					echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+					if($affiche_moy_classe!='oui') {
+						echo "&amp;avec_moy_classe=n";
+					}
 					echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
 					echo "usemap='#imagemap_star' ";
 					echo "/>\n";
