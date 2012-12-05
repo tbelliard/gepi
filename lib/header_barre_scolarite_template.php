@@ -80,6 +80,15 @@ if ($barre_plugin!="") {
 		$menus = null;
 
 		//=======================================================
+		// Module Absences
+		if (getSettingValue("active_module_absence") == 'y') {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_absences/gestion/voir_absences_viescolaire.php"'.insert_confirm_abandon().'>Absences</a></li>'."\n";
+		}
+		elseif (getSettingValue("active_module_absence") == '2') {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_abs2/index.php"'.insert_confirm_abandon().'>&nbsp;Absences</a></li>'."\n";
+		}
+
+		//=======================================================
 		// Module Cahier de textes
 		if (getSettingValue("active_cahiers_texte") == 'y') {
 			if((getSettingAOui('GepiAccesCdtScol'))||(getSettingAOui('GepiAccesCdtScolRestreint'))) {
@@ -184,6 +193,28 @@ if ($barre_plugin!="") {
 			$menus .= '</li>'."\n";
 			//=======================================================
 		}
+
+		//=======================================================
+		// Module emploi du temps
+		if (getSettingValue("autorise_edt_tous") == "y") {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=classe1"'.insert_confirm_abandon().'>Emploi du tps</a>'."\n";
+
+			$menus .= '   <ul class="niveau2">'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=classe1"'.insert_confirm_abandon().'>EDT classe</a></li>'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1"'.insert_confirm_abandon().'>EDT prof</a></li>'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=salle1"'.insert_confirm_abandon().'>EDT salle</a></li>'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=eleve1"'.insert_confirm_abandon().'>EDT élève</a></li>'."\n";
+			$menus .= '   </ul>'."\n";
+			$menus .= '</li>'."\n";
+		}
+		//=======================================================
+
+		//=======================================================
+		// Module discipline
+		if (getSettingValue("active_mod_discipline")=='y') {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_discipline/index.php"'.insert_confirm_abandon().'>Discipline</a></li>'."\n";
+		}
+		//=======================================================
 
 		//=======================================================
 		// Gestion
