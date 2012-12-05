@@ -1103,6 +1103,11 @@ $texteItem="a accès au paramètres des graphes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesGraphRangEleve';
+$texteItem="a accès au choix permettant d'afficher son rang dans les graphes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -1291,7 +1296,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='GepiAccesBulletinSimpleColonneMoyClasseResp';
-$texteItem="a accès à la colonne moyenne de la classe pour les enseignements,... sur les bulletins simplifiés et sur les graphes<br />(<em>sous réserve que l'accès aux bulletins simplifiés ou aux graphes soit donné";
+$texteItem="a accès à la colonne moyenne de la classe pour les enseignements,... sur les bulletins simplifiés et sur les graphes<br />(<em>sous réserve que l'accès aux bulletins simplifiés ou aux graphes soit donné</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1317,6 +1322,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesGraphParamParent';
 $texteItem="a accès au paramètres des graphes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesGraphRangParent';
+$texteItem="a accès au choix permettant d'afficher son rang dans les graphes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

@@ -926,9 +926,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	if ($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
 		// On filtre eleve2 :
 		if(!isset($eleve2)) {$eleve2 = "moyclasse";}
-		if ($eleve2 != "moyclasse" and $eleve2 != "moymin" and $eleve2 != "moymax") {
-			tentative_intrusion(3, "Tentative de manipulation de la seconde source de données sur la visualisation graphique des résultats (détournement de _eleve2_, qui ne peut, dans le cas d'un utilisateur parent ou eleve, ne correspondre qu'à une moyenne et non un autre élève).");
-			$eleve2 = "moyclasse";
+		if((($_SESSION['statut'] == "eleve")&&(getSettingAOui('GepiAccesGraphRangEleve')))||(($_SESSION['statut'] == "responsable")&&(getSettingAOui('GepiAccesGraphRangParent')))) {
+			if ($eleve2 != "moyclasse" and $eleve2 != "moymin" and $eleve2 != "moymax" and $eleve2 != "rang_eleve") {
+				tentative_intrusion(3, "Tentative de manipulation de la seconde source de données sur la visualisation graphique des résultats (détournement de _eleve2_, qui ne peut, dans le cas d'un utilisateur parent ou eleve, ne correspondre qu'à une moyenne et non un autre élève).");
+				$eleve2 = "moyclasse";
+			}
+		}
+		else {
+			if ($eleve2 != "moyclasse" and $eleve2 != "moymin" and $eleve2 != "moymax") {
+				tentative_intrusion(3, "Tentative de manipulation de la seconde source de données sur la visualisation graphique des résultats (détournement de _eleve2_, qui ne peut, dans le cas d'un utilisateur parent ou eleve, ne correspondre qu'à une moyenne et non un autre élève).");
+				$eleve2 = "moyclasse";
+			}
 		}
 	}
 
@@ -1027,6 +1035,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
+
+	// 20121205
+	$affiche_choix_rang="y";
+	if((($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesGraphRangParent')))||
+	(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesGraphRangEleve')))) {$affiche_choix_rang="n";}
 
 	if(isset($_POST['affiche_minmax'])) {
 		$affiche_minmax=$_POST['affiche_minmax'];
@@ -1680,11 +1693,16 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//if("$photo"!="") {
 			if ($photo) {
 				$dimimg=getimagesize($photo);
+				if(!$dimimg) {
+					echo "<span style='color:red'>Erreur sur $photo</span>";
+				}
+				else {
 
-				$largimg=$largeur_imposee_photo;
-				$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
+					$largimg=$largeur_imposee_photo;
+					$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
 
-				echo "<img src='".$photo."' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
+					echo "<img src='".$photo."' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
+				}
 			}
 
 		}
@@ -1747,6 +1765,16 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<option value='moymax'$selected>Moyenne max.</option>\n";
 		if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
 		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+		// 20121205
+		// On est dans une partie non élève/resp
+		/*
+		if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+		(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+		(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+		*/
+			if($eleve2=='rang_eleve') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='rang_eleve'$selected>Rang élève</option>\n";
+		//}
 		echo "</select>\n";
 		echo "<br />\n";
 
@@ -1815,11 +1843,27 @@ function eleve_suivant() {
 		// Pas de sélection de l'élève, il est déjà fixé.
 		// Pas de sélection non plus de la comparaison : c'est la moyenne de la classe (ou moy min ou max).
 		echo "<p>Eleve : ".$prenom_eleve . " " .$nom_eleve."</p>\n";
-		echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
-		echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";
-		if($affiche_moy_classe=='non') {
+		echo "<input type='hidden' name='eleve1' value='".$login_eleve."' />\n";
+		echo "<input type='hidden' name='login_eleve' value='".$login_eleve."' />\n";
+		// 20121205
+		if(($affiche_moy_classe=='non')&&($affiche_choix_rang=='n')) {
 			// La valeur/masquage sera forcée dans la page draw_graphe*.php
-			echo "<input type='hidden' name='eleve2' value='moyclasse'/>\n";
+			echo "<input type='hidden' name='eleve2' value='moyclasse' />\n";
+		}
+		elseif($affiche_choix_rang=='n') {
+			echo "et <select name='eleve2'>\n";
+			if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
+			if(!isset($eleve2)) {$selected=" selected='yes'";}
+			echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
+			if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymax'$selected>Moyenne max.</option>\n";
+			if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+			echo "</select>\n";
+			echo "<br />\n";
+		}
+		elseif($affiche_moy_classe=='non') {
+			echo "<input type='hidden' name='eleve2' value='rang_eleve' />\n";
 		}
 		else {
 			echo "et <select name='eleve2'>\n";
@@ -1830,6 +1874,8 @@ function eleve_suivant() {
 			echo "<option value='moymax'$selected>Moyenne max.</option>\n";
 			if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
 			echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+			if($eleve2=='rang_eleve') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='rang_eleve'$selected>Rang élève</option>\n";
 			echo "</select>\n";
 			echo "<br />\n";
 		}
@@ -2512,6 +2558,12 @@ function eleve_suivant() {
 
 			$coefficients_a_1="non";
 			$affiche_graph="n";
+			// 20121205
+			if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+			(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+			(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+				$affiche_rang="y";
+			}
 			include('../lib/calcul_moy_gen.inc.php');
 
 			// Récupérer la ligne de l'élève courant
@@ -2561,7 +2613,8 @@ function eleve_suivant() {
 			// On recherche l'élève2 et on récupère la moyenne générale 2:
 			$indice_eleve2=-1;
 			//echo "\$eleve2=$eleve2<br />";
-			if(($eleve2!='moyclasse')&&($eleve2!='moymin')&&($eleve2!='moymax')) {
+			// 20121205
+			if(($eleve2!='moyclasse')&&($eleve2!='moymin')&&($eleve2!='moymax')&&($eleve2!='rang_eleve')) {
 				for($loop=0;$loop<count($current_eleve_login);$loop++) {
 					if($current_eleve_login[$loop]==$eleve2) {
 						$indice_eleve2=$loop;
@@ -2580,6 +2633,17 @@ function eleve_suivant() {
 			}
 			elseif($eleve2=='moymax') {
 				$mgen[2]=$moy_max_classe;
+			}
+			// 20121205
+			elseif($eleve2=='rang_eleve') {
+				if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+				(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+				(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+					$mgen[2]=get_rang_eleve($eleve1, $id_classe, $periode_num, "n", "y");
+				}
+				else {
+					$mgen[2]="-";
+				}
 			}
 
 			if(preg_match("/^[0-9.,]*$/", $mgen[2])) {
@@ -2645,6 +2709,15 @@ function eleve_suivant() {
 					elseif($eleve2=='moymax') {
 						//$serie[2].=max($current_eleve_note[$loop]);
 						$serie[2].=$moy_max_classe_grp[$loop];
+					}
+					elseif($eleve2=='rang_eleve') {
+						if(isset($current_eleve_rang[$loop][$indice_eleve1])) {
+							if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+							(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+							(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+								$serie[2].=$current_eleve_rang[$loop][$indice_eleve1];
+							}
+						}
 					}
 
 					// Série min et série max pour les bandes min/max:
@@ -4182,7 +4255,7 @@ function eleve_suivant() {
 
 			$acces_aa="n";
 			if(isset($eleve1)) {
-				require('../mod_annees_anterieures/fonctions_annees_anterieures.inc.php');
+				require_once('../mod_annees_anterieures/fonctions_annees_anterieures.inc.php');
 				$acces_aa=check_acces_aa($eleve1);
 			}
 
@@ -4612,7 +4685,8 @@ function complete_textarea_avis(num) {
 
 
 //===========================================================
-if(isset($eleve1)) {
+//if(isset($eleve1)) {
+if((isset($eleve1))&&(isset($nom1))&&(isset($prenom1))) {
 	echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
 
 		echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
@@ -4696,7 +4770,9 @@ if(getSettingValue('active_annees_anterieures')=='y') {
 	//require("../mod_annees_anterieures/check_acces_et_liste_periodes.php");
 	//require('../mod_annees_anterieures/fonctions_annees_anterieures.inc.php');
 
-	if(isset($eleve1)) {
+	require_once('../mod_annees_anterieures/fonctions_annees_anterieures.inc.php');
+
+	if((isset($eleve1))&&(isset($id_classe))) {
 		$tab_periodes_aa=check_acces_et_liste_periodes($eleve1,$id_classe);
 		affiche_onglets_aa($eleve1, $id_classe, $tab_periodes_aa, 0);
 	}

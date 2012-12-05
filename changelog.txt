@@ -23,6 +23,8 @@ Bulletins :
   (bulletins PDF et HTML).
 - Possibilité de donner, aux parents et aux élèves, l'accès au bulletin
   simplifié des appreciations sur le groupe-classe.
+- Possibilité de masquer aux parents et aux élèves la moyenne de classe sur les
+  bulletins simplifiés et graphes.
 - Affichage de l'indication comme quoi les appréciations sont visibles
   ou non des parents à une date donnée.
 - Envoi des mails de proposition de correction aux comptes scolarité
@@ -63,6 +65,8 @@ Discipline :
 - Possibilité de définir ses propres types de sanctions de types retenue,
   exclusion ou travail.
 - Possibilité de préciser le matériel à apporter lors d'une retenue.
+- Possibilité d'imprimer les retenues et incidents avec les adresses distinctes
+  pour les parents séparés.
 
 Gestion:
 - Possibilité de masquer certains groupes dans les Cahiers de textes
@@ -70,7 +74,7 @@ Gestion:
 - Possibilité de renommer automatiquement les groupes d'une classe dont les
   descriptions sont identiques.
 - Possibilité pour les comptes scolarité de réinitialiser les mots de passe 
-  des responsables d'élèves (sous réserve de donner le droit)
+  des élèves et des responsables d'élèves (sous réserve de donner le droit)
 - Ajout de précautions pour l'accès aux choix sensibles 'Effacer la base' et 
   'Données de test'.
 - Possibilité pour l'admin de supprimer par lots les actions en 
@@ -102,6 +106,10 @@ Divers:
   consultation des infos concernant un élève.
 - Affichage des responsables non légaux dans l'onglet responsables de la page
   Consult.élève.
+- Possibilité d'afficher le rang de l'élève sur les graphes en courbe/étoile
+  (comme un choix au lieu d'afficher la Moyenne de la classe).
+  Possibilité d'interdire la consultation du rang pour les responsables/élèves.
+
 
 Gepi-1.6.1 (10/06/2012)
 ===========================

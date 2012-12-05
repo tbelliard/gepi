@@ -292,6 +292,14 @@
 						$nom_eleve[2]="";
 					}
 				break;
+			case 'rang_eleve':
+					$nom_eleve[2]="Rang élève";
+					/*
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
+					*/
+				break;
 			default:
 				$sql="SELECT * FROM eleves WHERE login='$eleve2'";
 				$resultat_infos_eleve2=mysql_query($sql);
@@ -457,7 +465,7 @@
 
 
 	// On force la couleur pour les moyennes classe/min/max
-	if(($eleve2=='moyclasse')||($eleve2=='moymin')||($eleve2=='moymax')){
+	if(($eleve2=='moyclasse')||($eleve2=='moymin')||($eleve2=='moymax')||($eleve2=='rang_eleve')){
 		$couleureleve[2]=$couleurmoyenne;
 	}
 
@@ -635,61 +643,67 @@
 		$couleureleve[$k]
 		);
 
-		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
-			$xprec="";
-			$yprec="";
-			$temoin_prec="";
+		//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+		((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+		) {
+			if(($k!=2)||
+			(($k==2)&&(isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {
+				$xprec="";
+				$yprec="";
+				$temoin_prec="";
 
-			// On place les points
-			$tab_x=array();
-			$tab_y=array();
-			for($i=1;$i<$nbMat+1;$i++){
-				if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+				// On place les points
+				$tab_x=array();
+				$tab_y=array();
+				for($i=1;$i<$nbMat+1;$i++){
+					if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
 
-					$angle=round(($i-1)*360/$nbMat);
-					$tab=coordcirc($moyenne[$k][$i],$angle);
+						$angle=round(($i-1)*360/$nbMat);
+						$tab=coordcirc($moyenne[$k][$i],$angle);
 
-					imageFilledRectangle($img,$tab[0]-2,$tab[1]-2,$tab[0]+2,$tab[1]+2,$couleureleve[$k]);
+						imageFilledRectangle($img,$tab[0]-2,$tab[1]-2,$tab[0]+2,$tab[1]+2,$couleureleve[$k]);
 
-					$tab_x[]=$tab[0];
-					$tab_y[]=$tab[1];
-				}
-				else{
-					$tab_x[]="";
-					$tab_y[]="";
-				}
-			}
-
-
-			// On joint ces points
-			$xprec="";
-			$yprec="";
-			for($i=0;$i<count($tab_x);$i++){
-				if($i==0){
-					if(($tab_x[$i]!="")&&($tab_x[count($tab_x)-1]!="")){
-						imageline ($img,$tab_x[$i],$tab_y[$i],$tab_x[count($tab_x)-1],$tab_y[count($tab_y)-1],$couleureleve[$k]);
+						$tab_x[]=$tab[0];
+						$tab_y[]=$tab[1];
+					}
+					else{
+						$tab_x[]="";
+						$tab_y[]="";
 					}
 				}
 
-				if($tab_x[$i]!=""){
-					if((isset($tab_x[$i+1]))&&($tab_x[$i+1]!="")) {
-						imageline ($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+1],$tab_y[$i+1],$couleureleve[$k]);
-						writinfo('/tmp/infos_graphe.txt','a+',"\nUne ligne\n");
-						writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i]=$tab_x[$i]\n");
-						writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i]=$tab_y[$i]\n");
-						writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i+1]=".$tab_x[$i+1]."\n");
-						writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i+1]=".$tab_y[$i+1]."\n");
+
+				// On joint ces points
+				$xprec="";
+				$yprec="";
+				for($i=0;$i<count($tab_x);$i++){
+					if($i==0){
+						if(($tab_x[$i]!="")&&($tab_x[count($tab_x)-1]!="")){
+							imageline ($img,$tab_x[$i],$tab_y[$i],$tab_x[count($tab_x)-1],$tab_y[count($tab_y)-1],$couleureleve[$k]);
+						}
 					}
-					elseif(($afficher_pointille!='n')&&(isset($tab_y[$i]))&&($tab_y[$i]!="")&&(isset($tab_y[$i+2]))&&($tab_y[$i+2]!="")) {
-						writinfo('/tmp/infos_graphe.txt','a+',"\nUne ligne pointillée\n");
-						writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i]=$tab_x[$i]\n");
-						writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i]=$tab_y[$i]\n");
-						writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i+2]=".$tab_x[$i+2]."\n");
-						writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i+2]=".$tab_y[$i+2]."\n");
-						imagesetstyle($img, $style_pointille);
-						imageLine($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+2],$tab_y[$i+2],IMG_COLOR_STYLED);
-						imagesetstyle($img, $style_plein);
-						//imageLine($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+2],$tab_y[$i+2],$couleureleve[$k]);
+
+					if($tab_x[$i]!=""){
+						if((isset($tab_x[$i+1]))&&($tab_x[$i+1]!="")) {
+							imageline ($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+1],$tab_y[$i+1],$couleureleve[$k]);
+							writinfo('/tmp/infos_graphe.txt','a+',"\nUne ligne\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i]=$tab_x[$i]\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i]=$tab_y[$i]\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i+1]=".$tab_x[$i+1]."\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i+1]=".$tab_y[$i+1]."\n");
+						}
+						elseif(($afficher_pointille!='n')&&(isset($tab_y[$i]))&&($tab_y[$i]!="")&&(isset($tab_y[$i+2]))&&($tab_y[$i+2]!="")) {
+							writinfo('/tmp/infos_graphe.txt','a+',"\nUne ligne pointillée\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i]=$tab_x[$i]\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i]=$tab_y[$i]\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i+2]=".$tab_x[$i+2]."\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i+2]=".$tab_y[$i+2]."\n");
+							imagesetstyle($img, $style_pointille);
+							imageLine($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+2],$tab_y[$i+2],IMG_COLOR_STYLED);
+							imagesetstyle($img, $style_plein);
+							//imageLine($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+2],$tab_y[$i+2],$couleureleve[$k]);
+						}
 					}
 				}
 			}
@@ -863,9 +877,14 @@
 			if(($angle>270)&&($angle<360)){$xtmp=$x+30;}else{$xtmp=$x;}
 			//**************
 			for($k=1;$k<=$nb_series_bis;$k++){
-				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
-					imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i+1]));
-					$xtmp=$xtmp+mb_strlen(nf($moyenne[$k][$i+1])." ")*ImageFontWidth($taille_police_inf);
+				//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+				((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+				) {
+					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i+1]);} else {$texte_courant=$moyenne[$k][$i+1];}
+
+					imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte_courant);
+					$xtmp=$xtmp+mb_strlen($texte_courant." ")*ImageFontWidth($taille_police_inf);
 				}
 			}
 		}
@@ -1083,9 +1102,14 @@
 			if(($angle>270)&&($angle<360)){$xtmp=$x+30;}else{$xtmp=$x;}
 			//**************
 			for($k=1;$k<=$nb_series_bis;$k++){
-				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
-					imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i+1]));
-					$xtmp=$xtmp+mb_strlen(nf($moyenne[$k][$i+1])." ")*ImageFontWidth($taille_police_inf);
+				//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+				((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+				) {
+					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i+1]);} else {$texte_courant=$moyenne[$k][$i+1];}
+
+					imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte_courant);
+					$xtmp=$xtmp+mb_strlen($texte_courant." ")*ImageFontWidth($taille_police_inf);
 				}
 			}
 		}
@@ -1109,7 +1133,10 @@
 	$total_largeur_chaines=0;
 	//for($k=1;$k<$nb_data;$k++){
 	for($k=1;$k<=$nb_series;$k++){
-		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+		//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+		((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+		) {
 			if($mgen[$k]!="") {
 				$chaine_mgen=" (".nf($mgen[$k]).")";
 			}
@@ -1163,10 +1190,14 @@
 		$xtmp=0;
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
-			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+			((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+			) {
 				$xtmp=$xtmp+$espace;
 				if($mgen[$k]!="") {
-					$chaine_mgen=" (".nf($mgen[$k]).")";
+					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($mgen[$k]);} else {$texte_courant=$mgen[$k];}
+					$chaine_mgen=" (".$texte_courant.")";
 				}
 				else {
 					$chaine_mgen="";

@@ -6209,4 +6209,79 @@ function responsables_adresses_separees($login_eleve) {
 	return $retour;
 }
 
+/** Fonction destinée à récupérer le rang de l'élève
+ *
+ * @param string $login_eleve Login de l'élève
+ * @param integer $id_classe Identifiant de la classe
+ * @param integer $periode_num Numéro de la période
+ * @param string $forcer_recalcul "y" ou "n" Forcer le recalcul du rang avant extraction du rang
+ * @param string $recalcul_si_rang_nul "y" ou "n" 
+ *
+ * @return integer rang de l'élève
+ */
+function get_rang_eleve($login_eleve, $id_classe, $periode_num, $forcer_recalcul="n", $recalcul_si_rang_nul="n") {
+	global $affiche_categories, $test_coef;
+	$retour=0;
+
+	$recalcul_rang="";
+	for($loop=1;$loop<=$periode_num;$loop++) {
+		$recalcul_rang.="y";
+	}
+
+	if($forcer_recalcul=="y") {
+		$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+
+		$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
+
+		include("../lib/calcul_rang.inc.php");
+	}
+
+	$sql="SELECT rang FROM j_eleves_classes WHERE periode='".$periode_num."' AND id_classe='".$id_classe."' AND login = '".$login_eleve."';";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$retour=mysql_result($res, 0, "rang");
+		if(($retour==0)&&($recalcul_si_rang_nul=='y')) {
+			$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+
+			$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
+
+			include("../lib/calcul_rang.inc.php");
+
+			$sql="SELECT rang FROM j_eleves_classes WHERE periode='".$periode_num."' AND id_classe='".$id_classe."' AND login = '".$login_eleve."';";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$retour=mysql_result($res, 0, "rang");
+			}
+		}
+	}
+	elseif($recalcul_si_rang_nul=='y') {
+		$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+
+		$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
+
+		include("../lib/calcul_rang.inc.php");
+
+		$sql="SELECT rang FROM j_eleves_classes WHERE periode='".$periode_num."' AND id_classe='".$id_classe."' AND login = '".$login_eleve."';";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$retour=mysql_result($res, 0, "rang");
+		}
+	}
+
+	return $retour;
+}
+
+
 ?>
