@@ -5017,12 +5017,28 @@ function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lie
 
 	$retour="";
 
-	if($target!="") {$target=" target='$target'";}
+	if($target!="") {
+		/*
+		// Cela masque le title Compte actif/inactif
+		if($target=='_blank') {
+			$target=" target='$target' title='Ouverture dans un nouvel onglet.'";
+		}
+		else {
+		*/
+			$target=" target='$target'";
+		//}
+	}
 
 	$test=check_compte_actif($login);
 	if($test!=0) {
 		if($statut=="") {
 			$statut=get_statut_from_login($login);
+		}
+		else {
+			$tmp_statut=get_statut_from_login($login);
+			if($tmp_statut!=$statut) {$retour.="<img src='../images/icons/flag2.gif' width='17' height='18' title=\"ANOMALIE : Le statut du compte ne coïncide pas avec le statut attendu.
+                    Le compte est '$tmp_statut' alors que vous avez fait
+                    une recherche pour un compte '$statut'.\" /> ";}
 		}
 
 		if($statut!="") {
