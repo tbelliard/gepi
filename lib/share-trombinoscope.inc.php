@@ -175,55 +175,29 @@ function efface_photos($photos) {
  * @return array Les nouvelles dimensions de l'image (largeur, hauteur)
  */
 function dimensions_affichage_photo($photo,$photo_largeur_max, $photo_hauteur_max) {
+	$nouvelle_largeur=$photo_largeur_max;
+	$nouvelle_hauteur=$photo_hauteur_max;
 
 	// prendre les informations sur l'image
 	$info_image=getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur=$info_image[0];
-	$hauteur=$info_image[1];
+	if(!$info_image) {
+		echo "<span style='color:red'>Erreur sur $photo</span>";
+	}
+	else {
+		// largeur et hauteur de l'image d'origine
+		$largeur=$info_image[0];
+		$hauteur=$info_image[1];
 
-	// calcule le ratio de redimensionnement
-	$ratio_l=$largeur/$photo_largeur_max;
-	$ratio_h=$hauteur/$photo_hauteur_max;
-	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
+		// calcule le ratio de redimensionnement
+		$ratio_l=$largeur/$photo_largeur_max;
+		$ratio_h=$hauteur/$photo_hauteur_max;
+		$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur=round($largeur/$ratio);
-	$nouvelle_hauteur=round($hauteur/$ratio);
-
+		// définit largeur et hauteur pour la nouvelle image
+		$nouvelle_largeur=round($largeur/$ratio);
+		$nouvelle_hauteur=round($hauteur/$ratio);
+	}
 	return array($nouvelle_largeur, $nouvelle_hauteur);
 }
 
-
-/**
- * Calcule les dimensions pour afficher une photo
- * dans un cadre de dimensions largeur_max X hauteur_max
- * en conservant le ratio initial
- *
- * @param string $photo L'adresse de la photo
- * @param integer $largeur_max Largeur du cadre
- * @param integer $hauteur_max Hauteur du cadre
- * @return array Les nouvelles dimensions de l'image (largeur, hauteur)
- */
-/*
-function dimensions_affichage_photo($photo,$photo_largeur_max, $photo_hauteur_max) {
-
-	// prendre les informations sur l'image
-	$info_image=getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur=$info_image[0];
-	$hauteur=$info_image[1];
-
-	// calcule le ratio de redimensionnement
-	$ratio_l=$largeur/$photo_largeur_max;
-	$ratio_h=$hauteur/$photo_hauteur_max;
-	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
-
-	// définit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur=round($largeur/$ratio);
-	$nouvelle_hauteur=round($hauteur/$ratio);
-
-	return array($nouvelle_largeur, $nouvelle_hauteur);
-}
-*/
 ?>
