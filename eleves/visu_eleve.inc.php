@@ -1118,18 +1118,46 @@ Patientez pendant l'extraction des données... merci.
 		   echo "<span style=\"color:red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."<br/><br/></span>";
 		}
 
-		// 20120920
 		if(isset($tab_ele['compte_utilisateur'])) {
 			if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
-				echo "<div style='float:right; width:16em; text-align:center;'>\n";
+				echo "<div style='float:right; width:20em; text-align:center;'>\n";
 					echo "<strong>Compte</strong>\n";
 					echo "<table class='boireaus' summary='Infos compte élève'>\n";
-					echo "<tr class='lig-1'><th style='text-align: left;'>Compte&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['login']."</td></tr>";
-					echo "<tr class='lig1'><th style='text-align: left;'>Etat&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['etat']."</td></tr>";
-					echo "<tr class='lig-1'><th style='text-align: left;'>Authentication&nbsp;:</th><td title=\"Gepi permet selon les configurations plusieurs modes d'authentification:
+					$alt=1;
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'><th style='text-align: left;'>Compte&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['login']."</td></tr>";
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'><th style='text-align: left;'>Etat&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['etat']."</td></tr>";
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'><th style='text-align: left;'>Authentification&nbsp;:</th><td title=\"Gepi permet selon les configurations plusieurs modes d'authentification:
 - gepi : Authentification sur la base mysql de Gepi,
 - sso : Authentification CAS ou LCS assurée par une autre machine,
 - ldap : Authentification en recherchant la correspondance login/mot_de_passe dans un annuaire LDAP.\">".$tab_ele['compte_utilisateur']['auth_mode']."</td></tr>";
+
+					if(($_SESSION['statut']=='administrateur')||
+						(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassEle')))||
+						(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeResetPassEle')))
+					) {
+						if($_SESSION['statut']=="administrateur") {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Dépannage :</th><td>";
+							echo affiche_actions_compte($tab_ele['compte_utilisateur']['login']);
+							if(($tab_ele['compte_utilisateur']['auth_mode']=='gepi')||
+								(($tab_ele['compte_utilisateur']['auth_mode']=='ldap')&&($gepiSettings['ldap_write_access'] == "yes"))) {
+								echo "<br />\n";
+								echo affiche_reinit_password($tab_ele['compte_utilisateur']['login']);
+							}
+							echo "</td></tr>\n";
+						}
+						elseif((($tab_ele['compte_utilisateur']['auth_mode']=='gepi')||
+						(($tab_ele['compte_utilisateur']['auth_mode']=='ldap')&&($gepiSettings['ldap_write_access'] == "yes")))&&
+						(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut']))) {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Dépannage :</th><td>";
+							echo affiche_reinit_password($tab_ele['compte_utilisateur']['login']);
+							echo "</td></tr>\n";
+						}
+					}
 
 					echo "</table>\n";
 				echo "</div>\n";

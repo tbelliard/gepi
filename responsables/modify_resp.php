@@ -732,11 +732,19 @@ echo "<td valign='top'>\n";
 			$resp_u_email=$lig_resp_login->email;
 			$resp_auth_mode=$lig_resp_login->auth_mode;
 
+			if($_SESSION['statut']=='administrateur') {$avec_lien="y";}
+			else {$avec_lien="n";}
+			$lien_image_compte_utilisateur=lien_image_compte_utilisateur($resp_login, "responsable", "_blank", $avec_lien);
+
 			if($_SESSION['statut']=='administrateur') {
-				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a></em>)";
+				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a>";
+				if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+				echo "</em>)";
 			}
 			else {
-				echo " (<em title=\"Compte d'utilisateur\">$resp_login</em>)";
+				echo " (<em title=\"Compte d'utilisateur\">$resp_login";
+				if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+				echo "</em>)";
 			}
 		}
 		else {

@@ -607,7 +607,12 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='ScolResetPassResp';
-$texteItem="peut réinitialiser les mots de passe des comptes de statut responsable";
+$texteItem="peut réinitialiser les mots de passe des comptes de statut responsable<br />(<em>sous réserve que le mode d'authentification (gepi/sso/ldap) du compte le permette</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='ScolResetPassEle';
+$texteItem="peut réinitialiser les mots de passe des comptes de statut élève<br />(<em>sous réserve que le mode d'authentification (gepi/sso/ldap) du compte le permette</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -777,7 +782,12 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='CpeResetPassResp';
-$texteItem="peut réinitialiser les mots de passe des comptes de statut responsable";
+$texteItem="peut réinitialiser les mots de passe des comptes de statut responsable<br />(<em>sous réserve que le mode d'authentification (gepi/sso/ldap) du compte le permette</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='CpeResetPassEle';
+$texteItem="peut réinitialiser les mots de passe des comptes de statut élève<br />(<em>sous réserve que le mode d'authentification (gepi/sso/ldap) du compte le permette</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
