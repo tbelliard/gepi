@@ -46,6 +46,7 @@ if (isset($_POST['is_posted'])) {
 	$msg = '';
 	$reg_ok = '';
 	$nb_reg_ok=0;
+	$nb_modif_priorite=0;
 	// Première boucle sur le nombre de periodes
 	$per = 0;
 	while ($per < $max_periode) {
@@ -234,35 +235,36 @@ if (isset($_POST['is_posted'])) {
 					}
 
 					// On enregistre les infos relatives aux catégories de matières
-					$nb_modif_priorite=0;
 					$tab_priorites_categories=array();
 					$temoin_pb_ordre_categories="n";
 					$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 					while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 						$reg_priority = $_POST['priority_'.$row["id"].'_'.$per];
-						if (isset($_POST['moyenne_'.$row["id"].'_'.$per])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
-						if (!is_numeric($reg_priority)) $reg_priority = 0;
-						if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
+						if($reg_priority!='') {
+							if (isset($_POST['moyenne_'.$row["id"].'_'.$per])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
+							if (!is_numeric($reg_priority)) $reg_priority = 0;
+							if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
 
-						if(in_array($reg_priority, $tab_priorites_categories)) {
-							$temoin_pb_ordre_categories="y";
-							$reg_priority=max($tab_priorites_categories)+1;
-						}
-						$tab_priorites_categories[]=$reg_priority;
+							if(in_array($reg_priority, $tab_priorites_categories)) {
+								$temoin_pb_ordre_categories="y";
+								$reg_priority=max($tab_priorites_categories)+1;
+							}
+							$tab_priorites_categories[]=$reg_priority;
 
-						$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
-						if ($test == 0) {
-							// Pas d'entrée... on créé
-							$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
-						} else {
-							// Entrée existante, on met à jour
-							$res = mysql_query("UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
-						}
-						if (!$res) {
-							$msg .= "<br />Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
-						}
-						else {
-							$nb_modif_priorite++;
+							$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
+							if ($test == 0) {
+								// Pas d'entrée... on créé
+								$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
+							} else {
+								// Entrée existante, on met à jour
+								$res = mysql_query("UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
+							}
+							if (!$res) {
+								$msg .= "<br />Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
+							}
+							else {
+								$nb_modif_priorite++;
+							}
 						}
 					}
 					if($temoin_pb_ordre_categories=="y") {
@@ -1174,6 +1176,7 @@ td {
 			echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
 			echo "<td style='padding: 5px; text-align: center;'>\n";
 			echo "<select name='priority_".$row["id"]."_".$per."' size='1'>\n";
+			echo "<option value=''>---</option>\n";
 			for ($i=0;$i<max(100,$max_priority_cat);$i++) {
 				echo "<option value='$i'";
 				//if ($current_priority == $i) echo " SELECTED";
