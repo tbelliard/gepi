@@ -69,6 +69,12 @@ if(isset($_POST['is_posted'])) {
 	if (isset($_POST['activer'])) {
 		if (!saveSetting("active_bulletins", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 	}
+
+	if (isset($_POST['vider_absences_bulletins'])) {
+		$sql="DELETE FROM absences;";
+		$nettoyage=mysql_query($sql);
+		if (!$nettoyage) {$msg = "Erreur lors du \"vidage\" de la table 'absences'.";} else {$msg = "La table 'absences' a été vidée.";}
+	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')){

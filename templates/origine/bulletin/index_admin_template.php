@@ -96,7 +96,6 @@
 <?php
 	echo add_token_field();
 ?>
-	  <input type="hidden" name="is_posted" value="1" />
 	  <input type="submit" value="Enregistrer" />
 	</p>
 	
@@ -138,6 +137,38 @@
 
 
 
+
+  <form action="index_admin.php" id="form2" method="post">
+	<p class="center">
+<?php
+	echo add_token_field();
+?>
+	  <input type="hidden" name="is_posted" value="1" />
+	</p>
+	
+	<h2 class="colleHaut">Absences sur les bulletins</h2>
+	<p>
+	  Vous pouvez souhaiter vider les enregistrements d'absences (*) réalisés pour les bulletins de façon à refaire un remplissage des absences par la suite.<br />
+	  Cela ne supprime pas les enregistrements effectués dans les modules Absence de Gepi.<br />
+	<?php
+		if(getSettingValue("active_module_absence") == '2') {
+			echo "
+	  Dans le cas où vous utilisez le module Absences 2, le \"vidage\" ne fonctionne que si vous avez opté pour un import manuel des absences.";
+		}
+	?>
+	</p>
+
+	<p class="center">
+	  <input type="hidden" name="is_posted" value="1" />
+	  <input type="hidden" name="vider_absences_bulletins" value="y" />
+	  <input type="submit" value="Vider les saisies absences des bulletins" />
+	</p>
+	<p style='color:red; text-align:center;'>ATTENTION : L'opération est irréversible.<br />
+	De plus, elle concerne toutes les classes et ce pour toutes les périodes.</p>
+
+	<br />
+	<p>(*) Les nombre de demi-journées d'absences, nombre d'absences non justifiées, nombre de retards et observation du CPE seront supprimées.</p>
+</form>
 
 
 <!-- Début du pied -->

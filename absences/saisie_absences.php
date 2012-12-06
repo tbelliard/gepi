@@ -261,6 +261,17 @@ Si vous n'avez rempli que les champs non nuls, vous pouvez compléter d'un coup 
 echo "<a href='javascript:complete_a_zero_champs_vides()'>Compléter les champs vides par des zéros</a>";
 echo "</p>\n";
 
+echo "<br />
+<p>Vous pouvez aussi vider les saisies, si vous voulez repartir à blanc.<br />
+<span style='color:red'>Attention&nbsp;: L'opération est irréversible<br />
+(<em>mais rien n'est pris en compte tant que vous ne cliquez pas sur Enregistrer</em>).</span></p>
+<ul>
+	<li><a href=\"javascript:vider_les_champs('');\">Vider la colonne Nombre de demi-journées d'absences</a></li>
+	<li><a href=\"javascript:vider_les_champs('1');\">Vider la colonne Nombre d'absences non justifiées</a></li>
+	<li><a href=\"javascript:vider_les_champs('2');\">Vider la colonne Nombre de retards</a></li>
+	<li><a href=\"javascript:vider_les_champs('3');\">Vider la colonne Observations</a></li>
+</ul>\n";
+
 echo "<script type='text/javascript'>\n";
 
 if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
@@ -286,6 +297,20 @@ function complete_a_zero_champs_vides() {
 			if(document.getElementById('n2'+i).value=='') {
 				document.getElementById('n2'+i).value=0;
 			}
+		}
+	}
+
+	changement();
+}
+
+// prefixe='' 1/2 j abs
+// prefixe='1' nbnj
+// prefixe='2' retards
+// prefixe='3' observations
+function vider_les_champs(prefixe) {
+	for(i=10;i<$num_id;i++) {
+		if(document.getElementById('n'+prefixe+i)) {
+			document.getElementById('n'+prefixe+i).value='';
 		}
 	}
 
