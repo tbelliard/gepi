@@ -118,9 +118,6 @@ $MargeDroite=10;
 $MargeGauche=10;
 $MargeBas=10;
 
-$x0=$MargeGauche;
-$y0=$MargeHaut;
-
 // Hauteur de l'étiquette
 $haut_etq=30;
 
@@ -137,6 +134,10 @@ while($lig=mysql_fetch_object($res)) {
 	$nom=$lig->nom;
 	$$nom=$lig->valeur;
 }
+
+$x0=$MargeGauche;
+$y0=$MargeHaut;
+
 // Espace horizontal entre deux étiquettes
 $dx=$largeur_page-$MargeDroite-$MargeGauche-2*$larg_etq;
 // AJOUTER UN TEST
