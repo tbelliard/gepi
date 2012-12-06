@@ -2032,7 +2032,7 @@ function insere_lien_insertion_image_dans_ckeditor($url_img) {
  * @return string : Chaine HTML <div float:right...><a href...><img...></a></div>
 */
 function insere_lien_insertion_lien_geogebra_dans_ckeditor($titre_ggb, $url_ggb) {
-	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_ggb_dans_ckeditor('".$titre_ggb."', '".$url_ggb."')\" title='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB'><img src='../images/up.png' width='18' height='18' alt='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB' /></a></div>";
+	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_ggb_dans_ckeditor('".preg_replace("/'/", " ", $titre_ggb)."', '".$url_ggb."')\" title='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB'><img src='../images/up.png' width='18' height='18' alt='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB' /></a></div>";
 }
 
 /** fonction alertant sur la configuration de suhosin
