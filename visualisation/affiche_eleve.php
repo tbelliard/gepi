@@ -595,10 +595,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 } elseif ($_SESSION['statut'] == "responsable" and $login_eleve == null) {
 	// On demande à l'utilisateur de choisir l'élève pour lequel il souhaite visualiser les données
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
-	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser les moyennes :</p>";
+	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser les moyennes :</p><ul>";
 	while ($current_eleve = mysql_fetch_object($get_eleves)) {
-		echo "<p><a href='affiche_eleve.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
+		echo "<li><a href='affiche_eleve.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></li>";
 	}
+	echo "</ul>\n";
 	// Après ça, on arrive en fin de page avec le require("../lib/footer.inc.php");
 
 } else {
@@ -1661,6 +1662,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	// Capture des mouvements de la souris et affichage des cadres d'info
 	//echo "<script type='text/javascript' src='cadre_info.js'></script>\n";
 
+	// 20121206
+	if ($_SESSION['statut'] == "responsable" and $login_eleve != null) {
+		while ($current_eleve = mysql_fetch_object($get_eleves)) {
+			if($current_eleve->login==$login_eleve) {echo " | <strong>".$current_eleve->prenom." ".$current_eleve->nom."</strong> ";}
+			else {echo " | <a href='affiche_eleve.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a> ";}
+		}
+		echo "<br />\n";
+	}
 
 	echo "<table summary='Présentation'>\n";
 	echo "<tr valign='top'>\n";
@@ -1842,6 +1851,7 @@ function eleve_suivant() {
 		// Cas d'un responsable ou d'un élève :
 		// Pas de sélection de l'élève, il est déjà fixé.
 		// Pas de sélection non plus de la comparaison : c'est la moyenne de la classe (ou moy min ou max).
+
 		echo "<p>Eleve : ".$prenom_eleve . " " .$nom_eleve."</p>\n";
 		echo "<input type='hidden' name='eleve1' value='".$login_eleve."' />\n";
 		echo "<input type='hidden' name='login_eleve' value='".$login_eleve."' />\n";
