@@ -705,7 +705,7 @@ if(getSettingAOui('active_bulletins')) {
             )
         )
         OR
-        (($this->statutUtilisateur == "cpe") AND (getSettingValue("GepiAccesReleveCpe") == "yes")) OR (getSettingValue("GepiAccesReleveCpeTousEleves") == "yes")));
+        (($this->statutUtilisateur == "cpe") AND ((getSettingValue("GepiAccesReleveCpe") == "yes") OR (getSettingValue("GepiAccesReleveCpeTousEleves") == "yes")))));
 
 	$condition2 = ($this->statutUtilisateur != "professeur" OR
 				(
