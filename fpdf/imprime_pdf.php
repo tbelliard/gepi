@@ -129,7 +129,7 @@ foreach($data1 as $key => $value) {
 */
 
 $pdf->SetFont('DejaVu','',8);
-$pdf->FancyTable($w1,$header1,$data1,"v");
+$pdf->FancyTable($w1,$header1,$data1,"v","R");
 
 //debug_var();
 
