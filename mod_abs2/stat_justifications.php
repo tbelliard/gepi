@@ -179,15 +179,14 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 			  ->endUse()
 			->endUse()
 			;
-		  $traiteEleveDemi_col = $propel_traitEleveDemi->find();
-		  $traiteEleveDemi = $propel_eleve->getDemiJourneesAbsenceParCollection($traiteEleveDemi_col,$date_debut,$date_fin);
+		  $traiteEleveDemi = $propel_eleve->getDemiJourneesAbsence($date_debut,$date_fin);
 		  $donnees[$eleve_id]['traitement'][] = $traiteEleveDemi->count();
 		  $totalDemi += $traiteEleveDemi->count();
 		}
 	  }
 	  $donnees[$eleve_id]['totalDemi']=$totalDemi;
 	}
-	unset ($eleveNbAbs, $traiteEleve_col, $propel_eleve, $propel_traitEleveDemi, $traiteEleveDemi, $traiteEleveDemi_col, $propel_traitEleve);
+	unset ($eleveNbAbs, $traiteEleve_col, $propel_eleve, $propel_traitEleveDemi, $traiteEleveDemi, $propel_traitEleve);
 	if ($erreur && isset ($donnees[$eleve_id]['justifiees']) && ($donnees[$eleve_id]['justifiees']==$donnees[$eleve_id]['totalDemi'])) {
 	  $donnees[$eleve_id] = array();
 	}
