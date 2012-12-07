@@ -91,13 +91,10 @@
 
   <div id='container'>
 
-  <form action="index_admin.php" id="form1" method="post">
-	<p class="center">
+  <form action="index_admin.php" id="form1" method="post" style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
 <?php
 	echo add_token_field();
 ?>
-	  <input type="submit" value="Enregistrer" />
-	</p>
 	
 	<h2 class="colleHaut">Configuration générale</h2>
 	<p class="italic">
@@ -134,18 +131,14 @@
 
 </form>
 
+<br />
 
-
-
-
-  <form action="index_admin.php" id="form2" method="post">
-	<p class="center">
+  <form action="index_admin.php" id="form2" method="post" style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
 <?php
 	echo add_token_field();
 ?>
-	  <input type="hidden" name="is_posted" value="1" />
-	</p>
-	
+	<input type="hidden" name="is_posted" value="1" />
+
 	<h2 class="colleHaut">Absences sur les bulletins</h2>
 	<p>
 	  Vous pouvez souhaiter vider les enregistrements d'absences (*) réalisés pour les bulletins de façon à refaire un remplissage des absences par la suite.<br />
