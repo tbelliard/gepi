@@ -156,6 +156,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 	<p>
     <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Afficher</button>
     <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="ods">Enregistrer au format ods</button>
+    &nbsp;<input type="checkbox" id='generer_csv' name="generer_csv" value="y"><label for='generer_csv' title="La génération de CSV est effectuée avec l'affichage HTML dans la présente page (pas lors de la génération d'un fichier ODS).">Générer un CSV</label>
 	</p>
 	</form>
 
@@ -214,6 +215,16 @@ if ($affichage != null && $affichage != '') {
 }
 
 if ($affichage == 'html') {
+    //debug_var();
+
+    if(isset($_POST['generer_csv'])) {
+        $user_temp_dir=get_user_temp_directory();
+        if(!$user_temp_dir) {
+            echo "<p style='color:red'>ERREUR : Il n'a pas été possible d'accéder à votre dossier temporaire pour y générer le CSV.</p>\n";
+        }
+        echo "<p id='p_csv' style='display:none'></p>\n";
+    }
+
     echo 'Total élèves : '.$eleve_col->count();
     echo '<table class="sortable resizable boireaus" style="border-width:1px; border-style:outset">';
     $precedent_eleve_id = null;
@@ -243,6 +254,8 @@ if ($affichage == 'html') {
     echo '</tr>';
     echo '</thead>';
     echo '<tbody>';
+    $csv="ELENOET;NOM;PRENOM;CLASSE;NBABS;NBNJ;NBRET;\n";
+    $csv2="ELENOET;NBABS;NBNJ;NBRET;\n";
     $nb_demijournees = 0;
     $nb_nonjustifiees = 0;
     $nb_retards = 0;
@@ -253,24 +266,33 @@ if ($affichage == 'html') {
 	    
 	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getNom().' '.$eleve->getPrenom();
+	    $csv.=$eleve->getElenoet().";".$eleve->getNom().";".$eleve->getPrenom().";";
+	    $csv2.=$eleve->getElenoet().";";
 	    echo '</td>';
 
 	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getClasseNom();
+	    $csv.=$eleve->getClasseNom().";";
 	    echo '</td>';
 
 	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getNbAbsences();
+	    $csv.=$eleve->getNbAbsences().";";
+	    $csv2.=$eleve->getNbAbsences().";";
 	    $nb_demijournees = $nb_demijournees + $eleve->getNbAbsences();
 	    echo '</td>';
 
 	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getNbNonJustifiees();
+	    $csv.=$eleve->getNbNonJustifiees().";";
+	    $csv2.=$eleve->getNbNonJustifiees().";";
 	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getNbNonJustifiees();
 	    echo '</td>';
 
 	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getNbRetards();
+	    $csv.=$eleve->getNbRetards().";\n";
+	    $csv2.=$eleve->getNbRetards().";\n";
 	    $nb_retards = $nb_retards + $eleve->getNbRetards();
 	    echo '</td>';
 
@@ -301,8 +323,33 @@ if ($affichage == 'html') {
     echo '</th>';
 
     echo '</tr>';
-     echo '</tfoot>';
+    echo '</tfoot>';
+    echo '</table>';
     echo '<h5>Extraction faite le '.date("d/m/Y - h:i").'</h5>';
+
+    if(isset($_POST['generer_csv'])) {
+        if($user_temp_dir) {
+            $chemin_fichier="../temp/".$user_temp_dir."/extraction_abs_".strftime("%Y%m%d%H%M%S").".csv";
+            $f=fopen($chemin_fichier, "w+");
+            if(!$f) {
+                echo "<p style='color:red'>ERREUR : Il n'a pas été possible de créer un fichier CSV dans votre dossier temporaire.</p>\n";
+            }
+            else {
+                fwrite($f, $csv2);
+                fclose($f);
+
+                $chemin_fichier1="../temp/".$user_temp_dir."/extraction_abs_plus_".strftime("%Y%m%d%H%M%S").".csv";
+                $f=fopen($chemin_fichier1, "w+");
+                fwrite($f, $csv);
+                fclose($f);
+                echo "<p><a href='$chemin_fichier' target='_blank'>Télécharger le CSV</a> ou le <a href='$chemin_fichier1' target='_blank'>CSV avec nom, prénom, classe</a></p>
+                <script type='text/javascript'>
+                    document.getElementById('p_csv').innerHTML=\"<a href='$chemin_fichier' target='_blank'>Télécharger le CSV</a> ou le <a href='$chemin_fichier1' target='_blank'>CSV avec nom, prénom, classe</a>\";
+                    document.getElementById('p_csv').style.display='';
+                </script>\n";
+            }
+        }
+    }
 } else if ($affichage == 'ods') {
     // load the TinyButStrong libraries    
 	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine
