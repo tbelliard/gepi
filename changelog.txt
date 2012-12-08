@@ -48,6 +48,7 @@ Cahiers de textes :
 - Possibilité de limiter l'accès des profs aux CDT de leurs seules classes.
 - Archivage: ajout d'un dispositif de sélection de notices dans l'archive
   produite.
+- Affichage du volume occupé par les documents joints dans les CDT.
 
 Abs2 :
 - Possibilité de cocher les absences, retards, infirmerie,... sur le plan de 

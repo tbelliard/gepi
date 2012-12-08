@@ -340,6 +340,20 @@ if ($test == -1) {
 }
 $result .= "<br />";
 
+$result .= "&nbsp;->Initialisation de l'affichage du volume des documents joints aux CDT : ";
+$cdt_afficher_volume_docs_joints=getSettingValue('cdt_afficher_volume_docs_joints');
+if($cdt_afficher_volume_docs_joints=='') {
+	$result_inter = traite_requete("INSERT INTO setting SET name='cdt_afficher_volume_docs_joints', value='y';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Prise en compte déjà effectuée.");
+}
+$result .= "<br />";
 
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
 ?>

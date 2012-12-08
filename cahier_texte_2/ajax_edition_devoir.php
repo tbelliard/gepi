@@ -177,6 +177,18 @@ foreach($classes as $classe){
 }
 echo "</div>\n";
 
+if(getSettingAOui('cdt_afficher_volume_docs_joints')) {
+	$volume_cdt_groupe=volume_docs_joints($groupe->getId());
+	if($volume_cdt_groupe!=0) {
+		$volume_cdt_groupe_cr=volume_docs_joints($groupe->getId(), "devoirs");
+		$volume_cdt_groupe_cr_h=volume_human($volume_cdt_groupe_cr);
+		$volume_cdt_groupe_h=volume_human($volume_cdt_groupe);
+		$info_volume=$volume_cdt_groupe_cr_h."/".$volume_cdt_groupe_h;
+		//mb_strlen($info_volume)
+		echo "<div style='float:right; width:10em; text-align:center; background: ".$color_fond_notices[$type_couleur].";' title=\"Les documents joints aux devoirs occupent $volume_cdt_groupe_cr_h sur un total de $volume_cdt_groupe_h pour l'enseignement de ".$groupe->getName()." ".$groupe->getDescriptionAvecClasses().".\">".$info_volume."</div>";
+	}
+}
+
 echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 			updateListeNoticesChaine();
 			id_groupe = (\$A($('id_groupe_colonne_droite').options).find(function(option) { return option.selected; }).value);
@@ -253,7 +265,6 @@ if($timestamp_du_jour!=$today) {
 //echo "\$timestamp_du_jour=$timestamp_du_jour<br />";
 //echo "\$today=$today<br />";
 echo "<br />\n";
-
 //==============================================
 
 //fin affichage des groupes

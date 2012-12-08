@@ -149,6 +149,18 @@ if (isset($_POST['is_posted'])) {
 	}
 
 
+	if (isset($_POST['is_posted'])) {
+		if (isset($_POST['cdt_afficher_volume_docs_joints'])) {
+			if (!saveSetting("cdt_afficher_volume_docs_joints", "y")) {
+				$msg .= "Erreur lors de l'enregistrement de l'affichage du volume des documents joints.<br />";
+			}
+		}
+		elseif (!saveSetting("cdt_afficher_volume_docs_joints", "n")) {
+			$msg .= "Erreur lors de l'enregistrement de l'affichage du volume des documents joints.<br />";
+		}
+	}
+
+
 	if (isset($_POST['is_posted']) && ($msg=="") ) {
 		$msg = "Les modifications ont été enregistrées !";
 		$post_reussi=TRUE;

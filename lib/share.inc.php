@@ -1647,6 +1647,64 @@ function vider_dir($dir){
 	return $statut;
 }
 
+
+/**
+ * Additionne la taille des documents joints dans le CDT d'un groupe
+ *
+ * @param int $id_groupe Identifiant du groupe
+ * @return int la taille totale des documents joints
+ */
+function volume_docs_joints($id_groupe, $mode="all"){
+	$volume_cdt_groupe=0;
+
+	/*
+	$sql="SELECT DISTINCT cd.id_ct FROM ct_documents cd, ct_entry ce WHERE cd.id_ct=ce.id_ct AND ce.id_groupe='".$groupe->getId()."';";
+	//echo "$sql<br />";
+	$res_doc=mysql_query($sql);
+	if(mysql_num_rows($res_doc)>0) {
+		while($lig_doc=mysql_fetch_object($res_doc)) {
+			$volume_cdt_groupe+=volume_dir("../documents/cl".$lig_doc->id_ct);
+		}
+	}
+	$sql="SELECT DISTINCT cde.id_ct FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$groupe->getId()."';";
+	//echo "$sql<br />";
+	$res_doc=mysql_query($sql);
+	if(mysql_num_rows($res_doc)>0) {
+		while($lig_doc=mysql_fetch_object($res_doc)) {
+			$volume_cdt_groupe+=volume_dir("../documents/cl_dev".$lig_doc->id_ct);
+		}
+	}
+	*/
+
+	if($mode=="devoirs") {
+		$sql="SELECT DISTINCT cdd.emplacement FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$id_groupe."';";
+	}
+	elseif($mode=="compte_rendus") {
+		$sql="SELECT DISTINCT cd.emplacement FROM ct_documents cd, ct_entry ce WHERE cd.id_ct=ce.id_ct AND ce.id_groupe='".$id_groupe."';";
+	}
+	else {
+		$sql="(SELECT DISTINCT cd.emplacement FROM ct_documents cd, ct_entry ce WHERE cd.id_ct=ce.id_ct AND ce.id_groupe='".$id_groupe."') UNION (SELECT DISTINCT cdd.emplacement FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$id_groupe."');";
+	}
+	//echo "$sql<br />";
+	$res_doc=mysql_query($sql);
+	if(mysql_num_rows($res_doc)>0) {
+		while($lig_doc=mysql_fetch_object($res_doc)) {
+			if(file_exists($lig_doc->emplacement)) {
+				$tabtmpsize=stat($lig_doc->emplacement);
+				if(isset($tabtmpsize[7])) {
+					$size=$tabtmpsize[7];
+					$volume_cdt_groupe+=$size;
+				}
+			}
+		}
+	}
+
+	return($volume_cdt_groupe);
+}
+
+
+
+
 /**
  * Cette fonction supprime le BOM éventuel d'un fichier encodé en UTF-8
  * A appeler immédiatement après ouverture du fichier
