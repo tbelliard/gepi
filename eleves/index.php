@@ -611,7 +611,11 @@ if (!isset($quelles_classes)) {
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='' style='cursor: pointer;'>\n";
-		echo "<span class='norme'>Elève dont le nom commence par: \n";
+		echo "<span class='norme'>Elève dont le nom \n";
+		echo "<select name='mode_rech_nom'>
+		<option value='commence_par'>commence par</option>
+		<option value='contient'>contient</option>
+		</select>";
 		echo "<input type='text' name='motif_rech' id='motif_rech_nom' value='' onclick='verif3()' size='5' />\n";
 		echo "</span><br />\n";
 		echo "</label>\n";
@@ -624,7 +628,11 @@ if (!isset($quelles_classes)) {
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='' style='cursor: pointer;'>\n";
-		echo "<span class='norme'>Elève dont le prénom commence par: \n";
+		echo "<span class='norme'>Elève dont le prénom \n";
+		echo "<select name='mode_rech_prenom'>
+		<option value='commence_par'>commence par</option>
+		<option value='contient'>contient</option>
+		</select>";
 		echo "<input type='text' name='motif_rech_p' value='' onclick='verif4()' size='5' />\n";
 		echo "</span><br />\n";
 		echo "</label>\n";
@@ -1491,6 +1499,14 @@ if(isset($quelles_classes)) {
 				$motif_rech=$motif_rech_p;
 			}
 
+			$pref_motif="";
+			$texte_motif="commence par";
+			if(((isset($_POST['mode_rech_prenom']))&&($_POST['mode_rech_prenom']=='contient'))||
+			((isset($_GET['mode_rech_prenom']))&&($_GET['mode_rech_prenom']=='contient'))) {
+				$pref_motif="%";
+				$texte_motif="contient";
+				$mode_rech_prenom="contient";
+			}
 			/*
 			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
 			ORDER BY $order_type
@@ -1498,23 +1514,32 @@ if(isset($quelles_classes)) {
 			*/
 			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
-					WHERE prenom like '".$motif_rech."%' AND
+					WHERE prenom like '".$pref_motif.$motif_rech."%' AND
 							e.login=jer.login AND
 							jec.login=e.login AND
 							c.id=jec.id_classe
 					ORDER BY $order_type";
 			}
 			else{
-				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE prenom like '".$motif_rech."%' AND
+				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE prenom like '".$pref_motif.$motif_rech."%' AND
 									e.login=jer.login
 								ORDER BY $order_type";
 			}
 			//echo "$sql<br />\n";
 			$calldata = mysql_query($sql);
 
-			echo "<p align='center'>Liste des élèves dont le prenom commence par <b>$motif_rech</b></p>\n";
+			echo "<p align='center'>Liste des élèves dont le prenom $texte_motif <b>$motif_rech</b></p>\n";
 
 		} else if ($quelles_classes == 'recherche') {
+			$pref_motif="";
+			$texte_motif="commence par";
+			if(((isset($_POST['mode_rech_nom']))&&($_POST['mode_rech_nom']=='contient'))||
+			((isset($_GET['mode_rech_nom']))&&($_GET['mode_rech_nom']=='contient'))) {
+				$pref_motif="%";
+				$texte_motif="contient";
+				$mode_rech_nom="contient";
+			}
+
 			/*
 			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
 			ORDER BY $order_type
@@ -1522,21 +1547,21 @@ if(isset($quelles_classes)) {
 			*/
 			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
-					WHERE nom like '".$motif_rech."%' AND
+					WHERE nom like '".$pref_motif.$motif_rech."%' AND
 							e.login=jer.login AND
 							jec.login=e.login AND
 							c.id=jec.id_classe
 					ORDER BY $order_type";
 			}
 			else{
-				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE nom like '".$motif_rech."%' AND
+				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE nom like '".$pref_motif.$motif_rech."%' AND
 							e.login=jer.login
 					ORDER BY $order_type";
 			}
 			//echo "$sql<br />\n";
 			$calldata = mysql_query($sql);
 
-			echo "<p align='center'>Liste des élèves dont le nom commence par <b>$motif_rech</b></p>\n";
+			echo "<p align='center'>Liste des élèves dont le nom $texte_motif <b>$motif_rech</b></p>\n";
 		}
 		else if ($quelles_classes == 'dse') { //Elève ayant une date de sortie renseignée.
 			$sql="SELECT e.*, jer.* FROM eleves e
@@ -1591,22 +1616,30 @@ if(isset($quelles_classes)) {
 	
 	echo "<th><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
+	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
 	echo "'>Nom Prénom</a></p></th>\n";
 	$csv.="Nom Prénom;";
 	$csv.="Date sortie;";
 
 	echo "<th><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
+	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
 	echo "'>Sexe</a></p></th>\n";
 	$csv.="Sexe;"
 	;
 	echo "<th><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
+	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
 	echo "'>Date de naissance</a></p></th>\n";
 	$csv.="Date de naissance;";
 
 	echo "<th><p><a href='index.php?order_type=regime,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
+	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
 	echo "'>Régime</a></p></th>\n";
 	$csv.="Régime;";
 
@@ -1617,6 +1650,8 @@ if(isset($quelles_classes)) {
 		if($_SESSION['statut'] != 'professeur') {
 			echo "<a href='index.php?order_type=classe,nom,prenom&amp;quelles_classes=$quelles_classes";
 			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+			if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
+			if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
 			echo "'>Classe</a>";
 		}
 		else{
