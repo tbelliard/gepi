@@ -68,6 +68,10 @@ Discipline :
 - Possibilité d'imprimer les retenues et incidents avec les adresses distinctes
   pour les parents séparés.
 
+Trombinoscope :
+- Possibilité de déplacer les photos dans le plan de classe en cliquant sur le
+  corps de l'infobulle et plus seulement sur son entête.
+
 Gestion:
 - Possibilité de masquer certains groupes dans les Cahiers de textes
   (comme on peut masquer des groupes dans les bulletins et/ou carnets de notes).

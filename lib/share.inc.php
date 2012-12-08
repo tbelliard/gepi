@@ -1530,7 +1530,7 @@ function get_user_temp_directory(){
 			if(file_exists("temp/".$dirname)){
 				return $dirname;
 			}
-			else if(file_exists("../temp/".$dirname)) {
+			elseif(file_exists("../temp/".$dirname)) {
 				return $dirname;
 			}
 			else if(file_exists("../../temp/".$dirname)) {
@@ -2406,7 +2406,7 @@ $GLOBALS['class_special_infobulle'] = '';
  * @param string $bg_texte Couleur de fond du DIV contenant le texte
  * @param int $largeur Largeur du DIV conteneur
  * @param int $hauteur Hauteur (minimale) du DIV conteneur
- * @param string $drag 'y' ou 'n' pour rendre le DIV draggable
+ * @param string $drag 'y' ou 'n' pour rendre le DIV draggable ('yy' rend même le corps de l'infobulle poignée de drag)
  * @param string $bouton_close 'y' ou 'n' pour afficher le bouton Close
  * @param string $survol_close 'y' ou 'n' pour refermer le DIV automatiquement lorsque le survol quitte le DIV
  * @param string $overflow 'y' ou 'n' activer l'overflow automatique sur la partie Texte. Il faut que $hauteur soit non NULLe
@@ -2481,7 +2481,7 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 			}
 			$div.=";'";
 		}
-		if($drag=="y"){
+		if(($drag=="y")||($drag=="yy")){
 			// Là on utilise les fonctions de http://www.brainjar.com stockées dans brainjar_drag.js
 			$div.=" onmousedown=\"dragStart(event, '$id')\"";
 		}
@@ -2515,6 +2515,12 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	//==================
 	// 20110113
 	$div.="<div id='".$id."_contenu_corps'";
+
+	if($drag=="yy"){
+		// Là on utilise les fonctions de http://www.brainjar.com stockées dans brainjar_drag.js
+		$div.=" onmousedown=\"dragStart(event, '$id')\"";
+	}
+
 	//==================
 	if($survol_close=="y"){
 		// On referme le DIV lorsque la souris quitte la zone de texte.
