@@ -232,7 +232,6 @@ if ($affiche_rang == 'y') {
 $coefficients_a_1="non";
 $affiche_graph = 'n';
 
-
 for($loop=$periode1;$loop<=$periode2;$loop++) {
 	$periode_num=$loop;
 	include "../lib/calcul_moy_gen.inc.php";
@@ -431,6 +430,12 @@ if ($choix_edit != '2') {
 
     $nombre_eleves = mysql_num_rows($appel_liste_eleves);
 
+	$avec_moy_min_max_classe="y";
+	if((($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseMinMaxEleve')))||
+	(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseMinMaxResp')))) {
+		$avec_moy_min_max_classe="n";
+	}
+	//echo "\$avec_moy_min_max_classe=$avec_moy_min_max_classe<br />";
 	//=========================
 	// AJOUT: boireaus 20080209
 	// Affichage des appréciations saisies pour la classe
