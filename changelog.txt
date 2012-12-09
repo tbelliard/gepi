@@ -25,6 +25,8 @@ Bulletins :
   simplifié des appreciations sur le groupe-classe.
 - Possibilité de masquer aux parents et aux élèves la moyenne de classe sur les
   bulletins simplifiés et graphes.
+- Possibilité d'afficher ou non sur le bulletin simplifié de classe les
+  moyennes min/max.
 - Affichage de l'indication comme quoi les appréciations sont visibles
   ou non des parents à une date donnée.
 - Envoi des mails de proposition de correction aux comptes scolarité
@@ -103,6 +105,12 @@ Gestion:
 - Ajout d'un droit distincts des droits pour les paramètres des bulletins pour
   accéder aux paramètres des relevés HTML.
 
+Graphes:
+- Possibilité d'afficher le rang de l'élève sur les graphes en courbe/étoile
+  (comme un choix au lieu d'afficher la Moyenne de la classe).
+- Possibilité de modifier la taille de police dans la fenêtre déroulante 
+  contenant les appréciations dans les graphes en courbe/étoile
+
 Divers:
 - Affichage des AID dans le choix Bulletins de la barre de menu horizontale prof
   et sur la page d'accueil simplifiée prof.
@@ -111,8 +119,6 @@ Divers:
   consultation des infos concernant un élève.
 - Affichage des responsables non légaux dans l'onglet responsables de la page
   Consult.élève.
-- Possibilité d'afficher le rang de l'élève sur les graphes en courbe/étoile
-  (comme un choix au lieu d'afficher la Moyenne de la classe).
   Possibilité d'interdire la consultation du rang pour les responsables/élèves.
 
 

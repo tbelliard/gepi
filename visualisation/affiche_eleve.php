@@ -115,6 +115,7 @@ if(isset($_POST['valider_raz_param'])) {
 'graphe_epaisseur_traits',
 'graphe_epaisseur_croissante_traits_periodes',
 'graphe_hauteur_affichage_deroulant',
+'graphe_app_deroulantes_taille_police',
 'graphe_hauteur_graphe',
 'graphe_largeur_graphe',
 'graphe_largeur_imposee_photo',
@@ -191,6 +192,8 @@ affiche_moy_classe
 			if(isset($_POST['graphe_affiche_deroulant_appreciations'])){save_params_graphe('graphe_affiche_deroulant_appreciations',$_POST['graphe_affiche_deroulant_appreciations']);}
 			if(isset($_POST['graphe_hauteur_affichage_deroulant'])) {save_params_graphe('graphe_hauteur_affichage_deroulant',$_POST['graphe_hauteur_affichage_deroulant']);}
 
+			if(isset($_POST['graphe_app_deroulantes_taille_police'])) {save_params_graphe('graphe_app_deroulantes_taille_police',$_POST['graphe_app_deroulantes_taille_police']);}
+
 			if(isset($_POST['click_plutot_que_survol_aff_app'])) {save_params_graphe('graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
 			if(isset($_POST['graphe_pointille'])) {save_params_graphe('graphe_pointille',$_POST['graphe_pointille']);}
@@ -243,6 +246,8 @@ if(isset($_POST['parametrage_affichage'])) {
 	// Ajout Eric 11/12/10
 	if(isset($_POST['graphe_affiche_deroulant_appreciations'])){savePref($_SESSION['login'],'graphe_affiche_deroulant_appreciations',$_POST['graphe_affiche_deroulant_appreciations']);}
 	if(isset($_POST['graphe_hauteur_affichage_deroulant'])) {savePref($_SESSION['login'],'graphe_hauteur_affichage_deroulant',$_POST['graphe_hauteur_affichage_deroulant']);}
+
+	if(isset($_POST['graphe_app_deroulantes_taille_police'])) {savePref($_SESSION['login'],'graphe_app_deroulantes_taille_police',$_POST['graphe_app_deroulantes_taille_police']);}
 
 	if(isset($_POST['click_plutot_que_survol_aff_app'])) {savePref($_SESSION['login'],'graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
@@ -1338,6 +1343,28 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
+	if(isset($_POST['graphe_app_deroulantes_taille_police'])) {
+		$graphe_app_deroulantes_taille_police=$_POST['graphe_app_deroulantes_taille_police'];
+	}
+	else{
+		$pref_graphe_app_deroulantes_taille_police=getPref($_SESSION['login'],'graphe_graphe_app_deroulantes_taille_police','');
+		if($pref_graphe_app_deroulantes_taille_police!='') {
+			$graphe_app_deroulantes_taille_police=$pref_graphe_app_deroulantes_taille_police;
+		}
+		else {
+			if(getSettingValue('graphe_app_deroulantes_taille_police')) {
+				$graphe_app_deroulantes_taille_police=getSettingValue('graphe_app_deroulantes_taille_police');
+			}
+			else{
+				$graphe_app_deroulantes_taille_police=16;
+			}
+		}
+	}
+	if((mb_strlen(preg_replace("/[0-9]/","",$graphe_app_deroulantes_taille_police))!=0)||($graphe_app_deroulantes_taille_police=="")) {
+		$graphe_app_deroulantes_taille_police=16;
+	}
+
+
 	//======================================================================
 	//======================================================================
 	//======================================================================
@@ -1545,7 +1572,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<tr><td>Afficher une fenêtre déroulante contenant les appréciations:</td><td><label for='affiche_deroulant_appreciations_oui' style='cursor: pointer;'><input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_oui' value='oui'$checked />Oui</label> / \n";
 			if($graphe_affiche_deroulant_appreciations=='non') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='affiche_deroulant_appreciations_non' style='cursor: pointer;'>Non<input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_non' value='non'$checked /></label></td></tr>\n";
+
 			echo "<tr><td><label for='graphe_hauteur_affichage_deroulant' style='cursor: pointer;'>Hauteur de la zone déroulante (<i>en pixels</i>):</label></td><td><input type='text' name='graphe_hauteur_affichage_deroulant' id='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
+
+			echo "<tr><td><label for='graphe_app_deroulantes_taille_police' style='cursor: pointer;'>Taille de la police (<i>en points</i>):</label></td><td><input type='text' name='graphe_app_deroulantes_taille_police' id='graphe_app_deroulantes_taille_police' value='$graphe_app_deroulantes_taille_police' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
 
 			echo "</table>\n";
 			
@@ -1896,7 +1926,11 @@ function eleve_suivant() {
 		echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
 		//echo "<div style='border:1px solid black; background-color:white; width: 320px;' style='height:$graphe_hauteur_affichage_deroulant'>";
 		echo "<b><i><center>Appréciations - $periode</center></i></b>";
-		echo "<div id='appreciations_deroulantes'>";
+		echo "<div id='appreciations_deroulantes'";
+		if((isset($graphe_app_deroulantes_taille_police))&&(preg_match("/^[0-9]*$/", $graphe_app_deroulantes_taille_police))&&($graphe_app_deroulantes_taille_police>0)) {
+			echo " style='font-size: ".$graphe_app_deroulantes_taille_police."pt'";
+		}
+		echo ">";
 		echo "<span id='appreciations_defile'>";
 		//echo $txt_appreciations_deroulantes;
 		echo "</span></div></div>";
@@ -1954,6 +1988,8 @@ function eleve_suivant() {
 	//Ajout Eric 11/12/10
 	echo "<input type='hidden' name='graphe_affiche_deroulant_appreciations' value='$graphe_affiche_deroulant_appreciations' />\n";
 	echo "<input type='hidden' name='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' />\n";
+
+	echo "<input type='hidden' name='graphe_app_deroulantes_taille_police' value='$graphe_app_deroulantes_taille_police' />\n";
 
 	echo "<input type='hidden' name='affiche_moy_classe' value='$affiche_moy_classe' />\n";
 
