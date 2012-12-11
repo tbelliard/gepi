@@ -50,6 +50,7 @@ if (!checkAccess()) {
 	die();
 }
 
+$taille_max_police=10;
 
 //$debug=1;
 $debug=0;
@@ -1166,7 +1167,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
-	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
+	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>$taille_max_police)||($taille_police=="")) {
 		$taille_police=2;
 	}
 
@@ -1474,7 +1475,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			// - taille des polices
 			echo "<tr><td><label for='taille_police' style='cursor: pointer;'>Taille des polices:</label></td><td><select name='taille_police' id='taille_police'>\n";
-			for($i=1;$i<=6;$i++) {
+			for($i=1;$i<=$taille_max_police;$i++) {
 				if($taille_police==$i) {$selected=" selected='yes'";} else {$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
 			}

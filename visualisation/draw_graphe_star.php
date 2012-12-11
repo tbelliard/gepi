@@ -30,6 +30,8 @@
 		die();
 	}
 
+	$taille_max_police=10;
+
 	$avec_moy_classe="y";
 	if((isset($_GET['avec_moy_classe']))&&($_GET['avec_moy_classe']=="n")) {
 		$avec_moy_classe="n";
@@ -125,10 +127,10 @@
 	//settype($largeurTotale,'integer');
 	//settype($hauteurTotale,'integer');
 
-	// $taille_police de 1 à 6
+	// $taille_police de 1 à 6 -> 10
 	//$taille_police=3;
 	$taille_police=isset($_GET['taille_police']) ? $_GET['taille_police'] : '3';
-	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
+	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>$taille_max_police)||($taille_police=="")){
 		$taille_police=3;
 	}
 
