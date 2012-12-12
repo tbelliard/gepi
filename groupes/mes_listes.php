@@ -353,10 +353,46 @@ echo "<form action='get_csv.php' method='post'>\n";
 if(isset($current_group)) {
 	echo "<p class='bold'>Liste de ".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."&nbsp;:</p>\n";
 	echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
+
+	echo "<div id='div_champs_periodes'>\n";
+	for($i=1;$i<$current_group['nb_periode'];$i++) {
+		echo "<input type='radio' id='periode_num_$i' name='periode_num' value='".$i."' ";
+		//if($i==1) {echo "checked ";}
+		if((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$current_group['nb_periode'])) {
+			if($_SESSION['mes_listes_periode_num']==$i) {
+				echo "checked ";
+			}
+		}
+		else {
+			if($i==1) {echo "checked ";}
+		}
+		echo "/><label for='periode_num_$i'> Période $i</label><br />\n";
+	}
+	echo "</div>\n";
+
 }
 elseif(isset($classe)) {
 	echo "<p class='bold'>Liste de $classe&nbsp;:</p>\n";
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+
+	include("../lib/periodes.inc.php");
+
+	echo "<div id='div_champs_periodes'>\n";
+	for($i=1;$i<$nb_periode;$i++) {
+		echo "<input type='radio' id='periode_num_$i' name='periode_num' value='".$i."' ";
+		//if($i==1) {echo "checked ";}
+		if((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$nb_periode)) {
+			if($_SESSION['mes_listes_periode_num']==$i) {
+				echo "checked ";
+			}
+		}
+		else {
+			if($i==1) {echo "checked ";}
+		}
+		echo "/><label for='periode_num_$i'> Période $i</label><br />\n";
+	}
+	echo "</div>\n";
+
 }
 else {
 	echo "<p class='bold'>Listes personnalisées&nbsp;:</p>\n";
