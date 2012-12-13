@@ -1038,7 +1038,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				$affiche_moy_classe=getSettingValue('graphe_affiche_moy_classe');
 			}
 			else{
-				$affiche_moy_classe="non";
+				$affiche_moy_classe="oui";
 			}
 		}
 	}
@@ -1061,7 +1061,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				$affiche_minmax=getSettingValue('graphe_affiche_minmax');
 			}
 			else{
-				$affiche_minmax="non";
+				$affiche_minmax="oui";
 			}
 		}
 	}
@@ -3236,6 +3236,7 @@ function eleve_suivant() {
 						//echo "'>";
 						//echo "&amp;temoin_imageps=$temoin_imageps";
 						echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+//20121213
 						if($affiche_moy_classe!='oui') {
 							echo "&amp;avec_moy_classe=n";
 						}
