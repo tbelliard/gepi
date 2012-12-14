@@ -646,11 +646,41 @@
 		);
 
 		//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+		/*
 		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
 		((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
 		) {
+		*/
+
+
+/*
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			$afficher_la_serie_courante="y";
+			if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+				$afficher_la_serie_courante="n";
+			}
+			if(($avec_moy_classe=='n')&&($k>1)) {
+				$afficher_la_serie_courante="n";
+			}
+
+			if($afficher_la_serie_courante=="y") {
+*/
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			$afficher_la_serie_courante="y";
+			// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+			if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+				$afficher_la_serie_courante="n";
+			}
+			if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+				$afficher_la_serie_courante="n";
+			}
+
+			if($afficher_la_serie_courante=="y") {
+
+			/*
 			if(($k!=2)||
 			(($k==2)&&(isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {
+			*/
 				$xprec="";
 				$yprec="";
 				$temoin_prec="";
@@ -880,9 +910,28 @@
 			//**************
 			for($k=1;$k<=$nb_series_bis;$k++){
 				//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				/*
 				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
 				((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
 				) {
+				*/
+
+				$afficher_la_serie_courante="y";
+				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+					$afficher_la_serie_courante="y";
+				}
+				/*
+				// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+				if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+					$afficher_la_serie_courante="n";
+				}
+				*/
+				if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+					$afficher_la_serie_courante="n";
+				}
+
+				if($afficher_la_serie_courante=="y") {
+
 					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i+1]);} else {$texte_courant=$moyenne[$k][$i+1];}
 
 					imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte_courant);
@@ -1105,9 +1154,29 @@
 			//**************
 			for($k=1;$k<=$nb_series_bis;$k++){
 				//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				/*
 				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
 				((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
 				) {
+				*/
+
+				$afficher_la_serie_courante="y";
+				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+					$afficher_la_serie_courante="y";
+				}
+
+				/*
+				// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+				if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+					$afficher_la_serie_courante="n";
+				}
+				*/
+				if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+					$afficher_la_serie_courante="n";
+				}
+
+				if($afficher_la_serie_courante=="y") {
+
 					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i+1]);} else {$texte_courant=$moyenne[$k][$i+1];}
 
 					imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte_courant);
@@ -1136,9 +1205,26 @@
 	//for($k=1;$k<$nb_data;$k++){
 	for($k=1;$k<=$nb_series;$k++){
 		//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+		/*
 		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
 		((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
 		) {
+		*/
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			$afficher_la_serie_courante="y";
+		}
+		/*
+		// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+		if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+			$afficher_la_serie_courante="n";
+		}
+		*/
+		if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+			$afficher_la_serie_courante="n";
+		}
+
+		if($afficher_la_serie_courante=="y") {
+
 			if($mgen[$k]!="") {
 				$chaine_mgen=" (".nf($mgen[$k]).")";
 			}
@@ -1193,9 +1279,27 @@
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
 			//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			/*
 			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
 			((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
 			) {
+			*/
+
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				$afficher_la_serie_courante="y";
+			}
+			/*
+			// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+			if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+				$afficher_la_serie_courante="n";
+			}
+			*/
+			if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+				$afficher_la_serie_courante="n";
+			}
+
+			if($afficher_la_serie_courante=="y") {
+
 				$xtmp=$xtmp+$espace;
 				if($mgen[$k]!="") {
 					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($mgen[$k]);} else {$texte_courant=$mgen[$k];}
