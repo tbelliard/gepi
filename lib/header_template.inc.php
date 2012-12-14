@@ -439,7 +439,12 @@ if (isset($titre_page)) {
 			$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
 			$tbs_statut[]=array("classe"=>"" , "texte"=>"Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]);
 		}elseif ($_SESSION['statut'] == "responsable") {
-			$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
+			if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+				$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login'], "simple", "yy");
+			}
+			else {
+				$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
+			}
 			$chaine_enfants="";
 			if(count($tab_tmp_ele)>0) {
 				$nom_enfant=$tab_tmp_ele[1];

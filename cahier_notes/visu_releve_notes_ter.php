@@ -182,12 +182,19 @@ elseif($_SESSION['statut']=='responsable') {
 
 	// Récupérer la liste des élèves
 
-	$sql="SELECT DISTINCT e.*  FROM eleves e, j_eleves_classes jec, responsables2 r, resp_pers rp
+	$sql="(SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, responsables2 r, resp_pers rp
 			WHERE (e.ele_id=r.ele_id AND
 					r.pers_id=rp.pers_id AND
 					rp.login='".$_SESSION['login']."' AND
-					(r.resp_legal='1' OR r.resp_legal='2') AND
-					jec.login=e.login) ORDER BY e.naissance;";
+					(r.resp_legal='1' OR r.resp_legal='2') AND jec.login=e.login) ORDER BY e.naissance)";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, responsables2 r, resp_pers rp
+			WHERE (e.ele_id=r.ele_id AND
+					r.pers_id=rp.pers_id AND
+					rp.login='".$_SESSION['login']."' AND
+					r.resp_legal='0' AND r.acces_sp='y' AND jec.login=e.login) ORDER BY e.naissance)";
+	}
+	$sql.=";";
 	$res_ele=mysql_query($sql);
 	if(mysql_num_rows($res_ele)==0) {
 		echo "</p>\n";

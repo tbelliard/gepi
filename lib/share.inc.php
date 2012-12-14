@@ -2070,18 +2070,40 @@ function get_noms_classes_from_ele_login($ele_login){
  *
  * @param string $resp_login Login du responsable
  * @param string $mode Si avec_classe renvoie aussi la classe
+ * @param string $meme_en_resp_legal_0 'y'
+ *               (on récupère même les enfants dont $resp_login est resp_legal=0)
+ *               'yy' (on récupère aussi les resp_legal=0 mais seulement s'ils ont l'accès aux données en tant qu'utilisateur
+ *               ou 'n' (on ne récupère que les enfants dont $resp_login est resp_legal=1 ou 2)
  * @return array 
  * @see get_class_from_ele_login()
  */
-function get_enfants_from_resp_login($resp_login,$mode='simple'){
-	$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
+function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_legal_0="n") {
+	$sql="(SELECT e.nom,e.prenom,e.login FROM eleves e,
 											responsables2 r,
 											resp_pers rp
 										WHERE e.ele_id=r.ele_id AND
 											rp.pers_id=r.pers_id AND
 											rp.login='$resp_login' AND
-											(r.resp_legal='1' OR r.resp_legal='2')
-										ORDER BY e.nom,e.prenom;";
+										(r.resp_legal='1' OR r.resp_legal='2') ORDER BY e.nom,e.prenom)";
+	if($meme_en_resp_legal_0=="y") {
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.login='$resp_login' AND
+										r.resp_legal='0' ORDER BY e.nom,e.prenom)";
+	}
+	elseif($meme_en_resp_legal_0=="yy") {
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.login='$resp_login' AND
+											r.acces_sp='y' AND
+										r.resp_legal='0' ORDER BY e.nom,e.prenom)";
+	}
 	$res_ele=mysql_query($sql);
 
 	$tab_ele=array();
@@ -2111,18 +2133,43 @@ function get_enfants_from_resp_login($resp_login,$mode='simple'){
  *
  * @param string $pers_id identifiant sconet du responsable
  * @param string $mode Si avec_classe renvoie aussi la classe
+ * @param string $meme_en_resp_legal_0 'y'
+ *               (on récupère même les enfants dont $resp_login est resp_legal=0)
+ *               'yy' (on récupère aussi les resp_legal=0 mais seulement s'ils ont l'accès aux données en tant qu'utilisateur
+ *               ou 'n' (on ne récupère que les enfants dont $resp_login est resp_legal=1 ou 2)
  * @return array 
  * @see get_class_from_ele_login()
  */
-function get_enfants_from_pers_id($pers_id,$mode='simple'){
-	$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
+function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_0="n"){
+	$sql="(SELECT e.nom,e.prenom,e.login FROM eleves e,
 											responsables2 r,
 											resp_pers rp
 										WHERE e.ele_id=r.ele_id AND
 											rp.pers_id=r.pers_id AND
-											rp.pers_id='$pers_id' AND
-											(r.resp_legal='1' OR r.resp_legal='2')
-										ORDER BY e.nom,e.prenom;";
+											rp.pers_id='$pers_id' AND 
+											(r.resp_legal='1' OR r.resp_legal='2') 
+										ORDER BY e.nom,e.prenom)";
+	if($meme_en_resp_legal_0=="y") {
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.pers_id='$pers_id' AND 
+											r.resp_legal='0' 
+										ORDER BY e.nom,e.prenom)";
+	}
+	elseif($meme_en_resp_legal_0=="yy") {
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.pers_id='$pers_id' AND 
+											r.acces_sp='y' AND
+											r.resp_legal='0' 
+										ORDER BY e.nom,e.prenom)";
+	}
 	$res_ele=mysql_query($sql);
 
 	$tab_ele=array();
@@ -5270,12 +5317,24 @@ function acces_ele_disc($login_ele) {
  * $tab[indice] = array('login','nom','prenom','civilite','designation'=>civilite nom prenom, 'pers_id')
  *
  * @param string $ele_login Login de l'élève
+ * @param string $meme_en_resp_legal_0 'y'
+ *               (on récupère même les enfants dont $resp_login est resp_legal=0)
+ *               'yy' (on récupère aussi les resp_legal=0 mais seulement s'ils ont l'accès aux données en tant qu'utilisateur
+ *               ou 'n' (on ne récupère que les enfants dont $resp_login est resp_legal=1 ou 2)
+ *
  * @return array Le tableau
  */
-function get_resp_from_ele_login($ele_login) {
+function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n") {
 	$tab="";
 
-	$sql="SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2');";
+	$sql="(SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2'))";
+	if($meme_en_resp_legal_0=="y") {
+		$sql.=" UNION (SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='0')";
+	}
+	elseif($meme_en_resp_legal_0=="yy") {
+		$sql.=" UNION (SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='0' AND r.acces_sp='y')";
+	}
+	$sql.=";";
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
@@ -5854,7 +5913,7 @@ function get_tel_resp_ele($ele_login) {
 
 	$cpt_resp=0;
 
-	$sql="SELECT rp.*, r.resp_legal, e.tel_pers AS ele_tel_pers, e.tel_port AS ele_tel_port, e.tel_prof AS ele_tel_prof FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND (resp_legal='1' OR resp_legal='2') ORDER BY r.resp_legal;";
+	$sql="SELECT rp.*, r.resp_legal, e.tel_pers AS ele_tel_pers, e.tel_port AS ele_tel_port, e.tel_prof AS ele_tel_prof FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		while($lig=mysql_fetch_object($res)) {
@@ -6101,21 +6160,40 @@ function in_array_i($chaine, $tableau) {
  * @param string $login_eleve Login de l'élève
  * @param string $login_resp Login du responsable
  * @param string $pers_id Identifiant pers_id du responsable
+ * @param string $meme_en_resp_legal_0 'y'
+ *               (on récupère même les enfants dont $resp_login est resp_legal=0)
+ *               'yy' (on récupère aussi les resp_legal=0 mais seulement s'ils ont l'accès aux données en tant qu'utilisateur
+ *               ou 'n' (on ne récupère que les enfants dont $resp_login est resp_legal=1 ou 2)
+ *
  *
  * @return boolean true/false
  */
 
-function is_responsable($login_eleve, $login_resp="", $pers_id="") {
+function is_responsable($login_eleve, $login_resp="", $pers_id="", $meme_en_resp_legal_0="n") {
 	$retour=false;
 	if($login_resp!="") {
-		$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
+		$sql="(SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2'))";
+		if($meme_en_resp_legal_0=="y") {
+			$sql.=" UNION (SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND r.resp_legal='0')";
+		}
+		elseif($meme_en_resp_legal_0=="yy") {
+			$sql.=" UNION (SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND r.resp_legal='0' AND r.acces_sp='y')";
+		}
+		$sql.=";";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
 			$retour=true;
 		}
 	}
 	elseif($pers_id!="") {
-		$sql="SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
+		$sql="(SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2'))";
+		if($meme_en_resp_legal_0=="y") {
+			$sql.=" UNION (SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND r.resp_legal='0')";
+		}
+		elseif($meme_en_resp_legal_0=="yy") {
+			$sql.=" UNION (SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND r.resp_legal='0' AND r.acces_sp='y')";
+		}
+		$sql.=";";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
 			$retour=true;

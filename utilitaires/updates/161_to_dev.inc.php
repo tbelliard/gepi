@@ -355,5 +355,50 @@ if($cdt_afficher_volume_docs_joints=='') {
 }
 $result .= "<br />";
 
+$result .= "&nbsp;->Initialisation de l'affichage des moyennes classe sur les graphes en courbe : ";
+$cdt_afficher_volume_docs_joints=getSettingValue('graphe_affiche_moy_classe');
+if($cdt_afficher_volume_docs_joints=='') {
+	$result_inter = traite_requete("INSERT INTO setting SET name='graphe_affiche_moy_classe', value='oui';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Prise en compte déjà effectuée.");
+}
+$result .= "<br />";
+
+/*
+$result .= "<strong>Ajout d'une table 'responsabilite_plus' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'responsabilite_plus'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS responsabilite_plus (ele_id varchar(10) NOT NULL, pers_id varchar(10) NOT NULL, acces varchar(1) NOT NULL, INDEX pers_id ( pers_id ), INDEX ele_id ( ele_id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+$result .= "<br />";
+*/
+
+$result .= "&nbsp;-> Ajout d'un champ 'acces_sp' à la table 'responsables2'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM responsables2 LIKE 'acces_sp';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE responsables2 ADD acces_sp varchar(1) NOT NULL default '';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
 ?>

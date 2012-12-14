@@ -350,13 +350,25 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 		$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe AND jec.login='".$_SESSION['login']."') ORDER BY c.classe;";
 	}
 	elseif(($_SESSION['statut']=='responsable')&&(getSettingValue("GepiAccesReleveParent") == "yes")) {
-		$sql="SELECT DISTINCT c.*  FROM eleves e, j_eleves_classes jec, classes c, responsables2 r, resp_pers rp
+		$sql="(SELECT DISTINCT c.* FROM eleves e, j_eleves_classes jec, classes c, responsables2 r, resp_pers rp
 				WHERE (e.ele_id=r.ele_id AND
 						r.pers_id=rp.pers_id AND
 						rp.login='".$_SESSION['login']."' AND
 						(r.resp_legal='1' OR r.resp_legal='2') AND
 						c.id=jec.id_classe AND
-						jec.login=e.login);";
+						jec.login=e.login))";
+		if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+			$sql.=" UNION (SELECT DISTINCT c.* FROM eleves e, j_eleves_classes jec, classes c, responsables2 r, resp_pers rp
+				WHERE (e.ele_id=r.ele_id AND
+						r.pers_id=rp.pers_id AND
+						rp.login='".$_SESSION['login']."' AND
+						r.resp_legal='0' AND
+						r.acces_sp='y' AND 
+						c.id=jec.id_classe AND
+						jec.login=e.login))";
+		}
+		$sql.=";";
+
 	}
 	elseif($_SESSION['statut']=='autre') {
 		$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe";
@@ -1196,13 +1208,24 @@ echo "</script>\n";
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE (jec.id_classe='".$tab_id_classe[$i]."' AND jec.login='".$_SESSION['login']."' AND jec.login=e.login);";
 		}
 		elseif(($_SESSION['statut']=='responsable')&&(getSettingValue("GepiAccesReleveParent") == "yes")) {
-			$sql="SELECT DISTINCT e.*  FROM eleves e, j_eleves_classes jec, responsables2 r, resp_pers rp
+			$sql="(SELECT DISTINCT e.*  FROM eleves e, j_eleves_classes jec, responsables2 r, resp_pers rp
 					WHERE (e.ele_id=r.ele_id AND
 							r.pers_id=rp.pers_id AND
 							rp.login='".$_SESSION['login']."' AND
 							jec.id_classe='".$tab_id_classe[$i]."' AND
 							(r.resp_legal='1' OR r.resp_legal='2') AND
-							jec.login=e.login);";
+							jec.login=e.login))";
+			if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+				$sql.=" UNION (SELECT DISTINCT e.*  FROM eleves e, j_eleves_classes jec, responsables2 r, resp_pers rp
+					WHERE (e.ele_id=r.ele_id AND
+							r.pers_id=rp.pers_id AND
+							rp.login='".$_SESSION['login']."' AND
+							jec.id_classe='".$tab_id_classe[$i]."' AND
+							r.resp_legal='0' AND
+							r.acces_sp='y' AND 
+							jec.login=e.login))";
+			}
+			$sql.=";";
 		}
 		elseif($_SESSION['statut'] == 'autre') {
 			$sql="SELECT DISTINCT e.* FROM eleves e,

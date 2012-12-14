@@ -599,7 +599,7 @@ function info_eleve($ele_login) {
 		}
 
 		// Récup infos responsables resp_legal=0
-		$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+		$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal, r.acces_sp FROM resp_pers rp,
 										resp_adr ra,
 										responsables2 r
 					WHERE r.ele_id='".$tab_ele['ele_id']."' AND
@@ -636,7 +636,8 @@ function info_eleve($ele_login) {
 				$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
 
 				$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
-				/*
+				$tab_ele['resp'][$cpt]['acces_sp']=$lig_resp->acces_sp;
+
 				//echo "\$lig_resp->login=".$lig_resp->login."<br />";
 				if($lig_resp->login!="") {
 					$sql="SELECT etat, auth_mode FROM utilisateurs WHERE login='".$lig_resp->login."';";
@@ -648,7 +649,7 @@ function info_eleve($ele_login) {
 						$tab_ele['resp'][$cpt]['auth_mode']=$lig_u->auth_mode;
 					}
 				}
-				*/
+				
 				$cpt++;
 			}
 		}

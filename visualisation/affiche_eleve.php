@@ -201,7 +201,7 @@ affiche_moy_classe
 			else{save_params_graphe('graphe_pointille','yes');}
 
 			if(isset($_POST['affiche_moy_classe'])) {save_params_graphe('graphe_affiche_moy_classe',$_POST['affiche_moy_classe']);}
-			else{save_params_graphe('graphe_affiche_moy_classe','non');}
+			else{save_params_graphe('graphe_affiche_moy_classe','oui');}
 
 			if($msg=='') {
 				$msg="Paramètres enregistrés.";
@@ -255,7 +255,7 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['graphe_pointille'])) {savePref($_SESSION['login'],'graphe_pointille',$_POST['graphe_pointille']);}
 
 	if(isset($_POST['affiche_moy_classe'])) {savePref($_SESSION['login'],'graphe_affiche_moy_classe',$_POST['affiche_moy_classe']);}
-	else{savePref($_SESSION['login'],'graphe_affiche_moy_classe','non');}
+	else{savePref($_SESSION['login'],'graphe_affiche_moy_classe','oui');}
 
 	if($msg=='') {
 		$msg.="Préférences personnelles enregistrées.";
@@ -459,12 +459,22 @@ $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : (isset($_G
 
 // Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
 if ($_SESSION['statut'] == "responsable") {
-	$get_eleves = mysql_query("SELECT e.login, e.prenom, e.nom " .
+	$sql="(SELECT e.login, e.prenom, e.nom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'))");
+			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login, e.prenom, e.nom " .
+			"FROM eleves e, resp_pers r, responsables2 re " .
+			"WHERE (" .
+			"e.ele_id = re.ele_id AND " .
+			"re.pers_id = r.pers_id AND " .
+			"r.login = '".$_SESSION['login']."' AND re.resp_legal='0' AND re.acces_sp='y'))";
+	}
+	$sql.=";";
+	$get_eleves = mysql_query($sql);
 
 	if (mysql_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
@@ -477,14 +487,25 @@ if ($_SESSION['statut'] == "responsable") {
 		if ($login_eleve != null) {
 			// $login_eleve a été défini mais l'utilisateur a plusieurs élèves associés. On vérifie
 			// qu'il a le droit de visualiser les données pour l'élève sélectionné.
-			$test = mysql_query("SELECT count(e.login) " .
+			$sql="(SELECT e.login " .
 					"FROM eleves e, responsables2 re, resp_pers r " .
 					"WHERE (" .
 					"e.login = '" . $login_eleve . "' AND " .
 					"e.ele_id = re.ele_id AND " .
 					"re.pers_id = r.pers_id AND " .
-					"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
-			if (mysql_result($test, 0) == 0) {
+					"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+			if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+				$sql.=" UNION (SELECT e.login " .
+					"FROM eleves e, responsables2 re, resp_pers r " .
+					"WHERE (" .
+					"e.login = '" . $login_eleve . "' AND " .
+					"e.ele_id = re.ele_id AND " .
+					"re.pers_id = r.pers_id AND " .
+					"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y'))";
+			}
+			$sql.=";";
+			$test = mysql_query($sql);
+			if (mysql_num_rows($test) == 0) {
 			    tentative_intrusion(2, "Tentative par un parent de visualisation graphique des résultats d'un élève dont il n'est pas responsable légal.");
 			    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.</p>\n";
 			    require("../lib/footer.inc.php");
@@ -916,14 +937,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		if ($login_eleve != null) {
 			$eleve1 = $login_eleve;
 		}
-		$test = mysql_query("SELECT count(e.login) " .
+		$sql="(SELECT e.login " .
 				"FROM eleves e, responsables2 re, resp_pers r " .
 				"WHERE (" .
 				"e.login = '" . $eleve1 . "' AND " .
 				"e.ele_id = re.ele_id AND " .
 				"re.pers_id = r.pers_id AND " .
-				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
-		if (mysql_result($test, 0) == 0) {
+				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+		if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+			$sql.=" UNION (SELECT e.login " .
+				"FROM eleves e, responsables2 re, resp_pers r " .
+				"WHERE (" .
+				"e.login = '" . $eleve1 . "' AND " .
+				"e.ele_id = re.ele_id AND " .
+				"re.pers_id = r.pers_id AND " .
+				"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y'))";
+		}
+		$sql.=";";
+		$test = mysql_query($sql);
+		if (mysql_num_rows($test) == 0) {
 		    tentative_intrusion(3, "Tentative (forte) d'un parent de visualisation graphique des résultats d'un élève dont il n'est pas responsable légal.");
 		    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.\n";
 		    require("../lib/footer.inc.php");
@@ -1798,13 +1830,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 			echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
 		}
-		if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
-		if(!isset($eleve2)) {$selected=" selected='yes'";}
-		echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
-		if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='moymax'$selected>Moyenne max.</option>\n";
-		if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+		//if($affiche_moy_classe!="non") {
+			if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
+			if(!isset($eleve2)) {$selected=" selected='yes'";}
+			echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
+			if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymax'$selected>Moyenne max.</option>\n";
+			if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+		//}
 		// 20121205
 		// On est dans une partie non élève/resp
 		/*
@@ -3236,7 +3270,6 @@ function eleve_suivant() {
 						//echo "'>";
 						//echo "&amp;temoin_imageps=$temoin_imageps";
 						echo "&amp;temoin_image_escalier=$temoin_image_escalier";
-//20121213
 						if($affiche_moy_classe!='oui') {
 							echo "&amp;avec_moy_classe=n";
 						}

@@ -1491,6 +1491,14 @@ Patientez pendant l'extraction des données... merci.
 								echo "<tr class='lig$alt'><th style='text-align: left;'>Dispose d'un compte:</th><td>";
 								if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
 									echo $tab_ele['resp'][$i]['login'];
+
+									if($tab_ele['resp'][$i]['acces_sp']=="y") {
+										echo " <img src='../images/vert.png' width='16' height='16' title=\"Bien que non responsable légal, ce 'responsable/contact' a accès aux informations de l'élève s'il se connecte.\" />";
+									}
+									else {
+										echo " <img src='../images/rouge.png' width='16' height='16' title=\"Ce 'responsable/contact' qui n'est pas responsable légal de l'élève, n'a pas accès aux informations de l'élève s'il se connecte.\" />";
+									}
+
 								}
 								else {
 									echo "Oui";
@@ -1515,6 +1523,33 @@ Patientez pendant l'extraction des données... merci.
 									echo "</span>";
 								}
 								echo "</td></tr>\n";
+
+
+								if(($_SESSION['statut']=='administrateur')||
+									(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassResp')))||
+									(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeResetPassResp')))
+								) {
+									if($_SESSION['statut']=="administrateur") {
+										$alt=$alt*(-1);
+										echo "<tr class='lig$alt'><th style='text-align: left;'>Dépannage :</th><td>";
+										echo affiche_actions_compte($tab_ele['resp'][$i]['login']);
+										if(($tab_ele['resp'][$i]['auth_mode']=='gepi')||
+											(($tab_ele['resp'][$i]['auth_mode']=='ldap')&&($gepiSettings['ldap_write_access'] == "yes"))) {
+											echo "<br />\n";
+											echo affiche_reinit_password($tab_ele['resp'][$i]['login']);
+										}
+										echo "</td></tr>\n";
+									}
+									elseif((($tab_ele['resp'][$i]['auth_mode']=='gepi')||
+									(($tab_ele['resp'][$i]['auth_mode']=='ldap')&&($gepiSettings['ldap_write_access'] == "yes")))&&
+									(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut']))) {
+										$alt=$alt*(-1);
+										echo "<tr class='lig$alt'><th style='text-align: left;'>Dépannage :</th><td>";
+										echo affiche_reinit_password($tab_ele['resp'][$i]['login']);
+										echo "</td></tr>\n";
+									}
+								}
+
 							}
 
 							if($tab_ele['resp'][$i]['adr1']!='') {

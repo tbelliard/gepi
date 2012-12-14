@@ -79,15 +79,13 @@ if(!$nom_classe) {
 	die();
 }
 
+//==============================
 include "../lib/periodes.inc.php";
 include "../lib/bulletin_simple.inc.php";
-//include "../lib/bulletin_simple_bis.inc.php";
-//==============================
-// AJOUT: boireaus 20080209
 include "../lib/bulletin_simple_classe.inc.php";
-//include "../lib/bulletin_simple_classe_bis.inc.php";
 //==============================
 require_once("../lib/header.inc.php");
+//==============================
 
 // Vérifications de sécurité
 if (
@@ -102,14 +100,26 @@ if (
 
 // Et une autre vérification de sécurité : est-ce que si on a un statut 'responsable' le $login_eleve est bien un élève dont le responsable a la responsabilité
 if ($_SESSION['statut'] == "responsable") {
-	$test = mysql_query("SELECT count(e.login) " .
+	$sql="(SELECT e.login " .
 			"FROM eleves e, responsables2 re, resp_pers r " .
 			"WHERE (" .
 			"e.login = '" . $login_eleve . "' AND " .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
-	if (mysql_result($test, 0) == 0) {
+			"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login FROM eleves e, resp_pers r, responsables2 re 
+						WHERE (e.login = '" . $login_eleve . "' AND
+							e.ele_id = re.ele_id AND 
+							re.pers_id = r.pers_id AND 
+							r.login = '".$_SESSION['login']."' AND 
+							re.resp_legal='0' AND 
+							re.acces_sp='y'))";
+	}
+	$sql.=";";
+	//echo "$sql<br />";
+	$test = mysql_query($sql);
+	if (mysql_num_rows($test) == 0) {
 	    tentative_intrusion(3, "Tentative d'un parent de visualiser un bulletin simplifié d'un élève ($login_eleve) dont il n'est pas responsable légal.");
 	    echo "Vous ne pouvez visualiser que les bulletins simplifiés des élèves pour lesquels vous êtes responsable légal.\n";
 	    require("../lib/footer.inc.php");

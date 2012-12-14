@@ -936,12 +936,22 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 {
 	global $selected_eleve;
 	// $current est le login de l'élève actuellement sélectionné
-	$sql="SELECT e.login, e.nom, e.prenom " .
+	$sql="(SELECT e.login, e.nom, e.prenom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$login_resp."' AND (re.resp_legal='1' OR re.resp_legal='2'));";
+			"r.login = '".$login_resp."' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login, e.nom, e.prenom FROM eleves e, resp_pers r, responsables2 re 
+						WHERE (e.ele_id = re.ele_id AND 
+							re.pers_id = r.pers_id AND 
+							r.login = '".$login_resp."' AND 
+							re.acces_sp='y' AND
+							re.resp_legal='0'))";
+	}
+	$sql.=";";
+	//echo "$sql<br />";
 	$get_eleves = mysql_query($sql);
 
 	if (mysql_num_rows($get_eleves) == 0) {

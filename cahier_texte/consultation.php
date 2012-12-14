@@ -88,12 +88,26 @@ if ($_SESSION['statut'] == 'eleve') {
 	}
 	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
 } elseif ($_SESSION['statut'] == "responsable") {
-	$get_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
+	$sql="(SELECT e.login, e.nom, e.prenom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'));");
+			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login, e.nom, e.prenom " .
+							"FROM eleves e, resp_pers r, responsables2 re " .
+							"WHERE (" .
+							"e.ele_id = re.ele_id AND " .
+							"re.pers_id = r.pers_id AND " .
+							"r.login = '".$_SESSION['login']."' AND 
+							re.resp_legal='0' AND 
+							re.acces_sp='y'))";
+	}
+	$sql.=";";
+	//echo "$sql<br />";
+	$get_eleves = mysql_query($sql);
 
 	if (mysql_num_rows($get_eleves) == 1) {
 			// Un seul élève associé : on initialise tout de suite la variable $selected_eleve
@@ -121,7 +135,17 @@ if ($_SESSION['statut'] == 'eleve') {
 
 
 	if((isset($login_eleve))&&($login_eleve!="")) {
-		$sql="SELECT 1=1 FROM resp_pers r, responsables2 re, eleves e WHERE r.pers_id=re.pers_id AND re.ele_id=e.ele_id AND r.login='".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2') AND e.login='".$login_eleve."';";
+		$sql="(SELECT 1=1 FROM resp_pers r, responsables2 re, eleves e WHERE r.pers_id=re.pers_id AND re.ele_id=e.ele_id AND r.login='".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2') AND e.login='".$login_eleve."')";
+		if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+			$sql.=" UNION (SELECT 1=1 FROM eleves e, resp_pers r, responsables2 re 
+							WHERE (e.login = '" . $login_eleve . "' AND
+								e.ele_id = re.ele_id AND 
+								re.pers_id = r.pers_id AND 
+								r.login = '".$_SESSION['login']."' AND 
+								re.resp_legal='0' AND 
+								re.acces_sp='y'))";
+		}
+		$sql.=";";
 		//echo "$sql<br />";
 		$verif_ele=mysql_query($sql);
 		if(mysql_num_rows($verif_ele)==0) {

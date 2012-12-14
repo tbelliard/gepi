@@ -381,7 +381,12 @@ elseif($_SESSION['statut']=="responsable"){
 
 			$tab_eleves_resp=array();
 			if($_SESSION['statut']=='responsable') {
-				$tmp_tab_eleves_resp=get_enfants_from_resp_login($_SESSION['login']);
+				if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+					$tmp_tab_eleves_resp=get_enfants_from_resp_login($_SESSION['login'], "simple", "yy");
+				}
+				else {
+					$tmp_tab_eleves_resp=get_enfants_from_resp_login($_SESSION['login']);
+				}
 				// On récupère un tableau avec login pour le premier indice et nom_prenom pour le 2è, puis on passe à l'élève suivant.
 				if(count($tmp_tab_eleves_resp)==2) {
 					$tab_eleves_resp[0]=array();
@@ -442,7 +447,7 @@ elseif($_SESSION['statut']=="responsable"){
 			}
 
 			if(isset($id_classe)){
-				$sql_ele="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,
+				$sql_ele="(SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,
 																j_eleves_classes jec,
 																responsables2 r,
 																resp_pers rp
@@ -452,18 +457,46 @@ elseif($_SESSION['statut']=="responsable"){
 											rp.pers_id=r.pers_id AND
 											(r.resp_legal='1' OR r.resp_legal='2') AND
 											r.ele_id=e.ele_id
-									ORDER BY e.nom,e.prenom;";
+									ORDER BY e.nom,e.prenom)";
+				if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+					$sql_ele.=" UNION (SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,
+																j_eleves_classes jec,
+																responsables2 r,
+																resp_pers rp
+									WHERE jec.id_classe='$id_classe' AND
+											jec.login=e.login AND
+											rp.login='".$_SESSION['login']."' AND
+											rp.pers_id=r.pers_id AND
+											r.resp_legal='0' AND
+											r.ele_id=e.ele_id AND
+											r.acces_sp='y'
+									ORDER BY e.nom,e.prenom)";
+				}
+				$sql_ele.=";";
+
 			}
 
 			if(isset($logineleve)){
-				$sql="SELECT 1=1 FROM resp_pers rp,
+				$sql="(SELECT 1=1 FROM resp_pers rp,
 										responsables2 r,
 										eleves e
 								WHERE rp.login='".$_SESSION['login']."' AND
 										rp.pers_id=r.pers_id AND
 										r.ele_id=e.ele_id AND
 										(r.resp_legal='1' OR r.resp_legal='2') AND
-										e.login='$logineleve'";
+										e.login='$logineleve')";
+				if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+					$sql.=" UNION (SELECT 1=1 FROM resp_pers rp,
+										responsables2 r,
+										eleves e
+								WHERE rp.login='".$_SESSION['login']."' AND
+										rp.pers_id=r.pers_id AND
+										r.ele_id=e.ele_id AND
+										r.resp_legal='0' AND
+										e.login='$logineleve' AND
+										r.acces_sp='y')";
+				}
+				$sql.=";";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)==0){
 					// A DEGAGER

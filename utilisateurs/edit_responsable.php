@@ -88,6 +88,19 @@ if ($mode == "classe") {
 
 aff_time();
 
+if((isset($_GET['acces_resp_legal_0']))&&(($_GET['acces_resp_legal_0']=='y')||($_GET['acces_resp_legal_0']=='n'))) {
+	check_token();
+
+	$sql="UPDATE responsables2 SET acces_sp='".$_GET['acces_resp_legal_0']."' WHERE pers_id='".$_GET['pers_id']."' AND ele_id='".$_GET['ele_id']."';";
+	$update=mysql_query($sql);
+	if($update) {
+		$msg="Modification de l'accès aux données pour pers_id=".$_GET['pers_id']." et ele_id=".$_GET['ele_id']." effectuée.<br />";
+	}
+	else {
+		$msg="Erreur lors de la modification de l'accès aux données pour pers_id=".$_GET['pers_id']." et ele_id=".$_GET['ele_id']."<br />";
+	}
+}
+
 // Trois actions sont possibles depuis cette page : activation, désactivation et suppression.
 // L'édition se fait directement sur la page de gestion des responsables
 if (!$error) {
@@ -387,15 +400,17 @@ aff_time();
 	echo "<p><b>Liste des comptes responsables existants</b> :</p>\n";
 	echo "<blockquote>\n";
 
-	$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
-	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+	$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : (isset($_GET['afficher_tous_les_resp']) ? $_GET['afficher_tous_les_resp'] : "n");
+
+	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : (isset($_GET['critere_recherche']) ? $_GET['critere_recherche'] : "");
 	//$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche);
 	$critere_recherche=nettoyer_caracteres_nom($critere_recherche, 'a', ' -','');
-  	$critere_recherche_login=isset($_POST['critere_recherche_login']) ? $_POST['critere_recherche_login'] : (isset($_GET['critere_recherche_login']) ? $_GET['critere_recherche_login'] : "");
+
+	$critere_recherche_login=isset($_POST['critere_recherche_login']) ? $_POST['critere_recherche_login'] : (isset($_GET['critere_recherche_login']) ? $_GET['critere_recherche_login'] : "");
 	//$critere_recherche_login=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche_login);
 	$critere_recherche_login=nettoyer_caracteres_nom($critere_recherche_login, 'a', ' -_.','');
 
-	$critere_id_classe=isset($_POST['critere_id_classe']) ? preg_replace('/[^0-9]/', '', $_POST['critere_id_classe']) : (isset($_POST['classe']) ? preg_replace('/[^0-9]/', '', $_POST['classe']) : "");
+	$critere_id_classe=isset($_POST['critere_id_classe']) ? preg_replace('/[^0-9]/', '', $_POST['critere_id_classe']) : (isset($_POST['classe']) ? preg_replace('/[^0-9]/', '', $_POST['classe']) : (isset($_GET['critere_id_classe']) ? preg_replace('/[^0-9]/', '', $_GET['critere_id_classe']) : (isset($_GET['classe']) ? preg_replace('/[^0-9]/', '', $_GET['classe']) : "")));
 	//====================================
 
 	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -486,6 +501,7 @@ aff_time();
 <tr>
 	<th>Identifiant</th>
 	<th>Nom Prénom</th>
+	<!--th colspan='2'>Responsable de</th-->
 	<th>Responsable de</th>
 	<th>Etat</th>
 	<th>Mode auth.</th>
@@ -498,9 +514,11 @@ aff_time();
 if((!isset($_POST['afficher_resp_eleves_sans_classe']))||($_POST['afficher_resp_eleves_sans_classe']!='y')) {
 	//if($critere_id_classe=='') {
 	if(($critere_id_classe=='')||($afficher_tous_les_resp=='y')) {
-		$sql="SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login";
+		//$sql="SELECT DISTINCT u.*, rp.pers_id, r.resp_legal FROM utilisateurs u, resp_pers rp, responsables2 r WHERE (u.statut = 'responsable' AND rp.login = u.login AND r.pers_id=rp.pers_id";
+		$sql="SELECT DISTINCT u.*, rp.pers_id FROM utilisateurs u, resp_pers rp, responsables2 r WHERE (u.statut = 'responsable' AND rp.login = u.login AND r.pers_id=rp.pers_id";
 	}
 	else {
+		//$sql="SELECT DISTINCT u.*, r.pers_id, r.resp_legal FROM classes c, j_eleves_classes jec, eleves e, utilisateurs u, resp_pers rp, responsables2 r WHERE (u.statut = 'responsable' AND rp.login=u.login";
 		$sql="SELECT DISTINCT u.*, r.pers_id FROM classes c, j_eleves_classes jec, eleves e, utilisateurs u, resp_pers rp, responsables2 r WHERE (u.statut = 'responsable' AND rp.login=u.login";
 	}
 
@@ -529,7 +547,8 @@ if((!isset($_POST['afficher_resp_eleves_sans_classe']))||($_POST['afficher_resp_
 	}
 }
 else {
-	$sql="SELECT u.*,rp.pers_id FROM utilisateurs u, resp_pers rp, responsables2 r, eleves e  WHERE u.statut='responsable' AND rp.login=u.login AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes) ORDER BY u.nom,u.prenom;";
+	//$sql="SELECT DISTINCT u.*,rp.pers_id, r.resp_legal, r.acces_sp FROM utilisateurs u, resp_pers rp, responsables2 r, eleves e  WHERE u.statut='responsable' AND rp.login=u.login AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes) ORDER BY u.nom,u.prenom;";
+	$sql="SELECT DISTINCT u.*,rp.pers_id FROM utilisateurs u, resp_pers rp, responsables2 r, eleves e  WHERE u.statut='responsable' AND rp.login=u.login AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes) ORDER BY u.nom,u.prenom;";
 }
 //echo "$sql<br />\n";
 $quels_parents = mysql_query($sql);
@@ -548,7 +567,14 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		echo "<td>";
 			echo $current_parent->nom . " " . $current_parent->prenom;
 		echo "</td>\n";
+		/*
+		echo "<td title='Responsable légal $current_parent->resp_legal'>";
+			echo "<span style='color:red'>A REVOIR: un responsable peut être resp_legal 1,2 ou 0 selon l'enfant</span>";
+			echo $current_parent->resp_legal;
+		echo "</td>\n";
+		*/
 		echo "<td>";
+		/*
 		$sql="SELECT DISTINCT e.login, e.nom,e.prenom,c.classe FROM eleves e,
 												j_eleves_classes jec,
 												classes c,
@@ -559,6 +585,16 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 												r.pers_id='$current_parent->pers_id' AND
 												(r.resp_legal='1' OR r.resp_legal='2')
 											ORDER BY e.nom,e.prenom";
+		*/
+		$sql="SELECT DISTINCT e.login, e.nom,e.prenom, e.ele_id,c.classe, r.resp_legal, r.acces_sp FROM eleves e,
+												j_eleves_classes jec,
+												classes c,
+												responsables2 r
+											WHERE e.login=jec.login AND
+												jec.id_classe=c.id AND
+												r.ele_id=e.ele_id AND
+												r.pers_id='$current_parent->pers_id'
+											ORDER BY e.nom,e.prenom";
 		$res_enfants=mysql_query($sql);
 		//echo "$sql<br />";
 		if(mysql_num_rows($res_enfants)==0){
@@ -566,7 +602,39 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		}
 		else{
 			while($current_enfant=mysql_fetch_object($res_enfants)){
-				echo "<a href='../eleves/modify_eleve.php?eleve_login=$current_enfant->login'>".casse_mot($current_enfant->prenom,'majf2')." ".casse_mot($current_enfant->nom,'maj')."</a> (<i>".$current_enfant->classe."</i>)<br />\n";
+
+				echo "<a href='../eleves/modify_eleve.php?eleve_login=$current_enfant->login'>".casse_mot($current_enfant->prenom,'majf2')." ".casse_mot($current_enfant->nom,'maj')."</a> (<i>".$current_enfant->classe."</i>)";
+				if($current_enfant->resp_legal==0) {
+					if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+						if($current_enfant->acces_sp=='y') {
+							echo " <a href='".$_SERVER['PHP_SELF']."?pers_id=$current_parent->pers_id&amp;ele_id=".$current_enfant->ele_id."&amp;acces_resp_legal_0=n";
+							if(isset($critere_recherche)) {echo "&amp;critere_recherche=".$critere_recherche;}
+							if(isset($critere_recherche_login)) {echo "&amp;critere_recherche_login=".$critere_recherche_login;}
+							if(isset($critere_id_classe)) {echo "&amp;critere_id_classe=".$critere_id_classe;}
+							if(isset($afficher_tous_les_resp)) {echo "&amp;afficher_tous_les_resp=".$afficher_tous_les_resp;}
+							echo add_token_in_url()."'";
+							echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+							echo "><img src='../images/vert.png' width='16' height='16' title=\"Le responsable non légal $current_parent->prenom $current_parent->nom a accès aux données notes, CDT,... de l'élève (si ces modules sont actifs)\" /></a>";
+						}
+						else {
+							echo " <a href='".$_SERVER['PHP_SELF']."?pers_id=$current_parent->pers_id&amp;ele_id=".$current_enfant->ele_id."&amp;acces_resp_legal_0=y";
+							if(isset($critere_recherche)) {echo "&amp;critere_recherche=".$critere_recherche;}
+							if(isset($critere_recherche_login)) {echo "&amp;critere_recherche_login=".$critere_recherche_login;}
+							if(isset($critere_id_classe)) {echo "&amp;critere_id_classe=".$critere_id_classe;}
+							if(isset($afficher_tous_les_resp)) {echo "&amp;afficher_tous_les_resp=".$afficher_tous_les_resp;}
+							echo add_token_in_url()."'";
+							echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+							echo "><img src='../images/rouge.png' width='16' height='16' title=\"Le responsable non légal $current_parent->prenom $current_parent->nom n'a pas accès aux données notes, CDT,... de l'élève (si ces modules sont actifs)\" /></a>";
+						}
+					}
+				}
+
+				echo "&nbsp;";
+				echo "<span title='Responsable légal $current_enfant->resp_legal'>";
+					echo $current_enfant->resp_legal;
+				echo "</span>";
+
+				echo "<br />\n";
 			}
 		}
 		echo "</td>\n";

@@ -52,16 +52,27 @@ $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : (isset($_G
 $error_login = false;
 // Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
 if ($_SESSION['statut'] == "responsable") {
-	$get_eleves = mysql_query("SELECT e.login " .
-			"FROM eleves e, resp_pers r, responsables2 re " .
-			"WHERE (" .
-			"e.ele_id = re.ele_id AND " .
-			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'))");
+	$sql="(SELECT e.login FROM eleves e, resp_pers r, responsables2 re 
+						WHERE (e.ele_id = re.ele_id AND 
+							re.pers_id = r.pers_id AND 
+							r.login = '".$_SESSION['login']."' AND 
+							(re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login FROM eleves e, resp_pers r, responsables2 re 
+						WHERE (e.ele_id = re.ele_id AND 
+							re.pers_id = r.pers_id AND 
+							r.login = '".$_SESSION['login']."' AND 
+							re.resp_legal='0' AND
+							re.acces_sp='y'))";
+	}
+	$sql.=";";
+	//echo "$sql<br />";
+	$get_eleves = mysql_query($sql);
 
 	if (mysql_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
 		$login_eleve = mysql_result($get_eleves, 0);
+		//echo "$login_eleve<br />";
 	} elseif (mysql_num_rows($get_eleves) == 0) {
 		$error_login = true;
 	}
@@ -247,11 +258,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
-	$quels_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
+	$sql="(SELECT e.login, e.nom, e.prenom " .
 				"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
 				"e.ele_id = re.ele_id AND " .
 				"re.pers_id = r.pers_id AND " .
-				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
+				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login, e.nom, e.prenom FROM eleves e, resp_pers r, responsables2 re 
+						WHERE (e.ele_id = re.ele_id AND 
+							re.pers_id = r.pers_id AND 
+							r.login = '".$_SESSION['login']."' AND 
+							re.resp_legal='0' AND
+							re.acces_sp='y'))";
+	}
+	$sql.=";";
+	$quels_eleves = mysql_query($sql);
+
 
 	echo "<p>Cliquez sur le nom d'un ".$gepiSettings['denomination_eleve']." pour visualiser son bulletin simplifié :</p>";
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {

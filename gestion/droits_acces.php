@@ -1363,6 +1363,18 @@ $texteItem="a accès dans le module Discipline aux incidents concernant les enfa
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+//+++++++++++++++++++++++++++
+
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiMemesDroitsRespNonLegaux';
+$texteItem="donner les mêmes droits aux responsables non légaux (resp_legal=0) qu'aux responsables légaux sous réserve que les responsables non légaux disposent d'un compte d'utilisateur et que vous cochiez une case dans la fiche de ces responsables.<br />(<em>Note&nbsp;: A l'heure actuelle, créer des comptes resp_legal=0 ne présente pas d'intérêt sans donner de droits, donc sans cocher cette case</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //=======================================================================================
 
 $tbs_message = $droitAffiche->get_erreurs();
