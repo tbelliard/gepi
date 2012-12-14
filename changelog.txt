@@ -104,12 +104,16 @@ Gestion:
   fréquentes sur la liste de diffusion.
 - Ajout d'un droit distincts des droits pour les paramètres des bulletins pour
   accéder aux paramètres des relevés HTML.
+- Possibilité de créer des comptes d'utilisateurs pour des resp_legal=0
+  (famille d'accueil,...), de donner ou non l'accès aux données de l'élève,...
 
 Graphes:
 - Possibilité d'afficher le rang de l'élève sur les graphes en courbe/étoile
   (comme un choix au lieu d'afficher la Moyenne de la classe).
 - Possibilité de modifier la taille de police dans la fenêtre déroulante 
   contenant les appréciations dans les graphes en courbe/étoile
+- Possibilité de donner ou non l'accès aux moyenne de classe, moyenne min et
+  moyenne max pour les responsables et élèves.
 
 Divers:
 - Affichage des AID dans le choix Bulletins de la barre de menu horizontale prof
