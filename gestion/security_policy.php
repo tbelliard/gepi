@@ -220,6 +220,15 @@ if (isset($_POST['csrf_mode'])) {
 	}
 }
 
+if (isset($_POST['form_anti_inject_var_SERVER'])) {
+	check_token();
+
+	$anti_inject_var_SERVER=isset($_POST['anti_inject_var_SERVER']) ? $_POST['anti_inject_var_SERVER'] : "y";
+	if (!saveSetting(("anti_inject_var_SERVER"), $anti_inject_var_SERVER)) {
+		$msg = "Erreur lors de l'enregistrement de anti_inject_var_SERVER à la valeur $anti_inject_var_SERVER !";
+	}
+}
+
 //**************** EN-TETE *********************
 $titre_page = "Politique de sécurité";
 require_once("../lib/header.inc.php");
@@ -403,8 +412,20 @@ echo "<div style='margin-left:3em;'>\n";
 	echo "<p>Il est recommandé de se prémunir d'éventuelles attaques CSRF dont les utilisateurs pourraient être victimes.<br />
 Vous devriez choisir le dernier mode ci-dessus.<br />
 Voir <a href='http://fr.wikipedia.org/wiki/CSRF'>http://fr.wikipedia.org/wiki/CSRF</a> pour plus de détails.</p>\n";
+echo "</div>\n";
 
 
+echo "<h2><a name='Divers'></a>Divers</h2>";
+echo "<div style='margin-left:3em;'>\n";
+
+	echo "<p>";
+	echo "<input type='hidden' id='form_anti_inject_var_SERVER' name='form_anti_inject_var_SERVER' value='1' />\n";
+	echo "<input type='checkbox' id='anti_inject_var_SERVER' name='anti_inject_var_SERVER' value='n' ";
+	if(getSettingValue('anti_inject_var_SERVER')=='n') {echo "checked ";}
+	echo "/><label for='anti_inject_var_SERVER'> Désactiver le filtrage anti_inject sur la variable \$_SERVER</label>.<br />";
+	echo "</p>\n";
+
+	echo "<p>Cela peut être nécessaire avec des serveurs sous M\$Window$.</p>\n";
 echo "</div>\n";
 
 echo "<center><input type='submit' value='Enregistrer' /></center>\n";
