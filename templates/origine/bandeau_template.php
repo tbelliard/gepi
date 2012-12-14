@@ -63,17 +63,17 @@
 	<!-- statut utilisateur -->
 		<?php
 			if (count($tbs_statut)) {
-				foreach ($tbs_statut as $value) {	
+				foreach ($tbs_statut as $value) {
 					echo "
 	<p>
-		<span class='$value[classe]'>
-			$value[texte]
+		<span class='".$value['classe']."'>
+			".$value['texte']."
 					";
 					if (count($donnees_enfant)) {
-						foreach ($donnees_enfant as $value2) {	
+						foreach ($donnees_enfant as $value2) {
 							echo "
 				
-						$value2[nom] (<em>$value2[classe]</em>)
+						".$value2['nom']." (<em>".$value2['classe']."</em>)
 							";
 						}
 						unset($value2);

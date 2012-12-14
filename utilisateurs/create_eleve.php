@@ -248,7 +248,7 @@ else{
 	echo "<blockquote>\n";
 
 	echo "<p>Sélectionnez le mode d'authentification appliqué aux comptes :</p>";
-	echo "<form action='create_eleve.php' method='post'>\n";
+	echo "<form action='create_eleve.php' method='post' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px;'>\n";
 	echo add_token_field();
 	echo "<select name='reg_auth_mode' size='1'>";
 	if ($session_gepi->auth_locale) {
@@ -363,8 +363,8 @@ else{
 	echo "</p>\n";
 
 	//====================================
-	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-	echo "<table style='border:1px solid black;' summary=\"Filtrage\">\n";
+	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px;'>\n";
+	echo "<table summary=\"Filtrage\">\n";
 	echo "<tr>\n";
 	echo "<td valign='top' rowspan='3'>\n";
 	echo "Filtrage:";
@@ -393,7 +393,7 @@ else{
 
 
 	echo "<p>Cliquez sur le bouton 'Créer' d'un élève pour créer un compte associé.</p>\n";
-	echo "<form id='form_create_one_eleve' action='create_eleve.php' method='post'>\n";
+	echo "<form id='form_create_one_eleve' action='create_eleve.php' method='post' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px;'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='mode' value='individual' />\n";
 	echo "<input type='hidden' name='mdp_INE' id='indiv_mdp_INE' value='' />\n";
