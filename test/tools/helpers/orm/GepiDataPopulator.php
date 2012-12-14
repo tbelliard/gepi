@@ -626,6 +626,12 @@ class GepiDataPopulator
         $saisie_1 = new AbsenceEleveSaisie();
         $saisie_1->setEleve($florence_eleve);
         $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-07 09:00:00');
+        $saisie_1->setFinAbs('2011-06-07 09:40:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
         $saisie_1->setDebutAbs('2011-06-07 08:00:00');
         $saisie_1->setFinAbs('2011-06-07 10:00:00');
         $saisie_1->save();

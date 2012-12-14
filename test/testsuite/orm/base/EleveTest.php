@@ -329,7 +329,7 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals(1,$retard_col->count());
 
                 $retard_col = $florence_eleve->getRetards(new DateTime('2011-06-09 00:00:00'),new DateTime('2011-06-10 23:59:59'));
-		$this->assertEquals(1,$retard_col->count());
+		$this->assertEquals(2,$retard_col->count());
 
 }
 

@@ -1269,8 +1269,8 @@ class Eleve extends BaseEleve {
                     if (!$contra) {
     			$abs_saisie_col_filtre->append($saisie);
     		    } else {
-                        //on retire la saisie contrée de la liste de test des saisise possiblement englobante
-                        $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie_contra));
+                        //on retire la saisie contrée de la liste de test des saisise possiblement englobante pour optimiser
+                        $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie));
                     }
     		}
 	    }
@@ -1425,8 +1425,8 @@ class Eleve extends BaseEleve {
                     if (!$contra) {
                         $result->append($saisie);
                     } else {
-                        //on retire la saisie contrée de la liste de test des saisise possiblement englobante
-                        $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie_contra));
+                        //on retire la saisie contrée de la liste de test des saisise possiblement englobante pour optimiser
+                        $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie));
                     }
                 }
             }
