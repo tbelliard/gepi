@@ -776,16 +776,6 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
-
-				if ($this->collJTraitementSaisieEleves !== null) {
-					foreach ($this->collJTraitementSaisieEleves as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-
 			$this->alreadyInValidation = false;
 		}
 
