@@ -1199,16 +1199,20 @@ class Eleve extends BaseEleve {
 	    if (isset($_REQUEST[$request_query_hash]) && $_REQUEST[$request_query_hash] != null) {
 		$abs_saisie_col = $_REQUEST[$request_query_hash];
 	    } else {
-		$abs_saisie_col =  AbsenceEleveSaisieQuery::create()
-		    ->filterByEleve($this)
-		    ->filterByPlageTemps($date_debut, $date_fin)
-		    ->orderByDebutAbs(Criteria::ASC)
-		    ->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
-		    ->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
-		    ->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType')
-		    ->distinct()
-		    ->find();
-		$_REQUEST[$request_query_hash] = $abs_saisie_col;
+                if ($date_debut== null && $date_fin== null) {
+                    $abs_saisie_col = parent::getAbsenceEleveSaisies();
+                } else {
+                    $abs_saisie_col =  AbsenceEleveSaisieQuery::create()
+                        ->filterByEleve($this)
+                        ->filterByPlageTemps($date_debut, $date_fin)
+                        ->orderByDebutAbs(Criteria::ASC)
+                        ->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
+                        ->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
+                        ->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType')
+                        ->distinct()
+                        ->find();
+                }
+                $_REQUEST[$request_query_hash] = $abs_saisie_col;
 	    }
 	    return $abs_saisie_col;
 	}
