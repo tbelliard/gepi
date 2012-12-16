@@ -1188,7 +1188,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection  AbsenceEleveSaisie[]
 	 */
-	public function getAbsenceEleveSaisies($date_debut= null, $date_fin= null) {
+	public function getAbsenceEleveSaisiesParDate($date_debut= null, $date_fin= null) {
 	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
 	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
 	    else {$request_query_hash .= 'null';}
@@ -1231,7 +1231,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function  getAbsenceEleveSaisiesDecompteDemiJournees($dateDebut = null, $dateFin = null, $non_justifiee = false) {
- 	    $abs_saisie_col = $this->getAbsenceEleveSaisies($dateDebut, $dateFin);
+ 	    $abs_saisie_col = $this->getAbsenceEleveSaisiesParDate($dateDebut, $dateFin);
 	    //on filtre les saisie qu'on ne veut pas compter
 	    $abs_saisie_col_filtre = new PropelCollection();
 	    $abs_saisie_englobante = clone $abs_saisie_col;
@@ -1397,7 +1397,7 @@ class Eleve extends BaseEleve {
                 $date_fin = $this->getDateSortie(null);
             }
 
-            $abs_saisie_col = $this->getAbsenceEleveSaisies($date_debut, $date_fin);
+            $abs_saisie_col = $this->getAbsenceEleveSaisiesParDate($date_debut, $date_fin);
             if ($abs_saisie_col->isEmpty()) {
                 return new PropelCollection();
             }
@@ -1782,7 +1782,7 @@ class Eleve extends BaseEleve {
                 $DMabsenceNonJustifiesCol = $this->getDemiJourneesNonJustifieesAbsence($dateDebutClone,$dateFinClone);
 		$DMabsencesCol			= $this->getDemiJourneesAbsence($dateDebutClone,$dateFinClone);
 		$retards				= $this->getRetards($dateDebutClone,$dateFinClone);
-		$saisiesCol				= clone $this->getAbsenceEleveSaisies($dateDebutClone, $dateFinClone);//cette collection de saisie va nous permettre de récupérer les notifications et les motifs
+		$saisiesCol				= clone $this->getAbsenceEleveSaisiesParDate($dateDebutClone, $dateFinClone);//cette collection de saisie va nous permettre de récupérer les notifications et les motifs
 				
 		// préférence admin pour la demi journée
 	    $heure_demi_journee = 11;
