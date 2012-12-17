@@ -903,44 +903,44 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
     echo "Fichier sélectionné pour la restauration : <b>".$_GET['file']."</b>\n";
     echo "<p><b>ATTENTION :</b> La procédure de restauration de la base est <b>irréversible</b>. Le fichier de restauration doit être valide. Selon le contenu de ce fichier, tout ou partie de la structure actuelle de la base ainsi que des données existantes peuvent être supprimées et remplacées par la structure et les données présentes dans le fichier.
     <br /><br />\n<b>AVERTISSEMENT :</b> Cette procédure peut être très longue selon la quantité de données à restaurer.</p>\n";
-    echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>\n";
+	echo "<br />Options de restauration :\n";
 	echo "<blockquote>\n";
 
-    echo "<table cellpadding=\"5\" cellspacing=\"5\" border=\"0\" summary='Confirmation'>\n";
-    echo "<tr>\n";
-    echo "<td>\n";
+
+
 		echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_oui>\n";
 		echo add_token_field();
-		echo "<table summary='Oui'>\n";
-		echo "<tr>\n";
-		echo "<td valign='top'>\n";
-		echo "<input type='submit' name='confirm' value = 'Oui' />\n";
-		echo "</td>\n";
-		echo "<td align='left'>\n";
+
+		echo "-----------------<br />";
 		echo "<input type=\"checkbox\" name=\"debug_restaure\" id=\"debug_restaure\" value=\"y\" /><label for='debug_restaure' style='cursor:pointer;'> Activer le mode debug</label><br />\n";
 
 		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_log\" id=\"ne_pas_restaurer_log\" value=\"y\" /><label for='ne_pas_restaurer_log' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'log'.</label><br />\n";
 
 		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_tentatives_intrusion\" id=\"ne_pas_restaurer_tentatives_intrusion\" value=\"y\" /><label for='ne_pas_restaurer_tentatives_intrusion' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'tentatives_intrusion'.</label><br />\n";
 
-		echo "---<br />";
-		echo "<input type=\"checkbox\" name=\"restauration_old_way\" id=\"restauration_old_way\" value=\"y\" /><label for='restauration_old_way' style='cursor:pointer;'> Restaurer la sauvegarde d'un bloc<br />(<i>utile par exemple pour restaurer un fichier SQL ne correspondant pas à une sauvegarde classique</i>).</label><br />\n";
+		echo "-----------------<br />";
+		echo "<input type=\"checkbox\" name=\"restauration_old_way\" id=\"restauration_old_way\" value=\"y\" onChange='document.getElementById(\"restauration_mysql\").checked=false;' /><label for='restauration_old_way' style='cursor:pointer;'> Restaurer la sauvegarde d'un bloc<br />(<i>utile par exemple pour restaurer un fichier SQL ne correspondant pas à une sauvegarde classique</i>)</label><br />\n";
+		echo "-----------------<br />";
+		echo "<input type=\"checkbox\" name=\"restauration_mysql\" id=\"restauration_mysql\" value=\"y\"";
+		if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) echo " disabled";
+		echo " onChange='document.getElementById(\"restauration_old_way\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;'";
+		echo "/><label for='restauration_mysql' style='cursor:pointer;'> Restaurer la sauvegarde par un appel à la commande système mysql<br />(<i>plus rapide mais il n'y a aucune indication de progression durant le processus</i>)</label><br />\n";
+		echo " -> préciser si le fichier à restaurer est codé en UTF8 (sauvegarde GEPI >=1.6.0) <input type='radio' name='char_set' value='utf8'  checked='checked'> ou en ISO (sauvegarde GEPI <=1.5.5)<input type='radio' name='char_set' value='latin1'>\n";
+		if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) {
+		echo "<p><b><font color=\"#FF0000\">Attention : </font></b>pour utiliser la commande système mysql lorsque Gepi est hébergé sous Windows il faut au préalable copier le fichier \"mysq.exe\" dans le dossier \"gestion\" de Gepi. Ce fichier \"mysql.exe\" se trouve généralement dans le sous-dossier \"bin\" du dossier d'installation de MySQL.</p>";
+		}
 
-		echo "</td>\n";
-		echo "</table>\n";
+		echo "<br /><br /><br />";
+		echo "<input type='submit' id='confirm' name='confirm' value = 'Lancer la restauration' /></td></tr>\n";
 		echo "<input type=\"hidden\" name=\"action\" value=\"restaure\" />\n";
 		echo "<input type=\"hidden\" name=\"file\" value=\"".$_GET['file']."\" />\n";
 		echo "</form>\n";
-    echo "</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-	echo "<td valign='top' align='left'>\n";
+
+	echo "<br />ou <br /><br />\n";
     echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_non>\n";
-    echo "<input type='submit' name='confirm' value = 'Non' />\n";
+    echo "<input type='submit' name='confirm' value = 'Abandonner la restauration' />\n";
     echo "</form>\n";
-    echo "</td>\n";
-    echo "</tr>\n";
-    echo "</table>\n";
+
 
 	echo "</blockquote>\n";
 
@@ -952,6 +952,8 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 // Restauration
 if (isset($action) and ($action == 'restaure'))  {
 	check_token();
+	
+	$restauration_mysql=isset($_POST["restauration_mysql"]) ? $_POST["restauration_mysql"] : (isset($_GET["restauration_mysql"]) ? $_GET["restauration_mysql"] : "n");
 
     unset($file);
     $file = isset($_POST["file"]) ? $_POST["file"] : (isset($_GET["file"]) ? $_GET["file"] : NULL);
@@ -1011,6 +1013,120 @@ if (isset($action) and ($action == 'restaure'))  {
 			die();
 		}
 		//===============================================
+	}
+	if($restauration_mysql=='y') {
+	function shutdown() {
+		global $retour,$t_retour,$t_debut,$ajout_char_set,$file;
+		
+		// durée de la sauvegarde
+		$t_duree=time()-$t_debut;
+		$s=$t_duree%60;
+		$t_duree=floor($t_duree/60);
+		$m=$t_duree%60;
+		$h=floor($t_duree/60);
+		echo "<script>document.getElementById('restau_en_cours').innerHTML='<p>Script exécuté en ".$h." h ".$m." min ".$s." s</p>'</script>";
+		//echo "<p style='padding-left: 1em;'>Script exécuté en $h h $m m $s s</p>";
+
+		// bilan de la sauvegarde
+		if ($retour==0) echo "<p style='padding-left: 1em;'>La restauration a été correctement effectuée.</p>";
+		else echo "<p style='padding-left: 1em; color:red; font-weight:bold;'>La restauration a échouée.</p>";
+		if ($ajout_char_set) echo "<p style='padding-left: 1em;'>Un fichier ".$file." a été créé dans le dossier des sauvegardes, vous pouvez le supprimer.</p>";
+
+		// dernière erreur fatale ou warning enregistrée
+		$error = error_get_last();
+		//if(($error!==NULL) && ($error['type'] & ( E_ERROR | E_WARNING))) {
+		if(isset($_POST['debug_restaure']) && $_POST['debug_restaure']=="y") {
+			echo "<p style='padding-left: 1em;'>Dernière erreur PHP : ".$error['message']." dans le fichier ".$error['file']." en ligne ".$error['line']."</p>";
+		}
+
+		echo "<br /><p style='padding-left: 1em;'><a href='../login.php'>Votre session Gepi n'est plus valide, vous devez vous reconnecter.</a></p>";
+
+		// On détruit la session
+		session_destroy();
+	}
+
+	// on fait patienter
+	echo "<br />";
+	echo "<span id='restau_en_cours'><p>Restauration de ".$file." en cours...</p></span>";
+	if (ob_get_contents()) ob_flush(); flush();
+
+
+	// on teste l'accès à mysql
+	@exec("mysql --help",$t_retour,$retour);
+	if ($retour!=0) {
+		echo "<script>document.getElementById('restau_en_cours').innerHTML='<a href=\"accueil_sauve.php\"><img src=\"../images/icons/back.png\" alt=\"Retour\">Retour</a>'</script>";
+		echo "<br />";
+		echo "<br /><p>La commande mysql n'est pas accessible, vérifiez votre configuration (sans doute un problème de PATH).</p>";
+		exit();
+	}
+
+	// Quel est le char set à utiliser ?
+	$char_set=(isset($_POST['char_set']))?$_POST['char_set']:"utf8";
+	
+	// Tests sur le type du fichier à restaurer
+	if (!is_readable("../backup/".$dirname."/".$file) || !is_writable("../backup/".$dirname."/".$file)){
+		echo "<script>document.getElementById('restau_en_cours').innerHTML='<a href=\"accueil_sauve.php\"><img src=\"../images/icons/back.png\" alt=\"Retour\">Retour</a>'</script>";
+		echo "<br />";
+		echo "<br /><p>Le fichier ".$file." n'est pas accessible en lecture et/ou en écriture, vérifiez les droits.</p>";
+		exit();
+	}
+	$file_info=pathinfo("../backup/".$dirname."/".$file);
+	if(!isset($file_info['extension']) || (strtolower($file_info['extension']!="gz") && strtolower($file_info['extension']!="sql"))) {
+		echo "<script>document.getElementById('restau_en_cours').innerHTML='<a href=\"accueil_sauve.php\"><img src=\"../images/icons/back.png\" alt=\"Retour\">Retour</a>'</script>";
+		echo "<br />";
+		echo "<br /><p>Le fichier à restaurer doit avoir pour extension '.sql' ou '.gz'.</p>";
+		exit();
+	}
+	
+
+	// il faut éventuellement décompresser le fichier, car le serveur peut être sous Windows
+	// (sinon un pipe et gunzip suffiraient)
+	$creation_fichier_sql=false;
+	$ajout_char_set=false;
+	if (strtolower($file_info['extension']=="gz")) {
+		// on décompresse l'archive
+		$d_file=$file_info['filename'];
+		if (!file_exists("../backup/".$dirname."/".$d_file)) {
+			$h=gzopen("../backup/".$dirname."/".$file,"rb");
+			$d_h=fopen("../backup/".$dirname."/".$d_file,"wb");
+			// ajout de SET NAMES...
+			$ajout_char_set=true;
+			fwrite($d_h,"SET NAMES '".$char_set."';\n");
+			while($buffer=gzread($h,10240)) {
+				fwrite($d_h,$buffer,strlen($buffer));
+			}
+			gzclose($h);
+			fclose($d_h);
+			$file=$d_file;
+			$creation_fichier_sql=true;
+		} else {
+			echo "<script>document.getElementById('restau_en_cours').innerHTML='<a href=\"accueil_sauve.php\"><img src=\"../images/icons/back.png\" alt=\"Retour\">Retour</a>'</script>";
+			echo "<br />";
+			echo "<br /><p>La restauration ne peut se faire avec la commande système mysql car un fichier ".$d_file." est déjà présent dans le dossier backup.</p>";
+			exit();
+			}
+		}
+
+	// La sauvegarde n'était pas compressée, il faut ajouter SET NAMES...
+	if (!$ajout_char_set) {
+		$h_temp=fopen("../backup/".$dirname."/".$file."tmp","wb");
+		$h_sql=fopen("../backup/".$dirname."/".$file,"rb");
+		fwrite($h_temp,"SET NAMES '".$char_set."';\n");
+		while ($buffer=fread($h_sql,10240)) {
+			fwrite($h_temp,$buffer,strlen($buffer));
+		}
+		fclose($h_temp);
+		fclose($h_sql);
+		unlink("../backup/".$dirname."/".$file);
+		rename("../backup/".$dirname."/".$file."tmp","../backup/".$dirname."/".$file);
+	}
+
+	// C'est parti pour la restauration
+	register_shutdown_function('shutdown');
+	$t_debut=time();
+	@exec("mysql -p".$dbPass." -u ".$dbUser." ".$dbDb." < ../backup/".$dirname."/".$file,$t_retour,$retour);
+	// ici le script est terminé, et donc la fonction 'shutdown' est appelée
+
 	}
 	else {
 
