@@ -1900,36 +1900,41 @@ echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier cré�
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
 echo add_token_field();
 echo "<br />Dossier à sauvegarder :<br />";
-echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (<em>_photos_le_DATE_a_HEURE.zip</em>)</label>";
 
-$suffixe_zip="_le_".date("Y_m_d_\a_H\hi");
-$chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
-$dossier_a_traiter = '../photos/'; //le dossier à traiter
-$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
+$dossier_photos = '../photos/'; //le dossier photos
+$dossier_documents = '../documents/'; //le dossier documents
+$dossiers_OK = true;
+
 
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-	//$dossier_a_traiter .=$_COOKIE['RNE']."/";
+	//$dossier_photos .=$_COOKIE['RNE']."/";
 	if((isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')) {
 		if(!preg_match('/^[A-Za-z0-9]*$/', $_COOKIE['RNE'])) {
 			echo "<p style='color:red; text-align:center'>RNE invalide&nbsp;: ".$_COOKIE['RNE']."</p>\n";
-			$chemin_stockage="";
+			$dossiers_OK = false;
 		}
 		else {
-			$dossier_a_traiter = '../photos/'.$_COOKIE['RNE'].'/'; //le dossier à traiter
+			$dossier_photos = '../photos/'.$_COOKIE['RNE'].'/'; //le dossier photos
+			$dossier_documents = '../documents/'.$_COOKIE['RNE'].'/'; //le dossier documents
 		}
 	}
 	else {
 		echo "<p style='color:red; text-align:center'>RNE invalide.</p>\n";
-		$chemin_stockage="";
+		$dossiers_OK = false;
 	}
 }
-if ($chemin_stockage !='') {
-	echo " (<em>volume du dossier photos&nbsp;: ".volume_dir_human($dossier_a_traiter)."</em>)";
+echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (<em>_photos_le_DATE_a_HEURE.zip</em>)</label>";
+if ($dossiers_OK) {
+	echo " (<em>volume du dossier photos&nbsp;: ".volume_dir_human($dossier_photos)."</em>)";
 }
 echo "<br />\n";
 
 if(!getSettingAOui('active_module_trombinoscopes')) {echo "<span style='color:red; margin-left:2em;'>Le module Trombinoscopes est <a href='../mod_trombinoscopes/trombinoscopes_admin.php'>inactif</a>, il ne devrait pas y avoir de photos à archiver.</span><br />";}
-echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_cdt\" value=\"cdt\" /><label for='dossier_cdt'> Dossier documents du cahier de textes (<em>_cdt_le_DATE_a_HEURE.zip</em>)</label><br />\n";
+echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_cdt\" value=\"cdt\" /><label for='dossier_cdt'> Dossier documents du cahier de textes (<em>_cdt_le_DATE_a_HEURE.zip</em>)</label>\n";
+if ($dossiers_OK) {
+	echo " (<em>volume du dossier documents&nbsp;: ".volume_dir_human($dossier_documents)." dont  ".volume_dir_human($dossier_documents."/archives")." dans le sous-dossier archives</em>)";
+}
+echo "<br />\n";
 if(!getSettingAOui('active_cahiers_texte')) {echo "<span style='color:red; margin-left:2em;'>Le module Cahiers de textes est <a href='../cahier_texte_admin/index.php'>inactif</a>, il ne devrait pas y avoir de photos à archiver</span><br />";}
 echo "<br />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"zip\" />\n
