@@ -119,7 +119,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	}
 
 	if($ok!='yes'){
-		$msg. = "Un ou plusieurs champs obligatoires sont vides !";
+		$msg.= "Un ou plusieurs champs obligatoires sont vides !";
 	}
 	else{
 		if(!isset($nouv_resp)){
