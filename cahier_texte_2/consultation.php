@@ -269,6 +269,12 @@ echo "<div class=\"centre_table\">\n";
 				echo "<span class='grand'>Cahier de textes";
 				if ($current_group) {echo " - $matiere_nom ($matiere_nom_court)";}
 				if ($id_classe != null) {echo "<br />$classe_nom";}
+				elseif((isset($id_groupe))&&(is_numeric($id_groupe))) {
+					$tmp_tab=get_classes_from_id_groupe($id_groupe);
+					if(isset($tmp_tab['classlist_string'])) {
+						echo "<br />".$tmp_tab['classlist_string'];
+					}
+				}
 				echo "</span>\n";
 
 				// Test si le cahier de texte est partagé
@@ -298,7 +304,6 @@ echo "<hr />\n";
 if($selected_eleve) {
 	$sql="SELECT * FROM periodes p, j_eleves_classes jec WHERE jec.id_classe=p.id_classe AND jec.login=''";
 
-
 	// Pour les élèves qui ont changé de classe, on risque des infos erronées si on se base sur la dernière période ouverte en saisie (si leur classe actuelle est fermée pour toutes les périodes et que l'ancienne classe est ouverte sur une période... on va récupérer les devoirs de l'autre classe)
 
 }
@@ -314,6 +319,21 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 
 	//echo "plop";
 	//echo "id_classe=$id_classe<br />";
+
+	if((isset($selected_eleve))&&($selected_eleve)) {
+
+		$tab_date_fin=array();
+		$tab_id_classe_ele=array();
+		$tab_periode_ele=array();
+
+		$tab_per_eleve=get_class_dates_from_ele_login($selected_eleve->login);
+
+		foreach($tab_per_eleve as $key => $value) {
+			$tab_date_fin[]=mysql_date_to_unix_timestamp($value['date_fin']);
+			$tab_id_classe_ele[]=$value['id_classe'];
+			$tab_periode_ele[]=$key;
+		}
+	}
 
     if ($delai == "") die("Erreur : Délai de visualisation du travail personnel non défini. Contactez l'administrateur de GEPI de votre établissement.");
     $nb_dev = 0;
@@ -332,6 +352,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 
         } elseif ($selected_eleve) {
 			// Le DISTINCT est quand même utile parce que si plusieurs périodes sont ouvertes en saisie, on a une multiplication des retours par le nombre de périodes ouvertes en saisie
+	        /*
 	        $sql="SELECT DISTINCT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
@@ -344,6 +365,29 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
                 "jec.login = '" . $selected_eleve->login ."' and " .
                 "ct.contenu != '' and " .
                 "ct.date_ct = '$jour')";
+			*/
+			$periode_courante=1;
+			for($loop=0;$loop<count($tab_date_fin);$loop++) {
+				if($jour<=$tab_date_fin[$loop]) {
+					$periode_courante=$tab_periode_ele[$loop];
+					$id_classe_courante=$tab_id_classe_ele[$loop];
+					break;
+				}
+			}
+
+			//if(isset($id_classe_courante)) {
+
+	        $sql="SELECT DISTINCT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+                "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec WHERE (" .
+                "ct.id_groupe = jeg.id_groupe and " .
+                "g.id = jeg.id_groupe and " .
+                "jeg.login = '" . $selected_eleve->login . "' and " .
+                "jeg.periode = jec.periode and " .
+                "jeg.periode = '".$periode_courante."' and " .
+                "jec.login = '" . $selected_eleve->login ."' and " .
+                "ct.contenu != '' and " .
+                "ct.date_ct = '$jour')";
+
         }
 		//echo strftime("%a %d/%m/%y",$jour)."<br />";
 		//echo "$sql<br />";

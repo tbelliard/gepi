@@ -1099,4 +1099,38 @@ function make_tables_of_groupes() {
       return $tab_groupes;
 }
 
+/** Fonction destinée à retourner les classes associées à un id_groupe
+ *
+ * @param string $login_eleve Login de l'élève
+ *
+ * @return array Tableau d'indice num_periode
+ */
+
+function get_classes_from_id_groupe($id_groupe) {
+	$tab=array();
+
+	$tab['classlist_string']="";
+
+	$sql="SELECT DISTINCT id, classe, nom_complet FROM classes c, j_groupes_classes jgc WHERE jgc.id_classe=c.id AND jgc.id_groupe='$id_groupe' ORDER BY c.classe, c.nom_complet;";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysql_fetch_object($res)) {
+			if($cpt>0) {$tab['classlist_string'].=", ";}
+			$tab['classlist_string'].=$lig->classe;
+			if(($lig->nom_complet!='')&&($lig->nom_complet!=$lig->classe)) {
+				$tab['classlist_string'].=" (".$lig->nom_complet.")";
+			}
+			$tab[$cpt]['id_classe']=$lig->id;
+			$tab[$cpt]['classe']=$lig->classe;
+			$tab[$cpt]['nom_complet']=$lig->nom_complet;
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+
 ?>

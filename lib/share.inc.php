@@ -5733,4 +5733,29 @@ function is_responsable($login_eleve, $login_resp="", $pers_id="") {
 	}
 	return $retour;
 }
+
+/** Fonction destinée à retourner pour un élève, un tableau des classes et dates de périodes en fonction du numéro de période
+ *
+ * @param string $login_eleve Login de l'élève
+ *
+ * @return array Tableau d'indice num_periode
+ */
+
+function get_class_dates_from_ele_login($login_eleve) {
+	$tab=array();
+
+	$sql="SELECT p.*, c.classe, c.nom_complet FROM periodes p, j_eleves_classes jec, classes c WHERE jec.id_classe=p.id_classe AND jec.periode=p.num_periode AND c.id=jec.id_classe AND jec.login='".$login_eleve."' ORDER BY p.num_periode;";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$lig->num_periode]['id_classe']=$lig->id_classe;
+			$tab[$lig->num_periode]['classe']=$lig->classe;
+			$tab[$lig->num_periode]['nom_complet']=$lig->nom_complet;
+			$tab[$lig->num_periode]['date_fin']=$lig->date_fin;
+		}
+	}
+
+	return $tab;
+}
 ?>
