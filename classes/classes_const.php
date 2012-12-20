@@ -41,7 +41,6 @@ if (!checkAccess()) {
 	die();
 }
 include "../lib/periodes.inc.php";
-
 $_SESSION['chemin_retour'] = $gepiPath."/classes/classes_const.php?id_classe=".$id_classe;
 
 $explication_motif_bloquant_suppression_eleve_de_la_classe="La présence de moyennes, appréciations ou avis du conseil de classe est bloquante pour la suppression d'un élève d'une classe.<br />Vous pouvez demander aux professeurs de vider leurs notes et appréciations pour le ou les élèves en question.<br />Sinon, un compte de statut 'secours' permet de corriger/vider des moyennes, appréciations et/ou avis du conseil de classe.";
@@ -589,7 +588,7 @@ function imposer_cpe() {
 			"u.login = jgp.login and " .
 			"jgp.id_groupe = jgc.id_groupe and " .
 			"jgc.id_classe = '".$id_classe."'" .
-			") ORDER BY u.login");
+			") ORDER BY u.nom, u.prenom");
 	$nb = mysql_num_rows($call_prof);
 	$i=0;
 	while ($i < $nb) {
