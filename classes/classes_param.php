@@ -70,9 +70,24 @@ if (isset($_POST['is_posted'])) {
 					while ($k < $per+1) {
 						$temp2 = "nb_".$per."_".$k;
 						if ($_POST[$temp2] != '') {
-							$register = mysql_query("UPDATE periodes SET nom_periode='".$_POST[$temp2]."' where (id_classe='".$id_classe."' and num_periode='".$k."')");
-						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
-					}
+							$sql="UPDATE periodes SET nom_periode='".$_POST[$temp2]."' WHERE (id_classe='".$id_classe."' and num_periode='".$k."')";
+							$register = mysql_query($sql);
+							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
+
+						$temp2 = "date_fin_".$per."_".$k;
+						if ($_POST[$temp2] != '') {
+							$tmp_tab=explode("/", $_POST[$temp2]);
+							if((!isset($tmp_tab[2]))||(!checkdate($tmp_tab[1], $tmp_tab[0], $tmp_tab[2]))) {
+								$msg.="Erreur sur la modification de date de fin de période : ".$_POST[$temp2]."<br />";
+							}
+							else {
+								$sql="UPDATE periodes SET date_fin='".$tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00'";
+								$sql.=" WHERE (id_classe='".$id_classe."' and num_periode='".$k."')";
+								$register = mysql_query($sql);
+								if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+							}
+						}
 						$k++;
 					}
 					$temp2 ="nb_".$per."_reg_suivi_par";
@@ -778,16 +793,22 @@ while ($per < $max_periode) {
 		<tr>
 		<th>&nbsp;</th>
 		<th>Nom de la période</th>
+		<th title="La date précisée ici est prise en compte pour les appartenances des élèves à telle classe sur telle période (notamment pour les élèves changeant de classe).
+Il n'est pas question ici de verrouiller automatiquement une période de note à la date saisie.">Date de fin de la période</th>
 		</tr>
 
 		<?php
 		$k = '1';
 		$alt=1;
-		While ($k < $per+1) {
+		while($k < $per+1) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 			echo "<th>Période ".$k."</th>\n";
 			echo "<td><input type='text' name='nb_".$per."_".$k."' value=\"\" size='30' /></td>\n";
+			echo "<td><input type='text' name='date_fin_".$per."_".$k."' id='date_fin_".$per."_".$k."' value=\"\" size='10' ";
+			echo " onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\"";
+			echo "/>";
+			echo "</td>\n";
 			echo"</tr>\n";
 			$k++;
 		}
