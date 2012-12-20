@@ -888,7 +888,12 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 			$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
 		}
 
-		$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
+		$out_html .= "<option $selected value=\"$link2\" title=\"".htmlspecialchars($row[2] . " - ")." ".$chaine;
+		$tmp_tab=get_classes_from_id_groupe($row[0]);
+		if(isset($tmp_tab['classlist_string'])) {
+			$out_html .= " en ".$tmp_tab['classlist_string'];
+		}
+		$out_html .= "\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
 	}
 	$out_html .= "\n</select>\n</p>\n
 	
