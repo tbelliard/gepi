@@ -2144,7 +2144,7 @@ else{
 									WHERE e.ele_id='$tab_ele_id[$i]' AND
 											jer.login=e.login AND
 											t.ele_id=e.ele_id AND
-											((jer.doublant='-' AND t.ELEDOUBL='O') OR (jer.doublant!='-' AND t.ELEDOUBL='N'));";
+											(((jer.doublant='-' OR jer.doublant='') AND t.ELEDOUBL='O') OR (jer.doublant!='-' AND jer.doublant!='' AND t.ELEDOUBL='N'));";
 							info_debug($sql);
 							//echo "$sql<br />";
 							if($tab_ele_id[$i]==$eleve_id_debug) {echo "$sql<br />\n";}
