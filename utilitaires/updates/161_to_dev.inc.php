@@ -284,14 +284,16 @@ if ($test == -1) {
 } else {
 	$result .= msj_present("La table existe déjà");
 }
+$result .= "<br />";
 
-$result .= "&nbsp;->Modification du type du champ 'cp' de la table 'etablissements' de 'int' en 'varchar'<br />";
+$result .= "&nbsp;->Modification du type du champ 'cp' de la table 'etablissements' de 'int' en 'varchar' :";
 $query = mysql_query("ALTER TABLE etablissements CHANGE cp cp VARCHAR( 10 ) NOT NULL;");
 if ($query) {
-		$result .= msj_ok();
+	$result .= msj_ok("SUCCES !");
 } else {
-		$result .= msj_erreur();
+	$result .= msj_erreur("ECHEC !");
 }
+$result .= "<br />";
 
 $result .= "<strong>Bulletins :</strong><br />";
 $result .= "&nbsp;->Prise en compte du module Bulletins : ";
