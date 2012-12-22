@@ -668,6 +668,163 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		}
 		$mode='modif_exam';
 	}
+	elseif((isset($id_exam))&&($mode=='modif_exam')&&(isset($_GET['select_grp']))&&($_GET['select_grp']=='all')) {
+		check_token();
+
+		// Ajout de groupes pour l'examen sélectionnée
+		$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : (isset($_GET['matiere']) ? $_GET['matiere'] : array());
+
+		// A FAIRE: Contrôler les caractères de $matiere
+
+		$sql="SELECT * FROM ex_examens WHERE id='$id_exam';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			$msg="L'examen n°$id_exam n'existe pas.<br />";
+		}
+		else {
+
+			$groupes_non_visibles['cn']=array();
+			$sql="SELECT DISTINCT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n';";
+			$res_vis=mysql_query($sql);
+			while($lig_vis=mysql_fetch_object($res_vis)) {
+				$groupes_non_visibles['cn'][]=$lig_vis->id_groupe;
+			}
+			$groupes_non_visibles['bull']=array();
+			$sql="SELECT DISTINCT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n';";
+			$res_vis=mysql_query($sql);
+			while($lig_vis=mysql_fetch_object($res_vis)) {
+				$groupes_non_visibles['bull'][]=$lig_vis->id_groupe;
+			}
+
+			$id_classe=array();
+			$sql="SELECT DISTINCT id_classe FROM ex_classes WHERE id_exam='$id_exam';";
+			$res_clas=mysql_query($sql);
+			while($lig_clas=mysql_fetch_object($res_clas)) {
+				$id_classe[]=$lig_clas->id_classe;
+			}
+
+			if(!is_array($matiere)) {
+				$tmp_matiere=$matiere;
+				$matiere=array($tmp_matiere);
+			}
+
+			if(count($matiere)==0) {
+				$sql="SELECT DISTINCT matiere FROM ex_matieres WHERE id_exam='$id_exam';";
+				//echo "$sql<br />";
+				$res_mat=mysql_query($sql);
+				while($lig_mat=mysql_fetch_object($res_mat)) {
+					$matiere[]=$lig_mat->matiere;
+				}
+			}
+
+			$nb_enr=0;
+			for($j=0;$j<count($matiere);$j++) {
+				for($i=0;$i<count($id_classe);$i++) {
+					$sql="SELECT g.* FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_groupe=g.id AND jgc.id_classe='$id_classe[$i]' AND jgm.id_matiere='$matiere[$j]' AND jgm.id_groupe=jgc.id_groupe AND g.id NOT IN (SELECT DISTINCT id_groupe FROM ex_groupes WHERE id_exam='$id_exam') ORDER BY g.name;";
+					//echo "$sql<br />\n";
+					$res=mysql_query($sql);
+					if(mysql_num_rows($res)>0) {
+						while($lig=mysql_fetch_object($res)) {
+							if((!in_array($lig->id, $groupes_non_visibles['cn']))||(!in_array($lig->id, $groupes_non_visibles['bull']))) {
+								$sql="INSERT INTO ex_groupes SET id_exam='$id_exam', matiere='$matiere[$j]', id_groupe='$lig->id';";
+								$insert=mysql_query($sql);
+								if($insert) {$nb_enr++;}
+							}
+						}
+					}
+				}
+			}
+			if($nb_enr>0) {$msg.="Mise à jour de la liste des groupes effectuée ($nb_enr groupe(s) ajouté(s)).<br />";}
+		}
+		$mode='modif_exam';
+	}
+	elseif((isset($id_exam))&&($mode=='modif_exam')&&(isset($_GET['select_moy']))&&((is_numeric($_GET['select_moy']))||($_GET['select_moy']=='moy_plusieurs_periodes'))) {
+		check_token();
+
+		// Ajout de groupes pour l'examen sélectionnée
+		$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : (isset($_GET['matiere']) ? $_GET['matiere'] : array());
+
+		// A FAIRE: Contrôler les caractères de $matiere
+
+		$sql="SELECT * FROM ex_examens WHERE id='$id_exam';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			$msg="L'examen n°$id_exam n'existe pas.<br />";
+		}
+		else {
+			/*
+			$groupes_non_visibles['cn']=array();
+			$sql="SELECT DISTINCT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n';";
+			$res_vis=mysql_query($sql);
+			while($lig_vis=mysql_fetch_object($res_vis)) {
+				$groupes_non_visibles['cn'][]=$lig_vis->id_groupe;
+			}
+			*/
+			$groupes_non_visibles['bull']=array();
+			$sql="SELECT DISTINCT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n';";
+			$res_vis=mysql_query($sql);
+			while($lig_vis=mysql_fetch_object($res_vis)) {
+				$groupes_non_visibles['bull'][]=$lig_vis->id_groupe;
+			}
+
+			/*
+			$id_classe=array();
+			$sql="SELECT DISTINCT id_classe FROM ex_classes WHERE id_exam='$id_exam';";
+			$res_clas=mysql_query($sql);
+			while($lig_clas=mysql_fetch_object($res_clas)) {
+				$id_classe[]=$lig_clas->id_classe;
+			}
+			*/
+			if(!is_array($matiere)) {
+				$tmp_matiere=$matiere;
+				$matiere=array($tmp_matiere);
+			}
+
+			if(count($matiere)==0) {
+				$sql="SELECT DISTINCT matiere FROM ex_matieres WHERE id_exam='$id_exam';";
+				//echo "$sql<br />";
+				$res_mat=mysql_query($sql);
+				while($lig_mat=mysql_fetch_object($res_mat)) {
+					$matiere[]=$lig_mat->matiere;
+				}
+			}
+
+			$nb_enr=0;
+			for($j=0;$j<count($matiere);$j++) {
+				$sql="SELECT eg.* FROM ex_groupes eg, j_groupes_matieres jgm WHERE jgm.id_groupe=eg.id_groupe AND jgm.id_matiere='$matiere[$j]' AND id_exam='$id_exam';";
+				//echo "$sql<br />\n";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while($lig=mysql_fetch_object($res)) {
+						if(!in_array($lig->id, $groupes_non_visibles['bull'])) {
+							if(is_numeric($_GET['select_moy'])) {
+								$sql="UPDATE ex_groupes SET type='moy_bull', id_dev='0', valeur='".$_GET['select_moy']."' WHERE id_exam='$id_exam' AND matiere='$matiere[$j]' AND id_groupe='$lig->id_groupe';";
+							}
+							else {
+								$liste_per_moy="";
+								$sql="SELECT DISTINCT periode FROM matieres_notes WHERE id_groupe='".$lig->id_groupe."' ORDER BY periode;";
+								//echo "$sql<br />\n";
+								$res_per=mysql_query($sql);
+								$cpt_per=0;
+								while($lig_per=mysql_fetch_object($res_per)) {
+									if($cpt_per>0) {$liste_per_moy.=" ";}
+									$liste_per_moy.=$lig_per->periode;
+									$cpt_per++;
+								}
+
+								$sql="UPDATE ex_groupes SET type='moy_plusieurs_periodes', id_dev='0', valeur='".$liste_per_moy."' WHERE id_exam='$id_exam' AND matiere='$matiere[$j]' AND id_groupe='$lig->id_groupe';";
+							}
+							//echo "$sql<br />\n";
+							$insert=mysql_query($sql);
+							if($insert) {$nb_enr++;}
+						}
+					}
+				}
+			}
+			if($nb_enr>0) {$msg.="Mise à jour de la liste des évaluations effectuée.<br />";}
+		}
+		$mode='modif_exam';
+	}
 
 
 /*
@@ -1172,9 +1329,36 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			//=================================
 
 			if((count($tab_matiere)>0)&&(count($tab_classe)>0)) {
+				$tab_periodes_avec_moy=array();
+				$tab_periodes_classes=array();
+				for($i=0;$i<count($tab_id_classe);$i++) {
+					// Faut-il restreindre aux périodes avec moyennes sur les bulletins?
+					// On peut souhaiter préparer un examen blanc en début d'année, avant le remplissage des bulletins
+					$sql="SELECT DISTINCT mn.periode FROM matieres_notes mn, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND mn.login=jec.login AND jec.periode=mn.periode ORDER BY periode;";
+					//echo "$sql<br />";
+					$res_per=mysql_query($sql);
+					while($lig_per=mysql_fetch_object($res_per)) {
+						if(!in_array($lig_per->periode, $tab_periodes_avec_moy)) {
+							$tab_periodes_avec_moy[]=$lig_per->periode;
+						}
+					}
+
+					$sql="SELECT DISTINCT num_periode FROM periodes WHERE id_classe='".$tab_id_classe[$i]."' ORDER BY num_periode;";
+					//echo "$sql<br />";
+					$res_per=mysql_query($sql);
+					while($lig_per=mysql_fetch_object($res_per)) {
+						if(!in_array($lig_per->num_periode, $tab_periodes_classes)) {
+							$tab_periodes_classes[]=$lig_per->num_periode;
+						}
+					}
+				}
+				sort($tab_periodes_avec_moy);
+				sort($tab_periodes_classes);
+
 				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form2'>\n";
 				echo add_token_field();
 
+				echo "<a name='choix_groupes_dev'></a>";
 				echo "<p class='bold'>Choix des groupes et devoirs&nbsp;:</p>\n";
 
 				$grp_hors_enseignement='n';
@@ -1185,7 +1369,36 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				echo "<table class='boireaus' border='1' summary='Tableau des associations matières/classes/groupes'>\n";
 				echo "<tr>\n";
 				echo "<th>Classes<br />Matières</th>\n";
-				echo "<th>Groupes<br />Devoirs</th>\n";
+				echo "<th>Groupes";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;mode=modif_exam&amp;select_grp=all".add_token_in_url()."#choix_groupes_dev'";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo "><img src='../images/icons/wizard.png' width='16' height='16' title=\"Sélectionner tous les groupes présents sur les Bulletins ou Carnets de notes (parmi les matières choisies pour cet examen blanc)\" /></a>";
+				echo "<br />Devoirs";
+
+				echo "<br />";
+				//for($loop=0;$loop<count($tab_periodes_avec_moy);$loop++) {
+				for($loop=0;$loop<count($tab_periodes_classes);$loop++) {
+					if($loop>0) {echo " -";}
+					echo " <a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;mode=modif_exam&amp;select_moy=".$tab_periodes_classes[$loop].add_token_in_url()."#choix_groupes_dev'";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo " title=\"Sélectionner les moyennes des bulletins en période n°".$tab_periodes_classes[$loop]." pour faire office d'évaluations\">";
+					if(!in_array($tab_periodes_classes[$loop], $tab_periodes_avec_moy)) {
+						echo "<span style='color:red' title='Pas de moyennes à ce jour dans cette période'>";
+						echo "P".$tab_periodes_classes[$loop];
+						echo "</span>";
+					}
+					else {
+						echo "P".$tab_periodes_classes[$loop];
+					}
+					echo "</a>";
+				}
+				echo " - <a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;mode=modif_exam&amp;select_moy=moy_plusieurs_periodes".add_token_in_url()."#choix_groupes_dev'";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo " title=\"Sélectionner les moyennes de toutes les périodes (avec notes) des bulletins pour faire office d'évaluations\">";
+				echo "Toutes";
+				echo "</a>";
+
+				echo"</th>\n";
 				echo "<th>Coef</th>\n";
 				echo "<th>Bonus</th>\n";
 				for($i=0;$i<count($tab_classe);$i++) {
@@ -1210,7 +1423,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					//echo "<a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;matiere=$tab_matiere[$j]&amp;id_classe=$tab_id_classe[$i]&amp;mode=modif_exam&amp;aff=groupes'>Choix groupes</a><br />\n";
 					echo "<a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;matiere=$tab_matiere[$j]&amp;mode=modif_exam&amp;aff=groupes'";
 					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-					echo ">Choix des groupes</a><br />\n";
+					echo ">Choix des groupes</a>";
+
+					echo "<a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;matiere=$tab_matiere[$j]&amp;mode=modif_exam&amp;select_grp=all".add_token_in_url()."#choix_groupes_dev'";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo "'><img src='../images/icons/wizard.png' width='16' height='16' title=\"Sélectionner tous les groupes de $tab_matiere[$j] présents sur les Bulletins ou Carnets de notes\" /></a>";
+
+					echo "<br />\n";
 
 					//$sql="SELECT 1=1 FROM ex_groupes eg WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' LIMIT 1;";
 					//$sql="SELECT 1=1 FROM ex_groupes eg WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND type!='hors_enseignement' LIMIT 1;";
