@@ -799,6 +799,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						if(!in_array($lig->id, $groupes_non_visibles['bull'])) {
 							if(is_numeric($_GET['select_moy'])) {
 								$sql="UPDATE ex_groupes SET type='moy_bull', id_dev='0', valeur='".$_GET['select_moy']."' WHERE id_exam='$id_exam' AND matiere='$matiere[$j]' AND id_groupe='$lig->id_groupe';";
+								//echo "$sql<br />\n";
+								$insert=mysql_query($sql);
+								if($insert) {$nb_enr++;}
 							}
 							else {
 								$liste_per_moy="";
@@ -806,17 +809,64 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 								//echo "$sql<br />\n";
 								$res_per=mysql_query($sql);
 								$cpt_per=0;
+								$id_dev_liste_periode=array();
 								while($lig_per=mysql_fetch_object($res_per)) {
 									if($cpt_per>0) {$liste_per_moy.=" ";}
 									$liste_per_moy.=$lig_per->periode;
+
+									$id_dev_liste_periode[]=$lig_per->periode;
+
 									$cpt_per++;
 								}
 
+								// Et inscrire les valeurs dans ex_notes
+								$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='".$lig->id_groupe."';";
+								//echo "$sql<br />";
+								$res_id_ex_grp=mysql_query($sql);
+								if(mysql_num_rows($res_id_ex_grp)==0) {
+									$msg.="Identifiant du groupe dans ex_groupe non trouvé pour l'examen $id_exam et le groupe ".$lig->id_groupe.".<br />";
+								}
+								else {
+									$lig_eg=mysql_fetch_object($res_id_ex_grp);
+									$id_ex_grp=$lig_eg->id;
+
+									// Nettoyage
+									$sql="DELETE FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
+									$nettoyage=mysql_query($sql);
+
+									unset($tab_note_per);
+									for($jj=0;$jj<count($id_dev_liste_periode);$jj++) {
+										$sql="SELECT * FROM matieres_notes WHERE id_groupe='".$lig->id_groupe."' AND periode='$id_dev_liste_periode[$jj]' ORDER BY login;";
+										$res=mysql_query($sql);
+										while($lig_mn=mysql_fetch_object($res)) {
+											if($lig_mn->statut=='') {
+												$tab_note_per[$lig_mn->login][$lig_mn->periode]=$lig_mn->note;
+												//$tab_note_per[$lig->login]['total']
+											}
+										}
+									}
+									if(isset($tab_note_per)) {
+										foreach($tab_note_per as $ele_login => $tab_notes_eleve) {
+											//echo "<p>$ele_login ";
+											$total=0;
+											foreach($tab_notes_eleve as $tmp_periode => $tmp_note) {
+												$total+=$tmp_note;
+												//echo $tmp_note." - ";
+											}
+											//echo "Moyenne: $total/".count($tab_notes_eleve)."<br />";
+											$moyenne=round($total*10/count($tab_notes_eleve))/10;
+											//$moyenne=str_replace(",", ".", $moyenne);
+											$sql="INSERT INTO ex_notes SET id_ex_grp='$id_ex_grp', login='$ele_login', note='$moyenne';";
+											$insert=mysql_query($sql);
+										}
+									}
+								}
+
 								$sql="UPDATE ex_groupes SET type='moy_plusieurs_periodes', id_dev='0', valeur='".$liste_per_moy."' WHERE id_exam='$id_exam' AND matiere='$matiere[$j]' AND id_groupe='$lig->id_groupe';";
+								//echo "$sql<br />\n";
+								$insert=mysql_query($sql);
+								if($insert) {$nb_enr++;}
 							}
-							//echo "$sql<br />\n";
-							$insert=mysql_query($sql);
-							if($insert) {$nb_enr++;}
 						}
 					}
 				}
@@ -2415,6 +2465,9 @@ function cocher_decocher(mode) {
 			//echo "<input type='hidden' name='aff' value='groupes' />\n";
 			echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
+
+			echo "<p><em>NOTES&nbsp;:</em></p>\n";
+			echo "<ul><li>Dans le cas où vous choisissez une moyenne de plusieurs périodes, le calcul de la moyenne des différentes périodes est faite sur le champ.<br />Si les notes sont modifiées par la suite par les professeurs, les modifications ne sont prises en compte que si vous revalidez le présent formulaire.</li></ul>\n";
 
 			echo "<script type='text/javascript'>
 function radio_change(i,cpt) {
