@@ -1795,6 +1795,19 @@ function checkbox_change(cpt) {
 				}
 			}
 
+			$groupes_non_visibles['cn']=array();
+			$sql="SELECT DISTINCT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n';";
+			$res_vis=mysql_query($sql);
+			while($lig_vis=mysql_fetch_object($res_vis)) {
+				$groupes_non_visibles['cn'][]=$lig_vis->id_groupe;
+			}
+			$groupes_non_visibles['bull']=array();
+			$sql="SELECT DISTINCT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n';";
+			$res_vis=mysql_query($sql);
+			while($lig_vis=mysql_fetch_object($res_vis)) {
+				$groupes_non_visibles['bull'][]=$lig_vis->id_groupe;
+			}
+
 			echo "<table class='boireaus' summary='Liste des groupes'>\n";
 
 			echo "<tr>\n";
@@ -1814,11 +1827,13 @@ function checkbox_change(cpt) {
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
 					while($lig=mysql_fetch_object($res)) {
-						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
-						echo "onchange=\"checkbox_change($cpt);changement();\" ";
-						if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-						echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span></label><br />\n";
-						$cpt++;
+						if((!in_array($lig->id, $groupes_non_visibles['cn']))||(!in_array($lig->id, $groupes_non_visibles['bull']))) {
+							echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
+							echo "onchange=\"checkbox_change($cpt);changement();\" ";
+							if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
+							echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span></label><br />\n";
+							$cpt++;
+						}
 					}
 				}
 				else {
@@ -1940,7 +1955,7 @@ function cocher_decocher(mode) {
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 			echo add_token_field();
 
-			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe";
+			echo "<p class='bold'>Choix des évaluations ou moyennes pour l'examen $id_exam&nbsp;: Classe";
 			if($nb_classes>1) {
 				echo "s";
 			}
@@ -1950,6 +1965,19 @@ function cocher_decocher(mode) {
 				echo get_class_from_id($id_classe[$loop]);
 			}
 			echo " et matière $matiere</p>\n";
+
+			$groupes_non_visibles['cn']=array();
+			$sql="SELECT DISTINCT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n';";
+			$res_vis=mysql_query($sql);
+			while($lig_vis=mysql_fetch_object($res_vis)) {
+				$groupes_non_visibles['cn'][]=$lig_vis->id_groupe;
+			}
+			$groupes_non_visibles['bull']=array();
+			$sql="SELECT DISTINCT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n';";
+			$res_vis=mysql_query($sql);
+			while($lig_vis=mysql_fetch_object($res_vis)) {
+				$groupes_non_visibles['bull'][]=$lig_vis->id_groupe;
+			}
 
 			$tab_moy_bull_inscrits=array();
 			$tab_moy_pp_inscrits=array();
@@ -1978,7 +2006,7 @@ function cocher_decocher(mode) {
 				}
 			}
 
-			echo "<table class='boireaus' summary='Liste des groupes'>\n";
+			echo "<table class='boireaus' summary='Liste des évaluations/moyennes'>\n";
 
 			echo "<tr>\n";
 			for($i=0;$i<$nb_classes;$i++) {
@@ -1993,144 +2021,164 @@ function cocher_decocher(mode) {
 			for($i=0;$i<$nb_classes;$i++) {
 				$alt=$alt*(-1);
 				echo "<td class='lig$alt' style='text-align:left; vertical-align:top;'>\n";
-				$sql="SELECT g.* FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_groupe=g.id AND jgc.id_classe='$id_classe[$i]' AND jgm.id_matiere='$matiere' AND jgm.id_groupe=jgc.id_groupe ORDER BY g.name;";
+				$sql="SELECT g.* FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_groupe=g.id AND jgc.id_classe='$id_classe[$i]' AND jgm.id_matiere='$matiere' AND jgm.id_groupe=jgc.id_groupe AND g.id IN (SELECT id_groupe FROM ex_groupes WHERE id_exam='$id_exam') ORDER BY g.name;";
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
 					while($lig=mysql_fetch_object($res)) {
-						echo "<p><span class='bold'>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span><br />\n";
+						if((!in_array($lig->id, $groupes_non_visibles['cn']))||(!in_array($lig->id, $groupes_non_visibles['bull']))) {
+							echo "<p><span class='bold'>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span><br />\n";
 
-						echo "<input type='hidden' name='id_groupe[$cpt_grp]' value='$lig->id' />\n";
+							echo "<input type='hidden' name='id_groupe[$cpt_grp]' value='$lig->id' />\n";
 
-						/*
-						// Le dispositif commenté ici aurait seulement permis de saisir un devoir pour un groupe existant alors que ce qui est utile, c'est de pouvoir créer un enseignement pour le bac de français, note obtenue en première.
-						echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='-1' ";
-						echo "onchange=\"radio_change($cpt_grp,$cpt)\" ";
-						//if() {echo "checked ";}
-						echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'>";
-						echo "Saisir une <span id='texte_id_dev_".$cpt_grp."_$cpt'>série de notes hors enseignement de l'année</span>\n";
-						echo "</label><br />\n";
-						$cpt++;
+							/*
+							// Le dispositif commenté ici aurait seulement permis de saisir un devoir pour un groupe existant alors que ce qui est utile, c'est de pouvoir créer un enseignement pour le bac de français, note obtenue en première.
+							echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='-1' ";
+							echo "onchange=\"radio_change($cpt_grp,$cpt)\" ";
+							//if() {echo "checked ";}
+							echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'>";
+							echo "Saisir une <span id='texte_id_dev_".$cpt_grp."_$cpt'>série de notes hors enseignement de l'année</span>\n";
+							echo "</label><br />\n";
+							$cpt++;
 
-						echo "ou choisir un devoir existant&nbsp;:<br />\n";
-						*/
+							echo "ou choisir un devoir existant&nbsp;:<br />\n";
+							*/
 
-						$sql="SELECT cd.*, ccn.periode FROM cn_devoirs cd, cn_cahier_notes ccn WHERE ccn.id_groupe='$lig->id' AND ccn.id_cahier_notes=cd.id_racine ORDER BY ccn.periode, cd.date, cd.nom_court, cd.nom_complet;";
-						//echo "$sql<br />\n";
-						$res2=mysql_query($sql);
-						if(mysql_num_rows($res2)>0) {
-							$periode_precedente=-1;
-							while($lig2=mysql_fetch_object($res2)) {
-								if($lig2->periode!=$periode_precedente) {
-									unset($lig3);
+							$sql="SELECT cd.*, ccn.periode FROM cn_devoirs cd, cn_cahier_notes ccn WHERE ccn.id_groupe='$lig->id' AND ccn.id_cahier_notes=cd.id_racine ORDER BY ccn.periode, cd.date, cd.nom_court, cd.nom_complet;";
+							//echo "$sql<br />\n";
+							$res2=mysql_query($sql);
+							if(mysql_num_rows($res2)>0) {
+								$periode_precedente=-1;
+								while($lig2=mysql_fetch_object($res2)) {
+									if($lig2->periode!=$periode_precedente) {
+										unset($lig3);
 
-									echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la période' title='Moyenne du bulletin pour la période'>";
-									$sql="SELECT nom_periode, verouiller FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$lig2->periode';";
-									$res3=mysql_query($sql);
-									if(mysql_num_rows($res3)>0) {
-										$lig3=mysql_fetch_object($res3);
-										echo "<span class='bold'>".htmlspecialchars($lig3->nom_periode)."</span>\n";
+										if(!in_array($lig->id, $groupes_non_visibles['bull'])) {
+											echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la période' title='Moyenne du bulletin pour la période'>";
+											$sql="SELECT nom_periode, verouiller FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$lig2->periode';";
+											$res3=mysql_query($sql);
+											if(mysql_num_rows($res3)>0) {
+												$lig3=mysql_fetch_object($res3);
+												echo "<span class='bold'>".htmlspecialchars($lig3->nom_periode)."</span>\n";
 
-										$tab_periodes[$cpt_grp][]=$lig2->periode;
+												$tab_periodes[$cpt_grp][]=$lig2->periode;
+											}
+											else {
+												// Ca ne devrait pas arriver...
+												echo "<span class='bold'>Période ".$lig2->periode."</span>\n";
+
+												$tab_periodes[$cpt_grp][]=$lig2->periode;
+											}
+											echo "</label>\n";
+
+											echo "&nbsp;<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='P$lig2->periode' ";
+											echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
+
+											if((isset($tab_moy_bull_inscrits[$lig->id]))&&($tab_moy_bull_inscrits[$lig->id]==$lig2->periode)) {
+												echo "checked ";
+											}
+
+											echo "/>";
+
+											if(isset($lig3)) {
+												if($lig3->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: Période non close' title='ATTENTION: Période non close' />\n";}
+											}
+										}
+										else {
+											echo "<span title='Moyenne du bulletin pour la période'>";
+											$sql="SELECT nom_periode, verouiller FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$lig2->periode';";
+											$res3=mysql_query($sql);
+											if(mysql_num_rows($res3)>0) {
+												$lig3=mysql_fetch_object($res3);
+												echo "<span class='bold'>".htmlspecialchars($lig3->nom_periode)."</span>\n";
+
+												$tab_periodes[$cpt_grp][]=$lig2->periode;
+											}
+											else {
+												// Ca ne devrait pas arriver...
+												echo "<span class='bold'>Période ".$lig2->periode."</span>\n";
+
+												$tab_periodes[$cpt_grp][]=$lig2->periode;
+											}
+											echo "</span>\n";
+										}
+										echo "<br />\n";
+										$periode_precedente=$lig2->periode;
+
+										$cpt++;
 									}
-									else {
-										// Ca ne devrait pas arriver...
-										echo "<span class='bold'>Période ".$lig2->periode."</span>\n";
 
-										$tab_periodes[$cpt_grp][]=$lig2->periode;
-									}
-									echo "</label>\n";
-
-									echo "&nbsp;<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='P$lig2->periode' ";
+									echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='$lig2->id' ";
 									echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
-
-									if((isset($tab_moy_bull_inscrits[$lig->id]))&&($tab_moy_bull_inscrits[$lig->id]==$lig2->periode)) {
-										echo "checked ";
-									}
-
-									echo "/>";
-
-									if(isset($lig3)) {
-										if($lig3->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: Période non close' title='ATTENTION: Période non close' />\n";}
-									}
-									echo "<br />\n";
-									$periode_precedente=$lig2->periode;
+									if(in_array($lig2->id,$tab_dev_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
+									echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'><span id='texte_id_dev_".$cpt_grp."_$cpt' $temp_style>".htmlspecialchars($lig2->nom_court)." (<span style='font-style:italic;font-size:x-small;'>".formate_date($lig2->date)."</span>)</span></label><br />\n";
 
 									$cpt++;
 								}
+							}
+							else {
+								echo "Aucun devoir.<br />";
+							}
 
-								echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='$lig2->id' ";
+							if(!in_array($lig->id, $groupes_non_visibles['bull'])) {
+								$sql="SELECT DISTINCT mn.periode, p.nom_periode, p.verouiller FROM matieres_notes mn, periodes p WHERE mn.id_groupe='$lig->id' AND p.id_classe='$id_classe[$i]' AND p.num_periode=mn.periode ORDER BY periode;";
+								//echo "$sql<br />\n";
+								$res2=mysql_query($sql);
+								if(mysql_num_rows($res2)>0) {
+									while($lig2=mysql_fetch_object($res2)) {
+										if((!isset($tab_periodes[$cpt_grp]))||(!in_array($lig2->periode, $tab_periodes[$cpt_grp]))) {
+											echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la période' title='Moyenne du bulletin pour la période'>";
+											echo "<span class='bold'>".htmlspecialchars($lig2->nom_periode)."</span>\n";
+											$tab_periodes[$cpt_grp][]=$lig2->periode;
+											echo "</label>\n";
+											echo "&nbsp;<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='P$lig2->periode' ";
+											echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
+											if((isset($tab_moy_bull_inscrits[$lig->id]))&&($tab_moy_bull_inscrits[$lig->id]==$lig2->periode)) {
+												echo "checked ";
+											}
+											echo "/>";
+
+											if($lig2->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: Période non close' title='ATTENTION: Période non close' />\n";}
+											echo "<br />\n";
+
+											$cpt++;
+										}
+									}
+								}
+							}
+
+
+							// Et proposer de saisir des notes hors devoir
+
+
+							/*
+								echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
+								echo "onchange=\"checkbox_change($cpt)\" ";
+								if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
+								echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span></label><br />\n";
+							*/
+
+
+							if(isset($tab_periodes[$cpt_grp])) {
+								//echo "<hr />\n";
+								echo "<b>Ou</b><br />\n";
+								//echo "<b>Moyenne de plusieurs périodes:</b>\n";
+								echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='Plusieurs_periodes' ";
 								echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
-								if(in_array($lig2->id,$tab_dev_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-								echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'><span id='texte_id_dev_".$cpt_grp."_$cpt' $temp_style>".htmlspecialchars($lig2->nom_court)." (<span style='font-style:italic;font-size:x-small;'>".formate_date($lig2->date)."</span>)</span></label><br />\n";
 
+								//if(in_array($lig2->id,$tab_dev_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
+								if(isset($tab_moy_pp_inscrits[$lig->id])) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
+
+								echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'><span id='texte_id_dev_".$cpt_grp."_$cpt' $temp_style>Moyenne de plusieurs périodes&nbsp;:</span></label><br />\n";
+
+								for($j=0;$j<count($tab_periodes[$cpt_grp]);$j++) {
+									echo "<span style='margin-left:2em;'><input type='checkbox' name='id_dev_".$cpt_grp."_periodes[]' id='id_dev_".$cpt_grp."_periodes_$j' value='".$tab_periodes[$cpt_grp][$j]."' onchange=\"document.getElementById('id_dev_".$cpt_grp."_$cpt').checked=true;\" ";
+									if((isset($tab_moy_pp_inscrits[$lig->id]))&&(in_array($tab_periodes[$cpt_grp][$j],$tab_moy_pp_inscrits[$lig->id]))) {echo "checked ";}
+									echo "/><label for='id_dev_".$cpt_grp."_periodes_$j'>Période ".$tab_periodes[$cpt_grp][$j]."</label></span><br />\n";
+								}
 								$cpt++;
 							}
 						}
-						else {
-							echo "Aucun devoir.<br />";
-						}
-
-
-
-						$sql="SELECT DISTINCT mn.periode, p.nom_periode, p.verouiller FROM matieres_notes mn, periodes p WHERE mn.id_groupe='$lig->id' AND p.id_classe='$id_classe[$i]' AND p.num_periode=mn.periode ORDER BY periode;";
-						//echo "$sql<br />\n";
-						$res2=mysql_query($sql);
-						if(mysql_num_rows($res2)>0) {
-							while($lig2=mysql_fetch_object($res2)) {
-								if((!isset($tab_periodes[$cpt_grp]))||(!in_array($lig2->periode, $tab_periodes[$cpt_grp]))) {
-									echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la période' title='Moyenne du bulletin pour la période'>";
-									echo "<span class='bold'>".htmlspecialchars($lig2->nom_periode)."</span>\n";
-									$tab_periodes[$cpt_grp][]=$lig2->periode;
-									echo "</label>\n";
-									echo "&nbsp;<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='P$lig2->periode' ";
-									echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
-									if((isset($tab_moy_bull_inscrits[$lig->id]))&&($tab_moy_bull_inscrits[$lig->id]==$lig2->periode)) {
-										echo "checked ";
-									}
-									echo "/>";
-
-									if($lig2->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: Période non close' title='ATTENTION: Période non close' />\n";}
-									echo "<br />\n";
-
-									$cpt++;
-								}
-							}
-						}
-
-
-
-						// Et proposer de saisir des notes hors devoir
-
-
-						/*
-							echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
-							echo "onchange=\"checkbox_change($cpt)\" ";
-							if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-							echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span></label><br />\n";
-						*/
-
-
-						if(isset($tab_periodes[$cpt_grp])) {
-							echo "<hr />\n";
-							echo "<b>Ou</b><br />\n";
-							//echo "<b>Moyenne de plusieurs périodes:</b>\n";
-							echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='Plusieurs_periodes' ";
-							echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
-
-							//if(in_array($lig2->id,$tab_dev_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-							if(isset($tab_moy_pp_inscrits[$lig->id])) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-
-							echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'><span id='texte_id_dev_".$cpt_grp."_$cpt' $temp_style>Moyenne de plusieurs périodes&nbsp;:</span></label><br />\n";
-
-							for($j=0;$j<count($tab_periodes[$cpt_grp]);$j++) {
-								echo "<span style='margin-left:2em;'><input type='checkbox' name='id_dev_".$cpt_grp."_periodes[]' id='id_dev_".$cpt_grp."_periodes_$j' value='".$tab_periodes[$cpt_grp][$j]."' onchange=\"document.getElementById('id_dev_".$cpt_grp."_$cpt').checked=true;\" ";
-								if((isset($tab_moy_pp_inscrits[$lig->id]))&&(in_array($tab_periodes[$cpt_grp][$j],$tab_moy_pp_inscrits[$lig->id]))) {echo "checked ";}
-								echo "/><label for='id_dev_".$cpt_grp."_periodes_$j'>Période ".$tab_periodes[$cpt_grp][$j]."</label></span><br />\n";
-							}
-							$cpt++;
-						}
-
 
 						$cpt_grp++;
 					}
