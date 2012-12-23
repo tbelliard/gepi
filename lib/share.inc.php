@@ -1704,13 +1704,21 @@ function ensure_utf8($str, $from_encoding = null) {
  */
 function detect_utf8 ($str) {
 	// Inspiré de http://w3.org/International/questions/qa-forms-utf-8.html
-	return preg_match('%^(?:[\x09\x0A\x0D\x20-\x7E])*$%xs', $str) | // ASCII
-		preg_match('#[\xC2-\xDF][\x80-\xBF]#', $str) | // non-overlong 2-byte
-		preg_match('#\xE0[\xA0-\xBF][\x80-\xBF]#', $str) | // excluding overlongs
-		preg_match('#[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}#', $str) | // straight 3-byte
+	// La chaîne ne comporte que des octets < 7E ?
+	$full_ascii=true; $i=0;
+	while ($full_ascii && $i<strlen($str)) {
+		$full_ascii = $full_ascii && (ord($str[$i])<0x7E);
+		$i++;
+	}
+	// Si oui c'est de l'utf8 sinon on cherche si la chaîne contient
+	// au moins une suite d'octets valide en UTF8
+	if ($full_ascii) return true;
+	else return preg_match('#[\xC2-\xDF][\x80-\xBF]#', $str) || // non-overlong 2-byte
+		preg_match('#\xE0[\xA0-\xBF][\x80-\xBF]#', $str) || // excluding overlongs
+		preg_match('#[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}#', $str) || // straight 3-byte
 		preg_match('#\xED[\x80-\x9F][\x80-\xBF]#', $str) | // excluding surrogates
-		preg_match('#\xF0[\x90-\xBF][\x80-\xBF]{2}#', $str) | // planes 1-3
-		preg_match('#[\xF1-\xF3][\x80-\xBF]{3}#', $str) | // planes 4-15
+		preg_match('#\xF0[\x90-\xBF][\x80-\xBF]{2}#', $str) || // planes 1-3
+		preg_match('#[\xF1-\xF3][\x80-\xBF]{3}#', $str) || // planes 4-15
 		preg_match('# \xF4[\x80-\x8F][\x80-\xBF]{2}#', $str) ; // plane 16
  }
 
