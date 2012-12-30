@@ -853,16 +853,8 @@ else
 
 
 // Durée d'une portion
-if ((isset($_POST['duree'])) and ($_POST['duree'] > 0)) $_SESSION['defaulttimeout'] = $_POST['duree'];
-if (getSettingValue("backup_duree_portion") > "4" and !isset($_POST['sauve_duree'])) $_SESSION['defaulttimeout'] = getSettingValue("backup_duree_portion");
-
 if (!isset($_SESSION['defaulttimeout'])) {
-    $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
-    if ($max_time>5) {
-        $_SESSION['defaulttimeout']=$max_time-2;
-    } else {
-        $_SESSION['defaulttimeout']=5;
-    }
+    $_SESSION['defaulttimeout']=max(get_cfg_var("max_execution_time")-2,5);
 }
 
 // Lors d'une sauvegarde, nombre de lignes traitées dans la base entre chaque vérification du temps restant
@@ -1751,30 +1743,9 @@ if ((substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))||
 <br />
 Description (<em>facultative</em>) de la sauvegarde&nbsp;:<br /><textarea name='description_sauvegarde' cols='30'></textarea>
 </div>
-
-<span class='small'><b>Remarques</b> :</span>
-<ul>
-<li><span class='small'>Les répertoires "documents" (contenant les documents joints aux cahiers de textes) et "photos" (contenant les photos du trombinoscope) ne seront pas sauvegardés.<br/>
-Un outil de sauvegarde spécifique se trouve en bas de <a href='#zip'>cette page</a>.</span></li>
-<li><span class='small'>Valeur de la <b>durée d'une portion</b> en secondes : <input type="text" name="duree" value="<?php echo $_SESSION['defaulttimeout']; ?>" size="5" />
-<input type='checkbox' name='sauve_duree' value='yes' /> Mémoriser la durée de la portion pour la prochaine fois
-<br/><a href='#' onClick="clicMenu('1')" style="cursor: hand">Afficher/cacher l'aide</a>.</span></li>
-</ul>
 </form>
-<div style="display:none" id="menu1">
-<table border="1" cellpadding="5" bgcolor="#C0C0C0"><tr><td>La <b>valeur de la durée d'une portion</b> doit être inférieure à la
-<b>valeur maximum d'exécution d'un script</b> sur le serveur (max_execution_time).
-<br />
-<br />Selon la taille de la base et selon la configuration du serveur,
-la sauvegarde ou la restauration peut échouer si le temps nécessaire à cette opération est supérieur
-au temps maximum autorisé pour l'exécution d'un script (max_execution_time).
-<br />
-Un message du type "Maximum execution time exceeded" apparaît alors, vous indiquant que le processus a échoué.
-<br /><br />
-Pour palier cela, <b>ce script sauvegarde et restaure "par portions" d'une durée fixée par l'utilisateur</b> en reprenant le processus à l'endroit où il s'est interrompue précédemment
-jusqu'à ce que l'opération de sauvegarde ou de restauration soit terminée.
-</td></tr></table>
-</div>
+
+<br /><span class='small'><b>Remarque</b> : les répertoires 'documents' (contenant les documents joints aux cahiers de textes) et 'photos' (contenant les photos du trombinoscope) ne seront pas sauvegardés. Un outil de sauvegarde spécifique se trouve en bas de <a href='#zip'>cette page</a>.</span>
 <hr />
 
 
