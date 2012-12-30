@@ -1925,14 +1925,19 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 }
 echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (<em>_photos_le_DATE_a_HEURE.zip</em>)</label>";
 if ($dossiers_OK) {
-	echo " (<em>volume du dossier photos&nbsp;: ".volume_dir_human($dossier_photos)."</em>)";
+	echo "<br />&nbsp;&nbsp;(<em>volume du dossier 'photos'&nbsp;: ".volume_dir_human($dossier_photos)."</em>)";
 }
 echo "<br />\n";
 
 if(!getSettingAOui('active_module_trombinoscopes')) {echo "<span style='color:red; margin-left:2em;'>Le module Trombinoscopes est <a href='../mod_trombinoscopes/trombinoscopes_admin.php'>inactif</a>, il ne devrait pas y avoir de photos à archiver.</span><br />";}
 echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_cdt\" value=\"cdt\" /><label for='dossier_cdt'> Dossier documents du cahier de textes (<em>_cdt_le_DATE_a_HEURE.zip</em>)</label>\n";
 if ($dossiers_OK) {
-	echo " (<em>volume du dossier documents&nbsp;: ".volume_dir_human($dossier_documents)." dont  ".volume_dir_human($dossier_documents."/archives")." dans le sous-dossier archives</em>)";
+	echo "<br />&nbsp;&nbsp;(<em>volume du dossier 'documents'&nbsp;: ".volume_dir_human($dossier_documents).", dont  ".volume_dir_human($dossier_documents."/archives")." dans le sous-dossier 'archives'";
+	if (is_dir($dossier_documents."/discipline")) {
+		echo " et ".volume_dir_human($dossier_documents."/discipline")." dans le sous-dossier 'discipline'";
+		echo " qui ne seront";
+	} else echo " qui ne sera";
+	echo " pas inclus dans l'archive</em>)";
 }
 echo "<br />\n";
 if(!getSettingAOui('active_cahiers_texte')) {echo "<span style='color:red; margin-left:2em;'>Le module Cahiers de textes est <a href='../cahier_texte_admin/index.php'>inactif</a>, il ne devrait pas y avoir de photos à archiver</span><br />";}
