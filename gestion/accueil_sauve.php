@@ -1282,11 +1282,6 @@ $quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : 
 if (isset($action) and ($action == 'dump'))  {
 	// On enregistre le paramètre pour s'en souvenir la prochaine fois
 	saveSetting("mode_sauvegarde", "gepi");
-	if (isset($_POST['sauve_duree'])) {
-		if ($_POST['sauve_duree'] == "yes") {
-			saveSetting("backup_duree_portion", $_SESSION['defaulttimeout']);
-		}
-	}
 	// Sauvegarde de la base
     $nomsql = $dbDb."_le_".date("Y_m_d_\a_H\hi");
     $cur_time=date("Y-m-d H:i");
