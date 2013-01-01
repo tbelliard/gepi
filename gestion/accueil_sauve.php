@@ -853,16 +853,8 @@ else
 
 
 // Durée d'une portion
-if ((isset($_POST['duree'])) and ($_POST['duree'] > 0)) $_SESSION['defaulttimeout'] = $_POST['duree'];
-if (getSettingValue("backup_duree_portion") > "4" and !isset($_POST['sauve_duree'])) $_SESSION['defaulttimeout'] = getSettingValue("backup_duree_portion");
-
 if (!isset($_SESSION['defaulttimeout'])) {
-    $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
-    if ($max_time>5) {
-        $_SESSION['defaulttimeout']=$max_time-2;
-    } else {
-        $_SESSION['defaulttimeout']=5;
-    }
+    $_SESSION['defaulttimeout']=max(get_cfg_var("max_execution_time")-2,5);
 }
 
 // Lors d'une sauvegarde, nombre de lignes traitées dans la base entre chaque vérification du temps restant
@@ -1290,11 +1282,6 @@ $quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : 
 if (isset($action) and ($action == 'dump'))  {
 	// On enregistre le paramètre pour s'en souvenir la prochaine fois
 	saveSetting("mode_sauvegarde", "gepi");
-	if (isset($_POST['sauve_duree'])) {
-		if ($_POST['sauve_duree'] == "yes") {
-			saveSetting("backup_duree_portion", $_SESSION['defaulttimeout']);
-		}
-	}
 	// Sauvegarde de la base
     $nomsql = $dbDb."_le_".date("Y_m_d_\a_H\hi");
     $cur_time=date("Y-m-d H:i");
@@ -1751,30 +1738,9 @@ if ((substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))||
 <br />
 Description (<em>facultative</em>) de la sauvegarde&nbsp;:<br /><textarea name='description_sauvegarde' cols='30'></textarea>
 </div>
-
-<span class='small'><b>Remarques</b> :</span>
-<ul>
-<li><span class='small'>Les répertoires "documents" (contenant les documents joints aux cahiers de textes) et "photos" (contenant les photos du trombinoscope) ne seront pas sauvegardés.<br/>
-Un outil de sauvegarde spécifique se trouve en bas de <a href='#zip'>cette page</a>.</span></li>
-<li><span class='small'>Valeur de la <b>durée d'une portion</b> en secondes : <input type="text" name="duree" value="<?php echo $_SESSION['defaulttimeout']; ?>" size="5" />
-<input type='checkbox' name='sauve_duree' value='yes' /> Mémoriser la durée de la portion pour la prochaine fois
-<br/><a href='#' onClick="clicMenu('1')" style="cursor: hand">Afficher/cacher l'aide</a>.</span></li>
-</ul>
 </form>
-<div style="display:none" id="menu1">
-<table border="1" cellpadding="5" bgcolor="#C0C0C0"><tr><td>La <b>valeur de la durée d'une portion</b> doit être inférieure à la
-<b>valeur maximum d'exécution d'un script</b> sur le serveur (max_execution_time).
-<br />
-<br />Selon la taille de la base et selon la configuration du serveur,
-la sauvegarde ou la restauration peut échouer si le temps nécessaire à cette opération est supérieur
-au temps maximum autorisé pour l'exécution d'un script (max_execution_time).
-<br />
-Un message du type "Maximum execution time exceeded" apparaît alors, vous indiquant que le processus a échoué.
-<br /><br />
-Pour palier cela, <b>ce script sauvegarde et restaure "par portions" d'une durée fixée par l'utilisateur</b> en reprenant le processus à l'endroit où il s'est interrompue précédemment
-jusqu'à ce que l'opération de sauvegarde ou de restauration soit terminée.
-</td></tr></table>
-</div>
+
+<br /><span class='small'><b>Remarque</b> : les répertoires 'documents' (contenant les documents joints aux cahiers de textes) et 'photos' (contenant les photos du trombinoscope) ne seront pas sauvegardés. Un outil de sauvegarde spécifique se trouve en bas de <a href='#zip'>cette page</a>.</span>
 <hr />
 
 
@@ -1845,7 +1811,8 @@ if ($n > 0) {
 		if ((preg_match('/.sql.gz$/i',$value) || preg_match('/.sql$/i',$value))) $type_sauvegarde="base";
 		switch ($type_sauvegarde) {
 			case "photos" :
-				echo "<td><a href='../mod_trombinoscopes/trombinoscopes_admin.php?action=restaurer_photos&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
+				//echo "<td><a href='../mod_trombinoscopes/trombinoscopes_admin.php?action=restaurer_photos&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
+				echo "<td></td>\n";
 				break;
 			case "base" :
 				echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."#restaurer'>Restaurer</a></td>\n";
@@ -1900,36 +1867,46 @@ echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier cré�
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
 echo add_token_field();
 echo "<br />Dossier à sauvegarder :<br />";
-echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (<em>_photos_le_DATE_a_HEURE.zip</em>)</label>";
 
-$suffixe_zip="_le_".date("Y_m_d_\a_H\hi");
-$chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
-$dossier_a_traiter = '../photos/'; //le dossier à traiter
-$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
+$dossier_photos = '../photos/'; //le dossier photos
+$dossier_documents = '../documents/'; //le dossier documents
+$dossiers_OK = true;
+
 
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-	//$dossier_a_traiter .=$_COOKIE['RNE']."/";
+	//$dossier_photos .=$_COOKIE['RNE']."/";
 	if((isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')) {
 		if(!preg_match('/^[A-Za-z0-9]*$/', $_COOKIE['RNE'])) {
 			echo "<p style='color:red; text-align:center'>RNE invalide&nbsp;: ".$_COOKIE['RNE']."</p>\n";
-			$chemin_stockage="";
+			$dossiers_OK = false;
 		}
 		else {
-			$dossier_a_traiter = '../photos/'.$_COOKIE['RNE'].'/'; //le dossier à traiter
+			$dossier_photos = '../photos/'.$_COOKIE['RNE'].'/'; //le dossier photos
+			$dossier_documents = '../documents/'.$_COOKIE['RNE'].'/'; //le dossier documents
 		}
 	}
 	else {
 		echo "<p style='color:red; text-align:center'>RNE invalide.</p>\n";
-		$chemin_stockage="";
+		$dossiers_OK = false;
 	}
 }
-if ($chemin_stockage !='') {
-	echo " (<em>volume du dossier photos&nbsp;: ".volume_dir_human($dossier_a_traiter)."</em>)";
+echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (<em>_photos_le_DATE_a_HEURE.zip</em>)</label>";
+if ($dossiers_OK) {
+	echo "<br />&nbsp;&nbsp;(<em>volume du dossier 'photos'&nbsp;: ".volume_dir_human($dossier_photos)."</em>)";
 }
 echo "<br />\n";
 
 if(!getSettingAOui('active_module_trombinoscopes')) {echo "<span style='color:red; margin-left:2em;'>Le module Trombinoscopes est <a href='../mod_trombinoscopes/trombinoscopes_admin.php'>inactif</a>, il ne devrait pas y avoir de photos à archiver.</span><br />";}
-echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_cdt\" value=\"cdt\" /><label for='dossier_cdt'> Dossier documents du cahier de textes (<em>_cdt_le_DATE_a_HEURE.zip</em>)</label><br />\n";
+echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_cdt\" value=\"cdt\" /><label for='dossier_cdt'> Dossier documents du cahier de textes (<em>_cdt_le_DATE_a_HEURE.zip</em>)</label>\n";
+if ($dossiers_OK) {
+	echo "<br />&nbsp;&nbsp;(<em>volume du dossier 'documents'&nbsp;: ".volume_dir_human($dossier_documents).", dont  ".volume_dir_human($dossier_documents."/archives")." dans le sous-dossier 'archives'";
+	if (is_dir($dossier_documents."/discipline")) {
+		echo " et ".volume_dir_human($dossier_documents."/discipline")." dans le sous-dossier 'discipline'";
+		echo " qui ne seront";
+	} else echo " qui ne sera";
+	echo " pas inclus dans l'archive</em>)";
+}
+echo "<br />\n";
 if(!getSettingAOui('active_cahiers_texte')) {echo "<span style='color:red; margin-left:2em;'>Le module Cahiers de textes est <a href='../cahier_texte_admin/index.php'>inactif</a>, il ne devrait pas y avoir de photos à archiver</span><br />";}
 echo "<br />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"zip\" />\n
