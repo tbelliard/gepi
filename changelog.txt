@@ -59,6 +59,7 @@ Abs2 :
   à des informations associées.
 - Ajout d'un bouton pour créer directement des notifications à partir d'une saisie
 - Ajout d'une information sur les saisies englobantes
+- Simplification du menu abs2
 
 Emplois du temps :
 - Possibilité de restreindre l'accès prof aux EDT des autres profs.
