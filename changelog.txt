@@ -57,6 +57,9 @@ Abs2 :
   classe sous réserve d'avoir créé son plan de classe dans le module Trombinoscope.
 - Ajout de liens (sur des élèves, sur des saisies,...) pour passer plus vite
   à des informations associées.
+- Ajout d'un bouton pour créer directement des notifications à partir d'une saisie
+- Ajout d'une information sur les saisies englobantes
+- Simplification du menu abs2
 
 Emplois du temps :
 - Possibilité de restreindre l'accès prof aux EDT des autres profs.
