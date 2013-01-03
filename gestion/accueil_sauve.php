@@ -1454,6 +1454,11 @@ if (isset($action) and ($action == 'system_dump'))  {
 		$ver_mysql[2] = mb_substr($ver_mysql[2], 0, 2);
 	}
 
+	// on fait patienter
+	echo "<br />";
+	echo "<span id='sauvegarde_en_cours'><p>Sauvegarde en cours...</p></span>";
+	if (ob_get_contents()) ob_flush(); flush();
+
 	if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe")) {
 		// on est sous Window$ et on a $filename : "xxxx.sql.gz"
 		$filename=substr($filename,0,-3); // $filename : "xxxx.sql"
@@ -1477,6 +1482,7 @@ if (isset($action) and ($action == 'system_dump'))  {
 	}
 
 	if (filesize($filename) > 10000) {
+		echo "<script>document.getElementById('sauvegarde_en_cours').innerHTML=''</script>";
 		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>\n";
 		if((isset($_POST['description_sauvegarde']))&&($_POST['description_sauvegarde']!='')) {
 			$f_desc=fopen($filename.".txt", "a+");
