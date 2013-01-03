@@ -418,6 +418,22 @@ $eleve_col = $query
 				echo $eleve_col->count();
 				echo '<button dojoType="dijit.form.Button" type="submit">Afficher</button>';
 			    }
+
+				echo "<br />\n";
+				$signaler_saisies_englobees=isset($_POST['signaler_saisies_englobees']) ? $_POST['signaler_saisies_englobees'] : NULL;
+				$checked_ou_pas="";
+				if($signaler_saisies_englobees=="y") {$checked_ou_pas=" checked";}
+				echo "<input type='checkbox' id='signaler_saisies_englobees' name='signaler_saisies_englobees' value='y'$checked_ou_pas /><label for='signaler_saisies_englobees'>Signaler les saisies englobées</label>\n";
+
+				echo " - ";
+				$ne_pas_afficher_saisies_englobees=isset($_POST['ne_pas_afficher_saisies_englobees']) ? $_POST['ne_pas_afficher_saisies_englobees'] : NULL;
+				$checked_ou_pas="";
+				if($ne_pas_afficher_saisies_englobees=="y") {$checked_ou_pas=" checked";}
+				echo "<input type='checkbox' id='ne_pas_afficher_saisies_englobees' name='ne_pas_afficher_saisies_englobees' value='y'$checked_ou_pas /><label for='ne_pas_afficher_saisies_englobees' title='Ne pas afficher les saisies englobées... sous réserve que les saisies ne soient pas conflictuelles.'>Ne pas afficher les saisies englobées</label>\n";
+				// Pour quand même afficher le bouton validant les checkbox ci-dessus:
+				if (!method_exists($eleve_col, 'haveToPaginate')) {
+					echo '<button dojoType="dijit.form.Button" type="submit">Afficher</button>';
+				}
 			}
 			?>
 			    </form>
@@ -573,42 +589,102 @@ $eleve_col = $query
 							continue;
 					    }
 					    $saisie_affiches[] = $saisie->getPrimaryKey();
-					    $nb_checkbox = $nb_checkbox + 1;                        
-					    echo '<nobr><input eleve_id="'.$eleve->getPrimaryKey().'" name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" ';
-					    if ($saisie->getNotificationEnCours()){echo 'saisie_notification_en_cours="true"';}
-                        if ($saisie->getNotifiee()) {echo 'saisie_notifiee="true"';}
-					    if ($saisie->getTraitee()) {echo 'saisie_traitee="true"';}
+					    $nb_checkbox = $nb_checkbox + 1;
+					    $chaine_contenu_td='<nobr><input eleve_id="'.$eleve->getPrimaryKey().'" name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" ';
+					    if ($saisie->getNotificationEnCours()){$chaine_contenu_td.='saisie_notification_en_cours="true"';}
+                        if ($saisie->getNotifiee()) {$chaine_contenu_td.='saisie_notifiee="true"';}
+					    if ($saisie->getTraitee()) {$chaine_contenu_td.='saisie_traitee="true"';}
 
 						$eleve_id_courant=$eleve->getPrimaryKey();
 						$id_checkbox_eleve_courant=$eleve_id_courant."_".$edt_creneau->getIdDefiniePeriode()."_".$nb_checkbox_eleve_courant_sur_ce_creneau;
 
-						echo " id='".$id_checkbox_eleve_courant."' ";
+						$chaine_contenu_td.=" id='".$id_checkbox_eleve_courant."' ";
 						if(!in_array($eleve_id_courant, $tab_eleve_id)) {$tab_eleve_id[]=$eleve_id_courant;}
 
-					    echo '/>';                        
-                        echo '<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'"/>';
+					    $chaine_contenu_td.='/>';
+                        $chaine_contenu_td.='<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'"/>';
 
 						$nb_checkbox_eleve_courant++;
 						$nb_checkbox_eleve_courant_sur_ce_creneau++;
 
                         //if ($saisie->getNotifiee()) {echo " (notifiée)";}
-					    echo '</nobr> ';                        
+					    $chaine_contenu_td.='</nobr> ';                        
 					    //echo $saisie->getTypesDescription();
-					    echo '</a>';                        
+					    $chaine_contenu_td.='</a>';                        
                         if($saisie->getNotificationEnCours()){
-                            echo '<img src="../images/icons/courrier_envoi.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
+                            $chaine_contenu_td.='<img src="../images/icons/courrier_envoi.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
                         }                        
                         if($saisie->getNotifiee()){
-                            echo '<img src="../images/icons/courrier_retour.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
+                            $chaine_contenu_td.='<img src="../images/icons/courrier_retour.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
                         }
-                        echo '<br/>';
-                        if(!$saisie->getTraitee()){
-                            echo '<img src="../images/icons/ico_attention.png" title="Saisie non traitée" />';
+                        $chaine_contenu_td.='<br/>';
+                        if(!$saisie->getTraitee()) {
+                            //if(!isset($ne_pas_afficher_saisies_englobees)) {
+                            if((!isset($ne_pas_afficher_saisies_englobees))||($violet)) {
+                                echo $chaine_contenu_td;
+                                if(isset($signaler_saisies_englobees)) {
+									$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+									if($saisies_englobante_col->isEmpty()) {
+										echo '<img src="../images/icons/ico_attention.png" title="Saisie non traitée" />';
+									}
+									else {
+										$texte_saisie_couverte='La saisie est englobée par : ';
+										$cpt_saisie_couverte=0;
+										foreach ($saisies_englobante_col as $saisies_englobante) {
+											if($cpt_saisie_couverte==0) {
+												$lien_saisie_couverte="<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'> ";
+											}
+											$texte_saisie_couverte.=$saisies_englobante->getDateDescription();
+											$texte_saisie_couverte.=' '.$saisies_englobante->getTypesTraitements();
+											if (!$saisies_englobante_col->isLast()) {
+												$texte_saisie_couverte.=' - ';
+											}
+											$cpt_saisie_couverte++;
+										}
+
+										echo $lien_saisie_couverte.'<img src="../images/icons/ico_toit2.png" title="'.$texte_saisie_couverte.'" /></a>';
+									}
+								}
+								else {
+									echo '<img src="../images/icons/ico_attention.png" title="Saisie non traitée" />';
+								}
+								echo '<br/>';
+							}
+							else {
+								// Faut-il quand même vérifier s'il n'y a pas de conflit?
+								// Fait (?) avec le test $violet plus haut.
+							}
                         }else{
+                            echo $chaine_contenu_td;
+
                             //echo '<img src="../images/icons/flag_green.png" title="'.$saisie->getTypesDescription().'" />';
-                             echo $saisie->getTypesDescription();
+                            $saisie_justifiee_ou_pas="";
+                            echo "<span title=\"";
+							$tab_traitements_deja_affiches=array();
+							foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+								if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+									$description_traitement_courant=$traitement->getDescription();
+									echo "Traitement ".$description_traitement_courant."\n";
+									if(preg_match("/justification :/", $description_traitement_courant)) {$saisie_justifiee_ou_pas=" <img src='../images/vert.png' width='16' height='16' title='Saisie justifiée' />";}
+								}
+							}
+                            echo "\">";
+                            echo $saisie->getTypesDescription();
+                            echo $saisie_justifiee_ou_pas;
+                            echo "</span>";
+
+							/*
+							echo "<br />";
+							$tab_traitements_deja_affiches=array();
+							foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+								if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+									echo $traitement->getDescription().' : ';
+								}
+							}
+							*/
+                            echo '<br/>';
                         }
-                        echo '<br/>';
+                        //echo '<br/>';
 					    //echo '</nobr>';					    
 					}                    
 					echo '</td>';
