@@ -890,7 +890,7 @@
 					//$y_prec[$y+1]=$ycourbe[$k][$i+1];
 					imageLine($img,$x1,$ycourbe[$k][$i],$x2,$ycourbe[$k][$i+1],$couleureleve[$k]);
 				}
-				elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
+				elseif(($afficher_pointille!='n')&&(isset($ycourbe[$k][$i]))&&($ycourbe[$k][$i]!=-1)&&(isset($ycourbe[$k][$i+2]))&&($ycourbe[$k][$i+2]!=-1)) {
 					/*
 					// imageDashedLine() est bugguée... on peut récupérer des hachures de 8mm de hauteur pour 2mm de large
 					imagesetthickness($img,1);

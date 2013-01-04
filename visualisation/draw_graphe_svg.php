@@ -1061,7 +1061,8 @@
 						$ytmp2=$ycourbe[$k][$i+1];
 						echo "<line x1=\"$xtmp1\" y1=\"$ytmp1\" x2=\"$xtmp2\" y2=\"$ytmp2\" style=\"stroke:".$couleureleve[$k]."; stroke-width:$epaisseur_traits\"/>\n";
 					}
-					elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
+					//elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
+					elseif(($afficher_pointille!='n')&&(isset($ycourbe[$k][$i]))&&($ycourbe[$k][$i]!=-1)&&(isset($ycourbe[$k][$i+2]))&&($ycourbe[$k][$i+2]!=-1)) {
 						echo "<line x1=\"".$x[$i]."\" y1=\"".$ycourbe[$k][$i]."\" x2=\"".$x[$i+2]."\" y2=\"".$ycourbe[$k][$i+2]."\" style='stroke:".$couleureleve[$k]."; stroke-dasharray:4, 4; stroke-width:$epaisseur_traits'/>\n";
 					}
 				}
