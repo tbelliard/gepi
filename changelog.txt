@@ -109,7 +109,8 @@ Gestion:
   accéder aux paramètres des relevés HTML.
 - Possibilité de créer des comptes d'utilisateurs pour des resp_legal=0
   (famille d'accueil,...), de donner ou non l'accès aux données de l'élève,...
-- Possibilité de restaurer plus vite une sauvegarde de la base via exec().
+- Possibilité de restaurer plus vite une sauvegarde de la base via la commande système 'mysql'
+  (commande PHP exec() faisant appel à mysql en ligne de commande).
 
 Graphes:
 - Possibilité d'afficher le rang de l'élève sur les graphes en courbe/étoile
