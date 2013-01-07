@@ -1196,3 +1196,4 @@ INSERT INTO droits VALUES ('/utilisateurs/modif_par_lots.php', 'V', 'F', 'F', 'F
 INSERT INTO droits VALUES ('/bulletin/index_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Bulletins : Activation du module bulletins', '1');
 INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseResp', value='y';
 INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseEleve', value='y';
+INSERT INTO droits SET id='/a_lire.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='V',autre='V',description='A lire...',statut='';

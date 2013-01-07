@@ -358,6 +358,10 @@ if(getSettingAOui('active_bulletins')) {
 				"Entrer en liaison avec l\'ENT pour gérer les utilisateurs et récupérer les logins pour le sso");
 	  }
 
+	  $this->creeNouveauItem('/a_lire.php',
+			"À lire",
+			"Quelques fichiers concernant Gepi.");
+
 	  if ($this->b>0){
 		$this->creeNouveauTitre('accueil',"Administration",'images/icons/configure.png');
 		return true;

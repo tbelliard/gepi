@@ -951,6 +951,18 @@ $tab_req[]="INSERT INTO droits VALUES ('/utilisateurs/modif_par_lots.php', 'V', 
 
 $tab_req[]="INSERT INTO droits VALUES ('/bulletin/index_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Bulletins : Activation du module bulletins', '1');";
 
+$tab_req[]="INSERT INTO droits SET id='/a_lire.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='V',
+autre='V',
+description='A lire...',
+statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {
