@@ -83,7 +83,8 @@ echo "</ul>\n";
 
 
 echo "<br />\n";
-if (isset($_GET['fichier'])) {
+$tab_fichiers=array("INSTALL.txt", "MAJ.TXT", "README.txt", "changelog.txt", "COPYING.txt");
+if ((isset($_GET['fichier']))&&(in_array($_GET['fichier'], $tab_fichiers))) {
 	echo "<div style=\"margin-left: 2%; margin-right: 2%;\">";
 	echo "<hr style=\"margin: 0;\"/>";
 	echo "Fichier ".$_GET['fichier'];
