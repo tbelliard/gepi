@@ -71,17 +71,36 @@ echo "</p>\n";
 echo "</div>\n";
 
 echo "<p>Voici quelques liens vers des fichiers d'information à propos de Gepi&nbsp;:</p>
-<ul>
-<li><a href='INSTALL.txt'>INSTALL.txt</a>&nbsp;: Les explications concernant l'installation de Gepi<br />
-(<em>si vous êtes ici, l'installation est probablement déjà faite;</em>)</li>
-<li><a href='MAJ.TXT'>MAJ.TXT</a>&nbsp;: Les explications concernant la mise à jour vers la présente version de Gepi<br />
-(<em>c'est le fichier que la personne qui a mis à jour le Gepi dans la présente version a assurément lu</em>)</li>
-<li><a href='README.txt'>README.txt</a>&nbsp;: À lire... comme son nom l'indique.</li>
-<li><a href='changelog.txt'>changelog.txt</a>&nbsp;: L'historique des modifications et ajouts au fil des versions de Gepi.</li>
-<li><a href='COPYING.txt'>COPYING.txt</a>&nbsp;: La licence GPL.</li>
-</ul>\n";
+<ul>";
+echo "<li><a href='a_lire.php?fichier=INSTALL.txt'>INSTALL.txt</a>&nbsp;: Les explications concernant l'installation de Gepi<br />
+(<em>si vous êtes ici, l'installation est probablement déjà faite;</em>)</li>";
+echo "<li><a href='a_lire.php?fichier=MAJ.TXT'>MAJ.TXT</a>&nbsp;: Les explications concernant la mise à jour vers la présente version de Gepi<br />
+(<em>c'est le fichier que la personne qui a mis à jour le Gepi dans la présente version a assurément lu</em>)</li>";
+echo "<li><a href='a_lire.php?fichier=README.txt'>README.txt</a>&nbsp;: À lire... comme son nom l'indique.</li>";
+echo "<li><a href='a_lire.php?fichier=changelog.txt'>changelog.txt</a>&nbsp;: L'historique des modifications et ajouts au fil des versions de Gepi.</li>";
+echo "<li><a href='a_lire.php?fichier=COPYING.txt'>COPYING.txt</a>&nbsp;: La licence GPL.</li>";
+echo "</ul>\n";
 
 
-echo "<p><br /></p>\n";
+echo "<br />\n";
+if (isset($_GET['fichier'])) {
+	echo "<div style=\"margin-left: 2%; margin-right: 2%;\">";
+	echo "<hr style=\"margin: 0;\"/>";
+	echo "Fichier ".$_GET['fichier'];
+	echo "<hr style=\"margin: 0;\"/>";
+	echo "<br />";
+	echo "<div style=\"margin-left: 3%; margin-right: 3%; font-size: small;  color: black; background-color:white;\">";
+	$f=fopen($_GET['fichier'],"r");
+	while(!feof($f)) {
+		echo htmlspecialchars(fgets($f))."<br />";
+		}
+	fclose($f);
+	echo "</div>";
+	echo "<br />";
+	echo "<hr style=\"margin: 0;\"/>";
+	echo "<a href=\"#haut_de_page\">Retour en haut de page</a>";
+	echo "<hr style=\"margin: 0;\"/>";
+	echo "</div>";
+}
 require("lib/footer.inc.php");
 ?>
