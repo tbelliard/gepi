@@ -212,8 +212,19 @@ if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_pr
 $saisie->setDebutAbs($dt_date_debut_appel);
 $saisie->setFinAbs($dt_date_fin_appel);
 
+$chaine_son_alerte="
+<audio id='id_erreur_sound' preload='auto' autobuffer autoplay>
+	<!--source src='../sounds/verre_brise.wav' /-->
+	<source src='../sounds/default_alarm.wav' />
+</audio>\n";
+
 if ($message_erreur != '') {
     $message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.$message_erreur.'</span>';
+
+	if(getSettingAOui("abs2_jouer_sound_erreur")) {
+		$message_enregistrement .= $chaine_son_alerte;
+	}
+
     //on arrete la saisie
     include("saisir_groupe.php");
     die();
@@ -223,6 +234,11 @@ if ($message_erreur != '') {
 } else {
     //on arrete la saisie
     $message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.format_verif_failures($saisie).'</span>';
+
+	if(getSettingAOui("abs2_jouer_sound_erreur")) {
+		$message_enregistrement .= $chaine_son_alerte;
+	}
+
     include("saisir_groupe.php");
     die();
 }
