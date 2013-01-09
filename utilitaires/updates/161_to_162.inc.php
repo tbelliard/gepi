@@ -22,7 +22,7 @@
  * @see msj_present()
  */
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2 :</h3>";
 
 $result .= "&nbsp;-> Ajout d'un champ 'tel_pers' à la table 'eleves'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'tel_pers';"));
