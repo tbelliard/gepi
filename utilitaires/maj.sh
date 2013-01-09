@@ -15,13 +15,13 @@ if ($argc != 2) {
     $script_error = true;
 } else {
     // Premier argument (obligatoire, pour éviter les accidents)
-    if (isset($argv[1]) && in_array($argv[1], array('1.4.4','1.5.0','1.5.1','1.5.2','1.5.3','1.5.3.1','1.5.4','1.5.5','1.6.0','1.6.1','defaut','forcer'))) {
+    if (isset($argv[1]) && in_array($argv[1], array('1.4.4','1.5.0','1.5.1','1.5.2','1.5.3','1.5.3.1','1.5.4','1.5.5','1.6.0','1.6.1','1.6.2','defaut','forcer'))) {
         if ($argv[1] == 'forcer') {
             $force = true;
         } elseif($argv[1] == 'defaut'){
             $start_from = $gepiSettings['version'];
             // Si la version actuelle est un trunk, on force une mise à jour complète.
-            if ($start_from == 'trunk') $force = true;
+            if (($start_from == 'trunk')||($start_from == 'master')) $force = true;
         }
         $start_from = $argv[1];
     } else {
@@ -147,8 +147,7 @@ Exemples d'utilisation :
     }
 
     if ($force || $start_from == '1.6.1') {
-        require './updates/161_to_dev.inc.php';
-
+        require './updates/161_to_162.inc.php';
     }
 
 // Nettoyage pour envoyer le résultat dans la console

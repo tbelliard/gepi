@@ -3,7 +3,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.6.2 (Version de développement)
+Gepi-1.6.2
 ===========================
 Librairies :
 - HTMLPurifier : màj en 4.4.0

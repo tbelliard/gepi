@@ -1,4 +1,4 @@
-GEPI-1.6.1
+GEPI-1.6.2
 ==============
 
 Eric ABGRALL <eric.abgrall@free.fr>
