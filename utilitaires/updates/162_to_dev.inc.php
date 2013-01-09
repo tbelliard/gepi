@@ -63,5 +63,4 @@ if ($test == -1) {
 */
 
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.3(dev) :</h3>";
 ?>
