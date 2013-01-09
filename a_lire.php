@@ -83,24 +83,28 @@ echo "</ul>\n";
 
 
 echo "<br />\n";
-if (isset($_GET['fichier'])) {
-	echo "<div style=\"margin-left: 2%; margin-right: 2%;\">";
-	echo "<hr style=\"margin: 0;\"/>";
-	echo "Fichier ".$_GET['fichier'];
-	echo "<hr style=\"margin: 0;\"/>";
-	echo "<br />";
-	echo "<div style=\"margin-left: 3%; margin-right: 3%; font-size: small;  color: black; background-color:white;\">";
-	$f=fopen($_GET['fichier'],"r");
-	while(!feof($f)) {
-		echo htmlspecialchars(fgets($f))."<br />";
-		}
-	fclose($f);
-	echo "</div>";
-	echo "<br />";
-	echo "<hr style=\"margin: 0;\"/>";
-	echo "<a href=\"#haut_de_page\">Retour en haut de page</a>";
-	echo "<hr style=\"margin: 0;\"/>";
-	echo "</div>";
+if (isset($_GET['fichier']) && is_file($_GET['fichier'])) {
+	$pathinfo_fichier=pathinfo($_GET['fichier']);
+	// on affiche que les fichiers .txt du dossier courant
+	if (is_file($pathinfo_fichier['basename']) && isset($pathinfo_fichier['extension']) && strtolower($pathinfo_fichier['extension'])=="txt") {
+		echo "<div style=\"margin-left: 3%; margin-right: 3%;\">";
+		echo "<hr style=\"margin: 0;\"/>";
+		echo "Fichier ".$pathinfo_fichier['basename'];
+		echo "<hr style=\"margin: 0;\"/>";
+		echo "<br />";
+		echo "<div style=\"padding: 2%; font-size: small;  color: black; background-color:white; border-style: solid; border-color: black; border-width: 1px;\">";
+		$f=fopen($pathinfo_fichier['basename'],"r");
+		while(!feof($f)) {
+			echo htmlspecialchars(fgets($f))."<br />";
+			}
+		fclose($f);
+		echo "</div>";
+		echo "<br />";
+		echo "<hr style=\"margin: 0;\"/>";
+		echo "<a href=\"#haut_de_page\">Retour en haut de page</a>";
+		echo "<hr style=\"margin: 0;\"/>";
+		echo "</div>";
+	}
 }
 require("lib/footer.inc.php");
 ?>
