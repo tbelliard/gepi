@@ -402,5 +402,4 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
 ?>
