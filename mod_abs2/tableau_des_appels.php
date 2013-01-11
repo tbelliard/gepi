@@ -190,6 +190,17 @@ foreach($classe_col as $classe){
 //		</td>';
 	echo '	<td><h4>'.$classe->getNom().'</h4></td>';
 
+	$sql="SELECT * FROM periodes WHERE id_classe='".$classe->getId()."' ORDER BY num_periode;";
+	$res_per_classe=mysql_query($sql);
+	if(mysql_num_rows($res_per_classe)>0) {
+		while($lig_pc=mysql_fetch_object($res_per_classe)) {
+			if($dt_date_absence_eleve->format('Y-m-d')." 00:00:00"<$lig_pc->date_fin) {
+				$num_periode_courante=$lig_pc->num_periode;
+				break;
+			}
+		}
+	}
+
 	//la classe a-t-elle des cours actuellement ? On récupère la liste des cours pour cette période.
 	//on regarde au debut du creneau et a la fin car il peut y avoir des demi creneau
 	//on pourrait appeler $classe->getEdtEmplacementCours deux fois mais on va faire une optimisation à la place.
@@ -303,37 +314,42 @@ foreach($classe_col as $classe){
 	}
         $current_eleve=Null;
 	foreach ($abs_col as $absenceSaisie) {
-        if($absenceSaisie->getEleve()!=null && $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)){
-            continue;
-        }
-        if($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()){
-            continue;
-        }
-        if ($absenceSaisie->getEleve()->getId() !== $current_eleve) {
-            if($current_eleve !=null) echo '<br/>';
-            $num_saisie=1;
-               if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
-                    echo "<a style='color: ".$absenceSaisie->getColor().";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank'>";
-                    echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom().' : ';
-                    echo "</a>";
-                } else {
-                    echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom().' : ';
-                }
-         }else{
-                 echo'-';
-             } 
-            echo "<a style='color: ".$absenceSaisie->getColor().";'  href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";             
-	    if($num_saisie==1){
-                echo ('Saisie '.$num_saisie); 
-            }else{
-                echo ($num_saisie);
-            }           
-	    echo "</a>";	    
-	    $current_eleve=$absenceSaisie->getEleve()->getId();
-            $num_saisie++;
-        if($abs_col->isLast()){
-            echo '<br /><br />';
-        }    
+		$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$absenceSaisie->getEleve()->getLogin()."' AND id_classe='".$classe->getId()."' AND periode='".$num_periode_courante."';";
+		$res_ele_clas_per=mysql_query($sql);
+		if(mysql_num_rows($res_ele_clas_per)>0) {
+
+		    if($absenceSaisie->getEleve()!=null && $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)){
+		        continue;
+		    }
+		    if($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()){
+		        continue;
+		    }
+		    if ($absenceSaisie->getEleve()->getId() !== $current_eleve) {
+		        if($current_eleve !=null) echo '<br/>';
+		        $num_saisie=1;
+		           if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
+		                echo "<a style='color: ".$absenceSaisie->getColor().";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank'>";
+		                echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom().' : ';
+		                echo "</a>";
+		            } else {
+		                echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom().' : ';
+		            }
+		     }else{
+		             echo'-';
+		         } 
+		        echo "<a style='color: ".$absenceSaisie->getColor().";'  href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";             
+			if($num_saisie==1){
+		            echo ('Saisie '.$num_saisie); 
+		        }else{
+		            echo ($num_saisie);
+		        }           
+			echo "</a>";	    
+			$current_eleve=$absenceSaisie->getEleve()->getId();
+		        $num_saisie++;
+		    if($abs_col->isLast()){
+		        echo '<br /><br />';
+		    }    
+		}
 	}    
 	echo '</td>';
 	if ($classe_col->isOdd()) {

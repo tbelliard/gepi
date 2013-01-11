@@ -138,13 +138,28 @@ foreach($classe_col as $classe) {
         ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve->format('U'))
 		->distinct();
 
+	$sql="SELECT * FROM periodes WHERE id_classe='".$classe->getId()."' ORDER BY num_periode;";
+	$res_per_classe=mysql_query($sql);
+	if(mysql_num_rows($res_per_classe)>0) {
+		while($lig_pc=mysql_fetch_object($res_per_classe)) {
+			if($dt_date_absence_eleve->format('Y-m-d')." 00:00:00"<$lig_pc->date_fin) {
+				$num_periode_courante=$lig_pc->num_periode;
+				break;
+			}
+		}
+	}
+
 	if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
 	    //on ne filtre pas
 	} else {
 	    $eleve_query->filterByUtilisateurProfessionnel($utilisateur);
 	}
 	$eleve_col = $eleve_query->find();
-	foreach($eleve_col as $eleve){
+	foreach($eleve_col as $eleve) {
+		$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$eleve->getLogin()."' AND id_classe='".$classe->getId()."' AND periode='".$num_periode_courante."';";
+		$res_ele_clas_per=mysql_query($sql);
+		if(mysql_num_rows($res_ele_clas_per)>0) {
+
 			$affiche = false;
 			foreach($eleve->getAbsenceEleveSaisiesDuJour($dt_debut) as $abs) {
 			    $affiche = false;
@@ -192,6 +207,7 @@ foreach($classe_col as $classe) {
 			    }
 			}
 			echo '</tr>';
+		}
 	}
 }
 ?>
