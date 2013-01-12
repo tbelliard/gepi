@@ -303,7 +303,10 @@ foreach($classe_col as $classe){
 	}
         $current_eleve=Null;
 	foreach ($abs_col as $absenceSaisie) {
-        if($absenceSaisie->getEleve()!=null && $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)){
+        if($absenceSaisie->getEleve()!=null && (
+                $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)
+                || $absenceSaisie->getEleve()->getClasse($classe->getPeriodeNote($dt_debut_creneau)) != $classe) //on teste la péridoe de l'élève qu'on va afficher
+            ) {
             continue;
         }
         if($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()){
