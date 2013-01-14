@@ -253,8 +253,8 @@ class Classe extends BaseClasse {
 	 * Retourne la periode de note correspondante à la date donnée en paramètre.
          * On regarde proritairement les dates de fin des périodes de notes,
          * puis les renseignements de l'edt.
-         * Si aucune période n'est trouvée on retourne la dernière période ouverte pour l'ordre chronologique,
-         * null sinon
+         * Si aucune période n'est trouvée on retourne la dernière période ouverte pour l'ordre de nommage,
+         * Si toujours aucune période n'est trouvée on renvoi null
 	 *
 	 * @return     PeriodeNote $periode la periode de la date précisée, ou null si non trouvé
 	 */
@@ -309,7 +309,9 @@ class Classe extends BaseClasse {
                     }
 		}
 
-                return null;
+                //si on a toujours aucune période, on renvoi la dernière période dans l'ordre des numéro, ou null si on ne trouve rien
+                $query = PeriodeNoteQuery::create();
+                return $query->filterByIdClasse($this->getId())->orderByNumPeriode(Criteria::DESC)->findOne();
 	}
 
  	/**
