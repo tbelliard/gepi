@@ -664,10 +664,11 @@ if (!isset($user_login)) echo "(<em>" . $longmax_login . " caractères maximum</
 <?php
 if (isset($user_login) and ($user_login!='')) {
 	echo "<b>".$user_login."</b>\n";
-	echo "<input type=hidden name=reg_login value=\"".$user_login."\" />\n";
+	echo "<input type='hidden' name='reg_login' value=\"".$user_login."\" />\n";
 } else {
-	echo "<input type=text name=new_login size=20 value=\"";
-	if (isset($user_login)) echo $user_login;
+	echo "<input type='text' name='new_login' size='20' value=\"";
+	if (isset($user_login)) {echo $user_login;}
+	elseif(isset($_POST['new_login'])) {echo $_POST['new_login'];}
 	echo "\" onchange=\"changement()\" />\n";
 }
 
