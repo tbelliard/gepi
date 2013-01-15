@@ -514,6 +514,7 @@ elseif(isset($_POST['suppression_assoc_user_groupes'])) {
 
 // On appelle les informations de l'utilisateur pour les afficher :
 if (isset($user_login) and ($user_login!='')) {
+
 	$call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE login='".$user_login."'");
 	$user_auth_mode = mysql_result($call_user_info, "0", "auth_mode");
 	$user_nom = mysql_result($call_user_info, "0", "nom");
@@ -574,6 +575,10 @@ if (isset($user_login) and ($user_login!='')) {
 	if (isset($_POST['reg_statut'])) $user_statut = $_POST['reg_statut'];
 	if (isset($_POST['reg_email'])) $user_email = $_POST['reg_email'];
 	if (isset($_POST['reg_etat'])) $user_etat = $_POST['reg_etat'];
+
+	if ((isset($_POST['matiere_0']))&&($_POST['matiere_0']!='')) {
+		$user_matiere[0]=$_POST['matiere_0'];
+	}
 }
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -583,7 +588,7 @@ $themessage2 = "Êtes-vous sûr de vouloir effectuer cette opération ?\\n Actue
 $titre_page = "Création/modification d'un personnel";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-
+//debug_var();
 ?>
 <script type='text/javascript'>
 	function display_password_fields(id,rw){
@@ -856,7 +861,7 @@ if (getSettingValue("statuts_prives") == "y") {
 $k = 0;
 while ($k < $nb_mat+1) {
 	$num_mat = $k+1;
-	echo "Matière N°$num_mat (si professeur): ";
+	echo "Matière N°$num_mat (<em>si professeur</em>)&nbsp;: ";
 	$temp = "matiere_".$k;
 	echo "<select size=1 name='$temp' onchange=\"changement()\">\n";
 	$calldata = mysql_query("SELECT * FROM matieres ORDER BY matiere");
