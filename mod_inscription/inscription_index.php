@@ -38,7 +38,13 @@ if (!checkAccess()) {
     die();
 }
 
-if (!isset($_SESSION['order_by'])) {$_SESSION['order_by'] = "date";}
+// filtage des items à afficher
+if (!isset($_SESSION['items_a_afficher'])) {$_SESSION['items_a_afficher'] = "ouverts";}
+if (isset($_POST['post_items_a_afficher'])) {
+	$_SESSION['items_a_afficher']=$_POST['items_a_afficher'];
+}
+
+if (!isset($_SESSION['order_by'])) {$_SESSION['order_by'] = "date ASC";}
 $_SESSION['order_by'] = isset($_POST['order_by']) ? $_POST['order_by'] : (isset($_GET['order_by']) ? $_GET['order_by'] : $_SESSION['order_by']);
 $order_by = $_SESSION['order_by'];
 
@@ -77,69 +83,91 @@ require_once("../lib/header.inc.php");
 </p>
 <?php
 echo getSettingValue("mod_inscription_explication");
+?>
 
+<br />
+<form id="form_items_a_afficher" method="post" action="inscription_index.php">
+<p align="center">
+Afficher les inscriptions :  
+<label style='cursor: pointer;'>ouvertes</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='ouverts' <?php if ($_SESSION['items_a_afficher']=="ouverts") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
+<label style='cursor: pointer;'>toutes</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='tous' <?php if ($_SESSION['items_a_afficher']=="tous") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
+<label style='cursor: pointer;'>closes</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='clos' <?php if ($_SESSION['items_a_afficher']=="clos") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
+<input type="hidden" name="post_items_a_afficher" />
+&nbsp;&nbsp;&nbsp;(<img src="../images/sort_up.gif" style="vertical-align:middle"><img src="../images/sort_dn.gif" style="vertical-align:middle">&nbsp;:&nbsp;ordre de tri)
+</p>
+</form>
+
+
+<?php
 echo "<form name=\"formulaire\" method=\"post\" action=\"inscription_index.php\">";
 echo add_token_field();
-echo "<table width=\"100%\" border=\"1\" cellspacing=\"1\" cellpadding=\"5\">\n";
+echo "<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n";
 
 echo "<tr>\n";
-echo "<td><p class='bold'><a href='inscription_index.php?order_by=id'>N°</a></p></td>\n";
-echo "<td><p class='bold'>Date</p></td>\n";
+echo "<td><p class='bold'>N°<a href='inscription_index.php?order_by=id%20ASC'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_index.php?order_by=id%20DESC'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
+echo "<td><p class='bold'>Date<a href='inscription_index.php?order_by=date%20ASC'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_index.php?order_by=date%20DESC'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
 echo "<td><p class='bold'>Heure</p></td>\n";
 //echo "<td><p class='bold'><a href='inscription_index.php?order_by=date'>Date</a></p></td>\n";
 //echo "<td><p class='bold'><a href='inscription_index.php?order_by=heure'>Heure</a></p></td>\n";
-echo "<td><p class='bold'><a href='inscription_index.php?order_by=description'>Intitulé</a></p></td>\n";
+echo "<td><p class='bold'>Intitulé<a href='inscription_index.php?order_by=description%20ASC'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_index.php?order_by=description%20DESC'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
 echo "<td><p class='bold'>Personnes actuellement inscrites</p></td>\n";
 echo "<td><p class='bold'>S'inscrire</p></td>\n";
 echo "</tr>\n";
 
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 $i = 0;
+$aujourdhui=date('Y/m/d');
 while ($i < $nombre_lignes){
     $id = mysql_result($call_data, $i, "id");
     $date = mysql_result($call_data, $i, "date");
-    $day = mb_substr($date, 8, 2);
-    $month = mb_substr($date, 5, 2);
-    $year = mb_substr($date, 0, 4);
-    $date = mktime(0,0,0,$month,$day,$year);
-    $date = strftime("%A %d %B %Y", $date);
+	if (($_SESSION['items_a_afficher']=="tous") || ($_SESSION['items_a_afficher']=="ouverts" && $date>$aujourdhui) || ($_SESSION['items_a_afficher']=="clos" && $date<=$aujourdhui)) {
+		$day = mb_substr($date, 8, 2);
+		$month = mb_substr($date, 5, 2);
+		$year = mb_substr($date, 0, 4);
 
-    $heure = mysql_result($call_data, $i, "heure");
-    $description = mysql_result($call_data, $i, "description");
+		$f_date = strftime("%A %d %B %Y", mktime(0,0,0,$month,$day,$year));
 
-    $inscrit = sql_query1("select id from inscription_j_login_items
-    where login='".$_SESSION['login']."' and id='".$id."' ");
+		$heure = mysql_result($call_data, $i, "heure");
+		$description = mysql_result($call_data, $i, "description");
 
-
-    $inscrits = mysql_query("select login from inscription_j_login_items
-    where id='".$id."' ");
-    $nb_inscrits = mysql_num_rows($inscrits);
-    if ($nb_inscrits == 0) $noms_inscrits = "<center>-</center>"; else $noms_inscrits = "";
-    $k = 0;
-    $nom_prenom = "";
-    while ($k < $nb_inscrits) {
-        $login_inscrit = mysql_result($inscrits, $k, "login");
-        $nom_inscrit = sql_query1("select nom from utilisateurs where login='".$login_inscrit."'");
-        $prenom_inscrit = sql_query1("select prenom from utilisateurs where login='".$login_inscrit."'");
-        if ($nom_inscrit == -1) $nom_inscrit = "<font color='red'>(Nom absent => login : ".$login_inscrit.")</font>";
-        if ($prenom_inscrit == -1) $prenom_inscrit = "";
-        $nom_prenom .=$prenom_inscrit." ".$nom_inscrit;
-        if ($k < ($nb_inscrits-1)) $nom_prenom .= "<br />";
-        $k++;
-
-    }
+		$inscrit = sql_query1("select id from inscription_j_login_items
+		where login='".$_SESSION['login']."' and id='".$id."' ");
 
 
-    echo "<tr>\n";
-    echo "<td>$id</td>\n";
-    echo "<td>$date</td>\n";
-    echo "<td>$heure</td>\n";
-    echo "<td>$description</td>\n";
-    echo "<td>".$nom_prenom."&nbsp;</td>\n";
-    echo "<td><input type=\"checkbox\" name=\"".$id."\" value=\"y\" ";
-    if ($inscrit == $id) echo " checked";
-    echo " /></td>\n";
-    echo "</tr>\n";
+		$inscrits = mysql_query("select login from inscription_j_login_items
+		where id='".$id."' ");
+		$nb_inscrits = mysql_num_rows($inscrits);
+		if ($nb_inscrits == 0) $noms_inscrits = "<center>-</center>"; else $noms_inscrits = "";
+		$k = 0;
+		$nom_prenom = "";
+		while ($k < $nb_inscrits) {
+			$login_inscrit = mysql_result($inscrits, $k, "login");
+			$nom_inscrit = sql_query1("select nom from utilisateurs where login='".$login_inscrit."'");
+			$prenom_inscrit = sql_query1("select prenom from utilisateurs where login='".$login_inscrit."'");
+			if ($nom_inscrit == -1) $nom_inscrit = "<font color='red'>(Nom absent => login : ".$login_inscrit.")</font>";
+			if ($prenom_inscrit == -1) $prenom_inscrit = "";
+			$nom_prenom .=$prenom_inscrit." ".$nom_inscrit;
+			if ($k < ($nb_inscrits-1)) $nom_prenom .= "<br />";
+			$k++;
+
+		}
+
+
+		echo "<tr>\n";
+		echo "<td>$id</td>\n";
+		echo "<td>$f_date</td>\n";
+		echo "<td>$heure</td>\n";
+		echo "<td>$description</td>\n";
+		echo "<td>".$nom_prenom."&nbsp;</td>\n";
+		echo "<td style=\"vertical-align:middle; text-align: center;\">"; 
+		if ($date>$aujourdhui) {
+			echo "<input type=\"checkbox\" name=\"".$id."\" value=\"y\" ";
+			if ($inscrit == $id) echo " checked";
+			echo " />";
+		} else echo "Inscriptions<br />closes";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
     $i++;
 }
 echo "</table>";

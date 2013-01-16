@@ -46,7 +46,13 @@ if (!checkAccess()) {
    die();
 }
 
-if (!isset($_SESSION['order_by_'])) {$_SESSION['order_by_'] = "date";}
+// filtage des items à afficher
+if (!isset($_SESSION['items_a_afficher'])) {$_SESSION['items_a_afficher'] = "ouverts";}
+if (isset($_POST['post_items_a_afficher'])) {
+	$_SESSION['items_a_afficher']=$_POST['items_a_afficher'];
+}
+
+if (!isset($_SESSION['order_by_'])) {$_SESSION['order_by_'] = "date ASC";}
 $_SESSION['order_by_'] = isset($_POST['order_by_']) ? $_POST['order_by_'] : (isset($_GET['order_by_']) ? $_GET['order_by_'] : $_SESSION['order_by_']);
 $order_by_ = $_SESSION['order_by_'];
 $id_inter = isset($_POST['id_inter']) ? $_POST['id_inter'] : (isset($_GET['id_inter']) ? $_GET['id_inter'] : NULL);
@@ -59,15 +65,14 @@ if (isset($_GET['action']) and ($_GET['action'] == "supprimer")) {
     $msg = "Les modifications ont été enregistrées.";
 }
 
-// Enregistrement
+// Enregistrements
 
+if (isset($_POST['activer']) && !saveSetting("active_inscription_utilisateurs", $_POST['activer']))
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 
 if (isset($_POST['is_posted_notes'])) {
   check_token();
 
-  $msg = "";
-  if (!saveSetting("active_inscription_utilisateurs", $_POST['activer']))
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 	if (isset($NON_PROTECT['notes'])) {
     $msg = "";
     $imp = traitement_magic_quotes($NON_PROTECT['notes']);
@@ -76,6 +81,7 @@ if (isset($_POST['is_posted_notes'])) {
   if (!saveSetting("mod_inscription_titre", $_POST['mod_inscription_titre']))
     $msg .= "Erreur lors de l'enregistrement de mod_inscription_titre !";
 }
+
 if (isset($_POST['is_posted'])) {
     check_token();
 
@@ -113,7 +119,7 @@ require_once("../lib/header.inc.php");
 if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
     echo "<p class=bold><a href=\"./inscription_config.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> | <a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a></p>\n";
 
-    echo "<form name=\"formulaire\" method=\"post\" action=\"inscription_config.php\">";
+    echo "<form name=\"formulaire2\" method=\"post\" action=\"inscription_config.php\">";
 
 	echo add_token_field();
 
@@ -145,7 +151,7 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
 }
 
 echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> | <a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a></p>\n";
-echo "<form name=\"formulaire\" method=\"post\"  action=\"inscription_config.php\">\n";
+echo "<form name=\"formulaire2\" method=\"post\"  action=\"inscription_config.php\">\n";
 echo add_token_field();
 echo "<H2>Activation  / Désactivation</H2>\n";
 $active_prof = getSettingValue("active_inscription_utilisateurs");
@@ -154,72 +160,107 @@ if ($active_prof == "y") {
 } else {
   echo "Actuellement, la page autorisant les inscriptions n'est pas activée : les utilisateurs (<em>professeurs, cpe, scolarité</em>) ne peuvent pas s'inscrire.";
 }
-?><br /> <label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_inscription_utilisateurs")=='y') echo " checked"; ?> />
+?>
+<br /> <label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_inscription_utilisateurs")=='y') echo " checked"; ?> />
 &nbsp;Activer l'acc&egrave;s aux inscriptions</label><br />
 <label for='activer_n' style='cursor: pointer;'><input type="radio" name="activer" id="activer_n" value="n" <?php if (getSettingValue("active_inscription_utilisateurs")=='n') echo " checked"; ?> />
 &nbsp;Désactiver l'accès aux inscriptions</label>
+<br />
+<center><input type="submit" name="ok" value="Enregistrer" /></center>
+</form>
+
+
+
 <?php
+echo "<hr />";
 echo "<H2>Liste des items</H2>\n";
 if ($nombre_lignes != 0) {
   echo "<p>Chaque item ci-dessous correspond à une entité (<em>stage, intervention dans les établissements, réunion,...</em>) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
-  echo "<table width=\"100%\" border=\"1\" cellspacing=\"1\" cellpadding=\"5\">\n";
+?>
+
+<br />
+<form id="form_items_a_afficher" method="post" action="inscription_config.php">
+<p align="center">
+Afficher les items :  
+<label style='cursor: pointer;'>ouverts</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='ouverts' <?php if ($_SESSION['items_a_afficher']=="ouverts") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
+<label style='cursor: pointer;'>tous</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='tous' <?php if ($_SESSION['items_a_afficher']=="tous") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
+<label style='cursor: pointer;'>clos</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='clos' <?php if ($_SESSION['items_a_afficher']=="clos") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
+<input type="hidden" name="post_items_a_afficher" />
+&nbsp;&nbsp;&nbsp;(<img src="../images/sort_up.gif" style="vertical-align:middle"><img src="../images/sort_dn.gif" style="vertical-align:middle">&nbsp;:&nbsp;ordre de tri)
+</p>
+</form>
+
+<?php
+
+  echo "<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n";
   echo "<tr>\n";
-  echo "<td><p class='bold'><a href='inscription_config.php?order_by_=id'>N°</a></p></td>\n";
-  echo "<td><p class='bold'><a href='inscription_config.php?order_by_=date'>Date</a></p></td>\n";
+  echo "<td><p class='bold'>N°<a href='inscription_config.php?order_by=id%20ASC'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_config.php?order_by=id%20DESC'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
+  echo "<td><p class='bold'>Date<a href='inscription_config.php?order_by=date%20ASC'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_config.php?order_by=date%20DESC'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
   echo "<td><p class='bold'>Heure</p></td>\n";
-  echo "<td><p class='bold'><a href='inscription_config.php?order_by_=description'>Description (<em>lieu,...</em>)</a></p></td>\n";
+  echo "<td><p class='bold'>Intitulé<a href='inscription_config.php?order_by=description%20ASC'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_config.php?order_by=description%20DESC'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
   echo "<td><p class='bold'>Personnes actuellement inscrites</p></td>\n";
   echo "<td><p class='bold'>-</p></td>\n";
   echo "</tr>\n";
   $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
   $i = 0;
+  $aujourdhui=date('Y/m/d');
   while ($i < $nombre_lignes){
     $id = mysql_result($call_data, $i, "id");
     $date = mysql_result($call_data, $i, "date");
-    $heure = mysql_result($call_data, $i, "heure");
-    $description = mysql_result($call_data, $i, "description");
+	if (($_SESSION['items_a_afficher']=="tous") || ($_SESSION['items_a_afficher']=="ouverts" && $date>$aujourdhui) || ($_SESSION['items_a_afficher']=="clos" && $date<=$aujourdhui)) {
+		$heure = mysql_result($call_data, $i, "heure");
+		$description = mysql_result($call_data, $i, "description");
 
-    $day = mb_substr($date, 8, 2);
-    $month = mb_substr($date, 5, 2);
-    $year = mb_substr($date, 0, 4);
-    $date = mktime(0,0,0,$month,$day,$year);
-    $date = strftime("%A %d %B %Y", $date);
-
-
-    $inscrit = sql_query1("select id from inscription_j_login_items
-    where login='".$_SESSION['login']."' and id='".$id."' ");
-
-    $inscrits = mysql_query("select login from inscription_j_login_items
-    where id='".$id."' ");
-    $nb_inscrits = mysql_num_rows($inscrits);
-    if ($nb_inscrits == 0) $noms_inscrits = "<center>-</center>"; else $noms_inscrits = "";
-    $k = 0;
-    while ($k < $nb_inscrits) {
-        $login_inscrit = mysql_result($inscrits, $k, "login");
-        $nom_inscrit = sql_query1("select nom from utilisateurs where login='".$login_inscrit."'");
-        if ($nom_inscrit == -1) $nom_inscrit = "<font color='red'>(Nom absent => login : ".$login_inscrit.")</font>";
-        $prenom_inscrit = sql_query1("select prenom from utilisateurs where login='".$login_inscrit."'");
-        if ($prenom_inscrit == -1) $prenom_inscrit = "";
-        $noms_inscrits .=$prenom_inscrit." ".$nom_inscrit."<br />";
-        $k++;
-    }
+		$day = mb_substr($date, 8, 2);
+		$month = mb_substr($date, 5, 2);
+		$year = mb_substr($date, 0, 4);
+		
+		$f_date = strftime("%A %d %B %Y", mktime(0,0,0,$month,$day,$year));
 
 
-    echo "<tr>\n";
-    echo "<td>$id <br /><a href=\"./inscription_config.php?id_inter=$id&amp;action=ajout\" >Modifier</a></td>\n";
-    echo "<td>$date</td>\n";
-    echo "<td>$heure</td>\n";
-    echo "<td>$description</td>\n";
-    echo "<td>".$noms_inscrits."</td>\n";
-    echo "<td><a href=\"./inscription_config.php?id_inter=$id&amp;action=supprimer\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer cet item ?')\">Supprimer</a></td>\n";
-    echo "</tr>\n";
+		$inscrit = sql_query1("select id from inscription_j_login_items
+		where login='".$_SESSION['login']."' and id='".$id."' ");
+
+		$inscrits = mysql_query("select login from inscription_j_login_items
+		where id='".$id."' ");
+		$nb_inscrits = mysql_num_rows($inscrits);
+		if ($nb_inscrits == 0) $noms_inscrits = "<center>-</center>"; else $noms_inscrits = "";
+		$k = 0;
+		while ($k < $nb_inscrits) {
+			$login_inscrit = mysql_result($inscrits, $k, "login");
+			$nom_inscrit = sql_query1("select nom from utilisateurs where login='".$login_inscrit."'");
+			if ($nom_inscrit == -1) $nom_inscrit = "<font color='red'>(Nom absent => login : ".$login_inscrit.")</font>";
+			$prenom_inscrit = sql_query1("select prenom from utilisateurs where login='".$login_inscrit."'");
+			if ($prenom_inscrit == -1) $prenom_inscrit = "";
+			$noms_inscrits .=$prenom_inscrit." ".$nom_inscrit."<br />";
+			$k++;
+		}
+		echo "<tr>\n";
+		echo "<td>$id <br />";
+		if ($date>$aujourdhui || $_SESSION['statut']=="administrateur" ) echo "<a href=\"./inscription_config.php?id_inter=$id&amp;action=ajout\" >Modifier</a>";
+		echo "</td>\n";
+		echo "<td>$f_date</td>\n";
+		echo "<td>$heure</td>\n";
+		echo "<td>$description</td>\n";
+		echo "<td>".$noms_inscrits."</td>\n";
+		echo "<td style=\"vertical-align:middle; text-align: center;\">"; 
+		if ($date>$aujourdhui || $_SESSION['statut']=="administrateur" ) echo "<a href=\"./inscription_config.php?id_inter=$id&amp;action=supprimer\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer cet item ?')\">Supprimer</a>";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
     $i++;
   }
   echo "</table>\n";
 } else {
   echo "<p>Actuellement aucun item n'est présent dans la base.";
 }
+
+
+echo "<hr />";
 $contenu = getSettingValue("mod_inscription_explication");
+
+echo "<form name=\"formulaire3\" method=\"post\"  action=\"inscription_config.php\">\n";
+echo add_token_field();
 echo "<H2>Titre du module</H2>\n";
 echo "<input type=\"text\" name=\"mod_inscription_titre\" size=\"40\" value=\"".getSettingValue("mod_inscription_titre")."\" />\n";
 echo "<H2>Texte explicatif</H2>\n";
@@ -229,13 +270,11 @@ echo "<input type=\"hidden\" name=\"is_posted_notes\" value=\"yes\" />\n";
 
     $oCKeditor = new CKeditor('../ckeditor/');
     $oCKeditor->editor('no_anti_inject_notes',$contenu) ;
-    echo "<br /><br />&nbsp;";
 
-
-
-
-echo "<div id=\"fixe\"><center>";
+//echo "<div id=\"fixe\">\n";
+echo "<center>";
 echo "<input type=\"submit\" name=\"ok\" value=\"Enregistrer\" />";
-echo "</center></div>\n";
+echo "</center>\n";
+//echo "</div>\n";
 echo "</form>\n";
 require("../lib/footer.inc.php");?>
