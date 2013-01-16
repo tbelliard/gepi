@@ -3,11 +3,6 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.6.3 (Version de développement)
-===========================
-- ...
-
-
 Gepi-1.6.2
 ===========================
 Librairies :

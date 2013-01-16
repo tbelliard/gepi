@@ -143,15 +143,11 @@ Exemples d'utilisation :
 
     if ($force || $start_from == '1.6.0') {
         require './updates/160_to_161.inc.php';
+
     }
 
     if ($force || $start_from == '1.6.1') {
         require './updates/161_to_162.inc.php';
-    }
-
-    if ($force || $start_from == '1.6.2') {
-        require './updates/162_to_dev.inc.php';
-
     }
 
 // Nettoyage pour envoyer le résultat dans la console
