@@ -423,7 +423,7 @@ $eleve_col = $query
 				$signaler_saisies_englobees=isset($_POST['signaler_saisies_englobees']) ? $_POST['signaler_saisies_englobees'] : NULL;
 				$checked_ou_pas="";
 				if($signaler_saisies_englobees=="y") {$checked_ou_pas=" checked";}
-				echo "<input type='checkbox' id='signaler_saisies_englobees' name='signaler_saisies_englobees' value='y'$checked_ou_pas /><label for='signaler_saisies_englobees'>Signaler les saisies englobées</label>\n";
+				echo "<input type='checkbox' id='signaler_saisies_englobees' name='signaler_saisies_englobees' value='y'$checked_ou_pas /><label for='signaler_saisies_englobees'>Signaler les saisies englobées <img src='../images/icons/ico_toit2.png' width='16' height='16' title='Témoin que la saisie est englobée' /></label>\n";
 
 				echo " - ";
 				$ne_pas_afficher_saisies_englobees=isset($_POST['ne_pas_afficher_saisies_englobees']) ? $_POST['ne_pas_afficher_saisies_englobees'] : NULL;
