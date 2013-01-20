@@ -40,17 +40,9 @@ class AbsencesEleveSaisieHelper {
         if ($abs_saisie_col->isEmpty()) {
             return new PropelCollection();
         }
-
-        //on va tester si les saisies sont bien ordonnée.$compteur_test n'est pas utilisé dans le reste de la fonction
-        $compteur_test = $abs_saisie_col->getFirst()->getDebutAbs('U');
-        foreach($abs_saisie_col as $saisie) {
-            $ts = $saisie->getDebutAbs('U');
-            if ($compteur_test > $ts) {
-                throw new PropelException('Les saisies doivent etre triees par ordre chronologique de debut d absence.');
-            }
-            $compteur_test = $ts;
-        }
-
+        
+        $abs_saisie_col->uasort(array("AbsencesEleveSaisieHelper", "compare_debut_absence"));
+        
         //on récupère l'heure de demi-journée
         $heure_demi_journee = 11;//11:50 par défaut si rien n'est précisé dans les settings
         $minute_demi_journee = 50;
@@ -151,6 +143,15 @@ class AbsencesEleveSaisieHelper {
             }
         }
         return $result;
+    }
+    
+    public static function compare_debut_absence(AbsenceEleveSaisie $arg1, AbsenceEleveSaisie $arg2) {
+        if ($arg1 === null && $arg2 != null) return 1;
+        if ($arg1 === null && $arg2 === null) return 0;
+        if ($arg1 != null && $arg2 === null) return -1;
+        if ($arg1->getDebutAbs() > $arg2->getDebutAbs()) return 1;
+        if ($arg1->getDebutAbs() == $arg2->getDebutAbs()) return 0;
+        if ($arg1->getDebutAbs() < $arg2->getDebutAbs()) return -1;
     }
 }
 

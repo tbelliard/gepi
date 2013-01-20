@@ -52,6 +52,11 @@ if (!checkAccess()) {
     die();
 }
 
+if(!getSettingAOui('active_bulletins')) {
+	header("Location: ../accueil.php?msg=Module_inactif");
+	die();
+}
+
 // Christian renvoye vers le fichier PDF bulletin
 	if (empty($_GET['classe']) and empty($_POST['classe'])) {$classe="";}
 	    else { if (isset($_GET['classe'])) {$classe=$_GET['classe'];} if (isset($_POST['classe'])) {$classe=$_POST['classe'];} }

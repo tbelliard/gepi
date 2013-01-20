@@ -50,6 +50,7 @@ if (!checkAccess()) {
 	die();
 }
 
+$taille_max_police=10;
 
 //$debug=1;
 $debug=0;
@@ -115,6 +116,7 @@ if(isset($_POST['valider_raz_param'])) {
 'graphe_epaisseur_traits',
 'graphe_epaisseur_croissante_traits_periodes',
 'graphe_hauteur_affichage_deroulant',
+'graphe_app_deroulantes_taille_police',
 'graphe_hauteur_graphe',
 'graphe_largeur_graphe',
 'graphe_largeur_imposee_photo',
@@ -122,7 +124,8 @@ if(isset($_POST['valider_raz_param'])) {
 'graphe_taille_police',
 'graphe_temoin_image_escalier',
 'graphe_pointille',
-'graphe_tronquer_nom_court');
+'graphe_tronquer_nom_court',
+'affiche_moy_classe');
 	for($loop=0;$loop<count($champ_aff);$loop++) {
 		$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name='$champ_aff[$loop]';";
 		$del=mysql_query($sql);
@@ -143,6 +146,8 @@ taille_police
 epaisseur_traits
 temoin_image_escalier
 tronquer_nom_court
+
+affiche_moy_classe
 */
 
 	if(isset($_POST['save_params'])) {
@@ -188,10 +193,15 @@ tronquer_nom_court
 			if(isset($_POST['graphe_affiche_deroulant_appreciations'])){save_params_graphe('graphe_affiche_deroulant_appreciations',$_POST['graphe_affiche_deroulant_appreciations']);}
 			if(isset($_POST['graphe_hauteur_affichage_deroulant'])) {save_params_graphe('graphe_hauteur_affichage_deroulant',$_POST['graphe_hauteur_affichage_deroulant']);}
 
+			if(isset($_POST['graphe_app_deroulantes_taille_police'])) {save_params_graphe('graphe_app_deroulantes_taille_police',$_POST['graphe_app_deroulantes_taille_police']);}
+
 			if(isset($_POST['click_plutot_que_survol_aff_app'])) {save_params_graphe('graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
 			if(isset($_POST['graphe_pointille'])) {save_params_graphe('graphe_pointille',$_POST['graphe_pointille']);}
 			else{save_params_graphe('graphe_pointille','yes');}
+
+			if(isset($_POST['affiche_moy_classe'])) {save_params_graphe('graphe_affiche_moy_classe',$_POST['affiche_moy_classe']);}
+			else{save_params_graphe('graphe_affiche_moy_classe','oui');}
 
 			if($msg=='') {
 				$msg="Paramètres enregistrés.";
@@ -208,8 +218,10 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['affiche_photo'])) {savePref($_SESSION['login'],'graphe_affiche_photo',$_POST['affiche_photo']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_photo','non');}
 	if(isset($_POST['largeur_imposee_photo'])) {savePref($_SESSION['login'],'graphe_largeur_imposee_photo',$_POST['largeur_imposee_photo']);}
+
 	if(isset($_POST['affiche_mgen'])) {savePref($_SESSION['login'],'graphe_affiche_mgen',$_POST['affiche_mgen']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_mgen','non');}
+
 	if(isset($_POST['affiche_minmax'])) {savePref($_SESSION['login'],'graphe_affiche_minmax',$_POST['affiche_minmax']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_minmax','non');}
 	if(isset($_POST['affiche_moy_annuelle'])) {savePref($_SESSION['login'],'graphe_affiche_moy_annuelle',$_POST['affiche_moy_annuelle']);}
@@ -236,9 +248,14 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['graphe_affiche_deroulant_appreciations'])){savePref($_SESSION['login'],'graphe_affiche_deroulant_appreciations',$_POST['graphe_affiche_deroulant_appreciations']);}
 	if(isset($_POST['graphe_hauteur_affichage_deroulant'])) {savePref($_SESSION['login'],'graphe_hauteur_affichage_deroulant',$_POST['graphe_hauteur_affichage_deroulant']);}
 
+	if(isset($_POST['graphe_app_deroulantes_taille_police'])) {savePref($_SESSION['login'],'graphe_app_deroulantes_taille_police',$_POST['graphe_app_deroulantes_taille_police']);}
+
 	if(isset($_POST['click_plutot_que_survol_aff_app'])) {savePref($_SESSION['login'],'graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
 	if(isset($_POST['graphe_pointille'])) {savePref($_SESSION['login'],'graphe_pointille',$_POST['graphe_pointille']);}
+
+	if(isset($_POST['affiche_moy_classe'])) {savePref($_SESSION['login'],'graphe_affiche_moy_classe',$_POST['affiche_moy_classe']);}
+	else{savePref($_SESSION['login'],'graphe_affiche_moy_classe','oui');}
 
 	if($msg=='') {
 		$msg.="Préférences personnelles enregistrées.";
@@ -442,12 +459,22 @@ $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : (isset($_G
 
 // Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
 if ($_SESSION['statut'] == "responsable") {
-	$get_eleves = mysql_query("SELECT e.login, e.prenom, e.nom " .
+	$sql="(SELECT e.login, e.prenom, e.nom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'))");
+			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login, e.prenom, e.nom " .
+			"FROM eleves e, resp_pers r, responsables2 re " .
+			"WHERE (" .
+			"e.ele_id = re.ele_id AND " .
+			"re.pers_id = r.pers_id AND " .
+			"r.login = '".$_SESSION['login']."' AND re.resp_legal='0' AND re.acces_sp='y'))";
+	}
+	$sql.=";";
+	$get_eleves = mysql_query($sql);
 
 	if (mysql_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
@@ -460,14 +487,25 @@ if ($_SESSION['statut'] == "responsable") {
 		if ($login_eleve != null) {
 			// $login_eleve a été défini mais l'utilisateur a plusieurs élèves associés. On vérifie
 			// qu'il a le droit de visualiser les données pour l'élève sélectionné.
-			$test = mysql_query("SELECT count(e.login) " .
+			$sql="(SELECT e.login " .
 					"FROM eleves e, responsables2 re, resp_pers r " .
 					"WHERE (" .
 					"e.login = '" . $login_eleve . "' AND " .
 					"e.ele_id = re.ele_id AND " .
 					"re.pers_id = r.pers_id AND " .
-					"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
-			if (mysql_result($test, 0) == 0) {
+					"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+			if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+				$sql.=" UNION (SELECT e.login " .
+					"FROM eleves e, responsables2 re, resp_pers r " .
+					"WHERE (" .
+					"e.login = '" . $login_eleve . "' AND " .
+					"e.ele_id = re.ele_id AND " .
+					"re.pers_id = r.pers_id AND " .
+					"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y'))";
+			}
+			$sql.=";";
+			$test = mysql_query($sql);
+			if (mysql_num_rows($test) == 0) {
 			    tentative_intrusion(2, "Tentative par un parent de visualisation graphique des résultats d'un élève dont il n'est pas responsable légal.");
 			    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.</p>\n";
 			    require("../lib/footer.inc.php");
@@ -584,10 +622,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 } elseif ($_SESSION['statut'] == "responsable" and $login_eleve == null) {
 	// On demande à l'utilisateur de choisir l'élève pour lequel il souhaite visualiser les données
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
-	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser les moyennes :</p>";
+	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser les moyennes :</p><ul>";
 	while ($current_eleve = mysql_fetch_object($get_eleves)) {
-		echo "<p><a href='affiche_eleve.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
+		echo "<li><a href='affiche_eleve.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></li>";
 	}
+	echo "</ul>\n";
 	// Après ça, on arrive en fin de page avec le require("../lib/footer.inc.php");
 
 } else {
@@ -898,14 +937,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		if ($login_eleve != null) {
 			$eleve1 = $login_eleve;
 		}
-		$test = mysql_query("SELECT count(e.login) " .
+		$sql="(SELECT e.login " .
 				"FROM eleves e, responsables2 re, resp_pers r " .
 				"WHERE (" .
 				"e.login = '" . $eleve1 . "' AND " .
 				"e.ele_id = re.ele_id AND " .
 				"re.pers_id = r.pers_id AND " .
-				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
-		if (mysql_result($test, 0) == 0) {
+				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+		if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+			$sql.=" UNION (SELECT e.login " .
+				"FROM eleves e, responsables2 re, resp_pers r " .
+				"WHERE (" .
+				"e.login = '" . $eleve1 . "' AND " .
+				"e.ele_id = re.ele_id AND " .
+				"re.pers_id = r.pers_id AND " .
+				"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y'))";
+		}
+		$sql.=";";
+		$test = mysql_query($sql);
+		if (mysql_num_rows($test) == 0) {
 		    tentative_intrusion(3, "Tentative (forte) d'un parent de visualisation graphique des résultats d'un élève dont il n'est pas responsable légal.");
 		    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.\n";
 		    require("../lib/footer.inc.php");
@@ -915,9 +965,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	if ($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
 		// On filtre eleve2 :
 		if(!isset($eleve2)) {$eleve2 = "moyclasse";}
-		if ($eleve2 != "moyclasse" and $eleve2 != "moymin" and $eleve2 != "moymax") {
-			tentative_intrusion(3, "Tentative de manipulation de la seconde source de données sur la visualisation graphique des résultats (détournement de _eleve2_, qui ne peut, dans le cas d'un utilisateur parent ou eleve, ne correspondre qu'à une moyenne et non un autre élève).");
-			$eleve2 = "moyclasse";
+		if((($_SESSION['statut'] == "eleve")&&(getSettingAOui('GepiAccesGraphRangEleve')))||(($_SESSION['statut'] == "responsable")&&(getSettingAOui('GepiAccesGraphRangParent')))) {
+			if ($eleve2 != "moyclasse" and $eleve2 != "moymin" and $eleve2 != "moymax" and $eleve2 != "rang_eleve") {
+				tentative_intrusion(3, "Tentative de manipulation de la seconde source de données sur la visualisation graphique des résultats (détournement de _eleve2_, qui ne peut, dans le cas d'un utilisateur parent ou eleve, ne correspondre qu'à une moyenne et non un autre élève).");
+				$eleve2 = "moyclasse";
+			}
+		}
+		else {
+			if ($eleve2 != "moyclasse" and $eleve2 != "moymin" and $eleve2 != "moymax") {
+				tentative_intrusion(3, "Tentative de manipulation de la seconde source de données sur la visualisation graphique des résultats (détournement de _eleve2_, qui ne peut, dans le cas d'un utilisateur parent ou eleve, ne correspondre qu'à une moyenne et non un autre élève).");
+				$eleve2 = "moyclasse";
+			}
 		}
 	}
 
@@ -999,6 +1057,29 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
+	if(isset($_POST['affiche_moy_classe'])) {
+		$affiche_moy_classe=$_POST['affiche_moy_classe'];
+	}
+	else{
+		$pref_affiche_moy_classe=getPref($_SESSION['login'],'graphe_affiche_moy_classe','');
+		if(($pref_affiche_moy_classe=='oui')||($pref_affiche_moy_classe=='non')) {
+			$affiche_moy_classe=$pref_affiche_moy_classe;
+		}
+		else {
+			if(getSettingValue('graphe_affiche_moy_classe')) {
+				$affiche_moy_classe=getSettingValue('graphe_affiche_moy_classe');
+			}
+			else{
+				$affiche_moy_classe="oui";
+			}
+		}
+	}
+
+	// 20121205
+	$affiche_choix_rang="y";
+	if((($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesGraphRangParent')))||
+	(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesGraphRangEleve')))) {$affiche_choix_rang="n";}
+
 	if(isset($_POST['affiche_minmax'])) {
 		$affiche_minmax=$_POST['affiche_minmax'];
 	}
@@ -1012,7 +1093,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				$affiche_minmax=getSettingValue('graphe_affiche_minmax');
 			}
 			else{
-				$affiche_minmax="non";
+				$affiche_minmax="oui";
 			}
 		}
 	}
@@ -1118,7 +1199,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
-	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
+	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>$taille_max_police)||($taille_police=="")) {
 		$taille_police=2;
 	}
 
@@ -1295,6 +1376,28 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
+	if(isset($_POST['graphe_app_deroulantes_taille_police'])) {
+		$graphe_app_deroulantes_taille_police=$_POST['graphe_app_deroulantes_taille_police'];
+	}
+	else{
+		$pref_graphe_app_deroulantes_taille_police=getPref($_SESSION['login'],'graphe_graphe_app_deroulantes_taille_police','');
+		if($pref_graphe_app_deroulantes_taille_police!='') {
+			$graphe_app_deroulantes_taille_police=$pref_graphe_app_deroulantes_taille_police;
+		}
+		else {
+			if(getSettingValue('graphe_app_deroulantes_taille_police')) {
+				$graphe_app_deroulantes_taille_police=getSettingValue('graphe_app_deroulantes_taille_police');
+			}
+			else{
+				$graphe_app_deroulantes_taille_police=16;
+			}
+		}
+	}
+	if((mb_strlen(preg_replace("/[0-9]/","",$graphe_app_deroulantes_taille_police))!=0)||($graphe_app_deroulantes_taille_police=="")) {
+		$graphe_app_deroulantes_taille_police=16;
+	}
+
+
 	//======================================================================
 	//======================================================================
 	//======================================================================
@@ -1335,14 +1438,33 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<p><b>Moyennes et périodes</b></p>\n";
 			echo "<blockquote>\n";
 
-			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<table border='0' summary='Paramètres'>\n";
+
+			//===========================
+			// 20121204
+			if($affiche_moy_classe=='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<tr valign='top'><td>Afficher la moyenne de la classe:</td><td>";
+			if($affiche_moy_classe=='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<input type='radio' name='affiche_moy_classe' id='affiche_moy_classe_oui' value='oui'$checked /><label for='affiche_moy_classe_oui' style='cursor: pointer;'> Oui </label>/";
+			if($affiche_moy_classe!='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='affiche_moy_classe_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_moy_classe' id='affiche_moy_classe_non' value='non'$checked />";
+			echo "</td></tr>\n";
+			//===========================
+
+			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			//echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne générale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
 			echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td>";
 			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<input type='radio' name='affiche_mgen' id='affiche_mgen_oui' value='oui'$checked /><label for='affiche_mgen_oui' style='cursor: pointer;'> Oui </label>/";
 			if($affiche_mgen!='oui') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<label for='affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_mgen' id='affiche_mgen_non' value='non'$checked /></td></tr>\n";
+			echo "<label for='affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_mgen' id='affiche_mgen_non' value='non'$checked />";
+
+			$sql="SELECT DISTINCT coef FROM j_groupes_classes WHERE id_classe='$id_classe' AND coef!='0.0';";
+			$test_coef_non_nul=mysql_query($sql);
+			if(mysql_num_rows($test_coef_non_nul)==0) {
+				echo " <img src='../images/icons/ico_attention.png' width='22' height='19' alt='Tous les coefficients sont nuls' title='Tous les coefficients sont nuls. Aucun calcul de moyenne générale ne sera possible.' />\n";
+			}
+			echo "</td></tr>\n";
 
 			//if($affiche_minmax=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			//echo "<tr valign='top'><td><label for='affiche_minmax' style='cursor: pointer;'>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</label></td><td><input type='checkbox' name='affiche_minmax' id='affiche_minmax' value='oui'$checked /></td></tr>\n";
@@ -1385,7 +1507,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			// - taille des polices
 			echo "<tr><td><label for='taille_police' style='cursor: pointer;'>Taille des polices:</label></td><td><select name='taille_police' id='taille_police'>\n";
-			for($i=1;$i<=6;$i++) {
+			for($i=1;$i<=$taille_max_police;$i++) {
 				if($taille_police==$i) {$selected=" selected='yes'";} else {$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
 			}
@@ -1483,7 +1605,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<tr><td>Afficher une fenêtre déroulante contenant les appréciations:</td><td><label for='affiche_deroulant_appreciations_oui' style='cursor: pointer;'><input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_oui' value='oui'$checked />Oui</label> / \n";
 			if($graphe_affiche_deroulant_appreciations=='non') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='affiche_deroulant_appreciations_non' style='cursor: pointer;'>Non<input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_non' value='non'$checked /></label></td></tr>\n";
+
 			echo "<tr><td><label for='graphe_hauteur_affichage_deroulant' style='cursor: pointer;'>Hauteur de la zone déroulante (<i>en pixels</i>):</label></td><td><input type='text' name='graphe_hauteur_affichage_deroulant' id='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
+
+			echo "<tr><td><label for='graphe_app_deroulantes_taille_police' style='cursor: pointer;'>Taille de la police (<i>en points</i>):</label></td><td><input type='text' name='graphe_app_deroulantes_taille_police' id='graphe_app_deroulantes_taille_police' value='$graphe_app_deroulantes_taille_police' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
 
 			echo "</table>\n";
 			
@@ -1600,6 +1725,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	// Capture des mouvements de la souris et affichage des cadres d'info
 	//echo "<script type='text/javascript' src='cadre_info.js'></script>\n";
 
+	// 20121206
+	if ($_SESSION['statut'] == "responsable" and $login_eleve != null) {
+		while ($current_eleve = mysql_fetch_object($get_eleves)) {
+			if($current_eleve->login==$login_eleve) {echo " | <strong>".$current_eleve->prenom." ".$current_eleve->nom."</strong> ";}
+			else {echo " | <a href='affiche_eleve.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a> ";}
+		}
+		echo "<br />\n";
+	}
 
 	echo "<table summary='Présentation'>\n";
 	echo "<tr valign='top'>\n";
@@ -1632,11 +1765,16 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//if("$photo"!="") {
 			if ($photo) {
 				$dimimg=getimagesize($photo);
+				if(!$dimimg) {
+					echo "<span style='color:red'>Erreur sur $photo</span>";
+				}
+				else {
 
-				$largimg=$largeur_imposee_photo;
-				$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
+					$largimg=$largeur_imposee_photo;
+					$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
 
-				echo "<img src='".$photo."' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
+					echo "<img src='".$photo."' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
+				}
 			}
 
 		}
@@ -1692,13 +1830,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 			echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
 		}
-		if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
-		if(!isset($eleve2)) {$selected=" selected='yes'";}
-		echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
-		if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='moymax'$selected>Moyenne max.</option>\n";
-		if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+		//if($affiche_moy_classe!="non") {
+			if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
+			if(!isset($eleve2)) {$selected=" selected='yes'";}
+			echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
+			if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymax'$selected>Moyenne max.</option>\n";
+			if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+		//}
+		// 20121205
+		// On est dans une partie non élève/resp
+		/*
+		if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+		(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+		(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+		*/
+			if($eleve2=='rang_eleve') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='rang_eleve'$selected>Rang élève</option>\n";
+		//}
 		echo "</select>\n";
 		echo "<br />\n";
 
@@ -1766,19 +1916,44 @@ function eleve_suivant() {
 		// Cas d'un responsable ou d'un élève :
 		// Pas de sélection de l'élève, il est déjà fixé.
 		// Pas de sélection non plus de la comparaison : c'est la moyenne de la classe (ou moy min ou max).
+
 		echo "<p>Eleve : ".$prenom_eleve . " " .$nom_eleve."</p>\n";
-		echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
-		echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";
-		echo "et <select name='eleve2'>\n";
-		if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
-		if(!isset($eleve2)) {$selected=" selected='yes'";}
-		echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
-		if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='moymax'$selected>Moyenne max.</option>\n";
-		if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
-		echo "</select>\n";
-		echo "<br />\n";
+		echo "<input type='hidden' name='eleve1' value='".$login_eleve."' />\n";
+		echo "<input type='hidden' name='login_eleve' value='".$login_eleve."' />\n";
+		// 20121205
+		if(($affiche_moy_classe=='non')&&($affiche_choix_rang=='n')) {
+			// La valeur/masquage sera forcée dans la page draw_graphe*.php
+			echo "<input type='hidden' name='eleve2' value='moyclasse' />\n";
+		}
+		elseif($affiche_choix_rang=='n') {
+			echo "et <select name='eleve2'>\n";
+			if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
+			if(!isset($eleve2)) {$selected=" selected='yes'";}
+			echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
+			if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymax'$selected>Moyenne max.</option>\n";
+			if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+			echo "</select>\n";
+			echo "<br />\n";
+		}
+		elseif($affiche_moy_classe=='non') {
+			echo "<input type='hidden' name='eleve2' value='rang_eleve' />\n";
+		}
+		else {
+			echo "et <select name='eleve2'>\n";
+			if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
+			if(!isset($eleve2)) {$selected=" selected='yes'";}
+			echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
+			if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymax'$selected>Moyenne max.</option>\n";
+			if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+			if($eleve2=='rang_eleve') {$selected=" selected='yes'";}else{$selected="";}
+			echo "<option value='rang_eleve'$selected>Rang élève</option>\n";
+			echo "</select>\n";
+			echo "<br />\n";
+		}
 		echo "<input type='submit' name='choix_eleves' value='Afficher' style='margin-bottom: 3px;'/><br />\n";
 	}
 
@@ -1786,7 +1961,11 @@ function eleve_suivant() {
 		echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
 		//echo "<div style='border:1px solid black; background-color:white; width: 320px;' style='height:$graphe_hauteur_affichage_deroulant'>";
 		echo "<b><i><center>Appréciations - $periode</center></i></b>";
-		echo "<div id='appreciations_deroulantes'>";
+		echo "<div id='appreciations_deroulantes'";
+		if((isset($graphe_app_deroulantes_taille_police))&&(preg_match("/^[0-9]*$/", $graphe_app_deroulantes_taille_police))&&($graphe_app_deroulantes_taille_police>0)) {
+			echo " style='font-size: ".$graphe_app_deroulantes_taille_police."pt'";
+		}
+		echo ">";
 		echo "<span id='appreciations_defile'>";
 		//echo $txt_appreciations_deroulantes;
 		echo "</span></div></div>";
@@ -1815,6 +1994,13 @@ function eleve_suivant() {
 	//======================================================================
 	//======================================================================
 
+
+	$sql="SELECT DISTINCT coef FROM j_groupes_classes WHERE id_classe='$id_classe' AND coef!='0.0';";
+	$test_coef_non_nul=mysql_query($sql);
+	if(mysql_num_rows($test_coef_non_nul)==0) {
+		$affiche_mgen="non";
+	}
+
 	//========================
 	// PARAMETRES D'AFFICHAGE
 	//========================
@@ -1837,17 +2023,25 @@ function eleve_suivant() {
 	//Ajout Eric 11/12/10
 	echo "<input type='hidden' name='graphe_affiche_deroulant_appreciations' value='$graphe_affiche_deroulant_appreciations' />\n";
 	echo "<input type='hidden' name='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' />\n";
-	
+
+	echo "<input type='hidden' name='graphe_app_deroulantes_taille_police' value='$graphe_app_deroulantes_taille_police' />\n";
+
+	echo "<input type='hidden' name='affiche_moy_classe' value='$affiche_moy_classe' />\n";
+
 	echo "<input type='hidden' name='parametrer_affichage' value='' />\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.<br />\n";
 
+	if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+	(($_SESSION['statut']=='eleve')&&(getSettingAOui('GepiAccesGraphParamEleve')))||
+	(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphParamParent')))) {
+		echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.<br />\n";
+
+		echo "<hr width='150' />\n";
+	}
 
 
 	//======================================================================
 	//======================================================================
 	//======================================================================
-
-	echo "<hr width='150' />\n";
 
 	echo "<script type='text/javascript'>
 	function fct_desactivation_infobulle() {
@@ -2445,6 +2639,12 @@ function eleve_suivant() {
 
 			$coefficients_a_1="non";
 			$affiche_graph="n";
+			// 20121205
+			if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+			(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+			(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+				$affiche_rang="y";
+			}
 			include('../lib/calcul_moy_gen.inc.php');
 
 			// Récupérer la ligne de l'élève courant
@@ -2494,7 +2694,8 @@ function eleve_suivant() {
 			// On recherche l'élève2 et on récupère la moyenne générale 2:
 			$indice_eleve2=-1;
 			//echo "\$eleve2=$eleve2<br />";
-			if(($eleve2!='moyclasse')&&($eleve2!='moymin')&&($eleve2!='moymax')) {
+			// 20121205
+			if(($eleve2!='moyclasse')&&($eleve2!='moymin')&&($eleve2!='moymax')&&($eleve2!='rang_eleve')) {
 				for($loop=0;$loop<count($current_eleve_login);$loop++) {
 					if($current_eleve_login[$loop]==$eleve2) {
 						$indice_eleve2=$loop;
@@ -2513,6 +2714,17 @@ function eleve_suivant() {
 			}
 			elseif($eleve2=='moymax') {
 				$mgen[2]=$moy_max_classe;
+			}
+			// 20121205
+			elseif($eleve2=='rang_eleve') {
+				if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+				(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+				(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+					$mgen[2]=get_rang_eleve($eleve1, $id_classe, $periode_num, "n", "y");
+				}
+				else {
+					$mgen[2]="-";
+				}
 			}
 
 			if(preg_match("/^[0-9.,]*$/", $mgen[2])) {
@@ -2578,6 +2790,15 @@ function eleve_suivant() {
 					elseif($eleve2=='moymax') {
 						//$serie[2].=max($current_eleve_note[$loop]);
 						$serie[2].=$moy_max_classe_grp[$loop];
+					}
+					elseif($eleve2=='rang_eleve') {
+						if(isset($current_eleve_rang[$loop][$indice_eleve1])) {
+							if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+							(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+							(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+								$serie[2].=$current_eleve_rang[$loop][$indice_eleve1];
+							}
+						}
 					}
 
 					// Série min et série max pour les bandes min/max:
@@ -3049,6 +3270,9 @@ function eleve_suivant() {
 						//echo "'>";
 						//echo "&amp;temoin_imageps=$temoin_imageps";
 						echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+						if($affiche_moy_classe!='oui') {
+							echo "&amp;avec_moy_classe=n";
+						}
 						echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
 						echo "usemap='#imagemap' ";
 						echo "/>\n";
@@ -3154,6 +3378,9 @@ function eleve_suivant() {
 						//echo "'>";
 						//echo "&amp;temoin_imageps=$temoin_imageps";
 						echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+						if($affiche_moy_classe!='oui') {
+							echo "&amp;avec_moy_classe=n";
+						}
 
 						echo "'";
 
@@ -3208,6 +3435,9 @@ function eleve_suivant() {
 					//echo "'>";
 					//echo "&amp;temoin_imageps=$temoin_imageps";
 					echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+					if($affiche_moy_classe!='oui') {
+						echo "&amp;avec_moy_classe=n";
+					}
 					echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
 					echo "usemap='#imagemap_star' ";
 					echo "/>\n";
@@ -4106,7 +4336,7 @@ function eleve_suivant() {
 
 			$acces_aa="n";
 			if(isset($eleve1)) {
-				require('../mod_annees_anterieures/fonctions_annees_anterieures.inc.php');
+				require_once('../mod_annees_anterieures/fonctions_annees_anterieures.inc.php');
 				$acces_aa=check_acces_aa($eleve1);
 			}
 
@@ -4536,45 +4766,48 @@ function complete_textarea_avis(num) {
 
 
 //===========================================================
-echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+//if(isset($eleve1)) {
+if((isset($eleve1))&&(isset($nom1))&&(isset($prenom1))) {
+	echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
 
-	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
-		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
-		echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
-		echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
-		echo "</a>\n";
-		echo "</div>\n";
+		echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
+			echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+			echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
+			echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+			echo "</a>\n";
+			echo "</div>\n";
 
-		echo "<div id='titre_entete_bull_simp'>";
-		echo "Bulletin simplifié de $prenom1 $nom1 ";
-		if($choix_periode=='periode') {
-			echo "en période $num_periode_choisie";
-		}
-		else {
-			echo "de la période 1 à la $nb_periode";
-		}
+			echo "<div id='titre_entete_bull_simp'>";
+			echo "Bulletin simplifié de $prenom1 $nom1 ";
+			if($choix_periode=='periode') {
+				echo "en période $num_periode_choisie";
+			}
+			else {
+				echo "de la période 1 à la $nb_periode";
+			}
+			echo "</div>\n";
 		echo "</div>\n";
-	echo "</div>\n";
 	
-	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #000000; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
-	if($acces_bull_simp=="y") {
-		if($choix_periode=='periode') {
-			$periode1=$num_periode_choisie;
-			$periode2=$num_periode_choisie;
+		echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #000000; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+		if($acces_bull_simp=="y") {
+			if($choix_periode=='periode') {
+				$periode1=$num_periode_choisie;
+				$periode2=$num_periode_choisie;
+			}
+			else {
+				$periode1=1;
+				$periode2=$nb_periode;
+			}
+			$choix_edit=2;
+			$login_eleve=$eleve1;
+			$inclusion_depuis_graphes="y";
+			include "../lib/bulletin_simple.inc.php";
+			include("../saisie/edit_limite.inc.php");
 		}
-		else {
-			$periode1=1;
-			$periode2=$nb_periode;
-		}
-		$choix_edit=2;
-		$login_eleve=$eleve1;
-		$inclusion_depuis_graphes="y";
-		include "../lib/bulletin_simple.inc.php";
-		include("../saisie/edit_limite.inc.php");
-	}
-	echo "</div>\n";
+		echo "</div>\n";
 
-echo "</div>\n";
+	echo "</div>\n";
+}
 
 echo "<script type='text/javascript'>
 	// <![CDATA[
@@ -4618,7 +4851,9 @@ if(getSettingValue('active_annees_anterieures')=='y') {
 	//require("../mod_annees_anterieures/check_acces_et_liste_periodes.php");
 	//require('../mod_annees_anterieures/fonctions_annees_anterieures.inc.php');
 
-	if(isset($eleve1)) {
+	require_once('../mod_annees_anterieures/fonctions_annees_anterieures.inc.php');
+
+	if((isset($eleve1))&&(isset($id_classe))) {
 		$tab_periodes_aa=check_acces_et_liste_periodes($eleve1,$id_classe);
 		affiche_onglets_aa($eleve1, $id_classe, $tab_periodes_aa, 0);
 	}

@@ -76,7 +76,7 @@ echo add_token_field();
     </tr>
     <tr>
         <td style="font-variant: small-caps;">
-        Espace disque maximal autorisé pour une rubrique :
+        Espace disque maximal autorisé pour une rubrique (<em>un enseignement/groupe</em>) :
         </td>
         <td><input type="text" name="total_max_size_ko" size="20" value="<?php echo(getSettingValue("total_max_size")/1024); ?>" />
         </td>

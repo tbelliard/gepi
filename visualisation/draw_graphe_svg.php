@@ -5,9 +5,41 @@
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
 
+	// Resume session
+	$resultat_session = $session_gepi->security_check();
+	if ($resultat_session == 'c') {
+		header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+		die();
+	} else if ($resultat_session == '0') {
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+	if (!checkAccess()) {
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
 	header("Content-type: image/svg+xml");
 	echo '<?xml version="1.0" encoding="utf-8"?>';
 	echo "\n";
+
+	$taille_max_police=10;
+
+	$avec_moy_classe="y";
+	if((isset($_GET['avec_moy_classe']))&&($_GET['avec_moy_classe']=="n")) {
+		$avec_moy_classe="n";
+	}
+
+	if((($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseEleve')))||
+	(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseResp')))) {
+		$avec_moy_classe="n";
+	}
+
+	if($avec_moy_classe=="n") {
+		if(isset($_GET['seriemin'])) {unset($_GET['seriemin']);}
+		if(isset($_GET['seriemax'])) {unset($_GET['seriemax']);}
+	}
 
 	// On précise de ne pas traiter les données avec la fonction anti_inject
 	$traite_anti_inject = 'no';
@@ -33,7 +65,6 @@
 		$mgen[$i]=isset($_GET['mgen'.$i]) ? $_GET['mgen'.$i] : "";
 	}
 
-
 	function writinfo($chemin,$type,$chaine){
 		//$debug=1;
 		$debug=0;
@@ -43,8 +74,6 @@
 			fclose($fich);
 		}
 	}
-
-
 
 	// Conversion de composantes RVB en portion de chaine couleur HTML
 
@@ -116,10 +145,10 @@
 	//settype($largeurTotale,'integer');
 	//settype($hauteurTotale,'integer');
 
-	// $taille_police de 1 à 6
+	// $taille_police de 1 à 6 -> 10
 	//$taille_police=3;
 	$taille_police=isset($_GET['taille_police']) ? $_GET['taille_police'] : '3';
-	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
+	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>$taille_max_police)||($taille_police=="")){
 		$taille_police=3;
 	}
 
@@ -145,8 +174,19 @@
 	for($i=1;$i<=count($mattmp);$i++){
 		$matiere[$i]=$mattmp[$i-1];
 
-		$call_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
-		$matiere_nom_long[$i] = mysql_result($call_matiere, "0", "nom_complet");
+		if(!preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_-]{1,19}$/", $matiere[$i])) {
+			$matiere[$i]=preg_replace("/[^A-Za-z0-9_-]/", "",$matiere[$i]);
+			$matiere_nom_long[$i]=$matiere[$i];
+		}
+		else {
+			$call_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
+			if(mysql_num_rows($call_matiere)>0) {
+				$matiere_nom_long[$i] = mysql_result($call_matiere, "0", "nom_complet");
+			}
+			else {
+				$matiere_nom_long[$i]=$matiere[$i];
+			}
+		}
 		$matiere_nom_long[$i]=remplace_accents($matiere_nom_long[$i],'simple');
 
 		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere[$i]=".$matiere[$i]."\n");
@@ -176,9 +216,14 @@
 	$eleve1=$_GET['v_legend1'];
 	$sql="SELECT * FROM eleves WHERE login='$eleve1'";
 	$resultat_infos_eleve1=mysql_query($sql);
-	$ligne=mysql_fetch_object($resultat_infos_eleve1);
-	//$nom_eleve1=$ligne->nom." ".$ligne->prenom;
-	$nom_eleve[1]=$ligne->nom." ".$ligne->prenom;
+	if(mysql_num_rows($resultat_infos_eleve1)>0) {
+		$ligne=mysql_fetch_object($resultat_infos_eleve1);
+		//$nom_eleve1=$ligne->nom." ".$ligne->prenom;
+		$nom_eleve[1]=$ligne->nom." ".$ligne->prenom;
+	}
+	else {
+		$nom_eleve[1]=$eleve1;
+	}
 	if($periode!=''){
 		$nom_eleve[1]=$nom_eleve[1]." ($periode)";
 	}
@@ -240,26 +285,48 @@
 			case 'moyclasse':
 					//$nom_eleve2="Moyennes de la classe";
 					$nom_eleve[2]="Moyennes de la classe";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
 				break;
 			case 'moymin':
 					//$nom_eleve2="Moyennes minimales";
 					$nom_eleve[2]="Moyennes minimales";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
 				break;
 			case 'moymax':
 					//$nom_eleve2="Moyennes maximales";
 					$nom_eleve[2]="Moyennes maximales";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
+				break;
+			case 'rang_eleve':
+					$nom_eleve[2]="Rang élève";
+					/*
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
+					*/
 				break;
 			default:
 				$sql="SELECT * FROM eleves WHERE login='$eleve2'";
 				$resultat_infos_eleve2=mysql_query($sql);
-				$ligne=mysql_fetch_object($resultat_infos_eleve2);
-				//$nom_eleve2=$ligne->nom." ".$ligne->prenom;
-				$nom_eleve[2]=$ligne->nom." ".$ligne->prenom;
+				if(mysql_num_rows($resultat_infos_eleve2)>0) {
+					$ligne=mysql_fetch_object($resultat_infos_eleve2);
+					//$nom_eleve2=$ligne->nom." ".$ligne->prenom;
+					$nom_eleve[2]=$ligne->nom." ".$ligne->prenom;
+				}
+				else {
+					$nom_eleve[2]=$eleve2;
+				}
 				break;
 		}
 		$nom_eleve[2]=remplace_accents($nom_eleve[2],'simple');
 	}
-
+	//$nom_eleve[2]=$avec_moy_classe;
 
 	writinfo('/tmp/infos_graphe.txt','a+',"\nAvant seriemin, seriemax,...\n");
 
@@ -473,7 +540,7 @@
 
 
 	// On force la couleur pour les moyennes classe/min/max
-	if(($eleve2=='moyclasse')||($eleve2=='moymin')||($eleve2=='moymax')){
+	if(($eleve2=='moyclasse')||($eleve2=='moymin')||($eleve2=='moymax')||($eleve2=='rang_eleve')){
 		$couleureleve[2]=$couleurmoyenne;
 	}
 
@@ -710,21 +777,46 @@
 		writinfo('/tmp/infos_graphe.txt','a+',"\$largeur_texte=$largeur_texte\n");
 
 		for($k=1;$k<=$nb_series_bis;$k++){
-			$ytmp=$ytmp+15;
+			//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			/*
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+			((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+			) {
+			*/
+			$afficher_la_serie_courante="y";
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				$afficher_la_serie_courante="y";
+			}
+			/*
+			// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+			if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+				$afficher_la_serie_courante="n";
+			}
+			*/
+			if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+				$afficher_la_serie_courante="n";
+			}
 
-			$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
-			$image_func_str = "imagettftext(\$img, ".($taille_police*5).", 0, $tmp, $ytmp, .$couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, $moyenne[$k][$i])\n";
-			writinfo('/tmp/infos_graphe.txt','a+',$image_func_str);
+			if($afficher_la_serie_courante=="y") {
 
-			//$largeur_texte=30;	// A REVOIR... COMMENT LE CALCULER EN SVG?
-			//$largeur_texte=0;	// A REVOIR... COMMENT LE CALCULER EN SVG?
-			$largeur_texte = mb_strlen($moyenne[$k][$i]) * $l_txt_px;
+				$ytmp=$ytmp+15;
 
-			$xtext=round($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2));
-			//$ytext=$ytmp;
-			$ytext=$ytmp+$fontsizetext;
-			//$fontsizetext=Floor($taille_police*3.5);
-			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$moyenne[$k][$i]."</text>\n";
+				if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i]);} else {$texte_courant=$moyenne[$k][$i];}
+
+				$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
+				$image_func_str = "imagettftext(\$img, ".($taille_police*5).", 0, $tmp, $ytmp, .$couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, $texte_courant)\n";
+				writinfo('/tmp/infos_graphe.txt','a+',$image_func_str);
+
+				//$largeur_texte=30;	// A REVOIR... COMMENT LE CALCULER EN SVG?
+				//$largeur_texte=0;	// A REVOIR... COMMENT LE CALCULER EN SVG?
+				$largeur_texte = mb_strlen($texte_courant) * $l_txt_px;
+
+				$xtext=round($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2));
+				//$ytext=$ytmp;
+				$ytext=$ytmp+$fontsizetext;
+				//$fontsizetext=Floor($taille_police*3.5);
+				echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$texte_courant."</text>\n";
+			}
 		}
 		//===========================================================================
 
@@ -779,20 +871,43 @@
 		$cpt_tmp=0;
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
-			$ytmp=$ytmp+15;
-			$largeur_texte = mb_strlen(nf($mgen[$k])) * $l_txt_px;
+			//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			/*
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+			((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+			) {
+			*/
+			$afficher_la_serie_courante="y";
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				$afficher_la_serie_courante="y";
+			}
+			/*
+			// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+			if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+				$afficher_la_serie_courante="n";
+			}
+			*/
+			if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+				$afficher_la_serie_courante="n";
+			}
 
-			$xtext=$x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
-			//$ytext=$ytmp;
-			$ytext=$ytmp+$fontsizetext;
-			//$fontsizetext=Floor($taille_police*3.5);
-			//echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$mgen[$k]."</text>\n";
-			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".nf($mgen[$k])."</text>\n";
+			if($afficher_la_serie_courante=="y") {
+				$ytmp=$ytmp+15;
+				if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($mgen[$k]);} else {$texte_courant=$mgen[$k];}
+				$largeur_texte = mb_strlen($texte_courant) * $l_txt_px;
+
+				$xtext=$x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
+				//$ytext=$ytmp;
+				$ytext=$ytmp+$fontsizetext;
+				//$fontsizetext=Floor($taille_police*3.5);
+				//echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$mgen[$k]."</text>\n";
+				echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$texte_courant."</text>\n";
 
 
-			if($mgen[$k]!="-"){
-				$total_tmp=$total_tmp+$mgen[$k];
-				$cpt_tmp++;
+				if($mgen[$k]!="-"){
+					$total_tmp=$total_tmp+$mgen[$k];
+					$cpt_tmp++;
+				}
 			}
 		}
 
@@ -813,7 +928,10 @@
 			$ytext=$ytmp+$fontsizetext;
 			//$fontsizetext=Floor($taille_police*3.5);
 			//echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$nb_series_bis]."; font-size:$fontsizetext;\">".$mgen_annuelle."</text>\n";
-			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$nb_series_bis]."; font-size:$fontsizetext;\">".nf($mgen_annuelle)."</text>\n";
+
+			$texte_courant=nf($mgen_annuelle);
+
+			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$nb_series_bis]."; font-size:$fontsizetext;\">".$texte_courant."</text>\n";
 		}
 
 	}
@@ -886,46 +1004,70 @@
 
 	//for($k=1;$k<=$nb_series;$k++){
 	for($k=1;$k<=$nb_series_bis;$k++){
-		echo "\n<!-- Courbe de la série $k -->\n";
-
-		//Placement des points de la courbe:
-		for($i=1;$i<$nbMat+1;$i++){
-			$x1=$x[$i];
-			// C'est eleve_classe.php qui envoye 0 quand il n'y a pas de note... A CHANGER...
-			//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
-			if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
-				$y1=round($hauteurMoy+$hauteur-$moyenne[$k][$i]*$hauteur/20);
-				//imageFilledRectangle($img,$x1-2,$y1-2,$x1+2,$y1+2,$couleureleve[$k]);
-
-				$xtmp1=$x1-2;
-				$ytmp1=$y1-2;
-				//echo "<rect x=\"$xtmp1\" y=\"$ytmp1\" width=\"4\" height=\"4\" style=\"fill:".$couleureleve[$k]."; stroke-width:1; stroke:black\" />";
-				echo "<rect x=\"$xtmp1\" y=\"$ytmp1\" width=\"4\" height=\"4\" style=\"fill:".$couleureleve[$k].";\" />";
-
-				$ycourbe[$k][$i]=$y1;
+		/*
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			if(($k!=2)||
+			(($k==2)&&(isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {
+			*/
+			$afficher_la_serie_courante="y";
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				$afficher_la_serie_courante="y";
 			}
-			else{
-				$ycourbe[$k][$i]=-1;
+			/*
+			// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+			if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+				$afficher_la_serie_courante="n";
 			}
-		}
+			*/
+			if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+				$afficher_la_serie_courante="n";
+			}
 
-		//Tracé de la courbe:
-		for($i=1;$i<$nbMat;$i++){
-			$x1=$x[$i];
-			$x2=$x[$i+1];
-			if(($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+1]!=-1)){
-				//imageLine($img,$x1,$ycourbe[$k][$i],$x2,$ycourbe[$k][$i+1],$couleureleve[$k]);
+			if($afficher_la_serie_courante=="y") {
 
-				$xtmp1=$x1;
-				$ytmp1=$ycourbe[$k][$i];
-				$xtmp2=$x2;
-				$ytmp2=$ycourbe[$k][$i+1];
-				echo "<line x1=\"$xtmp1\" y1=\"$ytmp1\" x2=\"$xtmp2\" y2=\"$ytmp2\" style=\"stroke:".$couleureleve[$k]."; stroke-width:$epaisseur_traits\"/>\n";
+				echo "\n<!-- Courbe de la série $k -->\n";
+
+				//Placement des points de la courbe:
+				for($i=1;$i<$nbMat+1;$i++){
+					$x1=$x[$i];
+					// C'est eleve_classe.php qui envoye 0 quand il n'y a pas de note... A CHANGER...
+					//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+					if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+						$y1=round($hauteurMoy+$hauteur-$moyenne[$k][$i]*$hauteur/20);
+						//imageFilledRectangle($img,$x1-2,$y1-2,$x1+2,$y1+2,$couleureleve[$k]);
+
+						$xtmp1=$x1-2;
+						$ytmp1=$y1-2;
+						//echo "<rect x=\"$xtmp1\" y=\"$ytmp1\" width=\"4\" height=\"4\" style=\"fill:".$couleureleve[$k]."; stroke-width:1; stroke:black\" />";
+						echo "<rect x=\"$xtmp1\" y=\"$ytmp1\" width=\"4\" height=\"4\" style=\"fill:".$couleureleve[$k].";\" />";
+
+						$ycourbe[$k][$i]=$y1;
+					}
+					else{
+						$ycourbe[$k][$i]=-1;
+					}
+				}
+
+				//Tracé de la courbe:
+				for($i=1;$i<$nbMat;$i++){
+					$x1=$x[$i];
+					$x2=$x[$i+1];
+					if(($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+1]!=-1)){
+						//imageLine($img,$x1,$ycourbe[$k][$i],$x2,$ycourbe[$k][$i+1],$couleureleve[$k]);
+
+						$xtmp1=$x1;
+						$ytmp1=$ycourbe[$k][$i];
+						$xtmp2=$x2;
+						$ytmp2=$ycourbe[$k][$i+1];
+						echo "<line x1=\"$xtmp1\" y1=\"$ytmp1\" x2=\"$xtmp2\" y2=\"$ytmp2\" style=\"stroke:".$couleureleve[$k]."; stroke-width:$epaisseur_traits\"/>\n";
+					}
+					//elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
+					elseif(($afficher_pointille!='n')&&(isset($ycourbe[$k][$i]))&&($ycourbe[$k][$i]!=-1)&&(isset($ycourbe[$k][$i+2]))&&($ycourbe[$k][$i+2]!=-1)) {
+						echo "<line x1=\"".$x[$i]."\" y1=\"".$ycourbe[$k][$i]."\" x2=\"".$x[$i+2]."\" y2=\"".$ycourbe[$k][$i+2]."\" style='stroke:".$couleureleve[$k]."; stroke-dasharray:4, 4; stroke-width:$epaisseur_traits'/>\n";
+					}
+				}
 			}
-			elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
-				echo "<line x1=\"".$x[$i]."\" y1=\"".$ycourbe[$k][$i]."\" x2=\"".$x[$i+2]."\" y2=\"".$ycourbe[$k][$i+2]."\" style='stroke:".$couleureleve[$k]."; stroke-dasharray:4, 4; stroke-width:$epaisseur_traits'/>\n";
-			}
-		}
+		//}
 	}
 
 	//================================================================

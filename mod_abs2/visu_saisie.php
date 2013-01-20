@@ -315,49 +315,53 @@ echo 'Traitement : ';
 echo '</td><td style="background-color:#ebedb5;" colspan="2">';
 $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
 $total_traitements_modifiable = 0;
+$tab_traitements_deja_affiches=array();
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-    //si c'est un traitement créé par un prof on va afficher une select box de modification si possible
-    echo "<nobr>";
-    if ($utilisateur->getStatut() == 'professeur' && $traitement->getUtilisateurId() == $utilisateur->getPrimaryKey() && $traitement->getModifiable()) {
-	$total_traitements_modifiable = $total_traitements_modifiable + 1;
-	$type_autorises->getFirst();
-	echo $traitement->getDescription().' : ';
-	if ($type_autorises->count() != 0) {
-		echo '<input type="hidden" name="id_traitement[';
-		echo ($total_traitements_modifiable - 1);
-		echo ']" value="'.$traitement->getId().'"/>';
-		echo ("<select name=\"type_traitement[");
-		echo ($total_traitements_modifiable - 1);
-		echo ("]\">");
-		echo "<option value='-1'></option>\n";
-		foreach ($type_autorises as $type) {
-		    //$type = new AbsenceEleveTypeStatutAutorise();
-			echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
-			if ($type->getAbsenceEleveType()->getId() == $traitement->getATypeId()) {
-			    echo "selected";
+	if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+		//si c'est un traitement créé par un prof on va afficher une select box de modification si possible
+		echo "<nobr>";
+		if ($utilisateur->getStatut() == 'professeur' && $traitement->getUtilisateurId() == $utilisateur->getPrimaryKey() && $traitement->getModifiable()) {
+		$total_traitements_modifiable = $total_traitements_modifiable + 1;
+		$type_autorises->getFirst();
+		echo $traitement->getDescription().' : ';
+		if ($type_autorises->count() != 0) {
+			echo '<input type="hidden" name="id_traitement[';
+			echo ($total_traitements_modifiable - 1);
+			echo ']" value="'.$traitement->getId().'"/>';
+			echo ("<select name=\"type_traitement[");
+			echo ($total_traitements_modifiable - 1);
+			echo ("]\">");
+			echo "<option value='-1'></option>\n";
+			foreach ($type_autorises as $type) {
+				//$type = new AbsenceEleveTypeStatutAutorise();
+				echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
+				if ($type->getAbsenceEleveType()->getId() == $traitement->getATypeId()) {
+					echo "selected";
+				}
+				echo ">";
+				echo $type->getAbsenceEleveType()->getNom();
+				echo "</option>\n";
 			}
-			echo ">";
-			echo $type->getAbsenceEleveType()->getNom();
-			echo "</option>\n";
+			echo "</select>";
+			echo '<button dojoType="dijit.form.Button" type="submit" name="modifier_type" value="vrai">Mod. le type</button>';
 		}
-		echo "</select>";
-		echo '<button dojoType="dijit.form.Button" type="submit" name="modifier_type" value="vrai">Mod. le type</button>';
+		}else {
+		if ($utilisateur->getStatut() != 'professeur') {
+			echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$id_saisie."";
+		    if($menu){
+		            echo"&menu=false";
+		        } 
+		    echo"' style='display: block; height: 100%;'> ";
+			echo $traitement->getDescription();
+			echo "</a>";
+		} else {
+			echo $traitement->getDescription();
+		}
+		}
+		echo "</nobr>";
+		echo "<br/>";
+		$tab_traitements_deja_affiches[]=$traitement->getId();
 	}
-    }else {
-	if ($utilisateur->getStatut() != 'professeur') {
-	    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$id_saisie."";
-        if($menu){
-                echo"&menu=false";
-            } 
-        echo"' style='display: block; height: 100%;'> ";
-	    echo $traitement->getDescription();
-	    echo "</a>";
-	} else {
-	    echo $traitement->getDescription();
-	}
-    }
-    echo "</nobr>";
-    echo "<br/><br/>";
 }
 //on autorise un ajout rapide seulement si il n'y a aucun traitement rapidement modifiable
 if ($total_traitements_modifiable == 0 && $utilisateur->getStatut() == 'professeur') {
@@ -378,6 +382,37 @@ echo '<input type="hidden" name="total_traitements" value="'.$total_traitements_
 
 echo '</td></tr>';
 
+echo '<tr><td>';
+echo 'Notification : ';
+echo '</td><td>';
+echo '<table style="background-color:#c7e3ec;">';
+foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
+    echo '<tr><td>';
+    echo "<a href='visu_notification.php?id_notification=".$notification->getId()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo"' style='display: block; height: 100%;'> ";
+    if ($notification->getDateEnvoi() != null) {
+	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getDateEnvoi('U')));
+    } else {
+	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
+    }
+    if ($notification->getTypeNotification() != null) {
+	echo ', type : '.$notification->getTypeNotification();
+    }
+    echo ', statut : '.$notification->getStatutEnvoi();
+    echo "</a>";
+    echo '</td></tr>';
+}
+}
+echo '</td></tr>';
+echo '</table>';
+echo '</td></tr>';
+
+echo '<tr><td>';
+
 if ($modifiable  || ($saisie->getCommentaire() != null && $saisie->getCommentaire() != "")) {
     echo '<tr><td>';
     echo 'Commentaire : ';
@@ -391,7 +426,7 @@ if ($modifiable  || ($saisie->getCommentaire() != null && $saisie->getCommentair
 }
 
 echo '<tr><td>';
-echo 'Saisie le : ';
+echo 'Enregistré le : ';
 echo '</td><td colspan="2">';
 echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getCreatedAt('U')));
 echo ' par '.  $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.mb_substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
@@ -439,6 +474,22 @@ if (!$saisies_conflit_col->isEmpty()) {
     }
     echo '</td></tr>';
 }
+$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+if (!$saisies_englobante_col->isEmpty()) {
+    echo '<tr><td>';
+    echo 'La saisie est englobée par : ';
+    echo '</td><td colspan="2">';
+    foreach ($saisies_englobante_col as $saisies_englobante) {
+	echo "<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'> ";
+	echo $saisies_englobante->getDateDescription();
+        echo ' '.$saisies_englobante->getTypesTraitements();
+	echo "</a>";
+	if (!$saisies_englobante_col->isLast()) {
+	    echo ' - ';
+	}
+    }
+    echo '</td></tr>';
+}
 
 echo '</td></tr>';
 if ($modifiable) {
@@ -455,6 +506,9 @@ if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") 
     echo '<button dojoType="dijit.form.Button" type="submit" name="creation_traitement" value="oui"';
     if ($saisie->getDeletedAt() != null) echo 'disabled';
     echo '>Traiter la saisie</button>';
+    echo '<button dojoType="dijit.form.Button" type="submit" name="creation_notification" value="oui"';
+    if ($saisie->getDeletedAt() != null) echo 'disabled';
+    echo '>Notifier la saisie</button>';
     echo '</td></tr>';
 }
 

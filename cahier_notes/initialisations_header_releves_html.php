@@ -39,9 +39,30 @@
 	text-align:left;
 }
 
-.uneligne td {
+table.uneligne {
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+	border-collapse:collapse;
+	font-size: 8pt;
+}
+
+.uneligne td, th {
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+	font-size: 8pt;
+
 	text-align:left;
-}\n";
+}
+
+.uneligne .lig1 {
+	background-color: papayawhip;
+}
+.uneligne .lig-1 {
+	background-color: honeydew;
+}
+\n";
 
 	// Récupération des variables du bloc adresses:
 	// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
@@ -110,7 +131,11 @@
 
 	$releve_col_hauteur=getSettingValue("releve_col_hauteur") ? getSettingValue("releve_col_hauteur") : 0;
 	$releve_largeurtableau=getSettingValue("releve_largeurtableau") ? getSettingValue("releve_largeurtableau") : 800;
+	if(($releve_largeurtableau=="")||(!is_numeric($releve_largeurtableau))||($releve_largeurtableau<=0)) {
+		$releve_largeurtableau=800;
+	}
 	$releve_col_matiere_largeur=getSettingValue("releve_col_matiere_largeur") ? getSettingValue("releve_col_matiere_largeur") : 150;
+	$releve_col_moyenne_largeur=getSettingValue("releve_col_moyenne_largeur") ? getSettingValue("releve_col_moyenne_largeur") : 30;
 
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi") ? getSettingValue("gepi_prof_suivi") : "professeur principal";
 

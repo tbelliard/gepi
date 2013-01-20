@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -311,7 +311,7 @@ if(!isset($enregistrer_parametres)) {
 		if($nb_modeles>0) {
 			echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"form_modele_par_defaut\">\n";
 			echo add_token_field();
-			echo "<p>Modèle&nbsp;: \n";
+			echo "<p>Modèle par défaut&nbsp;: \n";
 			echo "<select name='id_modele'>\n";
 			for($loop=0;$loop<count($tab_modele);$loop++) {
 				echo "<option value='".$tab_modele[$loop]['id_modele']."'>".$tab_modele[$loop]['nom_modele']."</option>\n";
@@ -349,7 +349,15 @@ if(!isset($enregistrer_parametres)) {
 			echo "</form>\n";
 		}
 		echo "</fieldset>\n";
-	
+
+		echo "<br />
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Vous pouvez définir plusieurs modèles, choisir le modèle par défaut, modifier/corriger un modèle et le supprimer.</li>
+	<li>Il est recommandé de donner un nom explicite aux modèles.<br />
+	Des noms comme Grille, Rencontre_Parents_profs,... seront plus explicites que Modèle_20121113_175234,...</li>
+</ul>\n";
+
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -504,7 +512,35 @@ echo "<div>\n
 		echo "<br />\n";
 		echo "</form>\n";
    echo "</fieldset>\n
- </div>";
+ </div>\n";
+
+echo "<div style='display:none' id='div_modif_via_js'>
+<br />
+<p style='text-indent:-4em; margin-left:4em;'><em>PROPOSITIONS&nbsp;:</em> Vous pouvez modifier d'un clic les paramètres pour afficher&nbsp;:</p>
+<ul>
+	<li><a href='javascript:ajuste_param(1)'> une colonne nom/prénom et tout le reste du tableau en colonnes de 8mm</a></li>
+	<li><a href='javascript:ajuste_param(2)'> une colonne nom/prénom, un colonne de 8mm pour la moyenne et une dernière colonne plus large pour un avis</a><br />
+	On ne joue ici que sur les valeurs des largeur de colonne Nom/prénom, largeur colonne (<em>autre</em>) et sur le quadrillage total ou non des cellules.</li>
+</ul>
+</div>
+
+<script type='text/javascript'>
+	document.getElementById('div_modif_via_js').style.display='';
+
+	function ajuste_param(num) {
+		if(num==1) {
+			document.getElementById('l_nomprenom').value=40;
+			document.getElementById('l_colonne').value=8;
+			document.getElementById('encadrement_total_cellules_1').checked=true;
+		}
+		if(num==2) {
+			document.getElementById('l_nomprenom').value=40;
+			document.getElementById('l_colonne').value=8;
+			document.getElementById('encadrement_total_cellules_0').checked=true;
+			document.getElementById('nb_cellules_quadrillees').value=1;
+		}
+	}
+</script>\n";
 
 
 

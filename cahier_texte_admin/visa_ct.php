@@ -249,6 +249,12 @@ echo "</ul>\n";
 	echo "<br /><br />\n";
 	echo "</div>\n";
 
+	if(getSettingAOui('cdt_afficher_volume_docs_joints')) {
+		$affichage_volume_docs_joints=isset($_GET['affichage_volume_docs_joints']) ? "y" : NULL;
+		if(!isset($affichage_volume_docs_joints)) {
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?affichage_volume_docs_joints=y'>Afficher le volume des documents joints aux CDT</a></p>\n";
+		}
+	}
 ?>
 <table class='boireaus' border="1"><tr valign='middle' align='center'>
 <th><b><a href='visa_ct.php?order_by=jc.id_classe,jm.id_matiere'>Classe(s)</a></b></th>
@@ -267,7 +273,16 @@ echo "</ul>\n";
 		genDateSelector("begin_", $bday, $bmonth, $byear,"more_years") ?>
 </th>
 
-<th><b>Nombre de visa</b></th></tr>
+<th><b>Nombre de visa</b></th>
+<?php
+	if(isset($affichage_volume_docs_joints)) {
+		$total_volumes_docs_joints=0;
+?>
+<th title="Volume des documents joints"><b>Volume</b></th>
+<?php
+	}
+?>
+</tr>
 
 <?php
 if (!isset($_GET['order_by'])) {
@@ -337,10 +352,29 @@ for ($i=0; ($row=sql_row($query,$i)); $i++) {
 	//echo "$sql<br />";
 	//echo "\$nb_ct_visa=$nb_ct_visa\<br />";
 	echo "</td>";
+
+	if(isset($affichage_volume_docs_joints)) {
+		echo "<td>";
+		$volume_cdt_groupe=volume_docs_joints($id_groupe);
+		if($volume_cdt_groupe!=0) {
+			$total_volumes_docs_joints+=$volume_cdt_groupe;
+			echo volume_human($volume_cdt_groupe);
+		}
+		else {
+			echo "0";
+		}
+		echo "</td>";
+	}
+
 	echo "</tr>";
 	$iter++;
 }
 echo "</table></form>";
+
+if((isset($affichage_volume_docs_joints))&&($total_volumes_docs_joints!=0)) {
+	echo "<p>Volume total des documents joints&nbsp;: ".volume_human($total_volumes_docs_joints)."</p>\n";
+}
+
 	echo "<br />";
 }
 require ("../lib/footer.inc.php");

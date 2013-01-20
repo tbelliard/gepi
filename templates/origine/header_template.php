@@ -187,22 +187,35 @@
 				var seconds_before_alert = 180;
 				var seconds_int_betweenn_2_msg = 30;
 
+				<?php
+					$sessionMaxLength=getSettingValue("sessionMaxLength");
+
+					$session_gc_maxlifetime=ini_get("session.gc_maxlifetime");
+					if($session_gc_maxlifetime!=FALSE) {
+						$session_gc_maxlifetime_minutes=$session_gc_maxlifetime/60;
+
+						if((getSettingValue("sessionMaxLength")!="")&&($session_gc_maxlifetime_minutes<getSettingValue("sessionMaxLength"))) {
+							$sessionMaxLength=$session_gc_maxlifetime_minutes;
+						}
+					}
+				?>
+
 				if (gepi_start_session.get('GEPI_start_session')) {
 					debut_alert.setTime(parseInt(gepi_start_session.get('GEPI_start_session'),10));
 				}
 				digital=new Date()
 				seconds=(digital-debut_alert)/1000
 				//if (1==1) {
-				  if (seconds>=<?php echo getSettingValue("sessionMaxLength")*60; ?>) {
+				  if (seconds>=<?php echo $sessionMaxLength*60; ?>) {
 				  	if (!warn_msg2_already_displayed) {
 						var message = "vous avez été probablement déconnecté du serveur, votre travail ne pourra pas être enregistré dans gepi depuis cette page, merci de le sauvegarder dans un bloc note.";
 						display_alert(message);				  
 						warn_msg2_already_displayed = true;
 					}
 				  }
-				else if (seconds><?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds_before_alert) {
+				else if (seconds><?php echo $sessionMaxLength*60; ?> - seconds_before_alert) {
 					if (!warn_msg1_already_displayed) {
-						var seconds_reste = Math.floor(<?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds);
+						var seconds_reste = Math.floor(<?php echo $sessionMaxLength*60; ?> - seconds);
 						now=new Date()
 						var hrs=now.getHours();
 						var mins=now.getMinutes();

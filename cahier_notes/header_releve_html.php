@@ -21,7 +21,8 @@
 
 	$logo_etab=getSettingValue("logo_etab") ? getSettingValue("logo_etab") : "";
 
-	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">
+	if(!isset($sans_header_html)) {
+		echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
 <meta http-equiv='Pragma' content='no-cache' />
@@ -29,10 +30,9 @@
 <meta http-equiv='Expires' content='0' />
 <title>".$gepiSchoolName." : Edition des relevés de notes</title>
 <link rel='stylesheet' type='text/css' href='../style.css' />\n";
-
+	}
 
 	//========================================
-
 	// Portion des styles et initialisations à reprendre dans le cas d'une insertion des relevés de notes entre les bulletins
 	include("initialisations_header_releves_html.php");
 
@@ -42,15 +42,17 @@
 	//======================================
 	// Portion des styles pouvant entrer en concurrence avec ceux du bulletin HTML dans le cas d'une insertion des relevés de notes entre les bulletins
 
-	echo "	<link rel='shortcut icon' type='image/x-icon' href='../favicon.ico' />
+	if(!isset($sans_header_html)) {
+		echo "	<link rel='shortcut icon' type='image/x-icon' href='../favicon.ico' />
 	<link rel='icon' type='image/ico' href='../favicon.ico' />\n";
 
-	if(isset($style_screen_ajout)){
-		// Styles paramétrables depuis l'interface:
-		if($style_screen_ajout=='y'){
-			// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-			// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
-			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+		if(isset($style_screen_ajout)){
+			// Styles paramétrables depuis l'interface:
+			if($style_screen_ajout=='y'){
+				// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+				// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+				echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+			}
 		}
 	}
 
@@ -105,8 +107,10 @@
 </style>\n";
 
 
-	echo "</head>\n";
-	echo "<body>\n";
-	echo "<div>\n";
+	if(!isset($sans_header_html)) {
+		echo "</head>\n";
+		echo "<body>\n";
+		echo "<div>\n";
+	}
 
 ?>

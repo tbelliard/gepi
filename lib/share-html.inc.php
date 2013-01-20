@@ -888,7 +888,12 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 			$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
 		}
 
-		$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
+		$out_html .= "<option $selected value=\"$link2\" title=\"".htmlspecialchars($row[2] . " - ")." ".$chaine;
+		$tmp_tab=get_classes_from_id_groupe($row[0]);
+		if(isset($tmp_tab['classlist_string'])) {
+			$out_html .= " en ".$tmp_tab['classlist_string'];
+		}
+		$out_html .= "\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
 	}
 	$out_html .= "\n</select>\n</p>\n
 	
@@ -936,12 +941,22 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 {
 	global $selected_eleve;
 	// $current est le login de l'élève actuellement sélectionné
-	$sql="SELECT e.login, e.nom, e.prenom " .
+	$sql="(SELECT e.login, e.nom, e.prenom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$login_resp."' AND (re.resp_legal='1' OR re.resp_legal='2'));";
+			"r.login = '".$login_resp."' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login, e.nom, e.prenom FROM eleves e, resp_pers r, responsables2 re 
+						WHERE (e.ele_id = re.ele_id AND 
+							re.pers_id = r.pers_id AND 
+							r.login = '".$login_resp."' AND 
+							re.acces_sp='y' AND
+							re.resp_legal='0'))";
+	}
+	$sql.=";";
+	//echo "$sql<br />";
 	$get_eleves = mysql_query($sql);
 
 	if (mysql_num_rows($get_eleves) == 0) {
@@ -1414,8 +1429,8 @@ function affiche_infos_actions() {
 	$chaine_id="";
 	if(mysql_num_rows($res)>0) {
 		echo "<div id='div_infos_actions' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%;'>\n";
-		echo "<div id='info_action_titre' style='font-weight: bold;' class='infobulle_entete'>\n";
-			echo "<div id='info_action_pliage' style='float:right; width: 1em'>\n";
+		echo "<div id='info_action_titre' style='font-weight: bold; min-height:16px; padding-right:8px;' class='infobulle_entete'>\n";
+			echo "<div id='info_action_pliage' style='float:right; width: 1em;'>\n";
 			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 			echo "</div>\n";
 
@@ -1433,9 +1448,9 @@ function affiche_infos_actions() {
 
 		$cpt_id=0;
 		while($lig=mysql_fetch_object($res)) {
-			echo "<div id='info_action_$lig->id' style='border: 1px solid black; margin:2px;'>\n";
-				echo "<div id='info_action_titre_$lig->id' style='font-weight: bold;' class='infobulle_entete'>\n";
-					echo "<div id='info_action_pliage_$lig->id' style='float:right; width: 1em'>\n";
+			echo "<div id='info_action_$lig->id' style='border: 1px solid black; margin:2px; min-height:16px;'>\n";
+				echo "<div id='info_action_titre_$lig->id' style='font-weight: bold; min-height:16px; padding-right:8px;' class='infobulle_entete'>\n";
+					echo "<div id='info_action_pliage_$lig->id' style='float:right; width: 1em;'>\n";
 					echo "<a href=\"javascript:div_alterne_affichage('$lig->id')\"><span id='img_pliage_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 					echo "</div>\n";
 					echo $lig->titre;
@@ -2032,7 +2047,7 @@ function insere_lien_insertion_image_dans_ckeditor($url_img) {
  * @return string : Chaine HTML <div float:right...><a href...><img...></a></div>
 */
 function insere_lien_insertion_lien_geogebra_dans_ckeditor($titre_ggb, $url_ggb) {
-	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_ggb_dans_ckeditor('".$titre_ggb."', '".$url_ggb."')\" title='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB'><img src='../images/up.png' width='18' height='18' alt='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB' /></a></div>";
+	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_ggb_dans_ckeditor('".preg_replace("/'/", " ", $titre_ggb)."', '".$url_ggb."')\" title='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB'><img src='../images/up.png' width='18' height='18' alt='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB' /></a></div>";
 }
 
 /** fonction alertant sur la configuration de suhosin
@@ -2302,6 +2317,55 @@ function get_infos_derniere_maj_sconet() {
 
 		//$retour.=$lig->texte;
 	}
+	return $retour;
+}
+
+
+/** Retourne le lien HTML pour un histogramme des notes passées en paramètre
+ *  et génère le DIV infobulle du graphe SVG.
+ *
+ * @param array $tab_graph_note : Le tableau des notes
+ * @param string $titre : Titre de l'infobulle
+ * @param string $id : Identifiant de l'infobulle
+ *
+ * @return string Retourne le lien
+ */
+function retourne_html_histogramme_svg($tab_graph_note, $titre, $id, $nb_tranches=5, $note_sur=20, $graphe_largeurTotale=200, $graphe_hauteurTotale=150, $graphe_taille_police=3, $graphe_epaisseur_traits=2) {
+	global $tabdiv_infobulle;
+
+	$retour="";
+
+	$graphe_serie="";
+	if(isset($tab_graph_note)) {
+		for($l=0;$l<count($tab_graph_note);$l++) {
+			if($l>0) {$graphe_serie.="|";}
+			$graphe_serie.=$tab_graph_note[$l];
+		}
+	}
+
+	$texte="<div align='center'><object data='../lib/graphe_svg.php?";
+	$texte.="serie=$graphe_serie";
+	$texte.="&amp;note_sur_serie=$note_sur";
+	$texte.="&amp;nb_tranches=$nb_tranches";
+	$texte.="&amp;titre=Repartition_des_notes";
+	$texte.="&amp;v_legend1=Notes";
+	$texte.="&amp;v_legend2=Effectif";
+	$texte.="&amp;largeurTotale=$graphe_largeurTotale";
+	$texte.="&amp;hauteurTotale=$graphe_hauteurTotale";
+	$texte.="&amp;taille_police=$graphe_taille_police";
+	$texte.="&amp;epaisseur_traits=$graphe_epaisseur_traits";
+	$texte.="'";
+	$texte.=" width='$graphe_largeurTotale' height='$graphe_hauteurTotale'";
+	$texte.=" type=\"image/svg+xml\"></object></div>\n";
+
+	$tabdiv_infobulle[]=creer_div_infobulle($id,$titre,"",$texte,"",14,0,'y','y','n','n');
+
+	$retour.=" <a href='#' onmouseover=\"delais_afficher_div('$id','y',-100,20,1500,10,10);\"";
+	$retour.=" onclick=\"afficher_div('$id','y',-100,20);return false;\"";
+	$retour.=">";
+	$retour.="<img src='../images/icons/histogramme.png' alt=\"$titre\" />";
+	$retour.="</a>";
+
 	return $retour;
 }
 

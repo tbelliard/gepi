@@ -20,40 +20,12 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+require_once("../lib/share-trombinoscope.inc.php");
 
 // On teste si on affiche le message de changement de mot de passe
 if (isset($_GET['change_mdp'])) $affiche_message = 'yes';
@@ -613,14 +585,21 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 			$msg.="La civilité choisie n'est pas valide.";
 		}
 		else {
-			$sql="UPDATE utilisateurs SET civilite='".$_POST['reg_civilite']."' WHERE login='".$_SESSION['login']."';";
-			$update=mysql_query($sql);
-			if(!$update) {
-				$msg.="Erreur lors de la mise à jour de la civilité.";
-			}
-			else {
-				$msg.="Civilité mise à jour.";
-				$no_modif="no";
+			$sql="SELECT civilite FROM utilisateurs WHERE login='".$_SESSION['login']."';";
+			$res_civ=mysql_query($sql);
+			if(mysql_num_rows($res_civ)>0) {
+				$tmp_civ=mysql_result($res_civ, 0, "civilite");
+				if($tmp_civ!=$_POST['reg_civilite']) {
+					$sql="UPDATE utilisateurs SET civilite='".$_POST['reg_civilite']."' WHERE login='".$_SESSION['login']."';";
+					$update=mysql_query($sql);
+					if(!$update) {
+						$msg.="Erreur lors de la mise à jour de la civilité.";
+					}
+					else {
+						$msg.="Civilité mise à jour.";
+						$no_modif="no";
+					}
+				}
 			}
 		}
 	}
@@ -668,6 +647,30 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_p
 
 //================================================================================
 
+// 20121128
+if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_nom_ou_description_groupe']))) {
+
+	$nb_reg=0;
+	$message_nom_ou_description_groupe="";
+
+	$nom_ou_description_groupe_barre_h=isset($_POST['nom_ou_description_groupe_barre_h']) ? $_POST['nom_ou_description_groupe_barre_h'] : NULL;
+	if((isset($nom_ou_description_groupe_barre_h))&&(savePref($_SESSION['login'], "nom_ou_description_groupe_barre_h", $nom_ou_description_groupe_barre_h))) {
+		$nb_reg++;
+	}
+
+	$nom_ou_description_groupe_cdt=isset($_POST['nom_ou_description_groupe_cdt']) ? $_POST['nom_ou_description_groupe_cdt'] : NULL;
+	if((isset($nom_ou_description_groupe_cdt))&&(savePref($_SESSION['login'], "nom_ou_description_groupe_cdt", $nom_ou_description_groupe_cdt))) {
+		$nb_reg++;
+	}
+
+	if($nb_reg==0) {
+		$message_nom_ou_description_groupe="<span style='color:red'>Aucun paramètre n'a été enregistré.</span>";
+	}
+	else {
+		$message_nom_ou_description_groupe="<span style='color:green'>$nb_reg paramètre(s) enregistré(s).</span>";
+	}
+
+}
 
 if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_form_cn']))) {
 	$i=0;
@@ -1490,6 +1493,42 @@ document.getElementById('$chaine_td').style.backgroundColor='lightgray';
 //==============================================================================
 
 if($_SESSION['statut']=='professeur') {
+	// 20121128
+	$nom_ou_description_groupe_barre_h=getPref($_SESSION['login'], "nom_ou_description_groupe_barre_h", "name");
+	$nom_ou_description_groupe_cdt=getPref($_SESSION['login'], "nom_ou_description_groupe_cdt", "name");
+
+	echo "<a name='nom_ou_description_groupe'></a>
+<form name='form_nom_ou_description_groupe' method='post' action='".$_SERVER['PHP_SELF']."#nom_ou_description_groupe'>\n";
+	echo add_token_field();
+	echo "
+	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+		<legend style='border: 1px solid grey; background-color: white;'>Dénomination des groupes</legend>
+			<input type='hidden' name='valide_nom_ou_description_groupe' value='y' />
+			<p>Vous pouvez choisir d'afficher le Nom ou la Description des enseignements/groupes dans différents modules&nbsp;:<br />
+
+				Barre de menu horizontale (<em>si elle est affichée</em>)&nbsp;: 
+				<input type='radio' name='nom_ou_description_groupe_barre_h' id='nom_ou_description_groupe_barre_h_name' value='name' ".($nom_ou_description_groupe_barre_h=='name' ? "checked " : "")."/><label for='nom_ou_description_groupe_barre_h_name'>Nom</label> - 
+				<input type='radio' name='nom_ou_description_groupe_barre_h' id='nom_ou_description_groupe_barre_h_description' value='description' ".($nom_ou_description_groupe_barre_h=='description' ? "checked " : "")."/><label for='nom_ou_description_groupe_barre_h_description'>Description</label>
+				<br />
+
+				Cahiers de textes&nbsp;: 
+				<input type='radio' name='nom_ou_description_groupe_cdt' id='nom_ou_description_groupe_cdt_name' value='name' ".($nom_ou_description_groupe_cdt=='name' ? "checked " : "")."/><label for='nom_ou_description_groupe_cdt_name'>Nom</label> - 
+				<input type='radio' name='nom_ou_description_groupe_cdt' id='nom_ou_description_groupe_cdt_description' value='description' ".($nom_ou_description_groupe_cdt=='description' ? "checked " : "")."/><label for='nom_ou_description_groupe_cdt_description'>Description</label>
+				<br />
+
+			</p>
+
+			<p style='text-align:center;'><input type='submit' name='Valider' value='Enregistrer' /></p>\n";
+
+	if(isset($message_nom_ou_description_groupe)) {echo $message_nom_ou_description_groupe;}
+
+	echo "
+	</fieldset>
+</form>
+<br/>\n";
+
+	//============================================================
+
 	echo "<a name='accueil_simpl_prof'></a><form name='form_accueil_simpl_prof' method='post' action='".$_SERVER['PHP_SELF']."#accueil_simpl_prof'>\n";
 	echo add_token_field();
 	echo "<fieldset style='border: 1px solid grey;";

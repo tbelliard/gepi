@@ -8,6 +8,12 @@
 function bulletin_classe($tab_moy,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories,$couleur_lignes=NULL) {
 global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
 
+global $affiche_colonne_moy_classe;
+//$affiche_colonne_moy_classe="n";
+
+// 20121209
+global $avec_moy_min_max_classe;
+
 //global $avec_rapport_effectif;
 $avec_rapport_effectif="y";
 
@@ -112,7 +118,9 @@ if($avec_rapport_effectif=="y") {
 	echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Effectif</td>\n";
 }
 
-echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Classe</td>\n";
+if($affiche_colonne_moy_classe!='n') {
+	echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Classe</td>\n";
+}
 echo "<td width=\"$larg_col5\" class='bull_simpl'>$bull_intitule_app</td></tr>\n";
 
 // Récupération des noms de categories
@@ -180,7 +188,9 @@ for($j=0;$j<$nombre_groupes;$j++) {
 		$nb=$periode1;
 		while ($nb < $periode2+1) {
 			$current_classe_matiere_moyenne[$nb]=$tab_moy['periodes'][$nb]['current_classe_matiere_moyenne'][$j];
-
+			// 20121209
+			$moy_min_classe_grp[$nb]=$tab_moy['periodes'][$nb]['moy_min_classe_grp'][$j];
+			$moy_max_classe_grp[$nb]=$tab_moy['periodes'][$nb]['moy_max_classe_grp'][$j];
 
 			// On teste si des notes de une ou plusieurs boites du carnet de notes doivent être affichées
 			$test_cn = mysql_query("select c.nom_court, c.id from cn_cahier_notes cn, cn_conteneurs c
@@ -217,7 +227,12 @@ for($j=0;$j<$nombre_groupes;$j++) {
 
 				// On détermine le nombre de colonnes pour le colspan
 				//$nb_total_cols = 4;
-				$nb_total_cols = 3;
+				if($affiche_colonne_moy_classe!='n') {
+					$nb_total_cols = 2;
+				}
+				else {
+					$nb_total_cols = 3;
+				}
 				//====================
 				if($affiche_coef=='y'){
 					if ($test_coef != 0) $nb_total_cols++;
@@ -340,12 +355,23 @@ for($j=0;$j<$nombre_groupes;$j++) {
 				echo "</td>\n";
 			}
 
-
-			echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>\n";
-			//$note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
-			$note=nf($current_classe_matiere_moyenne[$nb]);
-			if ($note != "0,0")  {echo $note;} else {echo "-";}
-			echo "</td>\n";
+			if($affiche_colonne_moy_classe!='n') {
+				echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>\n";
+				// 20121209
+				//$note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
+				$note=nf($current_classe_matiere_moyenne[$nb]);
+				if ($note != "0,0") {
+					if($avec_moy_min_max_classe=='y') {
+						echo "<span title=\"Moyenne minimale sur l'enseignement\">".nf($moy_min_classe_grp[$nb])."</span> ";
+					}
+					echo "<span style='font-weight:bold' title=\"Moyenne du groupe sur l'enseignement\">".$note."</span>";
+					if($avec_moy_min_max_classe=='y') {
+						echo " <span title=\"Moyenne maximale sur l'enseignement\">".nf($moy_max_classe_grp[$nb])."</span>";
+					}
+				}
+				else {echo "-";}
+				echo "</td>\n";
+			}
 
 			// Affichage des cases appréciations
 			echo "<td width=\"$larg_col5\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>\n";
@@ -426,27 +452,48 @@ if($display_moy_gen=="y") {
 			}
 
 
-			echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
-			/*
-			if ($total_points_classe[$nb] != 0) {
-				//$moy_classe=number_format($total_points_classe[$nb]/$total_coef[$nb],1, ',', ' ');
-				//=========================
-				// MODIF: boireaus 20080316
-				//$moy_classe=number_format($total_points_classe[$nb]/$total_coef_classe[$nb],1, ',', ' ');
-				$moy_classe=$tab_moy_gen[$nb];
-				//=========================
-			} else {
-				$moy_classe = '-';
-			}
-			*/
-			echo nf($tab_moy['periodes'][$nb]['moy_generale_classe'],2);
+			if($affiche_colonne_moy_classe!='n') {
+				echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
+				/*
+				if ($total_points_classe[$nb] != 0) {
+					//$moy_classe=number_format($total_points_classe[$nb]/$total_coef[$nb],1, ',', ' ');
+					//=========================
+					// MODIF: boireaus 20080316
+					//$moy_classe=number_format($total_points_classe[$nb]/$total_coef_classe[$nb],1, ',', ' ');
+					$moy_classe=$tab_moy_gen[$nb];
+					//=========================
+				} else {
+					$moy_classe = '-';
+				}
+				*/
 
-			if ($affiche_deux_moy_gen==1) {
-				echo "<br />\n";
-				$moy_classe1=$tab_moy['periodes'][$nb]['moy_generale_classe1'];
-				echo "<i>".nf($moy_classe1,2)."</i>\n";
+				// 20121209
+				if($avec_moy_min_max_classe=='y') {
+					echo "<span title=\"Moyenne générale minimale\">".nf($tab_moy['periodes'][$nb]['moy_min_classe'],2)."</span> ";
+				}
+				echo "<span style='font-weight:bold' title=\"Moyenne des moyennes générales de la classe\">".nf($tab_moy['periodes'][$nb]['moy_generale_classe'],2)."</span>";
+				if($avec_moy_min_max_classe=='y') {
+					echo " <span title=\"Moyenne générale maximale\">".nf($tab_moy['periodes'][$nb]['moy_max_classe'],2)."</span>";
+				}
+
+				if ($affiche_deux_moy_gen==1) {
+					echo "<br />\n";
+					echo "<i>";
+					/*
+					if($avec_moy_min_max_classe=='y') {
+						echo "<span title=\"Moyenne générale minimale avec tous les coefficients à 1\">".nf($tab_moy['periodes'][$nb]['moy_min_classe1'],2)."</span> ";
+					}
+					*/
+					echo "<span style='font-weight:bold' title=\"Moyenne des moyennes générales de la classe avec tous les coefficients à 1\">".nf($tab_moy['periodes'][$nb]['moy_generale_classe1'])."</span>";
+					/*
+					if($avec_moy_min_max_classe=='y') {
+						echo " <span title=\"Moyenne générale maximale avec tous les coefficients à 1\">".nf($tab_moy['periodes'][$nb]['moy_max_classe1'],2)."</span>";
+					}
+					*/
+					echo "</i>\n";
+				}
+				echo "</td>\n";
 			}
-			echo "</td>\n";
 			/*
 			echo "<td class='bull_simpl' align=\"center\">\n";
 			if ($total_points_eleve[$nb] != '0') {

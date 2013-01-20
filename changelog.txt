@@ -3,7 +3,12 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.6.2 (Version de développement)
+Gepi-1.6.3 (Version de développement)
+===========================
+- ...
+
+
+Gepi-1.6.2
 ===========================
 Librairies :
 - HTMLPurifier : màj en 4.4.0
@@ -23,6 +28,14 @@ Bulletins :
   (bulletins PDF et HTML).
 - Possibilité de donner, aux parents et aux élèves, l'accès au bulletin
   simplifié des appreciations sur le groupe-classe.
+- Possibilité de masquer aux parents et aux élèves la moyenne de classe sur les
+  bulletins simplifiés et graphes.
+- Possibilité d'afficher ou non sur le bulletin simplifié de classe les
+  moyennes min/max.
+- Affichage de l'indication comme quoi les appréciations sont visibles
+  ou non des parents à une date donnée.
+- Envoi des mails de proposition de correction aux comptes scolarité
+  en plus des comptes secours.
 
 Carnets de notes:
 - Possibilité de définir un mode par défaut pour le calcul de la moyenne dans le
@@ -31,6 +44,10 @@ Carnets de notes:
 Relevés de notes:
 - Prise en compte au niveau du paramétrage des classes en admin des choix
   d'affichage ou non des moyennes de classe, bloc adresse responsable,...
+- Possibilité d'afficher une colonne Moyenne du carnet de notes
+  Possibilité d'autoriser ou non les parents/élèves à voir cette colonne
+  (qui donne une info à un instant T, mais qui peut donner une fausse impression
+  (le prof peut ajouter des devoirs par la suite, modifier les coefficients,...))
 
 Cahiers de textes :
 - Possibilité d'inclure les documents joints dans l'export ZIP.
@@ -38,9 +55,16 @@ Cahiers de textes :
 - Possibilité de limiter l'accès des profs aux CDT de leurs seules classes.
 - Archivage: ajout d'un dispositif de sélection de notices dans l'archive
   produite.
+- Affichage du volume occupé par les documents joints dans les CDT.
 
 Abs2 :
-- Possibilité de cocher les absences sur le plan de classe.
+- Possibilité de cocher les absences, retards, infirmerie,... sur le plan de 
+  classe sous réserve d'avoir créé son plan de classe dans le module Trombinoscope.
+- Ajout de liens (sur des élèves, sur des saisies,...) pour passer plus vite
+  à des informations associées.
+- Ajout d'un bouton pour créer directement des notifications à partir d'une saisie
+- Ajout d'une information sur les saisies englobantes
+- Simplification du menu abs2
 
 Emplois du temps :
 - Possibilité de restreindre l'accès prof aux EDT des autres profs.
@@ -52,6 +76,12 @@ Discipline :
 - Possibilité de définir ses propres types de sanctions de types retenue,
   exclusion ou travail.
 - Possibilité de préciser le matériel à apporter lors d'une retenue.
+- Possibilité d'imprimer les retenues et incidents avec les adresses distinctes
+  pour les parents séparés.
+
+Trombinoscope :
+- Possibilité de déplacer les photos dans le plan de classe en cliquant sur le
+  corps de l'infobulle et plus seulement sur son entête.
 
 Gestion:
 - Possibilité de masquer certains groupes dans les Cahiers de textes
@@ -59,7 +89,7 @@ Gestion:
 - Possibilité de renommer automatiquement les groupes d'une classe dont les
   descriptions sont identiques.
 - Possibilité pour les comptes scolarité de réinitialiser les mots de passe 
-  des responsables d'élèves (sous réserve de donner le droit)
+  des élèves et des responsables d'élèves (sous réserve de donner le droit)
 - Ajout de précautions pour l'accès aux choix sensibles 'Effacer la base' et 
   'Données de test'.
 - Possibilité pour l'admin de supprimer par lots les actions en 
@@ -73,6 +103,37 @@ Gestion:
   un besoin complémentaire de la Récupération de mot de passe qui, elle, 
   nécessite de connaitre le login et d'avoir renseigné l'adresse mail dans 
   Gérer mon compte)
+- Dans le cas où il y a plusieurs professeurs principaux dans une classe,
+  possibilité de donner les mêmes droits à tous les PP de la classe sur 
+  l'ensemble des élèves de la classe.
+- Possibilité de choisir si on souhaite afficher le nom court du groupe 
+  ou sa description dans la barre de menu horizontale (en prof) et dans le CDT2.
+- Ajout d'explications à divers endroits pour répondre à des questions 
+  fréquentes sur la liste de diffusion.
+- Ajout d'un droit distincts des droits pour les paramètres des bulletins pour
+  accéder aux paramètres des relevés HTML.
+- Possibilité de créer des comptes d'utilisateurs pour des resp_legal=0
+  (famille d'accueil,...), de donner ou non l'accès aux données de l'élève,...
+- Possibilité de restaurer plus vite une sauvegarde de la base via la commande système 'mysql'
+  (commande PHP exec() faisant appel à mysql en ligne de commande).
+
+Graphes:
+- Possibilité d'afficher le rang de l'élève sur les graphes en courbe/étoile
+  (comme un choix au lieu d'afficher la Moyenne de la classe).
+- Possibilité de modifier la taille de police dans la fenêtre déroulante 
+  contenant les appréciations dans les graphes en courbe/étoile
+- Possibilité de donner ou non l'accès aux moyenne de classe, moyenne min et
+  moyenne max pour les responsables et élèves.
+
+Divers:
+- Affichage des AID dans le choix Bulletins de la barre de menu horizontale prof
+  et sur la page d'accueil simplifiée prof.
+- Ajouts divers dans les barres de menu horizontales.
+- Ajout de l'affichage des graphes dans l'onglet Bulletin des fiches de 
+  consultation des infos concernant un élève.
+- Affichage des responsables non légaux dans l'onglet responsables de la page
+  Consult.élève.
+  Possibilité d'interdire la consultation du rang pour les responsables/élèves.
 
 
 Gepi-1.6.1 (10/06/2012)

@@ -39,6 +39,11 @@ if (!checkAccess()) {
     die();
 }
 
+if(!getSettingAOui('active_bulletins')) {
+	header("Location: ../accueil.php?msg=Module_inactif");
+	die();
+}
+
 if (!isset($bord)) {$bord=isset($_SESSION['prepa_conseil_index1_bord']) ? $_SESSION['prepa_conseil_index1_bord'] : NULL;}
 if (!isset($larg_tab)) {$larg_tab=isset($_SESSION['prepa_conseil_index1_larg_tab']) ? $_SESSION['prepa_conseil_index1_larg_tab'] : NULL;}
 

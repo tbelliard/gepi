@@ -519,7 +519,7 @@ echo add_token_field();
 
 
 
-<p class='bold'>Classe : <?php echo $classe; ?></p>
+<p class='bold'>Classe&nbsp;: <?php echo $classe; ?></p>
 <center><input type="submit" value="Enregistrer" /></center>
 <p>
 
@@ -527,7 +527,7 @@ echo add_token_field();
 echo "<img src='../images/icons/add_user.png' alt='' /> <a href='classes_ajout.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Ajouter des élèves à la classe</a>";
 ?>
 </p>
-<p class='small'><b>Remarque :</b> lors du retrait d'un élève de la classe pour une période donnée, celui-ci sera retiré de tous les enseignements auxquels il était inscrit pour la période en question.</p>
+<p class='small'><b>Remarque&nbsp;:</b> lors du retrait d'un élève de la classe pour une période donnée, celui-ci sera retiré de tous les enseignements auxquels il était inscrit pour la période en question.</p>
 <?php
 
 
@@ -589,7 +589,7 @@ function imposer_cpe() {
 			"u.login = jgp.login and " .
 			"jgp.id_groupe = jgc.id_groupe and " .
 			"jgc.id_classe = '".$id_classe."'" .
-			") ORDER BY u.login");
+			") ORDER BY u.nom, u.prenom");
 	$nb = mysql_num_rows($call_prof);
 	$i=0;
 	while ($i < $nb) {
@@ -677,7 +677,9 @@ function imposer_cpe() {
 	$i="1";
 	while ($i < $nb_periode) {
 		//echo "<th><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]</p></th>\n";
-		echo "<th><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]<br />\n";
+		echo "<th><p class=\"small\" title=\"Fin de la période $i
+au sens Absences/appartenance de l'élève
+à la classe : ".formate_date($date_fin_periode[$i])."\">Retirer de la classe<br />$nom_periode[$i]<br />\n";
 
 		echo "<a href=\"javascript:CocheColonne(".$i.");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$i.");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 
@@ -800,7 +802,9 @@ function imposer_cpe() {
 			if ($nb_ligne != 0) {
 				if(!isset($tab_eff_per[$i])) {$tab_eff_per[$i]=0;}
 				$tab_eff_per[$i]++;
-				echo "<td>";
+				echo "<td title=\"Fin de la période $i
+au sens Absences/appartenance de l'élève
+à la classe : ".formate_date($date_fin_periode[$i])."\">";
 				echo "<p align='center'>";
 
 				// Tester s'il y a des notes/app dans le bulletin

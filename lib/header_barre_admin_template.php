@@ -90,7 +90,7 @@ include("menu_plugins.inc.php");
 		$menus .= '  <ul class="niveau2">'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/accueil_sauve.php" '.insert_confirm_abandon().'>Sauvegardes</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/maj.php" '.insert_confirm_abandon().'>Mise à jour de la base</a></li>'."\n";
-		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/clean_tables.php" '.insert_confirm_abandon().'>Nettoyage de la base</a></li>'."\n";
+		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/clean_tables.php" '.insert_confirm_abandon().'>Nettoyage des tables</a></li>'."\n";
 		if(!getSettingAOui('gepi_en_production')) {
 			$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_base.php" '.insert_confirm_abandon().'>Effacer la base</a></li>'."\n";
 		}
@@ -120,7 +120,7 @@ include("menu_plugins.inc.php");
 
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php" '.insert_confirm_abandon().'>Comptes Resp.légaux</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php" '.insert_confirm_abandon().'>Comptes Elèves</a></li>'."\n";
-		if(getSettingAOui('use_ent')) {
+		if(getSettingAOui('use_ent') || $gepiSettings['auth_sso'] == 'cas') {
 			$menus .= '                <li><a href="'.$gepiPath.'/mod_sso_table/index.php" '.insert_confirm_abandon().'>Correspondances identifiants SSO</a></li>'."\n";
 		}
 		$menus .= '            </ul>'."\n";
@@ -186,6 +186,7 @@ include("menu_plugins.inc.php");
 		$menus .= '    <ul class="niveau3">'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/cahier_texte_admin/index.php" '.insert_confirm_abandon().'>Cahier de textes</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/cahier_notes_admin/index.php" '.insert_confirm_abandon().'>Carnets de notes</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/index_admin.php" '.insert_confirm_abandon().'>Bulletins</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_absences/admin/index.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_abs2/admin/index.php" '.insert_confirm_abandon().'>Absences 2</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/edt_organisation/edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
@@ -254,6 +255,7 @@ include("menu_plugins.inc.php");
 		if(getSettingAOui('active_cahiers_texte')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php" '.insert_confirm_abandon().'>Visa c. de textes</a></li>'."\n";
 		}
+
 		if(getSettingAOui('active_inscription')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_inscription/inscription_config.php" '.insert_confirm_abandon().'>Inscriptions</a></li>'."\n";
 		}

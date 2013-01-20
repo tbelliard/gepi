@@ -319,13 +319,25 @@ $afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['affich
 $critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : (isset($_GET['critere_recherche']) ? $_GET['critere_recherche'] : "");
 $critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche);
 
+$critere_recherche_rl0=isset($_POST['critere_recherche_rl0']) ? $_POST['critere_recherche_rl0'] : (isset($_GET['critere_recherche_rl0']) ? $_GET['critere_recherche_rl0'] : "");
+$critere_recherche_rl0=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche_rl0);
+if(isset($_POST['filtrage_rl0'])) {
+	$critere_recherche=$critere_recherche_rl0;
+	$mode_recherche='rl0';
+}
+
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
 //$sql="SELECT * FROM resp_pers rp WHERE rp.login=''";
 
 // Effectif total sans login:
 //$sql="SELECT 1=1 FROM resp_pers rp WHERE rp.login=''";
-$sql="SELECT DISTINCT rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.login='' AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2');";
+if((isset($mode_recherche))&&($mode_recherche=='rl0')) {
+	$sql="SELECT DISTINCT rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.login='' AND rp.pers_id=r.pers_id AND r.resp_legal='0';";
+}
+else {
+	$sql="SELECT DISTINCT rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.login='' AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2');";
+}
 $nb = mysql_num_rows(mysql_query($sql));
 
 $sql="SELECT * FROM resp_pers rp WHERE rp.login=''";
@@ -385,7 +397,7 @@ else{
 
 	echo "<p><b>Créer des comptes par lot</b> :</p>\n";
 	echo "<blockquote>\n";
-	echo "<form action='create_responsable.php' method='post'>\n";
+	echo "<form action='create_responsable.php' method='post' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px;'>\n";
 	//=====================
 	// Sécurité: 20101118
 	echo add_token_field();
@@ -486,17 +498,26 @@ else{
 	echo "Utilisez le formulaire de recherche pour adapter la recherche.";
 	echo "</p>\n";
 
+	//debug_var();
+
 	//===================================
 	//echo "<div style='border:1px solid black;'>\n";
-	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-	echo "<table style='border:1px solid black;' summary=\"Filtrage\">\n";
+	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px;'>\n";
+	//style='border:1px solid black;' 
+	echo "<table summary=\"Filtrage\">\n";
 	echo "<tr>\n";
 	echo "<td valign='top' rowspan='3'>\n";
 	echo "Filtrage:";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<input type='submit' name='filtrage' value='Afficher' /> les responsables sans login dont le <b>nom</b> contient: ";
+	echo "<input type='submit' name='filtrage' value='Afficher' /> les responsables (<em>légaux 1 et 2</em>) sans login dont le <b>nom</b> contient: ";
 	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
+
+	echo "<br />\n";
+
+	echo "<input type='submit' name='filtrage_rl0' value='Afficher' /> les responsables non responsables légaux (<em>resp_legal=0</em>) sans login dont le <b>nom</b> contient: ";
+	echo "<input type='text' name='critere_recherche_rl0' value='$critere_recherche' />\n";
+
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -506,7 +527,7 @@ else{
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<input type='button' name='afficher_tous' value='Afficher tous les responsables sans login' onClick=\"document.getElementById('afficher_tous_les_resp').value='y'; document.form_rech.submit();\" />\n";
+	echo "<input type='button' name='afficher_tous' value='Afficher tous les responsables légaux 1 et 2 sans login' onClick=\"document.getElementById('afficher_tous_les_resp').value='y'; document.form_rech.submit();\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -518,7 +539,7 @@ else{
 	echo "<br />\n";
 
 	echo "<p>Cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>\n";
-	echo "<form id='form_create_one_resp' action='create_responsable.php' method='post'>\n";
+	echo "<form id='form_create_one_resp' action='create_responsable.php' method='post' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px;'>\n";
 	//=====================
 	// Sécurité: 20101118
 	echo add_token_field();
@@ -547,14 +568,24 @@ else{
 	echo "<table class='boireaus' border='1' summary=\"Créer\">\n";
 	$alt=1;
 	while ($current_parent = mysql_fetch_object($quels_parents)) {
-
-		$sql="SELECT DISTINCT e.ele_id, e.nom, e.prenom, c.classe, r.resp_legal
-				FROM responsables2 r, eleves e, j_eleves_classes jec, classes c
-				WHERE r.pers_id='".$current_parent->pers_id."' AND
-					(r.resp_legal='1' OR r.resp_legal='2') AND
-					r.ele_id=e.ele_id AND
-					jec.login=e.login AND
-					jec.id_classe=c.id";
+		if((isset($mode_recherche))&&($mode_recherche=='rl0')) {
+			$sql="SELECT DISTINCT e.ele_id, e.nom, e.prenom, c.classe, r.resp_legal
+					FROM responsables2 r, eleves e, j_eleves_classes jec, classes c
+					WHERE r.pers_id='".$current_parent->pers_id."' AND
+						r.resp_legal='0' AND
+						r.ele_id=e.ele_id AND
+						jec.login=e.login AND
+						jec.id_classe=c.id";
+		}
+		else {
+			$sql="SELECT DISTINCT e.ele_id, e.nom, e.prenom, c.classe, r.resp_legal
+					FROM responsables2 r, eleves e, j_eleves_classes jec, classes c
+					WHERE r.pers_id='".$current_parent->pers_id."' AND
+						(r.resp_legal='1' OR r.resp_legal='2') AND
+						r.ele_id=e.ele_id AND
+						jec.login=e.login AND
+						jec.id_classe=c.id";
+		}
 		if($debug_create_resp=="y") {echo "$sql<br />\n";}
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){

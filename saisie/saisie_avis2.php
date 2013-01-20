@@ -93,13 +93,22 @@ if (isset($_POST['is_posted'])) {
 		// si l'utilisateur n'a pas le statut scolarité, on vérifie qu'il est prof principal de l'élève
 		//if (($_SESSION['statut'] != 'scolarite') and ($_SESSION['statut'] != 'secours')) {
 		if ($_SESSION['statut'] == 'professeur') {
-			$test_prof_suivi = sql_query1("select professeur from j_eleves_professeurs
-			where login = '$current_eleve_login' and
-			professeur = '".$_SESSION['login']."' and
-			id_classe = '".$id_classe."'
-			");
-			if ($test_prof_suivi == '-1') {
-				$msg = "Vous n'êtes pas professeur de suivi de cet élève.";
+			if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe))) {
+				// Le prof est PP de la classe, c'est OK
+			}
+			elseif(is_pp($_SESSION['login'], $id_classe, $current_eleve_login)) {
+				// Le prof est PP de cet élève en particulier, c'est OK
+			}
+			else {
+				$msg = "Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de cet élève.";
+				$reg = 'no';
+			}
+
+			// On vérifie que l'élève est bien dans cette classe sur cette période pour éviter qu'un PP mette un avis à un élève qui a changé de classe
+			$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$current_eleve_login."' AND id_classe='$id_classe' AND periode='$periode_num';";
+			$test_ele_clas_per=mysql_query($sql);
+			if(mysql_num_rows($test_ele_clas_per)==0) {
+				$msg = "L'élève ".get_nom_prenom_eleve($current_eleve_login, "avec_classe")." n'est plus dans la classe de ".get_nom_classe($id_classe)." sur la période $periode_num.";
 				$reg = 'no';
 			}
 		}
@@ -136,6 +145,7 @@ if (isset($_POST['is_posted'])) {
 		$msg = "La période sur laquelle vous voulez enregistrer est verrouillée";
 	}
 
+	// Passage à l'élève suivant:
 	if (isset($_POST['ok1']))  {
 		if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') or (($_SESSION['statut'] == 'cpe')&&(getSettingAOui('GepiRubConseilCpeTous')))) {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
@@ -153,15 +163,24 @@ if (isset($_POST['is_posted'])) {
 			jec.periode = '".$periode_num."'
 			) ORDER BY nom,prenom";
 		} else {
-			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
-			WHERE (c.id_classe='$id_classe' AND
-			c.login = e.login AND
-			p.login = c.login AND
-			p.professeur = '".$_SESSION['login']."' AND
-			c.periode = '".$periode_num."'
-			) ORDER BY nom,prenom";
+			if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe))) {
+				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
+				WHERE (c.id_classe='$id_classe' AND
+				c.login = e.login AND
+				c.periode = '".$periode_num."'
+				) ORDER BY nom,prenom";
+			}
+			else {
+				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
+				WHERE (c.id_classe='$id_classe' AND
+				c.login = e.login AND
+				p.login = c.login AND
+				p.professeur = '".$_SESSION['login']."' AND
+				c.periode = '".$periode_num."'
+				) ORDER BY nom,prenom";
+			}
 		}
-		echo "$sql<br />";
+		//echo "$sql<br />";
 		$appel_donnees_eleves = mysql_query($sql);
 		$nb_eleve = mysql_num_rows($appel_donnees_eleves);
 		$current_eleve_login = @mysql_result($appel_donnees_eleves, $ind_eleve_login_suiv, "login");
@@ -225,7 +244,6 @@ if($_SESSION['statut']=='scolarite'){
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 }
 elseif($_SESSION['statut']=='professeur'){
-
 	// On a filtré plus haut les profs qui n'ont pas getSettingValue("GepiRubConseilProf")=='yes'
 	$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
 										j_eleves_classes jec,
@@ -395,13 +413,22 @@ echo "</form>\n";
 		jec.periode = '".$periode_num."'
 		) ORDER BY nom,prenom";
 	} else {
-		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
-		WHERE (c.id_classe='$id_classe' AND
-		c.login = e.login AND
-		p.login = c.login AND
-		p.professeur = '".$_SESSION['login']."' AND
-		c.periode = '".$periode_num."'
-		) ORDER BY nom,prenom";
+		if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe))) {
+			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
+			WHERE (c.id_classe='$id_classe' AND
+			c.login = e.login AND
+			c.periode = '".$periode_num."'
+			) ORDER BY nom,prenom";
+		}
+		else {
+			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
+			WHERE (c.id_classe='$id_classe' AND
+			c.login = e.login AND
+			p.login = c.login AND
+			p.professeur = '".$_SESSION['login']."' AND
+			c.periode = '".$periode_num."'
+			) ORDER BY nom,prenom";
+		}
 	}
 	//echo "<tr><td colspan='2'>$sql</td></tr>";
 	$appel_donnees_eleves = mysql_query($sql);
@@ -697,6 +724,7 @@ if (isset($fiche)) {
 		}
 
 		if($eleve_trouve=="y") {
+			/*
 			for($j=0;$j<count($tab_moy['current_group']);$j++) {
 				$current_group=$tab_moy['current_group'][$j];
 
@@ -721,6 +749,35 @@ if (isset($fiche)) {
 					}
 				}
 			}
+			*/
+
+			$compteur_groupes_eleve=0;
+			for($j=0;$j<count($tab_moy['current_group']);$j++) {
+				$current_group=$tab_moy['current_group'][$j];
+
+				if(in_array($current_eleve_login, $current_group["eleves"][$loop]["list"])) {
+					$current_group=$tab_moy['current_group'][$j];
+
+					if($compteur_groupes_eleve>0) {
+						$graphe_chaine_etiquette.="|";
+						$graphe_chaine_temp_classe.="|";
+						$graphe_chaine_seriemin.="|";
+						$graphe_chaine_seriemax.="|";
+						$graphe_chaine_temp_eleve.="|";
+					}
+
+					$graphe_chaine_etiquette.=$current_group["matiere"]["matiere"];
+					$graphe_chaine_temp_classe.=$tab_moy['periodes'][$loop]['current_classe_matiere_moyenne'][$j];
+					$graphe_chaine_seriemin.=$tab_moy['periodes'][$loop]['moy_min_classe_grp'][$j];
+					$graphe_chaine_seriemax.=$tab_moy['periodes'][$loop]['moy_max_classe_grp'][$j];
+
+					if(isset($tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i])) {
+						$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+					}
+					$compteur_groupes_eleve++;
+				}
+			}
+
 
 			$graphe_chaine_mgen_eleve=number_format($tab_moy['periodes'][$loop]['moy_gen_eleve'][$i],1);
 			$graphe_chaine_mgen_classe=number_format($tab_moy['periodes'][$loop]['moy_generale_classe'],1);
@@ -812,7 +869,7 @@ if (isset($fiche)) {
 
 		echo "<td valign='top'>\n";
 		//echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
-		echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\"";
+		echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\" onclick=\"afficher_div('photo_$current_eleve_login','y',-100,20); return false;\"";
 		echo ">";
 		echo "<img src='../images/icons/buddy.png' alt='$current_eleve_nom $current_eleve_prenom' />";
 		echo "</a>";
@@ -891,6 +948,53 @@ if (isset($fiche)) {
 
 	</form>
 	<?php
+
+		if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
+		(getSettingAOui('GepiAccesGraphParent'))||
+		(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
+		(getSettingAOui('GepiAccesGraphEleve'))) {
+
+			$date_du_jour=strftime("%d/%m/%Y");
+			// Si les parents ont accès aux bulletins ou graphes,... on va afficher un témoin
+			$tab_acces_app_classe=array();
+			// L'accès est donné à la même date pour parents et responsables.
+			// On teste seulement pour les parents
+			$date_ouverture_acces_app_classe=array();
+			$tab_acces_app_classe[$id_classe]=acces_appreciations($periode_num, $periode_num, $id_classe, 'responsable');
+
+			$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
+			if($acces_app_ele_resp=='manuel') {
+				$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
+			}
+			elseif($acces_app_ele_resp=='date') {
+				$chaine_date_ouverture_acces_app_classe="";
+				for($loop=0;$loop<count($date_ouverture_acces_app_classe);$loop++) {
+					if($loop>0) {
+						$chaine_date_ouverture_acces_app_classe.=", ";
+					}
+					$chaine_date_ouverture_acces_app_classe.=$date_ouverture_acces_app_classe[$loop];
+				}
+				if($chaine_date_ouverture_acces_app_classe=="") {$chaine_date_ouverture_acces_app_classe="Aucune date n'est encore précisée.
+			Peut-être devriez-vous en poser la question à l'administration de l'établissement.";}
+				$msg_acces_app_ele_resp="Les appréciations seront visibles soit à une date donnée (".$chaine_date_ouverture_acces_app_classe.").";
+			}
+			elseif($acces_app_ele_resp=='periode_close') {
+				$delais_apres_cloture=getSettingValue('delais_apres_cloture');
+				$msg_acces_app_ele_resp="Les appréciations seront visibles ".$delais_apres_cloture." jour(s) après la clôture de la période.";
+			}
+			else{
+				$msg_acces_app_ele_resp="???";
+			}
+
+			if($tab_acces_app_classe[$id_classe][$periode_num]=="y") {
+				echo "<p>A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." sont visibles des parents/élèves.</p>\n";
+			}
+			else {
+				echo "<p>A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." ne sont pas encore visibles des parents/élèves.<br />$msg_acces_app_ele_resp</p>\n";
+			}
+		}
+
+
 		echo "<script type='text/javascript'>
 	if(document.getElementById('no_anti_inject_current_eleve_login_ap')) {
 		//alert('1')

@@ -48,6 +48,19 @@ echo "\$_POST[is_posted]=".$_POST['is_posted']."<br />";
 echo "\$_GET[is_posted]=".$_GET['is_posted']."<br />";
 */
 
+if((isset($_GET['acces_resp_legal_0']))&&(($_GET['acces_resp_legal_0']=='y')||($_GET['acces_resp_legal_0']=='n'))) {
+	check_token();
+
+	$sql="UPDATE responsables2 SET acces_sp='".$_GET['acces_resp_legal_0']."' WHERE pers_id='".$_GET['pers_id']."' AND ele_id='".$_GET['ele_id']."';";
+	$update=mysql_query($sql);
+	if($update) {
+		$msg="Modification de l'accès aux données pour pers_id=".$_GET['pers_id']." et ele_id=".$_GET['ele_id']." effectuée.<br />";
+	}
+	else {
+		$msg="Erreur lors de la modification de l'accès aux données pour pers_id=".$_GET['pers_id']." et ele_id=".$_GET['ele_id']."<br />";
+	}
+}
+
 if (isset($is_posted) and ($is_posted == '1')) {
 	check_token();
 
@@ -66,23 +79,47 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if((isset($add_ele_id))&&(isset($pers_id))) {
 		$ok='yes';
 	}
-	//if(($resp_nom=='')||($resp_prenom=='')){
 	elseif((isset($tab_nom_prenom_resp))&&(($resp_nom=='')||($resp_prenom==''))) {
 		$ok='no';
 	}
-	else{
-		if($choisir_ad_existante=='oui'){
+	else {
+		if($choisir_ad_existante=='oui') {
 			// On crée la personne si elle n'existe pas et on enchaine avec la page choix_adr_existante.php
 			$ok='yes';
 		}
-		//elseif(($adr1 != '') and ($commune != '') and ($cp != '')){
-		elseif(($adr1 != '') and ($commune != '') and (($cp != '')||($pays != ''))){
-			$ok='yes';
+		else {
+			if(!isset($_POST['resp_legal'])) {
+				$tester_validite_adresse="n";
+				$ok='yes';
+			}
+			else {
+				$tester_validite_adresse="y";
+				if(is_array($_POST['resp_legal'])) {
+					$tmp_resp_legal=$_POST['resp_legal'];
+					$tester_validite_adresse="n";
+					$ok='yes';
+					for($loop=0;$loop<count($tmp_resp_legal);$loop++) {
+						if(($tmp_resp_legal[$loop]==1)||($tmp_resp_legal[$loop]==2)) {
+							$tester_validite_adresse="y";
+							$ok='no';
+							break;
+						}
+					}
+				}
+			}
+
+			if($tester_validite_adresse=='y') {
+				//elseif(($adr1 != '') and ($commune != '') and ($cp != '')){
+				if(($adr1 != '') and ($commune != '') and (($cp != '')||($pays != ''))) {
+					$ok='yes';
+					$msg.="Un responsable légal 1 ou 2 doit avoir une adresse non vide.<br />";
+				}
+			}
 		}
 	}
 
 	if($ok!='yes'){
-		$msg = "Un ou plusieurs champs obligatoires sont vides !";
+		$msg.= "Un ou plusieurs champs obligatoires sont vides !";
 	}
 	else{
 		if(!isset($nouv_resp)){
@@ -239,18 +276,49 @@ if (isset($is_posted) and ($is_posted == '1')) {
 							$msg.="Erreur lors de la suppression de l'association avec l'élève $suppr_ele_id[$i] dans 'responsables2'. ";
 						}
 					}
-					else{
-						if(!isset($resp_erreur[$i])){
+					else {
+						//if(!isset($resp_erreur[$i])){
+						// On ne cherche pas à modifier les resp_legal
+						if($resp_legal[$i]==0) {
+							$sql="UPDATE responsables2 SET resp_legal='$resp_legal[$i]' WHERE pers_id='$pers_id' AND ele_id='$ele_id[$i]'";
+							//echo "$sql<br />\n";
+							$res_update=mysql_query($sql);
+							if(!$res_update){
+								$msg.="Erreur lors de la mise à jour de 'resp_legal' pour le responsable $pers_id. ";
+							}
+						}
+						else {
+							// Pour le responsable affiché, on vient de soumettre $resp_legal[$i] pour l'élève $i
 							if($resp_legal[$i]==1){$resp_legal2=2;}else{$resp_legal2=1;}
 
 							$temoin_erreur="non";
-							if(isset($pers_id2[$i])){
-								$sql="UPDATE responsables2 SET resp_legal='$resp_legal2' WHERE pers_id='$pers_id2[$i]' AND ele_id='$ele_id[$i]'";
-								//echo "$sql<br />\n";
-								$res_update=mysql_query($sql);
-								if(!$res_update){
-									$msg.="Erreur lors de la mise à jour de 'resp_legal' pour l'autre responsable ($pers_id2[$i]). ";
-									$temoin_erreur="oui";
+							//if(isset($pers_id2[$i])){
+							if(isset($_POST['pers_id2_'.$i])){
+
+								$tmp_pers_id2=$_POST['pers_id2_'.$i];
+
+								for($loop=0;$loop<count($tmp_pers_id2);$loop++) {
+									if($loop==0) {
+										$sql="UPDATE responsables2 SET resp_legal='$resp_legal2' WHERE pers_id='".$tmp_pers_id2[$loop]."' AND ele_id='$ele_id[$i]'";
+										//echo "$sql<br />\n";
+										$res_update=mysql_query($sql);
+										if(!$res_update){
+											$msg.="Erreur lors de la mise à jour de 'resp_legal' pour l'autre responsable (".$tmp_pers_id2[$loop]."). ";
+											$temoin_erreur="oui";
+										}
+									}
+									else {
+										$sql="UPDATE responsables2 SET resp_legal='0' WHERE pers_id='".$tmp_pers_id2[$loop]."' AND ele_id='$ele_id[$i]'";
+										//echo "$sql<br />\n";
+										$res_update=mysql_query($sql);
+										if(!$res_update){
+											$msg.="Erreur lors de la mise à jour de 'resp_legal' pour l'autre responsable (".$tmp_pers_id2[$loop]."). ";
+											$temoin_erreur="oui";
+										}
+										else {
+											$msg.="Il y avait trop de responsables légaux.<br />Le responsable n°".$tmp_pers_id2[$loop]." est rendu responsable non légal. ";
+										}
+									}
 								}
 							}
 
@@ -722,7 +790,7 @@ echo "<td valign='top'>\n";
 	if(isset($pers_id)){
 		echo " (<i>n°$pers_id</i>)";
 
-		$sql="SELECT u.login, u.email FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
+		$sql="SELECT u.login, u.email, u.auth_mode FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
 		$test_compte=mysql_query($sql);
 		if(mysql_num_rows($test_compte)>0) {
 			$compte_resp_existe="y";
@@ -730,12 +798,21 @@ echo "<td valign='top'>\n";
 
 			$resp_login=$lig_resp_login->login;
 			$resp_u_email=$lig_resp_login->email;
+			$resp_auth_mode=$lig_resp_login->auth_mode;
+
+			if($_SESSION['statut']=='administrateur') {$avec_lien="y";}
+			else {$avec_lien="n";}
+			$lien_image_compte_utilisateur=lien_image_compte_utilisateur($resp_login, "responsable", "_blank", $avec_lien);
 
 			if($_SESSION['statut']=='administrateur') {
-				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a></em>)";
+				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a>";
+				if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+				echo "</em>)";
 			}
 			else {
-				echo " (<em title=\"Compte d'utilisateur\">$resp_login</em>)";
+				echo " (<em title=\"Compte d'utilisateur\">$resp_login";
+				if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+				echo "</em>)";
 			}
 		}
 		else {
@@ -839,7 +916,8 @@ if(isset($pers_id)){
 	// Enfants/élèves à charge:
 	//$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$pers_id'";
 	//$sql="SELECT e.nom,e.prenom,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id='$pers_id' ORDER BY e.nom,e.prenom;";
-	$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id' AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY e.nom,e.prenom;";
+	//$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id' AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY e.nom,e.prenom;";
+	$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal, r.acces_sp FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id') ORDER BY e.nom,e.prenom;";
 	//echo "$sql<br />\n";
 	$res1=mysql_query($sql);
 	if(mysql_num_rows($res1)==0){
@@ -851,13 +929,14 @@ if(isset($pers_id)){
 		echo "<table class='boireaus'>\n";
 		echo "<tr>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Elève</td>\n";
-		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='2'>Responsable legal</td>\n";
+		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='3'>Responsable legal</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Supprimer</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' rowspan='2'>Autre responsable</td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>1</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>2</td>\n";
+		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>0</td>\n";
 		echo "</tr>\n";
 		$cpt=0;
 		$alt=-1;
@@ -869,7 +948,8 @@ if(isset($pers_id)){
 			$resp_legal1=$lig_ele->resp_legal;
 
 			// Y a-t-il un deuxième responsable?
-			$sql="SELECT rp.nom,rp.prenom,rp.pers_id FROM resp_pers rp, responsables2 r WHERE (rp.pers_id!='$pers_id' AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2'));";
+			//$sql="SELECT rp.nom,rp.prenom,rp.pers_id FROM resp_pers rp, responsables2 r WHERE (rp.pers_id!='$pers_id' AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2'));";
+			$sql="SELECT rp.nom,rp.prenom,rp.pers_id, r.resp_legal FROM resp_pers rp, responsables2 r WHERE (rp.pers_id!='$pers_id' AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id') ORDER BY r.resp_legal='1' DESC;";
 			//echo "$sql<br />\n";
 			$res_resp=mysql_query($sql);
 
@@ -888,27 +968,83 @@ if(isset($pers_id)){
 			echo "<td style='text-align:center;'>";
 			if(mysql_num_rows($res_resp)>0){
 				echo "<input type='radio' name='resp_legal[$cpt]' value='2' onchange='changement();'";
-				if($resp_legal1!=1){echo " checked";}
+				//if($resp_legal1!=1){echo " checked";}
+				if($resp_legal1==2){echo " checked";}
 				echo " />";
+			}
+			echo "</td>\n";
+
+			echo "<td style='text-align:center;'>";
+			if(mysql_num_rows($res_resp)>0){
+				echo "<input type='radio' name='resp_legal[$cpt]' value='0' onchange='changement();'";
+				if($resp_legal1==0){echo " checked";}
+				echo " />";
+
+				if($resp_legal1==0){
+					// 20121213
+					if(isset($compte_resp_existe)&&($compte_resp_existe=="y")) {
+						if($lig_ele->acces_sp=='y') {
+							echo " <a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;ele_id=".$lig_ele->ele_id."&amp;acces_resp_legal_0=n".add_token_in_url()."'";
+							echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+							echo "><img src='../images/vert.png' width='16' height='16' title=\"Le responsable non légal $resp_prenom $resp_nom a accès aux données notes, CDT,... de l'élève (si ces modules sont actifs)\" /></a>";
+						}
+						else {
+							echo " <a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;ele_id=".$lig_ele->ele_id."&amp;acces_resp_legal_0=y".add_token_in_url()."'";
+							echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+							echo "><img src='../images/rouge.png' width='16' height='16' title=\"Le responsable non légal $resp_prenom $resp_nom n'a pas accès aux données notes, CDT,... de l'élève (si ces modules sont actifs)\" /></a>";
+						}
+					}
+				}
 			}
 			echo "</td>\n";
 
 			echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ele_id[$cpt]' value='$lig_ele->ele_id' onchange='changement();' /></td>\n";
 
 			echo "<td style='text-align:center;'>\n";
-			
+
 			if(mysql_num_rows($res_resp)>0){
+				/*
 				if(mysql_num_rows($res_resp)==1){
 					$lig_resp=mysql_fetch_object($res_resp);
-					echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a>\n";
+					echo "<span title='Responsable légal $lig_resp->resp_legal'><a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a>($lig_resp->resp_legal)</span>\n";
 					echo "<input type='hidden' name='pers_id2[".$cpt."]' value='$lig_resp->pers_id' />\n";
 				}
 				else{
 					echo "<input type='hidden' name='resp_erreur[".$cpt."]' value='y' />\n";
+					// 20121213 : A FAIRE: CA BUGGUE AVEC L'AFFICHAGE DES RESP_LEGAL=0
 					echo "<font color='red'>L'élève a trop de responsables légaux. Faites le ménage!</font><br />\n";
 					while($lig_resp=mysql_fetch_object($res_resp)){
-						echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a><br />\n";
+						echo "<span title='Responsable légal $lig_resp->resp_legal'><a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a>($lig_resp->resp_legal)</span><br />\n";
 					}
+				}
+				*/
+				$nb_resp_legaux_1=0;
+				if($resp_legal1==1) {$nb_resp_legaux_1++;}
+				$nb_resp_legaux_2=0;
+				if($resp_legal1==2) {$nb_resp_legaux_2++;}
+				$affichage_message_erreur_resp_legaux=0;
+				while($lig_resp=mysql_fetch_object($res_resp)){
+					if($lig_resp->resp_legal==2) {
+						$nb_resp_legaux_2++;
+					}
+					if($lig_resp->resp_legal==1) {
+						$nb_resp_legaux_1++;
+					}
+					if(($affichage_message_erreur_resp_legaux==0)&&(($nb_resp_legaux_1>1)||($nb_resp_legaux_2>1))) {
+						//echo "<input type='hidden' name='resp_erreur[".$cpt."]' value='y' />\n";
+						// 20121213 : A FAIRE: CA BUGGUE AVEC L'AFFICHAGE DES RESP_LEGAL=0
+						echo "<font color='red'>L'élève a trop de responsables légaux. Faites le ménage!</font><br />\n";
+						$affichage_message_erreur_resp_legaux++;
+					}
+
+					echo "<span title='Responsable légal $lig_resp->resp_legal'><a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a>($lig_resp->resp_legal)</span>\n";
+					//if(($lig_resp->resp_legal==2)&&($nb_resp_legaux_2<=1)) {
+					//if(($nb_resp_legaux_1<=1)&&($nb_resp_legaux_2<=1)) {
+					if(($lig_resp->resp_legal==1)||($lig_resp->resp_legal==2)) {
+						//echo "<input type='hidden' name='pers_id2[".$cpt."]' value='$lig_resp->pers_id' />\n";
+						echo "<input type='hidden' name='pers_id2_".$cpt."[]' value='$lig_resp->pers_id' />\n";
+					}
+					echo "<br />";
 				}
 			}
 			echo "</td>\n";
@@ -918,6 +1054,9 @@ if(isset($pers_id)){
 		}
 		echo "</table>\n";
 		echo "<input type='hidden' name='cpt' value='$cpt' />\n";
+
+		//$sql="SELECT * FROM resp_pers rp, responsables2 r WHERE rp.pers_id=r.pers_id AND r.resp_legal!='1' AND r.resp_legal!='2' AND r.ele_id=";
+
 		echo "<hr />\n";
 	}
 }
@@ -940,7 +1079,7 @@ echo "</table>\n";
 
 //==============================================
 // Infos compte utilisateur
-if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login))&&
+if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login))&&(isset($resp_auth_mode))&&
 	(
 		($_SESSION['statut']=="administrateur")||
 		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassResp')))||
@@ -953,7 +1092,9 @@ if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login)
 		echo "<br />\n";
 	}
 
-	if(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut'])) {
+	if((($resp_auth_mode=='gepi')||
+	(($resp_auth_mode=='ldap')&&($gepiSettings['ldap_write_access'] == "yes")))&&
+	(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut']))) {
 		echo affiche_reinit_password($resp_login);
 	}
 	echo "</div>\n";

@@ -472,6 +472,19 @@ if(isset($_POST['valide_modif_model'])) {
 
 	$signature_img=isset($_POST['signature_img']) ? $_POST['signature_img'] : (isset($_GET['signature_img']) ? $_GET['signature_img'] : "");
 
+	/*
+	if (empty($_GET['adresse_resp_fontsize_ligne_1']) and empty($_POST['adresse_resp_fontsize_ligne_1'])) { $adresse_resp_fontsize_ligne_1 = 12; }
+	else { if (isset($_GET['adresse_resp_fontsize_ligne_1'])) { $adresse_resp_fontsize_ligne_1 = $_GET['adresse_resp_fontsize_ligne_1']; } if (isset($_POST['adresse_resp_fontsize_ligne_1'])) { $adresse_resp_fontsize_ligne_1 = $_POST['adresse_resp_fontsize_ligne_1']; } }
+	if((!preg_match("/^[0-9]*$/", $adresse_resp_fontsize_ligne_1))||($adresse_resp_fontsize_ligne_1<=0)) {
+		$adresse_resp_fontsize_ligne_1=12;
+	}
+	*/
+	if (empty($_GET['adresse_resp_fontsize']) and empty($_POST['adresse_resp_fontsize'])) { $adresse_resp_fontsize = 12; }
+	else { if (isset($_GET['adresse_resp_fontsize'])) { $adresse_resp_fontsize = $_GET['adresse_resp_fontsize']; } if (isset($_POST['adresse_resp_fontsize'])) { $adresse_resp_fontsize = $_POST['adresse_resp_fontsize']; } }
+	if((!preg_match("/^[0-9]*$/", $adresse_resp_fontsize))||($adresse_resp_fontsize<=0)) {
+		$adresse_resp_fontsize=10;
+	}
+
 // fin Christian
 //===================================================
 
@@ -1318,6 +1331,34 @@ function DecocheCheckbox() {
 			Largeur du bloc&nbsp;<input name="largeur_bloc_adresse" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_adresse)) { ?>value="<?php echo $largeur_bloc_adresse; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_adresse" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_adresse)) { ?>value="<?php echo $hauteur_bloc_adresse; ?>" <?php } ?> />mm&nbsp;<br />
 
 			<input name="cadre_adresse" id="cadre_adresse" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_adresse) and $cadre_adresse==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="cadre_adresse" style="cursor: pointer;">Ajouter un encadrement</label><br /><br />
+
+			<!--
+			Taille de la police pour la ligne Civilité_Nom_Prénom&nbsp;: 
+			<select name=''>
+				<?php
+					/*
+					$adresse_resp_fontsize_ligne_1=12;
+					for($loop=1;$loop<30;$loop++) {
+						echo "<option value='$loop'";
+						if($loop==$adresse_resp_fontsize_ligne_1) {echo " selected";}
+						echo ">$loop</option>\n";
+					}
+					*/
+				?>
+			</select>pts<br />
+			Taille de la police pour les lignes suivantes du bloc adresse&nbsp;: 
+			-->
+			Taille de la police pour les lignes du bloc adresse&nbsp;: 
+			<select name='adresse_resp_fontsize'>
+				<?php
+					//$adresse_resp_fontsize=10;
+					for($loop=1;$loop<30;$loop++) {
+						echo "<option value='$loop'";
+						if($loop==$adresse_resp_fontsize) {echo " selected";}
+						echo ">$loop</option>\n";
+					}
+				?>
+			</select>pts<br /><br />
 
 			Imprimer les bulletins pour :<br />
 			<input name="imprime_pour" id="imprime_pour_1" value="1" type="radio" <?php if( (!empty($imprime_pour) and $imprime_pour==='1') or empty($imprime_pour) ) { ?>checked="checked"<?php } ?> /><label for='imprime_pour_1'>&nbsp;seulement pour le 1er responsable</label><br />

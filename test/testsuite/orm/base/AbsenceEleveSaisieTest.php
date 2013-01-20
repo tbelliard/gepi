@@ -533,4 +533,10 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         $saisie->save();
     }
 
+    public function testgetAbsenceEleveSaisiesEnglobantes()
+    {
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByDebutAbs('2011-06-02 08:00:00')->findOne();
+        $saisie_englobante = $saisie->getAbsenceEleveSaisiesEnglobantes();
+        $this->assertEquals($saisie_englobante->count(),1);
+    }
 }

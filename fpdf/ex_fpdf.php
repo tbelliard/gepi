@@ -88,12 +88,13 @@ function Header()
 
     }
 
-    function FancyTable($w1,$header,$data,$align_header)
+    function FancyTable($w1,$header,$data,$align_header, $align_cell_note='L')
     {
         // $w : tableau des largeurs des colonnes
         // header : tableau des données de la première ligne
         // $date : tableau 2 dimensions des données autres que la 1ère ligne
         // $align_header : si égal v la première ligne est affichée verticalement
+        // $align_cell_note : 
 
         //Couleurs, épaisseur du trait et police grasse de la première ligne
         $this->SetFillColor(255,255,255);
@@ -204,7 +205,7 @@ function Header()
                 //Imprime le texte
                 if (($w1[$i] == 'n') or ($w1[$i] == 'i')) {
                     // si ce n'est pas une cellule "commentaire", on condense
-                    $this->Cell($w[$i],5,$row[$i],'LR',0,'L');
+                    $this->Cell($w[$i],5,$row[$i],'LR',0,$align_cell_note);
                 } else {
                     // si c'est une cellule "commentaire", on imprime éventuellement sur plusieurs lignes
                     $this->MultiCell($w[$i],5,$row[$i],0,'L');

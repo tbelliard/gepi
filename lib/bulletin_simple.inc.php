@@ -6,93 +6,6 @@
 $delais_apres_cloture=getSettingValue('delais_apres_cloture');
 //echo "\$delais_apres_cloture=$delais_apres_cloture<br />";
 
-function acces_appreciations($periode1, $periode2, $id_classe) {
-	global $delais_apres_cloture;
-
-	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-		for($i=$periode1;$i<=$periode2;$i++) {
-			$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
-												statut='".$_SESSION['statut']."' AND
-												periode='$i';";
-			//echo "$sql<br />";
-			$res=mysql_query($sql);
-			if($res) {
-				if(mysql_num_rows($res)>0) {
-					$lig=mysql_fetch_object($res);
-					//echo "\$lig->acces=$lig->acces<br />";
-					if($lig->acces=="y") {
-						$tab_acces_app[$i]="y";
-					}
-					elseif($lig->acces=="date") {
-						//echo "<p>Période $i: Date limite: $lig->date<br />";
-						$tab_date=explode("-",$lig->date);
-						$timestamp_limite=mktime(0,0,0,$tab_date[1],$tab_date[2],$tab_date[0]);
-						//echo "$timestamp_limite<br />";
-						$timestamp_courant=time();
-						//echo "$timestamp_courant<br />";
-
-						if($timestamp_courant>$timestamp_limite){
-							$tab_acces_app[$i]="y";
-						}
-						else {
-							$tab_acces_app[$i]="n";
-						}
-					}
-					elseif($lig->acces=="d") {
-						$sql="SELECT verouiller,UNIX_TIMESTAMP(date_verrouillage) AS date_verrouillage FROM periodes WHERE id_classe='$id_classe' AND num_periode='$i';";
-						//echo "$sql<br />";
-						$res_dv=mysql_query($sql);
-
-						if(mysql_num_rows($res_dv)>0) {
-							$lig_dv=mysql_fetch_object($res_dv);
-
-							if($lig_dv->verouiller!='O') {
-								$tab_acces_app[$i]="n";
-							}
-							else {
-								$timestamp_limite=$lig_dv->date_verrouillage+$delais_apres_cloture*24*3600;
-								$timestamp_courant=time();
-								//echo "\$timestamp_limite=$timestamp_limite<br />";
-								//echo "\$timestamp_courant=$timestamp_courant<br />";
-
-								if($timestamp_courant>$timestamp_limite){
-									$tab_acces_app[$i]="y";
-								}
-								else {
-									$tab_acces_app[$i]="n";
-								}
-								//echo "\$tab_acces_app[$i]=$tab_acces_app[$i]<br />";
-							}
-						}
-						else {
-							$tab_acces_app[$i]="n";
-						}
-					}
-					else {
-						$tab_acces_app[$i]="n";
-					}
-				}
-				else {
-					$tab_acces_app[$i]="n";
-				}
-			}
-			else {
-				$tab_acces_app[$i]="n";
-			}
-		}
-	}
-	else {
-		// Pas de limitations d'accès pour les autres statuts.
-		for($i=$periode1;$i<=$periode2;$i++) {
-			$tab_acces_app[$i]="y";
-		}
-	}
-	return $tab_acces_app;
-} // function
-
-//function bulletin($current_eleve_login,$compteur,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories) {
-//function bulletin($current_eleve_login,$compteur,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories,$couleur_lignes=NULL) {
-//function bulletin_bis($tab_moy,$current_eleve_login,$compteur,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories,$couleur_lignes=NULL) {
 
 if(!isset($signalement_id_groupe)) {
 	$signalement_id_groupe=array();
@@ -107,6 +20,9 @@ global $affiche_coef;
 global $bull_intitule_app;
 
 global $affiche_deux_moy_gen;
+
+global $affiche_colonne_moy_classe;
+//$affiche_colonne_moy_classe="n";
 
 global $gepi_denom_mention;
 if($gepi_denom_mention=='') {$gepi_denom_mention="mention";}
@@ -307,8 +223,10 @@ if ($on_continue == 'yes') {
 		if ($test_coef != 0) echo "<td width=\"$larg_col2\" align=\"center\"><p class='bull_simpl'>Coef.</p></td>\n";
 	}
 	//====================
-	
-	echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Classe</td>\n";
+
+	if($affiche_colonne_moy_classe!='n') {
+		echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Classe</td>\n";
+	}
 	echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl'>&Eacute;lève</td>\n";
 	if ($affiche_rang=='y') {
 		echo "<td width=$larg_col4 align=\"center\" class='bull_simpl'><i>Rang</i></td>\n";
@@ -612,7 +530,12 @@ if ($on_continue == 'yes') {
 					// On récupère les infos nécessaires, et on affiche une ligne
 	
 					// On détermine le nombre de colonnes pour le colspan
-					$nb_total_cols = 4;
+					if($affiche_colonne_moy_classe=='n') {
+						$nb_total_cols = 3;
+					}
+					else {
+						$nb_total_cols = 4;
+					}
 					//====================
 					// Modif: boireaus 20070626
 					if($affiche_coef=='y'){
@@ -725,12 +648,16 @@ if ($on_continue == 'yes') {
 				else {
 					$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
 				}
-				echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>\n";
-				//=========================
-				//echo "\$nb=$nb<br />";
-				$note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
-				if ($note != "0,0")  {echo $note;} else {echo "-";}
-				echo "</td>\n";
+
+				if($affiche_colonne_moy_classe!='n') {
+					echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>\n";
+					//=========================
+					//echo "\$nb=$nb<br />";
+					$note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
+					if ($note != "0,0")  {echo $note;} else {echo "-";}
+					echo "</td>\n";
+				}
+
 				echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>\n<b>";
 				$flag_moy[$nb] = 'no';
 				if ($current_eleve_note[$nb] != '') {
@@ -1004,35 +931,36 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 					$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
 				}
 				//=========================
+				if($affiche_colonne_moy_classe!='n') {
+					echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
+					/*
+					//echo "\$total_points_classe[$nb]=$total_points_classe[$nb]<br />\n";
+					//echo "\$tab_moy_gen[$nb]=$tab_moy_gen[$nb]<br />\n";
+					//if ($total_points_classe[$nb] != 0) {
+					if(($total_points_classe[$nb]!=0)||(isset($tab_moy_gen[$nb]))) {
+						//$moy_classe=number_format($total_points_classe[$nb]/$total_coef[$nb],1, ',', ' ');
 	
-				echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
-				/*
-				//echo "\$total_points_classe[$nb]=$total_points_classe[$nb]<br />\n";
-				//echo "\$tab_moy_gen[$nb]=$tab_moy_gen[$nb]<br />\n";
-				//if ($total_points_classe[$nb] != 0) {
-				if(($total_points_classe[$nb]!=0)||(isset($tab_moy_gen[$nb]))) {
-					//$moy_classe=number_format($total_points_classe[$nb]/$total_coef[$nb],1, ',', ' ');
-	
-					//=========================
-					// MODIF: boireaus 20080316
-					//$moy_classe=number_format($total_points_classe[$nb]/$total_coef_classe[$nb],1, ',', ' ');
-					//$moy_classe=number_format($tab_moy_gen[$nb],1, ',', ' ');
-					$moy_classe=$tab_moy_gen[$nb];
-					//=========================
-				} else {
-					$moy_classe = '-';
-				}
-				//echo "$moy_classe";
-				echo nf($moy_classe);
-				*/
+						//=========================
+						// MODIF: boireaus 20080316
+						//$moy_classe=number_format($total_points_classe[$nb]/$total_coef_classe[$nb],1, ',', ' ');
+						//$moy_classe=number_format($tab_moy_gen[$nb],1, ',', ' ');
+						$moy_classe=$tab_moy_gen[$nb];
+						//=========================
+					} else {
+						$moy_classe = '-';
+					}
+					//echo "$moy_classe";
+					echo nf($moy_classe);
+					*/
 
-				echo nf($tab_moy['periodes'][$nb]['moy_generale_classe'],2);
-				if ($affiche_deux_moy_gen==1) {
-					echo "<br />\n";
-					$moy_classe1=$tab_moy['periodes'][$nb]['moy_generale_classe1'];
-					echo "<i>".nf($moy_classe1,2)."</i>\n";
+					echo nf($tab_moy['periodes'][$nb]['moy_generale_classe'],2);
+					if ($affiche_deux_moy_gen==1) {
+						echo "<br />\n";
+						$moy_classe1=$tab_moy['periodes'][$nb]['moy_generale_classe1'];
+						echo "<i>".nf($moy_classe1,2)."</i>\n";
+					}
+					echo "</td>\n";
 				}
-				echo "</td>\n";
 
 				echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
 				/*
@@ -1232,7 +1160,6 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 	while ($nb < $periode2+1) {
 	
 		//=========================
-		// AJOUT: boireaus 20080317
 		if($nb==$periode1) {
 			if($nb==$periode2) {
 				$style_bordure_cell="border: 1px solid black";
@@ -1297,6 +1224,8 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 } // Fin de la fonction
 
 function affiche_aid_simple($affiche_rang, $test_coef, $indice_aid, $aid_id, $current_eleve_login, $periode1, $periode2, $id_classe, $style_bulletin, $affiche_coef) {
+
+global $affiche_colonne_moy_classe;
 
 unset($tab_acces_app);
 $tab_acces_app=array();
@@ -1413,28 +1342,30 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 	$print_tr = 'no';
 	while ($nb < $periode2+1) {
 		if ($print_tr == 'yes') echo "<tr>";
-		echo "<td align=\"center\" class='$style_bulletin' style='$style_bordure_cell'>$aid_note_moyenne[$nb]</td>";
+		if($affiche_colonne_moy_classe!='n') {
+			echo "<td align=\"center\" class='$style_bulletin' style='$style_bordure_cell'>$aid_note_moyenne[$nb]</td>";
+		}
 		echo "<td align=\"center\" class='$style_bulletin' style='$style_bordure_cell'><b>";
 		// L'élève fait-il partie de la classe pour la période considérée ?
 		$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
-    if ($test_eleve_app !=0) {
-     if ($current_eleve_aid_statut[$nb] == '') {
-			if ($current_eleve_aid_note[$nb] != '') {
-				echo $current_eleve_aid_note[$nb];
+		if ($test_eleve_app !=0) {
+			if ($current_eleve_aid_statut[$nb] == '') {
+				if ($current_eleve_aid_note[$nb] != '') {
+					echo $current_eleve_aid_note[$nb];
+				} else {
+					echo "-";
+				}
+			} else if ($current_eleve_aid_statut[$nb] != 'other') {
+				echo "$current_eleve_aid_statut[$nb]";
 			} else {
 				echo "-";
 			}
-		 } else if ($current_eleve_aid_statut[$nb] != 'other'){
-			echo "$current_eleve_aid_statut[$nb]";
-		 } else {
-			echo "-";
-		 }
 		} else  echo "-";
 		echo "</b></td>";
 		if ($affiche_rang == 'y') echo "<td align=\"center\" class='".$style_bulletin."' style='$style_bordure_cell'>-</td>";
 		if ($test_eleve_app !=0) {
-        if (($eleve_aid_app[$nb]== '') or ($tab_acces_app[$nb]!="y")) {$eleve_aid_app[$nb] = ' -';}
-		    echo "<td class='$style_bulletin' style='text-align:left; $style_bordure_cell'>$eleve_aid_app[$nb]</td></tr>";
+			if (($eleve_aid_app[$nb]== '') or ($tab_acces_app[$nb]!="y")) {$eleve_aid_app[$nb] = ' -';}
+			echo "<td class='$style_bulletin' style='text-align:left; $style_bordure_cell'>$eleve_aid_app[$nb]</td></tr>";
 		} else echo "<td class='$style_bulletin' style='$style_bordure_cell'>-</td></tr>";
 		$print_tr = 'yes';
 		$nb++;
@@ -1519,7 +1450,14 @@ echo "</form>\n";
 			message=message+document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode).innerHTML;
 		}
 		//alert('document.getElementById(\'appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode+').innerHTML');
-		message=message+'\\n================================\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
+		message=message+'\\n================================\\n'
+";
+		if(getSettingValue('url_racine_gepi')!="") {
+			echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ".getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe='+id_groupe+'#saisie_app_'+eleve_login;\n";
+			echo "		message=message+'\\n'";
+		}
+		echo "
+		message=message+'\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
 
 
 		//alert('message='+message);

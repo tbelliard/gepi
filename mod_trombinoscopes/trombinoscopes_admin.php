@@ -62,6 +62,7 @@ $gepiPathJava="./..";
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 require_once("../lib/share-csrf.inc.php");
+require_once("../lib/share-trombinoscope.inc.php");
 
 
 /**

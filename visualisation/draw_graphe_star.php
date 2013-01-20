@@ -15,6 +15,38 @@
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
 
+	// Resume session
+	$resultat_session = $session_gepi->security_check();
+	if ($resultat_session == 'c') {
+		header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+		die();
+	} else if ($resultat_session == '0') {
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+	if (!checkAccess()) {
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+	$taille_max_police=10;
+
+	$avec_moy_classe="y";
+	if((isset($_GET['avec_moy_classe']))&&($_GET['avec_moy_classe']=="n")) {
+		$avec_moy_classe="n";
+	}
+
+	if((($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseEleve')))||
+	(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseResp')))) {
+		$avec_moy_classe="n";
+	}
+
+	if($avec_moy_classe=="n") {
+		if(isset($_GET['seriemin'])) {unset($_GET['seriemin']);}
+		if(isset($_GET['seriemax'])) {unset($_GET['seriemax']);}
+	}
+
 	// Récupération des valeurs:
 	//$nb_data = $_GET['nb_data'];
 	$nb_series= $_GET['nb_series'];
@@ -95,10 +127,10 @@
 	//settype($largeurTotale,'integer');
 	//settype($hauteurTotale,'integer');
 
-	// $taille_police de 1 à 6
+	// $taille_police de 1 à 6 -> 10
 	//$taille_police=3;
 	$taille_police=isset($_GET['taille_police']) ? $_GET['taille_police'] : '3';
-	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
+	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>$taille_max_police)||($taille_police=="")){
 		$taille_police=3;
 	}
 
@@ -132,8 +164,19 @@
 	for($i=1;$i<=count($mattmp);$i++){
 		$matiere[$i]=$mattmp[$i-1];
 
-		$call_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
-		$matiere_nom_long[$i] = mysql_result($call_matiere, "0", "nom_complet");
+		if(!preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_-]{1,19}$/", $matiere[$i])) {
+			$matiere[$i]=preg_replace("/[^A-Za-z0-9_-]/", "",$matiere[$i]);
+			$matiere_nom_long[$i]=$matiere[$i];
+		}
+		else {
+			$call_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
+			if(mysql_num_rows($call_matiere)>0) {
+				$matiere_nom_long[$i] = mysql_result($call_matiere, "0", "nom_complet");
+			}
+			else {
+				$matiere_nom_long[$i]=$matiere[$i];
+			}
+		}
 		$matiere_nom_long[$i]=remplace_accents($matiere_nom_long[$i],'simple');
 
 		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere[$i]=".$matiere[$i]."\n");
@@ -163,9 +206,14 @@
 	$eleve1=$_GET['v_legend1'];
 	$sql="SELECT * FROM eleves WHERE login='$eleve1'";
 	$resultat_infos_eleve1=mysql_query($sql);
-	$ligne=mysql_fetch_object($resultat_infos_eleve1);
-	//$nom_eleve1=$ligne->nom." ".$ligne->prenom;
-	$nom_eleve[1]=$ligne->nom." ".$ligne->prenom;
+	if(mysql_num_rows($resultat_infos_eleve1)>0) {
+		$ligne=mysql_fetch_object($resultat_infos_eleve1);
+		//$nom_eleve1=$ligne->nom." ".$ligne->prenom;
+		$nom_eleve[1]=$ligne->nom." ".$ligne->prenom;
+	}
+	else {
+		$nom_eleve[1]=$eleve1;
+	}
 	if($periode!=''){
 		$nom_eleve[1]=$nom_eleve[1]." ($periode)";
 	}
@@ -228,21 +276,43 @@
 			case 'moyclasse':
 					//$nom_eleve2="Moyennes de la classe";
 					$nom_eleve[2]="Moyennes de la classe";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
 				break;
 			case 'moymin':
 					//$nom_eleve2="Moyennes minimales";
 					$nom_eleve[2]="Moyennes minimales";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
 				break;
 			case 'moymax':
 					//$nom_eleve2="Moyennes maximales";
 					$nom_eleve[2]="Moyennes maximales";
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
+				break;
+			case 'rang_eleve':
+					$nom_eleve[2]="Rang élève";
+					/*
+					if($avec_moy_classe=='n') {
+						$nom_eleve[2]="";
+					}
+					*/
 				break;
 			default:
 				$sql="SELECT * FROM eleves WHERE login='$eleve2'";
 				$resultat_infos_eleve2=mysql_query($sql);
-				$ligne=mysql_fetch_object($resultat_infos_eleve2);
-				//$nom_eleve2=$ligne->nom." ".$ligne->prenom;
-				$nom_eleve[2]=$ligne->nom." ".$ligne->prenom;
+				if(mysql_num_rows($resultat_infos_eleve2)>0) {
+					$ligne=mysql_fetch_object($resultat_infos_eleve2);
+					//$nom_eleve2=$ligne->nom." ".$ligne->prenom;
+					$nom_eleve[2]=$ligne->nom." ".$ligne->prenom;
+				}
+				else {
+					$nom_eleve[2]=$eleve2;
+				}
 				break;
 		}
 		$nom_eleve[2]=remplace_accents($nom_eleve[2],'simple');
@@ -397,7 +467,7 @@
 
 
 	// On force la couleur pour les moyennes classe/min/max
-	if(($eleve2=='moyclasse')||($eleve2=='moymin')||($eleve2=='moymax')){
+	if(($eleve2=='moyclasse')||($eleve2=='moymin')||($eleve2=='moymax')||($eleve2=='rang_eleve')){
 		$couleureleve[2]=$couleurmoyenne;
 	}
 
@@ -575,60 +645,98 @@
 		$couleureleve[$k]
 		);
 
-		$xprec="";
-		$yprec="";
-		$temoin_prec="";
+		//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+		/*
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+		((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+		) {
+		*/
 
-		// On place les points
-		$tab_x=array();
-		$tab_y=array();
-		for($i=1;$i<$nbMat+1;$i++){
-			if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
 
-				$angle=round(($i-1)*360/$nbMat);
-				$tab=coordcirc($moyenne[$k][$i],$angle);
-
-				imageFilledRectangle($img,$tab[0]-2,$tab[1]-2,$tab[0]+2,$tab[1]+2,$couleureleve[$k]);
-
-				$tab_x[]=$tab[0];
-				$tab_y[]=$tab[1];
+/*
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			$afficher_la_serie_courante="y";
+			if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+				$afficher_la_serie_courante="n";
 			}
-			else{
-				$tab_x[]="";
-				$tab_y[]="";
+			if(($avec_moy_classe=='n')&&($k>1)) {
+				$afficher_la_serie_courante="n";
 			}
-		}
 
+			if($afficher_la_serie_courante=="y") {
+*/
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			$afficher_la_serie_courante="y";
+			// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+			if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+				$afficher_la_serie_courante="n";
+			}
+			if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+				$afficher_la_serie_courante="n";
+			}
 
-		// On joint ces points
-		$xprec="";
-		$yprec="";
-		for($i=0;$i<count($tab_x);$i++){
-			if($i==0){
-				if(($tab_x[$i]!="")&&($tab_x[count($tab_x)-1]!="")){
-					imageline ($img,$tab_x[$i],$tab_y[$i],$tab_x[count($tab_x)-1],$tab_y[count($tab_y)-1],$couleureleve[$k]);
+			if($afficher_la_serie_courante=="y") {
+
+			/*
+			if(($k!=2)||
+			(($k==2)&&(isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {
+			*/
+				$xprec="";
+				$yprec="";
+				$temoin_prec="";
+
+				// On place les points
+				$tab_x=array();
+				$tab_y=array();
+				for($i=1;$i<$nbMat+1;$i++){
+					if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+
+						$angle=round(($i-1)*360/$nbMat);
+						$tab=coordcirc($moyenne[$k][$i],$angle);
+
+						imageFilledRectangle($img,$tab[0]-2,$tab[1]-2,$tab[0]+2,$tab[1]+2,$couleureleve[$k]);
+
+						$tab_x[]=$tab[0];
+						$tab_y[]=$tab[1];
+					}
+					else{
+						$tab_x[]="";
+						$tab_y[]="";
+					}
 				}
-			}
 
-			if($tab_x[$i]!=""){
-				if((isset($tab_x[$i+1]))&&($tab_x[$i+1]!="")) {
-					imageline ($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+1],$tab_y[$i+1],$couleureleve[$k]);
-					writinfo('/tmp/infos_graphe.txt','a+',"\nUne ligne\n");
-					writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i]=$tab_x[$i]\n");
-					writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i]=$tab_y[$i]\n");
-					writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i+1]=".$tab_x[$i+1]."\n");
-					writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i+1]=".$tab_y[$i+1]."\n");
-				}
-				elseif(($afficher_pointille!='n')&&(isset($tab_y[$i]))&&($tab_y[$i]!="")&&(isset($tab_y[$i+2]))&&($tab_y[$i+2]!="")) {
-					writinfo('/tmp/infos_graphe.txt','a+',"\nUne ligne pointillée\n");
-					writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i]=$tab_x[$i]\n");
-					writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i]=$tab_y[$i]\n");
-					writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i+2]=".$tab_x[$i+2]."\n");
-					writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i+2]=".$tab_y[$i+2]."\n");
-					imagesetstyle($img, $style_pointille);
-					imageLine($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+2],$tab_y[$i+2],IMG_COLOR_STYLED);
-					imagesetstyle($img, $style_plein);
-					//imageLine($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+2],$tab_y[$i+2],$couleureleve[$k]);
+
+				// On joint ces points
+				$xprec="";
+				$yprec="";
+				for($i=0;$i<count($tab_x);$i++){
+					if($i==0){
+						if(($tab_x[$i]!="")&&($tab_x[count($tab_x)-1]!="")){
+							imageline ($img,$tab_x[$i],$tab_y[$i],$tab_x[count($tab_x)-1],$tab_y[count($tab_y)-1],$couleureleve[$k]);
+						}
+					}
+
+					if($tab_x[$i]!=""){
+						if((isset($tab_x[$i+1]))&&($tab_x[$i+1]!="")) {
+							imageline ($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+1],$tab_y[$i+1],$couleureleve[$k]);
+							writinfo('/tmp/infos_graphe.txt','a+',"\nUne ligne\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i]=$tab_x[$i]\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i]=$tab_y[$i]\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i+1]=".$tab_x[$i+1]."\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i+1]=".$tab_y[$i+1]."\n");
+						}
+						elseif(($afficher_pointille!='n')&&(isset($tab_y[$i]))&&($tab_y[$i]!="")&&(isset($tab_y[$i+2]))&&($tab_y[$i+2]!="")) {
+							writinfo('/tmp/infos_graphe.txt','a+',"\nUne ligne pointillée\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i]=$tab_x[$i]\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i]=$tab_y[$i]\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_x[$i+2]=".$tab_x[$i+2]."\n");
+							writinfo('/tmp/infos_graphe.txt','a+',"\$tab_y[$i+2]=".$tab_y[$i+2]."\n");
+							imagesetstyle($img, $style_pointille);
+							imageLine($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+2],$tab_y[$i+2],IMG_COLOR_STYLED);
+							imagesetstyle($img, $style_plein);
+							//imageLine($img,$tab_x[$i],$tab_y[$i],$tab_x[$i+2],$tab_y[$i+2],$couleureleve[$k]);
+						}
+					}
 				}
 			}
 		}
@@ -801,8 +909,34 @@
 			if(($angle>270)&&($angle<360)){$xtmp=$x+30;}else{$xtmp=$x;}
 			//**************
 			for($k=1;$k<=$nb_series_bis;$k++){
-		        imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i+1]));
-				$xtmp=$xtmp+mb_strlen(nf($moyenne[$k][$i+1])." ")*ImageFontWidth($taille_police_inf);
+				//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				/*
+				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+				((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+				) {
+				*/
+
+				$afficher_la_serie_courante="y";
+				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+					$afficher_la_serie_courante="y";
+				}
+				/*
+				// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+				if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+					$afficher_la_serie_courante="n";
+				}
+				*/
+				if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+					$afficher_la_serie_courante="n";
+				}
+
+				if($afficher_la_serie_courante=="y") {
+
+					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i+1]);} else {$texte_courant=$moyenne[$k][$i+1];}
+
+					imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte_courant);
+					$xtmp=$xtmp+mb_strlen($texte_courant." ")*ImageFontWidth($taille_police_inf);
+				}
 			}
 		}
 	}
@@ -1019,8 +1153,35 @@
 			if(($angle>270)&&($angle<360)){$xtmp=$x+30;}else{$xtmp=$x;}
 			//**************
 			for($k=1;$k<=$nb_series_bis;$k++){
-		        imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i+1]));
-				$xtmp=$xtmp+mb_strlen(nf($moyenne[$k][$i+1])." ")*ImageFontWidth($taille_police_inf);
+				//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				/*
+				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+				((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+				) {
+				*/
+
+				$afficher_la_serie_courante="y";
+				if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+					$afficher_la_serie_courante="y";
+				}
+
+				/*
+				// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+				if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+					$afficher_la_serie_courante="n";
+				}
+				*/
+				if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+					$afficher_la_serie_courante="n";
+				}
+
+				if($afficher_la_serie_courante=="y") {
+
+					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i+1]);} else {$texte_courant=$moyenne[$k][$i+1];}
+
+					imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte_courant);
+					$xtmp=$xtmp+mb_strlen($texte_courant." ")*ImageFontWidth($taille_police_inf);
+				}
 			}
 		}
 	}
@@ -1043,15 +1204,37 @@
 	$total_largeur_chaines=0;
 	//for($k=1;$k<$nb_data;$k++){
 	for($k=1;$k<=$nb_series;$k++){
-		if($mgen[$k]!="") {
-			$chaine_mgen=" (".nf($mgen[$k]).")";
+		//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+		/*
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+		((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+		) {
+		*/
+		if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			$afficher_la_serie_courante="y";
 		}
-		else {
-			$chaine_mgen="";
+		/*
+		// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+		if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+			$afficher_la_serie_courante="n";
 		}
-		$largeur_chaine[$k] = mb_strlen($chaine[$k].$chaine_mgen) * ImageFontWidth($taille_police);
+		*/
+		if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+			$afficher_la_serie_courante="n";
+		}
 
-		$total_largeur_chaines=$total_largeur_chaines+$largeur_chaine[$k];
+		if($afficher_la_serie_courante=="y") {
+
+			if($mgen[$k]!="") {
+				$chaine_mgen=" (".nf($mgen[$k]).")";
+			}
+			else {
+				$chaine_mgen="";
+			}
+			$largeur_chaine[$k] = mb_strlen($chaine[$k].$chaine_mgen) * ImageFontWidth($taille_police);
+
+			$total_largeur_chaines=$total_largeur_chaines+$largeur_chaine[$k];
+		}
 	}
 
 	// Calcul de l'espace entre ces noms d'élèves:
@@ -1095,15 +1278,39 @@
 		$xtmp=0;
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
-			$xtmp=$xtmp+$espace;
-			if($mgen[$k]!="") {
-				$chaine_mgen=" (".nf($mgen[$k]).")";
+			//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+			/*
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')||
+			((isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]!="Rang élève")))
+			) {
+			*/
+
+			if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
+				$afficher_la_serie_courante="y";
 			}
-			else {
-				$chaine_mgen="";
+			/*
+			// Le test sur le rang ne concerne que la courbe, pas les nombres affichés sous la ligne matière
+			if(($k==2)&&(isset($nom_eleve[2]))&&(($nom_eleve[2]=="Rang eleve")||($nom_eleve[2]=="Rang élève"))) {
+				$afficher_la_serie_courante="n";
 			}
-		    imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, 12, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
-			$xtmp=$xtmp+$largeur_chaine[$k];
+			*/
+			if(($avec_moy_classe=='n')&&($k>1)&&(isset($eleve2))&&(($eleve2=='moyclasse')||($eleve2=='moymax')||($eleve2=='moymin'))) {
+				$afficher_la_serie_courante="n";
+			}
+
+			if($afficher_la_serie_courante=="y") {
+
+				$xtmp=$xtmp+$espace;
+				if($mgen[$k]!="") {
+					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($mgen[$k]);} else {$texte_courant=$mgen[$k];}
+					$chaine_mgen=" (".$texte_courant.")";
+				}
+				else {
+					$chaine_mgen="";
+				}
+				imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, 12, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
+				$xtmp=$xtmp+$largeur_chaine[$k];
+			}
 		}
 	}
 	//=================================

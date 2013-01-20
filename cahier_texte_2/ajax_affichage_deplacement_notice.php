@@ -81,6 +81,16 @@ foreach ($utilisateur->getGroupes() as $group) {
 	if ($group->getId() == $id_groupe) {
 		echo " selected='true' ";
 	}
+
+	echo " title=\"".$group->getName()." - ".$group->getDescriptionAvecClasses()." (";
+	$cpt_prof=0;
+	foreach($group->getProfesseurs() as $prof) {
+		if($cpt_prof>0) {echo ", ";}
+		echo casse_mot($prof->getNom(),"maj")." ".casse_mot($prof->getPrenom(),"majf2");
+		$cpt_prof++;
+	}
+	echo ").\"";
+
 	echo ">";
 	echo $group->getDescriptionAvecClasses();
 	echo "</option>\n";

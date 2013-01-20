@@ -659,6 +659,7 @@ if(mysql_num_rows($res_cdt)==0) {
 		$info_action_destinataire="administrateur";
 		$info_action_mode="statut";
 		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+		saveSetting('verif_cdt_documents_index', 'fait');
 	}
 }
 

@@ -357,7 +357,9 @@ INSERT INTO setting VALUES ('addressblock_classe_annee', '35');
 INSERT INTO setting VALUES ('bull_ecart_bloc_nom', '1');
 INSERT INTO setting VALUES ('addressblock_debug', 'n');
 INSERT INTO droits VALUES ('/visualisation/affiche_eleve.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');
-INSERT INTO droits VALUES ('/visualisation/draw_graphe.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');
+INSERT INTO droits VALUES ('/visualisation/draw_graphe.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');
+INSERT INTO droits VALUES ('/visualisation/draw_graphe_star.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');
+INSERT INTO droits VALUES ('/visualisation/draw_graphe_svg.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');
 INSERT INTO droits VALUES ('/groupes/mes_listes.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Accès aux CSV des listes d élèves', '');
 INSERT INTO droits VALUES ('/groupes/get_csv.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Génération de CSV élèves', '');
 INSERT INTO droits VALUES ('/visualisation/choix_couleurs.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Choix des couleurs des graphiques des résultats scolaires', '');
@@ -661,7 +663,7 @@ INSERT INTO droits VALUES('/mod_notanet/choix_generation_csv.php','V','F','F','F
 INSERT INTO droits VALUES('/mod_notanet/verrouillage_saisie_app.php','V','F','F','F','F','F','F','F', 'Notanet: (Dé)Verrouillage des saisies','');
 INSERT INTO droits VALUES ('/bulletin/bull_index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Edition des bulletins', '1');
 INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes_bis.php', 'F', 'V', 'V', 'V', 'V', 'V', 'V','F', 'Relevé de notes', '1');
-INSERT INTO droits VALUES ('/cahier_notes/param_releve_html.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F','F', 'Paramètres du relevé de notes', '1');
+INSERT INTO droits VALUES ('/cahier_notes/param_releve_html.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F','F', 'Paramètres du relevé de notes', '1');
 INSERT INTO droits VALUES ('/utilisateurs/creer_statut.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Créer des statuts personnalisés', '');
 INSERT INTO droits VALUES ('/utilisateurs/creer_statut_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Autoriser la création des statuts personnalisés', '');
 INSERT INTO droits VALUES ('/classes/changement_eleve_classe.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F','F', 'Changement de classe pour un élève', '1');
@@ -1186,7 +1188,12 @@ INSERT INTO droits VALUES ('/mod_abs2/saisir_groupe_plan.php', 'F', 'V', 'F', 'F
 INSERT INTO droits VALUES ( '/matieres/matiere_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');
 INSERT INTO setting SET name='gepi_en_production', value='y';
 INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');
-INSERT INTO droits SET id='/responsables/maj_import3.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',
-description='Mise à jour Sconet',statut='';
+INSERT INTO droits SET id='/responsables/maj_import3.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Mise à jour Sconet',statut='';
 INSERT INTO droits SET id='/mod_discipline/mod_discipline_extraction_ooo.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Discipline : Extrait OOo des incidents',statut='';
 INSERT INTO droits SET id='/responsables/consult_maj_sconet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Consultation des compte-renduds de mise à jour Sconet',statut='';
+INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes_ter.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F','F', 'Relevé de notes : accès parents et élèves', '1');
+INSERT INTO droits VALUES ('/utilisateurs/modif_par_lots.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Personnels : Traitements par lots', '1');
+INSERT INTO droits VALUES ('/bulletin/index_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Bulletins : Activation du module bulletins', '1');
+INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseResp', value='y';
+INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseEleve', value='y';
+INSERT INTO droits SET id='/a_lire.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='V',autre='V',description='A lire...',statut='';

@@ -1530,7 +1530,7 @@ function get_user_temp_directory(){
 			if(file_exists("temp/".$dirname)){
 				return $dirname;
 			}
-			else if(file_exists("../temp/".$dirname)) {
+			elseif(file_exists("../temp/".$dirname)) {
 				return $dirname;
 			}
 			else if(file_exists("../../temp/".$dirname)) {
@@ -1649,6 +1649,82 @@ function vider_dir($dir){
 
 
 /**
+ * Additionne la taille des documents joints dans le CDT d'un groupe
+ *
+ * @param int $id_groupe Identifiant du groupe
+ * @return int la taille totale des documents joints
+ */
+function volume_docs_joints($id_groupe, $mode="all"){
+	$volume_cdt_groupe=0;
+
+	/*
+	$sql="SELECT DISTINCT cd.id_ct FROM ct_documents cd, ct_entry ce WHERE cd.id_ct=ce.id_ct AND ce.id_groupe='".$groupe->getId()."';";
+	//echo "$sql<br />";
+	$res_doc=mysql_query($sql);
+	if(mysql_num_rows($res_doc)>0) {
+		while($lig_doc=mysql_fetch_object($res_doc)) {
+			$volume_cdt_groupe+=volume_dir("../documents/cl".$lig_doc->id_ct);
+		}
+	}
+	$sql="SELECT DISTINCT cde.id_ct FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$groupe->getId()."';";
+	//echo "$sql<br />";
+	$res_doc=mysql_query($sql);
+	if(mysql_num_rows($res_doc)>0) {
+		while($lig_doc=mysql_fetch_object($res_doc)) {
+			$volume_cdt_groupe+=volume_dir("../documents/cl_dev".$lig_doc->id_ct);
+		}
+	}
+	*/
+
+	if($mode=="devoirs") {
+		$sql="SELECT DISTINCT cdd.emplacement FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$id_groupe."';";
+	}
+	elseif($mode=="compte_rendus") {
+		$sql="SELECT DISTINCT cd.emplacement FROM ct_documents cd, ct_entry ce WHERE cd.id_ct=ce.id_ct AND ce.id_groupe='".$id_groupe."';";
+	}
+	else {
+		$sql="(SELECT DISTINCT cd.emplacement FROM ct_documents cd, ct_entry ce WHERE cd.id_ct=ce.id_ct AND ce.id_groupe='".$id_groupe."') UNION (SELECT DISTINCT cdd.emplacement FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$id_groupe."');";
+	}
+	//echo "$sql<br />";
+	$res_doc=mysql_query($sql);
+	if(mysql_num_rows($res_doc)>0) {
+		while($lig_doc=mysql_fetch_object($res_doc)) {
+			if(file_exists($lig_doc->emplacement)) {
+				$tabtmpsize=stat($lig_doc->emplacement);
+				if(isset($tabtmpsize[7])) {
+					$size=$tabtmpsize[7];
+					$volume_cdt_groupe+=$size;
+				}
+			}
+		}
+	}
+
+	return($volume_cdt_groupe);
+}
+
+
+
+
+/**
+ * Cette fonction supprime le BOM éventuel d'un fichier encodé en UTF-8
+ * A appeler immédiatement après ouverture du fichier
+ * Exemple :
+ * $handle=fopen("....");
+ * skip_bom_uf8($handle)
+ *
+ * @param handle $h_file : Le pointeur de fichier à tester
+ * @return boolean : true si pas de BOM ou si BOM sauté, false dans les autres cas 
+ */
+function skip_bom_uf8($h_file)
+	{
+	if (ftell($h_file)!=0) return false;
+	$bytes=fread($h_file,3);
+	if ($bytes===false) return false;
+	if ($bytes!="\xEF\xBB\xBF") return rewind($h_file);
+	return true;
+	}
+
+/**
  * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien retournée en UTF-8
  * Attention, certain encodages sont très similaire et ne peuve pas être théoriquement distingué sur une chaine de caractere.
  * Si vous connaissez déjà l'encodage de votre chaine de départ, il est préférable de le préciser
@@ -1692,13 +1768,21 @@ function ensure_utf8($str, $from_encoding = null) {
  */
 function detect_utf8 ($str) {
 	// Inspiré de http://w3.org/International/questions/qa-forms-utf-8.html
-	return preg_match('%^(?:[\x09\x0A\x0D\x20-\x7E])*$%xs', $str) | // ASCII
-		preg_match('#[\xC2-\xDF][\x80-\xBF]#', $str) | // non-overlong 2-byte
-		preg_match('#\xE0[\xA0-\xBF][\x80-\xBF]#', $str) | // excluding overlongs
-		preg_match('#[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}#', $str) | // straight 3-byte
+	// La chaîne ne comporte que des octets < 7E ?
+	$full_ascii=true; $i=0;
+	while ($full_ascii && $i<strlen($str)) {
+		$full_ascii = $full_ascii && (ord($str[$i])<0x7E);
+		$i++;
+	}
+	// Si oui c'est de l'utf8 sinon on cherche si la chaîne contient
+	// au moins une suite d'octets valide en UTF8
+	if ($full_ascii) return true;
+	else return preg_match('#[\xC2-\xDF][\x80-\xBF]#', $str) || // non-overlong 2-byte
+		preg_match('#\xE0[\xA0-\xBF][\x80-\xBF]#', $str) || // excluding overlongs
+		preg_match('#[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}#', $str) || // straight 3-byte
 		preg_match('#\xED[\x80-\x9F][\x80-\xBF]#', $str) | // excluding surrogates
-		preg_match('#\xF0[\x90-\xBF][\x80-\xBF]{2}#', $str) | // planes 1-3
-		preg_match('#[\xF1-\xF3][\x80-\xBF]{3}#', $str) | // planes 4-15
+		preg_match('#\xF0[\x90-\xBF][\x80-\xBF]{2}#', $str) || // planes 1-3
+		preg_match('#[\xF1-\xF3][\x80-\xBF]{3}#', $str) || // planes 4-15
 		preg_match('# \xF4[\x80-\x8F][\x80-\xBF]{2}#', $str) ; // plane 16
  }
 
@@ -1994,18 +2078,40 @@ function get_noms_classes_from_ele_login($ele_login){
  *
  * @param string $resp_login Login du responsable
  * @param string $mode Si avec_classe renvoie aussi la classe
+ * @param string $meme_en_resp_legal_0 'y'
+ *               (on récupère même les enfants dont $resp_login est resp_legal=0)
+ *               'yy' (on récupère aussi les resp_legal=0 mais seulement s'ils ont l'accès aux données en tant qu'utilisateur
+ *               ou 'n' (on ne récupère que les enfants dont $resp_login est resp_legal=1 ou 2)
  * @return array 
  * @see get_class_from_ele_login()
  */
-function get_enfants_from_resp_login($resp_login,$mode='simple'){
-	$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
+function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_legal_0="n") {
+	$sql="(SELECT e.nom,e.prenom,e.login FROM eleves e,
 											responsables2 r,
 											resp_pers rp
 										WHERE e.ele_id=r.ele_id AND
 											rp.pers_id=r.pers_id AND
 											rp.login='$resp_login' AND
-											(r.resp_legal='1' OR r.resp_legal='2')
-										ORDER BY e.nom,e.prenom;";
+										(r.resp_legal='1' OR r.resp_legal='2') ORDER BY e.nom,e.prenom)";
+	if($meme_en_resp_legal_0=="y") {
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.login='$resp_login' AND
+										r.resp_legal='0' ORDER BY e.nom,e.prenom)";
+	}
+	elseif($meme_en_resp_legal_0=="yy") {
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.login='$resp_login' AND
+											r.acces_sp='y' AND
+										r.resp_legal='0' ORDER BY e.nom,e.prenom)";
+	}
 	$res_ele=mysql_query($sql);
 
 	$tab_ele=array();
@@ -2035,18 +2141,43 @@ function get_enfants_from_resp_login($resp_login,$mode='simple'){
  *
  * @param string $pers_id identifiant sconet du responsable
  * @param string $mode Si avec_classe renvoie aussi la classe
+ * @param string $meme_en_resp_legal_0 'y'
+ *               (on récupère même les enfants dont $resp_login est resp_legal=0)
+ *               'yy' (on récupère aussi les resp_legal=0 mais seulement s'ils ont l'accès aux données en tant qu'utilisateur
+ *               ou 'n' (on ne récupère que les enfants dont $resp_login est resp_legal=1 ou 2)
  * @return array 
  * @see get_class_from_ele_login()
  */
-function get_enfants_from_pers_id($pers_id,$mode='simple'){
-	$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
+function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_0="n"){
+	$sql="(SELECT e.nom,e.prenom,e.login FROM eleves e,
 											responsables2 r,
 											resp_pers rp
 										WHERE e.ele_id=r.ele_id AND
 											rp.pers_id=r.pers_id AND
-											rp.pers_id='$pers_id' AND
-											(r.resp_legal='1' OR r.resp_legal='2')
-										ORDER BY e.nom,e.prenom;";
+											rp.pers_id='$pers_id' AND 
+											(r.resp_legal='1' OR r.resp_legal='2') 
+										ORDER BY e.nom,e.prenom)";
+	if($meme_en_resp_legal_0=="y") {
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.pers_id='$pers_id' AND 
+											r.resp_legal='0' 
+										ORDER BY e.nom,e.prenom)";
+	}
+	elseif($meme_en_resp_legal_0=="yy") {
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.pers_id='$pers_id' AND 
+											r.acces_sp='y' AND
+											r.resp_legal='0' 
+										ORDER BY e.nom,e.prenom)";
+	}
 	$res_ele=mysql_query($sql);
 
 	$tab_ele=array();
@@ -2388,7 +2519,7 @@ $GLOBALS['class_special_infobulle'] = '';
  * @param string $bg_texte Couleur de fond du DIV contenant le texte
  * @param int $largeur Largeur du DIV conteneur
  * @param int $hauteur Hauteur (minimale) du DIV conteneur
- * @param string $drag 'y' ou 'n' pour rendre le DIV draggable
+ * @param string $drag 'y' ou 'n' pour rendre le DIV draggable ('yy' rend même le corps de l'infobulle poignée de drag)
  * @param string $bouton_close 'y' ou 'n' pour afficher le bouton Close
  * @param string $survol_close 'y' ou 'n' pour refermer le DIV automatiquement lorsque le survol quitte le DIV
  * @param string $overflow 'y' ou 'n' activer l'overflow automatique sur la partie Texte. Il faut que $hauteur soit non NULLe
@@ -2463,7 +2594,7 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 			}
 			$div.=";'";
 		}
-		if($drag=="y"){
+		if(($drag=="y")||($drag=="yy")){
 			// Là on utilise les fonctions de http://www.brainjar.com stockées dans brainjar_drag.js
 			$div.=" onmousedown=\"dragStart(event, '$id')\"";
 		}
@@ -2497,6 +2628,12 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	//==================
 	// 20110113
 	$div.="<div id='".$id."_contenu_corps'";
+
+	if($drag=="yy"){
+		// Là on utilise les fonctions de http://www.brainjar.com stockées dans brainjar_drag.js
+		$div.=" onmousedown=\"dragStart(event, '$id')\"";
+	}
+
 	//==================
 	if($survol_close=="y"){
 		// On referme le DIV lorsque la souris quitte la zone de texte.
@@ -2985,50 +3122,52 @@ function mail_connexion() {
 		if (mysql_num_rows($res_user)>0) {
 			$lig_user=mysql_fetch_object($res_user);
 
-			$adresse_ip = $_SERVER['REMOTE_ADDR'];
-			$date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
+			if(check_mail($lig_user->email)) {
+				$adresse_ip = $_SERVER['REMOTE_ADDR'];
+				$date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
 
-			if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
-				$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
-			}
-			else if($active_hostbyaddr == "no_local") {
-				if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
-					$result_hostbyaddr = "";
+				if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
+					$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
 				}
-				else{
-					$tabip=explode(".",$adresse_ip);
-					if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+				else if($active_hostbyaddr == "no_local") {
+					if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
 						$result_hostbyaddr = "";
 					}
 					else{
-						$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+						$tabip=explode(".",$adresse_ip);
+						if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+							$result_hostbyaddr = "";
+						}
+						else{
+							$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+						}
 					}
 				}
-			}
-			else{
-				$result_hostbyaddr = "";
-			}
+				else{
+					$result_hostbyaddr = "";
+				}
 
-			$message = "** Mail connexion Gepi **\n\n";
-			$message .= "\n";
-			$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
-			$message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
-			$message .= "Login                   : ".$user_login."\n";
-			$message .= "Date                    : ".$date."\n";
-			$message .= "Origine de la connexion : ".$adresse_ip."\n";
-			if($result_hostbyaddr!="") {
-				$message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
-			}
-			$message .= "\n";
-			$message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
-			$message .= "\n";
-			$message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
+				$message = "** Mail connexion Gepi **\n\n";
+				$message .= "\n";
+				$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
+				$message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
+				$message .= "Login                   : ".$user_login."\n";
+				$message .= "Date                    : ".$date."\n";
+				$message .= "Origine de la connexion : ".$adresse_ip."\n";
+				if($result_hostbyaddr!="") {
+					$message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
+				}
+				$message .= "\n";
+				$message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
+				$message .= "\n";
+				$message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
 
-			// On envoie le mail
-			//fdebug_mail_connexion("\$message=$message\n====================\n");
-			$destinataire=$lig_user->email;
-			$sujet="GEPI : Connexion $date";
-			envoi_mail($sujet, $message, $destinataire);
+				// On envoie le mail
+				//fdebug_mail_connexion("\$message=$message\n====================\n");
+				$destinataire=$lig_user->email;
+				$sujet="GEPI : Connexion $date";
+				envoi_mail($sujet, $message, $destinataire);
+			}
 		}
 	}
 }
@@ -3589,64 +3728,6 @@ function test_ecriture_style_screen_ajout() {
  *                                  Fonctions Trombinoscope
  **********************************************************************************************/
 
-/**
- * Crée les répertoires photos/RNE_Etablissement, photos/RNE_Etablissement/eleves et
- * photos/RNE_Etablissement/personnels s'ils n'existent pas
- * @return boolean TRUE si tout se passe bien ou FALSE si la création d'un répertoire échoue
- * @see getSettingValue()
- */
-function cree_repertoire_multisite() {
-  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		// On récupère le RNE de l'établissement
-	if (!$repertoire=$_COOKIE['RNE'])
-	  return FALSE;
-	//on vérifie que le dossier photos/RNE_Etablissement n'existe pas
-	if (!is_dir("../photos/".$repertoire)){
-	  // On crée le répertoire photos/RNE_Etablissement
-	  if (!mkdir("../photos/".$repertoire, 0700))
-		return FALSE;
-	  // On enregistre un fichier index.html dans photos/RNE_Etablissement
-	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/index.html" ))
-		return FALSE;
-	}
-	//on vérifie que le dossier photos/RNE_Etablissement/eleves n'existe pas
-	if (!is_dir("../photos/".$repertoire."/eleves")){
-	  // On crée le répertoire photos/RNE_Etablissement/eleves
-	  if (!mkdir("../photos/".$repertoire."/eleves", 0700))
-		return FALSE;
-	  // On enregistre un fichier index.html dans photos/RNE_Etablissement/eleves
-	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/eleves/index.html" ))
-		return FALSE;
-	 }
-	//on vérifie que le dossier photos/RNE_Etablissement/personnels n'existe pas
-	if (!is_dir("../photos/".$repertoire."/personnels")){
-	  // On crée le répertoire photos/RNE_Etablissement/personnels
-	  if (!mkdir("../photos/".$repertoire."/personnels", 0700))
-		return FALSE;
-	  // On enregistre un fichier index.html dans photos/RNE_Etablissement/personnels
-	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/personnels/index.html" ))
-		return FALSE;
-	  }
-	}
-	return TRUE;
-}
-
-/**
- * Crée si nécessaire l'entrée 'encodage_nom_photo' dans la table 'setting'
- * Crée ou modifie la valeur aléatoire 'alea_nom_photo' utilisée pour encoder
- *  le nom des fichiers photo des élèves et l'enregistre dans la table 'setting'
- * Renvoie true si l'encodage est activé ou réactivé, false sinon.
- *
- * @param string $alea_nom_photo Si non vide détermine la valeur à donner à 'alea_nom_photo'
- * @return boolean true : succès, false : échec
- * @see encode_nom_photo()
- */
-function active_encodage_nom_photo($alea_nom_photo="") {
-	$retour=true;
-	if ((getSettingValue('encodage_nom_photo')==NULL) || !getSettingAOui('encodage_nom_photo')) $retour=$retour && saveSetting('encodage_nom_photo','yes');
-	if ($alea_nom_photo=="") $alea_nom_photo=md5(time());
-	return $retour && saveSetting('alea_nom_photo',$alea_nom_photo);
-}
 
 /**
  * Ajoute au début d'un nom de fichier une chaîne 5 caractères pseudo alétaoires
@@ -3751,105 +3832,6 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	return $photo;
 }
 
-/**
- * Recherche les élèves sans photos
- *
- * @return array tableau de login - nom - prénom - classe - classe court - eleonet
- * @see nom_photo()
- */
-function recherche_eleves_sans_photo() {
-  $eleve=NULL;
-  $requete_liste_eleve = "SELECT e.elenoet, e.login, e.nom, e.prenom, c.nom_complet, c.classe
-	FROM eleves e, j_eleves_classes jec, classes c
-	WHERE e.login = jec.login
-	AND jec.id_classe = c.id
-	GROUP BY e.login
-	ORDER BY id_classe, nom, prenom ASC";
-  $res_eleve = mysql_query($requete_liste_eleve);
-  while ($row = mysql_fetch_object($res_eleve)) {
-	$nom_photo = nom_photo($row->elenoet);
-	if (!($nom_photo and file_exists($nom_photo))) {
-	  $eleve[]=$row;
-	}
-  }
-  return $eleve;
-}
-
-/**
- *
- * @param string $statut statut recherché
- * @return array tableau des personnels sans photo ou NULL
- * @see nom_photo()
- */
-function recherche_personnel_sans_photo($statut='professeur') {
-  $personnel=NULL;
-  $requete_liste_personnel = "SELECT login,nom,prenom FROM utilisateurs u
-	WHERE u.statut='".$statut."' AND u.etat='actif' 
-	ORDER BY nom, prenom ASC";
-  $res_personnel = mysql_query($requete_liste_personnel);
-  while ($row = mysql_fetch_object($res_personnel)) {
-	$nom_photo = nom_photo($row->login,"personnels");
-	if (!($nom_photo and file_exists($nom_photo))) {
-	  $personnel[]=$row;
-	}
-  }
-  return $personnel;
-}
-
-/**
- * Efface le dossier photo passé en argument
- * @param string $photos le dossier à effacer personnels ou eleves
- * @return string L'état de la suppression
- * @see cree_zip_archive()
- * @see getSettingValue()
- */
-function efface_photos($photos) {
-// on liste les fichier du dossier photos/personnels ou photos/eleves
-  if (!($photos=="eleves" || $photos=="personnels"))
-	return ("Le dossier <strong>".$photos."</strong> n'est pas valide.");
-  if (cree_zip_archive("photos")==TRUE){
-	$fichier_sup=array();
-	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		  // On récupère le RNE de l'établissement
-	  if (!$repertoire=$_COOKIE['RNE'])
-		return ("Erreur lors de la récupération du dossier établissement.");
-	} else {
-	  $repertoire="";
-	}
-	$folder = "../photos/".$repertoire.$photos."/";
-	$dossier = opendir($folder);
-	while ($Fichier = readdir($dossier)) {
-	  if (mb_strtolower(pathinfo($Fichier,PATHINFO_EXTENSION))=="jpg") {
-		$nomFichier = $folder."".$Fichier;
-		$fichier_sup[] = $nomFichier;
-	  }
-	}
-	closedir($dossier);
-	if(count($fichier_sup)==0) {
-	  return ("Le dossier <strong>".$folder."</strong> ne contient pas de photo.") ;
-	} else {
-	  $nb_erreurs=0; $erreurs="";
-	  foreach ($fichier_sup as $fic_efface) {
-		if(file_exists($fic_efface)) {
-		  @unlink($fic_efface);
-		  if(file_exists($fic_efface)) {
-			$nb_erreurs++;
-			$erreurs.="Le fichier  <strong>".$fic_efface."</strong> n'a pas pu être effacé.<br />";
-		  }
-		}
-	  }
-	  unset ($fic_efface);
-	  if ($nb_erreurs>0) {
-		if ($nb_erreurs>10) return $nb_erreurs." fichiers n'ont pu être effacés.";
-			else return $erreurs;
-	  }
-		else return ("Le dossier <strong>".$folder."</strong> a été vidé.") ;
-	}
-  }else{
-	return ("Erreur lors de la création de l'archive.") ;
-  }
-
-}
 
 /**
  * Redimensionne un fichier photo JPG en conservant son ratio d'origine
@@ -3914,37 +3896,6 @@ function redim_photo($file_source,$largeur_destination,$hauteur_destination,$ang
 	imagedestroy($destination);
 	return true;
 	}
-
-/**
- * Calcule les dimensions pour afficher une photo
- * dans un cadre de dimensions largeur_max X hauteur_max
- * en conservant le ratio initial
- *
- * @param string $photo L'adresse de la photo
- * @param integer $largeur_max Largeur du cadre
- * @param integer $hauteur_max Hauteur du cadre
- * @return array Les nouvelles dimensions de l'image (largeur, hauteur)
- */
-function dimensions_affichage_photo($photo,$photo_largeur_max, $photo_hauteur_max) {
-
-	// prendre les informations sur l'image
-	$info_image=getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur=$info_image[0];
-	$hauteur=$info_image[1];
-
-	// calcule le ratio de redimensionnement
-	$ratio_l=$largeur/$photo_largeur_max;
-	$ratio_h=$hauteur/$photo_hauteur_max;
-	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
-
-	// définit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur=round($largeur/$ratio);
-	$nouvelle_hauteur=round($hauteur/$ratio);
-
-	return array($nouvelle_largeur, $nouvelle_hauteur);
-}
-
 /**********************************************************************************************
  *                               Fin Fonctions Trombinoscope
  **********************************************************************************************/
@@ -4268,13 +4219,14 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
  * $login_eleve : login de l'élève à tester (si vide, on teste juste si le prof est PP 
  * (éventuellement pour la classe si id_classe est non vide))
  * 
- * @param type $login_prof login de l'utilisateur à tester
- * @param type $id_classe identifiant de la classe
- * @param type $login_eleve login de l'élève
+ * @param type string $login_prof login de l'utilisateur à tester
+ * @param type integer $id_classe identifiant de la classe
+ * @param type string $login_eleve login de l'élève
  * @return boolean 
  */
-function is_pp($login_prof,$id_classe="",$login_eleve="") {
+function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="") {
 	$retour=FALSE;
+
 	if($login_eleve=='') {
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE ";
 		if($id_classe!="") {$sql.="id_classe='$id_classe' AND ";}
@@ -4289,6 +4241,38 @@ function is_pp($login_prof,$id_classe="",$login_eleve="") {
 	if(mysql_num_rows($test)>0) {$retour=TRUE;}
 
 	return $retour;
+}
+
+/**
+ * Récupère le tableau des classes/élèves dont un utilisateur est prof principal (gepi_prof_suivi)
+ * 
+ * @param type string $login_prof login de l'utilisateur à tester
+ *
+ * @return array Tableau d'indices ['login'][] et ['id_classe'][] et ['classe'][]
+ */
+function get_tab_ele_clas_pp($login_prof) {
+	$tab=array();
+	$tab['login']=array();
+	$tab['id_classe']=array();
+
+	$sql="SELECT DISTINCT jep.login FROM j_eleves_professeurs jep, eleves e, j_eleves_classes jec, classes c WHERE jep.professeur='$login_prof' AND jep.login=e.login AND jec.login=e.login AND jec.id_classe=c.id ORDER BY c.classe, e.nom, e.prenom;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab['login'][]=$lig->login;
+		}
+	}
+
+	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE jep.professeur='$login_prof' AND jep.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab['id_classe'][]=$lig->id_classe;
+			$tab['classe'][]=$lig->classe;
+		}
+	}
+
+	return $tab;
 }
 
 /**
@@ -4815,7 +4799,7 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 			// valeurs par défaut
 			$date_debut=$t_appel;
 			$date_fin=$t_appel + 3600*24*7;
-			$date_decompte=$date_fin;		
+			$date_decompte=$date_fin;
 		}
 	$r_sql="INSERT INTO `messages` values('','".addslashes($texte)."','".$date_debut."','".$date_fin."','".$_SESSION['login']."','_','".$login_destinataire."','".$date_decompte."')";
 	$retour=mysql_query($r_sql)?true:false;
@@ -5152,12 +5136,28 @@ function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lie
 
 	$retour="";
 
-	if($target!="") {$target=" target='$target'";}
+	if($target!="") {
+		/*
+		// Cela masque le title Compte actif/inactif
+		if($target=='_blank') {
+			$target=" target='$target' title='Ouverture dans un nouvel onglet.'";
+		}
+		else {
+		*/
+			$target=" target='$target'";
+		//}
+	}
 
 	$test=check_compte_actif($login);
 	if($test!=0) {
 		if($statut=="") {
 			$statut=get_statut_from_login($login);
+		}
+		else {
+			$tmp_statut=get_statut_from_login($login);
+			if($tmp_statut!=$statut) {$retour.="<img src='../images/icons/flag2.gif' width='17' height='18' title=\"ANOMALIE : Le statut du compte ne coïncide pas avec le statut attendu.
+                    Le compte est '$tmp_statut' alors que vous avez fait
+                    une recherche pour un compte '$statut'.\" /> ";}
 		}
 
 		if($statut!="") {
@@ -5322,15 +5322,27 @@ function acces_ele_disc($login_ele) {
 /**
  * Renvoie un tableau des responsables d'un élève
  * 
- * $tab[indice] = array('login','nom','prenom','civilite','designation'=>civilite nom prenom)
+ * $tab[indice] = array('login','nom','prenom','civilite','designation'=>civilite nom prenom, 'pers_id')
  *
  * @param string $ele_login Login de l'élève
+ * @param string $meme_en_resp_legal_0 'y'
+ *               (on récupère même les enfants dont $resp_login est resp_legal=0)
+ *               'yy' (on récupère aussi les resp_legal=0 mais seulement s'ils ont l'accès aux données en tant qu'utilisateur
+ *               ou 'n' (on ne récupère que les enfants dont $resp_login est resp_legal=1 ou 2)
+ *
  * @return array Le tableau
  */
-function get_resp_from_ele_login($ele_login) {
+function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n") {
 	$tab="";
 
-	$sql="SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2');";
+	$sql="(SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2'))";
+	if($meme_en_resp_legal_0=="y") {
+		$sql.=" UNION (SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='0')";
+	}
+	elseif($meme_en_resp_legal_0=="yy") {
+		$sql.=" UNION (SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='0' AND r.acces_sp='y')";
+	}
+	$sql.=";";
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
@@ -5344,6 +5356,8 @@ function get_resp_from_ele_login($ele_login) {
 			$tab[$cpt]['civilite']=$lig->civilite;
 
 			$tab[$cpt]['designation']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
+
+			$tab[$cpt]['pers_id']=$lig->pers_id;
 
 			$cpt++;
 		}
@@ -5907,7 +5921,7 @@ function get_tel_resp_ele($ele_login) {
 
 	$cpt_resp=0;
 
-	$sql="SELECT rp.*, r.resp_legal, e.tel_pers AS ele_tel_pers, e.tel_port AS ele_tel_port, e.tel_prof AS ele_tel_prof FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND (resp_legal='1' OR resp_legal='2') ORDER BY r.resp_legal;";
+	$sql="SELECT rp.*, r.resp_legal, e.tel_pers AS ele_tel_pers, e.tel_port AS ele_tel_port, e.tel_prof AS ele_tel_prof FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		while($lig=mysql_fetch_object($res)) {
@@ -6154,21 +6168,40 @@ function in_array_i($chaine, $tableau) {
  * @param string $login_eleve Login de l'élève
  * @param string $login_resp Login du responsable
  * @param string $pers_id Identifiant pers_id du responsable
+ * @param string $meme_en_resp_legal_0 'y'
+ *               (on récupère même les enfants dont $resp_login est resp_legal=0)
+ *               'yy' (on récupère aussi les resp_legal=0 mais seulement s'ils ont l'accès aux données en tant qu'utilisateur
+ *               ou 'n' (on ne récupère que les enfants dont $resp_login est resp_legal=1 ou 2)
+ *
  *
  * @return boolean true/false
  */
 
-function is_responsable($login_eleve, $login_resp="", $pers_id="") {
+function is_responsable($login_eleve, $login_resp="", $pers_id="", $meme_en_resp_legal_0="n") {
 	$retour=false;
 	if($login_resp!="") {
-		$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
+		$sql="(SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2'))";
+		if($meme_en_resp_legal_0=="y") {
+			$sql.=" UNION (SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND r.resp_legal='0')";
+		}
+		elseif($meme_en_resp_legal_0=="yy") {
+			$sql.=" UNION (SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND r.resp_legal='0' AND r.acces_sp='y')";
+		}
+		$sql.=";";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
 			$retour=true;
 		}
 	}
 	elseif($pers_id!="") {
-		$sql="SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
+		$sql="(SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2'))";
+		if($meme_en_resp_legal_0=="y") {
+			$sql.=" UNION (SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND r.resp_legal='0')";
+		}
+		elseif($meme_en_resp_legal_0=="yy") {
+			$sql.=" UNION (SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND r.resp_legal='0' AND r.acces_sp='y')";
+		}
+		$sql.=";";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
 			$retour=true;
@@ -6194,5 +6227,234 @@ function captcha()
 	list($resultat, $phrase) = captchaMath();
 	$_SESSION['captcha'] = $resultat;
 	return $phrase;
+}
+
+/** Fonction destinée à retourner un tableau des ouvertures par période en 
+ *  consultation parent/élève pour telle classe sur telle à telle période
+ *
+ * @param integer $periode1  La première période à tester
+ * @param integer $periode2  La dernière période à tester
+ * @param integer $id_classe L'identifiant de la classe à tester
+ * @param string $statut     Le statut 'responsable' ou 'eleve'
+ *                           Si le statut est vide, on prend le statut de 
+ *                           l'utilisateur connecté.
+ *
+ * @return array Tableau avec les numéros de période en indice et 'y' ou 'n' 
+ *               selon que les appréciations sont ou non accessibles
+ */
+function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
+	global $delais_apres_cloture;
+	global $date_ouverture_acces_app_classe;
+
+	if($delais_apres_cloture==="") {
+		$delais_apres_cloture=getSettingValue('delais_apres_cloture');
+	}
+
+	$tab_acces_app=array();
+
+	if($statut=="") {
+		$statut=$_SESSION['statut'];
+	}
+
+	if(($statut=='eleve')||($statut=='responsable')) {
+		for($i=$periode1;$i<=$periode2;$i++) {
+			$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
+												statut='".$statut."' AND
+												periode='$i';";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			if($res) {
+				if(mysql_num_rows($res)>0) {
+					$lig=mysql_fetch_object($res);
+					//echo "\$lig->acces=$lig->acces<br />";
+					if($lig->acces=="y") {
+						$tab_acces_app[$i]="y";
+					}
+					elseif($lig->acces=="date") {
+						//echo "<p>Période $i: Date limite: $lig->date<br />";
+						$tab_date=explode("-",$lig->date);
+						$timestamp_limite=mktime(0,0,0,$tab_date[1],$tab_date[2],$tab_date[0]);
+						//echo "$timestamp_limite<br />";
+						$timestamp_courant=time();
+						//echo "$timestamp_courant<br />";
+
+						$date_ouverture_acces_app_classe[$i]=$lig->date;
+
+						if($timestamp_courant>$timestamp_limite){
+							$tab_acces_app[$i]="y";
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+					}
+					elseif($lig->acces=="d") {
+						$sql="SELECT verouiller,UNIX_TIMESTAMP(date_verrouillage) AS date_verrouillage FROM periodes WHERE id_classe='$id_classe' AND num_periode='$i';";
+						//echo "$sql<br />";
+						$res_dv=mysql_query($sql);
+
+						if(mysql_num_rows($res_dv)>0) {
+							$lig_dv=mysql_fetch_object($res_dv);
+
+							if($lig_dv->verouiller!='O') {
+								$tab_acces_app[$i]="n";
+							}
+							else {
+								$timestamp_limite=$lig_dv->date_verrouillage+$delais_apres_cloture*24*3600;
+								$timestamp_courant=time();
+								//echo "\$timestamp_limite=$timestamp_limite<br />";
+								//echo "\$timestamp_courant=$timestamp_courant<br />";
+
+								if($timestamp_courant>$timestamp_limite){
+									$tab_acces_app[$i]="y";
+								}
+								else {
+									$tab_acces_app[$i]="n";
+								}
+								//echo "\$tab_acces_app[$i]=$tab_acces_app[$i]<br />";
+							}
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+					}
+					else {
+						$tab_acces_app[$i]="n";
+					}
+				}
+				else {
+					$tab_acces_app[$i]="n";
+				}
+			}
+			else {
+				$tab_acces_app[$i]="n";
+			}
+		}
+	}
+	else {
+		// Pas de limitations d'accès pour les autres statuts.
+		for($i=$periode1;$i<=$periode2;$i++) {
+			$tab_acces_app[$i]="y";
+		}
+	}
+	return $tab_acces_app;
+}
+
+
+/** Fonction destinée à tester si les responsables légaux habitent à des adresses distinctes
+ *
+ * @param string $login_eleve Login de l'élève
+ *
+ * @return boolean true/false
+ */
+function responsables_adresses_separees($login_eleve) {
+	$retour=false;
+
+	$sql="SELECT DISTINCT adr1, adr2, adr3, adr4, cp, commune, pays FROM resp_adr ra, resp_pers rp, responsables2 r, eleves e WHERE ra.adr_id=rp.adr_id AND r.pers_id=rp.pers_id AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
+	//echo "$sql<br />";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>1) {
+		$retour=true;
+	}
+
+	return $retour;
+}
+
+/** Fonction destinée à récupérer le rang de l'élève
+ *
+ * @param string $login_eleve Login de l'élève
+ * @param integer $id_classe Identifiant de la classe
+ * @param integer $periode_num Numéro de la période
+ * @param string $forcer_recalcul "y" ou "n" Forcer le recalcul du rang avant extraction du rang
+ * @param string $recalcul_si_rang_nul "y" ou "n" 
+ *
+ * @return integer rang de l'élève
+ */
+function get_rang_eleve($login_eleve, $id_classe, $periode_num, $forcer_recalcul="n", $recalcul_si_rang_nul="n") {
+	global $affiche_categories, $test_coef;
+	$retour=0;
+
+	$recalcul_rang="";
+	for($loop=1;$loop<=$periode_num;$loop++) {
+		$recalcul_rang.="y";
+	}
+
+	if($forcer_recalcul=="y") {
+		$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+
+		$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
+
+		include("../lib/calcul_rang.inc.php");
+	}
+
+	$sql="SELECT rang FROM j_eleves_classes WHERE periode='".$periode_num."' AND id_classe='".$id_classe."' AND login = '".$login_eleve."';";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$retour=mysql_result($res, 0, "rang");
+		if(($retour==0)&&($recalcul_si_rang_nul=='y')) {
+			$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+
+			$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
+
+			include("../lib/calcul_rang.inc.php");
+
+			$sql="SELECT rang FROM j_eleves_classes WHERE periode='".$periode_num."' AND id_classe='".$id_classe."' AND login = '".$login_eleve."';";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$retour=mysql_result($res, 0, "rang");
+			}
+		}
+	}
+	elseif($recalcul_si_rang_nul=='y') {
+		$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+
+		$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
+
+		include("../lib/calcul_rang.inc.php");
+
+		$sql="SELECT rang FROM j_eleves_classes WHERE periode='".$periode_num."' AND id_classe='".$id_classe."' AND login = '".$login_eleve."';";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$retour=mysql_result($res, 0, "rang");
+		}
+	}
+
+	return $retour;
+}
+
+/** Fonction destinée à retourner pour un élève, un tableau des classes et dates de périodes en fonction du numéro de période
+ *
+ * @param string $login_eleve Login de l'élève
+ *
+ * @return array Tableau d'indice num_periode
+ */
+
+function get_class_dates_from_ele_login($login_eleve) {
+	$tab=array();
+
+	$sql="SELECT p.*, c.classe, c.nom_complet FROM periodes p, j_eleves_classes jec, classes c WHERE jec.id_classe=p.id_classe AND jec.periode=p.num_periode AND c.id=jec.id_classe AND jec.login='".$login_eleve."' ORDER BY p.num_periode;";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$lig->num_periode]['id_classe']=$lig->id_classe;
+			$tab[$lig->num_periode]['classe']=$lig->classe;
+			$tab[$lig->num_periode]['nom_complet']=$lig->nom_complet;
+			$tab[$lig->num_periode]['date_fin']=$lig->date_fin;
+		}
+	}
+
+	return $tab;
 }
 ?>

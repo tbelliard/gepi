@@ -53,6 +53,11 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	protected $oldVersion;
 
 	/**
+	 * @var        bool to store aggregation of sousResponsabiliteEtablissement value
+	 */
+	protected $saisiesEnglobantes;
+        
+	/**
 	 *
 	 * Renvoi une description intelligible du traitement
 	 *
@@ -771,16 +776,6 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
-
-				if ($this->collJTraitementSaisieEleves !== null) {
-					foreach ($this->collJTraitementSaisieEleves as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-
 			$this->alreadyInValidation = false;
 		}
 
@@ -1200,6 +1195,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    $this->manquementObligationPresence = null;
 	    $this->manquementObligationPresenceSpecifie_NON_PRECISE = null;
 	    $this->justifiee = null;
+            $this->saisiesEnglobantes = null;
 	    $this->boolSaisiesContradictoiresManquementObligation = null;
 	    $this->retard = null;
 	    $this->collectionSaisiesContradictoiresManquementObligation = null;
@@ -1209,5 +1205,54 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	public function getAlreadyInSave() {
 		return $this->alreadyInSave;
 	}
-	
+
+	/**
+	 *
+	 * Renvoi une collection de saisies englobant celle ci au sens large (on renvoi aussi les saisies de bornes identiques)
+	 *
+	 * @return     AbsenceEleveLieu
+	 *
+	 */
+	public function  getAbsenceEleveSaisiesEnglobantes() {
+            if (!isset($this->saisiesEnglobantes) || $this->saisiesEnglobantes === null) {
+                if ($this->getEleveId() == null) {
+                    $this->saisiesEnglobantes = new PropelCollection();
+                    return $this->saisiesEnglobantes;
+                }
+
+                $query = AbsenceEleveSaisieQuery::create();
+                $query->filterById($this->getId(), Criteria::NOT_EQUAL);
+                $query->filterByEleveId($this->getEleveId());
+                $query->filterByDebutAbs($this->getDebutAbs(), Criteria::LESS_EQUAL);
+                $query->filterByFinAbs($this->getFinAbs(), Criteria::GREATER_EQUAL);
+                $this->saisiesEnglobantes = $query->find();
+            }
+            return $this->saisiesEnglobantes;
+        }
+        
+	public function  setAbsenceEleveSaisiesEnglobantes(PropelCollection $col) {
+            $this->saisiesEnglobantes = $col;
+        }
+
+	/**
+	 *
+	 * filtre une collection de saisie pour ne retenir que les saisies englobante
+	 *
+	 * @return     AbsenceEleveLieu
+	 *
+	 */
+	public function filterAbsenceEleveSaisiesEnglobantes(PropelCollection $col) {
+            $result = new PropelCollection();
+            foreach ($col as $saisie) {
+                if ($saisie->getEleveId() == $this->getEleveId() &&
+                    $saisie->getDebutAbs(null) <= $this->getDebutAbs(null) &&
+                    $saisie->getFinAbs(null) >= $this->getFinAbs(null)) {
+                    $result->add($saisie);
+                }
+            }
+            return $result;
+        }
+
+
+        
 } // AbsenceEleveSaisie

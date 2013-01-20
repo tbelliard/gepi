@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -43,7 +43,7 @@ if ($resultat_session == 'c') {
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/param_releve_html.php';";
 $res_test=mysql_query($sql);
 if (mysql_num_rows($res_test)==0) {
-	$sql="INSERT INTO droits VALUES ('/cahier_notes/param_releve_html.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F','F', 'Relevé de notes', '1');";
+	$sql="INSERT INTO droits VALUES ('/cahier_notes/param_releve_html.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F','F', 'Relevé de notes', '1');";
 	$res_insert=mysql_query($sql);
 }
 
@@ -146,7 +146,7 @@ if (isset($_POST['ok'])) {
 			$reg_ok = 'no';
 		}
 	}
-	
+
 	if (isset($_POST['releve_col_matiere_largeur'])) {
 	
 		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_col_matiere_largeur'])) || $_POST['releve_col_matiere_largeur'] < 1) {
@@ -157,7 +157,17 @@ if (isset($_POST['ok'])) {
 			$reg_ok = 'no';
 		}
 	}
-	
+
+	if (isset($_POST['releve_col_moyenne_largeur'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_col_moyenne_largeur'])) || $_POST['releve_col_moyenne_largeur'] < 1) {
+			$_POST['releve_col_moyenne_largeur'] = 30;
+		}
+		if (!saveSetting("releve_col_moyenne_largeur", $_POST['releve_col_moyenne_largeur'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_col_moyenne_largeur !";
+			$reg_ok = 'no';
+		}
+	}
+
 	if (isset($_POST['releve_ecart_entete'])) {
 	
 		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_ecart_entete']))) {
@@ -318,7 +328,16 @@ if (isset($_POST['ok'])) {
 			$reg_ok = 'no';
 		}
 	}
-	
+
+	/*
+	if (isset($_POST['releve_avec_moyenne'])) {
+		if (!saveSetting("releve_avec_moyenne", $_POST['releve_avec_moyenne'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_avec_moyenne !";
+			$reg_ok = 'no';
+		}
+	}
+	*/
+
 	if (isset($_POST['releve_mention_doublant'])) {
 	
 		if (!saveSetting("releve_mention_doublant", $_POST['releve_mention_doublant'])) {
@@ -493,23 +512,28 @@ if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
    $msg = "Enregistrement réussi !";
 }
 
-
+//==============================================================
 // End standart header
 require_once("../lib/header.inc.php");
 if (!loadSettings()) {
     die("Erreur chargement settings");
 }
+//==============================================================
 ?>
 
-<p class=bold><a href="visu_releve_notes_bis.php" onclick="self.close();return false;"><img src='../images/icons/back.png' alt='Refermer' class='back_link'/> Refermer </a></p>
+<p class="bold"><a href="visu_releve_notes_bis.php" onclick="self.close();return false;"><img src='../images/icons/back.png' alt='Refermer' class='back_link'/> Refermer </a></p>
 
 <?php
 
-// A FAIRE: Créer des droits
-
-if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
+if ((($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprRelSettings")!='yes')) OR 
+(($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprRelSettings")!='yes')) OR 
+(($_SESSION['statut']=='cpe') AND (getSettingValue("GepiCpeImprRelSettings")!='yes')) OR 
+// Les comptes administrateurs n'ont pas accès aux relevés de notes normalement...
+(($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
 {
-    die("Droits insuffisants pour effectuer cette opération");
+	echo "<p style='color:red'>Droits insuffisants pour effectuer cette opération.</p>";
+	require("../lib/footer.inc.php");
+	die();
 }
 
 // Compteur pour alterner les couleurs de lignes
@@ -615,6 +639,21 @@ echo add_token_field();
 		}
 		else{
 			echo "150";
+		}
+		?>" onKeyDown="clavier_2(this.id,event,0,2000);" />
+        </td>
+    </tr>
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        <label for='releve_col_moyenne_largeur' style='cursor: pointer;'>Largeur de la deuxième colonne (moyenne) en pixels&nbsp;:</label><br />
+        <span class="small">(sous réserve que la colonne moyenne du carnet de notes soit affichée)</span>
+        </td>
+        <td><input type="text" name="releve_col_moyenne_largeur" id="releve_col_moyenne_largeur" size="20" value="<?php
+		if(getSettingValue("releve_col_moyenne_largeur")!=""){
+			echo(getSettingValue("releve_col_moyenne_largeur"));
+		}
+		else{
+			echo "30";
 		}
 		?>" onKeyDown="clavier_2(this.id,event,0,2000);" />
         </td>
@@ -819,7 +858,7 @@ echo add_token_field();
 ?>
 <h3>Informations devant figurer sur le relevé de notes</h3>
 <table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des informations devant figurer sur le relevé de notes">
-<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher le nom court de la classe&nbsp;:
         </td>

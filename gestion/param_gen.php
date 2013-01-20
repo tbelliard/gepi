@@ -405,6 +405,12 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['url_racine_gepi'])) {
+			if (!saveSetting("url_racine_gepi", $_POST['url_racine_gepi'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre url_racine_gepi !";
+			}
+		}
+
 		if (isset($_POST['ele_lieu_naissance'])) {
 			if (!saveSetting("ele_lieu_naissance", $_POST['ele_lieu_naissance'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
@@ -1585,6 +1591,22 @@ if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
 				echo "<input type='checkbox' name='aff_temoin_check_serveur' id='aff_temoin_check_serveur' value='y'";
 				if($aff_temoin_check_serveur=='y') {echo " checked";}
 				echo " onchange='changement()' />\n";
+			?>
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			<label for='url_racine_gepi' style='cursor: pointer'>Adresse de la racine Gepi</label>
+			<br />
+			<span class='small'>
+				(<em>utilisé dans des envois de mails pour donner l'adresse d'une page en particulier<br />
+				Exemple&nbsp;: https://NOM_SERVEUR/DOSSIER_GEPI</em>)&nbsp;:</label>
+			</span>
+		</span>
+		<span class="cellTab plusPetit">
+			<?php
+				echo "<input type='text' name='url_racine_gepi' id='url_racine_gepi' value=\"".getSettingValue('url_racine_gepi')."\" onchange='changement()' size='30' />\n";
 			?>
 		</span>
 	</p>

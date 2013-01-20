@@ -583,10 +583,10 @@ if ($id_groupe != null) {
 	if ($delai > 0) {
 		$cr_cours = "<p style=\"border: 1px solid grey; background-color: ".$color_fond_notices["c"]."; font-weight: bold;\">
 			<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les comptes rendus de s&eacute;ance de cours\">
-			Comptes rendus de séance</a></p>\n";
+			Passer à la saisie des<br />Comptes rendus de séance</a></p>\n";
 		$travaux_perso = "<p style=\"border: 1px solid grey; background-color: ".$color_fond_notices["t"]."; font-weight: bold;\">
 			<a href=\"index.php?edit_devoir=yes&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=". $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les notifications de travaux personnels &agrave; faire\">
-			Travaux personnels à effectuer</a></p>\n";
+			Passer à la saisie des<br />Travaux personnels à effectuer</a></p>\n";
 		// Si la notice d'info est en modification, on affiche les deux liens
 		if (isset($info)) {
 			echo $cr_cours.$travaux_perso;
@@ -1041,6 +1041,10 @@ if (mysql_num_rows($appel_cahier_texte_liste) > 1) {
 	  $contenu ='';
   }
 }
+
+echo "<div style=\"position:absolute;top:310px;left:30%;border:2px solid black;background-color:".$color_fond_notices[$type_couleur].";width:610px;height:20px;text-align:center;\">
+	<span style='font-weight:bold'>Saisie ".(($type_couleur == "t") ? "des Travaux personnels à effectuer" : "du compte-rendu de séance")."</span>
+</div>\n";
 
 // ======================= Correctif Pascal Fautrero : permet d'afficher la fenêtre de saisie dans une fenêtre flottante
 

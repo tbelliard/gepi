@@ -880,6 +880,56 @@ class Eleve extends BaseEleve {
 	    return $this->getAbsenceEleveSaisiesFilterByDate($dt, $dt_fin_creneau);
 	}
 
+        /**
+	 *
+	 * Retourne une liste de saisies type retard pour le creneau et le jour donné.
+	 *
+	 * @param      EdtCreneau $edtcreneau
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 *
+         * @return PropelColection AbsenceEleveSaisie[]
+	 */
+	public function getRetardsDuCreneau($edtcreneau = null, $v = 'now') {
+	    if ($edtcreneau == null) {
+		$edtcreneau = EdtCreneauPeer::retrieveEdtCreneauActuel($v);
+	    }
+
+	    if (!($edtcreneau instanceof EdtCreneau)) {
+		throw new PropelException('Le premier argument doit etre de la classe EdtCreneau');
+	    }
+
+	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+	    // -- which is unexpected, to say the least.
+	    //$dt = new DateTime();
+	    if ($v === null || $v === '') {
+		    $dt = null;
+	    } elseif ($v instanceof DateTime) {
+		    $dt = clone $v;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($v)) { // if it's a unix timestamp
+				    $dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt = new DateTime($v);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+		    }
+	    }
+
+	    $dt->setTime($edtcreneau->getHeuredebutDefiniePeriode('H'), $edtcreneau->getHeuredebutDefiniePeriode('i'), 0);
+	    $dt_fin_creneau = clone $dt;
+	    $dt_fin_creneau->setTime($edtcreneau->getHeurefinDefiniePeriode('H'), $edtcreneau->getHeurefinDefiniePeriode('i'), 0);
+
+	    return $this->getRetards($dt, $dt_fin_creneau);
+	}
+
   	/**
 	 *
 	 * Retourne une liste de saisie dont la periode de temps coincide avec les dates passees en paremetre (methode optimisee)
@@ -1071,82 +1121,66 @@ class Eleve extends BaseEleve {
 
 	/**
 	 *
-	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
-	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
-	 * Pour l'apres midi la date est 23/05/2010 à 12:30
+	 * Retourne la liste de toutes les période de notes pour lesquelles l'eleve a ete affecte
 	 *
-	 * @param      DateTime $date_debut
-	 * @param      DateTime $date_fin
 	 *
-	 * @return PropelCollection DateTime[]
+	 * @return PropelObjectCollection PeriodeNote[]
 	 */
-	public function getDemiJourneesAbsence($date_debut=null, $date_fin = null) {
-        $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
-        return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
-    }
+	public function getPeriodeNotes() {
+	    if(null === $this->collPeriodeNotes) {
+		    if ($this->isNew() && null === $this->collPeriodeNotes) {
+			    // return empty collection
+			    $this->initPeriodeNotes();
+		    } else {
+			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode ORDER by periodes.NUM_PERIODE";
+			    $con = Propel::getConnection(null, Propel::CONNECTION_READ);
+			    $stmt = $con->prepare($sql);
+			    $stmt->execute();
+
+			    $formatter = new PropelObjectFormatter();
+			    $formatter->setDbName(PeriodeNotePeer::DATABASE_NAME);
+			    $formatter->setClass('PeriodeNote');
+			    $formatter->setPeer('PeriodeNotePeer');
+			    $formatter->setAsColumns(array());
+			    $formatter->setHasLimit(false);
+			    $this->collPeriodeNotes = $formatter->format($stmt);
+			    
+//			    $collPeriodeNotes = PeriodeNoteQuery::create()->useClasseQuery()->useJEleveClasseQuery()->filterByEleve($this)->endUse()->endUse()
+//				    ->where('j_eleves_classes.periode = periodes.num_periode')
+//				    ->setComment('log pour sql manuel')
+//				    ->distinct()->find();
+//			    $this->collPeriodeNotes = $collPeriodeNotes;
+		    }
+	    }
+	    return $this->collPeriodeNotes;
+	}
 
 	/**
 	 *
-	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
-	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
-	 * Pour l'apres midi la date est 23/05/2010 à 12:30
-     * Il faut en entré une collection de saisies ordonnée par date de debut
+	 * Hydrate la collection des pÃ©riodes de notes (il faut une requete adÃ©quate : EleveQuery->joinWithPeriodeNotes()
 	 *
-	 * @param      PropelObjectCollection $abs_saisie_col collection de saisies d'absence ordonne par date de début
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     Boolean
 	 *
-	 * @return PropelCollection DateTime[]
 	 */
-	public function getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut=null, $date_fin=null) {
-	    if ($abs_saisie_col->isEmpty()) {
-		return new PropelCollection();
+	public function hydratePeriodeNotes() {
+	    $this->initPeriodeNotes();
+	    foreach ($this->getJEleveClasses() as $JEleveClasses) {
+		if ($JEleveClasses->getClasse() != null && $JEleveClasses->getClasse()->getProtectedCollPeriodeNote() != null) {
+		    foreach ($JEleveClasses->getClasse()->getProtectedCollPeriodeNote() as $periode_note) {
+			if ($periode_note->getNumPeriode() == $JEleveClasses->getPeriode()) {
+			    $this->collPeriodeNotes->add($periode_note);
+			    break;
+			}
+		    }
+		}
 	    }
-	    
-	    //on filtre les saisie qu'on ne veut pas compter
-	    $abs_saisie_col_filtre = new PropelCollection();
-	    $abs_saisie_col_2 = clone $abs_saisie_col;
-	    foreach ($abs_saisie_col as $saisie) {
-	        if ($saisie->getEleveId() != $this->getId()) {
-	            continue;
-	        }
-    		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-    		    $contra = false;
-                    //on va vérifier si il n'y a pas une saisie contradictoire simultanée
-                    foreach ($abs_saisie_col_2 as $saisie_contra) {
-                    if ($saisie_contra->getEleveId() != $this->getId()) {
-                        continue;
-                    }
-                        if ($saisie_contra->getId() != $saisie->getId()
-                                && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-                                && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-                                && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
-                                //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-                                && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
-                            $contra = true;
-                            break;
-                        }
-                    }
-                    if (!$contra) {
-    			$abs_saisie_col_filtre->append($saisie);
-    		    }
-    		}
-	    }
-        if ($date_fin != null) {
-            $date_fin_iteration = clone $date_fin;
-        } else {
-            $date_fin_iteration = null;
-        }
-        if ($this->getDateSortie() != null && ($date_fin_iteration == null || $this->getDateSortie('U') < $date_fin_iteration->format('U'))) {
-            $date_fin_iteration = $this->getDateSortie(null);
-			$date_fin_iteration->modify('-1 minute');
-        }
-
-	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
-	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
 
         /**
 	 *
-	 * Retourne une collection contenant les saisies des absences à prendre en compte dans les decomptes de demi-journées
+	 * Retourne une collection brute de saisies contenant les absences à prendre en compte dans les decomptes de demi-journées
 	 * entre deux dates
 	 *
 	 * @param      DateTime $date_debut
@@ -1154,7 +1188,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection  AbsenceEleveSaisie[]
 	 */
-	public function getAbsColDecompteDemiJournee($date_debut= null, $date_fin= null) {
+	public function getAbsenceEleveSaisiesParDate($date_debut= null, $date_fin= null) {
 	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
 	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
 	    else {$request_query_hash .= 'null';}
@@ -1165,18 +1199,113 @@ class Eleve extends BaseEleve {
 	    if (isset($_REQUEST[$request_query_hash]) && $_REQUEST[$request_query_hash] != null) {
 		$abs_saisie_col = $_REQUEST[$request_query_hash];
 	    } else {
-		$abs_saisie_col =  AbsenceEleveSaisieQuery::create()
-		    ->filterByEleve($this)
-		    ->filterByPlageTemps($date_debut, $date_fin)
-		    ->orderByDebutAbs(Criteria::ASC)
-		    ->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
-		    ->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
-		    ->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType')
-		    ->distinct()
-		    ->find();
-		$_REQUEST[$request_query_hash] = $abs_saisie_col;
+                if ($date_debut== null && $date_fin== null) {
+                    $abs_saisie_col = parent::getAbsenceEleveSaisies();
+                } else {
+                    $abs_saisie_col =  AbsenceEleveSaisieQuery::create()
+                        ->filterByEleve($this)
+                        ->filterByPlageTemps($date_debut, $date_fin)
+                        ->orderByDebutAbs(Criteria::ASC)
+                        ->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
+                        ->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
+                        ->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType')
+                        ->distinct()
+                        ->find();
+                }
+                $_REQUEST[$request_query_hash] = $abs_saisie_col;
 	    }
 	    return $abs_saisie_col;
+	}
+
+
+        /**
+	 *
+	 * Renvoi une collection filtrée de saisies qui montrent un manquement à l'obligation de présence pour le décompte des demi-journées.
+         * Une saisie qui est contré par une saisie de présence n'est pas dans la liste de retour.
+	 *
+	 * @param      DateTime $dateDebut
+	 * @param      DateTime $dateFin
+	 * @param      Boolean $non_justifiee
+         * Si $non_justifiee est à false on renvoi toutes les saisies, si c'est à true on ne renvoi que les saisies non justifiée
+	 * @return     PropelObjectCollection
+	 *
+	 */
+	public function  getAbsenceEleveSaisiesDecompteDemiJournees($dateDebut = null, $dateFin = null, $non_justifiee = false) {
+ 	    $abs_saisie_col = $this->getAbsenceEleveSaisiesParDate($dateDebut, $dateFin);
+	    //on filtre les saisie qu'on ne veut pas compter
+	    $abs_saisie_col_filtre = new PropelCollection();
+	    $abs_saisie_englobante = clone $abs_saisie_col;
+	    foreach ($abs_saisie_col as $saisie) {
+	        if ($saisie->getEleveId() != $this->getId()) {
+	            continue;
+	        }
+    		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && (!$non_justifiee || !$saisie->getJustifiee())) {
+                    //on va vérifier dans la même liste de saisies si il n'y a pas une autre saisie englobante et contradictoire à celle-ci
+		    $contra = false;
+                    foreach ($abs_saisie_englobante as $saisie_contra) {
+                        if ($saisie_contra->getId() == $saisie->getId()) continue;//c'est la meme saisie donc on a rien de spécial à faire
+                        if ($saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue; //la saisie contradictoire est marquée erreur de saisie donc on a rien à faire
+                        if (($saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') < $saisie_contra->getFinAbs('U'))
+                                || ($saisie->getDebutAbs('U') > $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')))
+                        {
+                            //on a une saisie strictement plus large
+                            if ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence() || ($non_justifiee && $saisie_contra->getJustifiee())) {
+                                //on est contré par une saisie plus large qui n'est pas un manquement de présence ou qui est justifiée (selon un parametre)
+                                $contra = true;
+                                break;
+                            }
+                            continue;
+                        }
+                        if ($saisie->getDebutAbs('U') == $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') == $saisie_contra->getFinAbs('U')) {
+                            //on a des saisies identiques au niveau des dates
+                            if ($saisie_contra->getRetard() || (!$saisie_contra->getManquementObligationPresence() && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y')) {
+                                //on a une saisie qui contre le manquement à l'obligation de présence
+                                $contra = true;
+                                break;
+                            }
+                            if ($non_justifiee && $saisie_contra->getJustifiee() && getSettingValue("abs2_saisie_multi_type_non_justifiee")=='n') {
+                                //on a une saisie qui contre car elle est justifié
+                                $contra = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!$contra) {
+    			$abs_saisie_col_filtre->append($saisie);
+    		    } else {
+                        //on retire la saisie contrée de la liste de test des saisise possiblement englobante pour optimiser
+                        $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie));
+                    }
+    		}
+	    }
+            return $abs_saisie_col_filtre;
+        }
+
+	/**
+	 *
+	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
+	 *
+	 * @param      DateTime $date_debut
+	 * @param      DateTime $date_fin
+	 *
+	 * @return PropelCollection DateTime[]
+	 */
+	public function getDemiJourneesAbsence($date_debut = null, $date_fin = null) {
+	    $abs_saisie_col_filtrees = $this->getAbsenceEleveSaisiesDecompteDemiJournees($date_debut, $date_fin, $non_justifiee = false);
+            if ($date_fin != null) {
+                $date_fin_iteration = clone $date_fin;
+            } else {
+                $date_fin_iteration = null;
+            }
+            if ($this->getDateSortie() != null && ($date_fin_iteration == null || $this->getDateSortie('U') < $date_fin_iteration->format('U'))) {
+                $date_fin_iteration = $this->getDateSortie(null);
+                            $date_fin_iteration->modify('-1 minute');
+            }
+
+	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
+	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtrees, $date_debut, $date_fin_iteration);
 	}
 
 	/**
@@ -1213,59 +1342,8 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection DateTime[]
 	 */
-	public function getDemiJourneesNonJustifieesAbsence($date_debut=null, $date_fin = null) {
-	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
-	    return ($this->getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
-	}
-	
-	/**
-	 *
-	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence non justifiees
-	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
-	 * Pour l'apres midi la date est 23/05/2010 à 12:30
-	 *
-	 * @param      PropelObjectCollection $abs_saisie_col collection de saisies d'absence ordonne par date de début
-	 * @param      DateTime $date_debut
-	 * @param      DateTime $date_fin
-	 *
-	 * @return PropelCollection DateTime[]
-	 */
-	public function getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut=null,$date_fin=null) {
-	    if ($abs_saisie_col->isEmpty()) {
-			return new PropelCollection();
-	    }
-
-	    //on filtre les saisie qu'on ne veut pas compter
-	    $abs_saisie_col_filtre = new PropelCollection();
-	    $abs_saisie_col_2 = clone $abs_saisie_col;
-	    foreach ($abs_saisie_col as $saisie) {
-	        if ($saisie->getEleveId() != $this->getId()) {
-	            continue;
-	        }
-	        if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && !$saisie->getJustifiee()) {
-		    $contra = false;
-		    if (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y') {
-			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
-			foreach ($abs_saisie_col_2 as $saisie_contra) {
-    	        if ($saisie_contra->getEleveId() != $this->getId()) {
-    	            continue;
-    	        }
-			    if ($saisie_contra->getId() != $saisie->getId()
-				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
-				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence() || $saisie_contra->getJustifiee())) {
-				$contra = true;
-				break;
-			    }
-			}
-		    }
-		    if (!$contra) {
-			$abs_saisie_col_filtre->append($saisie);
-		    }
-		}
-	    }
+	public function getDemiJourneesNonJustifieesAbsence($date_debut = null, $date_fin = null) {
+	    $abs_saisie_col_filtrees = $this->getAbsenceEleveSaisiesDecompteDemiJournees($date_debut, $date_fin, true);
 
 	    if ($date_fin != null) {
 		$date_fin_iteration = clone $date_fin;
@@ -1279,7 +1357,7 @@ class Eleve extends BaseEleve {
             }
 
 	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
-	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
+	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtrees, $date_debut, $date_fin_iteration);
 	}
 
  	/**
@@ -1315,53 +1393,57 @@ class Eleve extends BaseEleve {
 	 */
 	public function getRetards($date_debut=null, $date_fin = null) {
 
-		if (($date_fin != null) && ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin->format('U'))) {
-			$date_fin = $this->getDateSortie(null);
-		}
-		
-	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
-	    if ($abs_saisie_col->isEmpty()) {
-			return new PropelCollection();
-	    }
-
-	    $result = new PropelCollection();
-	    $abs_saisie_col_2 = clone $abs_saisie_col;
-	    //on va faire le décompte officiel des retard
-	    foreach ($abs_saisie_col as $saisie) {
-	        if ($saisie->getEleveId() != $this->getId()) {
-	            continue;
-	        }
-	        if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-			    $contra = false;
-	    		//on va vérifier si il n'y a pas une saisie contradictoire simultanée
-				foreach ($abs_saisie_col_2 as $saisie_contra) {
-        	        if ($saisie_contra->getEleveId() != $this->getId()) {
-        	            continue;
-        	        }
-				    if ($saisie_contra->getId() != $saisie->getId()
-					    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-					    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-					    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
-                                                                //on a une saisie plus large
-								$contra = true;
-								break;
-					}
-			    }
-			    if (!$contra) {
-					$result->append($saisie);
-			    }
-			}
-	    }
-	    
-	    //on va enlever les retards qui sont sur des périodes non ouvertes de l'établissement
-        require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
-        $result_final = new PropelCollection();
-        foreach ($result as $saisie) {
-            if (EdtHelper::isJourneeOuverte($saisie->getDebutAbs(null))
-                && EdtHelper::isHoraireOuvert($saisie->getDebutAbs(null))) {
-                $result_final->append($saisie);
+            if (($date_fin != null) && ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin->format('U'))) {
+                $date_fin = $this->getDateSortie(null);
             }
-        }
+
+            $abs_saisie_col = $this->getAbsenceEleveSaisiesParDate($date_debut, $date_fin);
+            if ($abs_saisie_col->isEmpty()) {
+                return new PropelCollection();
+            }
+
+            $result = new PropelCollection();
+            $abs_saisie_englobante = clone $abs_saisie_col;
+            //on va faire le décompte officiel des retard
+            foreach ($abs_saisie_col as $saisie) {
+                if ($saisie->getEleveId() != $this->getId()) {
+                    continue;
+                }
+                if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
+                    $contra = false;
+                    //on va vérifier si il n'y a pas une autre saisie englobante (et contradictoire pour ce decompte)
+                    foreach ($abs_saisie_englobante as $saisie_contra) {
+                        if ($saisie_contra->getEleveId() != $this->getId()) {
+                            continue;
+                        }
+                        if ($saisie_contra->getId() != $saisie->getId()
+                                && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+                                && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+                                && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE())
+                        {
+                            //on a une saisie plus large
+                            $contra = true;
+                            break;
+                        }
+                    }
+                    if (!$contra) {
+                        $result->append($saisie);
+                    } else {
+                        //on retire la saisie contrée de la liste de test des saisise possiblement englobante pour optimiser
+                        $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie));
+                    }
+                }
+            }
+
+            //on va enlever les retards qui sont sur des périodes non ouvertes de l'établissement
+            require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
+            $result_final = new PropelCollection();
+            foreach ($result as $saisie) {
+                if (EdtHelper::isJourneeOuverte($saisie->getDebutAbs(null))
+                    && EdtHelper::isHoraireOuvert($saisie->getDebutAbs(null))) {
+                    $result_final->append($saisie);
+                }
+            }
 	    return $result_final;
 	}
 
@@ -1387,84 +1469,6 @@ class Eleve extends BaseEleve {
 	    return $this->getRetards($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
 
-	/**
-	 *
-	 * Retourne la liste de toutes les période de notes pour lesquelles l'eleve a ete affecte
-	 *
-	 *
-	 * @return PropelObjectCollection PeriodeNote[]
-	 */
-	public function getPeriodeNotes() {
-	    if(null === $this->collPeriodeNotes) {
-		    if ($this->isNew() && null === $this->collPeriodeNotes) {
-			    // return empty collection
-			    $this->initPeriodeNotes();
-		    } else {
-			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode ORDER by periodes.NUM_PERIODE";
-			    $con = Propel::getConnection(null, Propel::CONNECTION_READ);
-			    $stmt = $con->prepare($sql);
-			    $stmt->execute();
-
-			    $formatter = new PropelObjectFormatter();
-			    $formatter->setDbName(PeriodeNotePeer::DATABASE_NAME);
-			    $formatter->setClass('PeriodeNote');
-			    $formatter->setPeer('PeriodeNotePeer');
-			    $formatter->setAsColumns(array());
-			    $formatter->setHasLimit(false);
-			    $this->collPeriodeNotes = $formatter->format($stmt);
-			    
-//			    $collPeriodeNotes = PeriodeNoteQuery::create()->useClasseQuery()->useJEleveClasseQuery()->filterByEleve($this)->endUse()->endUse()
-//				    ->where('j_eleves_classes.periode = periodes.num_periode')
-//				    ->setComment('log pour sql manuel')
-//				    ->distinct()->find();
-//			    $this->collPeriodeNotes = $collPeriodeNotes;
-		    }
-	    }
-	    return $this->collPeriodeNotes;
-	}
-
-
-	/**
-	 *
-	 * Renvoi une collection de saisies qui montrent un manquement à l'obligation de présence.
-         * Une saisie qui est contré par une saisie de présence n'est pas retournée.
-	 *
-	 * @param      DateTime $dateDebut
-	 * @param      DateTime $dateFin
-	 * @return     PropelObjectCollection
-	 *
-	 */
-	public function  getAbsenceEleveSaisiesManquementObligationPresence($dateDebut = null, $dateFin = null) {
- 	    $abs_saisie_col = $this->getAbsenceEleveSaisiesFilterByDate($dateDebut, $dateFin);
-	    //on filtre les saisie qu'on ne veut pas compter
-	    $abs_saisie_col_filtre = new PropelCollection();
-	    $abs_saisie_col_2 = clone $abs_saisie_col;
-	    foreach ($abs_saisie_col as $saisie) {
-		if ($saisie->getManquementObligationPresence()) {
-		    $contra = false;
-		    if (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y') {
-			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
-			foreach ($abs_saisie_col_2 as $saisie_contra) {
-			    if ($saisie_contra->getId() != $saisie->getId()
-				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
-				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-				    && (!$saisie_contra->getManquementObligationPresence())) {
-				$contra = true;
-				break;
-			    }
-			}
-		    }
-		    if (!$contra) {
-                        //on a une saisie qui est en manquement et qui n'est pas contrée
-			$abs_saisie_col_filtre->append($saisie);
-		    }
-		}
-	    }
-            return $abs_saisie_col_filtre;
-        }
-
    	/**
 	 *
 	 * Retourne une liste d'absence qui montrent un manquement à l'obligation de présence pour le creneau et le jour donné.
@@ -1475,7 +1479,7 @@ class Eleve extends BaseEleve {
 	 *
  	 * @return PropelColection AbsenceEleveSaisie[]
 	 */
-	public function getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($edtcreneau = null, $v = 'now') {
+	public function getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($edtcreneau = null, $v = 'now') {
 	    if ($edtcreneau == null) {
 		$edtcreneau = EdtCreneauPeer::retrieveEdtCreneauActuel($v);
 	    }
@@ -1512,7 +1516,7 @@ class Eleve extends BaseEleve {
 	    $dt_fin_creneau = clone $dt;
 	    $dt_fin_creneau->setTime($edtcreneau->getHeurefinDefiniePeriode('H'), $edtcreneau->getHeurefinDefiniePeriode('i'), 0);
 
-	    return $this->getAbsenceEleveSaisiesManquementObligationPresence($dt, $dt_fin_creneau);
+	    return $this->getAbsenceEleveSaisiesDecompteDemiJournees($dt, $dt_fin_creneau);
 	}
 
         /**
@@ -1618,29 +1622,6 @@ class Eleve extends BaseEleve {
 
 	    //rien n'a ete saisie (aucun cours a cette heure), en renvoi non present par defaut
 	    return false;
-	}
-
-	/**
-	 *
-	 * Hydrate la collection des pÃ©riodes de notes (il faut une requete adÃ©quate : EleveQuery->joinWithPeriodeNotes()
-	 *
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
-	 * @return     Boolean
-	 *
-	 */
-	public function hydratePeriodeNotes() {
-	    $this->initPeriodeNotes();
-	    foreach ($this->getJEleveClasses() as $JEleveClasses) {
-		if ($JEleveClasses->getClasse() != null && $JEleveClasses->getClasse()->getProtectedCollPeriodeNote() != null) {
-		    foreach ($JEleveClasses->getClasse()->getProtectedCollPeriodeNote() as $periode_note) {
-			if ($periode_note->getNumPeriode() == $JEleveClasses->getPeriode()) {
-			    $this->collPeriodeNotes->add($periode_note);
-			    break;
-			}
-		    }
-		}
-	    }
 	}
 
 	/**
@@ -1801,7 +1782,7 @@ class Eleve extends BaseEleve {
                 $DMabsenceNonJustifiesCol = $this->getDemiJourneesNonJustifieesAbsence($dateDebutClone,$dateFinClone);
 		$DMabsencesCol			= $this->getDemiJourneesAbsence($dateDebutClone,$dateFinClone);
 		$retards				= $this->getRetards($dateDebutClone,$dateFinClone);
-		$saisiesCol				= clone $this->getAbsColDecompteDemiJournee($dateDebutClone, $dateFinClone);//cette collection de saisie va nous permettre de récupérer les notifications et les motifs
+		$saisiesCol				= clone $this->getAbsenceEleveSaisiesParDate($dateDebutClone, $dateFinClone);//cette collection de saisie va nous permettre de récupérer les notifications et les motifs
 				
 		// préférence admin pour la demi journée
 	    $heure_demi_journee = 11;

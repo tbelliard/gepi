@@ -215,6 +215,17 @@ if (isset($_REQUEST["source"])) {
  * Connection à la base
  */
    require_once($chemin_relatif_gepi."/lib/mysql.inc");
+
+/**
+ * Pour permettre de caser Gepi dans un iframe avec M$IE sur certains ENT
+ */
+   $sql="SELECT 1=1 FROM setting WHERE name='header_p3p' AND value='yes';";
+   $test=mysql_query($sql);
+   if(mysql_num_rows($test)>0) {
+      //header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
+      header('P3P:CP="NON DSP COR CURa OUR NOR UNI"');
+   }
+
  /**
   * Ajout pour utiliser ou pas les fonctions mb_
   */

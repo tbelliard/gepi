@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -112,6 +112,32 @@ if (isset($_POST['action'])) {
         }
 
         if (!$res) $msg .= "Erreur lors de la mise à jour de la catégorie.";
+
+    } elseif($_POST['action']=='modif_ordre_categories') {
+		check_token();
+
+		$tab_priorites_categories=array();
+		$temoin_pb_ordre_categories="n";
+		foreach($_POST as $key => $value) {
+			if(preg_match("/^priority_/", $key)) {
+				if(in_array($value, $tab_priorites_categories)) {
+					$temoin_pb_ordre_categories="y";
+					$value=max($tab_priorites_categories)+1;
+				}
+				$tab_priorites_categories[]=$value;
+
+				$cat_id=preg_replace("/^priority_/", "", $key);
+				$sql="UPDATE matieres_categories SET priority = '" . $value . "' WHERE id = '".$cat_id."';";
+				//echo "$sql<br />";
+				$res = mysql_query($sql);
+
+				if (!$res) $msg .= "Erreur lors de la mise à jour de la catégorie.";
+			}
+		}
+
+		if($temoin_pb_ordre_categories=="y") {
+			$msg.="<br /><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Des mesures ont été prises pour imposer des ordres différents, mais il se peut que l'ordre ne vous convienne pas.<br />\n";
+		}
     } elseif ($_POST['action'] == "delete") {
         // On teste d'abord l'ID
         if (!is_numeric($_POST['categorie_id'])) {
@@ -128,7 +154,8 @@ if (isset($_POST['action'])) {
                 $res = mysql_query("SELECT matiere FROM matieres WHERE categorie_id = '" . $_POST['categorie_id'] ."'");
                 $test = mysql_num_rows($res);
 
-                $res2 = mysql_query("SELECT DISTINCT id_groupe, c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
+                //$res2 = mysql_query("SELECT DISTINCT id_groupe, c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
+                $res2 = mysql_query("SELECT DISTINCT c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
                 $test2 = mysql_num_rows($res2);
 
                 if ($test>0) {
@@ -144,7 +171,7 @@ if (isset($_POST['action'])) {
 					$liste_classes_associees="";
 					while($lig=mysql_fetch_object($res2)) {
 						if($liste_classes_associees!='') {$liste_classes_associees.=", ";}
-						$liste_classes_associees.="<a href='../groupes/edit_class.php?id_classe=$lig->id_classe' target='_blank'>".get_class_from_id($lig->id_classe)."</a>";
+						$liste_classes_associees.="<a href='../groupes/edit_class.php?id_classe=$lig->id' target='_blank'>".get_class_from_id($lig->id)."</a>";
 					}
                     $msg .= "La catégorie n'a pas pu être supprimée, car elle a déjà été associée à des enseignements pour des classes (<i>$liste_classes_associees</i>).<br/>";
                 }
@@ -185,16 +212,22 @@ elseif((isset($_GET['action']))&&($_GET['action'] == "corrige_accents_html")) {
 	unset($_GET['action']);
 }
 
+
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des catégories de matières";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
+//debug_var();
+
 if (isset($_GET['action'])) {
     // On a une action : soit on ajoute soit on édite soit on delete
     ?>
-    <p class=bold><a href="matieres_categories.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-    <?php
+    <p class="bold"><a href="matieres_categories.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+
+
+
+<?php
     if ($_GET['action'] == "add") {
         // On ajoute une catégorie
         // On affiche le formulaire d'ajout
@@ -255,8 +288,32 @@ if (isset($_GET['action'])) {
 } else {
     // Pas d'action. On affiche la liste des rubriques
     ?>
-    <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="matieres_categories.php?action=add">Ajouter une catégorie</a></p>
-    <p><em>Remarque&nbsp;:</em> la catégorie par défaut ne peut pas être supprimée. Elle est automatiquement associée aux matières existantes et aux nouvelles matières, et pour tous les groupes. Vous pouvez la renommer (<em>Autres, Hors catégories, etc.</em>), mais laissez toujours un nom générique.</p>
+    <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="matieres_categories.php?action=add">Ajouter une catégorie</a></p>
+    <!--p style='text-indent:-6em;padding-left:6em;'><em>Remarque&nbsp;:</em> la catégorie par défaut ne peut pas être supprimée. Elle est automatiquement associée aux matières existantes et aux nouvelles matières, et pour tous les groupes. Vous pouvez la renommer (<em>Autres, Hors catégories, etc.</em>), mais laissez toujours un nom générique.</p-->
+
+	<?php
+		$tab_priorites_categories=array();
+		$temoin_pb_ordre_categories="n";
+		$sql="select * from matieres_categories;";
+		$res_cat=mysql_query($sql);
+		if(mysql_num_rows($res_cat)>0) {
+			while($lig_cat=mysql_fetch_object($res_cat)) {
+				$current_priority=$lig_cat->priority;
+				if(in_array($current_priority, $tab_priorites_categories)) {
+					$temoin_pb_ordre_categories="y";
+				}
+				$tab_priorites_categories[]=$current_priority;
+			}
+		}
+
+		if($temoin_pb_ordre_categories=="y") {
+			echo "<p style='color:red; text-indent:-6em;padding-left:6em;'><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Vous devriez corriger.</p>\n";
+		}
+
+		echo "<form action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
+		echo "<fieldset style='border:1px solid white; background-image: url(\"../images/background/opacite50.png\");'>\n";
+		echo add_token_field();
+	?>
 
     <table class='boireaus' width='100%' border='1' cellpadding='5' summary='Tableau des catégories'>
 <tr>
@@ -266,6 +323,12 @@ if (isset($_GET['action'])) {
     <th><p class='bold'>Supprimer</p></th>
 </tr>
     <?php
+	$max_priority_cat=0;
+	$get_max_cat = mysql_query("SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
+	if(mysql_num_rows($get_max_cat)>0) {
+		$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
+	}
+
 	$temoin_anomalie_categ_Aucune='n';
 	$alt=1;
     $res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories ORDER BY $orderby");
@@ -276,7 +339,18 @@ if (isset($_GET['action'])) {
         //echo "<td>".html_entity_decode($current_cat["nom_complet"])."</td>\n";
         echo "<td><a href='matieres_categories.php?action=edit&categorie_id=".$current_cat["id"]."'>".$current_cat["nom_court"]."</a></td>\n";
         echo "<td>".$current_cat["nom_complet"]."</td>\n";
-        echo "<td>".$current_cat["priority"]."</td>\n";
+        echo "<td>";
+
+			echo "<select name='priority_".$current_cat["id"]."' size='1'>\n";
+			for ($i=0;$i<max(100,$max_priority_cat);$i++) {
+				echo "<option value='$i'";
+				if ($current_cat["priority"] == $i) echo " SELECTED";
+				echo ">$i</option>\n";
+			}
+			echo "</select>\n";
+			//echo $current_cat["priority"];
+
+        echo "</td>\n";
         echo "<td>";
         if ($current_cat["id"] != "1") {
             echo "<form enctype='multipart/form-data' action='matieres_categories.php' name='formulaire' method=post>\n";
@@ -292,6 +366,14 @@ if (isset($_GET['action'])) {
 		if($current_cat["nom_court"]=='Aucune') {$temoin_anomalie_categ_Aucune='y';}
     }
     echo "</table>\n";
+
+	echo "
+	<center><input type='submit' name='enregistrer' value=\"Modifier l'ordre des catégories\" /></center>
+	<input type=hidden name='is_posted' value='yes' />
+	<input type=hidden name='action' value='modif_ordre_categories' />
+	</fieldset>
+	</form>\n";
+
 	if($temoin_anomalie_categ_Aucune=='y') {
 		echo "<p style='color:red'>ANOMALIE&nbsp;: Il ne devrait pas exister de catégorie intitulée 'Aucune'.<br />Voir <a href='http://www.sylogix.org/wiki/gepi/Enseignement_invisible'>http://www.sylogix.org/wiki/gepi/Enseignement_invisible</a> et <a href='http://www.sylogix.org/wiki/gepi/Suppr_Cat_Aucune'>http://www.sylogix.org/wiki/gepi/Suppr_Cat_Aucune</a> pour des explications</p>\n";
 	}
@@ -314,6 +396,18 @@ if (isset($_GET['action'])) {
 		}
 	}
 
+	echo "<br />
+<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li><p>La catégorie par défaut ne peut pas être supprimée.<br />
+	Elle est automatiquement associée aux matières existantes et aux nouvelles matières, et pour tous les groupes.<br />
+	Vous pouvez la renommer (<em>Autres, Hors catégories, etc.</em>), mais laissez toujours un nom générique.</p></li>
+	<li><p>L'ordre des catégories défini ici est pris en compte comme ordre par défaut pour les nouvelles classes.<br />
+	Pour les classes existantes, vous pouvez modifier l'ordre dans&nbsp;:<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='../classes/index.php'>Gestion des bases/Gestion des classes/&lt;Telle_classe&gt; Paramètres</a><br />
+	Vous pouvez aussi effectuer ce paramétrage par lots de classes&nbsp;:<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='../classes/classes_param.php#parametres_generaux'>Gestion des bases/Gestion des classes/Paramétrage des classes par lots</a></p></li>
+</ul>\n";
 }
 require("../lib/footer.inc.php");
 ?>

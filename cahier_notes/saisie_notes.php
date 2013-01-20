@@ -715,7 +715,12 @@ if(mysql_num_rows($res_devoirs)>1) {
 }
 echo "</span>\n";
 
-if((isset($id_devoir))&&($id_devoir!=0)) {echo "<a href=\"saisie_notes.php?id_conteneur=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Visualisation du CN </a>|";}
+if((isset($id_devoir))&&($id_devoir!=0)) {
+	echo "<a href=\"saisie_notes.php?id_conteneur=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Visualisation du Carnet de Notes\"> Visu.CN </a>|";
+
+	// Ca ne fonctionne pas: On ne récupère que le dernier devoir consulté,... parce qu'imprime_pdf.php récupère ce qui est mis en $_SESSION['data_pdf']
+	//echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Export PDF du Carnet de Notes\"> CN PDF </a>|";
+}
 
 if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 	//echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\">Créer une boîte</a>|";
@@ -727,7 +732,10 @@ if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 
 	echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> Créer une évaluation </a>|";
 }
-echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return VerifChargement()\" target=\"_blank\"> Imprimer au format PDF </a>|";
+
+echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return VerifChargement()\" target=\"_blank\" ";
+if((isset($id_devoir))&&($id_devoir!=0)) {echo "title=\"Impression des notes de l'évaluation au format PDF\"";} else {echo "title=\"Impression du Carnet de Notes au format PDF\"";}
+echo "> Imprimer au format PDF </a>|";
 
 echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/saisie_notes.php?id_conteneur=$id_conteneur\"> Signaler des erreurs d'affectation</a>";
 
@@ -1783,9 +1791,16 @@ if ($multiclasses) {
 echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 $indice_max_log_eleve=$i;
 
-echo "<b>Moyennes :</b></td>\n";
 $w_pdf[] = $w2;
-$data_pdf[$tot_data_pdf][] = "Moyennes";
+if ($id_devoir==0) {
+	$data_pdf[$tot_data_pdf][] = "Moyennes";
+	echo "<b>Moyennes :</b></td>\n";
+}
+else {
+	$data_pdf[$tot_data_pdf][] = "Moyenne";
+	echo "<b>Moyenne :</b></td>\n";
+}
+
 if ($multiclasses) {$data_pdf[$tot_data_pdf][] = "";}
 $k='0';
 while ($k < $nb_dev) {
@@ -1931,9 +1946,15 @@ if(getPref($_SESSION['login'], 'cn_avec_min_max', 'y')=='y') {
 
 if(getPref($_SESSION['login'], 'cn_avec_mediane_q1_q3', 'y')=='y') {
 	$tot_data_pdf++;
-	$data_pdf[$tot_data_pdf][]='Médianes :';
 	echo "<tr>\n";
-	echo "<td class='cn bold'><b>Médianes&nbsp;:</b></td>\n";
+	if ($id_devoir==0) {
+		$data_pdf[$tot_data_pdf][]='Médianes :';
+		echo "<td class='cn bold'><b>Médianes&nbsp;:</b></td>\n";
+	}
+	else {
+		$data_pdf[$tot_data_pdf][]='Médiane :';
+		echo "<td class='cn bold'><b>Médiane&nbsp;:</b></td>\n";
+	}
 	if ($multiclasses) {
 		echo "<td class='cn bold'>&nbsp;</td>\n";
 		$data_pdf[$tot_data_pdf][]='';

@@ -58,6 +58,11 @@ if (!checkAccess()) {
 	die();
 }
 
+if(!getSettingAOui('active_bulletins')) {
+	header("Location: ../accueil.php?msg=Module_inactif");
+	die();
+}
+
 //================================
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
 if($gepi_denom_mention=="") {
@@ -446,8 +451,19 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	// FORMULAIRE POUR LE RETOUR AU CHOIX DES PERIODES
 	echo "\n<!-- Formulaire de retour au choix des périodes -->\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form_retour'>\n";
+	$temoin_periode_non_close="n";
+	$tab_per_non_close=array();
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<input type='hidden' name='tab_id_classe[$i]' value='".$tab_id_classe[$i]."' />\n";
+		//if($temoin_periode_non_close=="n") {
+		for($j=0;$j<count($tab_periode_num);$j++) {
+			$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$tab_id_classe[$i]."' AND verouiller='N' AND num_periode='".$tab_periode_num[$j]."';";
+			$test_per=mysql_query($sql);
+			if(mysql_num_rows($test_per)>0) {
+				$tab_per_non_close[$tab_id_classe[$i]][]=$tab_periode_num[$j];
+				$temoin_periode_non_close="y";
+			}
+		}
 	}
 	for($j=0;$j<count($tab_periode_num);$j++) {
 		echo "<input type='hidden' name='tab_periode_num[$j]' value='".$tab_periode_num[$j]."' />\n";
@@ -455,6 +471,9 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "</form>\n";
 	//===========================
 
+	if($temoin_periode_non_close=="y") {
+		echo "<br /><p style='text-indent:-7em; margin-left:7em;'><strong style='color:red; text-decoration:blink;'>ATTENTION&nbsp;:</strong> Les saisies ne sont pas closes (<em>période encore ouverte en saisie</em>).<br />Cela signifie que les notes et appréciations peuvent encore changer.<br />Les bulletins vont être marqués d'une indication comme quoi la période n'est pas close.<br />Vous ne devriez pas imprimer ces bulletins.<br />Vous pouvez tester l'affichage pour ajuster les paramètres d'impression, mais vous devriez verrouiller la période avec un compte 'scolarité' avant d'imprimer les bulletins.</p><br />\n";
+	}
 
 	//echo "<p class='bold'>Sélection des élèves:</p>\n";
 	echo "<p class='bold'>Sélection des élèves et paramètres:</p>\n";
@@ -941,7 +960,11 @@ function ToutDeCocher() {
 			//echo "<th>Période $j</th>\n";
 			$sql="SELECT nom_periode FROM periodes WHERE id_classe='".$tab_id_classe[$i]."' AND num_periode='".$tab_periode_num[$j]."';";
 			$res_per=mysql_query($sql);
-			echo "<th>\n";
+			echo "<th";
+			if((isset($tab_per_non_close[$tab_id_classe[$i]]))&&(in_array($tab_periode_num[$j], $tab_per_non_close[$tab_id_classe[$i]]))) {
+				echo " style='background-color:red' title='Période non close. Vous ne devriez pas imprimer ces bulletins.'";
+			}
+			echo ">\n";
 			$lig_per=mysql_fetch_object($res_per);
 
 			echo "<input type='hidden' name='tab_periode_num[$j]' value='".$tab_periode_num[$j]."' />\n";
@@ -951,7 +974,7 @@ function ToutDeCocher() {
 				echo $lig_per->nom_periode;
 			}
 			else {
-				echo "<span style='color:red'>X</span>";
+				echo "<span style='color:orange' title='Nom de période inconnu???'>X</span>";
 			}
 
 			echo "<br />\n";
@@ -1336,6 +1359,7 @@ else {
 		}
 	}
 
+	$nb_bulletins_edites=0;
 	// Boucle sur les classes
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 
@@ -1985,13 +2009,17 @@ else {
 							$pdf->SetXY(20,45);
 							$pdf->Cell(150,7, "mais les priorités d'affichage des catégories ne sont pas correctement définies,",0,2,'');
 							$pdf->SetXY(20,50);
-							$pdf->Cell(150,7, "ni au niveau global dans Gestion des matières,",0,2,'');
+							$pdf->Cell(150,7, "ni au niveau global dans Gestion des matières/Éditer les catégories de matières,",0,2,'');
 							$pdf->SetXY(20,55);
-							$pdf->Cell(150,7, "ni au niveau particulier dans Gestion des classes/<Classe> Enseignements",0,2,'');
+							$pdf->Cell(150,7, "ni au niveau particulier dans Gestion des classes/<Classe> Paramètres",0,2,'');
 							$pdf->SetXY(20,65);
 							$pdf->Cell(150,7, "Il ne faut pas que deux catégories aient la même priorité",0,2,'');
 							$pdf->SetXY(20,70);
 							$pdf->Cell(150,7, "sans quoi il peut survenir des anomalies d'ordre des matières sur le bulletin.",0,2,'');
+							$pdf->SetXY(20,80);
+							$pdf->Cell(150,7, "Vous pouvez définir un ordre des catégories pour toutes les classes via",0,2,'');
+							$pdf->SetXY(20,85);
+							$pdf->Cell(150,7, "   Gestion des classes/Paramétrage des classes par lots",0,2,'');
 
 							$nom_bulletin = 'Erreur_bulletin.pdf';
 							$pdf->Output($nom_bulletin,'I');
@@ -3263,13 +3291,15 @@ else {
 							$tableau_eleve['no_gep'][]=$tab_ele['no_gep'];
 							$tableau_eleve['nom_prenom'][]=remplace_accents($tab_ele['nom']."_".$tab_ele['prenom'],'all');
 						}
+
+						$nb_bulletins_edites++;
 					}
 				}
 			}
 		}
 	}
 
-
+	//echo "\$nb_bulletins_edites=$nb_bulletins_edites<br />";
 
 	//========================================================================
 	// A CE STADE LE TABLEAU $tab_bulletin EST RENSEIGNé
@@ -3638,7 +3668,28 @@ else {
 		}
 	}
 
+	//echo "\$compteur_bulletins=$compteur_bulletins<br />";
+
 	if($mode_bulletin=="html") {
+		if($compteur_bulletins==0) {
+			echo "<h1 style='color:red'>Anomalie</h1>\n";
+			echo "<p>Aucun bulletin ne semble avoir été édité.<br />C'est un problème qui peut apparaître si vous avez demandé à afficher les catégories de matières alors que les catégories sont mal paramétrées.<br />Effectuez un Nettoyage des tables&nbsp;: ";
+			if($_SESSION['statut']=='administrateur') {
+				echo "<a href='../utilitaires/clean_tables.php?maj=controle_categories_matieres".add_token_in_url()."'>Gestion générale/Nettoyage des tables/Vérifier les catégories de matières</a>";
+			}
+			else {
+				echo "Gestion générale/Nettoyage des tables/Vérifier les catégories de matières";
+			}
+			echo ".<br />Et contrôlez par ailleurs l'ordre des catégories dans ";
+			if($_SESSION['statut']=='administrateur') {
+				echo "<a href='../classes/index.php'>Gestion des bases/Gestion des classes/&ltTelle_classe;&gt; Paramètres</a>";
+			}
+			else {
+				echo "Gestion des bases/Gestion des classes/&lt;Telle_classe&gt; Paramètres";
+			}
+			echo "<br />(<em>deux catégories ne doivent pas avoir le même rang</em>).</p>\n";
+		}
+
 		echo "<script type='text/javascript'>
 	document.getElementById('infodiv').style.display='none';
 
@@ -3680,6 +3731,40 @@ On a aussi ajouté des champs dans la table 'classes' pour les relevés de notes
 	require("../lib/footer.inc.php");
 }
 elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
+
+	if($compteur_bulletins==0) {
+		$pdf->AddPage(); //ajout d'une page au document
+		$pdf->SetFont('DejaVu');
+		$pdf->SetXY(20,20);
+		$pdf->SetFontSize(14);
+		$pdf->Cell(90,7, "Anomalie",0,2,'');
+
+		$pdf->SetXY(20,40);
+		$pdf->SetFontSize(10);
+		$pdf->Cell(150,7, "Aucun bulletin ne semble avoir été édité.",0,2,'');
+		$pdf->SetXY(20,45);
+		$pdf->Cell(150,7, "C'est un problème qui peut apparaître si vous avez demandé à afficher les catégories de matières",0,2,'');
+		$pdf->SetXY(20,50);
+		$pdf->Cell(150,7, "alors que les catégories sont mal paramétrées.",0,2,'');
+
+		$pdf->SetXY(20,60);
+		$pdf->Cell(150,7, "Effectuez un Nettoyage des tables :",0,2,'');
+		$pdf->SetXY(20,65);
+		$pdf->Cell(150,7, "      Gestion générale/Nettoyage des tables/Vérifier les catégories de matières",0,2,'');
+
+		$pdf->SetXY(20,75);
+		$pdf->Cell(150,7, "Et contrôlez par ailleurs l'ordre des catégories dans ",0,2,'');
+		$pdf->SetXY(20,80);
+		$pdf->Cell(150,7, "      Gestion des bases/Gestion des classes/<Telle_classe> Paramètres",0,2,'');
+		$pdf->SetXY(20,85);
+		$pdf->Cell(150,7, "(deux catégories ne doivent pas avoir le même rang)",0,2,'');
+
+		$pdf->SetXY(20,95);
+		$pdf->Cell(150,7, "Vous pouvez définir un ordre des catégories pour toutes les classes via",0,2,'');
+		$pdf->SetXY(20,100);
+		$pdf->Cell(150,7, "      Gestion des classes/Paramétrage des classes par lots",0,2,'');
+	}
+
 	//fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
 

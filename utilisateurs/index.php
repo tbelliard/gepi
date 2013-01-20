@@ -315,6 +315,7 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
     		" - <a href=\"reset_passwords.php?mode=csv".add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera un fichier CSV contenant les informations nécessaires à un traitement automatisé.')\" target='_blank'>CSV</a>";
 
 	echo " | <a href='impression_bienvenue.php?mode=personnels'>Fiches bienvenue</a>";
+	echo " | <a href='modif_par_lots.php'>Modif.par lots</a>";
 }
 ?>
  | Affecter les matières aux professeurs&nbsp;: <a href="tab_profs_matieres.php">Mode 1</a>

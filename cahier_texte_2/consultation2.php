@@ -185,7 +185,17 @@ elseif($_SESSION['statut']=='responsable') {
 	$mode='eleve';
 
 	// On récupère la liste des élèves associés au responsable:
-	$tab_eleve=get_enfants_from_resp_login($_SESSION['login']);
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$tab_eleve=get_enfants_from_resp_login($_SESSION['login'], "simple", "yy");
+	}
+	else {
+		$tab_eleve=get_enfants_from_resp_login($_SESSION['login']);
+	}
+	if(count($tab_eleve)==0) {
+		echo "<p>Vous n'avez aucun élève en responsabilité&nbsp;???</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
 	/*
 	echo "<pre>";
 	echo print_r($tab_eleve);
@@ -196,7 +206,7 @@ elseif($_SESSION['statut']=='responsable') {
 	}
 
 	// On contrôle que l'élève choisi est bien associé au responsable:
-	if((isset($login_eleve))&&(!in_array($login_eleve,$tab_eleve_login))) {
+	if((isset($login_eleve))&&(isset($tab_eleve_login))&&(!in_array($login_eleve,$tab_eleve_login))) {
 		$login_eleve="";
 		// AJOUTER UN APPEL A tentative_intrusion()
 	}

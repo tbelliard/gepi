@@ -42,13 +42,22 @@ $error_login = false;
 // Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
 $login_eleve = isset($_GET['login_eleve']) ? $_GET['login_eleve'] : (isset($_POST['login_eleve']) ? $_POST["login_eleve"] : null);
 if ($_SESSION['statut'] == "responsable") {
-	$get_eleves = mysql_query("SELECT e.login " .
+	$sql="(SELECT e.login " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'))");
-
+			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login " .
+			"FROM eleves e, resp_pers r, responsables2 re " .
+			"WHERE (" .
+			"e.ele_id = re.ele_id AND " .
+			"re.pers_id = r.pers_id AND " .
+			"r.login = '".$_SESSION['login']."' AND re.resp_legal='0' AND re.acces_sp='y'))";
+	}
+	$sql.=";";
+	$get_eleves = mysql_query($sql);
 	if (mysql_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
 		$login_eleve = mysql_result($get_eleves, 0);
@@ -72,7 +81,7 @@ require_once("../lib/header.inc.php");
 
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-echo "</p>\n";
+//echo "</p>\n";
 
 // Quelques vérifications de droits d'accès.
 if ($_SESSION['statut'] == "responsable" and $error_login == true) {
@@ -94,14 +103,25 @@ if (
 
 // Et une autre vérification de sécurité : est-ce que si on a un statut 'responsable' le $login_eleve est bien un élève dont le responsable a la responsabilité
 if ($login_eleve != null and $_SESSION['statut'] == "responsable") {
-	$test = mysql_query("SELECT count(e.login) " .
+	$sql="(SELECT e.login " .
 			"FROM eleves e, responsables2 re, resp_pers r " .
 			"WHERE (" .
 			"e.login = '" . $login_eleve . "' AND " .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
-	if (mysql_result($test, 0) == 0) {
+			"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login " .
+			"FROM eleves e, responsables2 re, resp_pers r " .
+			"WHERE (" .
+			"e.login = '" . $login_eleve . "' AND " .
+			"e.ele_id = re.ele_id AND " .
+			"re.pers_id = r.pers_id AND " .
+			"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y'))";
+	}
+	$sql.=";";
+	$test = mysql_query($sql);
+	if (mysql_num_rows($test) == 0) {
 	    tentative_intrusion(2, "Tentative par un parent d'accéder à l'équipe pédagogique d'un élève dont il n'est pas responsable légal.");
 	    echo "Vous ne pouvez visualiser que les relevés de notes des élèves pour lesquels vous êtes responsable légal.\n";
 	    require("../lib/footer.inc.php");
@@ -113,12 +133,22 @@ if ($login_eleve != null and $_SESSION['statut'] == "responsable") {
 // On commence par traiter le cas où il faut sélectionner un élève (cas d'un responsable de plusieurs élèves)
 
 if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
+	echo "</p>\n";
 	// Si on est là normalement c'est parce qu'on a un responsable de plusieurs élèves qui n'a pas encore choisi d'élève.
-	$quels_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
+	$sql = "(SELECT e.login, e.nom, e.prenom " .
 				"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
 				"e.ele_id = re.ele_id AND " .
 				"re.pers_id = r.pers_id AND " .
-				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
+				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login, e.nom, e.prenom " .
+				"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
+				"e.ele_id = re.ele_id AND " .
+				"re.pers_id = r.pers_id AND " .
+				"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y'))";
+	}
+	$sql.=";";
+	$quels_eleves = mysql_query($sql);
     echo "<form enctype=\"multipart/form-data\" action=\"visu_profs_eleve.php\" method=\"post\">\n";
 	echo "<table summary='Choix'>\n";
 	echo "<tr>\n";
@@ -144,13 +174,34 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
     echo "</form>\n";
 
 } else {
+	if($_SESSION['statut'] == "responsable") {
+		$sql = "(SELECT e.login, e.nom, e.prenom " .
+					"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
+					"e.ele_id = re.ele_id AND " .
+					"re.pers_id = r.pers_id AND " .
+					"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2') AND e.login!='".$login_eleve."'))";
+		if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+			$sql.=" UNION (SELECT e.login, e.nom, e.prenom " .
+					"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
+					"e.ele_id = re.ele_id AND " .
+					"re.pers_id = r.pers_id AND " .
+					"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y' AND e.login!='".$login_eleve."'))";
+		}
+		$sql.=";";
+		$quels_eleves = mysql_query($sql);
+		while($lig_autres_eleves=mysql_fetch_object($quels_eleves)) {
+			echo " | <a href='".$_SERVER['PHP_SELF']."?login_eleve=".$lig_autres_eleves->login."'>".casse_mot($lig_autres_eleves->nom,'maj')." ".casse_mot($lig_autres_eleves->prenom,'majf2')."</a>";
+		}
+	}
+	echo "</p>\n";
+
 	// On a un élève. On affiche l'équipe pédagogique !
 	$eleve = mysql_query("SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
 	$nom_eleve = mysql_result($eleve, 0, "nom");
 	$prenom_eleve = mysql_result($eleve, 0, "prenom");
 	//$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
 
-	echo "<h3>Equipe pédagogique de l'élève : ".$prenom_eleve ." " . $nom_eleve;
+	echo "<h3>Equipe pédagogique de l'élève : <strong>".$prenom_eleve ." " . $nom_eleve."</strong>";
 
 	$sql="SELECT jec.id_classe, c.* FROM j_eleves_classes jec, classes c WHERE jec.login='".$login_eleve."' AND jec.id_classe=c.id ORDER BY periode DESC LIMIT 1";
 	$res_class=mysql_query($sql);

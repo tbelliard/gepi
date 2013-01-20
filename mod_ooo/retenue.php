@@ -1,8 +1,6 @@
 <?php
 /*
- * $Id: index.php 2554 2008-10-12 14:49:29Z crob $
- *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -76,6 +74,9 @@ $id_incident=isset($_POST['id_incident']) ? $_POST['id_incident'] : (isset($_GET
 $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL); 
 $id_sanction=isset($_POST['id_sanction']) ? $_POST['id_sanction'] : (isset($_GET['id_sanction']) ? $_GET['id_sanction'] : NULL); 
 
+// Identifiant du responsable pour lequel faire l'impression
+$pers_id=isset($_POST['pers_id']) ? $_POST['pers_id'] : (isset($_GET['pers_id']) ? $_GET['pers_id'] : NULL); 
+
 //Initialisation des données du modèle Ooo Retenue
 $date ='';
 $nom_prenom_eleve ='';
@@ -125,7 +126,12 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 		    $classe = '';
 		}
 
-		$sql="SELECT rp.civilite,rp.nom,rp.prenom,ra.adr1,ra.adr2,ra.adr3,ra.cp,ra.commune FROM resp_pers rp, resp_adr ra, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND e.login='$ele_login' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
+		if(isset($pers_id)) {
+			$sql="SELECT rp.civilite,rp.nom,rp.prenom,ra.adr1,ra.adr2,ra.adr3,ra.cp,ra.commune FROM resp_pers rp, resp_adr ra, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND e.login='$ele_login' AND r.pers_id='$pers_id' ORDER BY r.resp_legal;";
+		}
+		else {
+			$sql="SELECT rp.civilite,rp.nom,rp.prenom,ra.adr1,ra.adr2,ra.adr3,ra.cp,ra.commune FROM resp_pers rp, resp_adr ra, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND e.login='$ele_login' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
+		}
 		$res_resp=mysql_query($sql);
 		if(mysql_num_rows($res_resp)==0) {
 			$ad_nom_resp="";

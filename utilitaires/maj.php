@@ -245,8 +245,12 @@ if (isset ($_POST['maj'])) {
 	}
 
 	if (($force_maj == 'yes') or (quelle_maj("1.6.2"))) {
-            require 'updates/161_to_dev.inc.php';
-            //require 'updates/161_to_162.inc.php';
+            require 'updates/161_to_162.inc.php';
+	}
+
+	if (($force_maj == 'yes') or (quelle_maj("1.6.2"))) {
+            require 'updates/162_to_dev.inc.php';
+            //require 'updates/162_to_163.inc.php';
 	}
 
 	// Mise à jour du numéro de version

@@ -175,6 +175,9 @@ if ($groups->isEmpty()) {
     echo "<br /><br />";
 }
 
+$nom_ou_description_groupe_cdt=getPref($_SESSION['login'], "nom_ou_description_groupe_cdt", "name");
+//echo "\$nom_ou_description_groupe_cdt=$nom_ou_description_groupe_cdt<br />";
+
 $a = 1;
 foreach($groups as $group) {
 	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group->getId()."' AND domaine='cahier_texte' AND visible='n';";
@@ -196,7 +199,21 @@ foreach($groups as $group) {
 				return false;
 			\">";
 
-		echo $group->getNameAvecClasses();
+			echo "<span title=\"".$group->getName()." - ".$group->getDescriptionAvecClasses()." (";
+			$cpt_prof=0;
+			foreach($group->getProfesseurs() as $prof) {
+				if($cpt_prof>0) {echo ", ";}
+				echo casse_mot($prof->getNom(),"maj")." ".casse_mot($prof->getPrenom(),"majf2");
+				$cpt_prof++;
+			}
+			echo ").\">";
+			if($nom_ou_description_groupe_cdt=='name') {
+				echo $group->getNameAvecClasses();
+			}
+			else {
+				echo $group->getDescriptionAvecClasses();
+			}
+			echo "</span>";
 		echo "</a>&nbsp;\n";
 
 		if ($a == 3) {

@@ -462,11 +462,11 @@ else{
 		if(mysql_num_rows($res_adr_actuelle)!=0){
 			$lig_adr_actuelle=mysql_fetch_object($res_adr_actuelle);
 			echo "<tr style='background-color:orange;'>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"$lig_adr_actuelle->adr_id\" checked ";
+			echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' id='adr_id_existant_$lig_adr_actuelle->adr_id' value=\"$lig_adr_actuelle->adr_id\" checked ";
 			echo "onchange='changement();' ";
 			echo "/></td>\n";
-			echo "<td style='text-align:center;'>$lig_adr_actuelle->adr_id</td>\n";
-			echo "<td style='text-align:center;'>\n";
+			echo "<td style='text-align:center;'><label for='adr_id_existant_$lig_adr_actuelle->adr_id'>$lig_adr_actuelle->adr_id</label></td>\n";
+			echo "<td style='text-align:center;'><label for='adr_id_existant_$lig_adr_actuelle->adr_id'>\n";
 			if($lig_adr_actuelle->adr1!=""){
 				echo $lig_adr_actuelle->adr1;
 			}
@@ -479,12 +479,12 @@ else{
 			if($lig_adr_actuelle->adr4!=""){
 				echo "-".$lig_adr_actuelle->adr4;
 			}
+			echo "</label></td>\n";
+			echo "<td style='text-align:center;'><label for='adr_id_existant_$lig_adr_actuelle->adr_id'>$lig_adr_actuelle->cp</label>\n";
 			echo "</td>\n";
-			echo "<td style='text-align:center;'>$lig_adr_actuelle->cp\n";
+			echo "<td style='text-align:center;'><label for='adr_id_existant_$lig_adr_actuelle->adr_id'>$lig_adr_actuelle->commune</label>\n";
 			echo "</td>\n";
-			echo "<td style='text-align:center;'>$lig_adr_actuelle->commune\n";
-			echo "</td>\n";
-			echo "<td style='text-align:center;'>$lig_adr_actuelle->pays\n";
+			echo "<td style='text-align:center;'><label for='adr_id_existant_$lig_adr_actuelle->adr_id'>$lig_adr_actuelle->pays</label>\n";
 			echo "</td>\n";
 
 			echo "<td style='text-align:center;'>";
@@ -513,7 +513,7 @@ else{
 			if((isset($adr_id_actuel))&&($temoin_adr_actuelle_dans_la_page=="oui")) {
 				if($tab_adr[$i]["adr_id"]==$adr_id_actuel){
 					echo "<tr style='background-color:orange;'>\n";
-					echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
+					echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' id='adr_id_existant_".$tab_adr[$i]["adr_id"]."' value=\"".$tab_adr[$i]["adr_id"]."\" ";
 					echo "checked ";
 					echo "onchange='changement();' ";
 					echo "/></td>\n";
@@ -521,7 +521,7 @@ else{
 				else{
 					//echo "<tr style='background-color:$couleur;'>\n";
 					echo "<tr class='lig$alt'>\n";
-					echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
+					echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' id='adr_id_existant_".$tab_adr[$i]["adr_id"]."' value=\"".$tab_adr[$i]["adr_id"]."\" ";
 					echo "onchange='changement();' ";
 					echo "/></td>\n";
 				}
@@ -529,15 +529,15 @@ else{
 			else{
 				//echo "<tr style='background-color:$couleur;'>\n";
 				echo "<tr class='lig$alt'>\n";
-				echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
+				echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' id='adr_id_existant_".$tab_adr[$i]["adr_id"]."' value=\"".$tab_adr[$i]["adr_id"]."\" ";
 				echo "onchange='changement();' ";
 				echo "/></td>\n";
 			}
 			//echo "/></td>\n";
 
 
-			echo "<td style='text-align:center;'>".$tab_adr[$i]["adr_id"]."</td>\n";
-			echo "<td style='text-align:center;'>\n";
+			echo "<td style='text-align:center;'><label for='adr_id_existant_".$tab_adr[$i]["adr_id"]."'>".$tab_adr[$i]["adr_id"]."</label></td>\n";
+			echo "<td style='text-align:center;'><label for='adr_id_existant_".$tab_adr[$i]["adr_id"]."'>\n";
 			if($tab_adr[$i]["adr1"]!=""){
 				echo $tab_adr[$i]["adr1"];
 			}
@@ -550,13 +550,12 @@ else{
 			if($tab_adr[$i]["adr4"]!=""){
 				echo "-".$tab_adr[$i]["adr4"];
 			}
-
+			echo "</label></td>\n";
+			echo "<td style='text-align:center;'><label for='adr_id_existant_".$tab_adr[$i]["adr_id"]."'>".$tab_adr[$i]["cp"]."</label>\n";
 			echo "</td>\n";
-			echo "<td style='text-align:center;'>".$tab_adr[$i]["cp"]."\n";
+			echo "<td style='text-align:center;'><label for='adr_id_existant_".$tab_adr[$i]["adr_id"]."'>".$tab_adr[$i]["commune"]."</label>\n";
 			echo "</td>\n";
-			echo "<td style='text-align:center;'>".$tab_adr[$i]["commune"]."\n";
-			echo "</td>\n";
-			echo "<td style='text-align:center;'>".$tab_adr[$i]["pays"]."\n";
+			echo "<td style='text-align:center;'><label for='adr_id_existant_".$tab_adr[$i]["adr_id"]."'>".$tab_adr[$i]["pays"]."</label>\n";
 			echo "</td>\n";
 
 			echo "<td style='text-align:center;'>";

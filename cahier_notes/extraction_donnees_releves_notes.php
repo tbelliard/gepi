@@ -54,19 +54,22 @@
 
 	// Récupération des paramètres
 	// Les valeurs des tableaux peuvent ne pas être affectées si aucune case n'est cochée
-	$tab_rn_nomdev=isset($_POST['rn_nomdev']) ? $_POST['rn_nomdev'] : array();
-	$tab_rn_toutcoefdev=isset($_POST['rn_toutcoefdev']) ? $_POST['rn_toutcoefdev'] : array();
-	$tab_rn_coefdev_si_diff=isset($_POST['rn_coefdev_si_diff']) ? $_POST['rn_coefdev_si_diff'] : array();
-	$tab_rn_datedev=isset($_POST['rn_datedev']) ? $_POST['rn_datedev'] : array();
-	$tab_rn_app=isset($_POST['rn_app']) ? $_POST['rn_app'] : array();
-	$tab_rn_sign_chefetab=isset($_POST['rn_sign_chefetab']) ? $_POST['rn_sign_chefetab'] : array();
-	$tab_rn_sign_pp=isset($_POST['rn_sign_pp']) ? $_POST['rn_sign_pp'] : array();
-	$tab_rn_sign_resp=isset($_POST['rn_sign_resp']) ? $_POST['rn_sign_resp'] : array();
-	// Les deux suivants doivent être affectés (éventuellement avec des chaines vides)
-	$tab_rn_sign_nblig=isset($_POST['rn_sign_nblig']) ? $_POST['rn_sign_nblig'] : array();
-	$tab_rn_formule=isset($_POST['rn_formule']) ? $_POST['rn_formule'] : array();
+	$tab_rn_nomdev=isset($_POST['rn_nomdev']) ? $_POST['rn_nomdev'] : (isset($tab_rn_nomdev) ? $tab_rn_nomdev : array());
+	$tab_rn_toutcoefdev=isset($_POST['rn_toutcoefdev']) ? $_POST['rn_toutcoefdev'] : (isset($tab_rn_toutcoefdev) ? $tab_rn_toutcoefdev : array());
+	$tab_rn_coefdev_si_diff=isset($_POST['rn_coefdev_si_diff']) ? $_POST['rn_coefdev_si_diff'] : (isset($tab_rn_coefdev_si_diff) ? $tab_rn_coefdev_si_diff : array());
 
-	$tab_rn_adr_resp=isset($_POST['rn_adr_resp']) ? $_POST['rn_adr_resp'] : array();
+	$tab_rn_col_moy=isset($_POST['rn_col_moy']) ? $_POST['rn_col_moy'] : (isset($tab_rn_col_moy) ? $tab_rn_col_moy : array());
+
+	$tab_rn_datedev=isset($_POST['rn_datedev']) ? $_POST['rn_datedev'] : (isset($tab_rn_datedev) ? $tab_rn_datedev : array());
+	$tab_rn_app=isset($_POST['rn_app']) ? $_POST['rn_app'] : (isset($tab_rn_app) ? $tab_rn_app : array());
+	$tab_rn_sign_chefetab=isset($_POST['rn_sign_chefetab']) ? $_POST['rn_sign_chefetab'] : (isset($tab_rn_sign_chefetab) ? $tab_rn_sign_chefetab : array());
+	$tab_rn_sign_pp=isset($_POST['rn_sign_pp']) ? $_POST['rn_sign_pp'] : (isset($tab_rn_sign_pp) ? $tab_rn_sign_pp : array());
+	$tab_rn_sign_resp=isset($_POST['rn_sign_resp']) ? $_POST['rn_sign_resp'] : (isset($tab_rn_sign_resp) ? $tab_rn_sign_resp : array());
+	// Les deux suivants doivent être affectés (éventuellement avec des chaines vides)
+	$tab_rn_sign_nblig=isset($_POST['rn_sign_nblig']) ? $_POST['rn_sign_nblig'] :(isset($tab_rn_sign_nblig) ? $tab_rn_sign_nblig :  array());
+	$tab_rn_formule=isset($_POST['rn_formule']) ? $_POST['rn_formule'] : (isset($tab_rn_formule) ? $tab_rn_formule : array());
+
+	$tab_rn_adr_resp=isset($_POST['rn_adr_resp']) ? $_POST['rn_adr_resp'] : (isset($tab_rn_adr_resp) ? $tab_rn_adr_resp : array());
 	/*
 	if(count($tab_rn_adr_resp)>count($tab_id_classe)/2) {
 		savePref($_SESSION['login'], "pref_rn_adr_resp", "y");
@@ -76,19 +79,22 @@
 	}
 	*/
 	// Bloc observation sur la droite pour le relevé PDF:
-	$tab_rn_bloc_obs=isset($_POST['rn_bloc_obs']) ? $_POST['rn_bloc_obs'] : array();
+	$tab_rn_bloc_obs=isset($_POST['rn_bloc_obs']) ? $_POST['rn_bloc_obs'] : (isset($tab_rn_bloc_obs) ? $tab_rn_bloc_obs : array());
 	
-	$tab_rn_bloc_abs2=isset($_POST['rn_abs_2']) ? $_POST['rn_abs_2'] : array();
+	$tab_rn_bloc_abs2=isset($_POST['rn_abs_2']) ? $_POST['rn_abs_2'] : (isset($tab_rn_bloc_abs2) ? $tab_rn_bloc_abs2 : array());
 
-	$tab_rn_aff_classe_nom=isset($_POST['rn_aff_classe_nom']) ? $_POST['rn_aff_classe_nom'] : array();
+	$tab_rn_aff_classe_nom=isset($_POST['rn_aff_classe_nom']) ? $_POST['rn_aff_classe_nom'] : (isset($tab_rn_aff_classe_nom) ? $tab_rn_aff_classe_nom : array());
 
-	$tab_rn_moy_min_max_classe=isset($_POST['rn_moy_min_max_classe']) ? $_POST['rn_moy_min_max_classe'] : array();
-	$tab_rn_moy_classe=isset($_POST['rn_moy_classe']) ? $_POST['rn_moy_classe'] : array();
+	$tab_rn_moy_min_max_classe=isset($_POST['rn_moy_min_max_classe']) ? $_POST['rn_moy_min_max_classe'] : (isset($tab_rn_moy_min_max_classe) ? $tab_rn_moy_min_max_classe : array());
+	$tab_rn_moy_classe=isset($_POST['rn_moy_classe']) ? $_POST['rn_moy_classe'] : (isset($tab_rn_moy_classe) ? $tab_rn_moy_classe : array());
 
-	$tab_rn_retour_ligne=isset($_POST['rn_retour_ligne']) ? $_POST['rn_retour_ligne'] : array();
-	$tab_rn_rapport_standard_min_font=isset($_POST['rn_rapport_standard_min_font']) ? $_POST['rn_rapport_standard_min_font'] : array();
+	$tab_rn_retour_ligne=isset($_POST['rn_retour_ligne']) ? $_POST['rn_retour_ligne'] : (isset($tab_rn_retour_ligne) ? $tab_rn_retour_ligne : array());
+	$tab_rn_rapport_standard_min_font=isset($_POST['rn_rapport_standard_min_font']) ? $_POST['rn_rapport_standard_min_font'] : (isset($tab_rn_rapport_standard_min_font) ? $tab_rn_rapport_standard_min_font : array());
 
-	$chaine_coef=isset($_POST['chaine_coef']) ? $_POST['chaine_coef'] : "";
+	$chaine_coef=isset($_POST['chaine_coef']) ? $_POST['chaine_coef'] : (isset($chaine_coef) ? $chaine_coef : "");
+
+	$rn_couleurs_alternees=isset($_POST['rn_couleurs_alternees']) ? $_POST['rn_couleurs_alternees'] : (isset($rn_couleurs_alternees) ? $rn_couleurs_alternees : "n");
+	savePref($_SESSION['login'], "rn_couleurs_alternees", $rn_couleurs_alternees);
 
 	//+++++++++++++++++++++++++++++++++++
 	// A FAIRE
@@ -195,14 +201,25 @@
 			// A FAIRE
 			// Dans le cas d'un appel depuis la génération de bulletin, il faudrait prendre les paramètres par défaut de la classe
 			// ****************************************
-			$tab_releve[$id_classe][$periode_num]['rn_nomdev']=isset($tab_rn_nomdev[$loop_classe]) ? "y" : "n";
-			$tab_releve[$id_classe][$periode_num]['rn_toutcoefdev']=isset($tab_rn_toutcoefdev[$loop_classe]) ? "y" : "n";
-			$tab_releve[$id_classe][$periode_num]['rn_coefdev_si_diff']=isset($tab_rn_coefdev_si_diff[$loop_classe]) ? "y" : "n";
-			$tab_releve[$id_classe][$periode_num]['rn_app']=isset($tab_rn_app[$loop_classe]) ? "y" : "n";
-			$tab_releve[$id_classe][$periode_num]['rn_datedev']=isset($tab_rn_datedev[$loop_classe]) ? "y" : "n";
-			$tab_releve[$id_classe][$periode_num]['rn_sign_chefetab']=isset($tab_rn_sign_chefetab[$loop_classe]) ? "y" : "n";
-			$tab_releve[$id_classe][$periode_num]['rn_sign_pp']=isset($tab_rn_sign_pp[$loop_classe]) ? "y" : "n";
-			$tab_releve[$id_classe][$periode_num]['rn_sign_resp']=isset($tab_rn_sign_resp[$loop_classe]) ? "y" : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_nomdev']=isset($tab_rn_nomdev[$loop_classe]) ? $tab_rn_nomdev[$loop_classe] : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_toutcoefdev']=isset($tab_rn_toutcoefdev[$loop_classe]) ? $tab_rn_toutcoefdev[$loop_classe] : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_coefdev_si_diff']=isset($tab_rn_coefdev_si_diff[$loop_classe]) ? $tab_rn_coefdev_si_diff[$loop_classe] : "n";
+
+			if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+				(($_SESSION['statut']=='eleve')&&(getSettingAOui('GepiAccesColMoyReleveEleve')))||
+				(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesColMoyReleveParent')))
+				) {
+				$tab_releve[$id_classe][$periode_num]['rn_col_moy']=isset($tab_rn_col_moy[$loop_classe]) ? $tab_rn_col_moy[$loop_classe] : "n";
+			}
+			else {
+				$tab_releve[$id_classe][$periode_num]['rn_col_moy']="n";
+			}
+
+			$tab_releve[$id_classe][$periode_num]['rn_app']=isset($tab_rn_app[$loop_classe]) ? $tab_rn_app[$loop_classe] : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_datedev']=isset($tab_rn_datedev[$loop_classe]) ? $tab_rn_datedev[$loop_classe] : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_sign_chefetab']=isset($tab_rn_sign_chefetab[$loop_classe]) ? $tab_rn_sign_chefetab[$loop_classe] : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_sign_pp']=isset($tab_rn_sign_pp[$loop_classe]) ? $tab_rn_sign_pp[$loop_classe] : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_sign_resp']=isset($tab_rn_sign_resp[$loop_classe]) ? $tab_rn_sign_resp[$loop_classe] : "n";
 
 			$tab_releve[$id_classe][$periode_num]['rn_sign_nblig']=isset($tab_rn_sign_nblig[$loop_classe]) ? $tab_rn_sign_nblig[$loop_classe] : 3;
 			$tab_releve[$id_classe][$periode_num]['rn_formule']=isset($tab_rn_formule[$loop_classe]) ? $tab_rn_formule[$loop_classe] : "";
@@ -217,10 +234,10 @@
 			$affiche_adresse=$tab_releve[$id_classe][$periode_num]['rn_adr_resp'];
 			$tab_releve[$id_classe][$periode_num]['affiche_adresse']=$affiche_adresse;
 
-			$tab_releve[$id_classe][$periode_num]['rn_moy_min_max_classe']=isset($tab_rn_moy_min_max_classe[$loop_classe]) ? "y" : "n";
-			$tab_releve[$id_classe][$periode_num]['rn_moy_classe']=isset($tab_rn_moy_classe[$loop_classe]) ? "y" : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_moy_min_max_classe']=isset($tab_rn_moy_min_max_classe[$loop_classe]) ? $tab_rn_moy_min_max_classe[$loop_classe] : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_moy_classe']=isset($tab_rn_moy_classe[$loop_classe]) ? $tab_rn_moy_classe[$loop_classe] : "n";
 
-			$tab_releve[$id_classe][$periode_num]['rn_retour_ligne']=isset($tab_rn_retour_ligne[$loop_classe]) ? "y" : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_retour_ligne']=isset($tab_rn_retour_ligne[$loop_classe]) ? $tab_rn_retour_ligne[$loop_classe] : "n";
 			//$_SESSION['pref_rn_retour_ligne']=$tab_releve[$id_classe][$periode_num]['rn_retour_ligne'];
 
 			$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font']=((isset($tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]!='')&&(preg_match("/^[0-9.]*$/",$tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]>0)) ? $tab_rn_rapport_standard_min_font[$loop_classe] : 3;
@@ -251,6 +268,11 @@
 			else {
 				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : array();
 			}
+
+			if((count($tab_selection_eleves)==0)&&(isset($ele_login))&&($ele_login!='')) {
+				$tab_selection_eleves[]=$ele_login;
+			}
+
 			$tab_releve[$id_classe][$periode_num]['selection_eleves']=$tab_selection_eleves;
 
 
@@ -379,9 +401,23 @@
 							if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
 						}
 						elseif (getSettingValue("GepiAccesReleveProfP") == "yes") {
-							$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND login='".$current_eleve_login[$i]."';";
-							$verif=mysql_query($sql);
-							if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
+							if(is_pp($_SESSION['login'], $id_classe)) {
+								if(getSettingAOui('GepiAccesPPTousElevesDeLaClasse')) {
+									// Le prof est PP de la classe, on lui donne l'accès à tous les élèves de la classe
+									$autorisation_acces='y';
+								}
+								else {
+									// Le prof est PP d'au moins une partie des élèves de la classe
+									// L'est-il de l'élève courant?
+									$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND login='".$current_eleve_login[$i]."';";
+									$verif=mysql_query($sql);
+									if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
+								}
+							}
+							else {
+								// Le prof n'est pas PP dans cette classe
+								$autorisation_acces='n';
+							}
 						}
 						else {
 							// Ou juste:
@@ -545,6 +581,27 @@
 							}
 							$res_grp_id_cn=mysql_query($sql);
 							while($lig_grp_id_cn=mysql_fetch_object($res_grp_id_cn)) {
+
+								// On n'affiche la moyenne que sur une période, pas intervalle
+								if($choix_periode!="intervalle") {
+									if($tab_releve[$id_classe][$periode_num]['rn_col_moy']=="y") {
+										$sql="SELECT * FROM cn_notes_conteneurs WHERE login='".$current_eleve_login[$i]."' AND id_conteneur='".$lig_grp_id_cn->id_cahier_notes."';";
+										$res_moy=mysql_query($sql);
+										if(mysql_num_rows($res_moy)>0) {
+											$lig_moy=mysql_fetch_object($res_moy);
+											if($lig_moy->statut=='y') {
+												$tab_ele['groupe'][$j]['moyenne']=$lig_moy->note;
+											}
+											else {
+												$tab_ele['groupe'][$j]['moyenne']="-";
+											}
+										}
+										else {
+											$tab_ele['groupe'][$j]['moyenne']="-";
+										}
+									}
+								}
+
 								// Recherche des enfants de niveau 1
 								$sql="SELECT id, nom_court, nom_complet, display_parents FROM cn_conteneurs where id_racine='$lig_grp_id_cn->id_cahier_notes' AND parent=id_racine;";
 								if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {

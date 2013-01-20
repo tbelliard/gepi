@@ -90,7 +90,7 @@ CREATE TABLE `mef`
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Module élémentaire de formation';
 
 DROP TABLE IF EXISTS `etablissements`;
-CREATE TABLE `etablissements` ( `id` char(8) NOT NULL default '', `nom` char(50) NOT NULL default '', `niveau` char(50) NOT NULL default '', `type` char(50) NOT NULL default '', `cp` int(10) NOT NULL default '0', `ville` char(50) NOT NULL default '', PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE `etablissements` ( `id` char(8) NOT NULL default '', `nom` char(50) NOT NULL default '', `niveau` char(50) NOT NULL default '', `type` char(50) NOT NULL default '', `cp` varchar(10) NOT NULL default '0', `ville` char(50) NOT NULL default '', PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `j_aid_eleves`;
 CREATE TABLE `j_aid_eleves` ( `id_aid` varchar(100) NOT NULL default '', `login` varchar(60) NOT NULL default '', `indice_aid` int(11) NOT NULL default '0', PRIMARY KEY  (`id_aid`,`login`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `j_aid_utilisateurs`;
@@ -166,7 +166,7 @@ CREATE TABLE `miseajour` (`id_miseajour` int(11) NOT NULL auto_increment, `fichi
 DROP TABLE IF EXISTS absences_actions;
 CREATE TABLE `absences_actions` (`id_absence_action` int(11) NOT NULL auto_increment, `init_absence_action` char(2) NOT NULL default '', `def_absence_action` varchar(255) NOT NULL default '', PRIMARY KEY  (`id_absence_action`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `responsables2`;
-CREATE TABLE IF NOT EXISTS `responsables2` (`ele_id` varchar(10) NOT NULL, `pers_id` varchar(10) NOT NULL, `resp_legal` varchar(1) NOT NULL, `pers_contact` varchar(1) NOT NULL, INDEX pers_id ( `pers_id` ), INDEX ele_id ( `ele_id` ), INDEX resp_legal ( `resp_legal` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS `responsables2` (`ele_id` varchar(10) NOT NULL, `pers_id` varchar(10) NOT NULL, `resp_legal` varchar(1) NOT NULL, `pers_contact` varchar(1) NOT NULL, `acces_sp` varchar(1) NOT NULL, INDEX pers_id ( `pers_id` ), INDEX ele_id ( `ele_id` ), INDEX resp_legal ( `resp_legal` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `resp_adr`;
 CREATE TABLE IF NOT EXISTS `resp_adr` (`adr_id` varchar(10) NOT NULL,`adr1` varchar(100) NOT NULL,`adr2` varchar(100) NOT NULL,`adr3` varchar(100) NOT NULL,`adr4` varchar(100) NOT NULL,`cp` varchar(6) NOT NULL,`pays` varchar(50) NOT NULL,`commune` varchar(50) NOT NULL,PRIMARY KEY  (`adr_id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `resp_pers`;
@@ -790,6 +790,6 @@ id_classe smallint(6) NOT NULL,
 name varchar(100) NOT NULL,
 value varchar(255) NOT NULL,
 PRIMARY KEY (id),
-UNIQUE KEY id_classe_-_name (id_classe,name)
+UNIQUE KEY id_classe_name (id_classe,name)
 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
 

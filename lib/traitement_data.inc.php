@@ -280,7 +280,21 @@ if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non
 }
 
 // On nettoie aussi $_SERVER et $_COOKIE de manière systématique
-array_walk($_SERVER, 'anti_inject');
+$anti_inject_var_SERVER="y";
+$sql="SELECT 1=1 FROM setting WHERE name='anti_inject_var_SERVER' AND value='n';";
+$test_anti_inject_var_SERVER=mysql_query($sql);
+if(mysql_num_rows($test_anti_inject_var_SERVER)>0) {$anti_inject_var_SERVER="n";}
+if($anti_inject_var_SERVER!="n") {
+  array_walk($_SERVER, 'anti_inject');
+}
+/*
+ * foreach($_SERVER as $key => $value) {
+	echo "<p>\$_SERVER[$key]=$value<br />\n";
+	//$_SERVER[$key]=anti_inject($value,$key);
+	anti_inject($value,$key);
+	echo "\$_SERVER[$key]=$value<br />\n";
+}
+ */
 array_walk($_COOKIE, 'anti_inject');
 
 //===========================================================

@@ -22,6 +22,7 @@
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+require_once("../lib/share-trombinoscope.inc.php");
 
 unset($reg_login);
 $reg_login = isset($_POST["reg_login"]) ? $_POST["reg_login"] : NULL;
@@ -1594,11 +1595,19 @@ echo "<tr>\n";
 if (isset($eleve_login)) {
 	echo "<th style='text-align:left;'>Identifiant GEPI * : </th>
 	<td>";
+
+	if($_SESSION['statut']=='administrateur') {$avec_lien="y";}
+	else {$avec_lien="n";}
+	$lien_image_compte_utilisateur=lien_image_compte_utilisateur($eleve_login, "eleve", "_blank", $avec_lien);
+
 	if(($compte_eleve_existe=="y")&&($_SESSION['statut']=="administrateur")) {
-		echo "<a href='../utilisateurs/edit_eleve.php?critere_recherche=$eleve_nom'>".$eleve_login."</a>";
+		echo "<a href='../utilisateurs/edit_eleve.php?critere_recherche=$eleve_nom'>".$eleve_login;
+		if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+		echo "</a>";
 	}
 	else {
 		echo $eleve_login;
+		if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
 	}
 	echo "<input type='hidden' name='eleve_login' size='20' ";
 	if ($eleve_login) echo "value='$eleve_login'";

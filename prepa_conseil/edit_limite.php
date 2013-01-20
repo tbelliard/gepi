@@ -44,6 +44,10 @@ if (!checkAccess()) {
     die();
 }
 
+if(!getSettingAOui('active_bulletins')) {
+	header("Location: ../accueil.php?msg=Module_inactif");
+	die();
+}
 
 // Ebauche de liste des variables reçues:
 // $choix_edit correspond au choix de ce qui doit être affiché:
@@ -75,15 +79,13 @@ if(!$nom_classe) {
 	die();
 }
 
+//==============================
 include "../lib/periodes.inc.php";
 include "../lib/bulletin_simple.inc.php";
-//include "../lib/bulletin_simple_bis.inc.php";
-//==============================
-// AJOUT: boireaus 20080209
 include "../lib/bulletin_simple_classe.inc.php";
-//include "../lib/bulletin_simple_classe_bis.inc.php";
 //==============================
 require_once("../lib/header.inc.php");
+//==============================
 
 // Vérifications de sécurité
 if (
@@ -98,14 +100,26 @@ if (
 
 // Et une autre vérification de sécurité : est-ce que si on a un statut 'responsable' le $login_eleve est bien un élève dont le responsable a la responsabilité
 if ($_SESSION['statut'] == "responsable") {
-	$test = mysql_query("SELECT count(e.login) " .
+	$sql="(SELECT e.login " .
 			"FROM eleves e, responsables2 re, resp_pers r " .
 			"WHERE (" .
 			"e.login = '" . $login_eleve . "' AND " .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
-	if (mysql_result($test, 0) == 0) {
+			"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$sql.=" UNION (SELECT e.login FROM eleves e, resp_pers r, responsables2 re 
+						WHERE (e.login = '" . $login_eleve . "' AND
+							e.ele_id = re.ele_id AND 
+							re.pers_id = r.pers_id AND 
+							r.login = '".$_SESSION['login']."' AND 
+							re.resp_legal='0' AND 
+							re.acces_sp='y'))";
+	}
+	$sql.=";";
+	//echo "$sql<br />";
+	$test = mysql_query($sql);
+	if (mysql_num_rows($test) == 0) {
 	    tentative_intrusion(3, "Tentative d'un parent de visualiser un bulletin simplifié d'un élève ($login_eleve) dont il n'est pas responsable légal.");
 	    echo "Vous ne pouvez visualiser que les bulletins simplifiés des élèves pour lesquels vous êtes responsable légal.\n";
 	    require("../lib/footer.inc.php");
@@ -180,6 +194,16 @@ $choix_edit == "2") {
 	}
 }
 
+$affiche_colonne_moy_classe="y";
+if((($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseEleve')))||
+(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseResp')))) {
+	$affiche_colonne_moy_classe="n";
+}
+if((isset($_POST['pas_de_colonne_moy_classe']))&&($_POST['pas_de_colonne_moy_classe']=='y')) {
+	$affiche_colonne_moy_classe="n";
+}
+//echo "\$affiche_colonne_moy_classe=$affiche_colonne_moy_classe<br />";
+
 // debug_var();
 // On a passé les barrières, on passe au traitement
 
@@ -217,7 +241,6 @@ if ($affiche_rang == 'y') {
 // AJOUT: boireaus 20080316
 $coefficients_a_1="non";
 $affiche_graph = 'n';
-
 
 for($loop=$periode1;$loop<=$periode2;$loop++) {
 	$periode_num=$loop;
@@ -334,9 +357,11 @@ if ($choix_edit == '2') {
 	bulletin($tab_moy,$login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,$couleur_alterne);
 }
 
+//echo "choix_edit=$choix_edit<br />";
 if ($choix_edit != '2') {
 	// Si on arrive là, on n'est ni élève, ni responsable
 
+	unset($sql);
 	//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 	if ($_SESSION['statut'] == "professeur" AND
 	getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes" AND
@@ -346,7 +371,7 @@ if ($choix_edit != '2') {
 	    //if ($choix_edit == '1') {
 	    if (($choix_edit == '1')||(!isset($login_prof))) {
 			// On a alors $choix_edit==1 ou $choix_edit==4
-	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
+	        $sql="SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
 				"jec.id_classe='$id_classe' AND " .
@@ -354,20 +379,31 @@ if ($choix_edit != '2') {
 				"jeg.login = jec.login AND " .
 				"jeg.id_groupe = jgp.id_groupe AND " .
 				"jgp.login = '".$_SESSION['login']."') " .
-				"ORDER BY e.nom,e.prenom");
+				"ORDER BY e.nom,e.prenom";
 	    } else {
 			// On a alors $choix_edit==3 uniquement les élèves du professeur principal $login_prof
-	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
-				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp, j_eleves_professeurs jep " .
-				"WHERE (" .
-				"jec.id_classe='$id_classe' AND " .
-				"e.login = jeg.login AND " .
-				"jeg.login = p.login AND " .
-				"p.professeur = '".$login_prof."'" .
-				"p.login = jec.login AND " .
-				"jeg.id_groupe = jgp.id_groupe AND " .
-				"jgp.login = '".$_SESSION['login']."') " .
-				"ORDER BY e.nom,e.prenom");
+			if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe))) {
+				// Tous les élèves vont être affichés
+				$sql="SELECT DISTINCT e.* " .
+					"FROM eleves e, j_eleves_classes jec " .
+					"WHERE (" .
+					"jec.id_classe='$id_classe' AND " .
+					"jec.login=e.login) ".
+					"ORDER BY e.nom,e.prenom";
+			}
+			else {
+				$sql="SELECT DISTINCT e.* " .
+					"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp, j_eleves_professeurs jep " .
+					"WHERE (" .
+					"jec.id_classe='$id_classe' AND " .
+					"e.login = jeg.login AND " .
+					"jeg.login = jep.login AND " .
+					"jep.professeur = '".$login_prof."' AND " .
+					"jep.login = jec.login AND " .
+					"jeg.id_groupe = jgp.id_groupe AND " .
+					"jgp.login = '".$_SESSION['login']."') " .
+					"ORDER BY e.nom,e.prenom";
+				}
 	    }
 	} else {
 	    // On sélectionne sans restriction
@@ -375,27 +411,41 @@ if ($choix_edit != '2') {
 	    //if ($choix_edit == '1') {
 	    if (($choix_edit == '1')||(!isset($login_prof))) {
 			// On a alors $choix_edit==1 ou $choix_edit==4
-	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
+	        $sql="SELECT DISTINCT e.* " .
 	        		"FROM eleves e, j_eleves_classes c " .
 	        		"WHERE (" .
 	        		"c.id_classe='$id_classe' AND " .
 	        		"e.login = c.login" .
-	        		") ORDER BY e.nom,e.prenom");
+	        		") ORDER BY e.nom,e.prenom";
 	    } else {
 			// On a alors $choix_edit==3
-	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
-	        		"FROM eleves e, j_eleves_classes c, j_eleves_professeurs p " .
+	        $sql="SELECT DISTINCT e.* " .
+	        		"FROM eleves e, j_eleves_classes c, j_eleves_professeurs jep " .
 	        		"WHERE (" .
 	        		"c.id_classe='$id_classe' AND " .
 	        		"e.login = c.login AND " .
-	        		"p.login=c.login AND " .
-	        		"p.professeur='$login_prof'" .
-	        		") ORDER BY e.nom,e.prenom");
+	        		"jep.login=c.login AND " .
+	        		"jep.professeur='$login_prof'" .
+	        		") ORDER BY e.nom,e.prenom";
 		}
 	}
 
+	if(!isset($sql)) {
+		echo "<p style='color:red'>Aucune liste d'élèves n'a été extraite.<br />Êtes-vous bine autorisé à vous trouver ici&nbsp;?</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	//echo "$sql<br />";
+	$appel_liste_eleves = mysql_query($sql);
+
     $nombre_eleves = mysql_num_rows($appel_liste_eleves);
 
+	$avec_moy_min_max_classe="y";
+	if((($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseMinMaxEleve')))||
+	(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseMinMaxResp')))) {
+		$avec_moy_min_max_classe="n";
+	}
+	//echo "\$avec_moy_min_max_classe=$avec_moy_min_max_classe<br />";
 	//=========================
 	// AJOUT: boireaus 20080209
 	// Affichage des appréciations saisies pour la classe

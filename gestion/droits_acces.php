@@ -296,6 +296,12 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 // DROITS PROFESSEUR PRINCIPAL
 
 $statutItem="professeur_principal";
+
+$titreItem='GepiAccesPPTousElevesDeLaClasse';
+$texteItem="dans le cas où il y a plusieurs '".getSettingValue('gepi_prof_suivi')."' dans la classe, donner les mêmes droits à chaque '".getSettingValue('gepi_prof_suivi')." sur l'ensemble des élèves de la classe<br />(<em>sinon un élève n'est associé qu'à un seul ".getSettingValue('gepi_prof_suivi')."</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiRubConseilProf';
 $texteItem="peut saisir les avis du conseil de classe pour sa classe";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
@@ -342,6 +348,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesReleveProfP';
 $texteItem="a accès aux relevés des classes dont il est ".getSettingValue("gepi_prof_suivi");
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiProfImprRelSettings';
+$texteItem="a accès au paramétrage de l'impression des relevés de notes HTML";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -440,6 +451,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesReleveScol';
 $texteItem="a accès à tous les relevés de notes de toutes les classes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiScolImprRelSettings';
+$texteItem="a accès au paramétrage de l'impression des relevés de notes HTML";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -591,7 +607,12 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='ScolResetPassResp';
-$texteItem="peut réinitialiser les mots de passe des comptes de statut responsable";
+$texteItem="peut réinitialiser les mots de passe des comptes de statut responsable<br />(<em>sous réserve que le mode d'authentification (gepi/sso/ldap) du compte le permette</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='ScolResetPassEle';
+$texteItem="peut réinitialiser les mots de passe des comptes de statut élève<br />(<em>sous réserve que le mode d'authentification (gepi/sso/ldap) du compte le permette</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -648,6 +669,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesReleveCpeTousEleves';
 $texteItem="a accès à tous les relevés de notes de toutes les classes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiCpeImprRelSettings';
+$texteItem="a accès au paramétrage de l'impression des relevés de notes HTML";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -745,6 +771,23 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesModifMaPhotoCpe';
 $texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+//+++++++++++++++++++++++++++
+
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='CpeResetPassResp';
+$texteItem="peut réinitialiser les mots de passe des comptes de statut responsable<br />(<em>sous réserve que le mode d'authentification (gepi/sso/ldap) du compte le permette</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='CpeResetPassEle';
+$texteItem="peut réinitialiser les mots de passe des comptes de statut élève<br />(<em>sous réserve que le mode d'authentification (gepi/sso/ldap) du compte le permette</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -929,8 +972,23 @@ $texteItem="a accès à ses relevés de notes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesColMoyReleveEleve';
+$texteItem="a accès à la colonne moyenne du carnet de notes.<br />Notez que tant que la période n'est pas close, cette moyenne peut évoluer (<em>ajout de notes, modifications de coefficients,...</em>).";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesOptionsReleveEleve';
-$texteItem="a accès aux options du relevés de notes (<em>nom court, coef, date des devoirs, ...</em>)";
+$texteItem="a accès au tableau des options du relevés de notes (<em>nom court, coef, date des devoirs, ...</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMoyClasseReleveEleve';
+$texteItem="a accès à la moyenne de la classe pour chaque devoir";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMoyMinClasseMaxReleveEleve';
+$texteItem="a accès aux moyennes min/classe/max de chaque devoir";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1015,6 +1073,15 @@ $texteItem="a accès au bulletin simplifié du groupe-classe";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesBulletinSimpleColonneMoyClasseEleve';
+$texteItem="a accès à la colonne moyenne de la classe pour les enseignements,... sur les bulletins simplifiés et sur les graphes<br />(<em>sous réserve que l'accès aux bulletins simplifiés ou aux graphes soit donné</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesBulletinSimpleColonneMoyClasseMinMaxEleve';
+$texteItem="a accès aux valeurs min/max des moyennes de la classe<br />(<em>sous réserve que l'accès aux bulletins simplifiés et à la colonne Moyenne de la classe soient donnés</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='GepiAccesGraphEleve';
 $texteItem="a accès à la visualisation graphique de ses résultats<br />";
@@ -1032,6 +1099,16 @@ if($acces_app_ele_resp=='manuel') {
   $texteItem.= "Le mode d'ouverture de l'accès se paramètre en <a href='param_gen.php#mode_ouverture_acces_appreciations'  onclick=\"return confirm_abandon(this, change, '$themessage')\">Gestion générale/Configuration générale</a>";
   $texteItem.= "</em>";
 
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesGraphParamEleve';
+$texteItem="a accès au paramètres des graphes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesGraphRangEleve';
+$texteItem="a accès au choix permettant d'afficher son rang dans les graphes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1121,8 +1198,23 @@ $texteItem="a accès aux relevés de notes des ".$gepiSettings['denomination_ele
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesColMoyReleveParent';
+$texteItem="a accès à la colonne moyenne du carnet de notes.<br />Notez que tant que la période n'est pas close, cette moyenne peut évoluer (<em>ajout de notes, modifications de coefficients,...</em>).";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesOptionsReleveParent';
-$texteItem="a accès aux options du relevés de notes (<em>nom court, coef, date des devoirs,...</em>)";
+$texteItem="a accès au tableau des options du relevés de notes (<em>nom court, coef, date des devoirs,...</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMoyClasseReleveParent';
+$texteItem="a accès à la moyenne de la classe pour chaque devoir";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMoyMinClasseMaxReleveParent';
+$texteItem="a accès aux moyennes min/classe/max de chaque devoir";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1207,6 +1299,16 @@ $texteItem="a accès au bulletin simplifié du groupe-classe des élèves dont i
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesBulletinSimpleColonneMoyClasseResp';
+$texteItem="a accès à la colonne moyenne de la classe pour les enseignements,... sur les bulletins simplifiés et sur les graphes<br />(<em>sous réserve que l'accès aux bulletins simplifiés ou aux graphes soit donné</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesBulletinSimpleColonneMoyClasseMinMaxResp';
+$texteItem="a accès aux valeurs min/max des moyennes de la classe<br />(<em>sous réserve que l'accès aux bulletins simplifiés et à la colonne Moyenne de la classe soient donnés</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 
 $titreItem='GepiAccesGraphParent';
 $texteItem="a accès à la visualisation graphique des résultats des ".$gepiSettings['denomination_eleves']." dont il est responsable<br />";
@@ -1224,6 +1326,16 @@ $texteItem.= "<br />";
 $texteItem.= "Le mode d'ouverture de l'accès se paramètre en <a href='param_gen.php#mode_ouverture_acces_appreciations'  onclick=\"return confirm_abandon (this, change, '$themessage')\">Gestion générale/Configuration générale</a>";
 $texteItem.= "</em>";
 
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesGraphParamParent';
+$texteItem="a accès au paramètres des graphes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesGraphRangParent';
+$texteItem="a accès au choix permettant d'afficher son rang dans les graphes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1248,6 +1360,18 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='visuRespDisc';
 $texteItem="a accès dans le module Discipline aux incidents concernant les enfants dont il est responsable.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+//+++++++++++++++++++++++++++
+
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiMemesDroitsRespNonLegaux';
+$texteItem="donner les mêmes droits aux responsables non légaux (resp_legal=0) qu'aux responsables légaux sous réserve que les responsables non légaux disposent d'un compte d'utilisateur et que vous cochiez une case dans la fiche de ces responsables.<br />(<em>Note&nbsp;: A l'heure actuelle, créer des comptes resp_legal=0 ne présente pas d'intérêt sans donner de droits, donc sans cocher cette case</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

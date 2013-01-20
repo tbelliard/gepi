@@ -68,6 +68,9 @@ if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') 
     if(($utilisateur->getStatut()=="professeur")&&($_SESSION['abs2_onglet']=="saisir_groupe.php")&&(isset($_GET['type_selection']))&&($_GET['type_selection']=='id_groupe')&&(isset($_GET['id_groupe']))&&(is_numeric($_GET['id_groupe']))) {
        $param_saisie.="?type_selection=id_groupe&id_groupe=".$_GET['id_groupe'];
     }
+    elseif(($utilisateur->getStatut()=="professeur")&&($_SESSION['abs2_onglet']=="saisir_groupe.php")&&(isset($_GET['type_selection']))&&($_GET['type_selection']=='id_aid')&&(isset($_GET['id_aid']))&&(is_numeric($_GET['id_aid']))) {
+       $param_saisie.="?type_selection=id_aid&id_aid=".$_GET['id_aid'];
+    }
 
     header("Location: ./".$_SESSION['abs2_onglet'].$param_saisie);
     die();
@@ -80,6 +83,9 @@ if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") 
     $param_saisie="";
     if((isset($_GET['type_selection']))&&($_GET['type_selection']=='id_groupe')&&(isset($_GET['id_groupe']))&&(is_numeric($_GET['id_groupe']))) {
        $param_saisie.="?type_selection=id_groupe&id_groupe=".$_GET['id_groupe'];
+    }
+    elseif((isset($_GET['type_selection']))&&($_GET['type_selection']=='id_aid')&&(isset($_GET['id_aid']))&&(is_numeric($_GET['id_aid']))) {
+       $param_saisie.="?type_selection=id_aid&id_aid=".$_GET['id_aid'];
     }
 
     header("Location: ./saisir_groupe.php".$param_saisie);

@@ -22,7 +22,7 @@
  * @see msj_present()
  */
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2 :</h3>";
 
 $result .= "&nbsp;-> Ajout d'un champ 'tel_pers' à la table 'eleves'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'tel_pers';"));
@@ -284,6 +284,122 @@ if ($test == -1) {
 } else {
 	$result .= msj_present("La table existe déjà");
 }
+$result .= "<br />";
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
+$result .= "&nbsp;->Modification du type du champ 'cp' de la table 'etablissements' de 'int' en 'varchar' :";
+$query = mysql_query("ALTER TABLE etablissements CHANGE cp cp VARCHAR( 10 ) NOT NULL;");
+if ($query) {
+	$result .= msj_ok("SUCCES !");
+} else {
+	$result .= msj_erreur("ECHEC !");
+}
+$result .= "<br />";
+
+$result .= "<strong>Bulletins :</strong><br />";
+$result .= "&nbsp;->Prise en compte du module Bulletins : ";
+$test = sql_query1("SELECT 1=1 FROM setting WHERE name='active_bulletins';");
+if ($test == -1) {
+	$result_inter = traite_requete("INSERT INTO setting SET name='active_bulletins', value='y';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Prise en compte déjà effectuée.");
+}
+$result .= "<br />";
+
+$result .= "<strong>Droits :</strong><br />";
+$result .= "&nbsp;->Initialisation de l'accès responsable à la colonne Moyenne de la classe sur les bulletins simplifiés : ";
+$test = sql_query1("SELECT 1=1 FROM setting WHERE name='GepiAccesBulletinSimpleColonneMoyClasseResp';");
+if ($test == -1) {
+	$result_inter = traite_requete("INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseResp', value='y';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Prise en compte déjà effectuée.");
+}
+$result .= "<br />";
+
+$result .= "&nbsp;->Initialisation de l'accès élève à la colonne Moyenne de la classe sur les bulletins simplifiés : ";
+$test = sql_query1("SELECT 1=1 FROM setting WHERE name='GepiAccesBulletinSimpleColonneMoyClasseEleve';");
+if ($test == -1) {
+	$result_inter = traite_requete("INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseEleve', value='y';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Prise en compte déjà effectuée.");
+}
+$result .= "<br />";
+
+$result .= "&nbsp;->Initialisation de l'affichage du volume des documents joints aux CDT : ";
+$cdt_afficher_volume_docs_joints=getSettingValue('cdt_afficher_volume_docs_joints');
+if($cdt_afficher_volume_docs_joints=='') {
+	$result_inter = traite_requete("INSERT INTO setting SET name='cdt_afficher_volume_docs_joints', value='y';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Prise en compte déjà effectuée.");
+}
+$result .= "<br />";
+
+$result .= "&nbsp;->Initialisation de l'affichage des moyennes classe sur les graphes en courbe : ";
+$cdt_afficher_volume_docs_joints=getSettingValue('graphe_affiche_moy_classe');
+if($cdt_afficher_volume_docs_joints=='') {
+	$result_inter = traite_requete("INSERT INTO setting SET name='graphe_affiche_moy_classe', value='oui';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Prise en compte déjà effectuée.");
+}
+$result .= "<br />";
+
+/*
+$result .= "<strong>Ajout d'une table 'responsabilite_plus' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'responsabilite_plus'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS responsabilite_plus (ele_id varchar(10) NOT NULL, pers_id varchar(10) NOT NULL, acces varchar(1) NOT NULL, INDEX pers_id ( pers_id ), INDEX ele_id ( ele_id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+$result .= "<br />";
+*/
+
+$result .= "&nbsp;-> Ajout d'un champ 'acces_sp' à la table 'responsables2'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM responsables2 LIKE 'acces_sp';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE responsables2 ADD acces_sp varchar(1) NOT NULL default '';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>

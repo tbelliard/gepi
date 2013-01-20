@@ -63,46 +63,21 @@ if(($_SESSION['statut']=='cpe')||
     echo "title='Saisir pour un eleve'>Saisir élève</a></li>\n";
 
     echo "<li><a href='liste_saisies_selection_traitement.php' ";
-    if($url_end=='liste_saisies_selection_traitement.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
+    if($url_end=='liste_saisies_selection_traitement.php' || $url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
-    echo "title='Liste des saisies'>Liste saisies</a></li>\n";
-
-    echo "<li><a href='visu_saisie.php' ";
-    if($url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
-    else {
-        echo "style='background-color:#e6f8e7;' ";
-        $_SESSION['abs2_onglet'] = 'visu_saisie.php';
-    }
-    echo "title='Visualiser une saisie'>Saisie</a></li>\n";
+    echo "title='Liste des saisies'>Saisies</a></li>\n";
 
     echo "<li><a href='liste_traitements.php' ";
-    if($url_end=='liste_traitements.php') {echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";}
+    if($url_end=='liste_traitements.php'|| $url_end=='visu_traitement.php' || $url_end=='enregistrement_modif_traitement.php') {echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";}
     else {echo "style='background-color:#f9f9de;' ";}
-    echo "title='Traitement'>Liste traitements</a></li>\n";
-
-    echo "<li><a href='visu_traitement.php' ";
-    if($url_end=='visu_traitement.php' || $url_end=='enregistrement_modif_traitement.php') {
-        echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";
-        $_SESSION['abs2_onglet'] = 'visu_traitement.php';
-    } else {echo "style='background-color:#f9f9de;' ";}
-    echo "title='Traitement'>Traitement</a></li>\n";
+    echo "title='Traitement'>Traitements</a></li>\n";
 
     echo "<li><a href='liste_notifications.php' ";
-    if($url_end=='liste_notifications.php') {echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";}
-    else {echo "style='background-color:#ecf6f8;' ";}
-    echo "title='Notifications'>Liste notifications</a></li>\n";
-
-    echo "<li><a href='visu_notification.php' ";
-    if($url_end=='visu_notification.php' || $url_end=='enregistrement_modif_notification.php' || $url_end=='generer_notification.php') {
+    if($url_end=='liste_notifications.php' || $url_end=='visu_notification.php' || $url_end=='enregistrement_modif_notification.php' || $url_end=='generer_notification.php' || $url_end=='generer_notifications_par_lot.php') {
         echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";
-        $_SESSION['abs2_onglet'] = 'visu_notification.php';
-    } else {echo "style='background-color:#ecf6f8;' ";}
-    echo "title='Notification'>Notification</a></li>\n";
-
-    echo "<li><a href='generer_notifications_par_lot.php' ";
-    if($url_end=='generer_notifications_par_lot.php') {echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";}
+    }
     else {echo "style='background-color:#ecf6f8;' ";}
-    echo "title='Envoi par lot'>Envoi par lot</a></li>\n";
+    echo "title='Notifications'>Notifications</a></li>\n";
 
     if($url_end=='saisir_eleve.php' || $url_end=='enregistrement_saisie_eleve.php' || $url_end=='saisir_groupe.php' || $url_end=='enregistrement_saisie_groupe.php') {
 	echo '<li style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Saisie_cpe">wiki</a></li>';
@@ -127,15 +102,8 @@ if(($_SESSION['statut']=='cpe')||
     }
     echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
 
-    echo "<li><a href='visu_saisie.php' ";
-    if($url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {
-        echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";
-        $_SESSION['abs2_onglet'] = 'visu_saisie.php';
-    } else {echo "style='background-color:#e6f8e7;' ";}
-    echo "title='Visualiser une saisie'>Saisie</a></li>\n";
-
     echo "<li><a href='liste_saisies.php' ";
-    if($url_end=='liste_saisies.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
+    if($url_end=='liste_saisies.php' || $url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";    
 
@@ -158,15 +126,8 @@ if(($_SESSION['statut']=='cpe')||
         if($url_end=='saisir_eleve.php') {echo "class='current' ";}
         echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";        
     
-        echo "<li><a href='visu_saisie.php' ";
-        if($url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {
-            echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";
-            $_SESSION['abs2_onglet'] = 'visu_saisie.php';
-        } else {echo "style='background-color:#e6f8e7;' ";}
-        echo "title='Visualiser une saisie'>Saisie</a></li>\n";
-
         echo "<li><a href='liste_saisies.php' ";
-        if($url_end=='liste_saisies.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
+        if($url_end=='liste_saisies.php' || $url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
         else {echo "style='background-color:#e6f8e7;' ";}
         echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
     }

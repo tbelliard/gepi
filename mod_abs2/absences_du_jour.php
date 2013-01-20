@@ -65,6 +65,10 @@ if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
     include('creation_traitement.php');
 }
 
+if (isset($_POST["creation_notification"])) {
+    include('creation_notification.php');
+}
+
 //récupération des paramètres de la requète
 //contrairement aux autres pages, on ne recupere pas les parametres dans la session
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] : NULL);
@@ -414,6 +418,22 @@ $eleve_col = $query
 				echo $eleve_col->count();
 				echo '<button dojoType="dijit.form.Button" type="submit">Afficher</button>';
 			    }
+
+				echo "<br />\n";
+				$signaler_saisies_englobees=isset($_POST['signaler_saisies_englobees']) ? $_POST['signaler_saisies_englobees'] : NULL;
+				$checked_ou_pas="";
+				if($signaler_saisies_englobees=="y") {$checked_ou_pas=" checked";}
+				echo "<input type='checkbox' id='signaler_saisies_englobees' name='signaler_saisies_englobees' value='y'$checked_ou_pas /><label for='signaler_saisies_englobees'>Signaler les saisies englobées</label>\n";
+
+				echo " - ";
+				$ne_pas_afficher_saisies_englobees=isset($_POST['ne_pas_afficher_saisies_englobees']) ? $_POST['ne_pas_afficher_saisies_englobees'] : NULL;
+				$checked_ou_pas="";
+				if($ne_pas_afficher_saisies_englobees=="y") {$checked_ou_pas=" checked";}
+				echo "<input type='checkbox' id='ne_pas_afficher_saisies_englobees' name='ne_pas_afficher_saisies_englobees' value='y'$checked_ou_pas /><label for='ne_pas_afficher_saisies_englobees' title='Ne pas afficher les saisies englobées... sous réserve que les saisies ne soient pas conflictuelles.'>Ne pas afficher les saisies englobées</label>\n";
+				// Pour quand même afficher le bouton validant les checkbox ci-dessus:
+				if (!method_exists($eleve_col, 'haveToPaginate')) {
+					echo '<button dojoType="dijit.form.Button" type="submit">Afficher</button>';
+				}
 			}
 			?>
 			    </form>
@@ -422,6 +442,7 @@ $eleve_col = $query
 <?php if ($eleve_col->count() != 0) { ?>
 			<form dojoType="dijit.form.Form" jsId="creer_traitement" id="creer_traitement" name="creer_traitement" method="post" action="./absences_du_jour.php">
 			<input type="hidden" id="creation_traitement" name="creation_traitement" value="no"/>
+			<input type="hidden" id="creation_notification" name="creation_notification" value="no"/>
 			<input type="hidden" id="ajout_traitement" name="ajout_traitement" value="no"/>
 			<input type="hidden" id="id_traitement" name="id_traitement" value=""/>
 			<p>
@@ -430,6 +451,9 @@ $eleve_col = $query
 			    <div dojoType="dijit.Menu" style="display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
 				    Créer un nouveau traitement
+				</button>
+				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
+				    Créer une nouvelle notification
 				</button>
 			<?php
 			$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
@@ -445,6 +469,12 @@ $eleve_col = $query
 			<div dojoType="dijit.form.DropDownButton" style="display: inline">
 			    <span>Ajouter au traitement (popup)</span>
 			    <div dojoType="dijit.Menu" style="display: inline">				
+				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
+				    Créer un nouveau traitement
+				</button>
+				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
+				    Créer une nouvelle notification
+				</button>
 			<?php
 			$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 			if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
@@ -484,7 +514,7 @@ $eleve_col = $query
     $tab_eleve_id=array();
     foreach($eleve_col as $eleve) {        
 	$compteur = $compteur + 1;
-        $regime_eleve=EleveRegimeDoublantQuery::create()->findPk($eleve->getlogin())->getRegime();
+        $regime_eleve=$eleve->getEleveRegimeDoublant();
 		//$eleve = new Eleve();
 			$traitement_col = new PropelCollection();//liste des traitements pour afficher des boutons 'ajouter au traitement'
 
@@ -559,42 +589,102 @@ $eleve_col = $query
 							continue;
 					    }
 					    $saisie_affiches[] = $saisie->getPrimaryKey();
-					    $nb_checkbox = $nb_checkbox + 1;                        
-					    echo '<nobr><input eleve_id="'.$eleve->getPrimaryKey().'" name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" ';
-					    if ($saisie->getNotificationEnCours()){echo 'saisie_notification_en_cours="true"';}
-                        if ($saisie->getNotifiee()) {echo 'saisie_notifiee="true"';}
-					    if ($saisie->getTraitee()) {echo 'saisie_traitee="true"';}
+					    $nb_checkbox = $nb_checkbox + 1;
+					    $chaine_contenu_td='<nobr><input eleve_id="'.$eleve->getPrimaryKey().'" name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" ';
+					    if ($saisie->getNotificationEnCours()){$chaine_contenu_td.='saisie_notification_en_cours="true"';}
+                        if ($saisie->getNotifiee()) {$chaine_contenu_td.='saisie_notifiee="true"';}
+					    if ($saisie->getTraitee()) {$chaine_contenu_td.='saisie_traitee="true"';}
 
 						$eleve_id_courant=$eleve->getPrimaryKey();
 						$id_checkbox_eleve_courant=$eleve_id_courant."_".$edt_creneau->getIdDefiniePeriode()."_".$nb_checkbox_eleve_courant_sur_ce_creneau;
 
-						echo " id='".$id_checkbox_eleve_courant."' ";
+						$chaine_contenu_td.=" id='".$id_checkbox_eleve_courant."' ";
 						if(!in_array($eleve_id_courant, $tab_eleve_id)) {$tab_eleve_id[]=$eleve_id_courant;}
 
-					    echo '/>';                        
-                        echo '<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'"/>';
+					    $chaine_contenu_td.='/>';
+                        $chaine_contenu_td.='<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'"/>';
 
 						$nb_checkbox_eleve_courant++;
 						$nb_checkbox_eleve_courant_sur_ce_creneau++;
 
                         //if ($saisie->getNotifiee()) {echo " (notifiée)";}
-					    echo '</nobr> ';                        
+					    $chaine_contenu_td.='</nobr> ';                        
 					    //echo $saisie->getTypesDescription();
-					    echo '</a>';                        
+					    $chaine_contenu_td.='</a>';                        
                         if($saisie->getNotificationEnCours()){
-                            echo '<img src="../images/icons/courrier_envoi.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
+                            $chaine_contenu_td.='<img src="../images/icons/courrier_envoi.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
                         }                        
                         if($saisie->getNotifiee()){
-                            echo '<img src="../images/icons/courrier_retour.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
+                            $chaine_contenu_td.='<img src="../images/icons/courrier_retour.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
                         }
-                        echo '<br/>';
-                        if(!$saisie->getTraitee()){
-                            echo '<img src="../images/icons/ico_attention.png" title="Saisie non traitée" />';
+                        $chaine_contenu_td.='<br/>';
+                        if(!$saisie->getTraitee()) {
+                            //if(!isset($ne_pas_afficher_saisies_englobees)) {
+                            if((!isset($ne_pas_afficher_saisies_englobees))||($violet)) {
+                                echo $chaine_contenu_td;
+                                if(isset($signaler_saisies_englobees)) {
+									$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+									if($saisies_englobante_col->isEmpty()) {
+										echo '<img src="../images/icons/ico_attention.png" title="Saisie non traitée" />';
+									}
+									else {
+										$texte_saisie_couverte='La saisie est englobée par : ';
+										$cpt_saisie_couverte=0;
+										foreach ($saisies_englobante_col as $saisies_englobante) {
+											if($cpt_saisie_couverte==0) {
+												$lien_saisie_couverte="<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'> ";
+											}
+											$texte_saisie_couverte.=$saisies_englobante->getDateDescription();
+											$texte_saisie_couverte.=' '.$saisies_englobante->getTypesTraitements();
+											if (!$saisies_englobante_col->isLast()) {
+												$texte_saisie_couverte.=' - ';
+											}
+											$cpt_saisie_couverte++;
+										}
+
+										echo $lien_saisie_couverte.'<img src="../images/icons/ico_toit2.png" title="'.$texte_saisie_couverte.'" /></a>';
+									}
+								}
+								else {
+									echo '<img src="../images/icons/ico_attention.png" title="Saisie non traitée" />';
+								}
+								echo '<br/>';
+							}
+							else {
+								// Faut-il quand même vérifier s'il n'y a pas de conflit?
+								// Fait (?) avec le test $violet plus haut.
+							}
                         }else{
+                            echo $chaine_contenu_td;
+
                             //echo '<img src="../images/icons/flag_green.png" title="'.$saisie->getTypesDescription().'" />';
-                             echo $saisie->getTypesDescription();
+                            $saisie_justifiee_ou_pas="";
+                            echo "<span title=\"";
+							$tab_traitements_deja_affiches=array();
+							foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+								if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+									$description_traitement_courant=$traitement->getDescription();
+									echo "Traitement ".$description_traitement_courant."\n";
+									if(preg_match("/justification :/", $description_traitement_courant)) {$saisie_justifiee_ou_pas=" <img src='../images/vert.png' width='16' height='16' title='Saisie justifiée' />";}
+								}
+							}
+                            echo "\">";
+                            echo $saisie->getTypesDescription();
+                            echo $saisie_justifiee_ou_pas;
+                            echo "</span>";
+
+							/*
+							echo "<br />";
+							$tab_traitements_deja_affiches=array();
+							foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+								if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+									echo $traitement->getDescription().' : ';
+								}
+							}
+							*/
+                            echo '<br/>';
                         }
-                        echo '<br/>';
+                        //echo '<br/>';
 					    //echo '</nobr>';					    
 					}                    
 					echo '</td>';
@@ -634,6 +724,9 @@ $eleve_col = $query
 			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
 				    Créer un nouveau traitement
 				</button>';
+                            echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
+                                Créer une nouvelle notification
+                            </button>';
 			echo '</div></div><br/>';
 
 			echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
@@ -655,6 +748,9 @@ $eleve_col = $query
 			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
 				    Créer un nouveau traitement (fenêtre)
 				 </button>';
+                            echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
+                                Créer une nouvelle notification (fenêtre)
+                            </button>';
 			echo '</div></div><br/>';
 
             echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
@@ -676,6 +772,9 @@ $eleve_col = $query
 			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
 				    Créer un nouveau traitement (popup)
 				 </button>';
+                            echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
+                                Créer une nouvelle notification (popup)
+                            </button>';
 			echo '</div></div>';
 			echo '</td>';
 			echo "</tr>";

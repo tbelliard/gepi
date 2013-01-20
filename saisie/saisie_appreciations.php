@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -339,7 +339,8 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 				
 							if($envoi_mail_actif=='y') {
 								$email_destinataires="";
-								$sql="select email from utilisateurs where statut='secours' AND email!='';";
+								//$sql="select email from utilisateurs where statut='secours' AND email!='';";
+								$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
 								$req=mysql_query($sql);
 								if(mysql_num_rows($req)>0) {
 									$lig_u=mysql_fetch_object($req);
@@ -1071,9 +1072,9 @@ $alt=1;
 while ($k < $nb_periode) {
 	$alt=$alt*(-1);
 	if ($current_group["classe"]["ver_periode"]["all"][$k] == 0) {
-		echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
+		echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span><span id='span_repartition_notes_$k'></span></td>\n";
 	} else {
-		echo "<tr class='lig$alt'><td>$nom_periode[$k]</td>\n";
+		echo "<tr class='lig$alt'><td>$nom_periode[$k]<span id='span_repartition_notes_$k'></span></td>\n";
 	}
 	echo $mess[$k];
 	$k++;
@@ -1101,6 +1102,47 @@ if($_SESSION['statut']=="secours") {
 }
 */
 //=================================
+
+//=================================
+// 20121118
+$date_du_jour=strftime("%d/%m/%Y");
+// Si les parents ont accès aux bulletins ou graphes,... on va afficher un témoin
+$tab_acces_app_classe=array();
+foreach($current_group["classes"]["list"] as $key => $value) {
+	// L'accès est donné à la même date pour parents et responsables.
+	// On teste seulement pour les parents
+	$date_ouverture_acces_app_classe=array();
+	$tab_acces_app_classe[$value]=acces_appreciations(1, count($current_group["periodes"]), $value, 'responsable');
+}
+
+
+$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
+if($acces_app_ele_resp=='manuel') {
+	$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
+}
+elseif($acces_app_ele_resp=='date') {
+	$chaine_date_ouverture_acces_app_classe="";
+	for($loop=0;$loop<count($date_ouverture_acces_app_classe);$loop++) {
+		if($loop>0) {
+			$chaine_date_ouverture_acces_app_classe.=", ";
+		}
+		$chaine_date_ouverture_acces_app_classe.=$date_ouverture_acces_app_classe[$loop];
+	}
+	if($chaine_date_ouverture_acces_app_classe=="") {$chaine_date_ouverture_acces_app_classe="Aucune date n'est encore précisée.
+Peut-être devriez-vous en poser la question à l'administration de l'établissement.";}
+	$msg_acces_app_ele_resp="Les appréciations seront visibles soit à une date donnée (".$chaine_date_ouverture_acces_app_classe.").";
+}
+elseif($acces_app_ele_resp=='periode_close') {
+	$delais_apres_cloture=getSettingValue('delais_apres_cloture');
+	$msg_acces_app_ele_resp="Les appréciations seront visibles ".$delais_apres_cloture." jour(s) après la clôture de la période.";
+}
+else{
+	$msg_acces_app_ele_resp="???";
+}
+//=================================
+
+// Tableau des notes pour chaque période
+$tab_per_notes=array();
 
 $prev_classe = null;
 //=========================
@@ -1243,6 +1285,7 @@ foreach ($liste_eleves as $eleve_login) {
 			} else {
 				if ($eleve_note != '') {
 					$note .= $eleve_note;
+					$tab_per_notes[$k][]=$eleve_note;
 				} else {
 					$note .= "&nbsp;";
 				}
@@ -1347,17 +1390,17 @@ foreach ($liste_eleves as $eleve_login) {
 						}
 
 						if($conteneur_precedent!=$snnote['nom_court_conteneur']) {
-							$liste_notes_detaillees.="<p><b>".$snnote['nom_court_conteneur']."&nbsp;:</b> <br />";
+							$liste_notes_detaillees.="<p><strong>".$snnote['nom_court_conteneur']."&nbsp;:</strong> <br />";
 							$conteneur_precedent=$snnote['nom_court_conteneur'];
 						}
 
 						//if ($liste_notes_detaillees!='') {$liste_notes_detaillees.=", ";}
 						$liste_notes_detaillees.=$snnote['nom_court']."&nbsp;: ";
-						$liste_notes_detaillees.=$snnote['note'];
+						$liste_notes_detaillees.="<strong>".$snnote['note'];
 						if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
 							$liste_notes_detaillees.= "/".$snnote['note_sur'];
 						}
-						$liste_notes_detaillees.=" (coef&nbsp;".$snnote['coef'].")";
+						$liste_notes_detaillees.="</strong> (coef&nbsp;".$snnote['coef'].")";
 						$liste_notes_detaillees.=" (".formate_date($snnote['date']).")<br />";
 					}
 				}
@@ -1481,6 +1524,7 @@ foreach ($liste_eleves as $eleve_login) {
 		echo "</tr>\n";
 		*/
 
+		echo "<a name='saisie_app_$eleve_login'></a>";
 		echo "<table width=\"750\" class='boireaus' cellspacing=\"2\" cellpadding=\"5\" summary=\"Tableau de $eleve_nom $eleve_prenom\">\n";
 		echo "<tr>\n";
 		//echo "<th width=\"200\">\n";
@@ -1516,7 +1560,7 @@ foreach ($liste_eleves as $eleve_login) {
 		echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
 		echo "<th>\n";
 
-		echo "<div align=\"center\"><b>$eleve_nom $eleve_prenom</b>\n";
+		echo "<div align=\"center\"><b><a href='../eleves/visu_eleve.php?ele_login=$eleve_login' target='_blank' title=\"Voir la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">$eleve_nom $eleve_prenom</a></b>\n";
 
 		//==========================
 		// AJOUT: boireaus 20071115
@@ -1562,6 +1606,26 @@ foreach ($liste_eleves as $eleve_login) {
 				//	echo $nom_periode[$k];
 				//}
 				echo "</span>\n";
+
+				// 20121118
+				// Si les parents ont l'accès aux bulletins, graphes,... on affiche s'ils ont l'accès aux appréciations à ce jour
+				if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
+				(getSettingAOui('GepiAccesGraphParent'))||
+				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
+				(getSettingAOui('GepiAccesGraphEleve'))) {
+					if($tab_acces_app_classe[$eleve_id_classe][$k]=="y") {
+						echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
+					}
+					else {
+						/*
+						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour.") les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+Les appréciations seront visibles soit à une date donnée, soit N jours après la clôture de la période $k, soit après une intervention manuelle d'un compte de statut 'scolarité' selon le paramétrage choisi.\" />";
+						*/
+						echo " <img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+$msg_acces_app_ele_resp\" />";
+					}
+				}
+
 				echo "</td>\n";
 			}
 			else {
@@ -1581,6 +1645,25 @@ foreach ($liste_eleves as $eleve_login) {
 				//else {
 				//	echo $nom_periode[$k];
 				//}
+
+				// 20121118
+				// Si les parents ont l'accès aux bulletins, graphes,... on affiche s'ils ont l'accès aux appréciations à ce jour
+				if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
+				(getSettingAOui('GepiAccesGraphParent'))||
+				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
+				(getSettingAOui('GepiAccesGraphEleve'))) {
+					if($tab_acces_app_classe[$eleve_id_classe][$k]=="y") {
+						echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
+					}
+					else {
+						/*
+						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour.") les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+Les appréciations seront visibles soit à une date donnée, soit N jours après la clôture de la période $k, soit après une intervention manuelle d'un compte de statut 'scolarité' selon le paramétrage choisi.\" />";
+						*/
+						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+$msg_acces_app_ele_resp\" />";
+					}
+				}
 
 				echo "</td>\n";
 			}
@@ -1629,8 +1712,20 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 </form>
 
 <?php
+	for($loop=1;$loop<$nb_periode;$loop++) {
+		$histogramme="";
 
+		if((isset($tab_per_notes[$loop]))&&(count($tab_per_notes[$loop])>0)) {
+			$histogramme=retourne_html_histogramme_svg($tab_per_notes[$loop], "Repartition P$loop", "repartition_p$loop");
 
+			if($histogramme!="") {
+				//echo $histogramme;
+				echo "<script type='text/javascript'>
+	if(document.getElementById('span_repartition_notes_$loop')) {document.getElementById('span_repartition_notes_$loop').innerHTML='<br />".addslashes($histogramme)."';}
+</script>\n";
+			}
+		}
+	}
 
 echo "<script type='text/javascript'>
 
@@ -1697,8 +1792,15 @@ echo "<script type='text/javascript'>
 			message=message+document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode).innerHTML;
 		}
 		//alert('document.getElementById(\'appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode+').innerHTML');
-		message=message+'\\n================================\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
 
+		message=message+'\\n================================\\n'
+";
+		if(getSettingValue('url_racine_gepi')!="") {
+			echo "		message=message+'Après connexion dans Gepi, l\'adresse pour corriger est \\n".getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe='+id_groupe+'#saisie_app_'+eleve_login;\n";
+			echo "		message=message+'\\n'";
+		}
+		echo "
+		message=message+'\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
 
 		//alert('message='+message);
 

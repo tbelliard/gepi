@@ -185,6 +185,9 @@
 
 	$champ_bull_pdf[]="signature_img";
 
+	//$champ_bull_pdf[]="adresse_resp_fontsize_ligne_1";
+	$champ_bull_pdf[]="adresse_resp_fontsize";
+
 	/*
 		mysql> show fields from modele_bulletin;
 		+--------------------+--------------+------+-----+---------+-------+
@@ -384,6 +387,9 @@
 	//=========================
 
 	$val_defaut_champ_bull_pdf["signature_img"]=0;
+
+	//$val_defaut_champ_bull_pdf["adresse_resp_fontsize_ligne_1"]=12;
+	$val_defaut_champ_bull_pdf["adresse_resp_fontsize"]=10;
 
 
 	for($loop_champs=0;$loop_champs<count($champ_bull_pdf);$loop_champs++) {

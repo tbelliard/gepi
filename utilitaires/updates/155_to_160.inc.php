@@ -25,7 +25,7 @@
 
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.0 </h3>";
 
-require dirname(__FILE__).'/ISO_to_UTF8.inc.php';
+if ($version_old<="1.6.0") require dirname(__FILE__).'/ISO_to_UTF8.inc.php';
 
 $result.="<br />";
 $result.="<strong>Module relevé de notes :</strong>";

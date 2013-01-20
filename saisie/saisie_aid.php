@@ -268,7 +268,9 @@ change = 'no';
 if (!isset($aid_id)) {
 	?></p><?php
 	if ($_SESSION['statut'] != "secours") {
-		$call_prof_aid = mysql_query("SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$indice_aid') ORDER BY a.numero, a.nom");
+		$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$indice_aid') ORDER BY a.numero, a.nom";
+		//echo "$sql<br />";
+		$call_prof_aid = mysql_query($sql);
 		$nombre_aid = mysql_num_rows($call_prof_aid);
 		if ($nombre_aid == "0") {
 			echo "<p>$nom_aid : Vous n'êtes pas professeur responsable. Vous n'avez donc pas à entrer d'appréciations.</p></html></body>\n";

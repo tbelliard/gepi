@@ -83,7 +83,18 @@ else {
 	$ele_login=isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL;
 
 	$tab_ele_login=array();
-	$tab_enfants=get_enfants_from_resp_login($_SESSION['login'],'avec_classe');
+	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+		$tab_enfants=get_enfants_from_resp_login($_SESSION['login'],'avec_classe', "yy");
+	}
+	else {
+		$tab_enfants=get_enfants_from_resp_login($_SESSION['login'],'avec_classe');
+	}
+	if(!isset($tab_enfants)) {
+		echo "<p style='color:red'>Vous n'avez semble-t-il aucun élève en responsabilité.</p>\n";
+		tentative_intrusion(1, "Tentative d'accès au module Discipline sans élève en responsabilité.");
+		require("../lib/footer.inc.php");
+		die();
+	}
 	for($i=0;$i<count($tab_enfants);$i+=2) {
 		//echo "\$tab_enfants[$i]=".$tab_enfants[$i]."<br />";
 		$tab_ele_login[]=$tab_enfants[$i];

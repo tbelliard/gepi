@@ -46,6 +46,7 @@ if (isset($_POST['is_posted'])) {
 	$msg = '';
 	$reg_ok = '';
 	$nb_reg_ok=0;
+	$nb_modif_priorite=0;
 	// Première boucle sur le nombre de periodes
 	$per = 0;
 	while ($per < $max_periode) {
@@ -69,9 +70,24 @@ if (isset($_POST['is_posted'])) {
 					while ($k < $per+1) {
 						$temp2 = "nb_".$per."_".$k;
 						if ($_POST[$temp2] != '') {
-							$register = mysql_query("UPDATE periodes SET nom_periode='".$_POST[$temp2]."' where (id_classe='".$id_classe."' and num_periode='".$k."')");
-						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
-					}
+							$sql="UPDATE periodes SET nom_periode='".$_POST[$temp2]."' WHERE (id_classe='".$id_classe."' and num_periode='".$k."')";
+							$register = mysql_query($sql);
+							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
+
+						$temp2 = "date_fin_".$per."_".$k;
+						if ($_POST[$temp2] != '') {
+							$tmp_tab=explode("/", $_POST[$temp2]);
+							if((!isset($tmp_tab[2]))||(!checkdate($tmp_tab[1], $tmp_tab[0], $tmp_tab[2]))) {
+								$msg.="Erreur sur la modification de date de fin de période : ".$_POST[$temp2]."<br />";
+							}
+							else {
+								$sql="UPDATE periodes SET date_fin='".$tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00'";
+								$sql.=" WHERE (id_classe='".$id_classe."' and num_periode='".$k."')";
+								$register = mysql_query($sql);
+								if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+							}
+						}
 						$k++;
 					}
 					$temp2 ="nb_".$per."_reg_suivi_par";
@@ -223,7 +239,7 @@ if (isset($_POST['is_posted'])) {
 
 					// 20121027
 					//$tab_param=array('rn_aff_classe_nom');
-					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs');
+					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
 					for($loop=0;$loop<count($tab_param);$loop++) {
 						if (isset($_POST[$tab_param[$loop].'_'.$per])) {
 							if ($_POST[$tab_param[$loop].'_'.$per]!='') {
@@ -234,23 +250,40 @@ if (isset($_POST['is_posted'])) {
 					}
 
 					// On enregistre les infos relatives aux catégories de matières
+					$tab_priorites_categories=array();
+					$temoin_pb_ordre_categories="n";
 					$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 					while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 						$reg_priority = $_POST['priority_'.$row["id"].'_'.$per];
-						if (isset($_POST['moyenne_'.$row["id"].'_'.$per])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
-						if (!is_numeric($reg_priority)) $reg_priority = 0;
-						if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
-						$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
-						if ($test == 0) {
-							// Pas d'entrée... on créé
-							$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
-						} else {
-							// Entrée existante, on met à jour
-							$res = mysql_query("UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
+						if($reg_priority!='') {
+							if (isset($_POST['moyenne_'.$row["id"].'_'.$per])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
+							if (!is_numeric($reg_priority)) $reg_priority = 0;
+							if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
+
+							if(in_array($reg_priority, $tab_priorites_categories)) {
+								$temoin_pb_ordre_categories="y";
+								$reg_priority=max($tab_priorites_categories)+1;
+							}
+							$tab_priorites_categories[]=$reg_priority;
+
+							$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
+							if ($test == 0) {
+								// Pas d'entrée... on créé
+								$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
+							} else {
+								// Entrée existante, on met à jour
+								$res = mysql_query("UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
+							}
+							if (!$res) {
+								$msg .= "<br />Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
+							}
+							else {
+								$nb_modif_priorite++;
+							}
 						}
-						if (!$res) {
-							$msg .= "<br />Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
-						}
+					}
+					if($temoin_pb_ordre_categories=="y") {
+						$msg.="<br /><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Des mesures ont été prises pour imposer des ordres différents, mais il se peut que l'ordre ne vous convienne pas.<br />\n";
 					}
 
 
@@ -556,11 +589,11 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if ($reg_ok=='') {
-		if($nb_reg_ok==0) {
+		if(($nb_reg_ok==0)&&($nb_modif_priorite==0)) {
 			$message_enregistrement = "Aucune modification n'a été effectuée !";
 		}
 		else {
-			$message_enregistrement = "$nb_reg_ok modification(s) effectuée(s) !";
+			$message_enregistrement = ($nb_reg_ok+$nb_modif_priorite)." modification(s) effectuée(s) !";
 		}
 		$affiche_message = 'yes';
 	} else if ($reg_ok=='yes') {
@@ -749,6 +782,10 @@ while ($per < $max_periode) {
 
 
 		?>
+		<p style='text-indent:-6em; margin-left:6em;'><em>Remarque&nbsp;:</em> Les modifications ne concernent que les cases cochées ci-dessus.<br />
+		Aucune modification n'est apportée aux champs laissés vides ci-dessous.</p>
+		<br />
+
 		<p class='bold'>Pour la ou les classe(s) sélectionnée(s) ci-dessus&nbsp;: </p>
 		<p>Aucune modification ne sera apportée aux champs laissés vides</p>
 
@@ -756,16 +793,22 @@ while ($per < $max_periode) {
 		<tr>
 		<th>&nbsp;</th>
 		<th>Nom de la période</th>
+		<th title="La date précisée ici est prise en compte pour les appartenances des élèves à telle classe sur telle période (notamment pour les élèves changeant de classe).
+Il n'est pas question ici de verrouiller automatiquement une période de note à la date saisie.">Date de fin de la période</th>
 		</tr>
 
 		<?php
 		$k = '1';
 		$alt=1;
-		While ($k < $per+1) {
+		while($k < $per+1) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 			echo "<th>Période ".$k."</th>\n";
 			echo "<td><input type='text' name='nb_".$per."_".$k."' value=\"\" size='30' /></td>\n";
+			echo "<td><input type='text' name='date_fin_".$per."_".$k."' id='date_fin_".$per."_".$k."' value=\"\" size='10' ";
+			echo " onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\"";
+			echo "/>";
+			echo "</td>\n";
 			echo"</tr>\n";
 			$k++;
 		}
@@ -1107,6 +1150,7 @@ td {
 <table border='0' cellspacing='0'>
 <tr>
 	<td colspan='3'>
+	<a name='parametres_generaux'></a>
 	<h2><b>Paramètres généraux&nbsp;: </b></h2>
 	</td>
 </tr>
@@ -1139,6 +1183,11 @@ td {
 			<td style='width: auto; vertical-align:middle;'>Catégorie</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Priorité d'affichage</td><td style='width: 100px; text-align: center; vertical-align:middle;'>Afficher la moyenne sur le bulletin</td>
 		</tr>
 		<?php
+		$max_priority_cat=0;
+		$get_max_cat = mysql_query("SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
+		if(mysql_num_rows($get_max_cat)>0) {
+			$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
+		}
 		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 		while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 			$current_priority = $row["priority"];
@@ -1148,7 +1197,8 @@ td {
 			echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
 			echo "<td style='padding: 5px; text-align: center;'>\n";
 			echo "<select name='priority_".$row["id"]."_".$per."' size='1'>\n";
-			for ($i=0;$i<11;$i++) {
+			echo "<option value=''>---</option>\n";
+			for ($i=0;$i<max(100,$max_priority_cat);$i++) {
 				echo "<option value='$i'";
 				//if ($current_priority == $i) echo " SELECTED";
 				echo ">$i</option>\n";
@@ -1368,6 +1418,19 @@ td {
 	<td>
 		<input type="radio" value="y" name="rn_app_<?php echo $per;?>" id="rn_app_y" onchange='changement()' /><label for='rn_app_y' style='cursor: pointer;'>Oui</label> 
 		<input type="radio" value="n" name="rn_app_<?php echo $per;?>" id="rn_app_n" onchange='changement()' /><label for='rn_app_n' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Avec la colonne moyenne (<em title="Moyenne du carnet de notes :
+Notez que tant que la période n'est pas close, cette moyenne peut évoluer
+(ajout de notes, modifications de coefficients,...)">du CN</em>) de l'élève&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_col_moy_<?php echo $per;?>" id="rn_col_moy_y" onchange='changement()' /><label for='rn_col_moy_y' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_col_moy_<?php echo $per;?>" id="rn_col_moy_n" onchange='changement()' /><label for='rn_col_moy_n' style='cursor: pointer;'>Non</label>
 	</td>
 </tr>
 

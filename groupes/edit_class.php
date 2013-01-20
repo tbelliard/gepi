@@ -801,6 +801,21 @@ for($i=0;$i<10;$i++){
 }
 ?>
 </select>
+<?php
+	$temoin_tous_coef_nuls="y";
+	foreach ($groups as $group) {
+		$current_group = get_group($group["id"]);
+		if($current_group["classes"]["classes"][$id_classe]['coef']>0) {
+			$temoin_tous_coef_nuls="n";
+			break;
+		}
+	}
+
+	if($temoin_tous_coef_nuls=="y") {
+		echo "&nbsp;<img src='../images/icons/ico_attention.png' width='22' height='19' title=\"ATTENTION : Tous les coefficients des enseignements sont nuls.
+                    Aucun calcul de moyenne générale n'est alors possible.\" />\n";
+	}
+?>
 <!--input type='button' value='Modifier' onClick='coeff();' /-->
 <!--Mettre tous les coefficients à <input type='button' value='0' onClick='coeff(0);' /> / <input type='button' value='1' onClick='coeff(1);' /-->
 <!--/p-->

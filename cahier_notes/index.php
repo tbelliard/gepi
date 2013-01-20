@@ -618,17 +618,26 @@ var tab_per_cn=new Array();\n";
 		echo " | \n";
 	}
 
+	/*
+	// Ca ne fonctionne pas: On ne récupère que le dernier devoir consulté,... parce qu'imprime_pdf.php récupère ce qui est mis en $_SESSION['data_pdf']
+	$sql="SELECT 1=1 FROM cn_devoirs cd, cn_conteneurs cc WHERE cd.id_conteneur=cc.id AND cc.id_racine='$id_racine';";
+	$test_existence_devoir=mysql_query($sql);
+	if(mysql_num_rows($test_existence_devoir)>0) {
+		$titre_pdf = urlencode($current_group['description']." (".$nom_periode[$periode_num].")");
+		echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" title=\"Export PDF du Carnet de Notes\"> Imprimer au format PDF </a>|";
+	}
+	*/
 
 	//==================================
 	// AJOUT: boireaus EXPORT...
-    echo "<a href='export_cahier_notes.php?id_racine=".$id_racine."'>Exporter les notes</a> | \n";
+    echo "<a href='export_cahier_notes.php?id_racine=".$id_racine."' title=\"Exporter les notes au format tableur\">Exporter les notes</a> | \n";
 	//==================================
 
     if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 
 		//==================================
 		// AJOUT: boireaus EXPORT...
-		echo "<a href='import_cahier_notes.php?id_racine=".$id_racine."'>Importer les notes</a> | \n";
+		echo "<a href='import_cahier_notes.php?id_racine=".$id_racine."' title=\"Importer les notes depuis un format tableur\">Importer les notes</a> | \n";
 		//==================================
 
         echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
@@ -719,7 +728,7 @@ var tab_per_cn=new Array();\n";
     $empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
     //echo "</ul>\n";
     if ($empty == 'yes') echo "<p><b>Actuellement, aucune évaluation.</b> Vous devez créer au moins une évaluation.</p>\n";
-    if ($empty != 'yes') {
+    if (($empty != 'yes')&&(getSettingAOui('active_bulletins'))) {
 		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
 		$test_jgv=mysql_query($sql);
 		if(mysql_num_rows($test_jgv)==0) {

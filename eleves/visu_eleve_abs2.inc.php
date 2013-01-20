@@ -304,6 +304,9 @@ foreach($eleve->getPeriodeNotes() as $periode_note) {
 
 <?php
 $ligne = 0;
+$jour_debut_ligne_precedente="";
+$jour_debut_ligne_courante="";
+$alt=1;
 foreach ($donnees as $id => $eleve) {
     if(!isset($eleve['infos_saisies'])){
         continue;
@@ -313,14 +316,26 @@ foreach ($donnees as $id => $eleve) {
         foreach ($value2 as $journee) {
             foreach ($journee as $key => $value) {                
                 $style=$value['type_css'];
-
                 /*
                 echo "<tr><td colspan='6' style='background-color:white; text-align:left;'><pre>";
                 print_r($value);
                 echo "</pre></td></tr>";
                 */
 ?>
-	<tr>
+	<tr<?php
+		$jour_debut_ligne_courante=strftime("%Y%m%d", $value['dates']['debut']);
+		if($jour_debut_ligne_courante!=$jour_debut_ligne_precedente) {
+			$alt=$alt*(-1);
+		}
+		$jour_debut_ligne_precedente=$jour_debut_ligne_courante;
+
+		$style_ajout="";
+		if($alt==1) {
+			//echo " style='background-color:plum'";
+			$style_ajout='" style="background-color:plum;';
+		}
+		$style.=$style_ajout;
+	?>>
 	  <?php $ligne++; ?>
 
 	  

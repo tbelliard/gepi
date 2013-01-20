@@ -1008,7 +1008,6 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		$dbHost = $GLOBALS['dbHost'];
 		$dbUser = $GLOBALS['dbUser'];
 		$dbPass = $GLOBALS['dbPass'];
-		$db_nopersist = $GLOBALS['db_nopersist'];
 		$dbDb = $GLOBALS['dbDb'];
 
 		//list ($idpers,$login) = isauth();
@@ -1023,7 +1022,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 
 			// A ce stade, l'utilisateur est authentifié
 			// Etablir à nouveau la connexion à la base
-			if (empty($db_nopersist))
+			if (isset($GLOBALS['db_nopersist']) && !$GLOBALS['db_nopersist'])
 				$db_c = mysql_pconnect($dbHost, $dbUser, $dbPass);
 			else
 				$db_c = mysql_connect($dbHost, $dbUser, $dbPass);
