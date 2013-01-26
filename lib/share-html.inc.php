@@ -1432,13 +1432,13 @@ function affiche_infos_actions() {
 		echo "<div id='div_infos_actions' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%;'>\n";
 		echo "<div id='info_action_titre' style='font-weight: bold; min-height:16px; padding-right:8px;' class='infobulle_entete'>\n";
 			echo "<div id='info_action_pliage' style='float:right; width: 1em;'>\n";
-			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\" title=\"Plier/déplier le cadre des actions en attente\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 			echo "</div>\n";
 
 			//if($_SESSION['statut']=='administrateur') {
 			if(acces("/gestion/gestion_infos_actions.php", $_SESSION['statut'])) {
 				echo "<div style='float:right; width: 1em; margin-right:0.5em;'>\n";
-				echo "<a href=\"gestion/gestion_infos_actions.php\"><span id='img_pliage_conteneur'><img src='images/disabled.png' width='16' height='16' /></span></a>";
+				echo "<a href=\"gestion/gestion_infos_actions.php\" title=\"Consulter, supprimer par lots les actions en attente\"><span id='img_pliage_conteneur'><img src='images/disabled.png' width='16' height='16' /></span></a>";
 				echo "</div>\n";
 			}
 
@@ -1452,14 +1452,14 @@ function affiche_infos_actions() {
 			echo "<div id='info_action_$lig->id' style='border: 1px solid black; margin:2px; min-height:16px;'>\n";
 				echo "<div id='info_action_titre_$lig->id' style='font-weight: bold; min-height:16px; padding-right:8px;' class='infobulle_entete'>\n";
 					echo "<div id='info_action_pliage_$lig->id' style='float:right; width: 1em;'>\n";
-					echo "<a href=\"javascript:div_alterne_affichage('$lig->id')\"><span id='img_pliage_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+					echo "<a href=\"javascript:div_alterne_affichage('$lig->id')\" title=\"Plier/déplier l'action en attente\"><span id='img_pliage_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 					echo "</div>\n";
 					echo $lig->titre;
 				echo "</div>\n";
 
 				echo "<div id='info_action_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
 					echo "<div style='float:right; width: 9em; text-align: right;'>\n";
-					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\" title=\"Supprimer cette notification d'action en attente\">Supprimer</span></a>";
 					echo "</div>\n";
 
 					echo preg_replace("/\\\\n/","<br />",nl2br($lig->description));
