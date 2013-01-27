@@ -1094,6 +1094,11 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
                         <td>
                             <?php echo $user_email ?>
                             <input type="hidden" name="reg_email" value="<?php echo $user_email ?>" />
+                            <?php
+                                if((getSettingValue('cas_attribut_email')!='')&&(getSettingValue('sso_url_portail')!='')) {
+                                    echo " <a href='".getSettingValue('sso_url_portail')."' title=\"Vous pouvez renseigner/modifier votre adresse de courriel là : ".getSettingValue('sso_url_portail')."\" target='_blank'><img src='../images/icons/ico_question.png' width='19' height='19' /></a>";
+                                }
+                            ?>
                         </td>
                     </tr>
 <?php
