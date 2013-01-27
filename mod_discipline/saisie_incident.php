@@ -1197,8 +1197,8 @@ if(isset($id_incident) ) {
                 $resProf=mysql_query($sqlProf);
     ?>
         <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='change_declare'>
-        <fieldset style='border: 1px solid grey; margin-bottom:0.5em;'>
-        <legend style='border: 1px solid grey;'>Déclarant</legend>
+        <fieldset style='border: 1px solid grey; margin-bottom:0.5em; background-image: url("../images/background/opacite50.png");'>
+        <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Déclarant</legend>
             <p class='bold'>Changer le déclarant</p>
             <p>
                 <select id="choixProf" name="choixProf">
@@ -1249,8 +1249,8 @@ if(isset($id_incident) ) {
         if($etat_incident!='clos') {
 ?>
 <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='form_suppr'>
-    <fieldset style='border: 1px solid grey;'>
-    <legend style='border: 1px solid grey;'>Protagonistes</legend>
+    <fieldset style='border: 1px solid grey;background-image: url("../images/background/opacite50.png");'>
+    <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Protagonistes</legend>
     <p><input type='hidden' name='step' value='<?php echo $step; ?>' /></p>
 <?php
         }
@@ -1646,8 +1646,8 @@ if(isset($id_incident) ) {
 
 <blockquote>
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire1'>
-    <fieldset style='border: 1px solid grey;'>
-    <legend style='border: 1px solid grey;'>Recherche d'élèves</legend>
+    <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
+    <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Recherche d'élèves</legend>
     <p>
             Afficher les élèves dont le <strong>nom</strong> contient: 
             <input type='text' name='rech_nom' value='' />
@@ -1670,8 +1670,8 @@ if(isset($id_incident) ) {
     
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire2'>
 <?php if((isset($_POST['recherche_eleve']))||(isset($id_classe))) {?>
-        <fieldset style='border: 1px solid grey; margin-top:0.5em;'>
-        <legend style='border: 1px solid grey;'>Choix des élèves</legend>
+        <fieldset style='border: 1px solid grey; margin-top:0.5em; background-image: url("../images/background/opacite50.png");'>
+        <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Choix des élèves</legend>
 <?php }?>
         <p>
             <?php echo add_token_field(); ?>
@@ -1841,8 +1841,8 @@ elseif($step==1) {
 ?>
 <blockquote>
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire1'>
-        <fieldset style='border: 1px solid grey;'>
-        <legend style='border: 1px solid grey;'>Recherche de personnels</legend>
+        <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
+        <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Recherche de personnels</legend>
         <p>
             Afficher les utilisateurs dont le <strong>nom</strong> contient : 
             <input type='text' name='rech_nom' value='' />
@@ -1864,8 +1864,8 @@ elseif($step==1) {
 	if(isset($_POST['recherche_utilisateur'])) {
 ?>
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire2'>\n"; 
-        <fieldset style='border: 1px solid grey; margin-top:0.5em;'>
-        <legend style='border: 1px solid grey;'>Choix de personnels</legend>
+        <fieldset style='border: 1px solid grey; margin-top:0.5em; background-image: url("../images/background/opacite50.png");'>
+        <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Choix de personnels</legend>
 <?php
 		echo "<p>".add_token_field()."</p>\n";
 ?>
@@ -1906,8 +1906,8 @@ elseif($step==1) {
 ?>
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire'>
 <?php
-		echo "<fieldset style='border: 1px solid grey; margin-top:0.5em;'>\n";
-		echo "<legend style='border: 1px solid grey;'>Choix de personnels ($categ_u)</legend>\n";
+		echo "<fieldset style='border: 1px solid grey; margin-top:0.5em; background-image: url(\"../images/background/opacite50.png\");'>\n";
+		echo "<legend style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>Choix de personnels ($categ_u)</legend>\n";
 		echo "<p>".add_token_field()."</p>\n";
 ?>
         <p>
@@ -2044,8 +2044,8 @@ elseif($step==2) {
 	if($etat_incident!='clos') {
 ?>
 <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire'>
-    <fieldset style='border: 1px solid grey;'>
-    <legend style='border: 1px solid grey;'>Détails de l'incident</legend>
+    <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
+    <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Détails de l'incident</legend>
     <p><?php echo add_token_field(); ?></p>
 <?php
 	}
