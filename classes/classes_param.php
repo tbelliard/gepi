@@ -850,6 +850,9 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_cni" value="<?php echo "nb_".$per."_cni"; ?>" />
 		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cni' style='cursor: pointer;'>Civ. Nom initiale-Prénom (M. Durand A.)</label>
 		<br />
+		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_cn" value="<?php echo "nb_".$per."_cn"; ?>" />
+		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cn' style='cursor: pointer;'>Civ. Nom (M. Durand)</label>
+		<br />
 <br />
 
 <h2><b>Enseignements</b></h2>
