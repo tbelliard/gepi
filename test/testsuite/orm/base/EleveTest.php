@@ -227,6 +227,9 @@ class EleveTest extends GepiEmptyTestBase
                 $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_sans_manquement','n');
+                $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-03');
+                $saisies->getFirst()->clearAllReferences();
+                $saisies->getNext()->clearAllReferences();
                 $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
 
@@ -265,6 +268,9 @@ class EleveTest extends GepiEmptyTestBase
                 $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_sans_manquement','n');
+                $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-03');
+                $saisies->getFirst()->clearAllReferences();
+                $saisies->getNext()->clearAllReferences();
                 $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
 
@@ -275,6 +281,9 @@ class EleveTest extends GepiEmptyTestBase
                 $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-06-08 00:00:00'),new DateTime('2011-06-08 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_non_justifiee','y');
+                $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-08');
+                $saisies->getFirst()->clearAllReferences();
+                $saisies->getNext()->clearAllReferences();
                 $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-06-08 00:00:00'),new DateTime('2011-06-08 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_non_justifiee','n');//n par défaut

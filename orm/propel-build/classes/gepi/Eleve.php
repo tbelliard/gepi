@@ -1232,54 +1232,23 @@ class Eleve extends BaseEleve {
 	 */
 	public function  getAbsenceEleveSaisiesDecompteDemiJournees($dateDebut = null, $dateFin = null, $non_justifiee = false) {
  	    $abs_saisie_col = $this->getAbsenceEleveSaisiesParDate($dateDebut, $dateFin);
-	    //on filtre les saisie qu'on ne veut pas compter
+	    //on filtre les saisie qu'on veut comptabiliser
 	    $abs_saisie_col_filtre = new PropelCollection();
-	    $abs_saisie_englobante = clone $abs_saisie_col;
 	    foreach ($abs_saisie_col as $saisie) {
-	        if ($saisie->getEleveId() != $this->getId()) {
-	            continue;
-	        }
-    		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && (!$non_justifiee || !$saisie->getJustifiee())) {
-                    //on va vérifier dans la même liste de saisies si il n'y a pas une autre saisie englobante et contradictoire à celle-ci
-		    $contra = false;
-                    foreach ($abs_saisie_englobante as $saisie_contra) {
-                        if ($saisie_contra->getId() == $saisie->getId()) continue;//c'est la meme saisie donc on a rien de spécial à faire
-                        if ($saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue; //la saisie contradictoire est marquée erreur de saisie donc on a rien à faire
-                        if (($saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') < $saisie_contra->getFinAbs('U'))
-                                || ($saisie->getDebutAbs('U') > $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')))
-                        {
-                            //on a une saisie strictement plus large
-                            if ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence() || ($non_justifiee && $saisie_contra->getJustifiee())) {
-                                //on est contré par une saisie plus large qui n'est pas un manquement de présence ou qui est justifiée (selon un parametre)
-                                $contra = true;
-                                break;
-                            }
-                            continue;
-                        }
-                        if ($saisie->getDebutAbs('U') == $saisie_contra->getDebutAbs('U') && $saisie->getFinAbs('U') == $saisie_contra->getFinAbs('U')) {
-                            //on a des saisies identiques au niveau des dates
-                            if ($saisie_contra->getRetard() || (!$saisie_contra->getManquementObligationPresence() && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y')) {
-                                //on a une saisie qui contre le manquement à l'obligation de présence
-                                $contra = true;
-                                break;
-                            }
-                            if ($non_justifiee && $saisie_contra->getJustifiee() && getSettingValue("abs2_saisie_multi_type_non_justifiee")=='n') {
-                                //on a une saisie qui contre car elle est justifié
-                                $contra = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!$contra) {
-    			$abs_saisie_col_filtre->append($saisie);
-    		    } else {
-                        //on retire la saisie contrée de la liste de test des saisise possiblement englobante pour optimiser
-                        $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie));
-                    }
-    		}
+	        //on fait la liste de ce qu'on ne décompte pas
+	        if ($saisie->getEleveId() != $this->getId()) continue;
+	        if ($saisie->getRetard()) continue;
+	        if (!$saisie->getManquementObligationPresence()) continue;
+	        if (!$saisie->getManquementObligationPresenceEnglobante()) continue;
+	        if ($saisie->getRetardEnglobante()) continue; //on ne compte pas les retard dans le décompte des demi-journées d'absence
+	        if ($non_justifiee && $saisie->getJustifiee()) continue;//on demande un décompte des saisies non justifiées
+	        if ($non_justifiee && $saisie->getJustifieeEnglobante()) continue;
+
+	        //si on est là c'est qu'il faut décompter cette saisie
+	        $abs_saisie_col_filtre->append($saisie);
 	    }
-            return $abs_saisie_col_filtre;
-        }
+        return $abs_saisie_col_filtre;
+    }
 
 	/**
 	 *
@@ -1409,29 +1378,37 @@ class Eleve extends BaseEleve {
                 if ($saisie->getEleveId() != $this->getId()) {
                     continue;
                 }
-                if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-                    $contra = false;
-                    //on va vérifier si il n'y a pas une autre saisie englobante (et contradictoire pour ce decompte)
-                    foreach ($abs_saisie_englobante as $saisie_contra) {
-                        if ($saisie_contra->getEleveId() != $this->getId()) {
-                            continue;
-                        }
-                        if ($saisie_contra->getId() != $saisie->getId()
-                                && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-                                && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-                                && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE())
-                        {
-                            //on a une saisie plus large
-                            $contra = true;
-                            break;
-                        }
+                if (!$saisie->getRetard() ||
+                    !$saisie->getRetardEnglobante() ||
+                    !$saisie->getManquementObligationPresence() ||
+                    !$saisie->getManquementObligationPresenceEnglobante())
+                {
+                    //on retire la saisie contrée de la liste de test des saisise possiblement englobante pour optimiser
+                    $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie));
+                    continue;
+                }
+
+                //on va regarder si il y a un retard plus global, pour n'en compter qu'un seul en non pas deux
+                $contra = false;
+                foreach ($abs_saisie_englobante as $saisie_contra) {
+                    if ($saisie_contra->getEleveId() != $this->getId()) {
+                        continue;
                     }
-                    if (!$contra) {
-                        $result->append($saisie);
-                    } else {
-                        //on retire la saisie contrée de la liste de test des saisise possiblement englobante pour optimiser
-                        $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie));
+                    if ($saisie_contra->getId() != $saisie->getId()
+                            && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+                            && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+                            && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE())
+                    {
+                        //on a une saisie plus large
+                        $contra = true;
+                        break;
                     }
+                }
+                if (!$contra) {
+                    $result->append($saisie);
+                } else {
+                    //on retire la saisie contrée de la liste de test des saisise possiblement englobante pour optimiser
+                    $abs_saisie_englobante->remove($abs_saisie_englobante->search($saisie));
                 }
             }
 

@@ -703,6 +703,7 @@ class GepiDataPopulator
         $saisie_1->setDebutAbs('2011-06-11 08:00:00');
         $saisie_1->setFinAbs('2011-06-11 09:00:00');
         $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
         $saisie_1->setEleve($florence_eleve);
         $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
         $saisie_1->setDebutAbs('2011-06-11 08:00:00');
@@ -713,6 +714,7 @@ class GepiDataPopulator
         $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
+        $saisie_1 = new AbsenceEleveSaisie();
         $saisie_1->setEleve($florence_eleve);
         $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
         $saisie_1->setDebutAbs('2011-06-11 08:00:00');
@@ -724,6 +726,66 @@ class GepiDataPopulator
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
 
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-12 08:00:00');
+        $saisie_1->setFinAbs('2011-06-12 09:00:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-12 07:00:00');
+        $saisie_1->setFinAbs('2011-06-12 09:10:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-12 08:00:00');
+        $saisie_1->setFinAbs('2011-06-12 09:11:00');
+        $saisie_1->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_1);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-12 08:00:00');
+        $saisie_1->setFinAbs('2011-06-12 09:10:00');
+        $saisie_1->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_1);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Erreur de saisie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-13 08:00:00');
+        $saisie_1->setFinAbs('2011-06-13 08:10:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-13 08:00:00');
+        $saisie_1->setFinAbs('2011-06-13 08:10:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-13 08:00:00');
+        $saisie_1->setFinAbs('2011-06-13 08:10:00');
+        $saisie_1->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2011-06-13 08:00:00');
+        $saisie_1->setFinAbs('2011-06-13 09:10:00');
+        $saisie_1->save();
+        
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();
         
