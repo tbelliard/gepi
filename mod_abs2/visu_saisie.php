@@ -380,6 +380,17 @@ if ($total_traitements_modifiable == 0 && $utilisateur->getStatut() == 'professe
 
 echo '<input type="hidden" name="total_traitements" value="'.$total_traitements_modifiable.'"/>';
 
+if ($saisie->getManquementObligationPresenceEnglobante()){
+    echo 'globalement manquement à l\'obligation de présence<br/>';
+    if ($saisie->getJustifieeEnglobante()){
+        echo 'globalement justifiée<br/>';
+    }
+    if ($saisie->getNotifieeEnglobante()){
+        echo 'globalement notifiée<br/>';
+    }
+}
+
+
 echo '</td></tr>';
 
 echo '<tr><td>';
