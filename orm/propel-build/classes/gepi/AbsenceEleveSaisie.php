@@ -672,7 +672,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
                             $this->manquementObligationPresenceEnglobante =  true;
                         } else if ($manquement_sans) {
                             $this->manquementObligationPresenceEnglobante =  false;
-                        } else {echo 'ici4;';
+                        } else {
                             $this->manquementObligationPresenceEnglobante =  (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y');
                         }
                     }
@@ -772,7 +772,32 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    }
 	    return false;
 	}
-    /**
+	
+	
+	/**
+	 *
+	 * Renvoi true si une notification a ete recue avec succès par la famille pour cette saisies ou une saisie plus large
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getNotifieeEnglobante() {
+	    //on commence par vérifié cette saisie
+	    if ($this->getNotifiee()) {
+	        return true;
+	    }
+	    
+	    //on vérifie les saisies englobantes
+	    foreach ($this->getAbsenceEleveSaisiesEnglobantes() as $saisie) {
+	        if ($saisie->getNotifiee()) {
+    	        return true;
+    	    }      
+	    }
+	    return false;
+	}
+	
+	
+	/**
 	 *
 	 * Renvoi true si une notification est prête à envoyée ou envoyée à la famille
 	 *
@@ -791,6 +816,28 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
     }
 
 	/**
+	 *
+	 * Renvoi true si une notification est prête à envoyée ou envoyée à la famille
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getNotificationEnCoursEnglobante() {
+	    //on commence par vérifié cette saisie
+	    if ($this->getNotificationEnCours()) {
+	        return true;
+	    }
+	    
+	    //on vérifie les saisies englobantes
+	    foreach ($this->getAbsenceEleveSaisiesEnglobantes() as $saisie) {
+	        if ($saisie->getNotificationEnCours()) {
+    	        return true;
+    	    }      
+	    }
+	    return false;
+    }
+
+    /**
 	 * Gets a collection of AbsenceEleveTraitement objects related by a many-to-many relationship
 	 * to the current object by way of the j_traitements_saisies cross-reference table.
 	 *

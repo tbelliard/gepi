@@ -345,6 +345,65 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         $this->assertFalse($saisie->getNotificationEnCours());
     }
 
+    public function testGetNotifieeEnglobante()
+    {
+        $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
+        $this->assertTrue($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-07')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+        
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2011-06-13 08:10:00')->findOne();
+        $this->assertTrue($saisie->getNotifieeEnglobante());
+        
+    }
+
+    public function testGetNotificationEnCoursEnglobante()
+    {
+        $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+        $this->assertTrue($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-07')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+        
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2011-06-09 08:10:00')->findOne();
+        $this->assertTrue($saisie->getNotificationEnCoursEnglobante());
+    }
+    
     public function testGetAbsenceEleveTraitements()
     {
         $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
