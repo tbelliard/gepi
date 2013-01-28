@@ -116,8 +116,6 @@ class EleveQuery extends BaseEleveQuery {
      * Retourne la liste des eleves de la requete, en hydratant si necessaire les periodes
      * Issue a SELECT query based on the current ModelCriteria
      *
-     *
-     *
      * @param     PropelPDO $con an optional connection object
      *
      * @return     PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
@@ -135,8 +133,27 @@ class EleveQuery extends BaseEleveQuery {
 	return $result;
     }
 
-
-
+    /**
+     * Filtre l'eleve suivant sa classe à un instant donné.
+     * Si l'argument classe est nul, filtre les élèves qui n'ont pas de classe à un instant donné
+     *
+     */
+    public function filterByClasse($classe, $dateTime='now')
+    {
+        if ($classe == null) {
+            throw new Exception('not implemented yet');
+        } else if (!($classe instanceof Classe)) {
+            throw new Exception('first argument class must be an instance of Classe');
+        } else {
+            $periode = $classe->getPeriodeNote($dateTime);
+            if ($periode != null) {
+                $this->useJEleveClasseQuery()->filterByIdClasse($classe->getId())->filterByPeriode($periode->getNumPeriode())->endUse();
+            } else {
+                $this->useJEleveClasseQuery()->filterByIdClasse($classe->getId())->endUse();
+            }
+        }
+        return $this;
+    }
 }
 
 // EleveQuery

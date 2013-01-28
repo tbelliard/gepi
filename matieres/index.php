@@ -171,6 +171,7 @@ if ($orderby != "m.matiere" AND $orderby != "m.nom_complet" AND $orderby != "m.p
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 // On va chercher les classes déjà existantes, et on les affiche.
 
+$categories=array();
 $call_data = mysql_query("SELECT m.matiere, m.nom_complet, m.priority, m.categorie_id FROM matieres m ORDER BY $orderby");
 $get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
 while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
