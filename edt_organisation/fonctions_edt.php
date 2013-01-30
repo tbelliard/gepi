@@ -610,6 +610,9 @@ function NameTemplateEDT()
 // =============================================================================
 function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $id_aid, $id_semaine, $period)
 {
+	// 20130128
+	global $contenu_creneaux_edt_avec_span_title;
+
     if (($period != NULL) AND ($period != '0')) {
         $calendrier = "(id_calendrier = '".$period."' OR id_calendrier = '0')";
     }
@@ -884,7 +887,8 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 
 
 	$ChaineComplete="";
-	if($info_alt!="") {
+	// 20130128
+	if(($contenu_creneaux_edt_avec_span_title!="n")&&($info_alt!="")) {
 		$ChaineComplete.="<span title=\"$info_alt\">";
 	}
 
@@ -924,7 +928,8 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		//return ("".$aff_matiere."<br />\n".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']." ".$aff_sem."<br />\n".$classe_js."\n");
 	}
 
-	if($info_alt!="") {
+	// 20130128
+	if(($contenu_creneaux_edt_avec_span_title!="n")&&($info_alt!="")) {
 		$ChaineComplete.="</span>";
 	}
 

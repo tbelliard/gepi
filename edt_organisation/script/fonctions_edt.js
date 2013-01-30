@@ -66,6 +66,7 @@ function AfficheEdtClasseDuJour(idClasse, nomDiv, niveau_arbo) {
         }
         url=url+"construire_edt_classe_jour.php";
         url=url+"?classe="+idClasse;
+        url=url+"&contenu_creneaux_edt_avec_span_title=n";
         url=url+"&sid="+Math.random();
         xmlhttp.onreadystatechange= function () {
                                         stateChanged(nomDiv);

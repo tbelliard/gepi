@@ -43,6 +43,9 @@ else {
 	}
 }
 
+// 20130128
+$contenu_creneaux_edt_avec_span_title=(isset($_GET['contenu_creneaux_edt_avec_span_title'])) ? $_GET['contenu_creneaux_edt_avec_span_title'] : "";
+
 // Initialisations files
 require_once($CurrentPath."lib/initialisations.inc.php");
 //mes fonctions
