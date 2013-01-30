@@ -227,6 +227,74 @@ if (getFiltreRechercheParam('filter_saisies_supprimees')=='y') {
 	    $query->filterByDeletedAt($date_suppression_saisie_fin_plage, Criteria::LESS_EQUAL);
 	}
 }
+if (getFiltreRechercheParam('filter_saisies_globalement_non_justifiees')=='y') {
+        $query->filterById(null, Criteria::ISNOTNULL);
+	    //on va filtrer sur les 500 derniére saisies pour ne pas bloquer
+	    $q_clone = clone $query;
+	    $der_saisie = $q_clone->orderById(Criteria::DESC)->findOne();
+	    if ($der_saisie != null) {
+	        $limitId = $der_saisie->getId()-2000;
+	    } else {
+	        $limitId = 0;
+	    }
+	    
+	    $q_clone = clone $query;
+        $saisies = $q_clone->filterById($limitId,Criteria::GREATER_THAN)->distinct()->joinWith('Eleve')->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')->find();
+        //$saisies_2 = clone $saisies;
+        $non_justif = Array();
+        foreach ($saisies as $saisie) {//$Eleve = new Eleve();$Eleve->getAbsenceEleveSaisies()
+            //$saisie->setAbsenceEleveSaisiesEnglobantes($saisie->filterAbsenceEleveSaisiesEnglobantes($saisie->getEleve()->getAbsenceEleveSaisies()));//on remplie déjà les saisies englobantes pour optimiser
+            if ($saisie->getJustifieeEnglobante()) continue;
+            $non_justif[] = $saisie->getId();
+        }
+        $query->filterById($non_justif);
+}
+
+if (getFiltreRechercheParam('filter_saisies_globalement_manquement')=='y') {
+        $query->filterById(null, Criteria::ISNOTNULL);
+	    //on va filtrer sur les 500 derniére saisies pour ne pas bloquer
+	    $q_clone = clone $query;
+	    $der_saisie = $q_clone->orderById(Criteria::DESC)->findOne();
+	    if ($der_saisie != null) {
+	        $limitId = $der_saisie->getId()-2000;
+	    } else {
+	        $limitId = 0;
+	    }
+	    
+	    $q_clone = clone $query;
+        $saisies = $q_clone->filterById($limitId,Criteria::GREATER_THAN)->distinct()->joinWith('Eleve')->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')->find();
+        //$saisies_2 = clone $saisies;
+        $manque = Array();
+        foreach ($saisies as $saisie) {//$Eleve = new Eleve();$Eleve->getAbsenceEleveSaisies()
+            //$saisie->setAbsenceEleveSaisiesEnglobantes($saisie->filterAbsenceEleveSaisiesEnglobantes($saisie->getEleve()->getAbsenceEleveSaisies()));//on remplie déjà les saisies englobantes pour optimiser
+            if (!$saisie->getManquementObligationPresenceEnglobante()) continue;
+            $manque[] = $saisie->getId();
+        }
+        $query->filterById($manque);
+}
+
+if (getFiltreRechercheParam('filter_saisies_globalement_non_notifiees')=='y') {
+        $query->filterById(null, Criteria::ISNOTNULL);
+	    //on va filtrer sur les 500 derniére saisies pour ne pas bloquer
+	    $q_clone = clone $query;
+	    $der_saisie = $q_clone->orderById(Criteria::DESC)->findOne();
+	    if ($der_saisie != null) {
+	        $limitId = $der_saisie->getId()-2000;
+	    } else {
+	        $limitId = 0;
+	    }
+	    
+	    $q_clone = clone $query;
+        $saisies = $q_clone->filterById($limitId,Criteria::GREATER_THAN)->distinct()->joinWith('Eleve')->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')->find();
+        //$saisies_2 = clone $saisies;
+        $manque = Array();
+        foreach ($saisies as $saisie) {//$Eleve = new Eleve();$Eleve->getAbsenceEleveSaisies()
+            //$saisie->setAbsenceEleveSaisiesEnglobantes($saisie->filterAbsenceEleveSaisiesEnglobantes($saisie->getEleve()->getAbsenceEleveSaisies()));//on remplie déjà les saisies englobantes pour optimiser
+            if ($saisie->getNotifieeEnglobante()) continue;
+            $manque[] = $saisie->getId();
+        }
+        $query->filterById($manque);
+}
 
 //on va filtrer sur les saisies possiblement rattachées à un traitement
 $recherche_saisie_a_rattacher = getFiltreRechercheParam('filter_recherche_saisie_a_rattacher');
@@ -427,7 +495,7 @@ if ($saisies_col->haveToPaginate()) {
     echo '<input type="submit" name="page_deplacement" value="-"/>';
     echo '<input type="text" name="page_number" size="1" value="'.$page_number.'"/>';
     echo '<input type="submit" name="page_deplacement" value="+"/> ';
-    echo "sur ".$nb_pages." page(s) ";
+    echo "sur ".$nb_pages." ";
     echo "| ";
 }
 echo "Voir ";
@@ -437,8 +505,29 @@ echo ' | <input type="checkbox" name="filter_saisies_supprimees"  onchange="subm
 if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo "checked='checked'";}
 echo '/>';
 if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo '<font color="red">';}
-echo 'Voir les saisies supprimées';
+echo 'supprimées';
 if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo '</font>';}
+
+echo ' | <input type="checkbox" name="filter_saisies_globalement_manquement"  onchange="submit()" value="y"';
+if (getFiltreRechercheParam('filter_saisies_globalement_manquement') == 'y') {echo "checked='checked'";}
+echo '/>';
+if (getFiltreRechercheParam('filter_saisies_globalement_manquement') == 'y') {echo '<font color="red">';}
+echo 'manquement';
+if (getFiltreRechercheParam('filter_saisies_globalement_manquement') == 'y') {echo '</font>';}
+
+echo ' | <input type="checkbox" name="filter_saisies_globalement_non_justifiees"  onchange="submit()" value="y"';
+if (getFiltreRechercheParam('filter_saisies_globalement_non_justifiees') == 'y') {echo "checked='checked'";}
+echo '/>';
+if (getFiltreRechercheParam('filter_saisies_globalement_non_justifiees') == 'y') {echo '<font color="red">';}
+echo 'non justifiées';
+if (getFiltreRechercheParam('filter_saisies_globalement_non_justifiees') == 'y') {echo '</font>';}
+
+echo ' | <input type="checkbox" name="filter_saisies_globalement_non_notifiees"  onchange="submit()" value="y"';
+if (getFiltreRechercheParam('filter_saisies_globalement_non_notifiees') == 'y') {echo "checked='checked'";}
+echo '/>';
+if (getFiltreRechercheParam('filter_saisies_globalement_non_notifiees') == 'y') {echo '<font color="red">';}
+echo 'non notifiéés';
+if (getFiltreRechercheParam('filter_saisies_globalement_non_notifiees') == 'y') {echo '</font>';}
 if (getFiltreRechercheParam('filter_recherche_saisie_a_rattacher') == 'oui' && $traitement != null) {
     echo " | filtre actif : recherche de saisies a rattacher au traitement n° ";
     echo "<a href='./visu_traitement.php?id_traitement=".$traitement->getId()."";
