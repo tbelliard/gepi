@@ -1768,10 +1768,10 @@ function ensure_utf8($str, $from_encoding = null) {
  */
 function detect_utf8 ($str) {
 	// Inspiré de http://w3.org/International/questions/qa-forms-utf-8.html
-	// La chaîne ne comporte que des octets < 7E ?
+	// La chaîne ne comporte que des octets <= 7F ?
 	$full_ascii=true; $i=0;
 	while ($full_ascii && $i<strlen($str)) {
-		$full_ascii = $full_ascii && (ord($str[$i])<0x7E);
+		$full_ascii = $full_ascii && (ord($str[$i])<=0x7F);
 		$i++;
 	}
 	// Si oui c'est de l'utf8 sinon on cherche si la chaîne contient
