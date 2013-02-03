@@ -30,6 +30,14 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
+/*
+$chemin="/tmp/infos_session_graphe.txt";
+$type="a+";
+$fich=fopen($chemin,$type);
+$chaine="\n".strftime("%Y%m%d %H%M%S").": Dans affiche_eleve.php on recupere pour ".$_SESSION['login']." connecté\n";
+fwrite($fich,$chaine);
+fclose($fich);
+*/
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -1716,8 +1724,6 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	*/
 
-
-
 	// Infos DEBUG:
 	//echo "<p>classe=$classe<br />eleve1=$eleve1<br />eleve2=$eleve2<br />choix_periode=$choix_periode<br />periode=$periode<br />largeur_imposee_photo=$largeur_imposee_photo</p>\n";
 
@@ -2641,8 +2647,8 @@ function eleve_suivant() {
 			$affiche_graph="n";
 			// 20121205
 			if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-			(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
-			(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+			(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+			(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
 				$affiche_rang="y";
 			}
 			include('../lib/calcul_moy_gen.inc.php');
@@ -2718,8 +2724,8 @@ function eleve_suivant() {
 			// 20121205
 			elseif($eleve2=='rang_eleve') {
 				if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-				(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
-				(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+				(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+				(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
 					$mgen[2]=get_rang_eleve($eleve1, $id_classe, $periode_num, "n", "y");
 				}
 				else {
@@ -2941,7 +2947,6 @@ function eleve_suivant() {
 					}
 				}
 			}
-
 
 			// ImageMap:
 
@@ -3209,14 +3214,6 @@ function eleve_suivant() {
 				//***********************************************************
 
 			}
-
-
-
-
-
-
-
-
 
 
 
