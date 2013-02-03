@@ -815,13 +815,15 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 // Divers
 $titreItem='GepiAccesVisuToutesEquipCpe';
-$texteItem="a accès à la Visualisation de toutes les équipes";
+$texteItem="a accès à la Visualisation de toutes les équipes<br />
+(<em>Par défaut, un CPE ne voit que les équipes des classes dans lesquelles il est responsable d'au moins un élève</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 // Photos
 $titreItem='GepiAccesTouteFicheEleveCpe';
-$texteItem="a le droit d'accéder à toutes les fiches élève";
+$texteItem="a le droit d'accéder à toutes les fiches élève<br />
+(<em>Par défaut, un CPE ne voit que les fiches des élèves dont il est responsable</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
