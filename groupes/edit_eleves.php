@@ -776,9 +776,14 @@ if(count($total_eleves)>0) {
 					"</td>";
 				*/
 				echo "<td>";
+				echo "<a href='../classes/eleve_options.php?login_eleve=$e_login&id_classe=".$eleves_list["users"][$e_login]['id_classe']."' title=\"Consulter les matières suivies par ".$eleves_list["users"][$e_login]["nom"]." ".$eleves_list["users"][$e_login]["prenom"]." en classe de ".$eleves_list["users"][$e_login]["classe"]."\"";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo ">";
 				echo $eleves_list["users"][$e_login]["nom"];
 				echo " ";
 				echo $eleves_list["users"][$e_login]["prenom"];
+				echo "</a>\n";
+				//echo "<pre>".print_r($eleves_list["users"][$e_login])."</pre>";
 				echo "</td>\n";
 
 				if ($multiclasses) {echo "<td>" . $eleves_list["users"][$e_login]["classe"] . "</td>\n";}
