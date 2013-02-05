@@ -898,8 +898,8 @@ function ToutDeCocher() {
 		echo "<table class='boireaus' summary='Coefficients des enseignements de ".$classe_courante."'>\n";
 		echo "<tr>\n";
 		echo "<th>Enseignement</th>\n";
-		echo "<th>Classes</th>\n";
 		echo "<th>Enseignant(s)</th>\n";
+		echo "<th>Classes</th>\n";
 		echo "<th>Coefficient</th>\n";
 		echo "</tr>\n";
 		$alt=1;

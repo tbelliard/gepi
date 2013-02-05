@@ -356,7 +356,7 @@ else{
 	echo "'>Interface simplifiée</a>\n";
 }
 
-echo " | <a href='../gestion/config_prefs.php'>Paramétrer l'interface simplifiée</a>";
+echo " | <a href='../gestion/config_prefs.php#add_modif_conteneur'>Paramétrer l'interface simplifiée</a>";
 
 echo "</p>\n";
 echo "</div>\n";

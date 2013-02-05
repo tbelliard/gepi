@@ -605,7 +605,7 @@ else{
 
 echo "\n";
 
-echo " | <a href='../gestion/config_prefs.php'>Paramétrer l'interface simplifiée</a>";
+echo " | <a href='../gestion/config_prefs.php#add_modif_dev'>Paramétrer l'interface simplifiée</a>";
 
 echo "</p>\n";
 echo "</div>\n";

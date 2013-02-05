@@ -197,9 +197,9 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 				echo "<ul>\n";
 				while ($j < $nb_dev) {
 					if (getSettingValue("utiliser_sacoche") == 'yes') {
-						echo '<form id="sacoche_form_'.$j.'" method="POST" action="'.getSettingValue("sacocheUrl").'/index.php?sso&page=professeur_eval&section=groupe">';
+						echo '<form id="sacoche_form_'.$j.'" method="POST" action="'.getSettingValue("sacocheUrl").'/index.php?sso&page=evaluation_gestion&section=groupe">';
 						echo '<input type="hidden" name="id" value="'.getSettingValue("sacoche_base").'"/>';
-						echo '<input type="hidden" name="page" value="professeur_eval"/>';
+						echo '<input type="hidden" name="page" value="evaluation_gestion"/>';
 						echo '<input type="hidden" name="section" value="groupe"/>';
 						echo '<input type="hidden" name="source" value="distant-gepi-saml"/>';//source simplesaml pour préselectionner la source dans le module multiauth et éviter de choisir le webmestre
 						//encodage du devoir
@@ -278,6 +278,14 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />";}
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
 					echo "</i>)";
+
+					$sql="SELECT * FROM cc_dev WHERE id_cn_dev='$id_dev';";
+					$res_cc_dev=mysql_query($sql);
+					if(mysql_num_rows($res_cc_dev)>0) {
+						$lig_cc_dev=mysql_fetch_object($res_cc_dev);
+						echo " - <a href='index_cc.php?id_racine=".$id_racine."' title=\"Voir l'évaluation cumul associée $lig_cc_dev->nom_court ($lig_cc_dev->nom_complet)\">".$lig_cc_dev->nom_court."</a>";
+					}
+
 					echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo "</li>\n";
 					$j++;
@@ -390,6 +398,13 @@ En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('g
 							if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />";}
 							else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
 							echo "</i>)";
+
+							$sql="SELECT * FROM cc_dev WHERE id_cn_dev='$id_dev';";
+							$res_cc_dev=mysql_query($sql);
+							if(mysql_num_rows($res_cc_dev)>0) {
+								$lig_cc_dev=mysql_fetch_object($res_cc_dev);
+								echo " - <a href='index_cc.php?id_racine=".$id_racine."' title=\"Voir l'évaluation cumul associée $lig_cc_dev->nom_court ($lig_cc_dev->nom_complet)\">".$lig_cc_dev->nom_court."</a>";
+							}
 
 							echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 							echo "</li>\n";
@@ -1432,13 +1447,13 @@ function affiche_infos_actions() {
 		echo "<div id='div_infos_actions' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%;'>\n";
 		echo "<div id='info_action_titre' style='font-weight: bold; min-height:16px; padding-right:8px;' class='infobulle_entete'>\n";
 			echo "<div id='info_action_pliage' style='float:right; width: 1em;'>\n";
-			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\" title=\"Plier/déplier le cadre des actions en attente\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 			echo "</div>\n";
 
 			//if($_SESSION['statut']=='administrateur') {
 			if(acces("/gestion/gestion_infos_actions.php", $_SESSION['statut'])) {
 				echo "<div style='float:right; width: 1em; margin-right:0.5em;'>\n";
-				echo "<a href=\"gestion/gestion_infos_actions.php\"><span id='img_pliage_conteneur'><img src='images/disabled.png' width='16' height='16' /></span></a>";
+				echo "<a href=\"gestion/gestion_infos_actions.php\" title=\"Consulter, supprimer par lots les actions en attente\"><span id='img_pliage_conteneur'><img src='images/disabled.png' width='16' height='16' /></span></a>";
 				echo "</div>\n";
 			}
 
@@ -1452,14 +1467,14 @@ function affiche_infos_actions() {
 			echo "<div id='info_action_$lig->id' style='border: 1px solid black; margin:2px; min-height:16px;'>\n";
 				echo "<div id='info_action_titre_$lig->id' style='font-weight: bold; min-height:16px; padding-right:8px;' class='infobulle_entete'>\n";
 					echo "<div id='info_action_pliage_$lig->id' style='float:right; width: 1em;'>\n";
-					echo "<a href=\"javascript:div_alterne_affichage('$lig->id')\"><span id='img_pliage_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+					echo "<a href=\"javascript:div_alterne_affichage('$lig->id')\" title=\"Plier/déplier l'action en attente\"><span id='img_pliage_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 					echo "</div>\n";
 					echo $lig->titre;
 				echo "</div>\n";
 
 				echo "<div id='info_action_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
 					echo "<div style='float:right; width: 9em; text-align: right;'>\n";
-					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\" title=\"Supprimer cette notification d'action en attente\">Supprimer</span></a>";
 					echo "</div>\n";
 
 					echo preg_replace("/\\\\n/","<br />",nl2br($lig->description));

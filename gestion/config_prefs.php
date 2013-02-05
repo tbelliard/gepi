@@ -479,7 +479,6 @@ echo "<script type='text/javascript'>
 - Choisir les profs? ou juste répéter la ligne de titre?
 */
 
-echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 echo "<div class='norme'><p class=bold>";
 echo "<a href='";
 if($_SESSION['statut']=='administrateur'){
@@ -507,6 +506,11 @@ else{
 		echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix de la page</a>";
 	}
 	echo "</div>\n";
+
+	echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+	echo "<fieldset style='border: 1px solid grey;";
+	echo "background-image: url(\"../images/background/opacite50.png\"); ";
+	echo "'>\n";
 
 	echo add_token_field();
 
@@ -801,6 +805,7 @@ else{
 		echo "/><label for='cn_order_by_nom' id='texte_cn_order_by_nom'>par ordre alphabétique des noms des élèves.</label><br />\n";
 		echo "</p>\n";
 
+		echo "<a name='add_modif_dev'></a>\n";
 		echo "<table>";
 		echo "<tr>";
 		echo "<td>";
@@ -931,6 +936,7 @@ else{
 
 
 	if(($page=="add_modif_conteneur")||($_SESSION['statut']=='professeur')){
+	echo "<a name='add_modif_conteneur'></a>\n";
 		echo "<p>Paramétrage de la page de <b>création de ".casse_mot(getSettingValue("gepi_denom_boite"),'majf2')."</b> pour les ".$gepiSettings['denomination_professeurs']."</p>\n";
 
 		$tabchamps=array('add_modif_conteneur_simpl','add_modif_conteneur_nom_court','add_modif_conteneur_nom_complet','add_modif_conteneur_description','add_modif_conteneur_coef','add_modif_conteneur_boite','add_modif_conteneur_aff_display_releve_notes','add_modif_conteneur_aff_display_bull');
@@ -1133,15 +1139,18 @@ else{
 	echo "</ul>\n";
 	//}
 }
-
+echo "</fieldset>\n";
 echo "</form>\n";
 
 if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "professeur")) {
+	echo "<br />\n";
 	$ouverture_auto_WinDevoirsDeLaClasse=getPref($_SESSION['login'], 'ouverture_auto_WinDevoirsDeLaClasse', 'y');
 	echo "<form name='form_cdt_pref' method='post' action='./config_prefs.php'>\n";
 	echo add_token_field();
-	echo "<fieldset style='border: 1px solid grey;'>\n";
-	echo "<legend style='border: 1px solid grey;'>Cahier de textes 2</legend>\n";
+	echo "<fieldset style='border: 1px solid grey;";
+	echo "background-image: url(\"../images/background/opacite50.png\"); ";
+	echo "'>\n";
+	echo "<legend style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>Cahier de textes 2</legend>\n";
 	echo "<p>Lors de la saisie de notices de Travaux à faire dans le CDT2,<br />\n";
 	echo "<input type='radio' name='ouverture_auto_WinDevoirsDeLaClasse' id='ouverture_auto_WinDevoirsDeLaClasse_y' value='y' ";
 	echo "onchange=\"checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_y');checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_n');changement()\" ";
@@ -1165,8 +1174,10 @@ if (getSettingValue('active_mod_discipline')!='n') {
 	$mod_discipline_travail_par_defaut=getPref($_SESSION['login'], 'mod_discipline_travail_par_defaut', 'Travail : ');
 	echo "<form name='form_cdt_pref' method='post' action='./config_prefs.php'>\n";
 	echo add_token_field();
-	echo "<fieldset style='border: 1px solid grey;'>\n";
-	echo "<legend style='border: 1px solid grey;'>Module Discipline et sanctions</legend>\n";
+	echo "<fieldset style='border: 1px solid grey;";
+	echo "background-image: url(\"../images/background/opacite50.png\"); ";
+	echo "'>\n";
+	echo "<legend style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>Module Discipline et sanctions</legend>\n";
 	echo "<p>Lors de la saisie de travail à faire, le texte par défaut proposé sera&nbsp;: ,<br />\n";
 	echo "<input type='text' name='mod_discipline_travail_par_defaut' value='$mod_discipline_travail_par_defaut' size='30' /><br />\n";
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
@@ -1196,8 +1207,9 @@ if ($aff == "oui") {
 	echo add_token_field();
 
 	echo '
-	<fieldset id="afficherBarreMenu" style="border: 1px solid grey;">
-		<legend style="border: 1px solid grey;">Gérer la barre horizontale du menu</legend>
+		<fieldset style="border: 1px solid grey;
+		background-image: url(\'../images/background/opacite50.png\'); ">
+		<legend style="border: 1px solid grey; background-image: url(\'../images/background/opacite50.png\');">Gérer la barre horizontale du menu</legend>
 			<input type="hidden" name="modifier_le_menu" value="ok" />
 		</p>';
 
@@ -1242,8 +1254,9 @@ if ($_SESSION["statut"] == 'administrateur') {
 
 	echo '
 
-			<fieldset style="border: 1px solid grey;">
-				<legend style="border: 1px solid grey;">Gérer la hauteur de l\'entête pour les professeurs</legend>
+			<fieldset style="border: 1px solid grey;
+			background-image: url(\'../images/background/opacite50.png\'); ">
+				<legend style="border: 1px solid grey; background-image: url(\'../images/background/opacite50.png\');">Gérer la hauteur de l\'entête pour les professeurs</legend>
 				<input type="hidden" name="modifier_entete_prof" value="ok" />
 				<p>
 					<label for="headerBas" id="texte_headerBas">Imposer une entête basse</label>
@@ -1283,8 +1296,10 @@ if(count($tab_sound)>=0) {
 	echo "<form name='change_footer_sound' method='post' action='".$_SERVER['PHP_SELF']."'>\n";
 	echo add_token_field();
 
-	echo "<fieldset style='border: 1px solid grey;'>
-	<legend style='border: 1px solid grey;'>Choix de l'alerte sonore de fin de session</legend>
+	echo "<fieldset style='border: 1px solid grey;";
+	echo "background-image: url(\"../images/background/opacite50.png\"); ";
+	echo "'>
+	<legend style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>Choix de l'alerte sonore de fin de session</legend>
 	<p><select name='footer_sound' id='footer_sound' onchange='test_play_footer_sound()'>\n";
 	echo "	<option value=''";
 	if($footer_sound_actuel=='') {echo " selected='true'";}

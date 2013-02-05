@@ -345,6 +345,65 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         $this->assertFalse($saisie->getNotificationEnCours());
     }
 
+    public function testGetNotifieeEnglobante()
+    {
+        $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
+        $this->assertTrue($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-07')->getFirst();
+        $this->assertFalse($saisie->getNotifieeEnglobante());
+        
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2011-06-13 08:10:00')->findOne();
+        $this->assertTrue($saisie->getNotifieeEnglobante());
+        
+    }
+
+    public function testGetNotificationEnCoursEnglobante()
+    {
+        $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+        $this->assertTrue($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-07')->getFirst();
+        $this->assertFalse($saisie->getNotificationEnCoursEnglobante());
+        
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2011-06-09 08:10:00')->findOne();
+        $this->assertTrue($saisie->getNotificationEnCoursEnglobante());
+    }
+    
     public function testGetAbsenceEleveTraitements()
     {
         $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
@@ -539,4 +598,171 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         $saisie_englobante = $saisie->getAbsenceEleveSaisiesEnglobantes();
         $this->assertEquals($saisie_englobante->count(),1);
     }
+
+    public function testGetJustifieeEnglobante()
+    {
+        saveSetting('abs2_saisie_multi_type_non_justifiee','n');
+        $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+        $this->assertFalse($saisie->getJustifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+        $this->assertTrue($saisie->getJustifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
+        $this->assertFalse($saisie->getJustifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
+        $this->assertTrue($saisie->getJustifieeEnglobante());
+        saveSetting('abs2_saisie_multi_type_non_justifiee','y');
+        $saisie->clearAllReferences();
+        $this->assertFalse($saisie->getJustifieeEnglobante());
+        saveSetting('abs2_saisie_multi_type_non_justifiee','n');
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
+        $this->assertTrue($saisie->getJustifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
+        $this->assertFalse($saisie->getJustifieeEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-07')->getFirst();
+        $this->assertFalse($saisie->getJustifieeEnglobante());
+
+        $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-07');
+        $this->assertTrue($saisies->getCurrent()->getJustifieeEnglobante());
+        $this->assertTrue($saisies->getNext()->getJustifieeEnglobante());
+
+        $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-08');
+        $this->assertTrue($saisies->getCurrent()->getJustifieeEnglobante());
+        $this->assertTrue($saisies->getNext()->getJustifieeEnglobante());
+
+        $saisie = new AbsenceEleveSaisie();
+        $this->assertFalse($saisie->getJustifieeEnglobante());
+    }
+
+    public function testgetManquementObligationPresenceEnglobante()
+    {
+        saveSetting('abs2_saisie_multi_type_sans_manquement','n');
+        $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+        $this->assertTrue($saisie->getManquementObligationPresenceEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+        $this->assertTrue($saisie->getManquementObligationPresenceEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
+        $this->assertFalse($saisie->getManquementObligationPresenceEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
+        $this->assertTrue($saisie->getManquementObligationPresenceEnglobante());
+        saveSetting('abs2_saisie_multi_type_sans_manquement','y');
+        $saisie->clearAllReferences();
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
+        $this->assertFalse($saisie->getManquementObligationPresenceEnglobante());
+        saveSetting('abs2_saisie_multi_type_sans_manquement','n');
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
+        $this->assertTrue($saisie->getManquementObligationPresenceEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
+        $this->assertTrue($saisie->getManquementObligationPresenceEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-07')->getFirst();
+        $this->assertFalse($saisie->getManquementObligationPresenceEnglobante());
+
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2011-06-01 08:10:00')->findOne();
+        $this->assertFalse($saisie->getManquementObligationPresenceEnglobante());
+        
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByDebutAbs('2011-06-03 08:00:00')->find();
+        $this->assertTrue($saisie->getFirst()->getManquementObligationPresenceEnglobante());
+        $this->assertTrue($saisie->getNext()->getManquementObligationPresenceEnglobante());
+        
+        $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-07');
+        $this->assertTrue($saisies->getCurrent()->getManquementObligationPresenceEnglobante());
+        $this->assertTrue($saisies->getNext()->getManquementObligationPresenceEnglobante());
+
+        $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-08');
+        $this->assertTrue($saisies->getCurrent()->getManquementObligationPresenceEnglobante());
+        $this->assertTrue($saisies->getNext()->getManquementObligationPresenceEnglobante());
+
+        $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-11');
+        $this->assertTrue($saisies->getCurrent()->getManquementObligationPresenceEnglobante());
+        $this->assertTrue($saisies->getNext()->getManquementObligationPresenceEnglobante());
+        saveSetting('abs2_saisie_multi_type_sans_manquement','y');
+        $saisies->getFirst()->clearAllReferences();
+        $this->assertFalse($saisies->getFirst()->getManquementObligationPresenceEnglobante());
+        saveSetting('abs2_saisie_multi_type_sans_manquement','n');
+
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2011-06-12 09:00:00')->findOne();
+        $this->assertTrue($saisie->getManquementObligationPresenceEnglobante());
+        saveSetting('abs2_saisie_multi_type_sans_manquement','y');
+        $saisie->clearAllReferences();
+        $this->assertFalse($saisie->getManquementObligationPresenceEnglobante());
+        saveSetting('abs2_saisie_multi_type_sans_manquement','n');
+
+        $saisie = new AbsenceEleveSaisie();
+        $this->assertTrue($saisie->getManquementObligationPresenceEnglobante());
+    }
+
+    public function testRetardEnglobante()
+    {
+        saveSetting('abs2_retard_critere_duree',30);
+        $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+        $this->assertFalse($saisie->getRetardEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+        $this->assertFalse($saisie->getRetardEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
+        $this->assertFalse($saisie->getRetardEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
+        $this->assertTrue($saisie->getRetardEnglobante());
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
+        saveSetting('abs2_retard_critere_duree',30);
+        $this->assertTrue($saisie->getRetardEnglobante());
+        $saisie->clearAllReferences();
+        saveSetting('abs2_retard_critere_duree',20);
+        $this->assertFalse($saisie->getRetardEnglobante());
+        saveSetting('abs2_retard_critere_duree',30);
+
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();//sur cette saisie on a plusieurs traitement, on privilégie le retard
+        $this->assertTrue($saisie->getRetardEnglobante());
+ 
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2010-10-08 08:10:00')->findOne();
+        $this->assertFalse($saisie->getRetardEnglobante());
+
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2010-10-10 08:10:00')->findOne();
+        $this->assertTrue($saisie->getRetardEnglobante());
+
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2010-10-11 08:10:00')->findOne();
+        $this->assertTrue($saisie->getRetardEnglobante());
+
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2010-10-15 08:10:00')->findOne();
+        $this->assertFalse($saisie->getRetardEnglobante());
+
+        $saisies = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2010-10-18 09:00:00')->find();
+        $this->assertTrue($saisies->getFirst()->getRetardEnglobante());
+        $this->assertTrue($saisies->getNext()->getRetardEnglobante());
+        
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2011-05-31 09:10:00')->findOne();
+        $this->assertFalse($saisie->getRetardEnglobante());
+
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2011-06-01 08:10:00')->findOne();
+        $this->assertTrue($saisie->getRetard());
+        $this->assertFalse($saisie->getRetardEnglobante());
+
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2011-06-09 08:10:00')->findOne();
+        $this->assertTrue($saisie->getRetardEnglobante());
+
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByFinAbs('2011-06-13 08:10:00')->findOne();
+        $this->assertFalse($saisie->getRetardEnglobante());
+    }
+
+
 }
