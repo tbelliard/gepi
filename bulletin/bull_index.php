@@ -895,6 +895,26 @@ function ToutDeCocher() {
 		echo "<div style='float:right'>\n";
 		echo "<div align='left' style='margin-left:11em; font-size: xx-small;'>\n";
 
+		if (getSettingValue("active_module_absence")=='2' && getSettingValue("abs2_import_manuel_bulletin")!='y') {
+			echo "<p>Voici les dates prises en compte<br />pour les extractions d'absences&nbsp;:</p>\n";
+			echo "<table class='boireaus'>\n";
+			echo "<tr>\n";
+			echo "<th>Période</th>\n";
+			echo "<th>Date de fin</th>\n";
+			echo "</tr>\n";
+			$sql="SELECT nom_periode, num_periode, date_fin FROM periodes WHERE id_classe='".$tab_id_classe[$i]."' ORDER BY num_periode;";
+			$res_tmp_per=mysql_query($sql);
+			$alt=1;
+			while($lig_tmp_per=mysql_fetch_object($res_tmp_per)) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td>".$lig_tmp_per->nom_periode."</td>\n";
+				echo "<td>".formate_date($lig_tmp_per->date_fin)."</td>\n";
+				echo "</tr>\n";
+			}
+			echo "</table>\n";
+		}
+
 		echo "<table class='boireaus' summary='Coefficients des enseignements de ".$classe_courante."'>\n";
 		echo "<tr>\n";
 		echo "<th>Enseignement</th>\n";
