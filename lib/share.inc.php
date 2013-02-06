@@ -1985,7 +1985,13 @@ function nettoyer_caracteres_nom($chaine, $mode="a", $chaine_autres_caracteres_a
 	// Pour que le tiret soit à la fin si on le met dans $chaine_autres_caracteres_acceptes
 	$chaine_autres_caracteres_acceptes="ÆæŒœ".$chaine_autres_caracteres_acceptes;
 
-	$retour=trim(ensure_utf8($chaine));
+	if(is_numeric(trim($chaine))) {
+		$retour=trim($chaine);
+	}
+	else {
+		$retour=trim(ensure_utf8($chaine));
+	}
+
 	if($remplacer_oe_ae=="y") {$retour=preg_replace("#Æ#u","AE",preg_replace("#æ#u","ae",preg_replace("#Œ#u","OE",preg_replace("#œ#u","oe",$retour))));}
 	//if($remplacer_oe_ae=="y") {$retour=preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",$retour))));}
 
