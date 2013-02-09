@@ -54,6 +54,8 @@ if (empty($_GET['nom_motif']) and empty($_POST['nom_motif'])) { $nom_motif=""; }
 if (empty($_GET['com_motif']) and empty($_POST['com_motif'])) { $com_motif="";}
     else { if (isset($_GET['com_motif'])) {$com_motif=$_GET['com_motif'];} if (isset($_POST['com_motif'])) {$com_motif=$_POST['com_motif'];} }
 
+include("function.php");
+
 $motif = AbsenceEleveMotifQuery::create()->findPk($id_motif);
 if ($action == 'supprimer') {
 	check_token();
@@ -72,7 +74,7 @@ if ($action == 'supprimer') {
     }
 } elseif ($action == 'ajouterdefaut') {
 	check_token();
-    include("function.php");
+    //include("function.php");
     ajoutMotifsParDefaut();
 } else {
     if ($nom_motif != '') {

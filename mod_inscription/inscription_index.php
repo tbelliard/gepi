@@ -89,12 +89,11 @@ echo getSettingValue("mod_inscription_explication");
 <form id="form_items_a_afficher" method="post" action="inscription_index.php">
 <p align="center">
 Afficher les inscriptions :  
-<label style='cursor: pointer;'>ouvertes</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='ouverts' <?php if ($_SESSION['items_a_afficher']=="ouverts") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
-<label style='cursor: pointer;'>toutes</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='tous' <?php if ($_SESSION['items_a_afficher']=="tous") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
-<label style='cursor: pointer;'>closes</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='clos' <?php if ($_SESSION['items_a_afficher']=="clos") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
+ <input type="radio" name="items_a_afficher" id='items_a_afficher' value='ouverts' <?php if ($_SESSION['items_a_afficher']=="ouverts") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" /><label style='cursor: pointer;'> ouvertes</label> | 
+<input type="radio" name="items_a_afficher" id='items_a_afficher' value='tous' <?php if ($_SESSION['items_a_afficher']=="tous") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" /><label style='cursor: pointer;'> toutes</label> | 
+<input type="radio" name="items_a_afficher" id='items_a_afficher' value='clos' <?php if ($_SESSION['items_a_afficher']=="clos") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" /><label style='cursor: pointer;'> closes</label>
 <input type="hidden" name="post_items_a_afficher" />
-&nbsp;&nbsp;&nbsp;(<img src="../images/sort_up.gif" style="vertical-align:middle"><img src="../images/sort_dn.gif" style="vertical-align:middle">&nbsp;:&nbsp;ordre de tri)
-</p>
+</p><br />
 </form>
 
 
