@@ -2356,23 +2356,39 @@ if(isset($_GET['mode'])) {
 
 		//====================================================
 		// Recherche des tailles de polices optimales
-
+/*
+echo "\n";
+print_r($col_csv[1]);
+echo "\n";
+*/
 		// Une taille sans importance, histoire de tester
 		$pdf->SetFont($fonte,'',12);
 		// Recherche du plus long nom_prenom
 		$texte_test[1]="Edmou Dugenou";
 		$longueur_max_nom_prenom=0;
 		$largeur_col[1]=$largeur_col_nom_ele;
-		for($i=1;$i<=count($col_csv[1]);$i++) {
-			$longueur_courante=$pdf->GetStringWidth($col_csv[1][$i]);
-			if($longueur_courante>$longueur_max_nom_prenom) {
-				$texte_test[1]=$col_csv[1][$i];
-				$longueur_max_nom_prenom=$longueur_courante;
+		// $col_csv[1] contient la première colonne du tableau affiché et son indice commence à 0 avec le nom du premier élève ou le coefficient s'il est affiché
+		//for($i=1;$i<=count($col_csv[1]);$i++) {
+		for($i=0;$i<=count($col_csv[1]);$i++) {
+			// Si on n'affiche pas de coefficient, on ne va pas jusqu'à count($col_csv[1]
+			if(isset($col_csv[1][$i])) {
+//echo "\$col_csv[1][$i]=".$col_csv[1][$i]."\n";
+				$longueur_courante=$pdf->GetStringWidth($col_csv[1][$i]);
+				if($longueur_courante>$longueur_max_nom_prenom) {
+					$texte_test[1]=$col_csv[1][$i];
+					$longueur_max_nom_prenom=$longueur_courante;
+				}
 			}
 		}
 		$taille_police_col[1]=ajuste_FontSize($texte_test[1], $largeur_col[1], 12, 'B', 3);
-
+/*
+echo "\n";
+print_r($ligne1_csv);
+echo "\n";
+*/
+		// $ligne1_csv contient la première ligne du tableau affiché et son indice commence à 1 avec le Nom_prenom de l'eleve
 		for($i=2;$i<=count($ligne1_csv);$i++) {
+//echo "\$ligne1_csv[$i]=".$ligne1_csv[$i]."\n";
 			if(preg_match("/^Date de naiss/", $ligne1_csv[$i])) {
 				$largeur_col[$i]=15;
 				$texte_test[$i]="99/99/99";
@@ -2451,7 +2467,10 @@ if(isset($_GET['mode'])) {
 		}
 		//===========================
 
-		$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)-1)));
+		//$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)-1)));
+		// Il faut ajouter les trois lignes Min/Moy/Max
+		//$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)-1+3)));
+		$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)+3)));
 
 		/*
 		$pdf->SetXY(10, 110);
@@ -2465,7 +2484,8 @@ if(isset($_GET['mode'])) {
 
 		$y2=$y2+$h_ligne_titre_tableau;
 		$k=1;
-		for($j=1;$j<count($col[1]);$j++) {
+		//for($j=1;$j<count($col[1]);$j++) {
+		for($j=0;$j<count($col[1]);$j++) {
 			$x2=$x0;
 
 			/*
