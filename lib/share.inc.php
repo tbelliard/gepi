@@ -1768,6 +1768,9 @@ function ensure_utf8($str, $from_encoding = null) {
  */
 function detect_utf8 ($str) {
 	// Inspiré de http://w3.org/International/questions/qa-forms-utf-8.html
+	//
+	// on s'assure de bien opérer sur une chaîne de caractère
+	$str=(string)$str;
 	// La chaîne ne comporte que des octets <= 7F ?
 	$full_ascii=true; $i=0;
 	while ($full_ascii && $i<strlen($str)) {
