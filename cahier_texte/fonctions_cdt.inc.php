@@ -3,7 +3,7 @@
 /**
  *
  *
- * @copyright 2008
+ * @copyright 2008-2013
  */
 
 // Fonction qui renvoie la liste des devoirs à faire à partir d'aujourd'hui 00:00:00 sans limitation de temps
@@ -15,11 +15,15 @@ require_once("../lib/initialisations.inc.php");
 function retourneDevoirs($ele_login){
 	$date_ct1 = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 
+	$date_limite=$date_ct1+3600*24*getSettingValue('delai_devoirs');
+
 	// On récupère tous les devoirs depuis aujourd'hui 00:00:00
 	$sql="SELECT DISTINCT ctde.* FROM ct_devoirs_entry ctde, j_eleves_groupes jeg
 								WHERE ctde.id_groupe = jeg.id_groupe
 								AND jeg.login = '".$ele_login."'
 								AND ctde.date_ct >= '".$date_ct1."'
+								AND ctde.date_ct <= '".$date_limite."'
+								AND ctde.date_visibilite_eleve<='".date("Y")."-".date("m")."-".date("d")." ".date("H").":".date("i").":00'
 							ORDER BY ctde.date_ct, ctde.id_groupe;";
 	//echo "$sql<br />";
 	$res_ct = mysql_query($sql);
