@@ -1078,7 +1078,7 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 if ($step==2) {   //Eric Ajout génération du modèle Ooo pour imprimer le rapport d'incident.
 ?>
     | 
-    <a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=$id_incident".add_token_in_url()."' 
+    <a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=<?php echo $id_incident.add_token_in_url();?>' 
        onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
         Imprimer le rapport d'incident
     </a>
