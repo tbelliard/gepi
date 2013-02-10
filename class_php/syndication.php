@@ -69,6 +69,8 @@ if ($type_rss == "cdt") {
 }
 // =========================fin des cahiers de textes ===========================
 
+$ServerProtocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
+
  // Import de la classe RSSFeed
 require('RSSFeed/RSSFeed.class.php');
 
@@ -79,12 +81,12 @@ $oRssFeed->setCloud($_SERVER["SERVER_NAME"], $_SERVER["REMOTE_PORT"], $gepiPath,
 $oRssFeed->setProtectString(true);
 $oRssFeed->setTitle($title_rss);
 $oRssFeed->setDescription($description_rss);
-$oRssFeed->setLink('http://'.$_SERVER["SERVER_NAME"].$gepiPath);
+$oRssFeed->setLink($ServerProtocole.$_SERVER["SERVER_NAME"].$gepiPath);
 $oRssFeed->setPubDate('2007-12-31');
 $oRssFeed->setLastBuildDate(date('Y-m-d'));
 $oRssFeed->setWebMaster(getSettingValue("gepiSchoolEmail"),'ADMIN');
 $oRssFeed->setManagingEditor(getSettingValue("gepiSchoolEmail"),'ADMIN');
-$oRssFeed->setImage($gepiPath.'/favicon.ico', 'GEPI', 'http://'.$_SERVER["SERVER_NAME"]);
+$oRssFeed->setImage($gepiPath.'/favicon.ico', 'GEPI', $ServerProtocole.$_SERVER["SERVER_NAME"]);
 $oRssFeed->setCopyright('(L) - GEPI 151');
 $oRssFeed->setGenerator('Généré par RSSFeed Class de Hugo "Emacs" HAMON - http://www.apprendre-php.com');
 $oRssFeed->setLanguage('fr');
@@ -103,8 +105,8 @@ if ($items["cdt_dev"]["count"] != 0) {
 		$oRssItem = new RSSFeedItem();
 		$oRssItem->setTitle($donnees["description"].' - Pour le '.date("d-m-Y", $items["cdt_dev"][$a]["date_ct"]));
 		$oRssItem->setDescription('-> Travail donné par '.$prof.' : '.$items["cdt_dev"][$a]["contenu"]);
-		$oRssItem->setLink('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
-		$oRssItem->setGuid('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
+		$oRssItem->setLink($ServerProtocole.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
+		$oRssItem->setGuid($ServerProtocole.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
 		if(!empty($sEmail))
 		{
 			$oRssItem->setAuthor($sEmail, 'ADMIN');
@@ -120,8 +122,8 @@ if ($items["cdt_dev"]["count"] != 0) {
 	$oRssItem = new RSSFeedItem();
 	$oRssItem->setTitle('Le cahier de textes est vide');
 	$oRssItem->setDescription('Rien &agrave; afficher -> Il faut toujours revoir les le&ccedil;ons du jour.');
-	$oRssItem->setLink('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
-	$oRssItem->setGuid('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
+	$oRssItem->setLink($ServerProtocole.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
+	$oRssItem->setGuid($ServerProtocole.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
 	if(!empty($sEmail))
 	{
 		$oRssItem->setAuthor($sEmail, 'ADMIN');
@@ -137,8 +139,8 @@ if ($items["cdt_dev"]["count"] != 0) {
 	$oRssItem = new RSSFeedItem();
 	$oRssItem->setTitle('ERREUR sur le CDT');
 	$oRssItem->setDescription('Rien &agrave; afficher -> Il faut toujours apprendre les le&ccedil;ons du jour.');
-	$oRssItem->setLink('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
-	$oRssItem->setGuid('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
+	$oRssItem->setLink($ServerProtocole.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
+	$oRssItem->setGuid($ServerProtocole.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
 	if(!empty($sEmail))
 	{
 		$oRssItem->setAuthor($sEmail, 'ADMIN');
