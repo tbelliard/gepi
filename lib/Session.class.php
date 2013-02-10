@@ -72,6 +72,8 @@ class Session {
 
 	public function __construct($login_CAS_en_cours = false) {
 
+global $temoin_pas_d_update_session_table_log;
+
     if (!$login_CAS_en_cours) {
       # On initialise la session
       session_name("GEPI");
@@ -135,8 +137,32 @@ class Session {
 	          exit();
             }
         } else {
-          # Pas de timeout : on met à jour le log
-          $this->update_log();
+			$debug_maintien_session="n";
+			if($debug_maintien_session=="y") {
+				$sql = "SELECT END from log where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "';";
+				$tmp_res_fin_session=mysql_query($sql);
+				$tmp_fin_session=mysql_result($tmp_res_fin_session,0,'END');
+			}
+
+			if((!isset($temoin_pas_d_update_session_table_log))||($temoin_pas_d_update_session_table_log!="y")) {
+				# Pas de timeout : on met à jour le log
+				$this->update_log();
+
+				if($debug_maintien_session=="y") {
+					$fich=fopen("/tmp/update_log.txt", "a+");
+					fwrite($fich, strftime("%Y%m%d %H%M%S")." : Update log à $tmp_fin_session\n");
+					fwrite($fich, "$sql\n");
+					fclose($fich);
+				}
+			}
+			else {
+				if($debug_maintien_session=="y") {
+					$fich=fopen("/tmp/update_log.txt", "a+");
+					fwrite($fich, strftime("%Y%m%d %H%M%S")." : Pas d update log \nLa fin de session reste à $tmp_fin_session\n".(isset($temoin_pas_d_update_session_table_log) ? "\$temoin_pas_d_update_session_table_log=".$temoin_pas_d_update_session_table_log : "\$temoin_pas_d_update_session_table_log non initialise")."\n");
+					fwrite($fich, "$sql\n");
+					fclose($fich);
+				}
+			}
         }
       }
 		}
@@ -646,6 +672,7 @@ class Session {
 	    // Détruit le cookie sur le navigateur
 	    $CookieInfo = session_get_cookie_params();
 	    @setcookie(session_name(), '', time()-3600, $CookieInfo['path']);
+
 
 	    // détruit la session sur le serveur
 	    session_destroy();

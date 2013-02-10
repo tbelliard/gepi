@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -49,14 +49,35 @@ if (!checkAccess()) {
 }
 */
 
-header('Content-Type: text/html; charset=utf-8');
 
-$taille=isset($_GET['taille']) ? $_GET['taille'] : 10;
-if((!is_numeric($taille))||($taille<1)) {
-	$taille=10;
+if((isset($_GET['var']))&&($_GET['var']=='maintien_session')) {
+
+	$debug_maintien_session="n";
+	if($debug_maintien_session=="y") {
+		$fich=fopen("/tmp/update_log.txt", "a+");
+		fwrite($fich, strftime("%Y%m%d %H%M%S")." : Echo\n");
+		fclose($fich);
+	}
+
+	$temoin_pas_d_update_session_table_log="y";
+	require_once("../lib/initialisations.inc.php");
+
+	if($debug_maintien_session=="y") {
+		$fich=fopen("/tmp/update_log.txt", "a+");
+		fwrite($fich, "\n");
+		fclose($fich);
+	}
+	//echo strftime("%Y%m%d%H%M%S");
 }
+else {
+	header('Content-Type: text/html; charset=utf-8');
 
-//echo time();
-echo "<div style='width:".$taille."px; height:".$taille."px; background-color:green;'></div>";
+	$taille=isset($_GET['taille']) ? $_GET['taille'] : 10;
+	if((!is_numeric($taille))||($taille<1)) {
+		$taille=10;
+	}
 
+	//echo time();
+	echo "<div style='width:".$taille."px; height:".$taille."px; background-color:green;'></div>";
+}
 ?>

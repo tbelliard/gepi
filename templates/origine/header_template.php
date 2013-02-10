@@ -85,6 +85,8 @@
 			</script>
 		";
 	}
+
+	maintien_de_la_session();
 ?>
 	<script type="text/javascript" src="<?php echo $tbs_gepiPath?>/lib/cookieClass.js"></script>
 	<script type="text/javascript">
@@ -190,6 +192,8 @@
 				<?php
 					$sessionMaxLength=getSettingValue("sessionMaxLength");
 
+					/*
+					// Avec le dispositif maintien_de_la_session() de lib/share.inc.php pointant vers lib/echo.php, on devrait pouvoir ne tenir compte que de la variable Gepi: sessionMaxLength
 					$session_gc_maxlifetime=ini_get("session.gc_maxlifetime");
 					if($session_gc_maxlifetime!=FALSE) {
 						$session_gc_maxlifetime_minutes=$session_gc_maxlifetime/60;
@@ -198,6 +202,7 @@
 							$sessionMaxLength=$session_gc_maxlifetime_minutes;
 						}
 					}
+					*/
 				?>
 
 				if (gepi_start_session.get('GEPI_start_session')) {

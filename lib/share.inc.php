@@ -6463,4 +6463,31 @@ function get_class_dates_from_ele_login($login_eleve) {
 
 	return $tab;
 }
+
+
+/** Fonction destinée à passer outre le paramètre PHP session.gc_maxlifetime
+ *  s'il est inférieur au paramétrage sessionMaxLength de la table setting
+ */
+
+function maintien_de_la_session() {
+	global $gepiPath;
+
+	$session_gc_maxlifetime=ini_get("session.gc_maxlifetime");
+	// On fait réagir 3min avant la fin de session PHP
+	$nb_sec=max(60, $session_gc_maxlifetime-60*3);
+
+	echo "<span id='span_maintien_session'></span>
+
+<script type='text/javascript'>
+	var nb_millisec_maintien_session=$nb_sec*1000;
+
+	function function_maintien_session() {
+		new Ajax.Updater($('span_maintien_session'),'$gepiPath/lib/echo.php?var=maintien_session',{method: 'get'});
+		setTimeout('function_maintien_session()', nb_millisec_maintien_session);
+	}
+
+	setTimeout('function_maintien_session()', nb_millisec_maintien_session);
+</script>\n";
+}
+
 ?>
