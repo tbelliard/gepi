@@ -520,6 +520,7 @@ while ($j < $nb_dev) {
 	$ramener_sur_referentiel[$j] = mysql_result($appel_dev, $j, 'ramener_sur_referentiel');
 	$facultatif[$j] = mysql_result($appel_dev, $j, 'facultatif');
 	$display_parents[$j] = mysql_result($appel_dev, $j, 'display_parents');
+	$date_visibilite_ele_resp[$j] = mysql_result($appel_dev, $j, 'date_ele_resp');
 	$date = mysql_result($appel_dev, $j, 'date');
 	$annee = mb_substr($date,0,4);
 	$mois =  mb_substr($date,5,2);
@@ -1258,9 +1259,10 @@ while ($i < $nb_dev) {
 		$header_pdf[] = ($nom_dev[$i]." (".$display_date[$i].")");
 		$w_pdf[] = $w2;
 		if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
-			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">$nom_dev[$i]</a></b><br /><font size=-2>($display_date[$i])</font>\n";
+			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"Modifier les paramètres de cette évaluation (nom, coefficient, date, date de visibilité,...)\">$nom_dev[$i]</a></b><br /><font size=-2>(<em title=\"Date de l'évaluation\">$display_date[$i]</em>)</font>\n";
 			if($display_parents[$i]!=0) {
-				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />\n";
+				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes.
+Visible à compter du ".formate_date($date_visibilite_ele_resp[$i])." pour les parents et élèves.' alt='Evaluation visible sur le relevé de notes' />\n";
 			}
 			else {
 				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";
@@ -1270,7 +1272,8 @@ while ($i < $nb_dev) {
 		else {
 			echo "<td class=cn".$tmp." valign='top'><center><b>".$nom_dev[$i]."</b><br /><font size=-2>($display_date[$i])</font>\n";
 			if($display_parents[$i]!=0) {
-				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />\n";
+				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes.
+Visible à compter du ".formate_date($date_visibilite_ele_resp[$i])." pour les parents et élèves.' />\n";
 			}
 			else {
 				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";

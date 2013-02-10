@@ -225,6 +225,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					
 					$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
 					$id_dev = mysql_result($appel_dev, $j, 'id');
+					$date_dev = mysql_result($appel_dev, $j, 'date');
+					$date_ele_resp_dev = mysql_result($appel_dev, $j, 'date_ele_resp');
 					echo "<li>\n";
 					echo "<span style='color:green;'>$nom_dev</span>";
 					echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
@@ -275,7 +277,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					$display_parents=mysql_result($appel_dev, $j, 'display_parents');
 					$coef=mysql_result($appel_dev, $j, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
-					if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />";}
+					if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".formate_date($date_dev)." visible sur le relevé de notes.
+Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et élèves.' alt='Evaluation visible sur le relevé de notes' />";}
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
 					echo "</i>)";
 
@@ -349,6 +352,8 @@ En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('g
 						while ($j < $nb_dev) {
 							$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
 							$id_dev = mysql_result($appel_dev, $j, 'id');
+							$date_dev = mysql_result($appel_dev, $j, 'date');
+							$date_ele_resp_dev = mysql_result($appel_dev, $j, 'date_ele_resp');
 							echo "<li>\n";
 							echo "<font color='green'>$nom_dev</font> - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
 
@@ -395,7 +400,8 @@ En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('g
 							$display_parents=mysql_result($appel_dev, $j, 'display_parents');
 							$coef=mysql_result($appel_dev, $j, 'coef');
 							echo " (<i><span title='Coefficient $coef'>$coef</span> ";
-							if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />";}
+							if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".formate_date($date_dev)." visible sur le relevé de notes.
+Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et élèves.' alt='Evaluation visible sur le relevé de notes' />";}
 							else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
 							echo "</i>)";
 
