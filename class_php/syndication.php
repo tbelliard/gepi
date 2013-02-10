@@ -85,7 +85,7 @@ $oRssFeed->setLastBuildDate(date('Y-m-d'));
 $oRssFeed->setWebMaster(getSettingValue("gepiSchoolEmail"),'ADMIN');
 $oRssFeed->setManagingEditor(getSettingValue("gepiSchoolEmail"),'ADMIN');
 $oRssFeed->setImage($gepiPath.'/favicon.ico', 'GEPI', 'http://'.$_SERVER["SERVER_NAME"]);
-$oRssFeed->setCopyright('(L) - GEPI 151');
+$oRssFeed->setCopyright('(L) - GEPI '.getSettingValue('version'));
 $oRssFeed->setGenerator('Généré par RSSFeed Class de Hugo "Emacs" HAMON - http://www.apprendre-php.com');
 $oRssFeed->setLanguage('fr');
 
@@ -102,7 +102,25 @@ if ($items["cdt_dev"]["count"] != 0) {
 		$sEmail = getSettingValue("gepiSchoolEmail");
 		$oRssItem = new RSSFeedItem();
 		$oRssItem->setTitle($donnees["description"].' - Pour le '.date("d-m-Y", $items["cdt_dev"][$a]["date_ct"]));
-		$oRssItem->setDescription('-> Travail donné par '.$prof.' : '.$items["cdt_dev"][$a]["contenu"]);
+
+		$contenu_courant='-> Travail donné par '.$prof.' : '.$items["cdt_dev"][$a]["contenu"];
+		if(isset($items["cdt_dev"][$a]["doc_joint"])) {
+			//$contenu_courant.="\n";
+			if(count($items["cdt_dev"][$a]["doc_joint"])==1) {
+				$contenu_courant.=" - Un document est joint : ";
+			}
+			else {
+				$contenu_courant.=" - ".count($items["cdt_dev"][$a]["doc_joint"])." documents sont joints : ";
+			}
+			for($loop=0;$loop<count($items["cdt_dev"][$a]["doc_joint"]);$loop++) {
+				//$contenu_courant.="\n".$items["cdt_dev"][$a]["doc_joint"][$loop]['titre'];
+				//$contenu_courant.="\n"."<a href='https://".$_SERVER["SERVER_NAME"].$gepiPath."/".preg_replace("|^../|","",$items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])."'>".$items["cdt_dev"][$a]["doc_joint"][$loop]['titre']."</a>";
+				if($loop>0) {$contenu_courant.=", ";}
+				$contenu_courant.=$items["cdt_dev"][$a]["doc_joint"][$loop]['titre']." (https://".$_SERVER["SERVER_NAME"].$gepiPath."/".preg_replace("|^../|","",$items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement']).")";
+			}
+		}
+		$oRssItem->setDescription($contenu_courant);
+
 		$oRssItem->setLink('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
 		$oRssItem->setGuid('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
 		if(!empty($sEmail))

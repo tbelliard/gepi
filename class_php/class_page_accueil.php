@@ -1700,27 +1700,65 @@ if(getSettingAOui('active_bulletins')) {
 	$this->b=0;
 
 	if (getSettingValue("rss_cdt_eleve") == 'y' AND $this->statutUtilisateur == "eleve") {
+		// Les flux rss sont ouverts pour les élèves
+		$this->canal_rss_flux=1;
+
+		// A vérifier pour les cdt
+		if (getSettingValue("rss_acces_ele") == 'direct') {
+			// echo "il y a un flux RSS direct";
+			$uri_el = retourneUri($this->loginUtilisateur, $this->test_https, 'cdt');
+			$this->canal_rss=array("lien"=>$uri_el["uri"] ,
+				"texte"=>$uri_el["text"],
+				"mode"=>1 ,
+				"expli"=>"En cliquant sur la cellule de gauche,
+				vous pourrez récupérer votre URI (<em>si vous avez activé le javascript sur votre navigateur</em>).
+				<br />
+				<br />
+				<em style='font-size:small'>Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.<br />Firefox, Internet Explorer,... savent lire les flux RSS.<br />Il existe également des lecteurs de flux RSS pour les SmartPhone,...</em>");
+		}
+		elseif(getSettingValue("rss_acces_ele") == 'csv'){
+			$this->canal_rss=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
+		}
+
+		$this->creeNouveauTitre('accueil',"Votre flux RSS",'images/icons/rss.png');
+		return true;
+	}
+	elseif (getSettingValue("rss_cdt_responsable") == 'y' AND $this->statutUtilisateur == "responsable") {
 	  // Les flux rss sont ouverts pour les élèves
 	  $this->canal_rss_flux=1;
 
 	  // A vérifier pour les cdt
 	  if (getSettingValue("rss_acces_ele") == 'direct') {
-	// echo "il y a un flux RSS direct";
-		$uri_el = retourneUri($this->loginUtilisateur, $this->test_https, 'cdt');
-		$this->canal_rss=array("lien"=>$uri_el["uri"] ,
-				  "texte"=>$uri_el["text"],
-				  "mode"=>1 ,
+		// echo "il y a un flux RSS direct";
+			$this->canal_rss=array("mode"=>1 ,
 				  "expli"=>"En cliquant sur la cellule de gauche,
-				  vous pourrez récupérer votre URI (si vous avez activé le javascript sur votre navigateur).");
-	  }elseif(getSettingValue("rss_acces_ele") == 'csv'){
-		$this->canal_rss=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
+				  vous pourrez récupérer votre URI (<em>si vous avez activé le javascript sur votre navigateur</em>).
+				  <br />
+				  <br />
+				  <em style='font-size:small'>Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.<br />Firefox, Internet Explorer,... savent lire les flux RSS.<br />Il existe également des lecteurs de flux RSS pour les SmartPhone,...</em>");
+
+			$tab_ele_resp=get_enfants_from_resp_login($this->loginUtilisateur, 'avec_classe', "y");
+			if(count($tab_ele_resp)>2) {
+				$cpt_ele_rss=0;
+				$this->canal_rss_plus="";
+				for($loop=0;$loop<count($tab_ele_resp);$loop+=2) {
+					$uri_el = retourneUri($tab_ele_resp[$loop], $this->test_https, 'cdt');
+					$this->canal_rss_plus.=$tab_ele_resp[$loop+1]."<br /><a href='".$uri_el["uri"]."'>".$uri_el["text"]."</a><br />";
+				}
+			}
+			else {
+				$this->canal_rss['lien']=$uri_el["uri"];
+				$this->canal_rss['texte']=$uri_el["text"];
+			}
+		}
+		elseif(getSettingValue("rss_acces_ele") == 'csv' AND $this->statutUtilisateur == "responsable"){
+			$this->canal_rss=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
+		}
 	  }
 
 	  $this->creeNouveauTitre('accueil',"Votre flux RSS",'images/icons/rss.png');
 	  return true;
 	}
-
-  }
 
   protected function statutAutre(){
 
@@ -2002,8 +2040,8 @@ function retourneUri($eleve, $https, $type){
 				$web = 'http://';
 			}
 			if ($type == 'cdt') {
-				$rep["uri"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
-				$rep["text"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
+				$rep["uri"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$eleve.'&amp;type=cdt&amp;uri='.$uri["user_uri"];
+				$rep["text"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$eleve.'&amp;type=cdt&amp;uri='.$uri["user_uri"];
 			}
 
 		}else{

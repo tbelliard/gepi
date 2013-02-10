@@ -1,9 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /*
-* $Id: index_template.php 4900 2010-07-26 13:40:03Z regis $
- *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -116,6 +114,8 @@ if (count($lienFlux)){
  ?>
  
   <form id="form_rss" action="rss_cdt_admin.php" method="post">
+	<fieldset style='border: 1px solid grey; margin-bottom:0.5em; background-image: url("../images/background/opacite50.png");'>
+		<legend style='border: 1px solid grey; margin-bottom:0.5em; background-image: url("../images/background/opacite50.png");'>Accès</legend>
 	<p>
 <?php
 echo add_token_field();
@@ -129,16 +129,28 @@ echo add_token_field();
 			 onchange='document.getElementById("form_rss").submit();'
 			<?php echo $checked_ele; ?> />
 	  <label for="autoRssCdt">
-		Les élèves peuvent utiliser le flux RSS de leur cahier de textes
+		Les élèves peuvent utiliser le flux RSS de leur cahier de textes.
+	  </label>
+	  <br />
+	  <input type="checkbox"
+			 id="autoRssCdtResp"
+			 name="rss_cdt_responsable"
+			 value="y"
+			 onclick="changementDisplay('accesResp', '');"
+			 onchange='document.getElementById("form_rss").submit();'
+			<?php echo $checked_resp; ?> />
+	  <label for="autoRssCdtResp">
+		Les responsables peuvent utiliser le flux RSS des cahiers de textes des élèves dont ils sont responsables.
 	  </label>
 	</p>
+	</fieldset>
   </form>
   <br />
   
   <div id="accesEle"<?php echo $style_ele; ?>>
 	<form id="form_rss_ele" action="rss_cdt_admin.php" method="post">
-	  <fieldset>
-		<legend>mode de récupération</legend>
+	  <fieldset style='border: 1px solid grey; margin-bottom:0.5em; background-image: url("../images/background/opacite50.png");'>
+		<legend style='border: 1px solid grey; margin-bottom:0.5em; background-image: url("../images/background/opacite50.png");'>Mode de récupération</legend>
 <?php
 echo add_token_field();
 ?>
@@ -149,7 +161,7 @@ echo add_token_field();
 			   onchange='document.getElementById("form_rss_ele").submit();'
 			  <?php echo $style_ele_dir; ?> />
 		<label for="rssAccesEle">
-		  Les élèves récupèrent l'adresse (url) d'abonnement directement par leur accès à Gepi
+		  Les élèves (<em>et/ou responsables selon ce qui est coché ci-dessus</em>) récupèrent l'adresse (<em>url</em>) d'abonnement directement par leur accès à Gepi
 		</label>
 		<br />
 		<input type="radio"
@@ -159,7 +171,7 @@ echo add_token_field();
 			   onchange='document.getElementById("form_rss_ele").submit();'
 			  <?php echo $style_ele_csv; ?> />
 		<label for="rssAccesEle2">
-		  L'admin récupère un fichier csv de ces adresses (une par élève)
+		  L'admin récupère un fichier csv de ces adresses (<em>une par élève</em>)
 		</label>
 	  </fieldset>
 	</form>

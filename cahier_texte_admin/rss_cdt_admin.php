@@ -55,6 +55,7 @@ if (!checkAccess()) {
 // ======================== Initialisation des données ==================== //
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $rss_cdt_ele = isset($_POST["rss_cdt_ele"]) ? $_POST["rss_cdt_ele"] : NULL;
+$rss_cdt_responsable = isset($_POST["rss_cdt_responsable"]) ? $_POST["rss_cdt_responsable"] : NULL;
 $rss_acces_ele = isset($_POST["rss_acces_ele"]) ? $_POST["rss_acces_ele"] : NULL;
 $genereflux = isset($_GET["genereflux"]) ? $_GET["genereflux"] : NULL;
 $generefluxcsv = isset($_GET["generefluxcsv"]) ? $_GET["generefluxcsv"] : NULL;
@@ -69,6 +70,11 @@ $a=0;
 if ($action == "modifier") {
 	check_token();
 	$save = saveSetting("rss_cdt_eleve", $rss_cdt_ele);
+	if (!$save) {
+		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>'."\n";
+	}
+
+	$save = saveSetting("rss_cdt_responsable", $rss_cdt_responsable);
 	if (!$save) {
 		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>'."\n";
 	}
@@ -175,12 +181,24 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 
 // On vérifie les checked
 // et on définit si on doit afficher le div qui suit ou pas
+if ((getSettingValue("rss_cdt_eleve") == "y")||(getSettingValue("rss_cdt_responsable") == "y")) {
+	$style_ele = ' style="Display: block;"';
+}
+else{
+	$style_ele = ' style="display: none;"';
+}
+
 if (getSettingValue("rss_cdt_eleve") == "y") {
 	$checked_ele = ' checked="checked"';
-	$style_ele = ' style="Display: block;"';
-}else{
+}
+else {
 	$checked_ele = '';
-	$style_ele = ' style="Display: none;"';
+}
+
+if (getSettingValue("rss_cdt_responsable") == "y") {
+	$checked_resp = ' checked="checked"';
+}else{
+	$checked_resp = '';
 }
 
 if (getSettingValue("rss_acces_ele") == "direct") {
