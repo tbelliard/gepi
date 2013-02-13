@@ -903,26 +903,30 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 		echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_oui>\n";
 		echo add_token_field();
 
-		echo "-----------------<br />";
-		echo "<input type=\"checkbox\" name=\"debug_restaure\" id=\"debug_restaure\" value=\"y\" /><label for='debug_restaure' style='cursor:pointer;'> Activer le mode debug</label><br />\n";
+		echo "--Restauration par tables (option par défaut)--<br />";
+		echo "<blockquote>\n";
+		echo "<input type=\"checkbox\" name=\"debug_restaure\" id=\"debug_restaure\" value=\"y\" onChange='document.getElementById(\"restauration_old_way\").checked=false;' /><label for='debug_restaure' style='cursor:pointer;'> Activer le mode debug</label><br />\n";
 
-		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_log\" id=\"ne_pas_restaurer_log\" value=\"y\" /><label for='ne_pas_restaurer_log' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'log'.</label><br />\n";
+		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_log\" id=\"ne_pas_restaurer_log\" value=\"y\"  onChange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"restauration_old_way\").checked=false;' /><label for='ne_pas_restaurer_log' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'log'.</label><br />\n";
 
-		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_tentatives_intrusion\" id=\"ne_pas_restaurer_tentatives_intrusion\" value=\"y\" /><label for='ne_pas_restaurer_tentatives_intrusion' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'tentatives_intrusion'.</label><br />\n";
-
-		echo "-----------------<br />";
-		echo "<input type=\"checkbox\" name=\"restauration_old_way\" id=\"restauration_old_way\" value=\"y\" onChange='document.getElementById(\"restauration_mysql\").checked=false;' /><label for='restauration_old_way' style='cursor:pointer;'> Restaurer la sauvegarde d'un bloc<br />(<i>utile par exemple pour restaurer un fichier SQL ne correspondant pas à une sauvegarde classique</i>)</label><br />\n";
-		echo "-----------------<br />";
+		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_tentatives_intrusion\" id=\"ne_pas_restaurer_tentatives_intrusion\" value=\"y\"  onChange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"restauration_old_way\").checked=false;' /><label for='ne_pas_restaurer_tentatives_intrusion' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'tentatives_intrusion'.</label><br />\n";
+		echo "</blockquote>\n";
+		echo "--Restauration d'un bloc--<br />";
+		echo "<blockquote>\n";
+		echo "<input type=\"checkbox\" name=\"restauration_old_way\" id=\"restauration_old_way\" value=\"y\" onChange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;document.getElementById(\"debug_restaure\").checked=false;' /><label for='restauration_old_way' style='cursor:pointer;'> Restaurer la sauvegarde d'un bloc<br />(<i>utile par exemple pour restaurer un fichier SQL ne correspondant pas à une sauvegarde classique</i>)</label><br />\n";
+		echo "</blockquote>\n";
+		echo "--Restauration par MySQL--<br />";
+		echo "<blockquote>\n";
 		echo "<input type=\"checkbox\" name=\"restauration_mysql\" id=\"restauration_mysql\" value=\"y\"";
 		if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) echo " disabled";
 		echo " onChange='document.getElementById(\"restauration_old_way\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;'";
 		echo "/><label for='restauration_mysql' style='cursor:pointer;'> Restaurer la sauvegarde par un appel à la commande système mysql<br />(<i>plus rapide mais il n'y a aucune indication de progression durant le processus</i>)</label><br />\n";
-		echo " -> préciser si le fichier à restaurer est codé en UTF8 (sauvegarde GEPI >=1.6.0) <input type='radio' name='char_set' value='utf8'  checked='checked'> ou en ISO (sauvegarde GEPI <=1.5.5)<input type='radio' name='char_set' value='latin1'>\n";
+		echo "<span style='color:red; text-decoration:blink; font-weight:bolder;'> -> </span>préciser si le fichier à restaurer est codé en UTF8 (sauvegarde GEPI >=1.6.0) <input type='radio' name='char_set' value='utf8'  checked='checked'> ou en ISO (sauvegarde GEPI <=1.5.5)<input type='radio' name='char_set' value='latin1'>\n";
 		if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) {
 		echo "<p><b><font color=\"#FF0000\">Attention : </font></b>pour utiliser la commande système mysql lorsque Gepi est hébergé sous Windows il faut au préalable copier le fichier \"mysq.exe\" dans le dossier \"gestion\" de Gepi. Ce fichier \"mysql.exe\" se trouve généralement dans le sous-dossier \"bin\" du dossier d'installation de MySQL.</p>";
 		}
-
-		echo "<br /><br /><br />";
+		echo "</blockquote>\n";
+		echo "<br /><br />";
 		echo "<input type='submit' id='confirm' name='confirm' value = 'Lancer la restauration' /></td></tr>\n";
 		echo "<input type=\"hidden\" name=\"action\" value=\"restaure\" />\n";
 		echo "<input type=\"hidden\" name=\"file\" value=\"".$_GET['file']."\" />\n";
@@ -1010,7 +1014,7 @@ if (isset($action) and ($action == 'restaure'))  {
 	function shutdown() {
 		global $retour,$t_retour,$t_debut,$ajout_char_set,$file;
 		
-		// durée de la sauvegarde
+		// durée de la restauration
 		$t_duree=time()-$t_debut;
 		$s=$t_duree%60;
 		$t_duree=floor($t_duree/60);
@@ -1019,7 +1023,7 @@ if (isset($action) and ($action == 'restaure'))  {
 		echo "<script>document.getElementById('restau_en_cours').innerHTML='<p>Script exécuté en ".$h." h ".$m." min ".$s." s</p>'</script>";
 		//echo "<p style='padding-left: 1em;'>Script exécuté en $h h $m m $s s</p>";
 
-		// bilan de la sauvegarde
+		// bilan de la restauration
 		if ($retour==0) echo "<p style='padding-left: 1em;'>La restauration a été correctement effectuée.</p>";
 		else echo "<p style='padding-left: 1em; color:red; font-weight:bold;'>La restauration a échouée.</p>";
 		if ($ajout_char_set) echo "<p style='padding-left: 1em;'>Un fichier ".$file." a été créé dans le dossier des sauvegardes, vous pouvez le supprimer.</p>";
@@ -1074,7 +1078,6 @@ if (isset($action) and ($action == 'restaure'))  {
 	// il faut éventuellement décompresser le fichier, car le serveur peut être sous Windows
 	// (sinon un pipe et gunzip suffiraient)
 	$creation_fichier_sql=false;
-	$ajout_char_set=false;
 	if (strtolower($file_info['extension']=="gz")) {
 		// on décompresse l'archive
 		$d_file=$file_info['filename'];
@@ -1082,8 +1085,6 @@ if (isset($action) and ($action == 'restaure'))  {
 			$h=gzopen("../backup/".$dirname."/".$file,"rb");
 			$d_h=fopen("../backup/".$dirname."/".$d_file,"wb");
 			// ajout de SET NAMES...
-			$ajout_char_set=true;
-			fwrite($d_h,"SET NAMES '".$char_set."';\n");
 			while($buffer=gzread($h,10240)) {
 				fwrite($d_h,$buffer,strlen($buffer));
 			}
@@ -1099,24 +1100,10 @@ if (isset($action) and ($action == 'restaure'))  {
 			}
 		}
 
-	// La sauvegarde n'était pas compressée, il faut ajouter SET NAMES...
-	if (!$ajout_char_set) {
-		$h_temp=fopen("../backup/".$dirname."/".$file."tmp","wb");
-		$h_sql=fopen("../backup/".$dirname."/".$file,"rb");
-		fwrite($h_temp,"SET NAMES '".$char_set."';\n");
-		while ($buffer=fread($h_sql,10240)) {
-			fwrite($h_temp,$buffer,strlen($buffer));
-		}
-		fclose($h_temp);
-		fclose($h_sql);
-		unlink("../backup/".$dirname."/".$file);
-		rename("../backup/".$dirname."/".$file."tmp","../backup/".$dirname."/".$file);
-	}
-
 	// C'est parti pour la restauration
 	register_shutdown_function('shutdown');
 	$t_debut=time();
-	@exec("mysql -p".$dbPass." -u ".$dbUser." ".$dbDb." < ../backup/".$dirname."/".$file,$t_retour,$retour);
+	@exec("mysql --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." < ../backup/".$dirname."/".$file,$t_retour,$retour);
 	// ici le script est terminé, et donc la fonction 'shutdown' est appelée
 
 	}
