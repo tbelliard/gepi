@@ -957,6 +957,8 @@ if (isset($action) and ($action == 'restaure'))  {
 	$restauration_old_way=isset($_POST["restauration_old_way"]) ? $_POST["restauration_old_way"] : (isset($_GET["restauration_old_way"]) ? $_GET["restauration_old_way"] : "n");
 
 	$cpt=isset($_POST["cpt"]) ? $_POST["cpt"] : (isset($_GET["cpt"]) ? $_GET["cpt"] : 0);
+	
+	$t_debut=isset($_POST["t_debut"]) ? $_POST["t_debut"] : (isset($_GET["t_debut"]) ? $_GET["t_debut"] : time());
 
 	if($restauration_old_way=='y') {
 		//===============================================
@@ -988,23 +990,30 @@ if (isset($action) and ($action == 'restaure'))  {
 				echo "$cpt requête(s) exécutée(s) avec succès jusque là.<br />";
 
 				if (isset($debug)&&$debug!='') {
-					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url()."\">ici</a> pour poursuivre la restauration</b>\n";
+					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way&t_debut=$t_debut".add_token_in_url()."\">ici</a> pour poursuivre la restauration</b>\n";
 				}
 
 				if (!isset($debug)||$debug=='') {
-					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url()."\">ici</a></b>\n";
+					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way&t_debut=$t_debut".add_token_in_url()."\">ici</a></b>\n";
 				}
 
 				if (!isset($debug)||$debug=='') {
-					echo "<script>window.location=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url(false)."\";</script>\n";
+					echo "<script>window.location=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way&t_debut=$t_debut".add_token_in_url(false)."\";</script>\n";
 				}
 				flush();
 				exit;
 			}
 		} else {
 			echo "<p style='text-align:center'>$cpt requête(s) exécutée(s) avec succès en tout.</p>";
+			
+			// durée de la restauration
+			$t_duree=time()-$t_debut;
+			$s=$t_duree%60;
+			$t_duree=floor($t_duree/60);
+			$m=$t_duree%60;
+			$h=floor($t_duree/60);
 
-			echo "<div align='center'><p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
+			echo "<div align='center'><p>Restauration terminée en ".$h." h ".$m." min ".$s." s.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -1020,8 +1029,7 @@ if (isset($action) and ($action == 'restaure'))  {
 		$t_duree=floor($t_duree/60);
 		$m=$t_duree%60;
 		$h=floor($t_duree/60);
-		echo "<script>document.getElementById('restau_en_cours').innerHTML='<p>Script exécuté en ".$h." h ".$m." min ".$s." s</p>'</script>";
-		//echo "<p style='padding-left: 1em;'>Script exécuté en $h h $m m $s s</p>";
+		echo "<script>document.getElementById('restau_en_cours').innerHTML='<p>Restauration effectuée en ".$h." h ".$m." min ".$s." s</p>'</script>";
 
 		// bilan de la restauration
 		if ($retour==0) echo "<p style='padding-left: 1em;'>La restauration a été correctement effectuée.</p>";
@@ -1102,13 +1110,11 @@ if (isset($action) and ($action == 'restaure'))  {
 
 	// C'est parti pour la restauration
 	register_shutdown_function('shutdown');
-	$t_debut=time();
 	@exec("mysql --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." < ../backup/".$dirname."/".$file,$t_retour,$retour);
 	// ici le script est terminé, et donc la fonction 'shutdown' est appelée
 
 	}
 	else {
-
 		$debug_restaure=isset($_POST["debug_restaure"]) ? $_POST["debug_restaure"] : (isset($_GET["debug_restaure"]) ? $_GET["debug_restaure"] : "n");
 
 		$ne_pas_restaurer_log=isset($_POST["ne_pas_restaurer_log"]) ? $_POST["ne_pas_restaurer_log"] : (isset($_GET["ne_pas_restaurer_log"]) ? $_GET["ne_pas_restaurer_log"] : "n");
@@ -1185,7 +1191,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 
 				// On ne devrait pas arriver là.
 
-				echo "<div align='center'><p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
+				echo "<div align='center'><p>Restauration terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -1198,13 +1204,18 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 
 		}
 		else {
+			// durée de la sauvegarde
+			$t_duree=time()-$t_debut;
+			$s=$t_duree%60;
+			$t_duree=floor($t_duree/60);
+			$m=$t_duree%60;
+			$h=floor($t_duree/60);
 
 			//$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%';";
 			// Pour nettoyer aussi une trace d'une sauvegarde consécutive à une restauration ratée... pas sûr que ce soit prudent...
 			$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value!='a_tmp_setting';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-
 				echo "<div id='div_fin_restauration' class='infobulle_corps' style='position:absolute; top: 200px; left:100px; border:1px solid black; width: 30em;'>\n";
 				//echo "<div id='div_fin_restauration' class='infobulle_corps' style='position:absolute; border:1px solid black; width: 30em;'>\n";
 				//background-color: white;
@@ -1212,11 +1223,11 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 					echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: 30em;'";
 					// Là on utilise les fonctions de http://www.brainjar.com stockées dans brainjar_drag.js
 					echo " onmousedown=\"dragStart(event, 'div_fin_restauration')\">";
-					echo "Restauration Terminée";
+					echo "Restauration terminée";
 					echo "</div>\n";
 
 					echo "<div align='center'>\n";
-					echo "<p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href=\"../login.php\">Se connecter</a></p>\n";
+					echo "<p>Restauration terminée en ".$h." h ".$m." min ".$s." s.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href=\"../login.php\">Se connecter</a></p>\n";
 					//echo "<p><em>NOTE:</em> J'ai un problème bizarre! Alors que le lien pointe bien vers ../login.php, je me retrouve un dossier plus haut sur un logout.php hors du dossier de Gepi si bien que j'obtiens un 404 Not Found???</p>\n";
 					echo "</div>\n";
 
@@ -1241,6 +1252,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			echo add_token_field();
 			echo "<input type='hidden' name='ne_pas_restaurer_log' value='$ne_pas_restaurer_log' />\n";
 			echo "<input type='hidden' name='ne_pas_restaurer_tentatives_intrusion' value='$ne_pas_restaurer_tentatives_intrusion' />\n";
+			echo "<input type='hidden' name='t_debut' value='$t_debut' />\n";
 			echo "</form>\n";
 
 			echo "<script type='text/javascript'>
@@ -1255,6 +1267,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			echo "&amp;debug_restaure=$debug_restaure";
 			echo "&amp;ne_pas_restaurer_log=$ne_pas_restaurer_log";
 			echo "&amp;ne_pas_restaurer_tentatives_intrusion=$ne_pas_restaurer_tentatives_intrusion";
+			echo "&amp;t_debut=$t_debut";
 			echo "#suite\">ici</a> pour poursuivre la restauration</b>\n";
 		}
 	}
@@ -1267,6 +1280,7 @@ $quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : 
 
 // Sauvegarde
 if (isset($action) and ($action == 'dump'))  {
+	$t_debut=isset($_POST["t_debut"]) ? $_POST["t_debut"] : (isset($_GET["t_debut"]) ? $_GET["t_debut"] : time());
 	// On enregistre le paramètre pour s'en souvenir la prochaine fois
 	saveSetting("mode_sauvegarde", "gepi");
 	// Sauvegarde de la base
@@ -1334,19 +1348,19 @@ if (isset($action) and ($action == 'dump'))  {
         if ($offsettable>=0){
             if (backupMySql($dbDb,$fichier,$duree,$rowlimit)) {
                 if (isset($debug)&&$debug!='') {
-					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=dump&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt&amp;fichier=$fichier&amp;path=$path";
+					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=dump&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt&amp;fichier=$fichier&amp;path=$path&amp;t_debut=$t_debut";
 					if(isset($quitter_la_page)) {echo "&amp;quitter_la_page=y";}
 					echo add_token_in_url();
 					echo "\">ici</a> pour poursuivre la sauvegarde.</b>\n";
 				}
                 if (!isset($debug)||$debug=='') {
-					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=dump&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt&amp;fichier=$fichier&amp;path=$path";
+					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=dump&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt&amp;fichier=$fichier&amp;path=$path&amp;t_debut=$t_debut";
 					if(isset($quitter_la_page)) {echo "&amp;quitter_la_page=y";}
 					echo add_token_in_url();
 					echo "\">ici</a></b>\n";
 				}
                 if (!isset($debug)||$debug=='') {
-					echo "<script>window.location=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
+					echo "<script>window.location=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path&t_debut=$t_debut";
 					if(isset($quitter_la_page)) {echo "&quitter_la_page=y";}
 					echo add_token_in_url(false);
 					echo "\";</script>\n";
@@ -1362,7 +1376,14 @@ if (isset($action) and ($action == 'dump'))  {
 			}
 			@unlink($fichier);
 
-            echo "<div align='center'><p>Sauvegarde Terminée.<br />\n";
+			// durée de la sauvegarde
+			$t_duree=time()-$t_debut;
+			$s=$t_duree%60;
+			$t_duree=floor($t_duree/60);
+			$m=$t_duree%60;
+			$h=floor($t_duree/60);
+
+			echo "<div align='center'><p>Sauvegarde terminée en ".$h." h ".$m." min ".$s." s.<br />\n";
 
 			//$nomsql.$filetype
 			$handle=opendir($path);
@@ -1446,6 +1467,7 @@ if (isset($action) and ($action == 'system_dump'))  {
 	echo "<span id='sauvegarde_en_cours'><p>Sauvegarde en cours...</p></span>";
 	if (ob_get_contents()) ob_flush(); flush();
 
+	$t_debut=time();
 	if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe")) {
 		// on est sous Window$ et on a $filename : "xxxx.sql.gz"
 		$filename=substr($filename,0,-3); // $filename : "xxxx.sql"
@@ -1468,9 +1490,16 @@ if (isset($action) and ($action == 'system_dump'))  {
 		$exec = exec($command);
 	}
 
+	// durée de la sauvegarde
+	$t_duree=time()-$t_debut;
+	$s=$t_duree%60;
+	$t_duree=floor($t_duree/60);
+	$m=$t_duree%60;
+	$h=floor($t_duree/60);
+
 	if (filesize($filename) > 10000) {
 		echo "<script>document.getElementById('sauvegarde_en_cours').innerHTML=''</script>";
-		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>\n";
+		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès en ".$h." h ".$m." min ".$s." s.</p></center>\n";
 		if((isset($_POST['description_sauvegarde']))&&($_POST['description_sauvegarde']!='')) {
 			$f_desc=fopen($filename.".txt", "a+");
 			$description_sauvegarde=suppression_sauts_de_lignes_surnumeraires($_POST['description_sauvegarde']);
