@@ -1021,7 +1021,7 @@ if (isset($action) and ($action == 'restaure'))  {
 	}
 	if($restauration_mysql=='y') {
 	function shutdown() {
-		global $retour,$t_retour,$t_debut,$ajout_char_set,$file;
+		global $retour,$t_retour,$t_debut,$creation_fichier_sql,$gepiPath,$dirname,$file;
 		
 		// durée de la restauration
 		$t_duree=time()-$t_debut;
@@ -1032,9 +1032,19 @@ if (isset($action) and ($action == 'restaure'))  {
 		echo "<script>document.getElementById('restau_en_cours').innerHTML='<p>Restauration effectuée en ".$h." h ".$m." min ".$s." s</p>'</script>";
 
 		// bilan de la restauration
-		if ($retour==0) echo "<p style='padding-left: 1em;'>La restauration a été correctement effectuée.</p>";
-		else echo "<p style='padding-left: 1em; color:red; font-weight:bold;'>La restauration a échouée.</p>";
-		if ($ajout_char_set) echo "<p style='padding-left: 1em;'>Un fichier ".$file." a été créé dans le dossier des sauvegardes, vous pouvez le supprimer.</p>";
+		if ($retour==0) {
+			echo "<p style='padding-left: 1em;'>La restauration a été correctement effectuée.";
+			// on ne peut pas utliser unlink car dans la fonction shutdown() la arcine
+			// devient le dossier d'installation de PHP (echo getcwd();)
+			//unlink($gepiPath."/backup/".$dirname."/bilan_restauration_".$file.".txt");
+			echo "<br />Un fichier texte nommé 'bilan_restauration_".$file.".txt' a été créé dans le dossier des sauvegardes, vous pouvez le supprimer.";
+		}
+		else {
+			echo "<p style='padding-left: 1em;'><span style='color:red; font-weight:bolder;'>ATTENTION : la restauration a échoué.</span>";
+			echo "<br />Un fichier texte nommé <a href='../backup/".$dirname."/bilan_restauration_".$file.".txt' target='_blank'>'bilan_restauration_".$file.".txt'</a> a été créé dans le dossier des sauvegardes,<br />la requête qui a fait échouer la restauration se trouve à la fin de ce fichier.";
+		}
+		if ($creation_fichier_sql) echo "<br />Un fichier nommé '".$file."' a été créé dans le dossier des sauvegardes, vous pouvez le supprimer.";
+		echo "</p>";
 
 		// dernière erreur fatale ou warning enregistrée
 		$error = error_get_last();
@@ -1046,7 +1056,7 @@ if (isset($action) and ($action == 'restaure'))  {
 		echo "<br /><p style='padding-left: 1em;'><a href='../login.php'>Votre session Gepi n'est plus valide, vous devez vous reconnecter.</a></p>";
 
 		// On détruit la session
-		session_destroy();
+		//session_destroy();
 	}
 
 	// on fait patienter
@@ -1110,7 +1120,7 @@ if (isset($action) and ($action == 'restaure'))  {
 
 	// C'est parti pour la restauration
 	register_shutdown_function('shutdown');
-	@exec("mysql --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." < ../backup/".$dirname."/".$file,$t_retour,$retour);
+	@exec("mysql -v --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." < ../backup/".$dirname."/".$file ." > ../backup/".$dirname."/bilan_restauration_".$file.".txt",$t_retour,$retour);
 	// ici le script est terminé, et donc la fonction 'shutdown' est appelée
 
 	}
