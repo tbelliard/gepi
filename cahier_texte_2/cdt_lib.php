@@ -168,6 +168,7 @@ require_once("'.$pref_arbo.'/entete.php");
 	function lignes_cdt($tab_dates, $tab_notices, $tab_dev,$dossier_documents="",$mode="") {
 		global $temoin_erreur;
 		global $ne_pas_afficher_colonne_vide;
+		global $action;
 
 		$html="<table class='boireaus' style='margin:3px;' border='1' summary='CDT'>\n";
 		$alt=1;
@@ -257,6 +258,9 @@ require_once("'.$pref_arbo.'/entete.php");
 		if((isset($action))&&($action=='acces')) {
 			$pref_documents="../../../";
 		}
+		elseif((isset($action))&&($action=='acces_dynamique')) {
+			$pref_documents="../";
+		}
 		else {
 			$pref_documents="";
 		}
@@ -274,6 +278,7 @@ require_once("'.$pref_arbo.'/entete.php");
 		$res = sql_query($sql);
 		if (($res) and (sql_count($res)!=0)) {
 			$html_tmp= "<span class='petit'>Document(s) joint(s):</span>";
+			//$html_tmp.= "<br />\$pref_documents=$pref_documents";
 			$html_tmp.= "<ul style=\"padding-left: 15px;\">";
 			for ($i=0; ($row = sql_row($res,$i)); $i++) {
 				if(isset($_SESSION['statut']) && ((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
