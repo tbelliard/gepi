@@ -865,14 +865,14 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo "Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
 					echo "Interne&nbsp;externé";
-					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				}
 				//Eric Ajout
 				if ($releve_mention_doublant == 'yes'){
 					if ($tab_rel['eleve'][$i]['doublant'] == 'R'){
-					echo "<br />";
-					echo "Redoublant";
-					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+						echo "<br />";
+						echo "Redoublant";
+						if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 					}
 				}
 
@@ -896,12 +896,12 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo ", Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
 					echo ", Interne&nbsp;externé";
-					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				}
 				if ($releve_mention_doublant == 'yes'){
 					if ($tab_rel['eleve'][$i]['doublant'] == 'R'){
 						echo ", Redoublant";
-						if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+						if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 					}
 				}
 				if ($releve_mention_nom_court == 'yes') {
@@ -1004,14 +1004,14 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo "Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
 					echo "Interne&nbsp;externé";
-					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				}
 				//Eric Ajout
 				if ($releve_mention_doublant == 'yes'){
 					if ($tab_rel['eleve'][$i]['doublant'] == 'R'){
-					echo "<br />";
-					echo "Redoublant";
-					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+						echo "<br />";
+						echo "Redoublant";
+						if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 					}
 				}
 
@@ -1037,13 +1037,13 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo ", Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
 					echo ", Interne&nbsp;externé";
-					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				}
 				//Eric Ajout
 				if ($releve_mention_doublant == 'yes'){
 					if ($tab_rel['eleve'][$i]['doublant'] == 'R'){
-					echo ", Redoublant";
-					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+						echo ", Redoublant";
+						if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 					}
 				}
 				if ($releve_mention_nom_court == 'yes') {
