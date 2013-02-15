@@ -337,7 +337,7 @@ function restoreMySqlDump($duree) {
 
     // $duree=timeout pour changement de page (-1 = aucun)
 
-    global $TPSCOUR,$offset,$cpt;
+    global $TPSCOUR,$offset,$cpt,$erreur_mysql;
 	//global $nom_table;
 	//global $table_log_passee;
 	global $dirname;
@@ -368,7 +368,7 @@ function restoreMySqlDump($duree) {
 		$nb_tables_passees=$nb_tables-mysql_num_rows($res);
 		// Ca ne correspond plus à un nombre de tables, mais à un nombre de fichiers
 
-		echo "<p style='text-align:center;'>Fichier $nb_tables_passees/$nb_tables</p>\n";
+		echo "<p style='text-align:center;'>Fichier ".($nb_tables_passees+1)."/".$nb_tables."</p>\n";
 
 		echo "<p>Traitement de la table <span style='color:green;'>$nom_table</span><br />";
 
@@ -442,7 +442,8 @@ function restoreMySqlDump($duree) {
 		}
 
 		if (mysql_error()) {
-			echo "<hr />\nERREUR à partir de [$formattedQuery]<br />".mysql_error()."<hr />\n";
+			echo "<hr />\nERREUR à partir de ".nl2br($formattedQuery)." <br />".mysql_error()."<hr />\n";
+			$erreur_mysql=TRUE;
 		}
 		gzclose($fileHandle);
 
@@ -567,8 +568,10 @@ function restoreMySqlDump($duree) {
 						//echo "</div>\n";
 					}
 	
-					if (mysql_error())
-						echo "<hr />\nERREUR à partir de [$formattedQuery]<br />".mysql_error()."<hr />\n";
+					if (mysql_error()) {
+						echo "<hr />\nERREUR à partir de <br />".nl2br($formattedQuery)."<br />".mysql_error()."<hr />\n";
+						$erreur_mysql=TRUE;
+					}
 	
 					gzclose($fileHandle);
 	
@@ -717,7 +720,7 @@ function restoreMySqlDump_old($dumpFile,$duree) {
     // $dumpFile, fichier source
     // $duree=timeout pour changement de page (-1 = aucun)
 
-    global $TPSCOUR,$offset,$cpt;
+    global $TPSCOUR,$offset,$cpt,$erreur_mysql;
 
     if(!file_exists($dumpFile)) {
          echo "$dumpFile non trouvé<br />\n";
@@ -762,7 +765,7 @@ function restoreMySqlDump_old($dumpFile,$duree) {
             if (!isset($debut_req)) {$debut_req = $buffer;}
             $formattedQuery .= $buffer;
               //echo $formattedQuery."<hr />";
-            if ($formattedQuery) {
+            if (trim($formattedQuery)!="") {
                 $sql = $formattedQuery;
                 if (mysql_query($sql)) {//réussie sinon continue à concaténer
                     $offset=gztell($fileHandle);
@@ -777,7 +780,8 @@ function restoreMySqlDump_old($dumpFile,$duree) {
     }
 
     if (mysql_error()) {
-        echo "<hr />\nERREUR à partir de [$formattedQuery]<br />".mysql_error()."<hr />\n";
+        echo "<hr />\nERREUR à partir de ".nl2br($formattedQuery)."<br />".mysql_error()."<hr />\n";
+		$erreur_mysql=TRUE;
     }
 
     gzclose($fileHandle);
@@ -986,6 +990,7 @@ if (isset($action) and ($action == 'restaure'))  {
                 }
                 flush();
 		if ($offset!=-1) {
+			$erreur_mysql=FALSE;
 			if (restoreMySqlDump_old($path.$file,$duree)) {
 				echo "$cpt requête(s) exécutée(s) avec succès jusque là.<br />";
 
@@ -994,15 +999,17 @@ if (isset($action) and ($action == 'restaure'))  {
 				}
 
 				if (!isset($debug)||$debug=='') {
-					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way&t_debut=$t_debut".add_token_in_url()."\">ici</a></b>\n";
+					if (!$erreur_mysql) echo "<br />\n<b>Redirection automatique sinon";
+						else echo "<br />\n<b>Pour continuer";
+					echo " cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way&t_debut=$t_debut".add_token_in_url()."\">ici</a></b>\n";
 				}
 
-				if (!isset($debug)||$debug=='') {
+				if (!$erreur_mysql && (!isset($debug)||$debug=='')) {
 					echo "<script>window.location=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way&t_debut=$t_debut".add_token_in_url(false)."\";</script>\n";
 				}
 				flush();
 				exit;
-			}
+			} else die("<br />Erreur restoreMySqlDump_old");
 		} else {
 			echo "<p style='text-align:center'>$cpt requête(s) exécutée(s) avec succès en tout.</p>";
 			
@@ -1145,7 +1152,6 @@ if (isset($action) and ($action == 'restaure'))  {
 		echo "<div align='center'><b>Restauration en cours</b></div>\n";
 
 		$suite_restauration=isset($_GET['suite_restauration']) ? $_GET['suite_restauration'] : NULL;
-
 		if(!isset($suite_restauration)) {
 			// EXTRAIRE -> SCINDER
 
@@ -1189,8 +1195,8 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			$sql="SELECT 1=1 FROM a_tmp_setting WHERE name LIKE 'table_%';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
+				$erreur_mysql=FALSE;
 				// Il reste des tables à restaurer
-
 				//if (restoreMySqlDump($path."/base_extraite.sql",$duree)) {
 				if (restoreMySqlDump($duree)) {
 					$succes_etape="y";
@@ -1264,8 +1270,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			echo "<input type='hidden' name='ne_pas_restaurer_tentatives_intrusion' value='$ne_pas_restaurer_tentatives_intrusion' />\n";
 			echo "<input type='hidden' name='t_debut' value='$t_debut' />\n";
 			echo "</form>\n";
-
-			echo "<script type='text/javascript'>
+			if (((isset($erreur_mysql) && !$erreur_mysql)) || !isset($erreur_mysql)) echo "<script type='text/javascript'>
 	setTimeout(\"document.forms['form_suite'].submit();\",500);
 </script>\n";
 
