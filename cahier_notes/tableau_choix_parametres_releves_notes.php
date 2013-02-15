@@ -102,6 +102,8 @@
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	// A changer: il vaudrait mieux lister les paramètres correspondant à des champs de la table 'classes' (on ne devrait plus en ajouter)
+	$tab_param_table_classes_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
 
 	for($k=0;$k<count($tab_item);$k++) {
 		$affiche_ligne="y";
@@ -119,12 +121,20 @@
 				echo "<td>\n";
 				echo "<label for='".$tab_item[$k]."_".$i."' class='invisible'>".$tab_traduc[$tab_item[$k]]."</label>
 					<input type='checkbox' name='".$tab_item[$k]."[$i]' id='".$tab_item[$k]."_".$i."' value='y' ";
-				$sql="SELECT * FROM classes WHERE id='".$tab_id_classe[$i]."';";
-				$res_class_tmp=mysql_query($sql);
-				if(mysql_num_rows($res_class_tmp)>0){
-					$lig_class_tmp=mysql_fetch_object($res_class_tmp);
 
-					if($lig_class_tmp->$tab_item[$k]=="y") {echo "checked ='checked' ";}
+				if(!in_array($tab_item[$k], $tab_param_table_classes_param)) {
+					$sql="SELECT * FROM classes WHERE id='".$tab_id_classe[$i]."';";
+					$res_class_tmp=mysql_query($sql);
+					if(mysql_num_rows($res_class_tmp)>0){
+						$lig_class_tmp=mysql_fetch_object($res_class_tmp);
+
+						if($lig_class_tmp->$tab_item[$k]=="y") {echo "checked ='checked' ";}
+						//$tmp_champ=$tab_item[$k];
+						//if($lig_class_tmp->$tmp_champ=="y") {echo "checked ='checked' ";}
+					}
+				}
+				elseif(getParamClasse($tab_id_classe[$i],$tab_item[$k],'')=="y") {
+					echo "checked ='checked' ";
 				}
 				echo "/>\n";
 				echo "</td>\n";
