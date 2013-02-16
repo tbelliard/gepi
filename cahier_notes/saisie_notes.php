@@ -1340,11 +1340,28 @@ while ($i < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
 	if (($id_devoir==0) or ($id_dev[$i] == $id_devoir)) {
 		if ($id_dev[$i] == $id_devoir) {
-			echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=0\" onclick=\"return confirm_abandon (this, change,'$themessage')\">Visualiser</a></center></td>\n";
+			echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=0\" onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"Visualiser le conteneur $nom_conteneur\">Visualiser</a>";
+
+			$sql="SELECT * FROM cc_dev WHERE id_cn_dev='$id_dev[$i]';";
+			$res_cc_dev=mysql_query($sql);
+			if(mysql_num_rows($res_cc_dev)>0) {
+				$lig_cc_dev=mysql_fetch_object($res_cc_dev);
+				echo "<br /><a href='index_cc.php?id_racine=".$id_racine."' title=\"Voir l'évaluation cumul associée $lig_cc_dev->nom_court ($lig_cc_dev->nom_complet)\">EvCum</a>";
+			}
+
+			echo "</center></td>\n";
 			echo "<td class=cn valign='top'>&nbsp;</td>\n";
 		} else {
 			if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
-				echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev[$i]\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a></center></td>\n";
+				echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev[$i]\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a>";
+
+				$sql="SELECT * FROM cc_dev WHERE id_cn_dev='$id_dev[$i]';";
+				$res_cc_dev=mysql_query($sql);
+				if(mysql_num_rows($res_cc_dev)>0) {
+					$lig_cc_dev=mysql_fetch_object($res_cc_dev);
+					echo "<br /><a href='index_cc.php?id_racine=".$id_racine."' title=\"Voir l'évaluation cumul associée $lig_cc_dev->nom_court ($lig_cc_dev->nom_complet)\">EvCum</a>";
+				}
+				echo "</center></td>\n";
 			}
 			else {
 				echo "<td class=cn valign='top'>&nbsp;</td>\n";
