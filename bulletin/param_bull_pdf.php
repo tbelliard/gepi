@@ -1580,7 +1580,7 @@ function DecocheCheckbox() {
 
 
 			<div style="font-weight: bold; background: #CFCFCF;">Cadre Absences/CPE</div>
-			<input name="active_bloc_absence" id="active_bloc_absence_1" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_absence_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_absence" id="active_bloc_absence_0" value="0" type="radio" <?php if(empty($active_bloc_absence) or (!empty($active_bloc_absence) and $active_bloc_absence!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_absence_0'>&nbsp;Désactiver</label><br />
+			<input name="active_bloc_absence" id="active_bloc_absence_1" value="1" type="radio" <?php if(!empty($active_bloc_absence) and $active_bloc_absence==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_absence_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_absence" id="active_bloc_absence_0" value="0" type="radio" <?php if(empty($active_bloc_absence) or (!empty($active_bloc_absence) and $active_bloc_absence!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_absence_0'>&nbsp;Désactiver</label><br />
 			
 			Positionnement X&nbsp;<input name="X_absence" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_absence)) { ?>value="<?php echo $X_absence; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_absence" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_absence)) { ?>value="<?php echo $Y_absence; ?>" <?php } ?> />mm&nbsp;<br />
 

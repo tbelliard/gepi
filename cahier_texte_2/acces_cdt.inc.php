@@ -26,7 +26,7 @@
 //https://127.0.0.1/steph/gepi-trunk/documents/acces_cdt_BIDON/acces_cdt.php
 $niveau_arbo=2;
 $prefixe_arbo_acces_cdt="../..";
-
+$action="acces_dynamique";
 
 
 //On vérifie si le module est activé
