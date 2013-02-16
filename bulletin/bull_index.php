@@ -1294,6 +1294,16 @@ else {
 
 	// Absences
 	$bull_affiche_absences=getSettingValue("bull_affiche_absences");
+	$bull_affiche_abs_tot=getSettingValue("bull_affiche_abs_tot");
+	$bull_affiche_abs_nj=getSettingValue("bull_affiche_abs_nj");
+	$bull_affiche_abs_ret=getSettingValue("bull_affiche_abs_ret");
+	if(($bull_affiche_abs_tot=='')&&($bull_affiche_abs_nj=='')&&($bull_affiche_abs_ret=='')) {
+		if($bull_affiche_absences=='y') {
+			$bull_affiche_abs_tot="y";
+			$bull_affiche_abs_nj="y";
+			$bull_affiche_abs_ret="y";
+		}
+	}
 
 	// Prof principal
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
@@ -3660,6 +3670,17 @@ else {
 								bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
 							}
 
+/*
+echo "Tableau de la classe $id_classe en période $periode_num<br />
+<pre>";
+print_r($tab_bulletin[$id_classe][$periode_num]);
+echo "</pre>";
+
+echo "Tableau du modèle PDF<br />
+<pre>";
+print_r($tab_modele_pdf);
+echo "</pre>";
+*/
 
 							//==============================================================================================
 							// PAR LA SUITE, ON POURRA INSERER ICI, SI L'OPTION EST COCHEE, LE RELEVE DE NOTES DE LA PERIODE

@@ -456,14 +456,36 @@ if (isset($_POST['is_posted'])) {
 			$reg_ok = 'no';
 		}
 	}
-	
+
+	//20130215
 	if (isset($_POST['bull_affiche_absences'])) {
-	
 		if (!saveSetting("bull_affiche_absences", $_POST['bull_affiche_absences'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_absences !";
 			$reg_ok = 'no';
 		}
 	}
+
+	if (isset($_POST['bull_affiche_abs_tot'])) {
+		if (!saveSetting("bull_affiche_abs_tot", $_POST['bull_affiche_abs_tot'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_abs_tot !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_affiche_abs_nj'])) {
+		if (!saveSetting("bull_affiche_abs_nj", $_POST['bull_affiche_abs_nj'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_abs_nj !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_affiche_abs_ret'])) {
+		if (!saveSetting("bull_affiche_abs_ret", $_POST['bull_affiche_abs_ret'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_abs_ret !";
+			$reg_ok = 'no';
+		}
+	}
+
 	if (isset($_POST['bull_affiche_avis'])) {
 	
 		if (!saveSetting("bull_affiche_avis", $_POST['bull_affiche_avis'])) {
@@ -1305,9 +1327,13 @@ if(getSettingAOui('active_bulletins')) {
         ?>
         </td>
     </tr>
+
+    <!-- 20130215 -->
+
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les données sur les absences :
+        <strong>Absences&nbsp;</strong><br />
+        Afficher les données sur les absences&nbsp;:
         </td>
         <td>
         <?php
@@ -1318,9 +1344,76 @@ if(getSettingAOui('active_bulletins')) {
         if (getSettingValue("bull_affiche_absences") != 'y') echo " checked";
         echo " /><label for='bull_affiche_absencesn' style='cursor: pointer;'>&nbsp;Non</label>";
 
+		// Si seule cette case est cochée, on affichera l'appréciation du CPE, mais pas les absences/retards.
         ?>
         </td>
     </tr>
+
+    <?php
+        // A mettre dans 162_to_163
+        if((getSettingValue("bull_affiche_abs_tot")=="")&&(getSettingValue("bull_affiche_abs_nj")=="")&&(getSettingValue("bull_affiche_abs_ret")=="")) {
+            if(getSettingValue("bull_affiche_absences")=="y") {
+                saveSetting("bull_affiche_abs_tot", "y");
+                saveSetting("bull_affiche_abs_nj", "y");
+                saveSetting("bull_affiche_abs_ret", "y");
+            }
+            else {
+                saveSetting("bull_affiche_abs_tot", "n");
+                saveSetting("bull_affiche_abs_nj", "n");
+                saveSetting("bull_affiche_abs_ret", "n");
+            }
+        }
+    ?>
+
+    <tr <?php /*if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++;*/ ?>>
+        <td style="font-variant: small-caps;">
+        Afficher les totaux d'absences&nbsp;:
+        </td>
+        <td>
+        <?php
+        echo "<input type=\"radio\" name=\"bull_affiche_abs_tot\" id=\"bull_affiche_abs_toty\" value=\"y\" ";
+        if (getSettingValue("bull_affiche_abs_tot") == 'y') echo " checked";
+        echo " /><label for='bull_affiche_abs_toty' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_abs_tot\" id=\"bull_affiche_abs_totn\" value=\"n\" ";
+        if (getSettingValue("bull_affiche_abs_tot") != 'y') echo " checked";
+        echo " /><label for='bull_affiche_abs_totn' style='cursor: pointer;'>&nbsp;Non</label>";
+
+        ?>
+        </td>
+    </tr>
+    <tr <?php /*if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++;*/ ?>>
+        <td style="font-variant: small-caps;">
+        Afficher le nombre d'absences non justifiées&nbsp;:
+        </td>
+        <td>
+        <?php
+        echo "<input type=\"radio\" name=\"bull_affiche_abs_nj\" id=\"bull_affiche_abs_njy\" value=\"y\" ";
+        if (getSettingValue("bull_affiche_abs_nj") == 'y') echo " checked";
+        echo " /><label for='bull_affiche_abs_njy' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_abs_nj\" id=\"bull_affiche_abs_njn\" value=\"n\" ";
+        if (getSettingValue("bull_affiche_abs_nj") != 'y') echo " checked";
+        echo " /><label for='bull_affiche_abs_njn' style='cursor: pointer;'>&nbsp;Non</label>";
+
+        ?>
+        </td>
+    </tr>
+    <tr <?php /*if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++;*/ ?>>
+        <td style="font-variant: small-caps;">
+        Afficher le nombre de retards&nbsp;:
+        </td>
+        <td>
+        <?php
+        echo "<input type=\"radio\" name=\"bull_affiche_abs_ret\" id=\"bull_affiche_abs_rety\" value=\"y\" ";
+        if (getSettingValue("bull_affiche_abs_ret") == 'y') echo " checked";
+        echo " /><label for='bull_affiche_abs_rety' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_abs_ret\" id=\"bull_affiche_abs_retn\" value=\"n\" ";
+        if (getSettingValue("bull_affiche_abs_ret") != 'y') echo " checked";
+        echo " /><label for='bull_affiche_abs_retn' style='cursor: pointer;'>&nbsp;Non</label>";
+
+        ?>
+        </td>
+    </tr>
+
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher les avis du conseil de classe :

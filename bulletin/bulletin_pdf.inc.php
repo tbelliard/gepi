@@ -11,7 +11,12 @@
 	$champ_bull_pdf[]="active_bloc_datation";
 	$champ_bull_pdf[]="active_bloc_eleve";
 	$champ_bull_pdf[]="active_bloc_adresse_parent";
+
 	$champ_bull_pdf[]="active_bloc_absence";
+	$champ_bull_pdf[]="afficher_abs_tot";
+	$champ_bull_pdf[]="afficher_abs_nj";
+	$champ_bull_pdf[]="afficher_abs_ret";
+
 	$champ_bull_pdf[]="active_bloc_note_appreciation";
 	$champ_bull_pdf[]="active_bloc_avis_conseil";
 	$champ_bull_pdf[]="active_bloc_chef";
@@ -214,7 +219,12 @@
 	$val_defaut_champ_bull_pdf["active_bloc_datation"]=1;
 	$val_defaut_champ_bull_pdf["active_bloc_eleve"]=1;
 	$val_defaut_champ_bull_pdf["active_bloc_adresse_parent"]=1;
+
 	$val_defaut_champ_bull_pdf["active_bloc_absence"]=1;
+	$val_defaut_champ_bull_pdf["afficher_abs_tot"]=1;
+	$val_defaut_champ_bull_pdf["afficher_abs_nj"]=1;
+	$val_defaut_champ_bull_pdf["afficher_abs_ret"]=1;
+
 	$val_defaut_champ_bull_pdf["active_bloc_note_appreciation"]=1;
 	$val_defaut_champ_bull_pdf["active_bloc_avis_conseil"]=1;
 	$val_defaut_champ_bull_pdf["active_bloc_chef"]=1;

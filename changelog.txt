@@ -5,6 +5,10 @@
 
 Gepi-1.6.3 (Version de développement)
 ===========================
+Bulletins:
+- Possibilité de choisir ce que l'on souhaite faire apparaitre sur les bulletins
+  en ce qui concerne les absences (total, absences non-justifiées et/ou retards).
+
 Cahiers de textes
 - Accès au flux RSS CDT pour les responsables
 
