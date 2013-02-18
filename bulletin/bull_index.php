@@ -3116,9 +3116,9 @@ else {
 												WHERE (u.login=j.cpe_login AND
 													j.e_login='".$current_eleve_login[$i]."');";
 						$query = mysql_query($sql);
-						$current_eleve_cperesp_login = @mysql_result($query, "0", "login");
+						$current_eleve_cperesp_login = @mysql_result($query, 0, "login");
 						$tab_ele['cperesp_login']=$current_eleve_cperesp_login;
-						$current_eleve_cperesp_civilite = @mysql_result($query, "0", "civilite");
+						$current_eleve_cperesp_civilite = @mysql_result($query, 0, "civilite");
 						$tab_ele['cperesp_civilite']=$current_eleve_cperesp_civilite;
 						//==========================================
 
