@@ -1419,7 +1419,7 @@ foreach ($liste_eleves as $eleve_login) {
 					$tabdiv_infobulle[]=creer_div_infobulle('notes_'.$eleve_login.'_'.$k,$titre,"",$texte,"",30,0,'y','y','n','n');
 
 					$mess[$k].="<a name='".$eleve_login."_".$k."'></a>";
-					$mess[$k].="<a href='#".$eleve_login."_".$k."' onclick=\"afficher_div('notes_".$eleve_login."_".$k."','y',-100,-10);return false;\">";
+					$mess[$k].="<a href='#".$eleve_login."_".$k."' onclick=\"fermer_div_notes();afficher_div('notes_".$eleve_login."_".$k."','y',-100,-10);return false;\" title=\"Afficher le détail des notes\">";
 					$mess[$k].=$liste_notes;
 					$mess[$k].="</a>";
 				}
@@ -1560,7 +1560,7 @@ foreach ($liste_eleves as $eleve_login) {
 		echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
 		echo "<th>\n";
 
-		echo "<div align=\"center\"><b><a href='../eleves/visu_eleve.php?ele_login=$eleve_login' target='_blank' title=\"Voir la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">$eleve_nom $eleve_prenom</a></b>\n";
+		echo "<div align=\"center\"><b><a href='../eleves/visu_eleve.php?ele_login=$eleve_login' target='_blank' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">$eleve_nom $eleve_prenom</a></b>\n";
 
 		//==========================
 		// AJOUT: boireaus 20071115
@@ -1568,7 +1568,7 @@ foreach ($liste_eleves as $eleve_login) {
 		if($temoin_photo=="y"){
 			//echo " <a href='#' onmouseover=\"afficher_div('photo_$eleve_login','y',-100,20);\"";
 			echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-100,20,1000,10,10);\"";
-			echo " onclick=\"afficher_div('photo_$eleve_login','y',-100,20); return false;\"";
+			echo " onclick=\"afficher_div('photo_$eleve_login','y',-100,20); return false;\" title=\"Afficher la photo de l'élève.\"";
 			echo ">";
 			echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
 			echo "</a>";
@@ -1875,6 +1875,28 @@ echo "
 			document.getElementById('n'+id_focus_courant).value=app1;
 			document.getElementById('n'+id_focus_courant).focus();
 		}
+	}
+
+	function fermer_div_notes() {
+		//var exp = new RegExp(\"^[0-9-.]*$\",\"g\");
+		var exp = new RegExp(\"[0-9]$\",\"g\");
+
+		chaine=''
+		champs_div=document.getElementsByTagName('div');
+		for(i=0;i<champs_div.length;i++) {
+			if(champs_div[i].getAttribute('id')) {
+				id_courant=champs_div[i].getAttribute('id');
+				if(id_courant.substr(0,6)=='notes_') {
+					// On teste si le id_courant se termine par un chiffre (numero de periode)
+					// et ne pas recuperer les sous-div inclus dans les conteneurs de notes
+					if(exp.test(id_courant)) {
+						chaine=chaine+' '+id_courant;
+						cacher_div(id_courant);
+					}
+				}
+			}
+		}
+		//alert(chaine);
 	}
 
 </script>\n";
