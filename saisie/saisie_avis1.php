@@ -370,7 +370,7 @@ if(isset($id_class_suiv)){
 //fin ajout lien classe précédente / classe suivante
 
 if((acces('/impression/avis_pdf.php', $_SESSION['statut']))&&(acces('/saisie/impression_avis.php', $_SESSION['statut']))) {
-	echo "| <a href='../saisie/impression_avis.php'>Impression PDF des avis</a>";
+	echo "| <a href='../saisie/impression_avis.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Impression PDF des avis</a>";
 }
 echo "</p>\n";
 
