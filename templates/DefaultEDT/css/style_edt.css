@@ -7,10 +7,11 @@ $Id: style_edt.css $
 	#header, #version_gepi, #menu_edt, #agauche , #bandeau, .ButtonBarCommutator, .menu_deroulant{
 		display: none;
 	}
-
+/*
 	span {
 		display: none;
 	}
+*/
 }
 
 
