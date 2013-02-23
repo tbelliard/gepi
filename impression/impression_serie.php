@@ -120,8 +120,14 @@ else {
 
 	if(!isset($_POST['passer_au_choix_des_groupes'])) {
 		echo "<div style=\"text-align: center;\">\n";
-		echo "<fieldset>\n";
-		echo "<legend>Sélectionnez la (ou les) classe(s) pour lesquelles vous souhaitez imprimer les listes.</legend>\n";
+		echo "<fieldset style='border: 1px solid grey;";
+		echo "background-image: url(\"../images/background/opacite50.png\"); ";
+		echo "'>\n";
+
+		echo "<legend style='border: 1px solid grey;";
+		//echo "background-image: url(\"../images/background/opacite50.png\"); ";
+		echo "background-color: white; ";
+		echo "'>Sélectionnez la (ou les) classe(s) pour lesquelles vous souhaitez imprimer les listes.</legend>\n";
 
 		echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf\">\n";
 		if ($id_choix_periode != 0) {
@@ -197,8 +203,14 @@ else {
 	
 			echo "<h3 align='left'>Liste des enseignements : </h3>\n";
 
-			echo "<fieldset>\n";
-			echo "<legend>Sélectionnez la (ou les) classe(s) dans laquelle/lesquelles rechercher des listes de groupes.</legend>\n";
+			echo "<fieldset style='border: 1px solid grey;";
+			echo "background-image: url(\"../images/background/opacite50.png\"); ";
+			echo "'>\n";
+
+			echo "<legend style='border: 1px solid grey;";
+			//echo "background-image: url(\"../images/background/opacite50.png\"); ";
+			echo "background-color: white; ";
+			echo "'>Sélectionnez la (ou les) classe(s) dans laquelle/lesquelles rechercher des listes de groupes.</legend>\n";
 			//echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf\">\n";
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"choix_clas_grp\">\n";
 			if ($id_choix_periode != 0) {
@@ -354,8 +366,14 @@ if ($id_choix_periode != 0) {
 		
 		// sélection multiple avec choix de la période
 		echo "<div style=\"text-align: center;\">\n";
-		echo "   <fieldset>\n
-		<legend>Sélectionnez le (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
+		echo "<fieldset style='border: 1px solid grey;";
+		echo "background-image: url(\"../images/background/opacite50.png\"); ";
+		echo "'>\n";
+
+		echo "<legend style='border: 1px solid grey;";
+		//echo "background-image: url(\"../images/background/opacite50.png\"); ";
+		echo "background-color: white; ";
+		echo "'>Sélectionnez le (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
 		
 		//echo "<form method=\"post\" action=\"liste_pdf.php\" name=\"imprime_pdf\">\n";
 		echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf2\">\n";
