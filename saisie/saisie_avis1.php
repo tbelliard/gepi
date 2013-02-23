@@ -370,7 +370,7 @@ if(isset($id_class_suiv)){
 //fin ajout lien classe précédente / classe suivante
 
 if((acces('/impression/avis_pdf.php', $_SESSION['statut']))&&(acces('/saisie/impression_avis.php', $_SESSION['statut']))) {
-	echo "| <a href='../saisie/impression_avis.php'>Impression PDF des avis</a>";
+	echo "| <a href='../saisie/impression_avis.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Impression PDF des avis</a>";
 }
 echo "</p>\n";
 
@@ -788,7 +788,7 @@ $msg_acces_app_ele_resp\" />";
 				echo "</td>\n";
 			} elseif(($ver_periode[$k] != "O")&&($result_test>0)) {
 				echo "<tr class='lig$alt'>\n<td>";
-				echo "<a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login."&ind_eleve_login_suiv=$i#app'>";
+				echo "<a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login."&ind_eleve_login_suiv=$i#app' onclick=\"return confirm_abandon(this, change, '$themessage')\">";
 				echo $nom_periode[$k];
 				echo "</a>";
 
