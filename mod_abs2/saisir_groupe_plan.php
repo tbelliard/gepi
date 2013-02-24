@@ -776,6 +776,17 @@ include('menu_abs2.inc.php');
 <a name='haut_de_page'></a>
 <div class='css-panes' id='containDiv'>
 
+<div style='float:right; width:20px'>
+<img src="../images/icons/ico_question.png" width="19" height="19" title="Légende des couleurs: Une fois coché, un élève qui apparait en rouge
+                                      est considéré en Manquement à son obligation
+                                      de présence dans l'établissement.
+
+                                      En jaune, il n'est pas considéré comme
+                                      manquant à ses obligations.
+
+                                      Les couleurs dépendent du type choisi.">
+</div>
+
 	<!--
 	<form class="center" action="./saisir_groupe_plan.php" method="post" style="width: 100%;">
 		<p>
@@ -1147,9 +1158,16 @@ if ($eleve_col->isEmpty()) {
 			<?php
 
 				// 20121121
-				echo "<p id='p_choix_type' class='center' style='display:none'><span title='Type de saisie.
+				echo "<p id='p_choix_type' class='center' style='display:none'><span title=\"Type de saisie.
 Sans type, on laisse la Vie scolaire préciser le type.
-Pour vous, cet élève est juste non présent sans autre précision.'>Type&nbsp;:</span> <select name='type_courant' id='type_courant' onchange='modif_type_courant()'>
+Pour vous, cet élève est juste non présent sans autre précision.
+
+Légende des couleurs: Une fois coché, un élève qui apparait en rouge
+                                      est considéré en Manquement à son obligation
+                                      de présence dans l'établissement.
+
+                                      En jaune, il n'est pas considéré comme
+                                      manquant à ses obligations.\">Type&nbsp;:</span> <select name='type_courant' id='type_courant' onchange='modif_type_courant()'>
 	<option value='-1'>---</option>\n";
 				foreach($tab_types_autorises as $key => $value) {
 					echo "	<option value='".$value['type']."'>".$value['nom']."</option>\n";
@@ -1228,7 +1246,7 @@ echo "</pre>";
 					$valeur[0]=$nouvelle_largeur;
 					$valeur[1]=$nouvelle_hauteur;
 
-					echo "<img src='$photo' width='".$valeur[0]."' height='".$valeur[1]."' alt='".$eleve['accesFiche']."' id='photo_".$eleve['position']."' />\n";
+					echo "<img src='$photo' width='".$valeur[0]."' height='".$valeur[1]."' alt='".$eleve['accesFiche']."' title=\"".$eleve['nom']." ".$eleve['prenom']."\" id='photo_".$eleve['position']."' />\n";
 					echo "</label><br />\n";
 
 					echo "<input class='pc88'
@@ -1360,7 +1378,8 @@ if(isset($compteur_eleve)) {
 
 					document.getElementById(id_div).style.backgroundColor=couleur;
 					if(document.getElementById(id_photo)) {
-						document.getElementById(id_photo).style.opacity=0.2;
+						//document.getElementById(id_photo).style.opacity=0.2;
+						document.getElementById(id_photo).style.opacity=0.5;
 					}
 				}
 			}
