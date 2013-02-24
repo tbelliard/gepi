@@ -35,6 +35,10 @@
 	padding-right: 20%;
 }
 
+td.releve {
+	text-align:left;
+}
+
 .boireaus td {
 	text-align:left;
 }
