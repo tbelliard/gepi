@@ -373,7 +373,8 @@ if(!isset($id_groupe)) {
 				echo "</blockquote>\n";
 				echo "</div>\n";
 
-				echo "<p><input type='submit' value='Valider' /></p>\n";
+				echo "<p id='p_submit'><input type='submit' id='p_submit' value='Valider' /></p>\n";
+				echo "<p id='p_button'><input type='button' id='p_button' value='Valider' onclick='valider_submit()' /></p>\n";
 				echo "</form>\n";
 
 				echo "<script type='text/javascript'>
@@ -389,27 +390,45 @@ if(!isset($id_groupe)) {
 		}
 	}
 
-		function tout_cocher(mode) {
-			for (var k=0;k<$cpt;k++) {
-				if(document.getElementById('id_groupe_'+k)){
-					document.getElementById('id_groupe_'+k).checked = mode;
-					change_style_groupe(k);
-				}
+	function tout_cocher(mode) {
+		for (var k=0;k<$cpt;k++) {
+			if(document.getElementById('id_groupe_'+k)){
+				document.getElementById('id_groupe_'+k).checked = mode;
+				change_style_groupe(k);
 			}
 		}
-	
-		function change_style_groupe(num) {
-			//if(document.getElementById('id_groupe_'+num)) {
-			if((document.getElementById('id_groupe_'+num))&&(document.getElementById('label_groupe_'+num))) {
-				if(document.getElementById('id_groupe_'+num).checked) {
-					document.getElementById('label_groupe_'+num).style.fontWeight='bold';
-				}
-				else {
-					document.getElementById('label_groupe_'+num).style.fontWeight='normal';
-				}
+	}
+
+	function change_style_groupe(num) {
+		//if(document.getElementById('id_groupe_'+num)) {
+		if((document.getElementById('id_groupe_'+num))&&(document.getElementById('label_groupe_'+num))) {
+			if(document.getElementById('id_groupe_'+num).checked) {
+				document.getElementById('label_groupe_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('label_groupe_'+num).style.fontWeight='normal';
 			}
 		}
-	
+	}
+
+	document.getElementById('p_submit').style.display='none';
+	document.getElementById('p_button').style.display='';
+
+	function valider_submit() {
+		nb_grp=0;
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('id_groupe_'+i).checked==true) {
+				nb_grp++;
+			}
+		}
+		if(nb_grp==0) {
+			alert('Aucun enseignement n a été coché!');
+		}
+		else {
+			document.forms['formulaire'].submit();
+		}
+	}
+
 	</script>\n";
 	
 			}
@@ -515,7 +534,8 @@ if(!isset($id_groupe)) {
 				echo "</blockquote>\n";
 				echo "</div>\n";
 
-				echo "<p><input type='submit' value='Valider' /></p>\n";
+				echo "<p id='p_submit'><input type='submit' id='p_submit' value='Valider' /></p>\n";
+				echo "<p id='p_button'><input type='button' id='p_button' value='Valider' onclick='valider_submit()' /></p>\n";
 				echo "</form>\n";
 
 				echo "<script type='text/javascript'>
@@ -551,7 +571,24 @@ if(!isset($id_groupe)) {
 			}
 		}
 	}
-	
+
+	document.getElementById('p_submit').style.display='none';
+	document.getElementById('p_button').style.display='';
+
+	function valider_submit() {
+		nb_grp=0;
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('id_groupe_'+i).checked==true) {
+				nb_grp++;
+			}
+		}
+		if(nb_grp==0) {
+			alert('Aucun enseignement n a été coché!');
+		}
+		else {
+			document.forms['formulaire'].submit();
+		}
+	}
 </script>\n";
 
 			}
@@ -627,7 +664,8 @@ if(!isset($id_groupe)) {
 		echo "(<em><input type='checkbox' name='inclure_doc_joints' id='inclure_doc_joints' value='y' /><label for='inclure_doc_joints'> Inclure les documents joints dans l'archive ZIP</label></em>)\n";
 		echo "</p>\n";
 
-		echo "<p><input type='submit' value='Valider' /></p>\n";
+		echo "<p id='p_submit'><input type='submit' id='p_submit' value='Valider' /></p>\n";
+		echo "<p id='p_button'><input type='button' id='p_button' value='Valider' onclick='valider_submit()' /></p>\n";
 		echo "</form>\n";
 	
 		echo "<script type='text/javascript'>
@@ -653,6 +691,23 @@ if(!isset($id_groupe)) {
 		}
 	}
 
+	document.getElementById('p_submit').style.display='none';
+	document.getElementById('p_button').style.display='';
+
+	function valider_submit() {
+		nb_grp=0;
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('id_groupe_'+i).checked==true) {
+				nb_grp++;
+			}
+		}
+		if(nb_grp==0) {
+			alert('Aucun enseignement n a été coché!');
+		}
+		else {
+			document.forms['formulaire'].submit();
+		}
+	}
 </script>\n";
 
 	}
