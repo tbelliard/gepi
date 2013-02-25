@@ -371,5 +371,22 @@ else {
 	$update=mysql_query($sql);
 }
 
+$result.="<br />";
+$result.="Contrôle des index de la table absences&nbsp;: ";
+$sql="show index from absences where sub_part!='NULL';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)!=0) {
+  $result.="Correction des index de la table absences&nbsp;: ";
+  $result_inter = traite_requete("ALTER TABLE absences DROP PRIMARY KEY , ADD PRIMARY KEY ( login , periode );");
+  if ($result_inter == '') {
+    $result.=msj_ok("Ok !");
+  } else {
+    $result.=msj_erreur("Erreur !");
+  }
+}
+else {
+  $result .= msj_present("Déjà correct");
+}
+
 $result.="<br />Fin mise à jour<br/>";
 ?>
