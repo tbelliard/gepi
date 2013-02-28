@@ -82,12 +82,16 @@ foreach ($saisie_col as $saisie) {
   if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
 	continue;
   }
- /* 
-  if (!is_null($non_traitees) && $non_traitees != '' && $saisie->getTraitee() && $saisie->hasModeInterface()) {
-	continue;
-  }
-  */
-  
+  $strictement_englobee = false;
+    foreach ($saisie->getAbsenceEleveSaisiesEnglobantes() as $saisie_englobante) {
+        if ($saisie_englobante->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue;
+        if ($saisie_englobante->getDebutAbs(null) != $saisie->getDebutAbs(null) || $saisie_englobante->getFinAbs(null) != $saisie->getFinAbs(null)) {
+            $strictement_englobee = true;
+            break;
+        }
+    }
+    if ($strictement_englobee) continue;
+
   // on repère si retards, manquements, sans_manquements si $tri n'est pas vide
   if ($saisie->getRetard()) {
 	  if ($tri != null && $tri != '') {
