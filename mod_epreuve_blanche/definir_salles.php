@@ -379,7 +379,8 @@ if(!isset($mode)) {
 		}
 	}
 
-	$sql="select * from salle_cours ORDER BY nom_salle;";
+	//$sql="select * from salle_cours ORDER BY nom_salle;";
+	$sql="select * from salle_cours WHERE nom_salle!='' ORDER BY nom_salle;";
 	$res_salle_cours=mysql_query($sql);
 	if(mysql_num_rows($res_salle_cours)>0) {
 		$chaine_salles_cours_existantes="";

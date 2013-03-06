@@ -1973,8 +1973,16 @@ Patientez pendant l'extraction des données... merci.
 										}
 									}
 
-									$graphe_chaine_mgen_eleve=number_format($tab_moy['periodes'][$loop]['moy_gen_eleve'][$i],1);
-									$graphe_chaine_mgen_classe=number_format($tab_moy['periodes'][$loop]['moy_generale_classe'],1);
+									//echo "\$tab_moy['periodes'][$loop]['moy_gen_eleve'][$i]=".$tab_moy['periodes'][$loop]['moy_gen_eleve'][$i]."<br />";
+									$graphe_chaine_mgen_eleve=$tab_moy['periodes'][$loop]['moy_gen_eleve'][$i];
+									if(is_numeric($tab_moy['periodes'][$loop]['moy_gen_eleve'][$i])) {
+										$graphe_chaine_mgen_eleve=number_format($tab_moy['periodes'][$loop]['moy_gen_eleve'][$i],1);
+									}
+									//echo "\$tab_moy['periodes'][$loop]['moy_generale_classe']=".$tab_moy['periodes'][$loop]['moy_generale_classe']."<br />";
+									$graphe_chaine_mgen_classe=$tab_moy['periodes'][$loop]['moy_generale_classe'];
+									if(is_numeric($tab_moy['periodes'][$loop]['moy_generale_classe'])) {
+										$graphe_chaine_mgen_classe=number_format($tab_moy['periodes'][$loop]['moy_generale_classe'],1);
+									}
 
 
 									$graphe_chaine_periode[$loop]=
