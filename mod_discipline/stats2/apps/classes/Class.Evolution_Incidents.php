@@ -126,7 +126,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
         }
         //On compte les incidents du mois et le total global
         foreach($incidents as $titre=>$incident) {
-          if(!$titre['error']) {
+          if($titre!='error') {
             if (is_null($incident->id_categorie))$incident->sigle_categorie='NA';
             $this->evolution[$selection][$this->objet_filtre->get_categorie_from_sigle($incident->sigle_categorie)][$key]+=1;
             $this->totaux_par_type[$selection][$this->objet_filtre->get_categorie_from_sigle($incident->sigle_categorie)]+=1;
