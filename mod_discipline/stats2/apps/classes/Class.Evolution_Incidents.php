@@ -170,7 +170,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
         }
         //On compte les incidents du mois et le total global
         foreach($incidents as $titre=>$incident) {
-          if(!$titre['error']) {
+          if($titre!='error') {
             if (isset($this->mesures_mois[$incident->id_incident])) {
               foreach($this->mesures_mois[$incident->id_incident] as $protagoniste) {                  
                 foreach($protagoniste as $id_mesure) {
@@ -252,7 +252,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
         }
         //On compte les incidents du mois et le total global
         foreach($incidents as $titre=>$incident) {
-          if(!$titre['error']) {
+          if($titre!='error') {
             if (isset($this->sanctions_mois[$incident->id_incident])) {
               foreach($this->sanctions_mois[$incident->id_incident] as $protagoniste) {
                 foreach($protagoniste as $id_sanction) {
@@ -322,7 +322,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
         }
         //On compte les incidents du mois et le total global
         foreach($incidents as $titre=>$incident) {
-          if(!$titre['error']) {
+          if($titre!='error') {
             if(isset($this->protagonistes_mois[$incident->id_incident])) {
               foreach($this->protagonistes_mois[$incident->id_incident] as $protagoniste) {
                 if ($protagoniste->qualite =='')$protagoniste->qualite='Non défini';
