@@ -3760,7 +3760,7 @@ if($mode_bulletin=="html") {
 //==============================
 
 if((!isset($mode_bulletin))||($mode_bulletin!="pdf")) {
-	echo "<div id='remarques_bas_de_page'>
+	echo "<div id='remarques_bas_de_page' style='display:none;'>
 <p><br /></p>
 <p>A REVOIR:</p>
 <ul>
