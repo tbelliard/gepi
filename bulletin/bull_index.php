@@ -3141,6 +3141,14 @@ else {
 						$tab_ele['eleve_retards']=$current_eleve_retards;
 						$tab_ele['appreciation_absences']=$current_eleve_appreciation_absences;
 
+						// Indice non encore exploité dans les paramètres d'impression des bulletins, ni dans bull_func.lib.php
+						if((is_numeric($current_eleve_absences))&&(is_numeric($current_eleve_nj))) {
+							$tab_ele['eleve_justif']=$current_eleve_absences-$current_eleve_nj;
+						}
+						else {
+							$tab_ele['eleve_justif']="?";
+						} 
+
 						$sql="SELECT u.login login,u.civilite FROM utilisateurs u,
 													j_eleves_cpe j
 												WHERE (u.login=j.cpe_login AND
