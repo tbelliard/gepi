@@ -3875,7 +3875,9 @@ function redim_photo($file_source,$largeur_destination,$hauteur_destination,$ang
 	if ($largeur_source===false) return false;
 	$hauteur_source=imagesy($source);
 	if ($hauteur_source===false) return false;
-	if ($largeur_source==0 || $hauteur_source==0 || ($largeur_source==$largeur_destination && $hauteur_source==$hauteur_destination)) return false;
+
+	if ($largeur_source==0 || $hauteur_source==0) return false;
+	if ($largeur_source==$largeur_destination && $hauteur_source==$hauteur_destination) return true;
 
 	$ratio_lh_source=$largeur_source/$hauteur_source;
 	$ratio_lh_destination=$largeur_destination/$hauteur_destination;

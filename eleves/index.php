@@ -710,7 +710,7 @@ if (!isset($quelles_classes)) {
 				echo "<td>\n";
 				echo "<label for='quelles_classes_dse_anomalie' style='cursor: pointer;'>\n";
 				echo "<span class='norme'>Les élèves dont la date de sortie de l'établissement est renseignée et qui sont pourtant inscrits dans une classe (<i>".mysql_num_rows($test_dse2)."</i>).</span><br />\n";
-				echo "Le élèves partis en cours d'année, risquent d'apparaître ici.<br />";
+				echo "Les élèves partis en cours d'année risquent d'apparaître ici.<br />";
 				echo "</label>\n";
 				echo "</td>\n";
 				echo "</tr>\n";

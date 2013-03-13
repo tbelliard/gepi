@@ -432,7 +432,12 @@ if(getSettingAOui('active_bulletins')) {
 	$this->b=0;
 
 	$afficher_correction_validation="n";
-	$sql="SELECT 1=1 FROM matieres_app_corrections;";
+	if($_SESSION['statut']=='scolarite') {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+	}
+	else {
+		$sql="SELECT 1=1 FROM matieres_app_corrections;";
+	}
 	$test_mac=mysql_query($sql);
 	if($test_mac AND mysql_num_rows($test_mac)>0) {$afficher_correction_validation="y";}
 
