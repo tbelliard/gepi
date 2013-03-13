@@ -128,7 +128,8 @@ if (isset($_POST['action'])) {
                 $res = mysql_query("SELECT matiere FROM matieres WHERE categorie_id = '" . $_POST['categorie_id'] ."'");
                 $test = mysql_num_rows($res);
 
-                $res2 = mysql_query("SELECT DISTINCT id_groupe, c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
+                //$res2 = mysql_query("SELECT DISTINCT id_groupe, c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
+                $res2 = mysql_query("SELECT DISTINCT c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
                 $test2 = mysql_num_rows($res2);
 
                 if ($test>0) {
@@ -144,7 +145,7 @@ if (isset($_POST['action'])) {
 					$liste_classes_associees="";
 					while($lig=mysql_fetch_object($res2)) {
 						if($liste_classes_associees!='') {$liste_classes_associees.=", ";}
-						$liste_classes_associees.="<a href='../groupes/edit_class.php?id_classe=$lig->id_classe' target='_blank'>".get_class_from_id($lig->id_classe)."</a>";
+						$liste_classes_associees.="<a href='../groupes/edit_class.php?id_classe=$lig->id' target='_blank'>".get_class_from_id($lig->id)."</a>";
 					}
                     $msg .= "La catégorie n'a pas pu être supprimée, car elle a déjà été associée à des enseignements pour des classes (<i>$liste_classes_associees</i>).<br/>";
                 }

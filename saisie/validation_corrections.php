@@ -287,7 +287,12 @@ require_once("../lib/header.inc.php");
 if(!isset($tab_id_classe)) {
 	echo "</p>\n";
 
-	$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode ORDER BY classe;";
+	if($_SESSION['statut']=='scolarite') {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+	}
+	else {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode ORDER BY classe;";
+	}
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	$nb_classes=mysql_num_rows($res);
@@ -313,7 +318,11 @@ if(!isset($tab_id_classe)) {
 			echo "</td>\n";
 			echo "<td align='left'>\n";
 		}
-		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' /> $lig_clas->classe</label>";
+		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' ";
+		if($nb_classes==1) {
+			echo "checked ";
+		}
+		echo "/> $lig_clas->classe</label>";
 		echo "<br />\n";
 		$cpt++;
 	}
