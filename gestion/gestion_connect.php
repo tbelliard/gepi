@@ -335,7 +335,7 @@ elseif($disable_login=="no"){
 </p>
 
 <form action="gestion_connect.php" id="form_acti_connect" method="post">
-<fieldset id='infosPerso' style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
 	<p>
 <?php echo add_token_field(); ?>
 		<input type='radio' 
@@ -403,7 +403,7 @@ if(mysql_num_rows($res)==0) {
 <?php } else { ?>
 
 <form action="gestion_connect.php" id="form_message_login" method="post">
-<fieldset id='infosPerso' style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
 	<div style='border:1px dashed black; margin:1em;'>
 		<p>
 		<?php echo add_token_field(); ?>
@@ -456,7 +456,7 @@ if(mysql_num_rows($res)==0) {
 </p>
 
 <form action="gestion_connect.php" id="form_param_mdp" method="post">
-<fieldset id='infosPerso' style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
 	<table>
 	<tr style="text-align:left;">
 	<td>
@@ -516,7 +516,7 @@ if(mysql_num_rows($res)==0) {
 </p>
 
 <form action="gestion_connect.php" id="form_mail_connexion" method="post">
-<fieldset id='infosPerso' style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
 	<p>
 	<?php echo add_token_field(); ?>
 			Activer l'envoi de mail lors de la connexion :
@@ -720,7 +720,7 @@ switch( $duree2 ) {
 </ul>
 	
 <form action="gestion_connect.php#tab_connexions" id="form_affiche_log" method="post">
-<fieldset id='infosPerso' style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
 	<p>
 	Afficher le journal des connexions : 
 	<select name="duree2" size="1">
