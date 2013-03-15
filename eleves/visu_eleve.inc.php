@@ -2005,9 +2005,13 @@ Patientez pendant l'extraction des données... merci.
 									"tronquer_nom_court=4&amp;".
 									"temoin_image_escalier=oui&amp;".
 									"seriemin=".$graphe_chaine_seriemin."&amp;".
-									"seriemax=".$graphe_chaine_seriemax."&amp;".
-									"mgen1=".$graphe_chaine_mgen_eleve."&amp;".
-									"mgen2=".$graphe_chaine_mgen_classe;
+									"seriemax=".$graphe_chaine_seriemax;
+									if(isset($graphe_chaine_mgen_eleve)) {
+										$graphe_chaine_periode[$loop].="&amp;"."mgen1=".$graphe_chaine_mgen_eleve;
+									}
+									if(isset($graphe_chaine_mgen_classe)) {
+										$graphe_chaine_periode[$loop].="&amp;"."mgen2=".$graphe_chaine_mgen_classe;
+									}
 								}
 							}
 
