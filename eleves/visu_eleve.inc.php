@@ -1413,19 +1413,21 @@ Patientez pendant l'extraction des données... merci.
 
 				echo "<p><strong>".ucfirst($gepi_prof_suivi)."</strong>: ";
 				for($loop=0;$loop<count($tab_ele['classe']);$loop++) {
-					if($loop>0) {echo ", ";}
-					if($tab_ele['classe'][$loop]['pp']['email']!="") {
-						//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
-						//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
-						echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
-						if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-						echo ",%0d%0aCordialement.'>";
+					if(isset($tab_ele['classe'][$loop]['pp'])) {
+						if($loop>0) {echo ", ";}
+						if($tab_ele['classe'][$loop]['pp']['email']!="") {
+							//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
+							//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
+							echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+							echo ",%0d%0aCordialement.'>";
+						}
+						echo $tab_ele['classe'][$loop]['pp']['civ_nom_prenom'];
+						if($tab_ele['classe'][$loop]['pp']['email']!="") {
+							echo "</a>";
+						}
+						echo " (<em>".$tab_ele['classe'][$loop]['classe']."</em>)";
 					}
-					echo $tab_ele['classe'][$loop]['pp']['civ_nom_prenom'];
-					if($tab_ele['classe'][$loop]['pp']['email']!="") {
-						echo "</a>";
-					}
-					echo " (<em>".$tab_ele['classe'][$loop]['classe']."</em>)";
 				}
 				echo "</p>\n";
 
