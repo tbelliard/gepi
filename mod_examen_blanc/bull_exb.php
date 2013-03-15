@@ -1003,7 +1003,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	}
 	*/
 
-	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1' target='_blank'>\n";
 	echo "<p class='bold'>Choisissez les classes pour lesquelles vous souhaitez éditer des bulletins&nbsp;:</p>\n";
 	for($i=0;$i<$nb_classes;$i++) {
 		echo "<input type='checkbox' name='id_classe[]' id='id_classe_$i' value='$tab_id_classe[$i]' ";
