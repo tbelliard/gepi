@@ -74,8 +74,10 @@ echo "</p>\n";
 
 echo "<h3>Mes listes d'".$gepiSettings['denomination_eleves']."</h3>\n";
 
-if($_SESSION['statut']=='professeur'){
-	echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleve']."s&nbsp;:</p>\n";
+echo "<p class='bold'>Listes standard&nbsp;:</p>\n";
+
+if($_SESSION['statut']=='professeur') {
+	echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
 	//$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp, j_groupes_classes jgc, classe c WHERE
 	$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
@@ -89,7 +91,8 @@ if($_SESSION['statut']=='professeur'){
 		echo "</body></html>\n";
 		die();
 	}
-	else{
+	else {
+		$message_erreur="";
 		echo "<table>\n";
 		while($lig_grp=mysql_fetch_object($res_grp)){
 			echo "<tr>\n";
@@ -113,9 +116,12 @@ if($_SESSION['statut']=='professeur'){
 						$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
 						$res_per=mysql_query($sql);
 						if(mysql_num_rows($res_per)==0){
+							$message_erreur.="<p><span style='color:red'>ERREUR&nbsp;:</span> Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
+							/*
 							echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 							echo "</body></html>\n";
 							die();
+							*/
 						}
 						else{
 							while($lig_per=mysql_fetch_object($res_per)){
@@ -146,14 +152,16 @@ if($_SESSION['statut']=='professeur'){
 			echo "</tr>\n";
 		}
 		echo "</table>\n";
+		echo $message_erreur;
 
 		echo "<br />\n";
 
 		$groups=get_groups_for_prof($_SESSION['login']);
 
 		if(count($groups)>0) {
-			echo "<fieldset>\n";
 			echo "<form action='get_csv.php' method='post'>\n";
+			echo "<fieldset style='border: 1px solid grey;background-image: url(\"../images/background/opacite50.png\");'>\n";
+			//echo "<legend style='border: 1px solid grey;background-color: white;'></legend>\n";
 			echo "<p class='bold'>Listes personnalisées&nbsp;:</p>\n";
 
 			echo "<select name='id_groupe' id='id_groupe' onchange='update_champs_periode()'>\n";
@@ -237,6 +245,14 @@ if($_SESSION['statut']=='professeur'){
 			if((isset($_SESSION['mes_listes_avec_email']))&&($_SESSION['mes_listes_avec_email']=='y')) {echo "checked ";}
 			echo "/><label for='avec_email'> l'email</label><br />\n";
 
+			echo "<input type='checkbox' id='avec_doublant' name='avec_doublant' value='y' ";
+			if((isset($_SESSION['mes_listes_avec_doublant']))&&($_SESSION['mes_listes_avec_doublant']=='y')) {echo "checked ";}
+			echo "/><label for='avec_doublant'> le statut redoublant ou non</label><br />\n";
+
+			echo "<input type='checkbox' id='avec_regime' name='avec_regime' value='y' ";
+			if((isset($_SESSION['mes_listes_avec_regime']))&&($_SESSION['mes_listes_avec_regime']=='y')) {echo "checked ";}
+			echo "/><label for='avec_regime'> le régime</label><br />\n";
+
 			/*
 			//echo "<input type='checkbox' id='avec_prof' name='avec_prof' value='y' /><label for='avec_prof'> les informations professeurs</label><br />\n";
 			//echo "<input type='checkbox' id='avec_statut' name='avec_statut' value='y' /><label for='avec_statut'> le statut</label><br />\n";
@@ -256,8 +272,8 @@ if($_SESSION['statut']=='professeur'){
 			echo "<input type='hidden' name='mode' value='personnalise' />\n";
 
 			echo "<input type='submit' value='Exporter' />\n";
-			echo "</form>\n";
 			echo "</fieldset>\n";
+			echo "</form>\n";
 		}
 
 		require("../lib/footer.inc.php");
@@ -274,16 +290,21 @@ elseif(isset($id_classe)) {
 }
 else {
 	if($_SESSION['statut']=='cpe'){
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
+		if(getSettingAOui('GepiAccesTouteFicheEleveCpe')) {
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY classe";
+		}
+		else {
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+		}
 	}
 	elseif($_SESSION['statut']=='scol'){
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		//$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	else {
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY classe";
 	}
 	$result_classes=mysql_query($sql);
@@ -302,6 +323,7 @@ else {
 	$tab_id_classe=array();
 	$tab_classe=array();
 
+	$message_erreur="";
 	echo "<table width='100%'>\n";
 	echo "<tr valign='top' align='left'>\n";
 	$cpt=0;
@@ -321,9 +343,12 @@ else {
 		$res_per=mysql_query($sql);
 
 		if(mysql_num_rows($res_per)==0){
+			$message_erreur.="<p><span style='color:red'>ERREUR&nbsp;:</span> Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
+			/*
 			echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 			echo "</body></html>\n";
 			die();
+			*/
 		}
 		else{
 			$tab_classe[]=$lig_class->classe;
@@ -342,13 +367,14 @@ else {
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
+	echo $message_erreur;
 
 }
 
 echo "<br />\n";
 
-echo "<fieldset>\n";
 echo "<form action='get_csv.php' method='post'>\n";
+echo "<fieldset style='border: 1px solid grey;background-image: url(\"../images/background/opacite50.png\");'>\n";
 
 if(isset($current_group)) {
 	echo "<p class='bold'>Liste de ".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."&nbsp;:</p>\n";
@@ -508,11 +534,24 @@ echo "<input type='checkbox' id='avec_ele_id' name='avec_ele_id' value='y' ";
 if((isset($_SESSION['mes_listes_avec_ele_id']))&&($_SESSION['mes_listes_avec_ele_id']=='y')) {echo "checked ";}
 echo "/><label for='avec_ele_id'> le numéro ELE_ID</label><br />\n";
 
+echo "<input type='checkbox' id='avec_doublant' name='avec_doublant' value='y' ";
+if((isset($_SESSION['mes_listes_avec_doublant']))&&($_SESSION['mes_listes_avec_doublant']=='y')) {echo "checked ";}
+echo "/><label for='avec_doublant'> le statut redoublant ou non</label><br />\n";
+
+echo "<input type='checkbox' id='avec_regime' name='avec_regime' value='y' ";
+if((isset($_SESSION['mes_listes_avec_regime']))&&($_SESSION['mes_listes_avec_regime']=='y')) {echo "checked ";}
+echo "/><label for='avec_regime'> le régime</label><br />\n";
+
+if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+	echo "<input type='checkbox' id='avec_infos_resp' name='avec_infos_resp' value='y' ";
+	if((isset($_SESSION['mes_listes_avec_infos_resp']))&&($_SESSION['mes_listes_avec_infos_resp']=='y')) {echo "checked ";}
+	echo "/><label for='avec_infos_resp'> les informations responsables (<em>nom, prénom et téléphones</em>)</label><br />\n";
+}
 echo "<input type='hidden' name='mode' value='personnalise' />\n";
 
 echo "<input type='submit' value='Exporter' />\n";
-echo "</form>\n";
 echo "</fieldset>\n";
+echo "</form>\n";
 
 require("../lib/footer.inc.php");
 ?>
