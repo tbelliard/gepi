@@ -1969,7 +1969,13 @@ Patientez pendant l'extraction des données... merci.
 											$graphe_chaine_seriemax.=$tab_moy['periodes'][$loop]['moy_max_classe_grp'][$j];
 
 											if(isset($tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i])) {
-												$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+												//$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+												if($tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i]=='') {
+													$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+												}
+												else {
+													$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i];
+												}
 											}
 											$compteur_groupes_eleve++;
 										}
@@ -2435,7 +2441,6 @@ Patientez pendant l'extraction des données... merci.
 			echo "'>";
 			if(getSettingValue("active_module_absence")=='y' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-
 			    if(count($tab_ele['absences'])==0) {
 				    echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
 			    }
@@ -2512,7 +2517,7 @@ Patientez pendant l'extraction des données... merci.
 				
 			} elseif (getSettingValue("active_module_absence")=='2') {
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-			    
+
 				//affichage de la date de sortie de l'élève de l'établissement
 				if ($tab_ele['date_sortie']!=0) {
 					echo "<p style=\"color:red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."</p>";;
@@ -2525,7 +2530,7 @@ Patientez pendant l'extraction des données... merci.
 			    echo "<table class='boireaus'>\n";
 				echo "<caption>Bilan des absences</caption>\n";
 			    echo "<tr>\n";
-			    echo "<th>Période</th>\n";
+			    echo "<th title=\"Les dates de fin de période correspondent à ce qui est paramétré en colonne 'Date de fin' de la page de Verrouillage des périodes de notes (page accessible en compte scolarité).\">Période</th>\n";
 			    echo "<th>Nombre d'absences<br/>(1/2 journées)</th>\n";
 			    echo "<th>Absences non justifiées</th>\n";
 			    echo "<th>Nombre de retards</th>\n";
@@ -2542,7 +2547,7 @@ Patientez pendant l'extraction des données... merci.
 				    echo "<td>".$periode_note->getNomPeriode();
 				    echo " du ".$periode_note->getDateDebut('d/m/Y');
 				    echo " au ";
-                                    if ($periode_note->getDateFin() == null) {
+				    if ($periode_note->getDateFin() == null) {
 					echo '(non précisé)';
 				    } else {
 					echo $periode_note->getDateFin('d/m/Y');

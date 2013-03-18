@@ -649,6 +649,7 @@ if (isset($fiche)) {
 
 	for($j=0;$j<count($tab_moy['current_group']);$j++) {
 		$current_group=$tab_moy['current_group'][$j];
+
 		if(in_array($current_eleve_login, $current_group["eleves"]["all"]["list"])) {
 
 			if(!isset($graphe_chaine_etiquette)) {$graphe_chaine_etiquette="";}
@@ -660,12 +661,30 @@ if (isset($fiche)) {
 				if(!isset($graphe_chaine_temp[$loop])) {$graphe_chaine_temp[$loop]="";}
 				else {$graphe_chaine_temp[$loop].="|";}
 
+				/*
+				if(($j==0)&&($loop==1)) {
+				echo "<pre>";
+				print_r($tab_moy['periodes'][$loop]);
+				echo "</pre>";
+				}
+
+				echo "<br /><p>\$current_group : ".$current_group['name']."<br />";
+				*/
+
 				// Recherche de l'indice de l'élève:
 				for($i=0;$i<count($tab_moy['periodes'][$loop]['current_eleve_login']);$i++) {
 					if($tab_moy['periodes'][$loop]['current_eleve_login'][$i]==$current_eleve_login) {
 						if(isset($tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i])) {
-							$graphe_chaine_temp[$loop].=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+							//echo "\$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i]=".$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i]."<br />";
+							//echo "\$tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i]=".$tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i]."<br />";
+							if($tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i]=='') {
+								$graphe_chaine_temp[$loop].=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+							}
+							else {
+								$graphe_chaine_temp[$loop].=$tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i];
+							}
 						}
+						//echo "\$graphe_chaine_temp[$loop]=".$graphe_chaine_temp[$loop]."<br />";
 
 						if(!isset($graphe_chaine_mgen[$loop])) {
 							if(is_numeric($tab_moy['periodes'][$loop]['moy_gen_eleve'][$i])) {
@@ -779,7 +798,13 @@ if (isset($fiche)) {
 					$graphe_chaine_seriemax.=$tab_moy['periodes'][$loop]['moy_max_classe_grp'][$j];
 
 					if(isset($tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i])) {
-						$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+						//$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+						if($tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i]=='') {
+							$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+						}
+						else {
+							$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i];
+						}
 					}
 					$compteur_groupes_eleve++;
 				}
