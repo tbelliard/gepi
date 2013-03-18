@@ -1928,7 +1928,14 @@ function bull_exb($tab_ele,$i) {
 					$pp_classe[$i]="";
 				}
 				//$pdf->MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
-				$pdf->ext_MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
+				//$pdf->ext_MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
+
+				$texte=$pp_classe[$i];
+				$taille_max_police=$taille;
+				$taille_min_police=ceil($taille_max_police/3);
+				$largeur_dispo=200;
+				$h_cell=5;
+				cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
 			}
 
 
@@ -1961,16 +1968,10 @@ function bull_exb($tab_ele,$i) {
 					$pdf->Cell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, ($tab_ele['suivi_par']),0,2,'');
 				} else {
 					//$pdf->MultiCell($longeur_sign_chef[$classe_id],5, "Visa du Chef d'établissement\nou de son délégué",0,2,'');
-					$pdf->MultiCell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, ("Visa du Chef d'établissement\nou de son délégué"),0,2,'');
+					$pdf->MultiCell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, "Visa du Chef d'établissement\nou de son délégué",0,2,'');
 				}
 			}
-
-
-
-
 		}
-
-
 	}
 }
 

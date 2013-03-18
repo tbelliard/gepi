@@ -1969,7 +1969,13 @@ Patientez pendant l'extraction des données... merci.
 											$graphe_chaine_seriemax.=$tab_moy['periodes'][$loop]['moy_max_classe_grp'][$j];
 
 											if(isset($tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i])) {
-												$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+												//$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+												if($tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i]=='') {
+													$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+												}
+												else {
+													$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i];
+												}
 											}
 											$compteur_groupes_eleve++;
 										}
