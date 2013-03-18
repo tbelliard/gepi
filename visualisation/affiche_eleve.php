@@ -514,7 +514,7 @@ if ($_SESSION['statut'] == "responsable") {
 			$sql.=";";
 			$test = mysql_query($sql);
 			if (mysql_num_rows($test) == 0) {
-			    tentative_intrusion(2, "Tentative par un parent de visualisation graphique des résultats d'un élève dont il n'est pas responsable légal.");
+			    tentative_intrusion(2, "Tentative par un parent de visualisation graphique des résultats d'un élève ($login_eleve) dont il n'est pas responsable légal.");
 			    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.</p>\n";
 			    require("../lib/footer.inc.php");
 				die();
@@ -524,7 +524,7 @@ if ($_SESSION['statut'] == "responsable") {
 } else if ($_SESSION['statut'] == "eleve") {
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
 	if ($login_eleve != null and (my_strtoupper($login_eleve) != my_strtoupper($_SESSION['login']))) {
-		tentative_intrusion(2, "Tentative par un élève de visualisation graphique des résultats d'un autre élève.");
+		tentative_intrusion(2, "Tentative par un élève de visualisation graphique des résultats d'un autre élève ($login_eleve).");
 	}
 	$login_eleve = $_SESSION['login'];
 }
