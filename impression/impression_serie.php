@@ -74,8 +74,13 @@ if ($id_choix_periode != 0) {
 
 if ($id_choix_periode == 0) {
 	echo "<div style=\"text-align: center;\">\n";
-	echo "<fieldset>\n";
-	echo "<legend>Sélectionnez la période pour laquelle vous souhaitez imprimer les listes.</legend>\n";
+	echo "<fieldset style='border: 1px solid grey;";
+	echo "background-image: url(\"../images/background/opacite50.png\"); ";
+	echo "'>\n";
+	echo "<legend style='border: 1px solid grey;";
+	//echo "background-image: url(\"../images/background/opacite50.png\"); ";
+	echo "background-color: white; ";
+	echo "'>Sélectionnez la période pour laquelle vous souhaitez imprimer les listes.</legend>\n";
 	echo "<form method=\"post\" action=\"impression_serie.php\" name=\"imprime_serie\">\n";
 	$requete_periode = "SELECT DISTINCT `num_periode` FROM `periodes`";
 	$resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
