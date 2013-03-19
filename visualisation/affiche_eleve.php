@@ -1820,9 +1820,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$cpt++;
 		}
 		echo "</select>\n";
+		$eleve_precedent="";
+		$eleve_suivant="";
+		if(isset($tab_nomprenom_eleve[$numeleve1-1])) {
+			$eleve_precedent=$tab_nomprenom_eleve[$numeleve1-1];
+		}
+		if(isset($tab_nomprenom_eleve[$numeleve1+1])) {
+			$eleve_suivant=$tab_nomprenom_eleve[$numeleve1+1];
+		}
 		echo "<br />\n";
-
-
 
 		echo "et comparer avec:<br />\n";
 		echo "<select name='eleve2' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
@@ -1903,7 +1909,8 @@ function eleve_suivant() {
 
 	    if($precedent>0) {
 			//echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
-			echo "<a href='javascript:eleve_precedent();'>Élève précédent</a><br />\n";
+			echo "<a href='javascript:eleve_precedent();'>Élève <span title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]
+et le précédent est $eleve_precedent\">précédent</span></a><br />\n";
 		}
 
 		//echo "<input type='submit' name='choix_eleves' value='Afficher' />\n";
@@ -1912,7 +1919,8 @@ function eleve_suivant() {
 	    if($suivant<$nombreligne+1) {
 			echo "<br />\n";
 			//echo "<input type='button' name='suivant' value='>>' onClick='eleve_suivant();' />\n";
-			echo "<a href='javascript:eleve_suivant();'>Élève suivant</a>";
+			echo "<a href='javascript:eleve_suivant();'>Élève <span title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]
+et le suivant est $eleve_suivant\">suivant</span></a>";
 		}
 		echo "</p>\n";
 
