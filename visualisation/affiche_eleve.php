@@ -916,9 +916,47 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "'>Classe suivante</a>";
 				}
 		}
-		echo "</p>\n";
 
+		// 20130319
+		$restriction_id_groupe=isset($_POST['restriction_id_groupe']) ? $_POST['restriction_id_groupe'] : "";
+		$sql="SELECT g.id, g.name, g.description FROM groupes g, j_groupes_classes jgc WHERE jgc.id_classe='$id_classe' AND jgc.id_groupe=g.id AND g.id NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n') ORDER BY g.name, g.description;";
+		//echo "$sql<br />";
+		$res_restr_grp=mysql_query($sql);
+		if(mysql_num_rows($res_restr_grp)>0) {
+			echo " | Afficher les élèves de <select name='restriction_id_groupe' onchange=\"document.forms['form1'].submit();\">
+	<option value=''>tous les enseignements de la classe</option>\n";
+			while($lig_restr_grp=mysql_fetch_object($res_restr_grp)) {
+				// A FAIRE: Ne proposer que les groupes qui ne correspondent pas à l'effectif total de la classe.
+				echo "	<option value='$lig_restr_grp->id'";
+				if($lig_restr_grp->id==$restriction_id_groupe) {echo " selected";}
+				echo ">".$lig_restr_grp->name." (".$lig_restr_grp->description.")"."</option>\n";
+				echo "	<option value='-$lig_restr_grp->id'";
+				if("-".$lig_restr_grp->id==$restriction_id_groupe) {echo " selected";}
+				echo "> tous les enseignements sauf ".$lig_restr_grp->name." (".$lig_restr_grp->description.")"."</option>\n";
+			}
+			echo "</select>\n";
+		}
+		echo "</p>\n";
 		echo "</form>\n";
+
+		if($restriction_id_groupe!='') {
+			if(preg_match("/^-/", $restriction_id_groupe)) {
+				$tab_eleves_a_exclure=array();
+				$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='".preg_replace("/^-/","",$restriction_id_groupe)."';";
+				$res_restr_grp=mysql_query($sql);
+				while($lig_restr_grp=mysql_fetch_object($res_restr_grp)) {
+					$tab_eleves_a_exclure[]=$lig_restr_grp->login;
+				}
+			}
+			else {
+				$tab_eleves_a_proposer=array();
+				$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='".$restriction_id_groupe."';";
+				$res_restr_grp=mysql_query($sql);
+				while($lig_restr_grp=mysql_fetch_object($res_restr_grp)) {
+					$tab_eleves_a_proposer[]=$lig_restr_grp->login;
+				}
+			}
+		}
 
 		echo "</div>\n";
 	} else {
@@ -1702,6 +1740,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "<br />\n";
 			}
 
+			// 20130319
+			if(isset($restriction_id_groupe)) {
+				echo "<input type='hidden' name='restriction_id_groupe' value='$restriction_id_groupe' />\n";
+			}
+
 			echo "<input type='submit' name='Valider' value='Valider' /></p>\n";
 
 			echo "</form>\n";
@@ -1711,6 +1754,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form_raz_parametrage_affichage' method='post'>\n";
 			echo add_token_field();
+
+			// 20130319
+			if(isset($restriction_id_groupe)) {
+				echo "<input type='hidden' name='restriction_id_groupe' value='$restriction_id_groupe' />\n";
+			}
 
 			echo "<p align='center'>Si, après des essais, vous souhaitez abandonner vos paramètres personnels et revenir aux paramètres enregistrés dans la base, validez ci-dessous&nbsp;:<br />";
 			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
@@ -1840,26 +1888,40 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// Pour afficher le nom/prénom plutôt que le login:
 		$tab_nom_prenom_eleve=array();
 
+		// 20130319
+		if(isset($restriction_id_groupe)) {
+			echo "<input type='hidden' name='restriction_id_groupe' value='$restriction_id_groupe' />\n";
+		}
+
 		echo "Choisir l'élève:<br />\n";
 		echo "<select name='eleve1' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 		$cpt=1;
 		$numeleve1=0;
+		$nombreligne_effectives=0;
 		while($ligne=mysql_fetch_object($call_eleve)) {
 			// Le login est la clé liant les tables eleves et j_eleves_classes
-			$tab_login_eleve[$cpt]="$ligne->login";
-			$tab_nomprenom_eleve[$cpt]="$ligne->nom $ligne->prenom";
+			if(
+				((!isset($tab_eleves_a_exclure))&&(!isset($tab_eleves_a_proposer)))||
+				((isset($tab_eleves_a_exclure))&&(!in_array($ligne->login,$tab_eleves_a_exclure)))||
+				((isset($tab_eleves_a_proposer))&&(in_array($ligne->login,$tab_eleves_a_proposer)))
+			) {
+				$tab_login_eleve[$cpt]="$ligne->login";
+				$tab_nomprenom_eleve[$cpt]="$ligne->nom $ligne->prenom";
 
-			$tab_nom_prenom_eleve["$ligne->login"]=$tab_nomprenom_eleve[$cpt];
+				$tab_nom_prenom_eleve["$ligne->login"]=$tab_nomprenom_eleve[$cpt];
 
-			if($tab_login_eleve[$cpt]==$eleve1) {
-				$selected=" selected='yes'";
-				$numeleve1=$cpt;
+				if($tab_login_eleve[$cpt]==$eleve1) {
+					$selected=" selected='yes'";
+					$numeleve1=$cpt;
+				}
+				else{
+					$selected="";
+				}
+				echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
+				$cpt++;
+
+				$nombreligne_effectives++;
 			}
-			else{
-				$selected="";
-			}
-			echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
-			$cpt++;
 		}
 		echo "</select>\n";
 		$eleve_precedent="";
@@ -1874,7 +1936,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		echo "et comparer avec:<br />\n";
 		echo "<select name='eleve2' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
-		for($cpt=1;$cpt<=$nombreligne;$cpt++) {
+		//for($cpt=1;$cpt<=$nombreligne;$cpt++) {
+		for($cpt=1;$cpt<=$nombreligne_effectives;$cpt++) {
 			if($tab_login_eleve[$cpt]==$eleve2) {
 				$selected=" selected='yes'";
 				$numeleve2=$cpt;
@@ -1929,8 +1992,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 }
 
 function eleve_suivant() {
-	if(document.getElementById('numeleve1').value<$nombreligne) {";
-	    if($suivant<$nombreligne+1) {
+	if(document.getElementById('numeleve1').value<$nombreligne_effectives) {";
+	    if($suivant<$nombreligne_effectives+1) {
 	        echo "		document.getElementById('eleve1b').value='$tab_login_eleve[$suivant]';
 		document.forms['form_choix_eleves'].submit();";
 	    }
@@ -1949,7 +2012,7 @@ function eleve_suivant() {
 	 	// Cette valeur l'emporte sur le contenu de 'eleve1'
 		echo "<input type='hidden' name='eleve1b' id='eleve1b' value='' />\n";
 
-	    if($precedent>0) {
+	    if(($precedent>0)&&(isset($tab_nomprenom_eleve[$numeleve1]))) {
 			//echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
 			echo "<a href='javascript:eleve_precedent();'>Élève <span title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]
 et le précédent est $eleve_precedent\">précédent</span></a><br />\n";
@@ -1958,7 +2021,7 @@ et le précédent est $eleve_precedent\">précédent</span></a><br />\n";
 		//echo "<input type='submit' name='choix_eleves' value='Afficher' />\n";
 		echo "<a href=\"javascript:document.forms['form_choix_eleves'].submit();\">Actualiser</a>\n";
 
-	    if($suivant<$nombreligne+1) {
+	    if(($suivant<$nombreligne_effectives+1)&&(isset($tab_nomprenom_eleve[$numeleve1]))) {
 			echo "<br />\n";
 			//echo "<input type='button' name='suivant' value='>>' onClick='eleve_suivant();' />\n";
 			echo "<a href='javascript:eleve_suivant();'>Élève <span title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]
@@ -2060,6 +2123,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	//========================
 	// PARAMETRES D'AFFICHAGE
 	//========================
+
 
 	echo "<input type='hidden' name='affiche_mgen' value='$affiche_mgen' />\n";
 	echo "<input type='hidden' name='affiche_minmax' value='$affiche_minmax' />\n";
@@ -2290,7 +2354,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1) {
+							if($suivant<$nombreligne_effectives+1) {
 								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
@@ -2356,7 +2420,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1) {
+							if($suivant<$nombreligne_effectives+1) {
 								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
@@ -2495,7 +2559,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1) {
+							if($suivant<$nombreligne_effectives+1) {
 								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
@@ -2556,7 +2620,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1) {
+							if($suivant<$nombreligne_effectives+1) {
 								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
