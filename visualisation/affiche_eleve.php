@@ -265,6 +265,8 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['affiche_moy_classe'])) {savePref($_SESSION['login'],'graphe_affiche_moy_classe',$_POST['affiche_moy_classe']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_moy_classe','oui');}
 
+	if(isset($_POST['textarea_font_size'])) {savePref($_SESSION['login'],'graphe_textarea_font_size',$_POST['textarea_font_size']);}
+
 	if($msg=='') {
 		$msg.="Préférences personnelles enregistrées.";
 	}
@@ -1083,6 +1085,34 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
+	// 20130319
+	if(isset($_POST['textarea_font_size'])) {
+		$textarea_font_size=$_POST['textarea_font_size'];
+	}
+	else{
+		$pref_textarea_font_size=getPref($_SESSION['login'],'graphe_textarea_font_size','');
+		if($pref_textarea_font_size!='') {
+			$textarea_font_size=$pref_textarea_font_size;
+		}
+		else {
+			if(getSettingValue('graphe_textarea_font_size')) {
+				$textarea_font_size=getSettingValue('graphe_textarea_font_size');
+			}
+			else{
+				//$textarea_font_size=12;
+				$textarea_font_size="";
+			}
+		}
+	}
+	/*
+	if((mb_strlen(preg_replace("/[0-9]/","",$textarea_font_size))!=0)||($textarea_font_size=="")) {
+		$textarea_font_size=12;
+	}
+	*/
+	if(mb_strlen(preg_replace("/[0-9]/","",$textarea_font_size))!=0) {
+		$textarea_font_size="";
+	}
+
 	// 20121205
 	$affiche_choix_rang="y";
 	if((($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesGraphRangParent')))||
@@ -1592,6 +1622,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "<input type='radio' name='graphe_champ_saisie_avis_fixe' id='graphe_champ_saisie_avis_fixe_y' value='y'$checked /> <label for='graphe_champ_saisie_avis_fixe_y' style='cursor: pointer;'>en champ fixe sous le graphe</label>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
+
+				// 20130319
+				$taille_max_police_textarea=40;
+				echo "<tr><td><label for='textarea_font_size' style='cursor: pointer;'>Taille de la police dans les champs TEXTAREA de saisie&nbsp;:</label></td>";
+				echo "<td><select name='textarea_font_size' id='textarea_font_size'>\n";
+				echo "<option value='' title=\"Non précisée : C'est la taille standard qui est utilisée.\">---</option>\n";
+				for($i=1;$i<=$taille_max_police_textarea;$i++) {
+					if($textarea_font_size==$i) {$selected=" selected='yes'";} else {$selected="";}
+					echo "<option value='$i'$selected>$i</option>\n";
+				}
+				echo "</select></td></tr>\n";
+
 			}
 			//========================
 
@@ -2208,7 +2250,12 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte.=add_token_field();
 							$texte.="<div style='text-align:center;'>\n";
-							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							// 20130319
+							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
+								$texte.=" style='font-size:".$textarea_font_size."pt;'";
+							}
+							$texte.=">";
 							//$texte.="\n";
 							$texte.="$current_eleve_avis";
 							$texte.="</textarea>\n";
@@ -2269,7 +2316,12 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte_saisie_avis_fixe.="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
-							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							// 20130319
+							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
+								$texte_saisie_avis_fixe.=" style='font-size:".$textarea_font_size."pt;'";
+							}
+							$texte_saisie_avis_fixe.=">";
 							//$texte_saisie_avis_fixe.="\n";
 							$texte_saisie_avis_fixe.="$current_eleve_avis";
 							$texte_saisie_avis_fixe.="</textarea>\n";
