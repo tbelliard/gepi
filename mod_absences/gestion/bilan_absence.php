@@ -477,8 +477,10 @@ while ( $page < $nb_page )
 $datation_fichier = date("Ymd_Hi");
 $nom_fichier = 'Bilan_absence_' . $datation_fichier . '.pdf';
 
+$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 // générer la sotie PDF
-$pdf->Output($nom_fichier,'I');
+$pdf->Output($nom_fichier,$pref_output_mode_pdf);
 
 /* FIN - Génération du PDF */
 /* *********************** */

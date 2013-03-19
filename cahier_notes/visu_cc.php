@@ -571,11 +571,12 @@ if(isset($_GET['export_pdf'])) {
 			$compteur++;
 		}
 
+		$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
 
 		$date=date("Ymd_Hi");
 		$nom_fich='evaluation_cumul_'.$id_dev.'_'.$date.'.pdf';
 		send_file_download_headers('application/pdf',$nom_fich);
-		$pdf->Output($nom_fich,'I');
+		$pdf->Output($nom_fich,$pref_output_mode_pdf);
 		die();
 	}
 }

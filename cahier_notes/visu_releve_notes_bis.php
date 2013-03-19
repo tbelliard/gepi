@@ -1827,7 +1827,8 @@ else {
 			echo $pdf->Output($nom_fichier,'S');
 		}
 		else {
-			$pdf->Output($nom_fichier,'I');
+			$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+			$pdf->Output($nom_fichier, $pref_output_mode_pdf);
 		}
 
 		die();

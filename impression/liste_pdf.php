@@ -678,9 +678,12 @@ echo "</pre>";
 	if(isset($current_group)) {
 		$nom_releve=remplace_accents($current_group['name']."_".$current_group['description']."_-_".$current_group['classlist_string']."_", "all");
 	}
+
+	$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 	$nom_releve.=date("Ymd_Hi");
 	$nom_releve = 'Liste_'.$nom_releve.'.pdf';
 	//header('Content-Type: application/pdf');
 	send_file_download_headers('application/pdf',$nom_releve);
-	$pdf->Output($nom_releve,'I');
+	$pdf->Output($nom_releve,$pref_output_mode_pdf);
 ?>

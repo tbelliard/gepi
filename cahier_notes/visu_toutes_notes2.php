@@ -1836,8 +1836,10 @@ if(isset($_GET['mode'])) {
 			$k++;
 		}
 
+		$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 		send_file_download_headers('application/pdf',$nom_fic);
-		$pdf->Output($nom_fic,'I');
+		$pdf->Output($nom_fic, $pref_output_mode_pdf);
 		die();
 
 	}

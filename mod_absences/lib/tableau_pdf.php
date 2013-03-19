@@ -876,10 +876,12 @@ if ($type=='R') {
 
 // fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 
+	$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 	// génération du nom du document
 	$nom_fichier = 'bilan_journalier_.pdf';
 
 	// génération du document
-	$pdf->Output($nom_fichier,'I');
+	$pdf->Output($nom_fichier,$pref_output_mode_pdf);
 
 ?>

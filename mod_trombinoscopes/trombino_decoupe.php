@@ -553,11 +553,13 @@ if(isset($generer_pdf)) {
 				// Classe vide
 			}
 		}
-		
+
+		$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 		$date=date("Ymd_Hi");
 		$nom_fich='Trombino_'.$date.'.pdf';
 		header('Content-Type: application/pdf');
-		$pdf->Output($nom_fich,'I');
+		$pdf->Output($nom_fich, $pref_output_mode_pdf);
 		die();
 
 	}
