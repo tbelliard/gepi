@@ -75,7 +75,7 @@ echo "</p>\n";
 echo "<h3>Mes listes d'".$gepiSettings['denomination_eleves']."</h3>\n";
 
 if($_SESSION['statut']=='professeur'){
-	echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleve']."s&nbsp;:</p>\n";
+	echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
 	//$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp, j_groupes_classes jgc, classe c WHERE
 	$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
@@ -89,7 +89,7 @@ if($_SESSION['statut']=='professeur'){
 		echo "</body></html>\n";
 		die();
 	}
-	else{
+	else {
 		echo "<table>\n";
 		while($lig_grp=mysql_fetch_object($res_grp)){
 			echo "<tr>\n";
@@ -274,16 +274,16 @@ elseif(isset($id_classe)) {
 }
 else {
 	if($_SESSION['statut']=='cpe'){
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut']=='scol'){
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		//$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	else {
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY classe";
 	}
 	$result_classes=mysql_query($sql);
