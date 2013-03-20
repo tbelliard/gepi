@@ -245,6 +245,17 @@ else {
 	$groups_dest=get_groups_for_class($id_classe_dest);
 	*/
 
+	$sql="DELETE FROM matieres_appreciations_acces WHERE id_classe='$id_classe_dest';";
+	$menage=mysql_query($sql);
+	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe_dest' ORDER BY num_periode;";
+	$res_per=mysql_query($sql);
+	while($lig_per=mysql_fetch_object($res_per)) {
+		$sql="INSERT INTO matieres_appreciations_acces SET id_classe='$id_classe_dest', periode='$lig_per->num_periode', statut='responsable', date='0000-00-00', acces='y';";
+		$insert=mysql_query($sql);
+		$sql="INSERT INTO matieres_appreciations_acces SET id_classe='$id_classe_dest', periode='$lig_per->num_periode', statut='eleve', date='0000-00-00', acces='y';";
+		$insert=mysql_query($sql);
+	}
+
 	for($i=0;$i<$cpt_grp;$i++) {
 		if((isset($id_groupe_dest[$i]))&&($id_groupe_dest[$i]!='')) {
 			$current_group_src=get_group($id_groupe_src[$i]);
@@ -358,6 +369,7 @@ else {
 										$menage=mysql_query($sql);
 
 										$sql="INSERT INTO matieres_notes SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', note='$moy_carnet';";
+										echo "$sql<br />";
 										$insert=mysql_query($sql);
 
 										if($moy_carnet>=15) {
@@ -491,6 +503,12 @@ else {
 				}
 
 				$reg_professeurs=array();
+
+				$tmp_tab_prof=get_profs_for_matiere($current_group_src['matiere']['matiere']);
+				if(isset($tmp_tab_prof[0]['login'])) {
+					$reg_professeurs=array($tmp_tab_prof[0]['login']);
+				}
+
 				$create = update_group($id_groupe_dest[$i], $current_group_src['matiere']['matiere'], $current_group_src['matiere']['nom_complet'], $current_group_src['matiere']['matiere'], array($id_classe_dest), $reg_professeurs, $reg_eleves);
 				if (!$create) {
 					echo "<span style='color:red'>Erreur lors de la mise à jour du groupe ".$current_group_src['matiere']['matiere']."</span><br />";
@@ -601,6 +619,7 @@ else {
 											$menage=mysql_query($sql);
 
 											$sql="INSERT INTO matieres_notes SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', note='$moy_carnet';";
+											echo "$sql<br />";
 											$insert=mysql_query($sql);
 
 											if($moy_carnet>=15) {
