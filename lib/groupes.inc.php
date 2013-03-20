@@ -71,6 +71,7 @@ function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
  *          pas les indices profs, eleves, periodes, matieres)
  */
 function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
+	global $get_groups_for_class_avec_proflist, $get_groups_for_class_avec_visibilite;
 	// ATTENTION: Avec les catégories, les groupes dans aucune catégorie n'apparaissent pas.
 	// Avec le choix "n" sur les catégories, on reste sur un fonctionnement proche de celui d'origine (cf old_way)
 
@@ -148,6 +149,17 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 			if($k==0) {$temp[$i]["classlist_string"]="";} else {$temp[$i]["classlist_string"].=", ";}
 			$temp[$i]["classlist_string"].=$c_classe;
 		}
+
+		if($get_groups_for_class_avec_proflist=="y") {
+			$tmp_grp=get_profs_for_group($temp[$i]["id"]);
+			$temp[$i]["proflist_string"]=$tmp_grp['proflist_string'];
+		}
+
+		if($get_groups_for_class_avec_visibilite=="y") {
+			$tmp_grp=get_visibilite_for_group($temp[$i]["id"]);
+			$temp[$i]["visibilite"]=$tmp_grp['visibilite'];
+		}
+
 	}
 
 	return $temp;
@@ -283,6 +295,30 @@ function get_profs_for_group($_id_groupe) {
 		$temp["list"][] = $p_login;
 		$temp["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
 		$temp["proflist_string"].=$civilite." ".$p_nom." ".my_strtoupper(mb_substr($p_prenom,0,1));
+	}
+
+	return $temp;
+}
+
+/** Renvoie un tableau de la visibilité du groupe dans les différents domaines (bulletins, cahier_notes,...)
+ *
+ * @param int $_id_groupe Id du groupe
+ * @return array Le tableau des visibilités
+ */
+function get_visibilite_for_group($_id_groupe) {
+	global $tab_domaines;
+	$temp["visibilite"]=array();
+
+	for($loop=0;$loop<count($tab_domaines);$loop++) {
+		$temp["visibilite"][$tab_domaines[$loop]]="y";
+	}
+
+	$sql="SELECT * FROM j_groupes_visibilite WHERE id_groupe='" . $_id_groupe . "';";
+	$res_vis=mysql_query($sql);
+	if(mysql_num_rows($res_vis)>0) {
+		while($lig_vis=mysql_fetch_object($res_vis)) {
+			$temp["visibilite"][$lig_vis->domaine]=$lig_vis->visible;
+		}
 	}
 
 	return $temp;
