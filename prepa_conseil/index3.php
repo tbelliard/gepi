@@ -396,7 +396,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "/></td>\n";
 		echo "<td><label for='choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiés de tous les ".$gepiSettings['denomination_eleves']." de la classe";
 		if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
-			echo " (uniquement les ".$gepiSettings['denomination_eleves']." que j'ai en cours)";
+			echo " (<em>uniquement les ".$gepiSettings['denomination_eleves']." que j'ai en cours ou dont je suis ".getSettingValue('gepi_prof_suivi')."</em>)";
 		}
 		echo "</label></td></tr>\n";
 
@@ -441,6 +441,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 		if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
+			/*
 			$sql="SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
@@ -450,6 +451,50 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				"jeg.id_groupe = jgp.id_groupe AND " .
 				"jgp.login = '".$_SESSION['login']."') " .
 				"ORDER BY e.nom,e.prenom";
+			*/
+			if(is_pp($_SESSION['login'], $id_classe)) {
+				if(getSettingAOui('GepiAccesBulletinSimpleProf')) {
+					$sql="(SELECT DISTINCT e.* " .
+						"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
+						"WHERE (" .
+						"jec.id_classe='$id_classe' AND " .
+						"e.login = jeg.login AND " .
+						"jeg.login = jec.login AND " .
+						"jeg.id_groupe = jgp.id_groupe AND " .
+						"jgp.login = '".$_SESSION['login']."')) " .
+						"UNION (SELECT DISTINCT e.* " .
+						"FROM eleves e, j_eleves_classes jec, j_eleves_professeurs jep " .
+						"WHERE (" .
+						"jec.id_classe='$id_classe' AND " .
+						"e.login = jep.login AND " .
+						"jep.login = jec.login AND " .
+						"jep.professeur = '".$_SESSION['login']."')) ORDER BY nom,prenom;";
+					$appel_liste_eleves = mysql_query($sql);
+				}
+				else {
+					$sql="SELECT DISTINCT e.* " .
+						"FROM eleves e, j_eleves_classes jec, j_eleves_professeurs jep " .
+						"WHERE (" .
+						"jec.id_classe='$id_classe' AND " .
+						"e.login = jep.login AND " .
+						"jep.login = jec.login AND " .
+						"jep.professeur = '".$_SESSION['login']."') ORDER BY e.nom,e.prenom;";
+					$appel_liste_eleves = mysql_query($sql);
+				}
+			}
+			else {
+			    $sql="SELECT DISTINCT e.* " .
+					"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
+					"WHERE (" .
+					"jec.id_classe='$id_classe' AND " .
+					"e.login = jeg.login AND " .
+					"jeg.login = jec.login AND " .
+					"jeg.id_groupe = jgp.id_groupe AND " .
+					"jgp.login = '".$_SESSION['login']."') " .
+					"ORDER BY e.nom,e.prenom";
+				$appel_liste_eleves = mysql_query($sql);
+			}
+
 		} else {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom";
 		}
