@@ -228,31 +228,35 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
     echo "<table border='0' summary='Equipe'>\n";
 
     // On commence par le CPE
-    $req = mysql_query("SELECT DISTINCT u.nom,u.prenom,u.email,u.show_email,jec.cpe_login " .
+    $sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.show_email,jec.cpe_login " .
     		"FROM utilisateurs u,j_eleves_cpe jec " .
     		"WHERE jec.e_login='".$login_eleve."' AND " .
     		"u.login=jec.cpe_login " .
-    		"ORDER BY jec.cpe_login");
-    // Il ne doit y en avoir qu'un...
-    $cpe = mysql_fetch_object($req);
-    echo "<tr valign='top'><td>VIE SCOLAIRE</td>\n";
-    echo "<td>";
-    // On affiche l'email s'il est non nul, si le cpe l'a autorisé, et si l'utilisateur est autorisé par les droits d'accès globaux
-    if ($cpe->email!="" AND $cpe->show_email == "yes" AND (
-    	($_SESSION['statut'] == "responsable" AND
-    			(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes" OR
-    			getSettingValue("GepiAccesCpePPEmailParent") == "yes"))
-    	OR
-    	($_SESSION['statut'] == "eleve" AND
-    		(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes" OR
-    		getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes")
-    		)
-    	)){
-        echo "<a href='mailto:".$cpe->email."?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " ".$nom_eleve)."'>".affiche_utilisateur($cpe->cpe_login,$id_classe)."</a>";
-    } else {
-		echo affiche_utilisateur($cpe->cpe_login,$id_classe);
-    }
-    echo "</td></tr>\n";
+    		"ORDER BY jec.cpe_login;";
+	//echo "$sql<br />";
+	$req = mysql_query($sql);
+	if(mysql_num_rows($req)>0) {
+		// Il ne doit y en avoir qu'un...
+		$cpe = mysql_fetch_object($req);
+		echo "<tr valign='top'><td>VIE SCOLAIRE</td>\n";
+		echo "<td>";
+		// On affiche l'email s'il est non nul, si le cpe l'a autorisé, et si l'utilisateur est autorisé par les droits d'accès globaux
+		if ($cpe->email!="" AND $cpe->show_email == "yes" AND (
+			($_SESSION['statut'] == "responsable" AND
+					(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes" OR
+					getSettingValue("GepiAccesCpePPEmailParent") == "yes"))
+			OR
+			($_SESSION['statut'] == "eleve" AND
+				(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes" OR
+				getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes")
+				)
+			)){
+		    echo "<a href='mailto:".$cpe->email."?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " ".$nom_eleve)."'>".affiche_utilisateur($cpe->cpe_login,$id_classe)."</a>";
+		} else {
+			echo affiche_utilisateur($cpe->cpe_login,$id_classe);
+		}
+		echo "</td></tr>\n";
+	}
 
 	// On passe maintenant les groupes un par un, sans se préoccuper de la période : on affiche tous les groupes
 	// auxquel l'élève appartient ou a appartenu
