@@ -6503,7 +6503,7 @@ function get_profs_for_matiere($matiere) {
 	$tab=array();
 
 	$sql="SELECT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$matiere."' ORDER BY u.nom, u.prenom;";
-	echo "$sql<br />";
+	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		$cpt=0;

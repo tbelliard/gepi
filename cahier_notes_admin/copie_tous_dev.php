@@ -369,42 +369,42 @@ else {
 										$menage=mysql_query($sql);
 
 										$sql="INSERT INTO matieres_notes SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', note='$moy_carnet';";
-										echo "$sql<br />";
+										//echo "$sql<br />";
 										$insert=mysql_query($sql);
 
 										if($moy_carnet>=15) {
 											$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
 											$menage=mysql_query($sql);
 
-											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', app='Bon travail. Continuez.';";
+											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Bon travail. Continuez.';";
 											$insert=mysql_query($sql);
 										}
 										elseif($moy_carnet>=12) {
 											$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
 											$menage=mysql_query($sql);
 
-											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', app='Ensemble correct. Vous pouvez mieux faire en vous investissant davantage.';";
+											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Ensemble correct. Vous pouvez mieux faire en vous investissant davantage.';";
 											$insert=mysql_query($sql);
 										}
 										elseif($moy_carnet>=9) {
 											$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
 											$menage=mysql_query($sql);
 
-											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', app='C\'est trop moyen. Vous ne faites pas le maximum.';";
+											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='C\'est trop moyen. Vous ne faites pas le maximum.';";
 											$insert=mysql_query($sql);
 										}
 										elseif($moy_carnet>=6) {
 											$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
 											$menage=mysql_query($sql);
 
-											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', app='Il faut se mettre au travail.';";
+											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Il faut se mettre au travail.';";
 											$insert=mysql_query($sql);
 										}
 										else {
 											$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
 											$menage=mysql_query($sql);
 
-											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', app='Ensemble faible. La bonne volonté est-elle au rendez-vous?';";
+											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Ensemble faible. La bonne volonté est-elle au rendez-vous?';";
 											$insert=mysql_query($sql);
 										}
 
@@ -619,42 +619,47 @@ else {
 											$menage=mysql_query($sql);
 
 											$sql="INSERT INTO matieres_notes SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', note='$moy_carnet';";
-											echo "$sql<br />";
+											//echo "$sql<br />";
 											$insert=mysql_query($sql);
 
 											if($moy_carnet>=15) {
 												$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
 												$menage=mysql_query($sql);
 
-												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', app='Bon travail. Continuez.';";
+												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Bon travail. Continuez.';";
+												//echo "$sql<br />";
 												$insert=mysql_query($sql);
 											}
 											elseif($moy_carnet>=12) {
 												$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
 												$menage=mysql_query($sql);
 
-												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', app='Ensemble correct. Vous pouvez mieux faire en vous investissant davantage.';";
+												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Ensemble correct. Vous pouvez mieux faire en vous investissant davantage.';";
+												//echo "$sql<br />";
 												$insert=mysql_query($sql);
 											}
 											elseif($moy_carnet>=9) {
 												$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
 												$menage=mysql_query($sql);
 
-												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', app='C\'est trop moyen. Vous ne faites pas le maximum.';";
+												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='C\'est trop moyen. Vous ne faites pas le maximum.';";
+												//echo "$sql<br />";
 												$insert=mysql_query($sql);
 											}
 											elseif($moy_carnet>=6) {
 												$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
 												$menage=mysql_query($sql);
 
-												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', app='Il faut se mettre au travail.';";
+												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Il faut se mettre au travail.';";
+												//echo "$sql<br />";
 												$insert=mysql_query($sql);
 											}
-											else {
+											elseif($moy_carnet>=0) {
 												$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
 												$menage=mysql_query($sql);
 
-												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', app='Ensemble faible. La bonne volonté est-elle au rendez-vous?';";
+												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Ensemble faible. La bonne volonté est-elle au rendez-vous?';";
+												//echo "$sql<br />";
 												$insert=mysql_query($sql);
 											}
 
