@@ -63,7 +63,8 @@ $msg = $result = NULL;
 $lienFlux=array();
 $a=0;
 
-
+$rss_email_mode=isset($_POST["rss_email_mode"]) ? $_POST["rss_email_mode"] : NULL;
+$rss_email_prof=isset($_POST["rss_email_prof"]) ? $_POST["rss_email_prof"] : "n";
 
 
 // ======================== Traitement des données ======================== //
@@ -87,6 +88,21 @@ if (isset($rss_acces_ele)) {
 		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>';
 	}
 }
+
+
+if (isset($rss_email_mode)) {
+	check_token();
+	$save_d = saveSetting("rss_email_mode", $rss_email_mode);
+	if (!$save_d) {
+		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>';
+	}
+
+	$save_d = saveSetting("rss_email_prof", $rss_email_prof);
+	if (!$save_d) {
+		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>';
+	}
+}
+
 
 // On teste si l'admin veut autoriser les flux pour créer la table adéquate
   $test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
@@ -207,6 +223,20 @@ if (getSettingValue("rss_acces_ele") == "direct") {
 }else{
 	$style_ele_dir = '';
 	$style_ele_csv = ' checked="checked"';
+}
+
+if (getSettingValue("rss_email_mode") == "email_admin") {
+	$style_email_adm = ' checked="checked"';
+	$style_email_etab = '';
+}else{
+	$style_email_etab = ' checked="checked"';
+	$style_email_adm = '';
+}
+
+if (getSettingAOui("rss_email_prof")) {
+	$style_email_prof = ' checked="checked"';
+}else{
+	$style_email_prof = '';
 }
 
 

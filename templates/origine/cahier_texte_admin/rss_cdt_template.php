@@ -146,7 +146,7 @@ echo add_token_field();
 	</fieldset>
   </form>
   <br />
-  
+
   <div id="accesEle"<?php echo $style_ele; ?>>
 	<form id="form_rss_ele" action="rss_cdt_admin.php" method="post">
 	  <fieldset style='border: 1px solid grey; margin-bottom:0.5em; background-image: url("../images/background/opacite50.png");'>
@@ -173,6 +173,53 @@ echo add_token_field();
 		<label for="rssAccesEle2">
 		  L'admin récupère un fichier csv de ces adresses (<em>une par élève</em>)
 		</label>
+	  </fieldset>
+	</form>
+  </div>
+
+  <br />
+
+  <div id="emailRSS"<?php echo $style_ele; ?>>
+	<form id="form_rss_email" action="rss_cdt_admin.php" method="post">
+	  <fieldset style='border: 1px solid grey; margin-bottom:0.5em; background-image: url("../images/background/opacite50.png");'>
+		<legend style='border: 1px solid grey; margin-bottom:0.5em; background-image: url("../images/background/opacite50.png");'>Adresse email</legend>
+<?php
+echo add_token_field();
+?>
+		Adresse email à utiliser par défaut dans les flux RSS&nbsp;:<br />
+		<input type="radio"
+			   id="rss_email_mode_adm"
+			   name="rss_email_mode"
+			   value="email_admin"
+			   onchange='document.getElementById("form_rss_email").submit();'
+			  <?php echo $style_email_adm; ?> />
+		<label for="rss_email_mode_adm">
+			Utiliser l'email de l'administrateur GEPI (<em><?php echo getSettingValue('gepiAdminAdress');?></em>)
+		</label>
+		<br />
+
+		<input type="radio"
+			   id="rss_email_mode_etab"
+			   name="rss_email_mode"
+			   value="email_etab"
+			   onchange='document.getElementById("form_rss_email").submit();'
+			  <?php echo $style_email_etab; ?> />
+		<label for="rss_email_mode_etab">
+			Utiliser l'email de l'établissement (<em><?php echo getSettingValue('gepiSchoolEmail');?></em>)
+		</label>
+		<br />
+
+		<input type="checkbox"
+			   id="rss_email_prof"
+			   name="rss_email_prof"
+			   value="y"
+			   onchange='document.getElementById("form_rss_email").submit();'
+			  <?php echo $style_email_prof; ?> />
+		<label for="rss_email_prof">
+			Si le professeur autorise la présentation de son adresse email aux utilisateurs non personnels de l'établissement, utiliser son adresse email dans les notices concernants ses enseignements plutôt que celle ci-dessus utilisée par défaut (<em>pour les professeurs n'acceptant pas la présentation de leur adresse email</em>).
+		</label>
+		<br />
+
 	  </fieldset>
 	</form>
   </div>

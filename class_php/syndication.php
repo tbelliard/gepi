@@ -18,53 +18,76 @@ $uri = isset($_GET["uri"]) ? $_GET["uri"] : NULL;
 
 // On vérifie si la table des uri existe (si elle existe, elle est forcément remplie
 $test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
-	if ($test_table == 0) {
+if ($test_table == 0) {
+	die();
+}
+else {
 
-		die();
+	// On peut alors vérifier si l'uri demandée est la bonne
+	$test_uri = mysql_num_rows(mysql_query("SELECT id FROM rss_users WHERE user_login = '".$eleve_l."' AND user_uri = '".$uri."' LIMIT 1"));
 
+	if ($test_uri == 1) {
+		// C'est bon, on peut générer les réponses
 	}else{
-
-		// On peut alors vérifier si l'uri demandée est la bonne
-		$test_uri = mysql_num_rows(mysql_query("SELECT id FROM rss_users WHERE user_login = '".$eleve_l."' AND user_uri = '".$uri."' LIMIT 1"));
-
-		if ($test_uri == 1) {
-			// C'est bon, on peut générer les réponses
-		}else{
-
-			die();
-
-		}
-
+		die();
 	}
+}
+
+$rss_email_mode=getSettingValue('rss_email_mode');
+$rss_email_prof=getSettingAOui('rss_email_prof');
+if($rss_email_mode=='email_admin') {
+	$rss_email_defaut=getSettingValue('gepiAdminAdress');
+}
+else {
+	$rss_email_defaut=getSettingValue('gepiSchoolEmail');
+}
+$tab_rss_infos_prof=array();
 
 // =========================== Cahier de textes =================================
 if ($type_rss == "cdt") {
- 	$items = retourneDevoirs($eleve_l);
- 	function get_prof_login($prof_l){
- 		/*
- 		 * permet de construire le nom du prof avec la bonne civilité
- 		*/
- 		$sql = "SELECT nom, civilite FROM utilisateurs WHERE login = '".$prof_l."' AND statut = 'professeur'";
- 		$query = mysql_query($sql);
- 		$test = mysql_num_rows($query);
- 		if ($test == 1) {
- 			// c'est bon, on construit son nom
- 			$prof = mysql_fetch_array($query);
- 			if (isset($prof["civilite"])) {
- 				$civilite = $prof["civilite"];
- 			}else{
-			 	$civilite = "";
-			}
-			$rep = $civilite.'&nbsp;'.$prof["nom"];
- 		}else{
-			$rep = 'Erreur dans la reconnaissance de l\'enseignant';
+	$items = retourneDevoirs($eleve_l);
+	function get_prof_login($prof_l) {
+		global $tab_rss_infos_prof, $rss_email_prof;
+
+		if(isset($tab_rss_infos_prof[$prof_l]["civ_nom"])) {
+			$rep=$tab_rss_infos_prof[$prof_l]["civ_nom"];
 		}
+		else {
+			/*
+			 * permet de construire le nom du prof avec la bonne civilité
+			*/
+			$sql = "SELECT nom, civilite, show_email, email FROM utilisateurs WHERE login = '".$prof_l."' AND statut = 'professeur'";
+			$query = mysql_query($sql);
+			$test = mysql_num_rows($query);
+			if ($test == 1) {
+				// c'est bon, on construit son nom
+				$prof = mysql_fetch_array($query);
+				if (isset($prof["civilite"])) {
+					$civilite = $prof["civilite"];
+				}
+				else {
+				 	$civilite = "";
+				}
+				$rep = $civilite.'&nbsp;'.$prof["nom"];
+
+				$tab_rss_infos_prof[$prof_l]["civ_nom"]=$rep;
+				if($rss_email_prof) {
+					if($prof["show_email"]=="yes") {
+						$tab_rss_infos_prof[$prof_l]["email"]=$prof["email"];
+					}
+				}
+			}
+			else {
+				$rep = 'Erreur dans la reconnaissance de l\'enseignant';
+			}
+		}
+
 		return $rep;
- 	}
- 	$noms["nom"] = $noms["prenom"] = NULL;
- 	$noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$eleve_l."' LIMIT 1"));
- 	$title_rss = 'Cahier de textes - '.getSettingValue("gepiSchoolName").' ('.getSettingValue("gepiYear").').';
- 	$description_rss = 'Les devoirs à faire de '.$noms["nom"].' '.$noms["prenom"];
+	}
+	$noms["nom"] = $noms["prenom"] = NULL;
+	$noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$eleve_l."' LIMIT 1"));
+	$title_rss = 'Cahier de textes - '.getSettingValue("gepiSchoolName").' ('.getSettingValue("gepiYear").').';
+	$description_rss = 'Les devoirs à faire de '.$noms["nom"].' '.$noms["prenom"];
 }
 // =========================fin des cahiers de textes ===========================
 
@@ -83,8 +106,10 @@ $oRssFeed->setDescription($description_rss);
 $oRssFeed->setLink($ServerProtocole.$_SERVER["SERVER_NAME"].$gepiPath);
 $oRssFeed->setPubDate('2007-12-31');
 $oRssFeed->setLastBuildDate(date('Y-m-d'));
-$oRssFeed->setWebMaster(getSettingValue("gepiSchoolEmail"),'ADMIN');
-$oRssFeed->setManagingEditor(getSettingValue("gepiSchoolEmail"),'ADMIN');
+//$oRssFeed->setWebMaster(getSettingValue("gepiSchoolEmail"),'ADMIN');
+//$oRssFeed->setManagingEditor(getSettingValue("gepiSchoolEmail"),'ADMIN');
+$oRssFeed->setWebMaster($rss_email_defaut,'ADMIN');
+$oRssFeed->setManagingEditor($rss_email_defaut,'ADMIN');
 $oRssFeed->setImage($gepiPath.'/favicon.ico', 'GEPI', $ServerProtocole.$_SERVER["SERVER_NAME"]);
 $oRssFeed->setCopyright('(L) - GEPI '.getSettingValue('version'));
 $oRssFeed->setGenerator('Généré par RSSFeed Class de Hugo "Emacs" HAMON - http://www.apprendre-php.com');
@@ -100,7 +125,13 @@ if ($items["cdt_dev"]["count"] != 0) {
 		$prof = get_prof_login($items["cdt_dev"][$a]["id_login"]);
 
 		// Récupération de l'email
-		$sEmail = getSettingValue("gepiSchoolEmail");
+		//$sEmail = getSettingValue("gepiSchoolEmail");
+		if(isset($tab_rss_infos_prof[$prof]["email"])) {
+			$sEmail = $tab_rss_infos_prof[$prof]["email"];
+		}
+		else {
+			$sEmail = $rss_email_defaut;
+		}
 		$oRssItem = new RSSFeedItem();
 		$oRssItem->setTitle($donnees["description"].' - Pour le '.date("d-m-Y", $items["cdt_dev"][$a]["date_ct"]));
 
@@ -135,7 +166,8 @@ if ($items["cdt_dev"]["count"] != 0) {
 }elseif($items["cdt_dev"]["count"] == 0){
 
 	// Récupération de l'email
-	$sEmail = getSettingValue("gepiSchoolEmail");
+	//$sEmail = getSettingValue("gepiSchoolEmail");
+	$sEmail = $rss_email_defaut;
 	$oRssItem = new RSSFeedItem();
 	$oRssItem->setTitle('Le cahier de textes est vide');
 	$oRssItem->setDescription('Rien &agrave; afficher -> Il faut toujours revoir les le&ccedil;ons du jour.');
@@ -152,7 +184,8 @@ if ($items["cdt_dev"]["count"] != 0) {
 }else{
 
 	// Récupération de l'email
-	$sEmail = getSettingValue("gepiSchoolEmail");
+	//$sEmail = getSettingValue("gepiSchoolEmail");
+	$sEmail = $rss_email_defaut;
 	$oRssItem = new RSSFeedItem();
 	$oRssItem->setTitle('ERREUR sur le CDT');
 	$oRssItem->setDescription('Rien &agrave; afficher -> Il faut toujours apprendre les le&ccedil;ons du jour.');
