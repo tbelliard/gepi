@@ -43,6 +43,14 @@ a:active {
 	color:red;
 }
 
+.red {
+	color: red;
+}
+
+.grey {
+	color: gray;
+}
+
 #container {
 	margin-bottom:1em;
 	padding-left: 1em;
