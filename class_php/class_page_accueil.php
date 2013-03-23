@@ -1751,9 +1751,16 @@ if(getSettingAOui('active_bulletins')) {
 						$this->canal_rss_plus.=$tab_ele_resp[$loop+1]."<br /><a href='".$uri_el["uri"]."'>".$uri_el["text"]."</a><br />";
 					}
 				}
-				else {
+				elseif(count($tab_ele_resp)==2) {
+
+					$uri_el = retourneUri($tab_ele_resp[0], $this->test_https, 'cdt');
+
 					$this->canal_rss['lien']=$uri_el["uri"];
 					$this->canal_rss['texte']=$uri_el["text"];
+				}
+				else {
+					$this->canal_rss['lien']="Aucune URL";
+					$this->canal_rss['texte']="Aucun eleve trouvé.";
 				}
 			}
 			elseif(getSettingValue("rss_acces_ele") == 'csv' AND $this->statutUtilisateur == "responsable"){
