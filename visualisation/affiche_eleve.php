@@ -2105,7 +2105,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	echo "</select>\n";
 	echo "<br />\n";
 	if($choix_periode=='toutes_periodes') {$checked=" checked='yes'";}else{$checked="";}
-	echo "<label for='choix_toutes_periodes' style='cursor: pointer;'><input type='radio' name='choix_periode' id='choix_toutes_periodes' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\" /> Toutes les périodes</label>\n";
+	echo "<label for='choix_toutes_periodes' style='cursor: pointer;' title=\"L'affichage des moyennes de toutes les périodes pour l'élève choisi est exclusif de l'affichage du deuxième champ SELECT ci-dessus (généralement Moyenne de la classe). En effet, dans le cas contraire, on arriverait au 3è trimestre à 6 courbes, ce qui serait illisible.\"><input type='radio' name='choix_periode' id='choix_toutes_periodes' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\"/> Toutes les périodes</label>\n";
 
 	echo "<hr width='150' />\n";
 
