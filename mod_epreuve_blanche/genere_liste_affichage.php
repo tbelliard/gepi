@@ -547,14 +547,14 @@ if(!isset($imprime)) {
 	echo "<ul>\n";
 	echo "<li><b>CSV</b>&nbsp;:\n";
 	 	echo "<ul>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=csv".add_token_in_url()."'>Avec les colonnes 'NOM;PRENOM;NAISSANCE;CLASSE;SALLE'</a></li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=csv".add_token_in_url()."'>Avec les colonnes 'NUM_ANONYMAT;NOM;PRENOM;NAISSANCE;CLASSE;SALLE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=csv".add_token_in_url()."' target='_blank'>Avec les colonnes 'NOM;PRENOM;NAISSANCE;CLASSE;SALLE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=csv".add_token_in_url()."' target='_blank'>Avec les colonnes 'NUM_ANONYMAT;NOM;PRENOM;NAISSANCE;CLASSE;SALLE'</a></li>\n";
 		echo "</ul>\n";
 	echo "</li>\n";
 	echo "<li><b>PDF</b>&nbsp;:\n";
 	 	echo "<ul>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=pdf".add_token_in_url()."'>Avec les colonnes 'NOM;PRENOM;NAISSANCE;CLASSE;SALLE'</a></li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=pdf".add_token_in_url()."'>Avec les colonnes 'NUM_ANONYMAT;NOM;PRENOM;NAISSANCE;CLASSE;SALLE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=pdf".add_token_in_url()."' target='_blank'>Avec les colonnes 'NOM;PRENOM;NAISSANCE;CLASSE;SALLE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=pdf".add_token_in_url()."' target='_blank'>Avec les colonnes 'NUM_ANONYMAT;NOM;PRENOM;NAISSANCE;CLASSE;SALLE'</a></li>\n";
 		echo "</ul>\n";
 	echo "</li>\n";
 	echo "</ul>\n";

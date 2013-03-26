@@ -164,6 +164,7 @@ if(isset($imprime)) {
 					global $intitule_epreuve;
 					global $date_epreuve;
 					global $salle_courante;
+					global $effectif_salle_courante;
 					//global $num_page;
 					//global $decompte_page;
 
@@ -171,7 +172,8 @@ if(isset($imprime)) {
 					$this->SetFont('DejaVu','',7.5);
 
 					//$texte=getSettingValue("gepiSchoolName")."  ";
-					$texte=$intitule_epreuve." ($date_epreuve) - ".$salle_courante;
+					//$texte=$intitule_epreuve." ($date_epreuve) - ".$salle_courante;
+					$texte=$intitule_epreuve." ($date_epreuve) - ".$salle_courante." - (effectif : $effectif_salle_courante)";
 					$lg_text=$this->GetStringWidth($texte);
 					$this->SetXY(10,287);
 					$this->Cell(0,5,$texte,0,0,'L');
@@ -251,7 +253,8 @@ if(isset($imprime)) {
 				$sql="SELECT e.nom, e.prenom, e.login, ec.n_anonymat FROM eb_copies ec, eleves e WHERE e.login=ec.login_ele AND ec.id_salle='$id_salle[$i]' AND ec.id_epreuve='$id_epreuve' ORDER BY e.nom,e.prenom;";
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
+				$effectif_salle_courante=mysql_num_rows($res);
+				if($effectif_salle_courante>0) {
 
 					//if($compteur>0) {$pdf->Footer();}
 					$num_page++;
@@ -503,15 +506,15 @@ if(!isset($imprime)) {
 	echo "<ul>\n";
 	echo "<li><b>CSV</b>&nbsp;:\n";
 	 	echo "<ul>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=csv".add_token_in_url()."'>Avec les colonnes 'NOM;PRENOM;SIGNATURE'</a></li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=csv".add_token_in_url()."'>Avec les colonnes 'NOM;PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=tout&amp;mode=csv".add_token_in_url()."'>Avec les colonnes 'NOM;PRENOM;CLASSE;DATE_DE_NAISSANCE;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=csv".add_token_in_url()."' target='_blank'>Avec les colonnes 'NOM;PRENOM;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=csv".add_token_in_url()."' target='_blank'>Avec les colonnes 'NOM;PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=tout&amp;mode=csv".add_token_in_url()."' target='_blank'>Avec les colonnes 'NOM;PRENOM;CLASSE;DATE_DE_NAISSANCE;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
 		echo "</ul>\n";
 	echo "</li>\n";
 	echo "<li><b>PDF</b>&nbsp;:\n";
 	 	echo "<ul>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=pdf".add_token_in_url()."'>Avec les colonnes 'NOM_PRENOM;SIGNATURE'</a></li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=pdf".add_token_in_url()."'>Avec les colonnes 'NOM_PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=pdf".add_token_in_url()."' target='_blank'>Avec les colonnes 'NOM_PRENOM;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=pdf".add_token_in_url()."' target='_blank'>Avec les colonnes 'NOM_PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
 		echo "</ul>\n";
 	echo "</li>\n";
 	echo "</ul>\n";
