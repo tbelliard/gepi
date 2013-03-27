@@ -305,7 +305,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
 								else {
 									$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
-									$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
+									$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
 								}
 							} else {
 								$sql="DELETE FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
@@ -325,7 +325,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";}
 								else {
 									$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
-									$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
+									$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
 								}
 							}
 						}
@@ -370,10 +370,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 										while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
 									}
 				
-									$sujet_mail="[GEPI] Demande de validation de correction d'appréciation";
-					
-									$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-									if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+									$sujet_mail="Demande de validation de correction d'appréciation";
 						
 									$ajout_header="";
 									if($email_declarant!="") {
@@ -475,7 +472,7 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
 						else {
 							$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
-							$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
+							$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
 						}
 					} else {
 						$sql="DELETE FROM matieres_app_corrections WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
@@ -483,7 +480,7 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 						if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode.<br />";} 
 						else {
 							$msg.="Suppression de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectuée.<br />";
-							$texte_mail.="Suppression de la proposition de correction pour l'appréciation de groupe\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\n";
+							$texte_mail.="Suppression de la proposition de correction pour l'appréciation de groupe\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\r\n";
 						}
 					}
 		
@@ -495,7 +492,7 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode.<br />";}
 						else {
 							$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
-							$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
+							$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
 						}
 					}
 				}
@@ -542,11 +539,8 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 								while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
 							}
 		
-							$sujet_mail="[GEPI] Demande de validation de correction d'appréciation";
-			
-							$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-							if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
-				
+							$sujet_mail="Demande de validation de correction d'appréciation";
+
 							$ajout_header="";
 							if($email_declarant!="") {
 								$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
@@ -596,6 +590,34 @@ change = 'no';
 <?php
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
+
+
+$proposer_liens_enregistrement="n";
+$i=1;
+while ($i < $nb_periode) {
+	if($_SESSION['statut']=='professeur') {
+		if($current_group["classe"]["ver_periode"]["all"][$i] > 1) {
+			// 0 : Toutes les classes sont closes
+			// 1 : Toutes les classes sont partiellement closes
+			// 2 : Au moins une classe est ouverte
+			// 3 : Toutes les classes sont ouvertes
+			$proposer_liens_enregistrement="y";
+			break;
+		}
+	}
+	elseif($_SESSION['statut']=='secours') {
+		if($current_group["classe"]["ver_periode"]["all"][$i] > 0) {
+			// 0 : Toutes les classes sont closes
+			// 1 : Toutes les classes sont partiellement closes
+			// 2 : Au moins une classe est ouverte
+			// 3 : Toutes les classes sont ouvertes
+			$proposer_liens_enregistrement="y";
+			break;
+		}
+	}
+	$i++;
+}
+
 
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form1' method=\"post\">\n";
 
@@ -743,37 +765,40 @@ $saisie_app_nb_cols_textarea=getPref($_SESSION["login"],'saisie_app_nb_cols_text
 echo add_token_field(true);
 
 //=========================
-// AJOUT: boireaus 20090126
-$insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
-if ($insert_mass_appreciation_type=="y") {
-	// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
+if($proposer_liens_enregistrement=="y") {
+	$insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
+	if ($insert_mass_appreciation_type=="y") {
+		// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
 
-	$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$create_table=mysql_query($sql);
+		$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$create_table=mysql_query($sql);
 
-	// Pour tester:
-	// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
+		// Pour tester:
+		// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
 
-	$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
-	$res_droit=mysql_query($sql);
-	if(mysql_num_rows($res_droit)>0) {
-		$droit_insert_mass_appreciation_type="y";
-	}
-	else {
-		$droit_insert_mass_appreciation_type="n";
-	}
+		$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
+		$res_droit=mysql_query($sql);
+		if(mysql_num_rows($res_droit)>0) {
+			$droit_insert_mass_appreciation_type="y";
+		}
+		else {
+			$droit_insert_mass_appreciation_type="n";
+		}
 
-	if($droit_insert_mass_appreciation_type=="y") {
-		echo "<div style='float:right; width:150px; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
-		echo "Insérer l'appréciation-type suivante pour toutes les appréciations vides: ";
-		echo "<input type='text' name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' value='-' size='10' /><br />\n";
-		echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />\n";
-		echo "</div>\n";
+		if($droit_insert_mass_appreciation_type=="y") {
+			echo "<div style='float:right; width:150px; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
+			echo "Insérer l'appréciation-type suivante pour toutes les appréciations vides: ";
+			echo "<input type='text' name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' value='-' size='10' /><br />\n";
+			echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />\n";
+			echo "</div>\n";
+		}
 	}
 }
 //=========================
 
-echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+if($proposer_liens_enregistrement=="y") {
+	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+}
 
 //===========================================================
 echo "<div id='div_photo_eleve' class='infobulle_corps' style='position: fixed; top: 220px; right: 20px; text-align:center; border:1px solid black; display:none;'></div>\n";
@@ -801,7 +826,9 @@ echo "</div>\n";
 
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 
-echo "<p>Vous pouvez faire apparaître dans votre appréciation la liste des notes de l'élève pour la période en insérant la chaine de caractères <b>@@Notes</b><br />(<i>les notes apparaîtront alors lors de la visualisation/impression du bulletin</i>)<br />Insérer d'un clic @@Notes <a href=\"javascript:inserer_notes_dans_app('debut');changement()\">au début</a> ou <a href=\"javascript:inserer_notes_dans_app('fin');changement()\">à la fin</a> de toutes les appréciations.</p>\n";
+if($proposer_liens_enregistrement=="y") {
+	echo "<p>Vous pouvez faire apparaître dans votre appréciation la liste des notes de l'élève pour la période en insérant la chaine de caractères <b>@@Notes</b><br />(<i>les notes apparaîtront alors lors de la visualisation/impression du bulletin</i>)<br />Insérer d'un clic @@Notes <a href=\"javascript:inserer_notes_dans_app('debut');changement()\">au début</a> ou <a href=\"javascript:inserer_notes_dans_app('fin');changement()\">à la fin</a> de toutes les appréciations.</p>\n";
+}
 
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
 echo "<p><b>Groupe : " . htmlspecialchars($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";
@@ -1686,29 +1713,33 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 <input type="hidden" name="is_posted" value="yes" />
 <input type="hidden" name="id_groupe" value="<?php echo "$id_groupe";?>" />
 <input type="hidden" name="periode_cn" value="<?php echo "$periode_cn";?>" />
-<center><div id="fixe"><input type="submit" value="Enregistrer" /><br />
+<center>
+	<div id="fixe">
+	<?php
+		if($proposer_liens_enregistrement=='y') {
+			echo "
+		<input type='submit' value='Enregistrer' /><br />
 
-<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
-<div id='decompte'></div>
+		<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+		<div id='decompte'></div>\n";
+		}
 
-<?php
-	//============================================
-	// AJOUT: boireaus 20080520
-	// Dispositif spécifique: décommenter la ligne pour l'activer
-	if(getSettingValue('appreciations_types_profs')=='y' || getSettingValue('appreciations_types_profs')=='yes') {include('ctp.php');}
-	//============================================
+		//============================================
+		if(getSettingValue('appreciations_types_profs')=='y' || getSettingValue('appreciations_types_profs')=='yes') {include('ctp.php');}
+		//============================================
 
+		if($proposer_liens_enregistrement=="y") {
+			echo "<a href='#' onClick=\"insere_notes();return false;\">";
+			echo "<img src='../images/icons/wizard.png' width='16' height='16' alt='Insérer les notes des devoirs' title='Insérer les notes des devoirs' />";
+			echo "</a>\n";
+			}
+	?>
 
-	echo "<a href='#' onClick=\"insere_notes();return false;\">";
-	echo "<img src='../images/icons/wizard.png' width='16' height='16' alt='Insérer les notes des devoirs' title='Insérer les notes des devoirs' />";
-	echo "</a>\n";
-
-?>
-
-<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
-<input type='hidden' id='info_focus' name='champ_info_focus' value='' />
-<input type='hidden' id='focus_courant' name='focus_courant' value='' />
-</div></center>
+		<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
+		<input type='hidden' id='info_focus' name='champ_info_focus' value='' />
+		<input type='hidden' id='focus_courant' name='focus_courant' value='' />
+	</div>
+</center>
 </form>
 
 <?php
@@ -2048,8 +2079,9 @@ function decompte(cpt){
 	}
 }
 
-decompte(cpt);
-
+if(document.getElementById('decompte')) {
+	decompte(cpt);
+}
 ";
 
 // Après validation, on donne le focus au champ qui suivait celui qui vient d'être rempli
@@ -2068,8 +2100,7 @@ if(document.getElementById('focus_courant')) {document.getElementById('focus_cou
 echo "</script>\n";
 
 //=========================
-// AJOUT: boireaus 20090126
-if (($insert_mass_appreciation_type=="y")&&($droit_insert_mass_appreciation_type=="y")) {
+if ((isset($insert_mass_appreciation_type))&&($insert_mass_appreciation_type=="y")&&(isset($droit_insert_mass_appreciation_type))&&($droit_insert_mass_appreciation_type=="y")) {
 	echo "<script type='text/javascript'>
 	function ajoute_a_textarea_vide() {
 		champs_textarea=document.getElementsByTagName('textarea');
