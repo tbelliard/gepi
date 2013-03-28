@@ -2488,6 +2488,18 @@ echo "\n";
 		for($j=0;$j<count($col[1]);$j++) {
 			$x2=$x0;
 
+			// 20130328
+			if($j>0) {
+				//if($y2+$h_ligne<$hauteur_page-$marge_basse) {
+				if($y2+$h_ligne*2<$hauteur_page-$marge_basse) {
+					$y2+=$h_ligne;
+				}
+				else {
+					$pdf->AddPage();
+					$y2=$y0;
+				}
+			}
+
 			/*
 			if($j%2==0) {
 			$pdf->SetFillColor(0,0,0);
@@ -2520,7 +2532,9 @@ echo "\n";
 
 				$x2+=$largeur_dispo;
 			}
-			$y2+=$h_ligne;
+
+			// 20130328
+			//$y2+=$h_ligne;
 
 			$k++;
 		}
@@ -2623,7 +2637,7 @@ if($utiliser_coef_perso=='y') {
 if((isset($avec_moy_gen_periodes_precedentes))&&($avec_moy_gen_periodes_precedentes=="y")) {
 	echo "&amp;avec_moy_gen_periodes_precedentes=y";
 }
-echo "'>PDF</a>
+echo "' target='_blank'>PDF</a>
 </div>\n";
 
 // Lien pour générer un CSV
