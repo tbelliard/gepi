@@ -157,6 +157,8 @@ if(isset($imprime)) {
 			$MargeGauche=10;
 			$MargeBas=10;
 
+			$effectif_salle_courante="";
+
 			class rel_PDF extends FPDF
 			{
 				function Footer()
@@ -253,13 +255,16 @@ if(isset($imprime)) {
 				$sql="SELECT e.nom, e.prenom, e.login, ec.n_anonymat FROM eb_copies ec, eleves e WHERE e.login=ec.login_ele AND ec.id_salle='$id_salle[$i]' AND ec.id_epreuve='$id_epreuve' ORDER BY e.nom,e.prenom;";
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
-				$effectif_salle_courante=mysql_num_rows($res);
-				if($effectif_salle_courante>0) {
+				// Si on initialise $effectif_salle_courante avant l'ajout de page PDF, on se retrouve avec un décalage: on a l'effectif de la classe suivante affiché en footer???
+				//$effectif_salle_courante=mysql_num_rows($res);
+				//if($effectif_salle_courante>0) {
+				if(mysql_num_rows($res)>0) {
 
 					//if($compteur>0) {$pdf->Footer();}
 					$num_page++;
 					$pdf->AddPage("P");
 					$salle_courante=$salle[$i];
+					$effectif_salle_courante=mysql_num_rows($res);
 
 					// Initialisation:
 					$x1="";
