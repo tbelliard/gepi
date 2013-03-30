@@ -315,7 +315,7 @@ if (isset($_POST['ok'])) {
     }
 
 	$tmp_coef=isset($_POST['coef']) ? $_POST['coef'] : 0;
-	if((preg_match("/^[0-9]*$/", $coef))||(preg_match("/^[0-9]*\.[0-9]$/", $tmp_coef))) {
+	if((preg_match("/^[0-9]*$/", $tmp_coef))||(preg_match("/^[0-9]*\.[0-9]$/", $tmp_coef))) {
 		// Le coef a le bon format
 		//$msg.="Le coefficient proposé $tmp_coef est valide.<br />";
 	}
@@ -561,6 +561,10 @@ if ($id_devoir)  {
     $display_date = $jour."/".$mois."/".$annee;
 	$date_ele_resp=$display_date;
 }
+
+//onclick=\"return confirm_abandon (this, change, '$themessage')\"
+//onchange=\"changement();\"
+$themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes - Ajout/modification d'une évaluation";
 /**
@@ -568,12 +572,15 @@ $titre_page = "Carnet de notes - Ajout/modification d'une évaluation";
  */
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_dev.php\" method=\"post\">\n";
+
+//debug_var();
+
+echo "<form enctype=\"multipart/form-data\" name= \"form_choix_dev\" action=\"add_modif_dev.php\" method=\"post\">\n";
 echo add_token_field();
 if ($mode_navig == 'retour_saisie') {
-    echo "<div class='norme'><p class=bold><a href='./saisie_notes.php?id_conteneur=$id_retour'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+    echo "<div class='norme'><p class=bold><a href='./saisie_notes.php?id_conteneur=$id_retour' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 } else {
-    echo "<div class='norme'><p class=bold><a href='index.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+    echo "<div class='norme'><p class=bold><a href='index.php?id_racine=$id_racine' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 }
 
 // Interface simplifiée
@@ -596,19 +603,83 @@ if(isset($id_retour)){
 //if($interface_simplifiee!=""){
 if($interface_simplifiee=="y"){
 	echo "&amp;interface_simplifiee=n";
-	echo "'>Interface complète</a>\n";
+	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Interface complète</a>\n";
 }
 else{
 	echo "&amp;interface_simplifiee=y";
-	echo "'>Interface simplifiée</a>\n";
+	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Interface simplifiée</a>\n";
 }
 
 echo "\n";
 
-echo " | <a href='../gestion/config_prefs.php#add_modif_dev'>Paramétrer l'interface simplifiée</a>";
+echo " | <a href='../gestion/config_prefs.php#add_modif_dev' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer l'interface simplifiée</a>";
 
+$sql="SELECT * FROM cn_devoirs WHERE id_racine='$id_racine' ORDER BY date, nom_court, nom_complet;";
+$res_cd=mysql_query($sql);
+$chaine="";
+$index_num_devoir=0;
+$cpt_dev=0;
+$temoin_champ_changement_dev="n";
+if(mysql_num_rows($res_cd)>0) {
+	while ($lig_cd=mysql_fetch_object($res_cd)) {
+		$chaine.="<option value='".$lig_cd->id."'";
+		if(($id_devoir)&&($lig_cd->id==$id_devoir)) {
+			$chaine.=" selected";
+			$index_num_devoir=$cpt_dev;
+		}
+		$chaine.=">".$lig_cd->nom_court;
+		if(($lig_cd->nom_complet!="")&&($lig_cd->nom_court!=$lig_cd->nom_complet)) {$chaine.=" (".$lig_cd->nom_complet.")";}
+		$chaine.="</option>\n";
+		$cpt_dev++;
+	}
+	if((($id_devoir)&&($cpt_dev>1))||
+	((!$id_devoir)&&($cpt_dev>0))) {
+		echo " | Période $periode_num&nbsp;: <select id='id_devoir' name='id_devoir' onchange=\"confirm_changement_devoir(change, '$themessage');\">\n";
+		if(!$id_devoir) {echo "<option value='' selected>---</option>";}
+		echo $chaine;
+		echo "</select>\n";
+		echo "<input type='hidden' name='id_conteneur' value=\"$id_conteneur\" />\n";
+		echo "<input type='submit' id='validation_form_choix_dev' value=\"Changer d'évaluation\" />\n";
+		if($interface_simplifiee=="y"){
+			echo "<input type='hidden' name='interface_simplifiee' value=\"y\" />\n";
+		}
+		else {
+			echo "<input type='hidden' name='interface_simplifiee' value=\"n\" />\n";
+		}
+		$temoin_champ_changement_dev="y";
+	}
+}
 echo "</p>\n";
+if($temoin_champ_changement_dev=="y") {
+	echo "<script type='text/javascript'>
+	document.getElementById('validation_form_choix_dev').style.display='none';
+
+	// Initialisation
+	change='no';
+
+	function confirm_changement_devoir(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form_choix_dev.submit();
+		}
+		else {
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form_choix_dev.submit();
+			}
+			else{
+				document.getElementById('id_devoir').selectedIndex=$index_num_devoir;
+			}
+		}
+	}
+</script>\n";
+}
 echo "</div>\n";
+echo "</form>\n";
+
+echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_dev.php\" method=\"post\">\n";
+echo add_token_field();
 
 echo "<p class='bold'> Classe : $nom_classe | Matière : ".htmlspecialchars("$matiere_nom ($matiere_nom_court)")."| Période : $nom_periode[$periode_num] <input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 echo "</div>";
@@ -640,7 +711,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" />\n";
+		echo "<input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -648,7 +719,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr style='display:none;'>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court:</td>\n";
 		echo "<td>\n";
-		echo "<input type='hidden' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" />\n";
+		echo "<input type='hidden' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -658,7 +729,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" />\n";
+		echo "<input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -666,7 +737,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr style='display:none;'>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet:</td>\n";
 		echo "<td>\n";
-		echo "<input type='hidden' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" />\n";
+		echo "<input type='hidden' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -676,7 +747,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
 		echo "<td>\n";
-		echo "<textarea name='description' rows='2' cols='40' >".$description."</textarea>\n";
+		echo "<textarea name='description' rows='2' cols='40' onchange=\"changement();\">".$description."</textarea>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -694,7 +765,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Coefficient:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onkeydown=\"clavier_2(this.id,event,0,10);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -712,11 +783,11 @@ if($interface_simplifiee=="y"){
 		if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 			echo "<tr>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold;'>Note sur : </td>\n";
-	   		echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td>\n";
+	   		echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold; vertical-align: top;'>Ramener la note sur ".getSettingValue("referentiel_note")."<br />lors du calcul de la moyenne : </td>\n";
-    		echo "<td><input type='checkbox' name='ramener_sur_referentiel' value='V' "; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />\n";
+    		echo "<td><input type='checkbox' name='ramener_sur_referentiel' value='V' onchange=\"changement();\" "; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />\n";
 			echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />\n";
 			echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />\n";
 			echo "Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span><br /><br />\n";
@@ -741,7 +812,7 @@ if($interface_simplifiee=="y"){
 		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"";
 		if($aff_date_ele_resp!='y'){
-			echo " onchange=\"document.getElementById('date_ele_resp').value=document.getElementById('display_date').value\"";
+			echo " onchange=\"document.getElementById('date_ele_resp').value=document.getElementById('display_date').value;changement();\"";
 		}
 		echo "><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 		echo "</td>\n";
@@ -751,7 +822,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr style='display:none;'>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
 		echo "<td>\n";
-		echo "<input type='hidden' name = 'display_date' size='10' value = \"".$display_date."\" />\n";
+		echo "<input type='hidden' name = 'display_date' size='10' value = \"".$display_date."\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -760,7 +831,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'date_ele_resp' id='date_ele_resp' size='10' value = \"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+		echo "<input type='text' name = 'date_ele_resp' id='date_ele_resp' size='10' value = \"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 		echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -780,7 +851,7 @@ if($interface_simplifiee=="y"){
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Emplacement de l'évaluation:</td>\n";
 		echo "<td>\n";
 
-		echo "<select size='1' name='id_emplacement'>\n";
+		echo "<select size='1' name='id_emplacement' onchange=\"changement();\">\n";
 		$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court");
 		$nb_cont = mysql_num_rows($appel_conteneurs);
 		$i = 0;
@@ -825,12 +896,12 @@ else{
 	// =================
 
 	echo "<table summary='Nom et conteneur du devoir'>\n";
-	echo "<tr><td>Nom court : </td><td><input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
-	echo "<tr><td>Nom complet : </td><td><input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
-	echo "<tr><td>Description : </td><td><textarea name='description' rows='2' cols='40' >".$description."</textarea></td></tr></table>\n";
+	echo "<tr><td>Nom court : </td><td><input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" /></td></tr>\n";
+	echo "<tr><td>Nom complet : </td><td><input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" /></td></tr>\n";
+	echo "<tr><td>Description : </td><td><textarea name='description' rows='2' cols='40' onchange=\"changement();\" >".$description."</textarea></td></tr></table>\n";
 	echo "<br />\n";
 	echo "<table summary='Emplacement du devoir'><tr><td><h3 class='gepi'>Emplacement de l'évaluation : </h3></td>\n<td>";
-	echo "<select size='1' name='id_emplacement'>\n";
+	echo "<select size='1' name='id_emplacement' onchange=\"changement();\">\n";
 	$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court");
 	$nb_cont = mysql_num_rows($appel_conteneurs);
 	$i = 0;
@@ -849,8 +920,8 @@ else{
 	// =====
 
 	echo "<h3 class='gepi'>Coefficient de l'évaluation</h3>\n";
-	echo "<table summary='Ponderation'><tr><td>Valeur de la pondération dans le calcul de la moyenne (si 0, la note de l'évaluation n'intervient pas dans le calcul de la moyenne) : </td>";
-	echo "<td><input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr></table>\n";
+	echo "<table summary='Ponderation'><tr><td>Valeur de la pondération dans le calcul de la moyenne (<em>si 0, la note de l'évaluation n'intervient pas dans le calcul de la moyenne</em>)&nbsp;: </td>";
+	echo "<td><input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr></table>\n";
 
 	//====================================
 	// Note autre que sur 20
@@ -858,13 +929,13 @@ else{
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 	    echo "<h3 class='gepi'>Notation</h3>\n";
 	    echo "<table summary='Referentiel'><tr><td>Note sur : </td>";
-	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr>\n";
+	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr>\n";
 	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <br />";
 		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />";
 		echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />";
 		echo "Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span><br /><br />\n";
 		echo "</td>";
-		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V'"; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
+		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V' onchange=\"changement();\""; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
 		echo "</td></tr>\n";
 	} else {
 		echo "<input type='hidden' name = 'note_sur' value = '".$note_sur."' />\n";
@@ -876,15 +947,15 @@ else{
 	// ======
 
 	echo "<h3 class='gepi'>Statut de l'évaluation</h3>\n";
-	echo "<table summary='Statut du devoir'><tr><td><input type='radio' name='facultatif' id='facultatif_O' value='O' "; if ($facultatif=='O') echo "checked"; echo " /></td><td>";
+	echo "<table summary='Statut du devoir'><tr><td><input type='radio' name='facultatif' id='facultatif_O' value='O' onchange=\"changement();\" "; if ($facultatif=='O') echo "checked"; echo " /></td><td>";
 	echo "<label for='facultatif_O' style='cursor: pointer;'>";
 	echo "La note de l'évaluation entre dans le calcul de la moyenne.";
 	echo "</label>";
-	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_B' value='B' "; if ($facultatif=='B') echo "checked"; echo " /></td><td>";
+	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_B' value='B' onchange=\"changement();\" "; if ($facultatif=='B') echo "checked"; echo " /></td><td>";
 	echo "<label for='facultatif_B' style='cursor: pointer;'>";
 	echo "Seules les notes de l'évaluation supérieures à 10 entrent dans le calcul de la moyenne.";
 	echo "</label>";
-	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_N' value='N' "; if ($facultatif=='N') echo "checked"; echo " /></td><td>";
+	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_N' value='N' onchange=\"changement();\" "; if ($facultatif=='N') echo "checked"; echo " /></td><td>";
 	echo "<label for='facultatif_N' style='cursor: pointer;'>";
 	echo "La note de l'évaluation n'entre dans le calcul de la moyenne que si elle améliore la moyenne.";
 	echo "</label>";
@@ -894,15 +965,15 @@ else{
 	// Date
 	// ====
 
-	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de l'évaluation (format jj/mm/aaaa) : </h3>
+	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de l'évaluation (<em>format jj/mm/aaaa</em>) : </h3>
 	<b>Remarque</b> : c'est cette date qui est prise en compte pour l'édition des relevés de notes à différentes périodes de l'année.
-	<input type='text' name = 'display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
+	<input type='text' name = 'display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
 	echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 
 
-	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de visibilité de l'évaluation pour les élèves et responsables (format jj/mm/aaaa) : </h3>
+	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de visibilité de l'évaluation pour les élèves et responsables (<em>format jj/mm/aaaa</em>) : </h3>
 	<b>Remarque</b> : Cette date permet de ne rendre la note visible qu'une fois que le devoir est corrigé en classe.
-	<input type='text' name='date_ele_resp' id='date_ele_resp' size='10' value=\"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
+	<input type='text' name='date_ele_resp' id='date_ele_resp' size='10' value=\"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
 	echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 
 	//====================================
@@ -914,12 +985,12 @@ else{
 	echo "<tr><td><label for='display_parents' style='cursor: pointer;'>";
 	echo "Faire <b>apparaître cette évaluation</b> sur le <b>relevé de notes</b> de l'élève : ";
 	echo "</label>";
-	echo "</td><td><input type='checkbox' name='display_parents' id='display_parents' value='1' "; if ($display_parents == 1) echo " checked"; echo " /></td></tr>\n";
+	echo "</td><td><input type='checkbox' name='display_parents' id='display_parents' value='1' onchange=\"changement();\" "; if ($display_parents == 1) echo " checked"; echo " /></td></tr>\n";
 
 	echo "<tr><td><label for='display_parents_app' style='cursor: pointer;'>";
 	echo "<b>L'appréciation</b> de l'évaluation est affichable sur le <b>relevé de notes</b> de l'élève (si l'option précédente a été validée) :";
 	echo "</label>";
-	echo "</td><td><input type='checkbox' name='display_parents_app' id='display_parents_app' value='1' "; if ($display_parents_app == 1) echo " checked"; echo " /></td></tr>\n";
+	echo "</td><td><input type='checkbox' name='display_parents_app' id='display_parents_app' value='1' onchange=\"changement();\" "; if ($display_parents_app == 1) echo " checked"; echo " /></td></tr>\n";
 
   echo "</table>\n";
 
@@ -936,7 +1007,7 @@ if ($new_devoir=='yes') {
 	if(count($tab_group)>1) {
 
 		if($interface_simplifiee=="y"){echo "<div align='center'>\n";}
-		echo "<input type='checkbox' id='creation_dev_autres_groupes' name='creation_dev_autres_groupes' value='y' onchange=\"display_div_autres_groupes()\" /><label for='creation_dev_autres_groupes'> Créer le même devoir pour d'autres enseignements.</label><br />\n";
+		echo "<input type='checkbox' id='creation_dev_autres_groupes' name='creation_dev_autres_groupes' value='y' onchange=\"display_div_autres_groupes()\" onchange=\"changement();\" /><label for='creation_dev_autres_groupes'> Créer le même devoir pour d'autres enseignements.</label><br />\n";
 	
 		echo "<div id='div_autres_groupes'>\n";
 		echo "<table class='boireaus' summary='Autres enseignements'>\n";
@@ -963,7 +1034,7 @@ if ($new_devoir=='yes') {
 					echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
 					if($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num]>=2) {
-						echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' />\n";
+						echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' onchange=\"changement();\" />\n";
 						echo "</td>\n";
 						echo "<td><label for='case_$cpt'>".htmlspecialchars($tab_group[$i]['name'])."</label></td>\n";
 						echo "<td><label for='case_$cpt'>".htmlspecialchars($tab_group[$i]['description'])."</label></td>\n";
@@ -984,7 +1055,7 @@ if ($new_devoir=='yes') {
 		}
 		echo "</table>\n";
 		// A METTRE AU POINT: 
-		echo "<input type='checkbox' name='creer_conteneur' id='creer_conteneur' value='y' /><label for='creer_conteneur'> Créer si nécessaire ";
+		echo "<input type='checkbox' name='creer_conteneur' id='creer_conteneur' value='y' onchange=\"changement();\" /><label for='creer_conteneur'> Créer si nécessaire ";
 		if(getSettingValue('gepi_denom_boite_genre')=="m") {echo "le ";} else {echo "la ";}
 		echo getSettingValue('gepi_denom_boite');
 		echo ".</label>\n";

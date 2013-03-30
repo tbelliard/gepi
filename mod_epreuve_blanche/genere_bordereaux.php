@@ -188,12 +188,14 @@ if(isset($imprime)) {
 		}
 		elseif($mode=='pdf') {
 
+			if (!defined('FPDF_VERSION')) {
+				require_once('../fpdf/fpdf.php');
+			}
 
-if (!defined('FPDF_VERSION')) {
-	require_once('../fpdf/fpdf.php');
-}
-			
-			
+			if (!defined('FPDF_VERSION')) {
+				require_once('../fpdf/fpdf.php');
+			}
+
 			define('LargeurPage','210');
 			define('HauteurPage','297');
 
@@ -343,7 +345,8 @@ if (!defined('FPDF_VERSION')) {
 
 					$cpt_col=0;
 
-					$x1=10;
+					$x0=10;
+					$x1=$x0;
 					$y1=30;
 					$y2=41;
 
@@ -468,6 +471,9 @@ if (!defined('FPDF_VERSION')) {
 							else {
 								$pdf->AddPage("P");
 								$pdf->EnteteListe();
+								$x1=$x0;
+								$x_col=$x1;
+								$num_colonne=1;
 								$pdf->SetXY($x1,$y2);
 							}
 
@@ -622,10 +628,12 @@ if (!defined('FPDF_VERSION')) {
 */
 			//$pdf->Footer();
 
+			$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 			$date=date("Ymd_Hi");
 			$nom_fich='bordereaux_'.$id_epreuve.'_'.$date.'.pdf';
 			send_file_download_headers('application/pdf',$nom_fich);
-			$pdf->Output($nom_fich,'I');
+			$pdf->Output($nom_fich,$pref_output_mode_pdf);
 			die();
 
 		}
@@ -717,7 +725,7 @@ if(!isset($imprime)) {
 	}
 	//========================================================
 
-	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1' target='_blank'>\n";
 
 	echo "<p>Choisissez le type de bordereaux à imprimer&nbsp;:<br />\n";
 	echo "<input type='radio' name='mode' id='mode_csv' value='csv' /><label for='mode_csv'>CSV</label><br />";

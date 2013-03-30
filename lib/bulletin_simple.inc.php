@@ -1103,45 +1103,106 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 			$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
 		}
 		//====================================
-	
+
+		$nb_colspan_abs=0;
+		if(getSettingValue('bull_affiche_abs_tot')=='y') {$nb_colspan_abs++;}
+		if(getSettingValue('bull_affiche_abs_nj')=='y') {$nb_colspan_abs++;}
+		if(getSettingValue('bull_affiche_abs_ret')=='y') {$nb_colspan_abs++;}
+
 		echo "<tr>\n<td valign=top class='bull_simpl' style='$style_bordure_cell'>$nom_periode[$nb]</td>\n";
-	// Test pour savoir si l'élève appartient à la classe pour la période considérée
-	$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
-	if ($test_eleve_app != 0) {
-		echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
-		if ($eleve_abs_j[$nb] == "1") {
-			echo "Absences justifiées : une demi-journée";
-		} else if ($eleve_abs_j[$nb] != "0") {
-			echo "Absences justifiées : $eleve_abs_j[$nb] demi-journées";
-		} else {
-			echo "Aucune absence justifiée";
+		// Test pour savoir si l'élève appartient à la classe pour la période considérée
+		$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
+		if((getSettingValue('bull_affiche_abs_tot')=='y')||(getSettingValue('bull_affiche_abs_nj')=='y')||(getSettingValue('bull_affiche_abs_ret')=='y')) {
+			if ($test_eleve_app != 0) {
+
+				// 20130215
+				if(getSettingValue('bull_affiche_abs_tot')=='y') {
+					if(getSettingValue('bull_affiche_abs_nj')=='y') {
+						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
+						if ($eleve_abs_j[$nb] == "1") {
+							echo "Absences justifiées : une demi-journée";
+						} else if ($eleve_abs_j[$nb] != "0") {
+							echo "Absences justifiées : $eleve_abs_j[$nb] demi-journées";
+						} else {
+							echo "Aucune absence justifiée";
+						}
+						echo "</td>\n";
+
+						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
+						if ($eleve_abs_nj[$nb] == '1') {
+							echo "Absences non justifiées : une demi-journée";
+						} else if ($eleve_abs_nj[$nb] != '0') {
+							echo "Absences non justifiées : $eleve_abs_nj[$nb] demi-journées";
+						} else {
+							echo "Aucune absence non justifiée";
+						}
+						echo "</td>\n";
+					}
+					else {
+						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
+						if ($eleve_abs[$nb]>0) {
+							echo "Nombre de demi-journées : ".$eleve_abs[$nb];
+						} else {
+							echo "Aucune absence";
+						}
+						echo "</td>\n";
+					}
+				}
+				elseif(getSettingValue('bull_affiche_abs_nj')=='y') {
+					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
+					if ($eleve_abs_nj[$nb] == "1") {
+						echo "Absences non-justifiées : une demi-journée";
+					} else if ($eleve_abs_nj[$nb] != "0") {
+						echo "Absences non-justifiées : $eleve_abs_nj[$nb] demi-journées";
+					} else {
+						echo "Aucune absence non-justifiée";
+					}
+					echo "</td>\n";
+				}
+
+				if(getSettingValue('bull_affiche_abs_ret')=='y') {
+					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>Nb. de retards : $eleve_retards[$nb]</td>\n";
+				}
+				echo "</tr>\n";
+			} else {
+				if(getSettingValue('bull_affiche_abs_tot')=='y') {
+					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+				}
+				if(getSettingValue('bull_affiche_abs_nj')=='y') {
+					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+				}
+				if(getSettingValue('bull_affiche_abs_ret')=='y') {
+					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+				}
+				echo "</tr>\n";
+			}
 		}
-		echo "</td>\n";
-		echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
-		if ($eleve_abs_nj[$nb] == '1') {
-			echo "Absences non justifiées : une demi-journée";
-		} else if ($eleve_abs_nj[$nb] != '0') {
-			echo "Absences non justifiées : $eleve_abs_nj[$nb] demi-journées";
-		} else {
-			echo "Aucune absence non justifiée";
+		else {
+			if($nb_colspan_abs>0) {
+				echo "<td colspan='$nb_colspan_abs' valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+			}
+			else {
+				echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+			}
+			echo "</tr>\n";
 		}
-		echo "</td>\n";
-		echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>Nb. de retards : $eleve_retards[$nb]</td>\n</tr>\n";
-	} else {
-	echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td><td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td><td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n</tr>\n";
-	}
+
 		//Ajout Eric
 		if ($current_eleve_appreciation_absences != "") {
-		if ($test_eleve_app != 0) {
-			echo "<tr>\n";
-			echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>&nbsp;</td>\n";
-			echo "<td valign=top class='bull_simpl' colspan=\"3\" style='text-align:left; $style_bordure_cell'>";
-			echo " Observation(s) : $current_eleve_appreciation_absences</td>\n</tr>\n";
-		} else {
-			echo "<tr><td valign=top class='bull_simpl' style='$style_bordure_cell'>&nbsp;</td><td valign=top class='bull_simpl' colspan=\"3\" style='$style_bordure_cell'>-</td>\n</tr>\n";
+			if ($test_eleve_app != 0) {
+				echo "<tr>\n";
+				echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>&nbsp;</td>\n";
+				if($nb_colspan_abs>0) {
+					echo "<td valign=top class='bull_simpl' colspan=\"$nb_colspan_abs\" style='text-align:left; $style_bordure_cell'>";
+				}
+				else {
+					echo "<td valign=top class='bull_simpl' style='text-align:left; $style_bordure_cell'>";
+				}
+				echo " Observation(s) : $current_eleve_appreciation_absences</td>\n</tr>\n";
+			} else {
+				echo "<tr><td valign=top class='bull_simpl' style='$style_bordure_cell'>&nbsp;</td><td valign=top class='bull_simpl' colspan=\"3\" style='$style_bordure_cell'>-</td>\n</tr>\n";
+			}
 		}
-		}
-	
 		$nb++;
 	}
 	echo "</table>\n";

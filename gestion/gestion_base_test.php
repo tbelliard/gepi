@@ -727,5 +727,8 @@ Pour activer la sauvegarde des données de tests, merci de décommenter les lign
 echo "<h3>Documentation de la base de test : </h3>\n";
 include("../backup/$dirname/doc.html");
 
+echo "<hr />";
+echo "<p>Avec une base contenant déjà des données, vous pouvez procéder à des <a href='../cahier_notes_admin/copie_tous_dev.php'>recopies de devoirs, CDT,... d'une classe vers une autre</a></p>\n";
+
 require("../lib/footer.inc.php");
 ?>

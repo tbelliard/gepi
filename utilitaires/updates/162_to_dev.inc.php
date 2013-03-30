@@ -62,5 +62,30 @@ if ($test == -1) {
 }
 */
 
+$result .= "<br />";
+$result .= "<strong>Modularité de l'affichage des absences sur les bulletins HTML&nbsp;:</strong><br />";
+if((getSettingValue("bull_affiche_abs_tot")=="")&&(getSettingValue("bull_affiche_abs_nj")=="")&&(getSettingValue("bull_affiche_abs_ret")=="")) {
+	if(getSettingValue("bull_affiche_absences")=="y") {
+		$result .= "Enregistrement du non affichage des absences, absences non justifiées et retards&nbsp;: ";
+		if((saveSetting("bull_affiche_abs_tot", "y"))&&(saveSetting("bull_affiche_abs_nj", "y"))&&(saveSetting("bull_affiche_abs_ret", "y"))) {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_ok("SUCCES !");
+		}
+	}
+	else {
+		$result .= "Enregistrement du non affichage des absences, absences non justifiées et retards&nbsp;: ";
+		if((saveSetting("bull_affiche_abs_tot", "n"))&&(saveSetting("bull_affiche_abs_nj", "n"))&&(saveSetting("bull_affiche_abs_ret", "n"))) {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_ok("SUCCES !");
+		}
+	}
+}
+else {
+	$result .= msj_present("La migration a déjà été réalisée");
+}
 
 ?>

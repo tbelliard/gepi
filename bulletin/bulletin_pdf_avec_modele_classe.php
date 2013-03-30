@@ -4113,7 +4113,9 @@ unset($_SESSION["classe"]);
 unset($_SESSION["eleve"]);
 unset($_SESSION['tri_par_etab_origine']);
 
+$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 //fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 $nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
-$pdf->Output($nom_bulletin,'I');
+$pdf->Output($nom_bulletin,$pref_output_mode_pdf);
 ?>

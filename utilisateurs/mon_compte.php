@@ -915,8 +915,20 @@ if(isset($_POST['choix_encodage_csv'])) {
 			$message_choixEncodageCsv="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 		}
 	}
-} 
+}
 
+if(isset($_POST['output_mode_pdf'])) {
+	if(in_array($_POST['output_mode_pdf'],array("D", "I"))) {
+		if(!savePref($_SESSION['login'], 'output_mode_pdf', $_POST['output_mode_pdf'])) {
+			$msg.="Erreur lors de la sauvegarde de la préférence d'export PDF.<br />\n";
+			$message_output_mode_pdf="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			$msg.="Sauvegarde de la préférence sur les fichiers PDF effectuée.<br />\n";
+			$message_output_mode_pdf="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+	}
+}
 
 
 if (isset($_POST['modifier_hauteur_entete'])) {
@@ -2159,6 +2171,56 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 }
 //==============================================================================
 
+$tab_statuts_barre=array('professeur', 'cpe', 'scolarite', 'administrateur', 'autre', 'secours');
+if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
+	echo "<a name='choixModePDF'></a><form enctype=\"multipart/form-data\" action=\"mon_compte.php#choixModePDF\" method=\"post\">\n";
+	echo add_token_field();
+
+	echo "<fieldset id='choixModePDF' style='border: 1px solid grey;";
+	echo "background-image: url(\"../images/background/opacite50.png\"); ";
+	echo "'>\n";
+	echo "<legend style='border: 1px solid grey;";
+	//echo "background-image: url(\"../images/background/opacite50.png\"); ";
+	echo "background-color: white; ";
+	echo "'>Choix du mode d'export PDF</legend>\n";
+	echo "<input type='hidden' name='choix_mode_export_pdf' value='ok' />\n";
+
+	$output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "");
+	if($output_mode_pdf=='') {
+		$output_mode_pdf="I";
+	}
+
+	echo "<p>\n";
+	echo "<input type='radio' id='output_mode_pdf_I' name='output_mode_pdf' value='I'";
+	echo " onchange=\" checkbox_change('output_mode_pdf_I');checkbox_change('output_mode_pdf_D');changement()\"";
+	if($output_mode_pdf!="D") {echo " checked";}
+	echo " />\n";
+	echo "<label for='output_mode_pdf_I' id='texte_output_mode_pdf_I'>Affichage interne au navigateur</label>\n";
+	echo "</p>\n";
+
+	echo "<p>\n";
+	echo "<input type='radio' id='output_mode_pdf_D' name='output_mode_pdf' value='D'";
+	echo " onchange=\" checkbox_change('output_mode_pdf_I');checkbox_change('output_mode_pdf_D');changement()\"";
+	if($output_mode_pdf=="D") {echo " checked";}
+	echo " />\n";
+	echo "<label for='output_mode_pdf_D' id='texte_output_mode_pdf_D'>Fenêtre de téléchargement/ouverture</label>\n";
+	echo "</p>\n";
+
+	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
+
+	if(isset($message_output_mode_pdf)) {
+		echo $message_output_mode_pdf;
+	}
+
+	echo "<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Les fichiers PDF générés par Gepi peuvent être affichés dans le navigateur si vous avez installé un plugin comme Acrobat Reader, ou si vous utilisez un navigateur comme Firefox&gt;=19.0.0.<br />Cet affichage interne au navigateur peut ne pas être souhaité.<br />En choisisssant <b>Fenêtre de téléchargement/ouverture</b>, il est possible de forcer le navigateur à vous proposer l'enregistrement ou l'ouverture avec le programme de votre choix.</p>\n";
+
+	echo "</fieldset>\n";
+	echo "</form>\n";
+	//echo "  <hr />\n";
+	echo "<br/>\n";
+}
+//==============================================================================
+
 
 if(count($tab_sound)>=0) {
 	$footer_sound_actuel=getPref($_SESSION['login'],'footer_sound',"");
@@ -2223,7 +2285,7 @@ function test_play_footer_sound() {
 echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 echo "<script type='text/javascript'>
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252');
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I');
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);

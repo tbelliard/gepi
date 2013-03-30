@@ -1041,6 +1041,7 @@ switch ($choix_adr_parent) {
 		$nb_boucle_a_faire = 1;
 }
 
+$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
 
 $nb_eleves_i = 1;
 $nb_boucle = 0; //compteur de boucle à faire pour R1 et R2 != R1
@@ -1095,7 +1096,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 				// sortie PDF sur écran
 				$nom_releve=date("Ymd_Hi");
 				$nom_releve = 'Releve_'.$nom_releve.'.pdf';
-				$pdf->Output($nom_releve,'I');
+				$pdf->Output($nom_releve, $pref_output_mode_pdf);
 				die();
 			}
 		} // while temoin
@@ -1511,5 +1512,5 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 // sortie PDF sur écran
 $nom_releve=date("Ymd_Hi");
 $nom_releve = 'Releve_'.$nom_releve.'.pdf';
-$pdf->Output($nom_releve,'I');
+$pdf->Output($nom_releve, $pref_output_mode_pdf);
 ?>

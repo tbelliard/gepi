@@ -589,11 +589,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 							// Nettoyage
 							$sql="DELETE FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
+							//echo "$sql<br />";
 							$nettoyage=mysql_query($sql);
 
 							unset($tab_note_per);
 							for($j=0;$j<count($id_dev_liste_periode);$j++) {
 								$sql="SELECT * FROM matieres_notes WHERE id_groupe='$id_groupe[$i]' AND periode='$id_dev_liste_periode[$j]' ORDER BY login;";
+								//echo "$sql<br />";
 								$res=mysql_query($sql);
 								while($lig=mysql_fetch_object($res)) {
 									if($lig->statut=='') {
@@ -614,6 +616,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									$moyenne=round($total*10/count($tab_notes_eleve))/10;
 									//$moyenne=str_replace(",", ".", $moyenne);
 									$sql="INSERT INTO ex_notes SET id_ex_grp='$id_ex_grp', login='$ele_login', note='$moyenne';";
+									//echo "$sql<br />";
 									$insert=mysql_query($sql);
 								}
 							}
@@ -623,17 +626,20 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				elseif(mb_substr($id_dev,0,1)=='P') {
 					$tmp_per=mb_substr($id_dev,1);
 					$sql="UPDATE ex_groupes SET id_dev='0', type='moy_bull', valeur='$tmp_per' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+					//echo "$sql<br />";
 					$res=mysql_query($sql);
 				}
 				else {
 					// Vérifier que c'est un devoir valide.
 					$sql="SELECT 1=1 FROM cn_devoirs WHERE id='$id_dev';";
+					//echo "$sql<br />";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)==0) {
 						$msg.="Devoir $id_dev invalide pour le groupe $id_groupe[$i].<br />";
 					}
 					else {
-						$sql="UPDATE ex_groupes SET id_dev='$id_dev' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+						$sql="UPDATE ex_groupes SET id_dev='$id_dev', type='', valeur='' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+						//echo "$sql<br />";
 						$res=mysql_query($sql);
 					}
 				}
@@ -1071,7 +1077,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	
 						}
 						echo ">$lig->intitule</a> (<i>".formate_date($lig->date)."</i>)";
-						echo " - <a href='".$_SERVER['PHP_SELF']."?id_exam=$lig->id&amp;mode=suppr_exam".add_token_in_url()."' onclick=\"return confirm('Etes vous sûr de vouloir supprimer l examen?')\">Supprimer</a><br />\n";
+						echo " - <a href='".$_SERVER['PHP_SELF']."?id_exam=$lig->id&amp;mode=suppr_exam".add_token_in_url()."' onclick=\"return confirm('Etes vous sûr de vouloir supprimer l examen?')\">Supprimer</a>";
+						//echo " (<em>créé par...</em>)";
+						echo "<br />\n";
 					}
 				}
 				echo "</li>\n";

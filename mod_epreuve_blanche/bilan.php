@@ -442,11 +442,13 @@ if(isset($imprime)) {
 				}
 			}
 
-		$date=date("Ymd_Hi");
+			$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
+			$date=date("Ymd_Hi");
 			$nom_fich='Bilan_'.$id_epreuve.'_'.$date.'.pdf';
 			//send_file_download_headers('application/pdf',$nom_fic);
 			//$pdf->Output($nom_fich,'I');
-			$pdf->Output($nom_fich,'D');
+			$pdf->Output($nom_fich,$pref_output_mode_pdf);
 			die();
 
 		}

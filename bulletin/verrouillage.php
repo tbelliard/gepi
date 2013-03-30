@@ -339,6 +339,7 @@ if (($classe != 0) AND ($periode !=0)) {
 			$alt=1;
 		if ($calldata) {
 			for ($k = 0; ($row = sql_row($calldata, $k)); $k++) {
+				$precedente_date_fin="0000-00-00 00:00:00";
 				$id_classe = $row[0];
 				$classe = $row[1];
 				$alt=$alt*(-1);
@@ -384,7 +385,13 @@ if (($classe != 0) AND ($periode !=0)) {
 						if ($row_per[1] == "O") {echo "checked";}
 						echo " /></td>\n";
                         if(getSettingValue("active_module_absence")=="2"){
-                            echo "<td>";
+                            if($precedente_date_fin>$row_per[2]) {
+                                echo "<td style='background-color:red' title='ANOMALIE: La date de fin de cette période semble antérieure à la date de fin de la période précédente.'>";
+                            }
+                            else {
+                                echo "<td>";
+                            }
+                            $precedente_date_fin=$row_per[2];
                             echo "<input type=\"text\" size=\"8\" name=\"date_fin_".$nom_classe."\" id=\"date_fin_".$nom_classe."\" value=\"";
                             if ($row_per[2] != 0) {
                                 echo date("d/m/Y", strtotime($row_per[2]));
@@ -450,7 +457,15 @@ Calendar.setup({
 
 		echo "<br />\n";
 
-		echo "<p><i>Remarque&nbsp;:</i><br /><span style='margin-left: 3em;'>Si vous ne voyez pas toutes les classes, il se peut que certaines classes ne vous soient pas associées.</span><br /><span style='margin-left: 3em;'>Demandez alors à un compte administrateur de vous associer des classes dans <b>Gestion des bases/Gestion des classes/Paramétrage scolarité</b></span></p>\n";
+		echo "<p><i>Remarques&nbsp;:</i></p>
+<ul>
+	<li><p><span style='margin-left: 3em;'>Si vous ne voyez pas toutes les classes, il se peut que certaines classes ne vous soient pas associées.</span><br /><span style='margin-left: 3em;'>Demandez alors à un compte administrateur de vous associer des classes dans <b>Gestion des bases/Gestion des classes/Paramétrage scolarité</b></span></p></li>";
+		if(getSettingValue("active_module_absence")=="2"){
+			echo "
+	<li><p>Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les date de périodes de cours ci-dessous.\">Date Fin</p></li>";
+		}
+		echo "
+</ul>\n";
 
 	}
 	else {

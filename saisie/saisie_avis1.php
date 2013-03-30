@@ -370,7 +370,7 @@ if(isset($id_class_suiv)){
 //fin ajout lien classe précédente / classe suivante
 
 if((acces('/impression/avis_pdf.php', $_SESSION['statut']))&&(acces('/saisie/impression_avis.php', $_SESSION['statut']))) {
-	echo "| <a href='../saisie/impression_avis.php'>Impression PDF des avis</a>";
+	echo "| <a href='../saisie/impression_avis.php' onclick=\"return confirm_abandon(this, change, '$themessage')\">Impression PDF des avis</a>";
 }
 echo "</p>\n";
 
@@ -638,7 +638,7 @@ if ($insert_mass_appreciation_type=="y") {
 		if ($ver_periode[$k] != "N") {
 			echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">";
 			if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
-				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\">";
+				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"$nom_periode[$k] : Exporter au format PDF les avis du conseil de classe sur les élèves.\">";
 				echo $nom_periode[$k];
 				echo "</a>";
 			}
@@ -649,7 +649,7 @@ if ($insert_mass_appreciation_type=="y") {
 		} else {
 			echo "<tr class='lig$alt'>\n<td>";
 			if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
-				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\">";
+				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"$nom_periode[$k] : Exporter au format PDF les avis du conseil de classe sur les élèves.\">";
 				echo $nom_periode[$k];
 				echo "</a>";
 			}
@@ -727,14 +727,14 @@ if ($insert_mass_appreciation_type=="y") {
 		echo "<table width=\"750\" class='boireaus' border='1' cellspacing='2' cellpadding='5' summary=\"Elève $current_eleve_nom $current_eleve_prenom\">\n";
 		echo "<tr>\n";
 		echo "<th width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></th>\n";
-		echo "<th><div align=\"center\"><b>$current_eleve_nom $current_eleve_prenom</b>\n";
+		echo "<th><div align=\"center\"><b><a href='../eleves/visu_eleve.php?ele_login=$current_eleve_login' target='_blank' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">$current_eleve_nom $current_eleve_prenom</a></b>\n";
 
 		//==========================
 		// AJOUT: boireaus 20071115
 		// Lien photo...
 		if($temoin_photo=="y"){
 			//echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
-			echo " <a href=\"$photo\" onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\" onclick=\"afficher_div('photo_$current_eleve_login','y',-100,20); return false;\" target='_blank'";
+			echo " <a href=\"$photo\" onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\" onclick=\"afficher_div('photo_$current_eleve_login','y',-100,20); return false;\" target='_blank' title=\"Afficher la photo de l'élève.\"";
 			echo ">";
 			echo "<img src='../images/icons/buddy.png' alt='$current_eleve_nom $current_eleve_prenom' />";
 			echo "</a>";
@@ -788,7 +788,7 @@ $msg_acces_app_ele_resp\" />";
 				echo "</td>\n";
 			} elseif(($ver_periode[$k] != "O")&&($result_test>0)) {
 				echo "<tr class='lig$alt'>\n<td>";
-				echo "<a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login."&ind_eleve_login_suiv=$i#app'>";
+				echo "<a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login."&ind_eleve_login_suiv=$i#app' title=\"$nom_periode[$k] : Saisir l'avis du conseil de classe avec affichage du bulletin simplifié de $current_eleve_nom $current_eleve_prenom.\" onclick=\"return confirm_abandon(this, change, '$themessage')\">";
 				echo $nom_periode[$k];
 				echo "</a>";
 

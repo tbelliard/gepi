@@ -238,7 +238,7 @@ elseif($_SESSION['statut']=="professeur"){
 				}
 			}
 
-			if($acces_pp=="y"){
+			if($acces_pp!="y"){
 				// A DEGAGER
 				// A VOIR: Comment enregistrer une tentative d'accès illicite?
 				//echo "$sql<br />";

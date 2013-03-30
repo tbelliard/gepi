@@ -167,6 +167,8 @@ if (($donnees_personne_csv)) {
   $pdf->CellFitScale($l_cell_avis,$h_cell,"Erreur de session export PDF",1,0,'L',0); //le quadrillage
 }
 
+$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 // sortie PDF sur écran
-$pdf->Output($nom_releve,'I');
+$pdf->Output($nom_releve,$pref_output_mode_pdf);
 ?>

@@ -1768,6 +1768,9 @@ function ensure_utf8($str, $from_encoding = null) {
  */
 function detect_utf8 ($str) {
 	// Inspiré de http://w3.org/International/questions/qa-forms-utf-8.html
+	//
+	// on s'assure de bien opérer sur une chaîne de caractère
+	$str=(string)$str;
 	// La chaîne ne comporte que des octets <= 7F ?
 	$full_ascii=true; $i=0;
 	while ($full_ascii && $i<strlen($str)) {
@@ -1985,7 +1988,13 @@ function nettoyer_caracteres_nom($chaine, $mode="a", $chaine_autres_caracteres_a
 	// Pour que le tiret soit à la fin si on le met dans $chaine_autres_caracteres_acceptes
 	$chaine_autres_caracteres_acceptes="ÆæŒœ".$chaine_autres_caracteres_acceptes;
 
-	$retour=trim(ensure_utf8($chaine));
+	if(is_numeric(trim($chaine))) {
+		$retour=trim($chaine);
+	}
+	else {
+		$retour=trim(ensure_utf8($chaine));
+	}
+
 	if($remplacer_oe_ae=="y") {$retour=preg_replace("#Æ#u","AE",preg_replace("#æ#u","ae",preg_replace("#Œ#u","OE",preg_replace("#œ#u","oe",$retour))));}
 	//if($remplacer_oe_ae=="y") {$retour=preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",$retour))));}
 
@@ -3866,7 +3875,9 @@ function redim_photo($file_source,$largeur_destination,$hauteur_destination,$ang
 	if ($largeur_source===false) return false;
 	$hauteur_source=imagesy($source);
 	if ($hauteur_source===false) return false;
-	if ($largeur_source==0 || $hauteur_source==0 || ($largeur_source==$largeur_destination && $hauteur_source==$hauteur_destination)) return false;
+
+	if ($largeur_source==0 || $hauteur_source==0) return false;
+	if ($largeur_source==$largeur_destination && $hauteur_source==$hauteur_destination) return true;
 
 	$ratio_lh_source=$largeur_source/$hauteur_source;
 	$ratio_lh_destination=$largeur_destination/$hauteur_destination;
@@ -4770,6 +4781,7 @@ function get_tab_prof_suivi($id_classe) {
  * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, pour une durée de 7 jours, avec décompte sur le 7ième jour	
  *  - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130684567
  * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130690844
+ * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844,true) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130690844, et autorise l'utilisateur à supprimer ce message
  * 
  * @param type string $login_destinataire login du destinataire (obligatoire)
  * @param type string $texte texte du message contenant éventuellement des balises HTML et encodé en iso-8859-1 (obligatoire)
@@ -4781,7 +4793,7 @@ function get_tab_prof_suivi($id_classe) {
  */
 function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0,$bouton_supprimer=false)
 {
-	// On arrondit le timestamp d'appel à l'heure (pas néceassaire mais pour l'esthétique)
+	// On arrondit le timestamp d'appel à l'heure (pas nécessaire mais pour l'esthétique)
 	$t_appel=time()-(time()%3600);
 	// suivant le nombre de paramètres passés :
 	switch (func_num_args())
@@ -4794,6 +4806,7 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 			$date_decompte=$date_fin;
 			break;
 		case 5:
+		case 6:
 			break;
 		default :
 			// valeurs par défaut
@@ -6457,4 +6470,54 @@ function get_class_dates_from_ele_login($login_eleve) {
 
 	return $tab;
 }
+
+
+/** Fonction destinée à passer outre le paramètre PHP session.gc_maxlifetime
+ *  s'il est inférieur au paramétrage sessionMaxLength de la table setting
+ */
+
+function maintien_de_la_session() {
+	global $gepiPath;
+
+	$session_gc_maxlifetime=ini_get("session.gc_maxlifetime");
+	// On fait réagir 3min avant la fin de session PHP
+	$nb_sec=max(60, $session_gc_maxlifetime-60*3);
+
+	echo "<span id='span_maintien_session'></span>
+
+<script type='text/javascript'>
+	var nb_millisec_maintien_session=$nb_sec*1000;
+
+	function function_maintien_session() {
+		new Ajax.Updater($('span_maintien_session'),'$gepiPath/lib/echo.php?var=maintien_session',{method: 'get'});
+		setTimeout('function_maintien_session()', nb_millisec_maintien_session);
+	}
+
+	setTimeout('function_maintien_session()', nb_millisec_maintien_session);
+</script>\n";
+}
+
+/** Fonction destinée à récupérer la liste des enseignants associés à une matière
+ */
+function get_profs_for_matiere($matiere) {
+	$tab=array();
+
+	$sql="SELECT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$matiere."' ORDER BY u.nom, u.prenom;";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$cpt]['login']=$lig->login;
+			$tab[$cpt]['nom']=$lig->nom;
+			$tab[$cpt]['prenom']=$lig->prenom;
+			$tab[$cpt]['civilite']=$lig->civilite;
+			$tab[$cpt]['civ_nom_prenom']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
 ?>

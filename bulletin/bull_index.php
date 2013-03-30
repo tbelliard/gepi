@@ -895,6 +895,26 @@ function ToutDeCocher() {
 		echo "<div style='float:right'>\n";
 		echo "<div align='left' style='margin-left:11em; font-size: xx-small;'>\n";
 
+		if (getSettingValue("active_module_absence")=='2' && getSettingValue("abs2_import_manuel_bulletin")!='y') {
+			echo "<p>Voici les dates prises en compte<br />pour les extractions d'absences&nbsp;:</p>\n";
+			echo "<table class='boireaus'>\n";
+			echo "<tr>\n";
+			echo "<th>Période</th>\n";
+			echo "<th>Date de fin</th>\n";
+			echo "</tr>\n";
+			$sql="SELECT nom_periode, num_periode, date_fin FROM periodes WHERE id_classe='".$tab_id_classe[$i]."' ORDER BY num_periode;";
+			$res_tmp_per=mysql_query($sql);
+			$alt=1;
+			while($lig_tmp_per=mysql_fetch_object($res_tmp_per)) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td>".$lig_tmp_per->nom_periode."</td>\n";
+				echo "<td>".formate_date($lig_tmp_per->date_fin)."</td>\n";
+				echo "</tr>\n";
+			}
+			echo "</table>\n";
+		}
+
 		echo "<table class='boireaus' summary='Coefficients des enseignements de ".$classe_courante."'>\n";
 		echo "<tr>\n";
 		echo "<th>Enseignement</th>\n";
@@ -1274,6 +1294,16 @@ else {
 
 	// Absences
 	$bull_affiche_absences=getSettingValue("bull_affiche_absences");
+	$bull_affiche_abs_tot=getSettingValue("bull_affiche_abs_tot");
+	$bull_affiche_abs_nj=getSettingValue("bull_affiche_abs_nj");
+	$bull_affiche_abs_ret=getSettingValue("bull_affiche_abs_ret");
+	if(($bull_affiche_abs_tot=='')&&($bull_affiche_abs_nj=='')&&($bull_affiche_abs_ret=='')) {
+		if($bull_affiche_absences=='y') {
+			$bull_affiche_abs_tot="y";
+			$bull_affiche_abs_nj="y";
+			$bull_affiche_abs_ret="y";
+		}
+	}
 
 	// Prof principal
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
@@ -3093,11 +3123,13 @@ else {
 							require_once("../lib/initialisationsPropel.inc.php");
 							$eleve = EleveQuery::create()->findOneByLogin($current_eleve_login[$i]);
 							if ($eleve != null) {
-							$current_eleve_absences = strval($eleve->getDemiJourneesAbsenceParPeriode($periode_num)->count());
-							$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_num)->count());
-							$current_eleve_retards = strval($eleve->getRetardsParPeriode($periode_num)->count());
-							$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
-							$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+								$current_eleve_absences = strval($eleve->getDemiJourneesAbsenceParPeriode($periode_num)->count());
+								$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_num)->count());
+								$current_eleve_retards = strval($eleve->getRetardsParPeriode($periode_num)->count());
+								$sql="SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num');";
+								//echo "$sql< br />";
+								$current_eleve_absences_query = mysql_query($sql);
+								$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
 							}
 						}
 						if ($current_eleve_absences === '') { $current_eleve_absences = "?"; }
@@ -3109,14 +3141,22 @@ else {
 						$tab_ele['eleve_retards']=$current_eleve_retards;
 						$tab_ele['appreciation_absences']=$current_eleve_appreciation_absences;
 
+						// Indice non encore exploité dans les paramètres d'impression des bulletins, ni dans bull_func.lib.php
+						if((is_numeric($current_eleve_absences))&&(is_numeric($current_eleve_nj))) {
+							$tab_ele['eleve_justif']=$current_eleve_absences-$current_eleve_nj;
+						}
+						else {
+							$tab_ele['eleve_justif']="?";
+						} 
+
 						$sql="SELECT u.login login,u.civilite FROM utilisateurs u,
 													j_eleves_cpe j
 												WHERE (u.login=j.cpe_login AND
 													j.e_login='".$current_eleve_login[$i]."');";
 						$query = mysql_query($sql);
-						$current_eleve_cperesp_login = @mysql_result($query, "0", "login");
+						$current_eleve_cperesp_login = @mysql_result($query, 0, "login");
 						$tab_ele['cperesp_login']=$current_eleve_cperesp_login;
-						$current_eleve_cperesp_civilite = @mysql_result($query, "0", "civilite");
+						$current_eleve_cperesp_civilite = @mysql_result($query, 0, "civilite");
 						$tab_ele['cperesp_civilite']=$current_eleve_cperesp_civilite;
 						//==========================================
 
@@ -3638,6 +3678,17 @@ else {
 								bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
 							}
 
+/*
+echo "Tableau de la classe $id_classe en période $periode_num<br />
+<pre>";
+print_r($tab_bulletin[$id_classe][$periode_num]);
+echo "</pre>";
+
+echo "Tableau du modèle PDF<br />
+<pre>";
+print_r($tab_modele_pdf);
+echo "</pre>";
+*/
 
 							//==============================================================================================
 							// PAR LA SUITE, ON POURRA INSERER ICI, SI L'OPTION EST COCHEE, LE RELEVE DE NOTES DE LA PERIODE
@@ -3717,7 +3768,7 @@ if($mode_bulletin=="html") {
 //==============================
 
 if((!isset($mode_bulletin))||($mode_bulletin!="pdf")) {
-	echo "<div id='remarques_bas_de_page'>
+	echo "<div id='remarques_bas_de_page' style='display:none;'>
 <p><br /></p>
 <p>A REVOIR:</p>
 <ul>
@@ -3774,7 +3825,8 @@ elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
 		die();
 	}
 	else {
-		$pdf->Output($nom_bulletin,'I');
+		$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+		$pdf->Output($nom_bulletin,$pref_output_mode_pdf);
 	}
 }
 

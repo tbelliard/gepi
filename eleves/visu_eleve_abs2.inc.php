@@ -8,6 +8,7 @@ $non_traitees=1;
 $tri='';
 $type_extrait = 1; // filtrer par manquement aux obligations scolaires
 
+//debug_var();
 
 // Initialisation de l'élève
 $eleve_id = $eleve->getId();
@@ -24,6 +25,29 @@ foreach($eleve->getPeriodeNotes() as $periode_note) {
   }
   $finAnnee = $periode_note->getDateFin("d-m-Y");
 }
+
+// ===============================
+if($_SESSION['statut']=='cpe') {
+	$val_defaut_afficher_strictement_englobee="y";
+}
+else {
+	$val_defaut_afficher_strictement_englobee="n";
+}
+
+if(!isset($_POST['visu_eleve_abs2_is_posted'])) {
+	$afficher_strictement_englobee=isset($_POST['afficher_strictement_englobee']) ? $_POST['afficher_strictement_englobee'] : (isset($_SESSION['abs2_afficher_strictement_englobee']) ? $_SESSION['abs2_afficher_strictement_englobee'] : $val_defaut_afficher_strictement_englobee);
+}
+else {
+	if(isset($_POST['afficher_strictement_englobee'])) {
+		$afficher_strictement_englobee=$_POST['afficher_strictement_englobee'];
+	}
+	else {
+		$afficher_strictement_englobee="n";
+	}
+}
+
+$_SESSION['abs2_afficher_strictement_englobee']=$afficher_strictement_englobee;
+// ===============================
 
 /***** Gestion des dates *****/
 
@@ -82,12 +106,20 @@ foreach ($saisie_col as $saisie) {
   if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
 	continue;
   }
- /* 
-  if (!is_null($non_traitees) && $non_traitees != '' && $saisie->getTraitee() && $saisie->hasModeInterface()) {
-	continue;
-  }
-  */
-  
+
+//$afficher_strictement_englobee="y";
+if($afficher_strictement_englobee!="y") {
+  $strictement_englobee = false;
+    foreach ($saisie->getAbsenceEleveSaisiesEnglobantes() as $saisie_englobante) {
+        if ($saisie_englobante->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue;
+        if ($saisie_englobante->getDebutAbs(null) != $saisie->getDebutAbs(null) || $saisie_englobante->getFinAbs(null) != $saisie->getFinAbs(null)) {
+            $strictement_englobee = true;
+            break;
+        }
+    }
+    if ($strictement_englobee) continue;
+}
+
   // on repère si retards, manquements, sans_manquements si $tri n'est pas vide
   if ($saisie->getRetard()) {
 	  if ($tri != null && $tri != '') {
@@ -233,7 +265,11 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
     <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="date">
 	  Valider
 	</button>
+	<input type='checkbox' name='afficher_strictement_englobee' id='afficher_strictement_englobee' value='y' style='font-size:small;' onchange="maj_afficher_strictement_englobee()" <?php
+		if($afficher_strictement_englobee=="y") {echo "checked ";}
+	?>/><label for='afficher_strictement_englobee' style='font-size:small; font-variant: normal;'>Afficher les saisies englobées</label>
   </h2>
+	<input type="hidden" name="visu_eleve_abs2_is_posted" value="y" />
 </form>
 
 <form dojoType="dijit.form.Form" 
@@ -244,6 +280,8 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
   <p>
 	<input type="hidden" name="date_absence_eleve_debut" value="<?php echo $debutAnnee; ?>" />
 	<input type="hidden" name="date_absence_eleve_fin" value="<?php echo $finAnnee; ?>" />
+	<input type="hidden" name="visu_eleve_abs2_is_posted" value="y" />
+	<input type="hidden" name="afficher_strictement_englobee" id="afficher_strictement_englobee_annee" value="<?php echo $afficher_strictement_englobee;?>" />
   </p>
  <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="date">
 	  Année
@@ -263,6 +301,8 @@ foreach($eleve->getPeriodeNotes() as $periode_note) {
   <p>
 	<input type="hidden" name="date_absence_eleve_debut" value="<?php echo $periode_note->getDateDebut("d-m-Y"); ?>" />
 	<input type="hidden" name="date_absence_eleve_fin" value="<?php echo $periode_note->getDateFin("d-m-Y"); ?>" />
+	<input type="hidden" name="visu_eleve_abs2_is_posted" value="y" />
+	<input type="hidden" name="afficher_strictement_englobee" id="afficher_strictement_englobee_p_<?php echo ($i+1);?>" value="<?php echo $afficher_strictement_englobee;?>" />
   </p>
  <button type="submit"  style="font-size:12px;" dojoType="dijit.form.Button" name="affichage" value="date">
 	  <?php echo $periode_note->getNomPeriode(); ?>
@@ -273,7 +313,26 @@ foreach($eleve->getPeriodeNotes() as $periode_note) {
   $i++;
   
 }
+$nb_per=$i;
 ?>
+
+<script type='text/javascript'>
+function maj_afficher_strictement_englobee() {
+	if(document.getElementById('afficher_strictement_englobee').checked==true) {
+		document.getElementById('afficher_strictement_englobee_annee').value='y';
+		for(j=1;j<<?php echo $nb_per;?>;j++) {
+			document.getElementById('afficher_strictement_englobee_p_'+j).value='y';
+		}
+	}
+	else {
+		document.getElementById('afficher_strictement_englobee_annee').value='n';
+		for(j=1;j<<?php echo $nb_per;?>;j++) {
+			document.getElementById('afficher_strictement_englobee_p_'+j).value='n';
+		}
+	}
+}
+maj_afficher_strictement_englobee();
+</script>
 
 
 <div id="sortie_ecran">

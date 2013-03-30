@@ -133,6 +133,8 @@ $pdf->FancyTable($w1,$header1,$data1,"v","R");
 
 //debug_var();
 
+$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 //if((!isset($_GET['id_groupe']))||(!isset($_GET['nom_pdf_en_detail']))){
 if(!isset($_GET['id_groupe'])) {
 	send_file_download_headers('application/pdf','document.pdf');
@@ -143,7 +145,7 @@ elseif(!isset($_GET['nom_pdf_en_detail'])) {
 
 	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
 
-	$pdf->Output($ident_plus.'.pdf','I');
+	$pdf->Output($ident_plus.'.pdf',$pref_output_mode_pdf);
 }
 else{
 	//$ident_plus = date("Ymd");
@@ -157,6 +159,6 @@ else{
 
 	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
 
-	$pdf->Output($ident_plus.'.pdf','I');
+	$pdf->Output($ident_plus.'.pdf',$pref_output_mode_pdf);
 }
 ?>

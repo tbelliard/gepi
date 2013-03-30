@@ -762,7 +762,9 @@ require_once("../lib/header.inc.php");
 //echo "mode=$mode<br />";
 
 //echo "<div class='noprint'>\n";
-//echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+if((($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))&&(isset($mode))) {
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_passage_a_une_autre_epreuve'>\n";
+}
 echo "<p class='bold'><a href='../accueil.php'>Accueil</a>";
 //echo "</p>\n";
 //echo "</div>\n";
@@ -839,8 +841,50 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		//===========================================================================
 		// Création d'une épreuve
 		elseif($mode=='creer_epreuve') {
-			echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu épreuves blanches</a>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Menu épreuves blanches</a>\n";
+			$sql="SELECT * FROM eb_epreuves ORDER BY date, intitule, description;";
+			$res_eb=mysql_query($sql);
+			if(mysql_num_rows($res_eb)>0) {
+				echo " | <select name='id_epreuve' id='id_epreuve_a_passage_autre_epreuve' onchange=\"confirm_changement_epreuve(change, '$themessage');\">\n";
+				echo "<option value=''>---</option>\n";
+				while($lig_eb=mysql_fetch_object($res_eb)) {
+					echo "<option value='$lig_eb->id'>$lig_eb->intitule (".formate_date($lig_eb->date).")</option>\n";
+				}
+				echo "</select>\n";
+				echo "<input type='hidden' name='mode' value='modif_epreuve' />\n";
+				echo " <input type='submit' id='button_submit_passage_autre_epreuve' value='Go'>\n";
+
+			}
 			echo "</p>\n";
+			echo "</form>\n";
+
+			$indice_epreuve_courante=0;
+			echo "<script type='text/javascript'>
+	// Initialisation
+	var change='no';
+
+	document.getElementById('button_submit_passage_autre_epreuve').style.display='none';
+
+	function confirm_changement_epreuve(thechange, themessage)
+	{
+		if(document.getElementById('id_epreuve_a_passage_autre_epreuve').selectedIndex!=0) {
+			if (!(thechange)) thechange='no';
+			if (thechange != 'yes') {
+				document.forms['form_passage_a_une_autre_epreuve'].submit();
+			}
+			else{
+				var is_confirmed = confirm(themessage);
+				if(is_confirmed){
+					document.forms['form_passage_a_une_autre_epreuve'].submit();
+				}
+				else{
+					document.getElementById('id_epreuve_a_passage_autre_epreuve').selectedIndex=$indice_epreuve_courante;
+				}
+			}
+		}
+	}
+</script>\n";
+
 
 			echo "<p class='bold'>Création d'une épreuve blanche&nbsp;:</p>\n";
 
@@ -851,7 +895,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "<table summary='Paramètres'>\n";
 			echo "<tr>\n";
 			echo "<td>Intitule&nbsp;:</td>\n";
-			echo "<td><input type='text' name='intitule' value='Epreuve blanche' /></td>\n";
+			echo "<td><input type='text' name='intitule' value='Epreuve blanche' onchange='changement()' /></td>\n";
 			echo "</tr>\n";
 
 			$cal = new Calendrier("form1", "date");
@@ -876,21 +920,21 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "<td>Description&nbsp;:</td>\n";
 			echo "<td>\n";
 			//echo "<input type='text' name='description' value='' />";
-			echo "<textarea class='wrap' name=\"no_anti_inject_description\" rows='4' cols='40'></textarea>\n";
+			echo "<textarea class='wrap' name=\"no_anti_inject_description\" rows='4' cols='40' onchange='changement()'></textarea>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 
 			echo "<tr>\n";
 			echo "<td>Note sur&nbsp;:</td>\n";
 			echo "<td>\n";
-			echo "<input type='text' name='note_sur' id='note_sur' value='$note_sur' size='3' onchange='changement()' />\n";
+			echo "<input type='text' name='note_sur' id='note_sur' value='$note_sur' size='3' onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 
 			echo "<tr>\n";
 			echo "<td>Mode anonymat&nbsp;:</td>\n";
 			echo "<td>\n";
-			echo "<select name='type_anonymat'>\n";
+			echo "<select name='type_anonymat' onchange='changement()'>\n";
 			echo "<option value='elenoet'>Identifiant Elenoet</option>\n";
 			echo "<option value='ele_id'>Identifiant Ele_id</option>\n";
 			echo "<option value='no_gep'>Numéro INE</option>\n";
@@ -919,7 +963,53 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	//===========================================================================
 	// Modification/compléments sur une épreuve
 	elseif($mode=='modif_epreuve') {
-		echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu épreuves blanches</a>\n";
+		echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Menu épreuves blanches</a>\n";
+
+		$indice_epreuve_courante=-1;
+		$cpt_ep=0;
+		$sql="SELECT * FROM eb_epreuves ORDER BY date, intitule, description;";
+		$res_eb=mysql_query($sql);
+		if(mysql_num_rows($res_eb)>0) {
+			echo " | <select name='id_epreuve' id='id_epreuve_a_passage_autre_epreuve' onchange=\"confirm_changement_epreuve(change, '$themessage');\">\n";
+			//echo "<option value=''>---</option>\n";
+			while($lig_eb=mysql_fetch_object($res_eb)) {
+				echo "<option value='$lig_eb->id'";
+				if($lig_eb->id==$id_epreuve) {
+					echo " selected";
+					$indice_epreuve_courante=$cpt_ep;
+				}
+				echo ">$lig_eb->intitule (".formate_date($lig_eb->date).")</option>\n";
+				$cpt_ep++;
+			}
+			echo "</select>\n";
+			echo "<input type='hidden' name='mode' value='modif_epreuve' />\n";
+			echo " <input type='submit' id='button_submit_passage_autre_epreuve' value='Go'>\n";
+
+		}
+
+		echo "<script type='text/javascript'>
+	// Initialisation
+	var change='no';
+
+	document.getElementById('button_submit_passage_autre_epreuve').style.display='none';
+
+	function confirm_changement_epreuve(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.forms['form_passage_a_une_autre_epreuve'].submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.forms['form_passage_a_une_autre_epreuve'].submit();
+			}
+			else{
+				document.getElementById('id_epreuve_a_passage_autre_epreuve').selectedIndex=$indice_epreuve_courante;
+			}
+		}
+	}
+</script>\n";
 
 		if(isset($id_epreuve)) {
 		// VERIFIER: Il faut avoir saisi un intitulé,...
@@ -935,6 +1025,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$aff=isset($_POST['aff']) ? $_POST['aff'] : (isset($_GET['aff']) ? $_GET['aff'] : NULL);
 		if(!isset($aff)) {
 			echo "</p>\n";
+			echo "</form>\n";
 
 			echo "<p><b>Modification d'une épreuve blanche&nbsp;:</b> Epreuve n°$id_epreuve</p>\n";
 
@@ -1172,7 +1263,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "<tr>\n";
 			echo "<td>Note sur&nbsp;:</td>\n";
 			echo "<td>\n";
-			echo "<input type='text' name='note_sur' id='note_sur' value='$note_sur' size='3' onchange='changement()' />\n";
+			echo "<input type='text' name='note_sur' id='note_sur' value='$note_sur' size='3' onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 
@@ -1365,8 +1456,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		elseif($aff=='classes') {
 			// Choix des classes
 
-			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve'>Epreuve $id_epreuve</a>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve' onclick=\"return confirm_abandon (this, change, '$themessage')\">Epreuve $id_epreuve</a>\n";
 			echo "</p>\n";
+			echo "</form>\n";
 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 			$res=mysql_query($sql);
@@ -1453,7 +1545,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					}
 	
 					echo "<input type='checkbox' name='id_classe[]' id='id_classe_$i' value='$id_classe' ";
-					echo "onchange=\"checkbox_change($i)\" ";
+					echo "onchange=\"checkbox_change($i); changement();\" ";
 					if(in_array($id_classe,$tab_id_classe)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 					echo "/><label for='id_classe_$i'><span id='texte_id_classe_$i'$temp_style>Classe : ".$classe.".</span></label><br />\n";
 					$i++;
@@ -1490,9 +1582,10 @@ function checkbox_change(cpt) {
 		elseif($aff=='groupes') {
 			//Choix des groupes
 
-			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve'>Epreuve $id_epreuve</a>\n";
-			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve&amp;aff=classes'>Choix des classes</a>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve' onclick=\"return confirm_abandon (this, change, '$themessage')\">Epreuve $id_epreuve</a>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve&amp;aff=classes' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix des classes</a>\n";
 			echo "</p>\n";
+			echo "</form>\n";
 
 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
@@ -1568,7 +1661,7 @@ function checkbox_change(cpt) {
 				if(mysql_num_rows($res)>0) {
 					while($lig=mysql_fetch_object($res)) {
 						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
-						echo "onchange=\"checkbox_change($cpt)\" ";
+						echo "onchange=\"checkbox_change($cpt); changement()\" ";
 						if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
 						echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span></label><br />\n";
 						$cpt++;
@@ -1623,8 +1716,9 @@ function checkbox_change(cpt) {
 		elseif($aff=='profs') {
 			// Choix des profs
 
-			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve'>Epreuve $id_epreuve</a>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve' onclick=\"return confirm_abandon (this, change, '$themessage')\">Epreuve $id_epreuve</a>\n";
 			echo "</p>\n";
+			echo "</form>\n";
 
 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
@@ -1665,7 +1759,7 @@ function checkbox_change(cpt) {
 				//$cpt=0;
 				while($lig=mysql_fetch_object($res_profs_groupes)) {
 					echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
-					echo "onchange=\"checkbox_change($cpt)\" ";
+					echo "onchange=\"checkbox_change($cpt);changement();\" ";
 					//if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";}
 					//echo "/><label for='login_prof_$cpt'>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</span></label><br />\n";
 					if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
@@ -1700,7 +1794,7 @@ function checkbox_change(cpt) {
 					}
 	
 					echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
-					echo "onchange=\"checkbox_change($cpt)\" ";
+					echo "onchange=\"checkbox_change($cpt);changement();\" ";
 					if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 					echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</span></label><br />\n";
 					$cpt++;
@@ -1747,8 +1841,8 @@ function checkbox_change(cpt) {
 	//===========================================================================
 	// Copie de paramétrages
 	elseif($mode=='copier_choix') {
-		echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu épreuves blanches</a>\n";
-		echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve'>Epreuve blanche n°$id_epreuve</a>\n";
+		echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Menu épreuves blanches</a>\n";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve' onclick=\"return confirm_abandon (this, change, '$themessage')\">Epreuve blanche n°$id_epreuve</a>\n";
 
 // Classes
 // Salles
@@ -1769,6 +1863,7 @@ eb_salles
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
 			echo "</p>\n";
+			echo "</form>\n";
 
 			echo "<p style='color:red'>L'épreuve n°$id_epreuve n'existe pas.</p>\n";
 			require("../lib/footer.inc.php");
@@ -1783,6 +1878,7 @@ eb_salles
 
 		if(!isset($id_epreuve_modele)) {
 			echo "</p>\n";
+			echo "</form>\n";
 
 			echo "<p>Choix d'un modèle pour l'épreuve n°$id_epreuve</p>\n";
 
@@ -1795,14 +1891,15 @@ eb_salles
 			else {
 				echo "<ul>\n";
 				while($lig=mysql_fetch_object($res)) {
-					echo "<li><p><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix&amp;id_epreuve_modele=$lig->id".add_token_in_url()."'>Epreuve n°$lig->id</a>&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p></li>\n";
+					echo "<li><p><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix&amp;id_epreuve_modele=$lig->id".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Epreuve n°$lig->id</a>&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p></li>\n";
 				}
 				echo "</ul>\n";
 			}
 		}
 		else {
-			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=copier_choix&amp;id_epreuve=$id_epreuve'>Choix de l'épreuve modèle</a>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=copier_choix&amp;id_epreuve=$id_epreuve' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix de l'épreuve modèle</a>\n";
 			echo "</p>\n";
+			echo "</form>\n";
 
 			echo "<h3>Copie de paramètres pour l'épreuve n°$id_epreuve: $intitule_epreuve (".formate_date($date_epreuve).")</h3>\n";
 
@@ -1834,7 +1931,7 @@ eb_salles
 					echo "<p style='margin-left: 3em;'>";
 					while($lig=mysql_fetch_object($res)) {
 						$tmp_grp=get_group($lig->id_groupe);
-						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_".$lig->id_groupe."' value='$lig->id_groupe' checked /><label for='id_groupe_".$lig->id_groupe."'> ".$tmp_grp['name']." (<i>".$tmp_grp['classlist_string']."</i>)</label>\n";
+						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_".$lig->id_groupe."' value='$lig->id_groupe' onchange='changement()' checked /><label for='id_groupe_".$lig->id_groupe."'> ".$tmp_grp['name']." (<i>".$tmp_grp['classlist_string']."</i>)</label>\n";
 					}
 					echo "</p>\n";
 				}
@@ -1849,7 +1946,7 @@ eb_salles
 					echo "<p>Liste des salles&nbsp;:</p>\n";
 					echo "<p style='margin-left: 3em;'>";
 					while($lig=mysql_fetch_object($res)) {
-						echo "<input type='checkbox' name='id_salle[]' id='id_salle_".$lig->id."' value='$lig->id' checked /><label for='id_salle_".$lig->id."'> ".$lig->salle."</label>\n";
+						echo "<input type='checkbox' name='id_salle[]' id='id_salle_".$lig->id."' value='$lig->id' onchange='changement()' checked /><label for='id_salle_".$lig->id."'> ".$lig->salle."</label>\n";
 						$tab_salle[$lig->id]=$lig->salle;
 					}
 					echo "</p>\n";
@@ -1878,7 +1975,7 @@ eb_salles
 									$current_id_salle=$lig->id_salle;
 									echo "<p style='margin-left: 6em;'>";
 									echo "<span class='conteneur_infobulle_css'>\n";
-									echo "<input type='checkbox' name='copie_affect_ele_salle[]' id='copie_affect_ele_salle_".$lig->id_salle."' value='".$lig->id_salle."' checked  />";
+									echo "<input type='checkbox' name='copie_affect_ele_salle[]' id='copie_affect_ele_salle_".$lig->id_salle."' value='".$lig->id_salle."' onchange='changement()' checked  />";
 									echo "<label for='copie_affect_ele_salle_".$lig->id_salle."'>";
 									//if($lig->id_salle!='-1') {
 										echo "Copier les affectations d'élèves en ".$tab_salle[$lig->id_salle]."</label>";
@@ -1923,7 +2020,7 @@ eb_salles
 					while($lig=mysql_fetch_object($res)) {
 						$tab_prof[$lig->login_prof]=civ_nom_prenom($lig->login_prof);
 
-						echo "<input type='checkbox' name='login_prof[]' id='login_prof_".$lig->login_prof."' value='$lig->login_prof' checked /><label for='login_prof_".$lig->login_prof."'> ".$tab_prof[$lig->login_prof]."</label>\n";
+						echo "<input type='checkbox' name='login_prof[]' id='login_prof_".$lig->login_prof."' value='$lig->login_prof' onchange='changement()' checked /><label for='login_prof_".$lig->login_prof."'> ".$tab_prof[$lig->login_prof]."</label>\n";
 					}
 					echo "</p>\n";
 
@@ -1949,7 +2046,7 @@ eb_salles
 
 								echo "<p style='margin-left: 6em;'>";
 								echo "<span class='conteneur_infobulle_css'>\n";
-								echo "<input type='checkbox' name='copie_affect_copie_prof[]' id='copie_affect_copie_prof_".$lig->login_prof."' value='".$lig->login_prof."' checked  />";
+								echo "<input type='checkbox' name='copie_affect_copie_prof[]' id='copie_affect_copie_prof_".$lig->login_prof."' value='".$lig->login_prof."' onchange='changement()' checked  />";
 								echo "<label for='copie_affect_copie_prof_".$lig->login_prof."'>Copier les affectations copie d'élèves au correcteur ".$tab_prof[$lig->login_prof]."</label>";
 								//echo "<table class='boireaus' summary=\"Liste des élèves affectés en Salle $tab_salle[$lig->id]\">\n";
 								echo "<br />\n";

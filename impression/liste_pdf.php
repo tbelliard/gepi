@@ -285,7 +285,13 @@ elseif((isset($id_liste_groupes))&&(count($id_liste_groupes)==1)) {
 				$id_classe=$donnees_eleves[0]['id_classe'];
 			}
 		}
-
+/*
+echo "\$i_pdf=$i_pdf<br />
+\$donnees_eleves
+<pre>";
+print_r($donnees_eleves);
+echo "</pre>";
+*/
 		if ($id_liste_classes!=NULL) {
 			$donnees_eleves = traite_donnees_classe($id_liste_classes[$i_pdf],$id_periode,$nb_eleves);
 			$id_classe=$id_liste_classes[$i_pdf];
@@ -379,6 +385,7 @@ elseif((isset($id_liste_groupes))&&(count($id_liste_groupes)==1)) {
                }
 			  //PP de la classe
 			  if ($id_groupe != NULL) {
+				$current_group = get_group($id_groupe);
 			  // On n'affiche pas le PP (il peut y en avoir plusieurs) ==> on affiche la période
 			    $sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='$id_periode' ORDER BY num_periode";
 				$res_per=mysql_query($sql);
@@ -411,7 +418,8 @@ elseif((isset($id_liste_groupes))&&(count($id_liste_groupes)==1)) {
 			else {
               // On n'affiche pas le PP (il peut y en avoir plusieurs) ==> on affiche la période
 			  if ($id_groupe != NULL) {
-                $sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='$id_periode' ORDER BY num_periode";
+				$current_group = get_group($id_groupe);
+				$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='$id_periode' ORDER BY num_periode";
 				$res_per=mysql_query($sql);
 				if(mysql_num_rows($res_per)==0){
 					die("Problème avec les infos de la classe $id_classe</body></html>");
@@ -670,9 +678,12 @@ elseif((isset($id_liste_groupes))&&(count($id_liste_groupes)==1)) {
 	if(isset($current_group)) {
 		$nom_releve=remplace_accents($current_group['name']."_".$current_group['description']."_-_".$current_group['classlist_string']."_", "all");
 	}
+
+	$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 	$nom_releve.=date("Ymd_Hi");
 	$nom_releve = 'Liste_'.$nom_releve.'.pdf';
 	//header('Content-Type: application/pdf');
 	send_file_download_headers('application/pdf',$nom_releve);
-	$pdf->Output($nom_releve,'I');
+	$pdf->Output($nom_releve,$pref_output_mode_pdf);
 ?>

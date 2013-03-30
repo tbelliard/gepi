@@ -47,7 +47,12 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 $mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
 //$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_email','avec_statut','avec_ine','avec_elenoet','avec_ele_id','avec_prof');
-$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_lieu_naiss','avec_email','avec_statut','avec_elenoet','avec_ele_id','avec_no_gep','avec_prof');
+if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+	$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_lieu_naiss','avec_email','avec_statut','avec_elenoet','avec_ele_id','avec_no_gep','avec_prof', 'avec_doublant', 'avec_regime', 'avec_infos_resp');
+}
+else {
+	$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_lieu_naiss','avec_email','avec_statut','avec_elenoet','avec_ele_id','avec_no_gep','avec_prof', 'avec_doublant', 'avec_regime');
+}
 for($i=0;$i<count($tab);$i++) {
 	$champ=$tab[$i];
 	$$champ = isset($_POST[$champ]) ? $_POST[$champ] : (isset($_GET[$champ]) ? $_GET[$champ] : NULL);
@@ -123,6 +128,10 @@ else {
 		if((isset($avec_no_gep))&&($avec_no_gep=='y')) {$fd.="INE;";}
 	}
 
+	if((isset($avec_doublant))&&($avec_doublant=='y')) {$fd.="REDOUBLANT;";}
+	if((isset($avec_regime))&&($avec_regime=='y')) {$fd.="REGIME;";}
+	if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {$fd.="RESP_LEGAL_1;TEL_PERS_1;TEL_PROF_1;TEL_PORT_1;RESP_LEGAL_2;TEL_PERS_2;TEL_PROF_2;TEL_PORT_2;RESP_LEGAL_0;TEL_PERS_0;TEL_PROF_0;TEL_PORT_0;RESP_LEGAL_0b;TEL_PERS_0b;TEL_PROF_0b;TEL_PORT_0b;";}
+
 	// Suppression du ; en fin de ligne
 	$fd=preg_replace('/;$/','',$fd);
 	$fd.="\n";
@@ -197,7 +206,7 @@ if($current_group) {
 		$res_tmp=mysql_query($sql);
 
 		if(mysql_num_rows($res_tmp)==0){
-			die("Problème avec les infos de $eleve_login</body></html>");
+			die("Problème avec les infos (date de naissance, sexe,...) de $eleve_login</body></html>");
 		}
 		else{
 			$lig_tmp=mysql_fetch_object($res_tmp);
@@ -215,6 +224,46 @@ if($current_group) {
 
 			if($avec_lieu_naiss=='y') {
 				$eleve_lieu_naissance=get_commune($lig_tmp->lieu_naissance,'2');
+			}
+		}
+
+		if(((isset($avec_doublant))&&($avec_doublant=='y'))||
+		((isset($avec_regime))&&($avec_regime=='y'))) {
+			$sql="SELECT * FROM j_eleves_regime WHERE login='".$current_eleve["login"]."';";
+			$res_tmp=mysql_query($sql);
+			if(mysql_num_rows($res_tmp)==0) {
+				//die("Problème avec les infos (régime, doublant) de $eleve_login</body></html>");
+				$eleve_regime="X";
+				$eleve_doublant="X";
+			}
+			else {
+				while($lig_tmp=mysql_fetch_object($res_tmp)) {
+					$eleve_regime=$lig_tmp->regime;
+					$eleve_doublant=$lig_tmp->doublant;
+				}
+			}
+		}
+
+		if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {
+			$eleve_infos_resp_1="";
+			$eleve_infos_resp_2="";
+			$eleve_infos_resp_0="";
+			
+			$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.ele_id='$eleve_ele_id' AND r.pers_id=rp.pers_id AND (r.resp_legal='1' OR r.resp_legal='2' OR (r.pers_contact='1' AND (rp.tel_pers!='' OR rp.tel_prof!='' OR rp.tel_port!='')));";
+			$res_tmp=mysql_query($sql);
+			if(mysql_num_rows($res_tmp)>0) {
+				while($lig_tmp=mysql_fetch_object($res_tmp)) {
+					if($lig_tmp->resp_legal=='1') {
+						$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+					}
+					elseif($lig_tmp->resp_legal=='2') {
+						$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+					}
+					else {
+						if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
+						$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+					}
+				}
 			}
 		}
 
@@ -237,21 +286,38 @@ if($current_group) {
 			if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$ligne.="$eleve_ele_id;";}
 			if((isset($avec_no_gep))&&($avec_no_gep=='y')) {$ligne.="$eleve_no_gep;";}
 		}
-	
+		if((isset($avec_doublant))&&($avec_doublant=='y')) {$ligne.="$eleve_doublant;";}
+		if((isset($avec_regime))&&($avec_regime=='y')) {$ligne.="$eleve_regime;";}
+
+		if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {$ligne.=$eleve_infos_resp_1.";".$eleve_infos_resp_2.";".$eleve_infos_resp_0.";";}
+
 		// Suppression du ; en fin de ligne
 		$ligne=preg_replace('/;$/','',$ligne);
 
 		$fd.=$ligne."\n";
 	}
 } else {
-
-	$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.*
-	    FROM eleves e, j_eleves_classes j
-	    WHERE (
-	    j.id_classe='".$id_classe."' AND
-	    j.login = e.login AND
-	    periode='".$periode_num."'
-	    ) ORDER BY nom, prenom");
+	if(((isset($avec_doublant))&&($avec_doublant=='y'))||
+	((isset($avec_regime))&&($avec_regime=='y'))) {
+		$sql="SELECT DISTINCT e.*, jer.doublant, jer.regime
+			FROM eleves e, j_eleves_classes j, j_eleves_regime jer
+			WHERE (
+			j.id_classe='".$id_classe."' AND
+			j.login = e.login AND
+			periode='".$periode_num."' AND
+			jer.login=e.login
+			) ORDER BY nom, prenom";
+	}
+	else {
+		$sql="SELECT DISTINCT e.*
+			FROM eleves e, j_eleves_classes j
+			WHERE (
+			j.id_classe='".$id_classe."' AND
+			j.login = e.login AND
+			periode='".$periode_num."'
+			) ORDER BY nom, prenom";
+	}
+	$appel_donnees_eleves = mysql_query($sql);
 	$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 	$i = 0;
 	while($i < $nombre_lignes) {
@@ -274,6 +340,54 @@ if($current_group) {
 		$eleve_elenoet=mysql_result($appel_donnees_eleves, $i, "elenoet");
 		$eleve_ele_id=mysql_result($appel_donnees_eleves, $i, "ele_id");
 
+		if(((isset($avec_doublant))&&($avec_doublant=='y'))||
+		((isset($avec_regime))&&($avec_regime=='y'))) {
+			$eleve_doublant=mysql_result($appel_donnees_eleves, $i, "doublant");
+			$eleve_regime=mysql_result($appel_donnees_eleves, $i, "regime");
+		}
+
+		/*
+		if(((isset($avec_doublant))&&($avec_doublant=='y'))||
+		((isset($avec_regime))&&($avec_regime=='y'))) {
+			$sql="SELECT * FROM j_eleves_regime WHERE login='".$current_eleve["login"]."';";
+			$res_tmp=mysql_query($sql);
+			if(mysql_num_rows($res_tmp)==0) {
+				//die("Problème avec les infos (régime, doublant) de $eleve_login</body></html>");
+				$eleve_regime="X";
+				$eleve_doublant="X";
+			}
+			else {
+				while($lig_tmp=mysql_fetch_object($res_tmp)) {
+					$eleve_regime=$lig_tmp->regime;
+					$eleve_doublant=$lig_tmp->doublant;
+				}
+			}
+		}
+		*/
+
+		if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {
+			$eleve_infos_resp_1="";
+			$eleve_infos_resp_2="";
+			$eleve_infos_resp_0="";
+			
+			$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.ele_id='$eleve_ele_id' AND r.pers_id=rp.pers_id AND (r.resp_legal='1' OR r.resp_legal='2' OR (r.pers_contact='1' AND (rp.tel_pers!='' OR rp.tel_prof!='' OR rp.tel_port!='')));";
+			$res_tmp=mysql_query($sql);
+			if(mysql_num_rows($res_tmp)>0) {
+				while($lig_tmp=mysql_fetch_object($res_tmp)) {
+					if($lig_tmp->resp_legal=='1') {
+						$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+					}
+					elseif($lig_tmp->resp_legal=='2') {
+						$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+					}
+					else {
+						if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
+						$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+					}
+				}
+			}
+		}
+
 		$ligne="";
 		if((isset($avec_classe))&&($avec_classe=='y')) {$ligne.="$classe;";}
 		if((isset($avec_login))&&($avec_login=='y')) {$ligne.="$eleve_login;";}
@@ -291,7 +405,12 @@ if($current_group) {
 			if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$ligne.="$eleve_ele_id;";}
 			if((isset($avec_no_gep))&&($avec_no_gep=='y')) {$ligne.="$eleve_no_gep;";}
 		}
-	
+
+		if((isset($avec_doublant))&&($avec_doublant=='y')) {$ligne.="$eleve_doublant;";}
+		if((isset($avec_regime))&&($avec_regime=='y')) {$ligne.="$eleve_regime;";}
+
+		if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {$ligne.=$eleve_infos_resp_1.";".$eleve_infos_resp_2.";".$eleve_infos_resp_0.";";}
+
 		// Suppression du ; en fin de ligne
 		$ligne=preg_replace('/;$/','',$ligne);
 

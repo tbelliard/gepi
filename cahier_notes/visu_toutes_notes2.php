@@ -1799,6 +1799,18 @@ if(isset($_GET['mode'])) {
 		for($j=1;$j<count($col[1]);$j++) {
 			$x2=$x0;
 
+			// 20130328
+			if($j>1) {
+				//if($y2+$h_ligne<$hauteur_page-$marge_basse) {
+				if($y2+$h_ligne*2<$hauteur_page-$marge_basse) {
+					$y2+=$h_ligne;
+				}
+				else {
+					$pdf->AddPage();
+					$y2=$y0;
+				}
+			}
+
 			/*
 			if($j%2==0) {
 			$pdf->SetFillColor(0,0,0);
@@ -1831,13 +1843,16 @@ if(isset($_GET['mode'])) {
 
 				$x2+=$largeur_dispo;
 			}
-			$y2+=$h_ligne;
+			// 20130328
+			//$y2+=$h_ligne;
 
 			$k++;
 		}
 
+		$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 		send_file_download_headers('application/pdf',$nom_fic);
-		$pdf->Output($nom_fic,'I');
+		$pdf->Output($nom_fic, $pref_output_mode_pdf);
 		die();
 
 	}
@@ -1909,7 +1924,7 @@ if(($aff_date_naiss)&&($aff_date_naiss=='y')) {
 }
 echo add_token_in_url();
 
-echo "'>PDF</a>
+echo "' target='_blank'>PDF</a>
 </div>\n";
 
 // Lien pour générer un CSV

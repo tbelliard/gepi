@@ -58,6 +58,7 @@ if(isset($_POST['action_corrections'])) {
 	$tab_periode_num=array();
 
 	$tab_liste_id_groupe=array();
+	$tab_proflist_string=array();
 
 	for($i=0;$i<count($enregistrement);$i++) {
 		$tab_tmp=explode("|",$enregistrement[$i]);
@@ -66,6 +67,12 @@ if(isset($_POST['action_corrections'])) {
 		$current_periode=$tab_tmp[2];
 
 		$current_group=get_group($current_id_groupe);
+
+		//echo "<pre>".print_r($current_group)."</pre>";
+		if(isset($current_group["profs"]['proflist_string'])) {
+			$tab_proflist_string[$current_id_groupe]=$current_group["profs"]['proflist_string'];
+			//echo "\$tab_proflist_string[$current_id_groupe]=".$tab_proflist_string[$current_id_groupe]."<br />";
+		}
 
 		if($current_login_ele=='') {
 			// Appréciation de groupe
@@ -223,12 +230,11 @@ if(isset($_POST['action_corrections'])) {
 		}
 
 		if($envoi_mail_actif=='y') {
-			$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-			if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
-
 			$email_reply="";
+			$tab_email_reply=array();
 			//$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
 			$sql="(select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."')";
+			$sql.=" UNION (select nom, prenom, civilite, email from utilisateurs where statut = 'secours')";
 
 			for($loop=0;$loop<count($tab_liste_id_groupe);$loop++) {
 				$sql.=" UNION (select nom, prenom, civilite, email from utilisateurs u, j_scol_classes jsc, j_groupes_classes jgc where u.statut='scolarite' AND u.email!='' AND u.login=jsc.login AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe='".$tab_liste_id_groupe[$loop]."')";
@@ -236,8 +242,13 @@ if(isset($_POST['action_corrections'])) {
 			//echo "$sql<br />";
 			$req=mysql_query($sql);
 			if(mysql_num_rows($req)>0) {
-				$lig_u=mysql_fetch_object($req);
-				$email_reply=$lig_u->email;
+				while($lig_u=mysql_fetch_object($req)) {
+					if(!in_array($lig_u->email, $tab_email_reply)) {
+						if($email_reply!="") {$email_reply.=", ";}
+						$email_reply.=$lig_u->email;
+						$tab_email_reply[]=$lig_u->email;
+					}
+				}
 			}
 
 			foreach($texte_email as $id_groupe => $texte) {
@@ -255,7 +266,7 @@ if(isset($_POST['action_corrections'])) {
 					}
 
 					if($email_destinataires!='') {
-						$sujet_mail="[GEPI] Groupe n°$id_groupe: Réponse à votre demande de correction";
+						$sujet_mail="Groupe n°$id_groupe: Réponse à votre demande de correction";
 
 						$ajout_header="";
 						if($email_reply!="") {
@@ -264,6 +275,9 @@ if(isset($_POST['action_corrections'])) {
 						}
 	
 						$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
+						if(isset($tab_proflist_string[$id_groupe])) {
+							$salutation.=" ".$tab_proflist_string[$id_groupe];
+						}
 						$texte=$salutation.",\n\n".$texte."\nCordialement.\n-- \n".civ_nom_prenom($_SESSION['login']);
 
 						$envoi = envoi_mail($sujet_mail, $texte, $email_destinataires, $ajout_header);
@@ -287,7 +301,12 @@ require_once("../lib/header.inc.php");
 if(!isset($tab_id_classe)) {
 	echo "</p>\n";
 
-	$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode ORDER BY classe;";
+	if($_SESSION['statut']=='scolarite') {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+	}
+	else {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode ORDER BY classe;";
+	}
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	$nb_classes=mysql_num_rows($res);
@@ -313,7 +332,11 @@ if(!isset($tab_id_classe)) {
 			echo "</td>\n";
 			echo "<td align='left'>\n";
 		}
-		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' /> $lig_clas->classe</label>";
+		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' ";
+		if($nb_classes==1) {
+			echo "checked ";
+		}
+		echo "/> $lig_clas->classe</label>";
 		echo "<br />\n";
 		$cpt++;
 	}

@@ -313,7 +313,7 @@ class ClassIncidents {
         foreach ($tableau_sanctions as $id_incident) {
             foreach ($id_incident as $id_sanction) {
                 foreach ($id_sanction as $protagoniste) {
-                    if ($protagoniste->nature == 'exclusion') {
+                    if ($protagoniste->nature == 'Exclusion') {
                         $this->crenaux = $this->modele_incidents->get_crenaux();
                         if (is_null($this->crenaux) || (!isset($this->crenaux[$protagoniste->exc_heure_debut]) && !isset($this->crenaux[$protagoniste->exc_heure_fin]))) {
                             $date_debut_ex = "08:00:00";
@@ -403,7 +403,7 @@ class ClassIncidents {
             if (array_key_exists($id_incident, $sanctions)) {
                 foreach ($sanctions[$id_incident] as $id_sanctions) {
                     foreach ($id_sanctions as $sanction) {
-                        if ($sanction->nature == 'retenue')
+                        if ($sanction->nature == 'Retenue')
                             $this->nbre_heures = $this->nbre_heures + $sanction->ret_duree;
                     }
                 }
@@ -418,7 +418,7 @@ class ClassIncidents {
             if (array_key_exists($id_incident, $sanctions)) {
                 foreach ($sanctions[$id_incident] as $id_sanctions) {
                     foreach ($id_sanctions as $sanction) {
-                        if ($sanction->nature == 'exclusion')
+                        if ($sanction->nature == 'Exclusion')
                             $this->nbre_jours = $this->nbre_jours + $sanction->exc_duree;
                     }
                 }
@@ -493,7 +493,7 @@ class ClassIncidents {
         foreach ($incidents as $incident) {
             if (isset($sanctions[$incident][$eleve])) {
                 foreach ($sanctions[$incident][$eleve] as $sanction) {
-                    if ($sanction->nature == 'retenue')
+                    if ($sanction->nature == 'Retenue')
                         $this->nbre_heures = $this->nbre_heures + $sanction->ret_duree;
                 }
             }
@@ -506,7 +506,7 @@ class ClassIncidents {
         foreach ($incidents as $incident) {
             if (isset($sanctions[$incident][$eleve])) {
                 foreach ($sanctions[$incident][$eleve] as $sanction) {
-                    if ($sanction->nature == 'exclusion')
+                    if ($sanction->nature == 'Exclusion')
                         $this->nbre_jours = $this->nbre_jours + $sanction->exc_duree;
                 }
             }

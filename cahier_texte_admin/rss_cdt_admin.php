@@ -55,6 +55,7 @@ if (!checkAccess()) {
 // ======================== Initialisation des données ==================== //
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $rss_cdt_ele = isset($_POST["rss_cdt_ele"]) ? $_POST["rss_cdt_ele"] : NULL;
+$rss_cdt_responsable = isset($_POST["rss_cdt_responsable"]) ? $_POST["rss_cdt_responsable"] : NULL;
 $rss_acces_ele = isset($_POST["rss_acces_ele"]) ? $_POST["rss_acces_ele"] : NULL;
 $genereflux = isset($_GET["genereflux"]) ? $_GET["genereflux"] : NULL;
 $generefluxcsv = isset($_GET["generefluxcsv"]) ? $_GET["generefluxcsv"] : NULL;
@@ -62,7 +63,8 @@ $msg = $result = NULL;
 $lienFlux=array();
 $a=0;
 
-
+$rss_email_mode=isset($_POST["rss_email_mode"]) ? $_POST["rss_email_mode"] : NULL;
+$rss_email_prof=isset($_POST["rss_email_prof"]) ? $_POST["rss_email_prof"] : "n";
 
 
 // ======================== Traitement des données ======================== //
@@ -70,7 +72,12 @@ if ($action == "modifier") {
 	check_token();
 	$save = saveSetting("rss_cdt_eleve", $rss_cdt_ele);
 	if (!$save) {
-		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>'."\n";
+		$msg .= '<p class="red" style="text-align:center">La modification n\'a pas été enregistrée.</p>'."\n";
+	}
+
+	$save = saveSetting("rss_cdt_responsable", $rss_cdt_responsable);
+	if (!$save) {
+		$msg .= '<p class="red" style="text-align:center">La modification n\'a pas été enregistrée.</p>'."\n";
 	}
 
 }
@@ -78,7 +85,46 @@ if (isset($rss_acces_ele)) {
 	check_token();
 	$save_d = saveSetting("rss_acces_ele", $rss_acces_ele);
 	if (!$save_d) {
-		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>';
+		$msg .= '<p class="red" style="text-align:center">La modification n\'a pas été enregistrée.</p>';
+	}
+}
+
+
+if (isset($rss_email_mode)) {
+	check_token();
+	$save_d = saveSetting("rss_email_mode", $rss_email_mode);
+	if (!$save_d) {
+		$msg .= '<p class="red" style="text-align:center">La modification n\'a pas été enregistrée.</p>';
+	}
+
+	$save_d = saveSetting("rss_email_prof", $rss_email_prof);
+	if (!$save_d) {
+		$msg .= '<p class="red" style="text-align:center">La modification n\'a pas été enregistrée.</p>';
+	}
+}
+
+if(isset($_POST['form_rss_selection_ele_is_posted'])) {
+	check_token();
+
+	$rss_ele_a_initialiser=isset($_POST['rss_ele_a_initialiser']) ? $_POST['rss_ele_a_initialiser'] : array();
+	$cpt_flux_crees=0;
+	for($loop=0;$loop<count($rss_ele_a_initialiser);$loop++) {
+		// Ménage préalable parce qu'il n'y a pas de clé primaire sur rss_users
+		$sql="DELETE FROM rss_users WHERE user_login='".$rss_ele_a_initialiser[$loop]."';";
+		$menage = mysql_query($sql);
+
+		$uri_el = md5($rss_ele_a_initialiser[$loop].getSettingValue("gepiSchoolRne").mt_rand());
+		$sql = "INSERT INTO rss_users (id, user_login, user_uri) VALUES ('', '".$rss_ele_a_initialiser[$loop]."', '".$uri_el."');";
+		$insert = mysql_query($sql);
+		if (!$insert) {
+			$erreur .= 'Erreur sur '.$rss_ele_a_initialiser[$loop].'<br />';
+		}
+		else {
+			$cpt_flux_crees++;
+		}
+	}
+	if($cpt_flux_crees>0) {
+		$msg.="<p class='red' style='text-align:center'>$cpt_flux_crees flux créé(s).</p>";
 	}
 }
 
@@ -175,12 +221,24 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 
 // On vérifie les checked
 // et on définit si on doit afficher le div qui suit ou pas
+if ((getSettingValue("rss_cdt_eleve") == "y")||(getSettingValue("rss_cdt_responsable") == "y")) {
+	$style_ele = ' style="Display: block;"';
+}
+else{
+	$style_ele = ' style="display: none;"';
+}
+
 if (getSettingValue("rss_cdt_eleve") == "y") {
 	$checked_ele = ' checked="checked"';
-	$style_ele = ' style="Display: block;"';
-}else{
+}
+else {
 	$checked_ele = '';
-	$style_ele = ' style="Display: none;"';
+}
+
+if (getSettingValue("rss_cdt_responsable") == "y") {
+	$checked_resp = ' checked="checked"';
+}else{
+	$checked_resp = '';
 }
 
 if (getSettingValue("rss_acces_ele") == "direct") {
@@ -189,6 +247,20 @@ if (getSettingValue("rss_acces_ele") == "direct") {
 }else{
 	$style_ele_dir = '';
 	$style_ele_csv = ' checked="checked"';
+}
+
+if (getSettingValue("rss_email_mode") == "email_admin") {
+	$style_email_adm = ' checked="checked"';
+	$style_email_etab = '';
+}else{
+	$style_email_etab = ' checked="checked"';
+	$style_email_adm = '';
+}
+
+if (getSettingAOui("rss_email_prof")) {
+	$style_email_prof = ' checked="checked"';
+}else{
+	$style_email_prof = '';
 }
 
 

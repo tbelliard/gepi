@@ -500,6 +500,8 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		}
 	}
 
+	$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+
 	$date=date("Ymd_Hi");
 	$nom_fich='Trombino_';
 	if((isset($groupe))&&($groupe!=0)) {
@@ -516,7 +518,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	$nom_fich=remplace_accents($nom_fich, "all");
 	$nom_fich.=$date.'.pdf';
 	header('Content-Type: application/pdf');
-	$pdf->Output($nom_fich,'I');
+	$pdf->Output($nom_fich, $pref_output_mode_pdf);
 	die();
 }
 else {

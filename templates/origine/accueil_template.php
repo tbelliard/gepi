@@ -313,9 +313,18 @@
 				<?php echo $afficheAccueil->canal_rss['expli']; ?>
 			  </span>
 			  <span id="divuri" style="display: none;">
+			  <?php
+				if(!isset($afficheAccueil->canal_rss_plus)) {
+			  ?>
 				<a href="<?php echo $afficheAccueil->canal_rss['lien']; ?>" onclick="window.open(this.href, '_blank'); return false;" >
 				  <?php echo $afficheAccueil->canal_rss['texte']; ?>
 				</a>
+			  <?php
+				}
+				else {
+					echo $afficheAccueil->canal_rss_plus;
+				}
+			  ?>
 			  </span>
 			</p>
 
@@ -454,8 +463,8 @@
 	if (count($afficheAccueil->nom_connecte)) {
 		//echo "
 ?>
-	<div id='personnes_connectees' class='infobulle_corps' style='color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:1; width: 20em; left:0em;'>
-		<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: 20em;' onmousedown="dragStart(event, 'personnes_connectees')">
+	<div id='personnes_connectees' class='infobulle_corps' style='color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:1; width: 35em; left:0em;'>
+		<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: 35em;' onmousedown="dragStart(event, 'personnes_connectees')">
 			<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>
 				<a href='#' onclick="cacher_div('personnes_connectees');return false;">
 					<img src='./images/icons/close16.png' width='16' height='16' alt='Fermer' />
@@ -467,11 +476,13 @@
 		</div>
 		<div>
 			<div style="padding-left: 1px;">
-				<div style="text-align:center;">
+				<!--div style="text-align:center;"-->
+				<div align="center">
 					<table class='boireaus'>
 						<tr>
 							<th>Personne</th>
 							<th>Statut</th>
+							<th>Fin session</th>
 						</tr>
 <?php
 		foreach ($afficheAccueil->nom_connecte as $newentree) {
@@ -519,6 +530,11 @@
 									else {
 										echo $newentree['statut'];
 									}
+								?>
+							</td>
+							<td>
+								<?php
+									echo formate_date($newentree['end'], 'y');
 								?>
 							</td>
 						</tr>

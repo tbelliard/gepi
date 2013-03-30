@@ -54,6 +54,8 @@ if (empty($_GET['nom_lieu']) and empty($_POST['nom_lieu'])) { $nom_lieu=""; }
 if (empty($_GET['com_lieu']) and empty($_POST['com_lieu'])) { $com_lieu="";}
     else { if (isset($_GET['com_lieu'])) {$com_lieu=$_GET['com_lieu'];} if (isset($_POST['com_lieu'])) {$com_lieu=$_POST['com_lieu'];} }
 
+include("function.php");
+
 $lieu = AbsenceEleveLieuQuery::create()->findPk($id_lieu);
 if ($action == 'supprimer') {
 	check_token();
@@ -72,7 +74,7 @@ if ($action == 'supprimer') {
     }
 } elseif ($action == 'ajouterdefaut') {
 	check_token();
-    include("function.php");
+    //include("function.php");
     ajoutLieuxParDefaut();
 } else {
     if ($nom_lieu != '') {

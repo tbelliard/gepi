@@ -72,6 +72,9 @@ if (empty($_GET['ajout_statut_type_saisie']) and empty($_POST['ajout_statut_type
 if($id_lieu=='-1'){
     $id_lieu=Null;
 }
+
+include("function.php");
+
 //$type = new AbsenceEleveType();
 $type = AbsenceEleveTypeQuery::create()->findPk($id);
 if ($action == 'supprimer') {
@@ -91,7 +94,7 @@ if ($action == 'supprimer') {
     }
 } elseif ($action == 'ajouterdefaut') {
 	check_token();
-    include("function.php");
+    //include("function.php");
     ajoutTypesParDefaut();
 } elseif ($action == 'supprimer_statut') {
 	check_token();

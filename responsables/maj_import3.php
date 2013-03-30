@@ -7774,6 +7774,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 			echo "<input type='hidden' name='ne_pas_proposer_redoublonnage_adresse' value='".getSettingValue('ne_pas_proposer_redoublonnage_adresse')."' />\n";
 			echo "</form>\n";
 
+			echo "<br /><p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;</em> A l'étape suivante, nous allons contrôler la présence éventuelle de doublons avant d'afficher les différences.</p>";
 			break;
 
 		case "16a":
@@ -8002,7 +8003,9 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 				}
 			}
 
+			$temoin_rapprochement_propose="n";
 			if($chaine!="") {
+				$temoin_rapprochement_propose="y";
 				echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 				echo "<fieldset style='border: 1px solid grey;'>\n";
 
@@ -8054,10 +8057,15 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 				echo "<p><br /></p>\n";
 			}
 
+			if($temoin_rapprochement_propose=="n") {
+				echo "<p>Aucun doublon n'a été détecté à ce stade.</p>\n";
+			}
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo "<fieldset style='border: 1px solid grey;'>\n";
-			echo "<p class='bold'>Ou passer à la suite</p>\n";
+			if($temoin_rapprochement_propose=="y") {
+				echo "<p class='bold'>Ou passer à la suite</p>\n";
+			}
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			echo "<input type='hidden' name='step' value='16' />\n";
 
@@ -9637,7 +9645,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				//echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min($eff_tranche_recherche_diff,$nb_associations_a_consulter)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_associations_a_consulter.<br />\n";
 				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min(20,$nb_associations_a_consulter)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_associations_a_consulter.<br />\n";
 
-				echo "Ne pas proposer de supprimer des responsables non associés à des élèves <input type='checkbox' name='suppr_resp_non_assoc' value='n' /><br />\n";
+				echo "<label for='suppr_resp_non_assoc'>Ne pas proposer de supprimer des responsables non associés à des élèves </label><input type='checkbox' name='suppr_resp_non_assoc' id='suppr_resp_non_assoc' value='n' /><br />\n";
 				echo add_token_field();
 				echo "<input type='submit' value='Afficher les différences' /></p>\n";
 /*

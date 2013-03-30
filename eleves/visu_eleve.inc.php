@@ -1666,19 +1666,21 @@ Patientez pendant l'extraction des données... merci.
 
 				echo "<p><strong>".ucfirst($gepi_prof_suivi)."</strong>: ";
 				for($loop=0;$loop<count($tab_ele['classe']);$loop++) {
-					if($loop>0) {echo ", ";}
-					if($tab_ele['classe'][$loop]['pp']['email']!="") {
-						//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
-						//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
-						echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
-						if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-						echo ",%0d%0aCordialement.'>";
+					if(isset($tab_ele['classe'][$loop]['pp'])) {
+						if($loop>0) {echo ", ";}
+						if($tab_ele['classe'][$loop]['pp']['email']!="") {
+							//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
+							//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
+							echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+							echo ",%0d%0aCordialement.'>";
+						}
+						echo $tab_ele['classe'][$loop]['pp']['civ_nom_prenom'];
+						if($tab_ele['classe'][$loop]['pp']['email']!="") {
+							echo "</a>";
+						}
+						echo " (<em>".$tab_ele['classe'][$loop]['classe']."</em>)";
 					}
-					echo $tab_ele['classe'][$loop]['pp']['civ_nom_prenom'];
-					if($tab_ele['classe'][$loop]['pp']['email']!="") {
-						echo "</a>";
-					}
-					echo " (<em>".$tab_ele['classe'][$loop]['classe']."</em>)";
 				}
 				echo "</p>\n";
 
@@ -1967,14 +1969,28 @@ Patientez pendant l'extraction des données... merci.
 											$graphe_chaine_seriemax.=$tab_moy['periodes'][$loop]['moy_max_classe_grp'][$j];
 
 											if(isset($tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i])) {
-												$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+												//$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+												if($tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i]=='') {
+													$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_note'][$j][$i];
+												}
+												else {
+													$graphe_chaine_temp_eleve.=$tab_moy['periodes'][$loop]['current_eleve_statut'][$j][$i];
+												}
 											}
 											$compteur_groupes_eleve++;
 										}
 									}
 
-									$graphe_chaine_mgen_eleve=number_format($tab_moy['periodes'][$loop]['moy_gen_eleve'][$i],1);
-									$graphe_chaine_mgen_classe=number_format($tab_moy['periodes'][$loop]['moy_generale_classe'],1);
+									//echo "\$tab_moy['periodes'][$loop]['moy_gen_eleve'][$i]=".$tab_moy['periodes'][$loop]['moy_gen_eleve'][$i]."<br />";
+									$graphe_chaine_mgen_eleve=$tab_moy['periodes'][$loop]['moy_gen_eleve'][$i];
+									if(is_numeric($tab_moy['periodes'][$loop]['moy_gen_eleve'][$i])) {
+										$graphe_chaine_mgen_eleve=number_format($tab_moy['periodes'][$loop]['moy_gen_eleve'][$i],1);
+									}
+									//echo "\$tab_moy['periodes'][$loop]['moy_generale_classe']=".$tab_moy['periodes'][$loop]['moy_generale_classe']."<br />";
+									$graphe_chaine_mgen_classe=$tab_moy['periodes'][$loop]['moy_generale_classe'];
+									if(is_numeric($tab_moy['periodes'][$loop]['moy_generale_classe'])) {
+										$graphe_chaine_mgen_classe=number_format($tab_moy['periodes'][$loop]['moy_generale_classe'],1);
+									}
 
 
 									$graphe_chaine_periode[$loop]=
@@ -1995,9 +2011,13 @@ Patientez pendant l'extraction des données... merci.
 									"tronquer_nom_court=4&amp;".
 									"temoin_image_escalier=oui&amp;".
 									"seriemin=".$graphe_chaine_seriemin."&amp;".
-									"seriemax=".$graphe_chaine_seriemax."&amp;".
-									"mgen1=".$graphe_chaine_mgen_eleve."&amp;".
-									"mgen2=".$graphe_chaine_mgen_classe;
+									"seriemax=".$graphe_chaine_seriemax;
+									if(isset($graphe_chaine_mgen_eleve)) {
+										$graphe_chaine_periode[$loop].="&amp;"."mgen1=".$graphe_chaine_mgen_eleve;
+									}
+									if(isset($graphe_chaine_mgen_classe)) {
+										$graphe_chaine_periode[$loop].="&amp;"."mgen2=".$graphe_chaine_mgen_classe;
+									}
 								}
 							}
 
@@ -2421,7 +2441,6 @@ Patientez pendant l'extraction des données... merci.
 			echo "'>";
 			if(getSettingValue("active_module_absence")=='y' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-
 			    if(count($tab_ele['absences'])==0) {
 				    echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
 			    }
@@ -2498,7 +2517,7 @@ Patientez pendant l'extraction des données... merci.
 				
 			} elseif (getSettingValue("active_module_absence")=='2') {
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-			    
+
 				//affichage de la date de sortie de l'élève de l'établissement
 				if ($tab_ele['date_sortie']!=0) {
 					echo "<p style=\"color:red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."</p>";;
@@ -2511,7 +2530,7 @@ Patientez pendant l'extraction des données... merci.
 			    echo "<table class='boireaus'>\n";
 				echo "<caption>Bilan des absences</caption>\n";
 			    echo "<tr>\n";
-			    echo "<th>Période</th>\n";
+			    echo "<th title=\"Les dates de fin de période correspondent à ce qui est paramétré en colonne 'Date de fin' de la page de Verrouillage des périodes de notes (page accessible en compte scolarité).\">Période</th>\n";
 			    echo "<th>Nombre d'absences<br/>(1/2 journées)</th>\n";
 			    echo "<th>Absences non justifiées</th>\n";
 			    echo "<th>Nombre de retards</th>\n";
@@ -2528,7 +2547,7 @@ Patientez pendant l'extraction des données... merci.
 				    echo "<td>".$periode_note->getNomPeriode();
 				    echo " du ".$periode_note->getDateDebut('d/m/Y');
 				    echo " au ";
-                                    if ($periode_note->getDateFin() == null) {
+				    if ($periode_note->getDateFin() == null) {
 					echo '(non précisé)';
 				    } else {
 					echo $periode_note->getDateFin('d/m/Y');

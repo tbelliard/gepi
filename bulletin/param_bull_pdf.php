@@ -159,8 +159,18 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['active_bloc_eleve'])) { $active_bloc_eleve = $_GET['active_bloc_eleve']; } if (isset($_POST['active_bloc_eleve'])) { $active_bloc_eleve = $_POST['active_bloc_eleve']; } }
 	if (empty($_GET['active_bloc_adresse_parent']) and empty($_POST['active_bloc_adresse_parent'])) { $active_bloc_adresse_parent = ''; }
 	else { if (isset($_GET['active_bloc_adresse_parent'])) { $active_bloc_adresse_parent = $_GET['active_bloc_adresse_parent']; } if (isset($_POST['active_bloc_adresse_parent'])) { $active_bloc_adresse_parent = $_POST['active_bloc_adresse_parent']; } }
+
+	// 20130215
 	if (empty($_GET['active_bloc_absence']) and empty($_POST['active_bloc_absence'])) { $active_bloc_absence = ''; }
 	else { if (isset($_GET['active_bloc_absence'])) { $active_bloc_absence = $_GET['active_bloc_absence']; } if (isset($_POST['active_bloc_absence'])) { $active_bloc_absence = $_POST['active_bloc_absence']; } }
+
+	if (empty($_GET['afficher_abs_tot']) and empty($_POST['afficher_abs_tot'])) { $afficher_abs_tot = ''; }
+	else { if (isset($_GET['afficher_abs_tot'])) { $afficher_abs_tot = $_GET['afficher_abs_tot']; } if (isset($_POST['afficher_abs_tot'])) { $afficher_abs_tot = $_POST['afficher_abs_tot']; } }
+	if (empty($_GET['afficher_abs_nj']) and empty($_POST['afficher_abs_nj'])) { $afficher_abs_nj = ''; }
+	else { if (isset($_GET['afficher_abs_nj'])) { $afficher_abs_nj = $_GET['afficher_abs_nj']; } if (isset($_POST['afficher_abs_nj'])) { $afficher_abs_nj = $_POST['afficher_abs_nj']; } }
+	if (empty($_GET['afficher_abs_ret']) and empty($_POST['afficher_abs_ret'])) { $afficher_abs_ret = ''; }
+	else { if (isset($_GET['afficher_abs_ret'])) { $afficher_abs_ret = $_GET['afficher_abs_ret']; } if (isset($_POST['afficher_abs_ret'])) { $afficher_abs_ret = $_POST['afficher_abs_ret']; } }
+
 	if (empty($_GET['active_bloc_note_appreciation']) and empty($_POST['active_bloc_note_appreciation'])) { $active_bloc_note_appreciation = ''; }
 	else { if (isset($_GET['active_bloc_note_appreciation'])) { $active_bloc_note_appreciation = $_GET['active_bloc_note_appreciation']; } if (isset($_POST['active_bloc_note_appreciation'])) { $active_bloc_note_appreciation = $_POST['active_bloc_note_appreciation']; } }
 	if (empty($_GET['active_bloc_avis_conseil']) and empty($_POST['active_bloc_avis_conseil'])) { $active_bloc_avis_conseil = ''; }
@@ -289,6 +299,7 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['largeur_niveau'])) { $largeur_niveau = $_GET['largeur_niveau']; } if (isset($_POST['largeur_niveau'])) { $largeur_niveau = $_POST['largeur_niveau']; } }
 	if (empty($_GET['largeur_rang']) and empty($_POST['largeur_rang'])) { $largeur_rang = ''; }
 	else { if (isset($_GET['largeur_rang'])) { $largeur_rang = $_GET['largeur_rang']; } if (isset($_POST['largeur_rang'])) { $largeur_rang = $_POST['largeur_rang']; } }
+
 	if (empty($_GET['X_absence']) and empty($_POST['X_absence'])) { $X_absence = ''; }
 	else { if (isset($_GET['X_absence'])) { $X_absence = $_GET['X_absence']; } if (isset($_POST['X_absence'])) { $X_absence = $_POST['X_absence']; } }
 
@@ -902,7 +913,7 @@ function DecocheCheckbox() {
 
 		echo "<tr ";  if ($nb_ligne % 2) echo "bgcolor=".$bgcolor; echo " >\n"; $nb_ligne++;
 		echo "<td style=\"font-variant: small-caps;\" width=\"80%\" >\n";
-		echo "Interdire la sélection du modèle de bulletin lors de l'impression. Le modèle doit être défini dans les paramètres de chaque classe. <i>(En cas d'absence de modèle, le modèle standard est utilisé.)</i><br />\n";
+		echo "Interdire la sélection du modèle de bulletin lors de l'impression. Le modèle doit être défini dans les paramètres de chaque classe. <i>(<em>En cas d'absence de modèle, le modèle standard est utilisé.</em>)</i><br />\n";
 		echo "</td>\n";
 		echo "<td style=\"text-align: center;\">\n";
 			echo "<input type=\"radio\" name=\"option_modele_bulletin\" value=\"1\" ";
@@ -1580,8 +1591,46 @@ function DecocheCheckbox() {
 
 
 			<div style="font-weight: bold; background: #CFCFCF;">Cadre Absences/CPE</div>
-			<input name="active_bloc_absence" id="active_bloc_absence_1" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_absence_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_absence" id="active_bloc_absence_0" value="0" type="radio" <?php if(empty($active_bloc_absence) or (!empty($active_bloc_absence) and $active_bloc_absence!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_absence_0'>&nbsp;Désactiver</label><br />
-			
+
+			<?php
+				// A mettre dans 162_to_163
+				if((!isset($afficher_abs_tot))||($afficher_abs_tot=="")||(!isset($afficher_abs_nj))||($afficher_abs_nj=="")||(!isset($afficher_abs_ret))||($afficher_abs_ret=="")) {
+					if($active_bloc_absence=="1") {
+						$afficher_abs_tot='1';
+						$afficher_abs_nj='1';
+						$afficher_abs_ret='1';
+					}
+					else {
+						$afficher_abs_tot='0';
+						$afficher_abs_nj='0';
+						$afficher_abs_ret='0';
+					}
+				}
+			?>
+
+			<!-- 20130215 -->
+			<table border='0'>
+				<tr>
+					<td colspan='2'>Affichage du bloc absences/appréciation du CPE&nbsp;:</td>
+					<td><input name="active_bloc_absence" id="active_bloc_absence_1" value="1" type="radio" <?php if(!empty($active_bloc_absence) and $active_bloc_absence==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_absence_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_absence" id="active_bloc_absence_0" value="0" type="radio" <?php if(empty($active_bloc_absence) or (!empty($active_bloc_absence) and $active_bloc_absence!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_absence_0'>&nbsp;Désactiver</label></td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td>Affichage des totaux d'absences&nbsp;:</td>
+					<td><input name="afficher_abs_tot" id="afficher_abs_tot_1" value="1" type="radio" <?php if(!empty($afficher_abs_tot) and $afficher_abs_tot==='1') { ?>checked="checked"<?php } ?> /><label for='afficher_abs_tot_1'>&nbsp;Activer</label> &nbsp;<input name="afficher_abs_tot" id="afficher_abs_tot_0" value="0" type="radio" <?php if(empty($afficher_abs_tot) or (!empty($afficher_abs_tot) and $afficher_abs_tot!='1')) { ?>checked="checked"<?php } ?> /><label for='afficher_abs_tot_0'>&nbsp;Désactiver</label></td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td>Affichage du nombre d'absences non justifiées&nbsp;:</td>
+					<td><input name="afficher_abs_nj" id="afficher_abs_nj_1" value="1" type="radio" <?php if(!empty($afficher_abs_nj) and $afficher_abs_nj==='1') { ?>checked="checked"<?php } ?> /><label for='afficher_abs_nj_1'>&nbsp;Activer</label> &nbsp;<input name="afficher_abs_nj" id="afficher_abs_nj_0" value="0" type="radio" <?php if(empty($afficher_abs_nj) or (!empty($afficher_abs_nj) and $afficher_abs_nj!='1')) { ?>checked="checked"<?php } ?> /><label for='afficher_abs_nj_0'>&nbsp;Désactiver</label></td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td>Affichage du nombre de retards&nbsp;:</td>
+					<td><input name="afficher_abs_ret" id="afficher_abs_ret_1" value="1" type="radio" <?php if(!empty($afficher_abs_ret) and $afficher_abs_ret==='1') { ?>checked="checked"<?php } ?> /><label for='afficher_abs_ret_1'>&nbsp;Activer</label> &nbsp;<input name="afficher_abs_ret" id="afficher_abs_ret_0" value="0" type="radio" <?php if(empty($afficher_abs_ret) or (!empty($afficher_abs_ret) and $afficher_abs_ret!='1')) { ?>checked="checked"<?php } ?> /><label for='afficher_abs_ret_0'>&nbsp;Désactiver</label></td>
+				</tr>
+			</table>
+
 			Positionnement X&nbsp;<input name="X_absence" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_absence)) { ?>value="<?php echo $X_absence; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_absence" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_absence)) { ?>value="<?php echo $Y_absence; ?>" <?php } ?> />mm&nbsp;<br />
 
 			Largeur du cadre Absences&nbsp;: 

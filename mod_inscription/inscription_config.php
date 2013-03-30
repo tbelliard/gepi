@@ -52,9 +52,9 @@ if (isset($_POST['post_items_a_afficher'])) {
 	$_SESSION['items_a_afficher']=$_POST['items_a_afficher'];
 }
 
-if (!isset($_SESSION['order_by_'])) {$_SESSION['order_by_'] = "date ASC";}
-$_SESSION['order_by_'] = isset($_POST['order_by_']) ? $_POST['order_by_'] : (isset($_GET['order_by_']) ? $_GET['order_by_'] : $_SESSION['order_by_']);
-$order_by_ = $_SESSION['order_by_'];
+if (!isset($_SESSION['order_by'])) {$_SESSION['order_by'] = "date ASC";}
+$_SESSION['order_by'] = isset($_POST['order_by']) ? $_POST['order_by'] : (isset($_GET['order_by']) ? $_GET['order_by'] : $_SESSION['order_by']);
+$order_by = $_SESSION['order_by'];
 $id_inter = isset($_POST['id_inter']) ? $_POST['id_inter'] : (isset($_GET['id_inter']) ? $_GET['id_inter'] : NULL);
 
 
@@ -103,7 +103,7 @@ if (isset($_POST['is_posted'])) {
     $msg .= "Les modifications ont été enregistrées.";
 }
 
-$call_data = mysql_query("SELECT * FROM inscription_items ORDER BY $order_by_");
+$call_data = mysql_query("SELECT * FROM inscription_items ORDER BY $order_by");
 $nombre_lignes = mysql_num_rows($call_data);
 
 if (!loadSettings()) {
@@ -173,31 +173,31 @@ if ($active_prof == "y") {
 
 <?php
 echo "<hr />";
+echo "<a name='liste'></a>";
 echo "<H2>Liste des items</H2>\n";
 if ($nombre_lignes != 0) {
   echo "<p>Chaque item ci-dessous correspond à une entité (<em>stage, intervention dans les établissements, réunion,...</em>) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
 ?>
 
 <br />
-<form id="form_items_a_afficher" method="post" action="inscription_config.php">
+<form id="form_items_a_afficher" method="post" action="inscription_config.php#liste">
 <p align="center">
 Afficher les items :  
-<label style='cursor: pointer;'>ouverts</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='ouverts' <?php if ($_SESSION['items_a_afficher']=="ouverts") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
-<label style='cursor: pointer;'>tous</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='tous' <?php if ($_SESSION['items_a_afficher']=="tous") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
-<label style='cursor: pointer;'>clos</label> <input type="radio" name="items_a_afficher" id='items_a_afficher' value='clos' <?php if ($_SESSION['items_a_afficher']=="clos") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" />
+<input type="radio" name="items_a_afficher" id='items_a_afficher' value='ouverts' <?php if ($_SESSION['items_a_afficher']=="ouverts") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" /><label style='cursor: pointer;'> ouverts</label> | 
+<input type="radio" name="items_a_afficher" id='items_a_afficher' value='tous' <?php if ($_SESSION['items_a_afficher']=="tous") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" /><label style='cursor: pointer;'> tous</label> | 
+<input type="radio" name="items_a_afficher" id='items_a_afficher' value='clos' <?php if ($_SESSION['items_a_afficher']=="clos") echo "checked "; ?>onchange="document.getElementById('form_items_a_afficher').submit();" /><label style='cursor: pointer;'> clos</label>
 <input type="hidden" name="post_items_a_afficher" />
-&nbsp;&nbsp;&nbsp;(<img src="../images/sort_up.gif" style="vertical-align:middle"><img src="../images/sort_dn.gif" style="vertical-align:middle">&nbsp;:&nbsp;ordre de tri)
-</p>
+</p><br />
 </form>
 
 <?php
 
   echo "<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n";
   echo "<tr>\n";
-  echo "<td><p class='bold'>N°<a href='inscription_config.php?order_by=id%20ASC'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_config.php?order_by=id%20DESC'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
-  echo "<td><p class='bold'>Date<a href='inscription_config.php?order_by=date%20ASC'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_config.php?order_by=date%20DESC'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
+  echo "<td><p class='bold'>N°<a href='inscription_config.php?order_by=id%20ASC#liste'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_config.php?order_by=id%20DESC#liste'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
+  echo "<td><p class='bold'>Date<a href='inscription_config.php?order_by=date%20ASC#liste'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_config.php?order_by=date%20DESC#liste'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
   echo "<td><p class='bold'>Heure</p></td>\n";
-  echo "<td><p class='bold'>Intitulé<a href='inscription_config.php?order_by=description%20ASC'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_config.php?order_by=description%20DESC'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
+  echo "<td><p class='bold'>Intitulé<a href='inscription_config.php?order_by=description%20ASC#liste'><img src=\"../images/sort_up.gif\" style=\"vertical-align:middle\"></a><a href='inscription_config.php?order_by=description%20DESC#liste'><img src=\"../images/sort_dn.gif\" style=\"vertical-align:middle\"></a></p></td>\n";
   echo "<td><p class='bold'>Personnes actuellement inscrites</p></td>\n";
   echo "<td><p class='bold'>-</p></td>\n";
   echo "</tr>\n";

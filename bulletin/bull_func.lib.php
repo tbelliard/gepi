@@ -159,8 +159,14 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		$bull_mention_doublant,
 		$bull_affiche_eleve_une_ligne,
 		$bull_affiche_appreciations,
+
 		$bull_affiche_absences,
+		$bull_affiche_abs_tot,
+		$bull_affiche_abs_nj,
+		$bull_affiche_abs_ret,
+
 		$bull_affiche_avis,
+
 		$bull_affiche_aid,
 		$bull_affiche_numero,		// affichage du numéro du bulletin
 		// L'affichage des graphes devrait provenir des Paramètres d'impression des bulletins HTML, mais le paramètre a été stocké dans $tab_bull
@@ -823,30 +829,53 @@ width:".$largeur1."%;\n";
 		echo "\n<!-- Fin de l'affichage du tableau des matières du bulletin n°$bulletin pour ".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom'].", ".$tab_bull['eleve'][$i]['classe']." -->\n\n";
 
 
+
 		// Absences et retards
+		// 20130215
 		//if($tab_bull['affiche_absences']=='y') {
 		if($bull_affiche_absences=='y') {
+		//if(($bull_affiche_abs_tot=='y')||($bull_affiche_abs_nj=='y')||($bull_affiche_abs_ret=='y')) {
 			echo "\n<!-- Début de l'affichage du tableau des absences du bulletin n°$bulletin pour ".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom'].", ".$tab_bull['eleve'][$i]['classe']." -->\n\n";
 
             echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des absences'>\n";
 			echo "<tr>\n";
 			echo "<td style='vertical-align: top;'>\n";
 			echo "<p class='bulletin'>";
-			if ($tab_bull['eleve'][$i]['eleve_absences'] == '0') {
-				echo "<i>Aucune demi-journée d'absence</i>.";
-			} else {
-				echo "<i>Nombre de demi-journées d'absence ";
-				if ($tab_bull['eleve'][$i]['eleve_nj'] == '0') {echo "justifiées ";}
-				echo ": </i><b>".$tab_bull['eleve'][$i]['eleve_absences']."</b>";
-				if ($tab_bull['eleve'][$i]['eleve_nj'] != '0') {
-					echo " (dont <b>".$tab_bull['eleve'][$i]['eleve_nj']."</b> non justifiée"; if ($tab_bull['eleve'][$i]['eleve_nj'] != '1') {echo "s";}
-					echo ")";
+
+			if($bull_affiche_abs_tot=='y') {
+				if ($tab_bull['eleve'][$i]['eleve_absences'] == '0') {
+					echo "<i>Aucune demi-journée d'absence</i>.";
+				} else {
+					echo "<i>Nombre de demi-journées d'absence";
+					if($bull_affiche_abs_nj=='y') {
+						if ($tab_bull['eleve'][$i]['eleve_nj'] == '0') {echo " justifiées";}
+						echo "&nbsp;: </i><b>".$tab_bull['eleve'][$i]['eleve_absences']."</b>";
+						if ($tab_bull['eleve'][$i]['eleve_nj'] != '0') {
+							echo " (dont <b>".$tab_bull['eleve'][$i]['eleve_nj']."</b> non justifiée"; if ($tab_bull['eleve'][$i]['eleve_nj'] != '1') {echo "s";}
+							echo ")";
+						}
+					}
+					else {
+						echo "&nbsp;: </i><b>".$tab_bull['eleve'][$i]['eleve_absences']."</b>";
+					}
+					echo ".";
+				}
+			}
+			elseif($bull_affiche_abs_nj=='y') {
+				if ($tab_bull['eleve'][$i]['eleve_nj'] == '0') {
+					echo "<i>Aucune demi-journée d'absence non justifiée</i>.";
+				} else {
+					echo "<i>Nombre de demi-journées d'absence non justifiées&nbsp;: <b>".$tab_bull['eleve'][$i]['eleve_nj']."</b>";
 				}
 				echo ".";
 			}
-			if ($tab_bull['eleve'][$i]['eleve_retards'] != '0') {
-				echo "<i> Nombre de retards : </i><b>".$tab_bull['eleve'][$i]['eleve_retards']."</b>";
+
+			if($bull_affiche_abs_ret=='y') {
+				if ($tab_bull['eleve'][$i]['eleve_retards'] != '0') {
+					echo "<i> Nombre de retards&nbsp;: </i><b>".$tab_bull['eleve'][$i]['eleve_retards']."</b>";
+				}
 			}
+
 			echo "  (C.P.E. chargé";
 
 			if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
@@ -5229,30 +5258,57 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$origine_Y_absence = $tab_modele_pdf["Y_absence"][$classe_id];
 				$pdf->SetFont('DejaVu','I',8);
 				$info_absence='';
-				if($tab_bull['eleve'][$i]['eleve_absences'] != '?') {
-					if($tab_bull['eleve'][$i]['eleve_absences'] == '0')
-					{
-						$info_absence="<i>Aucune demi-journée d'absence</i>.";
-					} else {
-						$info_absence="<i>Nombre de demi-journées d'absence ";
-						if ($tab_bull['eleve'][$i]['eleve_nj'] == '0' or $tab_bull['eleve'][$i]['eleve_nj'] == '?') {
-							$info_absence = $info_absence."justifiées ";
-						}
-						$info_absence = $info_absence.": </i><b>".$tab_bull['eleve'][$i]['eleve_absences']."</b>";
-						if ($tab_bull['eleve'][$i]['eleve_nj'] != '0' and $tab_bull['eleve'][$i]['eleve_nj'] != '?')
+
+				// 20130215
+				/*
+				if(($tab_modele_pdf["afficher_abs_tot"][$classe_id]==='1')||
+				($tab_modele_pdf["afficher_abs_nj"][$classe_id]==='1')) {
+				*/
+				if($tab_modele_pdf["afficher_abs_tot"][$classe_id]=='1') {
+					if($tab_bull['eleve'][$i]['eleve_absences'] != '?') {
+						if($tab_bull['eleve'][$i]['eleve_absences'] == '0')
 						{
-							$info_absence = $info_absence." (dont <b>".$tab_bull['eleve'][$i]['eleve_nj']."</b> non justifiée";
-							if ($tab_bull['eleve'][$i]['eleve_nj'] != '1') { $info_absence = $info_absence."s"; }
-							$info_absence = $info_absence.")";
+							$info_absence="<i>Aucune demi-journée d'absence</i>.";
+						} else {
+							$info_absence="<i>Nombre de demi-journées d'absence ";
+
+							if($tab_modele_pdf["afficher_abs_nj"][$classe_id]=='1') {
+								if ($tab_bull['eleve'][$i]['eleve_nj'] == '0' or $tab_bull['eleve'][$i]['eleve_nj'] == '?') {
+									$info_absence = $info_absence."justifiées ";
+								}
+
+								$info_absence = $info_absence.": </i><b>".$tab_bull['eleve'][$i]['eleve_absences']."</b>";
+								if ($tab_bull['eleve'][$i]['eleve_nj'] != '0' and $tab_bull['eleve'][$i]['eleve_nj'] != '?')
+								{
+									$info_absence = $info_absence." (dont <b>".$tab_bull['eleve'][$i]['eleve_nj']."</b> non justifiée";
+									if ($tab_bull['eleve'][$i]['eleve_nj'] != '1') { $info_absence = $info_absence."s"; }
+									$info_absence = $info_absence.")";
+								}
+							}
+							else {
+								$info_absence = $info_absence.": </i><b>".$tab_bull['eleve'][$i]['eleve_absences']."</b>";
+							}
+							$info_absence = $info_absence.".";
 						}
-						$info_absence = $info_absence.".";
 					}
 				}
-				if($tab_bull['eleve'][$i]['eleve_retards'] != '0' and $tab_bull['eleve'][$i]['eleve_retards'] != '?')
-				{
-					$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_bull['eleve'][$i]['eleve_retards']."</b>";
+				elseif($tab_modele_pdf["afficher_abs_nj"][$classe_id]=='1') {
+					if($tab_bull['eleve'][$i]['eleve_nj'] == '0')
+					{
+						$info_absence="<i>Aucune absence non justifiée</i>.";
+					} else {
+						$info_absence="<i>Nombre de demi-journées d'absence non justifiées ";
+						$info_absence.=": </i><b>".$tab_bull['eleve'][$i]['eleve_nj']."</b>";
+					}
 				}
 
+				//if($tab_modele_pdf["afficher_abs_ret"][$classe_id]==='1') {
+				if($tab_modele_pdf["afficher_abs_ret"][$classe_id]=='1') {
+					if($tab_bull['eleve'][$i]['eleve_retards'] != '0' and $tab_bull['eleve'][$i]['eleve_retards'] != '?')
+					{
+						$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_bull['eleve'][$i]['eleve_retards']."</b>";
+					}
+				}
 				$pdf->SetFont('DejaVu','',8);
 
 				$info_absence = $info_absence." (C.P.E. chargé";

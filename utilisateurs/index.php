@@ -253,6 +253,8 @@ $afficher_statut=isset($_POST['afficher_statut']) ? $_POST['afficher_statut'] : 
 $afficher_auth_mode=isset($_POST['afficher_auth_mode']) ? $_POST['afficher_auth_mode'] : (isset($_GET['afficher_auth_mode']) ? $_GET['afficher_auth_mode'] : "");
 $tab_auth_mode=array('gepi', 'ldap', 'sso');
 
+$afficher_matiere=isset($_POST['afficher_matiere']) ? $_POST['afficher_matiere'] : (isset($_GET['afficher_matiere']) ? $_GET['afficher_matiere'] : "");
+
 //**************** EN-TETE *****************************
 if($mode=='personnels') {
 	$titre_page = "Gestion des personnels";
@@ -270,6 +272,8 @@ else {
 }
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************************
+
+//debug_var();
 
 //echo "\$total_photo=$total_photo<br />\$nb_succes_photos=$nb_succes_photos<br />\$nb_photos_proposees=$nb_photos_proposees<br />";
 
@@ -338,7 +342,7 @@ if (getSettingValue("statuts_prives") == "y") {
 ?>
 <table border='0' summary='Tableau de choix'>
 <tr>
-<td><p>Afficher : </p></td>
+<td><p>Afficher&nbsp;: </p></td>
 <td><p><label for='display_tous' style='cursor: pointer;'>tous les utilisateurs</label> <input type="radio" name="display" id='display_tous' value='tous' <?php if ($display=='tous') {echo " checked";} ?> onchange="document.forms['form1'].submit();" /></p></td>
 <td><p>
  &nbsp;&nbsp;<label for='display_actifs' style='cursor: pointer;'>les utilisateurs actifs</label> <input type="radio" id='display_actifs' name="display" value='actifs' <?php if ($display=='actifs') {echo " checked";} ?> onchange="document.forms['form1'].submit();" /></p></td>
@@ -372,6 +376,28 @@ echo ">Autre</option>\n";
 
 ?>
 </select>
+
+<?php
+if($afficher_statut=="professeur") {
+	// Proposer de filtrer par matière
+	$sql="SELECT DISTINCT m.* FROM matieres m, j_professeurs_matieres jpm WHERE jpm.id_matiere=m.matiere ORDER BY matiere, nom_complet";
+	$res_matieres=mysql_query($sql);
+	if(mysql_num_rows($res_matieres)>0) {
+		echo "<select name='afficher_matiere' onchange=\"document.forms['form1'].submit();\">
+	<option value=''>---</option>";
+		while($lig_matiere=mysql_fetch_object($res_matieres)) {
+			echo "
+	<option value='".$lig_matiere->matiere."'";
+			if((isset($afficher_matiere))&&($lig_matiere->matiere==$afficher_matiere)) {
+				echo " selected='true'";
+			}
+			echo ">".$lig_matiere->matiere." (".$lig_matiere->nom_complet.")</option>";
+		}
+		echo "</select>\n";
+	}
+}
+?>
+
 </p>
 </td>
 
@@ -427,6 +453,9 @@ echo "<input type='hidden' name='display' value='$display' />
 <input type='hidden' name='mode' value='$mode' />
 <input type='hidden' name='order_by' value='$order_by' />\n";
 
+if((isset($afficher_matiere))&&($afficher_matiere!="")) {
+echo "<input type='hidden' name='afficher_matiere' value='$afficher_matiere' />";
+}
 ?>
 
 <?php
@@ -436,14 +465,17 @@ echo "<table class='boireaus' cellpadding='3' summary='Tableau des utilisateurs'
 echo "<tr><th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=login&amp;display=$display";
 if($afficher_statut!="") {echo "&amp;afficher_statut=$afficher_statut";}
 if($afficher_auth_mode!="") {echo "&amp;afficher_auth_mode=$afficher_auth_mode";}
+if((isset($afficher_matiere))&&($afficher_matiere!="")) {echo "&amp;afficher_matiere=$afficher_matiere";}
 echo "'>Nom de login</a></b></p></th>\n";
 echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,prenom&amp;display=$display";
 if($afficher_statut!="") {echo "&amp;afficher_statut=$afficher_statut";}
 if($afficher_auth_mode!="") {echo "&amp;afficher_auth_mode=$afficher_auth_mode";}
+if((isset($afficher_matiere))&&($afficher_matiere!="")) {echo "&amp;afficher_matiere=$afficher_matiere";}
 echo "'>Nom et prénom</a></b></p></th>\n";
 echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display";
 if($afficher_statut!="") {echo "&amp;afficher_statut=$afficher_statut";}
 if($afficher_auth_mode!="") {echo "&amp;afficher_auth_mode=$afficher_auth_mode";}
+if((isset($afficher_matiere))&&($afficher_matiere!="")) {echo "&amp;afficher_matiere=$afficher_matiere";}
 echo "'>Statut</a></b></p></th>\n";
 echo "<th><p class=small><b>matière(s) si professeur</b></p></th>\n";
 echo "<th><p class=small><b>classe(s)</b></p></th>\n";
@@ -456,13 +488,22 @@ echo "<th><p class=small><b>imprimer fiche bienvenue</b></p></th>\n";
 echo "</tr>\n";
 if(($afficher_statut!="")&&(in_array($afficher_statut,$tab_statuts))) {
 	if(($afficher_auth_mode!="")&&(in_array($afficher_auth_mode,$tab_auth_mode))) {
-		$sql="SELECT * FROM utilisateurs WHERE (statut = '$afficher_statut' AND auth_mode='$afficher_auth_mode')
-			ORDER BY $order_by;";
+		if((isset($afficher_matiere))&&($afficher_matiere!="")) {
+			$sql="SELECT * FROM utilisateurs u, j_professeurs_matieres jpm WHERE (statut = '$afficher_statut' AND auth_mode='$afficher_auth_mode' AND jpm.id_professeur=u.login AND jpm.id_matiere='$afficher_matiere') ";
+		}
+		else {
+			$sql="SELECT * FROM utilisateurs WHERE (statut = '$afficher_statut' AND auth_mode='$afficher_auth_mode')";
+		}
 	}
 	else {
-		$sql="SELECT * FROM utilisateurs WHERE (statut = '$afficher_statut') 
-			ORDER BY $order_by;";
+		if((isset($afficher_matiere))&&($afficher_matiere!="")) {
+			$sql="SELECT * FROM utilisateurs u, j_professeurs_matieres jpm WHERE (statut = '$afficher_statut' AND jpm.id_professeur=u.login AND jpm.id_matiere='$afficher_matiere') ";
+		}
+		else {
+			$sql="SELECT * FROM utilisateurs WHERE (statut = '$afficher_statut') ";
+		}
 	}
+	$sql.=" ORDER BY $order_by;";
 }
 else {
 	if(($afficher_auth_mode!="")&&(in_array($afficher_auth_mode,$tab_auth_mode))) {
@@ -487,6 +528,7 @@ else {
 			ORDER BY $order_by;";
 	}
 }
+//echo "$sql<br />";
 $calldata = mysql_query($sql);
 $nombreligne = mysql_num_rows($calldata);
 $i = 0;

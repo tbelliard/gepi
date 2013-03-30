@@ -171,7 +171,44 @@ if ($_SESSION['statut'] == "eleve" AND $choix_edit != "2") {
 }
 
 if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
-	$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+	// On vérifie si le prof peut pour une raison (droit) ou une autre accéder à au moins un élève de la classe
+	if(is_pp($_SESSION['login'], $id_classe)) {
+		if(getSettingAOui('GepiAccesBulletinSimpleProf')) {
+			$sql="(SELECT jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')) " .
+				"UNION (SELECT jec.id_classe " .
+				"FROM j_eleves_classes jec, j_eleves_professeurs jep " .
+				"WHERE (" .
+				"jec.id_classe='$id_classe' AND " .
+				"jep.login = jec.login AND " .
+				"jep.professeur = '".$_SESSION['login']."'));";
+		}
+		else {
+			$sql="SELECT DISTINCT e.* " .
+				"FROM eleves e, j_eleves_classes jec, j_eleves_professeurs jep " .
+				"WHERE (" .
+				"jec.id_classe='$id_classe' AND " .
+				"e.login = jep.login AND " .
+				"jep.login = jec.login AND " .
+				"jep.professeur = '".$_SESSION['login']."') ORDER BY e.nom,e.prenom;";
+		}
+	}
+	else {
+	    $sql="SELECT DISTINCT e.* " .
+			"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
+			"WHERE (" .
+			"jec.id_classe='$id_classe' AND " .
+			"e.login = jeg.login AND " .
+			"jeg.login = jec.login AND " .
+			"jeg.id_groupe = jgp.id_groupe AND " .
+			"jgp.login = '".$_SESSION['login']."') " .
+			"ORDER BY e.nom,e.prenom";
+	}
+	//echo "$sql<br />";
+	$res_test = mysql_query($sql);
+
+	$test = mysql_num_rows($res_test);
+	//$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+
 	if ($test == "0") {
 		tentative_intrusion("2", "Tentative d'accès par un prof à une classe (".$nom_classe.") dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
 		echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
@@ -184,8 +221,31 @@ if ($_SESSION['statut'] == "professeur" AND
 getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes" AND
 getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND
 $choix_edit == "2") {
+	//$choix_edit==2 : on teste le droit du prof d'accéder au bulletin d'un élève en particulier.
 
-	$test = mysql_num_rows(mysql_query("SELECT jeg.* FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jeg.id_groupe = jgp.id_groupe AND jeg.login = '".$login_eleve."')"));
+	if(is_pp($_SESSION['login'], "", $login_eleve)) {
+		if(getSettingAOui('GepiAccesBulletinSimpleProf')) {
+			$sql="(SELECT jeg.login FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgp.id_groupe = jeg.id_groupe AND jeg.login = '".$login_eleve."')) " .
+				"UNION (SELECT DISTINCT jep.login " .
+				"FROM j_eleves_professeurs jep " .
+				"WHERE (" .
+				"jep.login='$login_eleve' AND " .
+				"jep.professeur = '".$_SESSION['login']."'));";
+		}
+		else {
+			$sql="SELECT DISTINCT jep.login " .
+				"FROM j_eleves_professeurs jep " .
+				"WHERE (" .
+				"jep.login='$login_eleve' AND " .
+				"jep.professeur = '".$_SESSION['login']."');";
+		}
+	}
+	else {
+		$sql="SELECT jeg.* FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jeg.id_groupe = jgp.id_groupe AND jeg.login = '".$login_eleve."')";
+	}
+	//echo "$sql<br />";
+
+	$test = mysql_num_rows(mysql_query($sql));
 	if ($test == "0") {
 		tentative_intrusion("2", "Tentative d'accès par un prof à un bulletin simplifié d'un élève ($login_eleve) qu'il n'a pas en cours, sans en avoir l'autorisation.");
 		echo "Vous ne pouvez pas accéder à cet élève !";
@@ -371,7 +431,8 @@ if ($choix_edit != '2') {
 	    //if ($choix_edit == '1') {
 	    if (($choix_edit == '1')||(!isset($login_prof))) {
 			// On a alors $choix_edit==1 ou $choix_edit==4
-	        $sql="SELECT DISTINCT e.* " .
+			/*
+	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
 				"jec.id_classe='$id_classe' AND " .
@@ -379,7 +440,50 @@ if ($choix_edit != '2') {
 				"jeg.login = jec.login AND " .
 				"jeg.id_groupe = jgp.id_groupe AND " .
 				"jgp.login = '".$_SESSION['login']."') " .
-				"ORDER BY e.nom,e.prenom";
+				"ORDER BY e.nom,e.prenom");
+			*/
+			if(is_pp($_SESSION['login'], $id_classe)) {
+				if(getSettingAOui('GepiAccesBulletinSimpleProf')) {
+					$sql="(SELECT DISTINCT e.* " .
+						"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
+						"WHERE (" .
+						"jec.id_classe='$id_classe' AND " .
+						"e.login = jeg.login AND " .
+						"jeg.login = jec.login AND " .
+						"jeg.id_groupe = jgp.id_groupe AND " .
+						"jgp.login = '".$_SESSION['login']."')) " .
+						"UNION (SELECT DISTINCT e.* " .
+						"FROM eleves e, j_eleves_classes jec, j_eleves_professeurs jep " .
+						"WHERE (" .
+						"jec.id_classe='$id_classe' AND " .
+						"e.login = jep.login AND " .
+						"jep.login = jec.login AND " .
+						"jep.professeur = '".$_SESSION['login']."')) ORDER BY nom,prenom;";
+					$appel_liste_eleves = mysql_query($sql);
+				}
+				else {
+					$sql="SELECT DISTINCT e.* " .
+						"FROM eleves e, j_eleves_classes jec, j_eleves_professeurs jep " .
+						"WHERE (" .
+						"jec.id_classe='$id_classe' AND " .
+						"e.login = jep.login AND " .
+						"jep.login = jec.login AND " .
+						"jep.professeur = '".$_SESSION['login']."') ORDER BY e.nom,e.prenom;";
+					$appel_liste_eleves = mysql_query($sql);
+				}
+			}
+			else {
+			    $sql="SELECT DISTINCT e.* " .
+					"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
+					"WHERE (" .
+					"jec.id_classe='$id_classe' AND " .
+					"e.login = jeg.login AND " .
+					"jeg.login = jec.login AND " .
+					"jeg.id_groupe = jgp.id_groupe AND " .
+					"jgp.login = '".$_SESSION['login']."') " .
+					"ORDER BY e.nom,e.prenom";
+				$appel_liste_eleves = mysql_query($sql);
+			}
 	    } else {
 			// On a alors $choix_edit==3 uniquement les élèves du professeur principal $login_prof
 			if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe))) {

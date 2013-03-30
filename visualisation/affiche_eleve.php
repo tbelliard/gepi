@@ -265,6 +265,8 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['affiche_moy_classe'])) {savePref($_SESSION['login'],'graphe_affiche_moy_classe',$_POST['affiche_moy_classe']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_moy_classe','oui');}
 
+	if(isset($_POST['textarea_font_size'])) {savePref($_SESSION['login'],'graphe_textarea_font_size',$_POST['textarea_font_size']);}
+
 	if($msg=='') {
 		$msg.="Préférences personnelles enregistrées.";
 	}
@@ -514,7 +516,7 @@ if ($_SESSION['statut'] == "responsable") {
 			$sql.=";";
 			$test = mysql_query($sql);
 			if (mysql_num_rows($test) == 0) {
-			    tentative_intrusion(2, "Tentative par un parent de visualisation graphique des résultats d'un élève dont il n'est pas responsable légal.");
+			    tentative_intrusion(2, "Tentative par un parent de visualisation graphique des résultats d'un élève ($login_eleve) dont il n'est pas responsable légal.");
 			    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.</p>\n";
 			    require("../lib/footer.inc.php");
 				die();
@@ -524,7 +526,7 @@ if ($_SESSION['statut'] == "responsable") {
 } else if ($_SESSION['statut'] == "eleve") {
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
 	if ($login_eleve != null and (my_strtoupper($login_eleve) != my_strtoupper($_SESSION['login']))) {
-		tentative_intrusion(2, "Tentative par un élève de visualisation graphique des résultats d'un autre élève.");
+		tentative_intrusion(2, "Tentative par un élève de visualisation graphique des résultats d'un autre élève ($login_eleve).");
 	}
 	$login_eleve = $_SESSION['login'];
 }
@@ -914,9 +916,47 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "'>Classe suivante</a>";
 				}
 		}
-		echo "</p>\n";
 
+		// 20130319
+		$restriction_id_groupe=isset($_POST['restriction_id_groupe']) ? $_POST['restriction_id_groupe'] : "";
+		$sql="SELECT g.id, g.name, g.description FROM groupes g, j_groupes_classes jgc WHERE jgc.id_classe='$id_classe' AND jgc.id_groupe=g.id AND g.id NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n') ORDER BY g.name, g.description;";
+		//echo "$sql<br />";
+		$res_restr_grp=mysql_query($sql);
+		if(mysql_num_rows($res_restr_grp)>0) {
+			echo " | Afficher les élèves de <select name='restriction_id_groupe' onchange=\"document.forms['form1'].submit();\">
+	<option value=''>tous les enseignements de la classe</option>\n";
+			while($lig_restr_grp=mysql_fetch_object($res_restr_grp)) {
+				// A FAIRE: Ne proposer que les groupes qui ne correspondent pas à l'effectif total de la classe.
+				echo "	<option value='$lig_restr_grp->id'";
+				if($lig_restr_grp->id==$restriction_id_groupe) {echo " selected";}
+				echo ">".$lig_restr_grp->name." (".$lig_restr_grp->description.")"."</option>\n";
+				echo "	<option value='-$lig_restr_grp->id'";
+				if("-".$lig_restr_grp->id==$restriction_id_groupe) {echo " selected";}
+				echo "> tous les enseignements sauf ".$lig_restr_grp->name." (".$lig_restr_grp->description.")"."</option>\n";
+			}
+			echo "</select>\n";
+		}
+		echo "</p>\n";
 		echo "</form>\n";
+
+		if($restriction_id_groupe!='') {
+			if(preg_match("/^-/", $restriction_id_groupe)) {
+				$tab_eleves_a_exclure=array();
+				$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='".preg_replace("/^-/","",$restriction_id_groupe)."';";
+				$res_restr_grp=mysql_query($sql);
+				while($lig_restr_grp=mysql_fetch_object($res_restr_grp)) {
+					$tab_eleves_a_exclure[]=$lig_restr_grp->login;
+				}
+			}
+			else {
+				$tab_eleves_a_proposer=array();
+				$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='".$restriction_id_groupe."';";
+				$res_restr_grp=mysql_query($sql);
+				while($lig_restr_grp=mysql_fetch_object($res_restr_grp)) {
+					$tab_eleves_a_proposer[]=$lig_restr_grp->login;
+				}
+			}
+		}
 
 		echo "</div>\n";
 	} else {
@@ -1081,6 +1121,34 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				$affiche_moy_classe="oui";
 			}
 		}
+	}
+
+	// 20130319
+	if(isset($_POST['textarea_font_size'])) {
+		$textarea_font_size=$_POST['textarea_font_size'];
+	}
+	else{
+		$pref_textarea_font_size=getPref($_SESSION['login'],'graphe_textarea_font_size','');
+		if($pref_textarea_font_size!='') {
+			$textarea_font_size=$pref_textarea_font_size;
+		}
+		else {
+			if(getSettingValue('graphe_textarea_font_size')) {
+				$textarea_font_size=getSettingValue('graphe_textarea_font_size');
+			}
+			else{
+				//$textarea_font_size=12;
+				$textarea_font_size="";
+			}
+		}
+	}
+	/*
+	if((mb_strlen(preg_replace("/[0-9]/","",$textarea_font_size))!=0)||($textarea_font_size=="")) {
+		$textarea_font_size=12;
+	}
+	*/
+	if(mb_strlen(preg_replace("/[0-9]/","",$textarea_font_size))!=0) {
+		$textarea_font_size="";
 	}
 
 	// 20121205
@@ -1592,6 +1660,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "<input type='radio' name='graphe_champ_saisie_avis_fixe' id='graphe_champ_saisie_avis_fixe_y' value='y'$checked /> <label for='graphe_champ_saisie_avis_fixe_y' style='cursor: pointer;'>en champ fixe sous le graphe</label>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
+
+				// 20130319
+				$taille_max_police_textarea=40;
+				echo "<tr><td><label for='textarea_font_size' style='cursor: pointer;'>Taille de la police dans les champs TEXTAREA de saisie&nbsp;:</label></td>";
+				echo "<td><select name='textarea_font_size' id='textarea_font_size'>\n";
+				echo "<option value='' title=\"Non précisée : C'est la taille standard qui est utilisée.\">---</option>\n";
+				for($i=1;$i<=$taille_max_police_textarea;$i++) {
+					if($textarea_font_size==$i) {$selected=" selected='yes'";} else {$selected="";}
+					echo "<option value='$i'$selected>$i</option>\n";
+				}
+				echo "</select></td></tr>\n";
+
 			}
 			//========================
 
@@ -1660,6 +1740,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "<br />\n";
 			}
 
+			// 20130319
+			if(isset($restriction_id_groupe)) {
+				echo "<input type='hidden' name='restriction_id_groupe' value='$restriction_id_groupe' />\n";
+			}
+
 			echo "<input type='submit' name='Valider' value='Valider' /></p>\n";
 
 			echo "</form>\n";
@@ -1669,6 +1754,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form_raz_parametrage_affichage' method='post'>\n";
 			echo add_token_field();
+
+			// 20130319
+			if(isset($restriction_id_groupe)) {
+				echo "<input type='hidden' name='restriction_id_groupe' value='$restriction_id_groupe' />\n";
+			}
 
 			echo "<p align='center'>Si, après des essais, vous souhaitez abandonner vos paramètres personnels et revenir aux paramètres enregistrés dans la base, validez ci-dessous&nbsp;:<br />";
 			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
@@ -1798,35 +1888,56 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// Pour afficher le nom/prénom plutôt que le login:
 		$tab_nom_prenom_eleve=array();
 
+		// 20130319
+		if(isset($restriction_id_groupe)) {
+			echo "<input type='hidden' name='restriction_id_groupe' value='$restriction_id_groupe' />\n";
+		}
+
 		echo "Choisir l'élève:<br />\n";
 		echo "<select name='eleve1' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 		$cpt=1;
 		$numeleve1=0;
+		$nombreligne_effectives=0;
 		while($ligne=mysql_fetch_object($call_eleve)) {
 			// Le login est la clé liant les tables eleves et j_eleves_classes
-			$tab_login_eleve[$cpt]="$ligne->login";
-			$tab_nomprenom_eleve[$cpt]="$ligne->nom $ligne->prenom";
+			if(
+				((!isset($tab_eleves_a_exclure))&&(!isset($tab_eleves_a_proposer)))||
+				((isset($tab_eleves_a_exclure))&&(!in_array($ligne->login,$tab_eleves_a_exclure)))||
+				((isset($tab_eleves_a_proposer))&&(in_array($ligne->login,$tab_eleves_a_proposer)))
+			) {
+				$tab_login_eleve[$cpt]="$ligne->login";
+				$tab_nomprenom_eleve[$cpt]="$ligne->nom $ligne->prenom";
 
-			$tab_nom_prenom_eleve["$ligne->login"]=$tab_nomprenom_eleve[$cpt];
+				$tab_nom_prenom_eleve["$ligne->login"]=$tab_nomprenom_eleve[$cpt];
 
-			if($tab_login_eleve[$cpt]==$eleve1) {
-				$selected=" selected='yes'";
-				$numeleve1=$cpt;
+				if($tab_login_eleve[$cpt]==$eleve1) {
+					$selected=" selected='yes'";
+					$numeleve1=$cpt;
+				}
+				else{
+					$selected="";
+				}
+				echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
+				$cpt++;
+
+				$nombreligne_effectives++;
 			}
-			else{
-				$selected="";
-			}
-			echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
-			$cpt++;
 		}
 		echo "</select>\n";
+		$eleve_precedent="";
+		$eleve_suivant="";
+		if(isset($tab_nomprenom_eleve[$numeleve1-1])) {
+			$eleve_precedent=$tab_nomprenom_eleve[$numeleve1-1];
+		}
+		if(isset($tab_nomprenom_eleve[$numeleve1+1])) {
+			$eleve_suivant=$tab_nomprenom_eleve[$numeleve1+1];
+		}
 		echo "<br />\n";
-
-
 
 		echo "et comparer avec:<br />\n";
 		echo "<select name='eleve2' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
-		for($cpt=1;$cpt<=$nombreligne;$cpt++) {
+		//for($cpt=1;$cpt<=$nombreligne;$cpt++) {
+		for($cpt=1;$cpt<=$nombreligne_effectives;$cpt++) {
 			if($tab_login_eleve[$cpt]==$eleve2) {
 				$selected=" selected='yes'";
 				$numeleve2=$cpt;
@@ -1881,8 +1992,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 }
 
 function eleve_suivant() {
-	if(document.getElementById('numeleve1').value<$nombreligne) {";
-	    if($suivant<$nombreligne+1) {
+	if(document.getElementById('numeleve1').value<$nombreligne_effectives) {";
+	    if($suivant<$nombreligne_effectives+1) {
 	        echo "		document.getElementById('eleve1b').value='$tab_login_eleve[$suivant]';
 		document.forms['form_choix_eleves'].submit();";
 	    }
@@ -1901,18 +2012,20 @@ function eleve_suivant() {
 	 	// Cette valeur l'emporte sur le contenu de 'eleve1'
 		echo "<input type='hidden' name='eleve1b' id='eleve1b' value='' />\n";
 
-	    if($precedent>0) {
+	    if(($precedent>0)&&(isset($tab_nomprenom_eleve[$numeleve1]))) {
 			//echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
-			echo "<a href='javascript:eleve_precedent();'>Élève précédent</a><br />\n";
+			echo "<a href='javascript:eleve_precedent();'>Élève <span title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]
+et le précédent est $eleve_precedent\">précédent</span></a><br />\n";
 		}
 
 		//echo "<input type='submit' name='choix_eleves' value='Afficher' />\n";
 		echo "<a href=\"javascript:document.forms['form_choix_eleves'].submit();\">Actualiser</a>\n";
 
-	    if($suivant<$nombreligne+1) {
+	    if(($suivant<$nombreligne_effectives+1)&&(isset($tab_nomprenom_eleve[$numeleve1]))) {
 			echo "<br />\n";
 			//echo "<input type='button' name='suivant' value='>>' onClick='eleve_suivant();' />\n";
-			echo "<a href='javascript:eleve_suivant();'>Élève suivant</a>";
+			echo "<a href='javascript:eleve_suivant();'>Élève <span title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]
+et le suivant est $eleve_suivant\">suivant</span></a>";
 		}
 		echo "</p>\n";
 
@@ -1992,7 +2105,7 @@ function eleve_suivant() {
 	echo "</select>\n";
 	echo "<br />\n";
 	if($choix_periode=='toutes_periodes') {$checked=" checked='yes'";}else{$checked="";}
-	echo "<label for='choix_toutes_periodes' style='cursor: pointer;'><input type='radio' name='choix_periode' id='choix_toutes_periodes' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\" /> Toutes les périodes</label>\n";
+	echo "<label for='choix_toutes_periodes' style='cursor: pointer;' title=\"L'affichage des moyennes de toutes les périodes pour l'élève choisi est exclusif de l'affichage du deuxième champ SELECT ci-dessus (généralement Moyenne de la classe). En effet, dans le cas contraire, on arriverait au 3è trimestre à 6 courbes, ce qui serait illisible.\"><input type='radio' name='choix_periode' id='choix_toutes_periodes' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\"/> Toutes les périodes</label>\n";
 
 	echo "<hr width='150' />\n";
 
@@ -2010,6 +2123,7 @@ function eleve_suivant() {
 	//========================
 	// PARAMETRES D'AFFICHAGE
 	//========================
+
 
 	echo "<input type='hidden' name='affiche_mgen' value='$affiche_mgen' />\n";
 	echo "<input type='hidden' name='affiche_minmax' value='$affiche_minmax' />\n";
@@ -2200,7 +2314,12 @@ function eleve_suivant() {
 							$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte.=add_token_field();
 							$texte.="<div style='text-align:center;'>\n";
-							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							// 20130319
+							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
+								$texte.=" style='font-size:".$textarea_font_size."pt;'";
+							}
+							$texte.=">";
 							//$texte.="\n";
 							$texte.="$current_eleve_avis";
 							$texte.="</textarea>\n";
@@ -2235,7 +2354,7 @@ function eleve_suivant() {
 
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1) {
+							if($suivant<$nombreligne_effectives+1) {
 								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
@@ -2261,7 +2380,12 @@ function eleve_suivant() {
 							$texte_saisie_avis_fixe.="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
-							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							// 20130319
+							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
+								$texte_saisie_avis_fixe.=" style='font-size:".$textarea_font_size."pt;'";
+							}
+							$texte_saisie_avis_fixe.=">";
 							//$texte_saisie_avis_fixe.="\n";
 							$texte_saisie_avis_fixe.="$current_eleve_avis";
 							$texte_saisie_avis_fixe.="</textarea>\n";
@@ -2296,7 +2420,7 @@ function eleve_suivant() {
 	
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1) {
+							if($suivant<$nombreligne_effectives+1) {
 								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
@@ -2435,7 +2559,7 @@ function eleve_suivant() {
 
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1) {
+							if($suivant<$nombreligne_effectives+1) {
 								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
@@ -2496,7 +2620,7 @@ function eleve_suivant() {
 
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1) {
+							if($suivant<$nombreligne_effectives+1) {
 								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {

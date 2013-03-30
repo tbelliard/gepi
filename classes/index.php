@@ -63,6 +63,19 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
 $nombre_lignes = mysql_num_rows($call_data);
 if ($nombre_lignes != 0) {
+	// 20130313
+	$classe_sans_scol="n";
+	$sql="SELECT c.* FROM classes c, periodes p WHERE p.id_classe=c.id AND c.id NOT IN (SELECT id_classe FROM j_scol_classes jsc, utilisateurs u WHERE u.login=jsc.login AND u.etat='actif');";
+	//echo "$sql<br />";
+	$test_scol=mysql_query($sql);
+	if(mysql_num_rows($test_scol)>0) {
+		$classe_sans_scol="y";
+		$tab_classe_sans_scol=array();
+		while($lig_tmp=mysql_fetch_object($test_scol)) {
+			$tab_classe_sans_scol[]=$lig_tmp->id;
+		}
+	}
+
 	$flag = 1;
 	//echo "<table cellpadding=3 cellspacing=0 style='border: none; border-collapse: collapse;'>\n";
 	echo "<table class='boireaus padd_et_bordg'>\n";
@@ -80,7 +93,7 @@ if ($nombre_lignes != 0) {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		echo "<a href='periodes.php?id_classe=$id_classe'><img src='../images/icons/date.png' alt='' /> Périodes</a></td>\n";
+		echo "<a href='periodes.php?id_classe=$id_classe'><img src='../images/icons/date.png' alt='Éditer les périodes associés à la classe' title='Éditer les périodes associés à la classe' /> Périodes</a></td>\n";
 		//echo "<td>|<a href='modify_class.php?id_classe=$id_classe'>Gérer les matières</a></td>\n";
 
 		$sql="select id_classe from periodes where id_classe = '$id_classe';";
@@ -88,7 +101,7 @@ if ($nombre_lignes != 0) {
 		$nb_per = mysql_num_rows($res_nb_per);
 		echo "<td>\n";
 		if ($nb_per != 0) {
-			echo "<a href='classes_const.php?id_classe=$id_classe'><img src='../images/icons/edit_user.png' alt='' /> Élèves</a>\n";
+			echo "<a href='classes_const.php?id_classe=$id_classe'><img src='../images/icons/edit_user.png' alt=\"Éditer les élèves associés à la classe\" title=\"Éditer les élèves associés à la classe\" /> Élèves</a>\n";
 		}
 		else {
 			echo "&nbsp;";
@@ -96,7 +109,7 @@ if ($nombre_lignes != 0) {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		echo "<a href='../groupes/edit_class.php?id_classe=$id_classe'> <img src='../images/icons/document.png' alt='' /> Enseignements</a>\n";
+		echo "<a href='../groupes/edit_class.php?id_classe=$id_classe'> <img src='../images/icons/document.png' alt=\"Éditer les enseignements associés à la classe\" title=\"Éditer les enseignements associés à la classe\" /> Enseignements</a>\n";
 		echo "</td>\n";
 
 		echo "<td>\n";
@@ -109,7 +122,7 @@ if ($nombre_lignes != 0) {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		echo "<a href='modify_nom_class.php?id_classe=$id_classe'><img src='../images/icons/configure.png' alt='' /> Paramètres</a>\n";
+		echo "<a href='modify_nom_class.php?id_classe=$id_classe'><img src='../images/icons/configure.png' alt=\"Éditer les paramètres de la classe\" title=\"Éditer les paramètres de la classe\" /> Paramètres</a>\n";
 		echo "</td>\n";
 
 		echo "<td>\n";
@@ -120,6 +133,15 @@ if ($nombre_lignes != 0) {
 		echo "<td>\n";
 		if ($nb_per == 0) echo " <b>(Classe virtuelle)</b> "; else echo "&nbsp;";
 		echo "</td>\n";
+
+		// 20130313
+		if($classe_sans_scol=="y") {
+			echo "<td>\n";
+			if(in_array($id_classe, $tab_classe_sans_scol)) {
+				echo "<a href='scol_resp.php'><img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Aucun compte scolarité n'est associé à cette classe.\" alt='Classe sans compte scolarité' /></a>\n";
+			}
+			echo "</td>\n";
+		}
 		echo "</tr>\n";
 		$i++;
 	}
