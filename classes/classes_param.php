@@ -392,6 +392,8 @@ if (isset($_POST['is_posted'])) {
 								$create = create_group($reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_categorie);
 								if($create) {
 									$current_group=get_group($create);
+									// Si le groupe a été créé, il faut pointer le succès de création pour le message de retour.
+									$nb_reg_ok++;
 
 									$reg_professeurs = array();
 									if($professeur_nouvel_enseignement!="") {
@@ -454,9 +456,11 @@ if (isset($_POST['is_posted'])) {
 										if(!$insert) {
 											$msg .= "<br />Erreur lors de la mise à jour de la non visibilité de ".$nouvel_enseignement_non_visible[$loop]." du groupe n°$create pour la classe n°$id_classe.";
 										}
+										/*
 										else {
 											$nb_reg_ok++;
 										}
+										*/
 									}
 								}
 							}
@@ -569,8 +573,10 @@ if (isset($_POST['is_posted'])) {
 								$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe';";
 							}
 							else {
-								$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe');";
+								//$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe');";
+								//$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgm.id_groupe FROM j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."');";
 							}
+							echo "$sql<br />";
 							$res_modif_coef=mysql_query($sql);
 							if(!$res_modif_coef) {
 								$msg.="Erreur lors de la requête<br />$sql<br />";
@@ -901,7 +907,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		<option value='___Tous_les_enseignements___'>Tous les enseignements</option>
 	<?php
 		while($lig_mat=mysql_fetch_object($res_mat)) {
-			echo "		<option value='$lig_mat->matiere'>".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+			echo "		<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
 		}
 	?>
 	</select>
@@ -958,7 +964,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			<select name='matiere_modif_visibilite_enseignement' id='matiere_modif_visibilite_enseignement' onchange=\"document.getElementById('change_visibilite').checked=true;\">\n";
 			echo "			<option value=''>---</option>\n";
 			while($lig_mat=mysql_fetch_object($res_mat)) {
-				echo "			<option value='$lig_mat->matiere'>".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+				echo "			<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
 			}
 			echo "	</select>
 		</td>
@@ -1008,7 +1014,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<select name='matiere_nouvel_enseignement' id='matiere_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;maj_prof_enseignement();maj_nom_descr_enseignement();\">\n";
 			echo "<option value=''>---</option>\n";
 			while($lig_mat=mysql_fetch_object($res_mat)) {
-				echo "<option value='$lig_mat->matiere'>".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+				echo "<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
 			}
 			echo "</select>\n";
 			echo "</td>\n";
