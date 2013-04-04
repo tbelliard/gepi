@@ -166,3 +166,6 @@ img.sans_bord {
 	border: 0px solid black;
 }
 
+tr.lignes_couleurs_alternees:nth-child(even) {background: #E8F1F4}
+tr.lignes_couleurs_alternees:nth-child(odd) {background: #C6DCE3}
+
