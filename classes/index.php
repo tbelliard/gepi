@@ -48,6 +48,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 <p class=bold>
 <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour </a>
 | <a href='classes_param.php'>Paramétrage de plusieurs classes par lots</a>
+| <a href='../init_xml2/init_alternatif.php?cat=classes' title="Création d'enseignements par lots">Créations par lots</a>
 | <a href='cpe_resp.php'>Paramétrage rapide CPE Responsable</a>
 | <a href='scol_resp.php'>Paramétrage scolarité</a>
 | <a href='acces_appreciations.php'>Paramétrage de l'accès aux appréciations</a>
