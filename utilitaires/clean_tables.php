@@ -1165,19 +1165,66 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 		echo $texte_info_action;
 		update_infos_action_nettoyage($id_info, $texte_info_action);
 
+		// Aucun groupe non associé à une matière ou à une classe ne doit exister
+		$sql="select g.* from groupes g left join j_groupes_classes jgc on jgc.id_groupe=g.id where jgc.id_groupe is NULL;";
+		$res_grp2=mysql_query($sql);
+		if(mysql_num_rows($res_grp2)>0){
+			$texte_info_action="<p>Un ou des groupes existent sans être associés à aucune classe.<br />C'est une anomalie.<br />En voici la liste&nbsp;:<br />\n";
+			while($ligne=mysql_fetch_object($res_grp2)) {
+				$texte_info_action.="Suppression du groupe n°$ligne->id&nbsp;: $ligne->name (<em>$ligne->description</em>)&nbsp;: ";
+				$sql="DELETE from groupes WHERE id='$ligne->id';";
+				//echo "$sql<br />";
+				$menage=mysql_query($sql);
+				if($menage) {
+					$texte_info_action.="<span style='color:green'>SUCCES</span>";
+				}
+				else {
+					$texte_info_action.="<span style='color:red'>ECHEC</span>";
+				}
+				$texte_info_action.="<br />\n";
+			}
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
+		}
+
+		$sql="select g.* from groupes g left join j_groupes_matieres jgm on jgm.id_groupe=g.id where jgm.id_groupe is NULL;";
+		$res_grp2=mysql_query($sql);
+		if(mysql_num_rows($res_grp2)>0){
+			$texte_info_action="<p>Un ou des groupes existent sans être associés à aucune matière.<br />C'est une anomalie.<br />En voici la liste&nbsp;:<br />\n";
+			while($ligne=mysql_fetch_object($res_grp2)) {
+				$texte_info_action.="Suppression du groupe n°$ligne->id&nbsp;: $ligne->name (<em>$ligne->description</em>)&nbsp;: ";
+				$sql="DELETE from groupes WHERE id='$ligne->id';";
+				//echo "$sql<br />";
+				$menage=mysql_query($sql);
+				if($menage) {
+					$texte_info_action.="<span style='color:green'>SUCCES</span>";
+				}
+				else {
+					$texte_info_action.="<span style='color:red'>ECHEC</span>";
+				}
+				$texte_info_action.="<br />\n";
+			}
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
+		}
+
+		// On va supprimer des tables 'j_signalement', 'j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes', 'j_groupes_visibilite', 'acces_cdt_groupes', les groupes qui ne sont pas dans la table 'groupes'
 		for($i=0;$i<count($table);$i++){
 			$err_no=0;
 			$sql="SELECT DISTINCT id_groupe FROM ".$table[$i]." ORDER BY id_groupe";
+			//echo "$sql<br />";
 			$res_grp1=mysql_query($sql);
 
 			if(mysql_num_rows($res_grp1)>0){
 				//echo "<p>On parcourt la table '".$table[$i]."'.</p>\n";
 				while($ligne=mysql_fetch_array($res_grp1)){
 					$sql="SELECT 1=1 FROM groupes WHERE id='".$ligne[0]."'";
+					//echo "$sql<br />";
 					$res_test=mysql_query($sql);
 
 					if(mysql_num_rows($res_test)==0){
 						$sql="DELETE FROM $table[$i] WHERE id_groupe='$ligne[0]'";
+						//echo "$sql<br />";
 						$texte_info_action="Suppression d'une référence à un groupe d'identifiant $ligne[0] dans la table $table[$i] alors que le groupe n'existe pas dans la table 'groupes'.<br />\n";
 						echo $texte_info_action;
 						update_infos_action_nettoyage($id_info, $texte_info_action);
