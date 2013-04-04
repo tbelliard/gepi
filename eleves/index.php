@@ -58,6 +58,28 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 	unset($_SESSION['retour_apres_maj_sconet']);
 }
 
+//debug_var();
+
+$mode_rech=isset($_POST['mode_rech']) ? $_POST['mode_rech'] : (isset($_GET['mode_rech']) ? $_GET['mode_rech'] : NULL);
+if((isset($quelles_classes))&&(isset($mode_rech))&&($mode_rech=='contient')) {
+	// On initialise des variables pour index_call_data.php
+	if($quelles_classes=='recherche') {
+		$mode_rech_nom="contient";
+	}
+	elseif($quelles_classes=='rech_prenom') {
+		$mode_rech_prenom="contient";
+	}
+	elseif($quelles_classes=='rech_elenoet') {
+		$mode_rech_elenoet="contient";
+	}
+	elseif($quelles_classes=='rech_ele_id') {
+		$mode_rech_ele_id="contient";
+	}
+	elseif($quelles_classes=='rech_no_gep') {
+		$mode_rech_no_gep="contient";
+	}
+}
+
 //log_debug('Après checkAccess()');
 
 //log_debug(debug_var());
@@ -424,6 +446,25 @@ if(getSettingValue('eleves_index_debug_var')=='y') {
 		document.getElementById('quelles_classes_rech_prenom').checked=true;
 		verif2();
 	}
+
+	/*
+	function verif5(){
+		document.getElementById('quelles_classes_rech_champ').checked=true;
+		verif2();
+	}
+	*/
+	function verif5(){
+		document.getElementById('quelles_classes_rech_elenoet').checked=true;
+		verif2();
+	}
+	function verif6(){
+		document.getElementById('quelles_classes_rech_ele_id').checked=true;
+		verif2();
+	}
+	function verif7(){
+		document.getElementById('quelles_classes_rech_no_gep').checked=true;
+		verif2();
+	}
 </script>
 
 <?php
@@ -610,15 +651,15 @@ if (!isset($quelles_classes)) {
 		echo "<input type='radio' name='quelles_classes' id='quelles_classes_recherche' value='recherche' onclick='verif2()' checked />\n";
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "<label for='' style='cursor: pointer;'>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
 		echo "<span class='norme'>Elève dont le nom \n";
-		echo "<select name='mode_rech_nom'>
+		echo "<select name='mode_rech_nom' onchange='verif3()'>
 		<option value='commence_par'>commence par</option>
-		<option value='contient'>contient</option>
+		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
 		</select>";
 		echo "<input type='text' name='motif_rech' id='motif_rech_nom' value='' onclick='verif3()' size='5' />\n";
 		echo "</span><br />\n";
-		echo "</label>\n";
+		//echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
@@ -627,15 +668,90 @@ if (!isset($quelles_classes)) {
 		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_prenom' value='rech_prenom' onclick='verif2()' />\n";
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "<label for='' style='cursor: pointer;'>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
 		echo "<span class='norme'>Elève dont le prénom \n";
-		echo "<select name='mode_rech_prenom'>
+		echo "<select name='mode_rech_prenom' onchange='verif4()'>
 		<option value='commence_par'>commence par</option>
-		<option value='contient'>contient</option>
+		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
 		</select>";
 		echo "<input type='text' name='motif_rech_p' value='' onclick='verif4()' size='5' />\n";
 		echo "</span><br />\n";
-		echo "</label>\n";
+		//echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		/*
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_champ' value='rech_champ' onclick='verif2()' checked />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont l'\n";
+		echo "<select name='champ_rech' onchange='verif5()'>
+		<option value='elenoet'>identifiant Sconet (elenoet)</option>
+		<option value='ele_id'>identifiant Sconet (ele_id)</option>
+		<option value='no_gep'>identifiant national</option>
+		</select>";
+		echo "<select name='mode_rech_champ' onchange='verif5()'>
+		<option value='commence_par'>commence par</option>
+		<option value='contient'>contient</option>
+		</select>";
+		echo "<input type='text' name='motif_rech' id='motif_rech_champ' value='' onclick='verif5()' size='5' />\n";
+		echo "</span><br />\n";
+		//echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+		*/
+
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_elenoet' value='rech_elenoet' onclick='verif2()' checked />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont l'identifiant Sconet (<em>elenoet</em>) ";
+		echo "<select name='mode_rech_elenoet' onchange='verif5()'>
+		<option value='commence_par'>commence par</option>
+		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
+		</select>";
+		echo "<input type='text' name='motif_rech_elenoet' id='motif_rech_elenoet' value='' onclick='verif5()' size='5' />\n";
+		echo "</span><br />\n";
+		//echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_ele_id' value='rech_ele_id' onclick='verif2()' checked />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont l'identifiant Sconet (<em>ele_id</em>) ";
+		echo "<select name='mode_rech_ele_id' onchange='verif6()'>
+		<option value='commence_par'>commence par</option>
+		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
+		</select>";
+		echo "<input type='text' name='motif_rech_ele_id' id='motif_rech_ele_id' value='' onclick='verif6()' size='5' />\n";
+		echo "</span><br />\n";
+		//echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_no_gep' value='rech_no_gep' onclick='verif2()' checked />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont l'identifiant national ";
+		echo "<select name='mode_rech_no_gep' onchange='verif7()'>
+		<option value='commence_par'>commence par</option>
+		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
+		</select>";
+		echo "<input type='text' name='motif_rech_no_gep' id='motif_rech_no_gep' value='' onclick='verif7()' size='5' />\n";
+		echo "</span><br />\n";
+		//echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
@@ -1184,33 +1300,35 @@ if(isset($quelles_classes)) {
 	echo "<tr>\n";
 	echo "<th><p>Identifiant</p></th>\n";
 	$csv.="Identifiant;";
-	
+
+	$ajout_param_lien="";
+	if(isset($motif_rech)){$ajout_param_lien.="&amp;motif_rech=$motif_rech";}
+	if(isset($mode_rech_nom)){$ajout_param_lien.="&amp;mode_rech_nom=$mode_rech_nom";}
+	if(isset($mode_rech_prenom)){$ajout_param_lien.="&amp;mode_rech_prenom=$mode_rech_prenom";}
+	//if((isset($mode_rech_champ))&&(isset($champ_rech))) {$ajout_param_lien.="&amp;mode_rech_champ=$mode_rech_champ&amp;champ_rech=$champ_rech";}
+	if(isset($mode_rech)) {$ajout_param_lien.="&amp;mode_rech=$mode_rech";}
+	if(isset($mode_rech_elenoet)) {$ajout_param_lien.="&amp;mode_rech_elenoet=$mode_rech_elenoet";}
+	if(isset($mode_rech_ele_id)) {$ajout_param_lien.="&amp;mode_rech_ele_id=$mode_rech_ele_id";}
+	if(isset($mode_rech_no_gep)) {$ajout_param_lien.="&amp;mode_rech_no_gep=$mode_rech_no_gep";}
+
 	echo "<th><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
-	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
-	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
+	echo $ajout_param_lien;
 	echo "'>Nom Prénom</a></p></th>\n";
 	$csv.="Nom Prénom;";
 	$csv.="Date sortie;";
 
 	echo "<th><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
-	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
-	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
+	echo $ajout_param_lien;
 	echo "'>Sexe</a></p></th>\n";
 	$csv.="Sexe;"
 	;
 	echo "<th><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes";
-	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
-	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
+	echo $ajout_param_lien;
 	echo "'>Date de naissance</a></p></th>\n";
 	$csv.="Date de naissance;";
 
 	echo "<th><p><a href='index.php?order_type=regime,nom,prenom&amp;quelles_classes=$quelles_classes";
-	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
-	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
+	echo $ajout_param_lien;
 	echo "'>Régime</a></p></th>\n";
 	$csv.="Régime;";
 
@@ -1220,9 +1338,7 @@ if(isset($quelles_classes)) {
 		echo "<th><p>";
 		if($_SESSION['statut'] != 'professeur') {
 			echo "<a href='index.php?order_type=classe,nom,prenom&amp;quelles_classes=$quelles_classes";
-			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-			if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
-			if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
+			echo $ajout_param_lien;
 			echo "'>Classe</a>";
 		}
 		else{
@@ -1283,7 +1399,7 @@ if(isset($quelles_classes)) {
 			$eleve_prenom = mysql_result($calldata, $i, "prenom");
 			$eleve_sexe = mysql_result($calldata, $i, "sexe");
 			$eleve_naissance = mysql_result($calldata, $i, "naissance");
-			$elenoet =  mysql_result($calldata, $i, "elenoet");
+			$elenoet = mysql_result($calldata, $i, "elenoet");
 			$date_sortie_elv = mysql_result($calldata, $i, "date_sortie");
 			if($quelles_classes=='no_regime') {
 				$eleve_regime = "-";
@@ -1357,6 +1473,7 @@ if(isset($quelles_classes)) {
 			((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $quelles_classes)))) {
 			echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
 			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+			if(isset($mode_rech)){echo "&amp;mode_rech=$mode_rech";}
 			echo "'>$eleve_nom $eleve_prenom</a>";
 		}
 		else {
@@ -1516,6 +1633,9 @@ if(isset($quelles_classes)) {
 	// Dans le cas scolarite, la liste des classes est dans la table tempo
 	if(isset($motif_rech)){
 		echo "<input type='hidden' name='motif_rech' value='$motif_rech' />\n";
+	}
+	if(isset($mode_rech)){
+		echo "<input type='hidden' name='mode_rech' value='$mode_rech' />\n";
 	}
 	echo "<input type='hidden' name='order_type' value='$order_type' />\n";
 

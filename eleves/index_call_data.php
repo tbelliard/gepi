@@ -1,5 +1,30 @@
 <?php
 
+	if(((isset($_POST['mode_rech_prenom']))&&($_POST['mode_rech_prenom']=='contient'))||
+			((isset($_GET['mode_rech_prenom']))&&($_GET['mode_rech_prenom']=='contient'))) {
+		$mode_rech_prenom="contient";
+	}
+
+	if(((isset($_POST['mode_rech_nom']))&&($_POST['mode_rech_nom']=='contient'))||
+			((isset($_GET['mode_rech_nom']))&&($_GET['mode_rech_nom']=='contient'))) {
+		$mode_rech_nom="contient";
+	}
+
+	if(((isset($_POST['mode_rech_elenoet']))&&($_POST['mode_rech_elenoet']=='contient'))||
+			((isset($_GET['mode_rech_elenoet']))&&($_GET['mode_rech_elenoet']=='contient'))) {
+		$mode_rech_elenoet="contient";
+	}
+
+	if(((isset($_POST['mode_rech_ele_id']))&&($_POST['mode_rech_ele_id']=='contient'))||
+			((isset($_GET['mode_rech_ele_id']))&&($_GET['mode_rech_ele_id']=='contient'))) {
+		$mode_rech_ele_id="contient";
+	}
+
+	if(((isset($_POST['mode_rech_no_gep']))&&($_POST['mode_rech_no_gep']=='contient'))||
+			((isset($_GET['mode_rech_no_gep']))&&($_GET['mode_rech_no_gep']=='contient'))) {
+		$mode_rech_no_gep="contient";
+	}
+
 	if($_SESSION['statut'] == 'professeur') {
 		/*
 		$calldata = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_professeurs jep
@@ -388,11 +413,12 @@
 
 			$pref_motif="";
 			$texte_motif="commence par";
-			if(((isset($_POST['mode_rech_prenom']))&&($_POST['mode_rech_prenom']=='contient'))||
-			((isset($_GET['mode_rech_prenom']))&&($_GET['mode_rech_prenom']=='contient'))) {
+			if((isset($mode_rech_prenom))&&($mode_rech_prenom=='contient')) {
 				$pref_motif="%";
 				$texte_motif="contient";
 				$mode_rech_prenom="contient";
+
+				$mode_rech="contient";
 			}
 			/*
 			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
@@ -422,14 +448,17 @@
 				// Message alternatif depuis modify_eleve.php
 			}
 
+			//$motif_rech=$pref_motif.$motif_rech;
+
 		} else if ($quelles_classes == 'recherche') {
 			$pref_motif="";
 			$texte_motif="commence par";
-			if(((isset($_POST['mode_rech_nom']))&&($_POST['mode_rech_nom']=='contient'))||
-			((isset($_GET['mode_rech_nom']))&&($_GET['mode_rech_nom']=='contient'))) {
+			if((isset($mode_rech_nom))&&($mode_rech_nom=='contient')) {
 				$pref_motif="%";
 				$texte_motif="contient";
 				$mode_rech_nom="contient";
+
+				$mode_rech="contient";
 			}
 
 			/*
@@ -459,6 +488,163 @@
 			else {
 				// Message alternatif depuis modify_eleve.php
 			}
+
+			//$motif_rech=$pref_motif.$motif_rech;
+		}
+		/*
+		else if ($quelles_classes == 'rech_champ') {
+			$pref_motif="";
+			$texte_motif="commence par";
+			if(((isset($_POST['mode_rech_champ']))&&($_POST['mode_rech_champ']=='contient'))||
+			((isset($_GET['mode_rech_champ']))&&($_GET['mode_rech_champ']=='contient'))) {
+				$pref_motif="%";
+				$texte_motif="contient";
+				$mode_rech_champ="contient";
+			}
+
+			if(preg_match('/classe/',$order_type)){
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
+					WHERE $champ_rech like '".$pref_motif.$motif_rech."%' AND
+							e.login=jer.login AND
+							jec.login=e.login AND
+							c.id=jec.id_classe
+					ORDER BY $order_type";
+			}
+			else{
+				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE $champ_rech like '".$pref_motif.$motif_rech."%' AND
+							e.login=jer.login
+					ORDER BY $order_type";
+			}
+			//echo "$sql<br />\n";
+			$calldata = mysql_query($sql);
+
+			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
+				echo "<p align='center'>Liste des élèves dont le $champ_rech $texte_motif <b>$motif_rech</b></p>\n";
+			}
+			else {
+				// Message alternatif depuis modify_eleve.php
+			}
+		}
+		*/
+		else if ($quelles_classes == 'rech_elenoet') {
+			if(isset($motif_rech_elenoet)) {
+				$motif_rech=$motif_rech_elenoet;
+			}
+
+			$pref_motif="";
+			$texte_motif="commence par";
+			if((isset($mode_rech_elenoet))&&($mode_rech_elenoet=='contient')) {
+				$pref_motif="%";
+				$texte_motif="contient";
+				$mode_rech_elenoet="contient";
+
+				$mode_rech="contient";
+			}
+
+			if(preg_match('/classe/',$order_type)){
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
+					WHERE elenoet like '".$pref_motif.$motif_rech."%' AND
+							e.login=jer.login AND
+							jec.login=e.login AND
+							c.id=jec.id_classe
+					ORDER BY $order_type";
+			}
+			else{
+				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE elenoet like '".$pref_motif.$motif_rech."%' AND
+							e.login=jer.login
+					ORDER BY $order_type";
+			}
+			//echo "$sql<br />\n";
+			$calldata = mysql_query($sql);
+
+			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
+				echo "<p align='center'>Liste des élèves dont l'elenoet $texte_motif <b>$motif_rech</b></p>\n";
+			}
+			else {
+				// Message alternatif depuis modify_eleve.php
+			}
+
+			//$motif_rech=$pref_motif.$motif_rech;
+		}
+		else if ($quelles_classes == 'rech_ele_id') {
+			if(isset($motif_rech_ele_id)) {
+				$motif_rech=$motif_rech_ele_id;
+			}
+
+			$pref_motif="";
+			$texte_motif="commence par";
+			if((isset($mode_rech_ele_id))&&($mode_rech_ele_id=='contient')) {
+				$pref_motif="%";
+				$texte_motif="contient";
+				$mode_rech_ele_id="contient";
+
+				$mode_rech="contient";
+			}
+
+			if(preg_match('/classe/',$order_type)){
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
+					WHERE ele_id like '".$pref_motif.$motif_rech."%' AND
+							e.login=jer.login AND
+							jec.login=e.login AND
+							c.id=jec.id_classe
+					ORDER BY $order_type";
+			}
+			else{
+				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE ele_id like '".$pref_motif.$motif_rech."%' AND
+							e.login=jer.login
+					ORDER BY $order_type";
+			}
+			//echo "$sql<br />\n";
+			$calldata = mysql_query($sql);
+
+			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
+				echo "<p align='center'>Liste des élèves dont l'ele_id $texte_motif <b>$motif_rech</b></p>\n";
+			}
+			else {
+				// Message alternatif depuis modify_eleve.php
+			}
+
+			//$motif_rech=$pref_motif.$motif_rech;
+		}
+		else if ($quelles_classes == 'rech_no_gep') {
+			if(isset($motif_rech_no_gep)) {
+				$motif_rech=$motif_rech_no_gep;
+			}
+
+			$pref_motif="";
+			$texte_motif="commence par";
+			if((isset($mode_rech_no_gep))&&($mode_rech_no_gep=='contient')) {
+				$pref_motif="%";
+				$texte_motif="contient";
+				$mode_rech_no_gep="contient";
+
+				$mode_rech="contient";
+			}
+
+			if(preg_match('/classe/',$order_type)){
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
+					WHERE no_gep like '".$pref_motif.$motif_rech."%' AND
+							e.login=jer.login AND
+							jec.login=e.login AND
+							c.id=jec.id_classe
+					ORDER BY $order_type";
+			}
+			else{
+				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE no_gep like '".$pref_motif.$motif_rech."%' AND
+							e.login=jer.login
+					ORDER BY $order_type";
+			}
+			//echo "$sql<br />\n";
+			$calldata = mysql_query($sql);
+
+			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
+				echo "<p align='center'>Liste des élèves dont l'identifiant national $texte_motif <b>$motif_rech</b></p>\n";
+			}
+			else {
+				// Message alternatif depuis modify_eleve.php
+			}
+
+			//$motif_rech=$pref_motif.$motif_rech;
 		}
 		else if ($quelles_classes == 'dse') { //Elève ayant une date de sortie renseignée.
 			$sql="SELECT e.*, jer.* FROM eleves e
