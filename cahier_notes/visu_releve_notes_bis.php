@@ -1024,8 +1024,10 @@ echo "</p>";
 		echo "</div>\n";
 
 		echo "<script type='text/javascript'>
-			
-	//<![CDATA[
+//<![CDATA[
+
+griser_lignes_specifiques_pdf();
+
 function CocheLigne(item) {
 	for (var i=0;i<".count($tab_id_classe).";i++) {
 		if(document.getElementById(item+'_'+i)){
