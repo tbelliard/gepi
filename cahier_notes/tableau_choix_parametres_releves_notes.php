@@ -18,6 +18,9 @@
 
 	$gepiProfSuivi=getSettingValue("gepi_prof_suivi");
 
+	$tab_js_lignes_specifiques_releve_html="var tab_html=new Array('rn_col_moy', 'rn_sign_chefetab', 'rn_abs_2');";
+	$tab_js_lignes_specifiques_releve_pdf="var tab_pdf=new Array('rn_aff_classe_nom', 'rn_rapport_standard_min_font', 'rn_bloc_obs');";
+
 	$tab_item=array();
 	$tab_item[]='rn_nomdev';
 	$tab_traduc['rn_nomdev']="Avec le nom des devoirs";
@@ -67,7 +70,7 @@
 	$alt=1;
 	// Affichage du nom de la classe Nom long  Nom court  Nom long (Nom court)
 	//$alt=$alt*(-1);
-	echo "<tr class='lig$alt white_hover'>\n";
+	echo "<tr id='tr_rn_aff_classe_nom' class='lig$alt white_hover'>\n";
 	echo "<td style='text-align:left;'>Affichage du nom de la classe (<em>relevé PDF</em>)<br />\n";
 	echo "Nom long (1) / Nom court (2) / Nom court (Nom long) (3)";
 	echo "</td>\n";
@@ -113,7 +116,7 @@
 
 		if($affiche_ligne=="y") {
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt white_hover'>\n";
+			echo "<tr id='tr_".$tab_item[$k]."' class='lig$alt white_hover'>\n";
 			echo "<td style='text-align:left;'>".$tab_traduc[$tab_item[$k]]."\n";
 			echo "</td>\n";
 
@@ -265,7 +268,7 @@
 	$rn_rapport_standard_min_font_defaut=(($rn_rapport_standard_min_font_defaut!='')&&(preg_match("/^[0-9.]*$/",$rn_rapport_standard_min_font_defaut))&&($rn_rapport_standard_min_font_defaut>0)) ? $rn_rapport_standard_min_font_defaut : 3;
 
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt white_hover'>\n";
+	echo "<tr id='tr_rn_rapport_standard_min_font' class='lig$alt white_hover'>\n";
 	echo "<td style='text-align:left;'>Rapport taille_standard / taille_minimale_de_police (<em>relevé PDF avec cell_ajustee()</em>)<br />(<em>Si pour que les notes tiennent dans la cellule, il faut réduire davantage la police, on supprime les retours à la ligne.</em>)\n";
 	echo "</td>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
@@ -315,7 +318,7 @@
 
 
 		$alt=$alt*(-1);
-		echo "<tr class='lig$alt white_hover'>\n";
+		echo "<tr id='tr_rn_bloc_obs' class='lig$alt white_hover'>\n";
 		echo "<td style='text-align:left;'>Afficher le bloc observations (<em>relevé PDF</em>)\n";
 
 		$titre_infobulle="Bloc observations en PDF\n";
@@ -422,6 +425,46 @@
 
 	}
 	echo "</table>\n";
+
+	echo "<script type='text/javascript'>
+	$tab_js_lignes_specifiques_releve_html;
+	$tab_js_lignes_specifiques_releve_pdf;
+
+	function reinit_lignes_specifiques_pdf_html() {
+		for(i=0;i<tab_html.length;i++) {
+			//alert(tab_html[i]);
+			if(document.getElementById('tr_'+tab_html[i])) {
+				document.getElementById('tr_'+tab_html[i]).style.backgroundColor='';
+			}
+		}
+
+		for(i=0;i<tab_pdf.length;i++) {
+			if(document.getElementById('tr_'+tab_pdf[i])) {
+				document.getElementById('tr_'+tab_pdf[i]).style.backgroundColor='';
+			}
+		}
+	}
+
+	function griser_lignes_specifiques_html() {
+		reinit_lignes_specifiques_pdf_html();
+		for(i=0;i<tab_html.length;i++) {
+			if(document.getElementById('tr_'+tab_html[i])) {
+				document.getElementById('tr_'+tab_html[i]).style.backgroundColor='grey';
+			}
+		}
+	}
+
+	function griser_lignes_specifiques_pdf() {
+		reinit_lignes_specifiques_pdf_html();
+		for(i=0;i<tab_pdf.length;i++) {
+			if(document.getElementById('tr_'+tab_pdf[i])) {
+				document.getElementById('tr_'+tab_pdf[i]).style.backgroundColor='grey';
+			}
+		}
+	}
+
+</script>
+";
 
 //echo "\$chaine_coef=$chaine_coef<br />";
 ?>
