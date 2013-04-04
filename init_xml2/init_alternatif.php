@@ -503,7 +503,7 @@ elseif($cat=='profs') {
 			echo "<input type='checkbox' name='matiere[]' id='matiere_$i' value='$lig->matiere' ";
 			echo "onchange=\"checkbox_change($i); changement();\" ";
 			if(in_array($lig->matiere,$tab_matieres_profs)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
-			echo "/><label for='matiere_$i'><span id='texte_matiere_$i'$temp_style>".$lig->nom_complet.".</span></label><br />\n";
+			echo "/><label for='matiere_$i'><span id='texte_matiere_$i'$temp_style title=\"$lig->matiere ($lig->nom_complet)\">".$lig->nom_complet."</span></label><br />\n";
 			$i++;
 		}
 		echo "</td>\n";
@@ -990,7 +990,7 @@ function test_form_classe(id_classe) {
 
 		echo "<input type='checkbox' name='matiere[]' id='matiere_$cpt_mat' value='$lig->matiere' ";
 		echo "onchange=\"checkbox_change_matiere($cpt_mat)\" ";
-		echo "/><label for='matiere_$cpt_mat'><span id='texte_matiere_$cpt_mat'>".$lig->nom_complet.".</span></label>";
+		echo "/><label for='matiere_$cpt_mat'><span id='texte_matiere_$cpt_mat' title=\"$lig->matiere ($lig->nom_complet)\">".$lig->nom_complet."</span></label>";
 		echo "<br />\n";
 
 		$cpt_mat++;
