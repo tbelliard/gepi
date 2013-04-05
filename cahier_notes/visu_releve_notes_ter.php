@@ -109,13 +109,35 @@ include("visu_releve_notes_func.lib.php");
 
 
 function cherche_periode_courante($id_classe, $ts, $valeur_par_defaut="") {
+	//echo "<pre>\$ts=$ts</pre>";
 	$retour=$valeur_par_defaut;
-	$sql="select p.num_periode from periodes p, edt_calendrier e where (classe_concerne_calendrier like '%;$id_classe;%' or classe_concerne_calendrier like '$id_classe;%') and etabferme_calendrier='1' and $ts<fin_calendrier_ts and $ts>debut_calendrier_ts and p.nom_periode=e.nom_calendrier and p.id_classe='$id_classe';";
+
+	if($ts=="") {
+		$ts=time();
+	}
+
+	//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
+	$sql="select * from periodes where id_classe='$id_classe' and date_fin>FROM_UNIXTIME($ts) order by num_periode ASC LIMIT 1;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		$retour=mysql_result($res, 0, "num_periode");
-		if(!is_numeric($retour)) {$retour=$valeur_par_defaut;}
 	}
+	else {
+		$sql="select p.num_periode from periodes p, edt_calendrier e where (classe_concerne_calendrier like '%;$id_classe;%' or classe_concerne_calendrier like '$id_classe;%') and etabferme_calendrier='1' and $ts<fin_calendrier_ts and $ts>debut_calendrier_ts and p.nom_periode=e.nom_calendrier and p.id_classe='$id_classe';";
+		//echo "$sql<br />";
+		/*
+		$f=fopen("/tmp/cherche_periode_courante.txt","a+");
+		fwrite($f, $sql."\n");
+		fclose($f);
+		*/
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$retour=mysql_result($res, 0, "num_periode");
+		}
+	}
+
+	if(!is_numeric($retour)) {$retour=$valeur_par_defaut;}
+
 	return $retour;
 }
 

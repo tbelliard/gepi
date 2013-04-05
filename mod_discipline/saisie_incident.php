@@ -1400,8 +1400,8 @@ if(isset($id_incident) ) {
                     <input type='hidden' name='u_login[<?php echo $cpt; ?>]' value="<?php echo $lig->login; ?>" />
                     <select name='qualite[<?php echo $cpt; ?>]' 
                             id='qualite_<?php echo $cpt; ?>' 
-                            onchange="sauve_role('$id_incident','$lig->login','<?php echo $cpt; ?>');">
-                        <option value=''<?php if($lig->qualite=="") {echo " selected='selected'";} ?> >---</option>
+                            onchange="sauve_role('<?php echo $id_incident;?>','<?php echo $lig->login;?>','<?php echo $cpt; ?>');">
+                        <option value=''<?php if($lig->qualite=="") {echo " selected='selected'";} ?>>---</option>
  <?php
                     for($loop=0;$loop<count($tab_qualite);$loop++) {
 ?>
