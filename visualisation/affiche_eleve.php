@@ -1027,16 +1027,38 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
+	//debug_var();
+
 	// On évite d'initialiser à NULL pour permettre de pré-cocher le choix_periode.
 	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : NULL;
 	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : "toutes_periodes";
 	$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : "periode";
+	//echo "\$choix_periode=$choix_periode<br />";
 	//if($choix_periode!='toutes_periodes') {
 	if(($choix_periode!='toutes_periodes')&&(isset($_POST['periode']))) {
 		$periode=$_POST['periode'];
 	}
-	else{
+	else {
 		$periode="";
+		// 20130405
+		if(isset($id_classe)) {
+			$num_periode_courante=cherche_periode_courante($id_classe, "", 1, "y");
+
+			$sql="SELECT nom_periode FROM periodes WHERE num_periode='$num_periode_courante' AND id_classe='$id_classe';";
+			$res_nom_per=mysql_query($sql);
+			if(mysql_num_rows($res_nom_per)>0) {
+				$periode=mysql_result($res_nom_per, 0, "nom_periode");
+			}
+		}
+		elseif(isset($login_eleve)) {
+			$num_periode_courante=cherche_periode_courante_eleve($login_eleve, "", 1, "y");
+
+			$sql="SELECT nom_periode FROM periodes p, j_eleves_classes jec WHERE num_periode='$num_periode_courante' AND p.id_classe=jec.id_classe AND jec.login='$login_eleve';";
+			$res_nom_per=mysql_query($sql);
+			if(mysql_num_rows($res_nom_per)>0) {
+				$periode=mysql_result($res_nom_per, 0, "nom_periode");
+			}
+		}
 	}
 
 
@@ -2099,6 +2121,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	echo "<select name='periode' onfocus=\"document.getElementById('choix_periode').checked='true'\" onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 	$num_periode_choisie=1;
 	for($i=1;$i<$nb_periode;$i++) {
+		// 20130405
 		if($periode==$nom_periode[$i]) {$selected=" selected='yes'";$num_periode_choisie=$i;}else{$selected="";}
 		echo "<option value='$nom_periode[$i]'$selected>$nom_periode[$i]</option>\n";
 	}
