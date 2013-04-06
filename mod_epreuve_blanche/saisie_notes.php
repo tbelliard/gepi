@@ -64,6 +64,7 @@ if (!checkAccess()) {
 
 $id_epreuve=isset($_POST['id_epreuve']) ? $_POST['id_epreuve'] : (isset($_GET['id_epreuve']) ? $_GET['id_epreuve'] : NULL);
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
+$en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : NULL;
 
 if(isset($_POST['saisie_notes'])) {
 	check_token();
@@ -211,6 +212,135 @@ elseif((isset($mode))&&($mode=='export_csv')) {
 		die();
 	}
 }
+// 20130406
+elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite')))) {
+	check_token();
+
+	$upload_autorise="y";
+	if($_SESSION['statut']=='professeur') {
+		$sql="SELECT * FROM eb_epreuves ee, eb_profs ep WHERE ee.etat!='clos' AND ee.id=ep.id_epreuve AND ep.login_prof='".$_SESSION['login']."' AND ep.id_epreuve='$id_epreuve';";
+		//echo "$sql<br />\n";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			$msg="Accès non autorisé à cette épreuve.<br />\n";
+			$upload_autorise="n";
+		}
+		else {
+			$lig=mysql_fetch_object($res);
+			$note_sur=$lig->note_sur;
+		}
+	}
+	else {
+		$sql="SELECT * FROM eb_epreuves ee WHERE ee.etat!='clos' AND ep.id_epreuve='$id_epreuve';";
+		//echo "$sql<br />\n";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			$msg="Cette épreuve est close ou inexistante.<br />\n";
+			$upload_autorise="n";
+		}
+		else {
+			$lig=mysql_fetch_object($res);
+			$note_sur=$lig->note_sur;
+		}
+	}
+
+	if($upload_autorise=="y") {
+		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+		if($csv_file['tmp_name'] != "") {
+			$fp = @fopen($csv_file['tmp_name'], "r");
+			if(!$fp) {
+				$msg="Impossible d'ouvrir le fichier CSV<br />";
+			}
+			else {
+				$nb_reg=0;
+				$msg="";
+				$long_max=4000;
+				while(!feof($fp)) {
+					if (isset($en_tete)) {
+						$data = fgetcsv ($fp, $long_max, ";");
+						unset($en_tete);
+					}
+					$data = fgetcsv ($fp, $long_max, ";");
+
+					if((isset($data[1]))&&($data[0]!='')&&($data[1]!='')) {
+						if($_SESSION['statut']=='professeur') {
+							$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[0]."';";
+							$res=mysql_query($sql);
+							if(mysql_num_rows($res)==0) {
+								$msg.="Le numéro d'anonymat ".$data[0]." ne vous est pas attribué.<br />";
+							}
+							else {
+								$note_courante=preg_replace("/,/", ".", $data[1]);
+								if((preg_match("/^[0-9\.\,]{1,}$/", $data[1]))&&($note_courante>=0)&&($note_courante<=$note_sur)) {
+									$sql="UPDATE eb_copies SET note='$note_courante', statut='' WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[0]."';";
+									$update=mysql_query($sql);
+									if($update) {
+										$nb_reg++;
+									}
+									else {
+										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[0].".<br />";
+									}
+								}
+								elseif(($data[1]=="abs")||($data[1]=="disp")||($data[1]=="-")) {
+									$sql="UPDATE eb_copies SET note='0.0', statut='".$data[1]."' WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[0]."';";
+									$update=mysql_query($sql);
+									if($update) {
+										$nb_reg++;
+									}
+									else {
+										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[0].".<br />";
+									}
+								}
+								else {
+									$msg.="La note ".$data[1]." pour le numéro d'anonymat ".$data[0]." est invalide.<br />";
+								}
+							}
+						}
+						else {
+							$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[0]."';";
+							$res=mysql_query($sql);
+							if(mysql_num_rows($res)==0) {
+								$msg.="Le numéro d'anonymat ".$data[0]." n'est pas associé à .<br />";
+							}
+							else {
+								$note_courante=preg_replace("/,/", ".", $data[1]);
+								if((preg_match("/^[0-9\.\,]{1,}$/", $data[1]))&&($note_courante>=0)&&($note_courante<=$note_sur)) {
+									$sql="UPDATE eb_copies SET note='$note_courante', statut='' WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[0]."';";
+									$update=mysql_query($sql);
+									if($update) {
+										$nb_reg++;
+									}
+									else {
+										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[0].".<br />";
+									}
+								}
+								elseif(($data[1]=="abs")||($data[1]=="disp")||($data[1]=="-")) {
+									$sql="UPDATE eb_copies SET note='0.0', statut='".$data[1]."' WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[0]."';";
+									$update=mysql_query($sql);
+									if($update) {
+										$nb_reg++;
+									}
+									else {
+										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[0].".<br />";
+									}
+								}
+								else {
+									$msg.="La note ".$data[1]." pour le numéro d'anonymat ".$data[0]." est invalide.<br />";
+								}
+							}
+						}
+					}
+				}
+				if($nb_reg>0) {
+					$msg.="$nb_reg notes enregistrée(s).<br />";
+				}
+			}
+		}
+		else {
+			$msg="Aucun fichier n'a été sélectionné !<br />";
+		}
+	}
+}
 
 include('lib_eb.php');
 
@@ -302,6 +432,11 @@ echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=expor
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Exporter au format CSV</a>";
 
+// 20130406
+echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=import_csv".add_token_in_url()."'";
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+echo ">Importer les notes depuis un CSV</a>";
+
 echo "</p>\n";
 
 //========================================================
@@ -353,7 +488,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	$res=mysql_query($sql);
 	
 	if(mysql_num_rows($res)==0) {
-		echo "<p style='color:red;'>Aucune copie n'a été trouvée.<br />Avez-vous associé des groupes/enseignements à l'épreuve?</p>\n";
+		echo "<p style='color:red;'>Aucune copie n'a été trouvée.<br />Avez-vous associé des groupes/enseignements à l'épreuve&nbsp;?</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -412,6 +547,35 @@ if(mysql_num_rows($test4)>0) {
 
 //========================================================
 
+// 20130406
+if((isset($mode))&&($mode=='import_csv')) {
+	if($etat!='clos') {
+
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+		$csv_file="";
+		echo add_token_field();
+		echo "
+	<p>Fichier CSV à importer&nbsp;: <input type='file' name='csv_file' /></p>
+	<p><input type='submit' value='Envoyer' /></p>
+	<p>
+		Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre&nbsp;
+		<input type='checkbox' name='en_tete' value='yes' checked />
+	</p>
+	<input type='hidden' name='id_epreuve' value='" . $id_epreuve . "' />
+	<input type='hidden' name='mode' value='upload_csv' />
+	<p><br /></p>
+	<p style='text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em> Le format du CSV attendu est un CSV à deux colonnes<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;N_ANONYMAT;NOTE;<br />
+	Le premier champ est le numéro d'anonymat et le deuxième, la note.</p>
+</form>\n";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+	else {
+		echo "<p style='color:red'>L'épreuve est close.<br />L'import CSV n'est pas possible.</p>\n";
+	}
+}
 
 // Couleurs utilisées
 $couleur_devoirs = '#AAE6AA';
@@ -529,13 +693,6 @@ function verifcol(num_id){
 
 //echo "<p style='color:red;'>Ajouter des confirm_abandon() sur les liens.</p>\n";
 echo "<p><br /></p>\n";
-echo "<p style='color:red;'>A FAIRE:</p>\n";
-echo "<ul>\n";
-//echo "<li><p style='color:red;'>Permettre de saisir des notes sur autre chose que 20.</p>\n";
-//echo "<li><p style='color:red;'>Calculer la moyenne, médiane,...</p></li>\n";
-echo "<li><p style='color:red;'>Permettre d'importer/exporter ses saisies au format CSV</p></li>\n";
-echo "</ul>\n";
-//echo "<p style='color:red;'>Vérifier que l'on n'a pas deux numéros anonymat identiques sur l'épreuve... pour verrouiller les saisies si nécessaire.</p>\n";
 
 require("../lib/footer.inc.php");
 ?>
