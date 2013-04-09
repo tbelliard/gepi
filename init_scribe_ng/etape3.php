@@ -194,7 +194,7 @@ if ($_POST['step'] == "3") {
               }
 
               // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
-              $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getResponsableEleveId()."','$numero_responsable','')";
+              $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getResponsableEleveId()."','$numero_responsable','','')";
               mysql_query($req_ajout_lien_eleve_resp);
               if (mysql_errno() != 0) {
                   die("Une erreur s'est produite lors de l'affectation d'un &eacute;l&egrave;ve &agrave; son responsable l&eacute;gal.");

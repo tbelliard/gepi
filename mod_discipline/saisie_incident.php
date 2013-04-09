@@ -2278,7 +2278,7 @@ elseif($step==2) {
 <?php
 				while($lig_nat=mysql_fetch_object($res_nat)) {
 ?>
-                        <option value="$lig_nat->nature"<?php if($lig_nat->nature==$nature) {echo " selected='selected'";} ?>>
+                        <option value="<?php echo $lig_nat->nature;?>"<?php if($lig_nat->nature==$nature) {echo " selected='selected'";} ?>>
                             <?php echo $lig_nat->nature; ?>
                         </option>
 <?php
