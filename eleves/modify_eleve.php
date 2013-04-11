@@ -78,6 +78,9 @@ $reg_doublant = isset($_POST["reg_doublant"]) ? $_POST["reg_doublant"] : NULL;
 
 //debug_var();
 
+// Témoin pour index_call_data.php
+$page_courante="modify_eleve";
+
 //=========================
 $modif_adr_pers_id=isset($_GET["modif_adr_pers_id"]) ? $_GET["modif_adr_pers_id"] : NULL;
 $adr_id=isset($_GET["adr_id"]) ? $_GET["adr_id"] : NULL;
@@ -109,10 +112,29 @@ $definir_etab = isset($_POST["definir_etab"]) ? $_POST["definir_etab"] : (isset(
 
 
 //=========================
-// AJOUT: boireaus 20071212
 // Pour l'arrivée depuis la page index.php suite à une recherche
 $motif_rech=isset($_POST['motif_rech']) ? $_POST['motif_rech'] : (isset($_GET['motif_rech']) ? $_GET['motif_rech'] : NULL);
+$mode_rech=isset($_POST['mode_rech']) ? $_POST['mode_rech'] : (isset($_GET['mode_rech']) ? $_GET['mode_rech'] : NULL);
+if((isset($quelles_classes))&&(isset($mode_rech))&&($mode_rech=='contient')) {
+	// On initialise des variables pour index_call_data.php
+	if($quelles_classes=='recherche') {
+		$mode_rech_nom="contient";
+	}
+	elseif($quelles_classes=='rech_prenom') {
+		$mode_rech_prenom="contient";
+	}
+	elseif($quelles_classes=='rech_elenoet') {
+		$mode_rech_elenoet="contient";
+	}
+	elseif($quelles_classes=='rech_ele_id') {
+		$mode_rech_ele_id="contient";
+	}
+	elseif($quelles_classes=='rech_no_gep') {
+		$mode_rech_no_gep="contient";
+	}
+}
 //=========================
+//echo "\$motif_rech=$motif_rech<br />";
 
 $journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
 $duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
@@ -1155,6 +1177,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
 			if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
 			if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
+			if (isset($mode_rech)) echo "<input type=hidden name=mode_rech value=\"$mode_rech\" />\n";
 
 
 			echo "<input type='hidden' name='afficher_tous_les_resp' id='afficher_tous_les_resp' value='n' />\n";
@@ -1258,6 +1281,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
 			if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
 			if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
+			if (isset($mode_rech)) echo "<input type=hidden name=mode_rech value=\"$mode_rech\" />\n";
 
 
 			echo "</form>\n";
@@ -1360,6 +1384,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
 			if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
 			if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
+			if (isset($mode_rech)) echo "<input type=hidden name=mode_rech value=\"$mode_rech\" />\n";
 
 
 			echo "<input type='hidden' name='afficher_tous_les_etab' id='afficher_tous_les_etab' value='n' />\n";
@@ -1408,6 +1433,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			if(isset($order_type)) {$chaine_param_tri.= "&amp;order_type=$order_type";}
 			if(isset($quelles_classes)) {$chaine_param_tri.= "&amp;quelles_classes=$quelles_classes";}
 			if(isset($motif_rech)) {$chaine_param_tri.= "&amp;motif_rech=$motif_rech";}
+			if (isset($mode_rech)) echo "<input type=hidden name=mode_rech value=\"$mode_rech\" />\n";
 			if(isset($afficher_tous_les_etab)) {$chaine_param_tri.= "&amp;afficher_tous_les_etab=$afficher_tous_les_etab";}
 
 			$call_etab=mysql_query($sql);
@@ -1527,6 +1553,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
 			if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
 			if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
+			if (isset($mode_rech)) echo "<input type=hidden name=mode_rech value=\"$mode_rech\" />\n";
 
 
 			echo "</form>\n";
@@ -1540,14 +1567,55 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	}
 }
 
-
+echo "<form enctype='multipart/form-data' name='form_choix_eleve' action='modify_eleve.php' method='post'>\n";
+//echo add_token_field();
 echo "<p class=bold><a href=\"index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+
+$num_eleve_courant=-1;
 if ((isset($order_type)) and (isset($quelles_classes))) {
     //echo "<p class=bold><a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
     echo " | <a href=\"index.php?quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+	if(isset($mode_rech)){echo "&amp;mode_rech=$mode_rech";}
 	echo "&amp;order_type=$order_type\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour à votre recherche</a>\n";
+
+	include("index_call_data.php");
+
+	echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
+	echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
+	if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
+	if (isset($mode_rech)) echo "<input type=hidden name=mode_rech value=\"$mode_rech\" />\n";
+
+	if(isset($calldata)) {
+		echo " | <select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
+		$cpt_eleve=0;
+		while($lig_calldata=mysql_fetch_object($calldata)) {
+			echo "<option value='$lig_calldata->login'";
+			if($lig_calldata->login==$eleve_login) {
+				echo " selected";
+				$num_eleve_courant=$cpt_eleve;
+			}
+			echo ">".$lig_calldata->nom." ".$lig_calldata->prenom."</option>\n";
+			$cpt_eleve++;
+		}
+		echo "</select>\n";
+	}
+	elseif(isset($tab_eleve)) {
+		echo " | <select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
+		$cpt_eleve=0;
+		for($loop=0;$loop<count($tab_eleve);$loop++) {
+			echo "<option value='".$tab_eleve[$loop]['login']."'";
+			if($tab_eleve[$loop]['login']==$eleve_login) {
+				echo " selected";
+				$num_eleve_courant=$cpt_eleve;
+			}
+			echo ">".$tab_eleve[$loop]['nom']." ".$tab_eleve[$loop]['prenom']."</option>\n";
+			$cpt_eleve++;
+		}
+		echo "</select>\n";
+	}
+	echo "<input type='submit' id='bouton_submit_changement_eleve' value='Changer' />\n";
 }
 /*
 else {
@@ -1555,6 +1623,34 @@ else {
 }
 */
 echo "</p>\n";
+echo "</form>\n";
+
+echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	if(document.getElementById('bouton_submit_changement_eleve')) {
+		document.getElementById('bouton_submit_changement_eleve').style.display='none';
+	}
+
+	function confirm_changement_eleve(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form_choix_eleve.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form_choix_eleve.submit();
+			}
+			else{
+				document.getElementById('choix_eleve_login').selectedIndex=$num_eleve_courant;
+			}
+		}
+	}
+</script>\n";
+
 
 
 echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
@@ -2109,6 +2205,7 @@ echo "<input type=hidden name=is_posted value=\"1\" />\n";
 if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
 if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
 if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
+if (isset($mode_rech)) echo "<input type=hidden name=mode_rech value=\"$mode_rech\" />\n";
 if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$eleve_login\" />\n";
 if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />\n";
 
@@ -2160,6 +2257,7 @@ if(isset($eleve_login)){
 				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+				if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Définir le responsable légal 1</a>";
 			}
 			echo "</p>\n";
@@ -2179,6 +2277,7 @@ if(isset($eleve_login)){
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+					if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Définir le responsable légal 1</a>";
 				}
 				echo "</p>\n";
@@ -2210,6 +2309,7 @@ if(isset($eleve_login)){
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+					if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 					//echo "'>Modifier le responsable</a></td>\n";
 					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Changer de responsable</a></td>\n";
 				}
@@ -2282,6 +2382,7 @@ if(isset($eleve_login)){
 				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+				if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Définir le responsable légal 2</a></p>\n";
 			}
 		}
@@ -2301,6 +2402,7 @@ if(isset($eleve_login)){
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+					if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Définir le responsable légal 2</a></p>\n";
 				}
 			}
@@ -2324,6 +2426,7 @@ if(isset($eleve_login)){
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+					if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Changer de responsable</a></td>\n";
 				}
 				echo "</tr>\n";
@@ -2388,6 +2491,7 @@ if(isset($eleve_login)){
 								if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 								if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 								if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+								if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 								//echo "'>Prendre l'adresse de l'autre responsable</a>";
 								echo add_token_in_url();
 								echo "' onclick=\"return confirm_abandon (this, change, '$themessage');\">Prendre l'adresse de l'autre responsable</a>";
@@ -2478,6 +2582,7 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 			if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 			if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 			if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+			if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 			echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Renseigner l'établissement d'origine</a>";
 		}
 		echo "</p>\n";
@@ -2496,6 +2601,7 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+				if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Définir l'établissement d'origine</a>";
 				echo "</p>\n";
 			}
@@ -2514,6 +2620,7 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+					if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 
 					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Modifier l'établissement d'origine</a>";
 				}
@@ -2540,6 +2647,7 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+					if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
 					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Modifier l'établissement d'origine</a>";
 				}
 				echo "</p>\n";

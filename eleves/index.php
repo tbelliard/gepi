@@ -58,6 +58,28 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 	unset($_SESSION['retour_apres_maj_sconet']);
 }
 
+//debug_var();
+
+$mode_rech=isset($_POST['mode_rech']) ? $_POST['mode_rech'] : (isset($_GET['mode_rech']) ? $_GET['mode_rech'] : NULL);
+if((isset($quelles_classes))&&(isset($mode_rech))&&($mode_rech=='contient')) {
+	// On initialise des variables pour index_call_data.php
+	if($quelles_classes=='recherche') {
+		$mode_rech_nom="contient";
+	}
+	elseif($quelles_classes=='rech_prenom') {
+		$mode_rech_prenom="contient";
+	}
+	elseif($quelles_classes=='rech_elenoet') {
+		$mode_rech_elenoet="contient";
+	}
+	elseif($quelles_classes=='rech_ele_id') {
+		$mode_rech_ele_id="contient";
+	}
+	elseif($quelles_classes=='rech_no_gep') {
+		$mode_rech_no_gep="contient";
+	}
+}
+
 //log_debug('Après checkAccess()');
 
 //log_debug(debug_var());
@@ -424,6 +446,25 @@ if(getSettingValue('eleves_index_debug_var')=='y') {
 		document.getElementById('quelles_classes_rech_prenom').checked=true;
 		verif2();
 	}
+
+	/*
+	function verif5(){
+		document.getElementById('quelles_classes_rech_champ').checked=true;
+		verif2();
+	}
+	*/
+	function verif5(){
+		document.getElementById('quelles_classes_rech_elenoet').checked=true;
+		verif2();
+	}
+	function verif6(){
+		document.getElementById('quelles_classes_rech_ele_id').checked=true;
+		verif2();
+	}
+	function verif7(){
+		document.getElementById('quelles_classes_rech_no_gep').checked=true;
+		verif2();
+	}
 </script>
 
 <?php
@@ -610,15 +651,15 @@ if (!isset($quelles_classes)) {
 		echo "<input type='radio' name='quelles_classes' id='quelles_classes_recherche' value='recherche' onclick='verif2()' checked />\n";
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "<label for='' style='cursor: pointer;'>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
 		echo "<span class='norme'>Elève dont le nom \n";
-		echo "<select name='mode_rech_nom'>
+		echo "<select name='mode_rech_nom' onchange='verif3()'>
 		<option value='commence_par'>commence par</option>
-		<option value='contient'>contient</option>
+		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
 		</select>";
 		echo "<input type='text' name='motif_rech' id='motif_rech_nom' value='' onclick='verif3()' size='5' />\n";
 		echo "</span><br />\n";
-		echo "</label>\n";
+		//echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
@@ -627,15 +668,90 @@ if (!isset($quelles_classes)) {
 		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_prenom' value='rech_prenom' onclick='verif2()' />\n";
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "<label for='' style='cursor: pointer;'>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
 		echo "<span class='norme'>Elève dont le prénom \n";
-		echo "<select name='mode_rech_prenom'>
+		echo "<select name='mode_rech_prenom' onchange='verif4()'>
 		<option value='commence_par'>commence par</option>
-		<option value='contient'>contient</option>
+		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
 		</select>";
 		echo "<input type='text' name='motif_rech_p' value='' onclick='verif4()' size='5' />\n";
 		echo "</span><br />\n";
-		echo "</label>\n";
+		//echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		/*
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_champ' value='rech_champ' onclick='verif2()' checked />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont l'\n";
+		echo "<select name='champ_rech' onchange='verif5()'>
+		<option value='elenoet'>identifiant Sconet (elenoet)</option>
+		<option value='ele_id'>identifiant Sconet (ele_id)</option>
+		<option value='no_gep'>identifiant national</option>
+		</select>";
+		echo "<select name='mode_rech_champ' onchange='verif5()'>
+		<option value='commence_par'>commence par</option>
+		<option value='contient'>contient</option>
+		</select>";
+		echo "<input type='text' name='motif_rech' id='motif_rech_champ' value='' onclick='verif5()' size='5' />\n";
+		echo "</span><br />\n";
+		//echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+		*/
+
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_elenoet' value='rech_elenoet' onclick='verif2()' checked />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont l'identifiant Sconet (<em>elenoet</em>) ";
+		echo "<select name='mode_rech_elenoet' onchange='verif5()'>
+		<option value='commence_par'>commence par</option>
+		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
+		</select>";
+		echo "<input type='text' name='motif_rech_elenoet' id='motif_rech_elenoet' value='' onclick='verif5()' size='5' />\n";
+		echo "</span><br />\n";
+		//echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_ele_id' value='rech_ele_id' onclick='verif2()' checked />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont l'identifiant Sconet (<em>ele_id</em>) ";
+		echo "<select name='mode_rech_ele_id' onchange='verif6()'>
+		<option value='commence_par'>commence par</option>
+		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
+		</select>";
+		echo "<input type='text' name='motif_rech_ele_id' id='motif_rech_ele_id' value='' onclick='verif6()' size='5' />\n";
+		echo "</span><br />\n";
+		//echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_no_gep' value='rech_no_gep' onclick='verif2()' checked />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont l'identifiant national ";
+		echo "<select name='mode_rech_no_gep' onchange='verif7()'>
+		<option value='commence_par'>commence par</option>
+		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
+		</select>";
+		echo "<input type='text' name='motif_rech_no_gep' id='motif_rech_no_gep' value='' onclick='verif7()' size='5' />\n";
+		echo "</span><br />\n";
+		//echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
@@ -1177,469 +1293,42 @@ if(isset($quelles_classes)) {
 	echo "</tr>\n";
 	*/
 
-	if($_SESSION['statut'] == 'professeur') {
-		/*
-		$calldata = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_professeurs jep
-		WHERE (
-		jep.login=e.login AND
-		jep.professeur='".$_SESSION['login']."' AND
-		jep.id_classe='$quelles_classes'
-		)
-		ORDER BY $order_type");
-		*/
-		if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $quelles_classes))) {
-			$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_regime jer, j_eleves_professeurs jep
-			WHERE (
-			jep.login=e.login AND
-			jer.login=e.login AND
-			jep.id_classe='$quelles_classes'
-			)
-			ORDER BY $order_type;";
-		}
-		else {
-			$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_professeurs jep, j_eleves_regime jer
-			WHERE (
-			jep.login=e.login AND
-			jer.login=e.login AND
-			jep.professeur='".$_SESSION['login']."' AND
-			jep.id_classe='$quelles_classes'
-			)
-			ORDER BY $order_type;";
-		}
-		$calldata = mysql_query($sql);
-
-		echo "<p align='center'>Liste des élèves de la classe choisie.</p>\n";
-	}
-	else{
-		if ($quelles_classes == 'certaines') {
-			/*
-			$calldata = mysql_query("SELECT DISTINCT e.* FROM eleves e, tempo t, j_eleves_classes j, classes cl
-			WHERE (t.num = '".SESSION_ID()."' AND
-				t.id_classe = j.id_classe and
-				j.login = e.login AND
-				cl.id=t.id_classe and
-				j.periode=t.max_periode
-				)
-			ORDER BY $order_type");
-			*/
-			$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, tempo t, j_eleves_classes j, classes cl, j_eleves_regime jer
-			WHERE (t.num = '".SESSION_ID()."' AND
-				t.id_classe = j.id_classe and
-				j.login = e.login AND
-				jer.login = e.login AND
-				cl.id=t.id_classe and
-				j.periode=t.max_periode
-				)
-			ORDER BY $order_type;";
-			$calldata = mysql_query($sql);
-
-			echo "<p align='center'>Liste des élèves de la ou des classes choisies.</p>\n";
-
-		} else if ($quelles_classes == 'toutes') {
-			if ($order_type == "classe,nom,prenom") {
-				/*
-				$calldata = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j, classes cl
-				WHERE (
-				j.login = e.login AND
-				j.id_classe =cl.id
-				)
-				ORDER BY $order_type");
-				*/
-				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes j, classes cl, j_eleves_regime jer
-				WHERE (
-				j.login = e.login AND
-				jer.login = e.login AND
-				j.id_classe =cl.id
-				)
-				ORDER BY $order_type;";
-				$calldata = mysql_query($sql);
-
-			} else {
-				//$calldata = mysql_query("SELECT * FROM eleves ORDER BY $order_type");
-				$calldata = mysql_query("SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE jer.login=e.login ORDER BY $order_type");
-			}
-
-			echo "<p align='center'>Liste de tous les élèves.</p>\n";
-
-		} else if ($quelles_classes == 'na') {
-			/*
-			$calldata = mysql_query("select e.* from eleves e
-			LEFT JOIN j_eleves_classes c ON c.login=e.login
-			where c.login is NULL
-			ORDER BY $order_type
-			");
-			*/
-			/*
-			if(mb_substr($order_type,0,6)=='regime') {
-				$tmp_order_type=my_ereg_replace('^regime,','',$order_type);
-			}
-			else {
-				$tmp_order_type=$order_type;
-			}
-
-			$sql="select e.* FROM eleves e
-			LEFT JOIN j_eleves_classes c ON c.login=e.login
-			where c.login is NULL
-			ORDER BY $tmp_order_type;";
-			$calldata = mysql_query($sql);
-
-			if(mysql_num_rows($calldata)!=0){
-				$tab_eleve=array();
-				$i=0;
-				while($lig_tmp=mysql_fetch_object($calldata)) {
-					$tab_eleve[$i]=array();
-					$tab_eleve[$i]['login']=$lig_tmp->login;
-					$tab_eleve[$i]['nom']=$lig_tmp->nom;
-					$tab_eleve[$i]['prenom']=$lig_tmp->prenom;
-					$tab_eleve[$i]['sexe']=$lig_tmp->sexe;
-					$tab_eleve[$i]['naissance']=$lig_tmp->naissance;
-					$tab_eleve[$i]['elenoet']=$lig_tmp->elenoet;
-
-					$sql="SELECT * FROM j_eleves_regime WHERE login='$lig_tmp->login';";
-					$res_regime=mysql_query($sql);
-					if(mysql_num_rows($res_regime)==0) {
-						$tab_eleve[$i]['regime']='-';
-						$tab_eleve[$i]['doublant']='N';
-					}
-					else {
-						$lig_reg=mysql_fetch_object($res_regime);
-						$tab_eleve[$i]['regime']=$lig_reg->regime;
-						$tab_eleve[$i]['doublant']=$lig_reg->doublant;
-					}
-					$i++;
-				}
-			}
-			*/
-			// TRI A FAIRE SI ON A CHOISI regime
-
-
-			$sql="select e.*,jer.* FROM j_eleves_regime jer, eleves e
-			LEFT JOIN j_eleves_classes c ON c.login=e.login
-			WHERE c.login is NULL AND jer.login=e.login
-			ORDER BY $order_type;";
-			//echo "$sql<br />";
-			$calldata = mysql_query($sql);
-
-			echo "<p align='center'>Liste des élèves non affectés dans une classe.</p>\n";
-
-		} else if ($quelles_classes == 'incomplet') {
-			/*
-			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE elenoet='' OR no_gep=''
-			ORDER BY $order_type
-			");
-			*/
-			if(preg_match('/classe/',$order_type)){
-				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
-					WHERE (e.elenoet='' OR e.no_gep='') AND
-							jer.login=e.login AND
-							jec.login=e.login AND
-							c.id=jec.id_classe
-					ORDER BY $order_type;";
-			}
-			else{
-				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE (elenoet='' OR no_gep='') AND
-							jer.login=e.login
-						ORDER BY $order_type;";
-			}
-			//echo "$sql<br />\n";
-			$calldata = mysql_query($sql);
-
-			echo "<p align='center'>Liste des élèves dont l'Elenoet ou le Numéro national (INE) n'est pas renseigné.</p>\n";
-
-
-		} else if ($quelles_classes == 'email_vide') {
-			/*
-			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE elenoet='' OR no_gep=''
-			ORDER BY $order_type
-			");
-			*/
-			if(preg_match('/classe/',$order_type)){
-				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
-					WHERE e.email='' AND
-							jer.login=e.login AND
-							jec.login=e.login AND
-							c.id=jec.id_classe
-					ORDER BY $order_type;";
-			}
-			else{
-				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE e.email='' AND
-							jer.login=e.login
-						ORDER BY $order_type;";
-			}
-			//echo "$sql<br />\n";
-			$calldata = mysql_query($sql);
-
-			echo "<p align='center'>Liste des élèves dont l'email n'est pas renseigné.</p>\n";
-
-
-		} else if ($quelles_classes == 'photo') {
-			//$sql="SELECT elenoet FROM eleves WHERE elenoet!='';";
-			if(isset($order_type)) {
-				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer WHERE e.elenoet!='' AND e.login=jec.login AND e.login=jer.login AND jec.id_classe=c.id ORDER BY $order_type;";
-			}
-			else {
-				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE e.elenoet!='' AND e.login=jer.login;";
-			}
-			//echo "$sql<br />";
-			$test_elenoet_ok=mysql_query($sql);
-			$tab_eleve=array();
-			if(mysql_num_rows($test_elenoet_ok)!=0){
-				//$chaine_photo_manquante="";
-				$i=0;
-				while($lig_tmp=mysql_fetch_object($test_elenoet_ok)) {
-					$test_photo=nom_photo($lig_tmp->elenoet);
-					if($test_photo==""){
-						//if($chaine_photo_manquante!=""){$chaine_photo_manquante.=" OR ";}
-						//$chaine_photo_manquante.="elenoet='$lig_tmp->elenoet'";
-						$tab_eleve[$i]=array();
-						$tab_eleve[$i]['login']=$lig_tmp->login;
-						$tab_eleve[$i]['nom']=$lig_tmp->nom;
-						$tab_eleve[$i]['prenom']=$lig_tmp->prenom;
-						$tab_eleve[$i]['sexe']=$lig_tmp->sexe;
-						$tab_eleve[$i]['naissance']=$lig_tmp->naissance;
-						$tab_eleve[$i]['elenoet']=$lig_tmp->elenoet;
-						$tab_eleve[$i]['regime']=$lig_tmp->regime;
-						$tab_eleve[$i]['doublant']=$lig_tmp->doublant;
-						$tab_eleve[$i]['date_sortie']=$lig_tmp->date_sortie;
-						$i++;
-					}
-				}
-				/*
-				$calldata = mysql_query("SELECT e.* FROM eleves e WHERE $chaine_photo_manquante
-				ORDER BY $order_type
-				");
-				*/
-			}
-
-			echo "<p align='center'>Liste des élèves sans photo.</p>\n";
-
-		} else if ($quelles_classes == 'no_cpe') {
-			if(preg_match('/classe/',$order_type)){
-				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer
-						WHERE e.login=jec.login AND
-							e.login=jer.login AND
-							jec.id_classe=c.id AND
-							e.login NOT IN (SELECT e_login FROM j_eleves_cpe) ORDER BY $order_type;";
-				$calldata=mysql_query($sql);
-			}
-			else{
-				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, j_eleves_regime jer
-						WHERE e.login=jec.login AND
-							e.login=jer.login AND
-							e.login NOT IN (SELECT e_login FROM j_eleves_cpe) ORDER BY $order_type;";
-				$calldata=mysql_query($sql);
-			}
-
-			echo "<p align='center'>Liste des élèves sans CPE.</p>\n";
-
-		} else if ($quelles_classes == 'no_regime') {
-
-			if(preg_match('/classe/',$order_type)){
-				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
-					LEFT JOIN j_eleves_regime jer ON jec.login=jer.login
-					WHERE jer.login is null AND e.login=jec.login AND c.id=jec.id_classe ORDER BY $order_type;";
-			}
-			else{
-				$sql="SELECT DISTINCT e.* FROM eleves e
-					LEFT JOIN j_eleves_regime jer ON e.login=jer.login
-					WHERE jer.login is null ORDER BY $order_type;";
-			}
-			//echo "$sql<br />";
-			$calldata=mysql_query($sql);
-
-			echo "<p align='center'>Liste des élèves dont le régime n'est pas renseigné.</p>\n";
-
-
-		} else if ($quelles_classes == 'no_pp') {
-			if(preg_match('/classe/',$order_type)){
-				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer
-						WHERE e.login=jec.login AND
-							e.login=jer.login AND
-							jec.id_classe=c.id AND
-							e.login NOT IN (SELECT login FROM j_eleves_professeurs) ORDER BY $order_type;";
-				$calldata=mysql_query($sql);
-
-			}
-			else{
-				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, j_eleves_regime jer
-						WHERE e.login=jec.login AND
-							e.login=jer.login AND
-							e.login NOT IN (SELECT login FROM j_eleves_professeurs) ORDER BY $order_type;";
-				$calldata=mysql_query($sql);
-
-			}
-
-			echo "<p align='center'>Liste des élèves sans ".getSettingValue('gepi_prof_suivi')."</p>\n";
-
-		} else if ($quelles_classes == 'no_resp') {
-			if(preg_match('/classe/',$order_type)){
-
-				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer
-						WHERE e.login=jec.login AND
-							e.login=jer.login AND
-							jec.id_classe=c.id AND
-							e.ele_id NOT IN (SELECT ele_id FROM responsables2) ORDER BY $order_type;";
-				//echo "$sql<br />\n";
-				$calldata=mysql_query($sql);
-
-			}
-			else{
-
-				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, j_eleves_regime jer
-						WHERE e.login=jec.login AND
-							e.login=jer.login AND
-							e.ele_id NOT IN (SELECT ele_id FROM responsables2) ORDER BY $order_type;";
-				//echo "$sql<br />\n";
-				$calldata=mysql_query($sql);
-
-			}
-
-		} else if ($quelles_classes == 'rech_prenom') {
-			if(isset($motif_rech_p)) {
-				$motif_rech=$motif_rech_p;
-			}
-
-			$pref_motif="";
-			$texte_motif="commence par";
-			if(((isset($_POST['mode_rech_prenom']))&&($_POST['mode_rech_prenom']=='contient'))||
-			((isset($_GET['mode_rech_prenom']))&&($_GET['mode_rech_prenom']=='contient'))) {
-				$pref_motif="%";
-				$texte_motif="contient";
-				$mode_rech_prenom="contient";
-			}
-			/*
-			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
-			ORDER BY $order_type
-			");
-			*/
-			if(preg_match('/classe/',$order_type)){
-				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
-					WHERE prenom like '".$pref_motif.$motif_rech."%' AND
-							e.login=jer.login AND
-							jec.login=e.login AND
-							c.id=jec.id_classe
-					ORDER BY $order_type";
-			}
-			else{
-				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE prenom like '".$pref_motif.$motif_rech."%' AND
-									e.login=jer.login
-								ORDER BY $order_type";
-			}
-			//echo "$sql<br />\n";
-			$calldata = mysql_query($sql);
-
-			echo "<p align='center'>Liste des élèves dont le prenom $texte_motif <b>$motif_rech</b></p>\n";
-
-		} else if ($quelles_classes == 'recherche') {
-			$pref_motif="";
-			$texte_motif="commence par";
-			if(((isset($_POST['mode_rech_nom']))&&($_POST['mode_rech_nom']=='contient'))||
-			((isset($_GET['mode_rech_nom']))&&($_GET['mode_rech_nom']=='contient'))) {
-				$pref_motif="%";
-				$texte_motif="contient";
-				$mode_rech_nom="contient";
-			}
-
-			/*
-			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
-			ORDER BY $order_type
-			");
-			*/
-			if(preg_match('/classe/',$order_type)){
-				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
-					WHERE nom like '".$pref_motif.$motif_rech."%' AND
-							e.login=jer.login AND
-							jec.login=e.login AND
-							c.id=jec.id_classe
-					ORDER BY $order_type";
-			}
-			else{
-				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE nom like '".$pref_motif.$motif_rech."%' AND
-							e.login=jer.login
-					ORDER BY $order_type";
-			}
-			//echo "$sql<br />\n";
-			$calldata = mysql_query($sql);
-
-			echo "<p align='center'>Liste des élèves dont le nom $texte_motif <b>$motif_rech</b></p>\n";
-		}
-		else if ($quelles_classes == 'dse') { //Elève ayant une date de sortie renseignée.
-			$sql="SELECT e.*, jer.* FROM eleves e
-					LEFT JOIN j_eleves_regime jer ON e.login=jer.login
-					WHERE jer.login =e.login AND e.date_sortie<>0 ORDER BY $order_type;";
-			//echo "$sql<br />";
-			$calldata = mysql_query($sql);
-
-			echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée.</p>\n";
-		}
-		else if ($quelles_classes == 'dse_anomalie') { //Elève ayant une date de sortie renseignée mais néanmoins dans des classes
-			$sql="SELECT e.*, jer.* FROM eleves e
-					LEFT JOIN j_eleves_regime jer ON e.login=jer.login
-					WHERE jer.login =e.login AND e.date_sortie<>0 AND e.login IN (SELECT DISTINCT login FROM j_eleves_classes) ORDER BY $order_type;";
-			//echo "$sql<br />";
-			$calldata = mysql_query($sql);
-
-			echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée, mais qui sont néanmoins inscrits dans une classe.</p>\n";
-		}
-		elseif ($quelles_classes == 'no_etab') {
-			if(preg_match('/classe/',$order_type)){
-				//$sql="SELECT distinct e.*,c.classe FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
-				$sql="SELECT distinct e.*,c.classe,jer.* FROM j_eleves_classes jec, classes c, j_eleves_regime jer, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and jer.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
-				//echo "$sql<br />\n";
-				$calldata=mysql_query($sql);
-		}
-			else{
-				/*
-				$sql="SELECT e.* FROM eleves e
-					LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet
-					where jee.id_eleve is NULL ORDER BY $order_type;";
-				*/
-				$sql="SELECT e.*, jer.* FROM j_eleves_regime jer, eleves e
-					LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet
-					where jee.id_eleve is NULL AND jer.login=e.login ORDER BY $order_type;";
-				//echo "$sql<br />\n";
-				$calldata=mysql_query($sql);
-			}
-		}
-
-	}
-
-
-
-
+	include("index_call_data.php");
 
 	$csv="";
 	echo "<table border='1' cellpadding='2' class='boireaus'  summary='Tableau des élèves de la classe'>\n";
 	echo "<tr>\n";
 	echo "<th><p>Identifiant</p></th>\n";
 	$csv.="Identifiant;";
-	
+
+	$ajout_param_lien="";
+	if(isset($motif_rech)){$ajout_param_lien.="&amp;motif_rech=$motif_rech";}
+	if(isset($mode_rech_nom)){$ajout_param_lien.="&amp;mode_rech_nom=$mode_rech_nom";}
+	if(isset($mode_rech_prenom)){$ajout_param_lien.="&amp;mode_rech_prenom=$mode_rech_prenom";}
+	//if((isset($mode_rech_champ))&&(isset($champ_rech))) {$ajout_param_lien.="&amp;mode_rech_champ=$mode_rech_champ&amp;champ_rech=$champ_rech";}
+	if(isset($mode_rech)) {$ajout_param_lien.="&amp;mode_rech=$mode_rech";}
+	if(isset($mode_rech_elenoet)) {$ajout_param_lien.="&amp;mode_rech_elenoet=$mode_rech_elenoet";}
+	if(isset($mode_rech_ele_id)) {$ajout_param_lien.="&amp;mode_rech_ele_id=$mode_rech_ele_id";}
+	if(isset($mode_rech_no_gep)) {$ajout_param_lien.="&amp;mode_rech_no_gep=$mode_rech_no_gep";}
+
 	echo "<th><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
-	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
-	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
+	echo $ajout_param_lien;
 	echo "'>Nom Prénom</a></p></th>\n";
 	$csv.="Nom Prénom;";
 	$csv.="Date sortie;";
 
 	echo "<th><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
-	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
-	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
+	echo $ajout_param_lien;
 	echo "'>Sexe</a></p></th>\n";
 	$csv.="Sexe;"
 	;
 	echo "<th><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes";
-	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
-	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
+	echo $ajout_param_lien;
 	echo "'>Date de naissance</a></p></th>\n";
 	$csv.="Date de naissance;";
 
 	echo "<th><p><a href='index.php?order_type=regime,nom,prenom&amp;quelles_classes=$quelles_classes";
-	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
-	if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
+	echo $ajout_param_lien;
 	echo "'>Régime</a></p></th>\n";
 	$csv.="Régime;";
 
@@ -1649,9 +1338,7 @@ if(isset($quelles_classes)) {
 		echo "<th><p>";
 		if($_SESSION['statut'] != 'professeur') {
 			echo "<a href='index.php?order_type=classe,nom,prenom&amp;quelles_classes=$quelles_classes";
-			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-			if(isset($mode_rech_nom)){echo "&amp;mode_rech_nom=$mode_rech_nom";}
-			if(isset($mode_rech_prenom)){echo "&amp;mode_rech_prenom=$mode_rech_prenom";}
+			echo $ajout_param_lien;
 			echo "'>Classe</a>";
 		}
 		else{
@@ -1712,7 +1399,7 @@ if(isset($quelles_classes)) {
 			$eleve_prenom = mysql_result($calldata, $i, "prenom");
 			$eleve_sexe = mysql_result($calldata, $i, "sexe");
 			$eleve_naissance = mysql_result($calldata, $i, "naissance");
-			$elenoet =  mysql_result($calldata, $i, "elenoet");
+			$elenoet = mysql_result($calldata, $i, "elenoet");
 			$date_sortie_elv = mysql_result($calldata, $i, "date_sortie");
 			if($quelles_classes=='no_regime') {
 				$eleve_regime = "-";
@@ -1786,6 +1473,7 @@ if(isset($quelles_classes)) {
 			((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $quelles_classes)))) {
 			echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
 			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+			if(isset($mode_rech)){echo "&amp;mode_rech=$mode_rech";}
 			echo "'>$eleve_nom $eleve_prenom</a>";
 		}
 		else {
@@ -1946,6 +1634,9 @@ if(isset($quelles_classes)) {
 	if(isset($motif_rech)){
 		echo "<input type='hidden' name='motif_rech' value='$motif_rech' />\n";
 	}
+	if(isset($mode_rech)){
+		echo "<input type='hidden' name='mode_rech' value='$mode_rech' />\n";
+	}
 	echo "<input type='hidden' name='order_type' value='$order_type' />\n";
 
 	?>
@@ -1976,7 +1667,7 @@ if(isset($quelles_classes)) {
 			echo "<p><i>Notes</i>&nbsp;:</p>\n";
 			echo "<ul>\n";
 		}
-		echo "<li><i>Note</i>&nbsp;: Il est possible d'uploader un fichier <a href='../mod_trombinoscopes/trombinoscopes_admin.php#telecharger_photos_eleves'>ZIP d'un lot de photos</a> plutôt que les uploader une par une.</p></li>\n";
+		echo "<li><p>Il est possible d'uploader un fichier <a href='../mod_trombinoscopes/trombinoscopes_admin.php#telecharger_photos_eleves'>ZIP d'un lot de photos</a> plutôt que les uploader une par une.</p></li>\n";
 		$temoin_notes_bas_de_page="y";
 	}
 

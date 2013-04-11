@@ -8007,7 +8007,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 			if($chaine!="") {
 				$temoin_rapprochement_propose="y";
 				echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-				echo "<fieldset style='border: 1px solid grey;'>\n";
+				echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>\n";
 
 				echo "<p class='bold'>Contrôle des doublons...</p>\n";
 				echo "<p>Veuillez contrôler si les nouveaux repérés sont vraiment des nouveaux ou s'il s'agit de doublons.<br />Voir en bas de tableau les explications.</p>\n";
@@ -8062,7 +8062,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 			}
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-			echo "<fieldset style='border: 1px solid grey;'>\n";
+			echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>\n";
 			if($temoin_rapprochement_propose=="y") {
 				echo "<p class='bold'>Ou passer à la suite</p>\n";
 			}
@@ -9050,7 +9050,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				//echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
 				echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
 			}
-			else{
+			else {
 				$erreur=0;
 				$cpt=0;
 				$texte="<p>Ajout ou modification de: ";
@@ -9091,8 +9091,29 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 									$sql="SELECT 1=1 FROM temp_responsables2_import WHERE pers_id='".$lig1->col2."' AND (resp_legal='1' OR resp_legal='2');";
 									$test_resp_legal=mysql_query($sql);
 									if(mysql_num_rows($test_resp_legal)>0) {
-										$info_action_titre="Nouveau responsable&nbsp;: ".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." ($lig1->col2)";
-										$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))."</a>.";
+										$info_action_titre="Nouveau responsable&nbsp;: ".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." (".$lig1->col2.")";
+										// 20130405
+										$info_action_texte="";
+										$sql="SELECT e.login, t.resp_legal FROM eleves e, temp_responsables2_import t WHERE e.ele_id=t.ele_id AND t.pers_id='".$lig1->col2."' ORDER BY e.nom, e.prenom;";
+										$res_ele_resp=mysql_query($sql);
+										if(mysql_num_rows($res_ele_resp)>0) {
+											$info_action_texte.="Le nouveau responsable <a href='responsables/modify_resp.php?pers_id=".$lig1->col2."'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." (".$lig1->col2.")</a> est associé d'après vos fichiers Sconet à ";
+											$cpt_ele_resp=0;
+											while($lig_ele_resp=mysql_fetch_object($res_ele_resp)) {
+												if($cpt_ele_resp>0) {$info_action_texte.=", ";}
+												$info_action_texte.="<a href='eleves/modify_eleve.php?eleve_login=".$lig_ele_resp->login."'>".get_nom_prenom_eleve($lig_ele_resp->login, 'avec_classe')." <span title=\"";
+												if(($lig_ele_resp->resp_legal==1)||($lig_ele_resp->resp_legal==2)) {
+													$info_action_texte.="en responsable légal $lig_ele_resp->resp_legal";
+												}
+												else {
+													$info_action_texte.="en responsable non légal (contact,...)";
+												}
+												$info_action_texte.="\">($lig_ele_resp->resp_legal)</span></a>";
+												$cpt_ele_resp++;
+											}
+											$info_action_texte.="<br />";
+										}
+										$info_action_texte.="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))."</a>.";
 										$info_action_destinataire=array("administrateur");
 										$info_action_mode="statut";
 										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);

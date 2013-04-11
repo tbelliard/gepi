@@ -659,6 +659,7 @@ for ($i=0;$i<$nb_mat;$i++) {
     $nom_matiere = mysql_result($query, $i, "nom_complet");
     //echo "<option value='" . $matiere . "'";
     echo "<option value='" . $matiere . "'";
+    echo " title=\"$matiere ($nom_matiere)\"";
     //echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
     echo ">" . htmlspecialchars($nom_matiere,ENT_QUOTES,"UTF-8") . "</option>\n";
 }

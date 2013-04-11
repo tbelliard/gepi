@@ -376,48 +376,49 @@ $eleve_col = $query
 
 ?>
 	<div style="text-align: center">
-			    <!-- <p class="expli_page choix_fin"> -->
-				    <form dojoType="dijit.form.Form" action="./absences_du_jour.php" name="absences_du_jour" id="absences_du_jour" method="post" style="width: 100%;">
-			    <p class="expli_page choix_fin">
+		<!-- <p class="expli_page choix_fin"> -->
+
+		<form dojoType="dijit.form.Form" action="./absences_du_jour.php" name="absences_du_jour" id="absences_du_jour" method="post" style="width: 100%;">
+			<p class="expli_page choix_fin">
 				<input type="hidden" name="type_selection" value="<?php echo $type_selection?>"/>
 				<input type="hidden" name="nom_eleve" value="<?php echo $nom_eleve?>"/>
 				<input type="hidden" name="id_eleve" value="<?php echo $id_eleve?>"/>
 				<input type="hidden" name="id_groupe" value="<?php echo $id_groupe?>"/>
 				<input type="hidden" name="id_classe" value="<?php echo $id_classe?>"/>
 				<input type="hidden" name="id_aid" value="<?php echo $id_aid?>"/>
-                                <input type="hidden" name="filter_regime" value="<?php echo $filter_regime?>"/>
-                                <input type="hidden" name="date_absence_eleve" value="<?php echo $date_absence_eleve?>"/>
-                                <input type="hidden" name="reinit_filtre" value="n"/>
-				    <input onchange="document.absences_du_jour.submit()" style="width : 7em" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
-				    <button dojoType="dijit.form.Button" type="submit" onClick="
+				<input type="hidden" name="filter_regime" value="<?php echo $filter_regime?>"/>
+				<input type="hidden" name="date_absence_eleve" value="<?php echo $date_absence_eleve?>"/>
+				<input type="hidden" name="reinit_filtre" value="n"/>
+				<input onchange="document.absences_du_jour.submit()" style="width : 7em" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
+				<button dojoType="dijit.form.Button" type="submit" onClick="
 					document.absences_du_jour.type_selection.value='';
 					document.absences_du_jour.nom_eleve.value='';
 					document.absences_du_jour.id_eleve.value='';
 					document.absences_du_jour.id_groupe.value='';
 					document.absences_du_jour.id_classe.value='';
 					document.absences_du_jour.id_aid.value='';
-                                        document.absences_du_jour.filter_regime.value='';
+					document.absences_du_jour.filter_regime.value='';
 					document.absences_du_jour.date_absence_eleve.value='';
 					document.absences_du_jour.reinit_filtre.value='y';
 					return true;">Réinitialiser les filtres</button>
-			    </p>
+			</p>
 			<?php
-           if ($eleve_col->count() != 0) {
-			    if (method_exists($eleve_col, 'haveToPaginate')) {
-				if ($eleve_col->haveToPaginate()) {
-				    echo "Page ";
-				    echo '<input type="submit" name="page_deplacement" value="-"/>';
-				    echo '<input type="text" name="page_number" size="1" value="'.$eleve_col->getPage().'"/>';
-				    echo '<input type="submit" name="page_deplacement" value="+"/> ';
-				    echo "sur ".$eleve_col->getLastPage()." page(s) ";
-				    echo "| ";
+			if ($eleve_col->count() != 0) {
+				if (method_exists($eleve_col, 'haveToPaginate')) {
+					if ($eleve_col->haveToPaginate()) {
+						echo "Page ";
+						echo '<input type="submit" name="page_deplacement" value="-"/>';
+						echo '<input type="text" name="page_number" size="1" value="'.$eleve_col->getPage().'"/>';
+						echo '<input type="submit" name="page_deplacement" value="+"/> ';
+						echo "sur ".$eleve_col->getLastPage()." page(s) ";
+						echo "| ";
+					}
+					echo "Voir ";
+					echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
+					echo " par page |  Nombre d'enregistrements : ";
+					echo $eleve_col->count();
+					echo '<button dojoType="dijit.form.Button" type="submit">Afficher</button>';
 				}
-				echo "Voir ";
-				echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
-				echo " par page |  Nombre d'enregistrements : ";
-				echo $eleve_col->count();
-				echo '<button dojoType="dijit.form.Button" type="submit">Afficher</button>';
-			    }
 
 				echo "<br />\n";
 				$signaler_saisies_englobees=isset($_POST['signaler_saisies_englobees']) ? $_POST['signaler_saisies_englobees'] : NULL;
@@ -430,354 +431,396 @@ $eleve_col = $query
 				$checked_ou_pas="";
 				if($ne_pas_afficher_saisies_englobees=="y") {$checked_ou_pas=" checked";}
 				echo "<input type='checkbox' id='ne_pas_afficher_saisies_englobees' name='ne_pas_afficher_saisies_englobees' value='y'$checked_ou_pas /><label for='ne_pas_afficher_saisies_englobees' title='Ne pas afficher les saisies englobées... sous réserve que les saisies ne soient pas conflictuelles.'>Ne pas afficher les saisies englobées</label>\n";
+
+				echo " - ";
+				$ne_pas_afficher_lignes_avec_traitement_englobant=isset($_POST['ne_pas_afficher_lignes_avec_traitement_englobant']) ? $_POST['ne_pas_afficher_lignes_avec_traitement_englobant'] : NULL;
+				$checked_ou_pas="";
+				if($ne_pas_afficher_lignes_avec_traitement_englobant=="y") {$checked_ou_pas=" checked";}
+				echo "<input type='checkbox' id='ne_pas_afficher_lignes_avec_traitement_englobant' name='ne_pas_afficher_lignes_avec_traitement_englobant' value='y'$checked_ou_pas /><label for='ne_pas_afficher_lignes_avec_traitement_englobant' title='Ne pas afficher les lignes pour lesquelles les saisies sont traitées ou englobées.'>Ne pas afficher les lignes traitées ou englobées</label>\n";
+
 				// Pour quand même afficher le bouton validant les checkbox ci-dessus:
 				if (!method_exists($eleve_col, 'haveToPaginate')) {
 					echo '<button dojoType="dijit.form.Button" type="submit">Afficher</button>';
 				}
+
 			}
 			?>
-			    </form>
-				<!--     <br/> -->
-			<!-- </p> -->
+		</form>
+		<!--     <br/> -->
+		<!-- </p> -->
 <?php if ($eleve_col->count() != 0) { ?>
-			<form dojoType="dijit.form.Form" jsId="creer_traitement" id="creer_traitement" name="creer_traitement" method="post" action="./absences_du_jour.php">
+		<form dojoType="dijit.form.Form" jsId="creer_traitement" id="creer_traitement" name="creer_traitement" method="post" action="./absences_du_jour.php">
 			<input type="hidden" id="creation_traitement" name="creation_traitement" value="no"/>
 			<input type="hidden" id="creation_notification" name="creation_notification" value="no"/>
 			<input type="hidden" id="ajout_traitement" name="ajout_traitement" value="no"/>
 			<input type="hidden" id="id_traitement" name="id_traitement" value=""/>
 			<p>
 			<div dojoType="dijit.form.DropDownButton" style="display: inline">
-			    <span>Ajouter au traitement</span>
-			    <div dojoType="dijit.Menu" style="display: inline">
-				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
-				    Créer un nouveau traitement
-				</button>
-				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
-				    Créer une nouvelle notification
-				</button>
-			<?php
-			$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
-			if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
-			    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-			    echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; document.creer_traitement.submit();">'."\n";
-			    echo '	    Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')'."\n";
-			    echo '	</button>'."\n";
-			}
-			?>
-			    </div>
+				<span>Ajouter au traitement</span>
+				<div dojoType="dijit.Menu" style="display: inline">
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
+						Créer un nouveau traitement
+					</button>
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
+						Créer une nouvelle notification
+					</button>
+
+<?php
+	$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
+	if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
+	$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
+	echo '
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; document.creer_traitement.submit();">
+						Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')
+					</button>'."\n";
+	}
+?>
+				</div>
 			</div>
+
 			<div dojoType="dijit.form.DropDownButton" style="display: inline">
-			    <span>Ajouter au traitement (popup)</span>
-			    <div dojoType="dijit.Menu" style="display: inline">				
-				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
-				    Créer un nouveau traitement
-				</button>
-				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
-				    Créer une nouvelle notification
-				</button>
-			<?php
-			$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
-			if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
-			    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-			    echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; pop_it(document.creer_traitement);">'."\n";
-			    echo '	    Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().') dans une popup'."\n";
-			    echo '	</button>'."\n";
-			}
-			?>
-			    </div>
+				<span>Ajouter au traitement (popup)</span>
+				<div dojoType="dijit.Menu" style="display: inline">
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
+						Créer un nouveau traitement
+					</button>
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
+						Créer une nouvelle notification
+					</button>
+<?php
+	$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
+	if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
+		$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
+		echo '
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; pop_it(document.creer_traitement);">
+						Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().') dans une popup
+					</button>'."\n";
+	}
+?>
+				</div>
 			</div>
-
 			</p>
-    <!-- Afichage du tableau de la liste des élèves -->
-    <!-- <table style="text-align: left; width: 600px;" border="0" cellpadding="0" cellspacing="1"> -->
-	    <table class="tb_absences" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
-		    <caption class="invisible no_print">Absences</caption>
-		    <tbody>
-			    <tr class="titre_tableau_gestion" style="white-space: nowrap;">
-				    <th style="text-align : center;" >Veille</th>
-				    <th style="text-align : center;" abbr="élèves">Liste des &eacute;l&egrave;ves</th>
-				    <th colspan="<?php echo (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime()->count());?>" class="th_abs_suivi" abbr="Créneaux">Suivi sur la journ&eacute;e</th>
-			    </tr>
-			    <tr>
-				    <td></td>
-				    <td></td>
-				    <?php
-						foreach(EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edt_creneau){
-							echo '		<td class="td_nom_creneau" style="text-align: center;"><a href="javascript:coche_checkbox_creneau('.$edt_creneau->getIdDefiniePeriode().')">'.$edt_creneau->getNomDefiniePeriode().'</a></td>';
-						}
-				    ?>
-			    </tr>
 
-    <?php
-    $nb_checkbox = 0; //nombre de checkbox
-    $compteur = 0;
-    $tab_eleve_id=array();
-    foreach($eleve_col as $eleve) {        
-	$compteur = $compteur + 1;
-        $regime_eleve=$eleve->getEleveRegimeDoublant();
+			<!-- Afichage du tableau de la liste des élèves -->
+			<!-- <table style="text-align: left; width: 600px;" border="0" cellpadding="0" cellspacing="1"> -->
+			<table class="tb_absences" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
+				<caption class="invisible no_print">Absences</caption>
+				<tbody>
+					<tr class="titre_tableau_gestion" style="white-space: nowrap;">
+						<th style="text-align : center;" >Veille</th>
+						<th style="text-align : center;" abbr="élèves">Liste des &eacute;l&egrave;ves</th>
+						<th colspan="<?php echo (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime()->count());?>" class="th_abs_suivi" abbr="Créneaux">Suivi sur la journ&eacute;e</th>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+<?php
+	foreach(EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edt_creneau){
+		echo '
+						<td class="td_nom_creneau" style="text-align: center;"><a href="javascript:coche_checkbox_creneau('.$edt_creneau->getIdDefiniePeriode().')">'.$edt_creneau->getNomDefiniePeriode().'</a></td>';
+	}
+?>
+					</tr>
+
+<?php
+
+	$nb_checkbox = 0; //nombre de checkbox
+	$compteur = 0;
+	$tab_eleve_id=array();
+	foreach($eleve_col as $eleve) {        
+		$compteur = $compteur + 1;
+		$regime_eleve=$eleve->getEleveRegimeDoublant();
 		//$eleve = new Eleve();
 			$traitement_col = new PropelCollection();//liste des traitements pour afficher des boutons 'ajouter au traitement'
 
+			// Témoin de ligne avec Traitement créé et les autres saisies englobées ou alors toutes les saisies sont traitées
+			//$ligne_avec_traitement_englobant_autres_saisies="n";
+			$nb_saisies_non_englobees=0;
+
 			$saisie_affiches = array ();
+			/*
 			if ($compteur % 2 == '1') {
 				$background_couleur="#E8F1F4";
 			} else {
 				$background_couleur="#C6DCE3";
 			}
 			echo "<tr style='background-color :$background_couleur'>\n";
-
+			*/
+			$ligne_courante="<tr class='lignes_couleurs_alternees'>\n";
 
 			$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
 			$compter_hier = $eleve->getAbsenceEleveSaisiesDuJour($Yesterday)->count();
 			$color_hier = ($compter_hier >= 1) ? ' style="background-color: red; text-align: center; color: white; font-weight: bold;"' : '';
 			$aff_compter_hier = ($compter_hier >= 1) ? $compter_hier.' enr.' : '';
-?>
-			<td<?php echo $color_hier; ?>><?php echo $aff_compter_hier; ?></td>
-			<td>
-<?php
-			echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().') ('.$regime_eleve.')';
-			echo ' ';
-			echo $eleve->getClasseNom($dt_date_absence_eleve);
+
+			$ligne_courante.="<td".$color_hier.">".$aff_compter_hier."</td>\n";
+			$ligne_courante.="<td>";
+
+			$ligne_courante.=strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().') ('.$regime_eleve.')';
+			$ligne_courante.=' ';
+			$ligne_courante.=$eleve->getClasseNom($dt_date_absence_eleve);
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
-			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
-			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
-			    echo ' (voir&nbsp;fiche)';
-			    echo "</a>";
+				//$ligne_courante.="<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
+				$ligne_courante.="<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
+				$ligne_courante.=' (voir&nbsp;fiche)';
+				$ligne_courante.="</a>";
 			}
-			echo "<br />\n";
-			echo "<div class='div_tab_tel_resp'>\n";
-				echo "<div style='float:left; width:2em;'>\n";
-				echo "<img src='../images/imabulle/tel3.jpg' width='20' height='15' />";
-				echo "</div>\n";
+			$ligne_courante.="<br />\n";
+			$ligne_courante.="<div class='div_tab_tel_resp'>\n";
+				$ligne_courante.="<div style='float:left; width:2em;'>\n";
+				$ligne_courante.="<img src='../images/imabulle/tel3.jpg' width='20' height='15' />";
+				$ligne_courante.="</div>\n";
 
-				echo "<div class='tableau_tel_resp'>\n";
-				echo tableau_tel_resp_ele($eleve->getLogin());
-				echo "</div>\n";
-			echo "</div>\n";
+				$ligne_courante.="<div class='tableau_tel_resp'>\n";
+				$ligne_courante.=tableau_tel_resp_ele($eleve->getLogin());
+				$ligne_courante.="</div>\n";
+			$ligne_courante.="</div>\n";
 
-			echo("</td>");
+			$ligne_courante.="</td>";
 
 			$col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 
 			$nb_checkbox_eleve_courant=0;
 			$id_checkbox_eleve_courant='';
-			for($i = 0; $i<$col_creneaux->count(); $i++){
-					$edt_creneau = $col_creneaux[$i];
-					$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
-					$violet = false;
-                    $style = '';
-					foreach ($absences_du_creneau as $absence) {                      
-					    $traitement_col->addCollection($absence->getAbsenceEleveTraitements());
-					    if (getSettingValue("abs2_alleger_abs_du_jour")!='y' && $absence->isSaisiesContradictoiresManquementObligation()) {
-					    //if (!($absence->getSaisiesContradictoiresManquementObligation()->isEmpty())) {
+			for($i = 0; $i<$col_creneaux->count(); $i++) {
+				$edt_creneau = $col_creneaux[$i];
+				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+				$violet = false;
+				$style = '';
+				foreach ($absences_du_creneau as $absence) {                      
+					$traitement_col->addCollection($absence->getAbsenceEleveTraitements());
+					if (getSettingValue("abs2_alleger_abs_du_jour")!='y' && $absence->isSaisiesContradictoiresManquementObligation()) {
+						//if (!($absence->getSaisiesContradictoiresManquementObligation()->isEmpty())) {
 						$violet = true;
 						break;
-					    }else{
-                         $style = 'style="background-color :'.$absence->getColor().'"';   
-                        }					    
+					} else {
+						$style = 'style="background-color :'.$absence->getColor().'"';   
 					}
-					if ($violet) {
-					    $style = 'style="background-color : purple"';
-					} 
-					echo '<td '.$style.'>';
-                    
-					//si il y a des absences de l'utilisateurs on va proposer de les modifier
-					$nb_checkbox_eleve_courant_sur_ce_creneau=0;
-					foreach ($absences_du_creneau as $saisie) {
-					    if (in_array($saisie->getPrimaryKey(), $saisie_affiches)) {
-							//on affiche les saisies une seule fois
-							continue;
-					    }
-					    $saisie_affiches[] = $saisie->getPrimaryKey();
-					    $nb_checkbox = $nb_checkbox + 1;
-					    $chaine_contenu_td='<nobr><input eleve_id="'.$eleve->getPrimaryKey().'" name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" ';
-					    if ($saisie->getNotificationEnCours()){$chaine_contenu_td.='saisie_notification_en_cours="true"';}
-                        if ($saisie->getNotifiee()) {$chaine_contenu_td.='saisie_notifiee="true"';}
-					    if ($saisie->getTraitee()) {$chaine_contenu_td.='saisie_traitee="true"';}
+				}
+				if ($violet) {
+					$style = 'style="background-color : purple"';
+				} 
+				$ligne_courante.='<td '.$style.'>';
 
-						$eleve_id_courant=$eleve->getPrimaryKey();
-						$id_checkbox_eleve_courant=$eleve_id_courant."_".$edt_creneau->getIdDefiniePeriode()."_".$nb_checkbox_eleve_courant_sur_ce_creneau;
+				//si il y a des absences de l'utilisateurs on va proposer de les modifier
+				$nb_checkbox_eleve_courant_sur_ce_creneau=0;
+				foreach ($absences_du_creneau as $saisie) {
+					if (in_array($saisie->getPrimaryKey(), $saisie_affiches)) {
+						//on affiche les saisies une seule fois
+						continue;
+					}
+					$saisie_affiches[] = $saisie->getPrimaryKey();
+					$nb_checkbox = $nb_checkbox + 1;
+					$chaine_contenu_td='<nobr><input eleve_id="'.$eleve->getPrimaryKey().'" name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" ';
+					if ($saisie->getNotificationEnCours()){$chaine_contenu_td.='saisie_notification_en_cours="true"';}
+					if ($saisie->getNotifiee()) {$chaine_contenu_td.='saisie_notifiee="true"';}
+					if ($saisie->getTraitee()) {$chaine_contenu_td.='saisie_traitee="true"';}
 
-						$chaine_contenu_td.=" id='".$id_checkbox_eleve_courant."' ";
-						if(!in_array($eleve_id_courant, $tab_eleve_id)) {$tab_eleve_id[]=$eleve_id_courant;}
+					$eleve_id_courant=$eleve->getPrimaryKey();
+					$id_checkbox_eleve_courant=$eleve_id_courant."_".$edt_creneau->getIdDefiniePeriode()."_".$nb_checkbox_eleve_courant_sur_ce_creneau;
 
-					    $chaine_contenu_td.='/>';
-                        $chaine_contenu_td.='<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'"/>';
+					$chaine_contenu_td.=" id='".$id_checkbox_eleve_courant."' ";
+					if(!in_array($eleve_id_courant, $tab_eleve_id)) {$tab_eleve_id[]=$eleve_id_courant;}
 
-						$nb_checkbox_eleve_courant++;
-						$nb_checkbox_eleve_courant_sur_ce_creneau++;
+					$chaine_contenu_td.='/>';
+					$chaine_contenu_td.='<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'"/>';
 
-                        //if ($saisie->getNotifiee()) {echo " (notifiée)";}
-					    $chaine_contenu_td.='</nobr> ';                        
-					    //echo $saisie->getTypesDescription();
-					    $chaine_contenu_td.='</a>';                        
-                        if($saisie->getNotificationEnCours()){
-                            $chaine_contenu_td.='<img src="../images/icons/courrier_envoi.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
-                        }                        
-                        if($saisie->getNotifiee()){
-                            $chaine_contenu_td.='<img src="../images/icons/courrier_retour.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
-                        }
-                        $chaine_contenu_td.='<br/>';
-                        if(!$saisie->getTraitee()) {
-                            //if(!isset($ne_pas_afficher_saisies_englobees)) {
-                            if((!isset($ne_pas_afficher_saisies_englobees))||($violet)) {
-                                echo $chaine_contenu_td;
-                                if(isset($signaler_saisies_englobees)) {
-									$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
-									if($saisies_englobante_col->isEmpty()) {
-										echo '<img src="../images/icons/ico_attention.png" title="Saisie non traitée" />';
-									}
-									else {
-										$texte_saisie_couverte='La saisie est englobée par : ';
-										$cpt_saisie_couverte=0;
-										foreach ($saisies_englobante_col as $saisies_englobante) {
-											if($cpt_saisie_couverte==0) {
-												$lien_saisie_couverte="<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'> ";
-											}
-											$texte_saisie_couverte.=$saisies_englobante->getDateDescription();
-											$texte_saisie_couverte.=' '.$saisies_englobante->getTypesTraitements();
-											if (!$saisies_englobante_col->isLast()) {
-												$texte_saisie_couverte.=' - ';
-											}
-											$cpt_saisie_couverte++;
-										}
+					$nb_checkbox_eleve_courant++;
+					$nb_checkbox_eleve_courant_sur_ce_creneau++;
 
-										echo $lien_saisie_couverte.'<img src="../images/icons/ico_toit2.png" title="'.$texte_saisie_couverte.'" /></a>';
-									}
+					//if ($saisie->getNotifiee()) {$ligne_courante.=" (notifiée)";}
+					$chaine_contenu_td.='</nobr> ';                        
+					//$ligne_courante.=$saisie->getTypesDescription();
+					$chaine_contenu_td.='</a>';                        
+					if($saisie->getNotificationEnCours()) {
+						$chaine_contenu_td.='<img src="../images/icons/courrier_envoi.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
+					}                        
+					if($saisie->getNotifiee()) {
+						$chaine_contenu_td.='<img src="../images/icons/courrier_retour.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
+					}
+					$chaine_contenu_td.='<br/>';
+					if(!$saisie->getTraitee()) {
+						//if(!isset($ne_pas_afficher_saisies_englobees)) {
+						if((!isset($ne_pas_afficher_saisies_englobees))||($violet)) {
+							$ligne_courante.=$chaine_contenu_td;
+							if((isset($signaler_saisies_englobees))||(isset($ne_pas_afficher_lignes_avec_traitement_englobant))) {
+								$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+								if($saisies_englobante_col->isEmpty()) {
+									$ligne_courante.='<img src="../images/icons/ico_attention.png" title="Saisie non traitée" />';
+									$nb_saisies_non_englobees++;
 								}
 								else {
-									echo '<img src="../images/icons/ico_attention.png" title="Saisie non traitée" />';
+									$texte_saisie_couverte='La saisie est englobée par : ';
+									$cpt_saisie_couverte=0;
+									foreach ($saisies_englobante_col as $saisies_englobante) {
+										if($cpt_saisie_couverte==0) {
+											$lien_saisie_couverte="<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'> ";
+										}
+										$texte_saisie_couverte.=$saisies_englobante->getDateDescription();
+										$texte_saisie_couverte.=' '.$saisies_englobante->getTypesTraitements();
+										if (!$saisies_englobante_col->isLast()) {
+											$texte_saisie_couverte.=' - ';
+										}
+										$cpt_saisie_couverte++;
+									}
+
+									$ligne_courante.=$lien_saisie_couverte.'<img src="../images/icons/ico_toit2.png" title="'.$texte_saisie_couverte.'" /></a>';
 								}
-								echo '<br/>';
 							}
 							else {
-								// Faut-il quand même vérifier s'il n'y a pas de conflit?
-								// Fait (?) avec le test $violet plus haut.
+								$ligne_courante.='<img src="../images/icons/ico_attention.png" title="Saisie non traitée" />';
+								$nb_saisies_non_englobees++;
 							}
-                        }else{
-                            echo $chaine_contenu_td;
+							$ligne_courante.='<br/>';
+						}
+						else {
+							// Faut-il quand même vérifier s'il n'y a pas de conflit?
+							// Fait (?) avec le test $violet plus haut.
+						}
+					} else {
+						$ligne_courante.=$chaine_contenu_td;
 
-                            //echo '<img src="../images/icons/flag_green.png" title="'.$saisie->getTypesDescription().'" />';
-                            $saisie_justifiee_ou_pas="";
-                            echo "<span title=\"";
-							$tab_traitements_deja_affiches=array();
-							foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-								if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
-									$description_traitement_courant=$traitement->getDescription();
-									echo "Traitement ".$description_traitement_courant."\n";
-									if(preg_match("/justification :/", $description_traitement_courant)) {$saisie_justifiee_ou_pas=" <img src='../images/vert.png' width='16' height='16' title='Saisie justifiée' />";}
-								}
+						//$ligne_courante.='<img src="../images/icons/flag_green.png" title="'.$saisie->getTypesDescription().'" />';
+						$saisie_justifiee_ou_pas="";
+						$ligne_courante.="<span title=\"";
+						$tab_traitements_deja_affiches=array();
+						foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+							if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+								$description_traitement_courant=$traitement->getDescription();
+								$ligne_courante.="Traitement ".$description_traitement_courant."\n";
+								if(preg_match("/justification :/", $description_traitement_courant)) {$saisie_justifiee_ou_pas=" <img src='../images/vert.png' width='16' height='16' title='Saisie justifiée' />";}
 							}
-                            echo "\">";
-                            echo $saisie->getTypesDescription();
-                            echo $saisie_justifiee_ou_pas;
-                            echo "</span>";
+						}
+						$ligne_courante.="\">";
+						$ligne_courante.=$saisie->getTypesDescription();
+						$ligne_courante.=$saisie_justifiee_ou_pas;
+						$ligne_courante.="</span>";
 
-							/*
-							echo "<br />";
-							$tab_traitements_deja_affiches=array();
-							foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-								if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
-									echo $traitement->getDescription().' : ';
-								}
+						/*
+						$ligne_courante.="<br />";
+						$tab_traitements_deja_affiches=array();
+						foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+							if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+								$ligne_courante.=$traitement->getDescription().' : ';
 							}
-							*/
-                            echo '<br/>';
-                        }
-                        //echo '<br/>';
-					    //echo '</nobr>';					    
-					}                    
-					echo '</td>';
-			    }             
-					       // Avec ou sans photo
+						}
+						*/
+						$ligne_courante.='<br/>';
+					}
+					//$ligne_courante.='<br/>';
+					//$ligne_courante.='</nobr>';
+				}
+				$ligne_courante.='</td>';
+			}
+
+			// Avec ou sans photo
 			if ((getSettingValue("active_module_trombinoscopes")=='y')) {
-			    $nom_photo = $eleve->getNomPhoto(1);
-			    $photos = $nom_photo;
-			    if (($nom_photo == NULL) or (!(file_exists($photos)))) {
-				    $photos = "../mod_trombinoscopes/images/trombivide.jpg";
-			    }
-			    $valeur = redimensionne_image_petit($photos);
+				$nom_photo = $eleve->getNomPhoto(1);
+				$photos = $nom_photo;
+				if (($nom_photo == NULL) or (!(file_exists($photos)))) {
+					$photos = "../mod_trombinoscopes/images/trombivide.jpg";
+				}
+				$valeur = redimensionne_image_petit($photos);
 
-			    echo '<td>
-				    <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px" alt="" title="" />
-			    </td>';
+				$ligne_courante.='
+				<td>
+					<img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px" alt="" title="" />
+				</td>';
 			}
 
-			echo '<td style="width : 7em">';
-			echo '<div add_select_shorcuts_button="true" eleve_id="'.$eleve->getPrimaryKey().'"></div>';
-			echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
-			    <span>Ajouter au traitement</span>
-			    <div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';              		
+			$ligne_courante.='<td style="width : 7em">';
+			$ligne_courante.='<div add_select_shorcuts_button="true" eleve_id="'.$eleve->getPrimaryKey().'"></div>';
+			$ligne_courante.='<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
+				<span>Ajouter au traitement</span>
+				<div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';              		
 			foreach ($traitement_col as $traitement) {
-			    echo '<button dojoType="dijit.MenuItem" onClick="';
-			    if($nb_checkbox_eleve_courant==1) {
-			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
-			    }
-			    echo 'document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.creer_traitement.submit();">';
-			    echo ' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
-			    echo '</button>';
+				$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="';
+				if($nb_checkbox_eleve_courant==1) {
+					$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+				}
+				$ligne_courante.='document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.creer_traitement.submit();">';
+				$ligne_courante.=' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
+				$ligne_courante.='</button>';
 			}
-            echo'	<button dojoType="dijit.MenuItem" onClick="';
-			    if($nb_checkbox_eleve_courant==1) {
-			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
-			    }
-			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
-				    Créer un nouveau traitement
-				</button>';
-                            echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
-                                Créer une nouvelle notification
-                            </button>';
-			echo '</div></div><br/>';
+			$ligne_courante.='	<button dojoType="dijit.MenuItem" onClick="';
+			if($nb_checkbox_eleve_courant==1) {
+				$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+			}
+			$ligne_courante.='document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
+				Créer un nouveau traitement
+			</button>';
+			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
+				Créer une nouvelle notification
+			</button>';
+			$ligne_courante.='</div></div><br/>';
 
-			echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
-			    <span>Ajouter (fenêtre)</span>
-			    <div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';				
+			$ligne_courante.='<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
+				<span>Ajouter (fenêtre)</span>
+				<div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';				
 			foreach ($traitement_col as $traitement) {
-			    echo '<button dojoType="dijit.MenuItem" onClick="';
-			    if($nb_checkbox_eleve_courant==1) {
-			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
-			    }
-			    echo 'document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">';
-			    echo ' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
-			    echo '</button>';
+				$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="';
+				if($nb_checkbox_eleve_courant==1) {
+					$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+				}
+				$ligne_courante.='document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">';
+				$ligne_courante.=' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
+				$ligne_courante.='</button>';
 			}
-            echo'<button dojoType="dijit.MenuItem" onClick="';
-			    if($nb_checkbox_eleve_courant==1) {
-			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
-			    }
-			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
-				    Créer un nouveau traitement (fenêtre)
-				 </button>';
-                            echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
-                                Créer une nouvelle notification (fenêtre)
-                            </button>';
-			echo '</div></div><br/>';
 
-            echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
-			    <span>Ajouter (popup)</span>
-			    <div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';				
-			foreach ($traitement_col as $traitement) {
-			    echo '<button dojoType="dijit.MenuItem" onClick="';
-			    if($nb_checkbox_eleve_courant==1) {
-			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
-			    }
-			    echo 'document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; pop_it(document.creer_traitement);">';
-			    echo ' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
-			    echo '</button>';
+			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="';
+			if($nb_checkbox_eleve_courant==1) {
+				$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
 			}
-            echo'<button dojoType="dijit.MenuItem" onClick="';
-			    if($nb_checkbox_eleve_courant==1) {
-			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
-			    }
-			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
-				    Créer un nouveau traitement (popup)
-				 </button>';
-                            echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
-                                Créer une nouvelle notification (popup)
-                            </button>';
-			echo '</div></div>';
-			echo '</td>';
-			echo "</tr>";
+			$ligne_courante.='document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
+				Créer un nouveau traitement (fenêtre)
+			</button>';
+			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
+				Créer une nouvelle notification (fenêtre)
+			</button>';
+			$ligne_courante.='</div></div><br/>';
+
+			$ligne_courante.='<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
+				<span>Ajouter (popup)</span>
+				<div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';				
+			foreach ($traitement_col as $traitement) {
+				$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="';
+				if($nb_checkbox_eleve_courant==1) {
+					$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+				}
+				$ligne_courante.='document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; pop_it(document.creer_traitement);">';
+				$ligne_courante.=' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
+				$ligne_courante.='</button>';
+			}
+
+			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="';
+			if($nb_checkbox_eleve_courant==1) {
+				$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+			}
+			$ligne_courante.='document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
+				Créer un nouveau traitement (popup)
+			</button>';
+			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
+				Créer une nouvelle notification (popup)
+			</button>';
+			$ligne_courante.='</div></div>';
+			$ligne_courante.='</td>';
+			$ligne_courante.="</tr>";
+
+
+			if((!isset($ne_pas_afficher_lignes_avec_traitement_englobant))||($ne_pas_afficher_lignes_avec_traitement_englobant!="y")) {
+				echo $ligne_courante;
+			}
+			else {
+				if($nb_saisies_non_englobees>0) {
+					echo $ligne_courante;
+				}
+				/*
+				if($ligne_avec_traitement_englobant_autres_saisies!="y") {
+					echo $ligne_courante;
+				}
+				*/
+			}
+
     }
 
     echo " </tbody>";

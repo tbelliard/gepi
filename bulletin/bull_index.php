@@ -494,7 +494,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "<table border='0' summary='Choix du type de bulletin'>\n";
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
-	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_pdf\");change_lien_param_bull(\"html\");' ";
+	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_pdf\");change_lien_param_bull(\"html\");griser_lignes_specifiques_pdf();' ";
 	if($type_bulletin_par_defaut=='html') {echo "checked ";}
 	echo "/> ";
 	echo "</td>\n";
@@ -533,7 +533,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 			}
 		}
 		else {
-			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_html\");change_lien_param_bull(\"pdf\");' ";
+			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_html\");change_lien_param_bull(\"pdf\");griser_lignes_specifiques_html();' ";
 			if($type_bulletin_par_defaut=='pdf') {echo "checked ";}
 			echo "/> ";
 			echo "</td>\n";
@@ -767,7 +767,16 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		include("../cahier_notes/tableau_choix_parametres_releves_notes.php");
 		echo "</div>\n";
 
-		echo "<script type='text/javascript'>
+		echo "<script type='text/javascript'>";
+
+		if($type_bulletin_par_defaut=='html') {
+			echo "griser_lignes_specifiques_pdf();";
+		}
+		else {
+			echo "griser_lignes_specifiques_html();";
+		}
+
+		echo "
 function CocheLigne(item) {
 	for (var i=0;i<".count($tab_id_classe).";i++) {
 		if(document.getElementById(item+'_'+i)){

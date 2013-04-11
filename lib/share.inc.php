@@ -2,7 +2,7 @@
 /** Fonctions accessibles dans toutes les pages
  * 
  * 
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
  * @package Initialisation
  * @subpackage general
@@ -2121,6 +2121,7 @@ function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_
 											r.acces_sp='y' AND
 										r.resp_legal='0' ORDER BY e.nom,e.prenom)";
 	}
+	//echo "$sql<br />";
 	$res_ele=mysql_query($sql);
 
 	$tab_ele=array();
@@ -6518,6 +6519,172 @@ function get_profs_for_matiere($matiere) {
 	}
 
 	return $tab;
+}
+
+/** Fonction destinée à générer des fichiers de debug
+ *  Nécessite de modifier la valeur de $debug
+ *
+ * @param string $fichier Le chemin/fichier
+ * @param string $mode Le mode (a+, w+,...)
+ * @param string $texte Le texte à écrire
+ */
+function fwrite_debug($fichier, $mode, $texte) {
+	$debug="n";
+
+	if($debug=="y") {
+		$f=fopen($fichier, $mode);
+		fwrite($f, $texte);
+		fclose($f);
+	}
+}
+
+/** Fonction destinée à retourner la période courante associée à une classe
+ *
+ * @param integer $id_classe identifiant de la classe
+ * @param integer $ts Timestamp unix (par défaut, si vide "", on prend le timestamp courant)
+ * @param integer $valeur_par_defaut La valeur par défaut à prendre si aucun retour n'est trouvé dans les tables.
+ * @param string $pour bulletins 'y' ou 'n' Si on cherche une période avec bulletins remplis, on se base sur la période suivante ouverte en saisie.
+ *
+ * @return integer Numéro de la période
+ */
+function cherche_periode_courante($id_classe, $ts, $valeur_par_defaut="", $pour_bulletins="n") {
+	//echo "<pre>\$ts=$ts</pre>";
+	$retour=$valeur_par_defaut;
+
+	if($ts=="") {
+		$ts=time();
+	}
+
+	$fich_debug="/tmp/cherche_periode_courante.txt";
+	fwrite_debug($fich_debug, "a+", "=================================================\n");
+
+	$periode_trouvee="n";
+	if($pour_bulletins=="y") {
+		$sql="select * from periodes where id_classe='$id_classe' order by num_periode ASC;";
+		fwrite_debug($fich_debug, "a+", $sql."\n");
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			while($lig=mysql_fetch_object($res)) {
+				$num_per_temp=$lig->num_periode;
+				if($lig->verouiller=='N') {
+					if($num_per_temp>1) {
+						$retour=$num_per_temp-1;
+					}
+					else {
+						// Si la première période est ouverte en saisie, on est en début d'année,
+						// pas la peine d'espérer que les bulletins soient remplis
+						$retour=1;
+					}
+					$periode_trouvee="y";
+					break;
+				}
+			}
+		}
+
+		fwrite_debug($fich_debug, "a+", "\$periode_trouvee=".$periode_trouvee."\n");
+
+		if($periode_trouvee=="n") {
+			//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
+			$sql="select * from periodes where id_classe='$id_classe' and date_fin<FROM_UNIXTIME($ts) order by num_periode DESC LIMIT 1;";
+			fwrite_debug($fich_debug, "a+", $sql."\n");
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$retour=mysql_result($res, 0, "num_periode");
+			}
+		}
+	}
+	else {
+		//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
+		$sql="select * from periodes where id_classe='$id_classe' and date_fin>FROM_UNIXTIME($ts) order by num_periode ASC LIMIT 1;";
+		fwrite_debug($fich_debug, "a+", $sql."\n");
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$retour=mysql_result($res, 0, "num_periode");
+		}
+		else {
+			$sql="select p.num_periode from periodes p, edt_calendrier e where (classe_concerne_calendrier like '%;$id_classe;%' or classe_concerne_calendrier like '$id_classe;%') and etabferme_calendrier='1' and $ts<fin_calendrier_ts and $ts>debut_calendrier_ts and p.nom_periode=e.nom_calendrier and p.id_classe='$id_classe';";
+			//echo "$sql<br />";
+			fwrite_debug($fich_debug, "a+", $sql."\n");
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$retour=mysql_result($res, 0, "num_periode");
+			}
+		}
+	}
+
+	if(!is_numeric($retour)) {$retour=$valeur_par_defaut;}
+
+	return $retour;
+}
+
+/** Fonction destinée à retourner la période courante associée à un élève
+ *
+ * @param string $login_eleve Le login de l'élève
+ * @param integer $ts Timestamp unix (par défaut, si vide "", on prend le timestamp courant)
+ * @param integer $valeur_par_defaut La valeur par défaut à prendre si aucun retour n'est trouvé dans les tables.
+ * @param string $pour bulletins 'y' ou 'n' Si on cherche une période avec bulletins remplis, on se base sur la période suivante ouverte en saisie.
+ *
+ * @return integer Numéro de la période
+ */
+function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut="", $pour_bulletins="n") {
+	//echo "<pre>\$ts=$ts</pre>";
+	$retour=$valeur_par_defaut;
+
+	if($ts=="") {
+		$ts=time();
+	}
+
+	$fich_debug="/tmp/cherche_periode_courante_eleve.txt";
+	fwrite_debug($fich_debug, "a+", "=================================================\n");
+
+	$periode_trouvee="n";
+	if($pour_bulletins=="y") {
+		$sql="select * from periodes p, j_eleves_classes jec where p.id_classe=jec.id_classe AND jec.login='$login_eleve' order by num_periode ASC;";
+		fwrite_debug($fich_debug, "a+", $sql."\n");
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			while($lig=mysql_fetch_object($res)) {
+				$num_per_temp=$lig->num_periode;
+				if($lig->verouiller=='N') {
+					if($num_per_temp>1) {
+						$retour=$num_per_temp-1;
+					}
+					else {
+						// Si la première période est ouverte en saisie, on est en début d'année,
+						// pas la peine d'espérer que les bulletins soient remplis
+						$retour=1;
+					}
+					$periode_trouvee="y";
+					break;
+				}
+			}
+		}
+
+		fwrite_debug($fich_debug, "a+", "\$periode_trouvee=".$periode_trouvee."\n");
+
+		if($periode_trouvee=="n") {
+			//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
+			$sql="select * from periodes p, j_eleves_classes jec where p.id_classe=jec.id_classe AND jec.login='$login_eleve' and date_fin<FROM_UNIXTIME($ts) order by num_periode DESC LIMIT 1;";
+			fwrite_debug($fich_debug, "a+", $sql."\n");
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$retour=mysql_result($res, 0, "num_periode");
+			}
+		}
+	}
+	else {
+		//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
+		$sql="select * from periodes p, j_eleves_classes jec where p.id_classe=jec.id_classe AND jec.login='$login_eleve' and date_fin>FROM_UNIXTIME($ts) order by num_periode ASC LIMIT 1;";
+		fwrite_debug($fich_debug, "a+", $sql."\n");
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$retour=mysql_result($res, 0, "num_periode");
+		}
+	}
+
+	if(!is_numeric($retour)) {$retour=$valeur_par_defaut;}
+
+	return $retour;
 }
 
 ?>

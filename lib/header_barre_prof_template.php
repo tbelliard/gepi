@@ -549,9 +549,41 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	//=======================================================
 	// Module notanet
 	if (getSettingValue("active_notanet") == "y") {
-		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_notanet/index.php' , "texte"=>"Brevet");
-		$compteur_menu++;
+		$sql="SELECT 1=1 FROM j_groupes_classes jgc,
+							j_groupes_professeurs jgp,
+							j_groupes_matieres jgm,
+							notanet n
+						WHERE jgc.id_classe=n.id_classe AND
+							jgc.id_groupe=jgp.id_groupe AND
+							jgc.id_groupe=jgm.id_groupe AND
+							jgp.login='".$_SESSION['login']."' AND
+							jgm.id_matiere=n.matiere
+						LIMIT 1;";
+		//echo "$sql<br />";
+		$res_test_notanet=mysql_query($sql);
+		if(mysql_num_rows($res_test_notanet)>0) {
+			$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_notanet/index.php' , "texte"=>"Brevet");
+			$compteur_menu++;
+		}
+		else {
+			$barre_notanet = '';
+		}
 	}else{ $barre_notanet = '';}
+
+	//=======================================================
+	// Module Epreuves blanches
+	if (getSettingAOui("active_mod_epreuve_blanche")) {
+		$sql="SELECT 1=1 FROM eb_epreuves ee, eb_profs ep WHERE ep.login_prof='".$_SESSION['login']."' AND ee.id=ep.id_epreuve AND ee.etat!='clos' ORDER BY ee.date, ee.intitule;";
+		//echo "$sql<br />";
+		$res_test_epb=mysql_query($sql);
+		if(mysql_num_rows($res_test_epb)>0) {
+			$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_epreuve_blanche/index.php' , "texte"=>"Ep.blanches");
+			$compteur_menu++;
+		}
+		else {
+			$barre_epb = '';
+		}
+	}else{ $barre_epb = '';}
 
 	//=======================================================
 	$tbs_menu_prof[$compteur_menu]=array("lien"=> '/groupes/visu_mes_listes.php' , "texte"=>"Élèves");
