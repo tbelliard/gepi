@@ -979,16 +979,16 @@ for($i=0;$i<10;$i++){
 		echo "<tr id='tr_enseignement_$cpt_grp' class='lig$alt white_hover'>\n";
 		// Suppression
 		echo "<td>";
-		echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe".add_token_in_url()."'><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
+		echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Supprimer cet enseignement\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
 		echo "</td>\n";
 
 		// Enseignement
 		echo "<td class='norme' style='text-align:left;'>";
 		echo "<strong>";
 		if ($total == "1") {
-			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe'>";
+			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement\">";
 		} else {
-			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement'>";
+			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement\">";
 		}
 		echo $group["description"] . "</a></strong>";
 		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".$group["description"]."\" />\n";
@@ -1027,9 +1027,11 @@ for($i=0;$i<10;$i++){
 		foreach($current_group["profs"]["list"] as $prof) {
 			if ($first) {echo "<br />";}
 			if (!$first) {echo ", ";}
+			echo "<a href='../utilisateurs/modify_user.php?user_login=".$current_group["profs"]["users"][$prof]["login"]."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modification de l'utilisateur\" style='color:black; font-size:small;'>";
 			echo casse_mot($current_group["profs"]["users"][$prof]["prenom"],'majf2');
 			echo " ";
 			echo $current_group["profs"]["users"][$prof]["nom"];
+			echo "</a>";
 	
 			if(in_array($current_group["profs"]["users"][$prof]["login"],$tab_prof_suivi)) {
 				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
@@ -1047,7 +1049,7 @@ for($i=0;$i<10;$i++){
 				$inscrits = count($current_group["eleves"][$period["num_periode"]]["list"]);
 
 				echo "<td>";
-				echo "<a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">" . $inscrits . "</a>";
+				echo "<a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier les élèves inscrits dans cet enseignement\">" . $inscrits . "</a>";
 				echo "</td>\n";
 			}
 		}
