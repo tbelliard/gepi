@@ -244,6 +244,8 @@ if (isset($_POST['is_posted'])) {
 
     $error = false;
 
+	$msg="";
+
 	$tab_id_groupe=array();
 
     foreach ($_POST as $key => $value) {
@@ -360,6 +362,29 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 	//================================
+
+	if(isset($_POST["name_grp"])) {
+		$name_grp=$_POST["name_grp"];
+		$description_grp=$_POST["description_grp"];
+
+		foreach($name_grp as $id_current_grp => $current_name) {
+			$sql="UPDATE groupes SET name='".html_entity_decode($current_name,ENT_QUOTES,"UTF-8")."' WHERE id='".$id_current_grp."';";
+			//echo "$sql<br />";
+			$update=mysql_query($sql);
+			if(!$update) {
+				$msg.="Erreur lors de la modification du nom court du groupe n°$id_current_grp<br />";
+			}
+		}
+
+		foreach($description_grp as $id_current_grp => $current_description) {
+			$sql="UPDATE groupes SET description='".html_entity_decode($current_description,ENT_QUOTES,"UTF-8")."' WHERE id='".$id_current_grp."';";
+			//echo "$sql<br />";
+			$update=mysql_query($sql);
+			if(!$update) {
+				$msg.="Erreur lors de la modification de la description du groupe n°$id_current_grp<br />";
+			}
+		}
+	}
 
 	$msg="Enregistrement effectué.";
 
@@ -634,7 +659,7 @@ echo "</p>\n";
 echo "</form>\n";
 
 
-echo "<h3>Gestion des enseignements pour la classe&nbsp;:" . $classe["classe"]."<span id='span_asterisque'></span></h3>\n";
+echo "<h3>Gestion des enseignements pour la classe&nbsp;: " . $classe["classe"]."<span id='span_asterisque'></span></h3>\n";
 
 echo "</td>\n";
 echo "<td width='60%' align='center'>\n";
@@ -645,7 +670,7 @@ echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group
 //$query = mysql_query("SELECT matiere, nom_complet FROM matieres");
 echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
 echo "<table border='0' summary='Ajout d enseignement'>\n<tr valign='top'>\n<td>\n";
-echo "Ajouter un enseignement : ";
+echo "Ajouter un enseignement&nbsp;: ";
 echo "</td>\n";
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 //==============================
@@ -855,10 +880,20 @@ for($i=0;$i<10;$i++){
 
 	//============================================================================================================
 
+	$afficher_champs_modif_nom_groupe=isset($_POST['afficher_champs_modif_nom_groupe']) ? $_POST['afficher_champs_modif_nom_groupe'] : (isset($_GET['afficher_champs_modif_nom_groupe']) ? $_GET['afficher_champs_modif_nom_groupe'] : "n");
+
 	echo "<table class='boireaus' summary='Tableau des enseignements'>\n";
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Supprimer</th>\n";
-	echo "<th rowspan='2'>Enseignement</th>\n";
+	echo "<th rowspan='2'>Enseignement<br />\n";
+	// 20130412
+	if($afficher_champs_modif_nom_groupe=="y") {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;afficher_champs_modif_nom_groupe=n' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Ne pas afficher les champs de modification des noms de groupes\"><img src='../images/icons/visible.png' width='19' height='16' /></a>";
+	}
+	else {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;afficher_champs_modif_nom_groupe=y' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Afficher les champs de modification des noms de groupes\"><img src='../images/icons/invisible.png' width='19' height='16' /></a>";
+	}
+	echo "</th>\n";
 	echo "<th colspan='".($nb_periode-1)."'><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits</th>\n";
 	echo "<th rowspan='2'>Priorité<br />d'affichage</th>\n";
 	echo "<th rowspan='2'>Catégorie</th>\n";
@@ -973,6 +1008,19 @@ for($i=0;$i<10;$i++){
 				echo ", $tabclasse[$i]";
 			}
 			echo "</em>)";
+		}
+
+		// 20130412
+		if($afficher_champs_modif_nom_groupe=="y") {
+			echo "<br />
+			<input type='hidden' name='afficher_champs_modif_nom_groupe' value='y' />
+			<table>
+				<tr><td style='border:0px; text-align:left;'>Nom court&nbsp;:</td><td style='border:0px'><input type='text' name='name_grp[".$group["id"]."]' value=\"".$group["name"]."\" onchange='changement()' /></td></tr>
+				<tr><td style='border:0px; text-align:left;'>Nom complet&nbsp;:</td><td style='border:0px'><input type='text' name='description_grp[".$group["id"]."]' value=\"".$group["description"]."\" onchange='changement()' /></td></tr>
+			</table>\n";
+		}
+		else {
+			echo "<input type='hidden' name='afficher_champs_modif_nom_groupe' value='n' />\n";
 		}
 
 		$first = true;
