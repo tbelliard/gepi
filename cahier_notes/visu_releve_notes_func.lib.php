@@ -2993,7 +2993,7 @@ function releve_pdf($tab_rel,$i) {
 													if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='v') {
 
 														if($tab_rel['rn_nomdev']=='y') {
-															$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].": ";
+															$chaine_notes.=unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court']).": ";
 														}
 
 														if($use_cell_ajustee!="n") {$chaine_notes.="<b>";}
@@ -3046,7 +3046,7 @@ function releve_pdf($tab_rel,$i) {
 													elseif(($tab_rel['rn_app']=='y')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app']=='1')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']!='')) {
 							
 														if($tab_rel['rn_nomdev']=='y') {
-															$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
+															$chaine_notes.=" (".unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court']).")";
 														}
 								
 														if($tab_rel['rn_datedev']=='y') {
@@ -3103,7 +3103,7 @@ function releve_pdf($tab_rel,$i) {
 	
 									if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='v') {
 										if($tab_rel['rn_nomdev']=='y') {
-											$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].": ";
+											$chaine_notes.=unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court']).": ";
 										}
 
 										if($use_cell_ajustee!="n") {$chaine_notes.="<b>";}
@@ -3154,7 +3154,7 @@ function releve_pdf($tab_rel,$i) {
 									elseif(($tab_rel['rn_app']=='y')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app']=='1')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']!='')) {
 			
 										if($tab_rel['rn_nomdev']=='y') {
-											$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
+											$chaine_notes.=" (".unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court']).")";
 										}
 				
 										if($tab_rel['rn_datedev']=='y') {
