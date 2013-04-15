@@ -1710,12 +1710,12 @@ function volume_docs_joints($id_groupe, $mode="all"){
  * A appeler immédiatement après ouverture du fichier
  * Exemple :
  * $handle=fopen("....");
- * skip_bom_uf8($handle)
+ * skip_bom_utf8($handle)
  *
  * @param handle $h_file : Le pointeur de fichier à tester
  * @return boolean : true si pas de BOM ou si BOM sauté, false dans les autres cas 
  */
-function skip_bom_uf8($h_file)
+function skip_bom_utf8($h_file)
 	{
 	if (ftell($h_file)!=0) return false;
 	$bytes=fread($h_file,3);

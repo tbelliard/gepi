@@ -574,9 +574,10 @@ if (isset($_POST['is_posted'])) {
 							}
 							else {
 								//$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe');";
-								//$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgm.id_groupe FROM j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."');";
+								$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgm.id_groupe FROM j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."');";
+
 							}
-							echo "$sql<br />";
+							//echo "$sql<br />";
 							$res_modif_coef=mysql_query($sql);
 							if(!$res_modif_coef) {
 								$msg.="Erreur lors de la requête<br />$sql<br />";
