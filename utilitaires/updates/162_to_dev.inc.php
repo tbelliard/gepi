@@ -88,4 +88,68 @@ else {
 	$result .= msj_present("La migration a déjà été réalisée");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'messagerie' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'messagerie'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS messagerie (
+		id int(11) NOT NULL AUTO_INCREMENT,
+		in_reply_to int(11) NOT NULL,
+		login_src varchar(50) NOT NULL,
+		login_dest varchar(50) NOT NULL,
+		sujet varchar(100) NOT NULL,
+		message text NOT NULL,
+		date_msg timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		vu tinyint(4) NOT NULL,
+		date_vu timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+		PRIMARY KEY (id)
+		) CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+if(getSettingValue('active_messagerie')=="") {
+	$result .= "&nbsp;-> Initialisation du module Messagerie&nbsp;: ";
+	if (!saveSetting("active_messagerie", 'y')) {
+		$result .= msj_erreur();
+	} else {
+		$result .= msj_ok("Ok !");
+	}
+}
+
+saveSetting("PeutPosterMessageAdministrateur", 'y');
+
+if(getSettingValue('MessagerieDelaisTest')=="") {
+	$result .= "&nbsp;-> Initialisation du délais entre deux tests de présence de messages non lus&nbsp;: ";
+	if (!saveSetting("MessagerieDelaisTest", '1')) {
+		$result .= msj_erreur();
+	} else {
+		$result .= msj_ok("Ok !");
+	}
+}
+
+if(getSettingValue('PeutPosterMessageScolarite')=="") {
+	$result .= "&nbsp;-> Initialisation de la possibilité de poster des messages pour les comptes 'scolarité'&nbsp;: ";
+	if (!saveSetting("PeutPosterMessageScolarite", 'y')) {
+		$result .= msj_erreur();
+	} else {
+		$result .= msj_ok("Ok !");
+	}
+}
+
+if(getSettingValue('PeutPosterMessageCpe')=="") {
+	$result .= "&nbsp;-> Initialisation de la possibilité de poster des messages pour les comptes 'cpe'&nbsp;: ";
+	if (!saveSetting("PeutPosterMessageCpe", 'y')) {
+		$result .= msj_erreur();
+	} else {
+		$result .= msj_ok("Ok !");
+	}
+}
+
 ?>

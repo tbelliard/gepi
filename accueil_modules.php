@@ -572,6 +572,18 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	}
 	unset($nouveauItem);
 
+// Messagerie
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/messagerie/admin.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->choix_icone('active_messagerie') ;
+		$nouveauItem->titre="Messagerie" ;
+		$nouveauItem->expli="Pour gérer la Messagerie interne." ;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+
 
 $tbs_microtime	="";
 $tbs_pmv="";

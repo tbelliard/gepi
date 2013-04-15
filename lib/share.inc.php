@@ -6687,4 +6687,300 @@ function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut=""
 	return $retour;
 }
 
+
+/*
+CREATE TABLE IF NOT EXISTS messagerie (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  in_reply_to int(11) NOT NULL,
+  login_src varchar(50) NOT NULL,
+  login_dest varchar(50) NOT NULL,
+  sujet varchar(100) NOT NULL,
+  message text NOT NULL,
+  date_msg timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  vu tinyint(4) NOT NULL,
+  date_vu timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+*/
+
+function enregistre_message($sujet, $message, $login_src, $login_dest, $in_reply_to=-1) {
+	$retour="";
+
+	$sql="INSERT INTO messagerie SET sujet='".mysql_real_escape_string($sujet)."',
+									message='".mysql_real_escape_string($message)."',
+									login_src='".$login_src."',
+									login_dest='".$login_dest."',
+									in_reply_to='".$in_reply_to."';";
+	$res=mysql_query($sql);
+	if($res) {
+		$retour=mysql_insert_id();
+	}
+	return $retour;
+}
+/*
+function form_saisie_message($in_reply_to=-1) {
+	$chaine="<form action='../lib/form_message.php' method='post'>
+		<fieldset style='border:1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+			
+		</fieldset>
+	</form>\n";
+}
+*/
+
+function affiche_historique_messages($login_src, $mode="tous") {
+	$retour="";
+	if($mode=='tous') {
+		$sql="SELECT * FROM messagerie WHERE login_src='$login_src' ORDER BY date_msg DESC, login_dest ASC, sujet;";
+	}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		$retour="<p>Aucun message.</p>";
+	}
+	else {
+		$retour.="<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Date</th>
+		<th>Destinataire</th>
+		<th>Sujet</th>
+		<th>Message</th>
+		<th>Lu/vu</th>
+	</tr>";
+		$cpt_ahm=0;
+		while($lig=mysql_fetch_object($res)) {
+			$retour.="
+	<tr>
+		<td>".formate_date($lig->date_msg,'y')."</td>
+		<td>".civ_nom_prenom($lig->login_dest)."</td>
+		<td>$lig->sujet</td>
+		<td id='td_ahm_".$cpt_ahm."' onclick=\"copie_ahm($cpt_ahm)\">".nl2br(preg_replace("/\\\\n/", "\n", $lig->message))."</td>
+		<td>";
+			if($lig->vu!=0) {
+				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Votre message a été lu/vu le ".formate_date($lig->date_vu,'y')."' />";
+			}
+			else {
+				$retour.="<img src='../images/disabled.png' width='20' height='20' title='Non lu/vu' />";
+			}
+			$retour.="</td>
+	</tr>";
+			$cpt_ahm++;
+		}
+		$retour.="</table>
+<script type='text/javascript'>
+	function copie_ahm(num) {
+		if(document.getElementById('message_messagerie')) {
+			document.getElementById('message_messagerie').innerHTML+=ahm_nettoyage(document.getElementById('td_ahm_'+num).innerHTML);
+		}
+	}
+
+	function ahm_nettoyage(str) {
+		//return str.replace(/<br\s*\/?>/mg,\"\\n\");
+		chaine=str.replace(/<br\s*\/?>/mg,\"\\n\")
+		chaine=chaine.replace(/\\r\\n\\r\\n/g, \"\\r\\n\");
+		chaine=chaine.replace(/\\n\\n/g, \"\\n\");
+		return chaine;
+	}
+</script>
+";
+	}
+	return $retour;
+}
+
+function affiche_historique_messages_recus($login_dest, $mode="tous") {
+	global $gepiPath;
+
+	$retour="";
+	if($mode=='tous') {
+		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' ORDER BY date_msg DESC, sujet;";
+	}
+	elseif($mode=='non_lus') {
+		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' AND vu='0' ORDER BY date_msg DESC, sujet;";
+	}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		$retour="<p>Aucun message.</p>";
+	}
+	else {
+		$retour.=add_token_field(true)."<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Date</th>
+		<th>Source</th>
+		<th>Sujet</th>
+		<th>Message</th>
+		<th>Lu/vu</th>
+		<!-- A FAIRE : Ajouter une colonne pour Répondre si on en a le droit -->
+	</tr>";
+
+
+		$cpt_ahmr=0;
+		while($lig=mysql_fetch_object($res)) {
+			$retour.="
+	<tr>
+		<td>".formate_date($lig->date_msg,'y')."</td>
+		<td>".civ_nom_prenom($lig->login_src)."</td>
+		<td>$lig->sujet</td>
+		<td id='td_ahmr_".$cpt_ahmr."' onclick=\"copie_ahmr($cpt_ahmr)\">".nl2br(preg_replace("/\\\\n/", "\n", $lig->message))."</td>
+		<td>";
+			if($lig->vu!=0) {
+				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Vous avez marqué/lu/vu ce message le ".formate_date($lig->date_vu,'y')."' />";
+			}
+			else {
+				$retour.="<span id='span_message_$lig->id'><a href='$gepiPath/lib/form_message.php?mode=marquer_lu&amp;id_msg=$lig->id&amp;mode_no_js=y".add_token_in_url()."' onclick=\"marquer_message_lu($lig->id);return false;\" target='_blank'><img src='../images/disabled.png' width='20' height='20' title='Non lu/vu. Cliquez pour marquer ce message comme lu.' /></a></span>";
+			}
+			$retour.="</td>
+	</tr>";
+			$cpt_ahmr++;
+		}
+		$retour.="</table>
+
+<script type='text/javascript'>
+	function marquer_message_lu(id_msg) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+
+		new Ajax.Updater($('span_message_'+id_msg),'$gepiPath/lib/form_message.php?mode=marquer_lu&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check&sound=no&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check2&csrf_alea='+csrf_alea,{method: 'get'});
+	}
+
+	function copie_ahmr(num) {
+		if(document.getElementById('message_messagerie')) {
+			document.getElementById('message_messagerie').innerHTML+=ahmr_nettoyage(document.getElementById('td_ahmr_'+num).innerHTML);
+		}
+	}
+
+	function ahmr_nettoyage(str) {
+		//return str.replace(/<br\s*\/?>/mg,\"\\n\");
+		chaine=str.replace(/<br\s*\/?>/mg,\"\\n\")
+		chaine=chaine.replace(/\\r\\n\\r\\n/g, \"\\r\\n\");
+		chaine=chaine.replace(/\\n\\n/g, \"\\n\");
+		return chaine;
+	}
+</script>";
+	}
+	return $retour;
+}
+
+function check_messages_recus($login_dest) {
+	$retour="";
+	$sql="SELECT 1=1 FROM messagerie WHERE login_dest='$login_dest' AND vu='0';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==1) {
+		$retour=mysql_num_rows($res)." message non lu.";
+	}
+	elseif(mysql_num_rows($res)>1) {
+		$retour=mysql_num_rows($res)." messages non lus.";
+	}
+	return $retour;
+}
+
+// A faire: check_mes_messages_lus() pour signaler qu'un de ses messages a été lu?
+
+function marquer_message_lu($id_msg) {
+	$retour="";
+
+	$sql="UPDATE messagerie SET vu='1', date_vu=CURRENT_TIMESTAMP WHERE id='$id_msg' AND login_dest='".$_SESSION['login']."';";
+	$update=mysql_query($sql);
+	if($update) {
+		$retour="Succès";
+	}
+	else {
+		$retour="Erreur";
+	}
+
+	return $retour;
+}
+
+function peut_poster_message($statut) {
+	// A FAIRE: Gérer le statut Autre...
+	if(getSettingAOui('PeutPosterMessage'.ucfirst(mb_strtolower($statut)))) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function affichage_temoin_messages_recus() {
+	global $gepiPath;
+
+	$MessagerieDelaisTest=getSettingValue('MessagerieDelaisTest');
+	if(($MessagerieDelaisTest=='')||(!preg_match('/^[0-9]$/', $MessagerieDelaisTest))||($MessagerieDelaisTest==0)) {
+		$MessagerieDelaisTest=1;
+	}
+
+	// On teste la présence de messages toutes les 1min, 2min,...
+	$nb_sec=60*$MessagerieDelaisTest;
+
+	$retour="";
+
+	if(peut_poster_message($_SESSION['statut'])) {
+		$retour.="<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></a></span>";
+	}
+	else {
+		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$retour.="<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></a></span>";
+		}
+		else {
+			$retour.="<span id='span_messages_recus'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></span>";
+		}
+	}
+
+	$retour.="
+<script type='text/javascript'>
+	var nb_millisec_check_message=$nb_sec*1000;
+
+	function function_check_message() {
+		new Ajax.Updater($('span_messages_recus'),'$gepiPath/lib/form_message.php?mode=check',{method: 'get'});
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check2',{method: 'get'});
+		setTimeout('function_check_message()', nb_millisec_check_message);
+	}
+
+	//alert('plop')
+	//setTimeout('function_check_message()', nb_millisec_check_message);
+	// On lance le premier test 10s après l'affichage de la page
+	setTimeout('function_check_message()', 10000);
+	// En fait, en cas de changement de page, on va tester la présence de message dans la seconde qui suit.
+</script>\n";
+
+	return $retour;
+}
+
+
+function joueSon($sound, $id_son="") {
+	global $gepiPath, $niveau_arbo;
+
+	$retour="";
+	if(!in_array($sound, array("KDE_Beep_Pop.wav", "libreoffice_gong.wav", "libreoffice_nature1.wav", "pluck.wav", "verre_brise.wav", "default_alarm.wav"))) {
+		$sound="KDE_Beep_Pop.wav";
+	}
+
+	if ($niveau_arbo == "0") {
+		$chemin_sound="./sounds/".$sound;
+	} elseif ($niveau_arbo == "1") {
+		$chemin_sound="../sounds/".$sound;
+	} elseif ($niveau_arbo == "2") {
+		$chemin_sound="../../sounds/".$sound;
+	} elseif ($niveau_arbo == "3") {
+		$chemin_sound="../../../sounds/".$sound;
+	} else {
+		$chemin_sound="../sounds/".$sound;
+	}
+
+	if($id_son=="") {
+		$id_son="id_son_".preg_replace("/[^0-9]/","_",microtime());
+	}
+
+	if(file_exists($chemin_sound)) { 
+		$retour ="<audio id='$id_son' preload='auto' autobuffer autoplay>
+	<source src=".$chemin_sound." />
+</audio>
+";
+	}
+	else {
+		$retour ="";
+	}
+	return $retour;
+} 
+
 ?>

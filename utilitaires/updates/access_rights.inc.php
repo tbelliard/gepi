@@ -963,6 +963,30 @@ autre='V',
 description='A lire...',
 statut='';";
 
+$tab_req[]="INSERT INTO droits SET id='/messagerie/admin.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Messagerie : Administration du module',
+statut='';";
+
+$tab_req[]="INSERT INTO droits SET id='/lib/form_message.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='V',
+autre='F',
+description='Messagerie',
+statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

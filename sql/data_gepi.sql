@@ -1197,3 +1197,5 @@ INSERT INTO droits VALUES ('/bulletin/index_admin.php', 'V', 'F', 'F', 'F', 'F',
 INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseResp', value='y';
 INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseEleve', value='y';
 INSERT INTO droits SET id='/a_lire.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='V',autre='V',description='A lire...',statut='';
+INSERT INTO droits SET id='/messagerie/admin.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Messagerie : Administration du module',statut='';
+INSERT INTO droits SET id='/lib/form_message.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='F',description='Messagerie',statut='';
