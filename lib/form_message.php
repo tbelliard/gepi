@@ -164,7 +164,7 @@ if ((isset($_POST['is_posted']))&&(getSettingAOui('PeutPosterMessage'.ucfirst($_
 	}
 }
 
-$themessage = 'Des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage = 'Un message est en cours de rédaction. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_enregistrement = "Les modifications ont été enregistrées !";
 $utilisation_prototype = "ok";
 //**************** EN-TETE *****************
