@@ -779,13 +779,13 @@ echo add_token_field();
 <td width='40%'>
 <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
 <p>Pour cette classe,
-<input type='button' value="régler les priorités d'affichage" onClick='choix_ordre();' />:</p>
+<input type='button' value="régler les priorités d'affichage" onClick='choix_ordre();' title="N'oubliez pas d'enregistrer ensuite." />:</p>
 <!--ul>
 <li><a href='javascript:ordre_defaut();'>égales aux valeurs définies par défaut</a>,</li>
 <li><a href='javascript:ordre_alpha();'>suivant l'ordre alphabétique des matières.</a></li>
 </ul-->
 <input type='radio' name='ordre' id='ordre_defaut' value='ordre_defaut' /><label for='ordre_defaut' style='cursor: pointer;'> égales aux valeurs définies par défaut,</label><br />
-<input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /><label for='ordre_alpha' style='cursor: pointer;'> suivant l'ordre alphabétique des matières.</label>
+<input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /><label for='ordre_alpha' style='cursor: pointer;'> suivant l'ordre alphabétique des matières</label>
 </fieldset>
 </td>
 
@@ -819,7 +819,7 @@ if($display_rang=='y') {
 
 <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
 <!--a href='javascript:coeff();'>Mettre tous les coefficients à</a-->
-<input type='button' value='Mettre tous les coefficients à' onClick='coeff(); changement();' />
+<input type='button' value='Mettre tous les coefficients à' onClick='coeff(); changement();' title="N'oubliez pas d'enregistrer ensuite." />
 <select name='coefficient_recop' id='coefficient_recopie' >
 <?php
 for($i=0;$i<10;$i++){
