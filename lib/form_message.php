@@ -129,17 +129,22 @@ if((isset($mode))&&($mode=='marquer_lu')) {
 }
 
 // Envoi de message
-if ((isset($_POST['is_posted']))&&(getSettingAOui('PeutPosterMessage'.ucfirst($_SESSION['statut'])))) {
+$message_envoye=isset($_POST['message_envoye']) ? $_POST['message_envoye'] : (isset($_GET['message_envoye']) ? $_GET['message_envoye'] : "n");
+
+$sujet=isset($_POST['sujet']) ? $_POST['sujet'] : (isset($_GET['sujet']) ? $_GET['sujet'] : NULL);
+$message=isset($_POST['message']) ? $_POST['message'] : (isset($_GET['message']) ? $_GET['message'] : NULL);
+
+if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 	check_token();
 
-	$login_dest=isset($_POST['login_dest']) ? $_POST['login_dest'] : NULL;
-	$sujet=isset($_POST['sujet']) ? $_POST['sujet'] : NULL;
-	$message=isset($_POST['message']) ? $_POST['message'] : NULL;
+	$login_dest=isset($_POST['login_dest']) ? $_POST['login_dest'] : (isset($_GET['login_dest']) ? $_GET['login_dest'] : NULL);
 
 	$msg="";
 
-	if(isset($login_dest)) {
+	if((isset($login_dest))&&(isset($sujet))&&(isset($message))) {
 		if(is_array($login_dest)) {
+			$tmp_login_dest=$login_dest;
+			$login_dest=array_unique($tmp_login_dest);
 			$nb_reg=0;
 			for($loop=0;$loop<count($login_dest);$loop++) {
 				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest[$loop]);
@@ -156,9 +161,19 @@ if ((isset($_POST['is_posted']))&&(getSettingAOui('PeutPosterMessage'.ucfirst($_
 			$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest);
 			if($retour!="") {
 				$msg.="Message pour ".civ_nom_prenom($login_dest)." enregistré.<br />";
+
+				if(isset($_GET['envoi_js'])) {
+					echo "<img src='$gepiPath/images/icons/mail_succes.png' width='16' height='16' title='Message envoyé' />";
+					die();
+				}
 			}
 			else {
 				$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($login_dest).".<br />";
+
+				if(isset($_GET['envoi_js'])) {
+					echo "<img src='$gepiPath/images/icons/mail_echec.png' width='16' height='16' title='Erreur lors de l envoi du message' />";
+					die();
+				}
 			}
 		}
 	}
@@ -195,7 +210,7 @@ if((isset($mode))&&($mode=='afficher_messages_non_lus')) {
 	die();
 }
 
-if(getSettingAOui('PeutPosterMessage'.ucfirst($_SESSION['statut']))) {
+if(peut_poster_message($_SESSION['statut'])) {
 ?>
 
 <form action='../lib/form_message.php' method='post'>
@@ -272,7 +287,7 @@ if(getSettingAOui('PeutPosterMessage'.ucfirst($_SESSION['statut']))) {
 				?></textarea></td>
 			</tr>
 		</table>
-		<input type='hidden' name='is_posted' value='y' />
+		<input type='hidden' name='message_envoye' value='y' />
 		<p><input type='submit' name='envoyer' value='Envoyer' /></p>
 	</fieldset>
 </form>
@@ -358,6 +373,15 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 				if(document.getElementById('login_dest_'+i)) {
 					if(document.getElementById('login_dest_'+i).checked==true) {
 						document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"'><input type='hidden' name='login_dest[]' value='"+login_u[i]+"' />"+designation_u[i]+" <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' width='16' height='16' /></a></span>";
+
+						// On décoche les cases pour que si on ajoute par la suite d'autres destinataires,
+						// ils ne soient pas pré-sélectionnés, au risque de faire apparaitre des doublons.
+						document.getElementById('login_dest_'+i).checked=false;
+						checkbox_change('login_dest_'+i);
+
+						if(document.getElementById('id_classe')) {document.getElementById('id_classe').selectedIndex=0;}
+
+						// Masquage du texte initial d'ajout de destinataires
 						if(document.getElementById('span_ajoutez_un_ou_des_destinataires')) {document.getElementById('span_ajoutez_un_ou_des_destinataires').style.display='none';}
 					}
 				}
