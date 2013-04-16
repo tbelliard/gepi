@@ -6742,7 +6742,14 @@ function affiche_historique_messages($login_src, $mode="tous") {
 		<th>Date</th>
 		<th>Destinataire</th>
 		<th>Sujet</th>
-		<th>Message</th>
+		";
+		if(peut_poster_message($_SESSION['statut'])) {
+			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message</th>";
+		}
+		else {
+			$retour.="<th>Message</th>";
+		}
+		$retour.="
 		<th>Lu/vu</th>
 	</tr>";
 		$cpt_ahm=0;
@@ -6805,7 +6812,14 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 		<th>Date</th>
 		<th>Source</th>
 		<th>Sujet</th>
-		<th>Message</th>
+		";
+		if(peut_poster_message($_SESSION['statut'])) {
+			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message</th>";
+		}
+		else {
+			$retour.="<th>Message</th>";
+		}
+		$retour.="
 		<th>Lu/vu</th>
 		<!-- A FAIRE : Ajouter une colonne pour Répondre si on en a le droit -->
 	</tr>";
