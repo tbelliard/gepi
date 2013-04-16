@@ -90,10 +90,10 @@
   <div id='container'>
 <!-- Fin haut de page -->
 
-	<h2>Activation du module</h2>
+	<h2>Activation et paramétrage du module</h2>
 
 	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" id='form1'>
-	  <fieldset class="no_bordure">
+	  <fieldset style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>
 <?php
 echo add_token_field();
 ?>
@@ -132,7 +132,9 @@ echo add_token_field();
 			      $nb_min=1;
 			   }
 			   	echo $nb_min;
-			   	?>' /> minute(s).
+			   	?>'
+			   	onkeydown="clavier_2(this.id,event,1,300);"
+			   	/> minute(s).
 		</p>
 
 		<br />
@@ -196,10 +198,35 @@ echo add_token_field();
 
 		<input type='hidden' name='is_posted' value='y' />
 
+		<p class="center">
+			<input type='submit' name='valider' value='Valider' />
+		</p>
 	  </fieldset>
-	  <p class="center">
-		<input type='submit' name='valider' value='Valider' />
-	  </p>
+	</form>
+
+	<!-- ================================================ -->
+
+	<h2>Suppression des messages</h2>
+
+	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" id='form2'>
+	  <fieldset style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>
+<?php
+echo add_token_field();
+?>
+		<legend class="invisible">Ménage</legend>
+		<p>
+		Supprimer les messages antérieurs au 
+		<input type='text' name='date_limite' id='date_limite' size='10' value = "<?php echo $date_limite;?>" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." />
+		<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>"><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="Petit calendrier" /></a>
+		</p>
+
+		<input type='hidden' name='is_posted2' value='y' />
+
+		<p class="center">
+			<input type='submit' name='valider' value='Valider' />
+		</p>
+
+	  </fieldset>
 	</form>
 
 
