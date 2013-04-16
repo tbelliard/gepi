@@ -188,7 +188,7 @@ $dim_photo=isset($_POST['dim_photo_'.$id_groupe]) ? $_POST['dim_photo_'.$id_grou
 $dim_photo=preg_replace('/[^0-9]/','',$dim_photo);
 if(($dim_photo=="")||($dim_photo==0)) {$dim_photo=100;}
 
-if(in_array($_POST['trombi_plan_titre'],array('login', 'nom', 'prenom'))) {
+if((isset($_POST['trombi_plan_titre']))&&(in_array($_POST['trombi_plan_titre'],array('login', 'nom', 'prenom')))) {
 	savePref($_SESSION['login'] ,"trombi_plan_titre", $_POST['trombi_plan_titre']);
 }
 $trombi_plan_titre=getPref($_SESSION['login'], 'trombi_plan_titre', 'login');
