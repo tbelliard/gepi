@@ -132,7 +132,7 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
  * @see traitement_magic_quotes()
  */
 function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_periode) {
-	global $tabdiv_infobulle, $gepiClosedPeriodLabel, $id_groupe, $eff_groupe;
+	global $tabdiv_infobulle, $gepiClosedPeriodLabel, $id_groupe, $eff_groupe, $acces_exceptionnel_saisie;
     
 	if((isset($id_groupe))&&(!isset($eff_groupe))) {
 		$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
@@ -191,7 +191,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 		$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
 		$nb_dev  = mysql_num_rows($appel_dev);
 		if ($nb_dev != 0) {$empty = 'no';}
-		if ($ver_periode >= 2) {
+		if (($ver_periode >= 2)||($acces_exceptionnel_saisie)) {
 			$j = 0;
 			if($nb_dev>0){
 				echo "<ul>\n";
@@ -299,7 +299,7 @@ Visible Ã  compter du ".formate_date($date_ele_resp_dev)." pour les parents et Ã
 		echo "</li>\n";
 		echo "</ul>\n";
 	}
-	if ($ver_periode >= 2) {
+	if (($ver_periode >= 2)||($acces_exceptionnel_saisie)) {
 		$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='$id_conteneur') order by nom_court");
 		$nb_cont = mysql_num_rows($appel_conteneurs);
 		if($nb_cont>0) {

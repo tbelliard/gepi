@@ -442,6 +442,11 @@ $texteItem="peut signaler, en période ouverte ou partiellement close, (<em>aux 
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='PeutDonnerAccesBullNotePeriodeCloseScol';
+$texteItem="a accès à l'ouverture exceptionnelle de saisie/correction de notes du bulletin d'un enseignement particulier en période partiellement close<br />(<em>typiquement pour corriger une erreur sans devoir rouvrir complètement la période en saisie pour tous les professeurs, ni devoir passer par un compte secours pour faire la modification à la place du professeur.</em>).";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -456,6 +461,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiScolImprRelSettings';
 $texteItem="a accès au paramétrage de l'impression des relevés de notes HTML";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='PeutDonnerAccesCNPeriodeCloseScol';
+$texteItem="a accès à l'ouverture exceptionnelle de saisie/correction dans le carnet de notes d'un enseignement particulier en période partiellement close<br />(<em>typiquement pour corriger une erreur sans devoir rouvrir complètement la période en saisie pour tous les professeurs</em>).";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

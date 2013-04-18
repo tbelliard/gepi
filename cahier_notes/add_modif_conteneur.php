@@ -105,8 +105,13 @@ $periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
  */
 include "../lib/periodes.inc.php";
 
+$acces_exceptionnel_saisie=false;
+if($_SESSION['statut']=='professeur') {
+	$acces_exceptionnel_saisie=acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $periode_num);
+}
+
 // On teste si la periode est vérouillée !
-if ($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) {
+if (($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1)&&(!$acces_exceptionnel_saisie)) {
     $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes dont la période est bloquée !");
     header("Location: index.php?msg=$mess");
     die();

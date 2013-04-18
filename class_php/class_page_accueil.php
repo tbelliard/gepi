@@ -737,6 +737,20 @@ if(getSettingAOui('active_bulletins')) {
 			  "Visualisation des moyennes des carnets de notes",
 			  "Cet outil vous permet de visualiser à l'écran les moyennes calculées d'après le contenu des carnets de notes, indépendamment de la saisie des moyennes sur les bulletins.");
 
+	if (($condition)&&(getSettingAOui('PeutDonnerAccesCNPeriodeCloseScol'))) {
+		if ($this->statutUtilisateur=='scolarite'){
+		  $this->creeNouveauItem("/cahier_notes/autorisation_exceptionnelle_saisie.php",
+				  "Autorisation exceptionnelle de saisie de CN",
+				  "Permet d'autoriser exceptionnellement un enseignant à saisir/corriger des notes du carnet de notes pour un enseignement sur une période partiellement close.");
+		}
+	}
+
+	if ($this->statutUtilisateur=='administrateur'){
+		$this->creeNouveauItem("/cahier_notes/autorisation_exceptionnelle_saisie.php",
+			"Autorisation exceptionnelle de saisie de CN",
+			"Permet d'autoriser exceptionnellement un enseignant à saisir/corriger des notes du carnet de notes pour un enseignement sur une période partiellement close.");
+	}
+
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Relevés de notes",'images/icons/releve.png');
 	  return true;
@@ -1079,6 +1093,13 @@ if(getSettingAOui('active_bulletins')) {
 		  $this->creeNouveauItem("/bulletin/autorisation_exceptionnelle_saisie_app.php",
 				  "Autorisation exceptionnelle de saisie d'appréciations",
 				  "Permet d'autoriser exceptionnellement un enseignant à proposer une saisie d'appréciations pour un enseignement sur une période partiellement close.");
+		}
+
+
+		if (($this->statutUtilisateur=='administrateur')||(($this->statutUtilisateur=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
+			$this->creeNouveauItem("/bulletin/autorisation_exceptionnelle_saisie_note.php",
+			"Autorisation exceptionnelle de saisie de note",
+			"Permet d'autoriser exceptionnellement un enseignant à saisir/corriger des notes de bulletins pour un enseignement sur une période partiellement close.");
 		}
 
 		if ($this->statutUtilisateur!='professeur'){

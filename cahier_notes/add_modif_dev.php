@@ -113,8 +113,13 @@ $periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
  */
 include "../lib/periodes.inc.php";
 
-// On teste si la periode est vérrouillée !
-if ($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) {
+$acces_exceptionnel_saisie=false;
+if($_SESSION['statut']=='professeur') {
+	$acces_exceptionnel_saisie=acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $periode_num);
+}
+
+// On teste si la periode est vérouillée !
+if (($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1)&&(!$acces_exceptionnel_saisie)) {
     $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes dont la période est bloquée !");
     header("Location: index.php?msg=$mess");
     die();
@@ -170,7 +175,7 @@ if (isset($_POST['ok'])) {
 			// Boucle sur les autres enseignements sur lesquels créer le même devoir
 			for($i=0;$i<count($id_autre_groupe);$i++) {
 				$tmp_group=get_group($id_autre_groupe[$i]);
-				// Vérifier que la période est bien ouverte en saisie
+				// Vérifier que la période est bien ouverte en saisie pour le groupe autre choisi
 				if($tmp_group["classe"]["ver_periode"]["all"][$periode_num]>=2) {
 
 					$tmp_id_racine="";
@@ -265,54 +270,75 @@ if (isset($_POST['ok'])) {
 
     }
 
-    if (isset($_POST['nom_court'])) {
-        $nom_court = $_POST['nom_court'];
-    } else {
-        $nom_court = "Devoir ".$id_devoir;
-    }
-    $reg = mysql_query("UPDATE cn_devoirs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '$id_devoir'");
-    if (!$reg)  $reg_ok = "no";
+	// Pour loguer les modifications en période close:
+	$temoin_log="n";
+	$chaine_log="";
+	if ($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) {
+		$sql="SELECT * FROM cn_devoirs WHERE id = '$id_devoir';";
+		$res_old=mysql_query($sql);
+		$lig_old=mysql_fetch_object($res_old);
+		$temoin_log="y";
+	}
+
+	if (isset($_POST['nom_court'])) {
+		$nom_court = $_POST['nom_court'];
+	} else {
+		$nom_court = "Devoir ".$id_devoir;
+	}
+	if(($temoin_log=="y")&&($nom_court!=$lig_old->nom_court)) {
+		$chaine_log.=". Modification du nom court : $nom_court -> $lig_old->nom_court\n";
+	}
+	$reg = mysql_query("UPDATE cn_devoirs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '$id_devoir'");
+	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
 		$reg=mysql_query($sql);
 	}
 
-    if (isset($_POST['nom_complet'])) {
-        $nom_complet = $_POST['nom_complet'];
-    } else {
-        $nom_complet = $nom_court;
-    }
-
-    $reg = mysql_query("UPDATE cn_devoirs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '$id_devoir'");
-    if (!$reg)  $reg_ok = "no";
+	if (isset($_POST['nom_complet'])) {
+		$nom_complet = $_POST['nom_complet'];
+	} else {
+		$nom_complet = $nom_court;
+	}
+	if(($temoin_log=="y")&&($nom_complet!=$lig_old->nom_complet)) {
+		$chaine_log.=". Modification du nom complet : $nom_complet -> $lig_old->nom_complet\n";
+	}
+	$reg = mysql_query("UPDATE cn_devoirs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '$id_devoir'");
+	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
 		$reg=mysql_query($sql);
 	}
 
-    if (isset($_POST['description'])) {
-        $reg = mysql_query("UPDATE cn_devoirs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '$id_devoir'");
-        if (!$reg)  $reg_ok = "no";
-    }
+	if (isset($_POST['description'])) {
+		if(($temoin_log=="y")&&($_POST['description']!=$lig_old->description)) {
+			$chaine_log.=". Modification de la description :\n$lig_old->description\n->\n".$_POST['description']."\n";
+		}
+		$reg = mysql_query("UPDATE cn_devoirs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '$id_devoir'");
+		if (!$reg)  $reg_ok = "no";
+	}
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
 		$reg=mysql_query($sql);
 	}
 
-    if (isset($_POST['id_emplacement'])) {
-        $id_emplacement = $_POST['id_emplacement'];
-        $reg = mysql_query("UPDATE cn_devoirs SET id_conteneur = '".$id_emplacement."' WHERE id = '$id_devoir'");
-        if (!$reg)  $reg_ok = "no";
+	if (isset($_POST['id_emplacement'])) {
+		$id_emplacement = $_POST['id_emplacement'];
+		if(($temoin_log=="y")&&($lig_old->id_conteneur!=$id_emplacement)) {
+			$chaine_log.=". Modification du conteneur dans lequel se trouve le devoir : $lig_old->id_conteneur -> ".$id_emplacement."\n";
+		}
+		$reg = mysql_query("UPDATE cn_devoirs SET id_conteneur = '".$id_emplacement."' WHERE id = '$id_devoir'");
+		if (!$reg)  $reg_ok = "no";
 
 		for($i=0;$i<count($tab_group);$i++) {
 			$sql="UPDATE cn_devoirs SET id_conteneur = '".$tab_group[$i]['id_conteneur']."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
 			//echo "$sql<br />\n";
 			$reg=mysql_query($sql);
 		}
-    }
+	}
 
 	$tmp_coef=isset($_POST['coef']) ? $_POST['coef'] : 0;
 	if((preg_match("/^[0-9]*$/", $tmp_coef))||(preg_match("/^[0-9]*\.[0-9]$/", $tmp_coef))) {
@@ -330,6 +356,9 @@ if (isset($_POST['ok'])) {
 	else {
 		$msg.="Le coefficient proposé $tmp_coef est invalide. Mise à 1.0 du coefficient.<br />";
 		$tmp_coef="1.0";
+	}
+	if(($temoin_log=="y")&&($lig_old->coef!=$tmp_coef)) {
+		$chaine_log.=". Modification du coefficient du devoir : $lig_old->coef -> ".$tmp_coef."\n";
 	}
 	$reg = mysql_query("UPDATE cn_devoirs SET coef='".$tmp_coef."' WHERE id='$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
@@ -353,6 +382,9 @@ if (isset($_POST['ok'])) {
 		$msg.="Le référentiel proposé $note_sur est invalide. Mise à ".getSettingValue("referentiel_note")." du référentiel.<br />";
 		$note_sur=getSettingValue("referentiel_note");
 	}
+	if(($temoin_log=="y")&&($lig_old->note_sur!=$note_sur)) {
+		$chaine_log.=". Modification du référentiel de note (note_sur) du devoir : $lig_old->note_sur -> ".$note_sur."\n";
+	}
 	$reg = mysql_query("UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
@@ -361,70 +393,78 @@ if (isset($_POST['ok'])) {
 		$reg=mysql_query($sql);
 	}
 
-    if ((isset($_POST['ramener_sur_referentiel']))&&($_POST['ramener_sur_referentiel']=="V")) {
-        $ramener_sur_referentiel='V';
-    } else {
-        $ramener_sur_referentiel='F';
-    }
-
-    $reg = mysql_query("UPDATE cn_devoirs SET ramener_sur_referentiel = '$ramener_sur_referentiel' WHERE id = '$id_devoir'");
-    if (!$reg)  $reg_ok = "no";
+	if ((isset($_POST['ramener_sur_referentiel']))&&($_POST['ramener_sur_referentiel']=="V")) {
+		$ramener_sur_referentiel='V';
+	} else {
+		$ramener_sur_referentiel='F';
+	}
+	if(($temoin_log=="y")&&($lig_old->ramener_sur_referentiel!=$ramener_sur_referentiel)) {
+		$chaine_log.=". Modification du paramètre ramener_sur_referentiel du devoir : $lig_old->ramener_sur_referentiel -> ".$ramener_sur_referentiel."\n";
+	}
+	$reg = mysql_query("UPDATE cn_devoirs SET ramener_sur_referentiel = '$ramener_sur_referentiel' WHERE id = '$id_devoir'");
+	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET ramener_sur_referentiel='$ramener_sur_referentiel' WHERE id='".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
 		$reg=mysql_query($sql);
 	}
 
-    if (isset($_POST['facultatif']) and preg_match("/^(O|N|B)$/", $_POST['facultatif'])) {
-        $reg = mysql_query("UPDATE cn_devoirs SET facultatif = '".$_POST['facultatif']."' WHERE id = '$id_devoir'");
-        if (!$reg)  $reg_ok = "no";
+	if (isset($_POST['facultatif']) and preg_match("/^(O|N|B)$/", $_POST['facultatif'])) {
+		$reg = mysql_query("UPDATE cn_devoirs SET facultatif = '".$_POST['facultatif']."' WHERE id = '$id_devoir'");
+		if (!$reg)  $reg_ok = "no";
 		for($i=0;$i<count($tab_group);$i++) {
 			$sql="UPDATE cn_devoirs SET facultatif='".$_POST['facultatif']."' WHERE id='".$tab_group[$i]['id_devoir']."';";
 			//echo "$sql<br />\n";
 			$reg=mysql_query($sql);
 		}
-    }
+	}
 
-    if (isset($_POST['display_date'])) {
-        if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date'])) {
-            $annee = mb_substr($_POST['display_date'],6,4);
-            $mois = mb_substr($_POST['display_date'],3,2);
-            $jour = mb_substr($_POST['display_date'],0,2);
-        } else {
-            $annee = strftime("%Y");
-            $mois = strftime("%m");
-            $jour = strftime("%d");
-        }
-        $date = $annee."-".$mois."-".$jour." 00:00:00";
-        $reg = mysql_query("UPDATE cn_devoirs SET date = '".$date."' WHERE id = '$id_devoir'");
-        if (!$reg)  $reg_ok = "no";
+	if (isset($_POST['display_date'])) {
+		if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date'])) {
+			$annee = mb_substr($_POST['display_date'],6,4);
+			$mois = mb_substr($_POST['display_date'],3,2);
+			$jour = mb_substr($_POST['display_date'],0,2);
+		} else {
+			$annee = strftime("%Y");
+			$mois = strftime("%m");
+			$jour = strftime("%d");
+		}
+		$date = $annee."-".$mois."-".$jour." 00:00:00";
+		if(($temoin_log=="y")&&($lig_old->date!=$date)) {
+			$chaine_log.=". Modification de la date du devoir : ".formate_date($lig_old->date)." -> ".formate_date($date)."\n";
+		}
+		$reg = mysql_query("UPDATE cn_devoirs SET date = '".$date."' WHERE id = '$id_devoir'");
+		if (!$reg)  $reg_ok = "no";
 		for($i=0;$i<count($tab_group);$i++) {
 			$sql="UPDATE cn_devoirs SET date='".$date."' WHERE id='".$tab_group[$i]['id_devoir']."';";
 			//echo "$sql<br />\n";
 			$reg=mysql_query($sql);
 		}
-    }
+	}
 
 	//====================================================
-    if (isset($_POST['date_ele_resp'])) {
-        if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['date_ele_resp'])) {
-            $annee = mb_substr($_POST['date_ele_resp'],6,4);
-            $mois = mb_substr($_POST['date_ele_resp'],3,2);
-            $jour = mb_substr($_POST['date_ele_resp'],0,2);
-        } else {
-            $annee = strftime("%Y");
-            $mois = strftime("%m");
-            $jour = strftime("%d");
-        }
-        $date = $annee."-".$mois."-".$jour." 00:00:00";
-        $reg = mysql_query("UPDATE cn_devoirs SET date_ele_resp='".$date."' WHERE id = '$id_devoir'");
-        if (!$reg)  $reg_ok = "no";
+	if (isset($_POST['date_ele_resp'])) {
+		if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['date_ele_resp'])) {
+			$annee = mb_substr($_POST['date_ele_resp'],6,4);
+			$mois = mb_substr($_POST['date_ele_resp'],3,2);
+			$jour = mb_substr($_POST['date_ele_resp'],0,2);
+		} else {
+			$annee = strftime("%Y");
+			$mois = strftime("%m");
+			$jour = strftime("%d");
+		}
+		$date = $annee."-".$mois."-".$jour." 00:00:00";
+		if(($temoin_log=="y")&&($lig_old->date_ele_resp!=$date)) {
+			$chaine_log.=". Modification de la date de visibilité élève/parent du devoir : ".formate_date($lig_old->date_ele_resp)." -> ".formate_date($date)."\n";
+		}
+		$reg = mysql_query("UPDATE cn_devoirs SET date_ele_resp='".$date."' WHERE id = '$id_devoir'");
+		if (!$reg)  $reg_ok = "no";
 		for($i=0;$i<count($tab_group);$i++) {
 			$sql="UPDATE cn_devoirs SET date_ele_resp='".$date."' WHERE id='".$tab_group[$i]['id_devoir']."';";
 			//echo "$sql<br />\n";
 			$reg=mysql_query($sql);
 		}
-    }
+	}
 	//====================================================
 
 	if (isset($_POST['display_parents'])) {
@@ -437,7 +477,9 @@ if (isset($_POST['ok'])) {
 	} else {
 		$display_parents=0;
 	}
-
+	if(($temoin_log=="y")&&($lig_old->display_parents!=$display_parents)) {
+		$chaine_log.=". Modification de la visibilité du devoir pour les parents/élèves : $lig_old->display_parents -> ".$display_parents."\n";
+	}
 	$reg = mysql_query("UPDATE cn_devoirs SET display_parents = '$display_parents' WHERE id = '$id_devoir'");
 	if (!$reg) {$reg_ok = "no";}
 	for($i=0;$i<count($tab_group);$i++) {
@@ -456,7 +498,9 @@ if (isset($_POST['ok'])) {
 	} else {
 		$display_parents_app=0;
 	}
-
+	if(($temoin_log=="y")&&($lig_old->display_parents_app!=$display_parents_app)) {
+		$chaine_log.=". Modification de la visibilité par les parents/élèves du commentaire saisi : $lig_old->display_parents_app -> ".$display_parents_app."\n";
+	}
 	$reg = mysql_query("UPDATE cn_devoirs SET display_parents_app = '$display_parents_app' WHERE id = '$id_devoir'");
 	if (!$reg) {$reg_ok = "no";}
 	for($i=0;$i<count($tab_group);$i++) {
@@ -464,6 +508,18 @@ if (isset($_POST['ok'])) {
 		//echo "$sql<br />\n";
 		$reg=mysql_query($sql);
 	}
+
+	if ($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) {
+		if($_POST['new_devoir'] == 'yes') {
+			$texte="Ajout du devoir n°$id_devoir : ".$nom_court." (".$nom_complet.") coef $tmp_coef du ".formate_date($date).".\n";
+		}
+		else {
+			$texte="Modification du devoir n°$id_devoir : ".$nom_court." (".$nom_complet.") coef $tmp_coef du ".formate_date($date).".\n";
+			$texte.=$chaine_log;
+		}
+		$retour=log_modifs_acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $periode_num, $texte);
+	}
+
 
     //==========================================================
     // MODIF: boireaus

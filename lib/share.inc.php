@@ -6997,4 +6997,37 @@ function joueSon($sound, $id_son="") {
 	return $retour;
 } 
 
+function acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $num_periode) {
+	$sql="SELECT 1=1 FROM acces_exceptionnel_matieres_notes WHERE id_groupe='$id_groupe' AND periode='$num_periode' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."';";
+	//echo "$sql<br />";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $num_periode, $texte_ajoute) {
+	$sql="SELECT * FROM acces_exceptionnel_matieres_notes WHERE id_groupe='$id_groupe' AND periode='$num_periode';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		// Il n'y a au plus qu'un enregistrement par (id_groupe;periode) dans acces_cn
+		$lig=mysql_fetch_object($res);
+		$texte=$lig->commentaires."\n".$texte_ajoute;
+		$sql="UPDATE acces_exceptionnel_matieres_notes SET commentaires='".mysql_real_escape_string($texte)."' WHERE id='$lig->id';";
+		$update=mysql_query($sql);
+		if($update) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
 ?>

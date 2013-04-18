@@ -769,7 +769,57 @@ function calc_moy_debug($texte){
 	}
 }
 
+/*
+function acces_saisie_cn_groupe_periode($id_groupe, $group, $num_periode, $id_classe="") {
+	if((!is_array($group))&&($id_groupe!="")) {
+		$group=get_group($id_groupe, array('classes', 'periodes', 'eleves'));
+	}
 
+	if(!is_array($group)) {
+		if($id_groupe=="") {
+			return false;
+		}
+		else {
+			
+		}
+	}
+	else {
+	
+	
+	
+	}
+}
+*/
+function acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $num_periode) {
+	$sql="SELECT 1=1 FROM acces_cn WHERE id_groupe='$id_groupe' AND periode='$num_periode' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
+function log_modifs_acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $num_periode, $texte_ajoute) {
+	$sql="SELECT * FROM acces_cn WHERE id_groupe='$id_groupe' AND periode='$num_periode';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		// Il n'y a au plus qu'un enregistrement par (id_groupe;periode) dans acces_cn
+		$lig=mysql_fetch_object($res);
+		$texte=$lig->commentaires."\n".$texte_ajoute;
+		$sql="UPDATE acces_cn SET commentaires='".mysql_real_escape_string($texte)."' WHERE id='$lig->id';";
+		$update=mysql_query($sql);
+		if($update) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
 
 ?>

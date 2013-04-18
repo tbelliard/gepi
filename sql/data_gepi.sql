@@ -1199,3 +1199,5 @@ INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseEleve', val
 INSERT INTO droits SET id='/a_lire.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='V',autre='V',description='A lire...',statut='';
 INSERT INTO droits SET id='/messagerie/admin.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Messagerie : Administration du module',statut='';
 INSERT INTO droits SET id='/lib/form_message.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='F',description='Messagerie',statut='';
+INSERT INTO droits VALUES ( '/cahier_notes/autorisation_exceptionnelle_saisie.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie dans le carnet de notes.', '');
+INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle_saisie_note.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie de notes du bulletin.', '');

@@ -152,4 +152,48 @@ if(getSettingValue('PeutPosterMessageCpe')=="") {
 	}
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'acces_cn' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'acces_cn'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS acces_cn (
+			id INT( 11 ) NOT NULL AUTO_INCREMENT ,
+			id_groupe INT( 11 ) NOT NULL ,
+			periode INT( 11 ) NOT NULL ,
+			date_limite timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			commentaires text NOT NULL,
+			PRIMARY KEY ( id )
+			) CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel au CN en periode close';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'acces_exceptionnel_matieres_notes' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'acces_exceptionnel_matieres_notes'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS acces_exceptionnel_matieres_notes (
+			id INT( 11 ) NOT NULL AUTO_INCREMENT ,
+			id_groupe INT( 11 ) NOT NULL ,
+			periode INT( 11 ) NOT NULL ,
+			date_limite timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			commentaires text NOT NULL,
+			PRIMARY KEY ( id )
+			) CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel à la modif de notes du bulletin en periode close';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

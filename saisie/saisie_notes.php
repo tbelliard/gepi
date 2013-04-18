@@ -77,6 +77,12 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 	check_token();
 
 	$k=$periode_cn;
+
+	$acces_exceptionnel_saisie=false;
+	if($_SESSION['statut']=='professeur') {
+		$acces_exceptionnel_saisie=acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn);
+	}
+
 	//=========================
 	// AJOUT: boireaus 20071010
 	$log_eleve=$_POST['log_eleve_'.$k];
@@ -96,7 +102,13 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 				$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
 				//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N") {
 				if (($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N")||
+					($acces_exceptionnel_saisie)||
 					(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]!="O")&&($_SESSION['statut']=='secours'))) {
+
+					$loguer_modif=false;
+					if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N")) {
+						$loguer_modif=true;
+					}
 
 					$note=$note_eleve[$i];
 
@@ -124,17 +136,85 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 						$note = '';
 						$elev_statut = '';
 					}
+
 					if (($note != '') or ($elev_statut != '')) {
 						$test_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
 						$test = mysql_num_rows($test_eleve_note_query);
 						if ($test != "0") {
+							if($loguer_modif) {
+								// On récupère la note précédente de l'élève
+								$lig_old_note_ele=mysql_fetch_object($test_eleve_note_query);
+
+								if(($lig_old_note_ele->note!=$note)||($lig_old_note_ele->statut!=$elev_statut)) {
+									$texte="Modification de note du bulletin en période $k pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
+									if(($lig_old_note_ele->statut!="")) {
+										$texte.=$lig_old_note_ele->statut." -> ";
+									}
+									else {
+										$texte.=$lig_old_note_ele->note." -> ";
+									}
+									if($elev_statut!="") {
+										if($elev_statut=="v") {
+											$texte.="(vide)";
+										}
+										else {
+											$texte.=$elev_statut;
+										}
+									}
+									else {
+										$texte.=$note;
+									}
+									$texte.=".";
+									$retour=log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn, $texte);
+								}
+							}
+
 							$register = mysql_query("UPDATE matieres_notes SET note='$note',statut='$elev_statut', rang='0' WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
 							$modif[$k] = 'yes';
 						} else {
+
+							if($loguer_modif) {
+								$texte="Saisie de note sur le bulletin en période $k pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
+								if(($elev_statut!="")) {
+									if($elev_statut=="v") {
+										$texte.="(vide)";
+									}
+									else {
+										$texte.=$elev_statut;
+									}
+								}
+								else {
+									$texte.=$note;
+								}
+								$texte.=".\n";
+								$retour=log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn, $texte);
+							}
+
 							$register = mysql_query("INSERT INTO matieres_notes SET login='$reg_eleve_login', id_groupe='" . $current_group["id"] . "',periode='$k',note='$note',statut='$elev_statut', rang='0'");
 							$modif[$k] = 'yes';
 						}
 					} else {
+						if($loguer_modif) {
+							$test_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
+							$test = mysql_num_rows($test_eleve_note_query);
+							if ($test != "0") {
+								$texte="Suppression de note sur le bulletin en période $k pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
+								if(($elev_statut!="")) {
+									if($elev_statut=="v") {
+										$texte.="(vide)";
+									}
+									else {
+										$texte.=$elev_statut;
+									}
+								}
+								else {
+									$texte.=$note;
+								}
+								$texte.=".\n";
+								$retour=log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn, $texte);
+							}
+						}
+
 						$register = mysql_query("DELETE FROM matieres_notes WHERE (login='$reg_eleve_login' and id_groupe='" . $current_group["id"] . "' and periode='$k')");
 						$modif[$k] = 'yes';
 					}
@@ -306,6 +386,17 @@ if ($periode_cn != 0) {
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 
+$acces_exceptionnel_saisie=array();
+$i = 1;
+while ($i < $nb_periode) {
+	$acces_exceptionnel_saisie[$i]=false;
+	$i++;
+}
+	
+if($_SESSION['statut']=='professeur') {
+	$acces_exceptionnel_saisie[$periode_cn]=acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn);
+}
+
 $affiche_bascule = 'no';
 $i = 1;
 /*
@@ -317,6 +408,7 @@ while ($i < $nb_periode) {
 //if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0) {
 //if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2) {
 if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
+	($acces_exceptionnel_saisie[$periode_cn])||
 	(($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0)&&($_SESSION['statut']=='secours'))) {
 	$affiche_bascule = 'yes';
 }
@@ -558,6 +650,7 @@ echo add_token_field();
 	//if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0) {
 	//if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2) {
 	if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
+		($acces_exceptionnel_saisie[$periode_cn])||
 		(($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0)&&($_SESSION['statut']=='secours'))) {
 		echo "<p><input type='submit' value='Enregistrer' /> : Enregistrer les moyennes dans le bulletin</p>\n";
 
@@ -626,6 +719,7 @@ echo add_token_field();
 	$i = 1;
 	while ($i < $nb_periode) {
 		if (($current_group["classe"]["ver_periode"]["all"][$i]>=2)||
+			($acces_exceptionnel_saisie[$i])||
 			(($current_group["classe"]["ver_periode"]["all"][$i]!=0)&&($_SESSION['statut']=='secours'))) {
 			if ($periode_cn == $i) {
 				echo "<td bgcolor=\"$couleur_moy_cn\" style='text-align:center;'>Carnet<br />de notes";
@@ -729,8 +823,9 @@ foreach ($liste_eleves as $eleve_login) {
 			}
 
 			//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N") {
-			if ((($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N")&&($_SESSION['statut']!='secours'))||
-			(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="O")&&($_SESSION['statut']=='secours'))) {
+			if ((!$acces_exceptionnel_saisie[$k])&&
+				((($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N")&&($_SESSION['statut']!='secours'))||
+				(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="O")&&($_SESSION['statut']=='secours')))) {
 			//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "O") {
 				//
 				// si la période est verrouillée pour l'élève
@@ -746,6 +841,7 @@ foreach ($liste_eleves as $eleve_login) {
 				}
 
 				if (($current_group["classe"]["ver_periode"]["all"][$k]>=2)||
+					($acces_exceptionnel_saisie[$k])||
 					(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 					// La période n'est pas complètement verrouillée pour tous.
 
@@ -872,6 +968,7 @@ foreach ($liste_eleves as $eleve_login) {
 			$suit_option[$k] = 'no';
 
 			if (($current_group["classe"]["ver_periode"]["all"][$k]>=2)||
+				($acces_exceptionnel_saisie[$k])||
 				(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 				if ($periode_cn == $k) {
 					$mess[$k]="<td bgcolor=\"$couleur_moy_cn\"><center>-</center></td><td bgcolor=\"$couleur_fond\"><center>-</center></td>\n";
@@ -946,6 +1043,7 @@ $k='1';
 $temp = '';
 while ($k < $nb_periode) {
 	if (($current_group["classe"]["ver_periode"]["all"][$k]>=2)||
+		($acces_exceptionnel_saisie[$k])||
 		(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 
 		$appel_cahier_notes_periode = mysql_query("SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$k')");
@@ -984,7 +1082,7 @@ while ($k < $nb_periode) {
 	}
 
 	if (($is_posted=='bascule') and (($periode_cn == $k) and
-		(($current_group["classe"]["ver_periode"]["all"][$k]>=2)||(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))))) {
+		(($current_group["classe"]["ver_periode"]["all"][$k]>=2)||($acces_exceptionnel_saisie[$k])||(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))))) {
 		echo "<td><center><b>$affiche_moy</b></center></td>\n";
 	} else {
 		$call_moyenne_t[$k] = mysql_query("SELECT round(avg(n.note),1) moyenne FROM matieres_notes n, j_eleves_groupes j " .
@@ -1021,6 +1119,7 @@ while ($k < $nb_periode) {
 
 			// Colonne CN
 			if (($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||
+				($acces_exceptionnel_saisie[$loop])||
 				(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))) {
 				if ($periode_cn == $loop) {
 					echo "<td bgcolor=\"$couleur_moy_cn\"></td>\n";
@@ -1040,7 +1139,7 @@ while ($k < $nb_periode) {
 			// Colonne Bull
 			echo "<td";
 			if (($is_posted=='bascule') and (($periode_cn == $loop) and
-				(($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))))) {
+				(($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||($acces_exceptionnel_saisie[$loop])||(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))))) {
 				echo ">";
 			} else {
 				echo " ".$temp.">";
@@ -1063,6 +1162,7 @@ while ($k < $nb_periode) {
 
 			// Colonne CN
 			if (($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||
+				($acces_exceptionnel_saisie[$loop])||
 				(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))) {
 				if ($periode_cn == $loop) {
 					echo "<td bgcolor=\"$couleur_moy_cn\"></td>\n";
@@ -1082,7 +1182,7 @@ while ($k < $nb_periode) {
 			// Colonne Bull
 			echo "<td";
 			if (($is_posted=='bascule') and (($periode_cn == $loop) and
-				(($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))))) {
+				(($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||($acces_exceptionnel_saisie[$loop])||(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))))) {
 				echo ">";
 			} else {
 				echo " ".$temp.">";
@@ -1104,6 +1204,7 @@ while ($k < $nb_periode) {
 
 			// Colonne CN
 			if (($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||
+				($acces_exceptionnel_saisie[$loop])||
 				(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))) {
 				if ($periode_cn == $loop) {
 					echo "<td bgcolor=\"$couleur_moy_cn\"></td>\n";
@@ -1123,7 +1224,7 @@ while ($k < $nb_periode) {
 			// Colonne Bull
 			echo "<td";
 			if (($is_posted=='bascule') and (($periode_cn == $loop) and
-				(($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))))) {
+				(($current_group["classe"]["ver_periode"]["all"][$loop]>=2)||($acces_exceptionnel_saisie[$loop])||(($current_group["classe"]["ver_periode"]["all"][$loop]!=0)&&($_SESSION['statut']=='secours'))))) {
 				echo ">";
 			} else {
 				echo " ".$temp.">";
@@ -1179,6 +1280,7 @@ if ($is_posted == 'bascule') {
 if (isset($retour_cn)) echo "<input type=\"hidden\" name=\"retour_cn\" value=\"".$retour_cn."\" />\n";
 
 if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
+($acces_exceptionnel_saisie[$periode_cn])||
 (($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0)&&($_SESSION['statut']=='secours'))
 ) {
 
