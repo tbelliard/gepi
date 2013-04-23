@@ -170,7 +170,7 @@ if (isset($_POST['ok'])) {
 
     if (isset($_POST['coef'])) {
     	$tmp_coef=$_POST['coef'];
-		if((preg_match("/^[0-9]*$/", $coef))||(preg_match("/^[0-9]*\.[0-9]$/", $tmp_coef))) {
+		if((preg_match("/^[0-9]*$/", $tmp_coef))||(preg_match("/^[0-9]*\.[0-9]$/", $tmp_coef))) {
 			// Le coef a le bon format
 			//$msg.="Le coefficient proposé $tmp_coef est valide.<br />";
 		}
