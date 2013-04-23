@@ -284,17 +284,25 @@ else {
 							$id_cahier_notes_dest=$lig_ccn_dest->id_cahier_notes;
 						}
 						else {
-							// Création d'un cahier de notes
+							// Création d'un cahier de notes 
 							$sql="INSERT INTO cn_conteneurs SET id_racine='', nom_court='".mysql_real_escape_string($current_group_dest["description"])."', nom_complet='". mysql_real_escape_string($current_group_dest["matiere"]["nom_complet"])."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'";
 							$creation_cnc=mysql_query($sql);
 							if($creation_cnc) {
 								$id_cahier_notes_dest=mysql_insert_id();
 
-								$sql="INSERT INTO cn_cahier_notes SET id_cahier_notes='$id_cahier_notes_dest', id_groupe='$id_groupe_dest[$i]', periode='$lig_ccn_src->periode';";
-								$creation_ccn=mysql_query($sql);
-								if(!$creation_ccn) {
+								$sql="UPDATE cn_conteneurs SET id_racine='$id_cahier_notes_dest', parent = '0' WHERE id='$id_cahier_notes_dest';";
+								$update_cn = mysql_query($sql);
+								if(!$update_cn) {
 									echo "<span style='color:red'>Erreur en créant le cahier de notes destination en période $lig_ccn_src->periode.</span><br />\n";
 									unset($id_cahier_notes_dest);
+								}
+								else {
+									$sql="INSERT INTO cn_cahier_notes SET id_cahier_notes='$id_cahier_notes_dest', id_groupe='$id_groupe_dest[$i]', periode='$lig_ccn_src->periode';";
+									$creation_ccn=mysql_query($sql);
+									if(!$creation_ccn) {
+										echo "<span style='color:red'>Erreur en créant le cahier de notes destination en période $lig_ccn_src->periode.</span><br />\n";
+										unset($id_cahier_notes_dest);
+									}
 								}
 							}
 							else {
