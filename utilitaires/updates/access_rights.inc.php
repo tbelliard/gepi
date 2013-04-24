@@ -991,6 +991,8 @@ $tab_req[]="INSERT INTO droits VALUES ( '/cahier_notes/autorisation_exceptionnel
 
 $tab_req[]="INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle_saisie_note.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie de notes du bulletin.', '');";
 
+$tab_req[]="INSERT INTO droits VALUES ('/cahier_notes/copie_dev.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

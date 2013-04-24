@@ -473,6 +473,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
     echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a> | \n";
 
 
+//if(isset($current_group)) { echo "DEBUG 1 : ".$current_group['classlist_string']."<br />";}
 
 if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	if($_SESSION['statut']=='professeur') {
@@ -485,6 +486,8 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	}
 
 	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+
+	//if(isset($current_group)) { echo "DEBUG 2 : ".$current_group['classlist_string']."<br />";}
 
 	if(!empty($tab_groups)) {
 
@@ -573,6 +576,8 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	// =================================
 }
 
+//if(isset($current_group)) { echo "DEBUG 3 : ".$current_group['classlist_string']."<br />";}
+
     echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> Choisir une autre période</a> | \n";
 
 	// Recuperer la liste des cahiers de notes
@@ -650,6 +655,8 @@ var tab_per_cn=new Array();\n";
 	}
 	*/
 
+	//if(isset($current_group)) { echo "DEBUG 4 : ".$current_group['classlist_string']."<br />";}
+
 	//==================================
 	// AJOUT: boireaus EXPORT...
     echo "<a href='export_cahier_notes.php?id_racine=".$id_racine."' title=\"Exporter les notes au format tableur\">Exporter les notes</a> | \n";
@@ -681,6 +688,8 @@ var tab_per_cn=new Array();\n";
     echo "</p>\n";
 	echo "</form>\n";
 	echo "</div>\n";
+
+	//if(isset($current_group)) { echo "DEBUG 5 : ".$current_group['classlist_string']."<br />";}
 
     echo "<h2 class='gepi'>Carnet de notes : ". htmlspecialchars($current_group["description"]) . " ($nom_periode[$periode_num])</h2>\n";
     echo "<p class='bold'> Classe(s) : " . $current_group["classlist_string"] . " | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "(" . htmlspecialchars($current_group["matiere"]["matiere"]) . ")";

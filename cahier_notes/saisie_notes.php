@@ -1484,7 +1484,11 @@ while ($i < $nb_dev) {
 		}
 		echo "coef : ".number_format($coef[$i],1, ',', ' ');
 		if (($facultatif[$i] == 'B') or ($facultatif[$i] == 'N')) {echo "<br />Bonus";}
-		echo "</center></td>\n";
+		echo "</center>";
+
+		echo "<div style='float:right; width:16px;'><a href='copie_dev.php?id_devoir=".$id_dev[$i]."' onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"Copier le devoir et les notes vers une autre période ou un autre enseignement (Les notes ne sont copiées que si les élèves sont les mêmes).\"><img src='../images/icons/copy-16.png' width='16' height='16' /></a></div>";
+
+		echo"</td>\n";
 		if ($id_dev[$i] == $id_devoir) {
 			echo "<td class='cn' valign='top'>&nbsp;</td>\n";
 			$data_pdf[0][] = "";

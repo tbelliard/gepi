@@ -1201,3 +1201,4 @@ INSERT INTO droits SET id='/messagerie/admin.php',administrateur='V',professeur=
 INSERT INTO droits SET id='/lib/form_message.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='F',description='Messagerie',statut='';
 INSERT INTO droits VALUES ( '/cahier_notes/autorisation_exceptionnelle_saisie.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie dans le carnet de notes.', '');
 INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle_saisie_note.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie de notes du bulletin.', '');
+INSERT INTO droits VALUES ('/cahier_notes/copie_dev.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');
