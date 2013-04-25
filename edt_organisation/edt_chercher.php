@@ -161,6 +161,7 @@ echo '
 	// choix de l'horaire
 
 	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux ORDER BY heuredebut_definie_periode");
+	$nb_heure=mysql_num_rows($req_heure);
 	$rep_heure = mysql_fetch_array($req_heure);
 
 echo '
@@ -173,7 +174,8 @@ echo '
 
 	$tab_select_heure = array();
 
-	for($b=0;$b<count($rep_heure);$b++) {
+	//for($b=0;$b<count($rep_heure);$b++) {
+	for($b=0;$b<$nb_heure;$b++) {
 		$tab_select_heure[$b]["id_heure"] = mysql_result($req_heure, $b, "id_definie_periode");
 		$tab_select_heure[$b]["creneaux"] = mysql_result($req_heure, $b, "nom_definie_periode");
 		$tab_select_heure[$b]["heure_debut"] = mysql_result($req_heure, $b, "heuredebut_definie_periode");
