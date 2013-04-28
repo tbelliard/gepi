@@ -115,7 +115,7 @@ if(isset($_GET['export_csv'])) {
 					$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig_resp->adr_id."';";
 					//echo "$sql<br />";
 					$res_adr=mysql_query($sql);
-					if(mysql_num_rows($res_adr)>1) {
+					if(mysql_num_rows($res_adr)==1) {
 						$adresse="";
 						$lig_adr=mysql_fetch_object($res_adr);
 						$adresse.=$lig_adr->adr1;
@@ -138,6 +138,7 @@ if(isset($_GET['export_csv'])) {
 							$adresse.=" ";
 						}
 
+						if(trim($adresse)!="") {$adresse=trim($adresse).", ";}
 						$adresse.=$lig_adr->cp." ".$lig_adr->commune;
 
 						$csv.=$adresse.";";
@@ -309,10 +310,10 @@ if(isset($_GET['export_csv'])) {
 					}
 
 					if(isset($resp[2]['nom'])) {
-						$csv.=$resp[2]['nom'].";".$resp[2]['prenom'].";".$resp[2]['tel_pers'].";".$resp[2]['tel_prof'].";".$resp[2]['tel_port'].";".$resp[2]['mel'].";";
+						$csv.=$resp[2]['nom'].";".$resp[2]['prenom'].";".$resp[2]['tel_pers'].";".$resp[2]['tel_prof'].";".$resp[2]['tel_port'].";".$resp[2]['mel'];
 					}
 					else {
-						$csv.=";;;;;;";
+						$csv.=";;;;;";
 					}
 					for($loop=0;$loop<count($tab_ele);$loop++) {
 						$csv.=";".$tab_ele[$loop];
