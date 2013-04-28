@@ -311,7 +311,7 @@ if(mysql_num_rows($quels_eleves)==0){
 }
 echo " | <a href='impression_bienvenue.php?mode=eleve'>Fiches bienvenue</a>";
 
-echo " | <a href='import_prof_csv.php?export_statut=eleve'>Export CSV</a>";
+echo " | <a href='import_prof_csv.php?export_statut=eleve' title=\"Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL\">Export CSV</a> <a href='import_prof_csv.php?export_statut=eleve&amp;sans_entete=y'><img src='../images/disabled.png' width='20' height='20' title='Export CSV sans entête' alt='CSV sans entête'></a>";
 
 echo " | <a href='edit_responsable.php'>Comptes responsables</a>";
 
