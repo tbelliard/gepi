@@ -2193,19 +2193,38 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 	$tab_ele=array();
 	if(mysql_num_rows($res_ele)>0){
 		while($lig_tmp=mysql_fetch_object($res_ele)){
-			$tab_ele[]=$lig_tmp->login;
-			if($mode=='avec_classe') {
-				$tmp_chaine_classes="";
+			if($mode=='csv') {
+				$tab_ele[]=$lig_tmp->login;
 
+				$tmp_chaine_classes="";
+				$tmp_chaine_classes2="";
 				$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
 				if(isset($tmp_tab_clas['liste'])) {
 					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+					$tmp_chaine_classes2=$tmp_tab_clas['liste'];
 				}
 
-				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+				$chaine_prenom_nom=casse_mot($lig_tmp->prenom, 'majf2')." ".casse_mot($lig_tmp->nom, 'maj');
+				$tab_ele[]=$chaine_prenom_nom.$tmp_chaine_classes.";".
+							$lig_tmp->login.";".
+							$chaine_prenom_nom.";".
+							$tmp_chaine_classes2;
 			}
 			else {
-				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
+				$tab_ele[]=$lig_tmp->login;
+				if($mode=='avec_classe') {
+					$tmp_chaine_classes="";
+
+					$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+					if(isset($tmp_tab_clas['liste'])) {
+						$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+					}
+
+					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+				}
+				else {
+					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
+				}
 			}
 		}
 	}
