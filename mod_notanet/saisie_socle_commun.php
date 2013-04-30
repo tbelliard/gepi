@@ -231,6 +231,14 @@ require_once("../lib/header.inc.php");
 
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 
+if((isset($_POST['temoin_suhosin_1']))&&(!isset($_POST['temoin_suhosin_2']))) {
+	echo "<p style='color:red; font-weight:bold; text-align:center;'>Il semble que certaines variables n'ont pas été transmises.<br />Cela peut arriver lorsqu'on tente de transmettre trop de variables.<br />Vous devriez opter pour un autre mode d'extraction.</p>\n";
+	echo "<div style='margin-left:3em; background-image: url(\"../images/background/opacite50.png\");'>";
+	echo alerte_config_suhosin();
+	echo "</div>\n";
+	echo "<p><br /></p>\n";
+}
+
 ?>
 <script type="text/javascript" language="javascript">
 change = 'no';
@@ -353,7 +361,9 @@ else {
 	
 		echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 		echo add_token_field();
-	
+
+		echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
+
 		$tabdiv_infobulle[]=creer_div_infobulle('MS',"","","<center>Socle ou compétence validée</center>","",10,0,'y','y','n','n');
 		$tabdiv_infobulle[]=creer_div_infobulle('ME',"","","<center>Socle ou compétence non validée</center>","",12,0,'y','y','n','n');
 		$tabdiv_infobulle[]=creer_div_infobulle('MN',"","","<center>Socle ou compétence non évaluée</center>","",10,0,'y','y','n','n');
@@ -490,6 +500,8 @@ else {
 
 		echo "<input type='hidden' name='is_posted' value='y' />\n";
 		//echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+
+		echo "<input type='hidden' name='temoin_suhosin_2' value='y' />\n";
 		echo "</form>\n";
 
 	}

@@ -154,8 +154,16 @@ if($_SESSION['statut']=='professeur'){
 		// On ne va accéder à l'accueil.php classique
 	}
 	else {
-		if($accueil_simpl=="y"){
-			header("Location: ./accueil_simpl_prof.php");
+		if($accueil_simpl=="y") {
+			$msg=isset($_POST['msg']) ? $_POST['msg'] : (isset($_GET['msg']) ? $_GET['msg'] : NULL);
+
+			if(isset($msg)) {
+				header("Location: ./accueil_simpl_prof.php?msg=$msg");
+			}
+			else {
+				header("Location: ./accueil_simpl_prof.php");
+			}
+			die();
 		}
 	}
 }

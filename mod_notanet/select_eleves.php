@@ -217,9 +217,14 @@ if (!isset($type_brevet)) {
 	echo "</div>\n";
 	echo "<h3>Choix du type de brevet</h3>\n";
 
-	echo "<p>Choisissez un type de brevet:<br />\n";
+	echo "<p>Choisissez un type de brevet&nbsp;: Série<br />\n";
+	/*
 	for($i=0;$i<count($tab_type_brevet);$i++){
 		echo "<a href='".$_SERVER['PHP_SELF']."?type_brevet=$i'>$tab_type_brevet[$i]</a><br />\n";
+	}
+	*/
+	foreach($tab_type_brevet as $key => $value){
+		echo "<a href='".$_SERVER['PHP_SELF']."?type_brevet=$key'>$tab_type_brevet[$key]</a><br />\n";
 	}
 	echo "</p>\n";
 }
@@ -232,7 +237,7 @@ else {
 		echo "</p>\n";
 		echo "</div>\n";
 
-		echo "<h3>Choix des classes pour le brevet $tab_type_brevet[$type_brevet]</h3>\n";
+		echo "<h3>Choix des classes pour le brevet série $tab_type_brevet[$type_brevet]</h3>\n";
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
 
