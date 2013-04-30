@@ -152,7 +152,7 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $fich[]="fb_PRO.ods";
     //$utilisation[]="Fiche brevet série professionnelle sans ODP";
     $utilisation[]="Fiche brevet série professionnelle";
-	$special[]="obsolete";
+	$special[]="";
 
     $lien_wiki[]='';
 	$entete_section[]="";
