@@ -223,7 +223,9 @@ unset($tab_mat);
 $sql="SELECT DISTINCT type_brevet FROM notanet_corresp ORDER BY type_brevet;";
 $res1=mysql_query($sql);
 while($lig1=mysql_fetch_object($res1)) {
-	$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet';";
+	//$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet';";
+	// Le ORDER BY id_mat, id permet de tenir compte de l'ordre des options ajoutées dans select_matieres (pas moyen autrement de faire passer les LV2 après les LV1 (dans le brevet pro, c'est mélangé...))
+	$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet' ORDER BY id_mat, id;";
 	//echo "$sql<br />";
 	$res2=mysql_query($sql);
 
