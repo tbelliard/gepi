@@ -145,6 +145,7 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
 	$entete_section[]="";
     $fich[]="fb_CLG_dp6.ods";
     $utilisation[]="Fiche brevet série collège ODP 6 heures";
+	$special[]="obsolete";
 
     $lien_wiki[]='';
 	$entete_section[]="";
