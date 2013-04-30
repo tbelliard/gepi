@@ -535,14 +535,21 @@ foreach($eleve_col as $eleve) {
 	// 20130416
 	$chaine_tr_veille_et_creneaux_precedents[$eleve->getLogin()].="<th>Veille</th>";
 	if ($abs_hier) {
+		$couleur_veille="";
 		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="<td title=\"";
 		if($afficheEleve[$elv]['text_hier']!="") {
 			$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="Absence ou retard traité. ";
+			$couleur_veille="green";
 		}
 		if($afficheEleve[$elv]['class_hier']!="") {
 			$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="Absence ou retard justifié. ";
+			$couleur_veille="green";
 		}
-		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="\">";
+		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="\"";
+		if($couleur_veille!="") {
+			$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].=" style=\"background-color:$couleur_veille\"";
+		}
+		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].=">";
 		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].=$afficheEleve[$elv]['text_hier'];
 		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="</td>";
 		$temoin_saisie_veille_et_creneaux_precedents[$eleve->getLogin()]="y";
