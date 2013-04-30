@@ -5,23 +5,39 @@ $Id$
  */
 
 $tab_type_brevet=array();
-$tab_type_brevet[0]="COLLEGE, option de série LV2";
-$tab_type_brevet[1]="COLLEGE, option de série DP6";
+
+//$tab_type_brevet[0]="COLLEGE, option de série LV2";
+//$tab_type_brevet[1]="COLLEGE, option de série DP6";
+
+// Y a-t-il des options de série? Le document sur Orion ne les mentionne pas.
+$tab_type_brevet[0]="GENERALE";
+
 //$tab_type_brevet[2]="COLLEGE, option de série TECHNOLOGIE traditionnelle";
 //$tab_type_brevet[3]="COLLEGE, option de série TECHNOLOGIE DP6";
+/*
 $tab_type_brevet[2]="PROFESSIONNELLE, sans option de série";
 $tab_type_brevet[3]="PROFESSIONNELLE, option de série DP6";
-$tab_type_brevet[4]="PROFESSIONNELLE, option de série AGRICOLE";
+*/
+$tab_type_brevet[2]="PROFESSIONNELLE";
+
+$tab_type_brevet[4]="PROFESSIONNELLE, option AGRICOLE";
+
+/*
+// Séries technologiques supprimées dans le brevet 2013
 //$tab_type_brevet[4]="TECHNOLOGIQUE, sans option de série";
 //$tab_type_brevet[5]="TECHNOLOGIQUE, option de série AGRICOLE";
 $tab_type_brevet[5]="TECHNOLOGIQUE, sans option de série";
 $tab_type_brevet[6]="TECHNOLOGIQUE, option de série DP6";
 $tab_type_brevet[7]="TECHNOLOGIQUE, option de série AGRICOLE";
+*/
 
 // Indice max des matières
 $indice_max_matieres=130;
 
 $indice_premiere_matiere=5;
+
+// 20130429
+$indice_brevet_pro_lv=103;
 
 // *****************
 // A FAIRE:
@@ -165,7 +181,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[114][-3]='MS ME MN AB';
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
-			$tabmatieres[130][-3]='AB VA NV'; // 20100425
+			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
 
 
 			// Colonnes pour les fiches brevet:
@@ -309,7 +325,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV'; // 20100425
+			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
 
 			// Colonnes pour les fiches brevet:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -510,17 +526,21 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[101][0]='FRANÇAIS';
 			$tabmatieres[102][0]='MATHÉMATIQUES';
-			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE OU ';
+
+			//$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE OU ';
+			$tabmatieres[103][0]='LANGUES VIVANTES';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			//$tabmatieres[103][0]='LANGUE VIVANTE';
 			//$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE OU SCIENCES PHYSIQUES';
-			$tabmatieres[104][0]='SCIENCES PHYSIQUES';
+
+			//$tabmatieres[104][0]='SCIENCES PHYSIQUES';
 			//$tabmatieres[104][0]='';
 			//$tabmatieres[105][0]='VIE SOCIALE ET PROFESSIONNELLE';
 			$tabmatieres[105][0]='PREVENTION SANTE ENVIRONNEMENT'; //20100425
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
 			$tabmatieres[107][0]='EDUCATION ARTISTIQUE';
-			$tabmatieres[108][0]='TECHNOLOGIE';
+			$tabmatieres[108][0]='SCIENCES ET TECHNOLOGIE';
+			$tabmatieres[110][0]='DECOUVERTE PROFESSIONNELLE';
 			$tabmatieres[112][0]='VIE SCOLAIRE';
 
 			//$tabmatieres[114][0]='SOCLE B2I';
@@ -560,7 +580,8 @@ function tabmatieres($type_brevet){
 
 			//$tabmatieres[5][-2]=2;
 
-			$tabmatieres[108][-2]=3;
+			$tabmatieres[108][-2]=2;
+			$tabmatieres[110][-2]=3;
 			$tabmatieres[121][-2]=0;
 
 			// Notes spéciales autorisées:
@@ -577,11 +598,12 @@ function tabmatieres($type_brevet){
 			$tabmatieres[106][-3]='AB DI';
 			$tabmatieres[107][-3]='AB DI';
 			$tabmatieres[108][-3]='AB DI';
+			$tabmatieres[110][-3]='AB DI';
 
 			//$tabmatieres[114][-3]='MS ME MN AB';
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
-			$tabmatieres[130][-3]='AB VA NV'; // 20100425
+			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
 
 
 			// Colonnes pour les fiches brevet:
@@ -730,7 +752,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV'; // 20100512
+			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
 
 			// Colonnes pour les fiches brevet:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -794,15 +816,16 @@ function tabmatieres($type_brevet){
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='';
-			//$tabmatieres[105][0]='PREVENTION SANTE ENVIRONNEMENT';
-			$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
+			$tabmatieres[105][0]='PREVENTION SANTE ENVIRONNEMENT';
+			//$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
 			$tabmatieres[107][0]='EDUCATION SOCIO-CULTURELLE';
 			// CES TROIS Là DEVRAIENT ETRE SUR UNE MEME LIGNE POUR LES FICHES BREVET
 			//$tabmatieres[108][0]='TECHNOLOGIE';
 			//$tabmatieres[109][0]='SCIENCES BIOLOGIQUES';
 			//$tabmatieres[110][0]='SCIENCES PHYSIQUES';
-			$tabmatieres[109][0]='TECHNOLOGIE: SCIENCES BILOGIQUES ET SCIENCES PHYSIQUES';
+			//$tabmatieres[109][0]='TECHNOLOGIE: SCIENCES BILOGIQUES ET SCIENCES PHYSIQUES';
+			$tabmatieres[109][0]='TECHNOLOGIE, SCIENCES ET DECOUVERTE DE LA VIE PROFESSIONNELLE ET DES METIERS';
 
 			$tabmatieres[112][0]='VIE SCOLAIRE';
 			$tabmatieres[113][0]='';
@@ -865,7 +888,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV'; // 20100425
+			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
 
 
 			$tabmatieres["num_fb_col"]=1;
@@ -1008,7 +1031,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV'; // 20100425
+			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
 
 			// Colonnes pour les fiches brevet:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -1133,7 +1156,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV'; // 20100512
+			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
 
 
 			// Colonnes pour les fiches brevet:
@@ -1254,7 +1277,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV'; // 20100512
+			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
 
 			// Colonnes pour les fiches brevet:
 			// Il n'y a qu'une seule colonne pour les fiches brevet en agricole
@@ -1331,6 +1354,8 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	global $indice_max_matieres;
 	global $indice_premiere_matiere;
 	global $compteur_champs_notes;
+	// 20130429
+	global $indice_brevet_pro_lv;
 
 	$affiche_enregistrements_precedents="y";
 	//global $affiche_enregistrements_precedents;
@@ -1405,9 +1430,69 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	}
 	echo "</tr>\n";
 
+	// 20130429
+	$temoin_brevet_pro_lv=0;
+	$total_brevet_pro_lv=0;
+	$liste_matiere_brevet_pro_lv="";
+	$chaine_total_brevet_pro_lv="";
+
+	$type_brevet_ele="";
+	$sql="SELECT type_brevet FROM notanet_ele_type WHERE login='".$tab_ele['login']."';";
+	//echo "$sql<br />";
+	$res_ele_type=mysql_query($sql);
+	if(mysql_num_rows($res_ele_type)>0) {
+		$type_brevet_ele=mysql_result($res_ele_type, 0, "type_brevet");
+	}
+	//echo "<tr></td>\$type_brevet_ele=$type_brevet_ele</td></tr>";
+
 	$alt=1;
 	for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 
+		//=================================================================
+		// 20130429
+		if(($type_brevet_ele==2)&&($j>$indice_brevet_pro_lv)&&($temoin_brevet_pro_lv>0)&&(!isset($ligne_lv_affichee))) {
+			echo "<tr style='background-color:lightpink;' title=\"Dans le cas du brevet série professionnelle, c'est la moyenne des notes de langue vivante, qu'il faut prendre en compte.\">
+				<td>$indice_brevet_pro_lv</td>
+				<td>LV</td>
+				<td><input type='text' name='liste_matiere_brevet_pro_lv[$num_eleve]' size='7' value='$liste_matiere_brevet_pro_lv' /></td>";
+			$sql="SELECT DISTINCT num_periode, verouiller FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
+			//echo "<td>$sql</td>";
+			$resultat_periodes=mysql_query($sql);
+			echo "
+				<td colspan='".mysql_num_rows($resultat_periodes)."'>($chaine_total_brevet_pro_lv)/$temoin_brevet_pro_lv</td>";
+
+			$k="0";
+			echo "
+				<td>".($total_brevet_pro_lv/$temoin_brevet_pro_lv)."</td>
+				<td><input type='text' name='moy_$indice_brevet_pro_lv"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='".$moy_NOTANET[$indice_brevet_pro_lv]."' size='6' onKeyDown=\"clavier(this.id,event);\" onchange='changement()' autocomplete=\"off\" onfocus=\"javascript:this.select()\" /></td>";
+
+			if($affiche_enregistrements_precedents=="y") {
+				echo "<td>\n";
+				$sql="SELECT note FROM notanet WHERE login='".$tab_ele['login']."' AND matiere='".$liste_matiere_brevet_pro_lv."' AND notanet_mat='".$tabmatieres[$j][0]."' AND id_mat='$indice_brevet_pro_lv';";
+				$enr=mysql_query($sql);
+				if(mysql_num_rows($enr)>0) {
+					$lig_enr=mysql_fetch_object($enr);
+
+					if($moy_NOTANET[$indice_brevet_pro_lv]!=$lig_enr->note) {
+						echo "<a href=\"#tableau_des_moyennes_eleve_$num_eleve\" onclick=\"document.getElementById('n".$compteur_champs_notes."').value='$lig_enr->note'; return false;\"><img src='../images/icons/back.png' width='16' height='16' alt='Rétablir la valeur enregistrée' /></a>";
+						echo "&nbsp;";
+					}
+
+					echo "<span id='note_precedemment_enregistree_$compteur_champs_notes'>".$lig_enr->note."</span>";
+				}
+				else {
+					echo "&nbsp;";
+				}
+				echo "</td>\n";
+			}
+
+
+			echo "
+			</tr>\n";
+			$ligne_lv_affichee="y";
+			$compteur_champs_notes++;
+		}
+		//=================================================================
 
 		// Initialisation de la moyenne pour la matière NOTANET courante.
 		$moy_NOTANET[$j]="";
@@ -1434,7 +1519,13 @@ function tab_extract_moy($tab_ele,$id_clas) {
 				//echo "<p><b>".$tabmatieres[$j][0]."</b><br />\n";
 				for($k=0;$k<count($id_matiere[$j]);$k++){
 					$alt=$alt*(-1);
-					echo "<tr class='lig$alt'>\n";
+					if((($type_brevet_ele==2)&&($j!=$indice_brevet_pro_lv))||
+					($type_brevet_ele!=2)) {
+						echo "<tr class='lig$alt'>\n";
+					}
+					else {
+						echo "<tr style='background-color:lightblue;' title=\"Dans le cas du brevet série professionnelle, c'est la moyenne des notes de langue vivante, qu'il faut prendre en compte.\">\n";
+					}
 					//echo $id_matiere[$j][$k]."<br />\n";
 					// A FAIRE: REQUETE moyenne pour la matière... si non vide... (test si note!="-" aussi?)
 
@@ -1491,27 +1582,52 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						//echo "<!-- mysql_num_rows(\$resultat_notes)=".mysql_num_rows($resultat_notes)." -->\n";
 						if(mysql_num_rows($resultat_notes)>0){
 							if(mysql_num_rows($resultat_notes)>1){
-								//$infos="Erreur? Il y a plusieurs notes/moyennes pour une même période! ";
-								$infos="<p>Erreur? Il y a plusieurs notes/moyennes pour une même période! <br />";
 
-								//$infos.="<br />$sql<br />";
 
-								$temoin_notanet_eleve="ERREUR";
-								if($info_erreur==""){
-									$info_erreur="Plusieurs notes/moyennes pour une même période.";
+								// 20130429 : A VOIR : Dans le cas brevet professionnel, pour les langues vivantes, si on a 2, c'est bon, mais il faudrait faire la moyenne.
+								//            Et comment stocker la liste des matières pour la fiche brevet? Refaire une extraction des listes de matières dans fiches_brevet.php ou stocker dans une table? Ou ajouter un champ dans la table notanet... ou notanet.matiere="AGL1|ESP2" et exploser suivant | dans fiches_brevet.php
 
-									$info_erreur.="<br />Dans ce cas, la moyenne est la somme des moyennes affichées divisée par le nombre de moyennes.<br />La valeur est correcte, s'il y a le même nombre de moyennes sur chaque trimestre et si on donne le même poids aux différentes moyennes.<br />";
+								// 20130429
+								/*
+								if((($type_brevet_ele==2)&&($j!=$indice_brevet_pro_lv))||
+								($type_brevet_ele!=2)) {
+								*/
+									//$infos="Erreur? Il y a plusieurs notes/moyennes pour une même période! ";
+									$infos="<p>Erreur? Il y a plusieurs notes/moyennes pour une même période!<br />";
+
+									//$infos.="<br />$sql<br />";
+
+									$temoin_notanet_eleve="ERREUR";
+									if($info_erreur==""){
+										$info_erreur="Plusieurs notes/moyennes pour une même période.";
+
+										$info_erreur.="<br />Dans ce cas, la moyenne est la somme des moyennes affichées divisée par le nombre de moyennes.<br />La valeur est correcte, s'il y a le même nombre de moyennes sur chaque trimestre et si on donne le même poids aux différentes moyennes.<br />";
+
+									}
+									else{
+										$info_erreur=$info_erreur." - Plusieurs notes/moyennes pour une même période.";
+									}
+									$chaine_couleur=" bgcolor='red'";
+								/*
+								}
+								// 20130429
+								elseif(($type_brevet_ele==2)&&($j==$indice_brevet_pro_lv)) {
+
+									$chaine_couleur=" bgcolor=' lightpink'";
 
 								}
-								else{
-									$info_erreur=$info_erreur." - Plusieurs notes/moyennes pour une même période.";
+								else {
+									// On ne passe jamais ici, il me semble...
+									$infos="";
+									$chaine_couleur="";
 								}
-								$chaine_couleur=" bgcolor='red'";
+								*/
 							}
-							else{
+							else {
 								$infos="";
 								$chaine_couleur="";
 							}
+
 							// Il ne devrait y avoir qu'une seule valeur:
 							echo "<td$chaine_couleur style='text-align: center;'>\n";
 							//echo "<!-- ... -->\n";
@@ -1582,9 +1698,10 @@ function tab_extract_moy($tab_ele,$id_clas) {
 
 						}
 					}
+
 					// Initialisation
 					$moyenne_arrondie="";
-					if($nbnotes>0){
+					if($nbnotes>0) {
 						$cpt++;
 						$liste_matieres_gepi.=" ".$id_matiere[$j][$k];
 						$moyenne=round($total/$nbnotes,1);
@@ -1628,13 +1745,32 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						$moyenne_arrondie=ceil($moyenne*2)/2;
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='".$moyenne_arrondie."' size='6' /></td>\n";
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='".$moyenne_arrondie."' size='6' />";
-						echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='".$moyenne_arrondie."' size='6' onKeyDown=\"clavier(this.id,event);\" onchange='changement()' autocomplete=\"off\" onfocus=\"javascript:this.select()\" />";
-						//$compteur_champs_notes++;
-						//echo "<input type='hidden' name='matiere_".$j."_[$num_eleve]' value='".$id_matiere[$j][$k]."' size='6' />";
-						echo "</td>\n";
 
-						//$moy_NOTANET[$j]="$moyenne";
-						$moy_NOTANET[$j]="$moyenne_arrondie";
+						// 20130429
+						if((($type_brevet_ele==2)&&($j!=$indice_brevet_pro_lv))||
+						($type_brevet_ele!=2)) {
+							echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='".$moyenne_arrondie."' size='6' onKeyDown=\"clavier(this.id,event);\" onchange='changement()' autocomplete=\"off\" onfocus=\"javascript:this.select()\" />";
+							//$compteur_champs_notes++;
+							//echo "<input type='hidden' name='matiere_".$j."_[$num_eleve]' value='".$id_matiere[$j][$k]."' size='6' />";
+							echo "</td>\n";
+
+							//$moy_NOTANET[$j]="$moyenne";
+							$moy_NOTANET[$j]="$moyenne_arrondie";
+						}
+						else {
+							$total_brevet_pro_lv+=$moyenne;
+							$temoin_brevet_pro_lv++;
+							echo "<td></td>\n";
+
+							if($liste_matiere_brevet_pro_lv!="") {$liste_matiere_brevet_pro_lv.="|";}
+							$liste_matiere_brevet_pro_lv.=$id_matiere[$j][$k];
+
+							if($chaine_total_brevet_pro_lv!="") {$chaine_total_brevet_pro_lv.="+";}
+							$chaine_total_brevet_pro_lv.=$moyenne;
+
+							// Au dernier tour dans la matière LV pour le brevet pro, le contenu est correct:
+							$moy_NOTANET[$j]=ceil(($total_brevet_pro_lv/$temoin_brevet_pro_lv)*2)/2;
+						}
 
 					}
 					else{
@@ -1655,7 +1791,15 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						//echo "<td><input type='text' name='moy.$j.$k[$num_eleve]' value='' size='6'></td>\n";
 						//echo "<td><input type='text' name='moy_$j"."_"."$k[$num_eleve]' value='' size='6'></td>\n";
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='' size='6' /></td>\n";
-						echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='' size='6' onKeyDown=\"clavier(this.id,event);\" onchange='changement()' autocomplete=\"off\" onfocus=\"javascript:this.select()\" /></td>\n";
+
+						// 20130429
+						if((($type_brevet_ele==2)&&($j!=$indice_brevet_pro_lv))||
+						($type_brevet_ele!=2)) {
+							echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='' size='6' onKeyDown=\"clavier(this.id,event);\" onchange='changement()' autocomplete=\"off\" onfocus=\"javascript:this.select()\" /></td>\n";
+						}
+						else {
+							echo "<td></td>\n";
+						}
 						//$compteur_champs_notes++;
 						//echo "<td></td>\n";
 					}
@@ -1883,7 +2027,10 @@ function tab_extract_moy($tab_ele,$id_clas) {
 			}
 		}
 
-		if($cpt>1){
+		// 20130429
+		if(((($type_brevet_ele==2)&&($j!=$indice_brevet_pro_lv))||
+		($type_brevet_ele!=2))
+		&&($cpt>1)) {
 			$temoin_notanet_eleve="ERREUR";
 			// Un élève a des notes dans deux options d'un même choix NOTANET (par exemple AGL1 et ALL1)
 			if($info_erreur==""){

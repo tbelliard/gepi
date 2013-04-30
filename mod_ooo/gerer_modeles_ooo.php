@@ -55,113 +55,139 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $lien_wiki[]='';
     $entete_section[]="MODULE DISCIPLINE";
 	$fich[]="retenue.odt";
-    $utilisation[]="Formulaire de retenue";	
+    $utilisation[]="Formulaire de retenue";
+	$special[]="";
 
     //rapport incident
     $lien_wiki[]='';
     $entete_section[]="";
 	$fich[]="rapport_incident.odt";
     $utilisation[]="Formulaire de rapport d'incident";
+	$special[]="";
 
 	//Exclusion temporaire
     $lien_wiki[]='';
     $entete_section[]="";
 	$fich[]="discipline_exclusion.odt";
     $utilisation[]="Exclusion temporaire de l'établissement";
+	$special[]="";
 
     //modèle ABS2
     $lien_wiki[]='';
 	$entete_section[]="MODULE ABSENCE";
     $fich[]="absence_extraction_demi-journees.ods";
     $utilisation[]="ABS2 : Tableau des demi-journées d'absences";
+	$special[]="";
 	
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_extraction_saisies.ods";
     $utilisation[]="ABS2 : Tableau des saisies d'absences";
+	$special[]="";
 	
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_extraction_traitements.ods";
     $utilisation[]="ABS2 : Tableau des traitements d'absences";
+	$special[]="";
     
     $lien_wiki[]='';
     $entete_section[]="";
     $fich[]="absence_taux_absenteisme.ods";
     $utilisation[]="ABS2 : Tableau des taux d'absentéisme";
+	$special[]="";
 
     $lien_wiki[]='';
     $entete_section[]="";
     $fich[]="absence_extraction_bilan.ods";
     $utilisation[]="ABS2 : Tableau bilan par jour par élève au format tableur";
+	$special[]="";
 
     $lien_wiki[]='';
     $entete_section[]="";
     $fich[]="absence_extraction_bilan.odt";
     $utilisation[]="ABS2 : Tableau bilan par jour par élève au format traitement de textes";
+	$special[]="";
 
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_modele_lettre_parents.odt";
     $utilisation[]="ABS2 : Modèle de lettre aux parents";
+	$special[]="";
 	
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_email.txt";
     $utilisation[]="ABS2 : Modèle du courriel envoyé aux parents";
+	$special[]="";
 	
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_sms.txt";
     $utilisation[]="ABS2 : Modèle de SMS envoyé aux parents";
+	$special[]="";
 
 
     //Fiches brevet
     $lien_wiki[]='http://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc#Gabarits-de-fiches-brevets-dautres-acad%C3%A9mies';
 	$entete_section[]="MODULE NOTANET";
+    $fich[]="fb_serie_generale.ods";
+    $utilisation[]="Fiche brevet série générale";
+	$special[]="";
+
+	$entete_section[]="";
     $fich[]="fb_CLG_lv2.ods";
     $utilisation[]="Fiche brevet série collège LV2";
+	$special[]="obsolete";
 	
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_CLG_dp6.ods";
     $utilisation[]="Fiche brevet série collège ODP 6 heures";
+
 	
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_PRO.ods";
-    $utilisation[]="Fiche brevet série professionnelle sans ODP";
-	
-    $lien_wiki[]='';
+    //$utilisation[]="Fiche brevet série professionnelle sans ODP";
+    $utilisation[]="Fiche brevet série professionnelle";
+	$special[]="obsolete";
+
 	$entete_section[]="";
     $fich[]="fb_PRO_dp6.ods";
     $utilisation[]="Fiche brevet série professionnelle ODP 6 heures";
+	$special[]="obsolete";
 	
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_PRO_agri.ods";
     $utilisation[]="Fiche brevet série professionnelle option agricole";
-	
-    $lien_wiki[]='';
+	$special[]="";
+
 	$entete_section[]="";
     $fich[]="fb_TECHNO.ods";
     $utilisation[]="Fiche brevet série technologique sans ODP";
+	$special[]="obsolete";
 	
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_TECHNO_dp6.ods";
     $utilisation[]="Fiche brevet série technologique ODP 6 heures";
+	$special[]="obsolete";
 	
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_TECHNO_agri.ods";
     $utilisation[]="Fiche brevet série technologique option agricole";
+	$special[]="obsolete";
+
 
     //rapport incident
     $lien_wiki[]='';
 	$entete_section[]="MODULE ECTS";
     $fich[]="documents_ects.odt";
     $utilisation[]="Documents ECTS (pour BTS, prépas...)";
+	$special[]="";
 	
 	
     $nbfich=sizeof($fich);
@@ -242,7 +268,12 @@ if (!isset($btn)) { //premier passage : formulaire
 	      echo "</br></br></b></br></br></td>";
 		  echo "</tr>";
 	  }
-	  echo "<tr class='lig$alt'>\n<form name=\"form$i\" method='post' ENCTYPE='multipart/form-data' action='$PHP_SELF' onsubmit=\"return bonfich('$i')\" >\n";
+	  if($special[$i]!='obsolete') {
+		echo "<tr class='lig$alt'>\n<form name=\"form$i\" method='post' ENCTYPE='multipart/form-data' action='$PHP_SELF' onsubmit=\"return bonfich('$i')\" >\n";
+	  }
+	  else {
+		echo "<tr style='background-color:grey;' title=\"Modèle obsolète\">\n<form name=\"form$i\" method='post' ENCTYPE='multipart/form-data' action='$PHP_SELF' onsubmit=\"return bonfich('$i')\" >\n";
+	  }
 	echo add_token_field();
 	  echo "<input type=\"hidden\" name=fich_cible value=$fich[$i] >\n";
 		 $type_ext = renvoi_nom_image(extension_nom_fichier($fich[$i]));

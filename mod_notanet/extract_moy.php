@@ -61,6 +61,14 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+if((isset($_POST['temoin_suhosin_1']))&&(!isset($_POST['temoin_suhosin_2']))) {
+	echo "<p style='color:red; font-weight:bold; text-align:center;'>Il semble que certaines variables n'ont pas été transmises.<br />Cela peut arriver lorsqu'on tente de transmettre trop de variables.<br />Vous devriez opter pour un autre mode d'extraction.</p>\n";
+	echo "<div style='margin-left:3em; background-image: url(\"../images/background/opacite50.png\");'>";
+	echo alerte_config_suhosin();
+	echo "</div>\n";
+	echo "<p><br /></p>\n";
+}
+
 // Bibliothèque pour Notanet et Fiches brevet
 include("lib_brevets.php");
 
@@ -125,7 +133,9 @@ else {
 	$sql="SELECT DISTINCT type_brevet FROM notanet_corresp ORDER BY type_brevet;";
 	$res1=mysql_query($sql);
 	while($lig1=mysql_fetch_object($res1)) {
-		$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet';";
+		//$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet';";
+		// Le ORDER BY id_mat, id permet de tenir compte de l'ordre des options ajoutées dans select_matieres (pas moyen autrement de faire passer les LV2 après les LV1 (dans le brevet pro, c'est mélangé...))
+		$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet' ORDER BY id_mat, id;";
 		//echo "$sql<br />";
 		$res2=mysql_query($sql);
 
@@ -209,6 +219,8 @@ else {
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
 			echo add_token_field();
+
+			echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
 
 			// Boucle élèves:
 			$num_eleve=0;
@@ -295,6 +307,8 @@ else {
 				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post'>\n";
 				echo add_token_field();
 
+				echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
+
 				$max_eff_classe=0;
 
 				// Boucle élèves:
@@ -345,6 +359,8 @@ else {
 				echo "<input type='hidden' name='choix_eleves' value='y' />\n";
 
 				echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
+
+				echo "<input type='hidden' name='temoin_suhosin_2' value='y' />\n";
 				echo "</form>\n";
 
 				echo "<script type='text/javascript'>
@@ -372,6 +388,8 @@ function DecocheColonneSelectEleves(i,j) {
 			else {
 				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
 				echo add_token_field();
+
+				echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
 
 				echo "<input type='hidden' name='choix_eleves' value='y' />\n";
 
@@ -496,6 +514,8 @@ function DecocheColonneSelectEleves(i,j) {
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
 			echo add_token_field();
 
+			echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
+
 			// Boucle élèves:
 			$num_eleve=0;
 			for($i=0;$i<count($id_classe);$i++){
@@ -558,6 +578,7 @@ function DecocheColonneSelectEleves(i,j) {
 		//echo "<input type='submit' name='choix_corrections' value='Valider les corrections' />\n";
 		echo "<input type='submit' name='enregistrer_extract_moy' id='enregistrer_extract_moy' value='Enregistrer' />\n";
 		//echo "<p>Valider les corrections ci-dessus permet de générer un nouveau fichier d'export tenant compte de vos modifications.</p>";
+		echo "<input type='hidden' name='temoin_suhosin_2' value='y' />\n";
 		echo "</form>\n";
 
 		echo "<p><i>NOTES:</i></p>\n";
@@ -660,6 +681,8 @@ function retablir_notes_enregistrees() {
 			}
 		}
 
+		$liste_matiere_brevet_pro_lv=isset($_POST['liste_matiere_brevet_pro_lv']) ? $_POST['liste_matiere_brevet_pro_lv'] : array();
+
 		// Boucle sur la liste des élèves...
 		//for($m=0;$m<count($INE);$m++){
 		for($m=0;$m<$nb_tot_eleves;$m++) {
@@ -713,7 +736,7 @@ function retablir_notes_enregistrees() {
 				else {
 					$lig_type_brevet_eleve=mysql_fetch_object($res_type_brevet_eleve);
 
-					echo "(<i><span style='font-size:x-small;'>".$tab_type_brevet[$lig_type_brevet_eleve->type_brevet]."</span></i>)<br />";
+					echo "(<i><span style='font-size:x-small;'>Série ".$tab_type_brevet[$lig_type_brevet_eleve->type_brevet]."</span></i>)<br />";
 
 					$tabmatieres=tabmatieres($lig_type_brevet_eleve->type_brevet);
 
@@ -751,10 +774,15 @@ function retablir_notes_enregistrees() {
 										if((isset($moy[$j][$k][$m]))&&($moy[$j][$k][$m]!="")) {
 											$temoin_moyenne++;
 
-
-											// L'élève fait-il ALL1 ou AGL1 parmi les options de LV1
-											$tab_opt_matiere_eleve[$j]=$id_matiere[$j][$k];
-
+											// 20130430
+											if(($lig_type_brevet_eleve->type_brevet==2)&&($j==$indice_brevet_pro_lv)) {
+												//echo "\$liste_matiere_brevet_pro_lv[$m]=$liste_matiere_brevet_pro_lv[$m]<br />";
+												$tab_opt_matiere_eleve[$j]=isset($liste_matiere_brevet_pro_lv[$m]) ? $liste_matiere_brevet_pro_lv[$m] : "";
+											}
+											else {
+												// L'élève fait-il ALL1 ou AGL1 parmi les options de LV1
+												$tab_opt_matiere_eleve[$j]=$id_matiere[$j][$k];
+											}
 
 											// A EFFECTUER: Contrôle des valeurs
 											//...
@@ -769,7 +797,8 @@ function retablir_notes_enregistrees() {
 											if($test_valeur_speciale_autorisee!="oui"){
 												if(mb_strlen(preg_replace("/[0-9\.]/","",$moy[$j][$k][$m]))!=0){
 													echo "<br /><span style='color:red'>ERREUR</span>: La valeur saisie n'est pas valide: ";
-													echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m];
+													//echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m];
+													echo $tab_opt_matiere_eleve[$j]."=".$moy[$j][$k][$m];
 													echo "<br />\n";
 													$erreur="oui";
 												}
@@ -780,7 +809,8 @@ function retablir_notes_enregistrees() {
 														echo " - ";
 													}
 													// On affiche la correspondance AGL1=12.0,...
-													echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m];
+													//echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m];
+													echo $tab_opt_matiere_eleve[$j]."=".$moy[$j][$k][$m];
 													$moy_NOTANET[$j]=round($moy[$j][$k][$m]*2)/2;
 												}
 											}
@@ -790,7 +820,8 @@ function retablir_notes_enregistrees() {
 												if(($j!=$indice_premiere_matiere)||($k!=0)){
 													echo " - ";
 												}
-												echo "<span style='color:purple;'>".$id_matiere[$j][$k]."=".$moy[$j][$k][$m]."</span>";
+												//echo "<span style='color:purple;'>".$id_matiere[$j][$k]."=".$moy[$j][$k][$m]."</span>";
+												echo "<span style='color:purple;'>".$tab_opt_matiere_eleve[$j]."=".$moy[$j][$k][$m]."</span>";
 												$moy_NOTANET[$j]=$moy[$j][$k][$m];
 											}
 										}
@@ -957,6 +988,7 @@ function retablir_notes_enregistrees() {
 																		ine='".$INE[$m]."',
 																		id_mat='".$j."',
 																		notanet_mat='".$tabmatieres[$j][0]."',";
+											// 20130430
 											if(isset($tab_opt_matiere_eleve[$j])){
 												//$sql.="mat='".$tab_opt_matiere_eleve[$j]."',";
 												$sql.="matiere='".$tab_opt_matiere_eleve[$j]."',";
@@ -983,6 +1015,7 @@ function retablir_notes_enregistrees() {
 							}
 
 							// Dans le cas brevet PRO, il ne faut retenir qu'une seule des deux matières 103 et 104
+							/*
 							if(($extract_mode==2)||($extract_mode==3)) {
 								$num_matiere_LV1=103;
 								$num_matiere_ScPhy=104;
@@ -998,6 +1031,7 @@ function retablir_notes_enregistrees() {
 									}
 								}
 							}
+							*/
 
 							echo colore_ligne_notanet($INE[$m]."|TOT|".sprintf("%02.2f",$TOT)."|")."<br />\n";
 							$tabnotanet[]=$INE[$m]."|TOT|".sprintf("%02.2f",$TOT)."|";
