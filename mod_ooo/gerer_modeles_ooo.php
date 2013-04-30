@@ -135,6 +135,7 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $utilisation[]="Fiche brevet série générale";
 	$special[]="";
 
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_CLG_lv2.ods";
     $utilisation[]="Fiche brevet série collège LV2";
@@ -145,7 +146,6 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $fich[]="fb_CLG_dp6.ods";
     $utilisation[]="Fiche brevet série collège ODP 6 heures";
 
-	
     $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_PRO.ods";
@@ -153,6 +153,7 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $utilisation[]="Fiche brevet série professionnelle";
 	$special[]="obsolete";
 
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_PRO_dp6.ods";
     $utilisation[]="Fiche brevet série professionnelle ODP 6 heures";
@@ -164,6 +165,7 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $utilisation[]="Fiche brevet série professionnelle option agricole";
 	$special[]="";
 
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_TECHNO.ods";
     $utilisation[]="Fiche brevet série technologique sans ODP";
@@ -182,7 +184,7 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
 	$special[]="obsolete";
 
 
-    //rapport incident
+    // Module ECTS
     $lien_wiki[]='';
 	$entete_section[]="MODULE ECTS";
     $fich[]="documents_ects.odt";
