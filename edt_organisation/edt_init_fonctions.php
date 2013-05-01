@@ -303,16 +303,85 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 						jgp.id_groupe = jgc.id_groupe AND
 						jgp.id_groupe = jgm.id_groupe");
 
-    	$rep_groupe = mysql_fetch_array($req_groupe);
-			//print_r($rep_groupe);
-			//echo '<br />';
-    	$nbre_rep = mysql_num_rows($req_groupe);
-    	// On vérifie ce qu'il y a dans la réponse
-    	if ($nbre_rep == 0) {
+		$rep_groupe = mysql_fetch_array($req_groupe);
+		//print_r($rep_groupe);
+		//echo '<br />';
+		$nbre_rep = mysql_num_rows($req_groupe);
+
+
+		// On vérifie ce qu'il y a dans la réponse
+		if ($nbre_rep == 0) {
 			$retour = "aucun";
 		} elseif ($nbre_rep > 1) {
-    		$retour = "plusieurs";
-    	}else{
+
+			//il y a plusieurs groupes correspondants 
+			//on essaye d'utiliser l'information $partie_txt
+			//pour déterminer le bon groupe
+
+
+			//si il n'y a pas de groupe donné
+			//ou si le groupe est la matière 
+			//on essaye d'utiliser la MATIERE comme nom de groupe
+			//comme nom de groupe
+			if($partie_txt == '' OR $partie_txt == $matiere_txt){
+
+				//on fait la requette avec le nom de la matière
+				$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm, groupes grp WHERE
+				jgp.login = '".$prof."' AND
+				jgc.id_classe = '".$classe."' AND
+				jgm.id_matiere = '".$matiere."' AND
+				grp.name = '".$matiere_txt."' AND
+				jgp.id_groupe = grp.id AND
+				jgp.id_groupe = jgc.id_groupe AND
+				jgp.id_groupe = jgm.id_groupe");
+
+			}
+
+			// on regarde si on a bien obtenu un seul groupe
+			$nbre_rep = mysql_num_rows($req_groupe);
+
+			if( $nbre_rep != 1 ){
+
+				//on va essayer de construire le nom de groupe
+				//avec la classe, la matière et la partie
+
+				//on prend le nom de groupe
+				$groupe_nom = str_replace ( ' ', '_', $partie_txt);
+
+				//on récupére le nom de la classe
+				$req_classe_list = mysql_query("SELECT classe FROM classes WHERE id = '".$classe."' ");
+				$classe_list = mysql_fetch_array($req_classe_list);
+				$classe_nom = $classe_list["classe"];
+				$classe_nom = str_replace ( ' ', '_', $classe_nom);
+
+				//----------------------------------------
+				//On essaye de de voir si un seul groupe 
+				// correspond aux informations données
+				// REGEXP '^MATIERE.?(CLASSE)?.?GROUPE$'
+				//----------------------------------------
+
+				$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm, groupes grp WHERE
+					jgp.login = '".$prof."' AND
+					jgc.id_classe = '".$classe."' AND
+					jgm.id_matiere = '".$matiere."' AND
+					grp.name REGEXP '^".$matiere.".?(".$classe_nom.")?.?".$groupe_nom.'$'."' AND
+					jgp.id_groupe = grp.id AND
+					jgp.id_groupe = jgc.id_groupe AND
+					jgp.id_groupe = jgm.id_groupe");
+
+			}
+
+			// on regarde si on a bien obtenu un seul groupe
+			$nbre_rep = mysql_num_rows($req_groupe);
+
+			if( $nbre_rep == 1){
+				$rep_groupe = mysql_fetch_array($req_groupe);
+				$retour = $rep_groupe["id_groupe"];
+			}else{
+				$retour = "plusieurs";
+			}
+
+		}else{
 			$retour = $rep_groupe["id_groupe"];
 		}
 
