@@ -461,7 +461,7 @@
 												`nom` char(50) NOT NULL default '',
 												`niveau` char(50) NOT NULL default '',
 												`type` char(50) NOT NULL default '',
-												`cp` int(10) NOT NULL default '0',
+												`cp` varchar(10) NOT NULL default '0',
 												`ville` char(50) NOT NULL default '',
 												PRIMARY KEY  (`id`)
 												) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
