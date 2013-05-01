@@ -240,6 +240,11 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='min') {
 	$_prenom = preg_replace("/-/","_", $_prenom);
 
 	//==========================
+	if(getSettingAOui("FiltrageStrictAlphaNomPrenomPourLogin")) {
+		$_nom = preg_replace("/[^A-Za-z]/","", $_nom);
+		$_prenom = preg_replace("/[^A-Za-z]/","", $_prenom);
+	}
+	//==========================
 	// On génère le login
 
 	if((preg_match('/n/', $_mode))&&($_nom=="")) {return false;}
