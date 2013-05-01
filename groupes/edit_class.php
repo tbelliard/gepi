@@ -1049,7 +1049,7 @@ for($i=0;$i<10;$i++){
 				$inscrits = count($current_group["eleves"][$period["num_periode"]]["list"]);
 
 				echo "<td>";
-				echo "<a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier les élèves inscrits dans cet enseignement\">" . $inscrits . "</a>";
+				echo "<a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier la liste des élèves inscrits dans cet enseignement\">" . $inscrits . "</a>";
 				echo "</td>\n";
 			}
 		}
