@@ -556,7 +556,7 @@ echo "<tr><td  colspan=\"4\" >\n";
 		<optgroup>
 		<option></option>
 	<?php
-	$r_sql="SELECT login,nom,prenom FROM utilisateurs WHERE statut IN ('administrateur','professeur','cpe','scolarite','secours','autre') ORDER BY nom,prenom";
+	$r_sql="SELECT login,nom,prenom,etat FROM utilisateurs WHERE statut IN ('administrateur','professeur','cpe','scolarite','secours','autre') ORDER BY nom,prenom";
 	$R_utilisateurs=mysql_query($r_sql);
 	$initiale_courante=0;
 	while($utilisateur=mysql_fetch_array($R_utilisateurs))
@@ -569,7 +569,7 @@ echo "<tr><td  colspan=\"4\" >\n";
 			echo "\t</optgroup><optgroup label=\"".chr($initiale)."\">";
 			}
 		?>
-		<option value="<?php echo $utilisateur['login']; ?>" <?php if (isset($login_destinataire)) if ($utilisateur['login']==$login_destinataire) echo "selected"; ?>><?php echo $nom." (".$utilisateur['login'].")"; ?></option>
+		<option value="<?php echo $utilisateur['login']; ?>" <?php if (isset($login_destinataire)) {if ($utilisateur['login']==$login_destinataire) {echo "selected";}} if($utilisateur['etat']=="inactif") { echo " style='background-color:grey;'";} ?>><?php echo $nom." (".$utilisateur['login'].")"; ?></option>
 		<?php
 		}
 	?>
