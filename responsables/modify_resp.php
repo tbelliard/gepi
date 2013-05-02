@@ -112,6 +112,9 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				//elseif(($adr1 != '') and ($commune != '') and ($cp != '')){
 				if(($adr1 != '') and ($commune != '') and (($cp != '')||($pays != ''))) {
 					$ok='yes';
+				}
+				else {
+					$ok='no';
 					$msg.="Un responsable légal 1 ou 2 doit avoir une adresse non vide.<br />";
 				}
 			}
