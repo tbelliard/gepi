@@ -83,6 +83,7 @@ function ajout_bouton_supprimer_message($contenu_cor,$id_message)
 	return mysql_query($r_sql)?true:false;
 	}
 
+//function update_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire,$matiere_destinataire)
 function update_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire)
 	{
 	$r_sql = "UPDATE messages
@@ -94,9 +95,11 @@ function update_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statu
 	statuts_destinataires = '".$statuts_destinataires."',
 	login_destinataire='".$login_destinataire."'
 	WHERE id ='".$_POST['id_mess']."'";
+	//", matiere_destinataire='".$matiere_destinataire."'";
 	return mysql_query($r_sql)?true:false;
 	}
 
+//function set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire,$matiere_destinataire)
 function set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire)
 	{
 	$r_sql = "INSERT INTO messages
@@ -107,6 +110,7 @@ function set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_
 	auteur='".$_SESSION['login']."',
 	statuts_destinataires = '".$statuts_destinataires."',
 	login_destinataire='".$login_destinataire."'";
+	//$r_sql.=", matiere_destinataire='".$matiere_destinataire."'";
 	$retour=mysql_query($r_sql)?true:false;
 	if ($retour)
 		{
@@ -169,7 +173,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	if (isset($_POST['desti_r'])) $statuts_destinataires .= 'r';
 	if (isset($_POST['desti_e'])) $statuts_destinataires .= 'e';
 
-	if ($statuts_destinataires=="_" && $_POST['id_classe']=="" && $_POST['login_destinataire']=="") {
+	if ($statuts_destinataires=="_" && $_POST['id_classe']=="" && $_POST['login_destinataire']=="" && $_POST['matiere_destinataire']=="") {
 		$msg_erreur = "ATTENTION : aucun destinataire saisi.<br />(message non enregitré)";
 		$record = 'no';
 	}
@@ -240,6 +244,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 
 	// tableau des utilisateurs destinataires
 	$login_destinataire="";
+	//$matiere_destinataire="";
 	$t_login_destinataires=array();
 		// un destinataire
 		if ($_POST['login_destinataire']<>"") 
@@ -251,7 +256,21 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			$r_sql="SELECT DISTINCT utilisateurs.login FROM j_groupes_classes,groupes,j_groupes_professeurs,utilisateurs WHERE j_groupes_classes.id_classe='".$id_classe."' AND j_groupes_classes.id_groupe=groupes.id AND groupes.id=j_groupes_professeurs.id_groupe AND j_groupes_professeurs.login=utilisateurs.login";
 			$R_professeurs=mysql_query($r_sql);
 			while ($un_professeur=mysql_fetch_assoc($R_professeurs))
-				$t_login_destinataires[]=$un_professeur['login'];
+				if(!in_array($un_professeur['login'], $t_login_destinataires)) {
+					$t_login_destinataires[]=$un_professeur['login'];
+				}
+			}
+		// les professeurs d'une matière
+		if ($_POST['matiere_destinataire']<>"")
+			{
+			$matiere_destinataire=$_POST['matiere_destinataire'];
+			$r_sql="SELECT DISTINCT u.login FROM j_groupes_matieres jgm, j_groupes_professeurs jgp, utilisateurs u WHERE jgm.id_groupe=jgp.id_groupe AND jgp.login=u.login AND jgm.id_matiere='".$matiere_destinataire."';";
+			//echo "$r_sql<br />";
+			$R_professeurs=mysql_query($r_sql);
+			while ($un_professeur=mysql_fetch_assoc($R_professeurs))
+				if(!in_array($un_professeur['login'], $t_login_destinataires)) {
+					$t_login_destinataires[]=$un_professeur['login'];
+				}
 			}
 
 	// on enregistre le message
@@ -281,6 +300,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 		unset($id_mess);
 		unset($statuts_destinataires);
 		unset($login_destinataire);
+		//unset($matiere_destinataire);
 		unset($id_classe);
 	} else {
 		$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".mysql_error();
@@ -354,6 +374,7 @@ if ($nb_messages>0) {
 	  $auteur1 = mysql_result($appel_messages, $ind, 'auteur');
 	  $statuts_destinataires1 = mysql_result($appel_messages, $ind, 'statuts_destinataires');
 	  $login_destinataire1=mysql_result($appel_messages, $ind, 'login_destinataire');
+	  //$matiere_destinataire1=mysql_result($appel_messages, $ind, 'matiere_destinataire');
 	//  $nom_auteur = sql_query1("SELECT nom from utilisateurs where login = '".$auteur1."'");
 	//  $prenom_auteur = sql_query1("SELECT prenom from utilisateurs where login = '".$auteur1."'");
 
@@ -428,6 +449,7 @@ if (isset($id_mess)) {
 	$date_decompte = mysql_result($appel_message, 0, 'date_decompte');
 	$statuts_destinataires = mysql_result($appel_message, 0, 'statuts_destinataires');
 	$login_destinataire=mysql_result($appel_message, 0, 'login_destinataire');
+	//$matiere_destinataire=mysql_result($appel_message, 0, 'matiere_destinataire');
 	$display_date_debut = strftime("%d", $date_debut)."/".strftime("%m", $date_debut)."/".strftime("%Y", $date_debut);
 	$display_date_fin = strftime("%d", $date_fin)."/".strftime("%m", $date_fin)."/".strftime("%Y", $date_fin);
 	$display_date_decompte = strftime("%d", $date_decompte)."/".strftime("%m", $date_decompte)."/".strftime("%Y", $date_decompte);
@@ -570,6 +592,38 @@ echo "<tr><td  colspan=\"4\" >\n";
 			}
 		?>
 		<option value="<?php echo $utilisateur['login']; ?>" <?php if (isset($login_destinataire)) {if ($utilisateur['login']==$login_destinataire) {echo "selected";}} if($utilisateur['etat']=="inactif") { echo " style='background-color:grey;'";} ?>><?php echo $nom." (".$utilisateur['login'].")"; ?></option>
+		<?php
+		}
+	?>
+		</optgroup>
+	</select>
+<br>
+
+<?php
+echo "</td></tr>\n";
+
+echo "<tr><td  colspan=\"4\" >\n";
+?>
+<br>
+<i>Matière du destinataire du message&nbsp;:&nbsp;</i><br />
+	<select name="matiere_destinataire" style="margin-left: 20px; max-width: 500px; width: 300px;">
+		<optgroup>
+		<option></option>
+	<?php
+	$r_sql="SELECT DISTINCT m.* FROM utilisateurs u, j_groupes_professeurs jgp, j_groupes_matieres jgm, matieres m
+		WHERE u.login=jgp.login AND
+			jgp.id_groupe=jgm.id_groupe AND
+			jgm.id_matiere=m.matiere
+		ORDER BY m.matiere, m.nom_complet";
+	$R_matieres=mysql_query($r_sql);
+	$initiale_courante=0;
+	while($matiere=mysql_fetch_array($R_matieres))
+		{
+		/*
+		<option value="<?php echo $matiere['matiere']; ?>" <?php if (isset($matiere_destinataire)) {if ($matiere['matiere']==$matiere_destinataire) {echo "selected";}}?>><?php echo $matiere['matiere']." (".$matiere['nom_complet'].")"; ?></option>
+		*/
+		?>
+		<option value="<?php echo $matiere['matiere']; ?>"><?php echo $matiere['matiere']." (".$matiere['nom_complet'].")"; ?></option>
 		<?php
 		}
 	?>
