@@ -385,6 +385,10 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 else {
 	echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
+
+if(acces("/responsables/consult_maj_sconet.php", $_SESSION['statut'])) {
+	echo " | <a href=\"consult_maj_sconet.php\">Journaux des mises à jour</a>";
+}
 //echo "</p>\n";
 
 
