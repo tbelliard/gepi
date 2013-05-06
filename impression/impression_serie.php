@@ -315,7 +315,8 @@ else {
 				// On utilisera les paramètres par défaut
 			}
 
-			echo "<input value=\"".$id_choix_periode."\" name=\"id_choix_periode\" type=\"hidden\" />\n";
+			//echo "<input value=\"".$id_choix_periode."\" name=\"id_choix_periode\" type=\"hidden\" />\n";
+			echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
 			echo "<br /><br /> <input value=\"Valider les enseignements\" name=\"Valider\" type=\"submit\" />\n";
 			echo "</form>\n";
 
