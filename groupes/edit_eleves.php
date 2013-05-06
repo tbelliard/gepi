@@ -589,7 +589,9 @@ if ($multiclasses) {
 }
 foreach ($current_group["periodes"] as $period) {
 	if($period["num_periode"]!=""){
-		echo "<th>" . $period["nom_periode"] . "</th>\n";
+		echo "<th>" . $period["nom_periode"];
+		echo " <a href='mes_listes.php?id_groupe=$id_groupe&amp;periode_num=".$period["num_periode"]."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Exporter la liste des élèves de cet enseignement pour la période ".$period["nom_periode"]." au format '><img src='../images/icons/csv.png' width='16' height='16' /></a>";
+		echo "</th>\n";
 	}
 }
 echo "<th>&nbsp;</th>";
