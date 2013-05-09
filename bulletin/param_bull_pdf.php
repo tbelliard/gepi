@@ -1428,6 +1428,7 @@ function DecocheCheckbox() {
 						<option value="4" <?php if ( isset($ordre_entete_model_bulletin) and $ordre_entete_model_bulletin === '4' ) { ?>selected="selected"<?php } ?>>4 - eleve | classe | min | max | rang | niveau | appreciation |</option>
 						<option value="5" <?php if ( isset($ordre_entete_model_bulletin) and $ordre_entete_model_bulletin === '5' ) { ?>selected="selected"<?php } ?>>5 - eleve | min | classe | max | niveau | rang | appreciation |</option>
 						<option value="6" <?php if ( isset($ordre_entete_model_bulletin) and $ordre_entete_model_bulletin === '6' ) { ?>selected="selected"<?php } ?>>6 - min | classe | max | eleve | rang | niveau | appreciation |</option>
+						<option value="7" <?php if ( isset($ordre_entete_model_bulletin) and $ordre_entete_model_bulletin === '7' ) { ?>selected="selected"<?php } ?>>7 - appreciation | eleve | niveau | rang | min | classe | max | </option>
 					</select><br />
 
 
