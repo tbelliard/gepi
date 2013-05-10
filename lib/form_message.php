@@ -282,7 +282,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 				<th>Message</th>
 				<td><textarea id='message_messagerie' name='message' cols='50' rows='5' onchange='changement()'><?php
 					if(isset($message)) {
-						echo preg_replace("/\\\\n/", "\n", $message);
+						echo stripslashes(preg_replace("/\\\\n/", "\n", $message));
 					}
 				?></textarea></td>
 			</tr>

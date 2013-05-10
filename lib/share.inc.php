@@ -6783,7 +6783,7 @@ function affiche_historique_messages($login_src, $mode="tous") {
 		<td>".formate_date($lig->date_msg,'y')."</td>
 		<td>".civ_nom_prenom($lig->login_dest)."</td>
 		<td>$lig->sujet</td>
-		<td id='td_ahm_".$cpt_ahm."' onclick=\"copie_ahm($cpt_ahm)\">".nl2br(preg_replace("/\\\\n/", "\n", $lig->message))."</td>
+		<td id='td_ahm_".$cpt_ahm."' onclick=\"copie_ahm($cpt_ahm)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
 		<td>";
 			if($lig->vu!=0) {
 				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Votre message a été lu/vu le ".formate_date($lig->date_vu,'y')."' />";
@@ -6856,7 +6856,7 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 		<td>".formate_date($lig->date_msg,'y')."</td>
 		<td>".civ_nom_prenom($lig->login_src)."</td>
 		<td>$lig->sujet</td>
-		<td id='td_ahmr_".$cpt_ahmr."' onclick=\"copie_ahmr($cpt_ahmr)\">".nl2br(preg_replace("/\\\\n/", "\n", $lig->message))."</td>
+		<td id='td_ahmr_".$cpt_ahmr."' onclick=\"copie_ahmr($cpt_ahmr)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
 		<td>";
 			if($lig->vu!=0) {
 				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Vous avez marqué/lu/vu ce message le ".formate_date($lig->date_vu,'y')."' />";
