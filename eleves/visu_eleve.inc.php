@@ -2213,6 +2213,14 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="cdt") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['cdt']."; ";
 			echo "'>";
+
+			if(isset($tab_ele['classe'])) {
+				$id_derniere_classe=$tab_ele['classe'][count($tab_ele['classe'])-1]['id_classe'];
+				if(acces("/cahier_texte_2/consultation2.php", $_SESSION['statut'])) {
+					echo "<div style='float:right; width:16'><a href='../cahier_texte_2/consultation2.php?mode=eleve&amp;login_eleve=$ele_login&amp;id_classe=$id_derniere_classe' title='Affichage semaine du cahier de textes'><img src='../images/icons/date.png' width='16' height='16' /></a></div>\n";
+				}
+			}
+
 			echo "<h2>Cahier de textes de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			echo "<p align='center'>";
@@ -2324,6 +2332,49 @@ Patientez pendant l'extraction des données... merci.
 			//echo "</div>\n";
 			echo "</table>\n";
 			echo "</div>\n";
+
+			if((getSettingAOui('rss_cdt_eleve'))||(getSettingAOui('rss_cdt_responsable'))) {
+				if($_SESSION['statut']=='administrateur') {
+					$test_https = 'y';
+					if (!isset($_SERVER['HTTPS'])
+						OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
+						OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https"))
+					{
+						$test_https = 'n';
+					}
+
+					echo "<div style='text-align:right; width:16;'>\n";
+					$uri_el = retourneUri($ele_login, $test_https, 'cdt');
+					if($uri_el['uri']!="#") {
+						echo "<a href='".$uri_el['uri']."' title='Flux RSS du cahier de textes de cet élève' target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+					}
+					else {
+						echo "<a href='../cahier_texte_admin/rss_cdt_admin.php#rss_initialisation_cas_par_cas' target='_blank' title=\"Le flux RSS du cahier de textes de cet élève n'est pas initialisé. Cliquez pour accéder au paramétrage du module RSS et créer le flux de cet élève\"><img src='../images/icons/rss_non_initialise.png' width='16' height='16' /></a>";
+					}
+					echo "</div>\n";
+				}
+				elseif((($_SESSION['statut']=='scolarite')&&(getSettingAOui('rss_cdt_scol')))||
+				(($_SESSION['statut']=='cpe')&&(getSettingAOui('rss_cdt_cpe')))||
+				(($_SESSION['statut']=='professeur')&&(getSettingAOui('rss_cdt_pp'))&&(is_pp($_SESSION['login'], "", $ele_login)))) {
+					$test_https = 'y';
+					if (!isset($_SERVER['HTTPS'])
+						OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
+						OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https"))
+					{
+						$test_https = 'n';
+					}
+
+					echo "<div style='text-align:right; width:16;'>\n";
+					$uri_el = retourneUri($ele_login, $test_https, 'cdt');
+					if($uri_el['uri']!="#") {
+						echo "<a href='".$uri_el['uri']."' title='Flux RSS du cahier de textes de cet élève' target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+					}
+					else {
+						echo "<img src='../images/icons/rss_non_initialise.png' width='16' height='16' title=\"Le flux RSS du cahier de textes de cet élève n'est pas initialisé. Contactez l'administrateur\" />";
+					}
+					echo "</div>\n";
+				}
+			}
 
 			echo "</div>\n";
 		}
