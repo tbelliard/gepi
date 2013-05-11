@@ -803,6 +803,7 @@ login_dest varchar(50) NOT NULL,
 sujet varchar(100) NOT NULL,
 message text NOT NULL,
 date_msg timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+date_visibilite timestamp NOT NULL,
 vu tinyint(4) NOT NULL,
 date_vu timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 PRIMARY KEY (id)

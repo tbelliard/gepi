@@ -6727,14 +6727,21 @@ CREATE TABLE IF NOT EXISTS messagerie (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 */
 
-function enregistre_message($sujet, $message, $login_src, $login_dest, $in_reply_to=-1) {
+function enregistre_message($sujet, $message, $login_src, $login_dest, $date_visibilite="", $in_reply_to=-1) {
 	$retour="";
+
+	$date_courante=strftime("%Y-%m-%d %H:%M:%S");
+	if(($date_visibilite=="")||($date_visibilite<$date_courante)) {
+		$date_visibilite=$date_courante;
+	}
 
 	$sql="INSERT INTO messagerie SET sujet='".mysql_real_escape_string($sujet)."',
 									message='".mysql_real_escape_string($message)."',
 									login_src='".$login_src."',
 									login_dest='".$login_dest."',
-									in_reply_to='".$in_reply_to."';";
+									in_reply_to='".$in_reply_to."',
+									date_msg='".$date_courante."',
+									date_visibilite='".$date_visibilite."';";
 	$res=mysql_query($sql);
 	if($res) {
 		$retour=mysql_insert_id();
@@ -6780,9 +6787,17 @@ function affiche_historique_messages($login_src, $mode="tous") {
 	</tr>";
 		$cpt_ahm=0;
 		while($lig=mysql_fetch_object($res)) {
+			$precision_visibilite="";
+			if($lig->date_visibilite>$lig->date_msg) {
+				$precision_visibilite=" title='Message du ".formate_date($lig->date_msg,'y')." visible à compter de ".formate_date($lig->date_visibilite,'y')."'";
+			}
+			$temoin_visibilite="";
+			if($lig->date_visibilite>strftime("%Y-%m-%d %H:%M:%S")) {
+				$temoin_visibilite="<img src='../images/icons/flag.png' width='17' height='18' />";
+			}
 			$retour.="
 	<tr>
-		<td>".formate_date($lig->date_msg,'y')."</td>
+		<td$precision_visibilite>".formate_date($lig->date_msg,'y')."$temoin_visibilite</td>
 		<td>".civ_nom_prenom($lig->login_dest)."</td>
 		<td>$lig->sujet</td>
 		<td id='td_ahm_".$cpt_ahm."' onclick=\"copie_ahm($cpt_ahm)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
@@ -6832,10 +6847,10 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 
 	$retour="";
 	if($mode=='tous') {
-		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' ORDER BY date_msg DESC, sujet;";
+		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' AND date_visibilite<='".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_msg DESC, sujet;";
 	}
 	elseif($mode=='non_lus') {
-		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' AND vu='0' ORDER BY date_msg DESC, sujet;";
+		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' AND date_visibilite<='".strftime("%Y-%m-%d %H:%M:%S")."' AND vu='0' ORDER BY date_msg DESC, sujet;";
 	}
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -6910,7 +6925,8 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 
 function check_messages_recus($login_dest) {
 	$retour="";
-	$sql="SELECT 1=1 FROM messagerie WHERE login_dest='$login_dest' AND vu='0';";
+	//$sql="SELECT 1=1 FROM messagerie WHERE login_dest='$login_dest' AND vu='0';";
+	$sql="SELECT 1=1 FROM messagerie WHERE login_dest='$login_dest' AND vu='0' AND date_visibilite<=CURRENT_TIMESTAMP;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==1) {
 		$retour=mysql_num_rows($res)." message non lu.";

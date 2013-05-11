@@ -77,7 +77,7 @@ if((isset($mode))&&($mode=='check')) {
 		}
 	}
 	else {
-		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."';";
+		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."' ;";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
 			echo "<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></a></span>";
@@ -162,6 +162,8 @@ $message_envoye=isset($_POST['message_envoye']) ? $_POST['message_envoye'] : (is
 
 $sujet=isset($_POST['sujet']) ? $_POST['sujet'] : (isset($_GET['sujet']) ? $_GET['sujet'] : NULL);
 $message=isset($_POST['message']) ? $_POST['message'] : (isset($_GET['message']) ? $_GET['message'] : NULL);
+$date_visibilite=isset($_POST['date_visibilite']) ? $_POST['date_visibilite'] : (isset($_GET['date_visibilite']) ? $_GET['date_visibilite'] : NULL);
+$heure_visibilite=isset($_POST['heure_visibilite']) ? $_POST['heure_visibilite'] : (isset($_GET['heure_visibilite']) ? $_GET['heure_visibilite'] : NULL);
 
 if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 	check_token();
@@ -171,12 +173,41 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 	$msg="";
 
 	if((isset($login_dest))&&(isset($sujet))&&(isset($message))) {
+
+		$date_heure_visibilite="";
+		if(isset($date_visibilite)) {
+			$tmp_tab=explode("/", $date_visibilite);
+			if(!checkdate($tmp_tab[1],$tmp_tab[0],$tmp_tab[2])) {
+				$msg.="Erreur sur la date de visibilité proposée $date_visibilite<br />";
+			}
+			else {
+				// On teste maintenant l'heure
+				if(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/", $heure_visibilite)) {
+					if((!preg_match("/[0-9]{1,2}", $heure_visibilite))||($heure_visibilite<0)||($heure_visibilite>23)) {
+						$msg.="Erreur sur l'heure de visibilité proposée $heure_visibilite<br />";
+					}
+					else {
+						$date_heure_visibilite=$tmp_tab[2].":".$tmp_tab[1].":".$tmp_tab[0]." ".$heure_visibilite.":00:00";
+					}
+				}
+				else {
+					$tmp_tab2=explode(":", $heure_visibilite);
+					if(($tmp_tab2[0]<0)||($tmp_tab2[0]>23)||($tmp_tab2[1]<0)||($tmp_tab2[1]>59)) {
+						$msg.="Erreur sur l'heure de visibilité proposée $heure_visibilite<br />";
+					}
+					else {
+						$date_heure_visibilite=$tmp_tab[2].":".$tmp_tab[1].":".$tmp_tab[0]." ".$tmp_tab2[0].":".$tmp_tab2[1].":00";
+					}
+				}
+			}
+		}
+
 		if(is_array($login_dest)) {
 			$tmp_login_dest=$login_dest;
 			$login_dest=array_unique($tmp_login_dest);
 			$nb_reg=0;
 			for($loop=0;$loop<count($login_dest);$loop++) {
-				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest[$loop]);
+				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest[$loop], $date_heure_visibilite);
 				if($retour!="") {
 					$nb_reg++;
 				}
@@ -187,7 +218,7 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 			$msg.="Message enregistré pour $nb_reg destinataire(s).<br />";
 		}
 		elseif(($login_dest!='')&&($sujet!='')&&($message!='')) {
-			$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest);
+			$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest, $date_heure_visibilite);
 			if($retour!="") {
 				$msg.="Message pour ".civ_nom_prenom($login_dest)." enregistré.<br />";
 
@@ -242,7 +273,7 @@ if((isset($mode))&&($mode=='afficher_messages_non_lus')) {
 if(peut_poster_message($_SESSION['statut'])) {
 ?>
 
-<form action='../lib/form_message.php' method='post'>
+<form action='../lib/form_message.php' method='post' name='formulaire'>
 	<fieldset style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>
 		<?php
 			echo add_token_field(true);
@@ -314,6 +345,24 @@ if(peut_poster_message($_SESSION['statut'])) {
 						echo stripslashes(preg_replace("/\\\\n/", "\n", $message));
 					}
 				?></textarea></td>
+			</tr>
+			<tr>
+				<th title="Une date de visibilité permet par exemple aux cpe/surveillants de saisir en fin de journée un message destiné aux professeurs de telle classe pour qu'ils envoient au bureau CPE tel élève le lendemain à 8h.
+Avec une date de visibilité pour le lendemain, le message ne dérangera pas les professeurs pendant qu'ils saisissent des notes ou leur cahier de textes la veille.
+Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendemain d'envoyer l'élève au bureau.">Visible à compter du</th>
+				<td>
+					<?php
+						include("../lib/calendrier/calendrier.class.php");
+						$cal = new Calendrier("formulaire", "date_visibilite");
+						$date_visibilite=strftime("%d/%m/%Y");
+						$heure_visibilite=strftime("%H:%M");
+					?>
+					<input type='text' name='date_visibilite' id='date_visibilite' size='10' value = "<?php echo $date_visibilite;?>" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." />
+					<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>"
+					onchange="changement();"><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="Petit calendrier" /></a>
+					à
+					<input name="heure_visibilite" value="<?php echo $heure_visibilite;?>" type="text" maxlength="5" size="4" id="heure_visibilite" onKeyDown="clavier_heure2(this.id,event,1,30);" AutoComplete="off" title="Vous pouvez modifier l'heure à l'aide des flèches Up et Down du pavé de direction et les flèches PageUp/PageDown." />
+				</td>
 			</tr>
 		</table>
 		<input type='hidden' name='message_envoye' value='y' />
@@ -476,8 +525,16 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 <a name='messages_envoyes'></a>
 <p class='bold'>Historique de vos messages envoyés&nbsp;:</p>
 <p style='color:red'>Pouvoir afficher/masquer les messages<br />N'afficher par défaut que les messages des 7 derniers jours,...</p>
-<div style='margin-left:3em; height:30em; maxheight:30em; overflow:auto;'>
+<!--div style='margin-left:3em; height:30em; maxheight:30em; overflow:auto;'-->
 <?php
+	$sql="SELECT 1=1 FROM messagerie WHERE login_src='".$_SESSION['login']."';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)<=2) {
+		echo "<div style='margin-left:3em; height:10em; maxheight:10em; overflow:auto;'>\n";
+	}
+	else {
+		echo "<div style='margin-left:3em; height:30em; maxheight:30em; overflow:auto;'>\n";
+	}
 	echo affiche_historique_messages($_SESSION['login']);
 ?>
 </div>

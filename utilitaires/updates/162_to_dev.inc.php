@@ -114,6 +114,19 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'date_visibilite' à la table 'messagerie'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM messagerie LIKE 'date_visibilite';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE messagerie ADD date_visibilite timestamp NOT NULL AFTER date_msg;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 if(getSettingValue('active_messagerie')=="") {
 	$result .= "&nbsp;-> Initialisation du module Messagerie&nbsp;: ";
 	if (!saveSetting("active_messagerie", 'y')) {
