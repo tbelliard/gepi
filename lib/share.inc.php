@@ -6761,20 +6761,22 @@ function affiche_historique_messages($login_src, $mode="tous") {
 		$retour="<p>Aucun message.</p>";
 	}
 	else {
-		$retour.="<table class='boireaus boireaus_alt'>
+		$retour.="<a name='tableau_historique_messages_envoyes'></a>
+<table class='boireaus boireaus_alt'>
 	<tr>
 		<th>Date</th>
 		<th>Destinataire</th>
 		<th>Sujet</th>
 		";
 		if(peut_poster_message($_SESSION['statut'])) {
-			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message</th>";
+			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' /></th>";
 		}
 		else {
 			$retour.="<th>Message</th>";
 		}
 		$retour.="
 		<th>Lu/vu</th>
+		<th>Relancer</th>
 	</tr>";
 		$cpt_ahm=0;
 		while($lig=mysql_fetch_object($res)) {
@@ -6784,12 +6786,15 @@ function affiche_historique_messages($login_src, $mode="tous") {
 		<td>".civ_nom_prenom($lig->login_dest)."</td>
 		<td>$lig->sujet</td>
 		<td id='td_ahm_".$cpt_ahm."' onclick=\"copie_ahm($cpt_ahm)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
-		<td>";
+		<td id='td_lu_message_envoye_".$lig->id."'>";
 			if($lig->vu!=0) {
-				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Votre message a été lu/vu le ".formate_date($lig->date_vu,'y')."' />";
+				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Votre message a été lu/vu le ".formate_date($lig->date_vu,'y')."' /></td>
+		<td id='td_relance_message_envoye_".$lig->id."'><a href='../lib/form_message.php?mode=relancer&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"relancer_message(".$lig->id.");return false;\" title=\"Relancer le message au même destinataire.
+Concrètement, le témoin est juste remis à non lu.\" target='_blank'><img src='../images/icons/forward.png' width='16' height='16' /></a>";
 			}
 			else {
-				$retour.="<img src='../images/disabled.png' width='20' height='20' title='Non lu/vu' />";
+				$retour.="<img src='../images/disabled.png' width='20' height='20' title='Non lu/vu' /></td>
+		<td>";
 			}
 			$retour.="</td>
 	</tr>";
@@ -6809,6 +6814,12 @@ function affiche_historique_messages($login_src, $mode="tous") {
 		chaine=chaine.replace(/\\r\\n\\r\\n/g, \"\\r\\n\");
 		chaine=chaine.replace(/\\n\\n/g, \"\\n\");
 		return chaine;
+	}
+
+	function relancer_message(id_msg) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'form_message.php?mode=relancer&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
+		document.getElementById('td_relance_message_envoye_'+id_msg).innerHTML='';
 	}
 </script>
 ";
@@ -6838,7 +6849,7 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 		<th>Sujet</th>
 		";
 		if(peut_poster_message($_SESSION['statut'])) {
-			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message</th>";
+			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' /></th>";
 		}
 		else {
 			$retour.="<th>Message</th>";
@@ -6912,10 +6923,15 @@ function check_messages_recus($login_dest) {
 
 // A faire: check_mes_messages_lus() pour signaler qu'un de ses messages a été lu?
 
-function marquer_message_lu($id_msg) {
+function marquer_message_lu($id_msg, $etat=true) {
 	$retour="";
 
-	$sql="UPDATE messagerie SET vu='1', date_vu=CURRENT_TIMESTAMP WHERE id='$id_msg' AND login_dest='".$_SESSION['login']."';";
+	if($etat) {
+		$sql="UPDATE messagerie SET vu='1', date_vu=CURRENT_TIMESTAMP WHERE id='$id_msg' AND login_dest='".$_SESSION['login']."';";
+	}
+	else {
+		$sql="UPDATE messagerie SET vu='0', date_vu=CURRENT_TIMESTAMP WHERE id='$id_msg';";
+	}
 	$update=mysql_query($sql);
 	if($update) {
 		$retour="Succès";

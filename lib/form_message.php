@@ -128,6 +128,35 @@ if((isset($mode))&&($mode=='marquer_lu')) {
 	die();
 }
 
+// Marquer un message comme lu
+if((isset($mode))&&($mode=='relancer')) {
+	check_token();
+	$id_msg=$_GET['id_msg'];
+
+	if(is_numeric($id_msg)) {
+		$retour=marquer_message_lu($id_msg, false);
+		if(!isset($_GET['mode_no_js'])) {
+			if($retour=="Erreur") {
+				//echo "<img src='../images/disabled.png' width='20' height='20' title='Lu/vu' />";
+				echo "<span style='color:red'>Erreur</span>";
+			}
+			else {
+				echo "<img src='../images/disabled.png' width='20' height='20' title='Lu/vu' />";
+			}
+		}
+		else {
+			if($retour=="Erreur") {
+				echo "<span style='color:red'>Erreur</span>";
+			}
+			else {
+				echo "Message marqué comme non lu.<br />Vous pouvez refermer cette page.";
+				// Il faudrait trouver une meilleure façon de gérer le marquage quand JS est inactif.
+			}
+		}
+	}
+	die();
+}
+
 // Envoi de message
 $message_envoye=isset($_POST['message_envoye']) ? $_POST['message_envoye'] : (isset($_GET['message_envoye']) ? $_GET['message_envoye'] : "n");
 
@@ -216,7 +245,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 <form action='../lib/form_message.php' method='post'>
 	<fieldset style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>
 		<?php
-			echo add_token_field();
+			echo add_token_field(true);
 		?>
 		<p class='bold'>Envoi d'un message/post-it&nbsp;:</p>
 		<table class='boireaus boireaus_alt'>
