@@ -54,7 +54,22 @@ $insert=mysql_query($sql);
 }
 
 if (!checkAccess()) {
-	header("Location: ../logout.php?auto=1");
+	// Si in reste sur une page sans se déconnecter, on n'envoie pas, en fin de session, de redir, ni de message par mail du type:
+	/*
+	** Alerte automatique sécurité Gepi **
+
+	Une nouvelle tentative d'intrusion a été détectée par Gepi. Les détails suivants ont été enregistrés dans la base de données :
+
+	Date : 2013-05-12 17:15:24
+	Fichier visé : /lib/form_message.php
+	Url d'origine : https://XXX/*.php
+	Niveau de gravité : 1
+	Description : Accès à une page sans être logué (peut provenir d'un timeout de session).
+
+	La tentative d'intrusion a été effectuée par un utilisateur non connecté à Gepi.
+	Adresse IP : 127.0.0.1
+	*/
+	//header("Location: ../logout.php?auto=1");
 	die();
 }
 
