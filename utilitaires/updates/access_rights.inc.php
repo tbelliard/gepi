@@ -875,6 +875,18 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_annees_anterieures/archivage_bull
 $tab_req[] = "INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Imprime fiches brevet OpenOffice',statut='';";
 $tab_req[] = "INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Fiches brevet OpenOffice',statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/consultation2.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='F',
+autre='V',
+description='Cahiers de textes: Consultation',
+statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {
