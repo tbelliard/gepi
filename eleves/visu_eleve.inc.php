@@ -32,7 +32,6 @@ if(($_SERVER['SCRIPT_NAME']!="$gepiPath/eleves/visu_eleve.php")&&
 
 $Recherche_sans_js=isset($_POST['Recherche_sans_js']) ? $_POST['Recherche_sans_js'] : (isset($_GET['Recherche_sans_js']) ? $_GET['Recherche_sans_js'] : NULL);
 
-
 if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 	echo "<div class='norme'>\n";
 	echo "<p class='bold'>\n";
@@ -923,13 +922,37 @@ Patientez pendant l'extraction des données... merci.
 		$active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes") ? getSettingValue("active_module_trombinoscopes") : "n";
 		//===========================================
 
-
-
 		// Bibliothèque de fonctions:
 		include("../eleves/visu_ele_func.lib.php");
 
 		// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
 		$tab_ele=info_eleve($ele_login);
+
+		if((getSettingAOui('autorise_edt_tous'))||
+			((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))||
+			((getSettingAOui('autorise_edt_eleve'))&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
+		) {
+			// Actuellement, les élèves et parents n'ont pas accès à visu_eleve.inc.php
+
+			$titre_infobulle="EDT de ".$tab_ele['prenom']." ".$tab_ele['nom'];
+			$texte_infobulle="";
+			$tabdiv_infobulle[]=creer_div_infobulle('edt_eleve',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+			echo "<div style='float:right; width:3em;'><a href='../edt_organisation/index_edt.php?login_edt=".$ele_login."&amp;type_edt_2=eleve&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle();return false;\" title=\"Emploi du temps de ".$tab_ele['prenom']." ".$tab_ele['nom']."\" target='_blank'>EDT</a></div>
+
+<style type='text/css'>
+	.lecorps {
+		margin-left:0px;
+	}
+</style>
+
+<script type='text/javascript'>
+	function affiche_edt_en_infobulle() {
+		new Ajax.Updater($('edt_eleve_contenu_corps'),'../edt_organisation/index_edt.php?login_edt=".$ele_login."&type_edt_2=eleve&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
+		afficher_div('edt_eleve','y',-20,20);
+	}
+</script>\n";
+		}
 
 		echo "<script type='text/javascript'>
 	document.getElementById('patience').style.display='none';
@@ -2213,10 +2236,12 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="cdt") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['cdt']."; ";
 			echo "'>";
-
+echo "a";
 			if(isset($tab_ele['classe'])) {
+echo "b";
 				$id_derniere_classe=$tab_ele['classe'][count($tab_ele['classe'])-1]['id_classe'];
 				if(acces("/cahier_texte_2/consultation2.php", $_SESSION['statut'])) {
+echo "c";
 					echo "<div style='float:right; width:16'><a href='../cahier_texte_2/consultation2.php?mode=eleve&amp;login_eleve=$ele_login&amp;id_classe=$id_derniere_classe' title='Affichage semaine du cahier de textes'><img src='../images/icons/date.png' width='16' height='16' /></a></div>\n";
 				}
 			}

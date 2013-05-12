@@ -240,8 +240,19 @@ else {
 //                                  VUE
 //		
 // =============================================================================
-require_once("../lib/header.inc.php");
+$no_entete=isset($_POST['no_entete']) ? $_POST['no_entete'] : (isset($_GET['no_entete']) ? $_GET['no_entete'] : "n");
+if($no_entete=="y") {
+	unset($titre_page);
+}
+
+$mode_infobulle=isset($_POST['mode_infobulle']) ? $_POST['mode_infobulle'] : (isset($_GET['mode_infobulle']) ? $_GET['mode_infobulle'] : "n");
+if($mode_infobulle=="n") {
+	require_once("../lib/header.inc.php");
+}
+
 require_once("./voir_edt_view.php");
-require_once("../lib/footer.inc.php");
+if($mode_infobulle=="n") {
+	require_once("../lib/footer.inc.php");
+}
 
 ?>

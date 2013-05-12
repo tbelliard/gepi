@@ -31,14 +31,23 @@ if ($IE6) {
 }
 
 
-// On ajoute le menu EdT
-require_once("./menu.inc.php");
+$no_menu=isset($_POST['no_menu']) ? $_POST['no_menu'] : (isset($_GET['no_menu']) ? $_GET['no_menu'] : "n");
+if($no_menu=="n") {
+	// On ajoute le menu EdT
+	require_once("./menu.inc.php");
+}
 
+$lien_refermer=isset($_POST['lien_refermer']) ? $_POST['lien_refermer'] : (isset($_GET['lien_refermer']) ? $_GET['lien_refermer'] : "n");
+if($lien_refermer=="y") {
+	echo "<div style='float:right; width:20px;'><a href='javascript:self.close()'><img src='../images/disabled.png' width='20' height='20' title='Refermer' alt='Refermer' /></a></div>\n";
+}
 
 echo "<br />\n";
 echo '<div id="lecorps">';
 
-require_once("./menu.inc.new.php");
+if($no_menu=="n") {
+	require_once("./menu.inc.new.php");
+}
 
 // ========================= AFFICHAGE DES MESSAGES
 

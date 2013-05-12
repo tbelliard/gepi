@@ -63,14 +63,18 @@ if (!checkAccess()) {
 if (param_edt($_SESSION["statut"]) != "yes") {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
-// CSS et js particulier à l'EdT
-$javascript_specifique = "edt_organisation/script/fonctions_edt";
-$ua = getenv("HTTP_USER_AGENT");
-if (strstr($ua, "MSIE 6.0")) {
-	$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6";
-}
-else {
-	$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt";
+
+$mode_infobulle=isset($_POST['mode_infobulle']) ? $_POST['mode_infobulle'] : (isset($_GET['mode_infobulle']) ? $_GET['mode_infobulle'] : "n");
+if($mode_infobulle=="n") {
+	// CSS et js particulier à l'EdT
+	$javascript_specifique = "edt_organisation/script/fonctions_edt";
+	$ua = getenv("HTTP_USER_AGENT");
+	if (strstr($ua, "MSIE 6.0")) {
+		$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6";
+	}
+	else {
+		$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt";
+	}
 }
 
 //ob_start( 'ob_gzhandler' );

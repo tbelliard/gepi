@@ -168,6 +168,11 @@ if ($tablekit == "ok") {
 	$tbs_librairies[]=$gepiPath."/lib/tablekit.js";
 }
 
+if(isset($avec_js_et_css_edt)) {
+	include("../edt_organisation/fonctions_edt.php");
+	prendre_en_compte_js_et_css_edt();
+}
+
 if(isset($javascript_specifique)) {
 	// Il faudrait filtrer le contenu de la variable...
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
@@ -493,6 +498,13 @@ if (isset($titre_page)) {
 	// menu accueil
 	$tbs_premier_menu[]=array("lien"=>$gepiPath."/accueil.php" , "confirme"=>"insert_confirm_abandon()" , "image"=>$gepiPath."/images/icons/home.png" , "alt"=>"Accueil" , "title"=>"Accueil" , "texte"=>"Accueil");
 	$tbs_premier_menu[]=array("lien"=>$gepiPath."/utilisateurs/mon_compte.php" , "confirme"=>"insert_confirm_abandon()" , "image"=>$gepiPath."/images/icons/buddy.png" , "alt"=>"Mon compte" , "title"=>"Mon compte" ,  "texte"=>"Gérer mon compte");
+
+	/*
+	if(in_array($_SESSION['statut'], array('professeur', 'scolarite', 'cpe', 'administrateur'))) {
+		$tbs_premier_menu[]=array("lien"=>"#", "alt"=>"Messagerie interne" , "title"=>"Messagerie interne" ,  "texte"=>affichage_temoin_messages_recus());
+	}
+	*/
+
 	if ($session_gepi->current_auth_mode == "sso" && $gepiSettings['sso_display_portail'] == 'yes') {
 	$tbs_premier_menu[]=array("lien"=>$gepiSettings["sso_url_portail"] , "confirme"=>"" , "image"=>$gepiPath."/images/icons/retour_sso.png" , "alt"=>"Portail" , "title"=>"Retour portail" , "texte"=>"Retour portail");
 	}

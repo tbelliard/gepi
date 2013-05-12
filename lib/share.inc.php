@@ -7135,4 +7135,46 @@ function retourneUri($eleve, $https, $type){
 	return $rep;
 }
 
+function prendre_en_compte_js_et_css_edt() {
+	global $javascript_specifique, $style_specifique;
+
+	// CSS et js particulier à l'EdT
+
+	if((is_array($javascript_specifique))) {
+		$javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+	}
+	else {
+		$tmp_js=$javascript_specifique;
+		$javascript_specifique=array();
+		$javascript_specifique[]=$tmp_js;
+		$javascript_specifique[]="edt_organisation/script/fonctions_edt";
+	}
+
+	if((is_array($style_specifique))) {
+		$ua = getenv("HTTP_USER_AGENT");
+		if (strstr($ua, "MSIE 6.0")) {
+			//$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6";
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6_infobulle";
+		}
+		else {
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt";
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_infobulle";
+		}
+	}
+	else {
+		$tmp_css=$style_specifique;
+		$style_specifique=array();
+		$style_specifique[]=$tmp_css;
+
+		$ua = getenv("HTTP_USER_AGENT");
+		if (strstr($ua, "MSIE 6.0")) {
+			//$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6";
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6_infobulle";
+		}
+		else {
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt";
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_infobulle";
+		}
+	}
+}
 ?>
