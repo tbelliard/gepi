@@ -963,6 +963,18 @@ autre='V',
 description='A lire...',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/consultation2.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='F',
+autre='V',
+description='Cahiers de textes: Consultation',
+statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {
