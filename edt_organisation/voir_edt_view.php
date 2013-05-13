@@ -55,16 +55,19 @@ if ($message != "") {
     echo ("<div class=\"cadreInformation\">".$message."</div>");
 }
 
-// ========================= AFFICHAGE DE LA BARRE DE COMMUTATION DES PERIODES
+$mode_infobulle=isset($_POST['mode_infobulle']) ? $_POST['mode_infobulle'] : (isset($_GET['mode_infobulle']) ? $_GET['mode_infobulle'] : "n");
+if($mode_infobulle=="n") {
+	// ========================= AFFICHAGE DE LA BARRE DE COMMUTATION DES PERIODES
 
-if (($DisplayPeriodBar) AND ($DisplayEDT)) {
-        AfficheBarCommutateurPeriodes($login_edt, $visioedt, $type_edt_2);
-}
+	if (($DisplayPeriodBar) AND ($DisplayEDT)) {
+		    AfficheBarCommutateurPeriodes($login_edt, $visioedt, $type_edt_2);
+	}
 
-// ========================= AFFICHAGE DE LA BARRE DE COMMUTATION DES SEMAINES
+	// ========================= AFFICHAGE DE LA BARRE DE COMMUTATION DES SEMAINES
 
-if (($DisplayWeekBar) AND ($DisplayEDT)) {
-        AfficheBarCommutateurSemaines($login_edt, $visioedt, $type_edt_2, $week_min, $_SESSION['week_selected']);
+	if (($DisplayWeekBar) AND ($DisplayEDT)) {
+		    AfficheBarCommutateurSemaines($login_edt, $visioedt, $type_edt_2, $week_min, $_SESSION['week_selected']);
+	}
 }
 
 //=========================== AFFICHAGE DES MENUS DEROULANTS DE SELECTION
@@ -111,9 +114,11 @@ if (isset($visioedt)) {
 // ========================= AFFICHAGE DES EMPLOIS DU TEMPS
 
 if ($DisplayEDT) {
-        AfficheImprimante(true);
-        //AfficheBascule(true, $login_edt, $visioedt, $type_edt_2);
-        AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $_SESSION['period_id']);
+	if($mode_infobulle=="n") {
+		    AfficheImprimante(true);
+	}
+	//AfficheBascule(true, $login_edt, $visioedt, $type_edt_2);
+	AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $_SESSION['period_id']);
 }
 
 echo '</div>';
