@@ -26,6 +26,8 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
+$pas_acces_a_une_page_sans_etre_logue="y";
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -69,6 +71,9 @@ if (!checkAccess()) {
 	La tentative d'intrusion a été effectuée par un utilisateur non connecté à Gepi.
 	Adresse IP : 127.0.0.1
 	*/
+
+	// En fait, on n'arrive même pas jusque là si la session est terminée.
+
 	//header("Location: ../logout.php?auto=1");
 	die();
 }

@@ -462,6 +462,7 @@ global $temoin_pas_d_update_session_table_log;
 	# un utilisateur correctement authentifié, et qu'il est bien autorisé à
 	# l'être. Elle remplace la fonction resumeSession qui était préalablement utilisée.
 	public function security_check() {
+		global $pas_acces_a_une_page_sans_etre_logue;
 		# Codes renvoyés :
 		# 0 = logout automatique
 		# 1 = session valide
@@ -475,7 +476,9 @@ global $temoin_pas_d_update_session_table_log;
 				$this->authenticate();
 			}
 		} else if ($this->is_anonymous()) {
-			tentative_intrusion(1, "Accès à une page sans être logué (peut provenir d'un timeout de session).");
+			if((!isset($pas_acces_a_une_page_sans_etre_logue))||($pas_acces_a_une_page_sans_etre_logue!="y")) {
+				tentative_intrusion(1, "Accès à une page sans être logué (peut provenir d'un timeout de session).");
+			}
 			return "0";
 			exit;
 		}
