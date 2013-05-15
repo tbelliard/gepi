@@ -769,7 +769,108 @@ function calc_moy_debug($texte){
 	}
 }
 
+/**
+ * Teste si un accès exceptionnel à la saisie de notes dans le CN est ouvert bien que la période soit close
+ *
+ * @param integer $id_groupe L'identifiant du groupe
+ * @param integer $num_periode Le numéro de la période
+ *
+ * @return boolean true/false
+ */
+function acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $num_periode) {
+	$sql="SELECT 1=1 FROM acces_cn WHERE id_groupe='$id_groupe' AND periode='$num_periode' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
+/**
+ * Enregistrer dans la table acces_cn les modifications effectuées lors d'un accès exceptionnel à la saisie de notes dans le CN alors que la période soit close
+ *
+ * @param integer $id_groupe L'identifiant du groupe
+ * @param integer $num_periode Le numéro de la période
+ * @param string $texte_ajoute Le texte à ajouter au log
+ *
+ * @return boolean true/false succès ou échec de l'enregistrement
+ */
+function log_modifs_acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $num_periode, $texte_ajoute) {
+	$sql="SELECT * FROM acces_cn WHERE id_groupe='$id_groupe' AND periode='$num_periode';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		// Il n'y a au plus qu'un enregistrement par (id_groupe;periode) dans acces_cn
+		$lig=mysql_fetch_object($res);
+		$texte=$lig->commentaires."\n".$texte_ajoute;
+		$sql="UPDATE acces_cn SET commentaires='".mysql_real_escape_string($texte)."' WHERE id='$lig->id';";
+		$update=mysql_query($sql);
+		if($update) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
 
+/**
+ * Récupérer l'identifiant du carner de notes associés à un groupe et une période
+ * (et si nécessaire créer le CN)
+ *
+ * @param integer $id_groupe L'identifiant du groupe
+ * @param integer $periode_num Le numéro de la période
+ *
+ * @return integer l'identifiant du CN
+ *                 ou false en cas d'échec
+ */
+function creer_carnet_notes($id_groupe, $periode_num) {
+	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe' and periode='$periode_num')";
+	$appel_cahier_notes = mysql_query($sql);
+	$nb_cahier_note = mysql_num_rows($appel_cahier_notes);
+	if ($nb_cahier_note == 0) {
+		$current_group=get_group($id_groupe, array('matieres'));
+		$nom_complet_matiere = $current_group["matiere"]["nom_complet"];
+		$nom_court_matiere = $current_group["matiere"]["matiere"];
+
+		// Création du conteneur
+		$sql="INSERT INTO cn_conteneurs SET id_racine='',
+				nom_court='".traitement_magic_quotes($current_group["description"])."',
+				nom_complet='". traitement_magic_quotes($nom_complet_matiere)."',
+				description = '',
+				mode = '".getPref($_SESSION['login'],'cnBoitesModeMoy', (getSettingValue('cnBoitesModeMoy')!="" ? getSettingValue('cnBoitesModeMoy') : 2))."', 
+				coef = '1.0',
+				arrondir = 's1',
+				ponderation = '0.0',
+				display_parents = '0',
+				display_bulletin = '1',
+				parent = '0'";
+		$reg = mysql_query($sql);
+		if ($reg) {
+			$id_racine = mysql_insert_id();
+
+			// Mise à jour du conteneur
+			$sql="UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine';";
+			$reg = mysql_query($sql);
+
+			// Création du carnet de notes
+			$sql="INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine';";
+			$reg = mysql_query($sql);
+		}
+	} else {
+		$id_racine = mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+	}
+
+	if(isset($id_racine)) {
+		return $id_racine;
+	}
+	else {
+		return false;
+	}
+}
 
 ?>

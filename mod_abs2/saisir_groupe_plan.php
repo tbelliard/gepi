@@ -494,7 +494,16 @@ $tab_types_autorises=array();
 $tab_id_types_autorises=array();
 $afficheEleve = array();
 $elv = 0;
+
+// 20130416
+$chaine_tr_entete_veille_et_creneaux_precedents=array();
+$chaine_veille_et_creneaux_precedents=array();
+$temoin_saisie_veille_et_creneaux_precedents=array();
 foreach($eleve_col as $eleve) {
+	// 20130416
+	$chaine_tr_veille_et_creneaux_precedents[$eleve->getLogin()]="<tr>";
+	$chaine_veille_et_creneaux_precedents[$eleve->getLogin()]="<tr>";
+
 	$saisie_affiches = array ();
 	if ($eleve_col->isOdd()) {
 		$afficheEleve[$elv]['background']="impair";
@@ -504,37 +513,65 @@ foreach($eleve_col as $eleve) {
 	
 	$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
 	$abs_hier = false;
-        $traitee_hier = true;//les saisies de la veille ont-elle été traitées intégralement
-        $justifiee_hier = true;//les saisies de la veille ont-elle été justifiées intégralement
-        $afficheEleve[$elv]['bulle_hier'] = '';
-        foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
-            if (!$saisie->getManquementObligationPresence()) continue;
-            $abs_hier = true;
-            $traitee_hier = $traitee_hier && $saisie->getTraitee();
-            $justifiee_hier = $justifiee_hier && $saisie->getJustifiee();
-            $afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
-        }
-        if ($abs_hier) {
-            $afficheEleve[$elv]['class_hier'] = $justifiee_hier ? "justifieeHier" : 'absentHier';
-            $afficheEleve[$elv]['text_hier'] = $traitee_hier ? 'T' : '';
-        } else {
-            $afficheEleve[$elv]['class_hier'] = '';
-            $afficheEleve[$elv]['text_hier'] = '';
-        }
+	$traitee_hier = true;//les saisies de la veille ont-elle été traitées intégralement
+	$justifiee_hier = true;//les saisies de la veille ont-elle été justifiées intégralement
+	$afficheEleve[$elv]['bulle_hier'] = '';
+
+	foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
+		if (!$saisie->getManquementObligationPresence()) continue;
+		$abs_hier = true;
+		$traitee_hier = $traitee_hier && $saisie->getTraitee();
+		$justifiee_hier = $justifiee_hier && $saisie->getJustifiee();
+		$afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
+	}
+	if ($abs_hier) {
+		$afficheEleve[$elv]['class_hier'] = $justifiee_hier ? "justifieeHier" : 'absentHier';
+		$afficheEleve[$elv]['text_hier'] = $traitee_hier ? 'T' : '';
+	} else {
+		$afficheEleve[$elv]['class_hier'] = '';
+		$afficheEleve[$elv]['text_hier'] = '';
+	}
+
+	// 20130416
+	$chaine_tr_veille_et_creneaux_precedents[$eleve->getLogin()].="<th>Veille</th>";
+	if ($abs_hier) {
+		$couleur_veille="";
+		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="<td title=\"";
+		if($afficheEleve[$elv]['text_hier']!="") {
+			$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="Absence ou retard traité. ";
+			$couleur_veille="green";
+		}
+		if($afficheEleve[$elv]['class_hier']!="") {
+			$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="Absence ou retard justifié. ";
+			$couleur_veille="green";
+		}
+		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="\"";
+		if($couleur_veille!="") {
+			$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].=" style=\"background-color:$couleur_veille\"";
+		}
+		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].=">";
+		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].=$afficheEleve[$elv]['text_hier'];
+		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="</td>";
+		$temoin_saisie_veille_et_creneaux_precedents[$eleve->getLogin()]="y";
+	}
+	else {
+		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="<td></td>";
+	}
+
 	$afficheEleve[$elv]['position'] = $eleve_col->getPosition();
 	$afficheEleve[$elv]['id'] = $eleve->getId();
 	$afficheEleve[$elv]['elenoet'] = $eleve->getElenoet();
 	$afficheEleve[$elv]['nom'] = $eleve->getNom();
 	$afficheEleve[$elv]['prenom'] = $eleve->getPrenom();
 	$afficheEleve[$elv]['civilite'] = $eleve->getCivilite();
-        $afficheEleve[$elv]['regime'] = '';
-        if ($eleve->getEleveRegimeDoublant() != null) {
-            $afficheEleve[$elv]['regime'] = $eleve->getEleveRegimeDoublant()->getRegime();
-            if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
-                    $tab_regimes[]=$afficheEleve[$elv]['regime'];
-            }
-            $tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
-        }
+	$afficheEleve[$elv]['regime'] = '';
+	if ($eleve->getEleveRegimeDoublant() != null) {
+		$afficheEleve[$elv]['regime'] = $eleve->getEleveRegimeDoublant()->getRegime();
+		if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
+			$tab_regimes[]=$afficheEleve[$elv]['regime'];
+		}
+		$tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
+	}
 
 	if ((isset($current_groupe) && $current_groupe != null && $current_groupe->getClasses()->count() == 1)
 		|| (isset($current_classe) && $current_classe != null)) {
@@ -601,8 +638,9 @@ foreach($eleve_col as $eleve) {
 				$absences_du_creneau = new PropelCollection();
 			}
 		}
+
 		$afficheEleve[$elv]['style'][$i] = "";
-                if ($deja_saisie && $nb_creneau_a_saisir > 0) {
+		if ($deja_saisie && $nb_creneau_a_saisir > 0) {
 			$afficheEleve[$elv]['style'][$i] = "fondVert";
 		}
 		if (!$absences_du_creneau->isEmpty()) {
@@ -613,7 +651,61 @@ foreach($eleve_col as $eleve) {
 				}
 			}
 		}
-		
+
+		// 20130416
+		$tmp_creneau=$col_creneaux[$i];
+		/*
+		echo "<p><br /><p>";
+		echo "<pre>";
+		print_r($tmp_creneau);
+		echo "</pre>";
+		echo "<p><br /><p>";
+		*/
+		//$chaine_tr_veille_et_creneaux_precedents[$eleve->getLogin()].="<th>".$col_creneaux[$i]."</th>";
+		$chaine_tr_veille_et_creneaux_precedents[$eleve->getLogin()].="<th>".$tmp_creneau->getNomDefiniePeriode()."</th>";
+		$couleur_td_courant="";
+		$texte_attribut_title="";
+		if (!$absences_du_creneau->isEmpty()) {
+			foreach ($absences_du_creneau as $abs_saisie) {
+				$temoin_saisie_veille_et_creneaux_precedents[$eleve->getLogin()]="y";
+				/*
+				echo "<p>".$eleve->getLogin()."</p>";
+				echo "<pre>";
+				print_r($abs_saisie);
+				echo "</pre>";
+				echo "<p><br /></p>";
+				*/
+				if ($abs_saisie->getManquementObligationPresence()) {
+					if($abs_saisie->getCommentaire()) {
+						$texte_attribut_title.=$abs_saisie->getCommentaire();
+					}
+
+					$couleur_td_courant="red";
+				}
+				else {
+					foreach ($abs_saisie->getAbsenceEleveTraitements() as $abs_saisie_traitement) {
+						if ($abs_saisie_traitement->getAbsenceEleveType() != null) {
+							$texte_attribut_title.=$abs_saisie_traitement->getAbsenceEleveType()->getNom().". ";
+						}
+					}
+
+					if($abs_saisie->getCommentaire()) {
+						$texte_attribut_title.=$abs_saisie->getCommentaire();
+					}
+				}
+			}
+
+			if($couleur_td_courant!="") {
+				$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="<td style='background-color:red' title=\"$texte_attribut_title\">&nbsp;</td>";
+			}
+			else {
+				$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="<td style='background-color:yellow' title=\"$texte_attribut_title\">&nbsp;</td>";
+			}
+		}
+		else {
+			$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="<td>&nbsp;</td>";
+		}
+
 		if ($nb_creneau_a_saisir>1) {
 			$afficheEleve[$elv]['nb_creneaux_a_saisir'][$i] = $nb_creneau_a_saisir;
 		} else {
@@ -687,8 +779,20 @@ foreach($eleve_col as $eleve) {
 		}
 		$afficheEleve[$elv]['nom_photo'] = $photos;
 	}
+
+	// 20130416
+	$chaine_tr_veille_et_creneaux_precedents[$eleve->getLogin()].="</tr>";
+	$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="</tr>";
+
 	$elv++;
 }
+/*
+echo "<hr />";
+echo "<pre>";
+print_r($chaine_veille_et_creneaux_precedents);
+echo "</pre>";
+echo "<hr />";
+*/
 
 // 20120618
 $chaine_effectifs_regimes="";
@@ -708,11 +812,15 @@ $style_specifique[] = "templates/origine/css/bandeau";
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $style_specifique[] = "mod_abs2/lib/saisie_smart_large";
+$style_specifique[] = "templates/origine/css/accueil";
+$style_specifique[] = "style_screen_ajout";
 $CSS_smartphone = "mod_abs2/lib/saisie_smart_mini";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 $javascript_specifique[] = "mod_abs2/lib/include";
+$javascript_specifique[] = "lib/position";
+$javascript_specifique[] = "lib/brainjar_drag";
 $titre_page = "Les absences";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
@@ -1293,6 +1401,20 @@ echo "</pre>";
 							   value=\"".$dt_date_absence_eleve->format('d/m/Y')."\" />\n";
 
 					echo "</div>\n";
+
+
+					// 20130416
+					if(isset($temoin_saisie_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
+						echo "<div style='position:absolute; top:".$y."px; left:".$x."px; width:".$largeur_div."px; height:18px; text-align:center;'>\n";
+						echo "<a href=\"javascript:afficher_div('div_infobulle_saisie_prec_".$eleve['position']."','y',10,-40);\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes' /></a>";
+						echo "</div>\n";
+
+						$titre_infobulle=$eleve['nom']." ".$eleve['prenom'];
+						//  title=\"Tableau de ".$eleve['nom']." ".$eleve['prenom']."\"
+						$texte_infobulle="<table class='boireaus boireaus_alt'>".$chaine_tr_veille_et_creneaux_precedents[$eleve['accesFiche']].$chaine_veille_et_creneaux_precedents[$eleve['accesFiche']]."</table>";
+						$tabdiv_infobulle[]=creer_div_infobulle("div_infobulle_saisie_prec_".$eleve['position'], $titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',2);
+
+					}
 				}
 
 				if($compteur_nouvel_eleve>0) {
@@ -1393,6 +1515,18 @@ if(isset($compteur_eleve)) {
 		//alert(type_courant);
 	}
 </script>\n";
+
+
+	/*
+	echo "<pre>";
+	print_r($chaine_veille_et_creneaux_precedents);
+	echo "</pre>";
+
+	//foreach($chaine_veille_et_creneaux_precedents as $login_ele => $tmp_tab) {
+	foreach($temoin_saisie_veille_et_creneaux_precedents as $login_ele => $tmp_tab) {
+		echo "<p>$login_ele</p><table class='boireaus boireaus_alt' title='Tableau de $login_ele'>".$chaine_tr_veille_et_creneaux_precedents[$login_ele].$chaine_veille_et_creneaux_precedents[$login_ele]."</table>";
+	}
+	*/
 }
 
 /*

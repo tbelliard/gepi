@@ -51,6 +51,7 @@ require_once("../lib/header.inc.php");
 //$id_classe=isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL;
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 $id_groupe=isset($_GET['id_groupe']) ? $_GET["id_groupe"] : NULL;
+$periode_num=isset($_GET['periode_num']) ? $_GET["periode_num"] : NULL;
 $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
 $refermer_onglet=isset($_POST['refermer_onglet']) ? $_POST['refermer_onglet'] : (isset($_GET['refermer_onglet']) ? $_GET['refermer_onglet'] : 'n');
@@ -175,7 +176,12 @@ if($_SESSION['statut']=='professeur') {
 			for($i=1;$i<$first_group['nb_periode'];$i++) {
 				echo "<input type='radio' id='periode_num_$i' name='periode_num' value='".$i."' ";
 				//if($i==1) {echo "checked ";}
-				if((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$first_group['nb_periode'])) {
+				if((isset($_GET['periode_num']))&&(is_numeric($_GET['periode_num']))&&($_GET['periode_num']<=$first_group['nb_periode'])) {
+					if($_GET['periode_num']==$i) {
+						echo "checked ";
+					}
+				}
+				elseif((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$first_group['nb_periode'])) {
 					if($_SESSION['mes_listes_periode_num']==$i) {
 						echo "checked ";
 					}
@@ -384,7 +390,12 @@ if(isset($current_group)) {
 	for($i=1;$i<$current_group['nb_periode'];$i++) {
 		echo "<input type='radio' id='periode_num_$i' name='periode_num' value='".$i."' ";
 		//if($i==1) {echo "checked ";}
-		if((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$current_group['nb_periode'])) {
+		if((isset($_GET['periode_num']))&&(is_numeric($_GET['periode_num']))&&($_GET['periode_num']<=$current_group['nb_periode'])) {
+			if($_GET['periode_num']==$i) {
+				echo "checked ";
+			}
+		}
+		elseif((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$current_group['nb_periode'])) {
 			if($_SESSION['mes_listes_periode_num']==$i) {
 				echo "checked ";
 			}
@@ -407,7 +418,12 @@ elseif(isset($classe)) {
 	for($i=1;$i<$nb_periode;$i++) {
 		echo "<input type='radio' id='periode_num_$i' name='periode_num' value='".$i."' ";
 		//if($i==1) {echo "checked ";}
-		if((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$nb_periode)) {
+		if((isset($_GET['periode_num']))&&(is_numeric($_GET['periode_num']))&&($_GET['periode_num']<=$nb_periode)) {
+			if($_GET['periode_num']==$i) {
+				echo "checked ";
+			}
+		}
+		elseif((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$nb_periode)) {
 			if($_SESSION['mes_listes_periode_num']==$i) {
 				echo "checked ";
 			}
@@ -436,7 +452,12 @@ else {
 	for($i=1;$i<=$nb_per;$i++) {
 		echo "<input type='radio' id='periode_num_$i' name='periode_num' value='".$i."' ";
 		//if($i==1) {echo "checked ";}
-		if((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$nb_per)) {
+		if((isset($_GET['periode_num']))&&(is_numeric($_GET['periode_num']))&&($_GET['periode_num']<=$nb_per)) {
+			if($_GET['periode_num']==$i) {
+				echo "checked ";
+			}
+		}
+		elseif((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$nb_per)) {
 			if($_SESSION['mes_listes_periode_num']==$i) {
 				echo "checked ";
 			}

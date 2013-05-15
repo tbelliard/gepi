@@ -227,6 +227,10 @@ if(isset($_POST['transfert_cn'])) {
 						$reg=mysql_query($sql);
 						if (!$reg) {$reg_ok = "no";}
 
+						$sql="UPDATE cn_devoirs SET date_ele_resp='$date_epreuve' WHERE id='$id_devoir'";
+						$reg=mysql_query($sql);
+						if (!$reg) {$reg_ok = "no";}
+
 						$sql="UPDATE cn_devoirs SET facultatif='O' WHERE id='$id_devoir'";
 						$reg=mysql_query($sql);
 						if (!$reg) {$reg_ok = "no";}
@@ -236,8 +240,6 @@ if(isset($_POST['transfert_cn'])) {
 						if (!$reg) {$reg_ok = "no";}
 
 
-	
-	
 						// Transférer les notes
 						$sql="SELECT DISTINCT ec.login_ele, ec.note, ec.statut FROM eb_copies ec, j_eleves_groupes jeg, cn_cahier_notes ccn WHERE ccn.id_groupe=jeg.id_groupe AND ccn.id_cahier_notes='$current_id_cn' AND ec.id_epreuve='$id_epreuve' AND jeg.periode='$current_periode' AND jeg.login=ec.login_ele;";
 						//echo "$sql<br />";

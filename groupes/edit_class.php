@@ -244,6 +244,8 @@ if (isset($_POST['is_posted'])) {
 
     $error = false;
 
+	$msg="";
+
 	$tab_id_groupe=array();
 
     foreach ($_POST as $key => $value) {
@@ -360,6 +362,29 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 	//================================
+
+	if(isset($_POST["name_grp"])) {
+		$name_grp=$_POST["name_grp"];
+		$description_grp=$_POST["description_grp"];
+
+		foreach($name_grp as $id_current_grp => $current_name) {
+			$sql="UPDATE groupes SET name='".html_entity_decode($current_name,ENT_QUOTES,"UTF-8")."' WHERE id='".$id_current_grp."';";
+			//echo "$sql<br />";
+			$update=mysql_query($sql);
+			if(!$update) {
+				$msg.="Erreur lors de la modification du nom court du groupe n°$id_current_grp<br />";
+			}
+		}
+
+		foreach($description_grp as $id_current_grp => $current_description) {
+			$sql="UPDATE groupes SET description='".html_entity_decode($current_description,ENT_QUOTES,"UTF-8")."' WHERE id='".$id_current_grp."';";
+			//echo "$sql<br />";
+			$update=mysql_query($sql);
+			if(!$update) {
+				$msg.="Erreur lors de la modification de la description du groupe n°$id_current_grp<br />";
+			}
+		}
+	}
 
 	$msg="Enregistrement effectué.";
 
@@ -634,7 +659,7 @@ echo "</p>\n";
 echo "</form>\n";
 
 
-echo "<h3>Gestion des enseignements pour la classe&nbsp;:" . $classe["classe"]."<span id='span_asterisque'></span></h3>\n";
+echo "<h3>Gestion des enseignements pour la classe&nbsp;: " . $classe["classe"]."<span id='span_asterisque'></span></h3>\n";
 
 echo "</td>\n";
 echo "<td width='60%' align='center'>\n";
@@ -645,7 +670,7 @@ echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group
 //$query = mysql_query("SELECT matiere, nom_complet FROM matieres");
 echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
 echo "<table border='0' summary='Ajout d enseignement'>\n<tr valign='top'>\n<td>\n";
-echo "Ajouter un enseignement : ";
+echo "Ajouter un enseignement&nbsp;: ";
 echo "</td>\n";
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 //==============================
@@ -754,13 +779,13 @@ echo add_token_field();
 <td width='40%'>
 <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
 <p>Pour cette classe,
-<input type='button' value="régler les priorités d'affichage" onClick='choix_ordre();' />:</p>
+<input type='button' value="régler les priorités d'affichage" onClick='choix_ordre();' title="N'oubliez pas d'enregistrer ensuite." />:</p>
 <!--ul>
 <li><a href='javascript:ordre_defaut();'>égales aux valeurs définies par défaut</a>,</li>
 <li><a href='javascript:ordre_alpha();'>suivant l'ordre alphabétique des matières.</a></li>
 </ul-->
 <input type='radio' name='ordre' id='ordre_defaut' value='ordre_defaut' /><label for='ordre_defaut' style='cursor: pointer;'> égales aux valeurs définies par défaut,</label><br />
-<input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /><label for='ordre_alpha' style='cursor: pointer;'> suivant l'ordre alphabétique des matières.</label>
+<input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /><label for='ordre_alpha' style='cursor: pointer;'> suivant l'ordre alphabétique des matières</label>
 </fieldset>
 </td>
 
@@ -794,7 +819,7 @@ if($display_rang=='y') {
 
 <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
 <!--a href='javascript:coeff();'>Mettre tous les coefficients à</a-->
-<input type='button' value='Mettre tous les coefficients à' onClick='coeff(); changement();' />
+<input type='button' value='Mettre tous les coefficients à' onClick='coeff(); changement();' title="N'oubliez pas d'enregistrer ensuite." />
 <select name='coefficient_recop' id='coefficient_recopie' >
 <?php
 for($i=0;$i<10;$i++){
@@ -855,10 +880,20 @@ for($i=0;$i<10;$i++){
 
 	//============================================================================================================
 
+	$afficher_champs_modif_nom_groupe=isset($_POST['afficher_champs_modif_nom_groupe']) ? $_POST['afficher_champs_modif_nom_groupe'] : (isset($_GET['afficher_champs_modif_nom_groupe']) ? $_GET['afficher_champs_modif_nom_groupe'] : "n");
+
 	echo "<table class='boireaus' summary='Tableau des enseignements'>\n";
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Supprimer</th>\n";
-	echo "<th rowspan='2'>Enseignement</th>\n";
+	echo "<th rowspan='2'>Enseignement<br />\n";
+	// 20130412
+	if($afficher_champs_modif_nom_groupe=="y") {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;afficher_champs_modif_nom_groupe=n' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Ne pas afficher les champs de modification des noms de groupes\"><img src='../images/icons/visible.png' width='19' height='16' /></a>";
+	}
+	else {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;afficher_champs_modif_nom_groupe=y' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Afficher les champs de modification des noms de groupes\"><img src='../images/icons/invisible.png' width='19' height='16' /></a>";
+	}
+	echo "</th>\n";
 	echo "<th colspan='".($nb_periode-1)."'><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits</th>\n";
 	echo "<th rowspan='2'>Priorité<br />d'affichage</th>\n";
 	echo "<th rowspan='2'>Catégorie</th>\n";
@@ -944,16 +979,16 @@ for($i=0;$i<10;$i++){
 		echo "<tr id='tr_enseignement_$cpt_grp' class='lig$alt white_hover'>\n";
 		// Suppression
 		echo "<td>";
-		echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe".add_token_in_url()."'><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
+		echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Supprimer cet enseignement\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
 		echo "</td>\n";
 
 		// Enseignement
 		echo "<td class='norme' style='text-align:left;'>";
 		echo "<strong>";
 		if ($total == "1") {
-			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe'>";
+			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement\">";
 		} else {
-			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement'>";
+			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement\">";
 		}
 		echo $group["description"] . "</a></strong>";
 		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".$group["description"]."\" />\n";
@@ -975,13 +1010,28 @@ for($i=0;$i<10;$i++){
 			echo "</em>)";
 		}
 
+		// 20130412
+		if($afficher_champs_modif_nom_groupe=="y") {
+			echo "<br />
+			<input type='hidden' name='afficher_champs_modif_nom_groupe' value='y' />
+			<table>
+				<tr><td style='border:0px; text-align:left;'>Nom court&nbsp;:</td><td style='border:0px'><input type='text' name='name_grp[".$group["id"]."]' value=\"".$group["name"]."\" onchange='changement()' /></td></tr>
+				<tr><td style='border:0px; text-align:left;'>Nom complet&nbsp;:</td><td style='border:0px'><input type='text' name='description_grp[".$group["id"]."]' value=\"".$group["description"]."\" onchange='changement()' /></td></tr>
+			</table>\n";
+		}
+		else {
+			echo "<input type='hidden' name='afficher_champs_modif_nom_groupe' value='n' />\n";
+		}
+
 		$first = true;
 		foreach($current_group["profs"]["list"] as $prof) {
 			if ($first) {echo "<br />";}
 			if (!$first) {echo ", ";}
+			echo "<a href='../utilisateurs/modify_user.php?user_login=".$current_group["profs"]["users"][$prof]["login"]."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modification de l'utilisateur\" style='color:black; font-size:small;'>";
 			echo casse_mot($current_group["profs"]["users"][$prof]["prenom"],'majf2');
 			echo " ";
 			echo $current_group["profs"]["users"][$prof]["nom"];
+			echo "</a>";
 	
 			if(in_array($current_group["profs"]["users"][$prof]["login"],$tab_prof_suivi)) {
 				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
@@ -999,7 +1049,7 @@ for($i=0;$i<10;$i++){
 				$inscrits = count($current_group["eleves"][$period["num_periode"]]["list"]);
 
 				echo "<td>";
-				echo "<a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">" . $inscrits . "</a>";
+				echo "<a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier la liste des élèves inscrits dans cet enseignement\">" . $inscrits . "</a>";
 				echo "</td>\n";
 			}
 		}

@@ -40,9 +40,15 @@ echo '
 		<option value="aucun">Liste des créneaux</option>
 ';
 // On appele la liste des créneaux
-$query = mysql_query("SELECT * FROM edt_creneaux WHERE type_creneaux != 'pause' AND type_creneaux != 'repas' ORDER BY heuredebut_definie_periode")
+
+// Certains cours peuvent démarrer sur la période du repas (en décalé)
+//$sql="SELECT * FROM edt_creneaux WHERE type_creneaux != 'pause' AND type_creneaux != 'repas' ORDER BY heuredebut_definie_periode";
+$sql="SELECT * FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+
+$query = mysql_query($sql)
 			OR trigger_error('Erreur dans la recherche des créneaux : '.mysql_error());
 
+$cpt_creneau_cours=0;
 while($creneaux = mysql_fetch_array($query)) {
 	// On teste pour le selected
 	// Dans le cas de edt_init_csv2.php, on modifie la forme des heures de début de créneau
@@ -80,7 +86,20 @@ while($creneaux = mysql_fetch_array($query)) {
 	$heure_deb = mb_substr($creneaux["heuredebut_definie_periode"], 0, -3);
 
 	echo '
-		<option value="'.$creneaux["id_definie_periode"].'"'.$selected.'>'.$creneaux["nom_definie_periode"].' : '.$heure_deb.'</option>';
+		<option value="'.$creneaux["id_definie_periode"].'"'.$selected;
+	if($creneaux["type_creneaux"]=='cours') {
+		if($cpt_creneau_cours%2==0) {
+			echo " style='background-color:#88C7FF;' title=\"Créneau de type 'cours'\"";
+		}
+		else {
+			echo " style='background-color:#B7DDFF;' title=\"Créneau de type 'cours'\"";
+		}
+		$cpt_creneau_cours++;
+	}
+	else {
+		echo " style='background-color:grey;' title=\"Créneau de type 'repas'\"";
+	}
+	echo '>'.$creneaux["nom_definie_periode"].' : '.$heure_deb.'</option>';
 }
 
 echo '

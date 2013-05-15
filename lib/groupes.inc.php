@@ -294,7 +294,7 @@ function get_profs_for_group($_id_groupe) {
 		$civilite = mysql_result($get_profs, $i, "civilite");
 		$temp["list"][] = $p_login;
 		$temp["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
-		$temp["proflist_string"].=$civilite." ".$p_nom." ".my_strtoupper(mb_substr($p_prenom,0,1));
+		$temp["proflist_string"].=$civilite." ".casse_mot($p_nom,'maj')." ".my_strtoupper(mb_substr($p_prenom,0,1));
 	}
 
 	return $temp;
@@ -446,8 +446,8 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 			for ($i=0;$i<$nb;$i++){
 				if($i>0) {$temp["profs"]["proflist_string"].=", ";}
 				$p_login = mysql_result($get_profs, $i, "login");
-				$p_nom = mysql_result($get_profs, $i, "nom");
-				$p_prenom = mysql_result($get_profs, $i, "prenom");
+				$p_nom = casse_mot(mysql_result($get_profs, $i, "nom"),'maj');
+				$p_prenom = casse_mot(mysql_result($get_profs, $i, "prenom"),'majf2');
 				$civilite = mysql_result($get_profs, $i, "civilite");
 				$temp["profs"]["list"][] = $p_login;
 				$temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);

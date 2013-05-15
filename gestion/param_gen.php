@@ -611,6 +611,16 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['FiltrageStrictAlphaNomPrenomPourLogin'])) {
+			if(($_POST['FiltrageStrictAlphaNomPrenomPourLogin']!='y')&&($_POST['FiltrageStrictAlphaNomPrenomPourLogin']!='n')) {
+				$msg .= "Choix invalide pour le filtrage des caractères lors de la génération de login !";
+			}
+			else {
+				if (!saveSetting("FiltrageStrictAlphaNomPrenomPourLogin", $_POST['FiltrageStrictAlphaNomPrenomPourLogin'])) {
+					$msg .= "Erreur lors de l'enregistrement du choix de filtrage des caractères lors de la génération de login !";
+				}
+			}
+		}
 
 		if (isset($_POST['unzipped_max_filesize'])) {
 			$unzipped_max_filesize=$_POST['unzipped_max_filesize'];
@@ -1130,6 +1140,21 @@ echo add_token_field();
 				if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type="nnnnnnnnnnnnnnnnnnnn";}
 				echo champ_input_choix_format_login('mode_generation_login_responsable', $default_login_gen_type);
 			?>
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<a name='filtrage_strict_nom_prenom_pour_login'></a>
+		Filtrer strictement des noms et prénoms pour la génération de logins&nbsp;:<br />
+		(<em>on ne garde que les caractères alphabétiques (on supprime les espaces, tirets,...)</em>)
+		<span class="cellTab plusPetit">
+			<span class="cellTab">
+				<input type="radio" name="FiltrageStrictAlphaNomPrenomPourLogin" id="FiltrageStrictAlphaNomPrenomPourLogin_y" value="y" <?php if(getSettingAOui("FiltrageStrictAlphaNomPrenomPourLogin")){echo "checked='checked'";} ?> onchange='changement()' />
+				<label for='FiltrageStrictAlphaNomPrenomPourLogin_y' style='cursor: pointer;'>Oui</label>
+				<br />
+				<input type="radio" name="FiltrageStrictAlphaNomPrenomPourLogin" id="FiltrageStrictAlphaNomPrenomPourLogin_n" value="n" <?php if(!getSettingAOui("FiltrageStrictAlphaNomPrenomPourLogin")){echo "checked='checked'";} ?> onchange='changement()' />
+				<label for='FiltrageStrictAlphaNomPrenomPourLogin_n' style='cursor: pointer;'>Non</label>
+			</span>
 		</span>
 	</p>
 

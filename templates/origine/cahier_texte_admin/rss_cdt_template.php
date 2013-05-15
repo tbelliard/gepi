@@ -142,6 +142,45 @@ echo add_token_field();
 	  <label for="autoRssCdtResp">
 		Les responsables peuvent utiliser le flux RSS des cahiers de textes des élèves dont ils sont responsables.
 	  </label>
+
+	  <br />
+	  <input type="checkbox"
+			 id="autoRssCdtScol"
+			 name="rss_cdt_scol"
+			 value="y"
+			 onclick="changementDisplay('accesScol', '');"
+			 onchange='document.getElementById("form_rss").submit();'
+			<?php echo $checked_scol; ?> />
+	  <label for="autoRssCdtScol">
+		Les comptes scolarité peuvent voir (<em>et donc consulter</em>) le flux RSS des cahiers de textes des élèves (*).
+	  </label>
+
+	  <br />
+	  <input type="checkbox"
+			 id="autoRssCdtCpe"
+			 name="rss_cdt_cpe"
+			 value="y"
+			 onclick="changementDisplay('accesCpe', '');"
+			 onchange='document.getElementById("form_rss").submit();'
+			<?php echo $checked_cpe; ?> />
+	  <label for="autoRssCdtCpe">
+		Les comptes cpe peuvent voir (<em>et donc consulter</em>) le flux RSS des cahiers de textes des élèves (*).
+	  </label>
+
+	  <br />
+	  <input type="checkbox"
+			 id="autoRssCdtPP"
+			 name="rss_cdt_pp"
+			 value="y"
+			 onclick="changementDisplay('accesPP', '');"
+			 onchange='document.getElementById("form_rss").submit();'
+			<?php echo $checked_pp; ?> />
+	  <label for="autoRssCdtPP">
+		Les comptes <?php echo getSettingValue('gepi_prof_suivi');?> peuvent voir (<em>et donc consulter</em>) le flux RSS des cahiers de textes des élèves (*).
+	  </label>
+	  <br />
+	  <br />
+	  (*)<em> depuis la page de <a href='../eleves/visu_eleve.php' target='_blank'>consultation des fiches élèves</a>, pour par exemple transmettre l'adresse du flux à un élève/responsable qui aurait du mal à se connecter</em>.
 	</p>
 	</fieldset>
   </form>
@@ -164,6 +203,7 @@ echo add_token_field();
 		  Les élèves (<em>et/ou responsables selon ce qui est coché ci-dessus</em>) récupèrent l'adresse (<em>url</em>) d'abonnement directement par leur accès à Gepi
 		</label>
 		<br />
+
 		<input type="radio"
 			   id="rssAccesEle2"
 			   name="rss_acces_ele"
@@ -216,7 +256,7 @@ echo add_token_field();
 			   onchange='document.getElementById("form_rss_email").submit();'
 			  <?php echo $style_email_prof; ?> />
 		<label for="rss_email_prof">
-			Si le professeur autorise la présentation de son adresse email aux utilisateurs non personnels de l'établissement, utiliser son adresse email dans les notices concernants ses enseignements plutôt que celle ci-dessus utilisée par défaut (<em>pour les professeurs n'acceptant pas la présentation de leur adresse email</em>).
+			Si le professeur autorise la présentation de son adresse email aux utilisateurs non personnels de l'établissement, utiliser son adresse email dans les notices concernant ses enseignements plutôt que celle ci-dessus utilisée par défaut (<em>pour les professeurs n'acceptant pas la présentation de leur adresse email</em>).
 		</label>
 		<br />
 
@@ -224,7 +264,7 @@ echo add_token_field();
 	</form>
   </div>
 
-
+  <a name='rss_initialisation_cas_par_cas'></a>
   <div id="selectEleRSS"<?php echo $style_ele; ?>>
 	<form id="form_rss_selection_ele" action="rss_cdt_admin.php" method="post">
 	  <fieldset style='border: 1px solid grey; margin-bottom:0.5em; background-image: url("../images/background/opacite50.png");'>

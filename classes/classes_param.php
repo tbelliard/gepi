@@ -359,7 +359,24 @@ if (isset($_POST['is_posted'])) {
 									$sql="SELECT 1=1 FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$professeur_nouvel_enseignement' AND jpm.id_matiere='$matiere_nouvel_enseignement'";
 									$verif=mysql_query($sql);
 									if(mysql_num_rows($verif)==0) {
-										$professeur_nouvel_enseignement="";
+										// Si JavaScript est inactif, on peut proposer un prof qui n'est pas professeur dans la matière.
+										// Associons le alors à la matière.
+
+										$sql="SELECT ordre_matieres FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$professeur_nouvel_enseignement' ORDER BY ordre_matieres DESC LIMIT 1;";
+										$res_ordre_matieres=mysql_query($sql);
+										if(mysql_num_rows($res_ordre_matieres)==0) {
+											$tmp_ordre_matieres=1;
+										}
+										else {
+											$tmp_ordre_matieres=mysql_result($res_ordre_matieres,0,"ordre_matieres")+1;
+										}
+
+										$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$professeur_nouvel_enseignement', id_matiere='$matiere_nouvel_enseignement', ordre_matieres='$tmp_ordre_matieres';";
+										$insert=mysql_query($sql);
+										if(!$insert) {
+											$professeur_nouvel_enseignement="";
+											$msg.="Erreur lors de l'association de ".civ_nom_prenom($professeur_nouvel_enseignement)." avec la matière '$matiere_nouvel_enseignement'";
+										}
 									}
 								}
 
@@ -398,6 +415,45 @@ if (isset($_POST['is_posted'])) {
 									$reg_professeurs = array();
 									if($professeur_nouvel_enseignement!="") {
 										$reg_professeurs[]=$professeur_nouvel_enseignement;
+									}
+
+									if(isset($_POST['declarer_pp_professeur_nouvel_enseignement'])) {
+										$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe';";
+										$res_pp=mysql_query($sql);
+										if(mysql_num_rows($res_pp)>0) {
+											while($lig_pp=mysql_fetch_object($res_pp)) {
+												if(!in_array($lig_pp->professeur, $reg_professeurs)) {
+													$sql="SELECT 1=1 FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$lig_pp->professeur' AND jpm.id_matiere='$matiere_nouvel_enseignement'";
+													$verif=mysql_query($sql);
+													if(mysql_num_rows($verif)==0) {
+														// Si JavaScript est inactif, on peut proposer un prof qui n'est pas professeur dans la matière.
+														// Associons le alors à la matière.
+
+														$sql="SELECT ordre_matieres FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$lig_pp->professeur' ORDER BY ordre_matieres DESC LIMIT 1;";
+														$res_ordre_matieres=mysql_query($sql);
+														if(mysql_num_rows($res_ordre_matieres)==0) {
+															$tmp_ordre_matieres=1;
+														}
+														else {
+															$tmp_ordre_matieres=mysql_result($res_ordre_matieres,0,"ordre_matieres")+1;
+														}
+
+														$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$lig_pp->professeur', id_matiere='$matiere_nouvel_enseignement', ordre_matieres='$tmp_ordre_matieres';";
+														$insert=mysql_query($sql);
+														if(!$insert) {
+															$msg.="Erreur lors de l'association de ".civ_nom_prenom($lig_pp->professeur)." avec la matière '$matiere_nouvel_enseignement'.<br />";
+															//$msg.="$sql<br />";
+														}
+														else {
+															$reg_professeurs[]=$lig_pp->professeur;
+														}
+													}
+													else {
+														$reg_professeurs[]=$lig_pp->professeur;
+													}
+												}
+											}
+										}
 									}
 
 									$nouvel_enseignement_eleves=isset($_POST['nouvel_enseignement_eleves']) ? $_POST['nouvel_enseignement_eleves'] : "tous";
@@ -574,9 +630,10 @@ if (isset($_POST['is_posted'])) {
 							}
 							else {
 								//$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe');";
-								//$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgm.id_groupe FROM j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."');";
+								$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT jgm.id_groupe FROM j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."');";
+
 							}
-							echo "$sql<br />";
+							//echo "$sql<br />";
 							$res_modif_coef=mysql_query($sql);
 							if(!$res_modif_coef) {
 								$msg.="Erreur lors de la requête<br />$sql<br />";
@@ -1101,14 +1158,43 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 
 			echo "<tr>\n";
 			echo "<td colspan='2'>&nbsp;&nbsp;&nbsp;</td>\n";
+
 			echo "<td>\n";
 			echo "Professeur&nbsp;: ";
+			echo "</td>\n";
+
+			echo "<td id='td_prof_nouvel_enseignement'>\n";
+			echo "<span id='span_prof_nouvel_enseignement'>";
+			// Pour fonctionner sans JavaScript:
+			$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs WHERE u.statut='professeur' AND u.etat='actif';";
+			$res_prof=mysql_query($sql);
+			if(mysql_num_rows($res_prof)==0) {
+				echo "&nbsp;";
+			}
+			else {
+				echo "<select name='professeur_nouvel_enseignement'>\n";
+				if(mysql_num_rows($res_prof)>0) {
+					while($lig_prof=mysql_fetch_object($res_prof)) {
+						echo "<option value='$lig_prof->login'>".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</option>\n";
+					}
+				}
+				echo "</select>";
+			}
+			echo "</span><br />\n";
+
+			echo "<input type='checkbox' name='declarer_pp_professeur_nouvel_enseignement' id='declarer_pp_professeur_nouvel_enseignement' value='y' /><label for='declarer_pp_professeur_nouvel_enseignement'> Déclarer le ou les ".getSettingValue('gepi_prof_suivi')." professeur(s) de cet enseignement.</label>";
 
 			echo "<script type='text/javascript'>
 				// <![CDATA[
+
+				// Au chargement, on vide le champ de choix du prof pour ne proposer que les profs de la matière, une fois une matière choisie
+				if(document.getElementById('span_prof_nouvel_enseignement')) {
+					document.getElementById('span_prof_nouvel_enseignement').innerHTML='Choisissez d\'abord une matière.';
+				}
+
 				function maj_prof_enseignement() {
 					matiere=document.getElementById('matiere_nouvel_enseignement').value;
-					new Ajax.Updater($('td_prof_nouvel_enseignement'),'classes_ajax_lib.php?mode=classes_param&matiere='+matiere,{method: 'get'});
+					new Ajax.Updater($('span_prof_nouvel_enseignement'),'classes_ajax_lib.php?mode=classes_param&matiere='+matiere,{method: 'get'});
 
 					//maj_nom_descr_enseignement();
 				}
@@ -1125,9 +1211,6 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 				//]]>
 			</script>\n";
 
-			echo "</td>\n";
-			echo "<td id='td_prof_nouvel_enseignement'>\n";
-			echo "&nbsp;";
 			echo "</td>\n";
 		}
 	?>

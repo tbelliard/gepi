@@ -315,7 +315,8 @@ else {
 				//echo "<a name='ancre_$j'></a>";
 				echo strtoupper($tabmatieres[$j][0])."</td>\n";
 
-				$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet';";
+				//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet';";
+				$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' ORDER BY id;";
 				$res_notanet_corresp=mysql_query($sql);
 				if(mysql_num_rows($res_notanet_corresp)>0){
 					$lig_notanet_corresp=mysql_fetch_object($res_notanet_corresp);
@@ -370,7 +371,8 @@ else {
 
 					//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' ORDER BY matiere;";
 					//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' ORDER BY matiere;";
-					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' AND matiere!='0' ORDER BY matiere;";
+					//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' AND matiere!='0' ORDER BY matiere;";
+					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' AND matiere!='0' ORDER BY id;";
 					//echo "$sql<br />";
 					$res_test=mysql_query($sql);
 					if(mysql_num_rows($res_test)>0){
@@ -437,8 +439,23 @@ else {
 		echo "<input type='submit' name='choix_matieres' value='Enregistrer' />\n";
 		echo "</form>\n";
 
+		echo "<br />";
 		echo "<p><i>NOTES:</i></p>\n";
 		echo "<ul>\n";
+		echo "<li>
+	<p><span style='color:red'><span style='text-decoration:blink;font-weight:bold;'>ATTENTION</span>&nbsp;: Nouveauté importante pour l'enseignement d'EPS pour le brevet 2013</span>.</p>
+	<p style='color:blue'>Attribution de la note d’EPS (<em>Note de service N°2012-096 du 22 juin 2012</em>).<br />
+	La note à prendre en compte est la moyenne des notes obtenues lors de l’évaluation de trois APSA (<em>Activités Physiques Sportives et Artistiques</em>) retenues pour le DNB par l’enseignant parmi la liste officielle nationale et académique, elle ne correspond pas nécessairement à la moyenne des notes trimestrielles obtenues par l’élève dans le cadre de l’enseignement d’EPS de la classe de troisième.</p>
+	<p>Pour gérer cela dans Gepi dans les meilleures conditions, voilà ce qui est préconisé&nbsp;:</p>
+	<ol>
+		<li>créer dans Gepi une matière <strong>EPS_brevet</strong> distincte de la matière <strong>EPS</strong> pour éviter des problèmes d'identification de l'enseignement à prendre en compte par le module notanet</li>
+		<li>associer à cette matière les professeurs d'EPS (<em>au moins ceux qui enseignent en 3ème</em>)</li>
+		<li>créer dans Gepi, pour chacune des classes de 3ème, un enseignement EPS_brevet, coefficient 0 avec le même professeur que l'enseignement d'EPS</li>
+		<li>inviter le professeur à créer dans l'enseignement d'<strong>EPS_brevet</strong>, en période 3, les 3 contrôles qu'il aura choisi et l'inviter à y retaper les notes.<br />
+		(<em>qu'il n'y ait pas de note aux premiers et deuxième trimestre n'a pas d'importance</em>)
+		</li>
+	</ol>
+</li>\n";
 		echo "<li><p>La désignation comme optionnelle de certaines matières ci-dessus ne correspond pas nécessairement au caractère optionnel d'une matière dans NOTANET, mais au fait que l'on ne considère pas comme une erreur le fait qu'un élève n'ait pas de moyenne saisie dans cette matière (<i>qu'on ne trouve pas de moyenne dans la table 'matiere_notes'</i>).</p></li>\n";
 		echo "<li><p>Certaines erreurs seront sans doute signalées parce que certains élèves sont dispensés, absents,... sur certaines matières.<br />Il sera alors possible de saisir les valeurs autorisées DI, AB,... avant de générer un fichier CSV complet.</p></li>\n";
 		//echo "<li><p></p></li>\n";
@@ -446,7 +463,7 @@ else {
 		(<i>on parle de sélection multiple</i>)</p></li>\n";
 		echo "<li><p>Dans le cas du 'SOCLE B2I', il n'est pas nécessaire d'associer une matière.<br />L'affectation de la 'note' (<i>MS, ME, MN ou AB</i>) ne se fait pas par extraction des notes de l'année.</p>
 		<p>Pour le 'SOCLE NIVEAU A2 DE LANGUE', les matières ne sont pas exploitées pour le filtrage... seul le statut 'imposee' ou 'optionnelle' selon le type de brevet est utilisé.</p></li>\n";
-		echo "<li><p>Dans certains établissements, la matière Education Civique est considérée comme une sous-matière de Histoire-géographie et EDCIV ne fait alors pas l'objet d'une moyenne séparée de HIGEO.<br />Dans ce cas, il convient d'associer les deux matières notanet Histoire-Géo et Education civique à HIGEO.<br />Dans le cas contraire, l'export CSV sera refusé par l'application Notanet académique.</p></li>\n";
+		echo "<li><p>Dans certains établissements, la matière Education Civique est considérée comme une sous-matière de Histoire-géographie et EDCIV ne fait alors pas l'objet d'une moyenne séparée de HIGEO.<br />Dans ce cas, il convient d'associer les deux matières notanet Histoire-Géo et Education civique à la matière gepi HIGEO.<br />Dans le cas contraire, l'export CSV sera refusé par l'application Notanet académique.</p></li>\n";
 
 		if(($type_brevet==2)||($type_brevet==3)||($type_brevet==4)||($type_brevet==5)||($type_brevet==6)) {
 				echo "<li><p>Dans certains établissements, on enseigne la LV1, mais pas les SCPHY pour les brevets PRO.<br />

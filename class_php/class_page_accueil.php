@@ -737,6 +737,20 @@ if(getSettingAOui('active_bulletins')) {
 			  "Visualisation des moyennes des carnets de notes",
 			  "Cet outil vous permet de visualiser à l'écran les moyennes calculées d'après le contenu des carnets de notes, indépendamment de la saisie des moyennes sur les bulletins.");
 
+	if (($condition)&&(getSettingAOui('PeutDonnerAccesCNPeriodeCloseScol'))) {
+		if ($this->statutUtilisateur=='scolarite'){
+		  $this->creeNouveauItem("/cahier_notes/autorisation_exceptionnelle_saisie.php",
+				  "Autorisation exceptionnelle de saisie de CN",
+				  "Permet d'autoriser exceptionnellement un enseignant à saisir/corriger des notes du carnet de notes pour un enseignement sur une période partiellement close.");
+		}
+	}
+
+	if ($this->statutUtilisateur=='administrateur'){
+		$this->creeNouveauItem("/cahier_notes/autorisation_exceptionnelle_saisie.php",
+			"Autorisation exceptionnelle de saisie de CN",
+			"Permet d'autoriser exceptionnellement un enseignant à saisir/corriger des notes du carnet de notes pour un enseignement sur une période partiellement close.");
+	}
+
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Relevés de notes",'images/icons/releve.png');
 	  return true;
@@ -1079,6 +1093,13 @@ if(getSettingAOui('active_bulletins')) {
 		  $this->creeNouveauItem("/bulletin/autorisation_exceptionnelle_saisie_app.php",
 				  "Autorisation exceptionnelle de saisie d'appréciations",
 				  "Permet d'autoriser exceptionnellement un enseignant à proposer une saisie d'appréciations pour un enseignement sur une période partiellement close.");
+		}
+
+
+		if (($this->statutUtilisateur=='administrateur')||(($this->statutUtilisateur=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
+			$this->creeNouveauItem("/bulletin/autorisation_exceptionnelle_saisie_note.php",
+			"Autorisation exceptionnelle de saisie de note",
+			"Permet d'autoriser exceptionnellement un enseignant à saisir/corriger des notes de bulletins pour un enseignement sur une période partiellement close.");
 		}
 
 		if ($this->statutUtilisateur!='professeur'){
@@ -2019,55 +2040,6 @@ if(getSettingAOui('active_bulletins')) {
   }
 
 
-}
-
-
-/**
- * Retourne l'URI des élèves pour les flux rss
- *
- * @global string
- * @param string $eleve Login de l'élève
- * @param string $https La page est-elle sécurisée ? en https si 'y'
- * @param string $type 'cdt' ou ''
- * @return string
- * @see getSettingValue()
- */
-function retourneUri($eleve, $https, $type){
-
-	global $gepiPath;
-	$rep = array();
-
-	// on vérifie que la table en question existe déjà
-	$test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
-	if ($test_table >= 1) {
-
-		$sql = "SELECT user_uri FROM rss_users WHERE user_login = '".$eleve."' LIMIT 1";
-		$query = mysql_query($sql);
-		$nbre = mysql_num_rows($query);
-		if ($nbre == 1) {
-			$uri = mysql_fetch_array($query);
-			if ($https == 'y') {
-				$web = 'https://';
-			}else{
-				$web = 'http://';
-			}
-			if ($type == 'cdt') {
-				$rep["uri"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$eleve.'&amp;type=cdt&amp;uri='.$uri["user_uri"];
-				$rep["text"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$eleve.'&amp;type=cdt&amp;uri='.$uri["user_uri"];
-			}
-
-		}else{
-			$rep["text"] = 'erreur1';
-			$rep["uri"] = '#';
-		}
-	}else{
-
-		$rep["text"] = 'Demandez à votre administrateur de générer les URI.';
-		$rep["uri"] = '#';
-
-	}
-
-	return $rep;
 }
 
 ?>

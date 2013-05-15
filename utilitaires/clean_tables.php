@@ -3562,14 +3562,17 @@ else {
 		echo "<hr />\n";
 	
 		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'absences_rb', 'absences_repas' et 'absences_eleves' du module abs1 de Gepi, ainsi que les tables a_agregation_decompte, a_notifications, a_saisies, a_saisies_version, a_traitements du module abs2 : </p>\n";
-		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\" id='form_suppr_abs'>\n";
 		echo add_token_field();
 		echo "<center>\n";
 		echo "<input type=submit value=\"Vider les tables enregistrements du module absences\" />\n";
+		include("../lib/calendrier/calendrier.class.php");
+		$cal = new Calendrier("form_suppr_abs", "date_limite");
 		$annee=strftime("%Y");
 		$mois=strftime("%m");
 		if($mois<=7) {$annee--;}
-		echo "pour les absences antérieures au <input type='text' name='date_limite' size='10' value='31/07/$annee' />\n";
+		echo "pour les absences antérieures au <input type='text' name='date_limite' id='date_limite' size='10' value='31/07/$annee' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>";
 		echo "</center>\n";
 		echo "<input type='hidden' name='action' value='clean_absences' />\n";
 		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";

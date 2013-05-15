@@ -205,6 +205,10 @@ if (count($current_group["classes"]["list"]) > 1) {
  */
 include "../lib/periodes.inc.php";
 
+$acces_exceptionnel_saisie=false;
+if($_SESSION['statut']=='professeur') {
+	$acces_exceptionnel_saisie=acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $periode_num);
+}
 /*
 // Pour gérer les classes avec des nombres de périodes différents
 while((!isset($current_group["classe"]["ver_periode"]["all"][$periode_num]))&&($periode_num>0)) {
@@ -219,9 +223,11 @@ if($periode_num<1) {
 
 // On teste si la periode est vérouillée !
 if (($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) and (isset($id_devoir)) and ($id_devoir!='') ) {
-	$mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes dont la période est bloquée !");
-	header("Location: index.php?msg=$mess");
-	die();
+	if(!$acces_exceptionnel_saisie) {
+		$mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes dont la période est bloquée !");
+		header("Location: index.php?msg=$mess");
+		die();
+	}
 }
 
 
@@ -352,13 +358,16 @@ if (isset($_POST['is_posted'])) {
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
+	$appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
+	$note_sur_verif = mysql_result($appel_note_sur,0 ,'note_sur');
+
 	for($i=0;$i<$indice_max_log_eleve;$i++){
 		if(isset($log_eleve[$i])) {
 			// La période est-elle ouverte?
 			$reg_eleve_login=$log_eleve[$i];
 			if(isset($current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"])){
 				$id_classe = $current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"];
-				if ($current_group["classe"]["ver_periode"][$id_classe][$periode_num] == "N") {
+				if (($current_group["classe"]["ver_periode"][$id_classe][$periode_num] == "N")||($acces_exceptionnel_saisie)) {
 					$note=$note_eleve[$i];
 					$elev_statut='';
 
@@ -379,8 +388,10 @@ if (isset($_POST['is_posted'])) {
 					}
 					else if (my_ereg ("^[0-9\.\,]{1,}$", $note)) {
 						$note = str_replace(",", ".", "$note");
-                                                $appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
-                                                $note_sur_verif = mysql_result($appel_note_sur,0 ,'note_sur');
+						/*
+						$appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
+						$note_sur_verif = mysql_result($appel_note_sur,0 ,'note_sur');
+						*/
 						if (($note < 0) or ($note > $note_sur_verif)) {
 							$note = '';
 							$elev_statut = 'v';
@@ -394,12 +405,58 @@ if (isset($_POST['is_posted'])) {
 					$test_eleve_note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$reg_eleve_login' AND id_devoir = '$id_devoir')");
 					$test = mysql_num_rows($test_eleve_note_query);
 					if ($test != "0") {
+						if($current_group["classe"]["ver_periode"][$id_classe][$periode_num] != "N") {
+							// On récupère la note précédente de l'élève
+							$lig_old_note_ele=mysql_fetch_object($test_eleve_note_query);
+
+							if(($lig_old_note_ele->note!=$note)||($lig_old_note_ele->statut!=$elev_statut)) {
+								$texte="Modification de note au devoir n°$id_devoir pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
+								if(($lig_old_note_ele->statut!="")) {
+									$texte.=$lig_old_note_ele->statut." -> ";
+								}
+								else {
+									$texte.=$lig_old_note_ele->note." -> ";
+								}
+								if($elev_statut!="") {
+									if($elev_statut=="v") {
+										$texte.="(vide)";
+									}
+									else {
+										$texte.=$elev_statut;
+									}
+								}
+								else {
+									$texte.=$note;
+								}
+								$texte.=".";
+								$retour=log_modifs_acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $periode_num, $texte);
+							}
+						}
+
 						$sql="UPDATE cn_notes_devoirs SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_devoir='".$id_devoir."');";
 						//echo "$sql<br />";
 						$register = mysql_query($sql);
+
 					} else {
 						$sql="INSERT INTO cn_notes_devoirs SET login='".$reg_eleve_login."', id_devoir='".$id_devoir."',note='".$note."',statut='".$elev_statut."',comment='".$comment."';";
 						$register = mysql_query($sql);
+
+						if($current_group["classe"]["ver_periode"][$id_classe][$periode_num] != "N") {
+							$texte="Saisie de note au devoir n°$id_devoir pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
+							if(($elev_statut!="")) {
+								if($elev_statut=="v") {
+									$texte.="(vide)";
+								}
+								else {
+									$texte.=$elev_statut;
+								}
+							}
+							else {
+								$texte.=$note;
+							}
+							$texte.=".\n";
+							$retour=log_modifs_acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $periode_num, $texte);
+						}
 					}
 
 				}
@@ -428,7 +485,7 @@ if (isset($_POST['is_posted'])) {
 if((isset($_GET['recalculer']))&&(isset($id_conteneur))&&(isset($periode_num))&&(isset($current_group))) {
 	check_token();
 
-	if((isset($id_conteneur))&&($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)) {
+	if((isset($id_conteneur))&&(($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie))) {
 
 		recherche_enfant($id_conteneur);
 
@@ -723,7 +780,7 @@ if((isset($id_devoir))&&($id_devoir!=0)) {
 	//echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Export PDF du Carnet de Notes\"> CN PDF </a>|";
 }
 
-if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
+if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
 	//echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\">Créer une boîte</a>|";
 	echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> Créer un";
 
@@ -1014,7 +1071,7 @@ foreach ($liste_eleves as $eleve) {
 
 			$mess_note[$i][$k].="<input type='hidden' name='log_eleve[$i]' id='log_eleve_$i' value='$eleve_login[$i]' />\n";
 			
-			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N") {
+			if (($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N")||($acces_exceptionnel_saisie)) {
 				
 				$indice_ele_saisie[$i]=$num_id;
 				$mess_note[$i][$k] .= "<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve[$i]\" ";
@@ -1057,7 +1114,7 @@ foreach ($liste_eleves as $eleve) {
 					}
 				}
 			}
-			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N") {
+			if (($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N")||($acces_exceptionnel_saisie)) {
 				$mess_note[$i][$k] = $mess_note[$i][$k]."\" onfocus=\"javascript:this.select()";
 
 				if(getSettingValue("gepi_pmv")!="n"){
@@ -1083,7 +1140,7 @@ foreach ($liste_eleves as $eleve) {
 			}
 			$mess_note[$i][$k] .= "</td>\n";
 			$mess_comment[$i][$k] = "<td class='cn' bgcolor='$couleur_devoirs'>";
-			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N"){
+			if (($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N")||($acces_exceptionnel_saisie)) {
 				if ((isset($appreciations_import[$current_displayed_line])) and  ($appreciations_import[$current_displayed_line] != '')) {
 					$eleve_comment = $appreciations_import[$current_displayed_line];
 				}
@@ -1205,7 +1262,7 @@ if ($id_devoir==0) {
 		else{
 			echo "<td class=cn valign='top'><center><b>&nbsp;</b><br />\n";
 		}
-		if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 3){
+		if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 3)||($acces_exceptionnel_saisie)) {
 			echo "<a href=\"./add_modif_conteneur.php?mode_navig=retour_saisie&amp;id_conteneur=$id_sous_cont[$i]&amp;id_retour=$id_conteneur\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">Configuration</a><br />\n";
 		}
 
@@ -1216,7 +1273,7 @@ if ($id_devoir==0) {
 	}
 }
 // En mode saisie, on n'affiche que le devoir à saisir
-if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) and ($id_devoir==0)){
+if ((($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) and ($id_devoir==0)) {
 	if($nom_conteneur!=""){
 		echo "<td class=cn  valign='top'><center><b>$nom_conteneur</b>";
 
@@ -1258,7 +1315,7 @@ while ($i < $nb_dev) {
 		if ($coef[$i] != 0) {$tmp = " bgcolor = $couleur_calcul_moy ";} else {$tmp = '';}
 		$header_pdf[] = ($nom_dev[$i]." (".$display_date[$i].")");
 		$w_pdf[] = $w2;
-		if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
+		if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
 			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"Modifier les paramètres de cette évaluation (nom, coefficient, date, date de visibilité,...)\">$nom_dev[$i]</a></b><br /><font size=-2>(<em title=\"Date de l'évaluation\">$display_date[$i]</em>)</font>\n";
 			if($display_parents[$i]!=0) {
 				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes.
@@ -1320,7 +1377,7 @@ if ($id_devoir==0) {
 // En mode saisie, on n'affiche que le devoir à saisir
 if ($id_devoir==0) {
 	echo "<td class=cn valign='top'><center><b>Moyenne</b>\n";
-	if((isset($id_conteneur))&&($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)) {
+	if((isset($id_conteneur))&&(($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie))) {
 		echo "<br /><a href='".$_SERVER['PHP_SELF']."?id_conteneur=$id_conteneur&amp;recalculer=y".add_token_in_url()."'>Recalculer</a>";
 	}
 	echo "</center></td>\n";
@@ -1352,7 +1409,7 @@ while ($i < $nb_dev) {
 			echo "</center></td>\n";
 			echo "<td class=cn valign='top'>&nbsp;</td>\n";
 		} else {
-			if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
+			if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
 				echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev[$i]\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a>";
 
 				$sql="SELECT * FROM cc_dev WHERE id_cn_dev='$id_dev[$i]';";
@@ -1427,7 +1484,11 @@ while ($i < $nb_dev) {
 		}
 		echo "coef : ".number_format($coef[$i],1, ',', ' ');
 		if (($facultatif[$i] == 'B') or ($facultatif[$i] == 'N')) {echo "<br />Bonus";}
-		echo "</center></td>\n";
+		echo "</center>";
+
+		echo "<div style='float:right; width:16px;'><a href='copie_dev.php?id_devoir=".$id_dev[$i]."' onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"Copier le devoir et les notes vers une autre période ou un autre enseignement (Les notes ne sont copiées que si les élèves sont les mêmes).\"><img src='../images/icons/copy-16.png' width='16' height='16' /></a></div>";
+
+		echo"</td>\n";
 		if ($id_dev[$i] == $id_devoir) {
 			echo "<td class='cn' valign='top'>&nbsp;</td>\n";
 			$data_pdf[0][] = "";

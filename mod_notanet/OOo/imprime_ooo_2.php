@@ -48,7 +48,8 @@ include_once('../../lib/pclzip.lib.php');
 //Le chemin et le nom du fichier ooo à traiter (le modèle de document)
 switch($type_brevet){
 	case '0':
-		$nom_fichier_modele_ooo  ='fb_CLG_lv2.ods';
+		//$nom_fichier_modele_ooo  ='fb_CLG_lv2.ods';
+		$nom_fichier_modele_ooo  ='fb_serie_generale.ods';
 // Collège LV2
 	break;
 	case '1':

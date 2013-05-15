@@ -73,6 +73,13 @@ tr.white_hover:hover {
 	background-color:white;
 }
 
+.boireaus_alt tr:nth-child(even) {
+	background-color: #C8FFC8;
+}
+.boireaus_alt tr:nth-child(odd) {
+	background-color: #FFE6AA;
+}
+
 /*
 #messagerie {
 	width: 70%;

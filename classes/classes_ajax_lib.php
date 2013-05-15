@@ -61,10 +61,14 @@ if($mode=='classes_param') {
 			$res_prof=mysql_query($sql);
 
 			echo "<select name='professeur_nouvel_enseignement'>\n";
-			//echo "<option value=''>---</option>\n";
-			if(mysql_num_rows($res_prof)>0) {
+			// On laisse la possibilité de ne pas associer un des profs si jamais on compte associer le PP via un autre champ (checkbox)
+			echo "<option value=''>---</option>\n";
+			$nb_profs=mysql_num_rows($res_prof);
+			if($nb_profs>0) {
 				while($lig_prof=mysql_fetch_object($res_prof)) {
-					echo "<option value='$lig_prof->login'>".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</option>\n";
+					echo "<option value='$lig_prof->login'";
+					if($nb_profs==1) {echo " selected";}
+					echo ">".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</option>\n";
 				}
 			}
 			echo "</select>\n";

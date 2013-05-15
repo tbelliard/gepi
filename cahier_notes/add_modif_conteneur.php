@@ -105,8 +105,13 @@ $periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
  */
 include "../lib/periodes.inc.php";
 
+$acces_exceptionnel_saisie=false;
+if($_SESSION['statut']=='professeur') {
+	$acces_exceptionnel_saisie=acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $periode_num);
+}
+
 // On teste si la periode est vérouillée !
-if ($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) {
+if (($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1)&&(!$acces_exceptionnel_saisie)) {
     $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes dont la période est bloquée !");
     header("Location: index.php?msg=$mess");
     die();
@@ -116,7 +121,9 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
-
+if(!isset($msg)) {
+	$msg="";
+}
 
 // enregistrement des données
 if (isset($_POST['ok'])) {
@@ -124,7 +131,9 @@ if (isset($_POST['ok'])) {
     $reg_ok = "yes";
     $new='no';
     if (isset($_POST['new_conteneur']) and $_POST['new_conteneur'] == 'yes') {
-        $reg = mysql_query("insert into cn_conteneurs (id_racine,nom_court,parent) values ('$id_racine','nouveau','$id_racine')");
+        $sql="insert into cn_conteneurs (id_racine,nom_court,parent) values ('$id_racine','nouveau','$id_racine')";
+        //echo "$sql<br />";
+        $reg = mysql_query($sql);
         $id_conteneur = mysql_insert_id();
         if (!$reg)  $reg_ok = "no";
         $new='yes';
@@ -132,7 +141,9 @@ if (isset($_POST['ok'])) {
 
     if (isset($_POST['mode']) and ($_POST['mode']) and my_ereg("^[12]{1}$", $_POST['mode'])) {
         if ($_POST['mode'] == 1) $_SESSION['affiche_tous'] = 'yes';
-        $reg = mysql_query("UPDATE cn_conteneurs SET mode = '".$_POST['mode']."' WHERE id = '$id_conteneur'");
+        $sql="UPDATE cn_conteneurs SET mode = '".$_POST['mode']."' WHERE id = '$id_conteneur'";
+        //echo "$sql<br />";
+        $reg = mysql_query($sql);
         if (!$reg)  $reg_ok = "no";
     }
 
@@ -142,7 +153,9 @@ if (isset($_POST['ok'])) {
     } else {
         $nom_court = "Cont. ".$id_conteneur;
     }
-    $reg = mysql_query("UPDATE cn_conteneurs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '$id_conteneur'");
+    $sql="UPDATE cn_conteneurs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '$id_conteneur'";
+    //echo "$sql<br />";
+    $reg = mysql_query($sql);
     if (!$reg)  $reg_ok = "no";
 
 
@@ -153,24 +166,28 @@ if (isset($_POST['ok'])) {
         $nom_complet = $nom_court;
     }
 
-    $reg = mysql_query("UPDATE cn_conteneurs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '$id_conteneur'");
+    $sql="UPDATE cn_conteneurs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '$id_conteneur'";
+    //echo "$sql<br />";
+    $reg = mysql_query($sql);
     if (!$reg)  $reg_ok = "no";
 
     if ($_POST['description'])  {
-
-        $reg = mysql_query("UPDATE cn_conteneurs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '$id_conteneur'");
+        $sql="UPDATE cn_conteneurs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '$id_conteneur'";
+        //echo "$sql<br />";
+        $reg = mysql_query($sql);
         if (!$reg)  $reg_ok = "no";
     }
     if (isset($_POST['parent']))  {
         $parent = $_POST['parent'];
-
-        $reg = mysql_query("UPDATE cn_conteneurs SET parent = '".$parent."' WHERE id = '$id_conteneur'");
+        $sql="UPDATE cn_conteneurs SET parent = '".$parent."' WHERE id = '$id_conteneur'";
+        //echo "$sql<br />";
+        $reg = mysql_query($sql);
         if (!$reg)  $reg_ok = "no";
     }
 
     if (isset($_POST['coef'])) {
     	$tmp_coef=$_POST['coef'];
-		if((preg_match("/^[0-9]*$/", $coef))||(preg_match("/^[0-9]*\.[0-9]$/", $tmp_coef))) {
+		if((preg_match("/^[0-9]*$/", $tmp_coef))||(preg_match("/^[0-9]*\.[0-9]$/", $tmp_coef))) {
 			// Le coef a le bon format
 			//$msg.="Le coefficient proposé $tmp_coef est valide.<br />";
 		}
@@ -186,23 +203,33 @@ if (isset($_POST['ok'])) {
 			$msg.="Le coefficient proposé $tmp_coef est invalide. Mise à 1.0 du coefficient.<br />";
 			$tmp_coef="1.0";
 		}
-        $reg = mysql_query("UPDATE cn_conteneurs SET coef = '" . $tmp_coef . "' WHERE id = '$id_conteneur'");
+        $sql="UPDATE cn_conteneurs SET coef = '" . $tmp_coef . "' WHERE id = '$id_conteneur'";
+        //echo "$sql<br />";
+        $reg = mysql_query($sql);
         if (!$reg)  $reg_ok = "no";
     } else {
-        $reg = mysql_query("UPDATE cn_conteneurs SET coef = '0' WHERE id = '$id_conteneur'");
+        $sql="UPDATE cn_conteneurs SET coef = '0' WHERE id = '$id_conteneur'";
+        //echo "$sql<br />";
+        $reg = mysql_query($sql);
         if (!$reg)  $reg_ok = "no";
     }
 
     if ($_POST['ponderation']) {
-        $reg = mysql_query("UPDATE cn_conteneurs SET ponderation = '". $_POST['ponderation']."' WHERE id = '$id_conteneur'");
+        $sql="UPDATE cn_conteneurs SET ponderation = '". $_POST['ponderation']."' WHERE id = '$id_conteneur'";
+        //echo "$sql<br />";
+        $reg = mysql_query($sql);
         if (!$reg)  $reg_ok = "no";
     } else {
-        $reg = mysql_query("UPDATE cn_conteneurs SET ponderation = '0' WHERE id = '$id_conteneur'");
+        $sql="UPDATE cn_conteneurs SET ponderation = '0' WHERE id = '$id_conteneur'";
+        //echo "$sql<br />";
+        $reg = mysql_query($sql);
         if (!$reg)  $reg_ok = "no";
     }
 
     if (($_POST['precision']) and my_ereg("^(s1|s5|se|p1|p5|pe)$", $_POST['precision'])) {
-        $reg = mysql_query("UPDATE cn_conteneurs SET arrondir = '". $_POST['precision']."' WHERE id = '$id_conteneur'");
+        $sql="UPDATE cn_conteneurs SET arrondir = '". $_POST['precision']."' WHERE id = '$id_conteneur'";
+        //echo "$sql<br />";
+        $reg = mysql_query($sql);
         if (!$reg)  $reg_ok = "no";
     }
 
@@ -211,14 +238,18 @@ if (isset($_POST['ok'])) {
     } else {
         $display_parents = 0;
     }
-    $reg = mysql_query("UPDATE cn_conteneurs SET display_parents = '$display_parents' WHERE id = '$id_conteneur'");
+    $sql="UPDATE cn_conteneurs SET display_parents = '$display_parents' WHERE id = '$id_conteneur'";
+    //echo "$sql<br />";
+    $reg = mysql_query($sql);
     if (!$reg)  $reg_ok = "no";
     if (isset($_POST['display_bulletin'])) {
         $display_bulletin = 1;
     } else {
         $display_bulletin = 0;
     }
-    $reg = mysql_query("UPDATE cn_conteneurs SET display_bulletin = '$display_bulletin' WHERE id = '$id_conteneur'");
+    $sql="UPDATE cn_conteneurs SET display_bulletin = '$display_bulletin' WHERE id = '$id_conteneur'";
+    //echo "$sql<br />";
+    $reg = mysql_query($sql);
     if (!$reg)  $reg_ok = "no";
 
     //==========================================================
@@ -237,11 +268,14 @@ if (isset($_POST['ok'])) {
     //==========================================================
 
     if ($reg_ok=='yes') {
-        if ($new=='yes') $msg = "Nouvel enregistrement réussi.";
-        else $msg="Les modifications ont été effectuées avec succès.";
+        if ($new=='yes') $msg.="Nouvel enregistrement réussi.";
+        else $msg.="Les modifications ont été effectuées avec succès.";
     } else {
-        $msg = "Il y a eu un problème lors de l'enregistrement";
+        $msg.="Il y a eu un problème lors de l'enregistrement";
     }
+
+	// Pour debug:
+	//die();
 
     //
     // retour

@@ -50,6 +50,10 @@ $liste_tables_del_etape_eleves = array(
 //==========================
 "j_eleves_professeurs",
 "j_eleves_regime",
+
+// Logs des mises à jour sconet
+"log_maj_sconet",
+
 // Notes et appréciations
 "matieres_appreciations",
 "matieres_notes",

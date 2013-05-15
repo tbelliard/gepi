@@ -315,8 +315,14 @@ aff_time();
 	}
 	echo " | <a href='impression_bienvenue.php?mode=responsable'>Fiches bienvenue</a>";
 
-	echo " | <a href='import_prof_csv.php?export_statut=responsable' title='Seuls les comptes actifs sont exportés'>Export CSV</a>";
-	echo " | <a href='import_prof_csv.php?export_statut=responsable&amp;avec_adresse=y' title='Seuls les comptes actifs sont exportés'>Export CSV avec adresse</a>";
+	echo " | <a href='import_prof_csv.php?export_statut=responsable' title='Seuls les comptes actifs sont exportés.
+Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL;ENFANTS;SEXE;IDENTIFIANT;STATUT'>Export CSV</a>";
+	echo " <a href='import_prof_csv.php?export_statut=responsable&amp;sans_entete=y' title='Seuls les comptes actifs sont exportés.
+Export CSV sans entête'><img src='../images/disabled.png' width='20' height='20' title='Export CSV sans entête' alt='CSV sans entête'></a>";
+	echo " | <a href='import_prof_csv.php?export_statut=responsable&amp;avec_adresse=y' title='Seuls les comptes actifs sont exportés.
+	Export avec adresse responsable.
+Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL;ENFANTS;SEXE;IDENTIFIANT;STATUT;ADRESSE'>Export CSV avec adresse</a>";
+	echo " <a href='import_prof_csv.php?export_statut=responsable&amp;sans_entete=y'><img src='../images/disabled.png' width='20' height='20' title='Export CSV avec adresse sans entête' alt='CSV avec adresse sans entête'></a>";
 
 	echo " | <a href='edit_eleve.php'>Comptes élèves</a>";
 

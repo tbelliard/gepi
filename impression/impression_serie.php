@@ -335,7 +335,8 @@ else {
 				// On utilisera les paramètres par défaut
 			}
 
-			echo "<input value=\"".$id_choix_periode."\" name=\"id_choix_periode\" type=\"hidden\" />\n";
+			//echo "<input value=\"".$id_choix_periode."\" name=\"id_choix_periode\" type=\"hidden\" />\n";
+			echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
 			echo "<br /><br /> <input value=\"Valider les enseignements\" name=\"Valider\" type=\"submit\" />\n";
 			echo "</form>\n";
 
@@ -432,7 +433,7 @@ if ($id_choix_periode != 0) {
 echo "<br />
 <p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Vous pouvez définir plusieurs modèles de grille en suivant le lien <a href='./parametres_impression_pdf.php'>Régler les paramètres du PDF</a>.<br />
 Un tableau entièrement quadrillé peut permettre de pointer des oublis, de noter des prises de parole,...<br />
-Un tableau avec deux ou trois colonnets pour par exemple Nom, Moyenne et Avis (<em>avec une colonne large pour l'avis<em>) peut être pratique pour le ".getSettingValue('prof_suivi')." afin de demander à ses collègues un bref compte-rendu avant une rencontre parents/professeurs.</p>\n";
+Un tableau avec deux ou trois colonnes pour par exemple Nom, Moyenne et Avis (<em>avec une colonne large pour l'avis<em>) peut être pratique pour le ".getSettingValue('prof_suivi')." afin de demander à ses collègues un bref compte-rendu avant une rencontre parents/professeurs.</p>\n";
 
 // Fin de sélection multiple avec choix de la période.
 require("../lib/footer.inc.php");

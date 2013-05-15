@@ -240,6 +240,11 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='min') {
 	$_prenom = preg_replace("/-/","_", $_prenom);
 
 	//==========================
+	if(getSettingAOui("FiltrageStrictAlphaNomPrenomPourLogin")) {
+		$_nom = preg_replace("/[^A-Za-z]/","", $_nom);
+		$_prenom = preg_replace("/[^A-Za-z]/","", $_prenom);
+	}
+	//==========================
 	// On génère le login
 
 	if((preg_match('/n/', $_mode))&&($_nom=="")) {return false;}
@@ -1710,12 +1715,12 @@ function volume_docs_joints($id_groupe, $mode="all"){
  * A appeler immédiatement après ouverture du fichier
  * Exemple :
  * $handle=fopen("....");
- * skip_bom_uf8($handle)
+ * skip_bom_utf8($handle)
  *
  * @param handle $h_file : Le pointeur de fichier à tester
  * @return boolean : true si pas de BOM ou si BOM sauté, false dans les autres cas 
  */
-function skip_bom_uf8($h_file)
+function skip_bom_utf8($h_file)
 	{
 	if (ftell($h_file)!=0) return false;
 	$bytes=fread($h_file,3);
@@ -2193,19 +2198,38 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 	$tab_ele=array();
 	if(mysql_num_rows($res_ele)>0){
 		while($lig_tmp=mysql_fetch_object($res_ele)){
-			$tab_ele[]=$lig_tmp->login;
-			if($mode=='avec_classe') {
-				$tmp_chaine_classes="";
+			if($mode=='csv') {
+				$tab_ele[]=$lig_tmp->login;
 
+				$tmp_chaine_classes="";
+				$tmp_chaine_classes2="";
 				$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
 				if(isset($tmp_tab_clas['liste'])) {
 					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+					$tmp_chaine_classes2=$tmp_tab_clas['liste'];
 				}
 
-				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+				$chaine_prenom_nom=casse_mot($lig_tmp->prenom, 'majf2')." ".casse_mot($lig_tmp->nom, 'maj');
+				$tab_ele[]=$chaine_prenom_nom.$tmp_chaine_classes.";".
+							$lig_tmp->login.";".
+							$chaine_prenom_nom.";".
+							$tmp_chaine_classes2;
 			}
 			else {
-				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
+				$tab_ele[]=$lig_tmp->login;
+				if($mode=='avec_classe') {
+					$tmp_chaine_classes="";
+
+					$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+					if(isset($tmp_tab_clas['liste'])) {
+						$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+					}
+
+					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+				}
+				else {
+					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
+				}
 			}
 		}
 	}
@@ -6687,4 +6711,470 @@ function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut=""
 	return $retour;
 }
 
+
+/*
+CREATE TABLE IF NOT EXISTS messagerie (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  in_reply_to int(11) NOT NULL,
+  login_src varchar(50) NOT NULL,
+  login_dest varchar(50) NOT NULL,
+  sujet varchar(100) NOT NULL,
+  message text NOT NULL,
+  date_msg timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  vu tinyint(4) NOT NULL,
+  date_vu timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+*/
+
+function enregistre_message($sujet, $message, $login_src, $login_dest, $date_visibilite="", $in_reply_to=-1) {
+	$retour="";
+
+	$date_courante=strftime("%Y-%m-%d %H:%M:%S");
+	if(($date_visibilite=="")||($date_visibilite<$date_courante)) {
+		$date_visibilite=$date_courante;
+	}
+
+	$sql="INSERT INTO messagerie SET sujet='".mysql_real_escape_string($sujet)."',
+									message='".mysql_real_escape_string($message)."',
+									login_src='".$login_src."',
+									login_dest='".$login_dest."',
+									in_reply_to='".$in_reply_to."',
+									date_msg='".$date_courante."',
+									date_visibilite='".$date_visibilite."';";
+	$res=mysql_query($sql);
+	if($res) {
+		$retour=mysql_insert_id();
+	}
+	return $retour;
+}
+/*
+function form_saisie_message($in_reply_to=-1) {
+	$chaine="<form action='../lib/form_message.php' method='post'>
+		<fieldset style='border:1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+			
+		</fieldset>
+	</form>\n";
+}
+*/
+
+function affiche_historique_messages($login_src, $mode="tous") {
+	$retour="";
+	if($mode=='tous') {
+		$sql="SELECT * FROM messagerie WHERE login_src='$login_src' ORDER BY date_msg DESC, login_dest ASC, sujet;";
+	}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		$retour="<p>Aucun message.</p>";
+	}
+	else {
+		$retour.="<a name='tableau_historique_messages_envoyes'></a>
+<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Date</th>
+		<th>Destinataire</th>
+		<th>Sujet</th>
+		";
+		if(peut_poster_message($_SESSION['statut'])) {
+			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' /></th>";
+		}
+		else {
+			$retour.="<th>Message</th>";
+		}
+		$retour.="
+		<th>Lu/vu</th>
+		<th>Relancer</th>
+	</tr>";
+		$cpt_ahm=0;
+		while($lig=mysql_fetch_object($res)) {
+			$precision_visibilite="";
+			if($lig->date_visibilite>$lig->date_msg) {
+				$precision_visibilite=" title='Message du ".formate_date($lig->date_msg,'y')." visible à compter de ".formate_date($lig->date_visibilite,'y')."'";
+			}
+			$temoin_visibilite="";
+			if($lig->date_visibilite>strftime("%Y-%m-%d %H:%M:%S")) {
+				$temoin_visibilite="<img src='../images/icons/flag.png' width='17' height='18' />";
+			}
+			$retour.="
+	<tr>
+		<td$precision_visibilite>".formate_date($lig->date_msg,'y')."$temoin_visibilite</td>
+		<td>".civ_nom_prenom($lig->login_dest)."</td>
+		<td>$lig->sujet</td>
+		<td id='td_ahm_".$cpt_ahm."' onclick=\"copie_ahm($cpt_ahm)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
+		<td id='td_lu_message_envoye_".$lig->id."'>";
+			if($lig->vu!=0) {
+				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Votre message a été lu/vu le ".formate_date($lig->date_vu,'y')."' /></td>
+		<td id='td_relance_message_envoye_".$lig->id."'><a href='../lib/form_message.php?mode=relancer&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"relancer_message(".$lig->id.");return false;\" title=\"Relancer le message au même destinataire.
+Concrètement, le témoin est juste remis à non lu.\" target='_blank'><img src='../images/icons/forward.png' width='16' height='16' /></a>";
+			}
+			else {
+				$retour.="<img src='../images/disabled.png' width='20' height='20' title='Non lu/vu' /></td>
+		<td>";
+			}
+			$retour.="</td>
+	</tr>";
+			$cpt_ahm++;
+		}
+		$retour.="</table>
+<script type='text/javascript'>
+	function copie_ahm(num) {
+		if(document.getElementById('message_messagerie')) {
+			document.getElementById('message_messagerie').innerHTML+=ahm_nettoyage(document.getElementById('td_ahm_'+num).innerHTML);
+		}
+	}
+
+	function ahm_nettoyage(str) {
+		//return str.replace(/<br\s*\/?>/mg,\"\\n\");
+		chaine=str.replace(/<br\s*\/?>/mg,\"\\n\")
+		chaine=chaine.replace(/\\r\\n\\r\\n/g, \"\\r\\n\");
+		chaine=chaine.replace(/\\n\\n/g, \"\\n\");
+		return chaine;
+	}
+
+	function relancer_message(id_msg) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'form_message.php?mode=relancer&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
+		document.getElementById('td_relance_message_envoye_'+id_msg).innerHTML='';
+	}
+</script>
+";
+	}
+	return $retour;
+}
+
+function affiche_historique_messages_recus($login_dest, $mode="tous") {
+	global $gepiPath;
+
+	$retour="";
+	if($mode=='tous') {
+		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' AND date_visibilite<='".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_msg DESC, sujet;";
+	}
+	elseif($mode=='non_lus') {
+		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' AND date_visibilite<='".strftime("%Y-%m-%d %H:%M:%S")."' AND vu='0' ORDER BY date_msg DESC, sujet;";
+	}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		$retour="<p>Aucun message.</p>";
+	}
+	else {
+		$retour.=add_token_field(true)."<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Date</th>
+		<th>Source</th>
+		<th>Sujet</th>
+		";
+		if(peut_poster_message($_SESSION['statut'])) {
+			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' /></th>";
+		}
+		else {
+			$retour.="<th>Message</th>";
+		}
+		$retour.="
+		<th>Lu/vu</th>
+		<!-- A FAIRE : Ajouter une colonne pour Répondre si on en a le droit -->
+	</tr>";
+
+
+		$cpt_ahmr=0;
+		while($lig=mysql_fetch_object($res)) {
+			$retour.="
+	<tr>
+		<td>".formate_date($lig->date_msg,'y')."</td>
+		<td>".civ_nom_prenom($lig->login_src)."</td>
+		<td>$lig->sujet</td>
+		<td id='td_ahmr_".$cpt_ahmr."' onclick=\"copie_ahmr($cpt_ahmr)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
+		<td>";
+			if($lig->vu!=0) {
+				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Vous avez marqué/lu/vu ce message le ".formate_date($lig->date_vu,'y')."' />";
+			}
+			else {
+				$retour.="<span id='span_message_$lig->id'><a href='$gepiPath/lib/form_message.php?mode=marquer_lu&amp;id_msg=$lig->id&amp;mode_no_js=y".add_token_in_url()."' onclick=\"marquer_message_lu($lig->id);return false;\" target='_blank'><img src='../images/disabled.png' width='20' height='20' title='Non lu/vu. Cliquez pour marquer ce message comme lu.' /></a></span>";
+			}
+			$retour.="</td>
+	</tr>";
+			$cpt_ahmr++;
+		}
+		$retour.="</table>
+
+<script type='text/javascript'>
+	function marquer_message_lu(id_msg) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+
+		new Ajax.Updater($('span_message_'+id_msg),'$gepiPath/lib/form_message.php?mode=marquer_lu&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check&sound=no&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check2&csrf_alea='+csrf_alea,{method: 'get'});
+	}
+
+	function copie_ahmr(num) {
+		if(document.getElementById('message_messagerie')) {
+			document.getElementById('message_messagerie').innerHTML+=ahmr_nettoyage(document.getElementById('td_ahmr_'+num).innerHTML);
+		}
+	}
+
+	function ahmr_nettoyage(str) {
+		//return str.replace(/<br\s*\/?>/mg,\"\\n\");
+		chaine=str.replace(/<br\s*\/?>/mg,\"\\n\")
+		chaine=chaine.replace(/\\r\\n\\r\\n/g, \"\\r\\n\");
+		chaine=chaine.replace(/\\n\\n/g, \"\\n\");
+		return chaine;
+	}
+</script>";
+	}
+	return $retour;
+}
+
+function check_messages_recus($login_dest) {
+	$retour="";
+	//$sql="SELECT 1=1 FROM messagerie WHERE login_dest='$login_dest' AND vu='0';";
+	$sql="SELECT 1=1 FROM messagerie WHERE login_dest='$login_dest' AND vu='0' AND date_visibilite<=CURRENT_TIMESTAMP;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==1) {
+		$retour=mysql_num_rows($res)." message non lu.";
+	}
+	elseif(mysql_num_rows($res)>1) {
+		$retour=mysql_num_rows($res)." messages non lus.";
+	}
+	return $retour;
+}
+
+// A faire: check_mes_messages_lus() pour signaler qu'un de ses messages a été lu?
+
+function marquer_message_lu($id_msg, $etat=true) {
+	$retour="";
+
+	if($etat) {
+		$sql="UPDATE messagerie SET vu='1', date_vu=CURRENT_TIMESTAMP WHERE id='$id_msg' AND login_dest='".$_SESSION['login']."';";
+	}
+	else {
+		$sql="UPDATE messagerie SET vu='0', date_vu=CURRENT_TIMESTAMP WHERE id='$id_msg';";
+	}
+	$update=mysql_query($sql);
+	if($update) {
+		$retour="Succès";
+	}
+	else {
+		$retour="Erreur";
+	}
+
+	return $retour;
+}
+
+function peut_poster_message($statut) {
+	// A FAIRE: Gérer le statut Autre...
+	if(getSettingAOui('PeutPosterMessage'.ucfirst(mb_strtolower($statut)))) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function affichage_temoin_messages_recus() {
+	global $gepiPath;
+
+	$MessagerieDelaisTest=getSettingValue('MessagerieDelaisTest');
+	if(($MessagerieDelaisTest=='')||(!preg_match('/^[0-9]$/', $MessagerieDelaisTest))||($MessagerieDelaisTest==0)) {
+		$MessagerieDelaisTest=1;
+	}
+
+	// On teste la présence de messages toutes les 1min, 2min,...
+	$nb_sec=60*$MessagerieDelaisTest;
+
+	$retour="";
+
+	if(peut_poster_message($_SESSION['statut'])) {
+		$retour.="<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></a></span>";
+	}
+	else {
+		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$retour.="<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></a></span>";
+		}
+		else {
+			$retour.="<span id='span_messages_recus'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></span>";
+		}
+	}
+
+	$retour.="
+<script type='text/javascript'>
+	var nb_millisec_check_message=$nb_sec*1000;
+
+	function function_check_message() {
+		new Ajax.Updater($('span_messages_recus'),'$gepiPath/lib/form_message.php?mode=check',{method: 'get'});
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check2',{method: 'get'});
+		setTimeout('function_check_message()', nb_millisec_check_message);
+	}
+
+	//alert('plop')
+	//setTimeout('function_check_message()', nb_millisec_check_message);
+	// On lance le premier test 10s après l'affichage de la page
+	setTimeout('function_check_message()', 10000);
+	// En fait, en cas de changement de page, on va tester la présence de message dans la seconde qui suit.
+</script>\n";
+
+	return $retour;
+}
+
+
+function joueSon($sound, $id_son="") {
+	global $gepiPath, $niveau_arbo;
+
+	$retour="";
+	if(!in_array($sound, array("KDE_Beep_Pop.wav", "libreoffice_gong.wav", "libreoffice_nature1.wav", "pluck.wav", "verre_brise.wav", "default_alarm.wav"))) {
+		$sound="KDE_Beep_Pop.wav";
+	}
+
+	if ($niveau_arbo == "0") {
+		$chemin_sound="./sounds/".$sound;
+	} elseif ($niveau_arbo == "1") {
+		$chemin_sound="../sounds/".$sound;
+	} elseif ($niveau_arbo == "2") {
+		$chemin_sound="../../sounds/".$sound;
+	} elseif ($niveau_arbo == "3") {
+		$chemin_sound="../../../sounds/".$sound;
+	} else {
+		$chemin_sound="../sounds/".$sound;
+	}
+
+	if($id_son=="") {
+		$id_son="id_son_".preg_replace("/[^0-9]/","_",microtime());
+	}
+
+	if(file_exists($chemin_sound)) { 
+		$retour ="<audio id='$id_son' preload='auto' autobuffer autoplay>
+	<source src=".$chemin_sound." />
+</audio>
+";
+	}
+	else {
+		$retour ="";
+	}
+	return $retour;
+} 
+
+function acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $num_periode) {
+	$sql="SELECT 1=1 FROM acces_exceptionnel_matieres_notes WHERE id_groupe='$id_groupe' AND periode='$num_periode' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."';";
+	//echo "$sql<br />";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $num_periode, $texte_ajoute) {
+	$sql="SELECT * FROM acces_exceptionnel_matieres_notes WHERE id_groupe='$id_groupe' AND periode='$num_periode';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		// Il n'y a au plus qu'un enregistrement par (id_groupe;periode) dans acces_cn
+		$lig=mysql_fetch_object($res);
+		$texte=$lig->commentaires."\n".$texte_ajoute;
+		$sql="UPDATE acces_exceptionnel_matieres_notes SET commentaires='".mysql_real_escape_string($texte)."' WHERE id='$lig->id';";
+		$update=mysql_query($sql);
+		if($update) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
+
+/**
+ * Retourne l'URI des élèves pour les flux rss
+ *
+ * @global string
+ * @param string $eleve Login de l'élève
+ * @param string $https La page est-elle sécurisée ? en https si 'y'
+ * @param string $type 'cdt' ou ''
+ * @return string
+ * @see getSettingValue()
+ */
+function retourneUri($eleve, $https, $type){
+
+	global $gepiPath;
+	$rep = array();
+
+	// on vérifie que la table en question existe déjà
+	$test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
+	if ($test_table >= 1) {
+
+		$sql = "SELECT user_uri FROM rss_users WHERE user_login = '".$eleve."' LIMIT 1";
+		$query = mysql_query($sql);
+		$nbre = mysql_num_rows($query);
+		if ($nbre == 1) {
+			$uri = mysql_fetch_array($query);
+			if ($https == 'y') {
+				$web = 'https://';
+			}else{
+				$web = 'http://';
+			}
+			if ($type == 'cdt') {
+				$rep["uri"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$eleve.'&amp;type=cdt&amp;uri='.$uri["user_uri"];
+				$rep["text"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$eleve.'&amp;type=cdt&amp;uri='.$uri["user_uri"];
+			}
+
+		}else{
+			$rep["text"] = 'erreur1';
+			$rep["uri"] = '#';
+		}
+	}else{
+
+		$rep["text"] = 'Demandez à votre administrateur de générer les URI.';
+		$rep["uri"] = '#';
+
+	}
+
+	return $rep;
+}
+
+function prendre_en_compte_js_et_css_edt() {
+	global $javascript_specifique, $style_specifique;
+
+	// CSS et js particulier à l'EdT
+
+	if((is_array($javascript_specifique))) {
+		$javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+	}
+	else {
+		$tmp_js=$javascript_specifique;
+		$javascript_specifique=array();
+		$javascript_specifique[]=$tmp_js;
+		$javascript_specifique[]="edt_organisation/script/fonctions_edt";
+	}
+
+	if((is_array($style_specifique))) {
+		$ua = getenv("HTTP_USER_AGENT");
+		if (strstr($ua, "MSIE 6.0")) {
+			//$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6";
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6_infobulle";
+		}
+		else {
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt";
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_infobulle";
+		}
+	}
+	else {
+		$tmp_css=$style_specifique;
+		$style_specifique=array();
+		$style_specifique[]=$tmp_css;
+
+		$ua = getenv("HTTP_USER_AGENT");
+		if (strstr($ua, "MSIE 6.0")) {
+			//$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6";
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6_infobulle";
+		}
+		else {
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt";
+			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_infobulle";
+		}
+	}
+}
 ?>

@@ -56,6 +56,9 @@ if (!checkAccess()) {
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $rss_cdt_ele = isset($_POST["rss_cdt_ele"]) ? $_POST["rss_cdt_ele"] : NULL;
 $rss_cdt_responsable = isset($_POST["rss_cdt_responsable"]) ? $_POST["rss_cdt_responsable"] : NULL;
+$rss_cdt_scol = isset($_POST["rss_cdt_scol"]) ? $_POST["rss_cdt_scol"] : NULL;
+$rss_cdt_cpe = isset($_POST["rss_cdt_cpe"]) ? $_POST["rss_cdt_cpe"] : NULL;
+$rss_cdt_pp = isset($_POST["rss_cdt_pp"]) ? $_POST["rss_cdt_pp"] : NULL;
 $rss_acces_ele = isset($_POST["rss_acces_ele"]) ? $_POST["rss_acces_ele"] : NULL;
 $genereflux = isset($_GET["genereflux"]) ? $_GET["genereflux"] : NULL;
 $generefluxcsv = isset($_GET["generefluxcsv"]) ? $_GET["generefluxcsv"] : NULL;
@@ -72,12 +75,27 @@ if ($action == "modifier") {
 	check_token();
 	$save = saveSetting("rss_cdt_eleve", $rss_cdt_ele);
 	if (!$save) {
-		$msg .= '<p class="red" style="text-align:center">La modification n\'a pas été enregistrée.</p>'."\n";
+		$msg .= '<p class="red" style="text-align:center">La modification d\'accès élève n\'a pas été enregistrée.</p>'."\n";
 	}
 
 	$save = saveSetting("rss_cdt_responsable", $rss_cdt_responsable);
 	if (!$save) {
-		$msg .= '<p class="red" style="text-align:center">La modification n\'a pas été enregistrée.</p>'."\n";
+		$msg .= '<p class="red" style="text-align:center">La modification d\'accès responsable n\'a pas été enregistrée.</p>'."\n";
+	}
+
+	$save = saveSetting("rss_cdt_scol", $rss_cdt_scol);
+	if (!$save) {
+		$msg .= '<p class="red" style="text-align:center">La modification d\'accès scolarité n\'a pas été enregistrée.</p>'."\n";
+	}
+
+	$save = saveSetting("rss_cdt_cpe", $rss_cdt_cpe);
+	if (!$save) {
+		$msg .= '<p class="red" style="text-align:center">La modification d\'accès cpe n\'a pas été enregistrée.</p>'."\n";
+	}
+
+	$save = saveSetting("rss_cdt_pp", $rss_cdt_pp);
+	if (!$save) {
+		$msg .= '<p class="red" style="text-align:center">La modification d\'accès '.getSettingValue('gepi_prof_suivi').' n\'a pas été enregistrée.</p>'."\n";
 	}
 
 }
@@ -94,12 +112,12 @@ if (isset($rss_email_mode)) {
 	check_token();
 	$save_d = saveSetting("rss_email_mode", $rss_email_mode);
 	if (!$save_d) {
-		$msg .= '<p class="red" style="text-align:center">La modification n\'a pas été enregistrée.</p>';
+		$msg .= '<p class="red" style="text-align:center">La modification de choix email n\'a pas été enregistrée.</p>';
 	}
 
 	$save_d = saveSetting("rss_email_prof", $rss_email_prof);
 	if (!$save_d) {
-		$msg .= '<p class="red" style="text-align:center">La modification n\'a pas été enregistrée.</p>';
+		$msg .= '<p class="red" style="text-align:center">La modification concernant le choix email prof n\'a pas été enregistrée.</p>';
 	}
 }
 
@@ -239,6 +257,24 @@ if (getSettingValue("rss_cdt_responsable") == "y") {
 	$checked_resp = ' checked="checked"';
 }else{
 	$checked_resp = '';
+}
+
+if (getSettingValue("rss_cdt_scol") == "y") {
+	$checked_scol = ' checked="checked"';
+}else{
+	$checked_scol = '';
+}
+
+if (getSettingValue("rss_cdt_cpe") == "y") {
+	$checked_cpe = ' checked="checked"';
+}else{
+	$checked_cpe = '';
+}
+
+if (getSettingValue("rss_cdt_pp") == "y") {
+	$checked_pp = ' checked="checked"';
+}else{
+	$checked_pp = '';
 }
 
 if (getSettingValue("rss_acces_ele") == "direct") {

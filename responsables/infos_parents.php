@@ -115,7 +115,7 @@ if(isset($_GET['export_csv'])) {
 					$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig_resp->adr_id."';";
 					//echo "$sql<br />";
 					$res_adr=mysql_query($sql);
-					if(mysql_num_rows($res_adr)>1) {
+					if(mysql_num_rows($res_adr)==1) {
 						$adresse="";
 						$lig_adr=mysql_fetch_object($res_adr);
 						$adresse.=$lig_adr->adr1;
@@ -138,6 +138,7 @@ if(isset($_GET['export_csv'])) {
 							$adresse.=" ";
 						}
 
+						if(trim($adresse)!="") {$adresse=trim($adresse).", ";}
 						$adresse.=$lig_adr->cp." ".$lig_adr->commune;
 
 						$csv.=$adresse.";";
@@ -167,7 +168,12 @@ if(isset($_GET['export_csv'])) {
 			$msg="Aucune association responsable/adresse n'a été trouvée.<br />";
 		}
 		else {
-			$csv="DESIGNATION;ADRESSE;ADR_1;ADR_2;ADR_3;ADR_4;CP;COMMUNE;PAYS;NOM_RESP_1;PRENOM_RESP_1;TEL_PERS_1;TEL_PROF_1;TEL_PORT_1;MEL_1;NOM_RESP_2;PRENOM_RESP_2;TEL_PERS_2;TEL_PROF_2;TEL_PORT_2;MEL_2;ELEVE_1;ELEVE_2;ELEVE_3;ELEVE_4;ELEVE_5;ELEVE_6;ELEVE_7;ELEVE_8;ELEVE_9;ELEVE_10\r\n";
+			if(isset($_GET['ancien_mode'])) {
+				$csv="DESIGNATION;ADRESSE;ADR_1;ADR_2;ADR_3;ADR_4;CP;COMMUNE;PAYS;NOM_RESP_1;PRENOM_RESP_1;TEL_PERS_1;TEL_PROF_1;TEL_PORT_1;MEL_1;NOM_RESP_2;PRENOM_RESP_2;TEL_PERS_2;TEL_PROF_2;TEL_PORT_2;MEL_2;ELEVE_1;ELEVE_2;ELEVE_3;ELEVE_4;ELEVE_5;ELEVE_6;ELEVE_7;ELEVE_8;ELEVE_9;ELEVE_10\r\n";
+			}
+			else {
+				$csv="DESIGNATION;ADRESSE;ADR_1;ADR_2;ADR_3;ADR_4;CP;COMMUNE;PAYS;NOM_RESP_1;PRENOM_RESP_1;TEL_PERS_1;TEL_PROF_1;TEL_PORT_1;MEL_1;NOM_RESP_2;PRENOM_RESP_2;TEL_PERS_2;TEL_PROF_2;TEL_PORT_2;MEL_2;ELEVE_1;ELEVE_1_LOGIN;ELEVE_1_PRENOM_NOM;ELEVE_1_CLASSES;ELEVE_2;ELEVE_2_LOGIN;ELEVE_2_PRENOM_NOM;ELEVE_2_CLASSES;ELEVE_3;ELEVE_3_LOGIN;ELEVE_3_PRENOM_NOM;ELEVE_3_CLASSES;ELEVE_4;ELEVE_4_LOGIN;ELEVE_4_PRENOM_NOM;ELEVE_4_CLASSES;ELEVE_5;ELEVE_5_LOGIN;ELEVE_5_PRENOM_NOM;ELEVE_5_CLASSES;ELEVE_6;ELEVE_6_LOGIN;ELEVE_6_PRENOM_NOM;ELEVE_6_CLASSES;ELEVE_7;ELEVE_7_LOGIN;ELEVE_7_PRENOM_NOM;ELEVE_7_CLASSES;ELEVE_8;ELEVE_8_LOGIN;ELEVE_8_PRENOM_NOM;ELEVE_8_CLASSES;ELEVE_9;ELEVE_9_LOGIN;ELEVE_9_PRENOM_NOM;ELEVE_9_CLASSES;ELEVE_10;ELEVE_10_LOGIN;ELEVE_10_PRENOM_NOM;ELEVE_10_CLASSES;\r\n";
+			}
 			while($lig_adr=mysql_fetch_object($res_adr)) {
 				$resp=array();
 				$tab_ele=array();
@@ -177,7 +183,12 @@ if(isset($_GET['export_csv'])) {
 					// On recherche alors aussi les élèves.
 					while($lig_rp=mysql_fetch_object($res_rp)) {
 						//$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
-						$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
+						if(isset($_GET['ancien_mode'])) {
+							$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
+						}
+						else {
+							$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'csv');
+						}
 						for($loop=1;$loop<count($tab_ele_tmp);$loop+=2) {
 							if(!in_array($tab_ele_tmp[$loop], $tab_ele)) {
 								$tab_ele[]=$tab_ele_tmp[$loop];
@@ -199,7 +210,12 @@ if(isset($_GET['export_csv'])) {
 					// On recherche alors aussi les élèves.
 					while($lig_rp=mysql_fetch_object($res_rp)) {
 						//$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
-						$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
+						if(isset($_GET['ancien_mode'])) {
+							$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
+						}
+						else {
+							$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'csv');
+						}
 						for($loop=1;$loop<count($tab_ele_tmp);$loop+=2) {
 							if(!in_array($tab_ele_tmp[$loop], $tab_ele)) {
 								$tab_ele[]=$tab_ele_tmp[$loop];
@@ -309,10 +325,10 @@ if(isset($_GET['export_csv'])) {
 					}
 
 					if(isset($resp[2]['nom'])) {
-						$csv.=$resp[2]['nom'].";".$resp[2]['prenom'].";".$resp[2]['tel_pers'].";".$resp[2]['tel_prof'].";".$resp[2]['tel_port'].";".$resp[2]['mel'].";";
+						$csv.=$resp[2]['nom'].";".$resp[2]['prenom'].";".$resp[2]['tel_pers'].";".$resp[2]['tel_prof'].";".$resp[2]['tel_port'].";".$resp[2]['mel'];
 					}
 					else {
-						$csv.=";;;;;;";
+						$csv.=";;;;;";
 					}
 					for($loop=0;$loop<count($tab_ele);$loop++) {
 						$csv.=";".$tab_ele[$loop];
@@ -352,7 +368,7 @@ if((!isset($mode))||($mode==1)) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?mode=2'>Grille 2</a>";
 	echo "</p>\n";
 	
-	echo "<p>Informations élèves/parents&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1'>Export CSV</a></p>\n";
+	echo "<p><strong>Grille 1&nbsp;:</strong> Informations élèves/parents&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1'>Export CSV</a></p>\n";
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Classe</th>\n";
@@ -452,7 +468,7 @@ else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?mode=1'>Grille 1</a>";
 	echo "</p>\n";
 	
-	echo "<p>Informations parents/élèves&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_eleves&amp;mode=2'>Export CSV</a></p>\n";
+	echo "<p><strong>Grille 2&nbsp;:</strong> Informations parents/élèves&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_eleves&amp;mode=2'>Export CSV</a> (<em><a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_eleves&amp;mode=2&amp;ancien_mode=y' title=\"Avec une seule colonne par élève\">ancien mode</a></em>)</p>\n";
 
 	$sql="SELECT DISTINCT ra.* FROM resp_adr ra, resp_pers rp, responsables2 r WHERE ra.adr_id=rp.adr_id AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY rp.nom, rp.prenom;";
 	$res_adr=mysql_query($sql);

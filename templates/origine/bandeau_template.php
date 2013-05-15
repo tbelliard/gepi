@@ -105,6 +105,14 @@
 	<!-- 	menu accueil -->
 	<ol>
 		<?php
+
+			if((getSettingAOui('active_messagerie'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe')))) {
+				echo "
+	<li class='ligne_premier_menu'>".affichage_temoin_messages_recus()."
+	</li>
+						";
+			}
+
 			if (count($tbs_premier_menu)) {
 				foreach ($tbs_premier_menu as $value) {
 					if ("$value[texte]"!="") {

@@ -723,8 +723,18 @@ for($i=0;$i<count($groups);$i++){
 					}
 	
 					// Saisie de notes dans le carnet de notes:
-					if($pref_accueil_cn=="y"){
-						echo "<td class='$class_style'>\n";
+					if($pref_accueil_cn=="y") {
+						if($class_style!="deverrouille") {
+							if(acces_exceptionnel_saisie_cn_groupe_periode($groups[$i]['id'], $j)) {
+								echo "<td style='background-color:orange;' title='Accès exceptionnellement ouvert'>\n";
+							}
+							else {
+								echo "<td class='$class_style'>\n";
+							}
+						}
+						else {
+							echo "<td class='$class_style'>\n";
+						}
 
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['cahier_notes'])) {
 							echo "<div id='h_cn_".$i."_".$j."'>";
@@ -764,7 +774,17 @@ for($i=0;$i<count($groups);$i++){
 	
 	
 						// Note sur le bulletin:
-						echo "<td class='$class_style'>\n";
+						if($class_style!="deverrouille") {
+							if(acces_exceptionnel_saisie_bull_note_groupe_periode($groups[$i]['id'], $j)) {
+								echo "<td style='background-color:orange;' title='Accès exceptionnellement ouvert'>\n";
+							}
+							else {
+								echo "<td class='$class_style'>\n";
+							}
+						}
+						else {
+							echo "<td class='$class_style'>\n";
+						}
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['bulletins'])) {
 							echo "<div id='h_bn_".$i."_".$j."'>";
 							echo "<a href='saisie/saisie_notes.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."'";

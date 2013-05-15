@@ -132,7 +132,7 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
  * @see traitement_magic_quotes()
  */
 function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_periode) {
-	global $tabdiv_infobulle, $gepiClosedPeriodLabel, $id_groupe, $eff_groupe;
+	global $tabdiv_infobulle, $gepiClosedPeriodLabel, $id_groupe, $eff_groupe, $acces_exceptionnel_saisie;
     
 	if((isset($id_groupe))&&(!isset($eff_groupe))) {
 		$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
@@ -191,7 +191,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 		$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
 		$nb_dev  = mysql_num_rows($appel_dev);
 		if ($nb_dev != 0) {$empty = 'no';}
-		if ($ver_periode >= 2) {
+		if (($ver_periode >= 2)||($acces_exceptionnel_saisie)) {
 			$j = 0;
 			if($nb_dev>0){
 				echo "<ul>\n";
@@ -289,6 +289,8 @@ Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et �
 						echo " - <a href='index_cc.php?id_racine=".$id_racine."' title=\"Voir l'évaluation cumul associée $lig_cc_dev->nom_court ($lig_cc_dev->nom_complet)\">".$lig_cc_dev->nom_court."</a>";
 					}
 
+					echo " - <a href='copie_dev.php?id_devoir=".$id_dev."' title=\"Copier le devoir et les notes vers une autre période ou un autre enseignement (Les notes ne sont copiées que si les élèves sont les mêmes).\"><img src='../images/icons/copy-16.png' width='16' height='16' /></a>\n";
+
 					echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo "</li>\n";
 					$j++;
@@ -299,7 +301,7 @@ Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et �
 		echo "</li>\n";
 		echo "</ul>\n";
 	}
-	if ($ver_periode >= 2) {
+	if (($ver_periode >= 2)||($acces_exceptionnel_saisie)) {
 		$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='$id_conteneur') order by nom_court");
 		$nb_cont = mysql_num_rows($appel_conteneurs);
 		if($nb_cont>0) {
@@ -411,6 +413,8 @@ Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et �
 								$lig_cc_dev=mysql_fetch_object($res_cc_dev);
 								echo " - <a href='index_cc.php?id_racine=".$id_racine."' title=\"Voir l'évaluation cumul associée $lig_cc_dev->nom_court ($lig_cc_dev->nom_complet)\">".$lig_cc_dev->nom_court."</a>";
 							}
+
+							echo " - <a href='copie_dev.php?id_devoir=".$id_dev."' title=\"Copier le devoir et les notes vers une autre période ou un autre enseignement (Les notes ne sont copiées que si les élèves sont les mêmes).\"><img src='../images/icons/copy-16.png' width='16' height='16' /></a>\n";
 
 							echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 							echo "</li>\n";

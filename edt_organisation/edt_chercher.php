@@ -160,8 +160,17 @@ echo '
 
 	// choix de l'horaire
 
-	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux ORDER BY heuredebut_definie_periode");
+	$sql="SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode, type_creneaux FROM edt_creneaux ORDER BY heuredebut_definie_periode";
+	$req_heure = mysql_query($sql);
+	$nb_heure=mysql_num_rows($req_heure);
 	$rep_heure = mysql_fetch_array($req_heure);
+
+/*
+echo "<p>".count($rep_heure)."</p>";
+echo "<pre>";
+print_r($rep_heure);
+echo "</pre>";
+*/
 
 echo '
 			<input type="hidden" name="salleslibres" value="ok" />
@@ -173,23 +182,42 @@ echo '
 
 	$tab_select_heure = array();
 
-	for($b=0;$b<count($rep_heure);$b++) {
+	$cpt_cours=0;
+	//for($b=0;$b<count($rep_heure);$b++) {
+	for($b=0;$b<$nb_heure;$b++) {
 		$tab_select_heure[$b]["id_heure"] = mysql_result($req_heure, $b, "id_definie_periode");
 		$tab_select_heure[$b]["creneaux"] = mysql_result($req_heure, $b, "nom_definie_periode");
 		$tab_select_heure[$b]["heure_debut"] = mysql_result($req_heure, $b, "heuredebut_definie_periode");
 		$tab_select_heure[$b]["heure_fin"] = mysql_result($req_heure, $b, "heurefin_definie_periode");
-	if(isset($ch_heure)){
-		if($ch_heure==$tab_select_heure[$b]["id_heure"]){
-			$selected=" selected='true'";
+		$tab_select_heure[$b]["type_creneaux"] = mysql_result($req_heure, $b, "type_creneaux");
+		if(isset($ch_heure)){
+			if($ch_heure==$tab_select_heure[$b]["id_heure"]){
+				$selected=" selected='true'";
+			}
+			else{
+				$selected="";
+			}
 		}
 		else{
 			$selected="";
 		}
-	}
-	else{
-		$selected="";
-	}
-		echo ("<option value='".$tab_select_heure[$b]["id_heure"]."'".$selected.">".$tab_select_heure[$b]["creneaux"]." : ".$tab_select_heure[$b]["heure_debut"]." - ".$tab_select_heure[$b]["heure_fin"]."</option>\n");
+		echo "<option value='".$tab_select_heure[$b]["id_heure"]."'".$selected;
+		if($tab_select_heure[$b]["type_creneaux"]=='cours') {
+			if($cpt_cours%2==0) {
+				echo " style='background-color:#88C7FF;'";
+			}
+			else {
+				echo " style='background-color:#B7DDFF;'";
+			}
+			$cpt_cours++;
+		}
+		elseif($tab_select_heure[$b]["type_creneaux"]=='repas') {
+			echo " style='background-color:grey;'";
+		}
+		elseif($tab_select_heure[$b]["type_creneaux"]=='pause') {
+			echo " style='background-color:lightgrey;'";
+		}
+		echo ">".$tab_select_heure[$b]["creneaux"]." : ".$tab_select_heure[$b]["heure_debut"]." - ".$tab_select_heure[$b]["heure_fin"]."</option>\n";
 
 	}
 echo "</select>\n<i> *</i>\n<br />\n";

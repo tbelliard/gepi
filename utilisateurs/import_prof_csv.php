@@ -59,9 +59,25 @@ $fd = '';
 //$appel_donnees = mysql_query("SELECT * FROM utilisateurs ORDER BY nom, prenom");
 if($export_statut=='personnels') {
 	$sql="SELECT * FROM utilisateurs WHERE statut!='eleve' AND statut!='responsable' AND etat='actif' ORDER BY statut, nom, prenom;";
+
+	if(!isset($_GET['sans_entete'])) {
+		$fd.="NOM;PRENOM;LOGIN;EMAIL;STATUT";
+		$fd.="\n";
+	}
 }
 else {
 	$sql="SELECT * FROM utilisateurs WHERE statut='$export_statut' AND etat='actif' ORDER BY statut, nom, prenom;";
+
+	if(!isset($_GET['sans_entete'])) {
+		$fd.="NOM;PRENOM;LOGIN;EMAIL";
+		if($export_statut=='responsable') {
+			$fd.=";ENFANTS;SEXE;IDENTIFIANT;STATUT";
+			if($avec_adresse=='y') {
+				$fd.=";ADR1;ADR2;ADR3;ADR4;CODE_POSTAL;COMMUNE;PAYS";
+			}
+		}
+		$fd.="\n";
+	}
 }
 //echo "$sql<br />";
 $appel_donnees = mysql_query($sql);

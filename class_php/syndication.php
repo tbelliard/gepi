@@ -86,7 +86,8 @@ if ($type_rss == "cdt") {
 	}
 	$noms["nom"] = $noms["prenom"] = NULL;
 	$noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$eleve_l."' LIMIT 1"));
-	$title_rss = 'Cahier de textes - '.getSettingValue("gepiSchoolName").' ('.getSettingValue("gepiYear").').';
+	$title_rss = 'Cahier de textes - '.getSettingValue("gepiSchoolName").' ('.getSettingValue("gepiYear").')';
+	$title_rss.= ': '.get_nom_prenom_eleve($eleve_l);
 	$description_rss = 'Les devoirs à faire de '.$noms["nom"].' '.$noms["prenom"];
 }
 // =========================fin des cahiers de textes ===========================
