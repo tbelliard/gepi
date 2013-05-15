@@ -31,6 +31,10 @@ $tab_type_brevet[6]="TECHNOLOGIQUE, option de série DP6";
 $tab_type_brevet[7]="TECHNOLOGIQUE, option de série AGRICOLE";
 */
 
+// Liste des indices:
+$sql_indices_types_brevets=" type_brevet='0' OR type_brevet='2' OR type_brevet='4' ";
+// Il faudra modifier cela pour récupérer de meilleure façon la liste des brevets pour lesquels des associations matière notanet/matière gepi ont été réalisées (en contrôlant que l'indice existe pour $tab_type_brevet)
+
 // Indice max des matières
 $indice_max_matieres=130;
 
