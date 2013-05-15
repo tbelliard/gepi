@@ -119,7 +119,7 @@ else {
 	if($extract_mode=="tous") {
 		//$fd.="\$extract_mode=$extract_mode".$eol;
 
-		$sql="SELECT DISTINCT type_brevet FROM notanet_corresp ORDER BY type_brevet;";
+		$sql="SELECT DISTINCT type_brevet FROM notanet_corresp WHERE $sql_indices_types_brevets ORDER BY type_brevet;";
 		$res0=mysql_query($sql);
 		if(mysql_num_rows($res0)>0) {
 			while($lig0=mysql_fetch_object($res0)) {
