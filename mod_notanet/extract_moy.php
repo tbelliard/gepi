@@ -87,7 +87,7 @@ if(mysql_num_rows($res)==0) {
 	die();
 }
 
-$sql="SELECT DISTINCT type_brevet FROM notanet_corresp ORDER BY type_brevet";
+$sql="SELECT DISTINCT type_brevet FROM notanet_corresp WHERE $sql_indices_types_brevets ORDER BY type_brevet";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
 	echo "</p>\n";
@@ -130,7 +130,7 @@ else {
 	//=========================================================
 	unset($tab_mat);
 	//$sql="SELECT * FROM notanet_corresp ORDER BY type_brevet;";
-	$sql="SELECT DISTINCT type_brevet FROM notanet_corresp ORDER BY type_brevet;";
+	$sql="SELECT DISTINCT type_brevet FROM notanet_corresp WHERE $sql_indices_types_brevets ORDER BY type_brevet;";
 	$res1=mysql_query($sql);
 	while($lig1=mysql_fetch_object($res1)) {
 		//$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet';";

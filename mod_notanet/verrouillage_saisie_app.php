@@ -136,7 +136,7 @@ if($nb_type_brevet1==0) {
 	die();
 }
 
-$sql="SELECT DISTINCT type_brevet FROM notanet_corresp ORDER BY type_brevet;";
+$sql="SELECT DISTINCT type_brevet FROM notanet_corresp WHERE $sql_indices_types_brevets ORDER BY type_brevet;";
 $res2=mysql_query($sql);
 $nb_type_brevet2=mysql_num_rows($res2);
 //if(mysql_num_rows($res)==0) {
