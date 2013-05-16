@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -27,11 +27,45 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 $fiche=isset($_POST["fiche"]) ? $_POST["fiche"] : (isset($_GET["fiche"]) ? $_GET["fiche"] : "personnels");
 
-$nom = 'BONNOT';
-$prenom = 'Jean';
-$identifiant = "JBONNOT";
-$mdp = "5Cdff45DF";
-$email = 'jbonnot@ici.fr';
+if(!isset($_GET['user_login'])) {
+	$nom = 'BONNOT';
+	$prenom = 'Jean';
+	$identifiant = "JBONNOT";
+	$mdp = "5Cdff45DF";
+	$email = 'jbonnot@ici.fr';
+	$fiche_demo="y";
+}
+else {
+	$sql="SELECT * FROM utilisateurs WHERE login='".$_GET['user_login']."';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		echo "<p style='color:red'>Le login proposé (<em>".$_GET['user_login']."</em>) n'existe pas</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$lig=mysql_fetch_object($res);
+	$nom = casse_mot($lig->nom, "maj");
+	$prenom = casse_mot($lig->prenom, "majf2");
+	$identifiant = $_GET['user_login'];
+	$email = $lig->email;
+
+	if($fiche=="eleves") {
+		$chaine_classes=get_chaine_liste_noms_classes_from_ele_login($_GET['user_login']);
+	}
+	elseif($fiche=="responsables") {
+		$tab=get_enfants_from_resp_login($_GET['user_login'], 'avec_classe');
+		$chaine_enfants="";
+		for($loop=1;$loop<count($tab);$loop+=2) {
+			if($loop>1) {
+				$chaine_enfants.=", ";
+			}
+			$chaine_enfants.=$tab[$loop];
+		}
+	}
+
+	$fiche_demo="n";
+}
 
 switch ($fiche) {
 case 'personnels' :
@@ -53,14 +87,33 @@ case 'eleves' :
 }
 
 for ($i=0;$i<$nb_fiches;$i++) {
-	echo "<p>A l'attention de  <span class = \"bold\">" . $nom . " " . $prenom . "</span>";
-	echo "<br />Nom de login : <span class = \"bold\">" . $identifiant. "</span>";
-	echo "<br />Mot de passe : <span class = \"bold\">" . $mdp . "</span>";
-	echo "<br />Adresse E-mail : <span class = \"bold\">" . $email . "</span>";
-	echo "</p>";
+	echo "<table><tr><td>A l'attention de </td><td><span class = \"bold\">" . $nom . " " . $prenom . "</span></td></tr>
+	<tr><td>Nom de login : </td><td class = \"bold\">" . $identifiant. "</td></tr>";
+	if(isset($mdp)) {
+		echo "
+	<tr><td>Mot de passe : </td><td class = \"bold\">" . $mdp . "</td></tr>";
+	}
+	if(isset($email)) {
+		echo "
+	<tr><td>Adresse E-mail : </td><td class = \"bold\">" . $email . "</td></tr>";
+	}
 
-	echo "<p style='font-variant:small-caps;color:red;'>La ligne donnant le mot de passe de l'utilisateur
+	if(isset($chaine_enfants)) {
+		echo "
+	<tr><td>Responsable de : </td><td class = \"bold\">" . $chaine_enfants . "</td></tr>";
+	}
+	elseif($chaine_classes) {
+		echo "
+	<tr><td>Classe : </td><td class = \"bold\">" . $chaine_classes . "</td></tr>";
+	}
+
+	echo "
+</table>";
+
+	if($fiche_demo=="y") {
+		echo "<p style='font-variant:small-caps;color:red;'>La ligne donnant le mot de passe de l'utilisateur
 ne figure sur la fiche <b>QUE SI</b> cette dernière est imprimée dès la création de l'utilisateur.</p>";
+	}
 
 	echo $impression;
 }

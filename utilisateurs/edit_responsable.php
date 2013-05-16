@@ -512,7 +512,8 @@ Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL;ENFANTS;SEXE;IDENTIFIAN
 	<th>Etat</th>
 	<th>Mode auth.</th>
 	<th>Supprimer</th>
-	<th colspan="4">Réinitialiser le mot de passe</th>
+	<th colspan="3">Réinitialiser le mot de passe</th>
+	<th>Fiche bienvenue</th>
 </tr>
 <?php
 //$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
@@ -690,6 +691,12 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 			echo "&nbsp;";
 			echo "</td>\n";
 		}
+
+		echo "<td>";
+		echo "<a href='../gestion/modele_fiche_information.php?user_login=".$current_parent->login."&amp;fiche=responsables' target='_blank' title=\"Générer la fiche bienvenue pour $current_parent->nom $current_parent->prenom.
+Le mot de passe n'est pas modifié, ni affiché.\">Fiche.B.</a>\n";
+		echo "</td>\n";
+
 	echo "</tr>\n";
 	$compteur_resp++;
 	flush();
