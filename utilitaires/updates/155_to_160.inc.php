@@ -388,5 +388,46 @@ else {
   $result .= msj_present("Déjà correct");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 't_plan_de_classe' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 't_plan_de_classe'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS t_plan_de_classe (
+	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	id_groupe INT(11) NOT NULL ,
+	login_prof VARCHAR(50) NOT NULL ,
+	dim_photo INT(11) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 't_plan_de_classe_ele' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 't_plan_de_classe_ele'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS t_plan_de_classe_ele (
+	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	id_plan INT( 11 ) NOT NULL,
+	login_ele VARCHAR(50) NOT NULL ,
+	x INT(11) NOT NULL ,
+	y INT(11) NOT NULL);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 $result.="<br />Fin mise à jour<br/>";
 ?>

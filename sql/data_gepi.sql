@@ -1203,3 +1203,4 @@ INSERT INTO droits VALUES ( '/cahier_notes/autorisation_exceptionnelle_saisie.ph
 INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle_saisie_note.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie de notes du bulletin.', '');
 INSERT INTO droits VALUES ('/cahier_notes/copie_dev.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');
 INSERT INTO droits SET id='/cahier_texte_2/consultation2.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='F',autre='V',description='Cahiers de textes: Consultation',statut='';
+INSERT INTO droits SET id='/mod_trombinoscopes/plan_de_classe.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Plan de classe',statut='';
