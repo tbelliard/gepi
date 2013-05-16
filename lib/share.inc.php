@@ -2088,6 +2088,26 @@ function get_noms_classes_from_ele_login($ele_login){
 }
 
 /**
+ * Retourne la chaine des classes d'un élève ordonnées par périodes puis classes
+ *
+ * @param string $ele_login Login de l'élève
+ * @return string 
+ */
+function get_chaine_liste_noms_classes_from_ele_login($ele_login) {
+	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
+	$res_class=mysql_query($sql);
+
+	$chaine="";
+	if(mysql_num_rows($res_class)>0){
+		while($lig_tmp=mysql_fetch_object($res_class)){
+			if($chaine!="") {$chaine.=", ";}
+			$chaine=$lig_tmp->classe;
+		}
+	}
+	return $chaine;
+}
+
+/**
  * Renvoie les élèves liés à un responsable
  *
  * @param string $resp_login Login du responsable
