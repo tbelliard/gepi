@@ -759,3 +759,19 @@ statut VARCHAR( 20 ) NOT NULL ,
 auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
 date_reserve DATE DEFAULT '0000-00-00',
 temoin VARCHAR( 50 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;
+
+DROP TABLE IF EXISTS t_plan_de_classe;
+CREATE TABLE IF NOT EXISTS t_plan_de_classe (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+id_groupe INT(11) NOT NULL ,
+login_prof VARCHAR(50) NOT NULL ,
+dim_photo INT(11) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS t_plan_de_classe_ele;
+CREATE TABLE IF NOT EXISTS t_plan_de_classe_ele (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+id_plan INT( 11 ) NOT NULL,
+login_ele VARCHAR(50) NOT NULL ,
+x INT(11) NOT NULL ,
+y INT(11) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
