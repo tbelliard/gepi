@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -218,7 +218,15 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 	echo "</table>\n";
 
-	echo "<p>Le paramétrage de la synchronisation est actuellement&nbsp;:".getSettingValue('mode_email_resp')."</p>\n";
+	echo "<p>Le paramétrage de la synchronisation est actuellement&nbsp;: <span style='color:green'>".getSettingValue('mode_email_resp')."</span><br />";
+
+	if(getSettingValue('mode_email_resp')=="mon_compte") {
+		echo "Cela signifie que c'est ce qui est saisi par le responsable dans <span class='bold'>Gérer mon compte</span> qui prime sur ce qui est saisi dans Sconet (<em>ou plus généralement dans Gestion des responsables</em>).";
+	}
+	elseif(getSettingValue('mode_email_resp')=='sconet') {
+		echo "Cela signifie que c'est ce qui est saisi <span class='bold'>dans Sconet</span> ou <span class='bold'>dans Gepi dans Gestion des bases/Gestion des responsables</span> prime sur ce qui est saisi par le responsable dans <span class='bold'>Gérer mon compte</span>.";
+	}
+	echo "</p>\n";
 
 	if(getSettingValue('mode_email_resp')=='sconet') {
 		echo "<p>Pour mettre à jour les email des comptes d'utilisateurs d'après les valeurs Sconet, <a href='".$_SERVER['PHP_SELF']."?synchroniser=y".add_token_in_url()."'>cliquez ici</a>.</p>\n";
