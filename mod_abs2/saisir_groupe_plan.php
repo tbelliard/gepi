@@ -1406,7 +1406,10 @@ echo "</pre>";
 					// 20130416
 					if(isset($temoin_saisie_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
 						echo "<div style='position:absolute; top:".$y."px; left:".$x."px; width:".$largeur_div."px; height:18px; text-align:center;'>\n";
-						echo "<a href=\"javascript:afficher_div('div_infobulle_saisie_prec_".$eleve['position']."','y',10,-40);\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes' /></a>";
+						//echo "<a href=\"javascript:afficher_div('div_infobulle_saisie_prec_".$eleve['position']."','y',10,-40);\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes' /></a>";
+						echo "<a href=\"javascript:alterne_affichage_div_journee('div_infobulle_saisie_prec_".$eleve['position']."');\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes.
+Cliquez une fois sur le drapeau pour afficher le tableau des saisies précédentes.
+Cliquez une deuxième fois pour masquer ce tableau.' /></a>";
 						echo "</div>\n";
 
 						$titre_infobulle=$eleve['nom']." ".$eleve['prenom'];
@@ -1469,6 +1472,17 @@ if(isset($compteur_eleve)) {
 	var tab_type_manquement=new Array();
 	tab_type_manquement[-1]=true;
 	$chaine_manquement
+
+	function alterne_affichage_div_journee(id) {
+		if(document.getElementById(id)) {
+			if(document.getElementById(id).style.display=='none') {
+				afficher_div(id,'y',10,-40);
+			}
+			else {
+				cacher_div(id);
+			}
+		}
+	}
 
 	var etat_tout_cocher=false;
 	function cocher_div_abs(num) {
