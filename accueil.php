@@ -155,6 +155,13 @@ if($_SESSION['statut']=='professeur'){
 	}
 	else {
 		if($accueil_simpl=="y") {
+			if (!check_user_temp_directory()) {
+				$_SESSION['user_temp_directory']='n';
+			}
+			else {
+				$_SESSION['user_temp_directory']='y';
+			}
+
 			$msg=isset($_POST['msg']) ? $_POST['msg'] : (isset($_GET['msg']) ? $_GET['msg'] : NULL);
 
 			if(isset($msg)) {
