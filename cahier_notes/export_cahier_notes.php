@@ -75,7 +75,8 @@ $type_export=isset($_POST["type_export"]) ? $_POST["type_export"] : NULL;
 $nettoyage=isset($_GET["nettoyage"]) ? $_GET["nettoyage"] : NULL;
 
 
-if($_SESSION['user_temp_directory']!='y') {
+//if($_SESSION['user_temp_directory']!='y') {
+if((isset($_SESSION['user_temp_directory']))&&($_SESSION['user_temp_directory']!='y')) {
 	$type_export="CSV";
 }
 else {
