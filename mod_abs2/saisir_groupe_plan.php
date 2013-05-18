@@ -495,6 +495,8 @@ $tab_id_types_autorises=array();
 $afficheEleve = array();
 $elv = 0;
 
+$chaine_veille_tous_eleves="";
+$chaine_entete_veille_tous_eleves="";
 // 20130416
 $chaine_tr_entete_veille_et_creneaux_precedents=array();
 $chaine_veille_et_creneaux_precedents=array();
@@ -1165,6 +1167,8 @@ if ($eleve_col->isEmpty()) {
 				}
 			?>
 
+			<div style='float:right;width:17px;'><a href="javascript:alterner_affichage_div('div_infobulle_saisie_veille_tous_eleves','y',-500,10);"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes de la journée.' /></a></div>
+
 			<p class="expli_page choix_fin center">
 				Saisie des absences du
 				<strong><?php echo strftime  ('%A %d/%m/%Y',  $dt_date_absence_eleve->format('U')); ?></strong>
@@ -1417,6 +1421,11 @@ Cliquez une deuxième fois pour masquer ce tableau.' /></a>";
 						$texte_infobulle="<table class='boireaus boireaus_alt'>".$chaine_tr_veille_et_creneaux_precedents[$eleve['accesFiche']].$chaine_veille_et_creneaux_precedents[$eleve['accesFiche']]."</table>";
 						$tabdiv_infobulle[]=creer_div_infobulle("div_infobulle_saisie_prec_".$eleve['position'], $titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',2);
 
+						if($chaine_entete_veille_tous_eleves=="") {
+							$chaine_entete_veille_tous_eleves=preg_replace("/^<tr>/","<tr><th>Élève</th>",$chaine_tr_veille_et_creneaux_precedents[$eleve['accesFiche']]);
+						}
+						$chaine_veille_tous_eleves.="<tr><td>".$eleve['nom']." ".$eleve['prenom']."</td>";
+						$chaine_veille_tous_eleves.=preg_replace("/^<tr>/","",$chaine_veille_et_creneaux_precedents[$eleve['accesFiche']]);
 					}
 				}
 
@@ -1458,6 +1467,14 @@ if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers
 </div>
 
 <?php
+if((isset($chaine_veille_tous_eleves))&&($chaine_veille_tous_eleves!="")) {
+	$titre_infobulle="Saisies de la journée";
+
+	$texte_infobulle="<table class='boireaus boireaus_alt'>".$chaine_entete_veille_tous_eleves.$chaine_veille_tous_eleves."</table>";
+	$tabdiv_infobulle[]=creer_div_infobulle("div_infobulle_saisie_veille_tous_eleves", $titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',2);
+
+}
+
 if(isset($compteur_eleve)) {
 	$chaine_manquement="";
 	foreach($tab_types_autorises as $key=>$value) {
