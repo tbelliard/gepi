@@ -98,7 +98,7 @@
 		Nombre de personnes actuellement connectées :
 		<?php
 			if($afficheAccueil->nb_connect>1) {
-				echo "<a style='font-weight:bold;' href='$afficheAccueil->nb_connect_lien' onmouseover=\"delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);\">$afficheAccueil->nb_connect</a>";
+				echo "<a style='font-weight:bold;' href='$afficheAccueil->nb_connect_lien' onmouseover=\"delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);\" onclick=\"alterner_affichage_div('personnes_connectees','y',-10,20);return false;\">$afficheAccueil->nb_connect</a>";
 			}
 			else {
 				echo "<b>".$afficheAccueil->nb_connect."</b>";

@@ -1611,7 +1611,7 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 			$tabdiv_infobulle[]=creer_div_infobulle('repartition_notes_'.$k,$titre,"",$texte,"",14,0,'y','y','n','n');
 
 			echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_$k','y',-100,20,1500,10,10);\"";
-			echo " onclick=\"afficher_div('repartition_notes_$k','y',-100,20);return false;\"";
+			echo " onclick=\"alterner_affichage_div('repartition_notes_$k','y',-100,20);return false;\"";
 			echo ">";
 			echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
 			echo "</a>";
@@ -1633,7 +1633,7 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 		// Colonne Moyenne de l'élève
 		echo "<td>";
 		echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_moyenne','y',-100,20,1500,10,10);\"";
-		echo " onclick=\"afficher_div('repartition_notes_moyenne','y',-100,20);return false;\"";
+		echo " onclick=\"alterner_affichage_div('repartition_notes_moyenne','y',-100,20);return false;\"";
 		echo ">";
 		echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
 		echo "</a>";
