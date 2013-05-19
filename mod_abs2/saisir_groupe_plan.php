@@ -495,6 +495,8 @@ $tab_id_types_autorises=array();
 $afficheEleve = array();
 $elv = 0;
 
+$chaine_veille_tous_eleves="";
+$chaine_entete_veille_tous_eleves="";
 // 20130416
 $chaine_tr_entete_veille_et_creneaux_precedents=array();
 $chaine_veille_et_creneaux_precedents=array();
@@ -1165,6 +1167,8 @@ if ($eleve_col->isEmpty()) {
 				}
 			?>
 
+			<div style='float:right;width:17px;'><a href="javascript:alterner_affichage_div('div_infobulle_saisie_veille_tous_eleves','y',-500,10);"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes de la journée.' /></a></div>
+
 			<p class="expli_page choix_fin center">
 				Saisie des absences du
 				<strong><?php echo strftime  ('%A %d/%m/%Y',  $dt_date_absence_eleve->format('U')); ?></strong>
@@ -1406,7 +1410,10 @@ echo "</pre>";
 					// 20130416
 					if(isset($temoin_saisie_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
 						echo "<div style='position:absolute; top:".$y."px; left:".$x."px; width:".$largeur_div."px; height:18px; text-align:center;'>\n";
-						echo "<a href=\"javascript:afficher_div('div_infobulle_saisie_prec_".$eleve['position']."','y',10,-40);\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes' /></a>";
+						//echo "<a href=\"javascript:afficher_div('div_infobulle_saisie_prec_".$eleve['position']."','y',10,-40);\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes' /></a>";
+						echo "<a href=\"javascript:alterne_affichage_div_journee('div_infobulle_saisie_prec_".$eleve['position']."');\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes.
+Cliquez une fois sur le drapeau pour afficher le tableau des saisies précédentes.
+Cliquez une deuxième fois pour masquer ce tableau.' /></a>";
 						echo "</div>\n";
 
 						$titre_infobulle=$eleve['nom']." ".$eleve['prenom'];
@@ -1414,6 +1421,11 @@ echo "</pre>";
 						$texte_infobulle="<table class='boireaus boireaus_alt'>".$chaine_tr_veille_et_creneaux_precedents[$eleve['accesFiche']].$chaine_veille_et_creneaux_precedents[$eleve['accesFiche']]."</table>";
 						$tabdiv_infobulle[]=creer_div_infobulle("div_infobulle_saisie_prec_".$eleve['position'], $titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',2);
 
+						if($chaine_entete_veille_tous_eleves=="") {
+							$chaine_entete_veille_tous_eleves=preg_replace("/^<tr>/","<tr><th>Élève</th>",$chaine_tr_veille_et_creneaux_precedents[$eleve['accesFiche']]);
+						}
+						$chaine_veille_tous_eleves.="<tr><td>".$eleve['nom']." ".$eleve['prenom']."</td>";
+						$chaine_veille_tous_eleves.=preg_replace("/^<tr>/","",$chaine_veille_et_creneaux_precedents[$eleve['accesFiche']]);
 					}
 				}
 
@@ -1455,6 +1467,14 @@ if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers
 </div>
 
 <?php
+if((isset($chaine_veille_tous_eleves))&&($chaine_veille_tous_eleves!="")) {
+	$titre_infobulle="Saisies de la journée";
+
+	$texte_infobulle="<table class='boireaus boireaus_alt'>".$chaine_entete_veille_tous_eleves.$chaine_veille_tous_eleves."</table>";
+	$tabdiv_infobulle[]=creer_div_infobulle("div_infobulle_saisie_veille_tous_eleves", $titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',2);
+
+}
+
 if(isset($compteur_eleve)) {
 	$chaine_manquement="";
 	foreach($tab_types_autorises as $key=>$value) {
@@ -1469,6 +1489,17 @@ if(isset($compteur_eleve)) {
 	var tab_type_manquement=new Array();
 	tab_type_manquement[-1]=true;
 	$chaine_manquement
+
+	function alterne_affichage_div_journee(id) {
+		if(document.getElementById(id)) {
+			if(document.getElementById(id).style.display=='none') {
+				afficher_div(id,'y',10,-40);
+			}
+			else {
+				cacher_div(id);
+			}
+		}
+	}
 
 	var etat_tout_cocher=false;
 	function cocher_div_abs(num) {

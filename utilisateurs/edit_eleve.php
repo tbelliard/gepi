@@ -523,7 +523,10 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login.add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>\n";
+		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login.add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\" title=\"Supprimer le compte de l'utilisateur $current_eleve->nom $current_eleve->prenom\">Supprimer</a>\n";
+
+		echo " - <a href='../gestion/modele_fiche_information.php?user_login=".$current_eleve->login."&amp;fiche=eleves' target='_blank' title=\"Générer la fiche bienvenue pour $current_eleve->nom $current_eleve->prenom.
+Le mot de passe n'est pas modifié, ni affiché.\">Fiche bienvenue</a>\n";
 
 		if($current_eleve->etat == "actif" && ($current_eleve->auth_mode == "gepi" || $gepiSettings['ldap_write_access'] == "yes")) {
 			echo "<br />";

@@ -1514,7 +1514,12 @@ if(isset($quelles_classes)) {
 			echo "<td><p><a href='../classes/classes_const.php?id_classe=$eleve_id_classe'>$eleve_classe</a></p></td>\n";
 		}
 		else {
-			echo "<td><p>$eleve_classe</p></td>\n";
+			if(acces('/classes/ajout_eleve_classe.php', $_SESSION['statut'])) {
+				echo "<td><p><a href=\"javascript:affiche_ajout_ele_clas('$eleve_login')\" title=\"Inscrire $eleve_nom $eleve_prenom dans une classe.\">$eleve_classe</a></p></td>\n";
+			}
+			else {
+				echo "<td><p>$eleve_classe</p></td>\n";
+			}
 		}
 		$csv.="$eleve_classe_csv;";
 
@@ -1627,6 +1632,15 @@ if(isset($quelles_classes)) {
 			document.getElementById('span_file_'+i).innerHTML='<a href=\'javascript:add_file_upload('+i+')\'><img src=\'../images/ico_edit16plus.png\' width=\'16\' height=\'16\' alt=\'Choisir un fichier à uploader\' /></a>';
 		}
 	}
+
+	function affiche_ajout_ele_clas(login_ele) {
+		if(document.getElementById('div_form_ajout_ele_clas')) {
+			if(document.getElementById('login_ele_ajout_classe')) {
+				document.getElementById('login_ele_ajout_classe').value=login_ele;
+				afficher_div('div_form_ajout_ele_clas', 'y',-20,20);
+			}
+		}
+	}
 </script>\n";
 
 	echo "<input type='hidden' name='quelles_classes' value='$quelles_classes' />\n";
@@ -1651,6 +1665,41 @@ if(isset($quelles_classes)) {
 	</form>
 
 	<?php
+
+	//=========================
+	$sql="SELECT max(num_periode) AS max_per FROM classes c, periodes p WHERE p.id_classe=c.id;";
+	$res_per=mysql_query($sql);
+	$max_per=mysql_result($res_per, 0, 'max_per');
+
+	$sql="SELECT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
+	$res_classe=mysql_query($sql);
+
+	$titre_infobulle="Inscription dans une classe";
+	$texte_infobulle="<form action='../classes/ajout_eleve_classe.php' method='post'>
+	".add_token_field()."
+	<input type='hidden' name='login_ele_ajout_classe' id='login_ele_ajout_classe' value='' />
+	<p style='text-align:center;'>Choisissez une classe&nbsp;: 
+	<select name='id_classe'>
+		<option value=''>---</option>";
+	while($lig_classe=mysql_fetch_object($res_classe)) {
+		$texte_infobulle.="
+		<option value='$lig_classe->id'>$lig_classe->classe ($lig_classe->nom_complet)</option>";
+	}
+	$texte_infobulle.="
+	</select>
+	<br />
+	et la ou les périodes<br />
+	<span id='span_periodes'>";
+	for($loop=1;$loop<=$max_per;$loop++) {
+		$texte_infobulle.="
+		<input type='checkbox' id='num_periode_$loop' name='num_periode[]' value='$loop' /><label for='num_periode_$loop'>Période $loop</label><br />";
+	}
+	$texte_infobulle.="
+	</span><br />
+	<input type='submit' value='Inscrire' />
+</form>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_form_ajout_ele_clas',$titre_infobulle,"",$texte_infobulle,"",20,0,'y','y','n','n');
+	//=========================
 
 	echo "<br />\n";
 	$temoin_notes_bas_de_page="n";
