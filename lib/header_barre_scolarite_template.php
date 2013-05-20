@@ -151,7 +151,12 @@ if ($barre_plugin!="") {
 				$menus .= '     <li class="plus">Bulletins'."\n";
 				$menus .= '            <ul class="niveau3">'."\n";
 				if(getSettingValue('GepiScolImprBulSettings')=='yes') {
-					$menus .= '                <li><a href="'.$gepiPath.'/bulletin/param_bull.php"'.insert_confirm_abandon().'>Param. impression bull</a></li>'."\n";
+				if(getSettingValue('type_bulletin_par_defaut')=="pdf") {
+					$menus .= '                <li><a href="'.$gepiPath.'/bulletin/param_bull_pdf.php" '.insert_confirm_abandon().'>Param. impression bull</a></li>'."\n";
+				}
+				else {
+					$menus .= '                <li><a href="'.$gepiPath.'/bulletin/param_bull.php" '.insert_confirm_abandon().'>Param. impression bull</a></li>'."\n";
+				}
 				}
 				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/bull_index.php"'.insert_confirm_abandon().'>Impression bulletins</a></li>'."\n";
 				$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a></li>'."\n";
