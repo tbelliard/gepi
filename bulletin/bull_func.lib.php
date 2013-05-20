@@ -190,6 +190,8 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		// Nom du fichier déterminé d'après le paramètre choix_bulletin
 		$fichier_bulletin,
 		$min_max_moyclas,
+		$moyennes_periodes_precedentes,
+		$moyennes_annee,
 
 		// Bloc adresse responsable
 		$addressblock_padding_right,

@@ -1433,11 +1433,16 @@ else {
 		}
 		//==============================
 
-		$moyennes_annee="n";
-		$moyennes_periodes_precedentes="n";
+		// Les deux choix ci-dessous sont maintenant dans les Paramètres des bulletins HTML
+		//$moyennes_annee="n";
+		//$moyennes_periodes_precedentes="n";
+
 		$evolution_moyenne_periode_precedente="n";
 		// Remplissage des paramètres du modèle de bulletin PDF:
 		if($mode_bulletin=="pdf") {
+			$moyennes_annee="n";
+			$moyennes_periodes_precedentes="n";
+
 			require_once("bulletin_pdf.inc.php");
 			foreach($val_defaut_champ_bull_pdf as $key => $value) {
 				$tab_modele_pdf[$key][$tab_id_classe[$loop_classe]]=$value;
@@ -1518,6 +1523,7 @@ else {
 			//================================
 		}
 
+		//echo "\$moyennes_annee=$moyennes_annee<br />";
 
 		//$id_classe=2;
 		$id_classe=$tab_id_classe[$loop_classe];
