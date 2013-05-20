@@ -1433,6 +1433,7 @@ else {
 		}
 		//==============================
 
+		$moyennes_annee="n";
 		$moyennes_periodes_precedentes="n";
 		$evolution_moyenne_periode_precedente="n";
 		// Remplissage des paramètres du modèle de bulletin PDF:
@@ -1441,155 +1442,6 @@ else {
 			foreach($val_defaut_champ_bull_pdf as $key => $value) {
 				$tab_modele_pdf[$key][$tab_id_classe[$loop_classe]]=$value;
 			}
-/*
-			// information d'activation des différentes parties du bulletin
-			$tab_modele_pdf["affiche_filigrame"][$tab_id_classe[$loop_classe]]='1'; // affiche un filigramme
-			$tab_modele_pdf["texte_filigrame"][$tab_id_classe[$loop_classe]]='DUPLICATA INTERNET'; // texte du filigrame
-			$tab_modele_pdf["affiche_logo_etab"][$tab_id_classe[$loop_classe]]='1';
-			$tab_modele_pdf["nom_etab_gras"][$tab_id_classe[$loop_classe]]='0';
-			$tab_modele_pdf["entente_mel"][$tab_id_classe[$loop_classe]]='1'; // afficher l'adresse mel dans l'entête
-			$tab_modele_pdf["entente_tel"][$tab_id_classe[$loop_classe]]='1'; // afficher le numéro de téléphone dans l'entête
-			$tab_modele_pdf["entente_fax"][$tab_id_classe[$loop_classe]]='1'; // afficher le numéro de fax dans l'entête
-			$tab_modele_pdf["L_max_logo"][$tab_id_classe[$loop_classe]]=75; $tab_modele_pdf["H_max_logo"][$tab_id_classe[$loop_classe]]=75; //dimension du logo
-			$tab_modele_pdf["active_bloc_datation"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les informations de datation du bulletin
-			$tab_modele_pdf["taille_texte_date_edition"][$tab_id_classe[$loop_classe]] = '8'; // définit la taille de la date d'édition du bulletin
-			$tab_modele_pdf["active_bloc_eleve"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les informations sur l'élève
-			$tab_modele_pdf["active_bloc_adresse_parent"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher l'adresse des parents
-			$tab_modele_pdf["active_bloc_absence"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les absences de l'élève
-			$tab_modele_pdf["active_bloc_note_appreciation"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les notes et appréciations
-			$tab_modele_pdf["active_bloc_avis_conseil"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les avis du conseil de classe
-			$tab_modele_pdf["active_bloc_chef"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher la signature du chef
-			$tab_modele_pdf["active_photo"][$tab_id_classe[$loop_classe]] = '0'; // fait - afficher la photo de l'élève
-			$tab_modele_pdf["active_coef_moyenne"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le coéficient des moyenne par matière
-			$active_coef_sousmoyene = '1'; // fait - afficher le coéficient des moyenne par matière
-			$tab_modele_pdf["active_nombre_note"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le nombre de note par matière sous la moyenne de l'élève
-			$tab_modele_pdf["active_nombre_note_case"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le nombre de note par matière
-			$tab_modele_pdf["active_moyenne"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les moyennes
-			$tab_modele_pdf["active_moyenne_eleve"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher la moyenne de l'élève
-			$tab_modele_pdf["active_moyenne_classe"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les moyennes de la classe
-			$tab_modele_pdf["active_moyenne_min"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les moyennes minimum
-			$tab_modele_pdf["active_moyenne_max"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les moyennes maximum
-			$tab_modele_pdf["active_regroupement_cote"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le nom des regroupement sur le coté
-			$tab_modele_pdf["active_entete_regroupement"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les entête des regroupement
-			$tab_modele_pdf["active_moyenne_regroupement"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les moyennes des regroupement
-			$tab_modele_pdf["active_moyenne_general"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher la moyenne général sur le bulletin
-			$tab_modele_pdf["active_rang"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le rang de l'élève
-			$tab_modele_pdf["active_graphique_niveau"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le graphique des niveaux
-			$tab_modele_pdf["active_appreciation"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les appréciations des professeurs
-			$tab_modele_pdf["affiche_doublement"][$tab_id_classe[$loop_classe]] = '1'; // affiche si l'élève à doubler
-			$tab_modele_pdf["affiche_date_naissance"][$tab_id_classe[$loop_classe]] = '1'; // affiche la date de naissance de l'élève
-			$tab_modele_pdf["affiche_lieu_naissance"][$tab_id_classe[$loop_classe]] = '0'; // affiche le lieu de naissance de l'élève
-			$tab_modele_pdf["affiche_dp"][$tab_id_classe[$loop_classe]] = '1'; // affiche l'état de demi pension ou extern
-			$tab_modele_pdf["affiche_nom_court"][$tab_id_classe[$loop_classe]] = '1'; // affiche le nom court de la classe
-			$tab_modele_pdf["affiche_effectif_classe"][$tab_id_classe[$loop_classe]] = '1'; // affiche l'effectif de la classe
-			$tab_modele_pdf["affiche_numero_impression"][$tab_id_classe[$loop_classe]] = '1'; // affiche le numéro d'impression des bulletins
-			$tab_modele_pdf["affiche_etab_origine"][$tab_id_classe[$loop_classe]] = '0'; // affiche l'établissement d'origine
-			$tab_modele_pdf["toute_moyenne_meme_col"][$tab_id_classe[$loop_classe]]='0'; // afficher les information moyenne classe/min/max sous la moyenne général de l'élève
-			$active_coef_sousmoyene = '1'; //afficher le coeficent en dessous de la moyenne de l'élève
-
-			$tab_modele_pdf["entete_model_bulletin"][$tab_id_classe[$loop_classe]] = '1'; //choix du type d'entete des moyennes
-			$tab_modele_pdf["ordre_entete_model_bulletin"][$tab_id_classe[$loop_classe]] = '1'; // ordre des entêtes tableau du bulletin
-
-			// information paramétrage
-			$tab_modele_pdf["caractere_utilse"][$tab_id_classe[$loop_classe]] = 'DejaVu';
-			// cadre identitée parents
-			$tab_modele_pdf["X_parent"][$tab_id_classe[$loop_classe]]=110; $tab_modele_pdf["Y_parent"][$tab_id_classe[$loop_classe]]=40;
-			$tab_modele_pdf["imprime_pour"][$tab_id_classe[$loop_classe]] = 1;
-			// cadre identitée eleve
-			$tab_modele_pdf["X_eleve"][$tab_id_classe[$loop_classe]]=5; $tab_modele_pdf["Y_eleve"][$tab_id_classe[$loop_classe]]=40;
-			$tab_modele_pdf["cadre_eleve"][$tab_id_classe[$loop_classe]]=1;
-			// cadre de datation du bulletin
-			$tab_modele_pdf["X_datation_bul"][$tab_id_classe[$loop_classe]]=110; $tab_modele_pdf["Y_datation_bul"][$tab_id_classe[$loop_classe]]=5;
-			$tab_modele_pdf["cadre_datation_bul"][$tab_id_classe[$loop_classe]]=1;
-			// si les catégorie son affiché avec moyenne
-			$tab_modele_pdf["hauteur_info_categorie"][$tab_id_classe[$loop_classe]]=5;
-			// cadre des notes et app
-			$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=5;
-			$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=72;
-			$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=200;
-			$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=175;
-
-			//coef des matiere
-			$tab_modele_pdf["largeur_coef_moyenne"][$tab_id_classe[$loop_classe]] = 8;
-			//nombre de note par matière
-			$tab_modele_pdf["largeur_nombre_note"][$tab_id_classe[$loop_classe]] = 8;
-			//champ des moyennes
-			$tab_modele_pdf["largeur_d_une_moyenne"][$tab_id_classe[$loop_classe]] = 10;
-			//graphique de niveau
-			$tab_modele_pdf["largeur_niveau"][$tab_id_classe[$loop_classe]] = 18;
-			//rang de l'élève
-			$tab_modele_pdf["largeur_rang"][$tab_id_classe[$loop_classe]] = 8;
-			//autres infos
-			$tab_modele_pdf["active_reperage_eleve"][$tab_id_classe[$loop_classe]] = '1';
-			$tab_modele_pdf["couleur_reperage_eleve1"][$tab_id_classe[$loop_classe]] = '255';
-			$tab_modele_pdf["couleur_reperage_eleve2"][$tab_id_classe[$loop_classe]] = '255';
-			$tab_modele_pdf["couleur_reperage_eleve3"][$tab_id_classe[$loop_classe]] = '207';
-			$tab_modele_pdf["couleur_categorie_cote"][$tab_id_classe[$loop_classe]] = '1';
-			$tab_modele_pdf["couleur_categorie_cote1"][$tab_id_classe[$loop_classe]]='239';
-			$tab_modele_pdf["couleur_categorie_cote2"][$tab_id_classe[$loop_classe]]='239';
-			$tab_modele_pdf["couleur_categorie_cote3"][$tab_id_classe[$loop_classe]]='239';
-			$tab_modele_pdf["couleur_categorie_entete"][$tab_id_classe[$loop_classe]] = '1';
-			$tab_modele_pdf["couleur_categorie_entete1"][$tab_id_classe[$loop_classe]]='239';
-			$tab_modele_pdf["couleur_categorie_entete2"][$tab_id_classe[$loop_classe]]='239';
-			$tab_modele_pdf["couleur_categorie_entete3"][$tab_id_classe[$loop_classe]]='239';
-			$tab_modele_pdf["couleur_moy_general"][$tab_id_classe[$loop_classe]] = '1';
-			$tab_modele_pdf["couleur_moy_general1"][$tab_id_classe[$loop_classe]]='239';
-			$tab_modele_pdf["couleur_moy_general2"][$tab_id_classe[$loop_classe]]='239';
-			$tab_modele_pdf["couleur_moy_general3"][$tab_id_classe[$loop_classe]]='239';
-			$tab_modele_pdf["titre_entete_matiere"][$tab_id_classe[$loop_classe]]='Matière';
-			$active_coef_sousmoyene = '1'; $tab_modele_pdf["titre_entete_coef"][$tab_id_classe[$loop_classe]]='coef.';
-			$tab_modele_pdf["titre_entete_nbnote"][$tab_id_classe[$loop_classe]]='nb. n.';
-			$tab_modele_pdf["titre_entete_rang"][$tab_id_classe[$loop_classe]]='rang';
-			$titre_entete_appreciation='Appréciation/Conseils';
-			// cadre absence
-			$tab_modele_pdf["X_absence"][$tab_id_classe[$loop_classe]]=5; $tab_modele_pdf["Y_absence"][$tab_id_classe[$loop_classe]]=246.3;
-			// entete du bas contient les moyennes gérnéral
-			$tab_modele_pdf["hauteur_entete_moyenne_general"][$tab_id_classe[$loop_classe]] = 5;
-			// cadre des Avis du conseil de classe
-			$tab_modele_pdf["X_avis_cons"][$tab_id_classe[$loop_classe]]=5; $tab_modele_pdf["Y_avis_cons"][$tab_id_classe[$loop_classe]]=250; $tab_modele_pdf["longeur_avis_cons"][$tab_id_classe[$loop_classe]]=130; $tab_modele_pdf["hauteur_avis_cons"][$tab_id_classe[$loop_classe]]=37;
-			$tab_modele_pdf["cadre_avis_cons"][$tab_id_classe[$loop_classe]]=1;
-			// cadre signature du chef
-			$tab_modele_pdf["X_sign_chef"][$tab_id_classe[$loop_classe]]=138; $tab_modele_pdf["Y_sign_chef"][$tab_id_classe[$loop_classe]]=250; $tab_modele_pdf["longeur_sign_chef"][$tab_id_classe[$loop_classe]]=67; $tab_modele_pdf["hauteur_sign_chef"][$tab_id_classe[$loop_classe]]=37;
-			$tab_modele_pdf["cadre_sign_chef"][$tab_id_classe[$loop_classe]]=0;
-			//les moyennes
-			$tab_modele_pdf["arrondie_choix"][$tab_id_classe[$loop_classe]]='0.01'; //arrondie de la moyenne
-			$tab_modele_pdf["nb_chiffre_virgule"][$tab_id_classe[$loop_classe]]='1'; //nombre de chiffre après la virgule
-			$tab_modele_pdf["chiffre_avec_zero"][$tab_id_classe[$loop_classe]]='1'; // si une moyenne se termine par ,00 alors on supprimer les zero
-
-			$tab_modele_pdf["autorise_sous_matiere"][$tab_id_classe[$loop_classe]] = '1'; //autorise l'affichage des sous matière
-			$tab_modele_pdf["affichage_haut_responsable"][$tab_id_classe[$loop_classe]] = '1'; //affiche le nom du haut responsable de la classe
-
-			$tab_modele_pdf["largeur_matiere"][$tab_id_classe[$loop_classe]] = '40'; // largeur de la colonne matiere
-
-			$tab_modele_pdf["taille_texte_matiere"][$tab_id_classe[$loop_classe]] = '10'; //taille du texte des matières
-
-			$tab_modele_pdf["titre_bloc_avis_conseil"][$tab_id_classe[$loop_classe]] = 'Avis du Conseil de classe:'; // titre du bloc avis du conseil de classe
-			$tab_modele_pdf["taille_titre_bloc_avis_conseil"][$tab_id_classe[$loop_classe]] = '10'; // taille du titre du bloc avis du conseil
-			$tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$tab_id_classe[$loop_classe]] = '10'; // taille du texte prof principal du bloc avis conseil de classe
-			$tab_modele_pdf["affiche_fonction_chef"][$tab_id_classe[$loop_classe]] = '1'; // affiche la fonction du chef
-			$tab_modele_pdf["taille_texte_fonction_chef"][$tab_id_classe[$loop_classe]] = '10'; // taille du texte de la fonction du chef
-			$tab_modele_pdf["taille_texte_identitee_chef"][$tab_id_classe[$loop_classe]] = '10'; // taille du texte du nom du chef
-
-			$tab_modele_pdf["cadre_adresse"][$tab_id_classe[$loop_classe]] = ''; // cadre sur l'adresse
-
-			$tab_modele_pdf["centrage_logo"][$tab_id_classe[$loop_classe]] = '0'; // centrer le logo de l'établissement
-			$tab_modele_pdf["Y_centre_logo"][$tab_id_classe[$loop_classe]] = '18'; // centre du logo sur la page
-			$tab_modele_pdf["ajout_cadre_blanc_photo"][$tab_id_classe[$loop_classe]] = '0'; // ajouter un cadre blanc pour la photo de l'élève.
-
-			$tab_modele_pdf["affiche_moyenne_mini_general"][$tab_id_classe[$loop_classe]] = '1'; // permet l'affichage de la moyenne général mini
-			$tab_modele_pdf["affiche_moyenne_maxi_general"][$tab_id_classe[$loop_classe]] = '1'; // permet l'affichage de la moyenne général maxi
-
-			$tab_modele_pdf["affiche_date_edition"][$tab_id_classe[$loop_classe]] = '1'; // affiche la date d'édition
-			$tab_modele_pdf["affiche_ine"][$tab_id_classe[$loop_classe]] = '0'; // affiche l'INE de l'élève
-
-			$tab_modele_pdf["affiche_moyenne_general_coef_1"][$tab_id_classe[$loop_classe]] = '0'; // affichage des moyennes générales avec coef 1 en plus des autres coeff saisis dans Gestion des classes/<Classe> Enseignements
-	
-			$tab_modele_pdf["affiche_numero_responsable"][$tab_id_classe[$loop_classe]] = '0'; // affichage du numéro du responsable legal de l'élève dont le bulletin est imprimé. 1 ==> affiche 0 ==> n'affiche pas
-			*/
-
-			//================================
-			//================================
-			//================================
 
 			// Modèle de bulletin PDF
 			$type_bulletin=isset($_POST['type_bulletin']) ? $_POST['type_bulletin'] : 1;
@@ -1641,6 +1493,11 @@ else {
 					if(($lig_model->nom=='evolution_moyenne_periode_precedente')&&($lig_model->valeur=='y')) {
 						// Pour que l'on extraie les moyennes pour les différentes périodes si nécessaire
 						$evolution_moyenne_periode_precedente="y";
+					}
+
+					if(($lig_model->nom=='moyennes_annee')&&($lig_model->valeur=='y')) {
+						// Moyennes des moyennes de périodes pour les différents enseignements
+						$moyennes_annee="y";
 					}
 				}
 			}
@@ -2352,6 +2209,7 @@ else {
 					}
 				}
 				*/
+
 				if(isset($current_eleve_rang)) {$tab_bulletin[$id_classe][$periode_num]['rang']=$current_eleve_rang;}
 				$tab_bulletin[$id_classe][$periode_num]['coef_eleve']=$current_coef_eleve;
 
@@ -3259,6 +3117,36 @@ else {
 									$tab_bulletin[$id_classe][$periode_num]['groupe'][$j][$i]['cn_id']=$cn_id;
 									$tab_bulletin[$id_classe][$periode_num]['groupe'][$j][$i]['cn_nom']=$cn_nom;
 								}
+
+								//================================
+								// 20130520 : Faire le calcul de moyenne annuelle là?
+								if((isset($moyennes_annee))&&($moyennes_annee=='y')) {
+									$sql="SELECT round(avg(note),1) as moy_annee from matieres_notes where login='".$current_eleve_login[$i]."' and statut='' and id_groupe='".$current_group[$j]['id']."';";
+									//echo "$sql<br />";
+									$res_annee=mysql_query($sql);
+									if(mysql_num_rows($res_annee)>0) {
+										$tab_bulletin[$id_classe][$periode_num]['moy_annee'][$j][$i]=mysql_result($res_annee, 0, "moy_annee");
+									}
+								}
+								/*
+								// Ou recherche d'indices?
+								if(isset($tab_bull['login_prec'])) {
+
+									//for($loop_p=1;$loop_p<count($tab_bull['login_prec']);$loop_p++) {
+									foreach($tab_bull['login_prec'] as $key => $value) {
+										// Il faut récupérer l'id_groupe et l'indice de l'élève... dans les tableaux récupérés de calcul_moy_gen.inc.php
+										// Tableaux d'indices [$j][$i] (groupe, élève)
+										//		$tab_bull['note_prec'][$loop_p]=$current_eleve_note;
+										//		$tab_bull['statut_prec'][$loop_p]=$current_eleve_statut;
+										$indice_eleve=-1;
+										//for($loop_l=0;$loop_l<count($tab_bull['login_prec'][$loop_p]);$loop_l++) {
+										for($loop_l=0;$loop_l<count($tab_bull['login_prec'][$key]);$loop_l++) {
+											//echo "\$tab_bull['login_prec'][$key][$loop_l]=".$tab_bull['login_prec'][$key][$loop_l]." et \$tab_bull['eleve'][$i]['login']=".$tab_bull['eleve'][$i]['login']."<br />\n";
+											if($tab_bull['login_prec'][$key][$loop_l]==$tab_bull['eleve'][$i]['login']) {$indice_eleve=$loop_l;break;}
+										}
+
+								*/
+								//================================
 
 								//================================
 								// Récup appréciation

@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -351,6 +351,8 @@ if(isset($_POST['valide_modif_model'])) {
 	$moyennes_periodes_precedentes=isset($_GET['moyennes_periodes_precedentes']) ? $_GET['moyennes_periodes_precedentes'] : (isset($_POST['moyennes_periodes_precedentes']) ? $_POST['moyennes_periodes_precedentes'] : 'n');
 
 	$evolution_moyenne_periode_precedente=isset($_GET['evolution_moyenne_periode_precedente']) ? $_GET['evolution_moyenne_periode_precedente'] : (isset($_POST['evolution_moyenne_periode_precedente']) ? $_POST['evolution_moyenne_periode_precedente'] : 'n');
+
+	$moyennes_annee=isset($_GET['moyennes_annee']) ? $_GET['moyennes_annee'] : (isset($_POST['moyennes_annee']) ? $_POST['moyennes_annee'] : 'n');
 
 	if (empty($_GET['active_coef_sousmoyene']) and empty($_POST['active_coef_sousmoyene'])) { $active_coef_sousmoyene = ''; }
 	else { if (isset($_GET['active_coef_sousmoyene'])) { $active_coef_sousmoyene = $_GET['active_coef_sousmoyene']; } if (isset($_POST['active_coef_sousmoyene'])) { $active_coef_sousmoyene = $_POST['active_coef_sousmoyene']; } }
@@ -1479,23 +1481,33 @@ function DecocheCheckbox() {
 
 				echo $decalage_gauche;
 				echo "ou<br />\n";
-
+				//===========================================
 				echo $decalage_gauche;
 				echo "<input name='moyennes_periodes_precedentes' id='moyennes_periodes_precedentes' style='border: 1px solid #74748F;' type='checkbox' value='y' ";
 				if(!empty($moyennes_periodes_precedentes) and $moyennes_periodes_precedentes=='y') {
 					echo "checked='checked' ";
 				}
 				echo "onchange='check_coherence_coches_bulletin_pdf();' ";
-				echo "/><label for='moyennes_periodes_precedentes'>&nbsp;Afficher les moyennes de l'élève pour les périodes précédentes</label><br />\n";
+				echo "/><label for='moyennes_periodes_precedentes'>&nbsp;Pour chaque enseignement, afficher les moyennes de l'élève pour les périodes précédentes</label><br />\n";
 				echo $decalage_gauche;
 				echo "(<i>incompatible avec le choix \"Moyennes classe/min/max sous la moyenne de l'élève\"</i>)<br />\n";
-
+				//===========================================
+				echo $decalage_gauche;
+				echo "<input name='moyennes_annee' id='moyennes_annee' style='border: 1px solid #74748F;' type='checkbox' value='y' ";
+				if(!empty($moyennes_annee) and $moyennes_annee=='y') {
+					echo "checked='checked' ";
+				}
+				echo "onchange='check_coherence_coches_bulletin_pdf();' ";
+				echo "/><label for='moyennes_annee'>&nbsp;Pour chaque enseignement, afficher les moyennes annuelles de l'élève</label><br />\n";
+				echo $decalage_gauche;
+				echo "(<i>incompatible avec le choix \"Moyennes classe/min/max sous la moyenne de l'élève\"</i>)<br />\n";
+				//===========================================
 				echo $decalage_gauche;
 				echo "<input name='evolution_moyenne_periode_precedente' id='evolution_moyenne_periode_precedente' style='border: 1px solid #74748F;' type='checkbox' value='y' ";
 				if(!empty($evolution_moyenne_periode_precedente) and $evolution_moyenne_periode_precedente==='y') {
 					echo "checked='checked' ";
 				}
-				echo "/><label for='evolution_moyenne_periode_precedente'>&nbsp;Indiquer par un + ou - l'évolution de la moyenne (<i>hausse/stable/baisse</i>).</label><br />\n";
+				echo "/><label for='evolution_moyenne_periode_precedente'>&nbsp;Pour chaque enseignement, indiquer par un + ou - l'évolution de la moyenne (<i>hausse/stable/baisse</i>) par rapport à la période précédente.</label><br />\n";
 
 			?>
 			<br />
@@ -1758,10 +1770,15 @@ function DecocheCheckbox() {
 		echo "<script type='text/javascript'>
 // Diverses vérifications
 function check_coherence_coches_bulletin_pdf() {
-	if((document.getElementById('toute_moyenne_meme_col'))&&(document.getElementById('moyennes_periodes_precedentes'))) {
-		if((document.getElementById('toute_moyenne_meme_col').checked==true)&&(document.getElementById('moyennes_periodes_precedentes').checked==true)) {
-			alert('Les choix \"Afficher Moyennes classe/min/max sous la moyenne de l\'élève\" et \"Afficher les moyennes de l\'élève pour les périodes précédentes\" ne sont pas compatibles.\\nLe deuxième choix va être décoché.');
+	if((document.getElementById('toute_moyenne_meme_col'))&&
+	(document.getElementById('moyennes_periodes_precedentes'))&&
+	(document.getElementById('moyennes_annee'))) {
+		if((document.getElementById('toute_moyenne_meme_col').checked==true)&&
+			((document.getElementById('moyennes_periodes_precedentes').checked==true)||
+			(document.getElementById('moyennes_annee').checked==true))) {
+			alert('Le choix \"Afficher Moyennes classe/min/max sous la moyenne de l\'élève\" est incompatible avec les choix \"Afficher les moyennes de l\'élève pour les périodes précédentes\" et \"Afficher les moyennes annuelles de l\'élève\".\\nLes deuxième et troisième choix vont être décochés.');
 			document.getElementById('moyennes_periodes_precedentes').checked=false;
+			document.getElementById('moyennes_annee').checked=false;
 		}
 	}
 }
