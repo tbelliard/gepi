@@ -86,6 +86,8 @@ CREATE TABLE `mef`
 	libelle_court VARCHAR(50) NOT NULL COMMENT 'libelle de la formation',
 	libelle_long VARCHAR(300) NOT NULL COMMENT 'libelle de la formation',
 	libelle_edition VARCHAR(300) NOT NULL COMMENT 'libelle de la formation pour presentation',
+	code_mefstat varchar(50) NOT NULL default '',
+	mef_rattachement varchar(50) NOT NULL default '',
 	PRIMARY KEY (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Module élémentaire de formation';
 

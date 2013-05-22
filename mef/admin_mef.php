@@ -235,7 +235,9 @@ if ($action=="importnomenclature") {
 					$tab_champs_mef=array("CODE_MEF",
 					"FORMATION",
 					"LIBELLE_LONG",
-					"LIBELLE_EDITION"
+					"LIBELLE_EDITION",
+					"CODE_MEFSTAT",
+					"MEF_RATTACHEMENT"
 					);
 
 					echo "<p>";
@@ -284,10 +286,21 @@ if ($action=="importnomenclature") {
 									$tab_mef[$loop]['libelle_edition']=casse_mot($tab_mef[$loop]['libelle_long'],'majf2');
 								}
 
+								if((!isset($tab_mef[$loop]['mef_rattachement']))||($tab_mef[$loop]['mef_rattachement']=="")) {
+									$tab_mef[$loop]['mef_rattachement']=$tab_mef[$loop]['code_mef'];
+								}
+
+								if(!isset($tab_mef[$loop]['code_mefstat'])) {
+									$tab_mef[$loop]['code_mefstat']="";
+								}
+
 								$sql="INSERT INTO mef SET mef_code='".$tab_mef[$loop]['code_mef']."',
 															libelle_court='".mysql_real_escape_string($tab_mef[$loop]['formation'])."',
 															libelle_long='".mysql_real_escape_string($tab_mef[$loop]['libelle_long'])."',
-															libelle_edition='".mysql_real_escape_string($tab_mef[$loop]['libelle_edition'])."';";
+															libelle_edition='".mysql_real_escape_string($tab_mef[$loop]['libelle_edition'])."',
+															code_mefstat='".$tab_mef[$loop]['code_mefstat']."',
+															mef_rattachement='".$tab_mef[$loop]['mef_rattachement']."'
+															;";
 								$insert=mysql_query($sql);
 								if($insert) {
 									$nb_mef_reg++;
@@ -375,10 +388,24 @@ echo add_token_field();
         <th>Libelle Court</th>
         <th>Libelle Long</th>
         <th>Libelle Edition</th>
+        <th>Mef rattachement</th>
         <th style="width: 25px;"></th>
         <th style="width: 25px;"><a href="admin_mef.php?action=supprimer_tous_mef<?php echo add_token_in_url();?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer tous les MEF ?')"><img src="../images/icons/delete.png" width="22" height="22" title="Supprimer tous les MEF" alt="" /></a></th>
      </tr>
     <?php
+    $tab_mef=array();
+    $sql="SELECT * FROM mef;";
+    $res_mef=mysql_query($sql);
+    if(mysql_num_rows($res_mef)>0) {
+        while($lig_mef=mysql_fetch_object($res_mef)) {
+            $tab_mef[$lig_mef->mef_code]["libelle_court"]=$lig_mef->libelle_court;
+            $tab_mef[$lig_mef->mef_code]["libelle_long"]=$lig_mef->libelle_long;
+            $tab_mef[$lig_mef->mef_code]["libelle_edition"]=$lig_mef->libelle_edition;
+            $tab_mef[$lig_mef->mef_code]["code_mefstat"]=$lig_mef->code_mefstat;
+            $tab_mef[$lig_mef->mef_code]["mef_rattachement"]=$lig_mef->mef_rattachement;
+        }
+    }
+
     $mef_collection = new PropelCollection();
     $mef_collection = MefQuery::create()->find();
    foreach ($mef_collection as $mef) {
@@ -388,7 +415,7 @@ echo add_token_field();
           <td><?php
               // On récupère un truc bizarre
               //echo $mef->getMefCode();
-              $sql="SELECT mef_code FROM mef WHERE id='".$mef->getId()."';";
+              $sql="SELECT * FROM mef WHERE id='".$mef->getId()."';";
               $res_mef_courant=mysql_query($sql);
               if(mysql_num_rows($res_mef_courant)>0) {
                   echo mysql_result($res_mef_courant,0,"mef_code");
@@ -400,6 +427,22 @@ echo add_token_field();
           <td><?php echo $mef->getLibelleCourt(); ?></td>
           <td><?php echo $mef->getLibelleLong(); ?></td>
           <td><?php echo $mef->getLibelleEdition(); ?></td>
+          <td>
+          <?php
+              if(mysql_num_rows($res_mef_courant)>0) {
+                  $mef_rattachement_courant=mysql_result($res_mef_courant,0,"mef_rattachement");
+                  if(isset($tab_mef[$mef_rattachement_courant])) {
+                      echo $tab_mef[$mef_rattachement_courant]['libelle_edition'];
+                  }
+                  else {
+                      echo "???";
+                  }
+              }
+              else {
+                  echo "???";
+              }
+          ?>
+          </td>
           <td><a href="admin_mef.php?action=modifier&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>"><img src="../images/icons/configure.png" title="Modifier" alt="" /></a></td>
           <td><a href="admin_mef.php?action=supprimer&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer ce mef ?')"><img src="../images/icons/delete.png" width="22" height="22" title="Supprimer" alt="" /></a></td>
        </tr>

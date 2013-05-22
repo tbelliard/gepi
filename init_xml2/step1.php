@@ -1169,7 +1169,9 @@
 						$tab_champs_mef=array("CODE_MEF",
 						"FORMATION",
 						"LIBELLE_LONG",
-						"LIBELLE_EDITION"
+						"LIBELLE_EDITION",
+						"CODE_MEFSTAT",
+						"MEF_RATTACHEMENT"
 						);
 
 						$tab_mef=array();
@@ -1218,10 +1220,21 @@
 											$tab_mef[$loop]['libelle_edition']=casse_mot($tab_mef[$loop]['libelle_long'],'majf2');
 										}
 
+										if((!isset($tab_mef[$loop]['mef_rattachement']))||($tab_mef[$loop]['mef_rattachement']=="")) {
+											$tab_mef[$loop]['mef_rattachement']=$tab_mef[$loop]['code_mef'];
+										}
+
+										if(!isset($tab_mef[$loop]['code_mefstat'])) {
+											$tab_mef[$loop]['code_mefstat']="";
+										}
+
 										$sql="INSERT INTO mef SET mef_code='".$tab_mef[$loop]['code_mef']."',
 																	libelle_court='".mysql_real_escape_string($tab_mef[$loop]['formation'])."',
 																	libelle_long='".mysql_real_escape_string($tab_mef[$loop]['libelle_long'])."',
-																	libelle_edition='".mysql_real_escape_string($tab_mef[$loop]['libelle_edition'])."';";
+																	libelle_edition='".mysql_real_escape_string($tab_mef[$loop]['libelle_edition'])."',
+																	code_mefstat='".$tab_mef[$loop]['code_mefstat']."',
+																	mef_rattachement='".$tab_mef[$loop]['mef_rattachement']."'
+																	;";
 										$insert=mysql_query($sql);
 										if(!$insert) {
 											echo "<span style='color:red'>ERREUR&nbsp;:</span> Erreur lors de l'import suivant&nbsp;:<br />$sql<br />";
