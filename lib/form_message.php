@@ -26,6 +26,8 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
+// Témoin destiné à ne pas enregistrer dans les logs les accès à la page sans être logué.
+// Une mauvaise déconnexion peut provoquer énormément d'alertes et de mail (toutes les minutes potentiellement)
 $pas_acces_a_une_page_sans_etre_logue="y";
 
 // Resume session
@@ -307,7 +309,28 @@ if(peut_poster_message($_SESSION['statut'])) {
 					<!-- Balises concernant JavaScript -->
 					<div id='p_ajout_dest_js' style='display:none;float:right;whidth:16px;'><a href="javascript:affiche_ajout_dest();"><img src='../images/icons/add.png' width='16' height='16' title='Ajouter un ou des destinataires' /></a></div>
 
-					<div id='div_login_dest_js'><span style='color:red' id='span_ajoutez_un_ou_des_destinataires'>Ajoutez un ou des destinataires --&gt;</span></div>
+					<div id='div_login_dest_js'>
+						<span style='color:red' id='span_ajoutez_un_ou_des_destinataires'><a href='javascript:affiche_ajout_dest();' style='color:red'>Ajoutez un ou des destinataires --&gt;</a></span>
+						<?php
+							if(isset($login_dest)) {
+								if(is_array($login_dest)) {
+									for($loop=0;$loop<count($login_dest);$loop++) {
+										// Avec l'identifiant spécial, on peut se retrouver, en ajoutant des destinataires, à avoir deux fois un même destinataire.
+										echo "<br /><span id='span_login_u_choisi_special_$loop'>";
+										echo "<input type='hidden' name='login_dest[]' value='".$login_dest[$loop]."' />";
+										echo civ_nom_prenom($login_dest[$loop]);
+										echo " <a href=\"javascript:removeElement('span_login_u_choisi_special_$loop')\"><img src='../images/icons/delete.png' width='16' height='16' /></a></span>";
+									}
+								}
+								else {
+									echo "<br /><span id='span_login_u_choisi_special'>";
+									echo "<input type='hidden' name='login_dest[]' value='".$login_dest."' />";
+									echo civ_nom_prenom($login_dest);
+									echo " <a href=\"javascript:removeElement('span_login_u_choisi_special')\"><img src='../images/icons/delete.png' width='16' height='16' /></a></span>";
+								}
+							}
+						?>
+					</div>
 					<!-- ======================================================= -->
 					<!-- Balises concernant JavaScript inactif -->
 					<div id='div_select_no_js'>
@@ -323,7 +346,20 @@ if(peut_poster_message($_SESSION['statut'])) {
 							<optgroup label='".$tab_statut[$loop]."'>";
 										while($lig_u=mysql_fetch_object($res_u)) {
 											echo "
-								<option value='$lig_u->login'>$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2')."</option>";
+								<option value='$lig_u->login'";
+											if(isset($login_dest)) {
+												if(is_array($login_dest)) {
+													if(in_array($lig_u->login, $login_dest)) {
+														echo " selected";
+													}
+												}
+												else {
+													if($lig_u->login==$login_dest) {
+														echo " selected";
+													}
+												}
+											}
+											echo ">$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2')."</option>";
 										}
 										echo "
 							</optgroup>";
