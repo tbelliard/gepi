@@ -228,13 +228,16 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 			$tmp_login_dest=$login_dest;
 			$login_dest=array_unique($tmp_login_dest);
 			$nb_reg=0;
-			for($loop=0;$loop<count($login_dest);$loop++) {
-				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest[$loop], $date_heure_visibilite);
+			//for($loop=0;$loop<count($login_dest);$loop++) {
+				//$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest[$loop], $date_heure_visibilite);
+			foreach($login_dest as $key => $value) {
+				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $value, $date_heure_visibilite);
 				if($retour!="") {
 					$nb_reg++;
 				}
 				else {
-					$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($login_dest[$loop]).".<br />";
+					//$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($login_dest[$loop]).".<br />";
+					$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($value).".<br />";
 				}
 			}
 			$msg.="Message enregistré pour $nb_reg destinataire(s).<br />";
@@ -314,12 +317,22 @@ if(peut_poster_message($_SESSION['statut'])) {
 						<?php
 							if(isset($login_dest)) {
 								if(is_array($login_dest)) {
-									for($loop=0;$loop<count($login_dest);$loop++) {
+									/*
+									echo "<pre>";
+									print_r($login_dest);
+									echo "</pre>";
+									*/
+									//for($loop=0;$loop<count($login_dest);$loop++) {
+									$loop=0;
+									foreach($login_dest as $key => $value) {
 										// Avec l'identifiant spécial, on peut se retrouver, en ajoutant des destinataires, à avoir deux fois un même destinataire.
 										echo "<br /><span id='span_login_u_choisi_special_$loop'>";
-										echo "<input type='hidden' name='login_dest[]' value='".$login_dest[$loop]."' />";
-										echo civ_nom_prenom($login_dest[$loop]);
+										//echo "<input type='hidden' name='login_dest[]' value='".$login_dest[$loop]."' />";
+										//echo civ_nom_prenom($login_dest[$loop]);
+										echo "<input type='hidden' name='login_dest[]' value='".$value."' />";
+										echo civ_nom_prenom($value);
 										echo " <a href=\"javascript:removeElement('span_login_u_choisi_special_$loop')\"><img src='../images/icons/delete.png' width='16' height='16' /></a></span>";
+										$loop++;
 									}
 								}
 								else {
