@@ -417,6 +417,8 @@
 							$i++;
 						}
 
+						/*
+						// Il peut y avoir plusieurs MEF associées à une classe (3EME et 3EME BILANGUE par exemple) et chaque élève est associé à un(e) des ces MEFS
 						for($i=0;$i<count($divisions);$i++) {
 							if(isset($divisions[$i]["mef_code"][0])) {
 								$sql="UPDATE eleves SET mef_code='".$divisions[$i]["mef_code"][0]."' WHERE login IN (SELECT j.login FROM j_eleves_classes j, classes c WHERE j.id_classe=c.id AND c.classe='".mysql_real_escape_string($divisions[$i]["code"])."');";
@@ -424,6 +426,7 @@
 								$update_mef=mysql_query($sql);
 							}
 						}
+						*/
 
 						$tab_champs_mef=array("LIBELLE_COURT",
 						"LIBELLE_LONG",
