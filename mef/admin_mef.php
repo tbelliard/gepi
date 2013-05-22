@@ -64,6 +64,10 @@ if ($action == 'supprimer') {
     if ($mef != null) {
 	$mef->delete();
     }
+} elseif ($action == 'supprimer_tous_mef') {
+	check_token();
+	$sql="TRUNCATE mef;";
+	$menage=mysql_query($sql);
 } elseif ($action == 'ajouterdefaut') {
 	check_token();
     ajoutMefParDefaut();
@@ -94,10 +98,231 @@ echo "</p>";
 
 <div style="text-align:center">
     <h2>Définition des mef</h2>
-<?php if ($action == "ajouter" OR $action == "modifier") { ?>
+<?php 
+
+if ($action=="importnomenclature") {
+	echo "<div style=\"text-align:center\">
+<h2>Importer les mef</h2>
+";
+
+	if(!isset($_POST['is_posted'])) {
+		$tempdir=get_user_temp_directory();
+		if(!$tempdir){
+			echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+		}
+		else {
+			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>
+".add_token_field()."
+	<p>Veuillez fournir le fichier Nomenclature.xml:<br />
+	<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" /></p>\n";
+			if ($gepiSettings['unzipped_max_filesize']>=0) {
+				echo "	<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex&nbsp;: Nomenclature.zip</em>)</p>";
+			}
+			echo "
+	<input type='hidden' name='action' value='importnomenclature' />
+	<input type='hidden' name='is_posted' value='yes' />
+	<p><input type='submit' value='Valider' /></p>
+</form>";
+		}
+	}
+	else {
+		$tempdir=get_user_temp_directory();
+		$xml_file = isset($_FILES["nomenclature_xml_file"]) ? $_FILES["nomenclature_xml_file"] : NULL;
+
+		if(!is_uploaded_file($xml_file['tmp_name'])) {
+			echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
+
+			echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+			echo "post_max_size=$post_max_size<br />\n";
+			echo "upload_max_filesize=$upload_max_filesize<br />\n";
+			echo "</p>\n";
+		}
+		else {
+			if(!file_exists($xml_file['tmp_name'])){
+				echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+
+				echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+				echo "post_max_size=$post_max_size<br />\n";
+				echo "upload_max_filesize=$upload_max_filesize<br />\n";
+				echo "et le volume de ".$xml_file['name']." serait<br />\n";
+				echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
+				echo "</p>\n";
+
+				echo "<p>Il semblerait que l'absence d'extension .XML ou .ZIP puisse aussi provoquer ce genre de symptômes.<br />Dans ce cas, ajoutez l'extension et ré-essayez.</p>\n";
+			}
+			else {
+				echo "<p>Le fichier a été uploadé.</p>\n";
+
+				//$source_file=stripslashes($xml_file['tmp_name']);
+				$source_file=$xml_file['tmp_name'];
+				$dest_file="../temp/".$tempdir."/nomenclature.xml";
+				$res_copy=copy("$source_file" , "$dest_file");
+
+				//===============================================================
+				// ajout prise en compte des fichiers ZIP: Marc Leygnac
+
+				$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
+				// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
+				// $unzipped_max_filesize < 0    extraction zip désactivée
+				if($unzipped_max_filesize>=0) {
+					$fichier_emis=$xml_file['name'];
+					$extension_fichier_emis=my_strtolower(mb_strrchr($fichier_emis,"."));
+					if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
+						{
+						require_once('../lib/pclzip.lib.php');
+						$archive = new PclZip($dest_file);
+
+						if (($list_file_zip = $archive->listContent()) == 0) {
+							echo "<p style='color:red;'>Erreur : ".$archive->errorInfo(true)."</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+
+						if(sizeof($list_file_zip)!=1) {
+							echo "<p style='color:red;'>Erreur : L'archive contient plus d'un fichier.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+
+						if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
+							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<em>".$list_file_zip[0]['size']." octets</em>) dépasse la limite paramétrée (<em>$unzipped_max_filesize octets</em>).</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+
+						$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
+						if ($res_extract != 0) {
+							echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+							$fichier_extrait=$res_extract[0]['filename'];
+							unlink("$dest_file"); // Pour Wamp...
+							$res_copy=rename("$fichier_extrait" , "$dest_file");
+						}
+						else {
+							echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+					}
+				}
+				//fin  ajout prise en compte des fichiers ZIP
+				//===============================================================
+
+				if(!$res_copy) {
+					echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+					// Il ne faut pas aller plus loin...
+					require("../lib/footer.inc.php");
+					die();
+				}
+				else{
+					// Lecture du fichier Nomenclature... pour changer les codes numériques d'options dans 'temp_gep_import2' en leur code gestion
+
+					$dest_file="../temp/".$tempdir."/nomenclature.xml";
+
+					$nomenclature_xml=simplexml_load_file($dest_file);
+					if(!$nomenclature_xml) {
+						echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+						require("../lib/footer.inc.php");
+						die();
+					}
+
+					$nom_racine=$nomenclature_xml->getName();
+					if(my_strtoupper($nom_racine)!='BEE_NOMENCLATURES') {
+						echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Nomenclatures.<br />Sa racine devrait être 'BEE_NOMENCLATURES'.</p>\n";
+						require("../lib/footer.inc.php");
+						die();
+					}
+
+					$tab_champs_mef=array("CODE_MEF",
+					"FORMATION",
+					"LIBELLE_LONG",
+					"LIBELLE_EDITION"
+					);
+
+					echo "<p>";
+					echo "Analyse du fichier...<br />\n";
+
+					$tab_mef=array();
+					$i=-1;
+
+					$objet_mefs=($nomenclature_xml->DONNEES->MEFS);
+					foreach ($objet_mefs->children() as $mef) {
+						$i++;
+			
+						$tab_mef[$i]=array();
+			
+						foreach($mef->attributes() as $key => $value) {
+							$tab_mef[$i][mb_strtolower($key)]=trim($value);
+						}
+
+						foreach($mef->children() as $key => $value) {
+							if(in_array(my_strtoupper($key),$tab_champs_mef)) {
+								$tab_mef[$i][mb_strtolower($key)]=preg_replace('/"/','',trim($value));
+							}
+						}
+					}
+					/*
+					echo "<pre>";
+					print_r($tab_mef);
+					echo "</pre>";
+					*/
+					$nb_mef_deja=0;
+					$nb_mef_reg=0;
+					for($loop=0;$loop<count($tab_mef);$loop++) {
+						$sql="SELECT 1=1 FROM mef WHERE mef_code='".$tab_mef[$loop]['code_mef']."';";
+						$test=mysql_query($sql);
+						if(mysql_num_rows($test)==0) {
+							if((!isset($tab_mef[$loop]['libelle_long']))||($tab_mef[$loop]['libelle_long']=="")) {
+								echo "<span style='color:red'>ERREUR&nbsp;:</span> Pas de libelle_long pour&nbsp;:<br />";
+								echo print_r($tab_mef[$loop]);
+								echo "<br />";
+							}
+							else {
+								if((!isset($tab_mef[$loop]['formation']))||($tab_mef[$loop]['formation']=="")) {
+									$tab_mef[$loop]['formation']="";
+								}
+								if((!isset($tab_mef[$loop]['libelle_edition']))||($tab_mef[$loop]['libelle_edition']=="")) {
+									$tab_mef[$loop]['libelle_edition']=casse_mot($tab_mef[$loop]['libelle_long'],'majf2');
+								}
+
+								$sql="INSERT INTO mef SET mef_code='".$tab_mef[$loop]['code_mef']."',
+															libelle_court='".mysql_real_escape_string($tab_mef[$loop]['formation'])."',
+															libelle_long='".mysql_real_escape_string($tab_mef[$loop]['libelle_long'])."',
+															libelle_edition='".mysql_real_escape_string($tab_mef[$loop]['libelle_edition'])."';";
+								$insert=mysql_query($sql);
+								if($insert) {
+									$nb_mef_reg++;
+								}
+								else {
+									echo "<span style='color:red'>ERREUR&nbsp;:</span> Erreur lors de l'import suivant&nbsp;:<br />$sql<br />";
+								}
+							}
+						}
+						else {
+							$nb_mef_deja++;
+						}
+					}
+
+					if($nb_mef_deja>0) {
+						echo "<p>$nb_mef_deja mef déjà présent(s) dans Gepi a(ont) été trouvé(s) dans le XML.</p>";
+					}
+					if($nb_mef_reg>0) {
+						echo "<p>$nb_mef_reg mef a(ont) été importé(s) depuis le XML.</p>";
+					}
+				}
+			}
+		}
+
+	}
+	echo "
+</div>
+<br />";
+
+}
+elseif ($action == "ajouter" OR $action == "modifier") { 
+?>
 <div style="text-align:center">
     <?php
-    	if($action=="ajouter") { 
+	if($action=="ajouter") { 
 	    echo "<h2>Ajout d'un mef</h2>";
 	} elseif ($action=="modifier") {
 	    echo "<h2>Modifier un mef</h2>";
@@ -141,15 +366,17 @@ echo add_token_field();
 	<br/><br/>
 	<a href="admin_mef.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter les mef par défaut</a>
 	<br/><br/>
+	<a href="admin_mef.php?action=importnomenclature<?php echo add_token_in_url();?>"><img src='../images/icons/add.png' alt='' class='back_link' /> Importer les mef depuis un fichier Nomenclature.xml</a>
+	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu">
       <tr>
-        <td>Id</td>
-        <td>Numéro mef nomenclature EN</td>
-        <td>Libelle Court</td>
-        <td>Libelle Long</td>
-        <td>Libelle Edition</td>
-        <td style="width: 25px;"></td>
-        <td style="width: 25px;"></td>
+        <th>Id</th>
+        <th>Numéro mef nomenclature EN</th>
+        <th>Libelle Court</th>
+        <th>Libelle Long</th>
+        <th>Libelle Edition</th>
+        <th style="width: 25px;"></th>
+        <th style="width: 25px;"><a href="admin_mef.php?action=supprimer_tous_mef<?php echo add_token_in_url();?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer tous les MEF ?')"><img src="../images/icons/delete.png" width="22" height="22" title="Supprimer tous les MEF" alt="" /></a></th>
      </tr>
     <?php
     $mef_collection = new PropelCollection();
@@ -158,7 +385,18 @@ echo add_token_field();
  ?>
         <tr>
 	  <td><?php echo $mef->getId(); ?></td>
-          <td><?php echo $mef->getMefCode(); ?></td>
+          <td><?php
+              // On récupère un truc bizarre
+              //echo $mef->getMefCode();
+              $sql="SELECT mef_code FROM mef WHERE id='".$mef->getId()."';";
+              $res_mef_courant=mysql_query($sql);
+              if(mysql_num_rows($res_mef_courant)>0) {
+                  echo mysql_result($res_mef_courant,0,"mef_code");
+              }
+              else {
+                  echo "???";
+              }
+              ?></td>
           <td><?php echo $mef->getLibelleCourt(); ?></td>
           <td><?php echo $mef->getLibelleLong(); ?></td>
           <td><?php echo $mef->getLibelleEdition(); ?></td>
@@ -175,8 +413,10 @@ echo add_token_field();
 
 function ajoutMefParDefaut() {
     $mef = new Mef();
-    $mef->setMefCode("1031000111");
-    $mef->setLibelleCourt("3G");
+    //$mef->setMefCode("1031000111");
+    //$mef->setLibelleCourt("3G");
+    $mef->setMefCode("1031001911");
+    $mef->setLibelleCourt("3EME");
     $mef->setLibelleLong("3EME");
     $mef->setLibelleEdition("3eme");
     if (MefQuery::create()->filterByMefCode($mef->getMefCode())->find()->isEmpty()) {
@@ -202,8 +442,10 @@ function ajoutMefParDefaut() {
     }
 
     $mef = new Mef();
-    $mef->setMefCode("1001000111");
-    $mef->setLibelleCourt("6G");
+    //$mef->setMefCode("1001000111");
+    //$mef->setLibelleCourt("6G");
+    $mef->setMefCode("1001001211");
+    $mef->setLibelleCourt("6EME");
     $mef->setLibelleLong("6EME");
     $mef->setLibelleEdition("6eme");
     if (MefQuery::create()->filterByMefCode($mef->getMefCode())->find()->isEmpty()) {
