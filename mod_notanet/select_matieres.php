@@ -451,6 +451,7 @@ else {
 		<li>créer dans Gepi une matière <strong>EPS_brevet</strong> distincte de la matière <strong>EPS</strong> pour éviter des problèmes d'identification de l'enseignement à prendre en compte par le module notanet</li>
 		<li>associer à cette matière les professeurs d'EPS (<em>au moins ceux qui enseignent en 3ème</em>)</li>
 		<li>créer dans Gepi, pour chacune des classes de 3ème, un enseignement EPS_brevet, coefficient 0 avec le même professeur que l'enseignement d'EPS</li>
+		<li>choisir <strong>Aucune</strong> (<em>et enregistrer</em>) pour la catégorie de matière dans la même page (<em>Gestion des classes/&lt;Telle classe&gt; Enseignements</em>) permet de masquer ces notes aux élèves/responsables, sous réserve d'avoir coché <strong>Utiliser les catégories de matières</strong> dans le paramétrage de la classe (<em>Gestion des classes/&lt;Telle classe&gt; Paramètres/Afficher les catégories de matières sur le bulletin (HTML),...</em>)</li>
 		<li>inviter le professeur à créer dans l'enseignement d'<strong>EPS_brevet</strong>, en période 3, les 3 contrôles qu'il aura choisi et l'inviter à y retaper les notes.<br />
 		(<em>qu'il n'y ait pas de note aux premiers et deuxième trimestre n'a pas d'importance</em>)
 		</li>
