@@ -61,7 +61,7 @@ CREATE TABLE eleves
 	tel_prof varchar(255) DEFAULT '' NOT NULL COMMENT 'Telephone professionnel (?) de l\'eleve',
 	id_eleve INTEGER(11) NOT NULL AUTO_INCREMENT COMMENT 'cle primaire autoincremente',
 	date_sortie DATETIME COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)',
-	mef_code BIGINT(20) COMMENT 'code mef de la formation de l\'eleve',
+	mef_code VARCHAR(50) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l\'eleve',
 	PRIMARY KEY (id_eleve),
 	INDEX eleves_FI_1 (mef_code),
 	INDEX I_referenced_j_eleves_classes_FK_1_1 (login),
@@ -82,7 +82,7 @@ DROP TABLE IF EXISTS `mef`;
 CREATE TABLE `mef`
 (
 	id INTEGER NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire de la classe',
-	mef_code BIGINT(20) COMMENT 'Numero de la nomenclature officielle (numero MEF)',
+	mef_code VARCHAR(50) DEFAULT '' NOT NULL COMMENT 'Numero de la nomenclature officielle (numero MEF)',
 	libelle_court VARCHAR(50) NOT NULL COMMENT 'libelle de la formation',
 	libelle_long VARCHAR(300) NOT NULL COMMENT 'libelle de la formation',
 	libelle_edition VARCHAR(300) NOT NULL COMMENT 'libelle de la formation pour presentation',

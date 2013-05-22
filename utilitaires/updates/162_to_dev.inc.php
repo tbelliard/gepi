@@ -209,4 +209,47 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$temoin_modif_mef_code="n";
+$result .= "<br />";
+$result .= "<strong>MEF :</strong><br />";
+$result .= "Contrôle du champ 'mef_code' dans la table 'mef' : ";
+$sql="show columns from mef where type like 'bigint%' and field='mef_code';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	$query = mysql_query("ALTER TABLE mef CHANGE mef_code mef_code VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'code mef de la formation de l''eleve';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+	$temoin_modif_mef_code="y";
+}
+else {
+	$result .= msj_present("Le champ a le bon type.");
+}
+
+$result .= "Contrôle du champ 'mef_code' dans la table 'eleves' : ";
+$sql="show columns from eleves where type like 'bigint%' and field='mef_code';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	$query = mysql_query("ALTER TABLE eleves CHANGE mef_code mef_code VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'code mef de la formation de l''eleve';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+	$temoin_modif_mef_code="y";
+}
+else {
+	$result .= msj_present("Le champ a le bon type.");
+}
+
+if(	$temoin_modif_mef_code=="y") {
+	$info_action_titre="Contenu de la table mef";
+	$info_action_texte="Le champ mef_code de la table 'mef' ou de la table 'eleves' n'avait pas le bon format lors de la mise à jour de la base du ".strftime("%d/%m/%Y à %H:%M:%S").". Vous devriez <a href='./mef/admin_mef.php'>contrôler le contenu de la table 'mef'</a> et faire une <a href='./responsables/maj_import.php'>Mise à jour d'après Sconet</a>.";
+	$info_action_destinataire="administrateur";
+	$info_action_mode="statut";
+	enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+}
+
 ?>
