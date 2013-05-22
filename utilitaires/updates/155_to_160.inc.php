@@ -363,11 +363,11 @@ if ($res_test==0){
 $sql="SELECT 1=1 FROM ref_wiki WHERE ref='enseignement_invisible';";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
-	$sql="INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/gepi/wiki/Enseignement_invisible');";
+	$sql="INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/projects/gepi/wiki/Enseignement_invisible');";
 	$update=mysql_query($sql);
 }
 else {
-	$sql="UPDATE ref_wiki SET url='http://www.sylogix.org/gepi/wiki/Enseignement_invisible' WHERE ref='enseignement_invisible'";
+	$sql="UPDATE ref_wiki SET url='http://www.sylogix.org/projects/gepi/wiki/Enseignement_invisible' WHERE ref='enseignement_invisible'";
 	$update=mysql_query($sql);
 }
 
