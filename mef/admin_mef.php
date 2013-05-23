@@ -71,6 +71,9 @@ if ($action == 'supprimer') {
 } elseif ($action == 'ajouterdefaut') {
 	check_token();
     ajoutMefParDefaut();
+} elseif ($action == 'ajouterdefautlycee') {
+	check_token();
+    ajoutMefParDefautLycee();
 } else {
     if ($EXT_ID != '') {
 		check_token();
@@ -377,7 +380,9 @@ echo add_token_field();
 } ?>
 	<a href="admin_mef.php?action=ajouter"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter les mef</a>
 	<br/><br/>
-	<a href="admin_mef.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter les mef par défaut</a>
+	<a href="admin_mef.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter les mef par défaut de collège</a>
+	<br/><br/>
+	<a href="admin_mef.php?action=ajouterdefautlycee<?php echo add_token_in_url();?>"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter les mef par défaut de lycée</a>
 	<br/><br/>
 	<a href="admin_mef.php?action=importnomenclature<?php echo add_token_in_url();?>"><img src='../images/icons/add.png' alt='' class='back_link' /> Importer les mef depuis un fichier Nomenclature.xml</a>
 	<br/><br/>
@@ -454,6 +459,7 @@ echo add_token_field();
 
 <?php require("../lib/footer.inc.php");
 
+// PROBLEME: Pour les MEF par défaut de lycée, il faudrait MEF_RATTACHEMENT
 function ajoutMefParDefaut() {
     $mef = new Mef();
     //$mef->setMefCode("1031000111");
@@ -494,5 +500,39 @@ function ajoutMefParDefaut() {
     if (MefQuery::create()->filterByMefCode($mef->getMefCode())->find()->isEmpty()) {
 	$mef->save();
     }
-
 }
+
+function ajoutMefParDefautLycee() {
+	$mef_lycee=array();
+	$mef_lycee[]="CODE_MEF;LIBELLE_COURT;LIBELLE_LONG;CODE_MEFSTAT;MEF_RATTACHEMENT";
+	$mef_lycee[]="20010015110;2DEGT2;2de GT2 (cas général 2 ens.explo);22111410015;20010015110";
+	$mef_lycee[]="20010015112;2EURO2;2de GT2 section européenne;22111410015;20010015110";
+	$mef_lycee[]="20010016110;2DEGT3;2de GT3 (cas dérogat. 3 ens.explo);22111410016;20010016110";
+	$mef_lycee[]="20010017110;2DEGT1;2de GT1 (cas dérogat. 1 ens.explo);22111410017;20010017110";
+	$mef_lycee[]="20111010110;1S SVT;Première scientifique SVT;22121111010;20111010110";
+	$mef_lycee[]="20111010112;1SVTEU;1ère scientif. SVT européenne;22121111010;20111010110";
+	$mef_lycee[]="20111011110;1S SI;Première scientifique Sc.Industr.;22121111011;20111011110";
+	$mef_lycee[]="20112005110;1ES;Première économique et sociale;22121312005;20112005110";
+	$mef_lycee[]="20112005112;1ES-EU;1ère économique et sociale européenne;22121312005;20112005110";
+	$mef_lycee[]="20113019110;1L;Première littéraire;22121213019;20113019110";
+	$mef_lycee[]="20113019112;1L-EU;1ère littéraire européenne;22121213019;20113019110";
+	$mef_lycee[]="20211010110;TS SVT;Terminale scientifique SVT;22131111010;20211010110";
+	$mef_lycee[]="20211010112;TSVTEU;Terminale scientifique SVT européenne;22131111010;20211010110";
+	$mef_lycee[]="20211011110;TS SI;Terminale scientifique Sc. Industr.;22131111011;20211011110";
+	$mef_lycee[]="20212005110;TES;Terminale économique et sociale;22131312005;20212005110";
+	$mef_lycee[]="20212005112;TESEU;Terminale économique et soc. européenne;22131312005;20212005110";
+	$mef_lycee[]="20213019110;TL;Terminale littéraire;22131213019;20213019110";
+	$mef_lycee[]="20213019112;TLEU;Terminale littéraire européenne;22131213019;20213019110";
+
+	for($loop=1;$loop<count($mef_lycee);$loop++) {
+		$tab=explode(";", $mef_lycee[$loop]);
+		$sql="SELECT * FROM mef WHERE mef_code='".$tab[0]."';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			$sql="INSERT INTO mef SET mef_code='".$tab[0]."', libelle_court='".$tab[1]."', libelle_long='".$tab[2]."', libelle_edition='".$tab[2]."', code_mefstat='".$tab[3]."', mef_rattachement='".$tab[4]."';";
+			$insert=mysql_query($sql);
+		}
+	}
+}
+
+
