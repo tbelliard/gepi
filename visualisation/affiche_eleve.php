@@ -133,7 +133,9 @@ if(isset($_POST['valider_raz_param'])) {
 'graphe_temoin_image_escalier',
 'graphe_pointille',
 'graphe_tronquer_nom_court',
-'affiche_moy_classe');
+'affiche_moy_classe',
+'graphe_star_decalage_y',
+'graphe_star_modif_rayon');
 	for($loop=0;$loop<count($champ_aff);$loop++) {
 		$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name='$champ_aff[$loop]';";
 		$del=mysql_query($sql);
@@ -211,6 +213,13 @@ affiche_moy_classe
 			if(isset($_POST['affiche_moy_classe'])) {save_params_graphe('graphe_affiche_moy_classe',$_POST['affiche_moy_classe']);}
 			else{save_params_graphe('graphe_affiche_moy_classe','oui');}
 
+
+			if(isset($_POST['graphe_star_decalage_y'])) {save_params_graphe('graphe_star_decalage_y',$_POST['graphe_star_decalage_y']);}
+			else{save_params_graphe('graphe_star_decalage_y',0);}
+
+			if(isset($_POST['graphe_star_modif_rayon'])) {save_params_graphe('graphe_star_modif_rayon',$_POST['graphe_star_modif_rayon']);}
+			else{save_params_graphe('graphe_star_modif_rayon',0);}
+
 			if($msg=='') {
 				$msg="Paramètres enregistrés.";
 			}
@@ -264,6 +273,12 @@ if(isset($_POST['parametrage_affichage'])) {
 
 	if(isset($_POST['affiche_moy_classe'])) {savePref($_SESSION['login'],'graphe_affiche_moy_classe',$_POST['affiche_moy_classe']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_moy_classe','oui');}
+
+	if(isset($_POST['graphe_star_decalage_y'])) {savePref($_SESSION['login'],'graphe_star_decalage_y',$_POST['graphe_star_decalage_y']);}
+	else{savePref($_SESSION['login'],'graphe_star_decalage_y',0);}
+
+	if(isset($_POST['graphe_star_modif_rayon'])) {savePref($_SESSION['login'],'graphe_star_modif_rayon',$_POST['graphe_star_modif_rayon']);}
+	else{savePref($_SESSION['login'],'graphe_star_modif_rayon',0);}
 
 	if($msg=='') {
 		$msg.="Préférences personnelles enregistrées.";
@@ -1083,6 +1098,65 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
+
+	if(isset($_POST['graphe_star_decalage_y'])) {
+		$graphe_star_decalage_y=$_POST['graphe_star_decalage_y'];
+	}
+	else{
+		$pref_graphe_star_decalage_y=getPref($_SESSION['login'],'graphe_star_decalage_y','');
+		if(($pref_graphe_star_decalage_y!='')&&
+			((preg_replace('/[0-9]/','',$pref_graphe_star_decalage_y)=='')||
+			(preg_replace('/^-[0-9]*/','',$pref_graphe_star_decalage_y)==''))
+		) {
+			$graphe_star_decalage_y=$pref_graphe_star_decalage_y;
+		}
+		else {
+			if(getSettingValue('graphe_star_decalage_y')) {
+				$graphe_star_decalage_y=getSettingValue('graphe_star_decalage_y');
+			}
+			else{
+				$graphe_star_decalage_y=0;
+			}
+		}
+	}
+	// On s'assure que la largeur est valide:
+		if(
+		($graphe_star_decalage_y=="")||
+		($graphe_star_decalage_y=="-")||
+		((!preg_match("/^[0-9]*$/",$graphe_star_decalage_y))&&
+		(!preg_match("/^-[0-9]*$/",$graphe_star_decalage_y)))
+	) {$graphe_star_decalage_y=0;}
+
+	if(isset($_POST['graphe_star_modif_rayon'])) {
+		$graphe_star_modif_rayon=$_POST['graphe_star_modif_rayon'];
+	}
+	else{
+		$pref_graphe_star_modif_rayon=getPref($_SESSION['login'],'graphe_star_modif_rayon','');
+		if(($pref_graphe_star_modif_rayon!='')&&
+			((preg_replace('/[0-9]/','',$pref_graphe_star_modif_rayon)=='')||
+			(preg_replace('/^-[0-9]*/','',$pref_graphe_star_modif_rayon)==''))
+		) {
+			$graphe_star_modif_rayon=$pref_graphe_star_modif_rayon;
+		}
+		else {
+			if(getSettingValue('graphe_star_modif_rayon')) {
+				$graphe_star_modif_rayon=getSettingValue('graphe_star_modif_rayon');
+			}
+			else{
+				$graphe_star_modif_rayon=0;
+			}
+		}
+	}
+	// On s'assure que la largeur est valide:
+	//cho "\$graphe_star_modif_rayon=$graphe_star_modif_rayon<br />";
+	if(
+		($graphe_star_modif_rayon=="")||
+		($graphe_star_modif_rayon=="-")||
+		((!preg_match("/^[0-9]*$/",$graphe_star_modif_rayon))&&
+		(!preg_match("/^-[0-9]*$/",$graphe_star_modif_rayon)))
+	) {$graphe_star_modif_rayon=0;}
+
+
 	// 20121205
 	$affiche_choix_rang="y";
 	if((($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesGraphRangParent')))||
@@ -1544,6 +1618,16 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			if($graphe_pointille=='no') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='graphe_pointille_non' style='cursor: pointer;'> Non </label><input type='radio' name='graphe_pointille' id='graphe_pointille_non' value='no'$checked />";
 			echo "</td></tr>\n";
+
+
+
+			// - Décalage vertical du centre de l'étoile (Graphe en étoile)
+			echo "<tr><td><label for='graphe_star_decalage_y' style='cursor: pointer;'>Décalage vertical du centre du polygone/étoile (<i>+ ou - tant de pixels</i>):<br />
+			(<em>Graphe en étoile/polygone</em>)</label></td><td><input type='text' name='graphe_star_decalage_y' id='graphe_star_decalage_y' value='$graphe_star_decalage_y' size='3' onkeydown=\"clavier_2(this.id,event,-300,300);\" /></td></tr>\n";
+
+			// - Modification sur le rayon du polygone/étoile (Graphe en étoile)
+			echo "<tr><td><label for='graphe_star_modif_rayon' style='cursor: pointer;'>Modification du rayon du polygone/étoile (<i>+ ou - tant de pixels</i>):<br />
+			(<em>Graphe en étoile/polygone</em>)</label></td><td><input type='text' name='graphe_star_modif_rayon' id='graphe_star_modif_rayon' value='$graphe_star_modif_rayon' size='3' onkeydown=\"clavier_2(this.id,event,-300,300);\" /></td></tr>\n";
 
 
 			// - modèle de couleurs
@@ -4063,10 +4147,12 @@ function eleve_suivant() {
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$k."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$k."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
 
 					if($click_plutot_que_survol_aff_app=="y") {
-						echo "<area href=\"#\" onClick=\"delais_afficher_div('div_app_".$k."','y',-10,20,1,50,50);return false;\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\" alt=\"\">\n";
+						//echo "<area href=\"#\" onClick=\"delais_afficher_div('div_app_".$k."','y',-10,20,1,50,50);return false;\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\" alt=\"\">\n";
+						echo "<area href=\"#\" onClick=\"affiche_eleve_afficher_div('div_app_".$k."','y',-10,20,1,50,50);return false;\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\" alt=\"\">\n";
 					}
 					else {
-						echo "<area href=\"#\" onClick='return false;' onMouseover=\"delais_afficher_div('div_app_".$k."','y',-10,20,$duree_delais_afficher_div,50,50);\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\" alt=\"\">\n";
+						//echo "<area href=\"#\" onClick='return false;' onMouseover=\"delais_afficher_div('div_app_".$k."','y',-10,20,$duree_delais_afficher_div,50,50);\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\" alt=\"\">\n";
+						echo "<area href=\"#\" onClick='return false;' onMouseover=\"affiche_eleve_delais_afficher_div('div_app_".$k."','y',-10,20,$duree_delais_afficher_div,50,50);\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\" alt=\"\">\n";
 					}
 				}
 
