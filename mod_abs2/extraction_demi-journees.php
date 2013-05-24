@@ -156,7 +156,8 @@ if ($affichage != 'ods') {// on affiche pas de html
 	<p>
     <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Afficher</button>
     <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="ods">Enregistrer au format ods</button>
-    &nbsp;<input type="checkbox" id='generer_csv' name="generer_csv" value="y"><label for='generer_csv' title="La génération de CSV est effectuée avec l'affichage HTML dans la présente page (pas lors de la génération d'un fichier ODS).">Générer un CSV</label>
+    &nbsp;<input type="checkbox" id='generer_csv' name="generer_csv" value="y"><label for='generer_csv' title="La génération de CSV est effectuée avec l'affichage HTML dans la présente page (pas lors de la génération d'un fichier ODS).
+Cochez la case et cliquez sur Afficher pour obtenir la génération d'un fichier CSV.">Générer un CSV</label>
 	</p>
 	</form>
 
