@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -170,10 +170,12 @@ echo "<p class=cn><b>Classe : $nom_classe | Enseignement : " . $current_group["d
 
 
 // Couleurs utilisées
+/*
 $couleur_devoirs = '#AAE6AA';
 $couleur_moy_cont = '#96C8F0';
 $couleur_moy_sous_cont = '#FAFABE';
 $couleur_calcul_moy = '#AAAAE6';
+*/
 
 // Calcul du nombre de periodes à afficher : $nb_cahier_note
 $appel_cahier_notes = mysql_query("SELECT periode, id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe') ORDER BY periode");
@@ -270,7 +272,8 @@ foreach ($current_group["eleves"]["all"]["list"] as $_login) {
             $eleve_statut = @mysql_result($note_query, 0, "statut");
             $eleve_note = @mysql_result($note_query, 0, "note");
             $mess_note[$i][$k] = '';
-            $mess_note[$i][$k] .= "<td class=cn bgcolor=$couleur_devoirs><center><b>";
+            //$mess_note[$i][$k] .= "<td class=cn bgcolor=$couleur_devoirs><center><b>";
+            $mess_note[$i][$k] .= "<td class='cn couleur_devoirs'><center><b>";
             if (($eleve_statut != '') and ($eleve_statut != 'v')) {
                 $mess_note[$i][$k] .= $eleve_statut;
                 $mess_note_pdf[$i][$k] = $eleve_statut;
@@ -295,10 +298,10 @@ foreach ($current_group["eleves"]["all"]["list"] as $_login) {
 //
 // Affichage du tableau
 //
-echo "<table summary='Toutes les notes' border='1' cellspacing='2' cellpadding='1'>\n";
+echo "<table class='boireaus boireaus_alt' summary='Toutes les notes' border='1' cellspacing='2' cellpadding='1'>\n";
 
 // Affichage première ligne
-echo "<tr><td class=cn>&nbsp;</td>\n";
+echo "<tr><th class=cn>&nbsp;</th>\n";
 $num_per = 0;
 while ($num_per < $nb_cahier_note) {
     // on calcule le nombre de colonnes à scinder
@@ -312,19 +315,19 @@ while ($num_per < $nb_cahier_note) {
     }
     // On rajoute 1 à colspan pour l'afichage de la colonne moyenne
     $nb_colspan++;
-    echo "<td class=cn colspan='$nb_colspan' valign='top'><center><b>".ucfirst($nom_periode[$num_per])."</b></center></td>\n";
+    echo "<th class=cn colspan='$nb_colspan' valign='top'><center><b>".ucfirst($nom_periode[$num_per])."</b></center></th>\n";
     $num_per++;
 }
 echo "</tr>\n";
 
 // Affichage deuxième ligne
-//echo "<tr><td class=cn><b>Boite :</b></td>\n";
-echo "<tr><td class=cn><b>".casse_mot(getSettingValue("gepi_denom_boite",'majf2'))." :</b></td>\n";
+//echo "<tr><th class=cn><b>Boite :</b></th>\n";
+echo "<tr><th class=cn><b>".casse_mot(getSettingValue("gepi_denom_boite",'majf2'))." :</b></th>\n";
 $num_per = 0;
 while ($num_per < $nb_cahier_note) {
     $nb_colspan = $nb_dev[$num_per]-$nb_dev[$num_per-1];
     if ($nb_colspan != 0) {
-        echo "<td class=cn colspan='$nb_colspan' valign='top'><center><b>$nom_conteneur[$num_per]</b></center></td>\n";
+        echo "<th class=cn colspan='$nb_colspan' valign='top'><center><b>$nom_conteneur[$num_per]</b></center></th>\n";
     }
 
     $i = $nb_sous_cont[$num_per-1];
@@ -346,19 +349,19 @@ while ($num_per < $nb_cahier_note) {
             $display_date_s_dev[$i][$m] = $jour."/".$mois."/".$annee;
             $m++;
         }
-        if ($nb_dev_s_cont[$i] != 0) echo "<td class=cn colspan='$nb_dev_s_cont[$i]' valign='top'><center><b>$nom_sous_cont[$i]</b></center></td>\n";
-        echo "<td class=cn valign='top'><center><b>$nom_sous_cont[$i]</b>";
-        if ($display_bulletin_sous_cont[$i] == '1') echo "<br /><font color='red'>Aff.&nbsp;bull.</font>";
-        echo "</center></td>\n";
+        if ($nb_dev_s_cont[$i] != 0) echo "<th class=cn colspan='$nb_dev_s_cont[$i]' valign='top'><center><b>$nom_sous_cont[$i]</b></center></th>\n";
+        echo "<th class=cn valign='top'><center><b>$nom_sous_cont[$i]</b>";
+        if ($display_bulletin_sous_cont[$i] == '1') echo "<br /><font color='red' title='Cette moyenne apparait sur le bulletin.'>Aff.&nbsp;bull.</font>";
+        echo "</center></th>\n";
         $i++;
     }
-    echo "<td class=cn  valign='top'><center><b>$nom_conteneur[$num_per]</b><br /><font color='red'>Aff.&nbsp;bull.</font></center></td>\n";
+    echo "<th class=cn  valign='top'><center><b>$nom_conteneur[$num_per]</b><br /><font color='red' title='Cette moyenne apparait sur le bulletin.'>Aff.&nbsp;bull.</font></center></th>\n";
     $num_per++;
 }
 echo "</tr>";
 
 // Troisième ligne
-echo "<tr><td class=cn valign='top'>&nbsp;</td>\n";
+echo "<tr><th class=cn valign='top'>&nbsp;</th>\n";
 $header_pdf[] = "Evaluation :";
 $w_pdf[] = $w1;
 
@@ -367,12 +370,13 @@ while ($num_per < $nb_cahier_note) {
     $i = $nb_dev[$num_per-1];
     while ($i < $nb_dev[$num_per]) {
         if ($coef[$i] != 0) {
-            $tmp = " bgcolor = $couleur_calcul_moy ";
+            $tmp = " couleur_calcul_moy";
         } else {
             $tmp = '';
         }
 
-        echo "<td class=cn".$tmp." valign='top'><center><b>$nom_dev[$i]</b><br />";
+        //echo "<th class=cn".$tmp." valign='top'><center><b>$nom_dev[$i]</b><br />";
+        echo "<td class='cn".$tmp."' valign='top'><center><b>$nom_dev[$i]</b><br />";
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur[$i]!=getSettingValue("referentiel_note")) {
 		if ($ramener_sur_referentiel[$i] != 'V') {
 			echo "<font size=-2>Note sur $note_sur[$i]<br />";
@@ -398,8 +402,10 @@ while ($num_per < $nb_cahier_note) {
         $m = 0;
         while ($m < $nb_dev_s_cont[$i]) {
             $tmp = '';
-            if (($mode[$num_per] == 1) and ($coef_s_dev[$i][$m] != 0)) $tmp = " bgcolor = $couleur_calcul_moy ";
-            echo "<td class=cn".$tmp." valign='top'><center><b>".$nom_sous_dev[$i][$m]."</b><br />";
+            //if (($mode[$num_per] == 1) and ($coef_s_dev[$i][$m] != 0)) $tmp = " bgcolor = $couleur_calcul_moy ";
+            //echo "<td class=cn".$tmp." valign='top'><center><b>".$nom_sous_dev[$i][$m]."</b><br />";
+            if (($mode[$num_per] == 1) and ($coef_s_dev[$i][$m] != 0)) $tmp = " couleur_calcul_moy";
+            echo "<td class='cn".$tmp."' valign='top'><center><b>".$nom_sous_dev[$i][$m]."</b><br />";
 	    if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur_s_dev[$i][$m]!=getSettingValue("referentiel_note")) {
 		if ($ramener_sur_referentiel_s_dev[$i][$m] != 'V') {
 			echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m]."<br />";
@@ -418,14 +424,16 @@ while ($num_per < $nb_cahier_note) {
             $m++;
         }
         $tmp = '';
-        if (($mode[$num_per] == 2) and ($coef_sous_cont[$i] != 0)) $tmp = " bgcolor = $couleur_calcul_moy ";
-        echo "<td class=cn".$tmp." valign='top'><center><b>Moy.</b></center></td>\n";
+        //if (($mode[$num_per] == 2) and ($coef_sous_cont[$i] != 0)) $tmp = " bgcolor = $couleur_calcul_moy ";
+        //echo "<td class=cn".$tmp." valign='top'><center><b>Moy.</b></center></td>\n";
+        if (($mode[$num_per] == 2) and ($coef_sous_cont[$i] != 0)) $tmp = " couleur_calcul_moy";
+        echo "<td class='cn".$tmp."' valign='top'><center><b>Moy.</b></center></td>\n";
         $header_pdf[] = "Moy. : ".$nom_sous_cont[$i];
         $w_pdf[] = $w2;
 
         $i++;
     }
-    echo "<td class=cn valign='top'><center><b>Moy.</b></center></td>\n";
+    echo "<th class=cn valign='top'><center><b>Moy.</b></center></th>\n";
     $header_pdf[] = "Moy. (".$nom_periode[$num_per].")";
     $w_pdf[] = $w2;
 
@@ -437,7 +445,7 @@ echo "</tr>";
 //
 // quatrième ligne
 //
-echo "<tr><td class=cn valign='top'><b>Nom&nbsp;Prénom&nbsp;\&nbsp;Coef.</b></td>\n";
+echo "<tr><th class=cn valign='top'><b>Nom&nbsp;Prénom&nbsp;\&nbsp;Coef.</b></th>\n";
 if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 	$data_pdf[0][] = "Nom Prénom\Coef. /Note sur";
 } else {
@@ -447,41 +455,41 @@ $num_per = 0;
 while ($num_per < $nb_cahier_note) {
     $i = $nb_dev[$num_per-1];
     while ($i < $nb_dev[$num_per]) {
-        echo "<td class=cn valign='top'><center><b>$coef[$i]</b>";
+        echo "<th class=cn valign='top'><center><b>$coef[$i]</b>";
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur[$i]!=getSettingValue("referentiel_note")) {
 		$data_pdf[0][] = $coef[$i]." /".$note_sur[$i];
 	} else {
 	        $data_pdf[0][] = $coef[$i];
 	}
         if (($facultatif[$i] == 'B') or ($facultatif[$i] == 'N')) echo "<br />Bonus";
-        echo "</center></td>\n";
+        echo "</center></th>\n";
         $i++;
     }
     $i = $nb_sous_cont[$num_per-1];
     while ($i < $nb_sous_cont[$num_per]) {
         $m = 0;
         while ($m < $nb_dev_s_cont[$i]) {
-            echo "<td class=cn valign='top'><center><b>".$coef_s_dev[$i][$m]."</b>";
+            echo "<th class=cn valign='top'><center><b>".$coef_s_dev[$i][$m]."</b>";
 	    if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur_s_dev[$i][$m]!=getSettingValue("referentiel_note")) {
 		$data_pdf[0][] = $coef_s_dev[$i][$m]." /".$note_sur_s_dev[$i][$m];
 	    } else {
 	        $data_pdf[0][] = $coef_s_dev[$i][$m];
 	    }
             if (($fac_s_dev[$i][$m] == 'B') or ($fac_s_dev[$i][$m] == 'N')) echo "<br />Bonus";
-            echo "</center></td>\n";
+            echo "</center></th>\n";
             $m++;
         }
         if ($mode[$num_per]==2) {
-            echo "<td class=cn valign='top'><center><b>$coef_sous_cont[$i]</b></center></td>\n";
+            echo "<th class=cn valign='top'><center><b>$coef_sous_cont[$i]</b></center></th>\n";
             $data_pdf[0][] = $coef_sous_cont[$i];
         } else {
-            echo "<td class=cn valign='top'><center>&nbsp;</center></td>\n";
+            echo "<th class=cn valign='top'><center>&nbsp;</center></th>\n";
             $data_pdf[0][] = "";
         }
         $i++;
     }
     $num_per++;
-    echo "<td class=cn valign='top'><center>&nbsp;</center></td>\n";
+    echo "<th class=cn valign='top'><center>&nbsp;</center></th>\n";
     $data_pdf[0][] = "";
 }
 echo "</tr>\n";
@@ -556,7 +564,8 @@ while($i < $nombre_lignes) {
                 $moy = '&nbsp;';
                 $data_pdf[$i+1][] = "";
             }
-            echo "<td class=cn bgcolor=$couleur_moy_cont><center><b>$moy</b></center></td>\n";
+            //echo "<td class=cn bgcolor=$couleur_moy_cont><center><b>$moy</b></center></td>\n";
+            echo "<td class='cn couleur_moy_cont'><center><b>$moy</b></center></td>\n";
         $num_per++;
         }
 
