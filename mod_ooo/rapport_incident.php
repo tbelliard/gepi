@@ -143,7 +143,7 @@ if ($mode=='module_discipline') {
 				$query = mysql_query($sql);
 				$result = mysql_fetch_array($query);
 
-				$donnee_tab_protagonistes[$cpt]['statut']=$result['nom_statut'];					
+				$donnee_tab_protagonistes[$cpt]['statut']=$result['nom_statut'];
 			}
 			else {
 				$donnee_tab_protagonistes[$cpt]['statut']=$lig3->statut;
@@ -168,7 +168,7 @@ if ($mode=='module_discipline') {
 
 
 	// on récupère les données à transmettre au modèle de retenue open office.
-	$sql_incident="SELECT * FROM s_incidents WHERE id_incident=$id_incident";
+	$sql_incident="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
 	$res_incident=mysql_query($sql_incident);
 	if(mysql_num_rows($res_incident)>0) {
 		$lig_incident=mysql_fetch_object($res_incident);
