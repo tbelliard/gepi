@@ -324,7 +324,7 @@ else {
 				echo "<td>\n";
 
 				if(file_exists($photo)) {
-					echo "<a href='#' onclick=\"afficher_div('div_photo_eleve','y',-100,20); affiche_photo('".$photo."','".addslashes(mb_strtoupper($eleve_nom)." ".ucfirst(mb_strtolower($eleve_prenom)))."')\">";
+					echo "<a href='#' onclick=\"afficher_div('div_photo_eleve','y',-100,20); affiche_photo('".$photo."','".addslashes(mb_strtoupper($eleve_nom)." ".ucfirst(mb_strtolower($eleve_prenom)))."');return false;\">";
 					echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
 					echo "</a>";
 				}
