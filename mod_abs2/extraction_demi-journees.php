@@ -118,6 +118,7 @@ if ($affichage != 'ods') {// on affiche pas de html
          <?php if (isset($message)){
           echo'<h2 class="no">'.$message.'</h2>';
         }?>
+    <div style='float:right;width:5em;' title="Lien à placer ailleurs par la suite... dans un onglet par exemple"><a href='export_stat.php' target='_blank'>Exports statistiques</a></div>
     <p>
       <strong>Précision:</strong> Un manquement à l'obligation de présence sur une heure, entraine le décompte de la demi-journée correspondante pour l'élève.
     </p>
@@ -261,12 +262,20 @@ if ($affichage == 'html') {
     $nb_nonjustifiees = 0;
     $nb_retards = 0;
     $alt=1;
+    $acces_visu_eleve=acces("/eleves/visu_eleve.php/", $_SESSION['statut']);
     foreach ($eleve_col as $eleve) {
 	    $alt=$alt*(-1);
 	    echo '<tr class="lig'.$alt.' white_hover">';
 	    
 	    echo '<td style="border:1px; border-style: inset;">';
-	    echo $eleve->getNom().' '.$eleve->getPrenom();
+	    if($acces_visu_eleve) {
+			echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank' title=\"Afficher la fiche élève dans un autre onglet ou une autre fenêtre.\">";
+			echo $eleve->getNom().' '.$eleve->getPrenom();
+			echo "</a>";
+		}
+		else {
+			echo $eleve->getNom().' '.$eleve->getPrenom();
+		}
 	    $csv.=$eleve->getElenoet().";".$eleve->getNom().";".$eleve->getPrenom().";";
 	    $csv2.=$eleve->getElenoet().";";
 	    echo '</td>';
