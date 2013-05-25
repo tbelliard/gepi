@@ -82,6 +82,8 @@ $statut_matiere=isset($_POST['statut_matiere']) ? $_POST['statut_matiere'] : NUL
 $choix_matieres=isset($_POST['choix_matieres']) ? $_POST['choix_matieres'] : NULL;
 $is_posted=isset($_POST['is_posted']) ? $_POST['is_posted'] : NULL;
 
+$debug_ajout_matiere=isset($_POST['debug_ajout_matiere']) ? $_POST['debug_ajout_matiere'] : "n";
+
 //if((isset($choix_matieres))&&(isset($type_brevet))) {
 if((isset($is_posted))&&(isset($type_brevet))) {
 	check_token();
@@ -91,8 +93,23 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 
 	$tabmatieres=tabmatieres($type_brevet);
 
+	if($debug_ajout_matiere=="y") {
+		debug_var();
+	}
+
+	if($debug_ajout_matiere=="y") {
+		echo "<p>Tableau des matières choisies&nbsp;:<br />";
+		echo "<pre>";
+		print_r($id_matiere);
+		echo "</pre>";
+	}
+
 	// Nettoyage des choix de matières dans 'notanet_corresp'
 	$sql="DELETE FROM notanet_corresp WHERE type_brevet='$type_brevet';";
+	if($debug_ajout_matiere=="y") {
+		echo "<p>Suppression des enregistrements précédents&nbsp;:<br />";
+		echo "$sql<br />";
+	}
 	$res_nettoyage=mysql_query($sql);
 	if(!$res_nettoyage){
 		$msg.="ERREUR lors du nettoyage de la table 'notanet_corresp'.<br />\n";
@@ -107,27 +124,49 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 			if($tabmatieres[$j][0]!=''){
 				//if(($tabmatieres[$j]['socle']=='n') {
 					if(isset($id_matiere[$j])){
+						if($debug_ajout_matiere=="y") {
+							echo "<p>La matière n°$j a une ou des matières Gepi sélectionnées&nbsp;:<br />";
+						}
 						for($i=0;$i<count($id_matiere[$j]);$i++){
 							$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
 																	matiere='".$id_matiere[$j][$i]."',
 																	statut='".$statut_matiere[$j]."',
 																	id_mat='$j',
 																	type_brevet='$type_brevet';";
+							if($debug_ajout_matiere=="y") {
+								echo "$sql<br />";
+							}
 							//echo "$sql<br />";
 							$res_insert=mysql_query($sql);
-							if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
+							if(!$res_insert) {
+								$nb_err++;
+								if($debug_ajout_matiere=="y") {
+									echo "<span style='color:red'>Erreur sur cette insertion.</span><br />";
+								}
+							}else{$cpt_enr++;}
 						}
 					}
 					else{
+						if($debug_ajout_matiere=="y") {
+							echo "<p>La matière n°$j n'a pas de matière Gepi sélectionnée&nbsp;:<br />";
+						}
 						// Cas de matières non dispensées...
 						$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
 																matiere='',
 																statut='".$statut_matiere[$j]."',
 																id_mat='$j',
 																type_brevet='$type_brevet';";
+						if($debug_ajout_matiere=="y") {
+							echo "$sql<br />";
+						}
 						//echo "$sql<br />";
 						$res_insert=mysql_query($sql);
-						if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
+						if(!$res_insert) {
+							$nb_err++;
+							if($debug_ajout_matiere=="y") {
+								echo "<span style='color:red'>Erreur sur cette insertion.</span><br />";
+							}
+						}else{$cpt_enr++;}
 					}
 				//else {
 				//}
@@ -146,6 +185,10 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 													statut='".$statut_matiere[$j_matiere]."',
 													id_mat='$j_matiere',
 													type_brevet='$type_brevet';";
+			if($debug_ajout_matiere=="y") {
+				echo "<p>Ajout de la matière Gepi choisie pour la matière notanet n°$j_matiere&nbsp;:<br />";
+				echo "$sql<br />";
+			}
 			//echo "$sql<br />";
 			$res_insert=mysql_query($sql);
 			if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
@@ -436,7 +479,12 @@ else {
 		//echo "<p>Le fichier d'export Notanet doit-il avoir des fins de lignes Unix ou Dos?<br /><input type='radio' name='finsdelignes' value='dos' checked /> Fins de lignes DOS<br /><input type='radio' name='finsdelignes' value='unix' /> Fins de lignes UNIX</p>\n";
 
 		echo "<input type='hidden' name='is_posted' value='y' />\n";
-		echo "<input type='submit' name='choix_matieres' value='Enregistrer' />\n";
+		echo "<p><input type='checkbox' name='debug_ajout_matiere' id='debug_ajout_matiere' value='y' ";
+		if($debug_ajout_matiere=="y") {
+			echo "checked ";
+		}
+		echo"/><label for='debug_ajout_matiere'> Afficher des informations pour débugger en cas de soucis lors de l'ajout de matières.</label></p>\n";
+		echo "<p><input type='submit' name='choix_matieres' value='Enregistrer' /></p>\n";
 		echo "</form>\n";
 
 		echo "<br />";
