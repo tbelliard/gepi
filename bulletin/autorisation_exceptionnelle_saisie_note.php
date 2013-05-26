@@ -144,16 +144,24 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 								$nom_personne_autorisant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
 								$email_personne_autorisant=$lig_u->email;
 							}
-		
+
 							$email_destinataires="";
+							$designation_destinataires="";
 							// Recherche des profs du groupe
 							$sql="SELECT DISTINCT u.email, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.email!='';";
 							//echo "$sql<br />";
 							$req=mysql_query($sql);
 							if(mysql_num_rows($req)>0) {
 								$lig_u=mysql_fetch_object($req);
-								$email_destinataires.=remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace')." <".$lig_u->email.">";
-								while($lig_u=mysql_fetch_object($req)) {$email_destinataires.=",".$lig_u->email;}
+
+								$designation_destinataires.=remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace');
+								$email_destinataires.=$designation_destinataires." <".$lig_u->email.">";
+								while($lig_u=mysql_fetch_object($req)) {
+									$designation_destinataires.=", ".remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace');
+									// Il se passe un truc bizarre avec les suivants
+									//$email_destinataires.=$designation_destinataires." <".$lig_u->email.">";
+									$email_destinataires.=", ".$lig_u->email;
+								}
 
 								$sujet_mail="[GEPI] Autorisation exceptionnelle de saisie/correction de notes de bulletins";
 				
@@ -181,7 +189,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 								}
 
 								$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
-								$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_personne_autorisant;
+								$texte_mail=$salutation." ".$designation_destinataires.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_personne_autorisant;
 
 								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
 
