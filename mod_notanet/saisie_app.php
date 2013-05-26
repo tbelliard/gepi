@@ -209,7 +209,7 @@ else {
 	echo "<p class='bold'>".$current_group['description']." (<i>".$current_group["classlist_string"]."</i>)</p>\n";
 
 	//echo "<div id='div_photo_eleve' class='infobulle_corps' style='position: fixed; top: 220px; right: 20px; text-align:center; border:1px solid black; display:none;'></div>\n";
-	$titre="Photo";
+	$titre="<span id='span_titre_photo'>Photo</span>";
 	$texte="Photo";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_photo_eleve',$titre,"",$texte,"",14,0,'y','y','n','n');
 
@@ -325,7 +325,7 @@ else {
 
 				if(file_exists($photo)) {
 					echo "<a href='#' onclick=\"afficher_div('div_photo_eleve','y',-100,20); affiche_photo('".$photo."','".addslashes(mb_strtoupper($eleve_nom)." ".ucfirst(mb_strtolower($eleve_prenom)))."');return false;\">";
-					echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
+					echo "<img src='../images/icons/buddy.png' alt=\"$eleve_nom $eleve_prenom\" />";
 					echo "</a>";
 				}
 			}
@@ -377,7 +377,7 @@ else {
 					// Rétablissement: boireaus 20080219
 					// Pour revenir au champ suivant après validation/enregistrement:
 					//echo " onfocus=\"focus_suivant(".$i.");\"";
-					echo " onfocus=\"focus_suivant(".$num_id.");\"";
+					echo " onfocus=\"change_photo('".$photo."','".addslashes(mb_strtoupper($eleve_nom)." ".ucfirst(mb_strtolower($eleve_prenom)))."');focus_suivant(".$num_id.");\"";
 					//==================================
 
 					echo ">".$eleve_app."</textarea>\n";
@@ -460,6 +460,14 @@ else {
 
 	function affiche_photo(photo,nom_prenom) {
 		document.getElementById('div_photo_eleve_contenu_corps').innerHTML='<div style=\'text-align: center\'><img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom+'</div>';
+		document.getElementById('span_titre_photo').innerHTML=nom_prenom;
+	}
+
+	function change_photo(photo,nom_prenom) {
+		if(document.getElementById('div_photo_eleve').style.display=='') {
+			affiche_photo(photo,nom_prenom);
+			afficher_div('div_photo_eleve','y',-100,20);
+		}
 	}
 
 	";
