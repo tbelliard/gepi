@@ -169,14 +169,14 @@ echo "<p class='bold'>Tableau des verrouillages:</p>\n";
 echo "<table class='boireaus'>\n";
 echo "<tr>\n";
 echo "<th rowspan='2'>Classe</th>\n";
-echo "<th colspan='$nb_type_brevet'>Type de brevet</th>\n";
+echo "<th colspan='".(2*$nb_type_brevet)."'>Type de brevet</th>\n";
 echo "</tr>\n";
 
 unset($type_brevet);
 $cpt=0;
 echo "<tr>\n";
 while($lig3=mysql_fetch_object($res3)) {
-	echo "<th>".$tab_type_brevet[$lig3->type_brevet];
+	echo "<th colspan='2'>".$tab_type_brevet[$lig3->type_brevet];
 	$type_brevet[$cpt]=$lig3->type_brevet;
 	echo "<input type='hidden' name='type_brevet[]' value='".$type_brevet[$cpt]."' />\n";
 	echo "</th>\n";
@@ -194,7 +194,7 @@ if(mysql_num_rows($res4)==0) {
 	require("../lib/footer.inc.php");
 	die();
 }
-
+$chaine_champs_verrouillage="";
 $alt=1;
 while($lig4=mysql_fetch_object($res4)) {
 	$alt=$alt*(-1);
@@ -206,11 +206,13 @@ while($lig4=mysql_fetch_object($res4)) {
 	for($i=0;$i<count($type_brevet);$i++) {
 		$sql="SELECT 1=1 FROM notanet n, notanet_ele_type net WHERE n.login=net.login AND net.type_brevet='".$type_brevet[$i]."';";
 		$res_test=mysql_query($sql);
-		echo "<td>\n";
 		if(mysql_num_rows($res_test)==0) {
+			echo "<td colspan='2'>\n";
 			echo "&nbsp;";
+			echo "</td>\n";
 		}
 		else {
+			echo "<td>\n";
 			$sql="SELECT * FROM notanet_verrou WHERE id_classe='$lig4->id' AND type_brevet='".$type_brevet[$i]."';";
 			$res_test=mysql_query($sql);
 			if(mysql_num_rows($res_test)==0) {
@@ -221,19 +223,25 @@ while($lig4=mysql_fetch_object($res4)) {
 				$verrou=$lig_verrou->verrouillage;
 			}
 			//echo "O <input type='radio' name='verrouiller_".$lig4->id."_".$i."' value='O' ";
-			echo "O <input type='radio' name='verrouiller_".$lig4->id."_".$type_brevet[$i]."' value='O' ";
+			echo "<label id='texte_verrouiller_".$lig4->id."_".$type_brevet[$i]."_O' for='verrouiller_".$lig4->id."_".$type_brevet[$i]."_O' title=\"Saisies verrouillées\"><img src='../images/icons/lock.png' width='24' height='24' /> Verrouillé </label><input type='radio' name='verrouiller_".$lig4->id."_".$type_brevet[$i]."' id='verrouiller_".$lig4->id."_".$type_brevet[$i]."_O' value='O' ";
 			if($verrou=="O") {
 				echo "checked ";
 			}
+			echo " onchange='mise_en_gras_choix_verrouillage_ou_non()'";
 			echo "/>\n";
+			echo "</td>\n";
+
+			echo "<td>\n";
 			//echo "<input type='radio' name='verrouiller_".$lig4->id."_".$i."' value='N' ";
-			echo "<input type='radio' name='verrouiller_".$lig4->id."_".$type_brevet[$i]."' value='N' ";
+			echo "<input type='radio' name='verrouiller_".$lig4->id."_".$type_brevet[$i]."' id='verrouiller_".$lig4->id."_".$type_brevet[$i]."_N' value='N' ";
 			if($verrou=="N") {
 				echo "checked ";
 			}
-			echo "/> N\n";
+			echo " onchange='mise_en_gras_choix_verrouillage_ou_non()'";
+			echo "/><label id='texte_verrouiller_".$lig4->id."_".$type_brevet[$i]."_N' for='verrouiller_".$lig4->id."_".$type_brevet[$i]."_N' title=\"Saisies ouvertes\"> Ouvert <img src='../images/icons/lock-open.png' width='24' height='24' /></label>\n";
+			$chaine_champs_verrouillage.=",'verrouiller_".$lig4->id."_".$type_brevet[$i]."'";
+			echo "</td>\n";
 		}
-		echo "</td>\n";
 	}
 }
 echo "</tr>\n";
@@ -242,9 +250,43 @@ echo "</table>\n";
 echo "<input type='hidden' name='is_posted' value='yes' />\n";
 echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
+if($chaine_champs_verrouillage!="") {
+	$chaine_champs_verrouillage=substr($chaine_champs_verrouillage,1);
+	echo "<script type='text/javascript'>
+	function mise_en_gras_choix_verrouillage_ou_non() {
+		var tab=new Array($chaine_champs_verrouillage);
+
+		for(i=0;i<tab.length;i++) {
+			if(document.getElementById(tab[i]+'_O')) {
+				if(document.getElementById(tab[i]+'_O').checked==true) {
+					if(document.getElementById('texte_'+tab[i]+'_O')) {
+						document.getElementById('texte_'+tab[i]+'_O').style.fontWeight='bold';
+					}
+
+					if(document.getElementById('texte_'+tab[i]+'_N')) {
+						document.getElementById('texte_'+tab[i]+'_N').style.fontWeight='';
+					}
+				}
+
+				if(document.getElementById(tab[i]+'_N').checked==true) {
+					if(document.getElementById('texte_'+tab[i]+'_N')) {
+						document.getElementById('texte_'+tab[i]+'_N').style.fontWeight='bold';
+					}
+
+					if(document.getElementById('texte_'+tab[i]+'_O')) {
+						document.getElementById('texte_'+tab[i]+'_O').style.fontWeight='';
+					}
+				}
+			}
+		}
+	}
+	mise_en_gras_choix_verrouillage_ou_non();
+</script>\n";
+}
+
 echo "</form>\n";
 
-echo "<p><i>NOTE:</i> 'O' correspond à un verrouillage/interdiction des saisies, tandis que le 'N' permet la saisie.</p>\n";
+//echo "<p><i>NOTE:</i> 'O' correspond à un verrouillage/interdiction des saisies, tandis que le 'N' permet la saisie.</p>\n";
 
 require("../lib/footer.inc.php");
 ?>
