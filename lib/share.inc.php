@@ -6762,6 +6762,7 @@ function enregistre_message($sujet, $message, $login_src, $login_dest, $date_vis
 									in_reply_to='".$in_reply_to."',
 									date_msg='".$date_courante."',
 									date_visibilite='".$date_visibilite."';";
+	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if($res) {
 		$retour=mysql_insert_id();
@@ -6877,13 +6878,14 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 		$retour="<p>Aucun message.</p>";
 	}
 	else {
+		$peut_poster_message=peut_poster_message($_SESSION['statut']);
 		$retour.=add_token_field(true)."<table class='boireaus boireaus_alt'>
 	<tr>
 		<th>Date</th>
 		<th>Source</th>
 		<th>Sujet</th>
 		";
-		if(peut_poster_message($_SESSION['statut'])) {
+		if($peut_poster_message) {
 			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' /></th>";
 		}
 		else {
@@ -6891,7 +6893,14 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 		}
 		$retour.="
 		<th>Lu/vu</th>
-		<!-- A FAIRE : Ajouter une colonne pour Répondre si on en a le droit -->
+		<!-- A FAIRE : Ajouter une colonne pour Répondre si on en a le droit -->";
+
+		if($peut_poster_message) {
+			$retour.="
+		<th>Répondre</th>";
+		}
+
+		$retour.="
 	</tr>";
 
 
@@ -6910,7 +6919,18 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 			else {
 				$retour.="<span id='span_message_$lig->id'><a href='$gepiPath/lib/form_message.php?mode=marquer_lu&amp;id_msg=$lig->id&amp;mode_no_js=y".add_token_in_url()."' onclick=\"marquer_message_lu($lig->id);return false;\" target='_blank'><img src='../images/disabled.png' width='20' height='20' title='Non lu/vu. Cliquez pour marquer ce message comme lu.' /></a></span>";
 			}
-			$retour.="</td>
+			$retour.="</td>";
+
+			if($peut_poster_message) {
+				/*
+				$retour.="
+		<td><a href='$gepiPath/lib/form_message.php?mode=repondre&amp;id_msg=$lig->id".add_token_in_url()."' onclick=\"repondre_message($lig->id);return false;\" target='_blank' title='Répondre'><img src='../images/icons/back.png' width='16' height='16' /></a></td>";
+				*/
+				$retour.="
+		<td><a href='$gepiPath/lib/form_message.php?mode=repondre&amp;id_msg=$lig->id".add_token_in_url()."' title='Répondre'><img src='../images/icons/back.png' width='16' height='16' /></a></td>";
+			}
+
+			$retour.="
 	</tr>";
 			$cpt_ahmr++;
 		}

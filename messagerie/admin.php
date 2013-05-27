@@ -74,16 +74,44 @@ if (isset($_POST['is_posted'])) {
 	$msg="";
 
 	if ((isset($_POST['activer']))&&(!saveSetting("active_messagerie", $_POST['activer']))) {
-		$msg .= "Erreur lors de l'enregistrement du paramètre activation/désactivation !<br />";
+		$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre activation/désactivation !</span><br />";
 	} else {
 		$nb_reg++;
 	}
 
 	if (isset($_POST['MessagerieAvecSon'])) {
 		if(!saveSetting("MessagerieAvecSon", $_POST['MessagerieAvecSon'])) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre Messagerie avec son !<br />";
+			$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre Messagerie avec son !</span><br />";
 		} else {
 			$nb_reg++;
+		}
+	}
+
+	if (isset($_POST['MessagerieDelaisTest'])) {
+		$MessagerieDelaisTest=$_POST['MessagerieDelaisTest'];
+		if(($MessagerieDelaisTest=='')||(!preg_match('/^[0-9]*$/', $MessagerieDelaisTest))||($MessagerieDelaisTest<1)) {
+			$msg .= "<span style='color:red'>La valeur proposée pour le paramètre Délais de test de présence de message est invalide !</span><br />";
+		}
+		else {
+			if(!saveSetting("MessagerieDelaisTest", $MessagerieDelaisTest)) {
+				$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre Délais de test de présence de message !</span><br />";
+			} else {
+				$nb_reg++;
+			}
+		}
+	}
+
+	if (isset($_POST['MessagerieLargeurImg'])) {
+		$MessagerieLargeurImg=$_POST['MessagerieLargeurImg'];
+		if(($MessagerieLargeurImg=='')||(!preg_match('/^[0-9]*$/', $MessagerieLargeurImg))||($MessagerieLargeurImg<1)) {
+			$msg .= "<span style='color:red'>La valeur proposée pour le paramètre Largeur de l'image signalant des messages non lus est invalide !</span><br />";
+		}
+		else {
+			if(!saveSetting("MessagerieLargeurImg", $MessagerieLargeurImg)) {
+				$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre Largeur de l'image signalant des messages non lus !</span><br />";
+			} else {
+				$nb_reg++;
+			}
 		}
 	}
 
@@ -99,7 +127,7 @@ if (isset($_POST['is_posted'])) {
 		}
 
 		if(!saveSetting('PeutPosterMessage'.$tab_statut[$loop], $valeur)) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre PeutPosterMessage".$tab_statut[$loop]." !<br />";
+			$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre PeutPosterMessage".$tab_statut[$loop]." !</span><br />";
 		} else {
 			$nb_reg++;
 		}
@@ -126,7 +154,7 @@ if (isset($_POST['is_posted2'])) {
 	}
 
 	if(!isset($date_limite)) {
-		$msg="Aucune date limite n'a été saisie.<br />\n";
+		$msg="<span style='color:red'>Aucune date limite n'a été saisie.</span><br />\n";
 	}
 	else {
 		$sql="DELETE FROM messagerie WHERE date_msg < '$annee-$mois-$jour 00:00:00';";
@@ -137,7 +165,7 @@ if (isset($_POST['is_posted2'])) {
 			$post_reussi=TRUE;
 		}
 		else {
-			$msg="Erreur lors de la suppression des messages antérieurs au $jour/$mois/$annee.<br />\n";
+			$msg="<span style='color:red'>Erreur lors de la suppression des messages antérieurs au $jour/$mois/$annee.</span><br />\n";
 		}
 	}
 }

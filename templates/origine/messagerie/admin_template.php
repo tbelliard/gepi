@@ -128,13 +128,30 @@ echo add_token_field();
 			   size='3'
 			   value='<?php
 			   $nb_min=getSettingValue('MessagerieDelaisTest');
-			   if(($nb_min=='')||(!preg_match('/^[0-9]$/', $nb_min))||($nb_min==0)) {
+			   if(($nb_min=='')||(!preg_match('/^[0-9]*$/', $nb_min))||($nb_min==0)) {
 			      $nb_min=1;
 			   }
 			   	echo $nb_min;
 			   	?>'
 			   	onkeydown="clavier_2(this.id,event,1,300);"
 			   	/> minute(s).
+		</p>
+
+		<p>
+		Largeur en pixels de l'image signalant à un utilisateur qu'il a des messages non lus
+		<input type='text'
+			   name='MessagerieLargeurImg'
+			   id='MessagerieLargeurImg'
+			   size='3'
+			   value='<?php
+			   $MessagerieLargeurImg=getSettingValue('MessagerieLargeurImg');
+			   if(($MessagerieLargeurImg=='')||(!preg_match('/^[0-9]*$/', $MessagerieLargeurImg))||($MessagerieLargeurImg<0)) {
+			      $MessagerieLargeurImg=16;
+			   }
+			   	echo $MessagerieLargeurImg;
+			   	?>'
+			   	onkeydown="clavier_2(this.id,event,16,500);"
+			   	/> px
 		</p>
 
 		<br />

@@ -114,7 +114,8 @@ if((isset($mode))&&($mode=='check')) {
 if((isset($mode))&&($mode=='check2')) {
 	$messages_non_lus=check_messages_recus($_SESSION['login']);
 	if($messages_non_lus!="") {
-		echo "<a href='$gepiPath/lib/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='16' height='16' title='Vous avez $messages_non_lus' /></a>";
+		$MessagerieLargeurImg=getSettingValue('MessagerieLargeurImg');
+		echo "<a href='$gepiPath/lib/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='$MessagerieLargeurImg' height='$MessagerieLargeurImg' title='Vous avez $messages_non_lus' /></a>";
 	}
 	else {
 		echo "";
@@ -224,6 +225,15 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 			}
 		}
 
+		unset($in_reply_to);
+		if((isset($_POST['in_reply_to']))&&(is_numeric($_POST['in_reply_to']))) {
+			$sql="SELECT 1=1 FROM messagerie WHERE id='".$_POST['in_reply_to']."' AND login_dest='".$_SESSION['login']."';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$in_reply_to=$_POST['in_reply_to'];
+			}
+		}
+
 		if(is_array($login_dest)) {
 			$tmp_login_dest=$login_dest;
 			$login_dest=array_unique($tmp_login_dest);
@@ -231,7 +241,13 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 			//for($loop=0;$loop<count($login_dest);$loop++) {
 				//$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest[$loop], $date_heure_visibilite);
 			foreach($login_dest as $key => $value) {
-				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $value, $date_heure_visibilite);
+				if(isset($in_reply_to)) {
+					$retour=enregistre_message($sujet, $message, $_SESSION['login'], $value, $date_heure_visibilite,$in_reply_to);
+				}
+				else {
+					$retour=enregistre_message($sujet, $message, $_SESSION['login'], $value, $date_heure_visibilite);
+				}
+
 				if($retour!="") {
 					$nb_reg++;
 				}
@@ -243,7 +259,13 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 			$msg.="Message enregistré pour $nb_reg destinataire(s).<br />";
 		}
 		elseif(($login_dest!='')&&($sujet!='')&&($message!='')) {
-			$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest, $date_heure_visibilite);
+			if(isset($in_reply_to)) {
+				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest, $date_heure_visibilite,$in_reply_to);
+			}
+			else {
+				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest, $date_heure_visibilite);
+			}
+
 			if($retour!="") {
 				$msg.="Message pour ".civ_nom_prenom($login_dest)." enregistré.<br />";
 
@@ -260,6 +282,34 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 					die();
 				}
 			}
+		}
+
+		unset($in_reply_to);
+	}
+}
+
+if((isset($mode))&&($mode=='repondre')) {
+	check_token();
+
+	$id_msg=$_GET['id_msg'];
+	if(is_numeric($id_msg)) {
+		$sql="SELECT * FROM messagerie WHERE id='$id_msg' AND login_dest='".$_SESSION['login']."';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			$msg.="Le message n°$id_msg s'il existe ne vous était pas destiné.<br />";
+		}
+		else {
+			$retour=marquer_message_lu($id_msg);
+
+			$login_dest=mysql_result($res,0,"login_src");
+			$sujet="Re: ".mysql_result($res,0,"sujet");
+
+			//$date_visibilite=mysql_result($res,0,"date_visibilite");
+			$date_msg=mysql_result($res,0,"date_msg");
+
+			$message="Le ".formate_date($date_msg, 'y').", vous avez écrit:\n================================\n".mysql_result($res,0,"message")."\n================================\n";
+
+			$in_reply_to=$id_msg;
 		}
 	}
 }
@@ -303,7 +353,14 @@ if(peut_poster_message($_SESSION['statut'])) {
 		<?php
 			echo add_token_field(true);
 		?>
-		<p class='bold'>Envoi d'un message/post-it&nbsp;:</p>
+		<p class='bold'>Envoi d'un message/post-it&nbsp;: 
+		<?php
+			if(isset($in_reply_to)) {
+				echo "<span style='color:red'>Réponse à un autre message</span>";
+				echo "<input type='hidden' name='in_reply_to' value='$in_reply_to' />\n";
+			}
+		?>
+		</p>
 		<table class='boireaus boireaus_alt'>
 			<tr>
 				<th>Destinataire(s)</th>

@@ -147,6 +147,15 @@ if(getSettingValue('MessagerieDelaisTest')=="") {
 	}
 }
 
+if(getSettingValue('MessagerieLargeurImg')=="") {
+	$result .= "&nbsp;-> Initialisation de la taille de l'image signalant des messages non lus&nbsp;: ";
+	if (!saveSetting("MessagerieLargeurImg", '16')) {
+		$result .= msj_erreur();
+	} else {
+		$result .= msj_ok("Ok !");
+	}
+}
+
 if(getSettingValue('PeutPosterMessageScolarite')=="") {
 	$result .= "&nbsp;-> Initialisation de la possibilité de poster des messages pour les comptes 'scolarité'&nbsp;: ";
 	if (!saveSetting("PeutPosterMessageScolarite", 'y')) {
