@@ -89,6 +89,20 @@ if(!getSettingAOui('active_messagerie')) {
 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
+if((isset($mode))&&($mode=='maj_span_nom_jour_semaine')) {
+	header('Content-Type: text/html; charset=utf-8');
+
+	$jour=isset($_GET['jour']) ? $_GET['jour'] : NULL;
+	//if(isset($jour)) {
+	if((isset($jour))&&(preg_match("|[0-9]{2}/[0-9]{2}/[0-9]{4}|", $jour))) {
+		$tmp_tab=explode("/", $jour);
+		if(checkdate($tmp_tab[1],$tmp_tab[0],$tmp_tab[2])) {
+			echo strftime("%A", mktime ("12", "59" , "00" , $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]));
+		}
+	}
+	die();
+}
+
 // Test de la présence de messages non lus et mise à jour du témoin en barre d'entête
 if((isset($mode))&&($mode=='check')) {
 	$messages_non_lus=check_messages_recus($_SESSION['login']);
@@ -152,7 +166,7 @@ if((isset($mode))&&($mode=='marquer_lu')) {
 	die();
 }
 
-// Marquer un message comme lu
+// Relancer un message : le marquer comme non-lu
 if((isset($mode))&&($mode=='relancer')) {
 	check_token();
 	$id_msg=$_GET['id_msg'];
@@ -166,6 +180,38 @@ if((isset($mode))&&($mode=='relancer')) {
 			}
 			else {
 				echo "<img src='../images/disabled.png' width='20' height='20' title='Lu/vu' />";
+			}
+		}
+		else {
+			if($retour=="Erreur") {
+				echo "<span style='color:red'>Erreur</span>";
+			}
+			else {
+				echo "Message marqué comme non lu.<br />Vous pouvez refermer cette page.";
+				// Il faudrait trouver une meilleure façon de gérer le marquage quand JS est inactif.
+			}
+		}
+	}
+	die();
+}
+
+// Clore un message
+if((isset($mode))&&($mode=='clore')) {
+	check_token();
+	$id_msg=$_GET['id_msg'];
+
+	if(is_numeric($id_msg)) {
+		$retour=clore_declore_message($id_msg);
+		if(!isset($_GET['mode_no_js'])) {
+			if($retour=="Erreur") {
+				//echo "<img src='../images/disabled.png' width='20' height='20' title='Lu/vu' />";
+				echo "<span style='color:red'>Erreur</span>";
+			}
+			elseif($retour==2) {
+				echo "<img src='../images/icons/securite.png' width='16' height='16' title='Message clos/traité.' />";
+			}
+			else {
+				echo "<img src='../images/disabled.png' width='20' height='20' title='Non lu/vu' />";
 			}
 		}
 		else {
@@ -196,35 +242,35 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 
 	$msg="";
 
-	if((isset($login_dest))&&(isset($sujet))&&(isset($message))) {
-
-		$date_heure_visibilite="";
-		if(isset($date_visibilite)) {
-			$tmp_tab=explode("/", $date_visibilite);
-			if(!checkdate($tmp_tab[1],$tmp_tab[0],$tmp_tab[2])) {
-				$msg.="Erreur sur la date de visibilité proposée $date_visibilite<br />";
-			}
-			else {
-				// On teste maintenant l'heure
-				if(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/", $heure_visibilite)) {
-					if((!preg_match("/[0-9]{1,2}", $heure_visibilite))||($heure_visibilite<0)||($heure_visibilite>23)) {
-						$msg.="Erreur sur l'heure de visibilité proposée $heure_visibilite<br />";
-					}
-					else {
-						$date_heure_visibilite=$tmp_tab[2].":".$tmp_tab[1].":".$tmp_tab[0]." ".$heure_visibilite.":00:00";
-					}
+	$date_heure_visibilite="";
+	if(isset($date_visibilite)) {
+		$tmp_tab=explode("/", $date_visibilite);
+		if(!checkdate($tmp_tab[1],$tmp_tab[0],$tmp_tab[2])) {
+			$msg.="Erreur sur la date de visibilité proposée $date_visibilite<br />";
+		}
+		else {
+			// On teste maintenant l'heure
+			if((!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/", $heure_visibilite))&&(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$/", $heure_visibilite))) {
+				if((!preg_match("/[0-9]{1,2}", $heure_visibilite))||($heure_visibilite<0)||($heure_visibilite>23)) {
+					$msg.="Erreur sur l'heure de visibilité proposée $heure_visibilite<br />";
 				}
 				else {
-					$tmp_tab2=explode(":", $heure_visibilite);
-					if(($tmp_tab2[0]<0)||($tmp_tab2[0]>23)||($tmp_tab2[1]<0)||($tmp_tab2[1]>59)) {
-						$msg.="Erreur sur l'heure de visibilité proposée $heure_visibilite<br />";
-					}
-					else {
-						$date_heure_visibilite=$tmp_tab[2].":".$tmp_tab[1].":".$tmp_tab[0]." ".$tmp_tab2[0].":".$tmp_tab2[1].":00";
-					}
+					$date_heure_visibilite=$tmp_tab[2].":".$tmp_tab[1].":".$tmp_tab[0]." ".$heure_visibilite.":00:00";
+				}
+			}
+			else {
+				$tmp_tab2=explode(":", $heure_visibilite);
+				if(($tmp_tab2[0]<0)||($tmp_tab2[0]>23)||($tmp_tab2[1]<0)||($tmp_tab2[1]>59)) {
+					$msg.="Erreur sur l'heure de visibilité proposée $heure_visibilite<br />";
+				}
+				else {
+					$date_heure_visibilite=$tmp_tab[2].":".$tmp_tab[1].":".$tmp_tab[0]." ".$tmp_tab2[0].":".$tmp_tab2[1].":00";
 				}
 			}
 		}
+	}
+
+	if((isset($login_dest))&&(isset($sujet))&&(isset($message))) {
 
 		unset($in_reply_to);
 		if((isset($_POST['in_reply_to']))&&(is_numeric($_POST['in_reply_to']))) {
@@ -481,12 +527,19 @@ Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendema
 					<?php
 						include("../lib/calendrier/calendrier.class.php");
 						$cal = new Calendrier("formulaire", "date_visibilite");
-						$date_visibilite=strftime("%d/%m/%Y");
-						$heure_visibilite=strftime("%H:%M");
+						if(!isset($date_visibilite)) {$date_visibilite=strftime("%d/%m/%Y");}
+						if(!isset($heure_visibilite)) {$heure_visibilite=strftime("%H:%M");}
+						else {
+							if(preg_match("/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $heure_visibilite)) {
+								$tmp_tab=explode(":", $heure_visibilite);
+								$heure_visibilite=$tmp_tab[0].":".$tmp_tab[1];
+							}
+						}
 					?>
-					<input type='text' name='date_visibilite' id='date_visibilite' size='10' value = "<?php echo $date_visibilite;?>" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." />
-					<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>"
-					onchange="changement();"><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="Petit calendrier" /></a>
+					<span id='span_nom_jour_semaine'></span> 
+					<input type='text' name='date_visibilite' id='date_visibilite' size='10' value = "<?php echo $date_visibilite;?>" onKeyDown="clavier_date(this.id,event);maj_span_nom_jour_semaine();" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." onchange="changement();maj_span_nom_jour_semaine();" onblur="maj_span_nom_jour_semaine();" />
+					<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>;document.getElementById('span_nom_jour_semaine').innerHTML='';"
+					><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="Petit calendrier" /></a>
 					à
 					<input name="heure_visibilite" value="<?php echo $heure_visibilite;?>" type="text" maxlength="5" size="4" id="heure_visibilite" onKeyDown="clavier_heure2(this.id,event,1,30);" AutoComplete="off" title="Vous pouvez modifier l'heure à l'aide des flèches Up et Down du pavé de direction et les flèches PageUp/PageDown." />
 				</td>
@@ -642,6 +695,16 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 		}
 	}
 
+	function maj_span_nom_jour_semaine() {
+		if(document.getElementById('date_visibilite')) {
+			jour_visibilite=document.getElementById('date_visibilite').value;
+			//alert(jour_visibilite);
+			new Ajax.Updater($('span_nom_jour_semaine'),'form_message.php?mode=maj_span_nom_jour_semaine&jour='+jour_visibilite,{method: 'get'});
+		}
+	}
+
+	maj_span_nom_jour_semaine();
+	//setTimeout('maj_span_nom_jour_semaine()', 3000);
 </script>
 
 <?php

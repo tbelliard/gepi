@@ -6803,8 +6803,12 @@ function affiche_historique_messages($login_src, $mode="tous") {
 			$retour.="<th>Message</th>";
 		}
 		$retour.="
-		<th>Lu/vu</th>
+		<th title='Témoin indiquant si votre message a été vu/lu'>Lu/vu</th>
 		<th>Relancer</th>
+		<th title=\"Marquer le message comme clos/traité.
+Cela permet d'indiquer au destinataire que le message peut ne pas être pris en compte.
+Exemple: Si vous avez demandé à plusieurs destinataires à ce que tel élève vous soit envoyé,
+         une fois l'élève vu, la lecture du message n'est plus nécessaire.\">Clore</th>
 	</tr>";
 		$cpt_ahm=0;
 		while($lig=mysql_fetch_object($res)) {
@@ -6823,16 +6827,23 @@ function affiche_historique_messages($login_src, $mode="tous") {
 		<td>$lig->sujet</td>
 		<td id='td_ahm_".$cpt_ahm."' onclick=\"copie_ahm($cpt_ahm)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
 		<td id='td_lu_message_envoye_".$lig->id."'>";
-			if($lig->vu!=0) {
+			if($lig->vu==1) {
 				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Votre message a été lu/vu le ".formate_date($lig->date_vu,'y')."' /></td>
 		<td id='td_relance_message_envoye_".$lig->id."'><a href='../lib/form_message.php?mode=relancer&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"relancer_message(".$lig->id.");return false;\" title=\"Relancer le message au même destinataire.
 Concrètement, le témoin est juste remis à non lu.\" target='_blank'><img src='../images/icons/forward.png' width='16' height='16' /></a>";
+			}
+			elseif($lig->vu==2) {
+				$retour.="<img src='../images/icons/securite.png' width='16' height='16' title='Non lu/vu' /></td>
+		<td>";
 			}
 			else {
 				$retour.="<img src='../images/disabled.png' width='20' height='20' title='Non lu/vu' /></td>
 		<td>";
 			}
 			$retour.="</td>
+		<td>
+			<a href='../lib/form_message.php?mode=clore&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"clore_message(".$lig->id.");return false;\"><img src='../images/icons/wizard.png' width='16' height='16' /></a>
+		</td>
 	</tr>";
 			$cpt_ahm++;
 		}
@@ -6856,6 +6867,11 @@ Concrètement, le témoin est juste remis à non lu.\" target='_blank'><img src=
 		csrf_alea=document.getElementById('csrf_alea').value;
 		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'form_message.php?mode=relancer&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
 		document.getElementById('td_relance_message_envoye_'+id_msg).innerHTML='';
+	}
+
+	function clore_message(id_msg) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'form_message.php?mode=clore&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
 	}
 </script>
 ";
@@ -6913,8 +6929,11 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 		<td>$lig->sujet</td>
 		<td id='td_ahmr_".$cpt_ahmr."' onclick=\"copie_ahmr($cpt_ahmr)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
 		<td>";
-			if($lig->vu!=0) {
+			if($lig->vu==0) {
 				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Vous avez marqué/lu/vu ce message le ".formate_date($lig->date_vu,'y')."' />";
+			}
+			elseif($lig->vu==2) {
+				$retour.="<img src='../images/icons/securite.png' width='16' height='16' title=\"Ce message a été marqué comme clos/traité par l'expéditeur le ".formate_date($lig->date_vu,'y')."\" />";
 			}
 			else {
 				$retour.="<span id='span_message_$lig->id'><a href='$gepiPath/lib/form_message.php?mode=marquer_lu&amp;id_msg=$lig->id&amp;mode_no_js=y".add_token_in_url()."' onclick=\"marquer_message_lu($lig->id);return false;\" target='_blank'><img src='../images/disabled.png' width='20' height='20' title='Non lu/vu. Cliquez pour marquer ce message comme lu.' /></a></span>";
@@ -6999,13 +7018,47 @@ function marquer_message_lu($id_msg, $etat=true) {
 	return $retour;
 }
 
-function peut_poster_message($statut) {
-	// A FAIRE: Gérer le statut Autre...
-	if(getSettingAOui('PeutPosterMessage'.ucfirst(mb_strtolower($statut)))) {
-		return true;
+function clore_declore_message($id_msg) {
+	$retour="";
+
+	$sql="SELECT 1=1 FROM messagerie WHERE id='$id_msg' AND login_dest='".$_SESSION['login']."' AND vu='2';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)==0) {
+		$sql="UPDATE messagerie SET vu='2', date_vu=CURRENT_TIMESTAMP WHERE id='$id_msg' AND login_dest='".$_SESSION['login']."';";
+		$update=mysql_query($sql);
+		if($update) {
+			$retour=2;
+		}
+		else {
+			$retour="Erreur";
+		}
 	}
 	else {
+		$sql="UPDATE messagerie SET vu='0', date_vu=CURRENT_TIMESTAMP WHERE id='$id_msg';";
+		$update=mysql_query($sql);
+		if($update) {
+			$retour=0;
+		}
+		else {
+			$retour="Erreur";
+		}
+	}
+
+	return $retour;
+}
+
+function peut_poster_message($statut) {
+	// A FAIRE: Gérer le statut Autre...
+	if(!acces('/lib/form_message.php', $statut)) {
 		return false;
+	}
+	else {
+		if(getSettingAOui('PeutPosterMessage'.ucfirst(mb_strtolower($statut)))) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
 
@@ -7216,5 +7269,53 @@ function prendre_en_compte_js_et_css_edt() {
 			$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_infobulle";
 		}
 	}
+}
+
+function get_next_tel_jour($jour, $decalage_aujourdhui=0) {
+	$retour="";
+
+	$debug="n";
+
+	if($debug=="y") {
+		$tab=array();
+		$tab[]="Mardi";
+		$tab[]="Mercredi";
+		$tab[]="Jeudi";
+		$tab[]="Vendredi";
+		$tab[]="Samedi";
+		$tab[]="Dimanche";
+		$tab[]="Lundi";
+
+		$f=fopen("/tmp/debug_get_next_tel_jour.txt","a+");
+		fwrite($f, "============================================\n");
+		fwrite($f, "get_next_tel_jour($jour, $decalage_aujourdhui)\n\n");
+		fwrite($f, "Recherche du prochain: ".$tab[$jour]."\n");
+		fwrite($f, "Aujourd'hui: ".strftime("%a %d/%m/%Y")."\n");
+	}
+
+	$indice_courant=strftime("%u");
+
+	for($i=$decalage_aujourdhui;$i<9;$i++) {
+		if($debug=="y") {
+			fwrite($f, "\n\$i=$i\n");
+		}
+		$jour_suivant=strftime("%u", time()+24*3600*$i);
+		if($debug=="y") {
+			fwrite($f, "\$jour_suivant=$jour_suivant\n");
+			fwrite($f, "soit ".strftime("%a %d/%m/%Y", time()+24*3600*$i)."\n");
+		}
+		if($jour_suivant==$jour) {
+			if($debug=="y") {
+				fwrite($f, "Jour trouvé \$i=$i\n");
+			}
+			$retour=$i;
+			break;
+		}
+	}
+
+	if($debug=="y") {
+		fclose($f);
+	}
+	return $retour;
 }
 ?>

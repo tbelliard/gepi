@@ -529,6 +529,9 @@ function ConstruireCreneauxEDT()
 // =============================================================================
 function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_creneaux, $id_groupe, $id_cours, $taille_box, $couleur, $contenu)
 {
+	// 20130528
+	global $login_prof_contenu_creneaux_courant;
+
     $tab_data_jour['type'][$index_box] = $type;
     $tab_data_jour['duree'][$index_box] = $taille_box;
     $tab_data_jour['contenu'][$index_box] = $contenu;
@@ -545,6 +548,17 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
     {
         $tab_data_jour['heuredeb_dec'][$index_box] = 1;
     }
+
+	if($login_prof_contenu_creneaux_courant!="") {
+		$tab_data_jour['login_prof'][$index_box] = $login_prof_contenu_creneaux_courant;
+	}
+	if($id_creneaux!="") {
+		$sql="SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode='$id_creneaux';";
+		$res_tmp=mysql_query($sql);
+		if(mysql_num_rows($res_tmp)>0) {
+			$tab_data_jour['heuredebut'][$index_box] = mysql_result($res_tmp, 0, 'heuredebut_definie_periode');
+		}
+	}
 
     // ====================== Récupérer la durée chiffrée du cours (en heures)
     preg_match_all('#[0-9]+#',$taille_box,$extract);
@@ -612,6 +626,11 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 {
 	// 20130128
 	global $contenu_creneaux_edt_avec_span_title;
+
+	// 20130528
+	global $login_prof_contenu_creneaux_courant;
+
+	$login_prof_contenu_creneaux_courant="";
 
     if (($period != NULL) AND ($period != '0')) {
         $calendrier = "(id_calendrier = '".$period."' OR id_calendrier = '0')";
@@ -706,6 +725,8 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$req_nom_prof = mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login ='".$req_recup_id['login_prof']."'");
 		$rep_nom_prof = mysql_fetch_array($req_nom_prof);
 
+		$login_prof_contenu_creneaux_courant=$req_recup_id['login_prof'];
+
 		//$rep_nom_prof['civilite'] = $noms_prof["nom"].' ';//$noms_prof["civilite"].' '.
 		//$rep_nom_prof['nom'] = " ";
 
@@ -791,6 +812,8 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$req_nom_prof = mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login ='".$rep_login_prof['login_prof']."'");
 		$rep_nom_prof = mysql_fetch_array($req_nom_prof);
 
+		$login_prof_contenu_creneaux_courant=$rep_login_prof['login_prof'];
+
 		// On récupère le nom de l'enseignement en question (en fonction du paramètre long ou court)
 		if (GetSettingEdt("edt_aff_matiere") == "long") {
 		    $req_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere IN (SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe ='".$enseignement."') ");
@@ -816,9 +839,12 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 			$aff_matiere = $rep_2_matiere['id_matiere'];
 		}
 
+		$info_alt="";
 		$req_tmp_grp = mysql_query("SELECT * FROM groupes WHERE id='".$enseignement."'");
+		if(mysql_num_rows($req_tmp_grp)>0) {
 		$lig_tmp_grp = mysql_fetch_object($req_tmp_grp);
-		$info_alt=$lig_tmp_grp->name." (".$lig_tmp_grp->description.") ".$info_alt;
+			$info_alt=$lig_tmp_grp->name." (".$lig_tmp_grp->description.") ".$info_alt;
+		}
 
 	}
 
