@@ -160,6 +160,8 @@ include("menu_plugins.inc.php");
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
+		$menus .= '        <li><a href="'.$gepiPath.'/mef/admin_mef.php" '.insert_confirm_abandon().' title="Gestion des Modules élémentaires de formation">MEF</a></li>'."\n";
+
 		$menus .= '        <li><a href="'.$gepiPath.'/aid/index.php" '.insert_confirm_abandon().'>AID</a></li>'."\n";
 
 		$menus .= '        <li><a href="'.$gepiPath.'/etablissements/index.php" '.insert_confirm_abandon().'>Etablissements</a></li>'."\n";
