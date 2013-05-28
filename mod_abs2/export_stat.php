@@ -198,10 +198,14 @@ include('menu_bilans.inc.php');
 
 // Choix du mois
 if(!isset($mois)) {
+	$mois=strftime("%m")-1;
+	if($mois==0) {$mois=12;}
 	echo "<form id='choix_mois' name='choix_mois' action='".$_SERVER['PHP_SELF']."' method='post'>
 	<p>Pour quel mois souhaitez-vous extraire les statistiques&nbsp;?<br />\n";
 	for($loop=1;$loop<=12;$loop++) {
-		echo "<input type='radio' name='mois' id='mois_$loop' value='$loop' /><label for='mois_$loop'> ".strftime("%B", strtotime($loop."/01/2000"))."</label><br />\n";
+		echo "<input type='radio' name='mois' id='mois_$loop' value='$loop' ";
+		if($loop==$mois) {echo "checked ";}
+		echo "/><label for='mois_$loop'> ".strftime("%B", strtotime($loop."/01/2000"))."</label><br />\n";
 	}
 
 	if(date("n")<9) {
