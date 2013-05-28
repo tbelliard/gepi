@@ -107,10 +107,12 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    ?>
 	    <div id="contain_div" class="css-panes">
 	    <?php
+	        /*
 	        if(acces("/mod_abs2/calcul_score.php", $_SESSION['statut'])) {
 	            echo "
 	    <div style='float:right; width:3em;'><a href='calcul_score.php'>Scores</a></div>";
 	        }
+	        */
 	    ?>
 	    <form dojoType="dijit.form.Form" id="choix_extraction" name="choix_extraction" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 	    <h2>Extraire les saisies du 		

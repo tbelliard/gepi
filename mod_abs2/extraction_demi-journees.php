@@ -118,7 +118,7 @@ if ($affichage != 'ods') {// on affiche pas de html
          <?php if (isset($message)){
           echo'<h2 class="no">'.$message.'</h2>';
         }?>
-    <div style='float:right;width:5em;' title="Lien à placer ailleurs par la suite... dans un onglet par exemple"><a href='export_stat.php' target='_blank'>Exports statistiques</a></div>
+    <!--div style='float:right;width:5em;' title="Lien à placer ailleurs par la suite... dans un onglet par exemple"><a href='export_stat.php' target='_blank'>Exports statistiques</a></div-->
     <p>
       <strong>Précision:</strong> Un manquement à l'obligation de présence sur une heure, entraine le décompte de la demi-journée correspondante pour l'élève.
     </p>
