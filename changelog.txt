@@ -8,15 +8,69 @@ Gepi-1.6.3 (Version de développement)
 Bulletins:
 - Possibilité de choisir ce que l'on souhaite faire apparaitre sur les bulletins
   en ce qui concerne les absences (total, absences non-justifiées et/ou retards).
+- Grisage par défaut des paramètres spécifiques HTML/PDF.
+- Possibilité de corriger des notes de bulletins en période partiellement close.
+- PDF: Ajout d'un ordre d'affichage des colonnes avec appréciation en premier.
+- Possibilité d'afficher la moyenne annuelle des enseignements sur les bulletins PDF.
+- Possibilité d'afficher les moyennes de l'élève pour les périodes précédentes et annuelle sur les bulletins HTML.
+- Possibilité de valider en tant qu'admin les corrections de bulletins proposées.
+
+Carnets de notes
+- Possibilité de corriger des notes de CN en période partiellement close.
+- Possibilité de copier un devoir et ses notes.
+- Ajout d'un lien vers toutes les évaluations de l'année.
+
+Graphes:
+- Possibilité de choisir la taille de la police pour le champ de saisie de l'avis du conseil de classe.
 
 Cahiers de textes
+- Abandon du mode Wiki pour la saisie des notices du CdT
+- Possibilité de n'afficher que le travail à faire ou que les compte-rendus en mode Toutes_matieres.
+
+RSS:
 - Accès au flux RSS CDT pour les responsables
+- Possibilité de créer des flux RSS pour les élèves arrivés en cours d'année.
+- Possibilité de signaler et visionner un flux RSS CDT élève en compte scolarité/cpe/pp.
+
+Abs2:
+- Absences du jour: Possibilité de ne pas afficher les lignes déjà traitées.
+- Absences du jour: Possibilité de signaler ou masquer les saisies englobées.
+- Tableau des appels: Possibilité de déposer un message si le module est Messagerie actif
+- Saisie des absences sur Plan de classe: Ajout de drapeaux concernant les absences précédentes.
+- Ajout d'une page d'exports statistiques (encore inachevée).
+- Possibilité de calculer un score d'absences.
+
+Messagerie:
+- Ajout d'un module permettant de déposer des messages à la façon d'une messagerie mail à l'attention de personnels choisis.
+- Possibilité de déposer un message depuis la liste des personnes connectées et depuis le tableau des appels dans mod_abs2.
+
+Epreuves blanches:
+- Ajout de l'effectif sur l'émargement PDF.
+
+Gestion:
+- Elèves: Possibilité de rechercher des élèves par elenoet, ele_id, no_gep
+-         Possibilité d'inscrire les élèves dans des classes depuis la liste des non inscrits.
+- Responsables: Mise à jour d'après Sconet: Ajout de précision sur les nouveaux responsables.
+- Classe/Enseignements: Possibilité de modifier les noms des groupes par lots pour une classe.
+- Possibilité de générer le CSV liste des élèves depuis la page liste des élèves suivant l'enseignement.
+- Paramétrage par lots: Possibilité d'associer le(s) professeur(s) principal(aux) à l'enseignement créé.
+- Import de l'emploi du temps depuis le CSV UnDeuxTemps: Amélioration de la recherche de groupes
+- Possibilité de filtrer les noms/prénoms pour ne retenir que les caractères alphabétiques dans la génération de login.
+- Possibilité de générer une fiche bienvenue pour un élève/responsable, sans changer le mot de passe.
+
+Panneau d'affichage:
+- Possibilité d'envoyer un message aux profs d'une matière.
 
 Divers:
+- Ajout d'une rubrique: A lire
 - Maintien de la session à la valeur définie dans Configuration générale,
   en contrant si nécessaire la valeur (session.gc_maxlifetime) définie dans 
   le php.ini
-
+- Ajout pour l'administrateur d'une colonne Date/heure de fin de session pour la liste des personnes connectées.
+- Ajouts de liens divers de passage/navigation vers des pages associées.
+- Ajout de messages explicatifs en balise title.
+- Possibilité de choisir la façon dont s'ouvre un PDF (dans un autre onglet ou en téléchargement)
+- Possibilité d'alterner l'affichage/masquage de certains cadres infobulles d'un clic.
 
 Gepi-1.6.2
 ===========================
@@ -92,6 +146,7 @@ Discipline :
 Trombinoscope :
 - Possibilité de déplacer les photos dans le plan de classe en cliquant sur le
   corps de l'infobulle et plus seulement sur son entête.
+- Possibilité de choisir le titre des infobulles parmi login, nom ou prénom.
 
 Gestion:
 - Possibilité de masquer certains groupes dans les Cahiers de textes
