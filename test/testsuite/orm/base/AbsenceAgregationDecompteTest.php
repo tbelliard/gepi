@@ -137,6 +137,16 @@ class AbsenceAgregationDecompteTest extends GepiEmptyTestBase
 	    mysql_query("update a_traitements set updated_at = now()-10 where id = ".$traitement->getId());
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-16 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
+        
+        
+	    //on va tester le passage à l'heure d'été
+	    AbsenceAgregationDecompteQuery::create()->deleteAll();
+	    foreach (EleveQuery::create()->find() as $eleve) {
+            $eleve->updateAbsenceAgregationTable(new DateTime('2013-03-31 00:00:00'),new DateTime('2013-03-31 23:59:59'));
+	    }
+	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime('2013-03-31 00:00:00'),new DateTime('2013-03-31 23:59:59'), 1));
+	    
+	   
 	}
 	
 	public function testPeerUpdateAgregationTable()
