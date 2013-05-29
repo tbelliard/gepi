@@ -241,6 +241,29 @@ if (isset($_POST['valid_sup_logs']) ) {
     }
 }
 
+if ((isset($_POST['clean_log_old']))&&(isset($_POST['date_limite']))) {
+	check_token();
+	$tmp_tab=explode("/",$_POST['date_limite']);
+	if(isset($tmp_tab[2])) {
+		if(checkdate($tmp_tab[1],$tmp_tab[0],$tmp_tab[2])) {
+			$sql = "delete from log where END < '".$tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00';";
+			//echo "$sql<br />";
+			$res = sql_query($sql);
+			if ($res) {
+			   $msg.= "La suppression des entrées antérieures au ".$_POST['date_limite']." dans le journal de connexion a été effectuée.<br />";
+			} else {
+			   $msg.= "Il y a eu un problème lors de la suppression des entrées antérieures au ".$_POST['date_limite']." dans le journal de connexion.<br />";
+			}
+		}
+		else {
+			$msg.="Date ".$_POST['date_limite']." invalide.<br />";
+		}
+	}
+	else {
+		$msg.="Date ".$_POST['date_limite']." mal formatée.<br />";
+	}
+}
+
 // Changement de mot de passe obligatoire
 if (isset($_POST['valid_chgt_mdp'])) {
 	check_token();
@@ -751,6 +774,23 @@ echo add_token_field();
 echo "<center><input type=\"submit\" name=\"valid_sup_logs\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir supprimer tout l\'historique du journal de connexion ?', 'Confirmation')\" /></center>\n";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
 echo "</form><br/>\n";
+
+?>
+<hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/>
+<h3 class='gepi'>Suppression d'une partie des entrées du journal de connexion</h3>
+<?php
+
+echo "<form action=\"options_connect.php\" method=\"post\" id='form_suppr_connexions'>\n";
+echo add_token_field();
+echo "<center>\n";
+echo "<input type=submit value=\"Supprimer les journaux de connexions\" />\n";
+include("../lib/calendrier/calendrier.class.php");
+$cal = new Calendrier("form_suppr_abs", "date_limite");
+echo " antérieurs au <input type='text' name='date_limite' id='date_limite' size='10' value='$jour/$mois/$annee' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>";
+echo "</center>\n";
+echo "<input type='hidden' name='clean_log_old' value='y' />\n";
+echo "</form><br />\n";
 
 require("../lib/footer.inc.php");
 ?>
