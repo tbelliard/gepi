@@ -44,6 +44,13 @@ if (!checkAccess()) {
 
 $msg="";
 
+//debug_var();
+
+// Mettre administrateur, c'est risquer de bloquer l'admin.
+//$tab_statuts_MailValideRequis=array("Administrateur", "Scolarite", "Cpe", "Professeur", "Secours", "Eleve", "Responsable");
+$tab_statuts_MailValideRequis=array("Scolarite", "Cpe", "Professeur", "Secours", "Eleve", "Responsable");
+
+
 // Enregistrement de la durée de conservation des données
 
 if (isset($_POST['duree'])) {
@@ -198,6 +205,20 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
   if (isset($_POST['cas_attribut_email'])) {
 	    saveSetting("cas_attribut_email", $_POST['cas_attribut_email']);
 	}
+}
+
+if (isset($_POST['valid_choix_saisie_mail'])) {
+	check_token();
+
+	for($i=0;$i<count($tab_statuts_MailValideRequis);$i++) {
+		if (isset($_POST['MailValideRequis'.$tab_statuts_MailValideRequis[$i]])) {
+			saveSetting('MailValideRequis'.$tab_statuts_MailValideRequis[$i], "y");
+		}
+		else {
+			saveSetting('MailValideRequis'.$tab_statuts_MailValideRequis[$i], "n");
+		}
+	}
+	$msg.="Le paramétrage mail requis ou non pour les différents statuts est enregistré.<br />";
 }
 
 // Load settings
@@ -415,6 +436,28 @@ echo "<center><input type=\"submit\" name=\"valid_chgt_mdp\" value=\"Valider\" o
 echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
 echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
 }
+
+//
+// Saisie d'un mail requise
+//
+
+echo "<h3 class='gepi'>Saisie d'une adresse mail requise</h3>\n";
+echo "<form action=\"options_connect.php\" name=\"form_saisie_mail\" method=\"post\">
+	".add_token_field()."
+	<p>La saisie d'une adresse mail pour les comptes d'utilisateurs peut vous paraitre nécessaire.<br />
+	Si vous tenez à imposer une telle saisie, veuillez choisir les statuts contraints à saisir une adresse mail au format valide (*)&nbsp;:<br />";
+	for($i=0;$i<count($tab_statuts_MailValideRequis);$i++) {
+		echo "
+	<input type='checkbox' name='MailValideRequis".$tab_statuts_MailValideRequis[$i]."' id='MailValideRequis".$tab_statuts_MailValideRequis[$i]."' value='y' ".(getSettingAOui('MailValideRequis'.$tab_statuts_MailValideRequis[$i]) ? "checked " : "" )."/><label for='MailValideRequis".$tab_statuts_MailValideRequis[$i]."'>".$tab_statuts_MailValideRequis[$i]."</label><br />";
+	}
+	echo "
+	<input type=\"submit\" name=\"valid_choix_saisie_mail\" value=\"Valider\" /></p>
+	<input type=hidden name=mode_navig value='$mode_navig' />
+	<p><br /></p>
+	<p>(*) Cela n'empêchera pas un utilisateur de saisir une adresse \"bidon\".</p>
+</form>\n";
+
+echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
 
 //
 // Paramétrage du Single Sign-On

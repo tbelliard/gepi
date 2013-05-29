@@ -806,6 +806,39 @@ function genDateSelector($prefix, $day, $month, $year, $option)
  */
 function checkAccess() {
     global $gepiPath;
+
+    if(!preg_match("/mon_compte.php/", $_SERVER['SCRIPT_NAME'])) {
+        if((isset($_SESSION['statut']))&&($_SESSION['statut']!="administrateur")&&(getSettingAOui('MailValideRequis'.ucfirst($_SESSION['statut'])))) {
+
+			$debug_test_mail="n";
+			if($debug_test_mail=="y") {
+				$f=fopen("/tmp/debug_check_mail.txt", "a+");
+				fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." checkAccess(): depuis ".$_SERVER['SCRIPT_NAME']."\n");
+				fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." checkAccess(): Avant le test check_mail().\n");
+				fclose($f);
+			}
+
+            if((!isset($_SESSION['email']))||(!check_mail($_SESSION['email']))) {
+
+			$debug_test_mail="n";
+				if($debug_test_mail=="y") {
+					$f=fopen("/tmp/debug_check_mail.txt", "a+");
+					if(!isset($_SESSION['email'])) {
+					fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." checkAccess(): Après le test check_mail() qui n'a pas été effectué : \$_SESSION['email'] n'est pas initialisé.\n");
+					}
+					else {
+					fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." checkAccess(): Après le test check_mail() qui a échoué sur '".$_SESSION['email']."'.\n");
+					}
+					fclose($f);
+				}
+
+                header("Location: $gepiPath/utilisateurs/mon_compte.php?saisie_mail_requise=yes");
+                //getSettingValue('sso_url_portail')
+                die();
+            }
+        }
+    }
+
     $url = parse_url($_SERVER['SCRIPT_NAME']);
     if ($_SESSION["statut"] == 'autre') {
 
@@ -4684,17 +4717,36 @@ function deltree($rep,$repaussi=TRUE) {
  * @return boolean  
  */
 function check_mail($email,$mode='simple') {
+	$debug_test_mail="n";
+
 	if(!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/" , $email)) {
+		if($debug_test_mail=="y") {
+			$f=fopen("/tmp/debug_check_mail.txt", "a+");
+			fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." check_mail(): Le format de la chaine '$email' est invalide.\n");
+			fclose($f);
+		}
 		return FALSE;
 	}
 	else {
 		if(($mode=='simple')||(!function_exists('checkdnsrr'))) {
+			if($debug_test_mail=="y") {
+				$f=fopen("/tmp/debug_check_mail.txt", "a+");
+				fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." check_mail(): Le format de la chaine '$email' est valide.\n");
+				fclose($f);
+			}
 			return TRUE;
 		}
 		else {
+			if($debug_test_mail=="y") {
+				$f=fopen("/tmp/debug_check_mail.txt", "a+");
+				fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." check_mail(): Le format de la chaine '$email' est valide; On teste avec checkdnsrr().\n");
+				fclose($f);
+			}
+
 			$tab=explode('@', $email);
 			if(checkdnsrr($tab[1], 'MX')) {return TRUE;}
 			elseif(checkdnsrr($tab[1], 'A')) {return TRUE;}
+			else {return FALSE;}
 		}
 	}
 }
@@ -7049,16 +7101,21 @@ function clore_declore_message($id_msg) {
 
 function peut_poster_message($statut) {
 	// A FAIRE: Gérer le statut Autre...
-	if(!acces('/lib/form_message.php', $statut)) {
-		return false;
-	}
-	else {
-		if(getSettingAOui('PeutPosterMessage'.ucfirst(mb_strtolower($statut)))) {
-			return true;
-		}
-		else {
+	if(getSettingAOui('active_messagerie')) {
+		if(!acces('/lib/form_message.php', $statut)) {
 			return false;
 		}
+		else {
+			if(getSettingAOui('PeutPosterMessage'.ucfirst(mb_strtolower($statut)))) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+	else {
+		return false;
 	}
 }
 

@@ -42,6 +42,8 @@ if (!checkAccess()) {
 	die();
 }
 
+//debug_var();
+
 $msg="";
 
 if (($_SESSION['statut'] == 'professeur') or ($_SESSION['statut'] == 'cpe') or ($_SESSION['statut'] == 'responsable') or ($_SESSION['statut'] == 'eleve')) {
@@ -154,6 +156,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 			if ($reg) {
 				if($msg!="") {$msg.="<br />";}
 				$msg.="L'adresse e_mail a été modifiéé !";
+				$_SESSION['email']=$reg_email;
 				$no_modif = "no";
 			}
 		}
@@ -169,6 +172,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 				if($msg!="") {$msg.="<br />";}
 				$msg.="L'adresse e_mail a été modifiéé !";
 				$no_modif = "no";
+				$_SESSION['email']=$reg_email;
 
 				if((getSettingValue('mode_email_resp')=='mon_compte')) {
 					$sql="UPDATE resp_pers SET mel='$reg_email' WHERE login='".$_SESSION['login']."';";
@@ -206,6 +210,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 				if($msg!="") {$msg.="<br />";}
 				$msg.="L'adresse e_mail a été modifiéé !";
 				$no_modif = "no";
+				$_SESSION['email']=$reg_email;
 
 				if((getSettingValue('mode_email_ele')=='mon_compte')) {
 					$sql="UPDATE eleves SET email='$reg_email' WHERE login='".$_SESSION['login']."';";
@@ -1018,7 +1023,7 @@ if ($session_gepi->current_auth_mode == "gepi" || $gepiSettings['ldap_write_acce
 	$affiche_bouton_submit = 'no';
 }
 
-echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
 
 echo "<fieldset id='infosPerso' style='border: 1px solid grey;";
@@ -1088,13 +1093,21 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
 		(getSettingValue('mode_email_resp')!='sconet'))) {
 ?>
                     <tr>
-                        <td>Email : </td>
+                        <td>
+                            <a name='saisie_mail'></a>
+                            Email : 
+                        </td>
                         <td>
                             <input type=text 
                                    name=reg_email 
                                    size=30
                                    <?php if ($user_email) { echo " value=\"".$user_email."\"";} ?>
                                    />
+                                   <?php
+                                       if((isset($_GET['saisie_mail_requise']))&&($_GET['saisie_mail_requise']=='yes')) {
+                                           echo "<p><span style='color:red'>Une adresse mail valide est requise</span></p>";
+                                       }
+                                   ?>
                         </td>
                     </tr>
                                    
@@ -1102,7 +1115,10 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
 	} else {
 ?>
                     <tr>
-                        <td>Email : </td>
+                        <td>
+                            <a name='saisie_mail'></a>
+                            Email : 
+                        </td>
                         <td>
                             <?php echo $user_email ?>
                             <input type="hidden" name="reg_email" value="<?php echo $user_email ?>" />
@@ -1110,6 +1126,10 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
                                 if((getSettingValue('cas_attribut_email')!='')&&(getSettingValue('sso_url_portail')!='')) {
                                     echo " <a href='".getSettingValue('sso_url_portail')."' title=\"Vous pouvez renseigner/modifier votre adresse de courriel là : ".getSettingValue('sso_url_portail')."\" target='_blank'><img src='../images/icons/ico_question.png' width='19' height='19' /></a>";
                                 }
+
+                               if((isset($_GET['saisie_mail_requise']))&&($_GET['saisie_mail_requise']=='yes')) {
+                                   echo "<p><span style='color:red'>Une adresse mail valide est requise</span></p>";
+                               }
                             ?>
                         </td>
                     </tr>
