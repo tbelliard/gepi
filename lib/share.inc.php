@@ -820,7 +820,6 @@ function checkAccess() {
 
             if((!isset($_SESSION['email']))||(!check_mail($_SESSION['email']))) {
 
-			$debug_test_mail="n";
 				if($debug_test_mail=="y") {
 					$f=fopen("/tmp/debug_check_mail.txt", "a+");
 					if(!isset($_SESSION['email'])) {
