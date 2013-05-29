@@ -799,6 +799,7 @@ date_debut DATETIME NOT NULL ,
 date_fin DATETIME NOT NULL
 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS classes_param;
 CREATE TABLE classes_param (
 id int(11) NOT NULL AUTO_INCREMENT,
 id_classe smallint(6) NOT NULL,
