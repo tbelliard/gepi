@@ -1317,6 +1317,8 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	</tr>
 ";
 
+	$tab_browser=array();
+	$tab_host=array();
 	$res = sql_query($sql);
 	if ($res) {
 		$alt=1;
@@ -1364,7 +1366,11 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 				echo "<td class=\"col\">".$temp1.$date_fin.$temp2."</td>\n";
 			}
 			if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
-				$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
+				//$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
+				if(!in_array($row[2], $tab_host)) {
+					$tab_host[$row[2]]=@gethostbyaddr($row[2]);
+				}
+				$result_hostbyaddr = " - ".$tab_host[$row[2]];
 			}
 			else if ($active_hostbyaddr == "no_local") {
 				if ((mb_substr($row[2],0,3) == 127) or
@@ -1378,7 +1384,11 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 						$result_hostbyaddr = "";
 					}
 					else {
-						$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
+						//$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
+						if(!in_array($row[2], $tab_host)) {
+							$tab_host[$row[2]]=@gethostbyaddr($row[2]);
+						}
+						$result_hostbyaddr = " - ".$tab_host[$row[2]];
 					}
 				}
 			}
@@ -1387,7 +1397,11 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 			}
 
 			echo "<td class=\"col\"><span class='small'>".$temp1.$row[2].$result_hostbyaddr.$temp2. "</span></td>\n";
-			echo "<td class=\"col\">".$temp1. detect_browser($row[3]) .$temp2. "</td>\n";
+			//echo "<td class=\"col\">".$temp1. detect_browser($row[3]) .$temp2. "</td>\n";
+			if(!in_array($row[3], $tab_browser)) {
+				$tab_browser[$row[3]]=detect_browser($row[3]);
+			}
+			echo "<td class=\"col\">".$temp1. $tab_browser[$row[3]] .$temp2. "</td>\n";
 			echo "</tr>\n";
 			flush();
 		}
