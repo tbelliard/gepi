@@ -22,7 +22,7 @@
 
 // On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
-	
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -234,10 +234,10 @@ if(isset($_POST['action_corrections'])) {
 			$tab_email_reply=array();
 			//$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
 			$sql="(select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."')";
-			$sql.=" UNION (select nom, prenom, civilite, email from utilisateurs where statut = 'secours')";
+			$sql.=" UNION (select nom, prenom, civilite, email from utilisateurs where statut = 'secours' AND etat='actif')";
 
 			for($loop=0;$loop<count($tab_liste_id_groupe);$loop++) {
-				$sql.=" UNION (select nom, prenom, civilite, email from utilisateurs u, j_scol_classes jsc, j_groupes_classes jgc where u.statut='scolarite' AND u.email!='' AND u.login=jsc.login AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe='".$tab_liste_id_groupe[$loop]."')";
+				$sql.=" UNION (select nom, prenom, civilite, email from utilisateurs u, j_scol_classes jsc, j_groupes_classes jgc where u.statut='scolarite' AND u.email!='' AND etat='actif' AND u.login=jsc.login AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe='".$tab_liste_id_groupe[$loop]."')";
 			}
 			//echo "$sql<br />";
 			$req=mysql_query($sql);
