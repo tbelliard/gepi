@@ -373,6 +373,18 @@ echo "<p class='bold'><a href='../accueil.php'>Retour à l'accueil</a> ";
 if(((!isset($mode))||($mode!='rediger_message'))&&(peut_poster_message($_SESSION['statut']))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?mode=rediger_message'>Rédiger un message</a>";
 }
+
+$sql="SELECT 1=1 FROM messagerie WHERE login_src='".$_SESSION['login']."';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	echo " | <a href='".$_SERVER['PHP_SELF']."#messages_envoyes'>Tous mes envois</a>";
+}
+
+$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	echo " | <a href='".$_SERVER['PHP_SELF']."#messages_recus' title='Lus/vus ou non'>Tous mes messages reçus</a>";
+}
 echo "</p>";
 
 //debug_var();

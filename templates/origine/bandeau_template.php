@@ -107,10 +107,20 @@
 		<?php
 
 			if((getSettingAOui('active_messagerie'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe')))) {
-				echo "
+				if(isset($_SERVER['SCRIPT_NAME'])) {
+					if(!preg_match("/form_message.php/", $_SERVER['SCRIPT_NAME'])) {
+						echo "
 	<li class='ligne_premier_menu'>".affichage_temoin_messages_recus()."
 	</li>
 						";
+					}
+					else {
+						echo "
+	<li class='ligne_premier_menu'>".affichage_temoin_messages_recus("header_seul")."
+	</li>
+						";
+					}
+				}
 			}
 
 			if (count($tbs_premier_menu)) {

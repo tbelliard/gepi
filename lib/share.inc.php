@@ -6980,7 +6980,7 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 		<td>$lig->sujet</td>
 		<td id='td_ahmr_".$cpt_ahmr."' onclick=\"copie_ahmr($cpt_ahmr)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
 		<td>";
-			if($lig->vu==0) {
+			if($lig->vu==1) {
 				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Vous avez marqué/lu/vu ce message le ".formate_date($lig->date_vu,'y')."' />";
 			}
 			elseif($lig->vu==2) {
@@ -7118,7 +7118,7 @@ function peut_poster_message($statut) {
 	}
 }
 
-function affichage_temoin_messages_recus() {
+function affichage_temoin_messages_recus($portee="header_et_fixe") {
 	global $gepiPath;
 
 	$MessagerieDelaisTest=getSettingValue('MessagerieDelaisTest');
@@ -7150,8 +7150,12 @@ function affichage_temoin_messages_recus() {
 	var nb_millisec_check_message=$nb_sec*1000;
 
 	function function_check_message() {
-		new Ajax.Updater($('span_messages_recus'),'$gepiPath/lib/form_message.php?mode=check',{method: 'get'});
-		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check2',{method: 'get'});
+		new Ajax.Updater($('span_messages_recus'),'$gepiPath/lib/form_message.php?mode=check',{method: 'get'});";
+	if($portee!="header_seul") {
+		$retour.="
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check2',{method: 'get'});";
+	}
+	$retour.="
 		setTimeout('function_check_message()', nb_millisec_check_message);
 	}
 
