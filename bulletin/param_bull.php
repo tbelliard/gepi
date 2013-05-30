@@ -590,7 +590,22 @@ if (isset($_POST['is_posted'])) {
 			$reg_ok = 'no';
 		}
 	}
-	
+
+	if (isset($_POST['moyennes_periodes_precedentes'])) {
+		if (!saveSetting("moyennes_periodes_precedentes", $_POST['moyennes_periodes_precedentes'])) {
+			$msg .= "Erreur lors de l'enregistrement de moyennes_periodes_precedentes !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['moyennes_annee'])) {
+		if (!saveSetting("moyennes_annee", $_POST['moyennes_annee'])) {
+			$msg .= "Erreur lors de l'enregistrement de moyennes_annee !";
+			$reg_ok = 'no';
+		}
+	}
+
+
 	if(isset($_POST['activer_photo_bulletin'])) {
 		if (!saveSetting("activer_photo_bulletin", $_POST['activer_photo_bulletin'])) {
 			$msg .= "Erreur lors de l'enregistrement de activer_photo_bulletin !";
@@ -1749,7 +1764,44 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         </td>
     </tr>
 
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">Afficher les moyennes des périodes précédentes dans la cellule Moyenne de l'élève :<br />
+            <!--(<em>choix incompatible avec l'affichage des moyennes minimale, classe et maximale dans une seule colonne</em>)-->
+        </td>
+        <td>
+	    <?php
+        echo "<input type=\"radio\" name=\"moyennes_periodes_precedentes\" id=\"moyennes_periodes_precedentes_y\" value='y' ";
+        if (getSettingValue("moyennes_periodes_precedentes") == 'y') echo " checked";
+        echo " /><label for='moyennes_periodes_precedentes_y' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"moyennes_periodes_precedentes\" id=\"moyennes_periodes_precedentes_n\" value='n' ";
+        if (getSettingValue("moyennes_periodes_precedentes") != 'y') echo " checked";
+        echo " /><label for='moyennes_periodes_precedentes_n' style='cursor: pointer;'>&nbsp;Non</label>";
+        ?>
+        </td>
+    </tr>
+
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">Afficher les moyennes annuelles des enseignements dans la cellule Moyenne de l'élève :<br />
+            <!--(<em>choix incompatible avec l'affichage des moyennes minimale, classe et maximale dans une seule colonne</em>)-->
+        </td>
+        <td>
+	    <?php
+        echo "<input type=\"radio\" name=\"moyennes_annee\" id=\"moyennes_annee_y\" value='y' ";
+        if (getSettingValue("moyennes_annee") == 'y') echo " checked";
+        echo " /><label for='moyennes_annee_y' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"moyennes_annee\" id=\"moyennes_annee_n\" value='n' ";
+        if (getSettingValue("moyennes_annee") != 'y') echo " checked";
+        echo " /><label for='moyennes_annee_n' style='cursor: pointer;'>&nbsp;Non</label>";
+        ?>
+        </td>
+    </tr>
+
 </table>
+
+<script type='text/javascript'>
+
+</script>
+
 <hr />
 
 <center><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></center>

@@ -9,8 +9,22 @@
 	require_once("../lib/initialisations.inc.php");
 	//send_file_download_headers("Content-type:image/png", "image.png", "inline");
 
+	/*
+	$chemin="/tmp/infos_session_graphe.txt";
+	$type="a+";
+	$fich=fopen($chemin,$type);
+	$chaine="\n".strftime("%Y%m%d %H%M%S").": Dans draw_graphe.php on recupere pour ".$_SESSION['login']." connecté\n";
+	fwrite($fich,$chaine);
+	fclose($fich);
+	*/
 	// Resume session
 	$resultat_session = $session_gepi->security_check();
+	/*
+	$fich=fopen($chemin,$type);
+	$chaine=strftime("%Y%m%d %H%M%S").": \$resultat_session=".$resultat_session."\n";
+	fwrite($fich,$chaine);
+	fclose($fich);
+	*/
 	if ($resultat_session == 'c') {
 		header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 		die();

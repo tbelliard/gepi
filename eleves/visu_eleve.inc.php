@@ -2638,7 +2638,15 @@ echo "c";
 				    echo "<td>";
 				    echo $eleve->getRetardsParPeriode($periode_note)->count();
 				    echo "</td>\n";
-				    echo "<td>"."</td>\n";
+				    echo "<td>";
+				    // PROBLEME: On n'a plus accès à cette table si on ne remplit pas la table absences.
+				    //           Revoir la façon dont on remplit l'appréciation, peut-être donner l'accès à la page absences/saisie_absences.php
+				    //           sans permettre la modif des retards/abs/nj)
+					$sql="SELECT * FROM absences WHERE (login='".$ele_login."' AND periode='".$periode_note->getNumPeriode()."');";
+					$current_eleve_absences_query = mysql_query($sql);
+					$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+					echo $current_eleve_appreciation_absences;
+				    echo "</td>\n";
 				    echo "</tr>\n";
 			    }
 			    echo "</table>\n";

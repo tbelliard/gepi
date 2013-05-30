@@ -160,6 +160,8 @@ include("menu_plugins.inc.php");
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
+		$menus .= '        <li><a href="'.$gepiPath.'/mef/admin_mef.php" '.insert_confirm_abandon().' title="Gestion des Modules élémentaires de formation">MEF</a></li>'."\n";
+
 		$menus .= '        <li><a href="'.$gepiPath.'/aid/index.php" '.insert_confirm_abandon().'>AID</a></li>'."\n";
 
 		$menus .= '        <li><a href="'.$gepiPath.'/etablissements/index.php" '.insert_confirm_abandon().'>Etablissements</a></li>'."\n";
@@ -227,7 +229,14 @@ include("menu_plugins.inc.php");
 		$menus .= '    <ul class="niveau3">'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/autorisation_exceptionnelle_saisie_app.php" '.insert_confirm_abandon().'>Droits saisie profs</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/classes/acces_appreciations.php" '.insert_confirm_abandon().'>Droits accès élèves</a></li>'."\n";
-		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/param_bull.php" '.insert_confirm_abandon().'>Param. impression</a></li>'."\n";
+
+		if(getSettingValue('type_bulletin_par_defaut')=="pdf") {
+			$menus .= '      <li><a href="'.$gepiPath.'/bulletin/param_bull_pdf.php" '.insert_confirm_abandon().'>Param. impression</a></li>'."\n";
+		}
+		else {
+			$menus .= '      <li><a href="'.$gepiPath.'/bulletin/param_bull.php" '.insert_confirm_abandon().'>Param. impression</a></li>'."\n";
+		}
+
 		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/bull_index.php" '.insert_confirm_abandon().'>Impression</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/statistiques/index.php" '.insert_confirm_abandon().'>Extractions stats</a></li>'."\n";
 		$gepi_denom_mention=getSettingValue('gepi_denom_mention');
@@ -256,6 +265,7 @@ include("menu_plugins.inc.php");
 		if(getSettingAOui('active_cahiers_texte')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php" '.insert_confirm_abandon().'>Visa c. de textes</a></li>'."\n";
 		}
+
 
 		if(getSettingAOui('active_inscription')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_inscription/inscription_config.php" '.insert_confirm_abandon().'>Inscriptions</a></li>'."\n";

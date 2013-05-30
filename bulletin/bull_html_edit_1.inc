@@ -114,15 +114,15 @@ if ($bull_affiche_aid == 'y') {
 			// Moyenne min/classe/max de la classe
 			if($min_max_moyclas!=1) {
 				// Trois colonnes séparées pour min/moy/max
-				echo "<td><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min']."</span></td>\n";
-				echo "<td><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne']."</span></td>\n";
-				echo "<td><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max']."</span></td>\n";
+				echo "<td><span class='bulletin' title=\"Note minimale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min']."</span></td>\n";
+				echo "<td><span class='bulletin' title=\"Note moyenne des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne']."</span></td>\n";
+				echo "<td><span class='bulletin' title=\"Note maximale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max']."</span></td>\n";
 			}
 			else{
 				// Min/Classe/Max en une seule colonne
-				echo "<td><span class='bullminclasmax'>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min']."</span><br />\n";
-				echo "<span class='bullminclasmax'>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne']."</span><br />\n";
-				echo "<span class='bullminclasmax'>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max']."</span></td>\n";
+				echo "<td><span class='bullminclasmax' title=\"Note minimale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min']."</span><br />\n";
+				echo "<span class='bullminclasmax' title=\"Note moyenne des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne']."</span><br />\n";
+				echo "<span class='bullminclasmax' title=\"Note maximale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max']."</span></td>\n";
 			}
 
 			// Moyenne de l'élève
@@ -207,16 +207,16 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 					if($min_max_moyclas!=1) {
 						// Min
 						//echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
-						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_min'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
+						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;' title=\"Moyenne minimale des élèves pour cette catégorie\">".nf($tab_bull['moy_cat_min'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 						// Moyenne catégorie classe
-						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
+						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;' title=\"Moyenne de la classe pour cette catégorie\">".nf($tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 						// Max
 						//echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
-						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_max'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
+						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;' title=\"Moyenne maximale des élèves pour cette catégorie\">".nf($tab_bull['moy_cat_max'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 					}
 					else {
 						// Moyenne catégorie classe
-						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
+						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;' title=\"Moyenne de la classe pour cette catégorie\">".nf($tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 					}
 
 					// Moyenne catégorie élève
@@ -298,24 +298,68 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 		}
 
 		if($min_max_moyclas!=1) {
-			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_min_classe_grp'][$j])."</span></td>\n";
-			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_classe_grp'][$j])."</span></td>\n";
+			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin' title=\"Note minimale des élèves pour cet enseignement\">".nf($tab_bull['moy_min_classe_grp'][$j])."</span></td>\n";
+			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin' title=\"Note moyenne des élèves pour cet enseignement\">".nf($tab_bull['moy_classe_grp'][$j])."</span></td>\n";
 			//echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>\$tab_bull['moy_classe_grp'][$j]=".$tab_bull['moy_classe_grp'][$j]."</span></td>\n";
-			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_max_classe_grp'][$j])."</span></td>\n";
+			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin' title=\"Note maximale des élèves pour cet enseignement\">".nf($tab_bull['moy_max_classe_grp'][$j])."</span></td>\n";
 		}
 		else {
-			echo "<td$chaine_rowspan style='text-align: center;'><span class='bullminclasmax'>".nf($tab_bull['moy_min_classe_grp'][$j])."</span><br />\n";
-			echo "<span class='bullminclasmax'>".nf($tab_bull['moy_classe_grp'][$j])."</span><br />\n";
-			echo "<span class='bullminclasmax'>".nf($tab_bull['moy_max_classe_grp'][$j])."</span></td>\n";
+			echo "<td$chaine_rowspan style='text-align: center;'><span class='bullminclasmax' title=\"Note minimale des élèves pour cet enseignement\">".nf($tab_bull['moy_min_classe_grp'][$j])."</span><br />\n";
+			echo "<span class='bullminclasmax' title=\"Note moyenne des élèves pour cet enseignement\">".nf($tab_bull['moy_classe_grp'][$j])."</span><br />\n";
+			echo "<span class='bullminclasmax' title=\"Note maximale des élèves pour cet enseignement\">".nf($tab_bull['moy_max_classe_grp'][$j])."</span></td>\n";
 		}
 
 		echo "<td$chaine_rowspan style='font-weight:bold; text-align: center;'><span class='bulletin'>";
+
+		if(($moyennes_periodes_precedentes=="y")&&(isset($tab_bull['moy_annee'][$j][$i]))) {
+			if(isset($tab_bull['login_prec'])) {
+				foreach($tab_bull['login_prec'] as $key => $value) {
+					// Il faut récupérer l'id_groupe et l'indice de l'élève... dans les tableaux récupérés de calcul_moy_gen.inc.php
+					// Tableaux d'indices [$j][$i] (groupe, élève)
+					//		$tab_bull['note_prec'][$loop_p]=$current_eleve_note;
+					//		$tab_bull['statut_prec'][$loop_p]=$current_eleve_statut;
+					$indice_eleve=-1;
+					for($loop_l=0;$loop_l<count($tab_bull['login_prec'][$key]);$loop_l++) {
+						if($tab_bull['login_prec'][$key][$loop_l]==$tab_bull['eleve'][$i]['login']) {$indice_eleve=$loop_l;break;}
+					}
+
+					if($indice_eleve!=-1) {
+						// Recherche du groupe
+						$indice_grp=-1;
+						for($loop_l=0;$loop_l<count($tab_bull['group_prec'][$key]);$loop_l++) {
+							if($tab_bull['group_prec'][$key][$loop_l]['id']==$tab_bull['groupe'][$j]['id']) {$indice_grp=$loop_l;break;}
+						}
+
+						if($indice_grp!=-1) {
+							if(isset($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve])) {
+								if ($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve]!="") {
+									$valeur = $tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve];
+								}
+								else {
+									$valeur = nf($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]);
+								}
+								echo "<span style='font-size:x-small; font-weight:normal;' title=\"Moyenne sur la période $key\">P$key:&nbsp;".$valeur."</span>";
+								echo "<br />\n";
+							}
+						}
+					}
+
+				}
+			}
+		}
+
 		if($tab_bull['statut'][$j][$i]=="") {
 			echo nbsp_au_lieu_de_vide(nf($tab_bull['note'][$j][$i]));
 		}
 		else {
 			echo $tab_bull['statut'][$j][$i];
 		}
+
+		if(($moyennes_annee=="y")&&(isset($tab_bull['moy_annee'][$j][$i]))) {
+			echo "<br />\n";
+			echo "<span style='font-size:x-small; font-weight:normal;' title=\"Moyenne sur l'année\">An:&nbsp;".$tab_bull['moy_annee'][$j][$i]."</span>";
+		}
+
 		echo "</span></td>\n";
 
 		if ($tab_bull['affiche_graph'] == 'y') {
@@ -421,15 +465,15 @@ if ($bull_affiche_aid == 'y') {
 			// Moyenne min/classe/max de la classe
 			if($min_max_moyclas!=1) {
 				// Trois colonnes séparées pour min/moy/max
-				echo "<td style='text-align: center;'><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min']."</span></td>\n";
-				echo "<td style='text-align: center;'><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne']."</span></td>\n";
-				echo "<td style='text-align: center;'><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max']."</span></td>\n";
+				echo "<td style='text-align: center;'><span class='bulletin' title=\"Note minimale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min']."</span></td>\n";
+				echo "<td style='text-align: center;'><span class='bulletin' title=\"Note moyenne des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne']."</span></td>\n";
+				echo "<td style='text-align: center;'><span class='bulletin' title=\"Note maximale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max']."</span></td>\n";
 			}
 			else{
 				// Min/Classe/Max en une seule colonne
-				echo "<td style='text-align: center;'><span class='bullminclasmax'>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min']."</span><br />\n";
-				echo "<span class='bullminclasmax'>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne']."</span><br />\n";
-				echo "<span class='bullminclasmax'>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max']."</span></td>\n";
+				echo "<td style='text-align: center;'><span class='bullminclasmax' title=\"Note minimale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min']."</span><br />\n";
+				echo "<span class='bullminclasmax' title=\"Note moyenne des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne']."</span><br />\n";
+				echo "<span class='bullminclasmax' title=\"Note maximale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max']."</span></td>\n";
 			}
 
 			// Moyenne de l'élève
@@ -517,16 +561,16 @@ if($tab_bull['display_moy_gen']=='y') {
 			}
 
 			if($min_max_moyclas!=1) {
-				echo "<td style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_min_classe'])."</span></td>\n";
+				echo "<td style='text-align: center;'><span class='bulletin' title=\"Moyenne générale minimale de la classe\">".nf($tab_bull['moy_min_classe'])."</span></td>\n";
 				//$tab_bull['moy_gen_classe'][$i]
-				echo "<td style='text-align: center;'><span class='bulletin'><b>".nf($tab_bull['moy_generale_classe'])."</b></span></td>\n";
-				echo "<td style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_max_classe'])."</span></td>\n";
+				echo "<td style='text-align: center;'><span class='bulletin' title=\"Moyenne générale de la classe\"><b>".nf($tab_bull['moy_generale_classe'])."</b></span></td>\n";
+				echo "<td style='text-align: center;'><span class='bulletin' title=\"Moyenne générale maximale de la classe\">".nf($tab_bull['moy_max_classe'])."</span></td>\n";
 			}
 			else {
-				echo "<td style='text-align: center;'><span class='bullminclasmax'>".nf($tab_bull['moy_min_classe'])."</span><br />\n";
+				echo "<td style='text-align: center;'><span class='bullminclasmax' title=\"Moyenne générale minimale de la classe\">".nf($tab_bull['moy_min_classe'])."</span><br />\n";
 				//$tab_bull['moy_gen_classe'][$i]
-				echo "<span class='bullminclasmax'><b>".nf($tab_bull['moy_generale_classe'])."</b></span><br />\n";
-				echo "<span class='bullminclasmax'>".nf($tab_bull['moy_max_classe'])."</span></td>\n";
+				echo "<span class='bullminclasmax' title=\"Moyenne générale de la classe\"><b>".nf($tab_bull['moy_generale_classe'])."</b></span><br />\n";
+				echo "<span class='bullminclasmax' title=\"Moyenne générale maximale de la classe\">".nf($tab_bull['moy_max_classe'])."</span></td>\n";
 			}
 
 			echo "<td style='text-align: center; font-weight:bold;'><span class='bulletin'>".nf($tab_bull['moy_gen_eleve'][$i])."</span></td>\n";

@@ -60,7 +60,7 @@ echo "<center><h3 class='gepi'>Troisième étape : Enregistrement des élèves e
 
 if (isset($is_posted) and ($is_posted == "yes")) {
 	check_token(false);
-    $call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP,LIEU_NAISSANCE FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
+    $call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP,LIEU_NAISSANCE,MEF_CODE FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
     $nb = mysql_num_rows($call_data);
     $i = "0";
     while ($i < $nb) {
@@ -92,6 +92,8 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
 	    $reg_lieu_naissance = mysql_result($call_data, $i, "LIEU_NAISSANCE");
 
+	    $reg_mef_code = mysql_result($call_data, $i, "MEF_CODE");
+
 		$reg_login="";
 	    $req = mysql_query("select col2 from tempo2 where col1 = '$id_tempo'");
 	    if($req) {
@@ -110,7 +112,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 		    if ($reg_naissance == '') {$reg_naissance = "19000101";}
 		    $maj_tempo = mysql_query("UPDATE temp_gep_import2 SET LOGIN='$reg_login' WHERE ID_TEMPO='$id_tempo'");
 
-		    $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='".mysql_real_escape_string($reg_nom)."',prenom='".mysql_real_escape_string($reg_prenom)."',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance'");
+		    $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='".mysql_real_escape_string($reg_nom)."',prenom='".mysql_real_escape_string($reg_prenom)."',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance',mef_code='$reg_mef_code'");
 
 		    if (!$reg_eleve) {echo "<p style='color:red'>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";}
 			else {
@@ -231,17 +233,31 @@ else {
 
 
     $tab_sql=array();
-	$tab_sql[]="SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import2 t, tempo_utilisateurs tu WHERE t.ELE_ID=tu.identifiant1 ORDER BY DIVCOD,ELENOM,ELEPRE;";
-	$tab_sql[]="SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import2 WHERE ELE_ID NOT IN (SELECT identifiant1 FROM tempo_utilisateurs) ORDER BY DIVCOD,ELENOM,ELEPRE;";
+	$tab_sql[]="SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP,MEF_CODE FROM temp_gep_import2 t, tempo_utilisateurs tu WHERE t.ELE_ID=tu.identifiant1 ORDER BY DIVCOD,ELENOM,ELEPRE;";
+	$tab_sql[]="SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP,MEF_CODE FROM temp_gep_import2 WHERE ELE_ID NOT IN (SELECT identifiant1 FROM tempo_utilisateurs) ORDER BY DIVCOD,ELENOM,ELEPRE;";
 
     echo "<p>Le tableau suivant affiche les données qui vont être enregistrées dans la base de donnée GEPI lorsque vous aurez confirmé ce choix tout en bas de la page.<br /><b>Tant que vous n'avez pas validé en bas de la page, aucune donnée n'est enregistrée !</b></p>\n";
     echo "<p>Les valeurs en rouge signalent d'éventuelles données manquantes (<em>ND pour \"non défini\"</em>) dans le fichier <b>ElevesSansAdresses.xml</b> fourni ! Ceci n'est pas gênant pour l'enregistrement dans la base <b>GEPI</b>. Vous aurez en effet la possibilité de compléter les données manquantes avec les outils fournis dans <b>GEPI</b></p>\n";
     echo "<p>Une fois cette page entièrement chargée, ce qui peut prendre un peu de temps, <b>veuillez lire attentivement les remarques en bas de la page </b>avant de procéder à l'enregistrement définitif des données</p>\n";
     echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2' summary='Tableau des élèves'>\n";
-    echo "<tr><th><p class=\"small\">N° INE</p></th><th><p class=\"small\">Identifiant</p></th><th><p class=\"small\">Nom</p></th><th><p class=\"small\">Prénom</p></th><th><p class=\"small\">Sexe</p></th><th><p class=\"small\">Date de naiss.</p></th><th><p class=\"small\">Régime</p></th><th><p class=\"small\">Doublant</p></th><th><p class=\"small\">Classe</p></th><th><p class=\"small\">Etablissement d'origine ou précédent</p></th></tr>\n";
+    echo "<tr>
+	<th><p class=\"small\">N° INE</p></th>
+	<th><p class=\"small\">Identifiant</p></th>
+	<th><p class=\"small\">Nom</p></th>
+	<th><p class=\"small\">Prénom</p></th>
+	<th><p class=\"small\">Sexe</p></th>
+	<th><p class=\"small\">Date de naiss.</p></th>
+	<th><p class=\"small\">Régime</p></th>
+	<th><p class=\"small\">Doublant</p></th>
+	<th><p class=\"small\">Classe</p></th>
+	<th><p class=\"small\">MEF</p></th>
+	<th><p class=\"small\">Etablissement d'origine ou précédent</p></th>
+</tr>\n";
 
 	$alt=1;
     $max_lignes_pb = 0;
+
+	$tab_mef=array();
 
     $ii = "0";
 
@@ -282,6 +298,27 @@ else {
 			$reg_doublant = mysql_result($call_data, $i, "ELEDOUBL");
 			$reg_classe = mysql_result($call_data, $i, "DIVCOD");
 			$reg_etab = mysql_result($call_data, $i, "ETOCOD_EP");
+
+			$reg_mef_code = mysql_result($call_data, $i, "MEF_CODE");
+
+			if(!isset($tab_mef[$reg_mef_code])) {
+				$tab_mef[$reg_mef_code]="<span style='color:red' title=\"Code MEF inconnu : $reg_mef_code\">???</span>";
+
+				$sql="SELECT * FROM mef WHERE mef_code='$reg_mef_code';";
+				$res_mef=mysql_query($sql);
+				if(mysql_num_rows($res_mef)>0) {
+					$lig_mef=mysql_fetch_object($res_mef);
+					if($lig_mef->libelle_edition!='') {
+						$tab_mef[$reg_mef_code]=$lig_mef->libelle_edition;
+					}
+					elseif($lig_mef->libelle_long!='') {
+						$tab_mef[$reg_mef_code]=$lig_mef->libelle_long;
+					}
+					elseif($lig_mef->libelle_court!='') {
+						$tab_mef[$reg_mef_code]=$lig_mef->libelle_court;
+					}
+				}
+			}
 
 			$reg_regime = mysql_result($call_data, $i, "ELEREG");
 			if ($no_gep != '') {
@@ -502,6 +539,7 @@ else {
 				echo "<td><p class=\"small\">$reg_regime_aff</p></td>\n";
 				echo "<td><p class=\"small\">$reg_doublant_aff</p></td>\n";
 				echo "<td><p class=\"small\">$classe_aff</p></td>\n";
+				echo "<td><p class=\"small\">".$tab_mef[$reg_mef_code]."</p></td>\n";
 				echo "<td><p class=\"small\">$reg_etab_aff</p></td>\n";
 				echo "</tr>\n";
 			}

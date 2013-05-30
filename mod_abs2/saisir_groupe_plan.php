@@ -501,6 +501,7 @@ $chaine_entete_veille_tous_eleves="";
 $chaine_tr_entete_veille_et_creneaux_precedents=array();
 $chaine_veille_et_creneaux_precedents=array();
 $temoin_saisie_veille_et_creneaux_precedents=array();
+$tab_type_veille_et_creneaux_precedents=array();
 foreach($eleve_col as $eleve) {
 	// 20130416
 	$chaine_tr_veille_et_creneaux_precedents[$eleve->getLogin()]="<tr>";
@@ -555,6 +556,8 @@ foreach($eleve_col as $eleve) {
 		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].=$afficheEleve[$elv]['text_hier'];
 		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="</td>";
 		$temoin_saisie_veille_et_creneaux_precedents[$eleve->getLogin()]="y";
+
+		$tab_type_veille_et_creneaux_precedents[$eleve->getLogin()][]=$couleur_veille;
 	}
 	else {
 		$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="<td></td>";
@@ -699,9 +702,11 @@ foreach($eleve_col as $eleve) {
 
 			if($couleur_td_courant!="") {
 				$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="<td style='background-color:red' title=\"$texte_attribut_title\">&nbsp;</td>";
+				$tab_type_veille_et_creneaux_precedents[$eleve->getLogin()][]="red";
 			}
 			else {
 				$chaine_veille_et_creneaux_precedents[$eleve->getLogin()].="<td style='background-color:yellow' title=\"$texte_attribut_title\">&nbsp;</td>";
+				$tab_type_veille_et_creneaux_precedents[$eleve->getLogin()][]="yellow";
 			}
 		}
 		else {
@@ -1165,9 +1170,11 @@ if ($eleve_col->isEmpty()) {
 					echo "</div>\n";
 					//echo "<div style='clear:both;'></div>\n";
 				}
-			?>
 
-			<div style='float:right;width:17px;'><a href="javascript:alterner_affichage_div('div_infobulle_saisie_veille_tous_eleves','y',-500,10);"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes de la journée.' /></a></div>
+				if(count($temoin_saisie_veille_et_creneaux_precedents)>0) {
+					echo "			<div style='float:right;width:17px;'><a href=\"javascript:alterner_affichage_div('div_infobulle_saisie_veille_tous_eleves','y',-500,10);\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes de la journée.' /></a></div>";
+				}
+			?>
 
 			<p class="expli_page choix_fin center">
 				Saisie des absences du
@@ -1411,7 +1418,20 @@ echo "</pre>";
 					if(isset($temoin_saisie_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
 						echo "<div style='position:absolute; top:".$y."px; left:".$x."px; width:".$largeur_div."px; height:18px; text-align:center;'>\n";
 						//echo "<a href=\"javascript:afficher_div('div_infobulle_saisie_prec_".$eleve['position']."','y',10,-40);\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes' /></a>";
-						echo "<a href=\"javascript:alterne_affichage_div_journee('div_infobulle_saisie_prec_".$eleve['position']."');\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes.
+						echo "<a href=\"javascript:alterne_affichage_div_journee('div_infobulle_saisie_prec_".$eleve['position']."');\"><img src='../images/icons/";
+						if(in_array("red", $tab_type_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
+							echo "flag.png";
+						}
+						elseif(in_array("yellow", $tab_type_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
+							echo "flag_yellow.png";
+						}
+						elseif(in_array("green", $tab_type_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
+							echo "flag_green.png";
+						}
+						else {
+							echo "flag.png";
+						}
+						echo "' width='17' height='18' title='Saisies précédentes.
 Cliquez une fois sur le drapeau pour afficher le tableau des saisies précédentes.
 Cliquez une deuxième fois pour masquer ce tableau.' /></a>";
 						echo "</div>\n";

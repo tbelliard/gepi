@@ -456,6 +456,21 @@ th.cn {
     font-size: 10pt;
 }
 
+
+.couleur_devoirs {
+	background-color: #AAE6AA;
+}
+.couleur_moy_cont {
+	background-color: #96C8F0;
+}
+.couleur_moy_sous_cont {
+	background-color: #FAFABE;
+}
+.couleur_calcul_moy {
+	background-color: #AAAAE6;
+}
+
+
 p.medium {
     font-size: 10pt;
 }
@@ -469,7 +484,6 @@ table#messagerie {
     width: 70%;
     padding: 5px 5px 5px 10px;
     border: 1px dashed #0000AA;
-    /*background-image: url("./images/background/left-top-corner.jpg");*/
     background-repeat: no-repeat;
     background-position: 0% 0%;
     margin: 10px;

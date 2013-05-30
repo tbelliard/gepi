@@ -1518,7 +1518,7 @@ foreach ($liste_eleves as $eleve_login) {
 			// si l'élève n'appartient pas au groupe pour cette période.
 			//
 			$suit_option[$k] = 'no';
-			$mess[$k] = "<td>&nbsp;</td><td><p class='small'>non suivie</p></td>\n";
+			$mess[$k] = "<td>&nbsp;</td><td><p class='small' title=\"Enseignement non suivi sur cette période.\">non suivi</p></td>\n";
 		}
 		$k++;
 	}

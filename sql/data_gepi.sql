@@ -786,7 +786,7 @@ INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsPP', 'no');
 INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsScolarite', 'yes');
 INSERT INTO setting VALUES ('gepiSchoolStatut', 'public');
 INSERT INTO setting VALUES ('gepiSchoolAcademie', '');
-INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/gepi/wiki/Enseignement_invisible');
+INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/projects/gepi/wiki/Enseignement_invisible');
 INSERT INTO droits VALUES('/saisie/export_cmnt_type_prof.php','F','V','F','F','F','F','F','F', 'Export appréciations-types pour les profs','');
 INSERT INTO setting VALUES ('note_autre_que_sur_referentiel', 'F');
 INSERT INTO setting VALUES ('referentiel_note', '20');
@@ -1205,3 +1205,8 @@ INSERT INTO droits VALUES ('/cahier_notes/copie_dev.php', 'F', 'V', 'F', 'F', 'F
 INSERT INTO droits SET id='/cahier_texte_2/consultation2.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='F',autre='V',description='Cahiers de textes: Consultation',statut='';
 INSERT INTO droits SET id='/mod_trombinoscopes/plan_de_classe.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Plan de classe',statut='';
 INSERT INTO droits SET id='/classes/ajout_eleve_classe.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Enregistrement des inscriptions élève/classe',statut='';
+INSERT INTO droits SET id='/mod_abs2/export_stat.php',administrateur='V',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Exports statistiques',statut='';
+INSERT INTO droits SET id='/mod_abs2/calcul_score.php',administrateur='V',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Exports statistiques',statut='';
+INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'V', 'F', 'F', 'V', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');
+INSERT INTO setting SET name='MessagerieDelaisTest', value='1';
+INSERT INTO setting SET name='MessagerieLargeurImg', value='16';

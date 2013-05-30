@@ -102,6 +102,8 @@
 	$champ_bull_pdf[]="moyennes_periodes_precedentes";
 	$champ_bull_pdf[]="evolution_moyenne_periode_precedente";
 
+	$champ_bull_pdf[]="moyennes_annee";
+
 	$champ_bull_pdf[]="active_reperage_eleve";
 	$champ_bull_pdf[]="couleur_reperage_eleve1";
 	$champ_bull_pdf[]="couleur_reperage_eleve2";
@@ -309,6 +311,8 @@
 	$val_defaut_champ_bull_pdf["toute_moyenne_meme_col"]=0;
 	$val_defaut_champ_bull_pdf["moyennes_periodes_precedentes"]='n';
 	$val_defaut_champ_bull_pdf["evolution_moyenne_periode_precedente"]='n';
+
+	$val_defaut_champ_bull_pdf["moyennes_annee"]='n';
 
 	$val_defaut_champ_bull_pdf["active_reperage_eleve"]=1;
 	$val_defaut_champ_bull_pdf["couleur_reperage_eleve1"]=255;

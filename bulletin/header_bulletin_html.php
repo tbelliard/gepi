@@ -252,6 +252,8 @@
 	// Pour afficher les trois colonnes en une seule, on transmet '1':
 	$min_max_moyclas=getSettingValue("min_max_moyclas") ? getSettingValue("min_max_moyclas") : 0;
 
+	$moyennes_periodes_precedentes=getSettingValue("moyennes_periodes_precedentes") ? getSettingValue("moyennes_periodes_precedentes") : "n";
+	$moyennes_annee=getSettingValue("moyennes_annee") ? getSettingValue("moyennes_annee") : "n";
 
 	echo "</style>
     <link rel='shortcut icon' type='image/x-icon' href='../favicon.ico' />
@@ -317,5 +319,7 @@
 	echo "<body>\n";
 	echo "<div>\n";
 	echo "<div>\n";
+
+	//echo "\$moyennes_annee=$moyennes_annee<br />";
 
 ?>

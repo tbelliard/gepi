@@ -501,8 +501,43 @@
 		$y0=round(2*(ImageFontHeight($taille_police))+5)+$L;
 	}
 
+	writinfo('/tmp/infos_graphe.txt','a+',"=====================================\n");
 	writinfo('/tmp/infos_graphe.txt','a+',"\$x0=$x0\n");
 	writinfo('/tmp/infos_graphe.txt','a+',"\$y0=$y0\n");
+	writinfo('/tmp/infos_graphe.txt','a+',"\$L=$L\n");
+
+	// 20130523: Revoir le calcul de $L et le décalage du centre
+	$graphe_star_decalage_y=getPref($_SESSION['login'],'graphe_star_decalage_y',"");
+	if(
+		($graphe_star_decalage_y=="")||
+		($graphe_star_decalage_y=="-")||
+		((!preg_match("/^[0-9]*$/",$graphe_star_decalage_y))&&
+		(!preg_match("/^-[0-9]*$/",$graphe_star_decalage_y)))
+	) {
+		$graphe_star_decalage_y=getSettingValue('graphe_star_decalage_y');
+		if((mb_strlen(preg_replace("/[0-9]/","",$graphe_star_decalage_y))!=0)||($graphe_star_decalage_y=="")) {$graphe_star_decalage_y=0;}
+	}
+	writinfo('/tmp/infos_graphe.txt','a+',"\$graphe_star_decalage_y=$graphe_star_decalage_y\n");
+
+	$y0+=$graphe_star_decalage_y;
+
+	$graphe_star_modif_rayon=getPref($_SESSION['login'],'graphe_star_modif_rayon',"");
+	if(
+		($graphe_star_modif_rayon=="")||
+		($graphe_star_modif_rayon=="-")||
+		((!preg_match("/^[0-9]*$/",$graphe_star_modif_rayon))&&
+		(!preg_match("/^-[0-9]*$/",$graphe_star_modif_rayon)))
+	) {
+		$graphe_star_modif_rayon=getSettingValue('graphe_star_modif_rayon');
+		if((mb_strlen(preg_replace("/[0-9]/","",$graphe_star_modif_rayon))!=0)||($graphe_star_modif_rayon=="")) {$graphe_star_modif_rayon=0;}
+	}
+	writinfo('/tmp/infos_graphe.txt','a+',"\$graphe_star_modif_rayon=$graphe_star_modif_rayon\n");
+	$L+=$graphe_star_modif_rayon;
+
+
+	writinfo('/tmp/infos_graphe.txt','a+',"\$x0=$x0\n");
+	writinfo('/tmp/infos_graphe.txt','a+',"\$y0=$y0\n");
+	writinfo('/tmp/infos_graphe.txt','a+',"\$L=$L\n");
 
 	$pi=pi();
 
@@ -1249,7 +1284,9 @@
 	if($legendy[2]=='Toutes_les_périodes'){
 		$chaine=$nom_periode;
 
-		imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, round(($largeurTotale-mb_strlen($nom_eleve[1]) * ImageFontWidth($taille_police))/2), 5, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $nom_eleve[1]);
+		//imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, round(($largeurTotale-mb_strlen($nom_eleve[1]) * ImageFontWidth($taille_police))/2), 5, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $nom_eleve[1]);
+		$y_texte_courant=$tmp_taille_police*$rapport_imageString_imagettftext+2;
+		imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, round(($largeurTotale-mb_strlen($nom_eleve[1]) * ImageFontWidth($taille_police))/2), $y_texte_courant, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $nom_eleve[1]);
 
 		// Positionnement des noms d'élèves:
 		//$xtmp=$largeurGrad;
@@ -1263,7 +1300,9 @@
 			else {
 				$chaine_mgen="";
 			}
-            imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, ImageFontHeight($taille_police)+5, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
+			//imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, ImageFontHeight($taille_police)+5, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
+			$y_texte_courant=$tmp_taille_police*$rapport_imageString_imagettftext+2+ImageFontHeight($taille_police)+2;
+			imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $y_texte_courant, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
 
 			$xtmp=$xtmp+$largeur_chaine[$k];
 		}

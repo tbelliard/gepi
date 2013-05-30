@@ -105,10 +105,19 @@ if ($current_group) {
 		echo "<th>Moyennes</th>\n";
 		$liste_periodes_ouvertes="";
 		while ($i < $nb_periode) {
+
+			$acces_exceptionnel_saisie=false;
+			if($_SESSION['statut']=='professeur') {
+				$acces_exceptionnel_saisie=acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $i);
+			}
+
 			echo "<td>\n";
 			//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
 			if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2)||
+				($acces_exceptionnel_saisie)||
 				((($current_group["classe"]["ver_periode"]["all"][$i]!=0))&&($_SESSION['statut']=='secours'))) {
+
+
 				if($liste_periodes_ouvertes!=""){$liste_periodes_ouvertes.=", ";}
 				$liste_periodes_ouvertes.=$current_group["periodes"][$i]["nom_periode"];
 
@@ -158,6 +167,12 @@ if ($current_group) {
 		echo "<tr class='lig1'>\n";
 		echo "<th>Appréciations</th>\n";
 		while ($i < $nb_periode) {
+
+			$acces_exceptionnel_saisie=false;
+			if($_SESSION['statut']=='professeur') {
+				$acces_exceptionnel_saisie=acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $i);
+			}
+
 			echo "<td>\n";
 			//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
 			if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2)||
@@ -186,9 +201,16 @@ if ($current_group) {
 		echo "<th>Importation d'un fichier CSV</th>\n";
 		$i=1;
 		while ($i < $nb_periode) {
+
+			$acces_exceptionnel_saisie=false;
+			if($_SESSION['statut']=='professeur') {
+				$acces_exceptionnel_saisie=acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $i);
+			}
+
 			echo "<td>\n";
 			//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
 			if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2)||
+				($acces_exceptionnel_saisie)||
 				((($current_group["classe"]["ver_periode"]["all"][$i]!=0))&&($_SESSION['statut']=='secours'))) {
 				$tabdiv_infobulle[]=creer_div_infobulle("info_import_csv_periode_$i","","","<center>Import CSV<br />(<i>les champs vides ne sont pas importés</i>)</center>","",15,0,"n","n","y","n");
 
@@ -264,9 +286,16 @@ if ($current_group) {
 	echo "<tr class='lig-1'>\n";
 	echo "<th>CSV</th>\n";
 	while ($i < $nb_periode) {
+
+		$acces_exceptionnel_saisie=false;
+		if($_SESSION['statut']=='professeur') {
+			$acces_exceptionnel_saisie=acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $i);
+		}
+
 		echo "<td>\n";
 		//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
 		if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2)||
+			($acces_exceptionnel_saisie)||
 			((($current_group["classe"]["ver_periode"]["all"][$i]!=0))&&($_SESSION['statut']=='secours'))) {
 			$tabdiv_infobulle[]=creer_div_infobulle("info_export_csv_periode_$i","","","<center>Export CSV des identifiants GEPI, avec les colonnes Moyennes et Appréciations de cette classe, avec ligne d'entête.</center>","",15,0,"n","n","y","n");
 
@@ -312,6 +341,7 @@ if ($current_group) {
 				echo "<td>\n";
 				//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
 				if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2)||
+					($acces_exceptionnel_saisie)||
 					((($current_group["classe"]["ver_periode"]["all"][$i]!=0))&&($_SESSION['statut']=='secours'))) {
 
 					//echo "-> <a href='export_class_ods.php?id_groupe=$id_groupe&amp;periode_num=$i'>Télécharger un fichier tableur OpenOffice (<i>ODS</i>) avec les identifiants GEPI, les colonnes Moyennes et Appréciations de cette classe.</a>\n";

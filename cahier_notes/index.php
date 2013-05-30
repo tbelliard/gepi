@@ -756,7 +756,13 @@ var tab_per_cn=new Array();\n";
     echo "<h3 class='gepi'>Liste des évaluations du carnet de notes</h3>\n";
     $empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
     //echo "</ul>\n";
+
     if ($empty == 'yes') echo "<p><b>Actuellement, aucune évaluation.</b> Vous devez créer au moins une évaluation.</p>\n";
+
+	if($periode_num>=2) {
+		echo "<p><a href='toutes_notes.php?id_groupe=$id_groupe'>Voir toutes les évaluations de l'année</a></p>\n";
+	}
+
     if (($empty != 'yes')&&(getSettingAOui('active_bulletins'))) {
 		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
 		$test_jgv=mysql_query($sql);

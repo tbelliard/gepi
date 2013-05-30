@@ -304,7 +304,8 @@
 						`ELEOPT10` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`ELEOPT11` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
-						`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default ''
+						`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default '',
+						`MEF_CODE` varchar(50) $chaine_mysql_collate NOT NULL default ''
 						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 						$create_table = mysql_query($sql);
 
@@ -511,7 +512,8 @@
 				"DATE_ENTREE",
 				"CODE_MOTIF_SORTIE",
 				"CODE_SEXE",
-				"CODE_COMMUNE_INSEE_NAISS"
+				"CODE_COMMUNE_INSEE_NAISS",
+				"CODE_MEF"
 				);
 
 				$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
@@ -669,6 +671,8 @@
 							if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
 
 							if(isset($eleves[$i]["code_commune_insee_naiss"])){$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";}
+
+							if(isset($eleves[$i]["code_mef"])){$sql.="mef_code='".$eleves[$i]["code_mef"]."', ";}
 
 							$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
@@ -1158,6 +1162,88 @@
 								}
 							}
 						}
+
+
+						echo "Recherche des MEFS...<br />\n";
+
+						$tab_champs_mef=array("CODE_MEF",
+						"FORMATION",
+						"LIBELLE_LONG",
+						"LIBELLE_EDITION",
+						"CODE_MEFSTAT",
+						"MEF_RATTACHEMENT"
+						);
+
+						$tab_mef=array();
+						$i=-1;
+
+						$objet_mefs=($nomenclature_xml->DONNEES->MEFS);
+						foreach ($objet_mefs->children() as $mef) {
+							$i++;
+			
+							$tab_mef[$i]=array();
+			
+							foreach($mef->attributes() as $key => $value) {
+								$tab_mef[$i][mb_strtolower($key)]=trim($value);
+							}
+
+							foreach($mef->children() as $key => $value) {
+								if(in_array(my_strtoupper($key),$tab_champs_mef)) {
+									$tab_mef[$i][mb_strtolower($key)]=preg_replace('/"/','',trim($value));
+								}
+							}
+						}
+						/*
+						echo "<pre>";
+						print_r($tab_mef);
+						echo "</pre>";
+						*/
+
+						for($loop=0;$loop<count($tab_mef);$loop++) {
+							$sql="SELECT 1=1 FROM mef WHERE mef_code='".$tab_mef[$loop]['code_mef']."';";
+							$test=mysql_query($sql);
+							if(mysql_num_rows($test)==0) {
+								// On n'importe que les MEF associés à des élèves
+								$sql="SELECT 1=1 FROM temp_gep_import2 WHERE MEF_CODE='".$tab_mef[$loop]['code_mef']."';";
+								$test=mysql_query($sql);
+								if(mysql_num_rows($test)>0) {
+									if((!isset($tab_mef[$loop]['libelle_long']))||($tab_mef[$loop]['libelle_long']=="")) {
+										echo "<span style='color:red'>ERREUR&nbsp;:</span> Pas de libelle_long pour&nbsp;:<br />";
+										echo print_r($tab_mef[$loop]);
+										echo "<br />";
+									}
+									else {
+										if((!isset($tab_mef[$loop]['formation']))||($tab_mef[$loop]['formation']=="")) {
+											$tab_mef[$loop]['formation']="";
+										}
+										if((!isset($tab_mef[$loop]['libelle_edition']))||($tab_mef[$loop]['libelle_edition']=="")) {
+											$tab_mef[$loop]['libelle_edition']=casse_mot($tab_mef[$loop]['libelle_long'],'majf2');
+										}
+
+										if((!isset($tab_mef[$loop]['mef_rattachement']))||($tab_mef[$loop]['mef_rattachement']=="")) {
+											$tab_mef[$loop]['mef_rattachement']=$tab_mef[$loop]['code_mef'];
+										}
+
+										if(!isset($tab_mef[$loop]['code_mefstat'])) {
+											$tab_mef[$loop]['code_mefstat']="";
+										}
+
+										$sql="INSERT INTO mef SET mef_code='".$tab_mef[$loop]['code_mef']."',
+																	libelle_court='".mysql_real_escape_string($tab_mef[$loop]['formation'])."',
+																	libelle_long='".mysql_real_escape_string($tab_mef[$loop]['libelle_long'])."',
+																	libelle_edition='".mysql_real_escape_string($tab_mef[$loop]['libelle_edition'])."',
+																	code_mefstat='".$tab_mef[$loop]['code_mefstat']."',
+																	mef_rattachement='".$tab_mef[$loop]['mef_rattachement']."'
+																	;";
+										$insert=mysql_query($sql);
+										if(!$insert) {
+											echo "<span style='color:red'>ERREUR&nbsp;:</span> Erreur lors de l'import suivant&nbsp;:<br />$sql<br />";
+										}
+									}
+								}
+							}
+						}
+
 
 						$sql="SELECT * FROM temp_gep_import2";
 						$res1=mysql_query($sql);

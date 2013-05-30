@@ -39,6 +39,9 @@ $reg_no_nat = isset($_POST["reg_no_nat"]) ? $_POST["reg_no_nat"] : NULL;
 unset($reg_no_gep);
 $reg_no_gep = isset($_POST["reg_no_gep"]) ? $_POST["reg_no_gep"] : NULL;
 
+unset($reg_mef_code);
+$reg_mef_code = isset($_POST["reg_mef_code"]) ? $_POST["reg_mef_code"] : NULL;
+
 unset($reg_auth_mode);
 $reg_auth_mode = isset($_POST["reg_auth_mode"]) ? $_POST["reg_auth_mode"] : NULL;
 
@@ -504,6 +507,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 							naissance='".$reg_naissance."',
 							elenoet = '".$reg_no_gep."',
 							ele_id = '".$ele_id."'";
+						if(isset($reg_mef_code)) {$sql.=",mef_code='".$reg_mef_code."'";}
 						if(isset($reg_tel_pers)) {$sql.=",tel_pers='".$reg_tel_pers."'";}
 						if(isset($reg_tel_port)) {$sql.=",tel_port='".$reg_tel_port."'";}
 						if(isset($reg_tel_prof)) {$sql.=",tel_prof='".$reg_tel_prof."'";}
@@ -536,6 +540,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 			if(isset($reg_tel_pers)) {$sql.=",tel_pers='".$reg_tel_pers."'";}
 			if(isset($reg_tel_port)) {$sql.=",tel_port='".$reg_tel_port."'";}
 			if(isset($reg_tel_prof)) {$sql.=",tel_prof='".$reg_tel_prof."'";}
+			if(isset($reg_mef_code)) {$sql.=",mef_code='".$reg_mef_code."'";}
 
 			$temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve="n";
 			$sql_test="SELECT email FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
@@ -986,6 +991,7 @@ if (isset($eleve_login)) {
     $reg_no_nat = mysql_result($call_eleve_info, "0", "no_gep");
     $reg_no_gep = mysql_result($call_eleve_info, "0", "elenoet");
 	$reg_ele_id = mysql_result($call_eleve_info, "0", "ele_id");
+	$reg_mef_code = mysql_result($call_eleve_info, "0", "mef_code");
 
 	$reg_tel_pers = mysql_result($call_eleve_info, "0", "tel_pers");
 	$reg_tel_port = mysql_result($call_eleve_info, "0", "tel_port");
@@ -1841,7 +1847,42 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
     if (isset($reg_ele_id)) {echo $reg_ele_id;}
     echo "</td>\n";
 	echo "</tr>\n";
-	
+
+    echo "<tr>
+	<th style='text-align:left;'>MEF : </th>
+	<td>
+		<select name='reg_mef_code' onchange='changement();'>
+			<option value=''>---</option>";
+	$sql="SELECT * FROM mef ORDER BY libelle_long, libelle_edition, libelle_court;";
+	$res_mef=mysql_query($sql);
+	while($lig_mef=mysql_fetch_object($res_mef)) {
+		echo "
+			<option value='$lig_mef->mef_code'";
+		if($lig_mef->mef_code==$reg_mef_code) {echo " selected";}
+		echo " title='$lig_mef->mef_code|$lig_mef->libelle_court|$lig_mef->libelle_long|$lig_mef->libelle_edition'>";
+		if($lig_mef->libelle_edition!="") {
+			echo $lig_mef->libelle_edition;
+		}
+		elseif($lig_mef->libelle_long!="") {
+			echo $lig_mef->libelle_long;
+		}
+		elseif($lig_mef->libelle_court!="") {
+			echo $lig_mef->libelle_court;
+		}
+		else {
+			echo $lig_mef->mef_code;
+		}
+		echo "</option>";
+	}
+	echo "
+		</select>";
+	if(acces("/mef/admin_mef.php", $_SESSION['statut'])) {
+		echo " <a href='../mef/admin_mef.php' title='Gérer les MEFS' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/configure.png' width='16' height='16' ></a>";
+	}
+	echo "
+	</td>
+</tr>\n";
+
 	//Date de sortie de l'établissement
     echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/>(<em style='font-weight:normal'>respecter format JJ/MM/AAAA</em>)</th>";
 	echo "<td><div class='norme'>";	

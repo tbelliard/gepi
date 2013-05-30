@@ -147,6 +147,15 @@ if(getSettingValue('MessagerieDelaisTest')=="") {
 	}
 }
 
+if(getSettingValue('MessagerieLargeurImg')=="") {
+	$result .= "&nbsp;-> Initialisation de la taille de l'image signalant des messages non lus&nbsp;: ";
+	if (!saveSetting("MessagerieLargeurImg", '16')) {
+		$result .= msj_erreur();
+	} else {
+		$result .= msj_ok("Ok !");
+	}
+}
+
 if(getSettingValue('PeutPosterMessageScolarite')=="") {
 	$result .= "&nbsp;-> Initialisation de la possibilité de poster des messages pour les comptes 'scolarité'&nbsp;: ";
 	if (!saveSetting("PeutPosterMessageScolarite", 'y')) {
@@ -207,6 +216,75 @@ if ($test == -1) {
 	}
 } else {
 	$result .= msj_present("La table existe déjà");
+}
+
+$temoin_modif_mef_code="n";
+$result .= "<br />";
+$result .= "<strong>MEF :</strong><br />";
+$result .= "Contrôle du champ 'mef_code' dans la table 'mef' : ";
+$sql="show columns from mef where type like 'bigint%' and field='mef_code';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	$query = mysql_query("ALTER TABLE mef CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+	$temoin_modif_mef_code="y";
+}
+else {
+	$result .= msj_present("Le champ a le bon type.");
+}
+
+$result .= "Contrôle du champ 'mef_code' dans la table 'eleves' : ";
+$sql="show columns from eleves where type like 'bigint%' and field='mef_code';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	$query = mysql_query("ALTER TABLE eleves CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+	$temoin_modif_mef_code="y";
+}
+else {
+	$result .= msj_present("Le champ a le bon type.");
+}
+
+if(	$temoin_modif_mef_code=="y") {
+	$info_action_titre="Contenu de la table mef";
+	$info_action_texte="Le champ mef_code de la table 'mef' ou de la table 'eleves' n'avait pas le bon format lors de la mise à jour de la base du ".strftime("%d/%m/%Y à %H:%M:%S").". Vous devriez <a href='./mef/admin_mef.php'>contrôler le contenu de la table 'mef'</a> et faire une <a href='./responsables/maj_import.php'>Mise à jour d'après Sconet</a>.";
+	$info_action_destinataire="administrateur";
+	$info_action_mode="statut";
+	enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'code_mefstat' à la table 'mef'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM mef LIKE 'code_mefstat';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE mef ADD code_mefstat varchar(50) NOT NULL default '';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'mef_rattachement' à la table 'mef'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM mef LIKE 'mef_rattachement';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE mef ADD mef_rattachement varchar(50) NOT NULL default '';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
 }
 
 ?>

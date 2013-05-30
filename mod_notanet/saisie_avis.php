@@ -230,6 +230,10 @@ else {
 	$tabdiv_infobulle[]=creer_div_infobulle('AB',"","","<center>Absent</center>","",8,0,'y','y','n','n');
 	*/
 
+	$titre="<span id='span_titre_photo'>Photo</span>";
+	$texte="Photo";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_photo_eleve',$titre,"",$texte,"",14,0,'y','y','n','n');
+
 	$cpt=0;
 	for($i=0;$i<count($id_classe);$i++) {
 
@@ -287,30 +291,17 @@ else {
 			$alt=1;
 			while($lig_ele=mysql_fetch_object($res_ele)) {
 
-				$temoin_photo="";
-
 				//========================
 				$sql="SELECT elenoet FROM eleves WHERE login='$lig_ele->login';";
-				$res_elenoet=mysql_query($sql);
-				$lig_elenoet=mysql_fetch_object($res_elenoet);
-				$eleve_elenoet=$lig_elenoet->elenoet;
-	
+				$res_ele2=mysql_query($sql);
+				$lig_ele2=mysql_fetch_object($res_ele2);
+				$eleve_elenoet=$lig_ele2->elenoet;
+
 				// Photo...
 				$photo=nom_photo($eleve_elenoet);
-				//$temoin_photo="";
-				//if("$photo"!=""){
+				$temoin_photo="";
 				if($photo){
-					$titre=$lig_ele->nom." ".$lig_ele->prenom;
-	
-					$texte="<div align='center'>\n";
-					//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$lig_ele->nom $lig_ele->prenom\" />";
-					$texte.="<img src='".$photo."' width='150' alt=\"$lig_ele->nom $lig_ele->prenom\" />";
-					$texte.="<br />\n";
-					$texte.="</div>\n";
-	
 					$temoin_photo="y";
-	
-					$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$lig_ele->login,$titre,"",$texte,"",14,0,'y','y','n','n');
 				}
 				//========================
 
@@ -327,10 +318,13 @@ else {
 				}
 				else {
 					echo "<td>".$lig_ele->nom." ".$lig_ele->prenom."</td>";
-					echo "<td><a href='#' onmouseover=\"afficher_div('photo_$lig_ele->login','y',-100,20);\"";
-					echo ">";
-					echo "<img src='../images/icons/buddy.png' alt='".$lig_ele->nom." ".$lig_ele->prenom."' />";
-					echo "</a>";
+
+					echo "<td>";
+					if(file_exists($photo)) {
+						echo "<a href='#' onclick=\"afficher_div('div_photo_eleve','y',-100,20); affiche_photo('".$photo."','".addslashes(mb_strtoupper($lig_ele->nom)." ".ucfirst(mb_strtolower($lig_ele->prenom)))."');return false;\">";
+						echo "<img src='../images/icons/buddy.png' alt=\"$lig_ele->nom $lig_ele->prenom\" />";
+						echo "</a>";
+					}
 				}
 				echo "<input type='hidden' name='ele_login[$cpt]' value=\"".$lig_ele->login."\" />\n";
 				echo "</td>\n";
@@ -364,8 +358,9 @@ else {
 				echo "<textarea id=\"n".$cpt."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$cpt."\" rows='2' cols='80' wrap='virtual' onchange=\"changement()\"";
 				//==================================
 				// Pour revenir au champ suivant après validation/enregistrement:
-				echo " onfocus=\"focus_suivant(".$cpt.");";
-				echo " document.getElementById('focus_courant').value='".$cpt."';";
+				//echo " onfocus=\"focus_suivant(".$cpt.");";
+				//echo " document.getElementById('focus_courant').value='".$cpt."';";
+				echo " onfocus=\"change_photo('".$photo."','".addslashes(mb_strtoupper($lig_ele->nom)." ".ucfirst(mb_strtolower($lig_ele->prenom)))."');focus_suivant(".$cpt."); document.getElementById('focus_courant').value='".$cpt."';\"";
 				echo "\"";
 				//==================================
 				echo ">".$def_avis."</textarea>\n";
@@ -473,6 +468,19 @@ function DecocheColonne(nom_col,num_classe) {
 		}
 
 		document.getElementById('info_focus').value=temoin;
+	}
+
+	function affiche_photo(photo,nom_prenom) {
+		document.getElementById('div_photo_eleve_contenu_corps').innerHTML='<div style=\'text-align: center\'><img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom+'</div>';
+		//alert('nom_prenom='+nom_prenom);
+		document.getElementById('span_titre_photo').innerHTML=nom_prenom;
+	}
+
+	function change_photo(photo,nom_prenom) {
+		if(document.getElementById('div_photo_eleve').style.display=='') {
+			affiche_photo(photo,nom_prenom);
+			afficher_div('div_photo_eleve','y',-100,20);
+		}
 	}
 
 	";

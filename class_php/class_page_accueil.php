@@ -1081,6 +1081,22 @@ if(getSettingAOui('active_bulletins')) {
 	$this->b=0;
 
 	if(getSettingAOui('active_bulletins')) {
+
+		if (($this->statutUtilisateur=='administrateur')&&(getSettingAOui('GepiAdminValidationCorrectionBulletins'))&&(acces('/saisie/validation_corrections.php', 'administrateur'))) {
+			$afficher_correction_validation="n";
+			$sql="SELECT 1=1 FROM matieres_app_corrections;";
+			$test_mac=mysql_query($sql);
+			if($test_mac AND mysql_num_rows($test_mac)>0) {$afficher_correction_validation="y";}
+
+			if($afficher_correction_validation=="y") {
+				$texte_item="Cet outil vous permet de valider les corrections d'appréciations proposées par des professeurs après la clôture d'une période.";
+				$texte_item.="<br /><span style='color:red;'>Une ou des propositions requièrent votre attention.</span>\n";
+				$this->creeNouveauItem("/saisie/validation_corrections.php",
+					  "Correction des bulletins",
+					  $texte_item);
+			}
+		}
+
 		if ((($this->test_prof_suivi != "0")
 				and (getSettingValue("GepiProfImprBul")=='yes'))
 				or ($this->statutUtilisateur!='professeur')){

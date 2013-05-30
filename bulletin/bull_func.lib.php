@@ -190,6 +190,8 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		// Nom du fichier déterminé d'après le paramètre choix_bulletin
 		$fichier_bulletin,
 		$min_max_moyclas,
+		$moyennes_periodes_precedentes,
+		$moyennes_annee,
 
 		// Bloc adresse responsable
 		$addressblock_padding_right,
@@ -3915,16 +3917,13 @@ fclose($f);
 							// calcul nombre de sous affichage
 
 							$nb_sousaffichage='1';
-							//20090908 if(empty($active_coef_sousmoyene)) { $active_coef_sousmoyene = ''; }
 
-							//++++++++++++++
-							//20100615
-							//if((isset($moyennes_periodes_precedentes))&&($moyennes_periodes_precedentes=="y")) {
-							//if($tab_modele_pdf["moyennes_periodes_precedentes"][$classe_id]=='y') {
 							if(($tab_modele_pdf["moyennes_periodes_precedentes"][$classe_id]=='y')&&(isset($tab_bull['login_prec']))) {
 								$nb_sousaffichage+=count($tab_bull['login_prec']); // Il faut récupérer le nombre de périodes...
 							}
-							//++++++++++++++
+
+							// 20130520
+							if((isset($tab_modele_pdf["moyennes_annee"][$classe_id]))&&($tab_modele_pdf["moyennes_annee"][$classe_id]=='y')) { $nb_sousaffichage = $nb_sousaffichage + 1; }
 
 							if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
 
@@ -3939,10 +3938,9 @@ fclose($f);
 							}
 
 
-							//20100615
-							//if((!isset($moyennes_periodes_precedentes))||($moyennes_periodes_precedentes!="y")) {
-							if($tab_modele_pdf["moyennes_periodes_precedentes"][$classe_id]!='y') {
-								//if((isset($evolution_moyenne_periode_precedente))&&($evolution_moyenne_periode_precedente=="y")) {
+							if(($tab_modele_pdf["moyennes_periodes_precedentes"][$classe_id]!='y')&&
+							($tab_modele_pdf["moyennes_annee"][$classe_id]!='y')) {
+								// On ne va pas afficher les moyennes des périodes précédentes dans la même cellule
 								if($tab_modele_pdf["evolution_moyenne_periode_precedente"][$classe_id]=='y') {
 									$pdf->SetFont('DejaVu','B',8);
 								}
@@ -4073,50 +4071,51 @@ fclose($f);
 
 							}
 							else {
-								//20100615
 								// On affiche les moyennes de l'élève pour les autres périodes dans la même colonne
 								// Il faut récupérer l'indice de l'élève... dans les tableaux récupérés de calcul_moy_gen.inc.php
 								$pdf->SetFont('DejaVu','I',6);
 
-								if(isset($tab_bull['login_prec'])) {
-	
-									//for($loop_p=1;$loop_p<count($tab_bull['login_prec']);$loop_p++) {
-									foreach($tab_bull['login_prec'] as $key => $value) {
-										// Il faut récupérer l'id_groupe et l'indice de l'élève... dans les tableaux récupérés de calcul_moy_gen.inc.php
-										// Tableaux d'indices [$j][$i] (groupe, élève)
-										//$tab_bull['note_prec'][$loop_p]=$current_eleve_note;
-										//$tab_bull['statut_prec'][$loop_p]=$current_eleve_statut;
-										$indice_eleve=-1;
-										//for($loop_l=0;$loop_l<count($tab_bull['login_prec'][$loop_p]);$loop_l++) {
-										for($loop_l=0;$loop_l<count($tab_bull['login_prec'][$key]);$loop_l++) {
-											//echo "\$tab_bull['login_prec'][$key][$loop_l]=".$tab_bull['login_prec'][$key][$loop_l]." et \$tab_bull['eleve'][$i]['login']=".$tab_bull['eleve'][$i]['login']."<br />\n";
-											if($tab_bull['login_prec'][$key][$loop_l]==$tab_bull['eleve'][$i]['login']) {$indice_eleve=$loop_l;break;}
-										}
-										//echo "\$indice_eleve=$indice_eleve<br />\n";
-	
-										if($indice_eleve!=-1) {
-											// Recherche du groupe
-											$indice_grp=-1;
-											for($loop_l=0;$loop_l<count($tab_bull['group_prec'][$key]);$loop_l++) {
-												//echo "\$tab_bull['group_prec'][$key][$loop_l]['id']=".$tab_bull['group_prec'][$key][$loop_l]['id']." et \$tab_bull['groupe'][$m]['id']=".$tab_bull['groupe'][$m]['id']."<br />\n";
-												if($tab_bull['group_prec'][$key][$loop_l]['id']==$tab_bull['groupe'][$m]['id']) {$indice_grp=$loop_l;break;}
+								if($tab_modele_pdf["moyennes_periodes_precedentes"][$classe_id]=='y') {
+									if(isset($tab_bull['login_prec'])) {
+
+										//for($loop_p=1;$loop_p<count($tab_bull['login_prec']);$loop_p++) {
+										foreach($tab_bull['login_prec'] as $key => $value) {
+											// Il faut récupérer l'id_groupe et l'indice de l'élève... dans les tableaux récupérés de calcul_moy_gen.inc.php
+											// Tableaux d'indices [$j][$i] (groupe, élève)
+											//		$tab_bull['note_prec'][$loop_p]=$current_eleve_note;
+											//		$tab_bull['statut_prec'][$loop_p]=$current_eleve_statut;
+											$indice_eleve=-1;
+											//for($loop_l=0;$loop_l<count($tab_bull['login_prec'][$loop_p]);$loop_l++) {
+											for($loop_l=0;$loop_l<count($tab_bull['login_prec'][$key]);$loop_l++) {
+												//echo "\$tab_bull['login_prec'][$key][$loop_l]=".$tab_bull['login_prec'][$key][$loop_l]." et \$tab_bull['eleve'][$i]['login']=".$tab_bull['eleve'][$i]['login']."<br />\n";
+												if($tab_bull['login_prec'][$key][$loop_l]==$tab_bull['eleve'][$i]['login']) {$indice_eleve=$loop_l;break;}
 											}
-											//echo "\$indice_grp=$indice_grp<br />\n";
+											//echo "\$indice_eleve=$indice_eleve<br />\n";
 	
-											if($indice_grp!=-1) {
-												if(isset($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve])) {
-													if ($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve]!="") {
-														$valeur = $tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve];
+											if($indice_eleve!=-1) {
+												// Recherche du groupe
+												$indice_grp=-1;
+												for($loop_l=0;$loop_l<count($tab_bull['group_prec'][$key]);$loop_l++) {
+													//echo "\$tab_bull['group_prec'][$key][$loop_l]['id']=".$tab_bull['group_prec'][$key][$loop_l]['id']." et \$tab_bull['groupe'][$m]['id']=".$tab_bull['groupe'][$m]['id']."<br />\n";
+													if($tab_bull['group_prec'][$key][$loop_l]['id']==$tab_bull['groupe'][$m]['id']) {$indice_grp=$loop_l;break;}
+												}
+												//echo "\$indice_grp=$indice_grp<br />\n";
+	
+												if($indice_grp!=-1) {
+													if(isset($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve])) {
+														if ($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve]!="") {
+															$valeur = $tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve];
+														}
+														else {
+															$valeur = present_nombre($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+														}
+														if($key==1) {$bordure_top='T';} else {$bordure_top='';}
+														$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'P'.$key.': '.$valeur,'LR'.$bordure_top,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 													}
-													else {
-														$valeur = present_nombre($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
-													}
-													if($key==1) {$bordure_top='T';} else {$bordure_top='';}
-													$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'P'.$key.': '.$valeur,'LR'.$bordure_top,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 												}
 											}
-										}
 	
+										}
 									}
 								}
 
@@ -4133,7 +4132,20 @@ fclose($f);
 									$valeur = present_nombre($tab_bull['note'][$m][$i], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 								}
 								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
+								// Réinitialisation
 								$valeur = "";
+
+
+								// 20130520
+								//echo "\$tab_modele_pdf[\"moyennes_annee\"][$classe_id]=".$tab_modele_pdf["moyennes_annee"][$classe_id]."<br />\n";
+								//echo "\$tab_bull['moy_annee'][$m][$i]=".$tab_bull['moy_annee'][$m][$i]."<br />\n";
+								if((isset($tab_modele_pdf["moyennes_annee"][$classe_id]))&&
+								($tab_modele_pdf["moyennes_annee"][$classe_id]=='y')&&
+								(isset($tab_bull['moy_annee'][$m][$i]))) {
+									$pdf->SetFont('DejaVu','I',6);
+									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, "An: ".$tab_bull['moy_annee'][$m][$i],1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
+								}
+
 
 								// On affiche éventuellement le coef
 								if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') {

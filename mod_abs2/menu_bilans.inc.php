@@ -78,6 +78,14 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='liste_eleves.php') {echo "class='current' ";}
     echo "title='Liste des élèves'>Èlèves</a></li>\n";
 
+    echo "<li><a href='export_stat.php' ";
+    if($onglet_abs=='export_stat.php') {echo "class='current' ";}
+    echo "title='Exports statistiques'>Exp.stat.</a></li>\n";
+
+    echo "<li><a href='calcul_score.php' ";
+    if($onglet_abs=='calcul_score.php') {echo "class='current' ";}
+    echo "title='Calcul de scores d\'absences'>Scores</a></li>\n";
+
     echo "</ul>\n";
 
 }

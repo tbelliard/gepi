@@ -61,7 +61,7 @@ if(($login_eleve=="")||($id_classe=="")||(count($num_periode)==0)) {
 }
 else {
 	$nom_prenom=get_nom_prenom_eleve($login_eleve);
-	if(preg_match("/(/", $nom_prenom)) {
+	if(preg_match("/\(/", $nom_prenom)) {
 		$msg="$nom_prenom n'est pas un élève.";
 		$erreur="y";
 	}
@@ -213,7 +213,7 @@ if($erreur=="n") {
 
 require_once("../lib/header.inc.php");
 
-echo "<p><span style='color:red'>ERREUR&nbsp;:</span> Il s'est produit une erreur&nbsp;:<br />".urlencode($msg)."</p>";
+echo "<p><span style='color:red'>ERREUR&nbsp;:</span> Il s'est produit une erreur&nbsp;:<br />".$msg."</p>";
 
 echo "<p><a href='../eleves/index.php?quelles_classes=na'>Retour à la liste des élèves non inscrits</a></p>";
 

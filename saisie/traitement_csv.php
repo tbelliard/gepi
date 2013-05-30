@@ -66,7 +66,12 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a>";
 
-if((($_SESSION['statut']!='secours')&&($current_group["classe"]["ver_periode"]['all'][$periode_num]<2))||
+$acces_exceptionnel_saisie=false;
+if($_SESSION['statut']=='professeur') {
+	$acces_exceptionnel_saisie=acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_num);
+}
+
+if((($_SESSION['statut']!='secours')&&($current_group["classe"]["ver_periode"]['all'][$periode_num]<2)&&(!$acces_exceptionnel_saisie))||
 (($_SESSION['statut']=='secours')&&($current_group["classe"]["ver_periode"]['all'][$periode_num]==0))) {
 	echo "<p class = 'grand'>Importation de moyennes et appréciations - $nom_periode[$periode_num]</p>";
 	echo "<p class = 'bold'>Groupe : " . $current_group["description"] . " " . $current_group["classlist_string"] . " | Matière : " . $current_group["matiere"]["nom_complet"]."</p>\n";
@@ -165,6 +170,7 @@ for ($row=1; $row<$nb_row; $row++) {
         if (in_array($reg_login, $current_group["eleves"][$periode_num]["list"]))  {
 			$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$periode_num]["users"][$reg_login]["classe"]]["id"];
 			if (($current_group["classe"]["ver_periode"][$eleve_id_classe][$periode_num]=="N")||
+			($acces_exceptionnel_saisie)||
 			(($current_group["classe"]["ver_periode"][$eleve_id_classe][$periode_num]!="O")&&($_SESSION['statut']=='secours'))) {
 				$reg_note_min = my_strtolower($reg_note);
 				if (preg_match ("/^[0-9\.\,]{1,}$/", $reg_note)) {

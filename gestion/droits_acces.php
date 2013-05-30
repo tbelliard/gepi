@@ -952,6 +952,11 @@ $texteItem="a accès au paramétrage de l'impression des bulletins";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAdminValidationCorrectionBulletins';
+$texteItem="a accès à la validation des propositions de corrections des bulletins";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiPasswordReinitAdmin';
 $texteItem="peut réinitialiser lui-même son mot de passe perdu (<em>si fonction activée</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))

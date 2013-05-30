@@ -728,7 +728,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/generer_notifications_par_lo
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/bilan_parent.php', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'F', 'Affichage parents des absences de leurs enfants', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/stat_justifications.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Statistiques des justifications des absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_eleves.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Liste des élèves avec les filtes absence', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'F', 'F', 'F', 'V', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'V', 'F', 'F', 'V', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/gestion/param_ordre_item.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modifier l ordre des items dans les menus', '');";
 
@@ -1008,6 +1008,10 @@ statut='';";
 $tab_req[] = "INSERT INTO droits SET id='/mod_trombinoscopes/plan_de_classe.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Plan de classe',statut='';";
 
 $tab_req[] = "INSERT INTO droits SET id='/classes/ajout_eleve_classe.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Enregistrement des inscriptions élève/classe',statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs2/export_stat.php',administrateur='V',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Exports statistiques',statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs2/calcul_score.php',administrateur='V',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Exports statistiques',statut='';";
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {

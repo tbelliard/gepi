@@ -56,6 +56,8 @@ if (empty($_GET['nom']) and empty($_POST['nom'])) { $nom="";}
 if (empty($_GET['commentaire']) and empty($_POST['commentaire'])) { $commentaire="";}
     else { if (isset($_GET['commentaire'])) {$commentaire=$_GET['commentaire'];} if (isset($_POST['commentaire'])) {$commentaire=$_POST['commentaire'];} }
 
+include("function.php");
+
 //$justification = new AbsenceElevejustification();
 $justification = AbsenceEleveJustificationQuery::create()->findPk($id);
 if ($action == 'supprimer') {
@@ -75,7 +77,7 @@ if ($action == 'supprimer') {
     }
 } elseif ($action == 'ajouterdefaut') {
 	check_token();
-    include("function.php");
+    //include("function.php");
     ajoutJustificationsParDefaut();
 } else {
     if ($nom != '') {

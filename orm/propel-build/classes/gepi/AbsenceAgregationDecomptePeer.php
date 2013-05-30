@@ -112,7 +112,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
     			group by eleves.ID_ELEVE';
     		$result = mysql_query($query);
     		$wrong_eleve = array();
-    		$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600-$dateDebutClone->format('U'))/(3600*12));
+    		$nbre_demi_journees=(int)(($dateFinClone->format('U')+3700-$dateDebutClone->format('U'))/(3600*12));
     		while($row = mysql_fetch_array($result)){
     			if ($row[1]!=$nbre_demi_journees) {
     				if ($debug) {

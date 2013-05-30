@@ -444,7 +444,7 @@ function EdtDuJourHorizontal($tab_data, $jour, $flags)
 // =============================================================================
 function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $period) 
 {
-
+	$peut_poster_message=peut_poster_message($_SESSION['statut']);
     echo ("<div class=\"fenetre\">\n");
 
     echo("<div class=\"contenu\">
@@ -515,6 +515,22 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
                 {
                     AfficheIconePlusAdd($type_edt,0,$login_edt,$jour_sem,$tab_data[$jour]['id_creneau'][$index_box], $period);
                 }
+
+				if($peut_poster_message) {
+					// Récupérer le jour suivant
+					echo "<div style='float:right;width:10px'><a href='../lib/form_message.php?message_envoye=y&amp;login_dest=".$tab_data[$jour]['login_prof'][$index_box];
+					$tmp_jour_suivant=get_next_tel_jour($jour+1);
+					if(($tmp_jour_suivant!="")&&(is_numeric($tmp_jour_suivant))) {
+						echo "&date_visibilite=".strftime("%d/%m/%Y", time()+24*3600*$tmp_jour_suivant);
+					}
+					else {
+						echo "&date_visibilite=".strftime("%d/%m/%Y");
+					}
+					if((isset($tab_data[$jour]['heuredebut'][$index_box]))&&($tab_data[$jour]['heuredebut'][$index_box]!='')) {
+						echo "&amp;heure_visibilite=".$tab_data[$jour]['heuredebut'][$index_box];
+					}
+					echo add_token_in_url()."' target='_blank' title=\"Déposer un message dans la Messagerie interne Gepi\"><img src='../images/icons/mail.png' width='10' height='10' /></a></div>";
+				}
                 echo ("</div>\n");
                 echo ("</div></div>\n");   
    
@@ -530,11 +546,15 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
     
             }
 
-
             $index_box++;
         }
 
         echo("</div>\n");
+		/*
+		echo "<hr /><pre>";
+		print_r($tab_data[$jour]);
+		echo "<pre>";
+		*/
         $jour++;
     }
 

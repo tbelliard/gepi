@@ -26,6 +26,8 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
+// Témoin destiné à ne pas enregistrer dans les logs les accès à la page sans être logué.
+// Une mauvaise déconnexion peut provoquer énormément d'alertes et de mail (toutes les minutes potentiellement)
 $pas_acces_a_une_page_sans_etre_logue="y";
 
 // Resume session
@@ -87,6 +89,20 @@ if(!getSettingAOui('active_messagerie')) {
 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
+if((isset($mode))&&($mode=='maj_span_nom_jour_semaine')) {
+	header('Content-Type: text/html; charset=utf-8');
+
+	$jour=isset($_GET['jour']) ? $_GET['jour'] : NULL;
+	//if(isset($jour)) {
+	if((isset($jour))&&(preg_match("|[0-9]{2}/[0-9]{2}/[0-9]{4}|", $jour))) {
+		$tmp_tab=explode("/", $jour);
+		if(checkdate($tmp_tab[1],$tmp_tab[0],$tmp_tab[2])) {
+			echo strftime("%A", mktime ("12", "59" , "00" , $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]));
+		}
+	}
+	die();
+}
+
 // Test de la présence de messages non lus et mise à jour du témoin en barre d'entête
 if((isset($mode))&&($mode=='check')) {
 	$messages_non_lus=check_messages_recus($_SESSION['login']);
@@ -112,7 +128,9 @@ if((isset($mode))&&($mode=='check')) {
 if((isset($mode))&&($mode=='check2')) {
 	$messages_non_lus=check_messages_recus($_SESSION['login']);
 	if($messages_non_lus!="") {
-		echo "<a href='$gepiPath/lib/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='16' height='16' title='Vous avez $messages_non_lus' /></a>";
+		$MessagerieLargeurImg=getSettingValue('MessagerieLargeurImg');
+		//echo "<a href='$gepiPath/lib/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='$MessagerieLargeurImg' height='$MessagerieLargeurImg' title='Vous avez $messages_non_lus' /></a>";
+		echo "<a href='$gepiPath/lib/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/temoin_message_non_lu.gif' width='$MessagerieLargeurImg' height='$MessagerieLargeurImg' title='Vous avez $messages_non_lus' /></a>";
 	}
 	else {
 		echo "";
@@ -148,7 +166,7 @@ if((isset($mode))&&($mode=='marquer_lu')) {
 	die();
 }
 
-// Marquer un message comme lu
+// Relancer un message : le marquer comme non-lu
 if((isset($mode))&&($mode=='relancer')) {
 	check_token();
 	$id_msg=$_GET['id_msg'];
@@ -162,6 +180,38 @@ if((isset($mode))&&($mode=='relancer')) {
 			}
 			else {
 				echo "<img src='../images/disabled.png' width='20' height='20' title='Lu/vu' />";
+			}
+		}
+		else {
+			if($retour=="Erreur") {
+				echo "<span style='color:red'>Erreur</span>";
+			}
+			else {
+				echo "Message marqué comme non lu.<br />Vous pouvez refermer cette page.";
+				// Il faudrait trouver une meilleure façon de gérer le marquage quand JS est inactif.
+			}
+		}
+	}
+	die();
+}
+
+// Clore un message
+if((isset($mode))&&($mode=='clore')) {
+	check_token();
+	$id_msg=$_GET['id_msg'];
+
+	if(is_numeric($id_msg)) {
+		$retour=clore_declore_message($id_msg);
+		if(!isset($_GET['mode_no_js'])) {
+			if($retour=="Erreur") {
+				//echo "<img src='../images/disabled.png' width='20' height='20' title='Lu/vu' />";
+				echo "<span style='color:red'>Erreur</span>";
+			}
+			elseif($retour==2) {
+				echo "<img src='../images/icons/securite.png' width='16' height='16' title='Message clos/traité.' />";
+			}
+			else {
+				echo "<img src='../images/disabled.png' width='20' height='20' title='Non lu/vu' />";
 			}
 		}
 		else {
@@ -192,33 +242,42 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 
 	$msg="";
 
-	if((isset($login_dest))&&(isset($sujet))&&(isset($message))) {
-
-		$date_heure_visibilite="";
-		if(isset($date_visibilite)) {
-			$tmp_tab=explode("/", $date_visibilite);
-			if(!checkdate($tmp_tab[1],$tmp_tab[0],$tmp_tab[2])) {
-				$msg.="Erreur sur la date de visibilité proposée $date_visibilite<br />";
-			}
-			else {
-				// On teste maintenant l'heure
-				if(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/", $heure_visibilite)) {
-					if((!preg_match("/[0-9]{1,2}", $heure_visibilite))||($heure_visibilite<0)||($heure_visibilite>23)) {
-						$msg.="Erreur sur l'heure de visibilité proposée $heure_visibilite<br />";
-					}
-					else {
-						$date_heure_visibilite=$tmp_tab[2].":".$tmp_tab[1].":".$tmp_tab[0]." ".$heure_visibilite.":00:00";
-					}
+	$date_heure_visibilite="";
+	if(isset($date_visibilite)) {
+		$tmp_tab=explode("/", $date_visibilite);
+		if(!checkdate($tmp_tab[1],$tmp_tab[0],$tmp_tab[2])) {
+			$msg.="Erreur sur la date de visibilité proposée $date_visibilite<br />";
+		}
+		else {
+			// On teste maintenant l'heure
+			if((!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/", $heure_visibilite))&&(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$/", $heure_visibilite))) {
+				if((!preg_match("/[0-9]{1,2}", $heure_visibilite))||($heure_visibilite<0)||($heure_visibilite>23)) {
+					$msg.="Erreur sur l'heure de visibilité proposée $heure_visibilite<br />";
 				}
 				else {
-					$tmp_tab2=explode(":", $heure_visibilite);
-					if(($tmp_tab2[0]<0)||($tmp_tab2[0]>23)||($tmp_tab2[1]<0)||($tmp_tab2[1]>59)) {
-						$msg.="Erreur sur l'heure de visibilité proposée $heure_visibilite<br />";
-					}
-					else {
-						$date_heure_visibilite=$tmp_tab[2].":".$tmp_tab[1].":".$tmp_tab[0]." ".$tmp_tab2[0].":".$tmp_tab2[1].":00";
-					}
+					$date_heure_visibilite=$tmp_tab[2].":".$tmp_tab[1].":".$tmp_tab[0]." ".$heure_visibilite.":00:00";
 				}
+			}
+			else {
+				$tmp_tab2=explode(":", $heure_visibilite);
+				if(($tmp_tab2[0]<0)||($tmp_tab2[0]>23)||($tmp_tab2[1]<0)||($tmp_tab2[1]>59)) {
+					$msg.="Erreur sur l'heure de visibilité proposée $heure_visibilite<br />";
+				}
+				else {
+					$date_heure_visibilite=$tmp_tab[2].":".$tmp_tab[1].":".$tmp_tab[0]." ".$tmp_tab2[0].":".$tmp_tab2[1].":00";
+				}
+			}
+		}
+	}
+
+	if((isset($login_dest))&&(isset($sujet))&&(isset($message))) {
+
+		unset($in_reply_to);
+		if((isset($_POST['in_reply_to']))&&(is_numeric($_POST['in_reply_to']))) {
+			$sql="SELECT 1=1 FROM messagerie WHERE id='".$_POST['in_reply_to']."' AND login_dest='".$_SESSION['login']."';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$in_reply_to=$_POST['in_reply_to'];
 			}
 		}
 
@@ -226,19 +285,34 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 			$tmp_login_dest=$login_dest;
 			$login_dest=array_unique($tmp_login_dest);
 			$nb_reg=0;
-			for($loop=0;$loop<count($login_dest);$loop++) {
-				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest[$loop], $date_heure_visibilite);
+			//for($loop=0;$loop<count($login_dest);$loop++) {
+				//$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest[$loop], $date_heure_visibilite);
+			foreach($login_dest as $key => $value) {
+				if(isset($in_reply_to)) {
+					$retour=enregistre_message($sujet, $message, $_SESSION['login'], $value, $date_heure_visibilite,$in_reply_to);
+				}
+				else {
+					$retour=enregistre_message($sujet, $message, $_SESSION['login'], $value, $date_heure_visibilite);
+				}
+
 				if($retour!="") {
 					$nb_reg++;
 				}
 				else {
-					$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($login_dest[$loop]).".<br />";
+					//$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($login_dest[$loop]).".<br />";
+					$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($value).".<br />";
 				}
 			}
 			$msg.="Message enregistré pour $nb_reg destinataire(s).<br />";
 		}
 		elseif(($login_dest!='')&&($sujet!='')&&($message!='')) {
-			$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest, $date_heure_visibilite);
+			if(isset($in_reply_to)) {
+				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest, $date_heure_visibilite,$in_reply_to);
+			}
+			else {
+				$retour=enregistre_message($sujet, $message, $_SESSION['login'], $login_dest, $date_heure_visibilite);
+			}
+
 			if($retour!="") {
 				$msg.="Message pour ".civ_nom_prenom($login_dest)." enregistré.<br />";
 
@@ -255,6 +329,34 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 					die();
 				}
 			}
+		}
+
+		unset($in_reply_to);
+	}
+}
+
+if((isset($mode))&&($mode=='repondre')) {
+	check_token();
+
+	$id_msg=$_GET['id_msg'];
+	if(is_numeric($id_msg)) {
+		$sql="SELECT * FROM messagerie WHERE id='$id_msg' AND login_dest='".$_SESSION['login']."';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			$msg.="Le message n°$id_msg s'il existe ne vous était pas destiné.<br />";
+		}
+		else {
+			$retour=marquer_message_lu($id_msg);
+
+			$login_dest=mysql_result($res,0,"login_src");
+			$sujet="Re: ".mysql_result($res,0,"sujet");
+
+			//$date_visibilite=mysql_result($res,0,"date_visibilite");
+			$date_msg=mysql_result($res,0,"date_msg");
+
+			$message="Le ".formate_date($date_msg, 'y').", vous avez écrit:\n================================\n".mysql_result($res,0,"message")."\n================================\n";
+
+			$in_reply_to=$id_msg;
 		}
 	}
 }
@@ -298,7 +400,14 @@ if(peut_poster_message($_SESSION['statut'])) {
 		<?php
 			echo add_token_field(true);
 		?>
-		<p class='bold'>Envoi d'un message/post-it&nbsp;:</p>
+		<p class='bold'>Envoi d'un message/post-it&nbsp;: 
+		<?php
+			if(isset($in_reply_to)) {
+				echo "<span style='color:red'>Réponse à un autre message</span>";
+				echo "<input type='hidden' name='in_reply_to' value='$in_reply_to' />\n";
+			}
+		?>
+		</p>
 		<table class='boireaus boireaus_alt'>
 			<tr>
 				<th>Destinataire(s)</th>
@@ -307,7 +416,38 @@ if(peut_poster_message($_SESSION['statut'])) {
 					<!-- Balises concernant JavaScript -->
 					<div id='p_ajout_dest_js' style='display:none;float:right;whidth:16px;'><a href="javascript:affiche_ajout_dest();"><img src='../images/icons/add.png' width='16' height='16' title='Ajouter un ou des destinataires' /></a></div>
 
-					<div id='div_login_dest_js'><span style='color:red' id='span_ajoutez_un_ou_des_destinataires'>Ajoutez un ou des destinataires --&gt;</span></div>
+					<div id='div_login_dest_js'>
+						<span style='color:red' id='span_ajoutez_un_ou_des_destinataires'><a href='javascript:affiche_ajout_dest();' style='color:red'>Ajoutez un ou des destinataires --&gt;</a></span>
+						<?php
+							if(isset($login_dest)) {
+								if(is_array($login_dest)) {
+									/*
+									echo "<pre>";
+									print_r($login_dest);
+									echo "</pre>";
+									*/
+									//for($loop=0;$loop<count($login_dest);$loop++) {
+									$loop=0;
+									foreach($login_dest as $key => $value) {
+										// Avec l'identifiant spécial, on peut se retrouver, en ajoutant des destinataires, à avoir deux fois un même destinataire.
+										echo "<br /><span id='span_login_u_choisi_special_$loop'>";
+										//echo "<input type='hidden' name='login_dest[]' value='".$login_dest[$loop]."' />";
+										//echo civ_nom_prenom($login_dest[$loop]);
+										echo "<input type='hidden' name='login_dest[]' value='".$value."' />";
+										echo civ_nom_prenom($value);
+										echo " <a href=\"javascript:removeElement('span_login_u_choisi_special_$loop')\"><img src='../images/icons/delete.png' width='16' height='16' /></a></span>";
+										$loop++;
+									}
+								}
+								else {
+									echo "<br /><span id='span_login_u_choisi_special'>";
+									echo "<input type='hidden' name='login_dest[]' value='".$login_dest."' />";
+									echo civ_nom_prenom($login_dest);
+									echo " <a href=\"javascript:removeElement('span_login_u_choisi_special')\"><img src='../images/icons/delete.png' width='16' height='16' /></a></span>";
+								}
+							}
+						?>
+					</div>
 					<!-- ======================================================= -->
 					<!-- Balises concernant JavaScript inactif -->
 					<div id='div_select_no_js'>
@@ -323,7 +463,20 @@ if(peut_poster_message($_SESSION['statut'])) {
 							<optgroup label='".$tab_statut[$loop]."'>";
 										while($lig_u=mysql_fetch_object($res_u)) {
 											echo "
-								<option value='$lig_u->login'>$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2')."</option>";
+								<option value='$lig_u->login'";
+											if(isset($login_dest)) {
+												if(is_array($login_dest)) {
+													if(in_array($lig_u->login, $login_dest)) {
+														echo " selected";
+													}
+												}
+												else {
+													if($lig_u->login==$login_dest) {
+														echo " selected";
+													}
+												}
+											}
+											echo ">$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2')."</option>";
 										}
 										echo "
 							</optgroup>";
@@ -374,12 +527,19 @@ Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendema
 					<?php
 						include("../lib/calendrier/calendrier.class.php");
 						$cal = new Calendrier("formulaire", "date_visibilite");
-						$date_visibilite=strftime("%d/%m/%Y");
-						$heure_visibilite=strftime("%H:%M");
+						if(!isset($date_visibilite)) {$date_visibilite=strftime("%d/%m/%Y");}
+						if(!isset($heure_visibilite)) {$heure_visibilite=strftime("%H:%M");}
+						else {
+							if(preg_match("/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $heure_visibilite)) {
+								$tmp_tab=explode(":", $heure_visibilite);
+								$heure_visibilite=$tmp_tab[0].":".$tmp_tab[1];
+							}
+						}
 					?>
-					<input type='text' name='date_visibilite' id='date_visibilite' size='10' value = "<?php echo $date_visibilite;?>" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." />
-					<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>"
-					onchange="changement();"><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="Petit calendrier" /></a>
+					<span id='span_nom_jour_semaine'></span> 
+					<input type='text' name='date_visibilite' id='date_visibilite' size='10' value = "<?php echo $date_visibilite;?>" onKeyDown="clavier_date(this.id,event);maj_span_nom_jour_semaine();" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." onchange="changement();maj_span_nom_jour_semaine();" onblur="maj_span_nom_jour_semaine();" />
+					<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>;document.getElementById('span_nom_jour_semaine').innerHTML='';"
+					><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="Petit calendrier" /></a>
 					à
 					<input name="heure_visibilite" value="<?php echo $heure_visibilite;?>" type="text" maxlength="5" size="4" id="heure_visibilite" onKeyDown="clavier_heure2(this.id,event,1,30);" AutoComplete="off" title="Vous pouvez modifier l'heure à l'aide des flèches Up et Down du pavé de direction et les flèches PageUp/PageDown." />
 				</td>
@@ -535,6 +695,16 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 		}
 	}
 
+	function maj_span_nom_jour_semaine() {
+		if(document.getElementById('date_visibilite')) {
+			jour_visibilite=document.getElementById('date_visibilite').value;
+			//alert(jour_visibilite);
+			new Ajax.Updater($('span_nom_jour_semaine'),'form_message.php?mode=maj_span_nom_jour_semaine&jour='+jour_visibilite,{method: 'get'});
+		}
+	}
+
+	maj_span_nom_jour_semaine();
+	//setTimeout('maj_span_nom_jour_semaine()', 3000);
 </script>
 
 <?php
