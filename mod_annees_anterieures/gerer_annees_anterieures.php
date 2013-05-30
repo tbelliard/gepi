@@ -72,10 +72,16 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 	$sql="DELETE FROM archivage_ects WHERE annee='".$_GET["annee_supp"]."';";
 	$res_suppr3=mysql_query($sql);
 
+	$sql="DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."';";
+	$res_suppr4=mysql_query($sql);
+
+	$sql="DELETE FROM archivage_aids WHERE annee='".$_GET["annee_supp"]."';";
+	$res_suppr5=mysql_query($sql);
+
 	// Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
 	suppression_donnees_eleves_inutiles();
 
-	if (($res_suppr1) and ($res_suppr2) and ($res_suppr3)) {
+	if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4) and ($res_suppr5)) {
 		$msg = "La suppression des données a été correctement effectuée.";
 	} else {
 		$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
