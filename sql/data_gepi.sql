@@ -1199,3 +1199,4 @@ INSERT INTO setting SET name='GepiAccesBulletinSimpleColonneMoyClasseEleve', val
 INSERT INTO droits SET id='/a_lire.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='V',autre='V',description='A lire...',statut='';
 INSERT INTO droits SET id='/cahier_texte_2/consultation2.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='F',autre='V',description='Cahiers de textes: Consultation',statut='';
 INSERT INTO droits SET id='/mod_trombinoscopes/plan_de_classe.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Plan de classe',statut='';
+INSERT INTO droits VALUES ('/mod_annees_anterieures/gerer_annees_anterieures.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gérer les années antérieures', '');
