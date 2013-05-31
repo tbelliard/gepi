@@ -907,6 +907,7 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 		echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_oui>\n";
 		echo add_token_field();
 
+		echo "<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); margin-bottom:1em;'>";
 		echo "--Restauration par tables (option par défaut)--<br />";
 		echo "<blockquote>\n";
 		echo "<input type=\"checkbox\" name=\"debug_restaure\" id=\"debug_restaure\" value=\"y\" onChange='document.getElementById(\"restauration_old_way\").checked=false;' /><label for='debug_restaure' style='cursor:pointer;'> Activer le mode debug</label><br />\n";
@@ -915,25 +916,55 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 
 		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_tentatives_intrusion\" id=\"ne_pas_restaurer_tentatives_intrusion\" value=\"y\"  onChange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"restauration_old_way\").checked=false;' /><label for='ne_pas_restaurer_tentatives_intrusion' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'tentatives_intrusion'.</label><br />\n";
 		echo "</blockquote>\n";
+		echo "</div>";
+
+		echo "<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); margin-bottom:1em;'>";
 		echo "--Restauration d'un bloc--<br />";
 		echo "<blockquote>\n";
 		echo "<input type=\"checkbox\" name=\"restauration_old_way\" id=\"restauration_old_way\" value=\"y\" onChange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;document.getElementById(\"debug_restaure\").checked=false;' /><label for='restauration_old_way' style='cursor:pointer;'> Restaurer la sauvegarde d'un bloc<br />(<i>utile par exemple pour restaurer un fichier SQL ne correspondant pas à une sauvegarde classique</i>)</label><br />\n";
 		echo "</blockquote>\n";
+		echo "</div>";
+
+		echo "<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>";
 		echo "--Restauration par MySQL--<br />";
 		echo "<blockquote>\n";
 		echo "<input type=\"checkbox\" name=\"restauration_mysql\" id=\"restauration_mysql\" value=\"y\"";
 		if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) echo " disabled";
 		echo " onChange='document.getElementById(\"restauration_old_way\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;'";
-		echo "/><label for='restauration_mysql' style='cursor:pointer;'> Restaurer la sauvegarde par un appel à la commande système mysql<br />(<i>plus rapide mais il n'y a aucune indication de progression durant le processus</i>)</label><br />\n";
-		echo "<span style='color:red; text-decoration:blink; font-weight:bolder;'> -> </span>préciser si le fichier à restaurer est codé en UTF8 (sauvegarde GEPI >=1.6.0) <input type='radio' name='char_set' value='utf8'  checked='checked'> ou en ISO (sauvegarde GEPI <=1.5.5)<input type='radio' name='char_set' value='latin1'>\n";
+		echo "/><label for='restauration_mysql' style='cursor:pointer;'> Restaurer la sauvegarde par un appel à la commande système mysql<br />(<i>plus rapide mais il n'y a aucune indication de progression durant le processus</i>)</label><br /><br />\n";
+
+		//echo "<span style='color:red; text-decoration:blink; font-weight:bolder;'> -> </span>préciser si le fichier à restaurer est codé en UTF8 (sauvegarde GEPI >=1.6.0) <input type='radio' name='char_set' value='utf8'  checked='checked'> ou en ISO (sauvegarde GEPI <=1.5.5)<input type='radio' name='char_set' value='latin1'>\n";
+
+		echo '<p>
+		<span style="color:red; text-decoration:blink; font-weight:bolder;"> → </span>
+		préciser si le fichier à restaurer est
+	</p>
+	<ul style="list-style-type:none;" >
+		<li>
+			<input id ="char_set_utf8" name="char_set" value="utf8" checked="checked" type="radio" />
+			<label for="char_set_utf8">
+				codé en UTF8 (sauvegarde GEPI &gt;=1.6.0)
+			</label>
+		</li>
+		<li>
+			<input id ="char_set_latin1" name="char_set" value="latin1" type="radio" />
+			<label for="char_set_latin1">
+				ou en ISO (sauvegarde GEPI &lt;=1.5.5)
+			</label>
+		</li>
+	</ul>
+';
 		if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) {
 		echo "<p><b><font color=\"#FF0000\">Attention : </font></b>pour utiliser la commande système mysql lorsque Gepi est hébergé sous Windows il faut au préalable copier le fichier \"mysq.exe\" dans le dossier \"gestion\" de Gepi. Ce fichier \"mysql.exe\" se trouve généralement dans le sous-dossier \"bin\" du dossier d'installation de MySQL.</p>";
 		}
 		echo "</blockquote>\n";
+		echo "</div>";
+
 		echo "<br /><br />";
 		echo "<input type='submit' id='confirm' name='confirm' value = 'Lancer la restauration' /></td></tr>\n";
 		echo "<input type=\"hidden\" name=\"action\" value=\"restaure\" />\n";
 		echo "<input type=\"hidden\" name=\"file\" value=\"".$_GET['file']."\" />\n";
+		
 		echo "</form>\n";
 
 	echo "<br />ou <br /><br />\n";

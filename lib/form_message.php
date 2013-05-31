@@ -373,6 +373,18 @@ echo "<p class='bold'><a href='../accueil.php'>Retour à l'accueil</a> ";
 if(((!isset($mode))||($mode!='rediger_message'))&&(peut_poster_message($_SESSION['statut']))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?mode=rediger_message'>Rédiger un message</a>";
 }
+
+$sql="SELECT 1=1 FROM messagerie WHERE login_src='".$_SESSION['login']."';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	echo " | <a href='".$_SERVER['PHP_SELF']."#messages_envoyes'>Tous mes envois</a>";
+}
+
+$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	echo " | <a href='".$_SERVER['PHP_SELF']."#messages_recus' title='Lus/vus ou non'>Tous mes messages reçus</a>";
+}
 echo "</p>";
 
 //debug_var();
@@ -388,6 +400,8 @@ if((isset($mode))&&($mode=='afficher_messages_non_lus')) {
 	echo affiche_historique_messages_recus($_SESSION['login'], 'non_lus');
 
 	echo "<p><br /></p>";
+
+	echo "<p style='text-indent:-4em; margin-left:4em;'><em style='color:red'>NOTE&nbsp;:</em> Pour faire cesser l'alerte, il faut cliquer sur les croix rouges.<br />Le test de présence de messages non lus n'est effectué que toutes les ".getSettingValue('MessagerieDelaisTest')."min.<br />".getSettingValue('MessagerieDelaisTest')."min après que vous ayez cliqué, l'alerte disparaitra donc.</p>";
 	require("../lib/footer.inc.php");
 	die();
 }
