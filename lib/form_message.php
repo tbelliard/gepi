@@ -400,6 +400,8 @@ if((isset($mode))&&($mode=='afficher_messages_non_lus')) {
 	echo affiche_historique_messages_recus($_SESSION['login'], 'non_lus');
 
 	echo "<p><br /></p>";
+
+	echo "<p style='text-indent:-4em; margin-left:4em;'><em style='color:red'>NOTE&nbsp;:</em> Pour faire cesser l'alerte, il faut cliquer sur les croix rouges.<br />Le test de présence de messages non lus n'est effectué que toutes les ".getSettingValue('MessagerieDelaisTest')."min.<br />".getSettingValue('MessagerieDelaisTest')."min après que vous ayez cliqué, l'alerte disparaitra donc.</p>";
 	require("../lib/footer.inc.php");
 	die();
 }
