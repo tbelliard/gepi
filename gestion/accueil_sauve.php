@@ -931,7 +931,7 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 		echo "<input type=\"checkbox\" name=\"restauration_mysql\" id=\"restauration_mysql\" value=\"y\"";
 		if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) echo " disabled";
 		echo " onChange='document.getElementById(\"restauration_old_way\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;'";
-		echo "/><label for='restauration_mysql' style='cursor:pointer;'> Restaurer la sauvegarde par un appel à la commande système mysql<br />(<i>plus rapide mais il n'y a aucune indication de progression durant le processus</i>)</label><br />\n";
+		echo "/><label for='restauration_mysql' style='cursor:pointer;'> Restaurer la sauvegarde par un appel à la commande système mysql<br />(<i>plus rapide mais il n'y a aucune indication de progression durant le processus</i>)</label><br /><br />\n";
 
 		//echo "<span style='color:red; text-decoration:blink; font-weight:bolder;'> -> </span>préciser si le fichier à restaurer est codé en UTF8 (sauvegarde GEPI >=1.6.0) <input type='radio' name='char_set' value='utf8'  checked='checked'> ou en ISO (sauvegarde GEPI <=1.5.5)<input type='radio' name='char_set' value='latin1'>\n";
 
