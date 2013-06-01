@@ -4915,7 +4915,7 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 		$contenu='
 		<form method="POST" action="#" name="f_suppression_message">
 		<input type="hidden" name="supprimer_message" value="'.$id_message.'">
-		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
+		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png" alt="" /></button>
 		</form>'.addslashes($texte);
 		$r_sql="UPDATE `messages` SET `texte`='".$contenu."' WHERE `id`='".$id_message."'";
 		$retour=mysql_query($r_sql)?true:false;
@@ -5261,7 +5261,7 @@ function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lie
 		}
 		else {
 			$tmp_statut=get_statut_from_login($login);
-			if($tmp_statut!=$statut) {$retour.="<img src='../images/icons/flag2.gif' width='17' height='18' title=\"ANOMALIE : Le statut du compte ne coïncide pas avec le statut attendu.
+			if($tmp_statut!=$statut) {$retour.="<img src='../images/icons/flag2.gif' width='17' height='18' alt='' title=\"ANOMALIE : Le statut du compte ne coïncide pas avec le statut attendu.
                     Le compte est '$tmp_statut' alors que vous avez fait
                     une recherche pour un compte '$statut'.\" /> ";}
 		}
@@ -5527,7 +5527,7 @@ function joueAlarme($niveau_arbo = "0") {
 
 	  if(file_exists($chemin_sound)) { 
 		$retour ="<audio id='id_footer_sound' preload='auto' autobuffer>
-	<source src=".$chemin_sound." />
+	<source src='".$chemin_sound."' />
 </audio>
 <script type='text/javascript'>
   function play_footer_sound() {
@@ -6576,7 +6576,9 @@ function maintien_de_la_session() {
 	// On fait réagir 3min avant la fin de session PHP
 	$nb_sec=max(60, $session_gc_maxlifetime-60*3);
 
-	echo "<span id='span_maintien_session'></span>
+	echo "<p>
+	<span id='span_maintien_session'></span>
+	</p>
 
 <script type='text/javascript'>
 	var nb_millisec_maintien_session=$nb_sec*1000;
@@ -6864,7 +6866,7 @@ function affiche_historique_messages($login_src, $mode="tous",$tri="date") {
 		<th><a href=\"javascript:trie_affiche_historique_messages('sujet')\" title='Trier par date'>Sujet</a></th>
 		";
 		if(peut_poster_message($_SESSION['statut'])) {
-			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' /></th>";
+			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' alt='' /></th>";
 		}
 		else {
 			$retour.="<th>Message</th>";
@@ -6885,7 +6887,7 @@ Exemple: Si vous avez demandé à plusieurs destinataires à ce que tel élève 
 			}
 			$temoin_visibilite="";
 			if($lig->date_visibilite>strftime("%Y-%m-%d %H:%M:%S")) {
-				$temoin_visibilite="<img src='../images/icons/flag.png' width='17' height='18' />";
+				$temoin_visibilite="<img src='../images/icons/flag.png' width='17' height='18' alt='' />";
 			}
 			$retour.="
 	<tr>
@@ -6895,21 +6897,24 @@ Exemple: Si vous avez demandé à plusieurs destinataires à ce que tel élève 
 		<td id='td_ahm_".$cpt_ahm."' onclick=\"copie_ahm($cpt_ahm)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
 		<td id='td_lu_message_envoye_".$lig->id."'>";
 			if($lig->vu==1) {
-				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Votre message a été lu/vu le ".formate_date($lig->date_vu,'y')."' /></td>
-		<td id='td_relance_message_envoye_".$lig->id."'><a href='../lib/form_message.php?mode=relancer&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"relancer_message(".$lig->id.");return false;\" title=\"Relancer le message au même destinataire.
-Concrètement, le témoin est juste remis à non lu.\" target='_blank'><img src='../images/icons/forward.png' width='16' height='16' /></a>";
+				$retour.="<img src='../images/enabled.png' width='20' height='20' alt='' title='Votre message a été lu/vu le ".formate_date($lig->date_vu,'y')."' /></td>
+		<td id='td_relance_message_envoye_".$lig->id."'>
+            <a href='../lib/form_message.php?mode=relancer&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"relancer_message(".$lig->id.");return false;\" title=\"Relancer le message au même destinataire.
+Concrètement, le témoin est juste remis à non lu.\" target='_blank'>
+            <img src='../images/icons/forward.png' width='16' height='16' alt='' />
+            </a>";
 			}
 			elseif($lig->vu==2) {
-				$retour.="<img src='../images/icons/securite.png' width='16' height='16' title='Non lu/vu' /></td>
+				$retour.="<img src='../images/icons/securite.png' width='16' height='16' alt='' title='Non lu/vu' /></td>
 		<td>";
 			}
 			else {
-				$retour.="<img src='../images/disabled.png' width='20' height='20' title='Non lu/vu' /></td>
+				$retour.="<img src='../images/disabled.png' width='20' height='20' alt='' title='Non lu/vu' /></td>
 		<td>";
 			}
 			$retour.="</td>
 		<td>
-			<a href='$gepiPath/lib/form_message.php?mode=clore&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"clore_message(".$lig->id.");return false;\"><img src='../images/icons/wizard.png' width='16' height='16' /></a>
+			<a href='$gepiPath/lib/form_message.php?mode=clore&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"clore_message(".$lig->id.");return false;\"><img src='../images/icons/wizard.png' width='16' height='16' alt='' /></a>
 		</td>
 	</tr>";
 			$cpt_ahm++;
@@ -6986,7 +6991,7 @@ function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date
 		<th><a href=\"javascript:trie_affiche_historique_messages_recus('sujet')\" title='Trier par sujet'>Sujet</a></th>
 		";
 		if($peut_poster_message) {
-			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' /></th>";
+			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' alt='' /></th>";
 		}
 		else {
 			$retour.="<th>Message</th>";
@@ -7014,13 +7019,13 @@ function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date
 		<td id='td_ahmr_".$cpt_ahmr."' onclick=\"copie_ahmr($cpt_ahmr)\">".stripslashes(nl2br(preg_replace("/\\\\n/", "\n", $lig->message)))."</td>
 		<td>";
 			if($lig->vu==1) {
-				$retour.="<img src='../images/enabled.png' width='20' height='20' title='Vous avez marqué/lu/vu ce message le ".formate_date($lig->date_vu,'y')."' />";
+				$retour.="<img src='../images/enabled.png' width='20' height='20' alt='' title='Vous avez marqué/lu/vu ce message le ".formate_date($lig->date_vu,'y')."' />";
 			}
 			elseif($lig->vu==2) {
-				$retour.="<img src='../images/icons/securite.png' width='16' height='16' title=\"Ce message a été marqué comme clos/traité par l'expéditeur le ".formate_date($lig->date_vu,'y')."\" />";
+				$retour.="<img src='../images/icons/securite.png' width='16' height='16' alt='' title=\"Ce message a été marqué comme clos/traité par l'expéditeur le ".formate_date($lig->date_vu,'y')."\" />";
 			}
 			else {
-				$retour.="<span id='span_message_$lig->id'><a href='$gepiPath/lib/form_message.php?mode=marquer_lu&amp;id_msg=$lig->id&amp;mode_no_js=y".add_token_in_url()."' onclick=\"marquer_message_lu($lig->id);return false;\" target='_blank'><img src='../images/disabled.png' width='20' height='20' title='Non lu/vu. Cliquez pour marquer ce message comme lu.' /></a></span>";
+				$retour.="<span id='span_message_$lig->id'><a href='$gepiPath/lib/form_message.php?mode=marquer_lu&amp;id_msg=$lig->id&amp;mode_no_js=y".add_token_in_url()."' onclick=\"marquer_message_lu($lig->id);return false;\" target='_blank'><img src='../images/disabled.png' width='20' height='20' alt='' title='Non lu/vu. Cliquez pour marquer ce message comme lu.' /></a></span>";
 			}
 			$retour.="</td>";
 
@@ -7030,7 +7035,7 @@ function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date
 		<td><a href='$gepiPath/lib/form_message.php?mode=repondre&amp;id_msg=$lig->id".add_token_in_url()."' onclick=\"repondre_message($lig->id);return false;\" target='_blank' title='Répondre'><img src='../images/icons/back.png' width='16' height='16' /></a></td>";
 				*/
 				$retour.="
-		<td><a href='$gepiPath/lib/form_message.php?mode=repondre&amp;id_msg=$lig->id".add_token_in_url()."' title='Répondre'><img src='../images/icons/back.png' width='16' height='16' /></a></td>";
+		<td><a href='$gepiPath/lib/form_message.php?mode=repondre&amp;id_msg=$lig->id".add_token_in_url()."' title='Répondre'><img src='../images/icons/back.png' width='16' height='16' alt='' /></a></td>";
 			}
 
 			$retour.="
@@ -7169,16 +7174,16 @@ function affichage_temoin_messages_recus($portee="header_et_fixe") {
 	$retour="";
 
 	if(peut_poster_message($_SESSION['statut'])) {
-		$retour.="<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></a></span>";
+		$retour.="<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='' /></a></span>";
 	}
 	else {
 		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
-			$retour.="<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></a></span>";
+			$retour.="<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='' /></a></span>";
 		}
 		else {
-			$retour.="<span id='span_messages_recus'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></span>";
+			$retour.="<span id='span_messages_recus'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='' /></span>";
 		}
 	}
 
@@ -7241,7 +7246,7 @@ function joueSon($sound, $id_son="") {
 
 	if(file_exists($chemin_sound)) { 
 		$retour ="<audio id='$id_son' preload='auto' autobuffer autoplay>
-	<source src=".$chemin_sound." />
+	<source src='".$chemin_sound."' />
 </audio>
 ";
 	}

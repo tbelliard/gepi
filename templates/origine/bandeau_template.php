@@ -9,7 +9,7 @@
 <!-- ************************* -->
 
 <?php
-	maintien_de_la_session();
+	//maintien_de_la_session();
 ?>
 
 <!-- Début bandeau -->
