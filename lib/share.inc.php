@@ -46,9 +46,6 @@ include_once dirname(__FILE__).'/share-pdf.inc.php';
 
 
 
-
-
-
 /**
  * Envoi d'un courriel
  *
@@ -6830,10 +6827,29 @@ function form_saisie_message($in_reply_to=-1) {
 }
 */
 
-function affiche_historique_messages($login_src, $mode="tous") {
+function affiche_historique_messages($login_src, $mode="tous",$tri="date") {
+	global $gepiPath;
+
 	$retour="";
 	if($mode=='tous') {
+		$sql="SELECT * FROM messagerie WHERE login_src='$login_src'";
+	}
+	else {
+		// Pour le moment aucun autre cas que Tous n'est géré
 		$sql="SELECT * FROM messagerie WHERE login_src='$login_src' ORDER BY date_msg DESC, login_dest ASC, sujet;";
+	}
+
+	if($tri=="sujet") {
+		$sql.=" ORDER BY sujet, date_msg DESC, login_dest ASC;";
+	}
+	elseif($tri=="dest") {
+		$sql.=" ORDER BY login_dest, date_msg DESC, login_dest ASC, sujet;";
+	}
+	elseif($tri=="vu") {
+		$sql.=" ORDER BY vu, date_msg DESC, login_dest ASC, sujet;";
+	}
+	else {
+		$sql.=" ORDER BY date_msg DESC, login_dest ASC, sujet;";
 	}
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -6843,9 +6859,9 @@ function affiche_historique_messages($login_src, $mode="tous") {
 		$retour.="<a name='tableau_historique_messages_envoyes'></a>
 <table class='boireaus boireaus_alt'>
 	<tr>
-		<th>Date</th>
-		<th>Destinataire</th>
-		<th>Sujet</th>
+		<th><a href=\"javascript:trie_affiche_historique_messages('date')\" title='Trier par date'>Date</a></th>
+		<th><a href=\"javascript:trie_affiche_historique_messages('dest')\" title='Trier par date'>Destinataire</a></th>
+		<th><a href=\"javascript:trie_affiche_historique_messages('sujet')\" title='Trier par date'>Sujet</a></th>
 		";
 		if(peut_poster_message($_SESSION['statut'])) {
 			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' /></th>";
@@ -6854,7 +6870,7 @@ function affiche_historique_messages($login_src, $mode="tous") {
 			$retour.="<th>Message</th>";
 		}
 		$retour.="
-		<th title='Témoin indiquant si votre message a été vu/lu'>Lu/vu</th>
+		<th title='Témoin indiquant si votre message a été vu/lu'><a href=\"javascript:trie_affiche_historique_messages('vu')\" title='Trier selon que le message est lu ou non'>Lu/vu</a></th>
 		<th>Relancer</th>
 		<th title=\"Marquer le message comme clos/traité.
 Cela permet d'indiquer au destinataire que le message peut ne pas être pris en compte.
@@ -6893,7 +6909,7 @@ Concrètement, le témoin est juste remis à non lu.\" target='_blank'><img src=
 			}
 			$retour.="</td>
 		<td>
-			<a href='../lib/form_message.php?mode=clore&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"clore_message(".$lig->id.");return false;\"><img src='../images/icons/wizard.png' width='16' height='16' /></a>
+			<a href='$gepiPath/lib/form_message.php?mode=clore&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"clore_message(".$lig->id.");return false;\"><img src='../images/icons/wizard.png' width='16' height='16' /></a>
 		</td>
 	</tr>";
 			$cpt_ahm++;
@@ -6916,13 +6932,17 @@ Concrètement, le témoin est juste remis à non lu.\" target='_blank'><img src=
 
 	function relancer_message(id_msg) {
 		csrf_alea=document.getElementById('csrf_alea').value;
-		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'form_message.php?mode=relancer&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'$gepiPath/lib/form_message.php?mode=relancer&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
 		document.getElementById('td_relance_message_envoye_'+id_msg).innerHTML='';
 	}
 
 	function clore_message(id_msg) {
 		csrf_alea=document.getElementById('csrf_alea').value;
-		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'form_message.php?mode=clore&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'$gepiPath/lib/form_message.php?mode=clore&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
+	}
+
+	function trie_affiche_historique_messages(tri) {
+		new Ajax.Updater($('div_messages_envoyes'),'$gepiPath/lib/form_message.php?mode=affiche_messages&tri='+tri+'&mode_affiche_historique_messages=$mode',{method: 'get'});
 	}
 </script>
 ";
@@ -6930,16 +6950,29 @@ Concrètement, le témoin est juste remis à non lu.\" target='_blank'><img src=
 	return $retour;
 }
 
-function affiche_historique_messages_recus($login_dest, $mode="tous") {
+function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date") {
 	global $gepiPath;
 
 	$retour="";
 	if($mode=='tous') {
-		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' AND date_visibilite<='".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_msg DESC, sujet;";
+		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' AND date_visibilite<='".strftime("%Y-%m-%d %H:%M:%S")."'";
 	}
 	elseif($mode=='non_lus') {
-		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' AND date_visibilite<='".strftime("%Y-%m-%d %H:%M:%S")."' AND vu='0' ORDER BY date_msg DESC, sujet;";
+		$sql="SELECT * FROM messagerie WHERE login_dest='$login_dest' AND date_visibilite<='".strftime("%Y-%m-%d %H:%M:%S")."' AND vu='0'";
 	}
+	if($tri=="sujet") {
+		$sql.=" ORDER BY sujet, date_msg DESC;";
+	}
+	elseif($tri=="source") {
+		$sql.=" ORDER BY login_src, date_msg DESC, sujet;";
+	}
+	elseif($tri=="vu") {
+		$sql.=" ORDER BY vu, date_msg DESC, sujet;";
+	}
+	else {
+		$sql.=" ORDER BY date_msg DESC, sujet;";
+	}
+
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
 		$retour="<p>Aucun message.</p>";
@@ -6948,9 +6981,9 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 		$peut_poster_message=peut_poster_message($_SESSION['statut']);
 		$retour.=add_token_field(true)."<table class='boireaus boireaus_alt'>
 	<tr>
-		<th>Date</th>
-		<th>Source</th>
-		<th>Sujet</th>
+		<th><a href=\"javascript:trie_affiche_historique_messages_recus('date')\" title='Trier par date'>Date</a></th>
+		<th><a href=\"javascript:trie_affiche_historique_messages_recus('source')\" title='Trier par expéditeur'>Source</a></th>
+		<th><a href=\"javascript:trie_affiche_historique_messages_recus('sujet')\" title='Trier par sujet'>Sujet</a></th>
 		";
 		if($peut_poster_message) {
 			$retour.="<th title=\"En cliquant sur le texte du message souhaité, vous pouvez compléter le champ Message d'un message que vous êtes en train de rédiger.\">Message <img src='../images/icons/ico_ampoule.png' width='9' height='15' /></th>";
@@ -6959,7 +6992,7 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 			$retour.="<th>Message</th>";
 		}
 		$retour.="
-		<th>Lu/vu</th>
+		<th><a href=\"javascript:trie_affiche_historique_messages_recus('vu')\" title='Trier selon que le message est lu ou non'>Lu/vu</a></th>
 		<!-- A FAIRE : Ajouter une colonne pour Répondre si on en a le droit -->";
 
 		if($peut_poster_message) {
@@ -7027,6 +7060,10 @@ function affiche_historique_messages_recus($login_dest, $mode="tous") {
 		chaine=chaine.replace(/\\r\\n\\r\\n/g, \"\\r\\n\");
 		chaine=chaine.replace(/\\n\\n/g, \"\\n\");
 		return chaine;
+	}
+
+	function trie_affiche_historique_messages_recus(tri) {
+		new Ajax.Updater($('div_messages_recus'),'$gepiPath/lib/form_message.php?mode=affiche_messages_recus&tri='+tri+'&mode_affiche_historique_messages_recus=$mode',{method: 'get'});
 	}
 </script>";
 	}
@@ -7188,6 +7225,14 @@ function joueSon($sound, $id_son="") {
 		$chemin_sound="../../../sounds/".$sound;
 	} else {
 		$chemin_sound="../sounds/".$sound;
+	}
+
+	$debug="n";
+	if($debug=="y") {
+		$f=fopen("/tmp/debug_gepi_sound.txt", "a+");
+		fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." : niveau_arbo=$niveau_arbo\n");
+		fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." : chemin_sound=$chemin_sound\n");
+		fclose($f);
 	}
 
 	if($id_son=="") {

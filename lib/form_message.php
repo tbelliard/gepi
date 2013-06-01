@@ -227,6 +227,28 @@ if((isset($mode))&&($mode=='clore')) {
 	die();
 }
 
+if((isset($mode))&&($mode=='affiche_messages_recus')) {
+	$tri=isset($_GET['tri']) ? $_GET['tri'] : "date";
+	if(!in_array($tri, array("date", "source", "sujet", "vu"))) {$tri="date";}
+
+	$mode_affiche_historique_messages_recus=isset($_GET['mode_affiche_historique_messages_recus']) ? $_GET['mode_affiche_historique_messages_recus'] : "tous";
+	if(!in_array($mode_affiche_historique_messages_recus, array("tous", "non_lus"))) {$mode_affiche_historique_messages_recus="tous";}
+
+	echo affiche_historique_messages_recus($_SESSION['login'], $mode_affiche_historique_messages_recus, $tri);
+	die;
+}
+
+if((isset($mode))&&($mode=='affiche_messages')) {
+	$tri=isset($_GET['tri']) ? $_GET['tri'] : "date";
+	if(!in_array($tri, array("date", "source", "sujet", "vu"))) {$tri="date";}
+
+	$mode_affiche_historique_messages=isset($_GET['mode_affiche_historique_messages']) ? $_GET['mode_affiche_historique_messages'] : "tous";
+	if(!in_array($mode_affiche_historique_messages, array("tous", "non_lus"))) {$mode_affiche_historique_messages="tous";}
+
+	echo affiche_historique_messages($_SESSION['login'], $mode_affiche_historique_messages, $tri);
+	die;
+}
+
 // Envoi de message
 $message_envoye=isset($_POST['message_envoye']) ? $_POST['message_envoye'] : (isset($_GET['message_envoye']) ? $_GET['message_envoye'] : "n");
 
@@ -397,11 +419,11 @@ if($messages_non_lus!="") {
 
 if((isset($mode))&&($mode=='afficher_messages_non_lus')) {
 
-	echo affiche_historique_messages_recus($_SESSION['login'], 'non_lus');
-
-	echo "<p><br /></p>";
-
-	echo "<p style='text-indent:-4em; margin-left:4em;'><em style='color:red'>NOTE&nbsp;:</em> Pour faire cesser l'alerte, il faut cliquer sur les croix rouges.<br />Le test de présence de messages non lus n'est effectué que toutes les ".getSettingValue('MessagerieDelaisTest')."min.<br />".getSettingValue('MessagerieDelaisTest')."min après que vous ayez cliqué, l'alerte disparaitra donc.</p>";
+	echo "<div id='div_messages_recus'>
+".affiche_historique_messages_recus($_SESSION['login'], 'non_lus')."
+</div>
+<p><br /></p>
+<p style='text-indent:-4em; margin-left:4em;'><em style='color:red'>NOTE&nbsp;:</em> Pour faire cesser l'alerte, il faut cliquer sur les croix rouges.<br />Le test de présence de messages non lus n'est effectué que toutes les ".getSettingValue('MessagerieDelaisTest')."min.<br />".getSettingValue('MessagerieDelaisTest')."min après que vous ayez cliqué, l'alerte disparaitra donc.</p>";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -728,30 +750,37 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 
 <a name='messages_envoyes'></a>
 <p class='bold'>Historique de vos messages envoyés&nbsp;:</p>
-<p style='color:red'>Pouvoir afficher/masquer les messages<br />N'afficher par défaut que les messages des 7 derniers jours,...</p>
+<!--p style='color:red'>ENCORE A FAIRE : Pouvoir afficher/masquer les messages<br />N'afficher par défaut que les messages des 7 derniers jours,...</p-->
 <!--div style='margin-left:3em; height:30em; maxheight:30em; overflow:auto;'-->
 <?php
 	$sql="SELECT 1=1 FROM messagerie WHERE login_src='".$_SESSION['login']."';";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)<=2) {
+		echo "<div style='margin-left:3em; height:6em; maxheight:10em; overflow:auto;'>\n";
+	}
+	elseif(mysql_num_rows($test)<=4) {
 		echo "<div style='margin-left:3em; height:10em; maxheight:10em; overflow:auto;'>\n";
 	}
 	else {
 		echo "<div style='margin-left:3em; height:30em; maxheight:30em; overflow:auto;'>\n";
 	}
+	echo "<div id='div_messages_envoyes'>\n";
 	echo affiche_historique_messages($_SESSION['login']);
 ?>
+</div>
 </div>
 
 <!-- ======================================================= -->
 
 <a name='messages_recus'></a>
 <p class='bold'>Historique de vos messages reçus&nbsp;:</p>
-<p style='color:red'>Pouvoir afficher/masquer les messages<br />N'afficher par défaut que les messages des 7 derniers jours,...</p>
+<!--p style='color:red'>ENCORE A FAIRE : Pouvoir afficher/masquer les messages<br />N'afficher par défaut que les messages des 7 derniers jours,...</p-->
 <div style='margin-left:3em; height:30em; maxheight:30em; overflow:auto;'>
-<?php
-	echo affiche_historique_messages_recus($_SESSION['login']);
-?>
+	<div id='div_messages_recus'>
+	<?php
+		echo affiche_historique_messages_recus($_SESSION['login']);
+	?>
+	</div>
 </div>
 
 <!-- ======================================================= -->
