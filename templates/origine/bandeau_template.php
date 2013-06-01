@@ -8,6 +8,10 @@
 <!-- Début du corps de la page -->
 <!-- ************************* -->
 
+<?php
+	maintien_de_la_session();
+?>
+
 <!-- Début bandeau -->
 <!-- Initialisation du bandeau à la bonne couleur -->
 	<div id='bandeau' class="<?php echo $tbs_modif_bandeau.' '.$tbs_degrade_entete.' '.$tbs_modif_bandeau.'_'.$tbs_degrade_entete; ?>">
@@ -353,4 +357,5 @@
 	</p>
 <?php
 			}
+	echo "<div id='temoin_messagerie_non_vide' style='position:fixed; right:1em; top:300px;'></div>\n";
 ?>

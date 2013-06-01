@@ -117,10 +117,8 @@ if (isset($dojo)) {
 
 <!-- on inclut le bandeau -->
 	<?php
-
-		maintien_de_la_session();
-
 		if(isset($titre_page)) {
+			maintien_de_la_session();
 			include($racineGepi.'/templates/origine/bandeau_template.php');
 		}
 	?>
