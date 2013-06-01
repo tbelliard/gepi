@@ -6,7 +6,7 @@
  * @subpackage Affichage
 */
 
-	echo "<div id='temoin_messagerie_non_vide' style='position:fixed; right:1em; top:300px;'></div>\n";
+	//echo "<div id='temoin_messagerie_non_vide' style='position:fixed; right:1em; top:300px;'></div>\n";
 
 	// Affichage de la durée de chargement de la page
 

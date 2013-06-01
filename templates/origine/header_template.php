@@ -86,7 +86,7 @@
 		";
 	}
 
-	maintien_de_la_session();
+	//maintien_de_la_session();
 ?>
 	<script type="text/javascript" src="<?php echo $tbs_gepiPath?>/lib/cookieClass.js"></script>
 	<script type="text/javascript">
