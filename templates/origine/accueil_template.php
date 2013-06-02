@@ -491,8 +491,8 @@
 						<tr class='<?php echo $newentree['style']; ?>'>
 							<td>
 								<?php
-									if((getSettingAOui('active_messagerie'))&&(in_array($newentree['statut'], array("administrateur", "scolarite", "cpe", "professeur", "secours", "autre")))) {
-										echo "<div style='float:right; width:16px;'><a href='./lib/form_message.php?message_envoye=y&amp;login_dest=".$newentree['login'].add_token_in_url()."' title=\"Déposer un message dans la messagerie interne à Gepi.\" target='_blank'><img src='./images/icons/mail.png' width='16' height='16' /></a></div>";
+									if((getSettingAOui('active_mod_alerte'))&&(in_array($newentree['statut'], array("administrateur", "scolarite", "cpe", "professeur", "secours", "autre")))) {
+										echo "<div style='float:right; width:16px;'><a href='./mod_alerte/form_message.php?message_envoye=y&amp;login_dest=".$newentree['login'].add_token_in_url()."' title=\"Déposer un message d'alerte/information à destination de ".$newentree['texte']." .\" target='_blank'><img src='./images/icons/mail.png' width='16' height='16' /></a></div>";
 									}
 
 									if(($newentree['courriel']!="")&&(check_mail($newentree['courriel']))) {

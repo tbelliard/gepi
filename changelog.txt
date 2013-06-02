@@ -40,7 +40,7 @@ Abs2:
 - Ajout d'une page d'exports statistiques (encore inachevée).
 - Possibilité de calculer un score d'absences.
 
-Messagerie:
+Alertes/informations:
 - Ajout d'un module permettant de déposer des messages à la façon d'une messagerie mail à l'attention de personnels choisis.
 - Possibilité de déposer un message depuis la liste des personnes connectées et depuis le tableau des appels dans mod_abs2.
 

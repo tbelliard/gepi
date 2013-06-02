@@ -518,7 +518,7 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
 
 				if($peut_poster_message) {
 					// Récupérer le jour suivant
-					echo "<div style='float:right;width:10px'><a href='../lib/form_message.php?message_envoye=y&amp;login_dest=".$tab_data[$jour]['login_prof'][$index_box];
+					echo "<div style='float:right;width:10px'><a href='../mod_alerte/form_message.php?message_envoye=y&amp;login_dest=".$tab_data[$jour]['login_prof'][$index_box];
 					$tmp_jour_suivant=get_next_tel_jour($jour+1);
 					if(($tmp_jour_suivant!="")&&(is_numeric($tmp_jour_suivant))) {
 						echo "&date_visibilite=".strftime("%d/%m/%Y", time()+24*3600*$tmp_jour_suivant);

@@ -127,9 +127,9 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
-if(getSettingValue('active_messagerie')=="") {
-	$result .= "&nbsp;-> Initialisation du module Messagerie&nbsp;: ";
-	if (!saveSetting("active_messagerie", 'y')) {
+if(getSettingValue('active_mod_alerte')=="") {
+	$result .= "&nbsp;-> Initialisation du dispositif d'alerte&nbsp;: ";
+	if (!saveSetting("active_mod_alerte", 'y')) {
 		$result .= msj_erreur();
 	} else {
 		$result .= msj_ok("Ok !");

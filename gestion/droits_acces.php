@@ -221,7 +221,7 @@ if(getSettingValue('active_mod_ooo')=='y') {
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }
 
-if(getSettingValue('active_messagerie')=='y') {
+if(getSettingValue('active_mod_alerte')=='y') {
   $titreItem='PeutChoisirAlerteSansSonProfesseur';
   $texteItem="peut choisir s'il accepte ou non une alerte sonore quand une nouvelle alerte/message lui est envoyée.";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
@@ -683,7 +683,7 @@ $texteItem="";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-if(getSettingValue('active_messagerie')=='y') {
+if(getSettingValue('active_mod_alerte')=='y') {
   $titreItem='PeutChoisirAlerteSansSonScolarite';
   $texteItem="peut choisir s'il accepte ou non une alerte sonore quand une nouvelle alerte/message lui est envoyée.";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
@@ -968,7 +968,7 @@ $texteItem="";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-if(getSettingValue('active_messagerie')=='y') {
+if(getSettingValue('active_mod_alerte')=='y') {
   $titreItem='PeutChoisirAlerteSansSonCpe';
   $texteItem="peut choisir s'il accepte ou non une alerte sonore quand une nouvelle alerte/message lui est envoyée.";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
@@ -1000,7 +1000,7 @@ $texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon co
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-if(getSettingValue('active_messagerie')=='y') {
+if(getSettingValue('active_mod_alerte')=='y') {
   $titreItem='PeutChoisirAlerteSansSonAdministrateur';
   $texteItem="peut choisir s'il accepte ou non une alerte sonore quand une nouvelle alerte/message lui est envoyée.";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))

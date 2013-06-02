@@ -40,10 +40,10 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-$sql="SELECT 1=1 FROM droits WHERE id='/lib/form_message.php';";
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_alerte/form_message.php';";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
-$sql="INSERT INTO droits SET id='/lib/form_message.php',
+$sql="INSERT INTO droits SET id='/mod_alerte/form_message.php',
 administrateur='V',
 professeur='V',
 cpe='V',
@@ -52,7 +52,7 @@ eleve='F',
 responsable='F',
 secours='V',
 autre='F',
-description='Messagerie',
+description='Dispositif d alerte',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -65,7 +65,7 @@ if (!checkAccess()) {
 	Une nouvelle tentative d'intrusion a été détectée par Gepi. Les détails suivants ont été enregistrés dans la base de données :
 
 	Date : 2013-05-12 17:15:24
-	Fichier visé : /lib/form_message.php
+	Fichier visé : /mod_alerte/form_message.php
 	Url d'origine : https://XXX/*.php
 	Niveau de gravité : 1
 	Description : Accès à une page sans être logué (peut provenir d'un timeout de session).
@@ -80,11 +80,18 @@ if (!checkAccess()) {
 	die();
 }
 
-if((!getSettingAOui('active_messagerie'))&&(!getSettingAOui('active_mod_alerte'))) {
-	$mess=rawurlencode("Vous tentez d accéder au module Messagerie qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Messagerie qui est désactivé.");
-	header("Location: ../accueil.php?msg=$mess");
-	die();
+if(!getSettingAOui('active_mod_alerte')) {
+	$active_messagerie=getSettingValue('active_messagerie');
+	if($active_messagerie!="") {
+		saveSetting('active_mod_alerte', $active_messagerie);
+	}
+
+	if(!getSettingAOui('active_mod_alerte')) {
+		$mess=rawurlencode("Vous tentez d accéder au dispositif d'alerte qui est désactivé !");
+		tentative_intrusion(1, "Tentative d'accès au dispositif d'alerte qui est désactivé.");
+		header("Location: ../accueil.php?msg=$mess");
+		die();
+	}
 }
 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
@@ -107,7 +114,7 @@ if((isset($mode))&&($mode=='maj_span_nom_jour_semaine')) {
 if((isset($mode))&&($mode=='check')) {
 	$messages_non_lus=check_messages_recus($_SESSION['login']);
 	if($messages_non_lus!="") {
-		echo "<a href='$gepiPath/lib/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='16' height='16' title='Vous avez $messages_non_lus' /></a>";
+		echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='16' height='16' title='Vous avez $messages_non_lus' /></a>";
 		if((getSettingAOui('MessagerieAvecSon'))&&(!isset($_GET['sound']))) {
 			$AlertesAvecSon=getPref($_SESSION['login'], "AlertesAvecSon","y");
 			if((!getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut'])))||
@@ -120,7 +127,7 @@ if((isset($mode))&&($mode=='check')) {
 		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."' ;";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
-			echo "<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></a></span>";
+			echo "<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' /></a></span>";
 		}
 		else {
 			echo "<img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' />";
@@ -133,8 +140,8 @@ if((isset($mode))&&($mode=='check2')) {
 	$messages_non_lus=check_messages_recus($_SESSION['login']);
 	if($messages_non_lus!="") {
 		$MessagerieLargeurImg=getSettingValue('MessagerieLargeurImg');
-		//echo "<a href='$gepiPath/lib/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='$MessagerieLargeurImg' height='$MessagerieLargeurImg' title='Vous avez $messages_non_lus' /></a>";
-		echo "<a href='$gepiPath/lib/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/temoin_message_non_lu.gif' width='$MessagerieLargeurImg' height='$MessagerieLargeurImg' title='Vous avez $messages_non_lus' /></a>";
+		//echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='$MessagerieLargeurImg' height='$MessagerieLargeurImg' title='Vous avez $messages_non_lus' /></a>";
+		echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/temoin_message_non_lu.gif' width='$MessagerieLargeurImg' height='$MessagerieLargeurImg' title='Vous avez $messages_non_lus' /></a>";
 	}
 	else {
 		echo "";
@@ -435,7 +442,7 @@ if((isset($mode))&&($mode=='afficher_messages_non_lus')) {
 if(peut_poster_message($_SESSION['statut'])) {
 ?>
 
-<form action='../lib/form_message.php' method='post' name='formulaire'>
+<form action='../mod_alerte/form_message.php' method='post' name='formulaire'>
 	<fieldset style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>
 		<?php
 			echo add_token_field(true);
