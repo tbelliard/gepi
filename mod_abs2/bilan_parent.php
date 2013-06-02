@@ -348,6 +348,11 @@ include('menu_bilans.inc.php');
           <th style="border: 1px solid black; background-color: gray;">
         <?php
           echo $creneau->getNomDefiniePeriode();
+          /*
+          echo "<pre>";
+          print_r($creneau);
+          echo "</pre>";
+          */
         ?>
         </th>
       <?php
@@ -371,8 +376,11 @@ include('menu_bilans.inc.php');
           //Il y'a au moins une absence affichable donc peut afficher
           if ($affichage) {
     ?>
-            <tr>
-              <td style="text-align:center;"><?php echo $date_actuelle->format('d/m/Y'); ?></td>
+            <tr class='white_hover'>
+              <td style="text-align:center;"><?php
+              	$tmp_date_actuelle=$date_actuelle->format('d/m/Y');
+              	echo $tmp_date_actuelle;
+              ?></td>
       <?php
             foreach ($creneau_col as $creneau) {
               $tab_heure = explode(":", $creneau->getHeuredebutDefiniePeriode());
@@ -380,6 +388,10 @@ include('menu_bilans.inc.php');
               $date_actuelle_heure_creneau->setTime($tab_heure[0], $tab_heure[1], $tab_heure[2]);
               $abs_col = $eleve->getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($creneau, $date_actuelle);
               $abs_col->addCollection($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve));
+              
+              $tab_heure_fin = explode(":", $creneau->getHeurefinDefiniePeriode());
+              $info_creneau_balise_title=$tab_heure[0]."h".$tab_heure[1]." à ".$tab_heure_fin[0]."h".$tab_heure_fin[1];
+              
               if ($abs_col->isEmpty() || !EdtHelper::isEtablissementOuvert($date_actuelle_heure_creneau)) {
       ?>
                 <td></td>
@@ -394,22 +406,22 @@ include('menu_bilans.inc.php');
                 switch ($priorite) {
                   case 1:
       ?>
-                    <td style="background:aqua;">RJ</td>
+                    <td style="background:aqua;" title="Retard justifié : Le <?php echo $tmp_date_actuelle.' de '.$info_creneau_balise_title;?>">RJ</td>
       <?php
                     break;
                   case 2:
       ?>
-                    <td style="background:blue;">J</td>
+                    <td style="background:blue;" title="Absence justifiée : Le <?php echo $tmp_date_actuelle.' de '.$info_creneau_balise_title;?>">J</td>
       <?php
                     break;
                   case 3:
       ?>
-                    <td style="background:fuchsia;">RNJ</td>
+                    <td style="background:fuchsia;" title="Retard non justifié : Le <?php echo $tmp_date_actuelle.' de '.$info_creneau_balise_title;?>">RNJ</td>
       <?php
                     break;
                   case 4:
       ?>
-                    <td style="background:red;">NJ</td>
+                    <td style="background:red;" title="Absence non justifiée : Le <?php echo $tmp_date_actuelle.' de '.$info_creneau_balise_title;?>">NJ</td>
       <?php
                     break;
                 }
