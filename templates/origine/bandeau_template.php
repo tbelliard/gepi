@@ -8,10 +8,6 @@
 <!-- Début du corps de la page -->
 <!-- ************************* -->
 
-<?php
-	maintien_de_la_session();
-?>
-
 <!-- Début bandeau -->
 <!-- Initialisation du bandeau à la bonne couleur -->
 	<div id='bandeau' class="<?php echo $tbs_modif_bandeau.' '.$tbs_degrade_entete.' '.$tbs_modif_bandeau.'_'.$tbs_degrade_entete; ?>">
@@ -30,6 +26,10 @@
 		<a class='change_taille_pt' href="#" onclick="modifier_taille_bandeau();change_mode_header('n', '<?php echo $tbs_bouton_taille;?>');return false;">
 			<img src="<?php echo $tbs_bouton_taille;?>/images/down.png" alt='Afficher le bandeau' title='Afficher le bandeau' />
 		</a>
+
+	<?php
+		maintien_de_la_session();
+	?>
 
 	<!-- Témoin de contact du serveur -->
 	<?php
