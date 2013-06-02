@@ -904,35 +904,43 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 
 
 
-		echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_oui>\n";
-		echo add_token_field();
+		echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method='post' id='formulaire_oui'>\n";
+		echo "<p>".add_token_field()."</p>";
 
 		echo "<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); margin-bottom:1em;'>";
 		echo "--Restauration par tables (option par défaut)--<br />";
 		echo "<blockquote>\n";
-		echo "<input type=\"checkbox\" name=\"debug_restaure\" id=\"debug_restaure\" value=\"y\" onChange='document.getElementById(\"restauration_old_way\").checked=false;' /><label for='debug_restaure' style='cursor:pointer;'> Activer le mode debug</label><br />\n";
-
-		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_log\" id=\"ne_pas_restaurer_log\" value=\"y\"  onChange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"restauration_old_way\").checked=false;' /><label for='ne_pas_restaurer_log' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'log'.</label><br />\n";
-
-		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_tentatives_intrusion\" id=\"ne_pas_restaurer_tentatives_intrusion\" value=\"y\"  onChange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"restauration_old_way\").checked=false;' /><label for='ne_pas_restaurer_tentatives_intrusion' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'tentatives_intrusion'.</label><br />\n";
-		echo "</blockquote>\n";
+        echo "<p>\n";
+		echo "<input type=\"checkbox\" name=\"debug_restaure\" id=\"debug_restaure\" value=\"y\" onchange='document.getElementById(\"restauration_old_way\").checked=false;' /><label for='debug_restaure' style='cursor:pointer;'> Activer le mode debug</label>\n";
+        echo "</p>\n";
+        echo "<p>\n";
+		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_log\" id=\"ne_pas_restaurer_log\" value=\"y\"  onchange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"restauration_old_way\").checked=false;' /><label for='ne_pas_restaurer_log' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'log'.</label>\n";
+		echo "</p>\n";
+        echo "<p>\n";
+		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_tentatives_intrusion\" id=\"ne_pas_restaurer_tentatives_intrusion\" value=\"y\"  onchange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"restauration_old_way\").checked=false;' /><label for='ne_pas_restaurer_tentatives_intrusion' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'tentatives_intrusion'.</label>\n";
+		echo "</p>\n";
+        echo "</blockquote>\n";
 		echo "</div>";
 
 		echo "<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); margin-bottom:1em;'>";
 		echo "--Restauration d'un bloc--<br />";
 		echo "<blockquote>\n";
-		echo "<input type=\"checkbox\" name=\"restauration_old_way\" id=\"restauration_old_way\" value=\"y\" onChange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;document.getElementById(\"debug_restaure\").checked=false;' /><label for='restauration_old_way' style='cursor:pointer;'> Restaurer la sauvegarde d'un bloc<br />(<i>utile par exemple pour restaurer un fichier SQL ne correspondant pas à une sauvegarde classique</i>)</label><br />\n";
-		echo "</blockquote>\n";
+		echo "<p>\n";
+		echo "<input type=\"checkbox\" name=\"restauration_old_way\" id=\"restauration_old_way\" value=\"y\" onchange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;document.getElementById(\"debug_restaure\").checked=false;' /><label for='restauration_old_way' style='cursor:pointer;'> Restaurer la sauvegarde d'un bloc<br />(<i>utile par exemple pour restaurer un fichier SQL ne correspondant pas à une sauvegarde classique</i>)</label>\n";
+		echo "</p>\n";
+        echo "</blockquote>\n";
 		echo "</div>";
 
 		echo "<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>";
 		echo "--Restauration par MySQL--<br />";
 		echo "<blockquote>\n";
+		echo "<p>\n";
 		echo "<input type=\"checkbox\" name=\"restauration_mysql\" id=\"restauration_mysql\" value=\"y\"";
 		if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) echo " disabled";
-		echo " onChange='document.getElementById(\"restauration_old_way\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;'";
+		echo " onchange='document.getElementById(\"restauration_old_way\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;'";
 		echo "/><label for='restauration_mysql' style='cursor:pointer;'> Restaurer la sauvegarde par un appel à la commande système mysql<br />(<i>plus rapide mais il n'y a aucune indication de progression durant le processus</i>)</label><br /><br />\n";
-
+		echo "</p>\n";
+        
 		//echo "<span style='color:red; text-decoration:blink; font-weight:bolder;'> -> </span>préciser si le fichier à restaurer est codé en UTF8 (sauvegarde GEPI >=1.6.0) <input type='radio' name='char_set' value='utf8'  checked='checked'> ou en ISO (sauvegarde GEPI <=1.5.5)<input type='radio' name='char_set' value='latin1'>\n";
 
 		echo '<p>
@@ -960,16 +968,16 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 		echo "</blockquote>\n";
 		echo "</div>";
 
-		echo "<br /><br />";
-		echo "<input type='submit' id='confirm' name='confirm' value = 'Lancer la restauration' /></td></tr>\n";
+		echo "<p><br /><br />";
+		echo "<input type='submit' id='confirm' name='confirm' value = 'Lancer la restauration' />\n";
 		echo "<input type=\"hidden\" name=\"action\" value=\"restaure\" />\n";
 		echo "<input type=\"hidden\" name=\"file\" value=\"".$_GET['file']."\" />\n";
-		
+		echo "</p>\n";
 		echo "</form>\n";
 
-	echo "<br />ou <br /><br />\n";
-    echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_non>\n";
-    echo "<input type='submit' name='confirm' value = 'Abandonner la restauration' />\n";
+	echo "<p>ou</p>\n";
+    echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" id=\"formulaire_non\">\n";
+    echo "<p><input type='submit' name='confirm' value = 'Abandonner la restauration' /></p>\n";
     echo "</form>\n";
 
 
@@ -1293,6 +1301,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 
 			// RESOUMETTRE
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='get' name='form_suite'>\n";
+            echo "<p>\n";
 			echo "<input type='hidden' name='suite_restauration' value='y' />\n";
 			echo "<input type='hidden' name='action' value='restaure' />\n";
 			echo "<input type='hidden' name='debug_restaure' value='$debug_restaure' />\n";
@@ -1300,6 +1309,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			echo "<input type='hidden' name='ne_pas_restaurer_log' value='$ne_pas_restaurer_log' />\n";
 			echo "<input type='hidden' name='ne_pas_restaurer_tentatives_intrusion' value='$ne_pas_restaurer_tentatives_intrusion' />\n";
 			echo "<input type='hidden' name='t_debut' value='$t_debut' />\n";
+            echo "</p>\n";
 			echo "</form>\n";
 			if (((isset($erreur_mysql) && !$erreur_mysql)) || !isset($erreur_mysql)) echo "<script type='text/javascript'>
 	setTimeout(\"document.forms['form_suite'].submit();\",500);
@@ -1733,7 +1743,9 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
     echo "<p><font color=\"#FF0000\"><b>Le répertoire \"/backup\" n'est actuellement pas protégé</b></font>.
     Si vous stockez des fichiers dans ce répertoire, ils seront accessibles de l'extérieur à l'aide d'un simple navigateur.</p>\n";
     echo "<form action=\"accueil_sauve.php\" name=\"protect\" method=\"post\">\n";
+    echo "<p >\n";
 	echo add_token_field();
+    echo "</p >\n";
     echo "<table><tr><td>Nouvel identifiant : </td><td><input type=\"text\" name=\"login_backup\" value=\"\" size=\"20\" /></td></tr>\n";
     echo "<tr><td>Nouveau mot de passe : </td><td><input type=\"password\" name=\"pwd1_backup\" value=\"\" size=\"20\" /></td></tr>\n";
     echo "<tr><td>Confirmation du mot de passe : </td><td><input type=\"password\" name=\"pwd2_backup\" value=\"\" size=\"20\" /></td></tr></table>\n";
@@ -1757,7 +1769,9 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
 			ou bien pour définir un nouvel <b>identifiant et un mot de passe</b></p>\n";
     echo "
 			<form action=\"accueil_sauve.php\" name=\"del_protect\" method=\"post\">\n";
+    echo "<p >\n";
 	echo add_token_field();
+    echo "</p >\n";
     echo "
 			<p align=\"center\"><input type=\"submit\" Value=\"Modifier/supprimer la protection du répertoire\" /></p>\n";
     echo "
@@ -1786,9 +1800,11 @@ if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysqldump.exe"))
 ?>
 <br />
 <form enctype="multipart/form-data" action="accueil_sauve.php" method="post" name="formulaire">
+    <p>
 <?php
 	echo add_token_field();
 ?>
+    </p>
 <div align='center'>
 <input type="submit" value="Sauvegarder" />
 <select name='action' size='1'>
@@ -1900,7 +1916,10 @@ if ($n > 0) {
 
 echo "<h3>Uploader un fichier (de restauration) vers le répertoire backup</h3>\n";
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire2\">\n";
+
+echo "<p >\n";
 echo add_token_field();
+echo "</p >\n";
 $sav_file="";
 echo "Les fichiers de sauvegarde sont sauvegardés dans un sous-répertoire du répertoire \"/backup\", dont le nom change de manière aléatoire régulièrement.
 Si vous le souhaitez, vous pouvez uploader un fichier de sauvegarde directement dans ce répertoire.
@@ -1933,8 +1952,10 @@ echo "<h3 id=\"zip\">Créer une archive (Zip) de dossiers de Gepi</h3>\n";
 echo "Une fois créée, pour télécharger l'archive, rendez-vous à la section \"Fichiers de restauration\" de cette page. <br />";
 echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier créé une fois l'archive téléchargée.</p>";
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
+echo "<p >\n";
 echo add_token_field();
 echo "<br />Dossier à sauvegarder :<br />";
+echo "</p >\n";
 
 $dossier_photos = '../photos/'; //le dossier photos
 $dossier_documents = '../documents/'; //le dossier documents

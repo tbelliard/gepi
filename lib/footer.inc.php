@@ -25,7 +25,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	// ========================================
 
 	//echo "<div id='temoin_messagerie_non_vide' style='display:none; position:fixed; right:1em; top:300px;width:16px;height:16px;'><a href='$gepiPath/lib/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='16' height='16' title='Vous avez un ou des messages non lus' /></a></div>";
-	echo "<div id='temoin_messagerie_non_vide' style='position:fixed; right:1em; top:300px;'></div>\n";
+	//echo "<div id='temoin_messagerie_non_vide' style='position:fixed; right:1em; top:300px;'></div>\n";
 
 	// On a stocké les DIV dans un tableau et on parcourt le tableau PHP en fin de page pour afficher les infobulles en dehors du coeur de la page.
 	// Les infobulles apparaissent ainsi un peu comme des notes de bas de page.
@@ -195,6 +195,5 @@ if (isset($javascript_footer_texte_specifique)) {
     echo $javascript_footer_texte_specifique;
 }
 ?>
-
 </body>
 </html>
