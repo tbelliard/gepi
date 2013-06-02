@@ -419,7 +419,7 @@ function rechercheCreneauCsv2($creneau){
 			$retour["debut"] = '0';
 		}else{
 			// Le cours commence au milieu du créneau
-			$retour["debut"] = 'O.5';
+			$retour["debut"] = '0.5';
 		}
 
 		// On définit la durée
