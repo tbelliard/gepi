@@ -109,7 +109,11 @@ if((isset($mode))&&($mode=='check')) {
 	if($messages_non_lus!="") {
 		echo "<a href='$gepiPath/lib/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='16' height='16' title='Vous avez $messages_non_lus' /></a>";
 		if((getSettingAOui('MessagerieAvecSon'))&&(!isset($_GET['sound']))) {
-			echo joueSon('pluck.wav',"","1");
+			$AlertesAvecSon=getPref($_SESSION['login'], "AlertesAvecSon","y");
+			if((!getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut'])))||
+			((getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut'])))&&($AlertesAvecSon=="y"))) {
+				echo joueSon('pluck.wav',"","1");
+			}
 		}
 	}
 	else {

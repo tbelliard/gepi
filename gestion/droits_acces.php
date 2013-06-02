@@ -221,6 +221,13 @@ if(getSettingValue('active_mod_ooo')=='y') {
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }
 
+if(getSettingValue('active_messagerie')=='y') {
+  $titreItem='PeutChoisirAlerteSansSonProfesseur';
+  $texteItem="peut choisir s'il accepte ou non une alerte sonore quand une nouvelle alerte/message lui est envoyée.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -229,19 +236,19 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AAProfTout';
-$texteItem="a accès aux données d'années antérieures pour tous les ".$gepiSettings['denomination_eleves'];
+$texteItem="a accès aux données d'années antérieures pour tous les ".$gepiSettings['denomination_eleves']."<br />(<em>sous réserve que le <a href='../mod_annees_anterieures/admin.php' target='_blank'>module Années antérieures soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AAProfClasses';
 $texteItem="a accès aux données antérieures des ".$gepiSettings['denomination_eleves']." des classes pour lesquelles il fournit un enseignement
-			<br />(<em>sans nécessairement avoir tous les ".$gepiSettings['denomination_eleves']." de la classe</em>)";
+			<br />(<em>sans nécessairement avoir tous les ".$gepiSettings['denomination_eleves']." de la classe</em>)<br />(<em>sous réserve que le <a href='../mod_annees_anterieures/admin.php' target='_blank'>module Années antérieures soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AAProfGroupes';
 $texteItem="a accès aux données antérieures des ".$gepiSettings['denomination_eleves']." des groupes auxquels il enseigne
-		  <br />(<em>il a ces ".$gepiSettings['denomination_eleves']." en classe</em>)";
+		  <br />(<em>il a ces ".$gepiSettings['denomination_eleves']." en classe</em>)<br />(<em>sous réserve que le <a href='../mod_annees_anterieures/admin.php' target='_blank'>module Années antérieures soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -275,22 +282,22 @@ if(getSettingValue('active_mod_discipline')=='y') {
 }
 
 //+++++++++++++++++++++++++++
+if(getSettingAOui('active_mod_ects')) {
+	$titreItem='';
+	$texteItem="";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='';
-$texteItem="";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	  $titreItem='GepiAccesSaisieEctsProf';
+	  $texteItem="a accès à la pré-saisie des mentions ECTS pour ses groupes.";
+	  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+		$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-  $titreItem='GepiAccesSaisieEctsProf';
-  $texteItem="a accès à la pré-saisie des mentions ECTS pour ses groupes.";
-  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
-
-  $titreItem='GepiAccesRecapitulatifEctsProf';
-  $texteItem="a accès aux récapitulatifs globaux des crédits ECTS pour ses classes.";
-  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
-
+	  $titreItem='GepiAccesRecapitulatifEctsProf';
+	  $texteItem="a accès aux récapitulatifs globaux des crédits ECTS pour ses classes.";
+	  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+		$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
 //=======================================================================================
 
 // DROITS PROFESSEUR PRINCIPAL
@@ -383,26 +390,28 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AAProfPrinc';
-$texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." dont il est ".$gepiSettings['denomination_professeur']." principal";
+$texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." dont il est ".$gepiSettings['denomination_professeur']." principal"."<br />(<em>sous réserve que le <a href='../mod_annees_anterieures/admin.php' target='_blank'>module Années antérieures soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 //+++++++++++++++++++++++++++
 
-$titreItem='';
-$texteItem="";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+if(getSettingAOui('active_mod_ects')) {
+	$titreItem='';
+	$texteItem="";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='GepiAccesSaisieEctsPP';
-$texteItem="peut saisir les crédits ECTS pour sa classe";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='GepiAccesSaisieEctsPP';
+	$texteItem="peut saisir les crédits ECTS pour sa classe";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='GepiAccesEditionDocsEctsPP';
-$texteItem="peut éditer les relevés ECTS pour sa classe";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='GepiAccesEditionDocsEctsPP';
+	$texteItem="peut éditer les relevés ECTS pour sa classe";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
 
 //+++++++++++++++++++++++++++
 
@@ -634,14 +643,38 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AAScolTout';
-$texteItem="a accès aux données d'années antérieures de tous les ".$gepiSettings['denomination_eleves'];
+$texteItem="a accès aux données d'années antérieures de tous les ".$gepiSettings['denomination_eleves']."<br />(<em>sous réserve que le <a href='../mod_annees_anterieures/admin.php' target='_blank'>module Années antérieures soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AAScolResp';
-$texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." des classes dont il est responsable";
+$texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." des classes dont il est responsable"."<br />(<em>sous réserve que le <a href='../mod_annees_anterieures/admin.php' target='_blank'>module Années antérieures soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+//+++++++++++++++++++++++++++
+
+if(getSettingAOui('active_mod_ects')) {
+	$titreItem='';
+	$texteItem="";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+	$titreItem='GepiAccesSaisieEctsScolarite';
+	$texteItem="peut saisir les crédits ECTS";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+	$titreItem='GepiAccesEditionDocsEctsScolarite';
+	$texteItem="peut éditer les relevés d'ECTS";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+	$titreItem='GepiAccesRecapitulatifEctsScolarite';
+	$texteItem="a accès aux récapitulatifs globaux des crédits ECTS.";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
 
 //+++++++++++++++++++++++++++
 
@@ -650,20 +683,12 @@ $texteItem="";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='GepiAccesSaisieEctsScolarite';
-$texteItem="peut saisir les crédits ECTS";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
-
-$titreItem='GepiAccesEditionDocsEctsScolarite';
-$texteItem="peut éditer les relevés d'ECTS";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
-
-$titreItem='GepiAccesRecapitulatifEctsScolarite';
-$texteItem="a accès aux récapitulatifs globaux des crédits ECTS.";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+if(getSettingValue('active_messagerie')=='y') {
+  $titreItem='PeutChoisirAlerteSansSonScolarite';
+  $texteItem="peut choisir s'il accepte ou non une alerte sonore quand une nouvelle alerte/message lui est envoyée.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
 
 //=======================================================================================
 
@@ -757,12 +782,12 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 //Années antérieures
 $titreItem='AACpeTout';
-$texteItem="a accès aux données d'années antérieures de tous les ".$gepiSettings['denomination_eleves'];
+$texteItem="a accès aux données d'années antérieures de tous les ".$gepiSettings['denomination_eleves']."<br />(<em>sous réserve que le <a href='../mod_annees_anterieures/admin.php' target='_blank'>module Années antérieures soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AACpeResp';
-$texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." dont il est responsable";
+$texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." dont il est responsable"."<br />(<em>sous réserve que le <a href='../mod_annees_anterieures/admin.php' target='_blank'>module Années antérieures soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -867,56 +892,57 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 //+++++++++++++++++++++++++++
 
 // Discipline
+if(getSettingValue('active_mod_discipline')=='y') {
+	$titreItem='';
+	$texteItem="";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='';
-$texteItem="";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='GepiDiscDefinirLieuxCpe';
+	$texteItem="a accès à la définition des lieux d'incidents";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='GepiDiscDefinirLieuxCpe';
-$texteItem="a accès à la définition des lieux d'incidents";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='GepiDiscDefinirRolesCpe';
+	$texteItem="a accès à la définition des rôles dans les incidents";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='GepiDiscDefinirRolesCpe';
-$texteItem="a accès à la définition des rôles dans les incidents";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='GepiDiscDefinirMesuresCpe';
+	$texteItem="a accès à la définition des mesures prises ou demandées à la suite d'incidents";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='GepiDiscDefinirMesuresCpe';
-$texteItem="a accès à la définition des mesures prises ou demandées à la suite d'incidents";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='GepiDiscDefinirSanctionsCpe';
+	$texteItem="a accès à la définition des sanctions";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='GepiDiscDefinirSanctionsCpe';
-$texteItem="a accès à la définition des sanctions";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='GepiDiscDefinirNaturesCpe';
+	$texteItem="a accès à la définition des natures d'incidents";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='GepiDiscDefinirNaturesCpe';
-$texteItem="a accès à la définition des natures d'incidents";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='GepiDiscDefinirCategoriesCpe';
+	$texteItem="a accès à la définition des catégories d'incidents";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='GepiDiscDefinirCategoriesCpe';
-$texteItem="a accès à la définition des catégories d'incidents";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='GepiDiscDefinirDestAlertesCpe';
+	$texteItem="a accès à la définition des destinataires d'alertes suite à des incidents";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='GepiDiscDefinirDestAlertesCpe';
-$texteItem="a accès à la définition des destinataires d'alertes suite à des incidents";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='DisciplineCpeChangeDeclarant';
+	$texteItem="a le droit de changer le déclarant d'un incident";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+		  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-$titreItem='DisciplineCpeChangeDeclarant';
-$texteItem="a le droit de changer le déclarant d'un incident";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-      $tbs_message = 'Erreur lors du chargement de '.$titreItem;
-
-$titreItem='DisciplineCpeChangeDefaut';
-$texteItem="Par défaut, a le droit de changer le déclarant d'un incident (si ce droit existe)";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-      $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	$titreItem='DisciplineCpeChangeDefaut';
+	$texteItem="Par défaut, a le droit de changer le déclarant d'un incident (si ce droit existe)";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+		  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
 
 // OOo
 if(getSettingValue('active_mod_ooo')=='y') {
@@ -937,10 +963,17 @@ if(getSettingValue('active_mod_ooo')=='y') {
 
 //+++++++++++++++++++++++++++
 
-	$titreItem='';
-	$texteItem="";
-	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+if(getSettingValue('active_messagerie')=='y') {
+  $titreItem='PeutChoisirAlerteSansSonCpe';
+  $texteItem="peut choisir s'il accepte ou non une alerte sonore quand une nouvelle alerte/message lui est envoyée.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
 
 //=======================================================================================
 
@@ -966,6 +999,13 @@ $titreItem='GepiAccesModifMaPhotoAdministrateur';
 $texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+if(getSettingValue('active_messagerie')=='y') {
+  $titreItem='PeutChoisirAlerteSansSonAdministrateur';
+  $texteItem="peut choisir s'il accepte ou non une alerte sonore quand une nouvelle alerte/message lui est envoyée.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
 
 //=======================================================================================
 
@@ -1137,7 +1177,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AAEleve';
-$texteItem="a accès à ses données d'années antérieures";
+$texteItem="a accès à ses données d'années antérieures"."<br />(<em>sous réserve que le <a href='../mod_annees_anterieures/admin.php' target='_blank'>module Années antérieures soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1189,7 +1229,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='visuEleDisc';
-$texteItem="a accès dans le module Discipline aux incidents le concernant.";
+$texteItem="a accès dans le module Discipline aux incidents le concernant."."<br />(<em>sous réserve que le <a href='../mod_discipline/discipline_admin.php' target='_blank'>module Discipline soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1364,7 +1404,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AAResponsable';
-$texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." dont il est responsable";
+$texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." dont il est responsable"."<br />(<em>sous réserve que le <a href='../mod_annees_anterieures/admin.php' target='_blank'>module Années antérieures soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1376,7 +1416,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='visuRespDisc';
-$texteItem="a accès dans le module Discipline aux incidents concernant les enfants dont il est responsable.";
+$texteItem="a accès dans le module Discipline aux incidents concernant les enfants dont il est responsable."."<br />(<em>sous réserve que le <a href='../mod_discipline/discipline_admin.php' target='_blank'>module Discipline soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

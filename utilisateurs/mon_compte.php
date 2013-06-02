@@ -1012,6 +1012,19 @@ if((count($tab_sound)>0)&&(isset($_POST['footer_sound']))&&(((in_array($_POST['f
 	}
 }
 
+if (isset($_POST['AlertesAvecSon'])) {
+	check_token();
+
+	$autorisation= isset($_POST['AlertesAvecSon']) ? $_POST['AlertesAvecSon'] : 'y';
+	if (savePref($_SESSION['login'], 'AlertesAvecSon', $autorisation)) {
+		$message_AlertesAvecSon = "<p style='color: green;'>Modification enregistrée&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S')."</p>";
+		$msg.="État de l'autorisation d'accompagnement sonore des alertes enregistré.<br />";
+	}else{
+		$message_AlertesAvecSon = "<p style='color: red;'>Impossible d'enregistrer la modification&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S')."</p>";
+		$msg.="Erreur lors de l'enregistrement de l'état de l'autorisation d'accompagnement sonore des alertes.<br />";
+	}
+}
+
 // On appelle les informations de l'utilisateur pour les afficher :
 $call_user_info = mysql_query("SELECT nom,prenom,statut,email,show_email,civilite FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
 $user_civilite = mysql_result($call_user_info, "0", "civilite");
@@ -2317,11 +2330,38 @@ function test_play_footer_sound() {
 
 }
 
+$pref_AlertesAvecSon=getPref($_SESSION['login'],'AlertesAvecSon',"y");
+if(getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut']))) {
+	echo "<br />
+<a name='AlertesAvecSon'></a>
+<form name='change_AlertesAvecSon' method='post' action='".$_SERVER['PHP_SELF']."#AlertesAvecSon'>
+	".add_token_field()."
+	<fieldset style='border: 1px solid grey;
+	background-image: url(\"../images/background/opacite50.png\");'>
+		<legend style='border: 1px solid grey; background-color: white;'>Accompagnement sonore des alertes</legend>
+			<p>Accepter ou non le son émis toutes les ".getSettingValue('MessagerieDelaisTest')."min lorsque le dispositif d'alerte interne signale la présence d'un message non lu&nbsp;:<br/>
+			<input type='radio' id='AlertesAvecSon_y' name='AlertesAvecSon' value='y'
+			 onchange=\"checkbox_change('AlertesAvecSon_y');checkbox_change('AlertesAvecSon_n');changement()\"".(($pref_AlertesAvecSon!="n") ? " checked" : "")." />
+			<label for='AlertesAvecSon_y' id='texte_AlertesAvecSon_y'>Oui</label>
+			<br />
+
+			<input type='radio' id='AlertesAvecSon_n' name='AlertesAvecSon' value='n'
+			 onchange=\" checkbox_change('AlertesAvecSon_n');checkbox_change('AlertesAvecSon_y');changement()\"".(($pref_AlertesAvecSon=="n") ? " checked" : "")." />
+			<label for='AlertesAvecSon_n' id='texte_AlertesAvecSon_n'>Non</label>
+			</p>
+
+	".(isset($message_AlertesAvecSon) ? $message_AlertesAvecSon : "")."
+
+			<p align='center'><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' /></p>
+		</fieldset>
+	</form>\n";
+}
+
 
 echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 echo "<script type='text/javascript'>
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I');
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n');
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);
@@ -2343,7 +2383,7 @@ $duree = $_POST['duree'];
 $duree = '7';
 }
 
-journal_connexions($_SESSION['login'],$duree);
+//journal_connexions($_SESSION['login'],$duree);
 
 require("../lib/footer.inc.php");
 ?>
