@@ -1465,7 +1465,8 @@ foreach ($liste_eleves as $eleve_login) {
 
 				$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='$saisie_app_nb_cols_textarea' onchange=\"changement();";
 				$mess[$k].="ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
-				$mess[$k].="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
+				// La vérification de fautes de frappe est maintenant faite dans la même requête ajax
+				//$mess[$k].="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
 				$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\n";
 				$mess[$k].="\"";
 

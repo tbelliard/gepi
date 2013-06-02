@@ -40,8 +40,8 @@ function log_ajax_app($texte) {
 // Sécurité
 if (!checkAccess()) {
 	log_ajax_app("Echec checkAccess().");
-    header("Location: ../logout.php?auto=2");
-    die();
+	header("Location: ../logout.php?auto=2");
+	die();
 }
 
 //echo "B";
@@ -65,7 +65,7 @@ $var2 = isset($_POST["var2"]) ? $_POST["var2"] : (isset($_GET["var2"]) ? $_GET["
 $appreciation = isset($_POST["var3"]) ? $_POST["var3"] : (isset($_GET["var3"]) ? $_GET["var3"] : NULL);
 $professeur = isset($_SESSION["statut"]) ? $_SESSION["statut"] : NULL;
 
-$mode=isset($_POST['mode']) ? $_POST['mode'] : "";
+//$mode=isset($_POST['mode']) ? $_POST['mode'] : "";
 
 // ========== Fin de l'initialisation de la page =============
 
@@ -87,7 +87,7 @@ if($_SESSION['statut']=='professeur') {
 
 	// On vérifie que le prof logué peut saisir ces appréciations
 	//$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."'");
-	if($mode!="verif") {
+	//if($mode!="verif") {
 		$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
 		if (mysql_num_rows($verif_prof) >= 1) {
 			// On ne fait rien
@@ -96,56 +96,19 @@ if($_SESSION['statut']=='professeur') {
 			log_ajax_app("Vous ne pouvez pas saisir d'appreciations pour cet eleve");
 			die('Vous ne pouvez pas saisir d\'appr&eacute;ciations pour cet &eacute;l&egrave;ve');
 		}
+	/*
 	}
 	else {
+		// On économise une requête quand il s'agit juste de vérifier les lapsus?
 		$temoin_prof=1;
 	}
+	*/
 }
 
-if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe') || (($temoin_eleve !== 0 AND $temoin_prof !== 0))) {
-	if($mode=='verif') {
-		$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
-			terme VARCHAR(255) NOT NULL DEFAULT '',
-			terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
-			PRIMARY KEY (id)
-			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		
-		log_ajax_app($sql);
-		$create_table=mysql_query($sql);
-		if(!$create_table) {
-			echo "<span style='color:red'>Erreur lors de la création de la table 'vocabulaire'.</span>";
-		}
-		else {
-			$sql="SELECT * FROM vocabulaire;";
-			//echo "$sql<br />";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				while($lig_voc=mysql_fetch_object($res)) {
-					$tab_voc[]=$lig_voc->terme;
-					$tab_voc_corrige[]=$lig_voc->terme_corrige;
-				}
+if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($_SESSION['statut']=='cpe') || (($temoin_eleve !== 0 AND $temoin_prof !== 0))) {
 
-				/*
-				$tab_tmp=explode(" ",preg_replace("//"," ",$appreciation);
-				for($loop=0;$loop<count($tab_tmp);$loop++) {
-					
-				}
-				*/
-				$appreciation_test=" ".preg_replace("/[',;\.]/"," ",casse_mot($appreciation,'min'))." ";
-				$chaine_retour="";
-				for($loop=0;$loop<count($tab_voc);$loop++) {
-					if(preg_match("/ ".$tab_voc[$loop]." /i",$appreciation_test)) {
-						if($chaine_retour=="") {$chaine_retour.="<span style='font-weight:bold'>Suspicion de faute de frappe&nbsp;: </span>";}
-						$chaine_retour.=$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]."<br />";
-					}
-				}
-				if($chaine_retour!="") {
-					echo $chaine_retour;
-				}
-			}
-		}
-	}
-	elseif($_SESSION['statut']=='professeur') {
+	if($_SESSION['statut']=='professeur') {
+		// Enregistrement ou pas de l'appréciation temporaire:
 		$insertion_ou_maj_tempo="y";
 		$sql="SELECT appreciation FROM matieres_appreciations WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
 		log_ajax_app($sql);
@@ -179,9 +142,68 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe') || (($tem
 			}
 		}
 		// et on renvoie une réponse valide
-		header("HTTP/1.0 200 OK");
-		echo ' ';
+		//header("HTTP/1.0 200 OK");
+		//echo ' ';
 	}
+
+	// Vérification des fautes de frappe/lapsus
+	//if($mode=='verif') {
+		$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
+			terme VARCHAR(255) NOT NULL DEFAULT '',
+			terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
+			PRIMARY KEY (id)
+			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		log_ajax_app($sql);
+		$create_table=mysql_query($sql);
+		if(!$create_table) {
+			echo "<span style='color:red'>Erreur lors de la création de la table 'vocabulaire'.</span>";
+		}
+		else {
+			$sql="SELECT * FROM vocabulaire;";
+			//echo "$sql<br />";
+			log_ajax_app($sql);
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				while($lig_voc=mysql_fetch_object($res)) {
+					$tab_voc[]=$lig_voc->terme;
+					$tab_voc_corrige[]=$lig_voc->terme_corrige;
+					log_ajax_app("Tableau des corrections possibles : ".$lig_voc->terme." -> ".$lig_voc->terme_corrige);
+				}
+
+				/*
+				$tab_tmp=explode(" ",preg_replace("//"," ",$appreciation);
+				for($loop=0;$loop<count($tab_tmp);$loop++) {
+					
+				}
+				*/
+				$appreciation_test=" ".preg_replace("/[',;\.]/"," ",casse_mot($appreciation,'min'))." ";
+				$chaine_retour="";
+				for($loop=0;$loop<count($tab_voc);$loop++) {
+					if(preg_match("/ ".$tab_voc[$loop]." /i",$appreciation_test)) {
+						if($chaine_retour=="") {$chaine_retour.="<span style='font-weight:bold'>Suspicion de faute de frappe&nbsp;: </span>";}
+						$chaine_retour.=$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]."<br />";
+						log_ajax_app("Suspicion de faute de frappe : ".$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]);
+					}
+				}
+
+				if($chaine_retour!="") {
+					echo $chaine_retour;
+					log_ajax_app("\$chaine_retour=".$chaine_retour);
+				}
+				else {
+					// et on renvoie une réponse valide
+					header("HTTP/1.0 200 OK");
+					echo ' ';
+				}
+			}
+			else {
+				// et on renvoie une réponse valide
+				header("HTTP/1.0 200 OK");
+				echo ' ';
+			}
+		}
+	//}
+
 }
 else {
 	// et on renvoie une réponse valide
