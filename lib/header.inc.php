@@ -118,7 +118,9 @@ if (isset($dojo)) {
 <!-- on inclut le bandeau -->
 	<?php
 		if(isset($titre_page)) {
-			maintien_de_la_session();
+			// On met le maintien_de_la_session() dans le templates/origine/bandeau_template.php
+			// pour qu'il soit aussi pris en compte dans les pages template.
+			//maintien_de_la_session();
 			include($racineGepi.'/templates/origine/bandeau_template.php');
 		}
 	?>
