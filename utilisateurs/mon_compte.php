@@ -2234,10 +2234,7 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 	echo "'>Choix du mode d'export PDF</legend>\n";
 	echo "<input type='hidden' name='choix_mode_export_pdf' value='ok' />\n";
 
-	$output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "");
-	if($output_mode_pdf=='') {
-		$output_mode_pdf="I";
-	}
+	$output_mode_pdf=get_output_mode_pdf();
 
 	echo "<p>\n";
 	echo "<input type='radio' id='output_mode_pdf_I' name='output_mode_pdf' value='I'";

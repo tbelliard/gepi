@@ -7428,4 +7428,10 @@ function get_next_tel_jour($jour, $decalage_aujourdhui=0) {
 	}
 	return $retour;
 }
+
+function get_output_mode_pdf() {
+	$output_mode_pdf=getSettingValue("output_mode_pdf");
+	if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
+	return getPref($_SESSION['login'], "output_mode_pdf", $output_mode_pdf);
+}
 ?>

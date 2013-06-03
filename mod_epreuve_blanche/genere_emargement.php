@@ -411,7 +411,7 @@ if(isset($imprime)) {
 
 			//$pdf->Footer();
 
-			$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+			$pref_output_mode_pdf=get_output_mode_pdf();
 
 			$date=date("Ymd_Hi");
 			$nom_fich='Emargement_'.$id_epreuve.'_'.$date.'.pdf';

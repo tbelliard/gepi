@@ -468,7 +468,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 	$y_tmp = $pdf->GetY();
 } // FOR (boucle classe)
 
-$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+$pref_output_mode_pdf=get_output_mode_pdf();
 
 // sortie PDF sur écran
 $nom_releve=date("Ymd_Hi");

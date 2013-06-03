@@ -1250,6 +1250,6 @@ if ( $active_graphique === '1' AND $test == 'on') {
 
 $cpt_eleve = $cpt_eleve + 1;
 }
-$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+$pref_output_mode_pdf=get_output_mode_pdf();
 $pdf->Output('fiche_recap_abs_'.date("Ymd_Hi").'.pdf',$pref_output_mode_pdf);
 ?>

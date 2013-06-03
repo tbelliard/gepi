@@ -679,7 +679,7 @@ echo "</pre>";
 		$nom_releve=remplace_accents($current_group['name']."_".$current_group['description']."_-_".$current_group['classlist_string']."_", "all");
 	}
 
-	$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+	$pref_output_mode_pdf=get_output_mode_pdf();
 
 	$nom_releve.=date("Ymd_Hi");
 	$nom_releve = 'Liste_'.$nom_releve.'.pdf';

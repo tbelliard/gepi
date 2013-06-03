@@ -996,7 +996,7 @@ while ($nb_page_traite < $nb_page_total)
 
 // fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 
-	$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+	$pref_output_mode_pdf=get_output_mode_pdf();
 
 	// génération du nom du document
 	$nom_fichier = 'bilan_journalier_'.$datation_fichier.'.pdf';

@@ -133,7 +133,7 @@ $pdf->FancyTable($w1,$header1,$data1,"v","R");
 
 //debug_var();
 
-$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+$pref_output_mode_pdf=get_output_mode_pdf();
 
 //if((!isset($_GET['id_groupe']))||(!isset($_GET['nom_pdf_en_detail']))){
 if(!isset($_GET['id_groupe'])) {
