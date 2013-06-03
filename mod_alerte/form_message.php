@@ -583,6 +583,7 @@ Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendema
 							}
 						}
 					?>
+					<div style='float:right; width:16px;'><a href='javascript:date_visibilite_maintenant()' title="Fixer la date/heure de visibilité à l'instant présent."><img src='../images/icons/wizard.png' width='16' height='16' /></a></div>
 					<span id='span_nom_jour_semaine'></span> 
 					<input type='text' name='date_visibilite' id='date_visibilite' size='10' value = "<?php echo $date_visibilite;?>" onKeyDown="clavier_date(this.id,event);maj_span_nom_jour_semaine();" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." onchange="changement();maj_span_nom_jour_semaine();" onblur="maj_span_nom_jour_semaine();" />
 					<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>;document.getElementById('span_nom_jour_semaine').innerHTML='';"
@@ -752,6 +753,14 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 
 	maj_span_nom_jour_semaine();
 	//setTimeout('maj_span_nom_jour_semaine()', 3000);
+
+	function date_visibilite_maintenant() {
+		maintenant = new Date();
+		document.getElementById('date_visibilite').value = maintenant.getDate()+'/'+(maintenant.getMonth()+1)+'/'+maintenant.getFullYear();
+		document.getElementById('heure_visibilite').value = maintenant.getHours()+':'+maintenant.getMinutes();
+		delete (maintenant);
+	}
+
 </script>
 
 <?php
