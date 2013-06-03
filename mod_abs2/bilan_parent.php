@@ -160,6 +160,8 @@ $titre_page = "Absences";
 require_once("../lib/header.inc.php");
 include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
+
+$mois_precedent="";
 ?>
 <div id="contain_div" class="css-panes">
   <form id="choix_date" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
@@ -375,11 +377,20 @@ include('menu_bilans.inc.php');
           }
           //Il y'a au moins une absence affichable donc peut afficher
           if ($affichage) {
+
+			$tmp_date_actuelle=$date_actuelle->format('d/m/Y');
+			$tmp_tab=explode("/",$tmp_date_actuelle);
+			if($tmp_tab[1]!=$mois_precedent) {
+				echo '<tr class="white_hover"><td colspan="'.($creneau_col->count() + 1).'" style="text-align:center; background-color: gray;">'.ucfirst(strftime("%B %Y", mktime(13,59,0,$tmp_tab[1],$tmp_tab[0],$tmp_tab[2]))).'</td></tr>';
+				$mois_precedent=$tmp_tab[1];
+			}
+
     ?>
             <tr class='white_hover'>
               <td style="text-align:center;"><?php
-              	$tmp_date_actuelle=$date_actuelle->format('d/m/Y');
-              	echo $tmp_date_actuelle;
+              	//$tmp_date_actuelle=date("l", mktime(13,59,0,$tmp_tab[1],$tmp_tab[0],$tmp_tab[2]))." ".$tmp_date_actuelle;
+              	$tmp_date_actuelle=strftime("%A", mktime(13,59,0,$tmp_tab[1],$tmp_tab[0],$tmp_tab[2]))." ".$tmp_date_actuelle;
+              	echo ucfirst($tmp_date_actuelle);
               ?></td>
       <?php
             foreach ($creneau_col as $creneau) {
