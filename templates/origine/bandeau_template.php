@@ -8,10 +8,6 @@
 <!-- Début du corps de la page -->
 <!-- ************************* -->
 
-<?php
-	maintien_de_la_session();
-?>
-
 <!-- Début bandeau -->
 <!-- Initialisation du bandeau à la bonne couleur -->
 	<div id='bandeau' class="<?php echo $tbs_modif_bandeau.' '.$tbs_degrade_entete.' '.$tbs_modif_bandeau.'_'.$tbs_degrade_entete; ?>">
@@ -30,6 +26,10 @@
 		<a class='change_taille_pt' href="#" onclick="modifier_taille_bandeau();change_mode_header('n', '<?php echo $tbs_bouton_taille;?>');return false;">
 			<img src="<?php echo $tbs_bouton_taille;?>/images/down.png" alt='Afficher le bandeau' title='Afficher le bandeau' />
 		</a>
+
+	<?php
+		maintien_de_la_session();
+	?>
 
 	<!-- Témoin de contact du serveur -->
 	<?php
@@ -110,11 +110,10 @@
 	<ol>
 		<?php
 
-			if((getSettingAOui('active_messagerie'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe')))) {
+			if((getSettingAOui('active_mod_alerte'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe')))) {
 				if(isset($_SERVER['SCRIPT_NAME'])) {
-					//if(!preg_match("/form_message.php/", $_SERVER['SCRIPT_NAME'])) {
 					// Pour éviter de faire apparaitre le témoin de message sur des pages présentées lors des conseils de classe:
-					$tab_pages_temoin_fixe_messagerie_exclu=array("/lib/form_message.php", "/visualisation/", "/bulletin/bull_index.php", "/saisie/saisie_avis", "/prepa_conseil/index3.php", "/prepa_conseil/edit_limite.php");
+					$tab_pages_temoin_fixe_messagerie_exclu=array("/mod_alerte/form_message.php", "/visualisation/", "/bulletin/bull_index.php", "/saisie/saisie_avis", "/prepa_conseil/index3.php", "/prepa_conseil/edit_limite.php");
 					$cpt_tab_pages_temoin_fixe_messagerie_exclu=0;
 					for($loop=0;$loop<count($tab_pages_temoin_fixe_messagerie_exclu);$loop++) {
 						if(preg_match("@$tab_pages_temoin_fixe_messagerie_exclu[$loop]@", $_SERVER['SCRIPT_NAME'])) {

@@ -41,10 +41,10 @@ if ($resultat_session == 'c') {
 }
 
 
-$sql="SELECT 1=1 FROM droits WHERE id='/messagerie/admin.php';";
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_alerte/admin.php';";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
-$sql="INSERT INTO droits SET id='/messagerie/admin.php',
+$sql="INSERT INTO droits SET id='/mod_alerte/admin.php',
 administrateur='V',
 professeur='F',
 cpe='F',
@@ -53,7 +53,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Messagerie : Administration du module',
+description='Dispositif d alerte : Administration du module',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -73,7 +73,7 @@ if (isset($_POST['is_posted'])) {
 	$nb_reg=0;
 	$msg="";
 
-	if ((isset($_POST['activer']))&&(!saveSetting("active_messagerie", $_POST['activer']))) {
+	if ((isset($_POST['activer']))&&(!saveSetting("active_mod_alerte", $_POST['activer']))) {
 		$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre activation/désactivation !</span><br />";
 	} else {
 		$nb_reg++;
@@ -81,7 +81,7 @@ if (isset($_POST['is_posted'])) {
 
 	if (isset($_POST['MessagerieAvecSon'])) {
 		if(!saveSetting("MessagerieAvecSon", $_POST['MessagerieAvecSon'])) {
-			$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre Messagerie avec son !</span><br />";
+			$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre Alertes avec son !</span><br />";
 		} else {
 			$nb_reg++;
 		}
@@ -174,7 +174,7 @@ if (isset($_POST['is_posted2'])) {
 // ====== Inclusion des balises head et du bandeau =====
 include_once("../lib/header_template.inc.php");
 
-if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Messagerie"))
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Alertes"))
 		echo "erreur lors de la création du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
@@ -202,7 +202,7 @@ if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 // $affiche_debug=debug_var();
 
 
-$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/messagerie/admin_template.php';
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_alerte/admin_template.php';
 
 $tbs_last_connection=""; // On n'affiche pas les dernières connexions
 include($nom_gabarit);

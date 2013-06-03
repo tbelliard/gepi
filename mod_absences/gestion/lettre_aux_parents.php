@@ -388,7 +388,7 @@ $pdf->Cell(0, 5, ($adresse2), 0, 1, 'C', '');
 // Et on affiche le pdf généré... (ou on le sauvegarde en local)
 // $pdf->Output(); pour afficher sur votre browser
 
-$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+$pref_output_mode_pdf=get_output_mode_pdf();
 
 $nom_lettre=date("Ymd_Hi");
 $nom_lettre='Lettre_'.$nom_lettre.'.pdf';

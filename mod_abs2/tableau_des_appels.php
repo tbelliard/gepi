@@ -194,8 +194,8 @@ foreach($classe_col as $classe){
 //			</div>
 //		</td>';
 	echo '	<td>';
-	if((getSettingAOui('active_messagerie'))&&(getSettingAOui('PeutPosterMessage'.ucfirst($_SESSION['statut'])))) {
-		echo "<div style='float:right; width:16px;'><a href='../lib/form_message.php?mode=rediger_message&sujet=".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." : Appel en ".$classe->getNom()."&message=L appel en ".$classe->getNom()." sur le créneau ".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." n a pas été effectué.' target='_blank'><img src='../images/icons/mail.png' width='16' height='16' title=\"Rédiger un message à propos de la classe de ".$classe->getNom().".\" /></a></div>";
+	if((getSettingAOui('active_mod_alerte'))&&(getSettingAOui('PeutPosterMessage'.ucfirst($_SESSION['statut'])))) {
+		echo "<div style='float:right; width:16px;'><a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." : Appel en ".$classe->getNom()."&message=L appel en ".$classe->getNom()." sur le créneau ".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." n a pas été effectué.' target='_blank'><img src='../images/icons/mail.png' width='16' height='16' title=\"Rédiger un message à propos de la classe de ".$classe->getNom().".\" /></a></div>";
 	}
 	echo '<h4>'.$classe->getNom().'</h4>';
 	echo '</td>';
@@ -302,8 +302,8 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 			if($current_cours_appel_manquant) {
 				$tab_dest_message[]=$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')."|".$classe->getNom()."|".$edtCours->getUtilisateurProfessionnel()->getLogin();
 
-				if((getSettingAOui('active_messagerie'))&&(getSettingAOui('PeutPosterMessage'.ucfirst($_SESSION['statut'])))) {
-					$echo_str.=" <span id='span_envoi_message_$cpt_user'><a href='../lib/form_message.php?message_envoye=y&login_dest=".$edtCours->getUtilisateurProfessionnel()->getLogin()."&sujet=".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." : Appel en ".$classe->getNom()."&message=Sauf erreur, vous avez oublié de faire l appel en ".$classe->getNom()." sur le créneau ".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i').add_token_in_url()."'
+				if((getSettingAOui('active_mod_alerte'))&&(getSettingAOui('PeutPosterMessage'.ucfirst($_SESSION['statut'])))) {
+					$echo_str.=" <span id='span_envoi_message_$cpt_user'><a href='../mod_alerte/form_message.php?message_envoye=y&login_dest=".$edtCours->getUtilisateurProfessionnel()->getLogin()."&sujet=".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." : Appel en ".$classe->getNom()."&message=Sauf erreur, vous avez oublié de faire l appel en ".$classe->getNom()." sur le créneau ".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i').add_token_in_url()."'
 					target='_blank'
 					onclick=\"envoi_rappel_appel($cpt_user,
 												'".$edtCours->getUtilisateurProfessionnel()->getLogin()."', 
@@ -501,12 +501,12 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 
 <?php
 	// 20130416
-	if((getSettingAOui('active_messagerie'))&&(getSettingAOui('PeutPosterMessage'.ucfirst($_SESSION['statut'])))&&(count($tab_dest_message)>0)) {
+	if((getSettingAOui('active_mod_alerte'))&&(getSettingAOui('PeutPosterMessage'.ucfirst($_SESSION['statut'])))&&(count($tab_dest_message)>0)) {
 		echo "<script type='text/javascript'>
 	function envoi_rappel_appel(id, login_dest, sujet, message) {
 		csrf_alea=document.getElementById('csrf_alea').value;
 
-		new Ajax.Updater($('span_envoi_message_'+id),'$gepiPath/lib/form_message.php?envoi_js=y&message_envoye=y&login_dest='+login_dest+'&sujet='+sujet+'&message='+message+'&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('span_envoi_message_'+id),'$gepiPath/mod_alerte/form_message.php?envoi_js=y&message_envoye=y&login_dest='+login_dest+'&sujet='+sujet+'&message='+message+'&csrf_alea='+csrf_alea,{method: 'get'});
 	}
 </script>";
 

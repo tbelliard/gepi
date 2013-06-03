@@ -554,7 +554,7 @@ if(isset($generer_pdf)) {
 			}
 		}
 
-		$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+		$pref_output_mode_pdf=get_output_mode_pdf();
 
 		$date=date("Ymd_Hi");
 		$nom_fich='Trombino_'.$date.'.pdf';

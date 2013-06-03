@@ -2761,7 +2761,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 
 	echo "</td>\n";
 
-	echo "<td>\n";
+	echo "<td width='".$largeur_graphe."px'>\n";
 	//====================================================================
 
 	// Récupération des infos personnelles sur l'élève (nom, prénom, sexe, date de naissance et redoublant)

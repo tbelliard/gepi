@@ -6821,7 +6821,7 @@ function enregistre_message($sujet, $message, $login_src, $login_dest, $date_vis
 }
 /*
 function form_saisie_message($in_reply_to=-1) {
-	$chaine="<form action='../lib/form_message.php' method='post'>
+	$chaine="<form action='../mod_alerte/form_message.php' method='post'>
 		<fieldset style='border:1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
 			
 		</fieldset>
@@ -6899,7 +6899,7 @@ Exemple: Si vous avez demandé à plusieurs destinataires à ce que tel élève 
 			if($lig->vu==1) {
 				$retour.="<img src='../images/enabled.png' width='20' height='20' alt='' title='Votre message a été lu/vu le ".formate_date($lig->date_vu,'y')."' /></td>
 		<td id='td_relance_message_envoye_".$lig->id."'>
-            <a href='../lib/form_message.php?mode=relancer&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"relancer_message(".$lig->id.");return false;\" title=\"Relancer le message au même destinataire.
+            <a href='$gepiPath/mod_alerte/form_message.php?mode=relancer&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"relancer_message(".$lig->id.");return false;\" title=\"Relancer le message au même destinataire.
 Concrètement, le témoin est juste remis à non lu.\" target='_blank'>
             <img src='../images/icons/forward.png' width='16' height='16' alt='' />
             </a>";
@@ -6914,7 +6914,7 @@ Concrètement, le témoin est juste remis à non lu.\" target='_blank'>
 			}
 			$retour.="</td>
 		<td>
-			<a href='$gepiPath/lib/form_message.php?mode=clore&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"clore_message(".$lig->id.");return false;\"><img src='../images/icons/wizard.png' width='16' height='16' alt='' /></a>
+			<a href='$gepiPath/mod_alerte/form_message.php?mode=clore&amp;mode_no_js=y&amp;id_msg=".$lig->id.add_token_in_url()."' onclick=\"clore_message(".$lig->id.");return false;\"><img src='../images/icons/wizard.png' width='16' height='16' alt='' /></a>
 		</td>
 	</tr>";
 			$cpt_ahm++;
@@ -6937,17 +6937,17 @@ Concrètement, le témoin est juste remis à non lu.\" target='_blank'>
 
 	function relancer_message(id_msg) {
 		csrf_alea=document.getElementById('csrf_alea').value;
-		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'$gepiPath/lib/form_message.php?mode=relancer&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'$gepiPath/mod_alerte/form_message.php?mode=relancer&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
 		document.getElementById('td_relance_message_envoye_'+id_msg).innerHTML='';
 	}
 
 	function clore_message(id_msg) {
 		csrf_alea=document.getElementById('csrf_alea').value;
-		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'$gepiPath/lib/form_message.php?mode=clore&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('td_lu_message_envoye_'+id_msg),'$gepiPath/mod_alerte/form_message.php?mode=clore&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
 	}
 
 	function trie_affiche_historique_messages(tri) {
-		new Ajax.Updater($('div_messages_envoyes'),'$gepiPath/lib/form_message.php?mode=affiche_messages&tri='+tri+'&mode_affiche_historique_messages=$mode',{method: 'get'});
+		new Ajax.Updater($('div_messages_envoyes'),'$gepiPath/mod_alerte/form_message.php?mode=affiche_messages&tri='+tri+'&mode_affiche_historique_messages=$mode',{method: 'get'});
 	}
 </script>
 ";
@@ -7025,17 +7025,17 @@ function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date
 				$retour.="<img src='../images/icons/securite.png' width='16' height='16' alt='' title=\"Ce message a été marqué comme clos/traité par l'expéditeur le ".formate_date($lig->date_vu,'y')."\" />";
 			}
 			else {
-				$retour.="<span id='span_message_$lig->id'><a href='$gepiPath/lib/form_message.php?mode=marquer_lu&amp;id_msg=$lig->id&amp;mode_no_js=y".add_token_in_url()."' onclick=\"marquer_message_lu($lig->id);return false;\" target='_blank'><img src='../images/disabled.png' width='20' height='20' alt='' title='Non lu/vu. Cliquez pour marquer ce message comme lu.' /></a></span>";
+				$retour.="<span id='span_message_$lig->id'><a href='$gepiPath/mod_alerte/form_message.php?mode=marquer_lu&amp;id_msg=$lig->id&amp;mode_no_js=y".add_token_in_url()."' onclick=\"marquer_message_lu($lig->id);return false;\" target='_blank'><img src='../images/disabled.png' width='20' height='20' alt='' title='Non lu/vu. Cliquez pour marquer ce message comme lu.' /></a></span>";
 			}
 			$retour.="</td>";
 
 			if($peut_poster_message) {
 				/*
 				$retour.="
-		<td><a href='$gepiPath/lib/form_message.php?mode=repondre&amp;id_msg=$lig->id".add_token_in_url()."' onclick=\"repondre_message($lig->id);return false;\" target='_blank' title='Répondre'><img src='../images/icons/back.png' width='16' height='16' /></a></td>";
+		<td><a href='$gepiPath/mod_alerte/form_message.php?mode=repondre&amp;id_msg=$lig->id".add_token_in_url()."' onclick=\"repondre_message($lig->id);return false;\" target='_blank' title='Répondre'><img src='../images/icons/back.png' width='16' height='16' /></a></td>";
 				*/
 				$retour.="
-		<td><a href='$gepiPath/lib/form_message.php?mode=repondre&amp;id_msg=$lig->id".add_token_in_url()."' title='Répondre'><img src='../images/icons/back.png' width='16' height='16' alt='' /></a></td>";
+		<td><a href='$gepiPath/mod_alerte/form_message.php?mode=repondre&amp;id_msg=$lig->id".add_token_in_url()."' title='Répondre'><img src='../images/icons/back.png' width='16' height='16' alt='' /></a></td>";
 			}
 
 			$retour.="
@@ -7048,9 +7048,9 @@ function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date
 	function marquer_message_lu(id_msg) {
 		csrf_alea=document.getElementById('csrf_alea').value;
 
-		new Ajax.Updater($('span_message_'+id_msg),'$gepiPath/lib/form_message.php?mode=marquer_lu&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
-		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check&sound=no&csrf_alea='+csrf_alea,{method: 'get'});
-		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check2&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('span_message_'+id_msg),'$gepiPath/mod_alerte/form_message.php?mode=marquer_lu&id_msg='+id_msg+'&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/mod_alerte/form_message.php?mode=check&sound=no&csrf_alea='+csrf_alea,{method: 'get'});
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/mod_alerte/form_message.php?mode=check2&csrf_alea='+csrf_alea,{method: 'get'});
 	}
 
 	function copie_ahmr(num) {
@@ -7068,7 +7068,7 @@ function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date
 	}
 
 	function trie_affiche_historique_messages_recus(tri) {
-		new Ajax.Updater($('div_messages_recus'),'$gepiPath/lib/form_message.php?mode=affiche_messages_recus&tri='+tri+'&mode_affiche_historique_messages_recus=$mode',{method: 'get'});
+		new Ajax.Updater($('div_messages_recus'),'$gepiPath/mod_alerte/form_message.php?mode=affiche_messages_recus&tri='+tri+'&mode_affiche_historique_messages_recus=$mode',{method: 'get'});
 	}
 </script>";
 	}
@@ -7142,8 +7142,8 @@ function clore_declore_message($id_msg) {
 
 function peut_poster_message($statut) {
 	// A FAIRE: Gérer le statut Autre...
-	if(getSettingAOui('active_messagerie')) {
-		if(!acces('/lib/form_message.php', $statut)) {
+	if(getSettingAOui('active_mod_alerte')) {
+		if(!acces('/mod_alerte/form_message.php', $statut)) {
 			return false;
 		}
 		else {
@@ -7174,13 +7174,13 @@ function affichage_temoin_messages_recus($portee="header_et_fixe") {
 	$retour="";
 
 	if(peut_poster_message($_SESSION['statut'])) {
-		$retour.="<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='' /></a></span>";
+		$retour.="<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='' /></a></span>";
 	}
 	else {
 		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
-			$retour.="<span id='span_messages_recus'><a href='$gepiPath/lib/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='' /></a></span>";
+			$retour.="<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='' /></a></span>";
 		}
 		else {
 			$retour.="<span id='span_messages_recus'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='' /></span>";
@@ -7192,10 +7192,10 @@ function affichage_temoin_messages_recus($portee="header_et_fixe") {
 	var nb_millisec_check_message=$nb_sec*1000;
 
 	function function_check_message() {
-		new Ajax.Updater($('span_messages_recus'),'$gepiPath/lib/form_message.php?mode=check',{method: 'get'});";
+		new Ajax.Updater($('span_messages_recus'),'$gepiPath/mod_alerte/form_message.php?mode=check',{method: 'get'});";
 	if($portee!="header_seul") {
 		$retour.="
-		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/lib/form_message.php?mode=check2',{method: 'get'});";
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/mod_alerte/form_message.php?mode=check2',{method: 'get'});";
 	}
 	$retour.="
 		setTimeout('function_check_message()', nb_millisec_check_message);
@@ -7427,5 +7427,11 @@ function get_next_tel_jour($jour, $decalage_aujourdhui=0) {
 		fclose($f);
 	}
 	return $retour;
+}
+
+function get_output_mode_pdf() {
+	$output_mode_pdf=getSettingValue("output_mode_pdf");
+	if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
+	return getPref($_SESSION['login'], "output_mode_pdf", $output_mode_pdf);
 }
 ?>

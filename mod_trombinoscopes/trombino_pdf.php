@@ -500,7 +500,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		}
 	}
 
-	$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+	$pref_output_mode_pdf=get_output_mode_pdf();
 
 	$date=date("Ymd_Hi");
 	$nom_fich='Trombino_';

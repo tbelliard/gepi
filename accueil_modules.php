@@ -574,12 +574,12 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 
 // Messagerie
 	$nouveauItem = new itemGeneral();
-	$nouveauItem->chemin='/messagerie/admin.php';
+	$nouveauItem->chemin='/mod_alerte/admin.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->choix_icone('active_messagerie') ;
-		$nouveauItem->titre="Messagerie" ;
-		$nouveauItem->expli="Pour gérer la Messagerie interne." ;
+		$nouveauItem->choix_icone('active_mod_alerte') ;
+		$nouveauItem->titre="Alertes" ;
+		$nouveauItem->expli="Pour gérer le dispositif d'alerte." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);

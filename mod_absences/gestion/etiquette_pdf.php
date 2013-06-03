@@ -311,6 +311,6 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 // compteur de page et fin de la boucle des pages
 $cpt_page = $cpt_page + 1;
 }
-$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+$pref_output_mode_pdf=get_output_mode_pdf();
 $pdf->Output('Etiquette_'.date("Ymd_Hi").'.pdf',$pref_output_mode_pdf);
 ?>

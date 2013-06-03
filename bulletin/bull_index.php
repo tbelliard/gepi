@@ -3728,7 +3728,7 @@ elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
 		die();
 	}
 	else {
-		$pref_output_mode_pdf=getPref($_SESSION['login'], "output_mode_pdf", "I");
+		$pref_output_mode_pdf=get_output_mode_pdf();
 		$pdf->Output($nom_bulletin,$pref_output_mode_pdf);
 	}
 }

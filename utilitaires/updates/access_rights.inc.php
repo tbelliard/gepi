@@ -963,7 +963,7 @@ autre='V',
 description='A lire...',
 statut='';";
 
-$tab_req[]="INSERT INTO droits SET id='/messagerie/admin.php',
+$tab_req[]="INSERT INTO droits SET id='/mod_alerte/admin.php',
 administrateur='V',
 professeur='F',
 cpe='F',
@@ -972,10 +972,10 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Messagerie : Administration du module',
+description='Dispositif d alerte : Administration du module',
 statut='';";
 
-$tab_req[]="INSERT INTO droits SET id='/lib/form_message.php',
+$tab_req[]="INSERT INTO droits SET id='/mod_alerte/form_message.php',
 administrateur='V',
 professeur='V',
 cpe='V',
@@ -984,7 +984,7 @@ eleve='F',
 responsable='F',
 secours='V',
 autre='F',
-description='Messagerie',
+description='Dispositif d alerte',
 statut='';";
 
 $tab_req[]="INSERT INTO droits VALUES ( '/cahier_notes/autorisation_exceptionnelle_saisie.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie dans le carnet de notes.', '');";

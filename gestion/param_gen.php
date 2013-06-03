@@ -394,6 +394,16 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['output_mode_pdf'])) {
+			$output_mode_pdf=$_POST['output_mode_pdf'];
+			if(!in_array($output_mode_pdf, array("D", "I"))) {
+				$msg .= "Erreur : Le mode choisi pour la lecture des PDF générés est invalide !";
+			}
+			elseif (!saveSetting("output_mode_pdf", $_POST['output_mode_pdf'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre output_mode_pdf !";
+			}
+		}
+
 		if (isset($_POST['aff_temoin_check_serveur'])) {
 			if (!saveSetting("aff_temoin_check_serveur", $_POST['aff_temoin_check_serveur'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre aff_temoin_check_serveur !";
@@ -1600,6 +1610,43 @@ if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
 				   onchange='changement()' />
 		</span>
 	</p>
+
+	<div style="display: table-row;">
+		<div class="cellTab70">
+			<p style="font-variant: small-caps;">
+				<a name='output_mode_pdf'></a>
+				Mode d'ouverture des fichiers PDF produits par Gepi&nbsp;:
+			</p>
+		</div>
+		<p class="cellTab plusPetit">
+<?php
+$output_mode_pdf=getSettingValue("output_mode_pdf");
+if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
+ ?>
+			<input type='radio' 
+				   name='output_mode_pdf' 
+				   id='output_mode_pdf_D' 
+				   value='D' 
+				   onchange='changement()'
+				   <?php if($output_mode_pdf=='D') {echo "checked='checked'";} ?>
+				   />
+			<label for='output_mode_pdf_D'>
+				Proposer le téléchargement du PDF pour lecture hors du navigateur
+			</label>
+			<br />
+			<input type='radio' 
+				   name='output_mode_pdf' 
+				   id='output_mode_pdf_I' 
+				   value='I' 
+				   onchange='changement()'
+				   <?php if($output_mode_pdf=='I') {echo "checked='checked'";} ?>
+				   />
+			<label for='output_mode_pdf_I'>
+				Ouvrir le PDF dans le navigateur<br />
+				(<em>ce choix peut nécessiter qu'un plugin soit installé sur le navigateur</em>)
+			</label>
+		</p>
+	</div>
 
 	<p class="ligneCaps">
 		<span class="cellTab70">
