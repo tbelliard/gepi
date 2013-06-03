@@ -283,11 +283,11 @@ $mois_precedent="";
 
     <p>
       <span style="background-color:red;">&nbsp;&nbsp;NJ&nbsp;&nbsp;</span>
-              	Manquement aux obligations scolaires : Absence non justifiée
+              	Manquement aux obligations scolaires : Absence non justifiée (<em style='font-weight:bold' title="Merci de fournir un justificatif à la Vie Scolaire (coupon dans le carnet ou certificat médical ou autre)">justificatif attendu</em>)
     </p>
     <p>
       <span style="background-color:fuchsia;">&nbsp;RNJ&nbsp;</span>
-              	Manquement aux obligations scolaires : Retard non justifié
+              	Manquement aux obligations scolaires : Retard non justifié (<em style='font-weight:bold' title="Merci de fournir un justificatif à la Vie Scolaire (coupon dans le carnet ou certificat médical ou autre)">justificatif attendu</em>)
     </p>
     <p>
       <span style="background-color:blue;">&nbsp;&nbsp;&nbsp;J&nbsp;&nbsp;&nbsp;&nbsp;</span>
