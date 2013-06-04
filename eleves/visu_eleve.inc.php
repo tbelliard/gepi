@@ -928,6 +928,35 @@ Patientez pendant l'extraction des données... merci.
 		// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
 		$tab_ele=info_eleve($ele_login);
 
+		/*
+		echo "<pre>";
+		print_r($tab_ele);
+		echo "</pre>";
+		*/
+		$indice_derniere_classe=count($tab_ele['classe'])-1;
+		if(!isset($tab_ele['classe'][$indice_derniere_classe]['pp'])) {
+			echo "<p style='color:red;'>Aucun ".$gepi_prof_suivi." n'est associé à cet(te) élève.";
+			if(acces("/classes/classes_const.php", $_SESSION['statut'])) {
+				/*
+				echo "<p>\$num_per_derniere_classe=$indice_derniere_classe</p>";
+				echo "<pre>";
+				print_r($tab_ele['periodes']);
+				echo "</pre>";
+				*/
+				if(isset($tab_ele['classe'][$indice_derniere_classe]['id_classe'])) {
+					echo " <a href='../classes/classes_const.php?id_classe=".$tab_ele['classe'][$indice_derniere_classe]['id_classe']."#".$tab_ele['login']."'>Associer</a>.";
+				}
+			}
+			echo "</p>\n";
+		}
+		if(!isset($tab_ele['cpe'])) {
+			echo "<p style='color:red;'>Aucun CPE n'est associé à cet(te) élève.";
+			if(isset($tab_ele['classe'][$indice_derniere_classe]['id_classe'])) {
+				echo " <a href='../classes/classes_const.php?id_classe=".$tab_ele['classe'][$indice_derniere_classe]['id_classe']."#".$tab_ele['login']."'>Associer</a>.";
+			}
+			echo "</p>\n";
+		}
+
 		if((getSettingAOui('autorise_edt_tous'))||
 			((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))||
 			((getSettingAOui('autorise_edt_eleve'))&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
@@ -1654,7 +1683,7 @@ Patientez pendant l'extraction des données... merci.
 						if($tab_ele['groupes'][$i]['prof'][$j]['email']!='') {
 							echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-							echo ",%0d%0aCordialement.'>";
+							echo ",%0d%0aCordialement.' title=\"Envoyer un email à ce professeur\">";
 						}
 						if(isset($tab_ele['classe'][0]['id_classe'])) {
 							echo affiche_utilisateur($tab_ele['groupes'][$i]['prof'][$j]['prof_login'], $tab_ele['classe'][0]['id_classe']);
@@ -1696,7 +1725,7 @@ Patientez pendant l'extraction des données... merci.
 							//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
 							echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-							echo ",%0d%0aCordialement.'>";
+							echo ",%0d%0aCordialement.' title=\"Envoyer un email au ".$gepi_prof_suivi."\">";
 						}
 						echo $tab_ele['classe'][$loop]['pp']['civ_nom_prenom'];
 						if($tab_ele['classe'][$loop]['pp']['email']!="") {
@@ -1713,7 +1742,7 @@ Patientez pendant l'extraction des données... merci.
 					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
 					echo "<a href='mailto:".$tab_ele['cpe']['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-					echo ",%0d%0aCordialement.'>";
+					echo ",%0d%0aCordialement.' title=\"Envoyer un email au CPE\">";
 				}
 				echo $tab_ele['cpe']['civ_nom_prenom'];
 				if($tab_ele['cpe']['email']!="") {
