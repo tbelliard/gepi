@@ -529,7 +529,7 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
 					if((isset($tab_data[$jour]['heuredebut'][$index_box]))&&($tab_data[$jour]['heuredebut'][$index_box]!='')) {
 						echo "&amp;heure_visibilite=".$tab_data[$jour]['heuredebut'][$index_box];
 					}
-					echo add_token_in_url()."' target='_blank' title=\"Déposer un message dans la Messagerie interne Gepi\"><img src='../images/icons/mail.png' width='10' height='10' /></a></div>";
+					echo add_token_in_url()."' target='_blank' title=\"Déposer pour ce professeur un message\ndans le module Alertes/Informations de Gepi\"><img src='../images/icons/mail.png' width='10' height='10' /></a></div>";
 				}
                 echo ("</div>\n");
                 echo ("</div></div>\n");   
