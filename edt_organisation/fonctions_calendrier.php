@@ -425,7 +425,7 @@ function heureDeb(){
 		$heureMilieu = ($explodeDeb[0] * 60) + $explodeDeb[1] + $miCreneau;
 		// et on compare
 		if ($heureMn > $heureMilieu) {
-			$retour = 'O.5';
+			$retour = '0.5';
 		}elseif($heureMn < $heureMilieu){
 			$retour = '0';
 		}else{

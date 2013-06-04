@@ -196,7 +196,7 @@ function info_eleve($ele_login) {
 			//echo "\$tab_ele['rn_sign_resp']=$lig_clas->rn_sign_resp<br/>";
 
 			// Liste des périodes dans la classe
-			$sql="SELECT p.* FROM periodes p, j_eleves_classes jec WHERE jec.login='$ele_login' AND p.num_periode=jec.periode AND jec.id_classe='".$lig_clas->id."' ORDER BY p.num_periode;";
+			$sql="SELECT p.* FROM periodes p, j_eleves_classes jec WHERE jec.login='$ele_login' AND p.num_periode=jec.periode AND jec.id_classe='".$lig_clas->id."' AND p.id_classe=jec.id_classe ORDER BY p.num_periode;";
 			$res_per=mysql_query($sql);
 			$cpt2=0;
 			if(mysql_num_rows($res_per)>0) {
