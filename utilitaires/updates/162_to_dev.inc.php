@@ -291,7 +291,7 @@ $output_mode_pdf=getSettingValue("output_mode_pdf");
 if(!in_array($output_mode_pdf, array("D", "I"))) {
 	$result .= "&nbsp;-> Initialisation de la valeur du mode de lecture des PDF générés.<br />";
 	$output_mode_pdf='D';
-	if (!saveSetting("output_mode_pdf", $_POST['output_mode_pdf'])) {
+	if (!saveSetting("output_mode_pdf", $output_mode_pdf)) {
 		$result .= msj_erreur();
 	} else {
 		$result .= msj_ok("Ok !");
