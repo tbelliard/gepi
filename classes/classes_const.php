@@ -639,13 +639,14 @@ function imposer_cpe() {
 		$i++;
 	}
 
+	$gepi_prof_suivi=ucfirst(getSettingValue("gepi_prof_suivi"));
 	$k = '0';
 	echo "<table class='boireaus' border='1' cellpadding='5' class='boireaus' summary='Elèves'>\n";
 	echo "<tr>\n";
 	echo "<th>Nom Prénom </th>\n";
 	echo "<th>Régime</th>\n";
 	echo "<th>Redoublant</th>\n";
-	echo "<th>".ucfirst(getSettingValue("gepi_prof_suivi"));
+	echo "<th>".$gepi_prof_suivi;
 	echo "<select size='1' name='pp_a_imposer' id='pp_a_imposer' style='font-size:small;'";
 	echo ">\n";
 	echo "<option value='0'>(vide)</option>\n";
@@ -735,7 +736,7 @@ au sens Absences/appartenance de l'élève
 
 		echo "";
 
-		echo "<table style='border-collaspe: collapse;' summary='Régime'>\n";
+		echo "<table style='border-collaspe: collapse;' summary='Régime' title='Régime'>\n";
 		echo "<tr>\n";
 
 		echo "<td style='text-align: center; border: 0px;'>I-ext<br /><input type='radio' name='regime_eleve[$k]' value='i-e' ";
@@ -760,12 +761,12 @@ au sens Absences/appartenance de l'élève
 
 		echo "</td>\n";
 
-		echo "<td><p align='center'><input type='checkbox' name='doublant_eleve[$k]' value='yes' ";
+		echo "<td><p align='center' title='Doublant ou non'><input type='checkbox' name='doublant_eleve[$k]' value='yes' ";
 		if ($doublant == 'R') {echo " checked";}
 		echo " onchange='changement()'";
 		echo " /></p></td>\n";
 
-		echo "<td>\n";
+		echo "<td title='".$gepi_prof_suivi."'>\n";
 		echo "<p><select size='1' name='prof_principal[$k]' id='prof_principal_$k'";
 		echo " onchange='changement()'";
 		echo ">\n";
@@ -780,7 +781,7 @@ au sens Absences/appartenance de l'élève
 		echo "</select></p>\n";
 		echo "</td>\n";
 
-		echo "<td>\n";
+		echo "<td title='CPE'>\n";
 		echo "<p><select size='1' name='cpe_resp[$k]' id='cpe_resp_$k'";
 		echo " onchange='changement()'";
 		echo ">\n";

@@ -1703,7 +1703,7 @@ if (isset($eleve_login)) {
 	$lien_image_compte_utilisateur=lien_image_compte_utilisateur($eleve_login, "eleve", "_blank", $avec_lien);
 
 	if(($compte_eleve_existe=="y")&&($_SESSION['statut']=="administrateur")) {
-		echo "<a href='../utilisateurs/edit_eleve.php?critere_recherche=$eleve_nom'>".$eleve_login;
+		echo "<a href='../utilisateurs/edit_eleve.php?critere_recherche=$eleve_nom' title=\"Accéder au compte de l'utilisateur.\">".$eleve_login;
 		if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
 		echo "</a>";
 	}
