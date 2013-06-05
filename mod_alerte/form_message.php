@@ -23,6 +23,8 @@
 // On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
+//$niveau_arbo=1;
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -119,7 +121,8 @@ if((isset($mode))&&($mode=='check')) {
 			$AlertesAvecSon=getPref($_SESSION['login'], "AlertesAvecSon","y");
 			if((!getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut'])))||
 			((getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut'])))&&($AlertesAvecSon=="y"))) {
-				echo joueSon('pluck.wav',"","1");
+				//echo joueSon('pluck.wav',"","1");
+				echo joueSon('pluck.wav',"");
 			}
 		}
 	}
