@@ -69,7 +69,8 @@ Divers:
 - Ajout pour l'administrateur d'une colonne Date/heure de fin de session pour la liste des personnes connectées.
 - Ajouts de liens divers de passage/navigation vers des pages associées.
 - Ajout de messages explicatifs en balise title.
-- Possibilité de choisir la façon dont s'ouvre un PDF (dans un autre onglet ou en téléchargement)
+- Possibilité de choisir la façon dont s'ouvre un PDF (dans un autre onglet ou en téléchargement):
+  Globalement dans Configuration générale, et utilisateur par utilisateur dans Mon compte.
 - Possibilité d'alterner l'affichage/masquage de certains cadres infobulles d'un clic.
 
 Gepi-1.6.2

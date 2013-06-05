@@ -7221,7 +7221,8 @@ function joueSon($sound, $id_son="") {
 	}
 
 	if ($niveau_arbo == "0") {
-		$chemin_sound="./sounds/".$sound;
+		//$chemin_sound="./sounds/".$sound;
+		$chemin_sound="sounds/".$sound;
 	} elseif ($niveau_arbo == "1") {
 		$chemin_sound="../sounds/".$sound;
 	} elseif ($niveau_arbo == "2") {
@@ -7232,9 +7233,21 @@ function joueSon($sound, $id_son="") {
 		$chemin_sound="../sounds/".$sound;
 	}
 
+	//$chemin_sound=$gepiPath."/sounds/".$sound;
+
+	if((isset($_SERVER['HTTP_REFERER']))&&((preg_match("#/accueil.php#", $_SERVER['HTTP_REFERER']))||(preg_match("#/accueil_simpl_prof.php#", $_SERVER['HTTP_REFERER'])))) {
+		//$chemin_sound="./sounds/".$sound;
+		$chemin_sound="sounds/".$sound;
+	}
+
 	$debug="n";
 	if($debug=="y") {
 		$f=fopen("/tmp/debug_gepi_sound.txt", "a+");
+		fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." : ================================\n");
+		if(isset($_SERVER['HTTP_REFERER'])) {
+			fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." : \$_SERVER['HTTP_REFERER']=".$_SERVER['HTTP_REFERER']."\n");
+		}
+		fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." : gepiPath=$gepiPath\n");
 		fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." : niveau_arbo=$niveau_arbo\n");
 		fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." : chemin_sound=$chemin_sound\n");
 		fclose($f);
@@ -7243,7 +7256,6 @@ function joueSon($sound, $id_son="") {
 	if($id_son=="") {
 		$id_son="id_son_".preg_replace("/[^0-9]/","_",microtime());
 	}
-
 	if(file_exists($chemin_sound)) { 
 		$retour ="<audio id='$id_son' preload='auto' autobuffer autoplay>
 	<source src='".$chemin_sound."' />
@@ -7253,6 +7265,7 @@ function joueSon($sound, $id_son="") {
 	else {
 		$retour ="";
 	}
+	//$retour.="Bip";
 	return $retour;
 } 
 
