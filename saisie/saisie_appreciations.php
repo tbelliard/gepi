@@ -339,8 +339,19 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 				
 							if($envoi_mail_actif=='y') {
 								$email_destinataires="";
-								//$sql="select email from utilisateurs where statut='secours' AND email!='';";
-								$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
+
+								$sql="SELECT id_classe FROM j_eleves_classes WHERE (login='$correction_login_eleve' AND periode='$correction_periode');";
+								$req=mysql_query($sql);
+								if(mysql_num_rows($req)>0) {
+									$correction_id_classe=mysql_result($req,0,"id_classe");
+									$sql="(SELECT DISTINCT email FROM utilisateurs WHERE statut='secours' AND email!='')
+									UNION (SELECT DISTINCT email FROM utilisateurs u, j_scol_classes jsc WHERE u.login=jsc.login AND id_classe='$correction_id_classe');";
+								}
+								else {
+									//$sql="select email from utilisateurs where statut='secours' AND email!='';";
+									$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
+								}
+								//echo "$sql<br />";
 								$req=mysql_query($sql);
 								if(mysql_num_rows($req)>0) {
 									$lig_u=mysql_fetch_object($req);
@@ -391,7 +402,10 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 		
 									$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
 								}
-							}	
+								else {
+									$msg.="Aucun compte scolarité avec adresse mail n'est associé à cet(te) élève.<br />Pas de compte secours avec adresse mail non plus.<br />La correction a été soumise, mais elle n'a pas fait l'objet d'un envoi de mail.<br />";
+								}
+							}
 						}
 					}
 				}
