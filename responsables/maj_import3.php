@@ -163,6 +163,9 @@ saveSetting('alert_diff_mail_ele', $alert_diff_mail_ele);
 saveSetting('alert_diff_mail_resp', $alert_diff_mail_resp);
 saveSetting('alert_diff_etab_origine', $alert_diff_etab_origine);
 
+$alert_diff_mef=isset($_POST['alert_diff_mef']) ? $_POST['alert_diff_mef'] : (isset($_GET['alert_diff_mef']) ? $_GET['alert_diff_mef'] : (isset($_SESSION['alert_diff_mef']) ? $_SESSION['alert_diff_mef'] : "y"));
+saveSetting('alert_diff_mef', $alert_diff_mef);
+
 // =====================================================
 // Test sur les modifications de telephone élève
 $ele_tel_prof_signaler_modif=isset($_POST['ele_tel_prof_signaler_modif']) ? $_POST['ele_tel_prof_signaler_modif'] : (isset($_GET['ele_tel_prof_signaler_modif']) ? $_GET['ele_tel_prof_signaler_modif'] : (isset($_SESSION['ele_tel_prof_signaler_modif']) ? $_SESSION['ele_tel_prof_signaler_modif'] : getSettingValue('ele_tel_prof_signaler_modif')));
@@ -492,6 +495,27 @@ if(!isset($step)) {
 	echo "<label for='alert_diff_etab_origine_n' style='cursor: pointer;'> ne pas signaler";
 	echo " les modifications d'établissement d'origine.</label></p>\n";
 
+	// 20130607
+	$alert_diff_mef=getSettingValue('alert_diff_mef');
+	echo "<br />\n";
+	echo "<p>\n";
+	echo "<strong title=\"MEF : Module élémentaire de formation\">Changement de MEF&nbsp;:</strong>\n";
+	echo "<br />\n";
+	echo "<input type='radio' name='alert_diff_mef' id='alert_diff_mef_y' value='y' ";
+	if($alert_diff_mef=='y') {
+		echo "checked ";
+	}
+	echo "/>\n";
+	echo "<label for='alert_diff_mef_y' style='cursor: pointer;'> signaler";
+	echo " les modifications de MEF.</label><br />\n";
+	echo "<input type='radio' name='alert_diff_mef' id='alert_diff_mef_n' value='n' ";
+	if($alert_diff_mef!='y') {
+		echo "checked ";
+	}
+	echo "/>\n";
+	echo "<label for='alert_diff_mef_n' style='cursor: pointer;'> ne pas signaler";
+	echo " les modifications de MEF.</label></p>\n";
+
 	// 20120630
 	$nb_types_tel_ele_utilises=0;
 	if(getSettingAOui('ele_tel_pers')) {$nb_types_tel_ele_utilises++;}
@@ -606,6 +630,8 @@ else{
 
 			$_SESSION['alert_diff_mail_ele']=$alert_diff_mail_ele;
 			$_SESSION['alert_diff_etab_origine']=$alert_diff_etab_origine;
+			// 20130607
+			$_SESSION['alert_diff_mef']=$alert_diff_mef;
 
 			$xml_file = isset($_FILES["eleves_xml_file"]) ? $_FILES["eleves_xml_file"] : NULL;
 
@@ -618,6 +644,8 @@ else{
 				echo "</p>\n";
 
 				echo "<p>Il semblerait que l'absence d'extension .XML ou .ZIP puisse aussi provoquer ce genre de symptômes.<br />Dans ce cas, ajoutez l'extension et ré-essayez.</p>\n";
+
+				echo "<p>Retour à la page <a href='".$_SERVER['PHP_SELF']."'>Mise à jour d'après Sconet</a></p>";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -634,6 +662,8 @@ else{
 					echo "</p>\n";
 
 					echo "<p>Il semblerait que l'absence d'extension .XML ou .ZIP puisse aussi provoquer ce genre de symptômes.<br />Dans ce cas, ajoutez l'extension et ré-essayez.</p>\n";
+
+					echo "<p>Retour à la page <a href='".$_SERVER['PHP_SELF']."'>Mise à jour d'après Sconet</a></p>";
 
 					require("../lib/footer.inc.php");
 					die();
@@ -679,12 +709,18 @@ else{
 
 						if (($list_file_zip = $archive->listContent()) == 0) {
 							echo "<p style='color:red;'>Erreur : ".$archive->errorInfo(true)."</p>\n";
+
+							echo "<p>Retour à la page <a href='".$_SERVER['PHP_SELF']."'>Mise à jour d'après Sconet</a></p>";
+
 							require("../lib/footer.inc.php");
 							die();
 						}
 
 						if(sizeof($list_file_zip)!=1) {
 							echo "<p style='color:red;'>Erreur : L'archive contient plus d'un fichier.</p>\n";
+
+							echo "<p>Retour à la page <a href='".$_SERVER['PHP_SELF']."'>Mise à jour d'après Sconet</a></p>";
+
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -711,6 +747,9 @@ else{
 						}
 						else {
 							echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+
+							echo "<p>Retour à la page <a href='".$_SERVER['PHP_SELF']."'>Mise à jour d'après Sconet</a></p>";
+
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -723,6 +762,9 @@ else{
 					echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier <b>temp/$tempdir</b></p>\n";
 					// Il ne faut pas aller plus loin...
 					// SITUATION A GERER
+
+					echo "<p>Retour à la page <a href='".$_SERVER['PHP_SELF']."'>Mise à jour d'après Sconet</a></p>";
+
 					require("../lib/footer.inc.php");
 					die();
 				}
@@ -765,7 +807,8 @@ else{
 					`MEL` varchar(255) $chaine_mysql_collate NOT NULL default '',
 					`TEL_PERS` varchar(255) $chaine_mysql_collate NOT NULL default '',
 					`TEL_PORT` varchar(255) $chaine_mysql_collate NOT NULL default '',
-					`TEL_PROF` varchar(255) $chaine_mysql_collate NOT NULL default ''
+					`TEL_PROF` varchar(255) $chaine_mysql_collate NOT NULL default '',
+					MEF_CODE VARCHAR(50) DEFAULT '' NOT NULL
 					);";
 					info_debug($sql);
 					$create_table = mysql_query($sql);
@@ -1041,6 +1084,7 @@ else{
 			"TEL_PERSONNEL",
 			"TEL_PORTABLE",
 			"TEL_PROFESSIONNEL",
+			"CODE_MEF"
 			);
 
 			$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
@@ -1226,6 +1270,8 @@ else{
 						$sql.=", eledoubl='".ouinon($eleves[$i]["doublement"])."'";
 						if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.=", etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."'";}
 						if(isset($eleves[$i]["code_regime"])){$sql.=", elereg='".$eleves[$i]["code_regime"]."'";}
+
+						if(isset($eleves[$i]["code_mef"])){$sql.=", mef_code='".$eleves[$i]["code_mef"]."'";}
 
 						//affiche_debug("eleve_id=".$eleves[$i]["eleve_id"]."<br />");
 						//affiche_debug("code_pays=".$eleves[$i]["code_pays"]."<br />");
@@ -2137,6 +2183,10 @@ else{
 										e.naissance!=t2.col2 OR
 										e.lieu_naissance!=t.LIEU_NAISSANCE OR
 										e.no_gep!=t.ELENONAT";
+					// 20130607
+					if(getSettingAOui('alert_diff_mef')) {
+						$sql.="						OR e.mef_code!=t.MEF_CODE";
+					}
 					if((getSettingValue('ele_tel_pers')=='yes')) {
 						$sql.="						OR e.tel_pers!=t.TEL_PERS";
 					}
@@ -2163,6 +2213,10 @@ else{
 										e.sexe!=t.ELESEXE OR
 										e.naissance!=t2.col2 OR
 										e.no_gep!=t.ELENONAT";
+					// 20130607
+					if(getSettingAOui('alert_diff_mef')) {
+						$sql.="						OR e.mef_code!=t.MEF_CODE";
+					}
 					if((getSettingValue('ele_tel_pers')=='yes')) {
 						$sql.="						OR e.tel_pers!=t.TEL_PERS";
 					}
@@ -2686,6 +2740,10 @@ else{
 				}
 
 				echo "<th>Classe</th>\n";
+				// 20130607
+				if(getSettingAOui('alert_diff_mef')) {
+					echo "<th>MEF</th>\n";
+				}
 				echo "<th>Etablissement d'origine</th>\n";
 				echo "</tr>\n";
 				$cpt=0;
@@ -2746,6 +2804,12 @@ else{
 						$affiche[13]=nettoyer_caracteres_nom($lig->TEL_PERS, "an", " @._-", "");
 						$affiche[14]=nettoyer_caracteres_nom($lig->TEL_PORT, "an", " @._-", "");
 						$affiche[15]=nettoyer_caracteres_nom($lig->TEL_PROF, "an", " @._-", "");
+
+						// 20130607
+						if(getSettingAOui('alert_diff_mef')) {
+							$affiche[16]=nettoyer_caracteres_nom($lig->MEF_CODE, "an", " @._-", "");
+						}
+
 
 							//$sql="SELECT * FROM eleves WHERE elenoet='$affiche[4]'";
 							$sql="SELECT * FROM eleves WHERE (elenoet='$affiche[4]' OR elenoet='".sprintf("%05d",$affiche[4])."')";
@@ -2927,6 +2991,14 @@ else{
 										$cpt_modif++;
 										$cpt_chgt_classe++;
 										$classe_actuelle_de_l_eleve="";
+									}
+								}
+
+								// 20130607
+								if(getSettingAOui('alert_diff_mef')) {
+									if($lig_ele->mef_code!=$affiche[16]) {
+										$temoin_modif='y';
+										$cpt_modif++;
 									}
 								}
 
@@ -3401,6 +3473,21 @@ else{
 								echo "</td>\n";
 
 
+								// 20130607
+								if(getSettingAOui('alert_diff_mef')) {
+									echo "<td";
+									if($lig_ele->mef_code!=$affiche[16]){
+										echo " class='modif'>";
+										if($lig_ele->mef_code!=''){
+											echo "$lig_ele->mef_code <font color='red'>-&gt;</font>\n";
+										}
+									}
+									else{
+										echo ">";
+									}
+									echo "$affiche[16]";
+									echo "</td>\n";
+								}
 
 
 								$sql="SELECT id_etablissement FROM j_eleves_etablissements WHERE id_eleve='$lig_ele->elenoet';";
@@ -3602,6 +3689,14 @@ else{
 								echo "</td>\n";
 
 
+								// 20130607
+								if(getSettingAOui('alert_diff_mef')) {
+									echo "<td>";
+									echo "$affiche[16]";
+									echo "</td>\n";
+								}
+
+
 								echo "<td style='text-align: center;'>";
 								if(my_strtolower($affiche[10])!=my_strtolower($gepiSchoolRne)) {
 									echo "$affiche[10]";
@@ -3769,6 +3864,11 @@ else{
 					}
 					if((getSettingAOui('ele_tel_prof'))&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {
 						$sql.=", tel_prof='".mysql_real_escape_string($lig->TEL_PROF)."'";
+					}
+
+					// 20130607
+					if(getSettingAOui('alert_diff_mef')) {
+						$sql.=", mef_code='".$lig->MEF_CODE."'";
 					}
 
 					// Si on a validé des modifs, on a un élève qui est dans l'établissement... pas sorti
@@ -4154,6 +4254,11 @@ else{
 								}
 								if((getSettingAOui('ele_tel_prof'))&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {
 									$sql.=", tel_prof='".mysql_real_escape_string($lig->TEL_PROF)."'";
+								}
+
+								// 20130607
+								if(getSettingAOui('alert_diff_mef')) {
+									$sql.=", mef_code='".$lig->MEF_CODE."'";
 								}
 
 								$sql.=";";
