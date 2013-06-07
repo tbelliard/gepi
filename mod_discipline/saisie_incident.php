@@ -2471,13 +2471,15 @@ new Ajax.Autocompleter (
 	//$texte.="Que ce compte-rendu soit visible ou non par défaut des parents des élèves concernés, retenez qu'ils ont le droit d'après la CNIL de réclamer l'accès à ces données.<br />";
 	$texte.="Veillez donc à respecter les préconisations suivantes&nbsp;:<br />";
 
-	$texte.="<strong>Règle n° 1 :</strong> Avoir à l'esprit, quand on renseigne ces zones commentaires, que la personne qui est concernée peut exercer son droit d'accès et lire ces commentaires !<br />";
-	$texte.="<strong>Règle n° 2 :</strong> Rédiger des commentaires purement objectifs et jamais excessifs ou insultants.<br />";
+	$texte.="<strong>Règle n° 1 :</strong> Avoir à l'esprit, quand on renseigne ces zones commentaires,<br />que la personne qui est concernée peut exercer son droit d'accès et lire ces commentaires !<br />";
+	$texte.="<strong>Règle n° 2 :</strong> Rédiger des commentaires purement objectifs<br />et jamais excessifs ou insultants.<br />";
 	$texte.="<br />";
 	$texte.="Pour plus de détails, consultez <a href='http://www.cnil.fr/la-cnil/actualite/article/article/zones-bloc-note-et-commentaires-les-bons-reflexes-pour-ne-pas-deraper/' target='_blank'>l'article de la CNIL</a>?<br />";
 
 	$tabdiv_infobulle[]=creer_div_infobulle('div_explication_description',"Description de l'incident","",$texte,"",30,0,'y','y','n','n');
 ?>
+                    <div id='div_avertissement_description2' style='display:none; font-size:small; color:red; font-weight:normal;'><?php echo $texte;?></div>
+
                 </td>
                 <td style='text-align:left;'<?php if($etat_incident!='clos') {if ($autorise_commentaires_mod_disc !="yes") echo " colspan='2'";} ?>>
 <?php
@@ -2511,6 +2513,7 @@ new Ajax.Autocompleter (
                               name="no_anti_inject_description" 
                               rows='8' 
                               cols='60' 
+                              onfocus="document.getElementById('div_avertissement_description2').style.display=''"
                               onchange="changement()"><?php echo $description; ?></textarea>
                     
                     <div id='div_compteur_caracteres_textarea' style='width:20em; text-align:center'></div>
