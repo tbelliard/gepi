@@ -696,6 +696,7 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 				}
 			}
 		}
+		window.scrollTo(0,0);
 	}
 	
 	function cocher_decocher_statut(statut) {
