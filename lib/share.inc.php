@@ -7447,4 +7447,55 @@ function get_output_mode_pdf() {
 	if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 	return getPref($_SESSION['login'], "output_mode_pdf", $output_mode_pdf);
 }
+
+function get_tab_mef($mode="indice_mef_code") {
+	$tab_mef=array();
+	$cpt=0;
+	$sql="SELECT * FROM mef ORDER BY libelle_edition, libelle_long, libelle_court;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			if($mode=="indice_mef_code") {
+				$tab_mef[$lig->mef_code]['mef_code']=$lig->mef_code;
+				$tab_mef[$lig->mef_code]['libelle_court']=$lig->libelle_court;
+				$tab_mef[$lig->mef_code]['libelle_long']=$lig->libelle_long;
+				$tab_mef[$lig->mef_code]['libelle_edition']=$lig->libelle_edition;
+				$tab_mef[$lig->mef_code]['mef_rattachement']=$lig->mef_rattachement;
+				if($lig->libelle_edition!="") {
+					$tab_mef[$lig->mef_code]['designation_courte']=$lig->libelle_edition;
+				}
+				elseif($lig->libelle_long!="") {
+					$tab_mef[$lig->mef_code]['designation_courte']=$lig->libelle_long;
+				}
+				elseif($lig->libelle_court!="") {
+					$tab_mef[$lig->mef_code]['designation_courte']=$lig->libelle_court;
+				}
+				elseif($lig->mef_code!="") {
+					$tab_mef[$lig->mef_code]['designation_courte']=$lig->mef_code;
+				}
+			}
+			else {
+				$tab_mef[$cpt]['mef_code']=$lig->mef_code;
+				$tab_mef[$cpt]['libelle_court']=$lig->libelle_court;
+				$tab_mef[$cpt]['libelle_long']=$lig->libelle_long;
+				$tab_mef[$cpt]['libelle_edition']=$lig->libelle_edition;
+				$tab_mef[$cpt]['mef_rattachement']=$lig->mef_rattachement;
+				if($lig->libelle_edition!="") {
+					$tab_mef[$cpt]['designation_courte']=$lig->libelle_edition;
+				}
+				elseif($lig->libelle_long!="") {
+					$tab_mef[$cpt]['designation_courte']=$lig->libelle_long;
+				}
+				elseif($lig->libelle_court!="") {
+					$tab_mef[$cpt]['designation_courte']=$lig->libelle_court;
+				}
+				elseif($lig->mef_code!="") {
+					$tab_mef[$cpt]['designation_courte']=$lig->mef_code;
+				}
+				$cpt++;
+			}
+		}
+	}
+	return $tab_mef;
+}
 ?>
