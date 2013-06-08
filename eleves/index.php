@@ -1435,6 +1435,8 @@ if(isset($quelles_classes)) {
 	echo "<p>Remarque : le login ne permet pas aux élèves de se connecter à Gepi. Il sert simplement d'identifiant unique.</p>\n";
 */
 
+	$acces_class_const=acces("/classes/classes_const.php", $_SESSION['statut']);
+
 	$tab_mef=get_tab_mef();
 	$acces_associer_eleve_mef=acces("/mef/associer_eleve_mef.php", $_SESSION['statut']);
 
@@ -1497,14 +1499,26 @@ if(isset($quelles_classes)) {
 			$eleve_profsuivi_nom = @mysql_result($call_suivi, 0, "nom");
 			$eleve_profsuivi_prenom = @mysql_result($call_suivi, 0, "prenom");
 		}
+
 		if ($eleve_profsuivi_nom == '') {
-			$eleve_profsuivi_nom = "<font color='red'>N/A</font>";
+			if(($acces_class_const)&&($eleve_id_classe!="")) {
+				$eleve_profsuivi_nom = "<a href='../classes/classes_const.php?id_classe=".$eleve_id_classe."' title=\"Définir le ".$gepi_prof_suivi."\"><font color='red'>N/A</font></a>";
+			}
+			else {
+				$eleve_profsuivi_nom = "<font color='red'>N/A</font>";
+			}
+			$info_pp=$eleve_profsuivi_nom;
+
 			$eleve_profsuivi_nom_csv = "N/A";
 		}
 		else {
 			$eleve_profsuivi_nom_csv = $eleve_profsuivi_nom;
+			$info_pp=casse_mot($eleve_profsuivi_nom,"maj")." ".casse_mot($eleve_profsuivi_prenom,"majf2");
 		}
 		//$delete_login = 'delete_'.$eleve_login;
+
+		//========================================
+		// Début de l'affichage de la ligne élève:
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 
@@ -1542,12 +1556,15 @@ if(isset($quelles_classes)) {
 		echo "</p></td>\n";
 		$csv.=";";
 
+		// Sexe
 		echo "<td><p>$eleve_sexe</p></td>\n";
 		$csv.="$eleve_sexe;";
 
+		// Naissance
 		echo "<td><p>".affiche_date_naissance($eleve_naissance)."</p></td>\n";
 		$csv.=affiche_date_naissance($eleve_naissance).";";
 
+		// Régime
 		echo "<td><p>";
 		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 			echo "<a href='#' onclick=\"afficher_changement_regime('$eleve_login', '$eleve_regime') ;return false;\">";
@@ -1562,6 +1579,7 @@ if(isset($quelles_classes)) {
 		echo "</p></td>\n";
 		$csv.="$eleve_regime;";
 
+		// Classe(s)
 		if(($_SESSION['statut']=='administrateur')&&($pas_de_classe!="y")) {
 			echo "<td><p><a href='../classes/classes_const.php?id_classe=$eleve_id_classe'>$eleve_classe</a></p></td>\n";
 		}
@@ -1575,6 +1593,7 @@ if(isset($quelles_classes)) {
 		}
 		$csv.="$eleve_classe_csv;";
 
+		// MEF
 		echo "<td><p style='font-size:x-small;'>";
 		if($acces_associer_eleve_mef) {
 			echo "<a href='../mef/associer_eleve_mef.php?type_selection=nom_eleve&amp;nom_eleve=".$eleve_nom."' target='_blank'>";
@@ -1591,10 +1610,11 @@ if(isset($quelles_classes)) {
 		echo "</p></td>\n";
 		//$csv.=";";
 
+		// Enseignements suivis
 		echo "<td><p><a href='../classes/eleve_options.php?login_eleve=".$eleve_login."&amp;id_classe=$eleve_id_classe&amp;quitter_la_page=y' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p></td>\n";
 		//$csv.=";";
 
-		$info_pp=casse_mot($eleve_profsuivi_nom,"maj")." ".casse_mot($eleve_profsuivi_prenom,"majf2");
+		// Professeur principal
 		echo "<td><p>$info_pp</p></td>\n";
 		$csv.="$info_pp;";
 
