@@ -798,10 +798,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			$nb_enr=0;
 			for($j=0;$j<count($matiere);$j++) {
 				$sql="SELECT eg.* FROM ex_groupes eg, j_groupes_matieres jgm WHERE jgm.id_groupe=eg.id_groupe AND jgm.id_matiere='$matiere[$j]' AND id_exam='$id_exam';";
-				//echo "$sql<br />\n";
+				//echo "<br /><p>$sql<br />\n";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
 					while($lig=mysql_fetch_object($res)) {
+						//echo "Groupe courant: $lig->id_groupe<br />";
 						if(!in_array($lig->id, $groupes_non_visibles['bull'])) {
 							if(is_numeric($_GET['select_moy'])) {
 								$sql="UPDATE ex_groupes SET type='moy_bull', id_dev='0', valeur='".$_GET['select_moy']."' WHERE id_exam='$id_exam' AND matiere='$matiere[$j]' AND id_groupe='$lig->id_groupe';";
@@ -843,8 +844,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									unset($tab_note_per);
 									for($jj=0;$jj<count($id_dev_liste_periode);$jj++) {
 										$sql="SELECT * FROM matieres_notes WHERE id_groupe='".$lig->id_groupe."' AND periode='$id_dev_liste_periode[$jj]' ORDER BY login;";
-										$res=mysql_query($sql);
-										while($lig_mn=mysql_fetch_object($res)) {
+										//echo "$sql<br />";
+										$res_mn=mysql_query($sql);
+										while($lig_mn=mysql_fetch_object($res_mn)) {
 											if($lig_mn->statut=='') {
 												$tab_note_per[$lig_mn->login][$lig_mn->periode]=$lig_mn->note;
 												//$tab_note_per[$lig->login]['total']
@@ -863,6 +865,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 											$moyenne=round($total*10/count($tab_notes_eleve))/10;
 											//$moyenne=str_replace(",", ".", $moyenne);
 											$sql="INSERT INTO ex_notes SET id_ex_grp='$id_ex_grp', login='$ele_login', note='$moyenne';";
+											//echo "$sql<br />";
 											$insert=mysql_query($sql);
 										}
 									}
