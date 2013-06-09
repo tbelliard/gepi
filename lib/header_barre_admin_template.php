@@ -165,6 +165,9 @@ include("menu_plugins.inc.php");
 		$menus .= '        <li><a href="'.$gepiPath.'/aid/index.php" '.insert_confirm_abandon().'>AID</a></li>'."\n";
 
 		$menus .= '        <li><a href="'.$gepiPath.'/etablissements/index.php" '.insert_confirm_abandon().'>Etablissements</a></li>'."\n";
+
+		$menus .= '        <li><a href="'.$gepiPath.'/statistiques/index.php" '.insert_confirm_abandon().'>Statistiques</a></li>'."\n";
+
 		if(!getSettingAOui('gepi_en_production')) {
 			$menus .= '        <li><a href="'.$gepiPath.'/gestion/gestion_base_test.php" '.insert_confirm_abandon().'>Données de tests</a></li>'."\n";
 		}
