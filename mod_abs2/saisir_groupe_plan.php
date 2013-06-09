@@ -527,6 +527,9 @@ foreach($eleve_col as $eleve) {
 	$afficheEleve[$elv]['nom'] = $eleve->getNom();
 	$afficheEleve[$elv]['prenom'] = $eleve->getPrenom();
 	$afficheEleve[$elv]['civilite'] = $eleve->getCivilite();
+
+	$afficheEleve[$elv]['login'] = $eleve->getLogin();
+
         $afficheEleve[$elv]['regime'] = '';
         if ($eleve->getEleveRegimeDoublant() != null) {
             $afficheEleve[$elv]['regime'] = $eleve->getEleveRegimeDoublant()->getRegime();
@@ -1210,9 +1213,9 @@ echo "<pre>";
 echo print_r($eleve);
 echo "</pre>";
 */
-					if(isset($tab_coord[$eleve['accesFiche']]['x'])) {
-						$x=$tab_coord[$eleve['accesFiche']]['x'];
-						$y=$tab_coord[$eleve['accesFiche']]['y'];
+					if(isset($tab_coord[$eleve['login']]['x'])) {
+						$x=$tab_coord[$eleve['login']]['x'];
+						$y=$tab_coord[$eleve['login']]['y'];
 					}
 					else {
 						$y=$max_y+$hauteur_div+70;
@@ -1246,7 +1249,7 @@ echo "</pre>";
 					$valeur[0]=$nouvelle_largeur;
 					$valeur[1]=$nouvelle_hauteur;
 
-					echo "<img src='$photo' width='".$valeur[0]."' height='".$valeur[1]."' alt='".$eleve['accesFiche']."' title=\"".$eleve['nom']." ".$eleve['prenom']."\" id='photo_".$eleve['position']."' />\n";
+					echo "<img src='$photo' width='".$valeur[0]."' height='".$valeur[1]."' alt='".$eleve['login']."' title=\"".$eleve['nom']." ".$eleve['prenom']."\" id='photo_".$eleve['position']."' />\n";
 					echo "</label><br />\n";
 
 					echo "<input class='pc88'
