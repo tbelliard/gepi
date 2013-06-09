@@ -386,7 +386,8 @@ elseif(($mode==2)||($mode==3)) {
 	
 	echo "<br />\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-	echo "<fieldset>\n";
+	echo "<fieldset id='connexions' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
+	echo "<legend style='border: 1px solid grey; background-color: white;  '>Connexions ".$categorie_utilisateur[$mode]."</legend>\n";
 	echo add_token_field();
 	
 	// Choix de la classe

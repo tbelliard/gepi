@@ -25,6 +25,8 @@
 		$mode_rech_no_gep="contient";
 	}
 
+	$motif_rech_mef=isset($_POST['motif_rech_mef']) ? $_POST['motif_rech_mef'] : (isset($_GET['motif_rech_mef']) ? $_GET['motif_rech_mef'] : NULL);
+
 	if($_SESSION['statut'] == 'professeur') {
 		/*
 		$calldata = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_professeurs jep
@@ -279,6 +281,7 @@
 						$tab_eleve[$i]['regime']=$lig_tmp->regime;
 						$tab_eleve[$i]['doublant']=$lig_tmp->doublant;
 						$tab_eleve[$i]['date_sortie']=$lig_tmp->date_sortie;
+						$tab_eleve[$i]['mef_code']=$lig_tmp->mef_code;
 						$i++;
 					}
 				}
@@ -689,6 +692,58 @@
 				$calldata=mysql_query($sql);
 			}
 		}
-
+		// 20130607
+		elseif ($quelles_classes == 'rech_mef') {
+			if(isset($motif_rech_mef)) {
+				if($motif_rech_mef!="") {
+					if(preg_match('/classe/',$order_type)) {
+						$sql="SELECT distinct e.*,c.classe,jer.* FROM j_eleves_classes jec, 
+																	classes c, 
+																	j_eleves_regime jer, 
+																	eleves e 
+																WHERE jec.id_classe=c.id AND 
+																	jec.login=e.login AND
+																	jer.login=e.login AND
+																	e.mef_code='$motif_rech_mef'
+																ORDER BY $order_type;";
+						//echo "$sql<br />\n";
+						$calldata=mysql_query($sql);
+					}
+					else {
+						$sql="SELECT distinct e.*,jer.* FROM j_eleves_regime jer, 
+															eleves e 
+														WHERE jer.login=e.login AND
+															e.mef_code='$motif_rech_mef'
+														ORDER BY $order_type;";
+						//echo "$sql<br />\n";
+						$calldata=mysql_query($sql);
+					}
+				}
+				else {
+					if(preg_match('/classe/',$order_type)) {
+						$sql="SELECT distinct e.*,c.classe,jer.* FROM j_eleves_classes jec, 
+																	classes c, 
+																	j_eleves_regime jer, 
+																	eleves e 
+																WHERE jec.id_classe=c.id AND 
+																	jec.login=e.login AND
+																	jer.login=e.login AND
+																	e.mef_code NOT IN (SELECT mef_code FROM mef)
+																ORDER BY $order_type;";
+						//echo "$sql<br />\n";
+						$calldata=mysql_query($sql);
+					}
+					else {
+						$sql="SELECT distinct e.*,jer.* FROM j_eleves_regime jer, 
+															eleves e 
+														WHERE jer.login=e.login AND
+															e.mef_code NOT IN (SELECT mef_code FROM mef)
+														ORDER BY $order_type;";
+						//echo "$sql<br />\n";
+						$calldata=mysql_query($sql);
+					}
+				}
+			}
+		}
 	}
 ?>
