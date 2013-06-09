@@ -76,6 +76,17 @@ if($_SESSION['statut']=='administrateur') {
 	echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
 	echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
 }
+
+if(getSettingAOui('active_mod_discipline')) {
+	if(acces("/mod_discipline/stats2/index.php", $_SESSION['statut'])) {
+		echo "<li>Discipline&nbsp;:<br />
+	<ul>
+		<li><a href='../mod_discipline/stats2/index.php'>Statistiques</a></li>
+		<li><a href='../mod_discipline/disc_stat.php'>Statistiques (<em>plus rudimentaires</em>)</a></li>
+	</ul>
+</li>\n";
+	}
+}
 echo "</ul>\n";
 
 
