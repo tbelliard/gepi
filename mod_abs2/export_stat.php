@@ -196,6 +196,8 @@ include('menu_bilans.inc.php');
     }?>
 <?php
 
+echo "<p style='color:red; font-weight:bold'>Cette page, réclamée peu de temps avant la sortie de la 1.6.3, est inachevée.</p>\n";
+
 // Choix du mois
 if(!isset($mois)) {
 	$mois=strftime("%m")-1;
@@ -220,7 +222,13 @@ if(!isset($mois)) {
 </form>
 
 <p><br /></p>
-<p style='color:red'>Proposer plutôt de choisir le mois en choisissant un jour dans un tableau JS.</p>
+<ul style='color:red; list-style-type:circle;'>
+	<li>- Proposer plutôt de choisir le mois en choisissant un jour dans un tableau JS.</li>
+	<li>- L'effectif_total calculé par mois est erroné&nbsp;: Il ne tient pas compte des dates de périodes (trimestres,...)<br />
+	Pour obtenir une valeur correcte, il faudrait enregistrer dans la table eleves une date d'entrée dans l'établissement.<br />
+	Le champ date_entree existe dans le ElevesSansAdresse.xml; il faudra l'importer dans init_xml2, le prendre en compte dans modify_eleve et maj_import3</li>
+	<li>- L'extraction des nombres d'élèves dépassant tant de demi-journée,... nécessite le remplissage de la table d'agrégation.</li>
+</ul>
 </div>";
 	require_once("../lib/footer.inc.php");
 	die();
