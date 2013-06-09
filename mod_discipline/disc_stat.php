@@ -101,9 +101,12 @@ if(!isset($is_posted)) {
 	// Afficher les statistiques globales?
 	// ou choisir quoi afficher
 
-	echo "<div style='border:1px solid black; padding: 1em;'>\n";
-	echo "<p class='bold'>Totaux&nbsp;:</p>\n";
+	//echo "<div style='border:1px solid black; padding: 1em;'>\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form1'>\n";
+	echo "<fieldset id='effectifsIncidents' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
+	echo "<legend style='border: 1px solid grey; background-color: white;  '>Effectifs par incidents,...</legend>\n";
+
+	//echo "<p class='bold'>Totaux&nbsp;:</p>\n";
 
 	echo add_token_field();
 
@@ -203,6 +206,13 @@ if(!isset($is_posted)) {
 	echo "<input type='hidden' name='is_posted' value='1' />\n";
 	echo "<input type='hidden' name='mode' value='totaux' />\n";
 	echo "<input type='submit' name='valider' value='Valider' />\n";
+
+	//echo "<p style='color:red;'>Ajouter des liens Tout cocher/décocher.</p>\n";
+	echo "<p style='color:red;'>A FAIRE: Totaux par classes...</p>\n";
+	echo "<p style='color:red;'>A FAIRE: Pouvoir faire des tableaux mois par mois.</p>\n";
+	//echo "</div>\n";
+
+	echo "</fieldset>\n";
 	echo "</form>\n";
 
 	echo "<script type='text/javascript'>
@@ -226,18 +236,17 @@ if(!isset($is_posted)) {
 
 </script>\n";
 
-	//echo "<p style='color:red;'>Ajouter des liens Tout cocher/décocher.</p>\n";
-	echo "<p style='color:red;'>A FAIRE: Totaux par classes...</p>\n";
-	echo "<p style='color:red;'>A FAIRE: Pouvoir faire des tableaux mois par mois.</p>\n";
-	echo "</div>\n";
 
 	echo "<p>&nbsp;</p>\n";
 
 	//=================================================================================
 
-	echo "<div style='border:1px solid black; padding: 1em;'>\n";
-	echo "<p class='bold'>Top ten&nbsp;:</p>\n";
+	//echo "<div style='border:1px solid black; padding: 1em;'>\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form2'>\n";
+	echo "<fieldset id='topten' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
+	echo "<legend style='border: 1px solid grey; background-color: white;  '>Top-ten,...</legend>\n";
+
+	//echo "<p class='bold'>Top ten&nbsp;:</p>\n";
 
 	echo add_token_field();
 
@@ -278,8 +287,9 @@ if(!isset($is_posted)) {
 	echo "<input type='hidden' name='is_posted' value='1' />\n";
 	echo "<input type='submit' name='valider' value='Valider' />\n";
 	echo "</p>\n";
+	echo "</fieldset>\n";
 	echo "</form>\n";
-	echo "</div>\n";
+	//echo "</div>\n";
 
 }
 elseif($mode=='totaux') {
