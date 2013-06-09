@@ -158,8 +158,8 @@ if ($windows == 'oui') {
 	$tbs_librairies[]=$gepiPath."/edt_effets/javascripts/effects.js";
 	$tbs_librairies[]=$gepiPath."/edt_effets/javascripts/window.js";
 	$tbs_librairies[]=$gepiPath."/edt_effets/javascripts/window_effects.js";
-	$tbs_CSS[]=array("fichier"=> $gepiPath."/edt_effets/themes/default.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
-	$tbs_CSS[]=array("fichier"=> $gepiPath."/edt_effets/themes/alphacube.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+	$tbs_CSS[]=array("fichier"=> $gepiPath."/edt_effets/themes/default.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
+	$tbs_CSS[]=array("fichier"=> $gepiPath."/edt_effets/themes/alphacube.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 }
 
 // Utilisation de tablekit
@@ -243,7 +243,7 @@ if(isset($style_specifique)) {
 	foreach($style_specifique as $current_style_specifique) {
 	  if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
 		//// Styles spécifiques à une page:
-		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 
 	  }
 
@@ -251,7 +251,7 @@ if(isset($style_specifique)) {
   } else {
 	if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
 	  // Styles spécifiques à une page:
-	  $tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+	  $tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 	}
   }
 }
@@ -259,7 +259,7 @@ if(isset($style_specifique)) {
 // vérifie si on est dans le modules absences
 $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs", "statistiques", "alert_suivi", "admin_config_semaines", "admin_motifs_absences", "admin_horaire_ouverture", "admin_actions_absences", "admin_periodes_absences");
 if(in_array(basename($_SERVER['PHP_SELF'],".php"), $files)) {
-	$tbs_CSS[]=array("fichier"=> $gepiPath."/mod_absences/styles/mod_absences.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+	$tbs_CSS[]=array("fichier"=> $gepiPath."/mod_absences/styles/mod_absences.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 }
 
 
@@ -300,12 +300,12 @@ if (isset($style_screen_ajout))  {
 		
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			if (@file_exists($gepiPath2.'/style_screen_ajout_'.getSettingValue("gepiSchoolRne").'.css')) {
-				$Style_CSS[]=array("fichier"=>$gepiPath."/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css"  , "rel"=>"stylesheet" , "type"=>"text/css","media"=>"" , "title"=>"");
+				$Style_CSS[]=array("fichier"=>$gepiPath."/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css"  , "rel"=>"stylesheet" , "type"=>"text/css","media"=>"all" , "title"=>"");
 				
 			}
 		} else {
 			if (@file_exists($gepiPath2.'/style_screen_ajout.css')) {
-				$Style_CSS[]=array("fichier"=>$gepiPath."/style_screen_ajout.css"  , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+				$Style_CSS[]=array("fichier"=>$gepiPath."/style_screen_ajout.css"  , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 			}
 		}
 	}

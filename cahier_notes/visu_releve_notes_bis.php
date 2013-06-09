@@ -392,20 +392,21 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 	// Affichage sur 3 colonnes
 	$nb_classes_par_colonne=round($nb_classes/3);
 
-	echo "<table width='100%' summary='Tableau de choix des classes'>\n";
-	echo "<tr valign='top' align='center'>\n";
+	echo "<table style='width:100%'>\n";
+	echo "<caption class='invisible'>Choix des classes</caption>\n";
+	echo "<tr style='vertical-align:top;'>\n";
 
 	$cpt = 0;
 
 	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
-	echo "<td align='left'>\n";
+	echo "<td>\n";
 
 	while($lig_clas=mysql_fetch_object($call_classes)) {
 
 		//affichage 2 colonnes
 		if(($cpt>0)&&(round($cpt/$nb_classes_par_colonne)==$cpt/$nb_classes_par_colonne)){
 			echo "</td>\n";
-			echo "<td align='left'>\n";
+			echo "<td>\n";
 		}
 
 		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='unCheckRadio();change_style_classe($cpt)' /> $lig_clas->classe</label>";
@@ -922,7 +923,7 @@ echo "</p>";
 		//$texte_infobulle.="\n";
 		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_cell_ajustee',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_cell_ajustee','y',100,100);\"  onmouseout=\"cacher_div('a_propos_cell_ajustee');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide Fonction cell_ajustee()' /></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_cell_ajustee','y',100,100);\"  onmouseout=\"cacher_div('a_propos_cell_ajustee');\"><img src='../images/icons/ico_ampoule.png' class='icone15x25' alt='Aide Fonction cell_ajustee()' /></a>";
 
 		echo "<br />\n";
 
@@ -934,7 +935,7 @@ echo "</p>";
 		//$texte_infobulle.="\n";
 		$tabdiv_infobulle[]=creer_div_infobulle('div_bull_debug_pdf',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('div_bull_debug_pdf','y',100,100);\"  onmouseout=\"cacher_div('div_bull_debug_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide Debug' /></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('div_bull_debug_pdf','y',100,100);\"  onmouseout=\"cacher_div('div_bull_debug_pdf');\"><img src='../images/icons/ico_ampoule.png' class='icone15x25' alt='Aide Debug' /></a>";
 
 		echo "<br />\n";
 
@@ -1113,7 +1114,7 @@ echo "</script>\n";
 
 				echo "<br />\n";
 
-				echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.",".$j.");\"><img src='../images/enabled.png' width='15' height='15' alt='Cocher tous les élèves' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.",".$j.");\"><img src='../images/disabled.png' width='15' height='15' alt='Décocher tous les élèves' /></a>\n";
+				echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.",".$j.");\"><img src='../images/enabled.png' class='icone15' alt='Cocher tous les élèves' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.",".$j.");\"><img src='../images/disabled.png' class='icone15' alt='Décocher tous les élèves' /></a>\n";
 
 				echo "</th>\n";
 			}
@@ -1122,7 +1123,7 @@ echo "</script>\n";
 			echo "<th>\n";
 			echo "Du $display_date_debut au $display_date_fin<br />\n";
 
-			echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.",'".$periode."');\"><img src='../images/enabled.png' width='15' height='15' alt='Cocher tous les élèves' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.",'".$periode."');\"><img src='../images/disabled.png' width='15' height='15' alt='Décocher tous les élèves' /></a>\n";
+			echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.",'".$periode."');\"><img src='../images/enabled.png' class='icone15' alt='Cocher tous les élèves' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.",'".$periode."');\"><img src='../images/disabled.png' class='icone15' alt='Décocher tous les élèves' /></a>\n";
 
 			echo "</th>\n";
 		}
@@ -1323,7 +1324,7 @@ echo "</script>\n";
 								echo "<td>";
 								echo "<label for='tab_selection_ele_".$i."_".$j."_".$cpt."' class='invisible'>".$lig_ele->nom." ".$lig_ele->prenom." periode ".$j."</label>
 									<input type='hidden' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$_SESSION['login']."\" />";
-								echo "<img src='../images/enabled.png' width='15' height='15' alt='Coché' />";
+								echo "<img src='../images/enabled.png' class='icone15' alt='Coché' />";
 								echo "</td>\n";
 							}
 							elseif($_SESSION['statut']=='responsable') {

@@ -553,8 +553,9 @@ $tabdiv_infobulle[]=creer_div_infobulle('parametres_communs_html_et_pdf',$titre_
 <?php
 echo add_token_field();
 ?>
-<H3>Mise en page du relevé de notes HTML</H3>
-<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des paramètres">
+<h3>Mise en page du relevé de notes HTML</h3>
+<table cellpadding="8" cellspacing="0" width="100%" border="0">
+    <caption class="invisible">Tableau des paramètres</caption>
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
@@ -787,7 +788,7 @@ echo add_token_field();
         <td style="font-variant: small-caps;">
         Faire apparaitre le nom de l'établissement sur le relevé&nbsp;:<br />(<i>certains établissements ont le nom dans le Logo</i>)
 		<?php
-			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' class='icone15x25' /></a>";
 		?>
         </td>
 	<?php
@@ -817,7 +818,7 @@ echo add_token_field();
         <td style="font-variant: small-caps;">
         Faire apparaitre l'adresse de l'établissement sur le relevé&nbsp;:<br />(<i>certains établissements ont l'adresse dans le Logo</i>)
 		<?php
-			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' class='icone15x25' /></a>";
 		?>
         </td>
 	<?php
@@ -854,7 +855,7 @@ echo add_token_field();
 
 
 <?php
-//Informations devant figurer sur le relevé de notes</H3>
+//Informations devant figurer sur le relevé de notes</h3>
 ?>
 <h3>Informations devant figurer sur le relevé de notes</h3>
 <table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des informations devant figurer sur le relevé de notes">
@@ -1026,7 +1027,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         <td style="font-variant: small-caps;">
         Afficher le numéro de téléphone de l'établissement&nbsp;:
 		<?php
-			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' class='icone15x25' /></a>";
 		?>
         </td>
         <td>
@@ -1046,7 +1047,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         <td style="font-variant: small-caps;">
         Afficher le numéro de fax de l'établissement&nbsp;:
 		<?php
-			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' class='icone15x25' /></a>";
 		?>
         </td>
         <td>
@@ -1066,7 +1067,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         <td style="font-variant: small-caps;">
         Afficher l'adresse email de l'établissement&nbsp;:
 		<?php
-			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' class='icone15x25' /></a>";
 		?>
         </td>
         <td>
@@ -1148,16 +1149,26 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
 
 <hr />
-<H3>Bloc adresse</H3>
-<center><table border="1" cellpadding="10" width="90%" summary="Tableau des paramètres bloc adresse"><tr><td>
-Ces options contrôlent le positionnement du bloc adresse du responsable de l'élève directement sur le relevé (et non sur la page de garde - voir ci-dessous). L'affichage de ce bloc est contrôlé classe par classe, au niveau du paramétrage de la classe.
-</td></tr></table></center>
+<h3>Bloc adresse</h3>
+<div class="center">
+    <table border="1" cellpadding="10" width="90%" summary="Tableau des paramètres bloc adresse">
+        <tr>
+            <td>
+                Ces options contrôlent le positionnement du bloc adresse du responsable de l'élève 
+                directement sur le relevé (et non sur la page de garde - voir ci-dessous). 
+                L'affichage de ce bloc est contrôlé classe par classe, au niveau du paramétrage 
+                de la classe.
+            </td>
+        </tr>
+    </table>
+</div>
 
-<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Paramètres du bloc adresse">
+<table cellpadding="8" cellspacing="0" width="100%" border="0">
+    <caption class="invisible">Paramètres du bloc adresse</caption>
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;;$nb_ligne++;?>>
         <td colspan='2' style="font-variant: small-caps;">
-	<a href="javascript:SetDefaultValues('Adresse')">Rétablir les paramètres par défaut</a>
+            <a href="javascript:SetDefaultValues('Adresse')">Rétablir les paramètres par défaut</a>
         </td>
      </tr>
 

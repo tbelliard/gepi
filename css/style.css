@@ -216,9 +216,30 @@ TD.calendar {border:0px; font-size: 7pt}
 TD.calendarcol1 {border:0px; font-size: 8pt}
 TD.calendarHeader {border:0px; font-size: 10pt}
 
-/* Styles utilisés ici et là... peut-être faudrait-il en remplacer certains par H1, H2,... */
+/* Styles utilisés ici et là... peut-être faudrait-il en remplacer certains par h1, h2,... */
 .grand {
 	color: #330033;
 	font-size: 16pt;
 }
+
+/* Icones */
+.icone15 {
+    height: 15px;
+    width: 15px;
+}
+
+.icone16 {
+    height: 16px;
+    width: 16px;
+}
+
+.icone20 {
+    height: 20px;
+    width: 20px;
+}
+.icone15x25 {
+    height: 25px;
+    width: 15px;
+}
+
 

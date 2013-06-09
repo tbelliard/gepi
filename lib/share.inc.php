@@ -5530,7 +5530,7 @@ function joueAlarme($niveau_arbo = "0") {
 	  }
 
 	  if(file_exists($chemin_sound)) { 
-		$retour ="<audio id='id_footer_sound' preload='auto' autobuffer>
+		$retour ="<audio id='id_footer_sound' preload='auto'>
 	<source src='".$chemin_sound."' />
 </audio>
 <script type='text/javascript'>

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <?php
 /*
  * $Id$
@@ -62,7 +62,7 @@
 
 <div id='container'>
 
-<a name='haut_de_page'></a>
+<a id='haut_de_page'></a>
 
 <div class='fixeMilieuDroit'>
 	<a href='#haut_de_page'><img src='images/up.png' width='18' height='18' alt="haut de la page" title="Remonter en haut de la page" /></a>
@@ -167,7 +167,7 @@
 
 
 	</div>
-	<a name="contenu" class="invisible">Début de la page</a>
+	<a id="contenu" class="invisible">Début de la page</a>
 
 <!-- Signalements d'erreurs d'affectations -->
 <?php
@@ -491,7 +491,7 @@
 							<td>
 								<?php
 									if((getSettingAOui('active_mod_alerte'))&&(in_array($newentree['statut'], array("administrateur", "scolarite", "cpe", "professeur", "secours", "autre")))) {
-										echo "<div style='float:right; width:16px;'><a href='./mod_alerte/form_message.php?message_envoye=y&amp;login_dest=".$newentree['login'].add_token_in_url()."' title=\"Déposer un message d'alerte/information à destination de ".$newentree['texte']." .\" target='_blank'><img src='./images/icons/mail.png' width='16' height='16' /></a></div>";
+										echo "<div style='float:right; width:16px;'><a href='./mod_alerte/form_message.php?message_envoye=y&amp;login_dest=".$newentree['login'].add_token_in_url()."' title=\"Déposer un message d'alerte/information à destination de ".$newentree['texte']." .\" target='_blank'><img src='./images/icons/mail.png' width='16' height='16' alt='courriel' /></a></div>";
 									}
 
 									if(($newentree['courriel']!="")&&(check_mail($newentree['courriel']))) {
@@ -567,7 +567,7 @@
 	</script>
 
 
-<a name='bas_de_page'></a>
+<a id='bas_de_page'></a>
 </div>
 
 		<?php

@@ -137,50 +137,6 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 			echo "<div id='div_info_formulaires' style='color:red; border:1px solid black; background-color: white; width: 40em; display:none; margin: 1em;'></div>\n";
 		}
 	}
-/**
-	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',"") : NULL;
-	if($footer_sound===NULL) {
-		$footer_sound=getSettingValue('footer_sound');
-		if($footer_sound=='') {
-			$footer_sound="KDE_Beep_Pop.wav";
-		}
-	}
-	
-	if($footer_sound!=='') {
-    
-	  if ($niveau_arbo == "0") {
-		  $chemin_sound="./sounds/".$footer_sound;
-	  } elseif ($niveau_arbo == "1") {
-		  $chemin_sound="../sounds/".$footer_sound;
-	  } elseif ($niveau_arbo == "2") {
-		  $chemin_sound="../../sounds/".$footer_sound;
-	  } elseif ($niveau_arbo == "3") {
-		  $chemin_sound="../../../sounds/".$footer_sound;
-	  }
-	  else {
-		  $chemin_sound="../sounds/".$footer_sound;
-	  }
-
-	  if(file_exists($chemin_sound)) {
-		  echo "<audio id='id_footer_sound' preload='auto' autobuffer>
-	<source src='$chemin_sound' />
-  </audio>\n";
-		  // Exemple de code d'appel: document.getElementById('id_footer_sound').play();
-		  // Décommenter pour tester:
-		  //echo "<a href='javascript:play_sound();'>Jouer le son 'footer_sound' : $footer_sound</a>";
-		  echo "
-  <!--a href='javascript:play_footer_sound();'>Jouer</a-->
-  <script type='text/javascript'>
-  function play_footer_sound() {
-	  if(document.getElementById('id_footer_sound')) {
-		  document.getElementById('id_footer_sound').play();
-	  }
-  }
-  </script>
-  ";
-	  }
-	}
- */
 	
 	echo "<!-- Alarme sonore -->\n";
 	echo joueAlarme($niveau_arbo);

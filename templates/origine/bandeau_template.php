@@ -142,7 +142,7 @@
 						echo "
 	<li class='ligne_premier_menu'>
 		<a href='$value[lien]'".insert_confirm_abandon().">
-			<img src='$value[image]' alt='$value[alt]' title='$value[title]' height='16' width='16' />
+			<img src='$value[image]' alt='$value[alt]' title='$value[title]' class='icone16' />
 			<span class='menu_bandeau'>
 				&nbsp;$value[texte]
 			</span>

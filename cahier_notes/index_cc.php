@@ -223,7 +223,7 @@ if($periode_num>1) {
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		$lig=mysql_fetch_object($res);
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$lig->id_cahier_notes'><img src='../images/icons/back.png' width='16' height='16' title='Période $periode_prec' alt='Période $periode_prec' /></a> ";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$lig->id_cahier_notes'><img src='../images/icons/back.png' class='icone16' title='Période $periode_prec' alt='Période $periode_prec' /></a> ";
 	}
 }
 echo "Période $periode_num";
@@ -234,7 +234,7 @@ if($periode_num<$current_group['nb_periode']) {
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		$lig=mysql_fetch_object($res);
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$lig->id_cahier_notes'><img src='../images/icons/forward.png' width='16' height='16' title='Période $periode_suiv' alt='Période $periode_suiv' /></a>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$lig->id_cahier_notes'><img src='../images/icons/forward.png' class='icone16' title='Période $periode_suiv' alt='Période $periode_suiv' /></a>";
 	}
 }
 
@@ -288,7 +288,7 @@ else {
 		}
 
 		if($lig->id_cn_dev!='0') {
-			echo " <img src='../images/icons/chaine.png' width='16' height='16' title='Devoir rattaché à ".get_infos_devoir($lig->id_cn_dev)."' />";
+			echo " <img src='../images/icons/chaine.png' class='icone16' title='Devoir rattaché à ".get_infos_devoir($lig->id_cn_dev)."' />";
 		}
 
 		echo "<br />\n";
