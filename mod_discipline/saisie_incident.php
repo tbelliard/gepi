@@ -661,7 +661,8 @@ $texte_mail,
 $destinataires, 
 $headers);
 </pre>";
-*/		$res_mes=mysql_query($sql);
+*/
+						$res_mes=mysql_query($sql);
 						if(mysql_num_rows($res_mes)>0) {
 							while($lig_mes=mysql_fetch_object($res_mes)) {
 								//$tab_mes_enregistree[]=$lig_mes->mesure;
@@ -938,7 +939,11 @@ $headers);
 								$texte_mail=$texte_mail."\n\n"."Message: ".preg_replace('#<br />#',"\n",$msg);
 						
 								$subject = "[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
+
 								$headers = "";
+								if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+									$headers.="Reply-to:".$_SESSION['email']."\r\n";
+								}
 
 								if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
 								if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
