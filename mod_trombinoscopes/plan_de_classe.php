@@ -93,7 +93,7 @@ y INT(11) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 // On ne va afficher l'entête que pour le choix du groupe, pas sur la partie réalisation du plan de classe
-if(!isset($id_groupe)) {
+if((!isset($id_groupe))||($id_groupe=="")) {
 	//**************** EN-TETE *****************
 	$titre_page = "Plan de classe";
 	/**
