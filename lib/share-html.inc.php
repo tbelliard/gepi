@@ -1202,6 +1202,8 @@ function test_ecriture_dossier($tab_restriction=array()) {
  * @todo On pourrait utiliser $_SESSION['login'] plutôt que $page
  */
 function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
+	global $active_hostbyaddr;
+
 	switch( $duree ) {
 	case 7:
 		$display_duree="une semaine";
