@@ -60,7 +60,7 @@
 
 <div class="bandeau_colonne" id="bd_colonne_droite">
 	<!-- Nom prénom -->
-		<p id='bd_nom'>
+		<p id='bd_nom' title="<?php echo $tbs_nom_prenom_statut;?>">
 			<?php echo $tbs_nom_prenom; ?>
 		</p>
 	

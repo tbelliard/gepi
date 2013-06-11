@@ -417,7 +417,9 @@ if (isset($titre_page)) {
 			$tbs_nom_prenom="Visiteur";
 		}
 	}
-	
+
+	$tbs_nom_prenom_statut=$tbs_nom_prenom;
+
 	//=== Dernière connexion ===
 	if (isset($affiche_connexion)) {
 		$tbs_last_connection=last_connection();
@@ -425,6 +427,7 @@ if (isset($titre_page)) {
 				
 //=== statut utilisateur ===
 	if (isset($_SESSION['statut'])) {
+		$tbs_nom_prenom_statut.=" (".$_SESSION['statut'].")";
 		if ($_SESSION['statut'] == "administrateur") {
 			$tbs_statut[]=array("classe"=>"rouge" , "texte"=>"Administrateur");
 		}elseif ($_SESSION['statut'] == "professeur") {
