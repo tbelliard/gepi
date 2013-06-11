@@ -122,6 +122,37 @@ if ($type_selection == 'id_groupe') {
     }
 }
 
+if(isset($_POST['suppr_saisies_cochees'])) {
+	$msg="";
+
+	// $_POST[select_saisie]['0']=	40004
+	$select_saisie=isset($_POST['select_saisie']) ? $_POST['select_saisie'] : array();
+	if(count($select_saisie)==0) {
+		$msg.="Aucune saisie n'a été cochée.<br />";
+	}
+	else {
+		foreach($select_saisie as $key => $value) {
+
+			$saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($value);
+			if ($saisie == null) {
+				//$message_enregistrement .= 'Modification impossible : saisie non trouvée.';
+				$msg .= 'Modification impossible : saisie n°'.$value.' non trouvée.';
+			}
+			else {
+				if ($utilisateur->getStatut() == 'cpe' || $utilisateur->getStatut() == 'scolarite'
+					|| ($utilisateur->getStatut() == 'professeur' && $saisie->getUtilisateurId() == $utilisateur->getPrimaryKey()) ) {
+					//ok
+					$msg .= 'Suppression de la saisie n°'.$value.'.<br />';
+					$saisie->delete();
+				} else {
+					//$message_enregistrement .= 'Modification non autorisée.';
+					$msg .= 'Modification de la saisie n°'.$value.' non autorisée.<br />';
+				}
+			}
+		}
+	}
+}
+
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $javascript_specifique[] = "mod_abs2/lib/include";
@@ -133,6 +164,8 @@ $_SESSION['cacher_header'] = "y";
 $dojo = true;
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
 
 include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
@@ -499,6 +532,12 @@ $eleve_col = $query
 ?>
 				</div>
 			</div>
+
+			<div style="display: inline">
+				<!--input type='submit' name='suppr_saisies_cochees' value='Supprimer les saisies' title="Supprimer les saisies cochées" dojoType="dijit.form.Button" /-->
+				<button type='submit' name='suppr_saisies_cochees' value='Supprimer les saisies' title="Supprimer les saisies cochées" dojoType="dijit.form.Button" />Supprimer les saisies</button>
+			</div>
+
 			</p>
 
 			<!-- Afichage du tableau de la liste des élèves -->
