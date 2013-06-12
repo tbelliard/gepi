@@ -219,6 +219,16 @@ if ($utilisateur->getStatut() == 'professeur' && (getSettingValue("abs2_saisie_p
 }
 
 if ($type_selection == 'id_cours') {
+	if(empty($id_cours)) {
+		// On recherche le créneau courant
+		if ($utilisateur->getStatut() == "professeur") {
+			$current_cours = $utilisateur->getEdtEmplacementCours();
+			if ($current_cours != null) {
+				$id_cours = $current_cours->getIdCours();
+			}
+		}
+	}
+
     if ($utilisateur->getStatut() == "professeur") {
 	$current_cours = EdtEmplacementCoursQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->findPk($id_cours);
     } else {
@@ -228,6 +238,7 @@ if ($type_selection == 'id_cours') {
     if ($current_cours != null) {
 	$current_creneau = $current_cours->getEdtCreneau();
 	$current_groupe = $current_cours->getGroupe();
+	$id_groupe=$current_groupe->getId();
 	$current_aid = $current_cours->getAidDetails();
 	$dt_date_absence_eleve = $current_cours->getDate($id_semaine);
     }
@@ -733,6 +744,8 @@ require_once("../lib/header_template.inc.php");
 <?php 
 include('../templates/origine/header_template.php');
 //include("../templates/origine/bandeau_template.php");
+
+//debug_var();
 ?>
 
 <!-- corrections internet Exploreur -->
