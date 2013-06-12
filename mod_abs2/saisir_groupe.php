@@ -218,6 +218,16 @@ if ($utilisateur->getStatut() == 'professeur' && (getSettingValue("abs2_saisie_p
 }
 
 if ($type_selection == 'id_cours') {
+	if(empty($id_cours)) {
+		// On recherche le créneau courant
+		if ($utilisateur->getStatut() == "professeur") {
+			$current_cours = $utilisateur->getEdtEmplacementCours();
+			if ($current_cours != null) {
+				$id_cours = $current_cours->getIdCours();
+			}
+		}
+	}
+
     if ($utilisateur->getStatut() == "professeur") {
 	$current_cours = EdtEmplacementCoursQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->findPk($id_cours);
     } else {
@@ -247,7 +257,7 @@ if ($type_selection == 'id_groupe') {
     $current_aid = AidDetailsQuery::create()->findPk($id_aid);
 } else if ($type_selection == 'id_classe') {
     $current_classe = ClasseQuery::create()->findPk($id_classe);
-} else if ($type_selection != 'id_cours' && getSettingValue("autorise_edt_tous") == 'y'){//rien n'as ete selectionner, on va regarder le cours actuel
+} else if ($type_selection != 'id_cours' && getSettingValue("autorise_edt_tous") == 'y'){//rien n'a ete selectionné, on va regarder le cours actuel
     $current_cours = $utilisateur->getEdtEmplacementCours();
     if ($current_cours != null) {
 	$current_creneau = $current_cours->getEdtCreneau();
@@ -262,6 +272,7 @@ if ($type_selection == 'id_groupe') {
 	}
     }
 }
+
 $id_groupe = null;
 $id_classe = null;
 $id_aid = null;
@@ -1145,7 +1156,21 @@ if ($eleve_col->isEmpty()) {
 				<?php 
 					}
 
-					if($_SESSION['statut']=='professeur' && isset($current_groupe) && $current_groupe != null && $current_creneau != null) {
+					if($_SESSION['statut']=='professeur' && isset($id_cours) && is_numeric($id_cours)) {
+						// Récupérer l'id_groupe pour tester s'il y a un plan de classe
+						$sql="SELECT id_groupe FROM edt_cours WHERE id_cours='".$id_cours."';";
+						$res_edt=mysql_query($sql);
+						if(mysql_num_rows($res_edt)>0) {
+							$id_groupe=mysql_result($res_edt, 0, "id_groupe");
+
+							$sql="SELECT 1=1 FROM t_plan_de_classe WHERE id_groupe='".$id_groupe."' AND login_prof='".$_SESSION['login']."';";
+							$test_pdc=mysql_query($sql);
+							if(mysql_num_rows($test_pdc)>0) {
+								echo " <a href='saisir_groupe_plan.php?type_selection=id_cours&amp;id_cours=$id_cours'><img src='../images/icons/trombino.png' width='20' height='20' title='Saisie sur plan de classe' /></a>";
+							}
+						}
+					}
+					elseif($_SESSION['statut']=='professeur' && isset($current_groupe) && $current_groupe != null && $current_creneau != null) {
 						$sql="SELECT 1=1 FROM t_plan_de_classe WHERE id_groupe='".$id_groupe."' AND login_prof='".$_SESSION['login']."';";
 						$test_pdc=mysql_query($sql);
 						if(mysql_num_rows($test_pdc)>0) {
