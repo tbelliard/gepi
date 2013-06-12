@@ -653,6 +653,9 @@ else {
 			$result .= msj_erreur();
 	}
 }
+/*
+
+// On passe en VARCHAR(50) en 1.6.3 et le BIGINT perd les caractères alphabétiques
 
 $result .= "&nbsp;->Extension du 'mef_code' de la table 'eleves' en BIGINT(20) : ";
 $result.="<br />";
@@ -671,6 +674,8 @@ if ($query) {
 } else {
 		$result .= msj_erreur();
 }
+
+*/
 
 $result .= "<br />&nbsp;->Ajout d'un champ 'nom_requete' à la table 'gc_affichages'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM gc_affichages LIKE 'nom_requete';"));
