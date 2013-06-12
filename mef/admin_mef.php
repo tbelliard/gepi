@@ -85,6 +85,16 @@ if ($action == 'supprimer') {
 		$mef->setLibelleLong(stripslashes($LIBELLE_LONG));
 		$mef->setLibelleEdition(stripslashes($LIBELLE_EDITION));
 		$mef->save();
+
+		if(isset($_POST['MEF_RATTACHEMENT'])) {
+			$sql="UPDATE mef SET mef_rattachement='".$_POST['MEF_RATTACHEMENT']."' WHERE mef_code='".$EXT_ID."';";
+			$update=mysql_query($sql);
+		}
+
+		if(isset($_POST['CODE_MEFSTAT'])) {
+			$sql="UPDATE mef SET code_mefstat='".$_POST['CODE_MEFSTAT']."' WHERE mef_code='".$EXT_ID."';";
+			$update=mysql_query($sql);
+		}
     }
 }
 
@@ -349,6 +359,7 @@ elseif ($action == "ajouter" OR $action == "modifier") {
     	<p>
 <?php
 echo add_token_field();
+$tab_mef=get_tab_mef();
 ?>
     	</p>
       <table cellpadding="2" cellspacing="2" class="menu">
@@ -357,18 +368,62 @@ echo add_token_field();
           <td>Libellé court</td>
           <td>Libellé long</td>
           <td>Libellé d'édition</td>
+          <td>Code mefstat</td>
+          <td title='Exemple: Le MEF  "6EME Bilangue" est rattaché au MEF "6EME"'>Mef rattachement</td>
        </tr>
         <tr>
               <td>
            <?php
+       // Initialisations
+       $code_mefstat="";
+       $mef_rattachement="";
+       $mef_code="";
+
 	   if ($mef != null) { ?>
 	      <input name="id" type="hidden" id="id" value="<?php echo $id ?>" />
+	   <?php
+			//$sql="SELECT * FROM mef WHERE mef_code='".$mef->getMefCode()."';";
+			// $mef->getMefCode() renvoie un truc bizarre.
+			// Exemple: 2147483647 au lieu de 10010012110
+			$sql="SELECT * FROM mef WHERE id='".$id."';";
+			//echo "$sql<br />";
+			$res_mef_courant=mysql_query($sql);
+			if(mysql_num_rows($res_mef_courant)>0) {
+				$code_mefstat=mysql_result($res_mef_courant, 0, "code_mefstat");
+				$mef_rattachement=mysql_result($res_mef_courant, 0, "mef_rattachement");
+				// Faute de le récupérer correctement avec getMefCode()
+				$mef_code=mysql_result($res_mef_courant, 0, "mef_code");
+			}
+			//echo "\$mef_rattachement=$mef_rattachement";
+	   ?>
 	   <?php } ?>
-              	<input name="EXT_ID" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getMefCode();} ?>" />
+              	<input name="EXT_ID" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {
+              	//echo $mef->getMefCode();
+              	echo $mef_code;
+              	}?>" />
               </td>
               <td><input name="LIBELLE_COURT" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getLibelleCourt();} ?>" /></td>
               <td><input name="LIBELLE_LONG" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getLibelleLong();} ?>" /></td>
               <td><input name="LIBELLE_EDITION" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getLibelleEdition();} ?>" /></td>
+              <td><input name="CODE_MEFSTAT" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $code_mefstat;} ?>" /></td>
+              <td>
+                  <select name='MEF_RATTACHEMENT'>
+                      <option value=''<?php 
+                      //if(($mef_rattachement!="")&&($mef_rattachement==$mef->getMefCode())) {echo " selected";}
+                      if(($mef_rattachement!="")&&($mef_rattachement==$mef_code)) {echo " selected";}
+                      ?>>---</option>
+                      <?php
+                          foreach($tab_mef as $key => $value) {
+                              echo "
+                       <option value='".$key."'";
+                              if(($mef!=null)&&($key==$mef_rattachement)) {
+                                  echo " selected";
+                              }
+                              echo ">".$value['designation_courte']."</option>";
+                          }
+                      ?>
+                  </select>
+              </td>
         </tr>
       </table>
      <p><input type="submit" name="Submit" value="Enregistrer" /></p>
@@ -378,7 +433,7 @@ echo add_token_field();
 </div>
 <?php
 } ?>
-	<a href="admin_mef.php?action=ajouter"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter les mef</a>
+	<a href="admin_mef.php?action=ajouter"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter des mef</a>
 	<br/><br/>
 	<a href="admin_mef.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter les mef par défaut de collège</a>
 	<br/><br/>
