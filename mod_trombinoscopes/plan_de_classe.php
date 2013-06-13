@@ -345,8 +345,8 @@ echo "<div style='position:absolute; top:0.5em; left:0.5em; width:5em; text-alig
 echo "<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a><br />\n";
 echo "<input type='button' name='Enregistrer' value='Enregistrer' class='noprint' onclick='enregistrement_position_div_photo()' />\n";
 
-echo "<br />";
-echo "<a href='javascript:decale_photos(10,0)'>Clic</a>";
+//echo "<br />";
+//echo "<a href='javascript:decale_photos(10,0)'>Clic</a>";
 
 echo "</div>\n";
 
