@@ -92,6 +92,9 @@ if (isset($visioedt)) {
 		if (($_SESSION['statut'] != "professeur") OR (($visioedt == "prof1") AND (getSettingValue('AccesProf_EdtProfs')!='no'))) {
 			require_once("./voir_edt_prof.php");
 		}
+		elseif(($_SESSION['statut'] == "professeur")&&($visioedt == "prof1")&&(isset($login_edt))) {
+			echo civ_nom_prenom($login_edt);
+		}
     }
     
     elseif (isset($visioedt) AND $visioedt == "salle1") {

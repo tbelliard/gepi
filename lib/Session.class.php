@@ -1220,7 +1220,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           $reg_data = sql_query("UPDATE utilisateurs SET date_verrouillage=now() WHERE login='".$_login."' and statut!='administrateur'");
        }
        # On enregistre une alerte de sécurité.
-       tentative_intrusion(2, "Verrouillage du compte ".$_login." en raison d'un trop grand nombre de tentatives de connexion infructueuses. Ce peut être une tentative d'attaque brute-force.");
+       tentative_intrusion(2, "Verrouillage du compte ".$_login." en raison d'un trop grand nombre de tentatives de connexion infructueuses. Ce peut être une tentative d'attaque brute-force.", $_login);
        return true;
 	}
 

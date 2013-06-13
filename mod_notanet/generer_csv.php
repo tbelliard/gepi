@@ -77,6 +77,9 @@ else {
 
 	$extract_mode=isset($_POST['extract_mode']) ? $_POST['extract_mode'] : (isset($_GET['extract_mode']) ? $_GET['extract_mode'] : NULL);
 
+	$avec_nom_prenom=isset($_GET['avec_nom_prenom']) ? $_GET['avec_nom_prenom'] : "n";
+	$total_seul=isset($_GET['total_seul']) ? $_GET['total_seul'] : "n";
+
 	//$fd.="TEMOIN".$eol;
 
 	// Bibliothèque pour Notanet et Fiches brevet
@@ -162,9 +165,38 @@ else {
 								// Le formatage est déjà fait lors de l'insertion dans la table: NON... il faut deux chiffres après la virgule
 								//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".formate_note_notanet($lig2->note_notanet)."|";
 								//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$lig2->note_notanet."|";
-								$lig_notanet[]="$lig2->ine|".sprintf("%03d",$lig2->id_mat)."|".$note."|";
+
+								if($total_seul!="y") {
+									$lig_notanet[]="$lig2->ine|".sprintf("%03d",$lig2->id_mat)."|".$note."|";
+								}
+								elseif(($avec_nom_prenom=="y")&&($total_seul!="y")) {
+									// Non traité actuellement
+								}
 							}
-							$lig_notanet[]="$ine|TOT|".formate_note_notanet($TOT)."|";
+
+							if($avec_nom_prenom!="y") {
+								$lig_notanet[]="$ine|TOT|".formate_note_notanet($TOT)."|";
+							}
+							else {
+								$nom_ele="";
+								$prenom_ele="";
+								$classe_ele="";
+
+								$sql="SELECT * FROM eleves WHERE login='$lig1->login';";
+								$res_ele=mysql_query($sql);
+								if(mysql_num_rows($res_ele)>0) {
+									$nom_ele=mysql_result($res_ele,0,"nom");
+									$prenom_ele=mysql_result($res_ele,0,"prenom");
+								}
+
+								$sql="SELECT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig1->login' ORDER BY periode DESC LIMIT 1;";
+								$res_clas=mysql_query($sql);
+								if(mysql_num_rows($res_clas)>0) {
+									$classe_ele=mysql_result($res_clas,0,"classe");
+								}
+
+								$lig_notanet[]="$ine|$nom_ele|$prenom_ele|$classe_ele|TOT|".formate_note_notanet($TOT)."|";
+							}
 						}
 					}
 				}
@@ -221,9 +253,38 @@ else {
 						// Le formatage est déjà fait lors de l'insertion dans la table
 						//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".formate_note_notanet($lig2->note_notanet)."|";
 						//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$note."|";
-						$lig_notanet[]="$lig2->ine|".sprintf("%03d",$lig2->id_mat)."|".$note."|";
+
+						if($avec_nom_prenom!="y") {
+							$lig_notanet[]="$lig2->ine|".sprintf("%03d",$lig2->id_mat)."|".$note."|";
+						}
+						elseif(($avec_nom_prenom=="y")&&($total_seul!="y")) {
+							// Non traité actuellement
+						}
 					}
-					$lig_notanet[]="$ine|TOT|".formate_note_notanet($TOT)."|";
+
+					if($avec_nom_prenom!="y") {
+						$lig_notanet[]="$ine|TOT|".formate_note_notanet($TOT)."|";
+					}
+					else {
+						$nom_ele="";
+						$prenom_ele="";
+						$classe_ele="";
+
+						$sql="SELECT * FROM eleves WHERE login='$lig1->login';";
+						$res_ele=mysql_query($sql);
+						if(mysql_num_rows($res_ele)>0) {
+							$nom_ele=mysql_result($res_ele,0,"nom");
+							$prenom_ele=mysql_result($res_ele,0,"prenom");
+						}
+
+						$sql="SELECT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig1->login' ORDER BY periode DESC LIMIT 1;";
+						$res_clas=mysql_query($sql);
+						if(mysql_num_rows($res_clas)>0) {
+							$classe_ele=mysql_result($res_clas,0,"classe");
+						}
+
+						$lig_notanet[]="$ine|$nom_ele|$prenom_ele|$classe_ele|TOT|".formate_note_notanet($TOT)."|";
+					}
 				}
 			}
 		}

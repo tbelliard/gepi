@@ -224,14 +224,37 @@ $result .= "<strong>MEF :</strong><br />";
 $result .= "Contrôle du champ 'mef_code' dans la table 'mef' : ";
 $sql="show columns from mef where type like 'bigint%' and field='mef_code';";
 $test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
-	$query = mysql_query("ALTER TABLE mef CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';");
+//echo "$sql<br />";
+//echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
+if(mysql_num_rows($test)>0) {
+	$tab=mysql_fetch_array($test);
+	/*
+	echo "<pre>";
+	print_r($tab);
+	echo "</pre>";
+	*/
+	$sql ="ALTER TABLE mef CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';";
+	//echo "$sql<br />";
+	$query = mysql_query($sql);
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
 			$result .= msj_erreur();
 	}
 	$temoin_modif_mef_code="y";
+
+	/*
+	$sql="show columns from mef where type like 'bigint%' and field='mef_code';";
+	$test=mysql_query($sql);
+	echo "$sql<br />";
+	echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
+	if(mysql_num_rows($test)>0) {
+		$tab=mysql_fetch_array($test);
+		echo "<pre>";
+		print_r($tab);
+		echo "</pre>";
+	}
+	*/
 }
 else {
 	$result .= msj_present("Le champ a le bon type");
@@ -240,7 +263,7 @@ else {
 $result .= "Contrôle du champ 'mef_code' dans la table 'eleves' : ";
 $sql="show columns from eleves where type like 'bigint%' and field='mef_code';";
 $test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+if(mysql_num_rows($test)>0) {
 	$query = mysql_query("ALTER TABLE eleves CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';");
 	if ($query) {
 			$result .= msj_ok("Ok !");

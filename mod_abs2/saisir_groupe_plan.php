@@ -219,6 +219,16 @@ if ($utilisateur->getStatut() == 'professeur' && (getSettingValue("abs2_saisie_p
 }
 
 if ($type_selection == 'id_cours') {
+	if(empty($id_cours)) {
+		// On recherche le créneau courant
+		if ($utilisateur->getStatut() == "professeur") {
+			$current_cours = $utilisateur->getEdtEmplacementCours();
+			if ($current_cours != null) {
+				$id_cours = $current_cours->getIdCours();
+			}
+		}
+	}
+
     if ($utilisateur->getStatut() == "professeur") {
 	$current_cours = EdtEmplacementCoursQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->findPk($id_cours);
     } else {
@@ -228,6 +238,7 @@ if ($type_selection == 'id_cours') {
     if ($current_cours != null) {
 	$current_creneau = $current_cours->getEdtCreneau();
 	$current_groupe = $current_cours->getGroupe();
+	$id_groupe=$current_groupe->getId();
 	$current_aid = $current_cours->getAidDetails();
 	$dt_date_absence_eleve = $current_cours->getDate($id_semaine);
     }
@@ -847,6 +858,8 @@ require_once("../lib/header_template.inc.php");
 <?php 
 include('../templates/origine/header_template.php');
 //include("../templates/origine/bandeau_template.php");
+
+//debug_var();
 ?>
 
 <!-- corrections internet Exploreur -->
@@ -1417,17 +1430,17 @@ echo "</pre>";
 
 
 					// 20130416
-					if(isset($temoin_saisie_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
+					if(isset($temoin_saisie_veille_et_creneaux_precedents[$eleve['login']])) {
 						echo "<div style='position:absolute; top:".$y."px; left:".$x."px; width:".$largeur_div."px; height:18px; text-align:center;'>\n";
 						//echo "<a href=\"javascript:afficher_div('div_infobulle_saisie_prec_".$eleve['position']."','y',10,-40);\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes' /></a>";
 						echo "<a href=\"javascript:alterne_affichage_div_journee('div_infobulle_saisie_prec_".$eleve['position']."');\"><img src='../images/icons/";
-						if(in_array("red", $tab_type_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
+						if(in_array("red", $tab_type_veille_et_creneaux_precedents[$eleve['login']])) {
 							echo "flag.png";
 						}
-						elseif(in_array("yellow", $tab_type_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
+						elseif(in_array("yellow", $tab_type_veille_et_creneaux_precedents[$eleve['login']])) {
 							echo "flag_yellow.png";
 						}
-						elseif(in_array("green", $tab_type_veille_et_creneaux_precedents[$eleve['accesFiche']])) {
+						elseif(in_array("green", $tab_type_veille_et_creneaux_precedents[$eleve['login']])) {
 							echo "flag_green.png";
 						}
 						else {
@@ -1440,14 +1453,14 @@ Cliquez une deuxième fois pour masquer ce tableau.' /></a>";
 
 						$titre_infobulle=$eleve['nom']." ".$eleve['prenom'];
 						//  title=\"Tableau de ".$eleve['nom']." ".$eleve['prenom']."\"
-						$texte_infobulle="<table class='boireaus boireaus_alt'>".$chaine_tr_veille_et_creneaux_precedents[$eleve['accesFiche']].$chaine_veille_et_creneaux_precedents[$eleve['accesFiche']]."</table>";
+						$texte_infobulle="<table class='boireaus boireaus_alt'>".$chaine_tr_veille_et_creneaux_precedents[$eleve['login']].$chaine_veille_et_creneaux_precedents[$eleve['login']]."</table>";
 						$tabdiv_infobulle[]=creer_div_infobulle("div_infobulle_saisie_prec_".$eleve['position'], $titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',2);
 
 						if($chaine_entete_veille_tous_eleves=="") {
-							$chaine_entete_veille_tous_eleves=preg_replace("/^<tr>/","<tr><th>Élève</th>",$chaine_tr_veille_et_creneaux_precedents[$eleve['accesFiche']]);
+							$chaine_entete_veille_tous_eleves=preg_replace("/^<tr>/","<tr><th>Élève</th>",$chaine_tr_veille_et_creneaux_precedents[$eleve['login']]);
 						}
 						$chaine_veille_tous_eleves.="<tr><td>".$eleve['nom']." ".$eleve['prenom']."</td>";
-						$chaine_veille_tous_eleves.=preg_replace("/^<tr>/","",$chaine_veille_et_creneaux_precedents[$eleve['accesFiche']]);
+						$chaine_veille_tous_eleves.=preg_replace("/^<tr>/","",$chaine_veille_et_creneaux_precedents[$eleve['login']]);
 					}
 				}
 

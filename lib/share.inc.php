@@ -1269,20 +1269,24 @@ function get_periode_active($_id_classe){
  * @global string
  * @param integer $_niveau Niveau d'intrusion enregistré
  * @param string $_description Message enregistré pour cette tentative
+ * @param string $_login_a_enregistrer Login à enregistrer bien que la session ne soit pas ouverte
+                                       (cas du verrouillage de compte pour erreur de mot de passe)
+                                       Il convient de vérifier avant de passer ce paramètre, que le compte existe.
  * @see getSettingValue()
  * @see mail()
  */
-function tentative_intrusion($_niveau, $_description) {
+function tentative_intrusion($_niveau, $_description, $_login_a_enregistrer="") {
 
 	global $gepiPath;
 
 	// On commence par enregistrer la tentative en question
-
-	if (!isset($_SESSION['login'])) {
+	if (isset($_SESSION['login'])) {
+		$user_login = $_SESSION['login'];
+	} elseif($_login_a_enregistrer!="") {
+		$user_login = $_login_a_enregistrer;
+	} else {
 		// Ici, ça veut dire que l'attaque est extérieure. Il n'y a pas d'utilisateur logué.
 		$user_login = "-";
-	} else {
-		$user_login = $_SESSION['login'];
 	}
 	$adresse_ip = $_SERVER['REMOTE_ADDR'];
 	$date = strftime("%Y-%m-%d %H:%M:%S");
