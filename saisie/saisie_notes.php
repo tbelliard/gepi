@@ -1011,7 +1011,12 @@ while ($k < $nb_periode) {
 
 	if(count($tab_per_notes)>0) {
 		echo "<tr>\n";
-		echo "<th>Min. :</th>\n";
+		if ($multiclasses) {
+			echo "<th colspan='2'>";
+		} else {
+			echo "<th>";
+		}
+		echo "Min. :</th>\n";
 		for($loop=1;$loop<$nb_periode;$loop++) {
 			/*
 			if((isset($tab_per_notes[$loop]))&&(count($tab_per_notes[$loop])>0)) {
@@ -1053,7 +1058,12 @@ while ($k < $nb_periode) {
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<th>Max. :</th>\n";
+		if ($multiclasses) {
+			echo "<th colspan='2'>";
+		} else {
+			echo "<th>";
+		}
+		echo "Max. :</th>\n";
 		for($loop=1;$loop<$nb_periode;$loop++) {
 			/*
 			if((isset($tab_per_notes[$loop]))&&(count($tab_per_notes[$loop])>0)) {
@@ -1095,7 +1105,12 @@ while ($k < $nb_periode) {
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<th>Répartition&nbsp;:</th>\n";
+		if ($multiclasses) {
+			echo "<th colspan='2'>";
+		} else {
+			echo "<th>";
+		}
+		echo "Répartition&nbsp;:</th>\n";
 		for($loop=1;$loop<$nb_periode;$loop++) {
 			$histogramme="";
 			if((isset($tab_per_notes[$loop]))&&(count($tab_per_notes[$loop])>0)) {
