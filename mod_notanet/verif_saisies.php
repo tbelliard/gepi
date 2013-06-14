@@ -486,9 +486,12 @@ echo "</pre>";
 					if(check_mail($tab_prof_manques[$login_prof]['email'])) {
 						$tab_num_mail[]=$num;
 						$sujet_mail="[Gepi]: Appreciations des Fiches Brevet manquantes";
-						echo "<a href='mailto:".$tab_prof_manques[$login_prof]['email']."?subject=$sujet_mail&amp;body=".rawurlencode($message)."'>".$info_prof."</a>";
+						echo "<a href='mailto:".$tab_prof_manques[$login_prof]['email']."?subject=$sujet_mail&amp;body=".rawurlencode($message)."' title=\"Envoyer un message à $info_prof via votre logiciel de courrier externe (Thunderbird,...)\">".$info_prof."</a>";
 						echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"$sujet_mail\" />\n";
 						echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$tab_prof_manques[$login_prof]['email']."\" />\n";
+					}
+					else {
+						echo $info_prof;
 					}
 				}
 				else {
@@ -507,7 +510,7 @@ echo "</pre>";
 					echo "<span style='color: red;'>Pas de mail</span>";
 				}
 				else {
-					echo "<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\">Envoyer</a></span>";
+					echo "<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\" title=\"Envoyer depuis Gepi, le message ci-contre à $info_prof\">Envoyer</a></span>";
 				}
 				echo "</td>\n";
 				echo "</tr>\n";
