@@ -265,6 +265,7 @@ function reactiver(mavar) {
 </script>
 
 <?php
+	//debug_var();
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
@@ -273,7 +274,7 @@ function reactiver(mavar) {
 
 	if($_SESSION['statut']=='professeur') {
 		echo " | <a href='plan_de_classe.php";
-		if(isset($groupe)) {
+		if(!empty($groupe)) {
 			echo "?id_groupe=$groupe";
 		}
 		echo "'>Plan de classe</a>";
