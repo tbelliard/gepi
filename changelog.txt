@@ -3,6 +3,10 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-master (Version de développement)
+===========================
+- 
+
 Gepi-1.6.3 (17/06/2013)
 ===========================
 Bulletins:
