@@ -214,12 +214,15 @@ $mois_precedent="";
                       ->distinct()->find();
 
       foreach ($eleve_col as $eleve) {
-        $affichage = false;
-        foreach ($eleve->getAbsenceEleveSaisiesDuJour($dt_date_absence_eleve) as $abs) {
-          if (isAffichable($abs, $dt_date_absence_eleve, $eleve)) {
-            $affichage = true;
-          }
-        }
+		$eleve_a_afficher=is_responsable($eleve->getLogin(), $utilisateur->getLogin(), "", "yy");
+
+		if($eleve_a_afficher) {
+		    $affichage = false;
+		    foreach ($eleve->getAbsenceEleveSaisiesDuJour($dt_date_absence_eleve) as $abs) {
+		      if (isAffichable($abs, $dt_date_absence_eleve, $eleve)) {
+		        $affichage = true;
+		      }
+		    }
     ?>
         <tr>
           <td>
@@ -278,6 +281,7 @@ $mois_precedent="";
         </tr>
     <?php
       }
+		}
     ?>
     </table>
 
@@ -336,6 +340,9 @@ $mois_precedent="";
 
 
       foreach ($eleve_col as $eleve) {
+		$eleve_a_afficher=is_responsable($eleve->getLogin(), $utilisateur->getLogin(), "", "yy");
+
+		if($eleve_a_afficher) {
   ?>
 
         <br />
@@ -450,6 +457,7 @@ $mois_precedent="";
       </table>
   <?php
       }
+		}
   ?>
 
 
