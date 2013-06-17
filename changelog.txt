@@ -8,7 +8,6 @@ Gepi-1.6.3 (Version de développement)
 Bulletins:
 - Possibilité de choisir ce que l'on souhaite faire apparaitre sur les bulletins
   en ce qui concerne les absences (total, absences non-justifiées et/ou retards).
-- Grisage par défaut des paramètres spécifiques HTML/PDF.
 - Possibilité de corriger des notes de bulletins en période partiellement close.
 - PDF: Ajout d'un ordre d'affichage des colonnes avec appréciation en premier.
 - Possibilité d'afficher la moyenne annuelle des enseignements sur les bulletins PDF.
@@ -19,6 +18,7 @@ Carnets de notes
 - Possibilité de corriger des notes de CN en période partiellement close.
 - Possibilité de copier un devoir et ses notes.
 - Ajout d'un lien vers toutes les évaluations de l'année.
+- Grisage par défaut des paramètres spécifiques HTML/PDF pour l'impression des relevés de notes.
 
 Graphes:
 - Possibilité de choisir la taille de la police pour le champ de saisie de l'avis du conseil de classe.
@@ -32,17 +32,17 @@ RSS:
 - Possibilité de créer des flux RSS pour les élèves arrivés en cours d'année.
 - Possibilité de signaler et visionner un flux RSS CDT élève en compte scolarité/cpe/pp.
 
+Alertes/informations:
+- Ajout d'un module permettant de déposer des alertes à la façon d'une messagerie mail à l'attention de personnels choisis.
+- Possibilité de déposer une alerte depuis la liste des personnes connectées et depuis le tableau des appels dans mod_abs2.
+
 Abs2:
 - Absences du jour: Possibilité de ne pas afficher les lignes déjà traitées.
 - Absences du jour: Possibilité de signaler ou masquer les saisies englobées.
-- Tableau des appels: Possibilité de déposer un message si le module est Messagerie actif
+- Tableau des appels: Possibilité de déposer une alerte aux professeurs si le module Alertes est actif
 - Saisie des absences sur Plan de classe: Ajout de drapeaux concernant les absences précédentes.
 - Ajout d'une page d'exports statistiques (encore inachevée).
 - Possibilité de calculer un score d'absences.
-
-Alertes/informations:
-- Ajout d'un module permettant de déposer des messages à la façon d'une messagerie mail à l'attention de personnels choisis.
-- Possibilité de déposer un message depuis la liste des personnes connectées et depuis le tableau des appels dans mod_abs2.
 
 Epreuves blanches:
 - Ajout de l'effectif sur l'émargement PDF.
@@ -59,10 +59,10 @@ Gestion:
 - Possibilité de générer une fiche bienvenue pour un élève/responsable, sans changer le mot de passe.
 
 Panneau d'affichage:
-- Possibilité d'envoyer un message aux profs d'une matière.
+- Possibilité d'afficher une annonce aux profs d'une matière.
 
 Divers:
-- Ajout d'une rubrique: A lire
+- Ajout en page d'accueil administrateur d'une rubrique: A lire
 - Maintien de la session à la valeur définie dans Configuration générale,
   en contrant si nécessaire la valeur (session.gc_maxlifetime) définie dans 
   le php.ini
