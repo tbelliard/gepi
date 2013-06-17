@@ -22,7 +22,7 @@
  * @see msj_present()
  */
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.3(dev) :</h3>";
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.3 :</h3>";
 
 /*
 // Section d'exemple
