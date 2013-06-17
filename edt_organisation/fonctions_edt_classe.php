@@ -1222,7 +1222,10 @@ while (isset($jour_sem_tab[$jour])) {
                 $contenu .= "<p>".ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $tab_cours['id_groupe'][$z],$tab_cours['id_aid'][$z], "", $period)."</p>";
 
 			}
-			$id_div = "ens_".$tab_id_creneaux[$j]."_".$jour_sem_tab[$jour]."_".$tab_cours['id_groupe'][$z];
+			// Normalement, l'ajout $tab_cours['id_groupe'][XXX] est inutile.
+			// On ne devrait pas avoir de collision d'id_dev pour un créneau sur un jour donné
+			//$id_div = "ens_".$tab_id_creneaux[$j]."_".$jour_sem_tab[$jour]."_".$tab_cours['id_groupe'][$z];
+			$id_div = "ens_".$tab_id_creneaux[$j]."_".$jour_sem_tab[$jour]."_".$tab_cours['id_groupe'][0];
 			$case_tab = "<a href='#' onclick=\"afficher_div('".$id_div."','n',0,0);return false;\">
 <img src=\"../templates/".NameTemplateEDT()."/images/voir.png\" title=\"voir les cours\" alt=\"voir les cours\" /> </a>".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"y","n","y","n")."\n";
             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", "", "cellule2", "cadreRouge", $case_tab);
@@ -1663,7 +1666,10 @@ while (isset($jour_sem_tab[$jour])) {
                 $contenu .= "<p>".ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $tab_cours['id_groupe'][$z],$tab_cours['id_aid'][$z], "", $period)."</p>";
 
 			}
-			$id_div = "ens_".$tab_id_creneaux[$j]."_".$jour_sem_tab[$jour]."_".$tab_cours['id_groupe'][$z];
+			// Normalement, l'ajout $tab_cours['id_groupe'][XXX] est inutile.
+			// On ne devrait pas avoir de collision d'id_dev pour un créneau sur un jour donné
+			//$id_div = "ens_".$tab_id_creneaux[$j]."_".$jour_sem_tab[$jour]."_".$tab_cours['id_groupe'][$z];
+			$id_div = "ens_".$tab_id_creneaux[$j]."_".$jour_sem_tab[$jour]."_".$tab_cours['id_groupe'][0];
 			$case_tab = "<a href='#' onclick=\"afficher_div('".$id_div."','n',0,0);return false;\">
 <img src=\"../templates/".NameTemplateEDT()."/images/voir.png\" title=\"voir les cours\" alt=\"voir les cours\" /> </a>".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"y","n","y","n")."\n";
             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", "", "cellule2", "cadreRouge", $case_tab);

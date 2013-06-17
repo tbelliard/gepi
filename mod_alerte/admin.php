@@ -19,7 +19,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 $accessibilite="y";
-$titre_page = "Messagerie : Activation/désactivation";
+$titre_page = "Alertes : Activation/désactivation";
 $niveau_arbo = 1;
 $gepiPathJava="./..";
 $post_reussi=FALSE;
@@ -90,11 +90,11 @@ if (isset($_POST['is_posted'])) {
 	if (isset($_POST['MessagerieDelaisTest'])) {
 		$MessagerieDelaisTest=$_POST['MessagerieDelaisTest'];
 		if(($MessagerieDelaisTest=='')||(!preg_match('/^[0-9]*$/', $MessagerieDelaisTest))||($MessagerieDelaisTest<1)) {
-			$msg .= "<span style='color:red'>La valeur proposée pour le paramètre Délais de test de présence de message est invalide !</span><br />";
+			$msg .= "<span style='color:red'>La valeur proposée pour le paramètre Délais de test de présence d'une alerte est invalide !</span><br />";
 		}
 		else {
 			if(!saveSetting("MessagerieDelaisTest", $MessagerieDelaisTest)) {
-				$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre Délais de test de présence de message !</span><br />";
+				$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre Délais de test de présence d'alerte !</span><br />";
 			} else {
 				$nb_reg++;
 			}
@@ -104,11 +104,11 @@ if (isset($_POST['is_posted'])) {
 	if (isset($_POST['MessagerieLargeurImg'])) {
 		$MessagerieLargeurImg=$_POST['MessagerieLargeurImg'];
 		if(($MessagerieLargeurImg=='')||(!preg_match('/^[0-9]*$/', $MessagerieLargeurImg))||($MessagerieLargeurImg<1)) {
-			$msg .= "<span style='color:red'>La valeur proposée pour le paramètre Largeur de l'image signalant des messages non lus est invalide !</span><br />";
+			$msg .= "<span style='color:red'>La valeur proposée pour le paramètre Largeur de l'image signalant des alertes non lues est invalide !</span><br />";
 		}
 		else {
 			if(!saveSetting("MessagerieLargeurImg", $MessagerieLargeurImg)) {
-				$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre Largeur de l'image signalant des messages non lus !</span><br />";
+				$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre Largeur de l'image signalant des alertes non lues !</span><br />";
 			} else {
 				$nb_reg++;
 			}
@@ -161,11 +161,11 @@ if (isset($_POST['is_posted2'])) {
 		//echo "$sql<br />\n";
 		$suppr=mysql_query($sql);
 		if($suppr) {
-			$msg="Les messages antérieurs au $jour/$mois/$annee ont été supprimés.<br />\n";
+			$msg="Les alertes antérieures au $jour/$mois/$annee ont été supprimées.<br />\n";
 			$post_reussi=TRUE;
 		}
 		else {
-			$msg="<span style='color:red'>Erreur lors de la suppression des messages antérieurs au $jour/$mois/$annee.</span><br />\n";
+			$msg="<span style='color:red'>Erreur lors de la suppression des alertes antérieures au $jour/$mois/$annee.</span><br />\n";
 		}
 	}
 }

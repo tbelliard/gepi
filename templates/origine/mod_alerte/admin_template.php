@@ -121,7 +121,7 @@ echo add_token_field();
 		<br />
 
 		<p>
-		Tester la présence de messages toutes les 
+		Tester la présence d'alertes toutes les 
 		<input type='text'
 			   name='MessagerieDelaisTest'
 			   id='MessagerieDelaisTest'
@@ -138,7 +138,7 @@ echo add_token_field();
 		</p>
 
 		<p>
-		Largeur en pixels de l'image signalant à un utilisateur qu'il a des messages non lus
+		Largeur en pixels de l'image signalant à un utilisateur qu'il a des alertes non lues
 		<input type='text'
 			   name='MessagerieLargeurImg'
 			   id='MessagerieLargeurImg'
@@ -152,6 +152,8 @@ echo add_token_field();
 			   	?>'
 			   	onkeydown="clavier_2(this.id,event,16,500);"
 			   	/> px
+		<br />
+		(<em>il peut être utile de faire apparaître une image de bonne taille pour qu'elle soit vue,<br />si, par exemple, votre CPE souhaite que des élèves lui soient renvoyés au bureau au plus vite</em>)
 		</p>
 
 		<br />
@@ -163,7 +165,7 @@ echo add_token_field();
 			   value='y'
 			   <?php if (getSettingAOui('MessagerieAvecSon')) echo ' checked="checked"'; ?>/>
 		<label for='MessagerieAvecSon_y'>
-		  Emettre un son lorsqu'il y a des messages non lus
+		  Emettre un son lorsqu'il y a des alertes non lues
 		</label>
 		<br />
 		<input type='radio'
@@ -172,7 +174,7 @@ echo add_token_field();
 			   value='n'
 			   <?php if (!getSettingAOui('MessagerieAvecSon')) echo ' checked="checked"'; ?>/>
 		<label for='MessagerieAvecSon_n'>
-		  Ne pas emettre de son lorsqu'il y a des messages non lus
+		  Ne pas emettre de son lorsqu'il y a des alertes non lues
 		</label>
 		</p>
 
@@ -189,7 +191,7 @@ echo add_token_field();
 			   value='y'
 			   <?php if (getSettingAOui('PeutPosterMessageProfesseur')) echo ' checked="checked"'; ?>/>
 		<label for='PeutPosterMessageProfesseur'>
-		  Les comptes professeurs peuvent poster des messages
+		  Les comptes professeurs peuvent poster des alertes
 		</label>
 		<br />
 
@@ -199,7 +201,7 @@ echo add_token_field();
 			   value='y'
 			   <?php if (getSettingAOui('PeutPosterMessageScolarite')) echo ' checked="checked"'; ?>/>
 		<label for='PeutPosterMessageScolarite'>
-		  Les comptes scolarité peuvent poster des messages
+		  Les comptes scolarité peuvent poster des alertes
 		</label>
 		<br />
 
@@ -209,7 +211,7 @@ echo add_token_field();
 			   value='y'
 			   <?php if (getSettingAOui('PeutPosterMessageCpe')) echo ' checked="checked"'; ?>/>
 		<label for='PeutPosterMessageCpe'>
-		  Les comptes cpe peuvent poster des messages
+		  Les comptes cpe peuvent poster des alertes
 		</label>
 		<br />
 
@@ -223,7 +225,7 @@ echo add_token_field();
 
 	<!-- ================================================ -->
 
-	<h2>Suppression des messages</h2>
+	<h2>Suppression des alertes</h2>
 
 	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" id='form2'>
 	  <fieldset style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>
@@ -232,7 +234,7 @@ echo add_token_field();
 ?>
 		<legend class="invisible">Ménage</legend>
 		<p>
-		Supprimer les messages antérieurs au 
+		Supprimer les alertes antérieures au 
 		<input type='text' name='date_limite' id='date_limite' size='10' value = "<?php echo $date_limite;?>" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." />
 		<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>"><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="Petit calendrier" /></a>
 		</p>

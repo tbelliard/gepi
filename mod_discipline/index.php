@@ -536,7 +536,7 @@ if(($_SESSION['statut']=='administrateur')||
 }
 //fin de la table configuration
 
-
+//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 
 /*
 // Table Signaler / saisir un incident
@@ -585,10 +585,15 @@ if(($_SESSION['statut']=='administrateur')||
 ($_SESSION['statut']=='autre')) {
 
 	$temoin = false;
+
+	// 20130610: Vérifier cette requête... pb de longueur?
+
 	$sql="SELECT 1=1 FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
 	WHERE sp.id_incident IS NULL;";
+	//echo "$sql<br />";
 	$test=mysql_query($sql);
+	//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 	if(mysql_num_rows($test)>0) {
 		$temoin = true;
 		/*
@@ -611,9 +616,11 @@ if(($_SESSION['statut']=='administrateur')||
 	}
 }
 
-
+// 20130610: Vérifier cette requête: Mettre LIMIT 1
 $sql="SELECT 1=1 FROM s_incidents si WHERE si.declarant='".$_SESSION['login']."' AND si.nature='' AND etat!='clos';";
+//echo "$sql<br />";
 $test=mysql_query($sql);
+//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 $nb_incidents_incomplets=mysql_num_rows($test);
 if($nb_incidents_incomplets>0) {
 
@@ -802,8 +809,12 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 	// declarant ou protagoniste
   
 
-	$sql="SELECT 1=1 FROM s_protagonistes, s_incidents WHERE ((login='".$_SESSION['login']."')||(declarant='".$_SESSION['login']."'));";
+	// 20130610: Vérifier cette requête
+	//$sql="SELECT 1=1 FROM s_protagonistes, s_incidents WHERE ((login='".$_SESSION['login']."')||(declarant='".$_SESSION['login']."'));";
+	$sql="(SELECT 1=1 FROM s_protagonistes WHERE login='".$_SESSION['login']."' LIMIT 1) UNION (SELECT 1=1 FROM s_incidents WHERE declarant='".$_SESSION['login']."' LIMIT 1);";
+	//echo "$sql<br />";
 	$test=mysql_query($sql);
+	//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 	if((mysql_num_rows($test)>0)) { //on a bien un prof ou statut autre comme déclarant ou un protagoniste
 	  /*
 		echo "<tr>\n";
@@ -823,24 +834,36 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 	  }
 	unset($nouveauItem);
 	} else { //le prof n'est ni déclarant ni protagoniste. Pour un elv dont il est PP y a t--il des incidents de déclaré ?
+
+		// 20130610: Vérifier ces requêtes: Peut-être ajouter des LIMIT 1
+
 		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp 
 						  WHERE sp.login=jep.login
-						  AND jep.professeur='".$_SESSION['login']."';";
+						  AND jep.professeur='".$_SESSION['login']."'
+						  LIMIT 1;";
+		//echo "$sql<br />";
 		$test=mysql_query($sql); // prof principal
+		//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 		if (getSettingValue("visuDiscProfClasses")=='yes') {
 		  $sql1="SELECT 1=1	FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_eleves_classes jec, s_protagonistes sp
-	WHERE   sp.login=jec.login
+	WHERE sp.login=jec.login
 		AND jec.id_classe=jgc.id_classe
 		AND jgp.id_groupe =  jgc.id_groupe
-		AND jgp.login = '".$_SESSION['login']."';";
+		AND jgp.login = '".$_SESSION['login']."'
+		LIMIT 1;";
+		//echo "$sql<br />";
 		  $test1=mysql_query($sql1); // prof de la classe autorisé à voir
+		//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 		}
 		if (getSettingValue("visuDiscProfGroupes")=='yes') {
 		  $sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, s_protagonistes sp
 							WHERE jeg.id_groupe=jgp.id_groupe
 							AND sp.login=jeg.login
-							AND jgp.login='".$_SESSION['login']."';";
+							AND jgp.login='".$_SESSION['login']."'
+							LIMIT 1;";
+			//echo "$sql<br />";
 		  $test2=mysql_query($sql2); // prof du groupe autorisé à voir
+		//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 		}
 		  $nouveauItem = new itemGeneral();
 		if ((mysql_num_rows($test)>0) ||
