@@ -212,12 +212,15 @@ include('menu_bilans.inc.php');
                       ->distinct()->find();
 
       foreach ($eleve_col as $eleve) {
-        $affichage = false;
-        foreach ($eleve->getAbsenceEleveSaisiesDuJour($dt_date_absence_eleve) as $abs) {
-          if (isAffichable($abs, $dt_date_absence_eleve, $eleve)) {
-            $affichage = true;
-          }
-        }
+		$eleve_a_afficher=is_responsable($eleve->getLogin(), $utilisateur->getLogin(), "", "yy");
+
+		if($eleve_a_afficher) {
+		    $affichage = false;
+		    foreach ($eleve->getAbsenceEleveSaisiesDuJour($dt_date_absence_eleve) as $abs) {
+		      if (isAffichable($abs, $dt_date_absence_eleve, $eleve)) {
+		        $affichage = true;
+		      }
+		    }
     ?>
         <tr>
           <td>
@@ -276,6 +279,7 @@ include('menu_bilans.inc.php');
         </tr>
     <?php
       }
+		}
     ?>
     </table>
 
@@ -334,6 +338,9 @@ include('menu_bilans.inc.php');
 
 
       foreach ($eleve_col as $eleve) {
+		$eleve_a_afficher=is_responsable($eleve->getLogin(), $utilisateur->getLogin(), "", "yy");
+
+		if($eleve_a_afficher) {
   ?>
 
         <br />
@@ -427,6 +434,7 @@ include('menu_bilans.inc.php');
       </table>
   <?php
       }
+		}
   ?>
 
 
