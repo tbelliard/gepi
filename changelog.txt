@@ -3,7 +3,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.6.3 (Version de développement)
+Gepi-1.6.3 (17/06/2013)
 ===========================
 Bulletins:
 - Possibilité de choisir ce que l'on souhaite faire apparaitre sur les bulletins
