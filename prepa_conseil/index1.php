@@ -405,7 +405,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 		$h_decalage=5;
 		$decalage_horizontal=50;
 
-		if($y_courant+6*$h_decalage>$hauteur_page-$marge_basse) {
+		if($y_courant+8*$h_decalage>$hauteur_page-$marge_basse) {
 			$pdf->AddPage();
 
 			$y_stat=$y0;
