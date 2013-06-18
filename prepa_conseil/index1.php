@@ -395,8 +395,59 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 		$k++;
 	}
 
-	$pref_output_mode_pdf=get_output_mode_pdf();
+	if((isset($_POST['moy_gen']))&&(isset($_POST['pourcent_i8']))&&(isset($_POST['pourcent_se8_ie12']))&&(isset($_POST['pourcent_se12']))) {
+		$y_courant=$pdf->GetY();
 
+		$largeur_dispo=$largeur_page-$marge_gauche-$marge_droite;
+		$alignement="L";
+		$graisse="B";
+		$bordure="";
+		$h_decalage=5;
+		$decalage_horizontal=50;
+
+		if($y_courant+8*$h_decalage>$hauteur_page-$marge_basse) {
+			$pdf->AddPage();
+
+			$y_stat=$y0;
+		}
+		else {
+			$y_stat=$y_courant+$h_decalage;
+		}
+
+		$pdf->SetXY($x0,$y_stat);
+		$texte="Moyenne générale de la classe : ".$_POST['moy_gen'];
+		cell_ajustee_une_ligne(($texte),$x0,$pdf->GetY(),$largeur_dispo,$hauteur_police,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+		$y_courant=$y_stat+2*$h_decalage;
+		$texte="Pourcentage des élèves ayant une moyenne générale : ";
+		cell_ajustee_une_ligne(($texte),$x0,$y_courant,$largeur_dispo,$hauteur_police,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+		$y_courant+=$h_decalage;
+		$graisse="";
+		$texte="     inférieure strictement à 8 :";
+		cell_ajustee_une_ligne(($texte),$x0,$y_courant,$largeur_dispo,$hauteur_police,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+		$graisse="B";
+		$texte=$_POST['pourcent_i8'];
+		cell_ajustee_une_ligne(($texte),$x0+$decalage_horizontal,$y_courant,$largeur_dispo,$hauteur_police,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+		$y_courant+=$h_decalage;
+		$graisse="";
+		$texte="     entre 8 et 12 :";
+		cell_ajustee_une_ligne(($texte),$x0,$y_courant,$largeur_dispo,$hauteur_police,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+		$graisse="B";
+		$texte=$_POST['pourcent_se8_ie12'];
+		cell_ajustee_une_ligne(($texte),$x0+$decalage_horizontal,$y_courant,$largeur_dispo,$hauteur_police,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+		$y_courant+=$h_decalage;
+		$graisse="";
+		$texte="     supérieure ou égale à 12 :";
+		cell_ajustee_une_ligne(($texte),$x0,$y_courant,$largeur_dispo,$hauteur_police,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+		$graisse="B";
+		$texte=$_POST['pourcent_se12'];
+		cell_ajustee_une_ligne(($texte),$x0+$decalage_horizontal,$y_courant,$largeur_dispo,$hauteur_police,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+	}
+
+	$pref_output_mode_pdf=get_output_mode_pdf();
 	send_file_download_headers('application/pdf',$nom_fic);
 	$pdf->Output($nom_fic,$pref_output_mode_pdf);
 	die();
@@ -1914,9 +1965,18 @@ function checkbox_change(champ, cpt) {
 			echo "<input type='hidden' name='lignes_csv[$j]' value=\"".$lignes_csv[$j]."\" />\n";
 			//echo "<br />\n";
 		}
-	
+
 		echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
 		echo "<input type='hidden' name='mode' value='pdf' />\n";
+
+		// 20130618: Exporter aussi les $moy_gen, $pourcent_i8, $pourcent_se12 et $pourcent_se8_ie12
+		if ($test == 1 and  $stat == "yes") {
+			echo "<input type='hidden' name='moy_gen' value='$moy_gen' />\n";
+			echo "<input type='hidden' name='pourcent_i8' value='$pourcent_i8' />\n";
+			echo "<input type='hidden' name='pourcent_se8_ie12' value='$pourcent_se8_ie12' />\n";
+			echo "<input type='hidden' name='pourcent_se12' value='$pourcent_se12' />\n";
+		}
+
 		// On ne met le bouton que pour l'affichage avec entête
 		if ($en_tete == "yes") {
 			echo "<input type='submit' value='Générer un PDF' />\n";
