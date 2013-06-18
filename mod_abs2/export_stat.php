@@ -228,6 +228,9 @@ if(!isset($mois)) {
 	Pour obtenir une valeur correcte, il faudrait enregistrer dans la table eleves une date d'entrée dans l'établissement.<br />
 	Le champ date_entree existe dans le ElevesSansAdresse.xml; il faudra l'importer dans init_xml2, le prendre en compte dans modify_eleve et maj_import3</li>
 	<li>- L'extraction des nombres d'élèves dépassant tant de demi-journée,... nécessite le remplissage de la table d'agrégation.</li>
+	<li>- Entre la version 1.6.2 et la version 1.6.3 de Gepi, le type du champ MEF_CODE a changé.<br />
+	Cela peut impliquer de re-remplir les MEF et de faire une mise à jour d'après Sconet pour importer les MEF associés aux élèves.<br />
+	Sans cela, il se peut que vos totaux apparaissent à zéro.</li>
 </ul>
 </div>";
 	require_once("../lib/footer.inc.php");
