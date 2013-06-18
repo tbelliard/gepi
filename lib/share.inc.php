@@ -6270,60 +6270,46 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
 	}
 
 	if(($statut=='eleve')||($statut=='responsable')) {
-		for($i=$periode1;$i<=$periode2;$i++) {
-			$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
-												statut='".$statut."' AND
-												periode='$i';";
-			//echo "$sql<br />";
-			$res=mysql_query($sql);
-			if($res) {
+		if(getSettingValue('acces_app_ele_resp')=='periode_close') {
+			$timestamp_limite=time()+$delais_apres_cloture*24*3600;
+			for($i=$periode1;$i<=$periode2;$i++) {
+				$sql="SELECT 1=1 FROM periodes WHERE UNIX_TIMESTAMP(date_verrouillage)>'".$timestamp_limite."' AND id_classe='$id_classe';";
+				//echo "$sql<br />";
+				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
-					$lig=mysql_fetch_object($res);
-					//echo "\$lig->acces=$lig->acces<br />";
-					if($lig->acces=="y") {
-						$tab_acces_app[$i]="y";
-					}
-					elseif($lig->acces=="date") {
-						//echo "<p>Période $i: Date limite: $lig->date<br />";
-						$tab_date=explode("-",$lig->date);
-						$timestamp_limite=mktime(0,0,0,$tab_date[1],$tab_date[2],$tab_date[0]);
-						//echo "$timestamp_limite<br />";
-						$timestamp_courant=time();
-						//echo "$timestamp_courant<br />";
+					$tab_acces_app[$i]="y";
+				}
+				else {
+					$tab_acces_app[$i]="n";
+				}
+			}
+		}
+		elseif(getSettingValue('acces_app_ele_resp')=='date') {
+			for($i=$periode1;$i<=$periode2;$i++) {
+				$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
+													statut='".$statut."' AND
+													periode='$i';";
+				//echo "$sql<br />";
+				$res=mysql_query($sql);
+				if($res) {
+					if(mysql_num_rows($res)>0) {
+						$lig=mysql_fetch_object($res);
+						//echo "\$lig->acces=$lig->acces<br />";
+						if($lig->acces=="date") {
+							//echo "<p>Période $i: Date limite: $lig->date<br />";
+							$tab_date=explode("-",$lig->date);
+							$timestamp_limite=mktime(0,0,0,$tab_date[1],$tab_date[2],$tab_date[0]);
+							//echo "$timestamp_limite<br />";
+							$timestamp_courant=time();
+							//echo "$timestamp_courant<br />";
 
-						$date_ouverture_acces_app_classe[$i]=$lig->date;
+							$date_ouverture_acces_app_classe[$i]=$lig->date;
 
-						if($timestamp_courant>$timestamp_limite){
-							$tab_acces_app[$i]="y";
-						}
-						else {
-							$tab_acces_app[$i]="n";
-						}
-					}
-					elseif($lig->acces=="d") {
-						$sql="SELECT verouiller,UNIX_TIMESTAMP(date_verrouillage) AS date_verrouillage FROM periodes WHERE id_classe='$id_classe' AND num_periode='$i';";
-						//echo "$sql<br />";
-						$res_dv=mysql_query($sql);
-
-						if(mysql_num_rows($res_dv)>0) {
-							$lig_dv=mysql_fetch_object($res_dv);
-
-							if($lig_dv->verouiller!='O') {
-								$tab_acces_app[$i]="n";
+							if($timestamp_courant>$timestamp_limite){
+								$tab_acces_app[$i]="y";
 							}
 							else {
-								$timestamp_limite=$lig_dv->date_verrouillage+$delais_apres_cloture*24*3600;
-								$timestamp_courant=time();
-								//echo "\$timestamp_limite=$timestamp_limite<br />";
-								//echo "\$timestamp_courant=$timestamp_courant<br />";
-
-								if($timestamp_courant>$timestamp_limite){
-									$tab_acces_app[$i]="y";
-								}
-								else {
-									$tab_acces_app[$i]="n";
-								}
-								//echo "\$tab_acces_app[$i]=$tab_acces_app[$i]<br />";
+								$tab_acces_app[$i]="n";
 							}
 						}
 						else {
@@ -6338,8 +6324,33 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
 					$tab_acces_app[$i]="n";
 				}
 			}
-			else {
-				$tab_acces_app[$i]="n";
+		}
+		else {
+			// Ouverture manuelle
+			for($i=$periode1;$i<=$periode2;$i++) {
+				$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
+													statut='".$statut."' AND
+													periode='$i';";
+				//echo "$sql<br />";
+				$res=mysql_query($sql);
+				if($res) {
+					if(mysql_num_rows($res)>0) {
+						$lig=mysql_fetch_object($res);
+						//echo "\$lig->acces=$lig->acces<br />";
+						if($lig->acces=="y") {
+							$tab_acces_app[$i]="y";
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+					}
+					else {
+						$tab_acces_app[$i]="n";
+					}
+				}
+				else {
+					$tab_acces_app[$i]="n";
+				}
 			}
 		}
 	}
