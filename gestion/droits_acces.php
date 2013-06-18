@@ -1105,7 +1105,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='GepiAccesGraphParamEleve';
-$texteItem="a accès au paramètres des graphes";
+$texteItem="a accès aux paramètres des graphes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1332,7 +1332,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='GepiAccesGraphParamParent';
-$texteItem="a accès au paramètres des graphes";
+$texteItem="a accès aux paramètres des graphes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
