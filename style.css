@@ -758,7 +758,8 @@ table.boireaus {
 	vertical-align: middle;
 	border-style: solid;
 	border-width: 1px;
-	border-color: black;
+	border-color: black;    
+    padding: 5px;
 }
 
 .boireaus .lig-1 {

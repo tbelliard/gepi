@@ -387,7 +387,7 @@ elseif($disable_login=="no"){
 //
 // Message sur la page de login
 // ?>
-<a name='message_login'></a>
+<a id='message_login'></a>
 <h2>Faire apparaitre un message sur la page de login</h2>
 
 <?php 
@@ -722,8 +722,8 @@ switch( $duree2 ) {
 <form action="gestion_connect.php#tab_connexions" id="form_affiche_log" method="post">
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
 	<p>
-	Afficher le journal des connexions : 
-	<select name="duree2" size="1">
+        <label for="duree2" >Afficher le journal des connexions : </label>
+	<select id="duree2" size="1">
 		<option <?php if ($duree2 == '20dernieres') echo "selected = 'selected'"; ?> value='20dernieres'>
 			les 20 dernières
 		</option>
@@ -765,16 +765,17 @@ switch( $duree2 ) {
 	<a href='<?php echo $_SERVER['PHP_SELF']; ?>?mode=csv'>CSV</a>
 </div>
 
-<a name='tab_connexions'></a>
+<a id='tab_connexions'></a>
 	<table class='boireaus center'>
-         <th class="col">Statut</th>
-		<th class="col">Identifiant</th>
-        <th class="col">Début session</th>
-        <th class="col">Fin session</th>
-        <th class="col"><a href='gestion_connect.php?order_by=ip<?php if(isset($duree2)){echo "&amp;duree2=$duree2";}?>#tab_connexions'>Adresse IP et nom de la machine cliente</a></th>
-        <th class="col">Navigateur</th>
-        <th class="col">Provenance</th>
-    </tr>
+        <tr>
+            <th class="col">Statut</th>
+		    <th class="col">Identifiant</th>
+            <th class="col">Début session</th>
+            <th class="col">Fin session</th>
+            <th class="col"><a href='gestion_connect.php?order_by=ip<?php if(isset($duree2)){echo "&amp;duree2=$duree2";}?>#tab_connexions'>Adresse IP et nom de la machine cliente</a></th>
+            <th class="col">Navigateur</th>
+            <th class="col">Provenance</th>
+        </tr>
 
 <?php
 $requete = '';

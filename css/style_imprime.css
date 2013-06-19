@@ -39,6 +39,7 @@ table.boireaus {
 	border-style: solid;
 	border-width: 1px;
 	border-color: black;
+    padding: 5pt;
 }
 
 .bull_simpl {

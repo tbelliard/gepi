@@ -102,7 +102,8 @@ if(mysql_num_rows($test_arch)>0) {
 	if(mysql_num_rows($res_login_alerte)>0) {
 		echo " | ";
 
-		echo "<select name='user_login' onchange=\"document.forms['form1'].submit();\">\n";
+		echo "<label for='user_login' class='invisible'>Utilisateur</label>";
+		echo "<select id='user_login' name='user_login' onchange=\"document.forms['form1'].submit();\">\n";
 		echo "<option value=''>---</option>\n";
 		while($lig_login_alerte=mysql_fetch_object($res_login_alerte)) {
 			echo "<option value='$lig_login_alerte->login'";
@@ -130,8 +131,8 @@ if(mysql_num_rows($test_arch)>0) {
 	if(mysql_num_rows($res_erreur_mdp)>0) {
 		echo " | ";
 
-		echo "Erreur mot de passe&nbsp;: ";
-		echo "<select name='user_login2' onchange=\"document.forms['form1'].submit();\">\n";
+		echo "<label for='user_login2'>Erreur mot de passe&nbsp;: </label>";
+		echo "<select id='user_login2' name='user_login2' onchange=\"document.forms['form1'].submit();\">\n";
 		echo "<option value=''>---</option>\n";
 		while($lig_erreur_login=mysql_fetch_object($res_erreur_mdp)) {
 			$tab_tmp=explode(':', $lig_erreur_login->description);
@@ -516,7 +517,7 @@ while ($row = mysql_fetch_object($req)) {
 echo "</table>\n";
 
 
-echo "<a name='utilisateurs_en_observation'></a>\n";
+echo "<a id='utilisateurs_en_observation'></a>\n";
 if(mysql_num_rows($req_observation)==0) {
 	echo "<p>Aucun utilisateur n'est en observation.</p>\n";
 }
@@ -587,7 +588,7 @@ else {
 }
 
 
-echo "<a name='utilisateurs_desactives'></a>\n";
+echo "<a id='utilisateurs_desactives'></a>\n";
 if(mysql_num_rows($req_desactive)==0) {
 	echo "<p>Aucun utilisateur avec alerte dans cette page n'est désactivé.</p>\n";
 }

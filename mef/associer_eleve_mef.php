@@ -86,14 +86,14 @@ $javascript_specifique[] = "mod_abs2/lib/include";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-echo "<table cellspacing='15px' cellpadding='5px'><tr>";
+echo "<table style='border-spacing: 15px;' ><tr>";
 
 //on affiche une boite de selection pour l'eleve
-echo "<td style='border : 1px solid; padding : 10 px;'>";
-echo "<form action=\"\" method=\"post\" style=\"width: 100%;\">\n";
+echo "<td style='border : 1px solid; padding : 5px;'>";
+echo "<form action=\"#\" method=\"post\" style=\"width: 100%;\">\n";
 echo '<p>';
-echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
-echo '<input type="text" name="nom_eleve" size="10" value="'.$nom_eleve.'"/> ';
+echo '<label for="nom_eleve">Nom</label> : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
+echo '<input type="text" name="nom_eleve" id="nom_eleve" size="10" value="'.$nom_eleve.'"/> ';
 echo '<button type="submit">Rechercher</button>';
 echo '</p>';
 echo '</form>';
@@ -104,11 +104,11 @@ echo '</td>';
 //on affiche une boite de selection avec les classes
 $classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
 if (!$classe_col->isEmpty()) {
-	echo "<td style='border : 1px solid; padding : 10 px;'>";
-	echo "<form action=\"\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<td style='border : 1px solid; padding : 5px;'>";
+	echo "<form action=\"#\" method=\"post\" style=\"width: 100%;\">\n";
 	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-	echo ("Classe : <select name=\"id_classe\" style=\"width:160px\">");
+	echo ("<label for='id_classe'>Classe</label> : <select id=\"id_classe\" name=\"id_classe\" style=\"width:160px\">");
 	echo "<option value='-1'>choisissez une classe</option>\n";
 	foreach ($classe_col as $classe) {
 		echo "<option value='".$classe->getId()."'";
@@ -167,7 +167,7 @@ if (!$eleve_col->isEmpty()) {
 <!-- Legende du tableau-->
 	<?php echo ('<p>');
 	    $mef_collection = MefQuery::create()->find();
-            echo ("MEF : <select name=\"id_mef\" class=\"small\">");
+            echo ("<label for=\"id_mef\">MEF</label> : <select id=\"id_mef\" name=\"id_mef\" class=\"small\">");
             echo "<option value='-1'></option>\n";
             foreach ($mef_collection as $mef) {
                     echo "<option value='".$mef->getId()."'>";
@@ -184,15 +184,14 @@ if (!$eleve_col->isEmpty()) {
 	<table style="width:750px;" >
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
-				<th style="text-align : center;" abbr="élèves">Liste des &eacute;l&egrave;ves.
+				<th style="text-align : center;">Liste des &eacute;l&egrave;ves.
 				Sélectionner :
 				<a href="#" onclick="SetAllCheckBoxes('liste_mef_eleve', 'active_mef_eleve[]', '', true); return false;">Tous</a>
 				<a href="#" onclick="SetAllCheckBoxes('liste_mef_eleve', 'active_mef_eleve[]', '', false); return false;">Aucun</a>
 				</th>
 				<th style="text-align : center;">MEF actuel</th>
 				<th style="text-align : center;">modifier</th>
-				<!--th></th>
-				<th></th-->
+				<th> </th>
 			</tr>
 <?php
 //echo '<input type="hidden" name="total_eleves" value="'.$eleve_col->count().'" />';
@@ -226,7 +225,9 @@ foreach($eleve_col as $eleve) {
                         }
 			echo '</p></td> ';
 
-                        echo '<td style="vertical-align: top;"><input style="font-size:88%;" name="active_mef_eleve[]" value="'.$eleve->getPrimaryKey().'" type="checkbox"';
+                        echo '<td style="vertical-align: top;">
+    <label for="active_mef_'.$eleve->getPrimaryKey().'" class="invisible">mef de '.$eleve->getPrimaryKey().'</label>
+    <input style="font-size:88%;" id="active_mef_'.$eleve->getPrimaryKey().'" name="active_mef_eleve[]" value="'.$eleve->getPrimaryKey().'" type="checkbox"';
 			if ($eleve_col->count() == 1) {
 			    echo "checked=\"checked\" ";
 			}
