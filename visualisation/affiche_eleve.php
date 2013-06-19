@@ -70,6 +70,8 @@ function affiche_debug($texte) {
 	}
 }
 
+$delais_apres_cloture=getSettingValue("delais_apres_cloture");
+
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
 if($gepi_denom_mention=="") {
 	$gepi_denom_mention="mention";
@@ -669,81 +671,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 	//==========================================================
-	// AJOUT: boireaus 20080218
 	//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
-
 	unset($tab_acces_app);
 	$tab_acces_app=array();
+
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-		for($i=1;$i<=$nb_periode;$i++) {
-			$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
-												statut='".$_SESSION['statut']."' AND
-												periode='$i';";
-			//echo "$sql<br />";
-			$res=mysql_query($sql);
-			if($res) {
-				if(mysql_num_rows($res)>0) {
-					$lig=mysql_fetch_object($res);
-					if($lig->acces=="y") {
-						$tab_acces_app[$i]="y";
-					}
-					elseif($lig->acces=="date") {
-						//echo "<p>Période $i: Date limite: $lig->date<br />";
-						$tab_date=explode("-",$lig->date);
-						$timestamp_limite=mktime(0,0,0,$tab_date[1],$tab_date[2],$tab_date[0]);
-						//echo "$timestamp_limite<br />";
-						$timestamp_courant=time();
-						//echo "$timestamp_courant<br />";
-
-						if($timestamp_courant>$timestamp_limite) {
-							$tab_acces_app[$i]="y";
-						}
-						else {
-							$tab_acces_app[$i]="n";
-						}
-					}
-					elseif($lig->acces=="d") {
-						$sql="SELECT verouiller,UNIX_TIMESTAMP(date_verrouillage) AS date_verrouillage FROM periodes WHERE id_classe='$id_classe' AND num_periode='$i';";
-						//echo "$sql<br />";
-						$res_dv=mysql_query($sql);
-
-						if(mysql_num_rows($res_dv)>0) {
-							$lig_dv=mysql_fetch_object($res_dv);
-
-							if($lig_dv->verouiller!='O') {
-								$tab_acces_app[$i]="n";
-							}
-							else {
-								$timestamp_limite=$lig_dv->date_verrouillage+$delais_apres_cloture*24*3600;
-								$timestamp_courant=time();
-								//echo "\$timestamp_limite=$timestamp_limite<br />";
-								//echo "\$timestamp_courant=$timestamp_courant<br />";
-
-								if($timestamp_courant>$timestamp_limite) {
-									$tab_acces_app[$i]="y";
-								}
-								else {
-									$tab_acces_app[$i]="n";
-								}
-								//echo "\$tab_acces_app[$i]=$tab_acces_app[$i]<br />";
-							}
-						}
-						else {
-							$tab_acces_app[$i]="n";
-						}
-					}
-					else {
-						$tab_acces_app[$i]="n";
-					}
-				}
-				else {
-					$tab_acces_app[$i]="n";
-				}
-			}
-			else {
-				$tab_acces_app[$i]="n";
-			}
-		}
+		$tab_acces_app=acces_appreciations(1, $nb_periode, $id_classe, $_SESSION['statut']);
 	}
 	else {
 		// Pas de limitations d'accès pour les autres statuts.

@@ -6368,9 +6368,9 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
 
 	if(($statut=='eleve')||($statut=='responsable')) {
 		if(getSettingValue('acces_app_ele_resp')=='periode_close') {
-			$timestamp_limite=time()+$delais_apres_cloture*24*3600;
+			$timestamp_limite=time()-$delais_apres_cloture*24*3600;
 			for($i=$periode1;$i<=$periode2;$i++) {
-				$sql="SELECT 1=1 FROM periodes WHERE UNIX_TIMESTAMP(date_verrouillage)>'".$timestamp_limite."' AND id_classe='$id_classe';";
+				$sql="SELECT 1=1 FROM periodes WHERE UNIX_TIMESTAMP(date_verrouillage)<='".$timestamp_limite."' AND id_classe='$id_classe' AND num_periode='$i';";
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
