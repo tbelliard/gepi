@@ -1069,8 +1069,8 @@ if ($new_devoir=='yes') {
 		echo "<table class='boireaus' summary='Autres enseignements'>\n";
 		echo "<tr>\n";
 		echo "<th rowspan='2'>";
-		echo "<a href='javascript:modif_case(true)'><img src='../images/enabled.png' class='icone15 alt='Tout cocher' /></a>/\n";
-		echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' class='icone15 alt='Tout décocher' /></a>\n";
+		echo "<a href='javascript:modif_case(true)'><img src='../images/enabled.png' class='icone15' alt='Tout cocher' /></a>/\n";
+		echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' class='icone15' alt='Tout décocher' /></a>\n";
 		echo "</th>\n";
 		echo "<th colspan='3'>Enseignement</th>\n";
 		echo "</tr>\n";
