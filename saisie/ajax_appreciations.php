@@ -3,8 +3,9 @@
 /**
  * ajax_appreciations.php
  * Fichier qui permet la sauvegarde automatique des appréciations au fur et à mesure de leur saisie
+ * Ajout du contrôle des lapsus sur les appréciations et avis des conseils de classe
  *
- * @copyright 2007-2011
+ * @copyright 2007-2013
  */
 
 // ============== Initialisation ===================
@@ -65,7 +66,7 @@ $var2 = isset($_POST["var2"]) ? $_POST["var2"] : (isset($_GET["var2"]) ? $_GET["
 $appreciation = isset($_POST["var3"]) ? $_POST["var3"] : (isset($_GET["var3"]) ? $_GET["var3"] : NULL);
 $professeur = isset($_SESSION["statut"]) ? $_SESSION["statut"] : NULL;
 
-//$mode=isset($_POST['mode']) ? $_POST['mode'] : "";
+$mode=isset($_POST['mode']) ? $_POST['mode'] : "";
 
 // ========== Fin de l'initialisation de la page =============
 
@@ -88,6 +89,8 @@ if($_SESSION['statut']=='professeur') {
 	// On vérifie que le prof logué peut saisir ces appréciations
 	//$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."'");
 	//if($mode!="verif") {
+	if($mode!="verif_avis") {
+		// On ne vient pas de la page de saisie d'avis du conseil de classe
 		$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
 		if (mysql_num_rows($verif_prof) >= 1) {
 			// On ne fait rien
@@ -96,6 +99,22 @@ if($_SESSION['statut']=='professeur') {
 			log_ajax_app("Vous ne pouvez pas saisir d'appreciations pour cet eleve");
 			die('Vous ne pouvez pas saisir d\'appr&eacute;ciations pour cet &eacute;l&egrave;ve');
 		}
+	}
+	else {
+		// On vient de la page de saisie d'avis du conseil de classe
+		$sql="SELECT login FROM j_eleves_professeurs WHERE login = '".$verif_var1[0]."' AND id_classe='".$var2."' AND professeur='".$_SESSION['login']."'";
+		//echo "$sql<br />";
+		$verif_prof = mysql_query($sql);
+		if (mysql_num_rows($verif_prof) >= 1) {
+			// On ne fait rien
+			$temoin_prof=mysql_num_rows($verif_prof);
+			$temoin_eleve=1;
+		} else {
+			log_ajax_app("Vous ne pouvez pas saisir d'avis pour cet eleve");
+			die('Vous ne pouvez pas saisir d\'avis pour cet &eacute;l&egrave;ve');
+		}
+	}
+
 	/*
 	}
 	else {
@@ -105,48 +124,55 @@ if($_SESSION['statut']=='professeur') {
 	*/
 }
 
-if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($_SESSION['statut']=='cpe') || (($temoin_eleve !== 0 AND $temoin_prof !== 0))) {
+//echo "\$temoin_eleve=$temoin_eleve<br />";
+//echo "\$temoin_prof=$temoin_prof<br />";
 
-	if($_SESSION['statut']=='professeur') {
-		// Enregistrement ou pas de l'appréciation temporaire:
-		$insertion_ou_maj_tempo="y";
-		$sql="SELECT appreciation FROM matieres_appreciations WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
-		log_ajax_app($sql);
-		$test_app_enregistree=mysql_query($sql);
-		if(mysql_num_rows($test_app_enregistree)>0) {
-			$lig_app_enregistree=mysql_fetch_object($test_app_enregistree);
-			if($lig_app_enregistree->appreciation==$appreciation) {
-				// On supprime l'enregistrement tempo pour éviter de conserver un tempo qui est déjà enregistré dans la table principale.
-				$sql="DELETE FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
-				log_ajax_app($sql);
-				$menage=mysql_query($sql);
-				$insertion_ou_maj_tempo="n";
-			}
-		}
-	
-		if($insertion_ou_maj_tempo=="y") {
-			// On vérifie si cette appréciation existe déjà ou non
-			$verif_appreciation = mysql_query("SELECT appreciation FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
-			// Si elle existe, on la met à jour
-			if (mysql_num_rows($verif_appreciation) == 1) {
-				$sql="UPDATE matieres_appreciations_tempo SET appreciation = '".$appreciation."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'";
-				log_ajax_app($sql);
-				$miseajour = mysql_query($sql);
-			} else {
-				//sinon on crée une nouvelle appréciation si l'appréciation n'est pas vide
-				if ($appreciation != "") {
-					$sql="INSERT INTO matieres_appreciations_tempo SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".$appreciation."'";
+if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($_SESSION['statut']=='cpe') || (($temoin_eleve !== 0 AND $temoin_prof !== 0))) {
+	if($mode!="verif_avis") {
+		// On ne vient pas de la page de saisie d'avis du conseil de classe
+		// On va enregistrer les appréciations temporaires
+
+		if($_SESSION['statut']=='professeur') {
+			// Enregistrement ou pas de l'appréciation temporaire:
+			$insertion_ou_maj_tempo="y";
+			$sql="SELECT appreciation FROM matieres_appreciations WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
+			log_ajax_app($sql);
+			$test_app_enregistree=mysql_query($sql);
+			if(mysql_num_rows($test_app_enregistree)>0) {
+				$lig_app_enregistree=mysql_fetch_object($test_app_enregistree);
+				if($lig_app_enregistree->appreciation==$appreciation) {
+					// On supprime l'enregistrement tempo pour éviter de conserver un tempo qui est déjà enregistré dans la table principale.
+					$sql="DELETE FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
 					log_ajax_app($sql);
-					$sauvegarde = mysql_query($sql);
+					$menage=mysql_query($sql);
+					$insertion_ou_maj_tempo="n";
 				}
 			}
+	
+			if($insertion_ou_maj_tempo=="y") {
+				// On vérifie si cette appréciation existe déjà ou non
+				$verif_appreciation = mysql_query("SELECT appreciation FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
+				// Si elle existe, on la met à jour
+				if (mysql_num_rows($verif_appreciation) == 1) {
+					$sql="UPDATE matieres_appreciations_tempo SET appreciation = '".$appreciation."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'";
+					log_ajax_app($sql);
+					$miseajour = mysql_query($sql);
+				} else {
+					//sinon on crée une nouvelle appréciation si l'appréciation n'est pas vide
+					if ($appreciation != "") {
+						$sql="INSERT INTO matieres_appreciations_tempo SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".$appreciation."'";
+						log_ajax_app($sql);
+						$sauvegarde = mysql_query($sql);
+					}
+				}
+			}
+			// et on renvoie une réponse valide
+			//header("HTTP/1.0 200 OK");
+			//echo ' ';
 		}
-		// et on renvoie une réponse valide
-		//header("HTTP/1.0 200 OK");
-		//echo ' ';
 	}
 
-	// Vérification des fautes de frappe/lapsus
+	// Vérification des fautes de frappe/lapsus que l'on saisisse une appréciation ou un avis du conseil de classe
 	//if($mode=='verif') {
 		$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
 			terme VARCHAR(255) NOT NULL DEFAULT '',
@@ -177,6 +203,7 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 				}
 				*/
 				$appreciation_test=" ".preg_replace("/[',;\.]/"," ",casse_mot($appreciation,'min'))." ";
+				//echo "$appreciation_test<br />";
 				$chaine_retour="";
 				for($loop=0;$loop<count($tab_voc);$loop++) {
 					if(preg_match("/ ".$tab_voc[$loop]." /i",$appreciation_test)) {
