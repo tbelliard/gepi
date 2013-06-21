@@ -775,6 +775,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 					}
 				}
 
+				// 20130621
 				if($coche_possible=='y') {
 					echo " onclick=\"document.getElementById('classe_fut_".$i."_".$cpt."').checked=true;calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\"";
 				}
@@ -874,16 +875,29 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				echo "</td>\n";
 			}
 
+			// 20130621
 			for($i=0;$i<count($autre_opt);$i++) {
 				echo "<td";
-				echo " onclick=\"if(document.getElementById('autre_opt_".$i."_".$cpt."').checked==true) {document.getElementById('autre_opt_".$i."_".$cpt."').checked=false} else {document.getElementById('autre_opt_".$i."_".$cpt."').checked=true};calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
+
+				//echo " onclick=\"if(document.getElementById('autre_opt_".$i."_".$cpt."').checked==true) {document.getElementById('autre_opt_".$i."_".$cpt."').checked=false} else {document.getElementById('autre_opt_".$i."_".$cpt."').checked=true};calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
+
+				echo " onclick=\"coche_autre_opt($i, $cpt);calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
+
 				echo " title=\"$lig->login/$autre_opt[$i]\"";
 				echo ">\n";
+
+				echo "<span id='span_input_autre_opt_".$i."_".$cpt."'>\n";
 				echo "<input type='checkbox' name='autre_opt_".$i."[$cpt]' id='autre_opt_".$i."_".$cpt."' value='$autre_opt[$i]' ";
 				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('autre_opt',".count($autre_opt).");changement();\" ";
 				echo "title=\"$lig->login/$autre_opt[$i]\" ";
 				echo "/>\n";
+				echo "</span>\n";
+
+				echo "<span id='span_affichage_coche_autre_opt_".$i."_".$cpt."'>\n";
+				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "X";}
+				echo "</span>\n";
+
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
@@ -1207,6 +1221,28 @@ function colorise_ligne(cat,cpt,i) {
 
 
 // 20130621
+function coche_autre_opt(i, cpt) {
+	document.getElementById('span_input_autre_opt_'+i+'_'+cpt).style.display='none';
+	document.getElementById('span_affichage_coche_autre_opt_'+i+'_'+cpt).style.display='';
+
+	if(document.getElementById('autre_opt_'+i+'_'+cpt).checked==true) {
+		document.getElementById('autre_opt_'+i+'_'+cpt).checked=false
+		document.getElementById('span_affichage_coche_autre_opt_'+i+'_'+cpt).innerHTML='';
+	}
+	else {
+		document.getElementById('autre_opt_'+i+'_'+cpt).checked=true
+		document.getElementById('span_affichage_coche_autre_opt_'+i+'_'+cpt).innerHTML='X';
+	}
+}
+
+
+for(k=0;k<".count($autre_opt).";k++) {
+	for(i=0;i<$cpt;i++) {
+		document.getElementById('span_input_autre_opt_'+k+'_'+i).style.display='none';
+	}
+}
+
+
 function colorise_ligne2(cpt) {
 	// On va coloriser d'après ce qui est sélectionné dans le champ de colorisation.
 	cat=document.forms['form_select_eleves_options'].elements['colorisation'].options[document.forms['form_select_eleves_options'].elements['colorisation'].selectedIndex].value;
