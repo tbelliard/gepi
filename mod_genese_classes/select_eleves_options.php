@@ -590,7 +590,10 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 			//echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.fontWeight='bold';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.fontWeight='normal';\">\n";
 			//echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='red';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='';\">\n";
-			echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
+			// 20130621
+			//echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
+			echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"colorise_ligne2($cpt);\">\n";
+
 			//echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol'\">\n";
 			echo "<td>\n";
 			echo "<a name='eleve$cpt'></a>\n";
@@ -1201,6 +1204,63 @@ function colorise_ligne(cat,cpt,i) {
 		}
 	}
 }
+
+
+// 20130621
+function colorise_ligne2(cpt) {
+	// On va coloriser d'après ce qui est sélectionné dans le champ de colorisation.
+	cat=document.forms['form_select_eleves_options'].elements['colorisation'].options[document.forms['form_select_eleves_options'].elements['colorisation'].selectedIndex].value;
+
+
+	if(cat=='classe_fut') {
+		var n=".count($classe_fut).";
+	}
+	if(cat=='lv1') {
+		var n=".count($lv1).";
+	}
+	if(cat=='lv2') {
+		var n=".count($lv2).";
+	}
+	if(cat=='lv3') {
+		var n=".count($lv3).";
+	}
+	if(cat=='profil') {
+		var n=".count($tab_profil).";
+	}
+
+	for(k=0;k<n;k++) {
+		i=cpt;
+		mode=cat;
+
+		if(mode!='profil') {
+			// Le champ peut ne pas exister pour les classes futures (à cause des options exclues sur certaines classes)
+			if(document.getElementById(mode+'_'+k+'_'+i)) {
+				if(document.getElementById(mode+'_'+k+'_'+i).checked) {
+					if(mode=='classe_fut') {
+						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
+					}
+					if(mode=='lv1') {
+						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
+					}
+					if(mode=='lv2') {
+						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
+					}
+					if(mode=='lv3') {
+						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+					}
+				}
+			}
+		}
+		else {
+			for(m=0;m<couleur_profil.length;m++) {
+				if(document.getElementById('profil_'+i).value==tab_profil[m]) {
+					document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil[m];
+				}
+			}
+		}
+	}
+}
+
 
 function lance_colorisation() {
 	cat=document.forms['form_select_eleves_options'].elements['colorisation'].options[document.forms['form_select_eleves_options'].elements['colorisation'].selectedIndex].value;
