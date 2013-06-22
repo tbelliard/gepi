@@ -42,6 +42,9 @@ switch($fb_dezip_ooo){
   case '2':
 	// pclzip.lib.php
 	include('imprime_ooo_2.php');
+  case '3':
+	// Zlib + openTBS (http://www.tinybutstrong.com/plugins/opentbs/tbs_plugin_opentbs.html)
+	include('imprime_ooo_3.php');
 default:
   // ziparchive ou zip-unzip
 	include('imprime_ooo_1.php');
