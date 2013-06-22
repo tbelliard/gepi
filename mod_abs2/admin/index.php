@@ -497,10 +497,13 @@ echo "<p style='color:red'>* Le responsable de l'absence, c'est l'élève (et se
 <blockquote>
 	<a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a><br />
 	<a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
-    <a href="admin_lieux_absences.php?action=visualiser">Définir les lieux des absences</a><br />
+	<a href="admin_lieux_absences.php?action=visualiser">Définir les lieux des absences</a><br />
 	<a href="admin_justifications_absences.php?action=visualiser">Définir les justifications</a><br />
 	<a href="../../mod_ooo/gerer_modeles_ooo.php">Gérer ses propres modèles de documents du module</a><br />
-    <a href="admin_table_agregation.php">Gérér la table d'agrégation des demi-journées d'absences</a>
+	<a href="admin_table_agregation.php">Gérér la table d'agrégation des demi-journées d'absences</a><br />
+	<?php
+		if(acces("/mod_abs2/admin/admin_table_totaux_absences.php", $_SESSION['statut'])) {echo '<a href="admin_table_totaux_absences.php">Gérér la table des totaux d\'absences</a>';}
+	?>
 </blockquote>
 
 <?PHP

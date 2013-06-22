@@ -1015,6 +1015,8 @@ $tab_req[] = "INSERT INTO droits SET id='/mod_abs2/export_stat.php',administrate
 
 $tab_req[] = "INSERT INTO droits SET id='/mod_abs2/calcul_score.php',administrateur='V',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Exports statistiques',statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs2/admin/admin_table_totaux_absences.php', administrateur='V', scolarite='F', cpe='F', professeur='F', secours='F', eleve='F', responsable='F';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {
