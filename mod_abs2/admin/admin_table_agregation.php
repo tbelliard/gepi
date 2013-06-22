@@ -79,6 +79,9 @@ require_once("../../lib/header.inc.php");
 echo "<p class=bold>";
 echo "<a href=\"index.php\">";
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if ($action != "vidage" && $action!="regeneration") {
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Agrégation des absences</a>";
+}
 echo "</p>";
 ?>
 
@@ -139,12 +142,12 @@ echo "</p>";
         <form action="admin_table_agregation.php" method="post" name="form_table" id="form_table">
             <?php echo add_token_field();?>
             <?php if($action==Null) :?>
-            <input type="radio" name="action" value="vidage" /> Vider la Table <br />
-            <input type="radio" name="action" value="regeneration" 
+            <input type="radio" name="action" id="action_vidage" value="vidage" /><label for='action_vidage'> Vider la Table </label><br />
+            <input type="radio" name="action" id="action_regeneration" value="regeneration" 
                    <?php if ($action !== "regeneration" &&  $action !== "vidage") : ?> 
                    checked 
                    <?php endif;?>
-                   />Remplir la Table<br />
+                   /><label for='action_regeneration'> Remplir la Table</label><br />
             <?php else :?>
             <input type="hidden" name="action" value="<?php echo $action; ?>" />
             <?php endif;?>

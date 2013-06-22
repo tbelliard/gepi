@@ -836,9 +836,9 @@ $msg_acces_app_ele_resp\" />";
 					echo "<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$current_eleve_login_t[$k]."\" />\n";
 					echo "<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_avis_eleve_".$k."_".$i."\" rows='2' cols='120' class='wrap' onchange=\"changement()\"";
 
-					echo " onBlur=\"ajaxVerifAppreciations('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\"";
+					echo " onBlur=\"ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\"";
 		
-					$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\n";
+					$chaine_test_vocabulaire.="ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\n";
 
 					echo ">";
 					//=========================
