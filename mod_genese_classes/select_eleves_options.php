@@ -221,6 +221,11 @@ echo "</p>\n";
 
 echo "<h2>Projet $projet</h2>\n";
 
+echo "<p id='p_temoin_modif_non_enregistrees' style='text-align:center; color:red'></p>";
+
+$temoin_erreur_eleves_en_doublon="";
+echo "<p id='p_message' style='text-align:center; color:red'></p>";
+
 echo "<p><a href='".$_SERVER['PHP_SELF']."?projet=$projet'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Rafraichir sans enregistrer</a></p>\n";
@@ -359,6 +364,9 @@ $eff_tot_F=0;
 
 // Nombre max de périodes pour faire les requêtes pour les redoublants dont la classe n'est pas "connue"
 $max_nb_per=0;
+
+// Pour repérer des élèves affichés deux fois (par exemple dans une classe et en redoublant (cas d'une erreur de choix des redoublants du niveau courant au lieu du niveau futur))
+$tab_eleves_affiches=array();
 
 $chaine_id_classe="";
 $cpt=0;
@@ -596,17 +604,25 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 			//echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol'\">\n";
 			echo "<td>\n";
+			$designation_eleve=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+			if(in_array($lig->login, $tab_eleves_affiches)) {
+				echo "<img src='../images/icons/ico_attention.png' class='icone16' title=\"Cet élève est déjà présent ailleurs dans une autre classe de la présente page.\" alt='Erreur' />";
+				$temoin_erreur_eleves_en_doublon.=$designation_eleve." apparaît plusieurs fois.<br />";
+			}
+			else {
+				$tab_eleves_affiches[]=$lig->login;
+			}
 			echo "<a name='eleve$cpt'></a>\n";
 			if(nom_photo($lig->elenoet)) {
 				echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
 				echo "<span id='nom_prenom_eleve_numero_$cpt' class='col_nom_eleve'>";
-				echo strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+				echo $designation_eleve;
 				echo "</span>";
 				echo "</a>\n";
 			}
 			else {
 				echo "<span id='nom_prenom_eleve_numero_$cpt' class='col_nom_eleve'>";
-				echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+				echo $designation_eleve;
 				echo "</span>";
 			}
 			//echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
@@ -836,56 +852,86 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 			for($i=0;$i<count($lv1);$i++) {
 				echo "<td";
-				echo " onclick=\"document.getElementById('lv1_".$i."_".$cpt."').checked=true;calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\"";
+				//echo " onclick=\"document.getElementById('lv1_".$i."_".$cpt."').checked=true;calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\"";
+				echo " onclick=\"coche_lv('lv1', $i, $cpt);calcule_effectif('lv1',".count($lv1).");changement();\"";
 				echo " title=\"$lig->login/$lv1[$i]\"";
 				echo ">\n";
+
+				// Conteneur du bouton radio
+				echo "<span id='span_input_lv1_".$i."_".$cpt."'>\n";
 				echo "<input type='radio' name='lv1[$cpt]' id='lv1_".$i."_".$cpt."' value='$lv1[$i]' ";
 				if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\" ";
 				echo "title=\"$lig->login/$lv1[$i]\" ";
 				echo "/>\n";
+				echo "</span>\n";
+
+				// Conteneur de l'affichage (non affiché si JS inactif)
+				echo "<span id='span_affichage_coche_lv1_".$i."_".$cpt."' style='display:none'>\n";
+				if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo $lv1[$i];}
+				echo "</span>\n";
+
 				echo "</td>\n";
 			}
 
 
 			for($i=0;$i<count($lv2);$i++) {
 				echo "<td";
-				echo " onclick=\"document.getElementById('lv2_".$i."_".$cpt."').checked=true;calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\"";
+				//echo " onclick=\"document.getElementById('lv2_".$i."_".$cpt."').checked=true;calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\"";
+				echo " onclick=\"coche_lv('lv2', $i, $cpt);calcule_effectif('lv2',".count($lv2).");changement();\"";
 				echo " title=\"$lig->login/$lv2[$i]\"";
 				echo ">\n";
+
+				// Conteneur du bouton radio
+				echo "<span id='span_input_lv2_".$i."_".$cpt."'>\n";
 				echo "<input type='radio' name='lv2[$cpt]' id='lv2_".$i."_".$cpt."' value='$lv2[$i]' ";
 				if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\" ";
 				echo "title=\"$lig->login/$lv2[$i]\" ";
 				echo "/>\n";
+				echo "</span>\n";
+
+				// Conteneur de l'affichage (non affiché si JS inactif)
+				echo "<span id='span_affichage_coche_lv2_".$i."_".$cpt."' style='display:none'>\n";
+				if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo $lv2[$i];}
+				echo "</span>\n";
+
 				echo "</td>\n";
 			}
 
 
 			for($i=0;$i<count($lv3);$i++) {
 				echo "<td";
-				echo " onclick=\"document.getElementById('lv3_".$i."_".$cpt."').checked=true;calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\"";
+				//echo " onclick=\"document.getElementById('lv3_".$i."_".$cpt."').checked=true;calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\"";
+				echo " onclick=\"coche_lv('lv3', $i, $cpt);calcule_effectif('lv3',".count($lv3).");changement();\"";
 				echo " title=\"$lig->login/$lv3[$i]\"";
 				echo ">\n";
+
+				// Conteneur du bouton radio
+				echo "<span id='span_input_lv3_".$i."_".$cpt."'>\n";
 				echo "<input type='radio' name='lv3[$cpt]' id='lv3_".$i."_".$cpt."' value='$lv3[$i]' ";
 				if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\" ";
 				echo "title=\"$lig->login/$lv3[$i]\" ";
 				echo "/>\n";
+				echo "</span>\n";
+
+				// Conteneur de l'affichage (non affiché si JS inactif)
+				echo "<span id='span_affichage_coche_lv3_".$i."_".$cpt."' style='display:none'>\n";
+				if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo $lv3[$i];}
+				echo "</span>\n";
 				echo "</td>\n";
 			}
 
 			// 20130621
 			for($i=0;$i<count($autre_opt);$i++) {
 				echo "<td";
-
 				//echo " onclick=\"if(document.getElementById('autre_opt_".$i."_".$cpt."').checked==true) {document.getElementById('autre_opt_".$i."_".$cpt."').checked=false} else {document.getElementById('autre_opt_".$i."_".$cpt."').checked=true};calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
-
 				echo " onclick=\"coche_autre_opt($i, $cpt);calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
-
 				echo " title=\"$lig->login/$autre_opt[$i]\"";
 				echo ">\n";
 
+				// Conteneur du checkbox
 				echo "<span id='span_input_autre_opt_".$i."_".$cpt."'>\n";
 				echo "<input type='checkbox' name='autre_opt_".$i."[$cpt]' id='autre_opt_".$i."_".$cpt."' value='$autre_opt[$i]' ";
 				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "checked ";}
@@ -894,8 +940,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				echo "/>\n";
 				echo "</span>\n";
 
-				echo "<span id='span_affichage_coche_autre_opt_".$i."_".$cpt."'>\n";
-				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "X";}
+				// Conteneur de l'affichage (non affiché si JS inactif)
+				echo "<span id='span_affichage_coche_autre_opt_".$i."_".$cpt."' style='display:none'>\n";
+				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo $autre_opt[$i];}
 				echo "</span>\n";
 
 				echo "</td>\n";
@@ -918,8 +965,15 @@ document.getElementById('eff_tot_classe_sexe_".$id_classe_actuelle[$j]."').inner
 echo "<input type='hidden' name='projet' value='$projet' />\n";
 echo "</form>\n";
 
+echo "<p><br /></p>
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Vous pouvez modifier les options choisies en cliquant dans les cellules du tableau et en n'oubliant pas de Valider les modifications ensuite.</p>\n";
 
-
+if((isset($temoin_erreur_eleves_en_doublon))&&($temoin_erreur_eleves_en_doublon!="")) {
+	echo "<script type='text/javascript'>
+	document.getElementById('p_message').innerHTML='ERREUR : Un ou des élèves apparaissent deux fois dans la page:<br />$temoin_erreur_eleves_en_doublon';
+</script>
+";
+}
 
 	//===============================================
 	// Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()
@@ -1035,6 +1089,47 @@ $texte.="<br />\n";
 $texte.="</div>\n";
 
 $tabdiv_infobulle[]=creer_div_infobulle('div_photo',$titre,"",$texte,"",14,0,'y','y','n','n');
+
+// 20130622
+$chaine_js_autre_opt="var tab_autre_opt=new Array(";
+for($loop=0;$loop<count($autre_opt);$loop++) {
+	if($loop>0) {
+		$chaine_js_autre_opt.=", ";
+	}
+	$chaine_js_autre_opt.="'".$autre_opt[$loop]."'";
+
+}
+$chaine_js_autre_opt.=");";
+
+$chaine_js_lv1="var tab_lv1=new Array(";
+for($loop=0;$loop<count($lv1);$loop++) {
+	if($loop>0) {
+		$chaine_js_lv1.=", ";
+	}
+	$chaine_js_lv1.="'".$lv1[$loop]."'";
+
+}
+$chaine_js_lv1.=");";
+
+$chaine_js_lv2="var tab_lv2=new Array(";
+for($loop=0;$loop<count($lv2);$loop++) {
+	if($loop>0) {
+		$chaine_js_lv2.=", ";
+	}
+	$chaine_js_lv2.="'".$lv2[$loop]."'";
+
+}
+$chaine_js_lv2.=");";
+
+$chaine_js_lv3="var tab_lv3=new Array(";
+for($loop=0;$loop<count($lv3);$loop++) {
+	if($loop>0) {
+		$chaine_js_lv3.=", ";
+	}
+	$chaine_js_lv3.="'".$lv3[$loop]."'";
+
+}
+$chaine_js_lv3.=");";
 
 echo "<script type='text/javascript'>
 function affiche_photo(photo,nom_prenom) {
@@ -1159,6 +1254,10 @@ var couleur_classe_fut=new Array($chaine_couleur_classe_fut);
 var couleur_lv1=new Array($chaine_couleur_lv1);
 var couleur_lv2=new Array($chaine_couleur_lv2);
 var couleur_lv3=new Array($chaine_couleur_lv3);
+$chaine_js_autre_opt
+$chaine_js_lv1
+$chaine_js_lv2
+$chaine_js_lv3
 
 function colorise(mode,n) {
 	var k;
@@ -1231,17 +1330,89 @@ function coche_autre_opt(i, cpt) {
 	}
 	else {
 		document.getElementById('autre_opt_'+i+'_'+cpt).checked=true
-		document.getElementById('span_affichage_coche_autre_opt_'+i+'_'+cpt).innerHTML='X';
+		document.getElementById('span_affichage_coche_autre_opt_'+i+'_'+cpt).innerHTML=tab_autre_opt[i];
 	}
+
+	affichage_temoin_modif();
 }
 
 
 for(k=0;k<".count($autre_opt).";k++) {
 	for(i=0;i<$cpt;i++) {
+		document.getElementById('span_affichage_coche_autre_opt_'+k+'_'+i).style.display='';
 		document.getElementById('span_input_autre_opt_'+k+'_'+i).style.display='none';
 	}
 }
 
+function coche_lv(lv, i, cpt) {
+	document.getElementById('span_input_'+lv+'_'+i+'_'+cpt).style.display='none';
+	document.getElementById('span_affichage_coche_'+lv+'_'+i+'_'+cpt).style.display='';
+
+	if(document.getElementById(lv+'_'+i+'_'+cpt).checked==true) {
+		// C'est un bouton radio.
+		// Il est déjà coché, on ne fait rien.
+		//document.getElementById(lv+'_'+i+'_'+cpt).checked=false
+		//document.getElementById('span_affichage_coche_'+lv+'_'+i+'_'+cpt).innerHTML='';
+	}
+	else {
+		document.getElementById(lv+'_'+i+'_'+cpt).checked=true
+		if(lv=='lv1') {
+			valeur=tab_lv1[i];
+			// On vide les autres champs:
+			for(k=0;k<".count($lv1).";k++) {
+				if(k!=i) {
+					document.getElementById('span_affichage_coche_'+lv+'_'+k+'_'+cpt).innerHTML='';
+				}
+			}
+		}
+		if(lv=='lv2') {
+			valeur=tab_lv2[i];
+			// On vide les autres champs:
+			for(k=0;k<".count($lv2).";k++) {
+				if(k!=i) {
+					document.getElementById('span_affichage_coche_'+lv+'_'+k+'_'+cpt).innerHTML='';
+				}
+			}
+		}
+		if(lv=='lv3') {
+			valeur=tab_lv3[i];
+			// On vide les autres champs:
+			for(k=0;k<".count($lv3).";k++) {
+				if(k!=i) {
+					document.getElementById('span_affichage_coche_'+lv+'_'+k+'_'+cpt).innerHTML='';
+				}
+			}
+		}
+		document.getElementById('span_affichage_coche_'+lv+'_'+i+'_'+cpt).innerHTML=valeur;
+
+		affichage_temoin_modif();
+	}
+}
+
+for(k=0;k<".count($lv1).";k++) {
+	for(i=0;i<$cpt;i++) {
+		document.getElementById('span_affichage_coche_lv1_'+k+'_'+i).style.display='';
+		document.getElementById('span_input_lv1_'+k+'_'+i).style.display='none';
+	}
+}
+
+for(k=0;k<".count($lv2).";k++) {
+	for(i=0;i<$cpt;i++) {
+		document.getElementById('span_affichage_coche_lv2_'+k+'_'+i).style.display='';
+		document.getElementById('span_input_lv2_'+k+'_'+i).style.display='none';
+	}
+}
+
+for(k=0;k<".count($lv3).";k++) {
+	for(i=0;i<$cpt;i++) {
+		document.getElementById('span_affichage_coche_lv3_'+k+'_'+i).style.display='';
+		document.getElementById('span_input_lv3_'+k+'_'+i).style.display='none';
+	}
+}
+
+function affichage_temoin_modif() {
+	document.getElementById('p_temoin_modif_non_enregistrees').innerHTML='Des modifications n&apos;ont pas été enregistrées.';
+}
 
 function colorise_ligne2(cpt) {
 	// On va coloriser d'après ce qui est sélectionné dans le champ de colorisation.
