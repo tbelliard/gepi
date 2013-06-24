@@ -360,8 +360,8 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 }
 
 echo "</div>\n";
-// On affiche une sélection des profs si la matière a été choisie
 
+// On affiche une sélection des profs si la matière a été choisie
 if ($reg_matiere != null) {
     echo "<div style='width: 45%; float: right;'>\n";
     echo "<p>Cochez les professeurs qui participent à cet enseignement&nbsp;: </p>\n";
@@ -381,7 +381,7 @@ if ($reg_matiere != null) {
 
         $prof_list["list"][] = $prof_login;
         //$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite);
-        $prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite, "statut" => $prof_statut);
+        $prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => casse_mot($prof_nom,'maj'), "prenom" => casse_mot($prof_prenom,'majf2'), "civilite" => $civilite, "statut" => $prof_statut);
     }
 
     if (count($prof_list["list"]) == "0") {
@@ -404,7 +404,7 @@ if ($reg_matiere != null) {
 				echo "</td>\n";
 				echo "<td style='text-align:left;'>\n";
 				echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>\n";
-				echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
+				echo " " . $prof_list["users"][$prof_login]["civilite"] . " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
 				echo "</label>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
@@ -417,7 +417,7 @@ if ($reg_matiere != null) {
 				echo "</td>\n";
 				echo "<td style='text-align:left;'>\n";
 				echo "<b>ANOMALIE</b>&nbsp;:";
-				echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
+				echo " " . $prof_list["users"][$prof_login]["civilite"] . " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
 				echo " (<i style='color:red'>compte ".$prof_list["users"][$prof_login]["statut"]."</i>)";
 				echo "<br />\n";
 				$temoin_nettoyage_requis='y';

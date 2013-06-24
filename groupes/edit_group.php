@@ -706,7 +706,8 @@ for ($i=0;$i<$nb;$i++) {
 
 	$prof_list["list"][] = $prof_login;
 	//$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite);
-	$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite, "statut" => $prof_statut);
+	//$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite, "statut" => $prof_statut);
+	$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => casse_mot($prof_nom,'maj'), "prenom" => casse_mot($prof_prenom,'majf2'), "civilite" => $civilite, "statut" => $prof_statut);
 }
 
 if (count($prof_list["list"]) == "0") {
@@ -733,23 +734,23 @@ if (count($prof_list["list"]) == "0") {
 					echo "</td>\n";
 					echo "<td style='text-align:left;'>\n";
 					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
-						casse_mot($current_group["profs"]["users"][$prof_login]["prenom"],'majf2') . " " .
-						$current_group["profs"]["users"][$prof_login]["nom"] . "</label>\n";
+						$current_group["profs"]["users"][$prof_login]["nom"] . " " .
+						$current_group["profs"]["users"][$prof_login]["prenom"] . "</label>\n";
 				} else {
 					echo " checked />\n";
 					echo "</td>\n";
 					echo "<td style='text-align:left;'>\n";
 					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
-						casse_mot($prof_list["users"][$prof_login]["prenom"],'majf2') . " " .
-						$prof_list["users"][$prof_login]["nom"] . "</label>\n";
+						$prof_list["users"][$prof_login]["nom"] . " " .
+						$prof_list["users"][$prof_login]["prenom"] . "</label>\n";
 				}
 			} else {
 				echo " />\n";
 				echo "</td>\n";
 				echo "<td style='text-align:left;'>\n";
 				echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
-						casse_mot($prof_list["users"][$prof_login]["prenom"],'majf2') . " " .
-						$prof_list["users"][$prof_login]["nom"] . "</label>";
+						$prof_list["users"][$prof_login]["nom"] . " " .
+						$prof_list["users"][$prof_login]["prenom"] . "</label>";
 			}
 
 			if(in_array($prof_login,$tab_prof_suivi)) {
