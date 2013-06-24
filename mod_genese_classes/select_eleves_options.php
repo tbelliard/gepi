@@ -1330,7 +1330,7 @@ function coche_autre_opt(i, cpt) {
 	}
 	else {
 		document.getElementById('autre_opt_'+i+'_'+cpt).checked=true
-		document.getElementById('span_affichage_coche_autre_opt_'+i+'_'+cpt).innerHTML=tab_autre_opt[i];
+		document.getElementById('span_affichage_coche_autre_opt_'+i+'_'+cpt).innerHTML='<span class=\'red\'>'+tab_autre_opt[i]+'</span>';
 	}
 
 	affichage_temoin_modif();
@@ -1383,7 +1383,7 @@ function coche_lv(lv, i, cpt) {
 				}
 			}
 		}
-		document.getElementById('span_affichage_coche_'+lv+'_'+i+'_'+cpt).innerHTML=valeur;
+		document.getElementById('span_affichage_coche_'+lv+'_'+i+'_'+cpt).innerHTML='<span class=\'red\'>'+valeur+'</span>';
 
 		affichage_temoin_modif();
 	}
