@@ -329,5 +329,9 @@ if(mysql_num_rows($res)>0) {
 	echo "</form>\n";
 }
 
+echo "<p><br /></p>
+<p><em>NOTE&nbsp;:</em> Cette page de saisie des contraintes ne permet  de saisir actuellementque des contraintes simples.<br />
+Vous poyvez préciser que vous ne pouvez pas avoir telle option dans telle(s) classe(s), mais in n'est pas encore possible de préciser que vous ne voulez pas telle combinaison d'options sur telle classe.</p>\n";
+
 require("../lib/footer.inc.php");
 ?>
