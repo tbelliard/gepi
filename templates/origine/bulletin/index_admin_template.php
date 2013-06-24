@@ -163,6 +163,11 @@
 	<p>(*) Les nombre de demi-journées d'absences, nombre d'absences non justifiées, nombre de retards et observation du CPE seront supprimées.</p>
 </form>
 
+<?php
+	if(acces("/gestion/gestion_signature.php", $_SESSION['statut'])) {
+		echo "<p style='margin-top:2em;'><a href='../gestion/gestion_signature.php'>Définir, modifier ou supprimer un fichier de signature pour les bulletins.</a></p>\n";
+	}
+?>
 
 <!-- Début du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
