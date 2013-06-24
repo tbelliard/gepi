@@ -765,6 +765,8 @@ if (!$current_group) {
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";
     echo "</form>\n";
 
+	echo "<p id='p_checkAll' style='display:none'><a href='javascript:checkAll_checkbox()'>Tout cocher</a> / <a href='javascript:UncheckAll_checkbox()'>Tout décocher</a></p>";
+
 	echo "<script type='text/javascript'>
 function checkbox_change(champ, cpt) {
 	if(document.getElementById(champ)) {
@@ -776,6 +778,39 @@ function checkbox_change(champ, cpt) {
 		}
 	}
 }
+
+document.getElementById('p_checkAll').style.display='';
+
+function checkAll_checkbox(){
+	champs_input=document.getElementsByTagName('input');
+	for(i=0;i<champs_input.length;i++){
+		type=champs_input[i].getAttribute('type');
+		if(type==\"checkbox\"){
+			champs_input[i].checked=true;
+
+			id_champ=champs_input[i].getAttribute('id');
+			for(j=0;j<$cpt;j++) {
+				checkbox_change(id_champ, j);
+			}
+		}
+	}
+}
+
+function UncheckAll_checkbox(){
+	champs_input=document.getElementsByTagName('input');
+	for(i=0;i<champs_input.length;i++){
+		type=champs_input[i].getAttribute('type');
+		if(type==\"checkbox\"){
+			champs_input[i].checked=false;
+
+			id_champ=champs_input[i].getAttribute('id');
+			for(j=0;j<$cpt;j++) {
+				checkbox_change(id_champ, j);
+			}
+		}
+	}
+}
+
 </script>\n";
 
 
