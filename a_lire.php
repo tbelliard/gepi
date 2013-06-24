@@ -71,18 +71,26 @@ echo "</p>\n";
 echo "</div>\n";
 
 echo "<p>Voici quelques liens vers des fichiers d'information à propos de Gepi&nbsp;:</p>
-<ul>";
-echo "<li><a href='a_lire.php?fichier=INSTALL.txt'>INSTALL.txt</a>&nbsp;: Les explications concernant l'installation de Gepi<br />
-(<em>si vous êtes ici, l'installation est probablement déjà faite;</em>)</li>";
-echo "<li><a href='a_lire.php?fichier=MAJ.TXT'>MAJ.TXT</a>&nbsp;: Les explications concernant la mise à jour vers la présente version de Gepi<br />
-(<em>c'est le fichier que la personne qui a mis à jour le Gepi dans la présente version a assurément lu</em>)</li>";
-echo "<li><a href='a_lire.php?fichier=README.txt'>README.txt</a>&nbsp;: À lire... comme son nom l'indique.</li>";
-echo "<li><a href='a_lire.php?fichier=changelog.txt'>changelog.txt</a>&nbsp;: L'historique des modifications et ajouts au fil des versions de Gepi.</li>";
-echo "<li><a href='a_lire.php?fichier=COPYING.txt'>COPYING.txt</a>&nbsp;: La licence GPL.</li>";
-echo "</ul>\n";
+<ul>
+	<li><a href='a_lire.php?fichier=INSTALL.txt#affichage_fichier'>INSTALL.txt</a>&nbsp;: Les explications concernant l'installation de Gepi<br />
+	(<em>si vous êtes ici, l'installation est probablement déjà faite;</em>)</li>
+	<li><a href='a_lire.php?fichier=MAJ.TXT#affichage_fichier'>MAJ.TXT</a>&nbsp;: Les explications concernant la mise à jour vers la présente version de Gepi<br />
+	(<em>c'est le fichier que la personne qui a mis à jour le Gepi dans la présente version a assurément lu</em>)</li>
+	<li><a href='a_lire.php?fichier=README.txt#affichage_fichier'>README.txt</a>&nbsp;: À lire... comme son nom l'indique.</li>
+	<li><a href='a_lire.php?fichier=changelog.txt#affichage_fichier'>changelog.txt</a>&nbsp;: L'historique des modifications et ajouts au fil des versions de Gepi.</li>
+	<li><a href='a_lire.php?fichier=COPYING.txt#affichage_fichier'>COPYING.txt</a>&nbsp;: La licence GPL.</li>
+</ul>
 
+<p>Voici par ailleurs les adresses de quelques ressources concernant Gepi&nbsp;:</p>
+<ul>
+	<li><a href='http://www.sylogix.org/projects/gepi/wiki'>La documentation officielle de Gepi</a></li>
+	<li><a href='http://lists.sylogix.net/mailman/listinfo/gepi-users'>S'inscrire à la liste de diffusion Gepi</a></li>
+	<li><a href='http://www.mail-archive.com/gepi-users@lists.sylogix.net/'>Les archives de la liste de diffusion Gepi</a><br />
+	(<em>pour rechercher si la question que vous vous posez a déjà trouvé une réponse</em>)</li>
+</ul>\n";
 
-echo "<br />\n";
+echo "<br />
+<a name='affichage_fichier'></a>\n";
 if (isset($_GET['fichier']) && is_file($_GET['fichier'])) {
 	$pathinfo_fichier=pathinfo($_GET['fichier']);
 	// on affiche que les fichiers .txt du dossier courant
