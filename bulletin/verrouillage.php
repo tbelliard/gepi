@@ -179,6 +179,12 @@ function CocheCase(rang,per) {
 				document.formulaire.elements[i+2].checked = false ;
 				document.formulaire.elements[i+3].checked = false ;
 				document.formulaire.elements[i+rang].checked = true ;
+				nom_du_champ=document.formulaire.elements[i+rang].getAttribute('name');
+				if(nom_du_champ!="") {
+					tmp_var=nom_du_champ.split("_");
+					id_classe=tmp_var[1];
+					actualise_cell_(id_classe,per);
+				}
 			}
 		}
 	}
@@ -375,13 +381,13 @@ if (($classe != 0) AND ($periode !=0)) {
 						//echo "<input type=\"hidden\" name=\"numperiode\" value=\"$i\" />";
 						echo "<td><input type=\"hidden\" name=\"numperiode\" value=\"$i\" />";
 						//echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" ";
-						echo "<input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
+						echo "<input type=\"radio\" name=\"".$nom_classe."\" id='radio_".$nom_classe."_N' value=\"N\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
 						if ($row_per[1] == "N") {echo "checked";}
 						echo " /></td>\n";
-						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"P\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
+						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" id='radio_".$nom_classe."_P' value=\"P\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
 						if ($row_per[1] == "P") {echo "checked";}
 						echo " /></td>\n";
-						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"O\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
+						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" id='radio_".$nom_classe."_O' value=\"O\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
 						if ($row_per[1] == "O") {echo "checked";}
 						echo " /></td>\n";
                         if(getSettingValue("active_module_absence")=="2"){
@@ -428,25 +434,27 @@ Calendar.setup({
 		function actualise_cell_(id_classe,i) {
 			// id_classe correspond à la ligne (pas nécessairement le numéro de ligne)
 			// i correspond au numéro de la période -1 (colonne)
-	
-			for (j=0;j<$max_per;j++) {
-	
-				if (eval('document.formulaire.cl_'+id_classe+'_'+i+'[j].checked')==true) {
-					//alert('Classe '+id_classe+' période '+i+' état '+eval('document.formulaire.cl_'+id_classe+'_'+i+'[j].value'));
-					if(eval('document.formulaire.cl_'+id_classe+'_'+i+'[j].value')=='N') {
+
+			if(document.getElementById('c_'+id_classe+'_'+i)) {
+				if(document.getElementById('radio_cl_'+id_classe+'_'+i+'_N')) {
+					if(document.getElementById('radio_cl_'+id_classe+'_'+i+'_N').checked==true) {
 						// Période ouverte en saisie
 						document.getElementById('c_'+id_classe+'_'+i).innerHTML='Ouvert (*)';
 						document.getElementById('c_'+id_classe+'_'+i).style.color='green';
 					}
-	
-					if(eval('document.formulaire.cl_'+id_classe+'_'+i+'[j].value')=='P') {
-						// Période ouverte en saisie
+				}
+
+				if(document.getElementById('radio_cl_'+id_classe+'_'+i+'_P')) {
+					if(document.getElementById('radio_cl_'+id_classe+'_'+i+'_P').checked==true) {
+						// Période partiellement close
 						document.getElementById('c_'+id_classe+'_'+i).innerHTML='Partiel.clos (*)';
 						document.getElementById('c_'+id_classe+'_'+i).style.color='orange';
 					}
-	
-					if(eval('document.formulaire.cl_'+id_classe+'_'+i+'[j].value')=='O') {
-						// Période ouverte en saisie
+				}
+
+				if(document.getElementById('radio_cl_'+id_classe+'_'+i+'_O')) {
+					if(document.getElementById('radio_cl_'+id_classe+'_'+i+'_O').checked==true) {
+						// Période close
 						document.getElementById('c_'+id_classe+'_'+i).innerHTML='Clos (*)';
 						document.getElementById('c_'+id_classe+'_'+i).style.color='red';
 					}
