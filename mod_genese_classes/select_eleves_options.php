@@ -247,7 +247,7 @@ else {
 		$sql="SELECT opt_exclue FROM gc_options_classes WHERE projet='$projet' AND classe_future='$lig->classe';";
 		$res_opt_exclues=mysql_query($sql);
 		while($lig_opt_exclue=mysql_fetch_object($res_opt_exclues)) {
-			$tab_opt_exclue["$lig->classe"][]=$lig_opt_exclue->opt_exclue;
+			$tab_opt_exclue["$lig->classe"][]=mb_strtoupper($lig_opt_exclue->opt_exclue);
 		}
 		//=========================
 	}
@@ -761,7 +761,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				$coche_possible='y';
 				if(($classe_fut[$i]!='Red')&&($classe_fut[$i]!='Dep')&&($classe_fut[$i]!='')) {
 					for($loop=0;$loop<count($tab_ele_opt);$loop++) {
-						if(in_array($tab_ele_opt[$loop],$tab_opt_exclue["$classe_fut[$i]"])) {
+						if(in_array(mb_strtoupper($tab_ele_opt[$loop]),$tab_opt_exclue["$classe_fut[$i]"])) {
 							$coche_possible='n';
 							break;
 						}
