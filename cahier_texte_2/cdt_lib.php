@@ -213,8 +213,9 @@ require_once("'.$pref_arbo.'/entete.php");
 					((getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==true)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))))
 				) {
 					$titre = $row[0];
-						$emplacement = $pref_documents.$row[1];
-					$html_tmp.= "<li style=\"padding: 0px; margin: 0px; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"$emplacement\">$titre</a></li>";
+					$emplacement = $pref_documents.$row[1];
+					//$html_tmp.= "<li style=\"padding: 0px; margin: 0px; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"$emplacement\">$titre</a></li>";
+					$html_tmp.= "<li style=\"padding: 0px; margin: 0px; font-size: 80%;\"><a href=\"$emplacement\" target=\"_blank\">$titre</a></li>";
 
 					$tab_chemin_url[]=$emplacement;
 					$nb_doc_joints_visibles++;
