@@ -61,6 +61,8 @@ function affiche_debug($texte) {
 	}
 }
 
+$delais_apres_cloture=getSettingValue("delais_apres_cloture");
+
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
 if($gepi_denom_mention=="") {
 	$gepi_denom_mention="mention";
