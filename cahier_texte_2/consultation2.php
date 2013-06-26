@@ -641,14 +641,17 @@ for($i=0;$i<14;$i++) {
 				// Dans le futur, ils ne sont vus que par les profs du groupe
 				if((($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes)))||
 					($ligne_ct->date_ct<=$ts_aujourdhui)) {
-					$sql="SELECT * FROM ct_documents where id='$ligne_ct->id_ct';";
+					$sql="SELECT * FROM ct_documents where id_ct='$ligne_ct->id_ct';";
 					$res_doc=mysql_query($sql);
-					while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
-						// Tester si le document est visible ou non dans le cas ele/resp
-						if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-						($ligne_ct_doc->visible_eleve_parent==1))
-						{
-							$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<br />\n<a href='$ligne_ct_doc->emplacement'>".$ligne_ct_doc->titre."</a>";
+					if(mysql_num_rows($res_doc)>0) {
+						$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<br /><strong>Documents joints&nbsp;:</strong>";
+						while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
+							// Tester si le document est visible ou non dans le cas ele/resp
+							if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+							($ligne_ct_doc->visible_eleve_parent==1))
+							{
+								$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<br />\n<a href='$ligne_ct_doc->emplacement' title=\"$ligne_ct_doc->titre\" target='_blank'>".$ligne_ct_doc->titre."</a>";
+							}
 						}
 					}
 					$cpt++;
@@ -679,13 +682,16 @@ for($i=0;$i<14;$i++) {
 				$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt].=$ligne_ct->contenu;
 
 				// Documents joints:
-				$sql="SELECT * FROM ct_devoirs_documents where id='$ligne_ct->id_ct';";
+				$sql="SELECT * FROM ct_devoirs_documents where id_ct_devoir='$ligne_ct->id_ct';";
 				$res_doc=mysql_query($sql);
-				while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
-					if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-					($ligne_ct_doc->visible_eleve_parent==1))
-					{
-						$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt].="<br />\n<a href='$ligne_ct_doc->emplacement'>".$ligne_ct_doc->titre."</a>";
+				if(mysql_num_rows($res_doc)>0) {
+					$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt].="<br /><strong>Documents joints&nbsp;:</strong>";
+					while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
+						if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+						($ligne_ct_doc->visible_eleve_parent==1))
+						{
+							$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt].="<br />\n<a href='$ligne_ct_doc->emplacement' title=\"$ligne_ct_doc->titre\" target='_blank'>".$ligne_ct_doc->titre."</a>";
+						}
 					}
 				}
 				$cpt++;
