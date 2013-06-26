@@ -401,7 +401,7 @@ $themessage = 'Un message est en cours de rédaction. Voulez-vous vraiment quitt
 $message_enregistrement = "Les modifications ont été enregistrées !";
 $utilisation_prototype = "ok";
 //**************** EN-TETE *****************
-$titre_page = "Messagerie";
+$titre_page = "Alertes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
