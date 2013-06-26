@@ -1039,7 +1039,8 @@ function affiche_docs_joints($id_ct,$type_notice) {
                 $emplacement = $row[1];
               // Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
               // alternative, utiliser un javascript
-                $html .= "<li style=\"padding: 0px; margin: 0px;font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
+                //$html .= "<li style=\"padding: 0px; margin: 0px;font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
+                $html .= "<li style=\"padding: 0px; margin: 0px;font-size: 80%;\"><a href=\"$emplacement\" target='_blank'>$titre</a></li>";
           }
       }
       $html .= "</ul>";
