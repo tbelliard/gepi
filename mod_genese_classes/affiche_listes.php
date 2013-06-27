@@ -1165,6 +1165,7 @@ else {
 	<option value='lv1'>LV1</option>
 	<option value='lv2'>LV2</option>
 	<option value='profil'>Profil</option>
+	<option value='aucune'>Aucune</option>
 	</select>\n";
 	echo "</p>\n";
 
@@ -1987,32 +1988,37 @@ echo "
 
 		for(i=0;i<$cpt;i++) {
 			if(mode!='profil') {
-				if(document.getElementById(mode+'_'+i)) {
-					for(k=0;k<n;k++) {
-						if(mode=='classe_fut') {
-							if(document.getElementById(mode+'_'+i).value==tab_classes_fut[k]) {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
+				if(mode!='aucune') {
+					if(document.getElementById(mode+'_'+i)) {
+						for(k=0;k<n;k++) {
+							if(mode=='classe_fut') {
+								if(document.getElementById(mode+'_'+i).value==tab_classes_fut[k]) {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
+								}
 							}
-						}
 	
-						if(mode=='lv1') {
-							if(document.getElementById(mode+'_'+i).value==tab_lv1[k]) {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
+							if(mode=='lv1') {
+								if(document.getElementById(mode+'_'+i).value==tab_lv1[k]) {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
+								}
 							}
-						}
 	
-						if(mode=='lv2') {
-							if(document.getElementById(mode+'_'+i).value==tab_lv2[k]) {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
+							if(mode=='lv2') {
+								if(document.getElementById(mode+'_'+i).value==tab_lv2[k]) {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
+								}
 							}
-						}
 	
-						if(mode=='lv3') {
-							if(document.getElementById(mode+'_'+i).value==tab_lv3[k]) {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+							if(mode=='lv3') {
+								if(document.getElementById(mode+'_'+i).value==tab_lv3[k]) {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+								}
 							}
 						}
 					}
+				}
+				else {
+					document.getElementById('tr_eleve_'+i).style.backgroundColor='white';
 				}
 			}
 			else {
@@ -2044,6 +2050,9 @@ echo "
 		}
 		if(cat=='profil') {
 			colorise(cat,".count($tab_profil).");
+		}
+		if(cat=='aucune') {
+			colorise(cat,0);
 		}
 	}
 
