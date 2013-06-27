@@ -1764,7 +1764,7 @@ if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysqldump.exe"))
     <div class="center">
         <p><input type="submit" value="Sauvegarder" /></p>
         <label for='action' class='invisible'>type de sauvegarde</label>
-        <select id='action' size='1'>
+        <select id='action' name='action' size='1'>
 <?php
 if ((substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))||
 	(substr(PHP_OS,0,3) != 'WIN'))
