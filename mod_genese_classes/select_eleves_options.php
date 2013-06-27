@@ -352,6 +352,9 @@ echo ">LV2</option>
 <option value='profil'";
 if((isset($_POST['colorisation']))&&($_POST['colorisation']=='profil')) {echo " selected='selected'";}
 echo ">Profil</option>
+<option value='aucune'";
+if((isset($_POST['colorisation']))&&($_POST['colorisation']=='aucune')) {echo " selected='selected'";}
+echo ">Aucune</option>
 </select>\n";
 
 echo "</p>\n";
@@ -1267,22 +1270,27 @@ function colorise(mode,n) {
 	for(k=0;k<n;k++) {
 		for(i=0;i<$cpt;i++) {
 			if(mode!='profil') {
-				// Le champ peut ne pas exister pour les classes futures (à cause des options exclues sur certaines classes)
-				if(document.getElementById(mode+'_'+k+'_'+i)) {
-					if(document.getElementById(mode+'_'+k+'_'+i).checked) {
-						if(mode=='classe_fut') {
-							document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
-						}
-						if(mode=='lv1') {
-							document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
-						}
-						if(mode=='lv2') {
-							document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
-						}
-						if(mode=='lv3') {
-							document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+				if(mode!='aucune') {
+					// Le champ peut ne pas exister pour les classes futures (à cause des options exclues sur certaines classes)
+					if(document.getElementById(mode+'_'+k+'_'+i)) {
+						if(document.getElementById(mode+'_'+k+'_'+i).checked) {
+							if(mode=='classe_fut') {
+								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
+							}
+							if(mode=='lv1') {
+								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
+							}
+							if(mode=='lv2') {
+								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
+							}
+							if(mode=='lv3') {
+								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+							}
 						}
 					}
+				}
+				else {
+					document.getElementById('tr_eleve_'+i).style.backgroundColor='white';
 				}
 			}
 			else {
@@ -1434,28 +1442,36 @@ function colorise_ligne2(cpt) {
 	if(cat=='profil') {
 		var n=".count($tab_profil).";
 	}
+	if(cat=='aucune') {
+		var n=1;
+	}
 
 	for(k=0;k<n;k++) {
 		i=cpt;
 		mode=cat;
 
 		if(mode!='profil') {
-			// Le champ peut ne pas exister pour les classes futures (à cause des options exclues sur certaines classes)
-			if(document.getElementById(mode+'_'+k+'_'+i)) {
-				if(document.getElementById(mode+'_'+k+'_'+i).checked) {
-					if(mode=='classe_fut') {
-						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
-					}
-					if(mode=='lv1') {
-						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
-					}
-					if(mode=='lv2') {
-						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
-					}
-					if(mode=='lv3') {
-						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+			if(mode!='aucune') {
+				// Le champ peut ne pas exister pour les classes futures (à cause des options exclues sur certaines classes)
+				if(document.getElementById(mode+'_'+k+'_'+i)) {
+					if(document.getElementById(mode+'_'+k+'_'+i).checked) {
+						if(mode=='classe_fut') {
+							document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
+						}
+						if(mode=='lv1') {
+							document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
+						}
+						if(mode=='lv2') {
+							document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
+						}
+						if(mode=='lv3') {
+							document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+						}
 					}
 				}
+			}
+			else {
+				document.getElementById('tr_eleve_'+i).style.backgroundColor='white';
 			}
 		}
 		else {
@@ -1486,6 +1502,10 @@ function lance_colorisation() {
 	}
 	if(cat=='profil') {
 		colorise(cat,".count($tab_profil).");
+	}
+	if(cat=='aucune') {
+		// Il faut au moins 1 pour faire un tour dans colorise()
+		colorise(cat,1);
 	}
 }
 

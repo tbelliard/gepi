@@ -1333,6 +1333,7 @@ $_POST['projet']=	4eme_vers_3eme
 	<option value='lv1'>LV1</option>
 	<option value='lv2'>LV2</option>
 	<option value='profil'>Profil</option>
+	<option value='aucune'>Aucune</option>
 	</select>\n";
 	
 	echo "</p>\n";
@@ -2096,6 +2097,7 @@ $_POST['projet']=	4eme_vers_3eme
 		}
 	}
 
+
 	function colorise_ligne2(cpt) {
 		// On va coloriser d'après ce qui est sélectionné dans le champ de colorisation.
 		cat=document.forms['form_affect_eleves_classes'].elements['colorisation'].options[document.forms['form_affect_eleves_classes'].elements['colorisation'].selectedIndex].value;
@@ -2231,21 +2233,26 @@ echo "
 		for(k=0;k<n;k++) {
 			for(i=0;i<$cpt;i++) {
 				if(mode!='profil') {
-					if(document.getElementById(mode+'_'+k+'_'+i)) {
-						if(document.getElementById(mode+'_'+k+'_'+i).checked) {
-							if(mode=='classe_fut') {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
-							}
-							if(mode=='lv1') {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
-							}
-							if(mode=='lv2') {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
-							}
-							if(mode=='lv3') {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+					if(mode!='aucune') {
+						if(document.getElementById(mode+'_'+k+'_'+i)) {
+							if(document.getElementById(mode+'_'+k+'_'+i).checked) {
+								if(mode=='classe_fut') {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
+								}
+								if(mode=='lv1') {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
+								}
+								if(mode=='lv2') {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
+								}
+								if(mode=='lv3') {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+								}
 							}
 						}
+					}
+					else {
+						document.getElementById('tr_eleve_'+i).style.backgroundColor='white';
 					}
 				}
 				else {
@@ -2304,6 +2311,10 @@ echo "
 		}
 		if(cat=='profil') {
 			colorise(cat,".count($tab_profil).");
+		}
+		if(cat=='aucune') {
+			// Il faut au moins 1 pour faire un tour dans colorise()
+			colorise(cat,1);
 		}
 	}
 
