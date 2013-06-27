@@ -178,7 +178,9 @@ if(mysql_num_rows($res)==0) {
 else {
 	//$cpt=0;
 	while($lig=mysql_fetch_object($res)) {
-		echo "<input type='checkbox' name='lv1[]' id='lv1_$cpt' value='$lig->opt' checked /><label for='lv1_$cpt'>$lig->opt</label><br />\n";
+		$sql="SELECT 1=1 FROM gc_eleves_options WHERE liste_opt LIKE '%|$lig->opt|%' AND projet='$projet';";
+		$nb_ele_opt=mysql_query($sql);
+		echo "<input type='checkbox' name='lv1[]' id='lv1_$cpt' value='$lig->opt' checked /><label for='lv1_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysql_num_rows($nb_ele_opt).")</em></label><br />\n";
 		$cpt++;
 	}
 }
@@ -217,7 +219,9 @@ if(mysql_num_rows($res)==0) {
 else {
 	//$cpt=0;
 	while($lig=mysql_fetch_object($res)) {
-		echo "<input type='checkbox' name='lv2[]' id='lv2_$cpt' value='$lig->opt' checked /><label for='lv2_$cpt'>$lig->opt</label><br />\n";
+		$sql="SELECT 1=1 FROM gc_eleves_options WHERE liste_opt LIKE '%|$lig->opt|%' AND projet='$projet';";
+		$nb_ele_opt=mysql_query($sql);
+		echo "<input type='checkbox' name='lv2[]' id='lv2_$cpt' value='$lig->opt' checked /><label for='lv2_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysql_num_rows($nb_ele_opt).")</em></label><br />\n";
 		$cpt++;
 	}
 }
@@ -255,7 +259,9 @@ if(mysql_num_rows($res)==0) {
 else {
 	//$cpt=0;
 	while($lig=mysql_fetch_object($res)) {
-		echo "<input type='checkbox' name='lv3[]' id='lv3_$cpt' value='$lig->opt' checked /><label for='lv3_$cpt'>$lig->opt</label><br />\n";
+		$sql="SELECT 1=1 FROM gc_eleves_options WHERE liste_opt LIKE '%|$lig->opt|%' AND projet='$projet';";
+		$nb_ele_opt=mysql_query($sql);
+		echo "<input type='checkbox' name='lv3[]' id='lv3_$cpt' value='$lig->opt' checked /><label for='lv3_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysql_num_rows($nb_ele_opt).")</em></label><br />\n";
 		$cpt++;
 	}
 }
@@ -293,7 +299,9 @@ if(mysql_num_rows($res)==0) {
 else {
 	//$cpt=0;
 	while($lig=mysql_fetch_object($res)) {
-		echo "<input type='checkbox' name='autre_option[]' id='autre_option_$cpt' value='$lig->opt' checked /><label for='autre_option_$cpt'>$lig->opt</label><br />\n";
+		$sql="SELECT 1=1 FROM gc_eleves_options WHERE liste_opt LIKE '%|$lig->opt|%' AND projet='$projet';";
+		$nb_ele_opt=mysql_query($sql);
+		echo "<input type='checkbox' name='autre_option[]' id='autre_option_$cpt' value='$lig->opt' checked /><label for='autre_option_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysql_num_rows($nb_ele_opt).")</em></label><br />\n";
 		$cpt++;
 	}
 }
