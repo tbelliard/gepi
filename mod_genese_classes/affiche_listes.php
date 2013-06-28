@@ -1749,7 +1749,7 @@ else {
 						$texte_chgt_classe.="<input type='hidden' name='chgt_classe' value='y' >\n";
 						$texte_chgt_classe.="<input type='hidden' name='projet' value='$projet' >\n";
 						$texte_chgt_classe.="<input type='hidden' name='id_aff' value='$id_aff' >\n";
-						$texte_chgt_classe.="<input type='text' name='colorisation_chgt_classe' id='colorisation_chgt_classe_$cpt' value='$colorisation_courante' >\n";
+						$texte_chgt_classe.="<input type='hidden' name='colorisation_chgt_classe' id='colorisation_chgt_classe_$cpt' value='$colorisation_courante' >\n";
 						$texte_chgt_classe.="<input type='hidden' name='afficher_listes' value='y' >\n";
 						$texte_chgt_classe.="<input type='submit' value='Valider' />\n";
 						$texte_chgt_classe.="</div>\n";
