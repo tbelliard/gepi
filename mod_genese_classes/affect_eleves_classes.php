@@ -680,7 +680,9 @@ function change_display(id) {
 	$classe_fut[]=""; // Vide pour les Non Affectés
 
 
-	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='' /><label for='clas_fut_$cpt'>Non encore affecté</label><br />\n";
+	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='' ";
+	if(in_array("",$clas_fut)) {echo "checked ";}
+	echo "/><label for='clas_fut_$cpt'>Non encore affecté</label><br />\n";
 	$cpt++;
 	echo "</td>\n";
 
@@ -1338,7 +1340,23 @@ $_POST['projet']=	4eme_vers_3eme
 	
 	echo "</p>\n";
 
+	if((isset($projet))&&(isset($choix_affich))&&(isset($requete_definie))&&(isset($id_aff))&&(isset($id_req))) {
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix_affich=$choix_affich&amp;requete_definie=$requete_definie&amp;id_aff=$id_aff&amp;id_req=$id_req'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Rafraichir sans enregistrer</a></p>\n";
+	}
+	//affect_eleves_classes.php?projet=futures_3emes&choix_affich=Valider&clas_fut[0]=
+	/*
 
+	$_POST['clas_fut']=	Array (*)
+		$_POST[clas_fut]['0']=	
+	$_POST['avec_lv1']=	Array (*)
+		$_POST[avec_lv1]['0']=	ALL1
+	$_POST['projet']=	futures_3emes
+	$_POST['choix_affich']=	Valider
+
+	Nombre de valeurs en POST: 4
+	*/
 
 	$eff_fut_classe_hors_selection=array();
 	$eff_fut_classe_hors_selection_F=array();
