@@ -35,6 +35,9 @@ if ($resultat_session == 'c') {
 	die();
 }
 
+// ajout des droits pour scolarité en 1.6.3
+$sql = "UPDATE `gepi`.`droits` SET `scolarite` = 'V' WHERE `droits`.`id` = '/mod_abs2/export_stat.php';";
+$resp=mysql_query($sql);
 //INSERT INTO droits SET id='/mod_abs2/export_stat.php',administrateur='V',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Exports statistiques',statut='';
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
