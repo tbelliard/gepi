@@ -272,6 +272,69 @@ if (isset($_POST['is_posted'])) {
 
 	$reg_clazz = $clazz;
 
+
+	if(isset($_POST['associer_tous_les_profs_de_la_classe'])) {
+		for($loo=0;$loo<count($clazz);$loo++) {
+			$sql="SELECT DISTINCT u.login FROM utilisateurs u, 
+										j_groupes_professeurs jgp, 
+										j_groupes_classes jgc 
+								WHERE u.statut='professeur' AND 
+									u.etat='actif' AND
+									u.login=jgp.login AND
+									jgp.id_groupe=jgc.id_groupe AND
+									jgc.id_classe='".$clazz[$loo]."';";
+			$res_prof=mysql_query($sql);
+			if(mysql_num_rows($res_prof)>0) {
+				while($lig_prof=mysql_fetch_object($res_prof)) {
+					if(!in_array($lig_prof->login, $reg_professeurs)) {
+						$reg_professeurs[]=$lig_prof->login;
+					}
+				}
+			}
+		}
+	}
+	elseif(isset($_POST['associer_tous_les_profs_de_l_etablissement'])) {
+		$sql="SELECT login FROM utilisateurs WHERE statut='professeur' AND etat='actif';";
+		$res_prof=mysql_query($sql);
+		if(mysql_num_rows($res_prof)>0) {
+			while($lig_prof=mysql_fetch_object($res_prof)) {
+				if(!in_array($lig_prof->login, $reg_professeurs)) {
+					$reg_professeurs[]=$lig_prof->login;
+				}
+			}
+		}
+	}
+
+	$tab_profs_matiere=array();
+	$sql="SELECT DISTINCT id_professeur FROM j_professeurs_matieres WHERE id_matiere='$reg_matiere';";
+	$res_prof_matiere=mysql_query($sql);
+	if(mysql_num_rows($res_prof_matiere)>0){
+		while($lig_prof_matiere=mysql_fetch_object($res_prof_matiere)){
+			$tab_profs_matiere[]=$lig_prof_matiere->id_professeur;
+		}
+	}
+
+	// On vérifie que les profs de la liste sont bien associés à la matière:
+	for($loo=0;$loo<count($reg_professeurs);$loo++) {
+		if(!in_array($reg_professeurs[$loo], $tab_profs_matiere)) {
+			$sql="SELECT MAX(ordre_matieres) AS max_ordre_matiere FROM j_professeurs_matieres WHERE id_professeur='".$reg_professeurs[$loo]."';";
+			//echo "$sql<br />";
+			$res_ordre=mysql_query($sql);
+			if(mysql_num_rows($res_ordre)==0) {
+				$ordre_matiere=1;
+			}
+			else {
+				$ordre_matiere=mysql_result($res_ordre, 0, "max_ordre_matiere")+1;
+			}
+
+			$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$reg_professeurs[$loo]."', id_matiere='$reg_matiere', ordre_matieres='$ordre_matiere';";
+			//echo "$sql<br />";
+			$insert=mysql_query($sql);
+		}
+	}
+
+
+
 	/*
 	echo "Apres modif:<br />";
 	foreach($reg_clazz as $key => $value) {
@@ -538,39 +601,6 @@ if ($mode == "groupe") {
 			}
 			echo "<br />\n";
 		}
-
-		/*
-		echo "<table width='100%'>\n";
-		echo "<tr valign='top' align='left'>\n";
-		echo "<td>\n";
-		$nb_class_par_colonne=round($nombre_lignes/3);
-		while ($i < $nombre_lignes){
-			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-				echo "</td>\n";
-				echo "<td>\n";
-			}
-
-			$id_classe_temp = mysql_result($call_data, $i, "id");
-			$classe = mysql_result($call_data, $i, "classe");
-			if (get_period_number($id_classe_temp) == get_period_number($id_classe)) {
-				//echo "<br /><input type='checkbox' name='classe_" . $id_classe_temp . "' value='yes'";
-				echo "<input type='checkbox' name='classe_" . $id_classe_temp . "' id='classe_" . $id_classe_temp . "' value='yes'";
-				if (in_array($id_classe_temp, $reg_clazz)){
-					echo " checked";
-				}
-				//echo " />$classe</option>\n";
-				echo " onchange='changement();'";
-				echo " /><label for='classe_".$id_classe_temp."' style='cursor: pointer;'>$classe</label>\n";
-				if (in_array($id_classe_temp, $reg_clazz)){
-					// Pour contrôler les suppressions de classes.
-					// On conserve la liste des classes précédemment cochées:
-					echo "<input type='hidden' name='precclasse_".$id_classe_temp."' value='y' />\n";
-				}
-				echo "<br />\n";
-			}
-			$i++;
-		}
-		*/
 		//echo "</p>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -597,35 +627,6 @@ if ($mode == "groupe") {
 
 <!--p>Sélectionnez la matière enseignée à ce groupe :-->
 <?php
-/*
-$query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
-$nb_mat = mysql_num_rows($query);
-
-echo "<select name='matiere' size='1'>\n";
-
-for ($i=0;$i<$nb_mat;$i++) {
-	$matiere = mysql_result($query, $i, "matiere");
-	$nom_matiere = mysql_result($query, $i, "nom_complet");
-	echo "<option value='" . $matiere . "'";
-	if ($reg_matiere == $matiere) echo " SELECTED";
-	//echo ">" . $nom_matiere . "</option>\n";
-	echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
-}
-echo "</select>\n";
-//echo "</p>\n";
-*/
-
-/*
-// Le coefficient peut différer d'une classe à l'autre.
-// On ne va pas l'éditer ici
-echo "<p>Coefficient de l'enseignement&nbsp;: ";
-echo "<select name='coef' id='coef'>\n";
-for($i=0;$i<max(10,      );$i++){
-	echo "<option value='$i'";
-	echo ">$i</option>\n";
-}
-echo "</select>\n";
-*/
 
 echo "<p>Visibilité de l'enseignement sur&nbsp;: <br />\n";
 for($loop=0;$loop<count($tab_domaines);$loop++) {
@@ -688,7 +689,7 @@ if(isset($id_classe)) {
 	}
 }
 
-echo "<p>Cochez les professeurs qui participent à cet enseignement : </p>\n";
+echo "<p>Cochez les professeurs qui participent à cet enseignement&nbsp;: </p>\n";
 
 //$calldata = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.login");
 $sql="SELECT u.login, u.nom, u.prenom, u.civilite, u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
@@ -789,6 +790,21 @@ if (count($prof_list["list"]) == "0") {
 		echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
 	}
 
+
+	if ($mode == "groupe") {
+		echo "<br />
+<input type='checkbox' name='associer_tous_les_profs_de_la_classe' id='associer_tous_les_profs_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_la_classe' id='texte_associer_tous_les_profs_de_la_classe'> Associer à cet enseignement tous les professeurs de la classe.</label><br />
+<input type='checkbox' name='associer_tous_les_profs_de_l_etablissement' id='associer_tous_les_profs_de_l_etablissement' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_l_etablissement' id='texte_associer_tous_les_profs_de_l_etablissement'> Associer à cet enseignement tous les professeurs de l'établissement.</label><br />
+";
+	}
+	else {
+		echo "<br />
+<input type='checkbox' name='associer_tous_les_profs_de_la_classe' id='associer_tous_les_profs_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_la_classe' id='texte_associer_tous_les_profs_de_la_classe'> Associer à cet enseignement tous les professeurs de la (<em>ou des</em>) classe(<em>s</em>).</label><br />
+<input type='checkbox' name='associer_tous_les_profs_de_l_etablissement' id='associer_tous_les_profs_de_l_etablissement' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_l_etablissement' id='texte_associer_tous_les_profs_de_l_etablissement'> Associer à cet enseignement tous les professeurs de l'établissement.</label><br />
+";
+	}
+
+
 	echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
 	if(document.getElementById('prof_'+cpt)) {
@@ -802,6 +818,7 @@ function checkbox_change(cpt) {
 }
 ";
 
+echo js_checkbox_change_style('checkbox_change_divers');
 echo js_checkbox_change_style('checkbox_change_classe');
 echo js_checkbox_change_style('checkbox_change_visibilite');
 
