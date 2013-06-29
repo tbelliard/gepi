@@ -650,7 +650,8 @@ if ($ldap_write_access) {
 ?>
 
 <form enctype="multipart/form-data" action="modify_user.php" method="post">
-<fieldset>
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
+		<legend style='border: 1px solid grey; background-color: white;'>Informations utilisateur</legend>
 <?php
 echo add_token_field();
 if (isset($user_login)) {
@@ -933,7 +934,8 @@ echo "<input type=hidden name=max_mat value=$nb_mat />\n";
 		if($nb_classes>0) {
 			echo "<p>&nbsp;</p>\n";
 			echo "<form enctype='multipart/form-data' action='modify_user.php' method='post'>\n";
-			echo "<fieldset>\n";
+			echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white;'>Enseignements du professeur</legend>";
 			echo add_token_field();
 			echo "<p>Le professeur est associé aux enseignements suivants.<br />Vous pouvez supprimer (<i>décocher</i>) l'association avec certains enseignements&nbsp;:</p>";
 			$k = 0;
