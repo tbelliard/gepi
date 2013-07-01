@@ -1425,6 +1425,7 @@ if(!isset($id_incident)) {
 			}
 			echo "</tr>\n";
 		}
+		flush();
 	}
 	echo "</table>\n";
 	echo "<p align='center'><input type='submit' name='valider2' value='Valider' /></p>\n";
@@ -1459,11 +1460,13 @@ if(isset($tabid_infobulle)){
 	echo "</script>\n";
 }
 
-echo "<p><em>NOTE&nbsp;:</em></p>\n";
-echo "<blockquote>\n";
-echo "<p>Lorsqu'un incident est clos, on ne peut plus modifier l'incident, ni saisir/modifier de sanction.</p>\n";
-echo "</blockquote>\n";
-echo "<p><br /></p>\n";
+echo "<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li><p>Lorsqu'un incident est clos, on ne peut plus modifier l'incident, ni saisir/modifier de sanction.<br />
+On peut en revanche le déclore</p></li>
+	<li><p>Ne jamais clore les incidents peut provoquer des lenteurs de chargement de la présente page lorsque le nombre d'incidents augmente (<em>avec le temps, l'accumulation est inéluctable</em>).</p></li>
+</ul>
+<p><br /></p>\n";
 
 require("../lib/footer.inc.php");
 ?>
