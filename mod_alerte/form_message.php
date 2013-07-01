@@ -273,10 +273,29 @@ $message=isset($_POST['message']) ? $_POST['message'] : (isset($_GET['message'])
 $date_visibilite=isset($_POST['date_visibilite']) ? $_POST['date_visibilite'] : (isset($_GET['date_visibilite']) ? $_GET['date_visibilite'] : NULL);
 $heure_visibilite=isset($_POST['heure_visibilite']) ? $_POST['heure_visibilite'] : (isset($_GET['heure_visibilite']) ? $_GET['heure_visibilite'] : NULL);
 
+$login_dest=isset($_POST['login_dest']) ? $_POST['login_dest'] : (isset($_GET['login_dest']) ? $_GET['login_dest'] : NULL);
+
+if((isset($_GET['id_incident']))&&(!isset($message))) {
+	$sql="SELECT * FROM s_incidents WHERE id_incident='".$_GET['id_incident']."';";
+	$res_incident=mysql_query($sql);
+	if(mysql_num_rows($res_incident)>0) {
+		$lig_incident=mysql_fetch_object($res_incident);
+		//A propos de l'incident n°<a href='$gepiPath/mod_discipline/saisie_incident.php?step=2&id_incident".$_GET['id_incident']."'></a> du ".formate_date
+		$message="Bonjour, 
+
+A propos de l'incident n°".$_GET['id_incident']." du ".formate_date($lig_incident->date)."
+================================================
+".$lig_incident->description."
+================================================
+
+Cordialement.
+-- 
+".civ_nom_prenom($_SESSION['login']);
+	}
+}
+
 if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 	check_token();
-
-	$login_dest=isset($_POST['login_dest']) ? $_POST['login_dest'] : (isset($_GET['login_dest']) ? $_GET['login_dest'] : NULL);
 
 	$msg="";
 

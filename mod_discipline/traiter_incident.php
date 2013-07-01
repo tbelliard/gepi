@@ -484,6 +484,9 @@ if(mysql_num_rows($res_mail)>0) {
 }
 //===================================
 
+// Tableau destiné à stocker la désignation d'un professeur, élève,... pour ne pas faire plusieurs fois les mêmes requêtes
+$tab_individu=array();
+
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'index</a>\n";
 //echo "</p>\n";
 
@@ -492,7 +495,8 @@ if(($_SESSION['statut']=='administrateur')||
 ($_SESSION['statut']=='scolarite')) {
 	$sql="SELECT 1=1 FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
-	WHERE sp.id_incident IS NULL;";
+	WHERE sp.id_incident IS NULL
+	LIMIT 1;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
 		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
@@ -501,7 +505,8 @@ if(($_SESSION['statut']=='administrateur')||
 elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	$sql="SELECT 1=1 FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
-	WHERE sp.id_incident IS NULL;";
+	WHERE sp.id_incident IS NULL;
+	LIMIT 1;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
 		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
@@ -614,8 +619,8 @@ if(!isset($id_incident)) {
 
 	//$sql.=" ORDER BY si.date DESC, si.heure DESC;";
 	//$sql2.=" ORDER BY si.date DESC, si.heure DESC;";
-	$sql.=" ORDER BY date DESC, heure DESC;";
-	$sql2.=" ORDER BY date DESC, heure DESC;";
+	//$sql.=" ORDER BY date DESC, heure DESC;";
+	//$sql2.=" ORDER BY date DESC, heure DESC;";
 
 	//echo "$sql<br />";
 	//echo "$sql2<br />";
@@ -739,6 +744,7 @@ if(!isset($id_incident)) {
 		echo ">".formate_date($lig_date->date)."</option>\n";
 	}
 	echo "</select>\n";
+	//echo "$sql<br />";
 	echo "</th>\n";
 
 	echo "<th>Heure\n";
@@ -773,6 +779,7 @@ if(!isset($id_incident)) {
 		echo ">".$lig_heure->heure."</option>\n";
 	}
 	echo "</select>\n";
+	//echo "$sql<br />";
 	echo "</th>\n";
 	
 	if (!(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre'))) {
@@ -790,22 +797,31 @@ if(!isset($id_incident)) {
 		else {
 			$sql="SELECT DISTINCT si.declarant FROM s_incidents si ORDER BY si.declarant ASC;";
 		}
+		//$chaine_tmp="<br />$sql<br />";
 		$res_declarant=mysql_query($sql);
 		while($lig_declarant=mysql_fetch_object($res_declarant)) {
+			$chaine_tmp.="Declarant: $lig_declarant->declarant<br />";
 			echo "<option value='$lig_declarant->declarant'";
 			if($declarant_incident==$lig_declarant->declarant) {echo " selected='selected'";}
 			if($lig_declarant->declarant!='') {
-			    $sql_declarant="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$lig_declarant->declarant';";
-				//echo "$sql<br />\n";
-			    $res1_declarant=mysql_query($sql_declarant);
-				if(mysql_num_rows($res1_declarant)>0) {
-					$lig1_declarant=mysql_fetch_object($res1_declarant);
-					$chaine=mb_strtoupper($lig1_declarant->nom)." ".ucfirst(mb_substr($lig1_declarant->prenom,0,1));
+				if(!in_array($lig_declarant->declarant, array_keys($tab_individu))) {
+					$sql_declarant="SELECT nom,prenom,civilite,statut, email FROM utilisateurs WHERE login='$lig_declarant->declarant';";
+					//echo "$sql_declarant<br />\n";
+					//$chaine_tmp.="$sql_declarant<br />";
+					$res1_declarant=mysql_query($sql_declarant);
+					if(mysql_num_rows($res1_declarant)>0) {
+						$lig1_declarant=mysql_fetch_object($res1_declarant);
+						$chaine=$lig1_declarant->civilite." ".casse_mot($lig1_declarant->nom, 'maj')." ".ucfirst(mb_substr($lig1_declarant->prenom,0,1));
+						$tab_individu[$lig_declarant->declarant]['designation']=$chaine;
+						$tab_individu[$lig_declarant->declarant]['email']=$lig_declarant->email;
+					}
+					else {
+						$chaine="ERREUR: Login $lig1_declarant->declarant inconnu";
+					}
 				}
 				else {
-					echo "ERREUR: Login $lig1_declarant->declarant inconnu";
+					$chaine=$tab_individu[$lig_declarant->declarant]['designation']."";
 				}
-			
 				echo ">".mb_substr($chaine,0,40)."</option>\n";
 			}
 			else {
@@ -814,6 +830,7 @@ if(!isset($id_incident)) {
 		}
 		echo "</select>\n";
 		//echo "$sql<br />\n";
+		//echo $chaine_tmp;
 		echo "</th>\n";
 	}
 	
@@ -867,6 +884,11 @@ if(!isset($id_incident)) {
 
 	echo "<th>Protagonistes\n";
 	echo "<br />\n";
+	/*
+	echo "<pre>";
+	print_r($tab_individu);
+	echo "</pre>";
+	*/
 	echo "<select name='protagoniste_incident' onchange=\"document.formulaire.submit();\">\n";
 	echo "<option value=''>---</option>\n";
 	//$sql="SELECT DISTINCT sp.login FROM s_protagonistes sp ORDER BY sp.login ASC;";
@@ -874,9 +896,9 @@ if(!isset($id_incident)) {
 	//$sql="SELECT DISTINCT sp.login FROM s_protagonistes sp, eleves e ORDER BY e.nom, e.prenom ASC;";
 	//$sql="SELECT DISTINCT sp.login FROM s_protagonistes sp, eleves e WHERE sp.login=e.login ORDER BY e.nom, e.prenom ASC;";
 
-	$sql="(SELECT DISTINCT sp.login, e.login, e.nom, e.prenom FROM s_protagonistes sp, eleves e WHERE sp.login=e.login ORDER BY nom, prenom ASC)";
+	$sql="(SELECT DISTINCT sp.login, e.login, e.nom, e.prenom, sp.statut FROM s_protagonistes sp, eleves e WHERE sp.login=e.login ORDER BY nom, prenom ASC)";
 	if(($_SESSION['statut']!='professeur')||($_SESSION['statut']!='autre')) {
-		$sql.=" UNION (SELECT DISTINCT sp.login, u.login, u.nom, u.prenom FROM s_protagonistes sp, utilisateurs u WHERE sp.login=u.login ORDER BY u.statut, u.nom, u.prenom ASC)";
+		$sql.=" UNION (SELECT DISTINCT sp.login, u.login, u.nom, u.prenom, u.statut FROM s_protagonistes sp, utilisateurs u WHERE sp.login=u.login ORDER BY u.statut, u.nom, u.prenom ASC)";
 		$sql.=" ORDER BY nom, prenom ASC;";
 	}
 	//echo "$sql<br />";
@@ -944,29 +966,53 @@ if(!isset($id_incident)) {
 		if($affiche_option_protagoniste=='y') {
 			echo "<option value='$lig_protagoniste->login'";
 			if($protagoniste_incident==$lig_protagoniste->login) {echo " selected='selected'";}
-			$sql="SELECT 1=1 FROM eleves WHERE login='$lig_protagoniste->login';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0) {
-				echo ">".p_nom($lig_protagoniste->login,"np");
-				$tmp_tab=get_class_from_ele_login($lig_protagoniste->login);
-				if(isset($tmp_tab['liste'])) {echo " (".$tmp_tab['liste'].")";}
+
+			if(in_array($lig_protagoniste->statut, array('professeur', 'cpe', 'scolarite', 'administrateur', 'autre', 'secours'))) {
+				echo " style='background-color: white;' title='$lig_protagoniste->statut'";
+			}
+			echo ">";
+
+			if(!in_array($lig_protagoniste->login, array_keys($tab_individu))) {
+				$chaine="";
+
+				$sql="SELECT 1=1 FROM eleves WHERE login='$lig_protagoniste->login';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0) {
+					$chaine=p_nom($lig_protagoniste->login,"np");
+
+					$chaine2="";
+					$tmp_tab=get_class_from_ele_login($lig_protagoniste->login);
+					if(isset($tmp_tab['liste'])) {
+						$chaine2=" (".$tmp_tab['liste'].")";
+						$chaine2b=" (<i>élève ".$tmp_tab['liste']."</i>)";
+					}
+
+					echo $chaine.$chaine2;
+					$tab_individu[$lig_protagoniste->login]['designation']=$chaine.$chaine2;
+					$tab_individu[$lig_protagoniste->login]['designation2']=$chaine.$chaine2b;
+				}
+				else {
+					$tab_individu[$lig_protagoniste->login]['designation']=u_p_nom($lig_protagoniste->login);
+					echo $tab_individu[$lig_protagoniste->login]['designation'];
+				}
 			}
 			else {
-				echo ">".u_p_nom($lig_protagoniste->login);
+				echo $tab_individu[$lig_protagoniste->login]['designation'];
 			}
+
 			echo "</option>\n";
 		}
 	}
 	echo "</select>\n";
 	//echo "$sql<br />";
 
-	//$chaine_tmp_debug="";
+	$chaine_tmp_debug="";
 	//if($_SESSION['statut']!='professeur') {
 		echo " ";
 		echo "<select name='id_classe_incident' onchange=\"document.formulaire.submit();\">\n";
 		echo "<option value=''>---</option>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM s_protagonistes sp, j_eleves_classes jec, classes c WHERE sp.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe ASC;";
-		//$chaine_tmp_debug.="$sql<br />";
+		$chaine_tmp_debug.="$sql<br />";
 		$res_classes=mysql_query($sql);
 		while($lig_classe=mysql_fetch_object($res_classes)) {
 			$affiche_option_classe="y";
@@ -976,7 +1022,7 @@ if(!isset($id_incident)) {
 
 				if((getSettingAOui('visuDiscProfClasses'))||(getSettingAOui('visuDiscProfGroupes'))) {
 					$sql="SELECT 1=1 FROM j_groupes_professeurs jgp, j_groupes_classes jgc WHERE jgp.login='".$_SESSION['login']."' AND jgp.id_groupe=jgc.id_groupe AND jgc.id_classe='".$lig_classe->id."';";
-					//$chaine_tmp_debug.="$sql<br />";
+					$chaine_tmp_debug.="$sql<br />";
 					$res_test=mysql_query($sql);
 					if(mysql_num_rows($res_test)>0) {
 						$affiche_option_classe="y";
@@ -985,6 +1031,7 @@ if(!isset($id_incident)) {
 
 				if($affiche_option_classe=="n") {
 					$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe='".$lig_classe->id."';";
+					$chaine_tmp_debug.="$sql<br />";
 					$res_test=mysql_query($sql);
 					if(mysql_num_rows($res_test)>0) {
 						$affiche_option_classe="y";
@@ -992,12 +1039,14 @@ if(!isset($id_incident)) {
 					else {
 						// REQUETE A REVOIR:
 						$sql="SELECT si.id_incident FROM s_protagonistes sp, s_incidents si, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE sp.id_incident=si.id_incident AND jgp.id_groupe=jgc.id_groupe AND jgp.login=sp.login AND sp.login='".$_SESSION['login']."' AND jgc.id_classe='".$lig_classe->id."';";
+						$chaine_tmp_debug.="$sql<br />";
 						$res_test=mysql_query($sql);
 						if(mysql_num_rows($res_test)>0) {
 							$affiche_option_classe="y";
 						}
 						else {
 							$sql="SELECT si.id_incident FROM s_protagonistes sp, s_incidents si, j_groupes_classes jgc, j_groupes_professeurs jgp, j_eleves_classes jec WHERE jgp.id_groupe=jgc.id_groupe AND jgp.login=si.declarant AND si.declarant='".$_SESSION['login']."' AND jgc.id_classe='".$lig_classe->id."' AND sp.id_incident=si.id_incident AND sp.login=jec.login AND jec.id_classe=jgc.id_classe;";
+							$chaine_tmp_debug.="$sql<br />";
 							//echo "$sql<br />";
 							$res_test=mysql_query($sql);
 							if(mysql_num_rows($res_test)>0) {
@@ -1018,6 +1067,7 @@ if(!isset($id_incident)) {
 		echo "</select>\n";
 	//echo $chaine_tmp_debug;
 	//}
+
 	echo "</th>\n";
 
 	echo "<th>Description</th>\n";
@@ -1035,6 +1085,13 @@ if(!isset($id_incident)) {
 	//echo "<th></th>\n";
 	echo "</tr>\n";
 
+	//=========================================================
+	// Fin de l'entête du tableau
+	//=========================================================
+	// Début des lignes d'incidents
+	//=========================================================
+	// 20130630
+
 	//$date_du_jour_format_mysql=strftime("%Y-%m-%d");
 	$jour_courant=strftime("%d");
 	$mois_courant=sprintf("%02d",strftime("%m"));
@@ -1047,7 +1104,7 @@ if(!isset($id_incident)) {
 		if(($_SESSION['statut']=='professeur')&&($id_classe_incident!="")) {
 			$affiche_ligne_incident='n';
 
-			$sql="SELECT 1=1 FROM s_protagonistes sp,j_eleves_classes jec WHERE sp.id_incident='$lig->id_incident' AND sp.login=jec.login AND jec.id_classe='$id_classe_incident';";
+			$sql="SELECT 1=1 FROM s_protagonistes sp,j_eleves_classes jec WHERE sp.id_incident='$lig->id_incident' AND sp.login=jec.login AND jec.id_classe='$id_classe_incident' LIMIT 1;";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0) {
 				$affiche_ligne_incident='y';
@@ -1068,33 +1125,54 @@ if(!isset($id_incident)) {
 
 			echo "<td>$lig->id_incident</td>\n";
 			//echo "<td>".formate_date($lig->date)."</td>\n";
+			$date_declaration_incident=formate_date($lig->date);
 			if($date_du_jour_format_mysql==$lig->date) {
-				echo "<td><strong>".formate_date($lig->date)."</strong></td>\n";
+				echo "<td><strong>".$date_declaration_incident."</strong></td>\n";
 			}
 			else {
-				echo "<td>".formate_date($lig->date)."</td>\n";
+				echo "<td>".$date_declaration_incident."</td>\n";
 			}
 			echo "<td>$lig->heure</td>\n";
 			
 			//=================================================
-			// Colonne declarant	
-            if (!(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre'))) {			
+			// Colonne declarant
+			if (!(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre'))) {
+
 				echo "<td>";
-				$sql_declarant="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$lig->declarant';";
-				//echo "$sql<br />\n";
-				$res_declarant=mysql_query($sql_declarant);
-				if(mysql_num_rows($res_declarant)>0) {
-					$lig_declarant=mysql_fetch_object($res_declarant);
-					echo $lig_declarant->civilite." ".mb_strtoupper($lig_declarant->nom)." ".ucfirst(mb_substr($lig_declarant->prenom,0,1)).".";	
+				$identite_trouvee="n";
+				if(in_array($lig->declarant, array_keys($tab_individu))) {
+					echo $tab_individu[$lig->declarant]['designation'];
+					$identite_trouvee="y";
 				}
 				else {
-					echo "ERREUR: Login $lig->declarant inconnu";
+					$sql_declarant="SELECT nom,prenom,civilite,statut,email FROM utilisateurs WHERE login='$lig->declarant';";
+					//echo "$sql<br />\n";
+					$res_declarant=mysql_query($sql_declarant);
+					if(mysql_num_rows($res_declarant)>0) {
+						$lig_declarant=mysql_fetch_object($res_declarant);
+						$chaine=$lig_declarant->civilite." ".mb_strtoupper($lig_declarant->nom)." ".ucfirst(mb_substr($lig_declarant->prenom,0,1)).".";
+						$tab_individu[$lig->declarant]['designation']=$chaine;
+						$tab_individu[$lig->declarant]['email']=$lig_declarant->email;
+						echo $chaine;
+						// 20130630: Prendre en compte la possibilité de poster un message/alerte.
+						$identite_trouvee="y";
+					}
+					else {
+						echo "ERREUR: Login $lig->declarant inconnu";
+					}
+				}
+				if(($identite_trouvee=='y')&&((peut_poster_message($_SESSION['statut'])))) {
+					echo "<a href='$gepiPath/mod_alerte/form_message.php?login_dest=".$lig->declarant."&amp;sujet=Incident du $date_declaration_incident&amp;id_incident=$lig->id_incident".add_token_in_url()."' title='Déposer un message dans le module Alertes de Gepi' target='_blank'><img src='../images/icons/mail.png' width='16' height='16' alt='Alerter' /></a>";
 				}
 				echo "</td>\n";
 			}
+
 			//=================================================
 			// Colonne nature
 			echo "<td>$lig->nature</td>\n";
+
+			//=================================================
+			// Colonne Protagonistes
 			echo "<td>\n";
 			$sql="SELECT * FROM s_protagonistes WHERE id_incident='$lig->id_incident' ORDER BY statut,qualite,login;";
 			$res2=mysql_query($sql);
@@ -1108,56 +1186,81 @@ if(!isset($id_incident)) {
 					$tab_protagonistes[]=$lig2->login;
 					if($cpt>0) {echo "<br />";}
 					if($lig2->statut=='eleve') {
-						$sql="SELECT nom,prenom FROM eleves WHERE login='$lig2->login';";
-						//echo "$sql<br />\n";
-						$res3=mysql_query($sql);
-						if(mysql_num_rows($res3)>0) {
-							$lig3=mysql_fetch_object($res3);
-							echo ucfirst(mb_strtolower($lig3->prenom))." ".mb_strtoupper($lig3->nom);
+						if(in_array($lig2->login, array_keys($tab_individu))) {
+							if(isset($tab_individu[$lig2->login]['designation2'])) {
+								echo $tab_individu[$lig2->login]['designation2'];
+							}
+							else {
+								echo $tab_individu[$lig2->login]['designation'];
+							}
 
 							if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
-							$liste_protagonistes.=ucfirst(mb_strtolower($lig3->prenom))." ".mb_strtoupper($lig3->nom);
+							$liste_protagonistes.=$tab_individu[$lig2->login]['designation'];
 						}
 						else {
-							echo "ERREUR: Login $lig2->login inconnu";
-						}
+							$sql="SELECT nom,prenom,email FROM eleves WHERE login='$lig2->login';";
+							//echo "$sql<br />\n";
+							$res3=mysql_query($sql);
+							if(mysql_num_rows($res3)>0) {
+								$lig3=mysql_fetch_object($res3);
+								$chaine=casse_mot($lig3->nom,'maj')." ".casse_mot($lig3->prenom, 'majf2');
+								$tab_individu[$lig2->login]['designation']=$chaine;
+								$tab_individu[$lig2->login]['email']=$lig3->email;
+								echo $chaine;
 
-						echo " (<i>élève ";
-						$tmp_tab=get_class_from_ele_login($lig2->login);
-						if(isset($tmp_tab['liste'])) {
-							echo $tmp_tab['liste'];
-							$liste_protagonistes.=" (".$tmp_tab['liste'].")";
+								if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
+								$liste_protagonistes.=$chaine;
+							}
+							else {
+								echo "ERREUR: Login $lig2->login inconnu";
+							}
+
+							echo " (<i>élève ";
+							$tmp_tab=get_class_from_ele_login($lig2->login);
+							if(isset($tmp_tab['liste'])) {
+								echo $tmp_tab['liste'];
+								$liste_protagonistes.=" (".$tmp_tab['liste'].")";
+								$tab_individu[$lig2->login]['designation2']=$tab_individu[$lig2->login]['designation']." (<i>".$tmp_tab['liste']."</i>)";
+							}
+							echo "</i>)";
 						}
-						echo "</i>)";
 					}
 					else {
-						$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$lig2->login';";
-						//echo "$sql<br />\n";
-						$res3=mysql_query($sql);
-						if(mysql_num_rows($res3)>0) {
-							$lig3=mysql_fetch_object($res3);
-							echo $lig3->civilite." ".mb_strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
-
+						if(in_array($lig2->login, array_keys($tab_individu))) {
 							if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
-							$liste_protagonistes.=$lig3->civilite." ".mb_strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
+							$liste_protagonistes.=$tab_individu[$lig2->login]['designation'];
+							echo $tab_individu[$lig2->login]['designation'];
 						}
 						else {
-							echo "ERREUR: Login $lig2->login inconnu";
-						}
+							$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$lig2->login';";
+							//echo "$sql<br />\n";
+							$res3=mysql_query($sql);
+							if(mysql_num_rows($res3)>0) {
+								$lig3=mysql_fetch_object($res3);
+								$chaine=$lig3->civilite." ".mb_strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
+								$tab_individu[$lig2->login]['designation']=$chaine;
 
-						if($lig3->statut=='autre') {
-							//echo " (<i>".$_SESSION['statut_special']."</i>)\n";
+								if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
+								$liste_protagonistes.=$lig3->civilite." ".mb_strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
+							}
+							else {
+								echo "ERREUR: Login $lig2->login inconnu";
+							}
 
-							$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
-															WHERE du.login_user = '".$lig2->login."'
-															AND du.id_statut = ds.id;";
-							$query = mysql_query($sql);
-							$result = mysql_fetch_array($query);
+							if($lig3->statut=='autre') {
+								//echo " (<i>".$_SESSION['statut_special']."</i>)\n";
 
-							echo " (<i>".$result['nom_statut']."</i>)\n";
-						}
-						else {
-							echo " (<i>$lig3->statut</i>)\n";
+								$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
+																WHERE du.login_user = '".$lig2->login."'
+																AND du.id_statut = ds.id;";
+								$query = mysql_query($sql);
+								$result = mysql_fetch_array($query);
+
+								echo " (<i>".$result['nom_statut']."</i>)\n";
+							}
+							else {
+								echo " (<i>$lig3->statut</i>)\n";
+							}
 						}
 					}
 
@@ -1181,24 +1284,23 @@ if(!isset($id_incident)) {
 				$texte.="Aucun détail n'a été saisi.";
 
 				if($lig->nature=='') {
-					$sql="SELECT email,civilite,nom,prenom FROM utilisateurs WHERE login='$lig->declarant' AND email!='';";
-					$res_mail=mysql_query($sql);
-					if(mysql_num_rows($res_mail)>0) {
-						$lig_mail=mysql_fetch_object($res_mail);
+					if((!in_array($lig->declarant, array_keys($tab_individu)))||(!isset($tab_individu[$lig->declarant]['email']))) {
+						$sql="SELECT email,civilite,nom,prenom FROM utilisateurs WHERE login='$lig->declarant' AND email!='';";
+						$res_mail=mysql_query($sql);
+						if(mysql_num_rows($res_mail)>0) {
+							$lig_mail=mysql_fetch_object($res_mail);
 
-						//$texte="<a href=\"mailto:".$lig_mail->email."?subject=Incident sans détails&bcc=".$_SESSION['email']."&body=Bonjour ".$lig_mail->civilite." ".$lig_mail->nom." ".mb_substr(ucfirst($lig_mail->prenom),0,1).".,%0A%0aVous avez déclaré un incident (numéro $lig->id_incident) sans en préciser les détails.%0A%0aPourriez-vous préciser?%0A%0aMerci.\">";
-						/*
-						$texte="<a href=\"mailto:".$lig_mail->email."?subject=".rawurlencode("Incident sans détails");
+							$tab_individu[$lig->declarant]['designation']=$lig_mail->civilite." ".casse_mot($lig_mail->nom, 'maj')." ".casse_mot($lig_mail->prenom, 'majf2');
+							$tab_individu[$lig->declarant]['email']=$lig_mail->email;
+						}
+					}
+
+					if((isset($tab_individu[$lig->declarant]['email']))&&(check_mail($tab_individu[$lig->declarant]['email']))) {
+						$texte="<a href=\"mailto:".$tab_individu[$lig->declarant]['email']."?subject="."Incident sans détails";
 						if($email_visiteur!='') {
 							$texte.="&amp;bcc=".$email_visiteur;
 						}
-						$texte.="&amp;body=Bonjour%20".$lig_mail->civilite."%20".$lig_mail->nom."%20".mb_substr(ucfirst($lig_mail->prenom),0,1).".,%0A%0a".rawurlencode("Vous avez déclaré un incident (numéro $lig->id_incident) sans en préciser la nature, les détails.")."%0A%0a".rawurlencode("L'incident a eu lieu le ".formate_date($lig->date)." en $lig->heure avec pour protagonistes: $liste_protagonistes")."%0A%0a".rawurlencode("Pourriez-vous préciser?")."%0A%0a".rawurlencode("Merci.")."\">";
-						*/
-						$texte="<a href=\"mailto:".$lig_mail->email."?subject="."Incident sans détails";
-						if($email_visiteur!='') {
-							$texte.="&amp;bcc=".$email_visiteur;
-						}
-						$texte.="&amp;body=Bonjour%20".$lig_mail->civilite."%20".$lig_mail->nom."%20".mb_substr(ucfirst($lig_mail->prenom),0,1).".,%0A%0a"."Vous avez déclaré un incident (numéro $lig->id_incident) sans en préciser la nature, les détails."."%0A%0a"."L'incident a eu lieu le ".formate_date($lig->date)." en $lig->heure avec pour protagonistes: $liste_protagonistes"."%0A%0a"."Pourriez-vous préciser?"."%0A%0a"."Merci."."\">";
+						$texte.="&amp;body=Bonjour%20".preg_replace("/ /","%20",$tab_individu[$lig->declarant]['designation']).",%0A%0a"."Vous avez déclaré un incident (numéro $lig->id_incident) sans en préciser la nature, les détails."."%0A%0a"."L'incident a eu lieu le ".formate_date($lig->date)." en $lig->heure avec pour protagonistes: $liste_protagonistes"."%0A%0a"."Pourriez-vous préciser?"."%0A%0a"."Merci."."\">";
 
 						$texte.="Aucun détail n'a été saisi.";
 						$texte.="</a>";
@@ -1225,94 +1327,14 @@ if(!isset($id_incident)) {
 			$texte.="<br /><span style='font-size:x-small;'>Incident signalé par ".u_p_nom($lig->declarant)."</span>";
 
 			if(($lig->declarant==$_SESSION['login'])||($_SESSION['statut']!='professeur')) {$possibilite_prof_clore_incident='y';} else {$possibilite_prof_clore_incident='n';}
-			/*
-			$sql="SELECT * FROM s_traitement_incident sti, s_mesures s WHERE sti.id_incident='$lig->id_incident' AND sti.id_mesure=s.id AND s.type='prise' ORDER BY login_ele";
-			//$texte.="<br />$sql";
-			$res_t_incident=mysql_query($sql);
 
-			$sql="SELECT * FROM s_traitement_incident sti, s_mesures s WHERE sti.id_incident='$lig->id_incident' AND sti.id_mesure=s.id AND s.type='demandee' ORDER BY login_ele";
-			//$texte.="<br />$sql";
-			$res_t_incident2=mysql_query($sql);
-
-			if((mysql_num_rows($res_t_incident)>0)||
-				(mysql_num_rows($res_t_incident2)>0)) {
-				$texte.="<br /><table class='boireaus' summary='Mesures' style='margin:1px;'>";
-			}
-
-			if(mysql_num_rows($res_t_incident)>0) {
-				$texte.="<tr class='lig-1'>";
-				$texte.="<td style='font-size:x-small; vertical-align:top;' rowspan='".mysql_num_rows($res_t_incident)."'>";
-				if(mysql_num_rows($res_t_incident)==1) {
-					$texte.="Mesure prise&nbsp;:";
-				}
-				else {
-					$texte.="Mesures prises&nbsp;:";
-				}
-				$texte.="</td>";
-				//$texte.="<td>";
-				$cpt_tmp=0;
-				while($lig_t_incident=mysql_fetch_object($res_t_incident)) {
-					if($cpt_tmp>0) {$texte.="<tr class='lig-1'>\n";}
-					$texte.="<td>";
-					$texte.=p_nom($lig_t_incident->login_ele);
-					$texte.="</td>\n";
-					$texte.="<td>";
-					$texte.="$lig_t_incident->mesure";
-					$texte.="</td>\n";
-					$texte.="</tr>\n";
-					$cpt_tmp++;
-				}
-				//$texte.="</td>\n";
-				//$texte.="</tr>\n";
-			}
-
-			//$possibilite_prof_clore_incident='y';
-			if(mysql_num_rows($res_t_incident2)>0) {
-				if($_SESSION['statut']=='professeur') {$possibilite_prof_clore_incident='n';}
-				$texte.="<tr class='lig1'>";
-				//$texte.="<td style='font-size:x-small; vertical-align:top;'>";
-				$texte.="<td style='font-size:x-small; vertical-align:top;' rowspan='".mysql_num_rows($res_t_incident)."'>";
-				if(mysql_num_rows($res_t_incident2)==1) {
-					$texte.="Mesure demandée&nbsp;:";
-				}
-				else {
-					$texte.="Mesures demandées&nbsp;:";
-				}
-				$texte.="</td>";
-				//$texte.="<td>";
-				$cpt_tmp=0;
-				while($lig_t_incident=mysql_fetch_object($res_t_incident2)) {
-					if($cpt_tmp>0) {$texte.="<tr class='lig1'>\n";}
-					$texte.="<td>";
-					$texte.=p_nom($lig_t_incident->login_ele);
-					$texte.="</td>\n";
-					$texte.="<td>";
-					$texte.="$lig_t_incident->mesure";
-					$texte.="</td>\n";
-					$texte.="</tr>\n";
-					$cpt_tmp++;
-				}
-				//$texte.="</td>\n";
-				//$texte.="</tr>\n";
-			}
-
-			if((mysql_num_rows($res_t_incident)>0)||
-				(mysql_num_rows($res_t_incident2)>0)) {
-				$texte.="</table>";
-			}
-			*/
 			$mesure_demandee_non_validee="n";
-			//$retenue_demandee_non_validee="n";
-			//$exclusion_demandee_non_validee="n";
 			$texte.=affiche_mesures_incident($lig->id_incident);
 
 			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig->id_incident,"Incident n°$lig->id_incident","",$texte,"",30,0,'y','y','n','n');
 
-			//if($lig->etat=='clos') {
 			if(($lig->etat=='clos')||(($_SESSION['statut']=='professeur')&&($lig->declarant!=$_SESSION['login']))||(($_SESSION['statut']=='autre')&&($lig->declarant!=$_SESSION['login']))) {
 				echo "<a href='#'";
-				//echo " onmouseover=\"delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('incident_".$lig->id_incident."','y',20,20);\"";
 				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				echo " onclick='return false;'";
 				echo ">Détails</a>";
@@ -1320,25 +1342,15 @@ if(!isset($id_incident)) {
 			else {
 				echo "<a href='";
 				echo "saisie_incident.php?id_incident=$lig->id_incident&amp;step=2";
-				//echo "' onmouseover=\"delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo "' onmouseover=\"cacher_toutes_les_infobulles(); afficher_div('incident_".$lig->id_incident."','y',20,20);\"";
 				echo "' onmouseover=\"cacher_toutes_les_infobulles(); delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo ">Détails</a>";
 				echo ">Modifier</a>";
-				//echo " (*)";
+				//echo "><img src='../images/edit16b.png' class='icone16 title='Modifier' /></a>";
 			}
 
 			if($mesure_demandee_non_validee=="y") {
 				echo " <img src='../images/icons/ico_attention.png' width='22' height='19' alt='Mesure(s) demandée(s)' title='Mesure(s) demandée(s)' />";
 			}
-			/*
-			if($retenue_demandee_non_validee=="y") {
-				echo " <img src='../images/icons/retenue.png' width='16' height='16' alt='Retenue(s) demandée(s)' title='Retenue(s) demandée(s)' />";
-			}
-			if($exclusion_demandee_non_validee=="y") {
-				echo " <img src='../images/icons/exclusion.png' width='16' height='16' alt='Exclusion(s) demandée(s)' title='Exclusion(s) demandée(s)' />";
-			}
-			*/
+
 			echo "</td>\n";
 			//=================================================
 			// Colonne Sanction
@@ -1355,8 +1367,6 @@ if(!isset($id_incident)) {
 			}
 
 			if($texte!="") {
-				//$texte.="<a href='#' onclick=\"alert('zIndex='+document.getElementById('sanctions_incident_".$lig->id_incident."').style.zIndex);return false;\">zIndex</a>";
-
 				$tabdiv_infobulle[]=creer_div_infobulle("sanctions_incident_".$lig->id_incident,"Sanctions incident n°$lig->id_incident","",$texte,"",40,0,'y','y','n','n');
 
 				$txt_lien="Modifier";
@@ -1364,23 +1374,18 @@ if(!isset($id_incident)) {
 			else {
 				$tabdiv_infobulle[]=creer_div_infobulle("sanctions_incident_".$lig->id_incident,"Sanctions incident n°$lig->id_incident","","Aucune sanction n'est encore saisie","",20,0,'y','y','n','n');
 
-				$txt_lien="Saisir";
+				$txt_lien="<strong>Saisir</strong>";
 			}
 
 			if(($lig->etat=='clos')||($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 				echo "<a href='#'";
-				//echo " onmouseover=\"delais_afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20);\"";
 				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				echo " onclick='return false;'";
 				echo ">Sanctions</a>";
 			}
 			else {
 				echo "<a href='saisie_sanction.php?id_incident=$lig->id_incident'";
-				//echo " onmouseover=\"delais_afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20);\"";
 				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo ">Saisir</a>";
 				echo ">$txt_lien</a>";
 			}
 			echo "</td>\n";
@@ -1424,9 +1429,10 @@ if(!isset($id_incident)) {
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
+			flush();
 		}
-		flush();
 	}
+
 	echo "</table>\n";
 	echo "<p align='center'><input type='submit' name='valider2' value='Valider' /></p>\n";
 
