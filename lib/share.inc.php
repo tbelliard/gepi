@@ -4776,6 +4776,24 @@ function get_date_slash_from_mysql_date($mysql_date) {
 	}
 }
 
+/**
+ * Fonction destinée à prendre une date au format jj/mm/aaaa
+ * et à retourner une date mysql aaaa-mm-jj HH:MM:SS
+ * 
+ * @param string $slash_date (jj/mm/aaaa)
+ * @return date $mysql_date date (aaaa-mm-jj HH:MM:SS)
+ * @todo on a déjà cette fonction
+ */
+function get_mysql_date_from_slash_date($slash_date) {
+	$tmp_tab=explode("/",$slash_date);
+	if(isset($tmp_tab[2])) {
+		return $tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00";
+	}
+	else {
+		return "Date '$slash_date' mal formatée?";
+	}
+}
+
 // Fonction destinée à prendre une date mysql aaaa-mm-jj HH:MM:SS et à retourner une heure au format HH:MM
 
 /**

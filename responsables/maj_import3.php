@@ -166,6 +166,9 @@ saveSetting('alert_diff_etab_origine', $alert_diff_etab_origine);
 $alert_diff_mef=isset($_POST['alert_diff_mef']) ? $_POST['alert_diff_mef'] : (isset($_GET['alert_diff_mef']) ? $_GET['alert_diff_mef'] : (isset($_SESSION['alert_diff_mef']) ? $_SESSION['alert_diff_mef'] : "y"));
 saveSetting('alert_diff_mef', $alert_diff_mef);
 
+$alert_diff_date_entree=isset($_POST['alert_diff_date_entree']) ? $_POST['alert_diff_date_entree'] : (isset($_GET['alert_diff_date_entree']) ? $_GET['alert_diff_date_entree'] : (isset($_SESSION['alert_diff_date_entree']) ? $_SESSION['alert_diff_date_entree'] : "y"));
+saveSetting('alert_diff_date_entree', $alert_diff_date_entree);
+
 // =====================================================
 // Test sur les modifications de telephone élève
 $ele_tel_prof_signaler_modif=isset($_POST['ele_tel_prof_signaler_modif']) ? $_POST['ele_tel_prof_signaler_modif'] : (isset($_GET['ele_tel_prof_signaler_modif']) ? $_GET['ele_tel_prof_signaler_modif'] : (isset($_SESSION['ele_tel_prof_signaler_modif']) ? $_SESSION['ele_tel_prof_signaler_modif'] : getSettingValue('ele_tel_prof_signaler_modif')));
@@ -516,6 +519,26 @@ if(!isset($step)) {
 	echo "<label for='alert_diff_mef_n' style='cursor: pointer;'> ne pas signaler";
 	echo " les modifications de MEF.</label></p>\n";
 
+	$alert_diff_date_entree=getSettingValue('alert_diff_date_entree');
+	echo "<br />\n";
+	echo "<p>\n";
+	echo "<strong>Date d'entrée dans l'établissement&nbsp;:</strong>\n";
+	echo "<br />\n";
+	echo "<input type='radio' name='alert_diff_date_entree' id='alert_diff_date_entree_y' value='y' ";
+	if($alert_diff_date_entree=='y') {
+		echo "checked ";
+	}
+	echo "/>\n";
+	echo "<label for='alert_diff_date_entree_y' style='cursor: pointer;'> signaler";
+	echo " les modifications de date d'entrée dans l'établissement.</label><br />\n";
+	echo "<input type='radio' name='alert_diff_date_entree' id='alert_diff_date_entree_n' value='n' ";
+	if($alert_diff_date_entree!='y') {
+		echo "checked ";
+	}
+	echo "/>\n";
+	echo "<label for='alert_diff_date_entree_n' style='cursor: pointer;'> ne pas signaler";
+	echo " les modifications de date d'entrée dans l'établissement.</label></p>\n";
+
 	// 20120630
 	$nb_types_tel_ele_utilises=0;
 	if(getSettingAOui('ele_tel_pers')) {$nb_types_tel_ele_utilises++;}
@@ -808,6 +831,7 @@ else{
 					`TEL_PERS` varchar(255) $chaine_mysql_collate NOT NULL default '',
 					`TEL_PORT` varchar(255) $chaine_mysql_collate NOT NULL default '',
 					`TEL_PROF` varchar(255) $chaine_mysql_collate NOT NULL default '',
+					DATE_ENTREE DATETIME,
 					MEF_CODE VARCHAR(50) DEFAULT '' NOT NULL
 					);";
 					info_debug($sql);
@@ -1072,6 +1096,7 @@ else{
 			"PRENOM",
 			"DATE_NAISS",
 			"DOUBLEMENT",
+			"DATE_ENTREE",
 			"DATE_SORTIE",
 			"CODE_REGIME",
 			"DATE_ENTREE",
@@ -1238,7 +1263,7 @@ else{
 						info_debug($sql);
 						$insert=mysql_query($sql);
 						//Eric	
-						// Enregistrement de l'information de la date de sortie pour l'élève (à partir de son id)					
+						// Enregistrement de l'information de la date de sortie pour l'élève (à partir de son id)
 						$sql="INSERT INTO tempo2 SET col1='".$eleves[$i]['eleve_id']."', col2='".$eleves[$i]['date_sortie']."';";
 						info_debug($sql);
 						$insert=mysql_query($sql);
@@ -1292,6 +1317,10 @@ else{
 						if(isset($eleves[$i]['tel_portable'])) {$sql.=", tel_port='".$eleves[$i]['tel_portable']."'";}
 						if(isset($eleves[$i]['tel_professionnel'])) {$sql.=", tel_prof='".$eleves[$i]['tel_professionnel']."'";}
 
+						if(isset($eleves[$i]['date_entree'])) {
+							$sql.=", date_entree='".get_mysql_date_from_slash_date($eleves[$i]['date_entree'])."'";
+						}
+
 						$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 						affiche_debug("$sql<br />\n");
 						info_debug($sql);
@@ -1306,7 +1335,7 @@ else{
 						}
 					}
 				}
-				else{
+				else {
 					// echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." n'est pas dans \$tab_ele_id donc pas dans une classe..."."<br />";
 
 
@@ -2187,6 +2216,9 @@ else{
 					if(getSettingAOui('alert_diff_mef')) {
 						$sql.="						OR e.mef_code!=t.MEF_CODE";
 					}
+					if(getSettingAOui('alert_diff_date_entree')) {
+						$sql.="						OR e.date_entree!=t.DATE_ENTREE";
+					}
 					if((getSettingValue('ele_tel_pers')=='yes')) {
 						$sql.="						OR e.tel_pers!=t.TEL_PERS";
 					}
@@ -2216,6 +2248,9 @@ else{
 					// 20130607
 					if(getSettingAOui('alert_diff_mef')) {
 						$sql.="						OR e.mef_code!=t.MEF_CODE";
+					}
+					if(getSettingAOui('alert_diff_date_entree')) {
+						$sql.="						OR e.date_entree!=t.DATE_ENTREE";
 					}
 					if((getSettingValue('ele_tel_pers')=='yes')) {
 						$sql.="						OR e.tel_pers!=t.TEL_PERS";
@@ -2277,8 +2312,20 @@ else{
 					}
 				}
 
+				$temoin_init_date_entree="n";
+				if((mysql_num_rows($test)==0)&&($temoin_chgt_ancien_etab!="y")&&(getSettingAOui('alert_diff_date_entree'))) {
+					// On teste aussi le cas d'une initialisation de date_entree
+					$sql="SELECT e.ele_id FROM eleves e, temp_gep_import2 t
+							WHERE e.ele_id=t.ELE_ID AND 
+									e.date_entree IS NULL AND
+									t.DATE_ENTREE IS NOT NULL AND
+									e.ele_id='$tab_ele_id[$i]';";
+					$test2=mysql_query($sql);
+					if(mysql_num_rows($test2)>0) {$temoin_init_date_entree="y";}
+				}
+
 				//if(mysql_num_rows($test)>0) {
-				if((mysql_num_rows($test)>0)||($temoin_chgt_ancien_etab=="y")) {
+				if((mysql_num_rows($test)>0)||($temoin_chgt_ancien_etab=="y")||($temoin_init_date_entree=="y")) {
 					if($cpt==0){
 						echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
 						echo "<br />\n";
@@ -2744,6 +2791,11 @@ else{
 				if(getSettingAOui('alert_diff_mef')) {
 					echo "<th>MEF</th>\n";
 				}
+
+				if(getSettingAOui('alert_diff_date_entree')) {
+					echo "<th title=\"Date d'entrée de l'élève dans l'établissement\">Date entrée</th>\n";
+				}
+
 				echo "<th>Etablissement d'origine</th>\n";
 				echo "</tr>\n";
 				$cpt=0;
@@ -2810,6 +2862,9 @@ else{
 							$affiche[16]=nettoyer_caracteres_nom($lig->MEF_CODE, "an", " @._-", "");
 						}
 
+						if(getSettingAOui('alert_diff_date_entree')) {
+							$affiche[17]=$lig->DATE_ENTREE;
+						}
 
 							//$sql="SELECT * FROM eleves WHERE elenoet='$affiche[4]'";
 							$sql="SELECT * FROM eleves WHERE (elenoet='$affiche[4]' OR elenoet='".sprintf("%05d",$affiche[4])."')";
@@ -3002,6 +3057,13 @@ else{
 									}
 								}
 
+								if(getSettingAOui('alert_diff_date_entree')) {
+									if($lig_ele->date_entree!=$affiche[17]) {
+										$temoin_modif='y';
+										$cpt_modif++;
+									}
+								}
+
 								// 20120919
 								$sql="SELECT 1=1 FROM eleves
 										WHERE ele_id='$tab_ele_id_diff[$w]' AND
@@ -3171,7 +3233,7 @@ else{
 										echo "<label for='check_".$cpt."'>";
 										if(($lig_ele->naissance!='')||($lig_ele->lieu_naissance!='')) {
 											if($lig_ele->naissance!='') {
-												echo "$lig_ele->naissance ";
+												echo formate_date($lig_ele->naissance)." ";
 											}
 											if($lig_ele->lieu_naissance!='') {
 												echo "à ".get_commune($lig_ele->lieu_naissance,1)." ";
@@ -3184,7 +3246,7 @@ else{
 										echo ">";
 										echo "<label for='check_".$cpt."'>";
 									}
-									echo "$new_date";
+									echo formate_date($new_date);
 
 									//echo "_".$ele_lieu_naissance;
 
@@ -3201,7 +3263,7 @@ else{
 										echo " class='modif'>";
 										echo "<label for='check_".$cpt."'>";
 										if($lig_ele->naissance!=''){
-											echo "$lig_ele->naissance <font color='red'>-&gt;</font>\n";
+											echo formate_date($lig_ele->naissance)." <font color='red'>-&gt;</font>\n";
 										}
 									}
 									else{
@@ -3209,7 +3271,7 @@ else{
 										echo ">";
 										echo "<label for='check_".$cpt."'>";
 									}
-									echo "$new_date";
+									echo formate_date($new_date);
 //									echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
 									echo "</label>";
 									echo "</td>\n";
@@ -3322,7 +3384,7 @@ else{
 										echo "<table class='boireaus'>\n";
 										if((getSettingValue('ele_tel_pers')=='yes')&&(getSettingAOui('ele_tel_pers_signaler_modif'))) {
 											echo "<tr>\n";
-											echo "<td>Pe</td>\n";
+											echo "<td title=\"Numéro de téléphone personnel\">Pe</td>\n";
 											echo "<td";
 											if(stripslashes($lig_ele->tel_pers)!=stripslashes($affiche[13])){
 												echo " class='modif'>";
@@ -3340,7 +3402,7 @@ else{
 										}
 										if((getSettingValue('ele_tel_port')=='yes')&&(getSettingAOui('ele_tel_port_signaler_modif'))) {
 											echo "<tr>\n";
-											echo "<td>Po</td>\n";
+											echo "<td title=\"Numéro de téléphone portable\">Po</td>\n";
 											echo "<td";
 											if(stripslashes($lig_ele->tel_port)!=stripslashes($affiche[14])){
 												echo " class='modif'>";
@@ -3358,7 +3420,7 @@ else{
 										}
 										if((getSettingValue('ele_tel_prof')=='yes')&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {
 											echo "<tr>\n";
-											echo "<td>Pr</td>\n";
+											echo "<td title=\"Numéro de téléphone professionnel\">Pr</td>\n";
 											echo "<td";
 											if(stripslashes($lig_ele->tel_prof)!=stripslashes($affiche[15])){
 												echo " class='modif'>";
@@ -3489,6 +3551,20 @@ else{
 									echo "</td>\n";
 								}
 
+								if(getSettingAOui('alert_diff_date_entree')) {
+									echo "<td";
+									if($lig_ele->date_entree!=$affiche[17]){
+										echo " class='modif'>";
+										if($lig_ele->date_entree!=''){
+											echo formate_date($lig_ele->date_entree)." <font color='red'>-&gt;</font>\n";
+										}
+									}
+									else{
+										echo ">";
+									}
+									echo formate_date($affiche[17]);
+									echo "</td>\n";
+								}
 
 								$sql="SELECT id_etablissement FROM j_eleves_etablissements WHERE id_eleve='$lig_ele->elenoet';";
 								info_debug($sql);
@@ -3696,6 +3772,11 @@ else{
 									echo "</td>\n";
 								}
 
+								if(getSettingAOui('alert_diff_date_entree')) {
+									echo "<td>";
+									echo formate_date($affiche[17]);
+									echo "</td>\n";
+								}
 
 								echo "<td style='text-align: center;'>";
 								if(my_strtolower($affiche[10])!=my_strtolower($gepiSchoolRne)) {
@@ -3869,6 +3950,10 @@ else{
 					// 20130607
 					if(getSettingAOui('alert_diff_mef')) {
 						$sql.=", mef_code='".$lig->MEF_CODE."'";
+					}
+
+					if(getSettingAOui('alert_diff_date_entree')) {
+						$sql.=", date_entree='".$lig->DATE_ENTREE."'";
 					}
 
 					// Si on a validé des modifs, on a un élève qui est dans l'établissement... pas sorti
@@ -4259,6 +4344,10 @@ else{
 								// 20130607
 								if(getSettingAOui('alert_diff_mef')) {
 									$sql.=", mef_code='".$lig->MEF_CODE."'";
+								}
+
+								if(getSettingAOui('alert_diff_date_entree')) {
+									$sql.=", date_entree='".$lig->DATE_ENTREE."'";
 								}
 
 								$sql.=";";

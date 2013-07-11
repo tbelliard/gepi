@@ -62,6 +62,18 @@ if ($test == -1) {
 }
 */
 
+$result .= "&nbsp;-> Ajout d'un champ 'date_entree' à la table 'eleves'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'date_entree';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE eleves ADD date_entree DATETIME COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 
 
 ?>

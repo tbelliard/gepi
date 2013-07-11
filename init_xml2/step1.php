@@ -305,7 +305,9 @@
 						`ELEOPT11` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default '',
-						`MEF_CODE` varchar(50) $chaine_mysql_collate NOT NULL default ''
+						`MEF_CODE` varchar(50) $chaine_mysql_collate NOT NULL default '',
+						DATE_SORTIE DATETIME,
+						DATE_ENTREE DATETIME
 						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 						$create_table = mysql_query($sql);
 
@@ -428,7 +430,7 @@
 								//echo "$sql<br />\n";
 								$res_insert=mysql_query($sql);
 								if(!$res_insert){
-									echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+									echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 									$nb_err++;
 								}
 								$id_tempo++;
@@ -508,6 +510,7 @@
 				"DATE_NAISS",
 				"DOUBLEMENT",
 				"DATE_SORTIE",
+				"DATE_ENTREE",
 				"CODE_REGIME",
 				"DATE_ENTREE",
 				"CODE_MOTIF_SORTIE",
@@ -674,12 +677,14 @@
 
 							if(isset($eleves[$i]["code_mef"])){$sql.="mef_code='".$eleves[$i]["code_mef"]."', ";}
 
+							if(isset($eleves[$i]["date_entree"])){$sql.="date_entree='".get_mysql_date_from_slash_date($eleves[$i]["date_entree"])."', ";}
+
 							$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 								$nb_err++;
 								flush();
 							}
@@ -801,7 +806,7 @@
 
 										$res_insert_etab=mysql_query($sql);
 										if(!$res_insert_etab){
-											echo "Erreur lors de la requête $sql<br />\n";
+											echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 											$nb_err_etab++;
 											flush();
 										}
@@ -944,7 +949,7 @@
 							affiche_debug("$sql<br />\n");
 							$res_update=mysql_query($sql);
 							if(!$res_update){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 								flush();
 								$nb_err++;
 							}
@@ -1296,7 +1301,7 @@
 								affiche_debug($sql."<br />\n");
 								$res2=mysql_query($sql);
 								if(!$res2){
-									echo "Erreur lors de la requête $sql<br />\n";
+									echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 									flush();
 									$nb_err++;
 								}
@@ -1533,7 +1538,7 @@
 						$res=mysql_query($sql);
 
 						if(!$res){
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 							flush();
 							$nb_err++;
 						}
@@ -1568,7 +1573,7 @@
 						$res=mysql_query($sql);
 
 						if(!$res){
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 							flush();
 							$nb_err++;
 						}
