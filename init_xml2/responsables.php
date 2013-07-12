@@ -347,7 +347,7 @@
 
 						$nom_racine=$resp_xml->getName();
 						if(my_strtoupper($nom_racine)!='BEE_RESPONSABLES') {
-							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
+							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p><p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du fichier.</a></p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
