@@ -377,7 +377,9 @@ echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' 
 // Activation/désactivation de la procédure de récupération du mot de passe
 //
 echo "<h3 class='gepi'>Mots de passe perdus</h3>\n";
-echo "<form action=\"options_connect.php\" method=\"post\">\n";
+echo "<form action=\"options_connect.php\" method=\"post\">
+	<fieldset id='mdp_perdus' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white;'>Mots de passe perdus</legend>\n";
 echo add_token_field();
 echo "<input type='radio' name='enable_password_recovery' value='no' id='label_1b'";
 if (getSettingValue("enable_password_recovery")=='no') echo " checked ";
@@ -388,7 +390,9 @@ if (getSettingValue("enable_password_recovery")=='yes') echo " checked ";
 echo " /> <label for='label_2b' style='cursor: pointer;'>Activer la procédure automatisée de récupération de mot de passe</label>\n";
 
 echo "<center><input type=\"submit\" value=\"Valider\" /></center>\n";
-echo "</form>\n";
+echo "
+	</fieldset>
+</form>\n";
 
 echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
 
@@ -396,7 +400,9 @@ echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
 // Activation/désactivation de la procédure de demande de compte/mot de passe
 //
 echo "<h3 class='gepi'>Demande de compte et mot de passe</h3>\n";
-echo "<form action=\"options_connect.php\" method=\"post\">\n";
+echo "<form action=\"options_connect.php\" method=\"post\">
+	<fieldset id='demande_compte' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white;'>Demande de compte et mot de passe</legend>\n";
 echo add_token_field();
 echo "<p>Permettre aux responsables de demander ou récupérer un compte/mot de passe.<br />\n";
 echo "<input type='radio' name='GepiResp_obtenir_compte_et_motdepasse' value='no' id='GepiResp_obtenir_compte_et_motdepasse_no'";
@@ -435,7 +441,9 @@ echo " /> <label for='RegBaseCpe_obtenir_compte_et_motdepasse' style='cursor: po
 </p>\n";
 
 echo "<center><input type=\"submit\" value=\"Valider\" /></center>\n";
-echo "</form>\n";
+echo "
+	</fieldset>
+</form>\n";
 
 echo "<p style='text-indent:-5em; margin-left:5em;'><em>NOTES&nbsp;:</em> Le responsable dispose en page de login d'un lien pour remplir un formulaire avec nom, prénom, email et indication sur le nom, prénom et classe d'un des enfants.<br />
 Le document doit être imprimé et déposé à l'Administration pour finaliser la demande.<br />
@@ -452,12 +460,16 @@ if ($session_gepi->auth_locale ||
 		(($session_gepi->auth_ldap || $session_gepi->auth_sso)
 				&& getSettingValue("ldap_write_access") == "yes")) {
 echo "<h3 class='gepi'>Changement du mot de passe obligatoire lors de la prochaine connexion</h3>\n";
-echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>tous les utilisateurs</b> dont le mot de passe est éditable par Gepi (les utilisateurs locaux, ou bien tous les utilisateurs si un accès LDAP en écriture a été configuré) seront amenés à changer leur mot de passe lors de leur prochaine connexion.</p>\n";
-echo "<form action=\"options_connect.php\" name=\"form_chgt_mdp\" method=\"post\">\n";
+echo "<form action=\"options_connect.php\" name=\"form_chgt_mdp\" method=\"post\">
+	<fieldset id='mdp_perdus' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white;'>Changement de mot de passe</legend>\n";
 echo add_token_field();
+echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>tous les utilisateurs</b> dont le mot de passe est éditable par Gepi (les utilisateurs locaux, ou bien tous les utilisateurs si un accès LDAP en écriture a été configuré) seront amenés à changer leur mot de passe lors de leur prochaine connexion.</p>\n";
 echo "<center><input type=\"submit\" name=\"valid_chgt_mdp\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir forcer le changement de mot de passe de tous les utilisateurs ?', 'Confirmation')\" /></center>\n";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
-echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
+echo "
+	</fieldset>
+</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
 }
 
 //
@@ -466,6 +478,8 @@ echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;
 
 echo "<h3 class='gepi'>Saisie d'une adresse mail requise</h3>\n";
 echo "<form action=\"options_connect.php\" name=\"form_saisie_mail\" method=\"post\">
+	<fieldset id='mdp_perdus' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white;'>Adresse mail requise</legend>
 	".add_token_field()."
 	<p>La saisie d'une adresse mail pour les comptes d'utilisateurs peut vous paraitre nécessaire.<br />
 	Si vous tenez à imposer une telle saisie, veuillez choisir les statuts contraints à saisir une adresse mail au format valide (*)&nbsp;:<br />";
@@ -478,6 +492,7 @@ echo "<form action=\"options_connect.php\" name=\"form_saisie_mail\" method=\"po
 	<input type=hidden name=mode_navig value='$mode_navig' />
 	<p><br /></p>
 	<p>(*) Cela n'empêchera pas un utilisateur de saisir une adresse \"bidon\".</p>
+	</fieldset>
 </form>\n";
 
 echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
@@ -494,7 +509,9 @@ echo "<p>Dans le cas d'une authentification externe (LDAP ou SSO), aucun mot de 
 echo "<p>Si vous paramétrez un accès LDAP en écriture, les mots de passe des utilisateurs pourront être modifiés directement à travers Gepi, même pour les modes LDAP et SSO. L'administrateur pourra également éditer les données de base de l'utilisateur (nom, prénom, email). Lorsque vous activez l'accès LDAP en écriture, assurez-vous que le paramétrage sur le serveur LDAP permet à l'utilisateur de connexion LDAP de modifier les champs login, mot de passe, nom, prénom et email.</p>\n";
 echo "<p>Si vous utilisez CAS, vous devez entrer les informations de configuration du serveur CAS dans le fichier /secure/config_cas.inc.php (un modèle de configuration se trouve dans le fichier /secure/config_cas.cfg).</p>\n";
 echo "<p>Si vous utilisez l'authentification sur serveur LDAP, ou bien que vous activez l'accès LDAP en écriture, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur (un modèle se trouve dans /secure/config_ldap.cfg).</p>\n";
-echo "<form action=\"options_connect.php\" name=\"form_auth\" method=\"post\">\n";
+echo "<form action=\"options_connect.php\" name=\"form_auth\" method=\"post\">
+	<fieldset id='mdp_perdus' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white;'>Mode d'authentification</legend>\n";
 echo add_token_field();
 
 echo "<p><strong>Modes d'authentification :</strong></p>\n";
@@ -717,7 +734,9 @@ echo "<center><input type=\"submit\" name=\"auth_mode_submit\" value=\"Valider\"
 echo "<input type='hidden' name='auth_options_posted' value='1' />\n";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
 
-echo "</form>
+echo "
+	</fieldset>
+</form>
 
 
 
@@ -732,7 +751,9 @@ echo "<h3 class='gepi'>Durée de conservation des connexions</h3>\n";
 echo "<p>Conformément à la loi loi informatique et liberté 78-17 du 6 janvier 1978, la durée de conservation de ces données doit être déterminée et proportionnée aux finalités de leur traitement.
 Cependant par sécurité, il est conseillé de conserver une trace des connexions sur un laps de temps suffisamment long.
 </p>\n";
-echo "<form action=\"options_connect.php\" name=\"form_chgt_duree\" method=\"post\">\n";
+echo "<form action=\"options_connect.php\" name=\"form_chgt_duree\" method=\"post\">
+	<fieldset id='mdp_perdus' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white;'>Conservation des log</legend>\n";
 echo add_token_field();
 echo "Durée de conservation des informations sur les connexions : <select name=\"duree\" size=\"1\">\n";
 echo "<option ";
@@ -751,7 +772,9 @@ echo " value=365>Un an</option>\n";
 echo "</select>\n";
 echo "<input type=\"submit\" name=\"Valider\" value=\"Enregistrer\" />\n";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
-echo "</form>\n";
+echo "
+	</fieldset>
+</form>\n";
 //
 // Nettoyage du journal
 //
@@ -769,18 +792,24 @@ $jour =  mb_substr($row[0],8,2);
 echo "<p>Nombre d'entrées actuellement présentes dans le journal de connexion : <b>".$logs_number."</b><br />\n";
 echo "Actuellement, le journal contient l'historique des connexions depuis le <b>".$jour."/".$mois."/".$annee."</b></p>\n";
 echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>toutes les entrées du journal de connexion (hormis les connexions en cours) seront supprimées</b>.</p>\n";
-echo "<form action=\"options_connect.php\" name=\"form_sup_logs\" method=\"post\">\n";
+echo "<form action=\"options_connect.php\" name=\"form_sup_logs\" method=\"post\">
+	<fieldset id='mdp_perdus' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white;'>Suppression complète des log</legend>\n";
 echo add_token_field();
 echo "<center><input type=\"submit\" name=\"valid_sup_logs\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir supprimer tout l\'historique du journal de connexion ?', 'Confirmation')\" /></center>\n";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
-echo "</form><br/>\n";
+echo "
+	</fieldset>
+</form><br/>\n";
 
 ?>
 <hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/>
 <h3 class='gepi'>Suppression d'une partie des entrées du journal de connexion</h3>
 <?php
 
-echo "<form action=\"options_connect.php\" method=\"post\" id='form_suppr_connexions'>\n";
+echo "<form action=\"options_connect.php\" method=\"post\" id='form_suppr_connexions'>
+	<fieldset id='mdp_perdus' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white;'>Suppression des log</legend>\n";
 echo add_token_field();
 echo "<center>\n";
 echo "<input type=submit value=\"Supprimer les journaux de connexions\" />\n";
@@ -790,7 +819,9 @@ echo " antérieurs au <input type='text' name='date_limite' id='date_limite' siz
 echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>";
 echo "</center>\n";
 echo "<input type='hidden' name='clean_log_old' value='y' />\n";
-echo "</form><br />\n";
+echo "
+	</fieldset>
+</form><br />\n";
 
 require("../lib/footer.inc.php");
 ?>
