@@ -247,7 +247,7 @@ echo '</td><td colspan="2">';
 if (!$modifiable || $saisie->getDeletedAt() != null ) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDebutAbs('U')));
 } else {
-    echo '<nobr><input name="heure_debut" id="heure_debut" value="'.$saisie->getDebutAbs("H:i").'" type="text" maxlength="5" size="4" onkeydown="clavier_heure(this.id,event);" autocomplete="off" />&nbsp;';
+    echo '<nobr><input name="heure_debut" id="heure_debut" value="'.$saisie->getDebutAbs("H:i").'" type="text" maxlength="5" size="4" onkeydown="clavier_heure(this.id,event);" autocomplete="off" title="Vous pouvez modifier l\'heure en utilisant les flèches Haut/Bas et PageUp/PageDown du clavier" />&nbsp;';
     if ($utilisateur->getStatut() == 'professeur') {//on autorise pas au professeur a changer la date
 	echo (strftime(" %a %d/%m/%Y", $saisie->getDebutAbs('U')));
 	echo '<input name="date_debut" value="'.$saisie->getDebutAbs('d/m/Y').'" type="hidden"/></nobr> ';
@@ -281,7 +281,7 @@ echo '</td><td colspan="2">';
 if (!$modifiable || $saisie->getDeletedAt() != null) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getFinAbs('U')));
 } else {
-    echo '<nobr><input name="heure_fin" id="heure_fin" value="'.$saisie->getFinAbs("H:i").'" type="text" maxlength="5" size="4" onkeydown="clavier_heure(this.id,event);" autocomplete="off" />&nbsp;';
+    echo '<nobr><input name="heure_fin" id="heure_fin" value="'.$saisie->getFinAbs("H:i").'" type="text" maxlength="5" size="4" onkeydown="clavier_heure(this.id,event);" autocomplete="off" title="Vous pouvez modifier l\'heure en utilisant les flèches Haut/Bas et PageUp/PageDown du clavier" />&nbsp;';
     //if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
     if ($utilisateur->getStatut() == 'professeur') {
 	echo (strftime(" %a %d/%m/%Y", $saisie->getFinAbs('U')));
