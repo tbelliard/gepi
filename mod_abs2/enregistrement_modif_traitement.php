@@ -74,6 +74,8 @@ if ($traitement == null) {
     die();
 }
 
+//debug_var();
+
 if ($modif == 'type') {    
 	$traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->findPk($_POST["id_type"]));   
 } elseif ($modif == 'commentaire') {
@@ -96,8 +98,61 @@ if ($modif == 'type') {
         include("liste_traitements.php");
     }    
     die;
-}
+} elseif ($modif == 'modifier_heures_saisies') {
 
+	$message_enregistrement="";
+
+	// Tableau des id_saisie à modifier
+	$id_saisie=$_POST['id_saisie'];
+
+	// Date de début transmise au format aaaa-mm-jj
+	try {
+		$tab_date=explode("-",$_POST['date_debut']);
+		$tmp_date=$tab_date[2].".".$tab_date[1].".".$tab_date[0];
+		$date_debut = new DateTime($tmp_date);
+	} catch (Exception $x) {
+		$message_enregistrement .= "Mauvais format de date.<br/>";
+	}
+
+	// Date de fin transmise au format aaaa-mm-jj
+	try {
+		$tab_date=explode("-",$_POST['date_fin']);
+		$tmp_date=$tab_date[2].".".$tab_date[1].".".$tab_date[0];
+		$date_fin = new DateTime($tmp_date);
+	} catch (Exception $x) {
+		$message_enregistrement .= "Mauvais format de date.<br/>";
+	}
+
+	// Heure de début transmise au format HH:MM
+	try {
+		$heure_debut = new DateTime($_POST['heure_debut']);
+		$date_debut->setTime($heure_debut->format('H'), $heure_debut->format('i'));
+	} catch (Exception $x) {
+		$message_enregistrement .= "Mauvais format d'heure.<br/>";
+	}
+
+	// Heure de fin transmise au format HH:MM
+	try {
+		$heure_fin = new DateTime($_POST['heure_fin']);
+		$date_fin->setTime($heure_fin->format('H'), $heure_fin->format('i'));
+	} catch (Exception $x) {
+		$message_enregistrement .= "Mauvais format d'heure.<br/>";
+	}
+
+	if ($message_enregistrement == "") {
+		for($loop=0;$loop<count($id_saisie);$loop++) {
+			$saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($id_saisie[$loop]);
+			if ($saisie != null) {
+				$saisie->setDebutAbs($date_debut);
+				$saisie->setFinAbs($date_fin);
+				$saisie->save();
+			}
+		}
+	}
+
+	include("visu_traitement.php");
+	die();
+}
 
 if (!$traitement->isModified()) {
     if (isset($count_delete) && $count_delete > 0) {
