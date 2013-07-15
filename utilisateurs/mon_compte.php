@@ -193,13 +193,16 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 							$sujet_mail=remplace_accents("Mise à jour mail ".$_SESSION['nom']." ".$_SESSION['prenom'],'all');
 							$message_mail="L'adresse email du responsable ";
 							$message_mail.=remplace_accents($_SESSION['nom']." ".$_SESSION['prenom'],'all')." est passée à '$reg_email'. Vous devriez mettre à jour Sconet en conséquence.";
-							$destinataire_mail=getSettingValue('gepiSchoolEmail');
-							if(getSettingValue('gepiSchoolEmail')!='') {
+							$destinataire_mail=getSettingValue('email_dest_info_modif_mail');
+							if($destinataire_mail=="") {
+								$destinataire_mail=getSettingValue('gepiSchoolEmail');
+							}
+							if(($destinataire_mail!='')&&(check_mail($destinataire_mail))) {
 								envoi_mail($sujet_mail, $message_mail, $destinataire_mail);
 							}
 						}
 
-						if(getSettingValue('envoi_mail_actif')!='n') {
+						if((getSettingValue('envoi_mail_actif')!='n')&&(check_mail($user_email))) {
 							$sujet_mail="Mise à jour de votre adresse mail";
 							$message_mail="Vous avez procédé à la modification de votre adresse mail dans 'Gérer mon compte' le ".strftime('%A %d/%m/%Y à %H:%M:%S').". Votre nouvelle adresse est donc '$reg_email'. C'est cette adresse qui sera utilisée pour les éventuels prochains messages.";
 							$destinataire_mail=$user_email;
@@ -236,8 +239,11 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 							$sujet_mail=remplace_accents("Mise à jour mail ".$_SESSION['nom']." ".$_SESSION['prenom'],'all');
 							$message_mail="L'adresse email de l'élève ";
 							$message_mail.=remplace_accents($_SESSION['nom']." ".$_SESSION['prenom'],'all')." est passée à '$reg_email'. Vous devriez mettre à jour Sconet en conséquence.";
-							$destinataire_mail=getSettingValue('gepiSchoolEmail');
-							if(getSettingValue('gepiSchoolEmail')!='') {
+							$destinataire_mail=getSettingValue('email_dest_info_modif_mail');
+							if($destinataire_mail=="") {
+								$destinataire_mail=getSettingValue('gepiSchoolEmail');
+							}
+							if(($destinataire_mail!='')&&(check_mail($destinataire_mail))) {
 								envoi_mail($sujet_mail, $message_mail, $destinataire_mail);
 							}
 						}
