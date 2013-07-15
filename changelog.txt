@@ -5,7 +5,8 @@
 
 Gepi-master (Version de développement)
 ===========================
-- 
+Gestion:
+- Possibilité de choisir l'adresse mail destinataire de l'information comme quoi un changement d'adresse mail responsable ou élèev a eu lieu.
 
 Gepi-1.6.3 (17/06/2013)
 ===========================
