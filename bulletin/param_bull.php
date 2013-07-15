@@ -57,6 +57,7 @@ else {
 	$titre_page = "Paramètres bloc adresse responsables";
 }
 
+//debug_var();
 
 // Tableau des couleurs HTML:
 $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
@@ -85,7 +86,29 @@ if (isset($_POST['is_posted'])) {
 			$reg_ok = 'no';
 		}
 	}
+
+	if (isset($_POST['bull_cell_pp_textsize'])) {
 	
+		if (!(preg_match ("/^[0-9]{1,}$/", $_POST['bull_cell_pp_textsize'])) || $_POST['bull_cell_pp_textsize'] < 1) {
+			$_POST['bull_cell_pp_textsize'] = 10;
+		}
+		if (!saveSetting("bull_cell_pp_textsize", $_POST['bull_cell_pp_textsize'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_cell_pp_textsize !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_cell_signature_textsize'])) {
+	
+		if (!(preg_match ("/^[0-9]{1,}$/", $_POST['bull_cell_signature_textsize'])) || $_POST['bull_cell_signature_textsize'] < 1) {
+			$_POST['bull_cell_signature_textsize'] = 10;
+		}
+		if (!saveSetting("bull_cell_signature_textsize", $_POST['bull_cell_signature_textsize'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_cell_signature_textsize !";
+			$reg_ok = 'no';
+		}
+	}
+
 	//==================================
 	// AJOUT: boireaus
 	if (isset($_POST['p_bulletin_margin'])) {
@@ -801,6 +824,8 @@ function SetDefaultValues(nb){
 	if (nb=='A4V') {
 		window.document.formulaire.titlesize.value = '14';
 		window.document.formulaire.textsize.value = '8';
+		window.document.formulaire.bull_cell_pp_textsize.value = '8';
+		window.document.formulaire.bull_cell_signature_textsize.value = '8';
 		window.document.formulaire.largeurtableau.value = '800';
 		window.document.formulaire.col_matiere_largeur.value = '150';
 		window.document.formulaire.col_note_largeur.value = '30';
@@ -811,6 +836,8 @@ function SetDefaultValues(nb){
 	if(nb=='A3H'){
 		window.document.formulaire.titlesize.value = '16';
 		window.document.formulaire.textsize.value = '10';
+		window.document.formulaire.bull_cell_pp_textsize.value = '10';
+		window.document.formulaire.bull_cell_signature_textsize.value = '10';
 		window.document.formulaire.largeurtableau.value = '1440';
 		window.document.formulaire.col_matiere_largeur.value = '300';
 		window.document.formulaire.col_note_largeur.value = '50';
@@ -907,7 +934,35 @@ if(getSettingAOui('active_bulletins')) {
         <td><input type="text" name="textsize" id="textsize" size="20" value="<?php echo(getSettingValue("textsize")); ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
-    <!-- Début AJOUT: boireaus -->
+
+    <tr <?php 
+    	if ($nb_ligne % 2) {echo "bgcolor=".$bgcolor;$nb_ligne++;}
+    	$bull_cell_pp_textsize=getSettingValue('bull_cell_pp_textsize');
+    	if($bull_cell_pp_textsize=="") {
+    		$bull_cell_pp_textsize=8;
+    	}
+    ?>>
+        <td style="font-variant: small-caps;">
+        <label for='bull_cell_pp_textsize' style='cursor: pointer;'>Taille en points du texte de la cellule 'Avis du conseil de classe' :</label>
+        </td>
+        <td><input type="text" name="bull_cell_pp_textsize" id="bull_cell_pp_textsize" size="20" value="<?php echo $bull_cell_pp_textsize; ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
+        </td>
+    </tr>
+
+    <tr <?php 
+    	if ($nb_ligne % 2) {echo "bgcolor=".$bgcolor;$nb_ligne++;}
+    	$bull_cell_signature_textsize=getSettingValue('bull_cell_signature_textsize');
+    	if($bull_cell_signature_textsize=="") {
+    		$bull_cell_signature_textsize=8;
+    	}
+    ?>>
+        <td style="font-variant: small-caps;">
+        <label for='bull_cell_signature_textsize' style='cursor: pointer;'>Taille en points du texte de la cellule Signature :</label>
+        </td>
+        <td><input type="text" name="bull_cell_signature_textsize" id="bull_cell_signature_textsize" size="20" value="<?php echo $bull_cell_signature_textsize; ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
+        </td>
+    </tr>
+
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <label for='p_bulletin_margin' style='cursor: pointer;'>Marges hautes et basses des paragraphes en points du texte (hormis les titres) :</label>
@@ -921,7 +976,6 @@ if(getSettingAOui('active_bulletins')) {
 		}?>" onKeyDown="clavier_2(this.id,event,0,40);" />
         </td>
     </tr>
-    <!-- Fin AJOUT: boireaus -->
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <label for='largeurtableau' style='cursor: pointer;'>Largeur du tableau en pixels :</label>

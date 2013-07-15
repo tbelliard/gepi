@@ -910,15 +910,22 @@ width:".$largeur1."%;\n";
 		}
 
         if ($bull_affiche_avis == 'y') {
+			$span1="";
+			$span2="";
+			if(getSettingValue('bull_cell_pp_textsize')!="") {
+				$span1="<span style='font-size:".getSettingValue('bull_cell_pp_textsize')."pt'>";
+				$span2="</span>";
+			}
+
 			//
 			// Case de gauche : avis des conseils de classe
 			//
 			echo "<td style='vertical-align: top; text-align: left;'>\n";
 			// 1) l'avis
-			echo "<span class='bulletin'><i>Avis du conseil de classe:</i></span><br />\n";
+			echo "<span class='bulletin'><i>".$span1."Avis du conseil de classe:".$span2."</i></span><br />\n";
 
 			if($tab_bull['avis'][$i]!="") {
-				echo "<span class='avis_bulletin'>";
+				echo "<span class='avis_bulletin'>".$span1;
 				/*
 				if((strstr($tab_bull['avis'][$i],">"))||(strstr($tab_bull['avis'][$i],"<"))){
 					echo $tab_bull['avis'][$i];
@@ -928,7 +935,7 @@ width:".$largeur1."%;\n";
 				}
 				*/
 				echo texte_html_ou_pas($tab_bull['avis'][$i]);
-				echo "</span>";
+				echo $span2."</span>";
 
 				// **** AJOUT POUR LES MENTIONS ****
 				if(getSettingValue('bull_affich_mentions')!="n") {
@@ -938,10 +945,12 @@ width:".$largeur1."%;\n";
 					//if((trim($tab_bull['id_mention'][$i])!="")||($avec_coches_mentions=="y")) {
 					if(isset($tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]])) {
 						echo "<br/>\n";
+						echo $span1;
 						if(getSettingValue('bull_affich_intitule_mentions')!="n") {
 							echo "<b>".ucfirst($gepi_denom_mention)." : </b>";
 						}
 						echo texte_html_ou_pas(traduction_mention($tab_bull['id_mention'][$i]));
+						echo $span2;
 					}
 				}
 				// **** FIN D'AJOUT POUR LES MENTIONS ****
@@ -962,10 +971,12 @@ width:".$largeur1."%;\n";
 					//if((trim($tab_bull['id_mention'][$i])!="")||($avec_coches_mentions=="y")) {
 					if(isset($tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]])) {
 						echo "<br/>\n";
+						echo $span1;
 						if(getSettingValue('bull_affich_intitule_mentions')!="n") {
 							echo "<b>".ucfirst($gepi_denom_mention)." : </b>";
 						}
 						echo texte_html_ou_pas(traduction_mention($tab_bull['id_mention'][$i]));
+						echo $span2;
 						$n++;
 					}
 				}
@@ -998,12 +1009,20 @@ width:".$largeur1."%;\n";
 			}
 			*/
 			if(isset($tab_bull['eleve'][$i]['pp'][0])) {
+				$span1="";
+				$span2="";
+				if(getSettingValue('bull_cell_pp_textsize')!="") {
+					$span1="<span style='font-size:".getSettingValue('bull_cell_pp_textsize')."pt'>";
+					$span2="</span>";
+				}
+				echo $span1;
 				echo "<b>".ucfirst($gepi_prof_suivi)."</b> ";
 				echo "<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp'][0]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
 				for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i]['pp']);$i_pp++) {
 					echo ", ";
 					echo "<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp'][$i_pp]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
 				}
+				echo $span2;
 			}
 
 			echo "</td>\n";
@@ -1012,42 +1031,36 @@ width:".$largeur1."%;\n";
 			//
 			echo "<td style='vertical-align: top; text-align: left;' width='30%'>\n";
 			echo "<!-- Case: paraphe du proviseur -->\n";
-			if($tab_bull['formule']!='') {echo "<span class='bulletin'><b>".$tab_bull['formule']."</b>:</span><br />";}
-			if($tab_bull['suivi_par']!='') {echo "<span class='bulletin'><i>".$tab_bull['suivi_par']."</i></span>";}
+			$span1="";
+			$span2="";
+			if(getSettingValue('bull_cell_signature_textsize')!="") {
+				$span1="<span style='font-size:".getSettingValue('bull_cell_signature_textsize')."pt'>";
+				$span2="</span>";
+			}
+			if($tab_bull['formule']!='') {echo "<span class='bulletin'><b>".$span1.$tab_bull['formule'].$span2."</b>:</span><br />";}
+			if($tab_bull['suivi_par']!='') {echo "<span class='bulletin'><i>".$span1.$tab_bull['suivi_par'].$span2."</i></span>";}
 
-			// 20120716
 			// Si une image de signature doit être insérée...
-			/*
-			$tmp_fich=getSettingValue('fichier_signature');
-			$fich_sign = '../backup/'.getSettingValue('backup_directory').'/'.$tmp_fich;
-			//echo "\$fich_sign=$fich_sign<br />\n";
-			if($bull_affiche_img_signature=='y' and ($tmp_fich!='') and file_exists($fich_sign))
-			{
-				$sql="SELECT 1=1 FROM droits_acces_fichiers WHERE fichier='signature_img' AND ((identite='".$_SESSION['statut']."' AND type='statut') OR (identite='".$_SESSION['login']."' AND type='individu'))";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0) {
-			*/
 			if($url_fich_sign!="") {
-					$fich_sign=$url_fich_sign;
+				$fich_sign=$url_fich_sign;
 
-					$largeur_dispo=getSettingValue('bull_largeur_img_signature');
-					$hauteur_dispo=getSettingValue('bull_hauteur_img_signature');
+				$largeur_dispo=getSettingValue('bull_largeur_img_signature');
+				$hauteur_dispo=getSettingValue('bull_hauteur_img_signature');
 
-					$tmp_dim_photo=getimagesize($fich_sign);
-					$ratio_l=$tmp_dim_photo[0]/$largeur_dispo;
-					$ratio_h=$tmp_dim_photo[1]/$hauteur_dispo;
-					if($ratio_l>$ratio_h) {
-						$L_sign = $largeur_dispo;
-						$H_sign = $largeur_dispo*$tmp_dim_photo[1]/$tmp_dim_photo[0];
-					}
-					else {
-						$H_sign = $hauteur_dispo;
-						$L_sign = $hauteur_dispo*$tmp_dim_photo[0]/$tmp_dim_photo[1];
-					}
-					echo "<center>\n";
-					echo "<img src='$fich_sign' width='$L_sign' height='$H_sign' />\n";
-					echo "</center>\n";
-				//}
+				$tmp_dim_photo=getimagesize($fich_sign);
+				$ratio_l=$tmp_dim_photo[0]/$largeur_dispo;
+				$ratio_h=$tmp_dim_photo[1]/$hauteur_dispo;
+				if($ratio_l>$ratio_h) {
+					$L_sign = $largeur_dispo;
+					$H_sign = $largeur_dispo*$tmp_dim_photo[1]/$tmp_dim_photo[0];
+				}
+				else {
+					$H_sign = $hauteur_dispo;
+					$L_sign = $hauteur_dispo*$tmp_dim_photo[0]/$tmp_dim_photo[1];
+				}
+				echo "<center>\n";
+				echo "<img src='$fich_sign' width='$L_sign' height='$H_sign' />\n";
+				echo "</center>\n";
 			}
 		}
 

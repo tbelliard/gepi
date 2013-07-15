@@ -5,6 +5,9 @@
 
 Gepi-master (Version de développement)
 ===========================
+Bulletins:
+- Bulletins HTML: Possibilité de définir la taille des textes des cellules Avis du conseil de classe et Signature.
+
 Gestion:
 - Possibilité de choisir l'adresse mail destinataire de l'information comme quoi un changement d'adresse mail responsable ou élèev a eu lieu.
 
