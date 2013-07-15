@@ -265,10 +265,12 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['gepiPrefixeSujetMail'])) {
+			if (!saveSetting("gepiPrefixeSujetMail", $_POST['gepiPrefixeSujetMail'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre gepiPrefixeSujetMail !";
+			}
+		}
 
-
-	
-	
 		if (isset($_POST['longmin_pwd'])) {
 			if (!saveSetting("longmin_pwd", $_POST['longmin_pwd'])) {
 				$msg .= "Erreur lors de l'enregistrement de la longueur minimale du mot de passe !";
@@ -929,7 +931,18 @@ echo add_token_field();
 	onchange='changement()' />
 		</span>
 	</p>
-		
+
+	<p class="ligneCaps">
+		<label for='gepiPrefixeSujetMail' class="cellTab70">
+			Ajouter un préfixe au sujet des mails envoyés par Gepi :<br />
+			<span class="plusPetit">Cela peut être utile si vous recevez des mails de plusieurs Gepi.<br />
+			Notez que le préfixe 'GEPI :' est de toutes façons ajouté.</span>
+		</label>
+		<span class="cellTab plusPetit">
+			<input type="text" id='gepiPrefixeSujetMail' name="gepiPrefixeSujetMail" value="<?php echo getSettingValue('gepiPrefixeSujetMail');?>" onchange='changement()' />
+		</span>
+	</p>
+
 	<p class="ligneCaps">
 		<label for='contact_admin_mailto' class="cellTab70">
 			Remplacer le formulaire [Contacter l'administrateur] par un lien mailto :
@@ -942,7 +955,7 @@ echo add_token_field();
 	onchange='changement()' />
 		</span>
 	</p>
-		
+
 	<p class="ligneCaps">
 		<label for='envoi_mail_liste' class="cellTab70">
 			Permettre d'envoyer des mails à une liste d'élèves :
