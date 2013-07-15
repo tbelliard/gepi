@@ -301,7 +301,7 @@ echo "<p class='bold'>";
 if ($_SESSION['statut'] == 'administrateur') {
 	echo "<a href=\"../accueil_admin.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href=\"modify_resp.php\">Ajouter un ".$gepiSettings['denomination_responsable']."</a>\n";
-	if(getSettingValue("import_maj_xml_sconet")==1){
+	if(getSettingValue("import_maj_xml_sconet")==1) {
 		echo " | <a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
 	}
 
@@ -355,11 +355,13 @@ if(!isset($order_by)) {$order_by = "nom,prenom";$num_resp=1;}
 
 $cpt=0;
 
+//debug_var();
+
 unset($chaine_recherche);
 if(!isset($val_rech)) {$val_rech="";}
 //if(isset($val_rech)){
 $chaine_info_recherche="";
-if($val_rech!=""){
+if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 	//echo "\$val_rech=$val_rech<br />";
 	//$order_by=="nom,prenom";
 	$limit="TOUS";
@@ -525,7 +527,21 @@ if($val_rech!=""){
 		echo "<p>Aucun ".$gepiSettings['denomination_responsable']." trouvé.</p>\n";
 		//if($chaine_recherche!="") {
 		if((isset($chaine_recherche))&&($chaine_recherche!="")) {
-			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour à l'index ".$gepiSettings['denomination_responsables']."</a></p>\n";
+			// 20130714
+			echo "<p><a href='".$_SERVER['PHP_SELF'];
+			$chaine_rech_retour="";
+			if((isset($_POST['champ_rech']))&&($_POST['champ_rech']!="")&&
+			(isset($_POST['crit_rech']))&&($_POST['crit_rech']!="")&&
+			(isset($_POST['val_rech']))&&($_POST['val_rech']!="")&&
+			(isset($_POST['mode_rech']))&&($_POST['mode_rech']!="")) {
+				$chaine_rech_retour.="?champ_rech=".$_POST['champ_rech'];
+				$chaine_rech_retour.="&amp;crit_rech=".$_POST['crit_rech'];
+				$chaine_rech_retour.="&amp;mode_rech=".$_POST['mode_rech'];
+				$chaine_rech_retour.="&amp;val_rech=".$_POST['val_rech'];
+				$chaine_rech_retour.="&amp;retour_index=y";
+				echo $chaine_rech_retour;
+			}
+			echo "'>Retour à l'index ".$gepiSettings['denomination_responsables']."</a></p>\n";
 		}
 		require("../lib/footer.inc.php");
 		die();
@@ -732,15 +748,27 @@ else{
 	echo "<table border='0' summary='Recherche'><tr><td>parmi les </td>\n";
 	echo "<td>\n";
 	echo "<label for='champ_rech_resp1' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='champ_rech' id='champ_rech_resp1' value='resp1' checked /> responsables (<i>légal 1</i>)\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_resp1' value='resp1' ";
+	if((!isset($champ_rech))||($champ_rech=="")||($champ_rech=="resp1")) {
+		echo "checked ";
+	}
+	echo "/> responsables (<i>légal 1</i>)\n";
 	echo "</label>\n";
 	echo "<br />\n";
 	echo "<label for='champ_rech_resp2' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='champ_rech' id='champ_rech_resp2' value='resp2' /> responsables (<i>légal 2</i>)\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_resp2' value='resp2' ";
+	if((isset($champ_rech))&&($champ_rech=="resp2")) {
+		echo "checked ";
+	}
+	echo "/> responsables (<i>légal 2</i>)\n";
 	echo "</label>\n";
 	echo "<br />\n";
 	echo "<label for='champ_rech_eleves' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='champ_rech' id='champ_rech_eleves' value='eleves' /> élèves\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_eleves' value='eleves' ";
+	if((isset($champ_rech))&&($champ_rech=="eleves")) {
+		echo "checked ";
+	}
+	echo "/> élèves\n";
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
