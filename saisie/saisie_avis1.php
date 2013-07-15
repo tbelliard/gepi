@@ -690,6 +690,7 @@ if ($insert_mass_appreciation_type=="y") {
 		$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
 		$current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
 		$current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
+		$current_eleve_sexe = mysql_result($appel_donnees_eleves, $i, "sexe");
 
 		//========================
 		// AJOUT boireaus 20071115
@@ -736,7 +737,14 @@ if ($insert_mass_appreciation_type=="y") {
 			//echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
 			echo " <a href=\"$photo\" onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\" onclick=\"afficher_div('photo_$current_eleve_login','y',-100,20); return false;\" target='_blank' title=\"Afficher la photo de l'élève.\"";
 			echo ">";
-			echo "<img src='../images/icons/buddy.png' alt='$current_eleve_nom $current_eleve_prenom' />";
+			echo "<img src='../mod_trombinoscopes/images/";
+			if($current_eleve_sexe=="F") {
+				echo "photo_f.png";
+			}
+			else{
+				echo "photo_g.png";
+			}
+			echo "' class='icone20' alt='$current_eleve_nom $current_eleve_prenom' />";
 			echo "</a>";
 		}
 		//==========================

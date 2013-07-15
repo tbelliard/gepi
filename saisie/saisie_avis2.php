@@ -883,12 +883,13 @@ if (isset($fiche)) {
 
 	//==========================
 	// Photo
-	$sql="SELECT elenoet, nom, prenom FROM eleves WHERE login='$current_eleve_login';";
+	$sql="SELECT elenoet, nom, prenom, sexe FROM eleves WHERE login='$current_eleve_login';";
 	$res_ele=mysql_query($sql);
 	$lig_ele=mysql_fetch_object($res_ele);
 	$current_eleve_elenoet=$lig_ele->elenoet;
 	$current_eleve_nom=$lig_ele->nom;
 	$current_eleve_prenom=$lig_ele->prenom;
+	$current_eleve_sexe=$lig_ele->sexe;
 
 	// Photo...
 	$photo=nom_photo($current_eleve_elenoet);
@@ -911,7 +912,14 @@ if (isset($fiche)) {
 		//echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\"";
 		echo " <a href=\"$photo\" onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\" onclick=\"afficher_div('photo_$current_eleve_login','y',-100,20); return false;\" target='_blank'";
 		echo ">";
-		echo "<img src='../images/icons/buddy.png' alt='$current_eleve_nom $current_eleve_prenom' />";
+			echo "<img src='../mod_trombinoscopes/images/";
+			if($current_eleve_sexe=="F") {
+				echo "photo_f.png";
+			}
+			else{
+				echo "photo_g.png";
+			}
+			echo "' class='icone20' alt='$current_eleve_nom $current_eleve_prenom' />";
 		echo "</a>";
 		echo "</td>\n";
 	}
