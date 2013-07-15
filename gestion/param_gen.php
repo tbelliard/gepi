@@ -734,6 +734,8 @@ require_once("../lib/header.inc.php");
 ?>
 
 <form action="param_gen.php" method="post" id="form1" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
+
 	<p>
 <?php
 echo add_token_field();
@@ -1734,6 +1736,7 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 			   style="font-variant: small-caps; display:none;" 
 			   onclick="test_puis_submit()" />
 	</p>
+</fieldset>
 </form>
 
 <script type='text/javascript'>
@@ -1874,6 +1877,7 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 
 <hr />
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form2" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p class="cellTab70">
 <?php
 echo add_token_field();
@@ -1903,15 +1907,16 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 		<strong><em>Pas de logo actuellement</em></strong>
 <?php } ?>
 	</p>
-</form>
 
-<p>
-	<em>Remarques&nbsp;</em>
-	Les transparences sur les images PNG, GIF ne permettent pas une impression PDF 
-	(<em>canal alpha non supporté par fpdf</em>).
-	<br />
-	Il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la génération de PDF.
-</p>
+	<p>
+		<em>Remarques&nbsp;</em>
+		Les transparences sur les images PNG, GIF ne permettent pas une impression PDF 
+		(<em>canal alpha non supporté par fpdf</em>).
+		<br />
+		Il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la génération de PDF.
+	</p>
+</fieldset>
+</form>
 
 <hr />
 
@@ -1922,6 +1927,7 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 <hr />
 
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form3" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p>
 <?php
 echo add_token_field();
@@ -1967,10 +1973,12 @@ echo add_token_field();
 		Il arrive que ce test de présence provoque un affichage d'erreur (<em>à propos de pmv.php</em>).
 		Dans ce cas, désactivez simplement le test.
 	</p>
+</fieldset>
 </form>
 <hr />
 
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form4" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p>
 <?php
 echo add_token_field();
@@ -2021,6 +2029,7 @@ echo add_token_field();
 		Si git est installé sur votre serveur et accessible par le serveur web, alors vous pouvez afficher dans l'entête administrateur sur la page d'accueil, la date de la révision en place.<br />
 		Cela peut être commode pour apporter des précisions sur votre version quand vous posez une question sur la liste gepi-users, mais l'absence éventuelle de git n'enlèvera aucune fonctionnalité à votre Gepi.
 	</p>
+</fieldset>
 </form>
 
 
@@ -2028,6 +2037,7 @@ echo add_token_field();
 
 <a name='gepi_en_production'></a>
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form4" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p>
 <?php
 echo add_token_field();
@@ -2078,6 +2088,7 @@ echo add_token_field();
 		Sur un serveur Gepi en production, avec des données que l'on ne veut pas perdre accidentellement, on désactive l'accès à quelques liens sensibles de Gepi comme <strong>Effacer la base</strong> et <strong>Données de test</strong>.<br />
 		Sur un Gepi de test en revanche, on peut souhaiter effectuer ces actions sensibles.
 	</p>
+</fieldset>
 </form>
 
 <?php
