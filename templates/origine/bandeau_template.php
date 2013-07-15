@@ -240,10 +240,18 @@
 				echo $tab['texte']."\n";
 			}
 			elseif (mb_substr($tab['lien'],0,4) == 'http') {
-				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
+				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				if(isset($tab['target'])) {
+					echo " target='".$tab['target']."'";
+				}
+				echo ">".$tab['texte']."</a>\n";
 			}
 			else {
-				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
+				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				if(isset($tab['target'])) {
+					echo " target='".$tab['target']."'";
+				}
+				echo ">".$tab['texte']."</a>\n";
 			}
 
 			echo "<ul class='niveau".$tab['niveau_sous_menu']."'>\n";
@@ -265,10 +273,18 @@
 				echo $tab['texte']."\n";
 			}
 			elseif (mb_substr($tab['lien'],0,4) == 'http') {
-				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
+				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				if(isset($tab['target'])) {
+					echo " target='".$tab['target']."'";
+				}
+				echo ">".$tab['texte']."</a>\n";
 			}
 			else {
-				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>";
+				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				if(isset($tab['target'])) {
+					echo " target='".$tab['target']."'";
+				}
+				echo ">".$tab['texte']."</a>";
 			}
 			echo "</li>\n";
 		}

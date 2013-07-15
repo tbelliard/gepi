@@ -413,7 +413,7 @@ echo '<!--[if lt IE 7]>
 		$barre_eleve.= '      <li class="plus"><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscope</a>';
 		$barre_eleve.= '         <ul class="niveau3">'."\n";
 		foreach($mes_groupes as $tmp_group) {
-			$barre_eleve.= '            <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe=&amp;groupe='.$tmp_group['id'].'&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline="'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)</a></li>'."\n";
+			$barre_eleve.= '            <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe=&amp;groupe='.$tmp_group['id'].'&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline="'.insert_confirm_abandon().' target="_blank">'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)</a></li>'."\n";
 		}
 		$barre_eleve.= '            <li><a href="'.$gepiPath.'/mod_trombinoscopes/plan_de_classe.php"'.insert_confirm_abandon().'>Plan de classe</a></li>'."\n";
 		$barre_eleve.= '         </ul>'."\n";

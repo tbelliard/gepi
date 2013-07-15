@@ -608,6 +608,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 			else {
 				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 			}
+			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
 			$cpt_sous_menu2++;
 		}
 
