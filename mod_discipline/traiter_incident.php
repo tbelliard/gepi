@@ -813,7 +813,7 @@ if(!isset($id_incident)) {
 						$lig1_declarant=mysql_fetch_object($res1_declarant);
 						$chaine=$lig1_declarant->civilite." ".casse_mot($lig1_declarant->nom, 'maj')." ".ucfirst(mb_substr($lig1_declarant->prenom,0,1));
 						$tab_individu[$lig_declarant->declarant]['designation']=$chaine;
-						$tab_individu[$lig_declarant->declarant]['email']=$lig_declarant->email;
+						$tab_individu[$lig_declarant->declarant]['email']=$lig1_declarant->email;
 					}
 					else {
 						$chaine="ERREUR: Login $lig1_declarant->declarant inconnu";
