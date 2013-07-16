@@ -8,8 +8,19 @@ Gepi-master (Version de développement)
 Bulletins:
 - Bulletins HTML: Possibilité de définir la taille des textes des cellules Avis du conseil de classe et Signature.
 
+Absences2:
+- Possibilité de modifier les dates/heure de début et fin d'une saisie depuis la page de saisie d'un traitement.
+
+Discipline:
+- Affichage par tranches des incidents à traiter (pour limiter le temps de chargement de la page).
+
+Modèles Ooo:
+- Possibilité de gérer des modèles OOo en compte scolarité ou cpe.
+
 Gestion:
+- Ajout de la date d'entrée d'un élève dans l'établissement.
 - Possibilité de choisir l'adresse mail destinataire de l'information comme quoi un changement d'adresse mail responsable ou élèev a eu lieu.
+- Possibilité d'ajouter un préfixe au sujet des mails envoyés par Gepi.
 
 Gepi-1.6.3 (17/06/2013)
 ===========================

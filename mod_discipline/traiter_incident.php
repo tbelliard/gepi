@@ -729,7 +729,7 @@ if(!isset($id_incident)) {
 	echo "</p>\n";
 
 	echo "<div style='float: right; border: 1px solid black;'>";
-	echo $nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche." incidents";
+	echo "<a href='javascript:afficher_tous_les_incidents()' title=\"Afficher tous ces incidents\">".$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche." incidents</a>";
 	if($chaine_criteres!="") {echo " avec le(s) critère(s) choisi(s)";}
 	echo "</div>\n";
 
@@ -760,10 +760,8 @@ echo "</select> enregistrements à partir de l'enregistrement n°\n";
 echo "<input type='text' name='debut' value='$debut' size='5' /> \n";
 
 
-
-if(isset($cpt)){
-	//echo "<p>limit=$limit debut=$debut cpt=$cpt</p>";
-	if($limit+$debut<$cpt){
+if(isset($nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche)){
+	if($limit+$debut<$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche){
 		echo "<input type='button' value='>>' onClick='tranche_suivante()' /> \n";
 	}
 }
@@ -776,6 +774,12 @@ echo "</p>\n";
 
 
 echo "<script type='text/javascript'>
+	function afficher_tous_les_incidents() {
+		document.forms.formulaire.debut.value=0;
+		document.forms.formulaire.limit.selectedIndex=7;
+		document.forms.formulaire.submit();
+	}
+
 	function tranche_precedente(){
 		debut=document.forms.formulaire.debut.value;
 		limit=document.forms.formulaire.limit.value;
@@ -801,8 +805,8 @@ echo "<script type='text/javascript'>
 		else{
 			// Il faudrait récupérer le nombre de lignes du tableau...\n";
 
-if(isset($cpt)){
-	echo "			document.forms.formulaire.debut.value=Math.min(eval(debut)+eval(limit),eval($cpt)-eval(limit));\n";
+if(isset($nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche)){
+	echo "			document.forms.formulaire.debut.value=Math.min(eval(debut)+eval(limit),eval($nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche)-eval(limit));\n";
 }
 else{
 	echo "			document.forms.formulaire.debut.value=eval(debut)+eval(limit);\n";
