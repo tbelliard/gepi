@@ -1,8 +1,6 @@
 <?php
 /*
- * $Id: index.php 2554 2008-10-12 14:49:29Z crob $
- *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,8 +32,6 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_ooo/gerer_modeles_ooo.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modèle Ooo : Index', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/gerer_modeles_ooo.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modèle Ooo : Index', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
@@ -50,7 +46,10 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     // L'entête de la section pour le 1er fichier de la section sinon "" (vide)
     //Le nom du fichier en minuscule avec son extension
 	//La description du document
-	
+
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('OOoUploadCpeDiscipline')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OOoUploadScolDiscipline')))) {
     //Retenue
     $lien_wiki[]='';
     $entete_section[]="MODULE DISCIPLINE";
@@ -71,7 +70,11 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
 	$fich[]="discipline_exclusion.odt";
     $utilisation[]="Exclusion temporaire de l'établissement";
 	$special[]="";
+}
 
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('OOoUploadCpeAbs2')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OOoUploadScolAbs2')))) {
     //modèle ABS2
     $lien_wiki[]='';
 	$entete_section[]="MODULE ABSENCE";
@@ -126,8 +129,11 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $fich[]="absence_sms.txt";
     $utilisation[]="ABS2 : Modèle de SMS envoyé aux parents";
 	$special[]="";
+}
 
-
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('OOoUploadCpeNotanet')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OOoUploadScolNotanet')))) {
     //Fiches brevet
     $lien_wiki[]='http://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc#Gabarits-de-fiches-brevets-dautres-acad%C3%A9mies';
 	$entete_section[]="MODULE NOTANET";
@@ -183,16 +189,19 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $fich[]="fb_TECHNO_agri.ods";
     $utilisation[]="Fiche brevet série technologique option agricole";
 	$special[]="obsolete";
+}
 
-
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('OOoUploadCpeEcts')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OOoUploadScolEcts')))) {
     // Module ECTS
     $lien_wiki[]='';
 	$entete_section[]="MODULE ECTS";
     $fich[]="documents_ects.odt";
     $utilisation[]="Documents ECTS (pour BTS, prépas...)";
 	$special[]="";
-	
-	
+}
+
     $nbfich=sizeof($fich);
 // Fin liste des fichiers
 

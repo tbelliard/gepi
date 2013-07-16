@@ -1,8 +1,6 @@
 <?php
 /*
- * $Id: index.php 2554 2008-10-12 14:49:29Z crob $
- *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,13 +32,10 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_ooo/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo : Index', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo: Index : Index', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
-
 
 //**************** EN-TETE *****************
 $titre_page = "Modèle Open Office";
@@ -60,13 +55,15 @@ $_SESSION['retour']=$_SERVER['PHP_SELF'] ;
 
 
 //Début de la table configuration
-if($_SESSION['statut']=='administrateur') {
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&((getSettingAOui('OOoUploadCpeAbs2'))||(getSettingAOui('OOoUploadCpeDiscipline'))||(getSettingAOui('OOoUploadCpeNotanet'))))||
+(($_SESSION['statut']=='scolarite')&&((getSettingAOui('OOoUploadScolAbs2'))||(getSettingAOui('OOoUploadScolDiscipline'))||(getSettingAOui('OOoUploadScolNotanet'))))) {
   echo "<table class='menu' summary='Modele Open Office'>\n";
   echo "<tr>\n";
   echo "<th colspan='2'><img src='../images/icons/control-center.png' alt='Configuration du module Modèle Open Office' class='link'/> - Configuration du module</th>\n";
   echo "</tr>\n";
   echo "<tr>\n";
-  echo "<td width='30%'><a href='../mod_ooo/gerer_modeles_ooo.php'>Gérer ses propres modèles de document</a>";
+  echo "<td width='30%'><a href='../mod_ooo/gerer_modeles_ooo.php'>Gérer les modèles de document OOo de l'établissement</a>";
   echo "</td>\n";
   echo "<td>Gérer ses propres modèles de document Open Office</td>\n";
   echo "</tr>\n"; 

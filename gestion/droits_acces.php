@@ -599,6 +599,26 @@ if(getSettingValue('active_mod_ooo')=='y') {
   $texteItem="a accès à l'upload de fichiers modèles OpenOffice personnels.";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+  $titreItem='OOoUploadScolDiscipline';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice pour le module Discipline.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+  $titreItem='OOoUploadScolAbs2';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice pour le module Absences 2.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+  $titreItem='OOoUploadScolNotanet';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice pour le module Notanet.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+  $titreItem='OOoUploadScolECTS';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice pour le module ECTS.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }
 
 //+++++++++++++++++++++++++++
@@ -955,6 +975,26 @@ if(getSettingValue('active_mod_ooo')=='y') {
 
   $titreItem='OOoUploadCpe';
   $texteItem="a accès à l'upload de fichiers modèles OpenOffice personnels.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+  $titreItem='OOoUploadCpeDiscipline';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice pour le module Discipline.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+  $titreItem='OOoUploadCpeAbs2';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice pour le module Absences 2.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+  $titreItem='OOoUploadCpeNotanet';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice pour le module Notanet.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+  $titreItem='OOoUploadCpeECTS';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice pour le module ECTS.";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }
