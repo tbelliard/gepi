@@ -2877,15 +2877,17 @@ function debug_var() {
 
 	echo "<table summary=\"Tableau de debug\">\n";
 	foreach($_POST as $post => $val) {
-		echo "<tr><td valign='top'>\$_POST['".$post."']=</td><td>".$val;
+		//echo "<tr><td valign='top'>\$_POST['".$post."']=</td><td>".$val;
+		echo "<tr><td valign='top'>\$_POST['".$post."']=</td><td>";
 
 		if(is_array($_POST[$post])) {
-			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
+			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>Array\n";
 			tab_debug_var('POST',$_POST[$post],'$_POST['.$post.']');
 
 			$cpt_debug_debug_var++;
 		}
 		else {
+			echo $val;
 			$debug_var_count['POST']++;
 		}
 
