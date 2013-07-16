@@ -308,8 +308,11 @@ $protagoniste_incident=isset($_POST['protagoniste_incident']) ? $_POST['protagon
 
 //$declarant_incident=isset($_POST['declarant_incident']) ? $_POST['declarant_incident'] : (isset($_GET['declarant_incident']) ? $_GET['declarant_incident'] : "");
 $declarant_incident=isset($_POST['declarant_incident']) ? $_POST['declarant_incident'] : (isset($_GET['declarant_incident']) ? $_GET['declarant_incident'] : "---");
+//echo "\$declarant_incident=$declarant_incident<br />";
 $declarant_incident2=isset($_POST['declarant_incident2']) ? $_POST['declarant_incident2'] : (isset($_GET['declarant_incident2']) ? $_GET['declarant_incident2'] : NULL);
 if(isset($declarant_incident2)) {$declarant_incident=$declarant_incident2;}
+//echo "\$declarant_incident2=$declarant_incident2<br />";
+//echo "\$declarant_incident=$declarant_incident<br />";
 
 $incidents_clos=isset($_POST['incidents_clos']) ? $_POST['incidents_clos'] : (isset($_GET['incidents_clos']) ? $_GET['incidents_clos'] : "n");
 
@@ -509,8 +512,9 @@ if(($_SESSION['statut']=='administrateur')||
 elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	$sql="SELECT 1=1 FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
-	WHERE sp.id_incident IS NULL;
+	WHERE sp.id_incident IS NULL
 	LIMIT 1;";
+	//echo "$sql<br />";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
 		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
@@ -718,14 +722,19 @@ if(!isset($id_incident)) {
 	echo add_token_field();
 	echo "<p align='left'><input type='checkbox' name='incidents_clos' id='incidents_clos' value='y'";
 	if($incidents_clos=="y") {echo " checked='checked'";}
-	echo " /><label for='incidents_clos' style='cursor:pointer;'> Afficher les incidents clos</label><br />\n";
+	echo " /><label for='incidents_clos' style='cursor:pointer;'> Afficher les incidents clos</label>";
 
-	//echo "<input type='checkbox' name='declarant_incident' id='declarant_incident' value='".$_SESSION['login']."'";
-	echo "<input type='checkbox' name='declarant_incident2' id='declarant_incident2' value='".$_SESSION['login']."'";
-	//if(($declarant_incident!="")&&($declarant_incident!="---")) {echo " checked='checked'";}
-	if($declarant_incident==$_SESSION['login']) {echo " checked='checked'";}
-	//echo " /><label for='declarant_incident' style='cursor:pointer;'> Ne voir que mes déclarations d'incidents</label>\n";
-	echo " /><label for='declarant_incident2' style='cursor:pointer;'> Ne voir que mes déclarations d'incidents</label>\n";
+	// 20130716
+	$sql_test_mes_incidents="SELECT 1=1 FROM s_incidents si, s_protagonistes sp WHERE si.declarant='".$_SESSION['login']."' AND si.id_incident=sp.id_incident LIMIT 1;";
+	//$sql_test_mes_incidents="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.declarant='".$_SESSION['login']."' AND si.id_incident=sp.id_incident LIMIT 1;";
+	//echo "<br />$sql_test_mes_incidents<br />";
+	$res_test_mes_incidents=mysql_query($sql_test_mes_incidents);
+	if(mysql_num_rows($res_test_mes_incidents)>0) {
+		echo "<br />\n";
+		echo "<input type='checkbox' name='declarant_incident2' id='declarant_incident2' value='".$_SESSION['login']."'";
+		if($declarant_incident==$_SESSION['login']) {echo " checked='checked'";}
+		echo " /><label for='declarant_incident2' style='cursor:pointer;'> Ne voir que mes déclarations d'incidents</label>\n";
+	}
 	echo "</p>\n";
 
 	echo "<div style='float: right; border: 1px solid black;'>";
