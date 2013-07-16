@@ -532,7 +532,22 @@ if(($_SESSION['statut']=='administrateur')||
 	}
 	unset($nouveauItem);
 
-
+	if(($_SESSION['statut']=='administrateur')||
+	(($_SESSION['statut']=='cpe')&&(getSettingAOui('OOoUploadCpeDiscipline')))||
+	(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OOoUploadScolDiscipline')))) {
+		$nouveauItem = new itemGeneral();
+		// L'ancre pose un pb de test de droit.
+		$nouveauItem->chemin='/mod_ooo/gerer_modeles_ooo.php#MODULE_DISCIPLINE';
+		//$nouveauItem->chemin='/mod_ooo/gerer_modeles_ooo.php';
+		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+		{
+			$nouveauItem->titre="Gestion des modèles OOo" ;
+			$nouveauItem->expli="Permet de gérer les modèles OOo associés au module Discipline." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
+		unset($nouveauItem);
+	}
 }
 //fin de la table configuration
 

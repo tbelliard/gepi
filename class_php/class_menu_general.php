@@ -66,7 +66,9 @@ class itemGeneral {
 	function acces($id,$statut) 
 	{ 
 		if ($_SESSION['statut']!='autre') {
-			$tab_id = explode("?",$id);
+			//$tab_id = explode("?",$id);
+			$tab_id_0 = explode("?",$id);
+			$tab_id = explode("#",$tab_id_0[0]);
 			$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
 			$droit = @mysql_result($query_droits, 0, $statut);
 			if ($droit == "V") {
