@@ -84,12 +84,13 @@ function infobulle_photo($eleve_login) {
 
 	$retour="";
 
-	$sql="SELECT elenoet, nom, prenom FROM eleves WHERE login='$eleve_login';";
+	$sql="SELECT elenoet, nom, prenom, sexe FROM eleves WHERE login='$eleve_login';";
 	$res_ele=mysql_query($sql);
 	$lig_ele=mysql_fetch_object($res_ele);
 	$eleve_elenoet=$lig_ele->elenoet;
 	$eleve_nom=$lig_ele->nom;
 	$eleve_prenom=$lig_ele->prenom;
+	$eleve_sexe=$lig_ele->sexe;
 
 	// Photo...
 	$photo=nom_photo($eleve_elenoet);
@@ -109,7 +110,15 @@ function infobulle_photo($eleve_login) {
 
 		$retour.=" <a href='#' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-100,20,1000,20,20);\"";
 		$retour.=">";
-		$retour.="<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
+		//$retour.="<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
+		$retour.="<img src='../mod_trombinoscopes/images/";
+		if($eleve_sexe=="F") {
+			$retour.="photo_f.png";
+		}
+		else {
+			$retour.="photo_g.png";
+		}
+		$retour.="' class='icone20' alt='$eleve_nom $eleve_prenom' />";
 		$retour.="</a>";
 	}
 
