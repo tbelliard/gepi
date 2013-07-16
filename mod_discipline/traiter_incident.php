@@ -474,6 +474,10 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+// Paramètres destinés à récupérer une partie seulement des incidents
+$limit=isset($_POST['limit']) ? $_POST['limit'] : (isset($_GET['limit']) ? $_GET['limit'] : 20);
+$debut=isset($_POST['debut']) ? $_POST['debut'] : (isset($_GET['debut']) ? $_GET['debut'] : 0);
+
 //===================================
 $email_visiteur="";
 $sql="SELECT email FROM utilisateurs WHERE login='".$_SESSION['login']."' AND email!='';";
@@ -616,6 +620,33 @@ if(!isset($id_incident)) {
 		}
 	}
 
+	// 20130716
+	if(!isset($limit)){
+		$limit=20;
+	}
+
+	if(!isset($debut)){
+		$debut=0;
+	}
+	elseif($limit=='TOUS') {
+		$debut=0;
+	}
+	else{
+		if(mb_strlen(preg_replace("/[0-9]/","",$debut))){
+			$debut=0;
+		}
+	}
+
+	$res=mysql_query($sql);
+	$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche=mysql_num_rows($res);
+	if($debut>$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche) {
+		$debut=0;
+	}
+	// On va refaire la requête un peu après avec les limitations de tranche choisies
+	if($limit!='TOUS'){
+		$sql.=" LIMIT $debut,$limit";
+		$sql2.=" LIMIT $debut,$limit";
+	}
 
 	//$sql.=" ORDER BY si.date DESC, si.heure DESC;";
 	//$sql2.=" ORDER BY si.date DESC, si.heure DESC;";
@@ -698,9 +729,92 @@ if(!isset($id_incident)) {
 	echo "</p>\n";
 
 	echo "<div style='float: right; border: 1px solid black;'>";
-	echo mysql_num_rows($res)." incidents";
+	echo $nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche." incidents";
 	if($chaine_criteres!="") {echo " avec le(s) critère(s) choisi(s)";}
 	echo "</div>\n";
+
+
+//======================================
+echo "<p>";
+if($debut > 0){
+	echo "<input type='button' value='<<' onClick='tranche_precedente()' /> \n";
+}
+
+/*
+//echo "Afficher <select name='limit'>\n";
+//echo "<input type='submit' value='Afficher' />\n";
+echo "<input type='button' value='Afficher' onClick='decoche_suppr_et_valide();' />\n";
+*/
+echo "<select name='limit'>\n";
+if($limit==20){$selected=" selected='true'";}else{$selected="";}
+echo "<option value='20'$selected>20</option>\n";
+if($limit==50){$selected=" selected='true'";}else{$selected="";}
+echo "<option value='50'$selected>50</option>\n";
+for($i=100;$i<=500;$i+=100){
+	if($limit==$i){$selected=" selected='true'";}else{$selected="";}
+	echo "<option value='$i'$selected>$i</option>\n";
+}
+if($limit=='TOUS'){$selected=" selected='true'";}else{$selected="";}
+echo "<option value='TOUS'$selected>TOUS</option>\n";
+echo "</select> enregistrements à partir de l'enregistrement n°\n";
+echo "<input type='text' name='debut' value='$debut' size='5' /> \n";
+
+
+
+if(isset($cpt)){
+	//echo "<p>limit=$limit debut=$debut cpt=$cpt</p>";
+	if($limit+$debut<$cpt){
+		echo "<input type='button' value='>>' onClick='tranche_suivante()' /> \n";
+	}
+}
+else{
+	echo "<input type='button' value='>>' onClick='tranche_suivante()' /> \n";
+}
+
+echo "</p>\n";
+
+
+
+echo "<script type='text/javascript'>
+	function tranche_precedente(){
+		debut=document.forms.formulaire.debut.value;
+		limit=document.forms.formulaire.limit.value;
+		//alert('debut='+debut+' et limit='+limit);
+
+		if(limit=='TOUS'){
+			document.forms.formulaire.debut.value=0;
+		}
+		else{
+			document.forms.formulaire.debut.value=Math.max(debut-limit,0);
+		}
+		document.forms.formulaire.submit();
+	}
+
+	function tranche_suivante(){
+		debut=document.forms.formulaire.debut.value;
+		limit=document.forms.formulaire.limit.value;
+		//alert('debut='+debut+' et limit='+limit);
+
+		if(limit=='TOUS'){
+			document.forms.formulaire.debut.value=0;
+		}
+		else{
+			// Il faudrait récupérer le nombre de lignes du tableau...\n";
+
+if(isset($cpt)){
+	echo "			document.forms.formulaire.debut.value=Math.min(eval(debut)+eval(limit),eval($cpt)-eval(limit));\n";
+}
+else{
+	echo "			document.forms.formulaire.debut.value=eval(debut)+eval(limit);\n";
+}
+
+echo "		}
+		document.forms.formulaire.submit();
+	}
+</script>\n";
+//======================================
+
+
 
 	echo "<p align='center'><input type='submit' name='valider' value='Valider' /></p>\n";
 
