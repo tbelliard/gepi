@@ -2856,16 +2856,18 @@ function debug_var() {
 
 		echo "<table id='container_debug_var_$cpt_debug_debug_var' summary=\"Tableau de debug\">\n";
 		foreach($tableau as $post => $val) {
-			echo "<tr><td valign='top'>".$pref_chaine."['".$post."']=</td><td>".$val;
+			echo "<tr><td valign='top'>".$pref_chaine."['".$post."']=</td><td>";
 
 			if(is_array($tableau[$post])) {
 				$cpt_debug_debug_var++;
 
+				echo "Array";
 				tab_debug_var($chaine_tab_niv1,$tableau[$post],$pref_chaine.'['.$post.']');
 
 				$cpt_debug_debug_var++;
 			}
 			elseif(isset($debug_var_count[$chaine_tab_niv1])) {
+				echo $val;
 				$debug_var_count[$chaine_tab_niv1]++;
 			}
 
@@ -2877,7 +2879,6 @@ function debug_var() {
 
 	echo "<table summary=\"Tableau de debug\">\n";
 	foreach($_POST as $post => $val) {
-		//echo "<tr><td valign='top'>\$_POST['".$post."']=</td><td>".$val;
 		echo "<tr><td valign='top'>\$_POST['".$post."']=</td><td>";
 
 		if(is_array($_POST[$post])) {
@@ -2915,15 +2916,16 @@ function debug_var() {
 	echo "<table summary=\"Tableau de debug sur GET\">";
 	foreach($_GET as $get => $val){
 		
-		echo "<tr><td valign='top'>\$_GET['".$get."']=</td><td>".$val;
+		echo "<tr><td valign='top'>\$_GET['".$get."']=</td><td>";
 
 		if(is_array($_GET[$get])) {
-			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
+			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>Array\n";
 			tab_debug_var('GET',$_GET[$get],'$_GET['.$get.']');
 
 			$cpt_debug_debug_var++;
 		}
 		else {
+			echo $val;
 			$debug_var_count['GET']++;
 		}
 
@@ -2952,14 +2954,15 @@ function debug_var() {
 	echo "<table summary=\"Tableau de debug sur SESSION\">";
 	foreach($_SESSION as $variable => $val){
 		
-		echo "<tr><td valign='top'>\$_SESSION['".$variable."']=</td><td>".$val;
+		echo "<tr><td valign='top'>\$_SESSION['".$variable."']=</td><td>";
 		if(is_array($_SESSION[$variable])) {
-			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
+			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>Array\n";
 			tab_debug_var('SESSION',$_SESSION[$variable],'$_SESSION['.$variable.']');
 
 			$cpt_debug_debug_var++;
 		}
 		else {
+			echo $val;
 			$debug_var_count['SESSION']++;
 		}
 		echo "</td></tr>\n";
@@ -3011,15 +3014,18 @@ function debug_var() {
 
 		echo "<table summary=\"Tableau de debug\">\n";
 		foreach($_FILES as $key => $val) {
-			echo "<tr><td valign='top'>\$_FILES['".$key."']=</td><td>".$val;
+			echo "<tr><td valign='top'>\$_FILES['".$key."']=</td><td>";
 	
 			if(is_array($_FILES[$key])) {
-				echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
+				echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>Array\n";
 				tab_debug_var('FILES',$_FILES[$key],'$_FILES['.$key.']');
 	
 				$cpt_debug_debug_var++;
 			}
-	
+			else {
+				echo $val;
+			}
+
 			echo "</td></tr>\n";
 		}
 		echo "</table>\n";
@@ -3044,15 +3050,16 @@ function debug_var() {
 	echo "<table summary=\"Tableau de debug sur COOKIE\">";
 	foreach($_COOKIE as $variable => $val){
 
-		echo "<tr><td valign='top'>\$_COOKIE['".$variable."']=</td><td>".$val;
+		echo "<tr><td valign='top'>\$_COOKIE['".$variable."']=</td><td>";
 
 		if(is_array($val)) {
-			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
+			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>Array\n";
 			tab_debug_var('COOKIE',$val,'$_COOKIE['.$variable.']');
 
 			$cpt_debug_debug_var++;
 		}
 		else {
+			echo $val;
 			$debug_var_count['COOKIE']++;
 		}
 

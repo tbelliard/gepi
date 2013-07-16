@@ -100,7 +100,10 @@ echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Ret
 if($dossier_etab=="") {
 	echo "</p>\n";
 
-	echo "<p style='color:red'>Le dossier d'archivage de l'établissement n'a pas pu être identifié.</p>\n";
+	echo "<p style='color:red'>Le dossier d'archivage de l'établissement n'a pas pu être identifié.<br />
+Cela ne devrait pas arriver sauf si votre Gepi était auparavant en 'multisite' et qu'il ne l'est plus.<br />
+En quittant le mode multisite, il se peut que vous ayez oublié laissé un enregistrement 'multisite=y' dans la table 'setting'.<br />
+Dans ce cas, passer la valeur à 'n' règlera le problème.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -145,7 +148,7 @@ if(!isset($step)) {
 	echo "<li><p>Lors de l'archivage, les cahiers de textes sont parcourus pour mettre en place une arborescence copie de l'arborescence des cahiers de textes.<br />La procédure ne vide pas les tables des cahiers de textes.</p></li>\n";
 	echo "<li><p>Si vous souhaitez tester la procédure d'archivage, vous pouvez, à n'importe quel moment de l'année, effectuer un archivage sans transfert des documents joints.<br />Une arborescence copie sera mise en place.<br />Vous pourrez la consulter... et la supprimer si vous le souhaitez sans impact sur les cahiers de textes en cours d'utilisation.<br />En revanche, si vous cochez Transfert, les documents joints aux cahiers de textes seront déplacés.<br />Un professeur qui consulterait son cahier de textes de l'année courante, trouverait ses comptes-rendus, mais les documents joints ne seraient plus disponibles.</p></li>\n";
 	echo "<li><p>En fin d'année, il est recommandé d'effectuer un archivage avec transfert des documents pour ne pas laisser de scories pour les enseignements des années suivantes (<em>et éviter d'encombrer l'arborescence du serveur de fichiers inutiles</em>).</p><p>Une fois l'archivage de fin d'année effectué, vous pourrez vider les tables des cahiers de textes dans <a href='../utilitaires/clean_tables.php'>Gestion générale/Nettoyage des tables</a><br />(<em>ce nettoyage 'manuel' des tables n'est pas indispensable; il est effectué automatiquement lors de l'initialisation de l'année si vous ne faites pas une initialisation tout à la main</em>)</p></li>\n";
-	echo "<li><p>Dans les archives de CDT, les professeurs ne pourront consulter que leurs propres cahiers de textes.br />Les comptes de statut 'administrateur', 'scolarite' auront accès à toutes les archives de cahiers de textes.<br />Les autres statuts n'y auront aucun accès.</p></li>\n";
+	echo "<li><p>Dans les archives de CDT, les professeurs ne pourront consulter que leurs propres cahiers de textes.<br />Les comptes de statut 'administrateur', 'scolarite' auront accès à toutes les archives de cahiers de textes.<br />Les autres statuts n'y auront aucun accès.</p></li>\n";
 	echo "</ul>\n";
 }
 else {
