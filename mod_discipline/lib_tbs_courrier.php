@@ -3,6 +3,7 @@
  */
 //fonction tirée de la gestion des adresses pour les bulletins PDF
 function adresse_responsables($login_eleve) {	
+	$un_seul_bull_par_famille="non";
     /* 
 	$tab_adresse[0]['civilite']="";
 	$tab_adresse[0]['civilite_courrier']=""; // Monsieur ou Madame ou Madame, Monsieur
@@ -13,6 +14,9 @@ function adresse_responsables($login_eleve) {
 	$tab_adresse[0]['cp_ville']="";
 	$tab_adresse[0]['pays']="";
 	*/
+
+	$gepiSchoolPays=getSettingValue('gepiSchoolPays');
+
 	// Récup infos responsables
 	$sql="SELECT rp.civilite,rp.nom,rp.prenom,ra.adr1,ra.adr2,ra.adr3,ra.adr4,ra.cp,ra.commune,ra.pays,ra.adr_id FROM resp_pers rp, resp_adr ra, responsables2 r,eleves e WHERE rp.pers_id=r.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
 	$res_resp=mysql_query($sql);
@@ -38,7 +42,7 @@ function adresse_responsables($login_eleve) {
 			$cpt++;
 		}
 	}
-		
+
 	if (!isset($tab_ele['resp'][0])) {
 		$tab_adresse[0]['civilite']="ADRESSE MANQUANTE";
 		$tab_adresse[0]['civilite_courrier']="";
@@ -53,6 +57,16 @@ function adresse_responsables($login_eleve) {
 		$nb_bulletins=1;
 	}
 	else {
+		// Initialisation des indices:
+		$tab_adresse[0]['civilite']="";
+		$tab_adresse[0]['civilite_courrier']="";
+		$tab_adresse[0]['adresse1']="";
+		$tab_adresse[0]['adresse2']="";
+		$tab_adresse[0]['adresse3']="";
+		$tab_adresse[0]['adresse4']="";
+		$tab_adresse[0]['cp_ville']="";
+		$tab_adresse[0]['pays']="";
+
 		if (isset($tab_ele['resp'][1])) {
 			//echo "<pre>il y a un R2</pre>";		
 			if ((isset($tab_ele['resp'][1]['adr1']))&&
