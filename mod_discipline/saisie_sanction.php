@@ -706,7 +706,10 @@ if(($mode=="suppr_report")&&(isset($id_report))) {
 	$res=mysql_query($sql);
 }
 
-if(isset($odt)&&($odt=="exclusion")) { //impression de l'exclusion en Ooo
+if(isset($odt)&&
+	(($odt=="exclusion")||
+	($odt=="travail")||
+	($odt=="autre"))) { //impression de l'exclusion en Ooo
 	//recup des informations à exporter dans l'ODT
 	//Nom et prenom eleve;
 	if ($ele_login != null && $ele_login != '') {
@@ -737,70 +740,124 @@ if(isset($odt)&&($odt=="exclusion")) { //impression de l'exclusion en Ooo
 
 	//Contenu du courrier
 	if ($id_sanction != null && $id_sanction != '') {
-	$sql="SELECT * FROM s_exclusions WHERE id_sanction='$id_sanction';";
-	$res_sanction=mysql_query($sql);
-		if(mysql_num_rows($res_sanction)==0) {
-			$num_courrier="";
-			$type_exclusion="";
-			$qualidication_faits="";
-			$duree_exclusion="";
-			$date_debut="";
-			$date_fin="";
-			$signataire="";
-		}
-		else {
-			$lig_sanction=mysql_fetch_object($res_sanction);
-			$num_courrier=$lig_sanction->num_courrier;
-			$type_exclusion=$lig_sanction->type_exclusion;
-			$qualification_faits=$lig_sanction->qualification_faits;
-			$duree_exclusion=$lig_sanction->nombre_jours;
-			$date_debut=$lig_sanction->date_debut;
-			$date_fin=$lig_sanction->date_fin;
-			$signataire=$lig_sanction->id_signataire;
-		}
+		if($odt=='exclusion') {
+			$sql="SELECT * FROM s_exclusions WHERE id_sanction='$id_sanction';";
+			$res_sanction=mysql_query($sql);
+			if(mysql_num_rows($res_sanction)==0) {
+				$num_courrier="";
+				$type_exclusion="";
+				$qualidication_faits="";
+				$duree_exclusion="";
+				$date_debut="";
+				$date_fin="";
+				$signataire="";
+			}
+			else {
+				$lig_sanction=mysql_fetch_object($res_sanction);
+				$num_courrier=$lig_sanction->num_courrier;
+				$type_exclusion=$lig_sanction->type_exclusion;
+				$qualification_faits=$lig_sanction->qualification_faits;
+				$duree_exclusion=$lig_sanction->nombre_jours;
+				$date_debut=$lig_sanction->date_debut;
+				$date_fin=$lig_sanction->date_fin;
+				$signataire=$lig_sanction->id_signataire;
+			}
 
-	$sql="SELECT * FROM s_delegation WHERE id_delegation='$signataire';";
-	$res_delegation=mysql_query($sql);
-		if(mysql_num_rows($res_delegation)==0) {
-			$fct_delegation="";
-			$fct_autorite="";
-			$nom_autorite="";
+			$sql="SELECT * FROM s_delegation WHERE id_delegation='$signataire';";
+			$res_delegation=mysql_query($sql);
+			if(mysql_num_rows($res_delegation)==0) {
+				$fct_delegation="";
+				$fct_autorite="";
+				$nom_autorite="";
+			}
+			else {
+				$lig_delegation=mysql_fetch_object($res_delegation);
+				$fct_delegation=$lig_delegation->fct_delegation;
+				$fct_autorite=$lig_delegation->fct_autorite;
+				$nom_autorite=$lig_delegation->nom_autorite;
+			}
 		}
-		else {
-			$lig_delegation=mysql_fetch_object($res_delegation);
-			$fct_delegation=$lig_delegation->fct_delegation;
-			$fct_autorite=$lig_delegation->fct_autorite;
-			$nom_autorite=$lig_delegation->nom_autorite;
-		}
-	}
-	//conversion des dates
-	//Voici les deux tableaux des jours et des mois traduits en français
-	$nom_jour_fr = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
-	$mois_fr = Array("", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", 
-		    "septembre", "octobre", "novembre", "décembre");
-	// on extrait la date du jour pour la date de debut
-	list($annee, $mois, $jour) = explode('-', $date_debut);
-	$mois=intval($mois);
-	$timestamp = mktime (0, 0, 0, $mois, $jour, $annee);
-	// affichage du jour de la semaine
-	$date_debut = $nom_jour_fr[date("w",$timestamp)].' '.$jour.' '.$mois_fr[$mois].' '.$annee; 
-	// on extrait la date du jour pour la date de fin
-	list($annee, $mois, $jour) = explode('-', $date_fin); 
-	$mois=intval($mois);
-	$timestamp = mktime (0, 0, 0, $mois, $jour, $annee);
-	// affichage du jour de la semaine
-	$date_fin = $nom_jour_fr[date("w",$timestamp)].' '.$jour.' '.$mois_fr[$mois].' '.$annee; 
+		elseif($odt=='travail') {
+			$nom_autorite=civ_nom_prenom($_SESSION['login'],'');
 
-	if ($date_debut==$date_fin) {
-	$chaine_date = "du $date_debut";
-	$journee = "la journée";
-	} else {
-	$chaine_date = "du $date_debut au $date_fin inclus";
-	$journee = "les journées";
+			$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
+			$res_incident=mysql_query($sql);
+			if(mysql_num_rows($res_incident)==0) {
+				$qualification_faits="";
+			}
+			else {
+				$qualification_faits=mysql_result($res_incident,0,"description");
+			}
+
+			$sql="SELECT * FROM s_travail WHERE id_sanction='$id_sanction';";
+			$res_sanction=mysql_query($sql);
+			if(mysql_num_rows($res_sanction)==0) {
+				$date_retour="";
+				$heure_retour="";
+				$travail="";
+			}
+			else {
+				$lig_sanction=mysql_fetch_object($res_sanction);
+				$date_retour=formate_date($lig_sanction->date_retour);
+				$heure_retour=$lig_sanction->heure_retour;
+				$travail=$lig_sanction->travail;
+			}
+		}
+		elseif($odt=='autre') {
+			$nom_autorite=civ_nom_prenom($_SESSION['login'],'');
+
+			$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
+			$res_incident=mysql_query($sql);
+			if(mysql_num_rows($res_incident)==0) {
+				$qualification_faits="";
+			}
+			else {
+				$qualification_faits=mysql_result($res_incident,0,"description");
+			}
+
+			$sql="SELECT sas.*, sts.nature FROM s_autres_sanctions sas, s_types_sanctions sts WHERE sas.id_sanction='$id_sanction' AND sas.id_nature=sts.id_nature;";
+			$res_sanction=mysql_query($sql);
+			if(mysql_num_rows($res_sanction)==0) {
+				$nature_sanction="";
+				$description_sanction="";
+			}
+			else {
+				$lig_sanction=mysql_fetch_object($res_sanction);
+				$nature_sanction=$lig_sanction->nature;
+				$description_sanction=$lig_sanction->description;
+			}
+		}
 	}
 
 	$export = array();
-	$export[] = Array('nom' => $nom_ele, 'prenom' => $prenom_ele, 'classe' => $classe_ele,
+	if($odt=='exclusion') {
+		//conversion des dates
+		//Voici les deux tableaux des jours et des mois traduits en français
+		$nom_jour_fr = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
+		$mois_fr = Array("", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", 
+				"septembre", "octobre", "novembre", "décembre");
+		// on extrait la date du jour pour la date de debut
+		list($annee, $mois, $jour) = explode('-', $date_debut);
+		$mois=intval($mois);
+		$timestamp = mktime (0, 0, 0, $mois, $jour, $annee);
+		// affichage du jour de la semaine
+		$date_debut = $nom_jour_fr[date("w",$timestamp)].' '.$jour.' '.$mois_fr[$mois].' '.$annee; 
+		// on extrait la date du jour pour la date de fin
+		list($annee, $mois, $jour) = explode('-', $date_fin); 
+		$mois=intval($mois);
+		$timestamp = mktime (0, 0, 0, $mois, $jour, $annee);
+		// affichage du jour de la semaine
+		$date_fin = $nom_jour_fr[date("w",$timestamp)].' '.$jour.' '.$mois_fr[$mois].' '.$annee; 
+
+		if ($date_debut==$date_fin) {
+			$chaine_date = "du $date_debut";
+			$journee = "la journée";
+		} else {
+			$chaine_date = "du $date_debut au $date_fin inclus";
+			$journee = "les journées";
+		}
+
+		$export[] = Array('nom' => $nom_ele, 'prenom' => $prenom_ele, 'classe' => $classe_ele,
 					  'ad_nom_resp' => $ad_nom_resp, 
 					  'adr1_resp' => $adr1_resp, 'adr2_resp' => $adr2_resp, 'adr3_resp' => $adr3_resp,
 					  'cp_ville_resp' => $cp_ville_resp,
@@ -817,6 +874,36 @@ if(isset($odt)&&($odt=="exclusion")) { //impression de l'exclusion en Ooo
 					  'fonction_autorite' => $fct_autorite,
 					  'nom_autorite' => $nom_autorite
 					  );
+	}
+	elseif($odt=='travail') {
+		$export[] = Array('nom' => $nom_ele, 'prenom' => $prenom_ele, 'classe' => $classe_ele,
+					  'ad_nom_resp' => $ad_nom_resp, 
+					  'adr1_resp' => $adr1_resp, 'adr2_resp' => $adr2_resp, 'adr3_resp' => $adr3_resp,
+					  'cp_ville_resp' => $cp_ville_resp,
+					  'civilite_courrier' => $civilite_courrier,
+					  'id_incident' => $id_incident,
+					  'id_sanction' => $id_sanction,
+					  'qualif_faits' => $qualification_faits,
+					  'date_retour' => $date_retour,
+					  'heure_retour' => $heure_retour,
+					  'travail' => $travail,
+					  'nom_autorite' => $nom_autorite
+					  );
+	}
+	elseif($odt=='autre') {
+		$export[] = Array('nom' => $nom_ele, 'prenom' => $prenom_ele, 'classe' => $classe_ele,
+					  'ad_nom_resp' => $ad_nom_resp, 
+					  'adr1_resp' => $adr1_resp, 'adr2_resp' => $adr2_resp, 'adr3_resp' => $adr3_resp,
+					  'cp_ville_resp' => $cp_ville_resp,
+					  'civilite_courrier' => $civilite_courrier,
+					  'id_incident' => $id_incident,
+					  'id_sanction' => $id_sanction,
+					  'qualif_faits' => $qualification_faits,
+					  'nature_sanction' => $nature_sanction,
+					  'description_sanction' => $description_sanction,
+					  'nom_autorite' => $nom_autorite
+					  );
+	}
 	/*
 	echo "<pre>";
 	echo print_r($mois);
@@ -825,13 +912,25 @@ if(isset($odt)&&($odt=="exclusion")) { //impression de l'exclusion en Ooo
 	// génération Ooo
 	include_once '../mod_abs2/lib/function.php'; //pour la fonction repertoire_modeles
 	include_once '../orm/helpers/AbsencesNotificationHelper.php'; // pour la fonction tbs_str et MergeInfosEtab
-	$extraction_bilans = repertoire_modeles('discipline_exclusion.odt');
+	if($odt=='exclusion') {
+		$fichier_modele_discipline='discipline_exclusion.odt';
+		$prefixe_fichier_odt="exclusion";
+	}
+	elseif($odt=='travail') {
+		$fichier_modele_discipline='discipline_travail.odt';
+		$prefixe_fichier_odt="travail";
+	}
+	elseif($odt=='autre') {
+		$fichier_modele_discipline='discipline_autre.odt';
+		$prefixe_fichier_odt="autre_sanction";
+	}
+	$extraction_bilans = repertoire_modeles($fichier_modele_discipline);
 	//Coordonnées etab
 	$TBS = AbsencesNotificationHelper::MergeInfosEtab($extraction_bilans);
 
 	$TBS->MergeBlock('export', $export);
 
-	$nom_fichier = 'exclusion_'. $nom_ele.'_'.$prenom_ele.'_'.$id_sanction. '.odt';
+	$nom_fichier = $prefixe_fichier_odt.'_'. $nom_ele.'_'.$prenom_ele.'_'.$id_sanction. '.odt';
 	$TBS->Show(OPENTBS_DOWNLOAD + TBS_EXIT, $nom_fichier);
 } //fin Ooo
 
@@ -1166,6 +1265,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 					echo "<th>Nature</th>\n";
 					echo "<th>Date retour</th>\n";
 					echo "<th>Travail</th>\n";
+					echo "<th>Imprimer</th>\n";
 					echo "<th>Suppr</th>\n";
 					echo "</tr>\n";
 					$alt_b=1;
@@ -1190,6 +1290,15 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 						echo "</td>\n";
 
+						echo "<td>";
+						if ($gepiSettings['active_mod_ooo'] == 'y') { //impression avec mod_ooo
+							echo "<a href='".$_SERVER['PHP_SELF']."?odt=travail&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/print.png' width='16' height='16' alt=\"Imprimer le document\" /></a>\n";
+						}
+						else {
+							echo "-";
+						}
+						echo "</td>\n";
+
 						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
 						echo "</tr>\n";
 					}
@@ -1208,6 +1317,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 					echo "<tr>\n";
 					echo "<th>Nature</th>\n";
 					echo "<th>Description</th>\n";
+					echo "<th>Imprimer</th>\n";
 					echo "<th>Suppr</th>\n";
 					echo "</tr>\n";
 					$alt_b=1;
@@ -1222,6 +1332,15 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						$tabdiv_infobulle[]=creer_div_infobulle("div_autre_sanction_$lig_sanction->id_sanction","$lig_sanction->nature (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n');
 
 						echo " <a href='#' onmouseover=\"delais_afficher_div('div_autre_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
+						echo "</td>\n";
+						
+						echo "<td>";
+						if ($gepiSettings['active_mod_ooo'] == 'y') { //impression avec mod_ooo
+							echo "<a href='".$_SERVER['PHP_SELF']."?odt=autre&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/print.png' width='16' height='16' alt=\"Imprimer le document\" /></a>\n";
+						}
+						else {
+							echo "-";
+						}
 						echo "</td>\n";
 
 						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";

@@ -70,6 +70,20 @@ if(($_SESSION['statut']=='administrateur')||
 	$fich[]="discipline_exclusion.odt";
     $utilisation[]="Exclusion temporaire de l'établissement";
 	$special[]="";
+
+	// Travail
+    $lien_wiki[]='';
+    $entete_section[]="";
+	$fich[]="discipline_travail.odt";
+    $utilisation[]="Travail à rendre";
+	$special[]="";
+
+	// Autre sanction
+    $lien_wiki[]='';
+    $entete_section[]="";
+	$fich[]="discipline_autre.odt";
+    $utilisation[]="Autre sanction";
+	$special[]="";
 }
 
 if(($_SESSION['statut']=='administrateur')||
