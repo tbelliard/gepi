@@ -311,7 +311,7 @@ if(!isset($tab_id_classe)) {
 	$res=mysql_query($sql);
 	$nb_classes=mysql_num_rows($res);
 	if($nb_classes==0) {
-		echo "<p>Aucune propostion de correction ne requiert votre attention.</p>\n";
+		echo "<p>Aucune proposition de correction ne requiert votre attention.</p>\n";
 		echo "<p><br /></p>\n";
 		require("../lib/footer.inc.php");
 		die();
