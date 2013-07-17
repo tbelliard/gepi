@@ -112,7 +112,7 @@ if(isset($mesure)) {
 		}
 
 		if($msg=="") {
-			$msg.="Mise à jour des commentaires des mesures précédemment saisies effectué.<br />";
+			$msg.="Mise à jour des commentaires des mesures précédemment saisies effectuée.<br />";
 		}
 		//if(in_array($mesure,$tab_mesure)) {$a_enregistrer='n';}
 	}
