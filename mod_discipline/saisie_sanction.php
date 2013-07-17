@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -73,7 +73,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 	$sql="SELECT * FROM s_types_sanctions2 WHERE id_nature='".$id_nature_sanction."';";
 	$res_ns=mysql_query($sql);
 	if(mysql_num_rows($res_ns)==0) {
-		$msg.="Le type de sanction est inconnu???<br />";
+		$msg.="Le type de ".$mod_disc_terme_sanction." est inconnu???<br />";
 	}
 	else {
 		$type_sanction=mysql_result($res_ns, 0, "type");
@@ -162,7 +162,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)==0) {
-					$msg.="La sanction n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
+					$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
 				}
 				else {
 					$sql="SELECT 1=1 FROM s_retenues WHERE id_sanction='$id_sanction';";
@@ -183,7 +183,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						//echo "$sql<br />\n";
 						$update=mysql_query($sql);
 						if(!$update) {
-							$msg.="Erreur lors de la mise à jour de la sanction '$nature_sanction' n°$id_sanction.<br />";
+							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
 					}
 				}
@@ -195,7 +195,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
-					$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions'.<br />";
+					$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions'.<br />";
 				}
 				else {
 					$id_sanction=mysql_insert_id();
@@ -217,7 +217,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
-							$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop].<br />";
+							$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop].<br />";
 						}
 						else {
 							$tmp_id_sanction=mysql_insert_id();
@@ -343,21 +343,21 @@ if(isset($_POST['enregistrer_sanction'])) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)==0) {
-					$msg.="La sanction n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
+					$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
 				}
 				else {
 					$sql="SELECT 1=1 FROM s_exclusions WHERE id_sanction='$id_sanction';";
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
-						$msg.="La sanction n°$id_sanction n'existe pas dans 's_exclusions'.<br />Elle ne peut pas être mise à jour.<br />";
+						$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_exclusions'.<br />Elle ne peut pas être mise à jour.<br />";
 					}
 					else {
 						$sql="UPDATE s_exclusions SET date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', id_signataire='$signataire' WHERE id_sanction='$id_sanction';";
 						//echo "$sql<br />\n";
 						$update=mysql_query($sql);
 						if(!$update) {
-							$msg.="Erreur lors de la mise à jour de la sanction '$nature_sanction' n°$id_sanction.<br />";
+							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
 					}
 				}
@@ -367,7 +367,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
-					$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions'.<br />";
+					$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions'.<br />";
 				}
 				else {
 					$id_sanction=mysql_insert_id();
@@ -383,7 +383,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
-							$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop].<br />";
+							$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop].<br />";
 						}
 						else {
 							$tmp_id_sanction=mysql_insert_id();
@@ -439,7 +439,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)==0) {
-					$msg.="La sanction n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
+					$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
 				}
 				else {
 					$sql="SELECT 1=1 FROM s_travail WHERE id_sanction='$id_sanction';";
@@ -454,7 +454,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						//echo "$sql<br />\n";
 						$update=mysql_query($sql);
 						if(!$update) {
-							$msg.="Erreur lors de la mise à jour de la sanction '$nature_sanction' n°$id_sanction.<br />";
+							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
 					}
 				}
@@ -464,7 +464,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
-					$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions'.<br />";
+					$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions'.<br />";
 				}
 				else {
 					$id_sanction=mysql_insert_id();
@@ -481,7 +481,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
-							$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop]<br />";
+							$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop]<br />";
 						}
 						else {
 							$tmp_id_sanction=mysql_insert_id();
@@ -521,14 +521,14 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
-						$msg.="La sanction n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
+						$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
 					}
 					else {
 						$sql="SELECT 1=1 FROM s_autres_sanctions WHERE id_sanction='$id_sanction';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							$msg.="La sanction n°$id_sanction n'existe pas dans 's_autres_sanctions'.<br />Elle ne peut pas être mis à jour.<br />";
+							$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_autres_sanctions'.<br />Elle ne peut pas être mis à jour.<br />";
 						}
 						else {
 							$sql="UPDATE s_autres_sanctions SET description='$description', id_nature='$id_nature_sanction' WHERE id_sanction='$id_sanction';";
@@ -536,7 +536,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 							$update=mysql_query($sql);
 							if(!$update) {
 								//$msg.="Erreur lors de la mise à jour de la sanction '$type_sanction' n°$id_sanction.<br />";
-								$msg.="Erreur lors de la mise à jour de la sanction '$nature_sanction' n°$id_sanction.<br />";
+								$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 							}
 						}
 					}
@@ -546,7 +546,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions'.<br />";
+						$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions'.<br />";
 					}
 					else {
 						$id_sanction=mysql_insert_id();
@@ -556,7 +556,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						$res=mysql_query($sql);
 						if(!$res) {
 							//$msg.="Erreur lors de l'enregistrement de la sanction '$type_sanction' n°$id_sanction.<br />";
-							$msg.="Erreur lors de l'enregistrement de la sanction '$nature_sanction' n°$id_sanction.<br />";
+							$msg.="Erreur lors de l'enregistrement de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
 					}
 
@@ -566,7 +566,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 							//echo "$sql<br />\n";
 							$res=mysql_query($sql);
 							if(!$res) {
-								$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop]<br />";
+								$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop]<br />";
 							}
 							else {
 								$tmp_id_sanction=mysql_insert_id();
@@ -577,7 +577,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 								$res=mysql_query($sql);
 								if(!$res) {
 									//$msg.="Erreur lors de l'enregistrement de la sanction '$type_sanction' n°$tmp_id_sanction.<br />";
-									$msg.="Erreur lors de l'enregistrement de la sanction '$nature_sanction' n°$tmp_id_sanction.<br />";
+									$msg.="Erreur lors de l'enregistrement de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$tmp_id_sanction.<br />";
 								}
 							}
 						}
@@ -937,7 +937,7 @@ if(isset($odt)&&
 $utilisation_prototype="ok";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Discipline: Traitement/sanction";
+$titre_page = "Discipline: Traitement/".$mod_disc_terme_sanction;
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
@@ -973,7 +973,7 @@ echo "<ul style='margin:0px;'>\n";
 echo "<li>\n";
 echo "<a href='traiter_incident.php'";
 echo " onclick='return confirm_abandon (this, change, \"$themessage\")'";
-echo ">Liste des incidents</a>";
+echo ">Liste des ".$mod_disc_terme_incident."s</a>";
 echo "</li>\n";
 
 echo "<li>\n";
@@ -992,14 +992,14 @@ echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Reto
 if(!isset($id_incident)) {
 	echo "</p>\n";
 
-	echo "<p><strong>Erreur&nbsp;:</strong> Il faut commencer par sélectionner l'incident.</p>\n";
+	echo "<p><strong>Erreur&nbsp;:</strong> Il faut commencer par sélectionner l'".$mod_disc_terme_incident.".</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
 
 echo " | <a href='saisie_incident.php?id_incident=$id_incident&amp;step=2'";
 echo " onclick='return confirm_abandon (this, change, \"$themessage\")'";
-echo ">Retour incident</a>\n";
+echo ">Retour ".$mod_disc_terme_incident."</a>\n";
 
 //if(!isset($mode)) {
 if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
@@ -1014,7 +1014,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 		//echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 		//echo "<input type='hidden' name='step' value='$step' />\n";
 
-		echo "<p class='bold'>Protagonistes de l'incident n°$id_incident&nbsp;:</p>\n";
+		echo "<p class='bold'>Protagonistes de l'".$mod_disc_terme_incident." n°$id_incident&nbsp;:</p>\n";
 
 		echo "<blockquote>\n";
 
@@ -1023,8 +1023,8 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 		echo "<th>Individu</th>\n";
 		echo "<th>Statut</th>\n";
 		//echo "<th>Qualité dans l'incident</th>\n";
-		echo "<th>Rôle dans l'incident</th>\n";
-		echo "<th>Traitement/sanction</th>\n";
+		echo "<th>Rôle dans l'".$mod_disc_terme_incident."</th>\n";
+		echo "<th>Traitement/".$mod_disc_terme_sanction."</th>\n";
 		echo "</tr>\n";
 		$alt=1;
 		$cpt=0;
@@ -1299,7 +1299,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						}
 						echo "</td>\n";
 
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction' /></a></td>\n";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
@@ -1313,7 +1313,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				//echo "$sql<br />\n";
 				$res_sanction=mysql_query($sql);
 				if(mysql_num_rows($res_sanction)>0) {
-					echo "<table class='boireaus' border='1' summary='Autres sanctions' style='margin:2px;'>\n";
+					echo "<table class='boireaus' border='1' summary='Autres ".$mod_disc_terme_sanction."s' style='margin:2px;'>\n";
 					echo "<tr>\n";
 					echo "<th>Nature</th>\n";
 					echo "<th>Description</th>\n";
@@ -1336,21 +1336,21 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						
 						echo "<td>";
 						if ($gepiSettings['active_mod_ooo'] == 'y') { //impression avec mod_ooo
-							echo "<a href='".$_SERVER['PHP_SELF']."?odt=autre&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/print.png' width='16' height='16' alt=\"Imprimer le document\" /></a>\n";
+							echo "<a href='".$_SERVER['PHP_SELF']."?odt=autre&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction'><img src='../images/icons/print.png' width='16' height='16' alt=\"Imprimer le document\" /></a>\n";
 						}
 						else {
 							echo "-";
 						}
 						echo "</td>\n";
 
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction' /></a></td>\n";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
 				}
 
 
-				echo "<a href='".$_SERVER['PHP_SELF']."?id_incident=$id_incident&amp;ele_login=$lig->login&amp;mode=ajout' title='Ajouter une sanction'><img src='../images/icons/add.png' width='16' height='16' alt='Ajouter une sanction' /></a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_incident=$id_incident&amp;ele_login=$lig->login&amp;mode=ajout' title='Ajouter une ".$mod_disc_terme_sanction."'><img src='../images/icons/add.png' width='16' height='16' alt='Ajouter une ".$mod_disc_terme_sanction."' /></a>";
 			}
 			else {
 				// Pas de sanction pour un personnel, non mais sans blagues;o)
@@ -1367,7 +1367,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 		rappel_incident($id_incident);
 	}
 	else {
-		echo "<p>Aucun protagoniste n'a (<i>encore</i>) été spécifié pour cet incident.</p>\n";
+		echo "<p>Aucun protagoniste n'a (<i>encore</i>) été spécifié pour cet ".$mod_disc_terme_incident.".</p>\n";
 	}
 
 	require("../lib/footer.inc.php");
@@ -1376,7 +1376,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 elseif($mode=='ajout') {
 	echo " | <a href='saisie_sanction.php?id_incident=$id_incident&amp;step=2'";
 	echo " onclick='return confirm_abandon (this, change, \"$themessage\")'";
-	echo ">Retour sanction</a>\n";
+	echo ">Retour ".$mod_disc_terme_sanction."</a>\n";
 	//echo " | <a href='traiter_incident.php'>Liste des incidents</a>\n";
 	echo "</p>\n";
 
@@ -1395,9 +1395,9 @@ elseif($mode=='ajout') {
 
 	echo add_token_field(true);
 
-	echo "<p class='bold'>Ajout d'une sanction pour ".p_nom($ele_login);
+	echo "<p class='bold'>Ajout d'une ".$mod_disc_terme_sanction." pour ".p_nom($ele_login);
 	echo infobulle_photo($ele_login);
-	echo " (<em>incident n°$id_incident</em>)&nbsp;:</p>\n";
+	echo " (<em>".$mod_disc_terme_incident." n°$id_incident</em>)&nbsp;:</p>\n";
 
 	echo "<blockquote>\n";
 
@@ -1416,7 +1416,7 @@ elseif($mode=='ajout') {
 
 	echo "<div style='float:left; width:".$largeur_champ_select."em;'>\n";
 
-	echo "<p class='bold'>Nature de la sanction&nbsp;:<br />\n";
+	echo "<p class='bold'>Nature de la ".$mod_disc_terme_sanction."&nbsp;:<br />\n";
 	echo "<select name='traitement' id='traitement' onchange=\"maj_traitement()\">\n";
 	echo "<option value=''";
 	echo ">---</option>\n";
@@ -1495,7 +1495,7 @@ echo "<script type='text/javascript'>
 elseif($mode=='modif') {
 	echo " | <a href='saisie_sanction.php?id_incident=$id_incident&amp;step=2'";
 	echo " onclick='return confirm_abandon (this, change, \"$themessage\")'";
-	echo ">Retour sanction</a>\n";
+	echo ">Retour ".$mod_disc_terme_sanction."</a>\n";
 	//echo " | <a href='traiter_incident.php'>Liste des incidents</a>\n";
 	echo "</p>\n";
 
@@ -1519,7 +1519,7 @@ elseif($mode=='modif') {
 
 	echo add_token_field(true);
 
-	echo "<p class='bold'>Sanction (<em>$traitement</em>) n°$id_sanction concernant ".p_nom($ele_login);
+	echo "<p class='bold'>".ucfirst($mod_disc_terme_sanction)." (<em>$traitement</em>) n°$id_sanction concernant ".p_nom($ele_login);
 	echo infobulle_photo($ele_login);
 	echo "&nbsp;: ";
 	echo get_nature_sanction($traitement);

@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -78,7 +78,7 @@ if(isset($suppr_mesure)) {
 			$sql="SELECT 1=1 FROM s_traitement_incident sti WHERE sti.id_mesure='".$suppr_mesure[$i]."';";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0) {
-				$msg.="Suppression de la mesure n°".$suppr_mesure[$i]." impossible car associée à ".mysql_num_rows($test)." incidents.<br />\n";
+				$msg.="Suppression de la mesure n°".$suppr_mesure[$i]." impossible car associée à ".mysql_num_rows($test)." ".$mod_disc_terme_incident."s.<br />\n";
 			}
 			else {
 				//$sql="DELETE FROM s_mesures WHERE mesure='$suppr_mesure[$i]';";
@@ -172,7 +172,7 @@ echo "</p>\n";
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 echo add_token_field();
 
-echo "<p class='bold'>Saisie des mesures prises ou demandées suite à un incident&nbsp;:</p>\n";
+echo "<p class='bold'>Saisie des mesures prises ou demandées suite à un ".$mod_disc_terme_incident."&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
 $cpt=0;
@@ -271,7 +271,7 @@ echo "<p><br /></p>\n";
 echo "<p><em>NOTES&nbsp;:</em></p>\n";
 echo "<ul>\n";
 echo "<li><p>Une mesure demandée (<em>par un professeur</em>) doit être validée par un CPE/scol.</p></li>\n";
-echo "<li><p>Le commentaire est affiché en infobulle dans la page de saisie d'incident.</p></li>\n";
+echo "<li><p>Le commentaire est affiché en infobulle dans la page de saisie d'".$mod_disc_terme_incident.".</p></li>\n";
 echo "</ul>\n";
 echo "<p><br /></p>\n";
 

@@ -13,6 +13,8 @@ Absences2:
 
 Discipline:
 - Affichage par tranches des incidents à traiter (pour limiter le temps de chargement de la page).
+- Possibilité d'imprimer des fichiers OOo pour les sanctions  de type travail et autre.
+- Possibilité de modifier les termes 'incident' et 'sanction'.
 
 Modèles Ooo:
 - Possibilité de gérer des modèles OOo en compte scolarité ou cpe.

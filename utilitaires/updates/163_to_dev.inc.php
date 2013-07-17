@@ -75,5 +75,31 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "&nbsp;-> Initialisation du terme 'incident' dans le module Discipline : ";
+$mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
+if ($mod_disc_terme_incident=="") {
+	if (!saveSetting("mod_disc_terme_incident", 'incident')) {
+		$result .= msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= msj_ok("Ok !");
+	}
+} else {
+	$result .= msj_present("déjà faite");
+}
+
+$result .= "&nbsp;-> Initialisation du terme 'sanction' dans le module Discipline : ";
+$mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
+if ($mod_disc_terme_sanction=="") {
+	if (!saveSetting("mod_disc_terme_sanction", 'sanction')) {
+		$result .= msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= msj_ok("Ok !");
+	}
+} else {
+	$result .= msj_present("déjà faite");
+}
+
 
 ?>

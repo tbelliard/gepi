@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -286,21 +286,21 @@ if($etat_incident!='clos') {
 			$sql="SELECT 1=1 FROM s_sanctions WHERE login='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
 			$test_sanction=mysql_query($sql);
 			if(mysql_num_rows($test_sanction)>0) {
-				$msg.="ERREUR: Il n'est pas possible de supprimer ".$suppr_ele_incident[$i]." pour l'incident $id_incident car une ou des sanctions sont prises. Vous devez d'abord supprimer les sanctions associées.<br />\n";
+				$msg.="ERREUR: Il n'est pas possible de supprimer ".$suppr_ele_incident[$i]." pour l'".$mod_disc_terme_incident." $id_incident car une ou des ".$mod_disc_terme_sanction."s sont prises. Vous devez d'abord supprimer les ".$mod_disc_terme_sanction."s associées.<br />\n";
 			}
 			else {
 				$sql="DELETE FROM s_traitement_incident WHERE login_ele='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
 				//echo "$sql<br />";
 				$menage=mysql_query($sql);
 				if(!$menage) {
-					$msg.="ERREUR lors de la suppression des traitements associés à ".$suppr_ele_incident[$i]." pour l'incident $id_incident. Les mesures demandées ou prises posent un problème.<br />\n";
+					$msg.="ERREUR lors de la suppression des traitements associés à ".$suppr_ele_incident[$i]." pour l'".$mod_disc_terme_incident." $id_incident. Les mesures demandées ou prises posent un problème.<br />\n";
 				}
 				else {
 					$sql="DELETE FROM s_protagonistes WHERE login='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de ".$suppr_ele_incident[$i]." pour l'incident $id_incident<br />\n";
+						$msg.="ERREUR lors de la suppression de ".$suppr_ele_incident[$i]." pour l'".$mod_disc_terme_incident." $id_incident<br />\n";
 					}
 				}
 			}
@@ -472,14 +472,14 @@ if($etat_incident!='clos') {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
-					$msg.="ERREUR lors de l'enregistrement de l'incident&nbsp;:".$sql."<br />\n";
+					$msg.="ERREUR lors de l'enregistrement de l'".$mod_disc_terme_incident."&nbsp;:".$sql."<br />\n";
 				}
 				else {
 					$id_incident=mysql_insert_id();
-					$msg.="Enregistrement de l'incident n°".$id_incident." effectué.<br />\n";
+					$msg.="Enregistrement de l'".$mod_disc_terme_incident." n°".$id_incident." effectué.<br />\n";
 				}
 	
-				$texte_mail="Saisie par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident) survenu le $jour/$mois/$annee à $display_heure:\n";
+				$texte_mail="Saisie par ".civ_nom_prenom($_SESSION['login'])." d'un ".$mod_disc_terme_incident." (n°$id_incident) survenu le $jour/$mois/$annee à $display_heure:\n";
 				$texte_mail.="Nature: $nature\nDescription: $description\n";
 			}
 			else {
@@ -523,7 +523,7 @@ if($etat_incident!='clos') {
 							$tab_res[]=$lign_cat->id_categorie;
 						}
 						//il ne devrait pas y avoir plus d'un enregistrement; dans le cas contraire on envoi un message
-						if (count($tab_res)>1) {$msg.="Il y a plusieurs catégories affectées à cette nature. La première est retenue pour cet incident. Vous devriez mettre à jour vos catégories d'incidents.<br />";}
+						if (count($tab_res)>1) {$msg.="Il y a plusieurs catégories affectées à cette nature. La première est retenue pour cet ".$mod_disc_terme_incident.". Vous devriez mettre à jour vos catégories d'".$mod_disc_terme_incident."s.<br />";}
 						//on affecte la categorie a l'incident ou on met à null dans le cas contraire;
 						if ($tab_res['0']==null) {$sql.="id_categorie=NULL ,";}
 						else {$sql.="id_categorie='".$tab_res['0']."' ,";}
@@ -573,10 +573,10 @@ if($etat_incident!='clos') {
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la mise à jour de l'incident ".$id_incident."<br />\n";
+						$msg.="ERREUR lors de la mise à jour de l'".$mod_disc_terme_incident." ".$id_incident."<br />\n";
 					}
 					else {
-						$msg.="Mise à jour de l'incident n°".$id_incident." effectuée.<br />\n";
+						$msg.="Mise à jour de l'".$mod_disc_terme_incident." n°".$id_incident." effectuée.<br />\n";
 					}
 				}
 				
@@ -584,10 +584,10 @@ if($etat_incident!='clos') {
 		        $res_declarant=mysql_query($sql_declarant);
 		        if(mysql_num_rows($res_declarant)>0) {
 			        $lig_decclarant=mysql_fetch_object($res_declarant);
-			        $texte_mail= "Déclaration initiale de l'incident par ".u_p_nom($lig_decclarant->declarant)."\n";
+			        $texte_mail= "Déclaration initiale de l'".$mod_disc_terme_incident." par ".u_p_nom($lig_decclarant->declarant)."\n";
 		        }
 	
-				$texte_mail.="Mise à jour par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident)";
+				$texte_mail.="Mise à jour par ".civ_nom_prenom($_SESSION['login'])." d'un ".$mod_disc_terme_incident." (n°$id_incident)";
 				if(isset($display_heure)) {
 					$texte_mail.=" survenu le $jour/$mois/$annee à/en $display_heure:\n";
 				}
@@ -823,10 +823,10 @@ $headers);
 					$sql="UPDATE s_incidents SET etat='clos' WHERE id_incident='$id_incident';";
 					$update=mysql_query($sql);
 					if(!$update) {
-						$msg.="ERREUR lors de la clôture de l'incident n°$id_incident.<br />\n";
+						$msg.="ERREUR lors de la clôture de l'".$mod_disc_terme_incident." n°$id_incident.<br />\n";
 					}
 					else {
-						$msg.="Clôture de l'incident n°$id_incident.<br />\n";
+						$msg.="Clôture de l'".$mod_disc_terme_incident." n°$id_incident.<br />\n";
 					}
 				}
 	
@@ -876,7 +876,7 @@ $headers);
 						$res_prot=mysql_query($sql);
 						if(mysql_num_rows($res_prot)>0) {
 							$texte_mail.="\n";
-							$texte_mail.="Protagonistes de l'incident: \n";
+							$texte_mail.="Protagonistes de l'".$mod_disc_terme_incident.": \n";
 							while($lig_prot=mysql_fetch_object($res_prot)) {
 								if($lig_prot->statut=='eleve') {
 									$classe_elv = get_noms_classes_from_ele_login($lig_prot->login);
@@ -938,7 +938,7 @@ $headers);
 							if($destinataires!="") {
 								$texte_mail=$texte_mail."\n\n"."Message: ".preg_replace('#<br />#',"\n",$msg);
 						
-								$subject = "[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
+								$subject = "[GEPI][".ucfirst($mod_disc_terme_incident)." n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
 
 								$headers = "";
 								if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
@@ -973,7 +973,7 @@ $style_specifique[]="mod_discipline/mod_discipline";
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Discipline: Signaler un incident";
+$titre_page = "Discipline: Signaler un ".$mod_disc_terme_incident;
 //require_once("../lib/header.inc.php");
 
 include_once("../lib/header_template.inc.php");
@@ -1015,11 +1015,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='cpe')||($_SES
 	if(mysql_num_rows($test)>0) {
 ?>
     <a href='incidents_sans_protagonistes.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
-        Incidents sans protagonistes
+        <?php echo ucfirst($mod_disc_terme_incident);?> sans protagonistes
     </a>
     |
     <a href='traiter_incident.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
-        Liste des incidents
+        Liste des <?php echo $mod_disc_terme_incident;?>s
     </a>
     (<em>avec protagonistes</em>)
 <?php
@@ -1027,7 +1027,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='cpe')||($_SES
 	else {
 ?>
     <a href='traiter_incident.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
-        Liste des incidents
+        Liste des <?php echo $mod_disc_terme_incident;?>s
     </a>
 <?php
 	}
@@ -1040,7 +1040,7 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	if(mysql_num_rows($test)>0) {
 ?>
     <a href='incidents_sans_protagonistes.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
-        Incidents sans protagonistes
+        <?php echo ucfirst($mod_disc_terme_incident);?> sans protagonistes
     </a> 
     | 
 <?php
@@ -1051,7 +1051,7 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	if(mysql_num_rows($test)>0) {
 ?>
     <a href='traiter_incident.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
-        Liste des incidents
+        Liste des <?php echo $mod_disc_terme_incident;?>s
     </a>
 <?php
 	}
@@ -1061,7 +1061,7 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 		if(mysql_num_rows($test)>0) {
 ?>
     <a href='traiter_incident.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
-        Liste des incidents
+        Liste des <?php echo $mod_disc_terme_incident;?>s
     </a>
 <?php
 		}
@@ -1071,7 +1071,7 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 			if(mysql_num_rows($test)>0) {
 ?>
     <a href='traiter_incident.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
-        Liste des incidents
+        Liste des <?php echo $mod_disc_terme_incident;?>s
     </a>
 <?php
 			}
@@ -1085,7 +1085,7 @@ if ($step==2) {   //Eric Ajout génération du modèle Ooo pour imprimer le rapp
     | 
     <a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=<?php echo $id_incident.add_token_in_url();?>' 
        onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
-        Imprimer le rapport d'incident
+        Imprimer le rapport d'<?php echo $mod_disc_terme_incident;?>
     </a>
 <?php
 }
@@ -1148,7 +1148,7 @@ if($step!=2) {
         <li>
             <a href='saisie_incident.php?step=2<?php if(isset($id_incident)) {echo "&amp;id_incident=".$id_incident;} ?>'
                onclick='return confirm_abandon (this, change, "<?php echo $themessage; ?>")'>
-                Préciser l'incident
+                Préciser l'<?php echo $mod_disc_terme_incident;?>
             </a>
         </li>            
 <?php
@@ -1158,7 +1158,7 @@ if((isset($id_incident))&&($_SESSION['statut']!='professeur')&&(($_SESSION['stat
         <li>
             <a href='saisie_sanction.php?id_incident=<?php echo $id_incident; ?>' 
                onclick='return confirm_abandon (this, change, "<?php echo $themessage; ?>")'>
-                Traitement/sanction
+                Traitement/<?php echo $mod_disc_terme_sanction;?>
             </a>
         </li>     
 <?php
@@ -1260,14 +1260,14 @@ if(isset($id_incident) ) {
 <?php
         }
 ?>
-    <p class='bold'>Protagonistes de l'incident n°<?php echo $id_incident; ?>&nbsp;:</p>
+    <p class='bold'>Protagonistes de l'<?php echo $mod_disc_terme_incident;?> n°<?php echo $id_incident; ?>&nbsp;:</p>
     <blockquote>
         <table class='boireaus' style="border:1px;">
             <caption class='invisible'>Protagonistes</caption>
             <tr>
                 <th>Individu</th>
                 <th>Statut</th>
-                <th>Rôle dans l'incident</th>                
+                <th>Rôle dans l'<?php echo $mod_disc_terme_incident;?></th>                
 <?php
         if(($gepiSettings['active_mod_ooo'] == 'y')&&
                 ((($_SESSION['statut']=='professeur')&&(getSettingValue('imprDiscProfRetenueOOo')=='yes'))
@@ -1579,7 +1579,7 @@ if(isset($id_incident) ) {
             N'oubliez pas de 
             <a href='saisie_incident.php?step=2<?php if(isset($id_incident)) {echo "&amp;id_incident=".$id_incident ;} ?>'
                 onclick="return confirm_abandon (this, change, '$themessage')">
-                préciser l'incident
+                préciser l'<?php echo $mod_disc_terme_incident;?>
             </a>
             après ajout des protagonistes.
         </p>
@@ -1636,9 +1636,9 @@ if(isset($id_incident) ) {
     }
     else {
 ?>
-<p class='bold'>Protagonistes de l'incident&nbsp;:</p>
+<p class='bold'>Protagonistes de l'<?php echo $mod_disc_terme_incident;?>&nbsp;:</p>
 <blockquote>
-    <p style='color:red;'>Aucun protagoniste n'a (<em>encore</em>) été spécifié pour cet incident.</p>
+    <p style='color:red;'>Aucun protagoniste n'a (<em>encore</em>) été spécifié pour cet <?php echo $mod_disc_terme_incident;?>.</p>
 </blockquote>
  <?php	
     }
@@ -1647,7 +1647,7 @@ if(isset($id_incident) ) {
     if($step==0) {
 	// AJOUT DE PROTAGONISTES ELEVES A L'INCIDENT
 ?>
-<p class='bold'>Ajouter des protagonistes de l'incident.</p>
+<p class='bold'>Ajouter des protagonistes de l'<?php echo $mod_disc_terme_incident;?>.</p>
 
 <blockquote>
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire1'>
@@ -2025,7 +2025,7 @@ elseif($step==2) {
 	//==========================================
 	// SAISIE DES DETAILS DE L'INCIDENT
 ?>
-<p class='bold'>Détails de l'incident
+<p class='bold'>Détails de l'<?php echo $mod_disc_terme_incident;?>
 <?php
 	if(isset($id_incident)) {
 		echo " n°$id_incident";
@@ -2050,7 +2050,7 @@ elseif($step==2) {
 ?>
 <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire'>
     <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
-    <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Détails de l'incident</legend>
+    <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Détails de l'<?php echo $mod_disc_terme_incident;?></legend>
     <p><?php echo add_token_field(); ?></p>
 <?php
 	}
@@ -2108,14 +2108,14 @@ elseif($step==2) {
 	$alt=1;
 ?>
         <table class='boireaus' style="border:1px;">
-            <caption class="invisible">Détails de l'incident</caption>
+            <caption class="invisible">Détails de l'<?php echo $mod_disc_terme_incident;?></caption>
 <?php
 	// Date de l'incident
 	$alt=$alt*(-1);
 ?>
             <tr class='lig<?php echo $alt; ?>'>
                 <td style='font-weight:bold;vertical-align:top;text-align:left;'>
-                    Date de l'incident&nbsp;:
+                    Date de l'<?php echo $mod_disc_terme_incident;?>&nbsp;:
                 </td>
 <?php
 	if($etat_incident!='clos') {
@@ -2168,7 +2168,7 @@ elseif($step==2) {
 ?>
             <tr class='lig<?php echo $alt; ?>'>
                 <td style='font-weight:bold;vertical-align:top;text-align:left;'>
-                    Heure de l'incident&nbsp;:
+                    Heure de l'<?php echo $mod_disc_terme_incident;?>&nbsp;:
                 </td>
                 <td style='text-align:left;'<?php if($etat_incident!='clos') {echo " colspan='2'";}?>>
 <?php
@@ -2257,7 +2257,7 @@ elseif($step==2) {
 ?>
             <tr class='lig<?php echo $alt; ?>'>
                 <td style='font-weight:bold;vertical-align:top;text-align:left;'>
-                    Nature de l'incident <span style='color:red;'>(*)</span>&nbsp;:
+                    Nature de l'<?php echo $mod_disc_terme_incident;?> <span style='color:red;'>(*)</span>&nbsp;:
                 </td>
                 <td style='text-align:left;'<?php if($etat_incident!='clos') {echo " colspan='2'";} ?>>
 <?php
@@ -2341,7 +2341,7 @@ new Ajax.Autocompleter (
 				}
 				$texte.="</table>\n";
 	
-				$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature',"Nature de l'incident","",$texte,"",14,0,'y','y','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature',"Nature de l'".$mod_disc_terme_incident,"",$texte,"",14,0,'y','y','n','n');
 
 ?>
                     <a href='#' 
@@ -2352,8 +2352,8 @@ new Ajax.Autocompleter (
                     </a>
 
 <?php		
-				$texte="Cliquez pour choisir une nature existante.<br />Ou si aucune nature n'est déjà définie, saisissez la nature d'incident de votre choix.";
-				$tabdiv_infobulle[]=creer_div_infobulle('div_explication_choix_nature',"Choix nature de l'incident","",$texte,"",18,0,'y','y','n','n');
+				$texte="Cliquez pour choisir une nature existante.<br />Ou si aucune nature n'est déjà définie, saisissez la nature d'".$mod_disc_terme_incident." de votre choix.";
+				$tabdiv_infobulle[]=creer_div_infobulle('div_explication_choix_nature',"Choix nature de l'".$mod_disc_terme_incident,"",$texte,"",18,0,'y','y','n','n');
 	
 				//====================================================
 	
@@ -2390,7 +2390,7 @@ new Ajax.Autocompleter (
                             </div>
                             
                             <span style='padding-left: 1px; margin-bottom: 3px;'>
-                                Natures d'incidents semblables
+                                Natures d'<?php echo $mod_disc_terme_incident;?>s semblables
                             </span>
                         </div>			
 <?php
@@ -2458,7 +2458,7 @@ new Ajax.Autocompleter (
 ?>
             <tr class='lig<?php echo $alt; ?>'>
                 <td style='font-weight:bold;vertical-align:top;text-align:left;'>
-                    Description de l'incident&nbsp;:&nbsp;
+                    Description de l'<?php echo $mod_disc_terme_incident;?>&nbsp;:&nbsp;
                     <div id='div_avertissement_description' style='float:right;'>
                         <a href='#' 
                            onclick="afficher_div('div_explication_description','y',10,-40);return false;" 
@@ -2481,7 +2481,7 @@ new Ajax.Autocompleter (
 	$texte.="<br />";
 	$texte.="Pour plus de détails, consultez <a href='http://www.cnil.fr/la-cnil/actualite/article/article/zones-bloc-note-et-commentaires-les-bons-reflexes-pour-ne-pas-deraper/' target='_blank'>l'article de la CNIL</a>?<br />";
 
-	$tabdiv_infobulle[]=creer_div_infobulle('div_explication_description',"Description de l'incident","",$texte,"",30,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('div_explication_description',"Description de l'".$mod_disc_terme_incident,"",$texte,"",30,0,'y','y','n','n');
 ?>
                     <div id='div_avertissement_description2' style='display:none; font-size:small; color:red; font-weight:normal;'><?php echo $texte;?></div>
 
@@ -2553,7 +2553,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 	if ($autorise_commentaires_mod_disc=="yes") {
 ?>
                 <td style='text-align:center;'>
-                    <strong>Zone de dialogue sur l'incident</strong>
+                    <strong>Zone de dialogue sur l'<?php echo $mod_disc_terme_incident;?></strong>
                     <a href='#' 
                        onclick="return false;" 
                        onmouseover="delais_afficher_div('div_explication_commentaires','y',10,-40,<?php echo $delais_affichage_infobulle; ?>,<?php echo $largeur_survol_infobulle; ?>,<?php echo $hauteur_survol_infobulle; ?>)"
@@ -2561,7 +2561,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
                         <img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' />
                     </a>
 <?php
-		$texte="Cette zone de texte est disponible pour dialoguer avec la vie scolaire des modalités particulières de traitement de l'incident ou suivre les suites de celui-ci.<br /> Horaire et lieu d'une retenue demandée, demande de convocation de l'élève par le CPE, ...";
+		$texte="Cette zone de texte est disponible pour dialoguer avec la vie scolaire des modalités particulières de traitement de l'".$mod_disc_terme_incident." ou suivre les suites de celui-ci.<br /> Horaire et lieu d'une retenue demandée, demande de convocation de l'élève par le CPE, ...";
 		$tabdiv_infobulle[]=creer_div_infobulle('div_explication_commentaires',"Zone de texte : dialogue","",$texte,"",18,0,'y','y','n','n');
 ?>
                     <textarea id="commentaire"  
@@ -2631,10 +2631,10 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 <?php
 
 					$texte="Les mesures demandées le sont par des professeurs.<br />";
-					$texte.="Un compte cpe ou scolarité peut ensuite saisir la sanction correspondante s'il juge la demande appropriée.<br />";
+					$texte.="Un compte cpe ou scolarité peut ensuite saisir la ".$mod_disc_terme_sanction." correspondante s'il juge la demande appropriée.<br />";
 					$texte.="<br />";
 					$texte.="Il n'y a pas d'intérêt pour un CPE à cocher une de ces cases.<br />";
-					$texte.="Il vaut mieux passer à la saisie en suivant le lien Traitement/sanction en haut à droite.<br />";
+					$texte.="Il vaut mieux passer à la saisie en suivant le lien Traitement/".$mod_disc_terme_sanction." en haut à droite.<br />";
 					$tabdiv_infobulle[]=creer_div_infobulle("div_mesures_demandees","Mesures demandées","",$texte,"",30,0,'y','y','n','n');
 ?>
                                 <a href='#' 
@@ -2871,7 +2871,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
             <input type='hidden' name='step' value='<?php echo $step; ?>' />
         </p>
         <p style='text-align:center;'><input type='checkbox' name='clore_incident' id='clore_incident' value='y' />
-            <label for='clore_incident' style='cursor:pointer;'>&nbsp;Clore l'incident.</label>
+            <label for='clore_incident' style='cursor:pointer;'>&nbsp;Clore l'<?php echo $mod_disc_terme_incident;?>.</label>
             <br />
             <em style='font-size:x-small;'>(sous réserve de ne pas <strong>Demander</strong> de mesure)</em>
         </p>
@@ -2882,8 +2882,8 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 
         <p><em>NOTES&nbsp;</em>&nbsp;:</p>
         <ul>
-            <li><span style='color:red;'>(*)</span> Il est impératif de saisir une Nature d'incident pour des questions de facilité de traitement par la suite.</li>
-            <li>Les formulaires de saisie du rôle des protagonistes et de saisie des détails de l'incident sont séparés.<br />
+            <li><span style='color:red;'>(*)</span> Il est impératif de saisir une Nature d'<?php echo $mod_disc_terme_incident;?> pour des questions de facilité de traitement par la suite.</li>
+            <li>Les formulaires de saisie du rôle des protagonistes et de saisie des détails de l'<?php echo $mod_disc_terme_incident;?> sont séparés.<br />
 Ne faites pas de modification dans les deux formulaires sans valider entre les deux, vous perdriez la modification.</li>
         </ul>
 
@@ -2907,12 +2907,12 @@ Ne faites pas de modification dans les deux formulaires sans valider entre les d
 			echo "if(document.getElementById('nature').options[document.getElementById('nature').selectedIndex].value=='') {";
 		}
 ?>
-			alert("La nature de l'incident doit être précisée.");
+			alert("La nature de l'<?php echo $mod_disc_terme_incident;?> doit être précisée.");
 			return false;
 		}
 		else {
 			if(document.getElementById('display_heure').value=='') {
-				alert("L'heure de l'incident (non vide) doit être précisée. \\nEn cas de doute sur l'heure, mettre un '?'.");
+				alert("L'heure de l'<?php echo $mod_disc_terme_incident;?> (non vide) doit être précisée. \\nEn cas de doute sur l'heure, mettre un '?'.");
 				return false;
 			}
 			else {

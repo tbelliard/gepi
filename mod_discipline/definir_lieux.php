@@ -56,7 +56,7 @@ if(($_SESSION['statut']=='administrateur')||
 	$acces_ok="y";
 }
 else {
-	$msg="Vous n'avez pas le droit de définir les lieux de sanctions.";
+	$msg="Vous n'avez pas le droit de définir les lieux de ".$mod_disc_terme_incident."s.";
 	header("Location: ./index.php?msg=$msg");
 	die();
 }
@@ -119,7 +119,6 @@ if((isset($lieu))&&($lieu!='')) {
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-//$titre_page = "Sanctions: Définition des qualités";
 $titre_page = "Discipline: Définition des lieux";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
@@ -133,7 +132,7 @@ echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' meth
 echo add_token_field();
 
 //echo "<p class='bold'>Saisie des qualités dans un incident&nbsp;:</p>\n";
-echo "<p class='bold'>Saisie les lieux des incidents&nbsp;:</p>\n";
+echo "<p class='bold'>Saisie les lieux des ".$mod_disc_terme_incident."s&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
 $cpt=0;

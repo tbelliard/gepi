@@ -2,6 +2,13 @@
 /*
 */
 
+// Initialisations diverses pour le module Discipline
+$mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
+if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
+
+$mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
+if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
+
 // Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()
 // Hauteur de la bande testée pour la position de la souris:
 $hauteur_survol_infobulle=20;
@@ -303,7 +310,8 @@ function affiche_mesures_incident($id_incident) {
 }
 
 function rappel_incident($id_incident) {
-	echo "<p class='bold'>Rappel de l'incident";
+	global $mod_disc_terme_incident;
+	echo "<p class='bold'>Rappel de l'".$mod_disc_terme_incident;
 	if(isset($id_incident)) {
 		echo " n°$id_incident";
 
@@ -323,7 +331,7 @@ function rappel_incident($id_incident) {
 	if(mysql_num_rows($res_incident)>0) {
 		$lig_incident=mysql_fetch_object($res_incident);
 
-		echo "<table class='boireaus' border='1' summary='Incident'>\n";
+		echo "<table class='boireaus' border='1' summary='".ucfirst($mod_disc_terme_incident)."'>\n";
 		echo "<tr class='lig1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Date: </td><td style='text-align:left;'>".formate_date($lig_incident->date)."</td></tr>\n";
 		echo "<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure: </td><td style='text-align:left;'>$lig_incident->heure</td></tr>\n";
 
@@ -366,7 +374,7 @@ function rappel_incident($id_incident) {
 		echo "</table>\n";
 	}
 	else {
-		echo "<p>L'incident n°$id_incident ne semble pas enregistré???</p>\n";
+		echo "<p>L'".$mod_disc_terme_incident." n°$id_incident ne semble pas enregistré???</p>\n";
 	}
 	echo "</blockquote>\n";
 }
@@ -592,6 +600,8 @@ function tab_lignes_adresse($ele_login) {
 }
 
 function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
+	global $mod_disc_terme_incident;
+
 	$retour="";
 
 	if($date_debut!="") {
@@ -665,8 +675,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
-		$retour="<p>Tableau des incidents concernant ".p_nom($ele_login)."</p>\n";
-		$retour.="<table class='boireaus' border='1' summary='Tableau des incidents concernant $ele_login'>\n";
+		$retour="<p>Tableau des ".$mod_disc_terme_incident."s concernant ".p_nom($ele_login)."</p>\n";
+		$retour.="<table class='boireaus' border='1' summary=\"Tableau des ".$mod_disc_terme_incident."s concernant $ele_login\">\n";
 		$retour.="<tr>\n";
 		$retour.="<th>Num</th>\n";
 		$retour.="<th>Date</th>\n";
@@ -718,7 +728,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 			//echo "$sql<br />\n";
 			$res_prot=mysql_query($sql);
 			if(mysql_num_rows($res_prot)>0) {
-				$retour.="<table class='boireaus' border='1' summary='Protagonistes de l incident n°$lig->id_incident'>\n";
+				$retour.="<table class='boireaus' border='1' summary=\"Protagonistes de l ".$mod_disc_terme_incident." n°$lig->id_incident\">\n";
 
 				$alt_2=1;
 				while($lig_prot=mysql_fetch_object($res_prot)) {
@@ -794,7 +804,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							//$retour.="<p style='text-align:left;'>Tableau des mesures pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
 							$retour.="<p style='text-align:left; font-weight: bold;'>Mesures</p>\n";
 
-							$retour.="<table class='boireaus' border='1' summary='Tableau des mesures pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident'>\n";
+							$retour.="<table class='boireaus' border='1' summary=\"Tableau des mesures pour le protagoniste $lig_prot->login de l ".$mod_disc_terme_incident." n°$lig->id_incident\">\n";
 
 							$retour.="<tr>\n";
 							$retour.="<th>Nature</th>\n";
@@ -835,9 +845,9 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 						if(mysql_num_rows($res_suivi)>0) {
 
 							//$retour.="<p style='text-align:left;'>Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
-							$retour.="<p style='text-align:left; font-weight: bold;'>Sanctions</p>\n";
+							$retour.="<p style='text-align:left; font-weight: bold;'>".ucfirst($mod_disc_terme_sanction)."s</p>\n";
 
-							$retour.="<table class='boireaus' border='1' summary='Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident'>\n";
+							$retour.="<table class='boireaus' border='1' summary=\"Tableau des ".$mod_disc_terme_sanction."s pour le protagoniste $lig_prot->login de l ".$mod_disc_terme_incident." n°$lig->id_incident\">\n";
 
 							$retour.="<tr>\n";
 							$retour.="<th>Nature</th>\n";
@@ -928,7 +938,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 				// Ajout Eric de la zone de commentaire
 				//affichage du commentaire
 				if ($zone_de_commentaire !="") {
-				$retour .=  "<p style='text-align:left;'><b>Commentaires sur l'incident&nbsp;:&nbsp;</b></br></br>$zone_de_commentaire</p>";	
+				$retour .=  "<p style='text-align:left;'><b>Commentaires sur l'".$mod_disc_terme_incident."&nbsp;:&nbsp;</b></br></br>$zone_de_commentaire</p>";	
 				}
 			}
 
@@ -937,12 +947,12 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 		$retour.="</table>\n";
 
 		// Totaux
-		$retour.="<p style='font-weight: bold;'>Totaux des incidents/mesures/sanctions en tant que Responsable.</p>\n";
+		$retour.="<p style='font-weight: bold;'>Totaux des ".$mod_disc_terme_incident."s/mesures/".$mod_disc_terme_sanction."s en tant que Responsable.</p>\n";
 
 		$retour.="<div style='float:left; width:33%;'>\n";
-		$retour.="<p style='font-weight: bold;'>Incidents</p>\n";
+		$retour.="<p style='font-weight: bold;'>".ucfirst($mod_disc_terme_incident)."s</p>\n";
 		if(count($tab_incident)>0) {
-			$retour.="<table class='boireaus' border='1' summary='Totaux incidents'>\n";
+			$retour.="<table class='boireaus' border='1' summary='Totaux ".$mod_disc_terme_incident."s'>\n";
 			$retour.="<tr><th>Nature</th><th>Total</th></tr>\n";
 			$alt=1;
 			foreach($tab_incident as $key => $value) {
@@ -952,7 +962,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 			$retour.="</table>\n";
 		}
 		else {
-			$retour.="<p>Aucun incident relevé en qualité de responsable.</p>\n";
+			$retour.="<p>Aucun ".$mod_disc_terme_incident." relevé en qualité de responsable.</p>\n";
 		}
 		$retour.="</div>\n";
 
@@ -974,9 +984,9 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 		$retour.="</div>\n";
 
 		$retour.="<div style='float:left; width:33%;'>\n";
-		$retour.="<p style='font-weight: bold;'>Sanctions</p>\n";
+		$retour.="<p style='font-weight: bold;'>".ucfirst($mod_disc_terme_sanction)."s</p>\n";
 		if(count($tab_sanction)>0) {
-			$retour.="<table class='boireaus' border='1' summary='Totaux sanctions'>\n";
+			$retour.="<table class='boireaus' border='1' summary='Totaux ".$mod_disc_terme_sanction."s'>\n";
 			$retour.="<tr><th>Nature</th><th>Total</th></tr>\n";
 			$alt=1;
 			foreach($tab_sanction as $key => $value) {
@@ -994,7 +1004,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 
 	}
 	else {
-		$retour="<p>Aucun incident relevé.</p>\n";
+		$retour="<p>Aucun ".$mod_disc_terme_incident." relevé.</p>\n";
 	}
 
 	return $retour;
@@ -1058,6 +1068,8 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe) {
 
 // Retourne à partir de l'id d'un incident le login du déclarant
 function get_login_declarant_incident($id_incident) {
+	global $mod_disc_terme_incident;
+
 	$retour="";
     //$sql_declarant="SELECT DISTINCT SI.id_incident, SI.declarant FROM s_incidents SI, s_sanctions SS WHERE SI.id_incident='$id_incident' AND SI.id_incident=SS.id_incident;";
     $sql_declarant="SELECT DISTINCT SI.id_incident, SI.declarant FROM s_incidents SI WHERE SI.id_incident='$id_incident';";
@@ -1067,13 +1079,14 @@ function get_login_declarant_incident($id_incident) {
 		$lig_declarant=mysql_fetch_object($res_declarant);
 		  $retour= $lig_declarant->declarant;	
 		} else {
-		  $retour='Incident inconnu';
+		  $retour=ucfirst($mod_disc_terme_incident).' inconnu';
 		}
 	return $retour;
 }
 
 //Fonction dressant la liste des reports pour une sanction ($id_type_sanction)
 function afficher_tableau_des_reports($id_sanction) {
+	global $mod_disc_terme_sanction;
 	global $id_incident;
 	$retour="";
 	$sql="SELECT * FROM s_reports WHERE id_sanction='$id_sanction' ORDER BY id_report;";
@@ -1105,7 +1118,7 @@ function afficher_tableau_des_reports($id_sanction) {
 		}
 		echo "</table>\n";
 	} else {
-		$retour = "Aucun report actuellement pour cette sanction.";
+		$retour = "Aucun report actuellement pour cette ".$mod_disc_terme_sanction.".";
 	}	
 	return $retour;
 }
@@ -1423,6 +1436,9 @@ function suppr_doc_joints_sanction($id_sanction) {
 }
 
 function lien_envoi_mail_rappel($id_sanction, $num, $id_incident="") {
+	global $mod_disc_terme_incident;
+	global $mod_disc_terme_sanction;
+
 	$retour="";
 
 	if(($id_sanction!="")||($id_incident!="")) {
@@ -1434,7 +1450,7 @@ function lien_envoi_mail_rappel($id_sanction, $num, $id_incident="") {
 			//pour le mail
 			$mail_declarant = retourne_email($login_declarant);
 			//echo add_token_field(true);
-			$retour.="<input type='hidden' name='sujet_mail_rappel_$num' id='sujet_mail_rappel_$num' value=\"[GEPI] Discipline : Demande de travail pour une sanction\" />\n";
+			$retour.="<input type='hidden' name='sujet_mail_rappel_$num' id='sujet_mail_rappel_$num' value=\"[GEPI] Discipline : Demande de travail pour une ".$mod_disc_terme_sanction."\" />\n";
 			$retour.="<input type='hidden' name='destinataire_mail_rappel_$num' id='destinataire_mail_rappel_$num' value=\"".$mail_declarant."\" />\n";
 
 			$num_incident=$id_incident;
@@ -1447,7 +1463,7 @@ function lien_envoi_mail_rappel($id_sanction, $num, $id_incident="") {
 			}
 
 			//$trame_message.="La sanction (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée.\n";
-			$trame_message.="La sanction (voir l'incident N°$num_incident) de $chaine_protagonistes est planifiée.\n";
+			$trame_message.="La ".$mod_disc_terme_sanction." (voir l'".$mod_disc_terme_incident." N°$num_incident) de $chaine_protagonistes est planifiée.\n";
 		}
 		else {
 			$sql="SELECT * FROM s_sanctions WHERE id_sanction='$id_sanction';";
@@ -1470,7 +1486,7 @@ function lien_envoi_mail_rappel($id_sanction, $num, $id_incident="") {
 		
 				if($lig_sanction->nature="retenue") {
 					//$trame_message.="La $lig_sanction->nature (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée le %jour% en/à %heure% pour une durée de %duree%H \n";
-					$trame_message.="La retenue (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée le %jour% en/à %heure% pour une durée de %duree%H \n";
+					$trame_message.="La retenue (voir l'".$mod_disc_terme_incident." N°%num_incident%) de %prenom_nom% (%classe%) est planifiée le %jour% en/à %heure% pour une durée de %duree%H \n";
 		
 					$sql="SELECT * FROM s_retenues WHERE id_sanction='$lig_sanction->id_sanction';";
 					$res2=mysql_query($sql);
@@ -1487,7 +1503,7 @@ function lien_envoi_mail_rappel($id_sanction, $num, $id_incident="") {
 					}
 				}
 				elseif($lig_sanction->nature="exclusion") {
-					$trame_message.="L'exclusion (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée du %jour_debut% au %jour_fin% \n";
+					$trame_message.="L'exclusion (voir l'".$mod_disc_terme_incident." N°%num_incident%) de %prenom_nom% (%classe%) est planifiée du %jour_debut% au %jour_fin% \n";
 		
 					$sql="SELECT * FROM s_exclusions WHERE id_sanction='$lig_sanction->id_sanction';";
 					$res2=mysql_query($sql);
@@ -1502,7 +1518,7 @@ function lien_envoi_mail_rappel($id_sanction, $num, $id_incident="") {
 					}
 				}
 				elseif($lig_sanction->nature="travail") {
-					$trame_message.="Le travail (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifié pour une date de retour au %jour_retour% à %heure_retour% \n";
+					$trame_message.="Le travail (voir l'".$mod_disc_terme_incident." N°%num_incident%) de %prenom_nom% (%classe%) est planifié pour une date de retour au %jour_retour% à %heure_retour% \n";
 		
 					$sql="SELECT * FROM s_travail WHERE id_sanction='$lig_sanction->id_sanction';";
 					$res2=mysql_query($sql);
@@ -1517,7 +1533,7 @@ function lien_envoi_mail_rappel($id_sanction, $num, $id_incident="") {
 					}
 				}
 				else {
-					$trame_message.="La sanction '$lig_sanction->nature' (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée.\n";
+					$trame_message.="La ".$mod_disc_terme_sanction." '$lig_sanction->nature' (voir l'".$mod_disc_terme_incident." N°%num_incident%) de %prenom_nom% (%classe%) est planifiée.\n";
 				}
 			}
 

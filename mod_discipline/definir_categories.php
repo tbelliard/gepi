@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
  *
  * This file is part of GEPI.
  *
@@ -59,7 +59,7 @@ if(($_SESSION['statut']=='administrateur')||
 	$acces_ok="y";
 }
 else {
-	$msg="Vous n'avez pas le droit de définir les catégories d'incidents.";
+	$msg="Vous n'avez pas le droit de définir les catégories d'".$mod_disc_terme_incident."s.";
 	header("Location: ./index.php?msg=$msg");
 	die();
 }
@@ -81,16 +81,15 @@ if (isset($suppr_categorie)) {
             $sql = "DELETE FROM s_categories WHERE id='$suppr_categorie[$i]';";
             $suppr = mysql_query($sql);
             if (!$suppr) {
-                //$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_lieu[$i].".<br />\n";
                 $msg.="ERREUR lors de la suppression de la catégorie n°" . $suppr_categorie[$i] . ".<br />\n";
             } else {
                 $msg.="Suppression de la catégorie n°" . $suppr_categorie[$i] . ".<br />\n";
                 $sql = "UPDATE s_incidents SET id_categorie=0 WHERE id_categorie=" . $suppr_categorie[$i] . ";";
                 $res = mysql_query($sql);
                 if (!$res) {
-                    $msg.="ERREUR lors de la mise à jour des incidents de la catégorie supprimée !! <br />\n";
+                    $msg.="ERREUR lors de la mise à jour des ".$mod_disc_terme_incident."s de la catégorie supprimée !! <br />\n";
                 } else {
-                    $msg.="Mise à jour des incidents de la catégorie supprimée effectuée.<br />\n";
+                    $msg.="Mise à jour des ".$mod_disc_terme_incident."s de la catégorie supprimée effectuée.<br />\n";
                 }
             }
         }
@@ -128,34 +127,8 @@ if ((isset($categorie)) && ($categorie != '')) {
     }
 }
 
-/*
-if(isset($_POST['is_posted'])) {
-	check_token();
-
-	if(isset($_POST['DisciplineNaturesRestreintes'])) {
-		$DisciplineNaturesRestreintes="y";
-	}
-	else {
-		$DisciplineNaturesRestreintes="n";
-	}
-	$reg_DisciplineNaturesRestreintes=saveSetting("DisciplineNaturesRestreintes", $DisciplineNaturesRestreintes);
-	if(!$reg_DisciplineNaturesRestreintes) {
-		$msg.="Erreur lors de l'enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes'<br />\n";
-	}
-	else {
-		$msg.="Enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes' effectué.<br />\n";
-	}
-}
-
-$DisciplineNaturesRestreintes=getSettingValue('DisciplineNaturesRestreintes');
-if(($DisciplineNaturesRestreintes!='y')&&($DisciplineNaturesRestreintes!='n')) {
-	$DisciplineNaturesRestreintes="n";
-}
-*/
-
 $themessage = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-//$titre_page = "Sanctions: Définition des qualités";
 $titre_page = "Discipline: Définition des catégories";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
@@ -167,23 +140,18 @@ echo "</p>\n";
 echo "<form enctype='multipart/form-data' action='" . $_SERVER['PHP_SELF'] . "' method='post' name='formulaire'>\n";
 echo add_token_field();
 
-//echo "<p class='bold'>Saisie des qualités dans un incident&nbsp;:</p>\n";
-echo "<p class='bold'>Saisie des catégories des incidents&nbsp;:</p>\n";
+echo "<p class='bold'>Saisie des catégories des ".$mod_disc_terme_incident."s&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
 $cpt = 0;
 $sql = "SELECT * FROM s_categories ORDER BY categorie;";
 $res = mysql_query($sql);
 if (mysql_num_rows($res) == 0) {
-    //echo "<p>Aucune qualité n'est encore définie.</p>\n";
     echo "<p>Aucune catégorie n'est encore définie.</p>\n";
 } else {
-    //echo "<p>Qualités existantes&nbsp;:</p>\n";
-    //echo "<table class='boireaus' border='1' summary='Tableau des qualités existantes'>\n";
     echo "<p>Catégories existantes&nbsp;:</p>\n";
     echo "<table class='boireaus' border='1' summary='Tableau des catégories existantes'>\n";
     echo "<tr>\n";
-    //echo "<th>Qualité</th>\n";
     echo "<th>Catégorie</th>\n";
     echo "<th>Sigle</th>\n";
     echo "<th>Supprimer</th>\n";
@@ -222,21 +190,11 @@ echo "</table>\n";
 
 echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 
-/*
-echo "<p><input type='checkbox' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes' value='y' ";
-if($DisciplineNaturesRestreintes=="y") {
-	echo "checked ";
-}
-echo "/><label for='DisciplineNaturesRestreintes'> Restreindre les natures d'incidents pouvant être sélectionnées aux seules catégories ci-dessus.</label></p>\n";
-*/
-
 echo "<input type='hidden' name='is_posted' value='y' />\n";
 echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
 echo "</form>\n";
 
 echo "<p><br /></p>\n";
-
-//echo "<p><i>NOTE&nbsp;:</i> Restreindre les natures d'incidents pouvant être sélectionnées aux seules catégories ci-dessus permet d'éviter une trop grande dispersion des natures (<i>on peut sinon avoir 'Insolence', 'Comportement insolent', 'insolent',...</i>).</p>\n";
 
 require("../lib/footer.inc.php");
 ?>

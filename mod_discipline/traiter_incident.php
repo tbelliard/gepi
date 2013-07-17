@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -49,6 +49,9 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 require('sanctions_func_lib.php');
 
 function liste_sanctions($id_incident,$ele_login) {
+	global $mod_disc_terme_incident;
+	global $mod_disc_terme_sanction;
+
 	// Pour que les infobulles définies ici fonctionnent même si elles sont appelées depuis une autre infobulle
 	global $tabdiv_infobulle;
 	global $delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle;
@@ -121,7 +124,7 @@ function liste_sanctions($id_incident,$ele_login) {
 					}
 				}
 
-				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
 				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
@@ -134,7 +137,7 @@ function liste_sanctions($id_incident,$ele_login) {
 				
 				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
 					//$retour.="<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
-					$retour.="<td><a href='saisie_sanction.php?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+					$retour.="<td><a href='saisie_sanction.php?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction' /></a></td>\n";
 				}
 				$retour.="</tr>\n";
 			}
@@ -189,14 +192,14 @@ function liste_sanctions($id_incident,$ele_login) {
 						$texte.=$tmp_doc_joints;
 					}
 				}
-				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
 				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
 
 				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
 					//$retour.="<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
-					$retour.="<td><a href='saisie_sanction.php?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+					$retour.="<td><a href='saisie_sanction.php?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction' /></a></td>\n";
 				}
 				$retour.="</tr>\n";
 			}
@@ -242,14 +245,14 @@ function liste_sanctions($id_incident,$ele_login) {
 						$texte.=$tmp_doc_joints;
 					}
 				}
-				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
 				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
 
 				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
 					//$retour.="<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
-					$retour.="<td><a href='saisie_sanction.php?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+					$retour.="<td><a href='saisie_sanction.php?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction' /></a></td>\n";
 				}
 				$retour.="</tr>\n";
 			}
@@ -261,7 +264,7 @@ function liste_sanctions($id_incident,$ele_login) {
 		//echo "$sql<br />\n";
 		$res_sanction=mysql_query($sql);
 		if(mysql_num_rows($res_sanction)>0) {
-			$retour.="<table class='boireaus' border='1' summary='Autres sanctions' style='margin:2px;'>\n";
+			$retour.="<table class='boireaus' border='1' summary='Autres ".$mod_disc_terme_sanction."s' style='margin:2px;'>\n";
 			$retour.="<tr>\n";
 			$retour.="<th>Nature</th>\n";
 			$retour.="<th>Description</th>\n";
@@ -280,14 +283,14 @@ function liste_sanctions($id_incident,$ele_login) {
 					$texte.="<br />";
 					$texte.=$tmp_doc_joints;
 				}
-				$tabdiv_infobulle[]=creer_div_infobulle("div_autre_sanction_$lig_sanction->id_sanction","$lig_sanction->nature (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle("div_autre_sanction_$lig_sanction->id_sanction","$lig_sanction->nature (".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n');
 
 				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_autre_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_autre_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
 
 				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
 					//$retour.="<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
-					$retour.="<td><a href='saisie_sanction.php?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+					$retour.="<td><a href='saisie_sanction.php?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction' /></a></td>\n";
 				}
 				$retour.="</tr>\n";
 			}
@@ -391,7 +394,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de retenues attachées à l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de retenues attachées à l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 
@@ -399,7 +402,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression d'excluions attachées à l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression d'excluions attachées à l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 
@@ -407,7 +410,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de travaux attachés à l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de travaux attachés à l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 
@@ -415,7 +418,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression d'autres sanctions attachées à l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression d'autres ".$mod_disc_terme_sanction."s attachées à l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 				}
@@ -426,7 +429,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de la sanction associée à l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de la ".$mod_disc_terme_sanction." associée à l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 				}
@@ -437,7 +440,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
-					$msg.="ERREUR lors de la suppression des traitements d'incident (mesures) de l'incident ".$suppr_incident[$i].".<br />\n";
+					$msg.="ERREUR lors de la suppression des traitements d'".$mod_disc_terme_incident." (mesures) de l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
 					$temoin_erreur="y";
 				}
 
@@ -446,7 +449,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression des travaux proposés pour une mesure demandée de l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression des travaux proposés pour une mesure demandée de l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 				}
@@ -456,7 +459,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
 					}
 				}
 			}
@@ -467,10 +470,10 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 if (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre'))  {
-	$titre_page = "Discipline: Consulter un incident";
+	$titre_page = "Discipline: Consulter un ".$mod_disc_terme_incident;
 }
 else {
-	$titre_page = "Discipline: Traiter un incident";
+	$titre_page = "Discipline: Traiter un ".$mod_disc_terme_incident;
 }
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
@@ -506,7 +509,7 @@ if(($_SESSION['statut']=='administrateur')||
 	LIMIT 1;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
+		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst($mod_disc_terme_incident)."s sans protagonistes</a>\n";
 	}
 }
 elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
@@ -517,7 +520,7 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	//echo "$sql<br />";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
+		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst($mod_disc_terme_incident)."s sans protagonistes</a>\n";
 	}
 }
 
@@ -678,7 +681,7 @@ if(!isset($id_incident)) {
 		else {
 			$res=mysql_query($sql2);
 			if(mysql_num_rows($res)==0) {
-				echo "<p>Aucun incident n'est encore déclaré";
+				echo "<p>Aucun ".$mod_disc_terme_incident." n'est encore déclaré";
 				if(($date_incident!="")||
 				($heure_incident!="")||
 				($nature_incident!="---")||
@@ -699,7 +702,7 @@ if(!isset($id_incident)) {
 				($id_classe_incident!="")) {echo " avec les critères choisis";}
 				echo ".</p>\n";
 
-				echo "<p><a href='".$_SERVER['PHP_SELF']."?incidents_clos=y$chaine_criteres'>Afficher les incidents clos avec les mêmes critères</a>.</p>\n";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."?incidents_clos=y$chaine_criteres'>Afficher les ".$mod_disc_terme_incident."s clos avec les mêmes critères</a>.</p>\n";
 			}
 		}
 		echo "<p><br /></p>\n";
@@ -715,14 +718,14 @@ if(!isset($id_incident)) {
 	echo "</div>\n";
 	*/
 
-	echo "<p class='bold'>Choisir l'incident à traiter/consulter&nbsp;:</p>\n";
+	echo "<p class='bold'>Choisir l'".$mod_disc_terme_incident." à traiter/consulter&nbsp;:</p>\n";
 	echo "<blockquote>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	echo add_token_field();
 	echo "<p align='left'><input type='checkbox' name='incidents_clos' id='incidents_clos' value='y'";
 	if($incidents_clos=="y") {echo " checked='checked'";}
-	echo " /><label for='incidents_clos' style='cursor:pointer;'> Afficher les incidents clos</label>";
+	echo " /><label for='incidents_clos' style='cursor:pointer;'> Afficher les ".$mod_disc_terme_incident."s clos</label>";
 
 	// 20130716
 	$sql_test_mes_incidents="SELECT 1=1 FROM s_incidents si, s_protagonistes sp WHERE si.declarant='".$_SESSION['login']."' AND si.id_incident=sp.id_incident LIMIT 1;";
@@ -733,12 +736,12 @@ if(!isset($id_incident)) {
 		echo "<br />\n";
 		echo "<input type='checkbox' name='declarant_incident2' id='declarant_incident2' value='".$_SESSION['login']."'";
 		if($declarant_incident==$_SESSION['login']) {echo " checked='checked'";}
-		echo " /><label for='declarant_incident2' style='cursor:pointer;'> Ne voir que mes déclarations d'incidents</label>\n";
+		echo " /><label for='declarant_incident2' style='cursor:pointer;'> Ne voir que mes déclarations d'".$mod_disc_terme_incident."s</label>\n";
 	}
 	echo "</p>\n";
 
 	echo "<div style='float: right; border: 1px solid black;'>";
-	echo "<a href='javascript:afficher_tous_les_incidents()' title=\"Afficher tous ces incidents\">".$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche." incidents</a>";
+	echo "<a href='javascript:afficher_tous_les_incidents()' title=\"Afficher tous ces incidents\">".$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche." ".$mod_disc_terme_incident."s</a>";
 	if($chaine_criteres!="") {echo " avec le(s) critère(s) choisi(s)";}
 	echo "</div>\n";
 
@@ -836,7 +839,7 @@ echo "		}
 		$prof_is_pp=is_pp($_SESSION['login']);
 	}
 
-	echo "<table class='boireaus' border='1' summary='Incidents'>\n";
+	echo "<table class='boireaus' border='1' summary='".ucfirst($mod_disc_terme_incident)."s'>\n";
 	echo "<tr>\n";
 	echo "<th>Id</th>\n";
 	echo "<th>Date\n";
@@ -1198,7 +1201,7 @@ echo "		}
 	echo "</th>\n";
 
 	echo "<th>Description</th>\n";
-	echo "<th>Sanctions</th>\n";
+	echo "<th>".ucfirst($mod_disc_terme_sanction)."s</th>\n";
 	echo "<th>Etat<br />";
 	//echo "<input type='submit' name='modifier_etat_incidents' value='Valider' />\n";
 	echo "clos ou non";
@@ -1206,7 +1209,7 @@ echo "		}
 	// Ne proposer le bouton pour supprimer qu'à certains utilisateurs?
 	//echo "<th><input type='submit' name='supprimer' value='Suppr' /></th>\n";
 	if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
-	    echo "<th>Imprimer le rapport d'incident</th>\n";
+	    echo "<th>Imprimer le rapport d'".$mod_disc_terme_incident."</th>\n";
 		echo "<th>Suppr</th>\n";
 	}
 	//echo "<th></th>\n";
@@ -1289,7 +1292,7 @@ echo "		}
 					}
 				}
 				if(($identite_trouvee=='y')&&((peut_poster_message($_SESSION['statut'])))) {
-					echo "<a href='$gepiPath/mod_alerte/form_message.php?login_dest=".$lig->declarant."&amp;sujet=Incident du $date_declaration_incident&amp;id_incident=$lig->id_incident".add_token_in_url()."' title='Déposer un message dans le module Alertes de Gepi' target='_blank'><img src='../images/icons/mail.png' width='16' height='16' alt='Alerter' /></a>";
+					echo "<a href='$gepiPath/mod_alerte/form_message.php?login_dest=".$lig->declarant."&amp;sujet=".ucfirst($mod_disc_terme_incident)." du $date_declaration_incident&amp;id_incident=$lig->id_incident".add_token_in_url()."' title='Déposer un message dans le module Alertes de Gepi' target='_blank'><img src='../images/icons/mail.png' width='16' height='16' alt='Alerter' /></a>";
 				}
 				echo "</td>\n";
 			}
@@ -1423,11 +1426,11 @@ echo "		}
 					}
 
 					if((isset($tab_individu[$lig->declarant]['email']))&&(check_mail($tab_individu[$lig->declarant]['email']))) {
-						$texte="<a href=\"mailto:".$tab_individu[$lig->declarant]['email']."?subject="."Incident sans détails";
+						$texte="<a href=\"mailto:".$tab_individu[$lig->declarant]['email']."?subject=".ucfirst($mod_disc_terme_incident)." sans détails";
 						if($email_visiteur!='') {
 							$texte.="&amp;bcc=".$email_visiteur;
 						}
-						$texte.="&amp;body=Bonjour%20".preg_replace("/ /","%20",$tab_individu[$lig->declarant]['designation']).",%0A%0a"."Vous avez déclaré un incident (numéro $lig->id_incident) sans en préciser la nature, les détails."."%0A%0a"."L'incident a eu lieu le ".formate_date($lig->date)." en $lig->heure avec pour protagonistes: $liste_protagonistes"."%0A%0a"."Pourriez-vous préciser?"."%0A%0a"."Merci."."\">";
+						$texte.="&amp;body=Bonjour%20".preg_replace("/ /","%20",$tab_individu[$lig->declarant]['designation']).",%0A%0a"."Vous avez déclaré un ".$mod_disc_terme_incident." (numéro $lig->id_incident) sans en préciser la nature, les détails."."%0A%0a"."L'".$mod_disc_terme_incident." a eu lieu le ".formate_date($lig->date)." en $lig->heure avec pour protagonistes: $liste_protagonistes"."%0A%0a"."Pourriez-vous préciser?"."%0A%0a"."Merci."."\">";
 
 						$texte.="Aucun détail n'a été saisi.";
 						$texte.="</a>";
@@ -1451,14 +1454,14 @@ echo "		}
 				$texte.="<span style='font-size:x-small;'> à l'heure $lig->heure</span>";
 			}
 
-			$texte.="<br /><span style='font-size:x-small;'>Incident signalé par ".u_p_nom($lig->declarant)."</span>";
+			$texte.="<br /><span style='font-size:x-small;'>".ucfirst($mod_disc_terme_incident)." signalé par ".u_p_nom($lig->declarant)."</span>";
 
 			if(($lig->declarant==$_SESSION['login'])||($_SESSION['statut']!='professeur')) {$possibilite_prof_clore_incident='y';} else {$possibilite_prof_clore_incident='n';}
 
 			$mesure_demandee_non_validee="n";
 			$texte.=affiche_mesures_incident($lig->id_incident);
 
-			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig->id_incident,"Incident n°$lig->id_incident","",$texte,"",30,0,'y','y','n','n');
+			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig->id_incident,"".ucfirst($mod_disc_terme_incident)." n°$lig->id_incident","",$texte,"",30,0,'y','y','n','n');
 
 			if(($lig->etat=='clos')||(($_SESSION['statut']=='professeur')&&($lig->declarant!=$_SESSION['login']))||(($_SESSION['statut']=='autre')&&($lig->declarant!=$_SESSION['login']))) {
 				echo "<a href='#'";
@@ -1494,12 +1497,12 @@ echo "		}
 			}
 
 			if($texte!="") {
-				$tabdiv_infobulle[]=creer_div_infobulle("sanctions_incident_".$lig->id_incident,"Sanctions incident n°$lig->id_incident","",$texte,"",40,0,'y','y','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle("sanctions_incident_".$lig->id_incident,ucfirst($mod_disc_terme_sanction)."s ".$mod_disc_terme_incident." n°$lig->id_incident","",$texte,"",40,0,'y','y','n','n');
 
 				$txt_lien="Modifier";
 			}
 			else {
-				$tabdiv_infobulle[]=creer_div_infobulle("sanctions_incident_".$lig->id_incident,"Sanctions incident n°$lig->id_incident","","Aucune sanction n'est encore saisie","",20,0,'y','y','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle("sanctions_incident_".$lig->id_incident,ucfirst($mod_disc_terme_sanction)."s ".$mod_disc_terme_incident." n°$lig->id_incident","","Aucune ".$mod_disc_terme_sanction." n'est encore saisie","",20,0,'y','y','n','n');
 
 				$txt_lien="<strong>Saisir</strong>";
 			}
@@ -1508,7 +1511,7 @@ echo "		}
 				echo "<a href='#'";
 				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				echo " onclick='return false;'";
-				echo ">Sanctions</a>";
+				echo ">".ucfirst($mod_disc_terme_sanction)."s</a>";
 			}
 			else {
 				echo "<a href='saisie_sanction.php?id_incident=$lig->id_incident'";
@@ -1538,7 +1541,7 @@ echo "		}
 			// Colonne imprimer
 			if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
 				echo "<td>\n";
-				echo "<a href='../mod_ooo/rapport_incident.php?mode=module_discipline&id_incident=$lig->id_incident".add_token_in_url()."' title='Imprimer le rapport d'\incident'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer le Rapport d\'incident'></a>\n";
+				echo "<a href='../mod_ooo/rapport_incident.php?mode=module_discipline&id_incident=$lig->id_incident".add_token_in_url()."' title='Imprimer le rapport d'\incident'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer le Rapport d\'".addslashes($mod_disc_terme_incident)."'></a>\n";
 				echo "</td>\n";
 			}
 			//===============================
@@ -1573,7 +1576,7 @@ else {
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
-		echo "<p>Incident n°$id_incident</p>\n";
+		echo "<p>".ucfirst($mod_disc_terme_incident)." n°$id_incident</p>\n";
 
 		echo "<p>Normalement, on n'arrive pas ici...</p>\n";
 	}
@@ -1595,9 +1598,9 @@ if(isset($tabid_infobulle)){
 
 echo "<p><em>NOTES&nbsp;:</em></p>
 <ul>
-	<li><p>Lorsqu'un incident est clos, on ne peut plus modifier l'incident, ni saisir/modifier de sanction.<br />
+	<li><p>Lorsqu'un ".$mod_disc_terme_incident." est clos, on ne peut plus modifier l'".$mod_disc_terme_incident.", ni saisir/modifier de ".$mod_disc_terme_sanction.".<br />
 On peut en revanche le déclore</p></li>
-	<li><p>Ne jamais clore les incidents peut provoquer des lenteurs de chargement de la présente page lorsque le nombre d'incidents augmente (<em>avec le temps, l'accumulation est inéluctable</em>).</p></li>
+	<li><p>Ne jamais clore les ".$mod_disc_terme_incident."s peut provoquer des lenteurs de chargement de la présente page lorsque le nombre d'".$mod_disc_terme_incident."s augmente (<em>avec le temps, l'accumulation est inéluctable</em>).</p></li>
 </ul>
 <p><br /></p>\n";
 

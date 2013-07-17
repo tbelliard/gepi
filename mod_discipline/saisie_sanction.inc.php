@@ -48,7 +48,7 @@ if(isset($ele_login)) {
 		$tab_protagonistes=get_protagonistes($id_incident,array('Responsable'),array('eleve'));
 		if(count($tab_protagonistes)>1) {
 			//echo "plup";
-			$meme_sanction_pour_autres_protagonistes.="Même sanction pour&nbsp;:<br />\n";
+			$meme_sanction_pour_autres_protagonistes.="Même ".$mod_disc_terme_sanction." pour&nbsp;:<br />\n";
 			for($loop=0;$loop<count($tab_protagonistes);$loop++) {
 				if($tab_protagonistes[$loop]!=$ele_login) {
 					$meme_sanction_pour_autres_protagonistes.="<input type='checkbox' name='autre_protagoniste_meme_sanction[]' id='autre_protagoniste_meme_sanction_$loop' value=\"$tab_protagonistes[$loop]\" /><label for='autre_protagoniste_meme_sanction_$loop'>".get_nom_prenom_eleve($tab_protagonistes[$loop])."</label><br />\n";
@@ -66,7 +66,7 @@ if(isset($ele_login)) {
 $sql="SELECT * FROM s_types_sanctions2 WHERE id_nature='$valeur';";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p style='color:red;'>Type de sanction inconnu.</p>\n";
+	echo "<p style='color:red;'>Type de ".$mod_disc_terme_sanction." inconnu.</p>\n";
 }
 else {
 	$lig=mysql_fetch_object($res);
@@ -155,7 +155,7 @@ else {
 		if($meme_sanction_pour_autres_protagonistes!="") {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+			echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même ".$mod_disc_terme_sanction."&nbsp;: </td>\n";
 			echo "<td style='text-align:left;'>\n";
 			echo $meme_sanction_pour_autres_protagonistes;
 			echo "</td>\n";
@@ -360,7 +360,7 @@ else {
 		if($meme_sanction_pour_autres_protagonistes!="") {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+			echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même ".$mod_disc_terme_sanction."&nbsp;: </td>\n";
 			echo "<td style='text-align:left;'>\n";
 			echo $meme_sanction_pour_autres_protagonistes;
 			echo "</td>\n";
@@ -607,7 +607,7 @@ else {
 		if($meme_sanction_pour_autres_protagonistes!="") {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+			echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même ".$mod_disc_terme_sanction."&nbsp;: </td>\n";
 			echo "<td style='text-align:left;'>\n";
 			echo $meme_sanction_pour_autres_protagonistes;
 			echo "</td>\n";
@@ -666,7 +666,7 @@ else {
 			if($meme_sanction_pour_autres_protagonistes!="") {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
-				echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+				echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même ".$mod_disc_terme_sanction."&nbsp;: </td>\n";
 				echo "<td style='text-align:left;'>\n";
 				echo $meme_sanction_pour_autres_protagonistes;
 				echo "</td>\n";

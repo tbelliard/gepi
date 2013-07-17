@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -49,13 +49,37 @@ if (!checkAccess()) {
 
 if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 	check_token();
-    if (!saveSetting("active_mod_discipline", $_POST['activer'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	$msg="";
+
+	if (!saveSetting("active_mod_discipline", $_POST['activer'])) {
+		$msg.= "Erreur lors de l'enregistrement du paramètre activation/désactivation !<br />";
 	}
 
 	$autorise_commentaires_mod_disc=isset($_POST['autorise_commentaires_mod_disc']) ? $_POST['autorise_commentaires_mod_disc'] : "no";
 	if (!saveSetting("autorise_commentaires_mod_disc", $autorise_commentaires_mod_disc)) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation \"autorise_commentaires_mod_disc\" !";
+		$msg.= "Erreur lors de l'enregistrement du paramètre activation/désactivation \"autorise_commentaires_mod_disc\" !<br />";
+	}
+
+	$mod_disc_terme_incident=isset($_POST['mod_disc_terme_incident']) ? $_POST['mod_disc_terme_incident'] : "incident";
+	$mod_disc_terme_incident=preg_replace("/[^A-Za-z".$liste_caracteres_accentues."' -]/","",$mod_disc_terme_incident);
+	if($mod_disc_terme_incident=="") {
+		$msg.="Le terme choisi pour 'incident' est invalide.<br />";
+	}
+	else {
+		if (!saveSetting("mod_disc_terme_incident", $mod_disc_terme_incident)) {
+			$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_terme_incident\" !<br />";
+		}
+	}
+
+	$mod_disc_terme_sanction=isset($_POST['mod_disc_terme_sanction']) ? $_POST['mod_disc_terme_sanction'] : "sanction";
+	$mod_disc_terme_sanction=preg_replace("/[^A-Za-z".$liste_caracteres_accentues."' -]/","",$mod_disc_terme_sanction);
+	if($mod_disc_terme_sanction=="") {
+		$msg.="Le terme choisi pour 'sanction' est invalide.<br />";
+	}
+	else {
+		if (!saveSetting("mod_disc_terme_sanction", $mod_disc_terme_sanction)) {
+			$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_terme_sanction\" !<br />";
+		}
 	}
 }
 

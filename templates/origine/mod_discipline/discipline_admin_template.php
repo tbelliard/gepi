@@ -102,6 +102,11 @@ interface discipline_admin {
 	<fieldset class="no_bordure">
 <?php
 echo add_token_field();
+
+$mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
+if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
+$mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
+if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 ?>
 	  <legend class="invisible">Activation</legend>
 	  <input type="radio"
@@ -121,6 +126,25 @@ echo add_token_field();
 	  <label for='activer_n' style='cursor: pointer;'>
 		Désactiver le module Discipline
 	  </label>
+	</fieldset>
+
+	<fieldset class="no_bordure">
+	  <legend class="invisible">Choix de termes personnalisés</legend>
+
+	  Terme à utiliser à la place du terme '<strong>incident</strong>' dans le module Discipline&nbsp;: 
+	  <input type="text"
+			 name="mod_disc_terme_incident"
+			 id='mod_disc_terme_incident'
+			 value="<?php echo $mod_disc_terme_incident; ?>" />
+	  <br />
+
+	  Terme à utiliser à la place du terme '<strong>sanction</strong>' dans le module Discipline&nbsp;: 
+	  <input type="text"
+			 name="mod_disc_terme_sanction"
+			 id='mod_disc_terme_sanction'
+			 value="<?php echo $mod_disc_terme_sanction; ?>" />
+	  <br />
+
 	</fieldset>
 
 	<h2>Autoriser l'utilisation d'une zone commentaire dans la gestion des incidents</h2>
