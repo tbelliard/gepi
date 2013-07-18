@@ -300,12 +300,20 @@ require_once("../lib/header.inc.php");
 
 if(!isset($tab_id_classe)) {
 	echo "</p>\n";
-
+	/*
 	if($_SESSION['statut']=='scolarite') {
 		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
 	}
 	else {
 		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode ORDER BY classe;";
+	}
+	*/
+	if($_SESSION['statut']=='scolarite') {
+		//$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jgc.id_classe AND jgc.id_groupe=mac.id_groupe AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+	}
+	else {
+		$sql="SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, j_groupes_classes jgc, classes c WHERE mac.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY classe;";
 	}
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
