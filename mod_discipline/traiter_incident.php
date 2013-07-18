@@ -644,6 +644,9 @@ if(!isset($id_incident)) {
 		}
 	}
 
+	$sql.=" ORDER BY date DESC, heure DESC";
+	$sql2.=" ORDER BY date DESC, heure DESC";
+
 	$res=mysql_query($sql);
 	$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche=mysql_num_rows($res);
 	if($debut>$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche) {
