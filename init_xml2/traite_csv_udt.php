@@ -609,6 +609,11 @@
 				$del = @mysql_query("DELETE FROM j_eleves_groupes;");
 				$del = @mysql_query("DELETE FROM j_groupes_classes;");
 				$del = @mysql_query("DELETE FROM j_groupes_professeurs;");
+				$del = @mysql_query("DELETE FROM j_groupes_matieres;");
+				$del = @mysql_query("DELETE FROM j_signalement;");
+				$del = @mysql_query("DELETE FROM j_groupes_visibilite;");
+				$del = @mysql_query("DELETE FROM acces_cdt_groupes;");
+				// On conserve les associations profs/matières
 				//$del = @mysql_query("DELETE FROM j_professeurs_matieres;");
 
 /*
