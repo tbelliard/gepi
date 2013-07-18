@@ -15,6 +15,7 @@ Discipline:
 - Affichage par tranches des incidents à traiter (pour limiter le temps de chargement de la page).
 - Possibilité d'imprimer des fichiers OOo pour les sanctions  de type travail et autre.
 - Possibilité de modifier les termes 'incident' et 'sanction'.
+- Possibilité de saisir certaines sanctions en tant que professeur (liste à préciser dans Définir les sanctions).
 
 Modèles Ooo:
 - Possibilité de gérer des modèles OOo en compte scolarité ou cpe.
