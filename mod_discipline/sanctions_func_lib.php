@@ -309,74 +309,84 @@ function affiche_mesures_incident($id_incident) {
 	return $texte;
 }
 
-function rappel_incident($id_incident) {
+function rappel_incident($id_incident, $mode_retour='echo') {
 	global $mod_disc_terme_incident;
-	echo "<p class='bold'>Rappel de l'".$mod_disc_terme_incident;
+
+	$retour="";
+
+	$retour.="<p class='bold'>Rappel de l'".$mod_disc_terme_incident;
 	if(isset($id_incident)) {
-		echo " n°$id_incident";
+		$retour.=" n°$id_incident";
 
 		$sql="SELECT declarant FROM s_incidents WHERE id_incident='$id_incident';";
 		$res_dec=mysql_query($sql);
 		if(mysql_num_rows($res_dec)>0) {
 			$lig_dec=mysql_fetch_object($res_dec);
-			echo " (<span style='font-size:x-small; font-style:italic;'>signalé par ".u_p_nom($lig_dec->declarant)."</span>)";
+			$retour.=" (<span style='font-size:x-small; font-style:italic;'>signalé par ".u_p_nom($lig_dec->declarant)."</span>)";
 		}
 	}
-	echo "&nbsp;:</p>\n";
-	echo "<blockquote>\n";
+	$retour.="&nbsp;:</p>\n";
+	$retour.="<blockquote>\n";
 
 	$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
-	//echo "$sql<br />\n";
+	//$retour.="$sql<br />\n";
 	$res_incident=mysql_query($sql);
 	if(mysql_num_rows($res_incident)>0) {
 		$lig_incident=mysql_fetch_object($res_incident);
 
-		echo "<table class='boireaus' border='1' summary='".ucfirst($mod_disc_terme_incident)."'>\n";
-		echo "<tr class='lig1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Date: </td><td style='text-align:left;'>".formate_date($lig_incident->date)."</td></tr>\n";
-		echo "<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure: </td><td style='text-align:left;'>$lig_incident->heure</td></tr>\n";
+		$retour.="<table class='boireaus' border='1' summary='".ucfirst($mod_disc_terme_incident)."'>\n";
+		$retour.="<tr class='lig1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Date: </td><td style='text-align:left;'>".formate_date($lig_incident->date)."</td></tr>\n";
+		$retour.="<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure: </td><td style='text-align:left;'>$lig_incident->heure</td></tr>\n";
 
-		echo "<tr class='lig1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu: </td><td style='text-align:left;'>";
+		$retour.="<tr class='lig1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu: </td><td style='text-align:left;'>";
 		/*
 		$sql="SELECT lieu FROM s_lieux_incidents WHERE id='$lig_incident->id_lieu';";
 		$res_lieu_incident=mysql_query($sql);
 		if(mysql_num_rows($res_lieu_incident)>0) {
 			$lig_lieu_incident=mysql_fetch_object($res_incident);
-			echo $lig_lieu_incident->lieu;
+			$retour.=$lig_lieu_incident->lieu;
 		}
 		*/
-		echo get_lieu_from_id($lig_incident->id_lieu);
-		echo "</td></tr>\n";
+		$retour.=get_lieu_from_id($lig_incident->id_lieu);
+		$retour.="</td></tr>\n";
 
-		echo "<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature: </td><td style='text-align:left;'>$lig_incident->nature</td></tr>\n";
-		echo "<tr class='lig1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Description: </td><td style='text-align:left;'>".nl2br($lig_incident->description)."</td></tr>\n";
+		$retour.="<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature: </td><td style='text-align:left;'>$lig_incident->nature</td></tr>\n";
+		$retour.="<tr class='lig1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Description: </td><td style='text-align:left;'>".nl2br($lig_incident->description)."</td></tr>\n";
 
 		/*
 		$sql="SELECT * FROM s_traitement_incident sti, s_mesures s WHERE sti.id_incident='$id_incident' AND sti.id_mesure=s.id;";
 		$res_t_incident=mysql_query($sql);
 		if(mysql_num_rows($res_t_incident)>0) {
-			echo "<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Mesures&nbsp;: </td>\n";
-			echo "<td style='text-align:left;'>";
+			$retour.="<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Mesures&nbsp;: </td>\n";
+			$retour.="<td style='text-align:left;'>";
 			while($lig_t_incident=mysql_fetch_object($res_t_incident)) {
-				echo "$lig_t_incident->mesure (<em style='color:green;'>mesure $lig_t_incident->type</em>)<br />";
+				$retour.="$lig_t_incident->mesure (<em style='color:green;'>mesure $lig_t_incident->type</em>)<br />";
 			}
-			echo "</td>\n";
-			echo "</tr>\n";
+			$retour.="</td>\n";
+			$retour.="</tr>\n";
 		}
 		*/
 		$texte=affiche_mesures_incident($lig_incident->id_incident);
 		if($texte!='') {
-			echo "<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Mesures&nbsp;: </td>\n";
-			echo "<td style='text-align:left;'>";
-			echo $texte;
-			echo "</td>\n";
-			echo "</tr>\n";
+			$retour.="<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Mesures&nbsp;: </td>\n";
+			$retour.="<td style='text-align:left;'>";
+			$retour.=$texte;
+			$retour.="</td>\n";
+			$retour.="</tr>\n";
 		}
-		echo "</table>\n";
+		$retour.="</table>\n";
 	}
 	else {
-		echo "<p>L'".$mod_disc_terme_incident." n°$id_incident ne semble pas enregistré???</p>\n";
+		$retour.="<p>L'".$mod_disc_terme_incident." n°$id_incident ne semble pas enregistré???</p>\n";
 	}
-	echo "</blockquote>\n";
+	$retour.="</blockquote>\n";
+
+	if($mode_retour=='echo') {
+		echo $retour;
+	}
+	else {
+		return $retour;
+	}
 }
 
 function tab_lignes_adresse($ele_login) {
@@ -1588,4 +1598,14 @@ function get_nature_sanction($id_nature_sanction) {
 	return $retour;
 }
 
+function sanction_saisie_par($id_sanction, $login) {
+	$sql="SELECT 1=1 FROM s_sanctions WHERE id_sanction='$id_sanction' AND saisie_par='".$login."';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)==0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
 ?>

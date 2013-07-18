@@ -101,5 +101,30 @@ if ($mod_disc_terme_sanction=="") {
 	$result .= msj_present("déjà faite");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'saisie_prof' à la table 's_types_sanctions2' : ";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_types_sanctions2 LIKE 'saisie_prof';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE s_types_sanctions2 ADD saisie_prof char(1) NOT NULL default 'n';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'saisie_par' à la table 's_sanctions' : ";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_sanctions LIKE 'saisie_par';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE s_sanctions ADD saisie_par varchar(255) NOT NULL default '';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 
 ?>

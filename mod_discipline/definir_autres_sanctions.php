@@ -104,12 +104,29 @@ if(isset($nature)) {
 
 	check_token();
 
+	$saisie_prof=isset($_POST['saisie_prof']) ? $_POST['saisie_prof'] : array();
+
 	$sql="SELECT * FROM s_types_sanctions2 ORDER BY nature;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		$tab_nature=array();
+		$tab_saisie_prof_avant=array();
 		while($lig=mysql_fetch_object($res)) {
 			$tab_nature[]=$lig->nature;
+			if($lig->saisie_prof=="y") {
+				$tab_saisie_prof_avant[]=$lig->id_nature;
+			}
+
+			if((!in_array($lig->id_nature, $saisie_prof))&&(in_array($lig->id_nature, $tab_saisie_prof_avant))) {
+				$sql="UPDATE s_types_sanctions2 SET saisie_prof='n' WHERE id_nature='$lig->id_nature';";
+				$update=mysql_query($sql);
+				if(!$update) {
+					$msg.="Erreur lors de la suppression de la possibilité de saisie professeur de $lig->nature.<br />";
+				}
+				else {
+					$msg.="Suppression de la possibilité de saisie professeur de $lig->nature.<br />";
+				}
+			}
 		}
 
 		if(in_array($nature,$tab_nature)) {
@@ -118,6 +135,18 @@ if(isset($nature)) {
 		}
 	}
 
+	for($loop=0;$loop<count($saisie_prof);$loop++) {
+		if(!in_array($saisie_prof[$loop], $tab_saisie_prof_avant)) {
+			$sql="UPDATE s_types_sanctions2 SET saisie_prof='y' WHERE id_nature='".$saisie_prof[$loop]."';";
+			$update=mysql_query($sql);
+			if(!$update) {
+				$msg.="Erreur lors de la saisie de la possibilité de saisie professeur des $mod_disc_terme_sanction n°".$saisie_prof[$loop].".<br />";
+			}
+			else {
+				$msg.="Enregistrement de la possibilité de saisie professeur des $mod_disc_terme_sanction n°".$saisie_prof[$loop].".<br />";
+			}
+		}
+	}
 
 	if((isset($nature))&&($nature!='')) {
 		if($a_enregistrer=='y') {
@@ -174,6 +203,7 @@ else {
 	echo "<tr>\n";
 	echo "<th>Nature</th>\n";
 	echo "<th>Type</th>\n";
+	echo "<th title=\"Précisez si un professeur peut ou non saisir lui-même ce type de ".$mod_disc_terme_sanction."\">Professeur</th>\n";
 	echo "<th>Supprimer</th>\n";
 	echo "</tr>\n";
 	$alt=1;
@@ -189,6 +219,12 @@ else {
 
 		echo "<td>\n";
 		echo $lig->type;
+		echo "</td>\n";
+
+		echo "<td>\n";
+		echo "<input type='checkbox' name='saisie_prof[]' id='saisie_prof_$cpt' value=\"$lig->id_nature\" ";
+		if($lig->saisie_prof=="y") {echo "checked ";}
+		echo "onchange='changement();' />";
 		echo "</td>\n";
 
 		echo "<td>";

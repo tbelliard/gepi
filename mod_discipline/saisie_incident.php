@@ -1153,7 +1153,16 @@ if($step!=2) {
         </li>            
 <?php
 }
-if((isset($id_incident))&&($_SESSION['statut']!='professeur')&&(($_SESSION['statut']!='autre'))) {
+$nb_droit_prof_saisie_sanction=0;
+$sql="SELECT 1=1 FROM s_types_sanctions2 WHERE saisie_prof='y';";
+$test_droit_prof_saisie_sanction=mysql_query($sql);
+$nb_droit_prof_saisie_sanction=mysql_num_rows($test_droit_prof_saisie_sanction);
+if((isset($id_incident))&&
+	(
+		(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))||
+		(($_SESSION['statut']=='professeur')&&($nb_droit_prof_saisie_sanction>0))
+	)
+) {
 ?>
         <li>
             <a href='saisie_sanction.php?id_incident=<?php echo $id_incident; ?>' 
@@ -2360,7 +2369,10 @@ new Ajax.Autocompleter (
 				$id_infobulle_nature2='div_choix_nature2';
 				$largeur_infobulle_nature2=35;
 				$hauteur_infobulle_nature2=10;
-			
+
+				// Pour que le div soit caché via le code en footer lors du chargement de la page.
+				$tabid_infobulle[]=$id_infobulle_nature2;
+
 				// Conteneur:
 ?>
                     <div id='<?php echo $id_infobulle_nature2; ?>' 

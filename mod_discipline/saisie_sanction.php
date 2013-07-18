@@ -191,7 +191,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 			else {
 				//$sql="INSERT INTO s_sanctions SET login='$ele_login', nature='retenue', id_incident='$id_incident';";
 				//$sql="INSERT INTO s_sanctions SET login='$ele_login', nature='retenue', id_incident='$id_incident';";
-				$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident';";
+				$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
@@ -213,7 +213,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 
 				if(count($autre_protagoniste_meme_sanction)>0) {
 					for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
-						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident';";
+						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
@@ -363,7 +363,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				}
 			}
 			else {
-				$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident';";
+				$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
@@ -379,7 +379,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 
 				if(count($autre_protagoniste_meme_sanction)>0) {
 					for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
-						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident';";
+						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
@@ -460,7 +460,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				}
 			}
 			else {
-				$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident';";
+				$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
@@ -477,7 +477,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 
 				if(count($autre_protagoniste_meme_sanction)>0) {
 					for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
-						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident';";
+						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
@@ -542,7 +542,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 					}
 				}
 				else {
-					$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident';";
+					$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
@@ -562,7 +562,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 
 					if(count($autre_protagoniste_meme_sanction)>0) {
 						for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
-							$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident';";
+							$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 							//echo "$sql<br />\n";
 							$res=mysql_query($sql);
 							if(!$res) {
@@ -683,20 +683,29 @@ if(isset($_POST['enregistrer_sanction'])) {
 if(($mode=="suppr_sanction")&&(isset($id_sanction))) {
 	check_token();
 
-	$msg.=suppr_doc_joints_sanction($id_sanction);
+	$suppression_sanction_possible="y";
+	if(($_SESSION['statut']=='professeur')&&(!sanction_saisie_par($id_sanction, $_SESSION['login']))) {
+		$suppression_sanction_possible="n";
+		$msg.="Vous n'avez pas le droit de supprimer cette sanction.<br />";
+		// Tentative intrusion?
+	}
 
-	$sql="DELETE FROM s_travail WHERE id_sanction='$id_sanction';";
-	$res=mysql_query($sql);
-	$sql="DELETE FROM s_exclusions WHERE id_sanction='$id_sanction';";
-	$res=mysql_query($sql);
-	$sql="DELETE FROM s_retenues WHERE id_sanction='$id_sanction';";
-	$res=mysql_query($sql);
-	$sql="DELETE FROM s_autres_sanctions WHERE id_sanction='$id_sanction';";
-	$res=mysql_query($sql);
-	$sql="DELETE FROM s_sanctions WHERE id_sanction='$id_sanction';";
-	$res=mysql_query($sql);
-	$sql="DELETE FROM s_reports WHERE id_sanction='$id_sanction';";
-	$res=mysql_query($sql);
+	if($suppression_sanction_possible=="y") {
+		$msg.=suppr_doc_joints_sanction($id_sanction);
+
+		$sql="DELETE FROM s_travail WHERE id_sanction='$id_sanction';";
+		$res=mysql_query($sql);
+		$sql="DELETE FROM s_exclusions WHERE id_sanction='$id_sanction';";
+		$res=mysql_query($sql);
+		$sql="DELETE FROM s_retenues WHERE id_sanction='$id_sanction';";
+		$res=mysql_query($sql);
+		$sql="DELETE FROM s_autres_sanctions WHERE id_sanction='$id_sanction';";
+		$res=mysql_query($sql);
+		$sql="DELETE FROM s_sanctions WHERE id_sanction='$id_sanction';";
+		$res=mysql_query($sql);
+		$sql="DELETE FROM s_reports WHERE id_sanction='$id_sanction';";
+		$res=mysql_query($sql);
+	}
 }
 
 if(($mode=="suppr_report")&&(isset($id_report))) {
@@ -1188,7 +1197,14 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						}
 						echo "</td>\n";
 //
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+						echo "<td>";
+						if(($_SESSION['statut']!='professeur')||($lig_sanction->saisie_par==$_SESSION['login'])) {
+							echo "<a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a>";
+						}
+						else {
+							echo "<img src='../images/disabled.png' class='icone16' title=\"Un professeur ne peut supprimer que ses propres sanctions.\" />";
+						}
+						echo "</td>\n";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
@@ -1404,7 +1420,12 @@ elseif($mode=='ajout') {
 	$largeur_champ_select=11;
 	$tab_autres_sanctions=array();
 	//$sql="SELECT * FROM s_types_sanctions ORDER BY nature;";
-	$sql="SELECT * FROM s_types_sanctions2 ORDER BY type, nature;";
+	if($_SESSION['statut']=='professeur') {
+		$sql="SELECT * FROM s_types_sanctions2 WHERE saisie_prof='y' ORDER BY type, nature;";
+	}
+	else {
+		$sql="SELECT * FROM s_types_sanctions2 ORDER BY type, nature;";
+	}
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		while($lig=mysql_fetch_object($res)) {
@@ -1418,8 +1439,10 @@ elseif($mode=='ajout') {
 
 	echo "<p class='bold'>Nature de la ".$mod_disc_terme_sanction."&nbsp;:<br />\n";
 	echo "<select name='traitement' id='traitement' onchange=\"maj_traitement()\">\n";
-	echo "<option value=''";
-	echo ">---</option>\n";
+	if(count($tab_autres_sanctions)>1) {
+		echo "<option value=''";
+		echo ">---</option>\n";
+	}
 
 	/*
 	echo "<option value='travail'";

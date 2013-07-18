@@ -143,25 +143,20 @@
 	</p>
   </li>
   <li>
-	<p>Un professeur peut saisir un <?php echo $mod_disc_terme_incident;?>, mais ne peut pas saisir les <?php echo $mod_disc_terme_sanction;?>s.<br />
+	<p>Un professeur peut saisir un <?php echo $mod_disc_terme_incident;?>, mais ne peut pas saisir les <?php echo $mod_disc_terme_sanction;?>s sauf paramétrage contraire dans la page de définition des <?php echo $mod_disc_terme_sanction;?>s.<br />
 Un professeur ne peut modifier que les <?php echo $mod_disc_terme_incident;?>s (<em>non clos</em>) qu'il a lui-même déclaré.<br />Il ne peut consulter que les <?php echo $mod_disc_terme_incident;?>s (<em>et leurs suites</em>) qu'il a déclarés, ou dont il est protagoniste, ou encore dont un des élèves, dont il est professeur principal, est protagoniste.
 	</p>
   </li>
   <li>
 	<p>
-	  <em>A FAIRE:</em>
+	  <em style='color:red'>A FAIRE:</em>
 	  Ajouter des tests 'changement()' dans les pages de saisie pour ne pas quitter une étape sans enregistrer.
+	  C'est fait au moins en partie... contrôler plus à fond.
 	</p>
   </li>
   <li>
 	<p>
-	  <em>A FAIRE:</em>
-	  Permettre de consulter d'autres <?php echo $mod_disc_terme_incident;?>s que les siens propres.<br />Eventuellement avec limitation aux élèves de ses classes.
-	</p>
-  </li>
-  <li>
-	<p>
-	  <em>A FAIRE ENCORE:</em>
+	  <em style='color:red'>A FAIRE:</em>
 	  Permettre d'archiver les <?php echo $mod_disc_terme_incident;?>s/<?php echo $mod_disc_terme_sanction;?>s d'une année et vider les tables <?php echo $mod_disc_terme_incident;?>s/<?php echo $mod_disc_terme_sanction;?>s lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<em>homonymie,...</em>)
 	</p>
   </li>
