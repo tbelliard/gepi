@@ -433,10 +433,13 @@ if(getSettingAOui('active_bulletins')) {
 
 	$afficher_correction_validation="n";
 	if($_SESSION['statut']=='scolarite') {
-		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+		// Il faut détecter les corrections d'appréciation de groupe et pas seulement celles d'élèves:
+		//$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jgc.id_classe AND jgc.id_groupe=mac.id_groupe AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
 	}
 	else {
-		$sql="SELECT 1=1 FROM matieres_app_corrections;";
+		//$sql="SELECT 1=1 FROM matieres_app_corrections;";
+		$sql="SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, j_groupes_classes jgc, classes c WHERE mac.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY classe;";
 	}
 	$test_mac=mysql_query($sql);
 	if($test_mac AND mysql_num_rows($test_mac)>0) {$afficher_correction_validation="y";}

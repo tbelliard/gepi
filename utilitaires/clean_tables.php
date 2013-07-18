@@ -1172,9 +1172,11 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 			$texte_info_action="<p>Un ou des groupes existent sans être associés à aucune classe.<br />C'est une anomalie.<br />En voici la liste&nbsp;:<br />\n";
 			while($ligne=mysql_fetch_object($res_grp2)) {
 				$texte_info_action.="Suppression du groupe n°$ligne->id&nbsp;: $ligne->name (<em>$ligne->description</em>)&nbsp;: ";
-				$sql="DELETE from groupes WHERE id='$ligne->id';";
+
+				//$sql="DELETE from groupes WHERE id='$ligne->id';";
 				//echo "$sql<br />";
-				$menage=mysql_query($sql);
+				//$menage=mysql_query($sql);
+				$menage=delete_group($ligne->id);
 				if($menage) {
 					$texte_info_action.="<span style='color:green'>SUCCES</span>";
 				}
@@ -1193,9 +1195,10 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 			$texte_info_action="<p>Un ou des groupes existent sans être associés à aucune matière.<br />C'est une anomalie.<br />En voici la liste&nbsp;:<br />\n";
 			while($ligne=mysql_fetch_object($res_grp2)) {
 				$texte_info_action.="Suppression du groupe n°$ligne->id&nbsp;: $ligne->name (<em>$ligne->description</em>)&nbsp;: ";
-				$sql="DELETE from groupes WHERE id='$ligne->id';";
+				//$sql="DELETE from groupes WHERE id='$ligne->id';";
 				//echo "$sql<br />";
-				$menage=mysql_query($sql);
+				//$menage=mysql_query($sql);
+				$menage=delete_group($ligne->id);
 				if($menage) {
 					$texte_info_action.="<span style='color:green'>SUCCES</span>";
 				}
