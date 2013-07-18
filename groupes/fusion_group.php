@@ -372,6 +372,8 @@ if(isset($step)){
 
 				for($i=0;$i<count($tab_grp);$i++) {
 					if($tab_grp[$i]!=$id_groupe){
+						$suppr=delete_group($tab_grp[$i]);
+						/*
 						$sql="DELETE FROM groupes WHERE id='".$tab_grp[$i]."';";
 						//echo "$sql<br />";
 						$suppr=mysql_query($sql);
@@ -391,6 +393,7 @@ if(isset($step)){
 						$sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='".$tab_grp[$i]."';";
 						//echo "$sql<br />";
 						$suppr=mysql_query($sql);
+						*/
 					}
 				}
 
