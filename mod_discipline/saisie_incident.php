@@ -2360,7 +2360,10 @@ new Ajax.Autocompleter (
 				$id_infobulle_nature2='div_choix_nature2';
 				$largeur_infobulle_nature2=35;
 				$hauteur_infobulle_nature2=10;
-			
+
+				// Pour que le div soit caché via le code en footer lors du chargement de la page.
+				$tabid_infobulle[]=$id_infobulle_nature2;
+
 				// Conteneur:
 ?>
                     <div id='<?php echo $id_infobulle_nature2; ?>' 
