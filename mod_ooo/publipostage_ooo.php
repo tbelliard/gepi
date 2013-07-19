@@ -385,6 +385,9 @@ if(!isset($num_fich)) {
 			echo "<p>Pour quel(s) utilisateur(s) souhaitez-vous mettre en place le modèle&nbsp;? ";
 			echo "<a href='javascript:cocher_decocher(true)'>Tout cocher</a> / <a href='javascript:cocher_decocher(false)'>Tout décocher</a>\n";
 			echo "</p>\n";
+
+			echo liste_checkbox_utilisateurs(array('administrateur', 'scolarite', 'cpe', 'professeur'), array($_SESSION['login']));
+			/*
 			$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE statut='administrateur' OR statut='scolarite' OR statut='cpe' OR statut='professeur' AND etat='actif' ORDER BY statut, login, nom, prenom;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
@@ -438,6 +441,7 @@ function cocher_decocher(mode) {
 </script>\n";
 
 			}
+			*/
 		}
 	
 		echo "<p>Fichier modèle&nbsp;:&nbsp;<input type='file' name='monfichier' value='il a cliqué le bougre'></p>\n";
