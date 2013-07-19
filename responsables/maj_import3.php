@@ -2560,6 +2560,13 @@ else{
 		case "4":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
+			/*
+			$tab_mef=get_tab_mef();
+			echo "tab_mef:<pre>";
+			print_r($tab_mef);
+			echo "</pre>";
+			*/
+
 			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : 10;
 			if(preg_match("/[^0-9]/",$eff_tranche)) {$eff_tranche=10;}
 
@@ -3478,14 +3485,36 @@ else{
 									echo "<td";
 									if($lig_ele->mef_code!=$affiche[16]){
 										echo " class='modif'>";
-										if($lig_ele->mef_code!=''){
-											echo "$lig_ele->mef_code <font color='red'>-&gt;</font>\n";
+										if($lig_ele->mef_code!='') {
+											if(isset($tab_mef[$lig_ele->mef_code])) {
+												if((isset($tab_mef[$lig_ele->mef_code]['libelle_court']))&&($tab_mef[$lig_ele->mef_code]['libelle_court']!="")) {
+													echo "<span title=\"".$tab_mef[$lig_ele->mef_code]['designation_courte']."\">".$tab_mef[$lig_ele->mef_code]['libelle_court']."</span>";
+												}
+												else {
+													echo $tab_mef[$lig_ele->mef_code]['designation_courte'];
+												}
+											}
+											else {
+												echo "$lig_ele->mef_code";
+											}
+											echo " <font color='red'>-&gt;</font>\n";
 										}
 									}
 									else{
 										echo ">";
 									}
-									echo "$affiche[16]";
+
+									if(isset($tab_mef[$affiche[16]])) {
+										if((isset($tab_mef[$affiche[16]]['libelle_court']))&&($tab_mef[$affiche[16]]['libelle_court']!="")) {
+											echo "<span title=\"".$tab_mef[$affiche[16]]['designation_courte']."\">".$tab_mef[$affiche[16]]['libelle_court']."</span>";
+										}
+										else {
+											echo $tab_mef[$affiche[16]]['designation_courte'];
+										}
+									}
+									else {
+										echo $affiche[16];
+									}
 									echo "</td>\n";
 								}
 
@@ -3692,7 +3721,17 @@ else{
 								// 20130607
 								if(getSettingAOui('alert_diff_mef')) {
 									echo "<td>";
-									echo "$affiche[16]";
+									if(isset($tab_mef[$affiche[16]])) {
+										if((isset($tab_mef[$affiche[16]]['libelle_court']))&&($tab_mef[$affiche[16]]['libelle_court']!="")) {
+											echo "<span title=\"".$tab_mef[$affiche[16]]['designation_courte']."\">".$tab_mef[$affiche[16]]['libelle_court']."</span>";
+										}
+										else {
+											echo $tab_mef[$affiche[16]]['designation_courte'];
+										}
+									}
+									else {
+										echo $affiche[16];
+									}
 									echo "</td>\n";
 								}
 
