@@ -537,6 +537,7 @@ if (isset($_POST['is_posted'])) {
 			$reg_ok = 'no';
 		}
 	}
+	/*
 	if (isset($_POST['bull_affiche_img_signature'])) {
 	
 		if (!saveSetting("bull_affiche_img_signature", $_POST['bull_affiche_img_signature'])) {
@@ -544,6 +545,7 @@ if (isset($_POST['is_posted'])) {
 			$reg_ok = 'no';
 		}
 	}
+	*/
 
 	if (isset($_POST['bull_hauteur_img_signature'])) {
 		$bull_hauteur_img_signature=$_POST['bull_hauteur_img_signature'];
@@ -1564,7 +1566,9 @@ if(getSettingAOui('active_bulletins')) {
         </td>
     </tr>
 
-    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+    <!--tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;
+    //$nb_ligne++;
+    ?>>
         <td style="font-variant: small-caps;">
         Insérer la signature ou cachet de l'établissement&nbsp;:
         <?php
@@ -1588,11 +1592,16 @@ if(getSettingAOui('active_bulletins')) {
         echo " /><label for='bull_affiche_img_signaturen' style='cursor: pointer;'>&nbsp;Non</label>";
         ?>
         </td>
-    </tr>
+    </tr-->
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps; vertical-align:top;">
         Dimensions maximales (<em>en pixels</em>) de l'image de la signature ou cachet de l'établissement&nbsp;:
+        <?php
+            if(acces('/gestion/gestion_signature.php', $_SESSION['statut'])) {
+                echo "<br />Voir <a href='../gestion/gestion_signature.php' target='_blank'>Gestion du ou des fichiers de signature</a>";
+            }
+        ?>
        </td>
         <td>
         <?php

@@ -2414,4 +2414,70 @@ function retourne_html_histogramme_svg($tab_graph_note, $titre, $id, $nb_tranche
 	return $retour;
 }
 
+function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=array(), $nom_champ='login_user', $nom_func_js_tout_cocher_decocher='cocher_decocher') {
+	$retour="";
+
+	$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE (";
+	for($loop=0;$loop<count($tab_statuts);$loop++) {
+		if($loop>0) {
+			$sql.=" OR ";
+		}
+		$sql.="statut='".$tab_statuts[$loop]."'";
+	}
+	$sql.=") AND etat='actif' ORDER BY statut, login, nom, prenom;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$nombreligne=mysql_num_rows($res);
+		$nbcol=3;
+		$nb_par_colonne=round($nombreligne/$nbcol);
+
+		$retour.="<table width='100%' summary=\"Tableau de choix des utilisateurs\">\n";
+		$retour.="<tr valign='top' align='center'>\n";
+		$retour.="<td align='left'>\n";
+
+		$cpt=0;
+		$statut_prec="";
+		while($lig=mysql_fetch_object($res)) {
+			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
+				$retour.="</td>\n";
+				$retour.="<td align='left'>\n";
+			}
+
+			if($lig->statut!=$statut_prec) {
+				$retour.="<p><b>".ucfirst($lig->statut)."</b><br />\n";
+				$statut_prec=$lig->statut;
+			}
+
+			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->login' ";
+			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
+			if(in_array($lig->login, $tab_user_preselectionnes)) {
+				$retour.="checked ";
+				$temp_style=" style='font-weight: bold;'";
+			}
+			else {
+				$temp_style="";
+			}
+			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->login\"><span id='texte_".$nom_champ."_$cpt'$temp_style>$lig->civilite $lig->nom $lig->prenom</span></label><br />\n";
+
+			$cpt++;
+		}
+		$retour.="</td>\n";
+		$retour.="</tr>\n";
+		$retour.="</table>\n";
+
+		$retour.="<script type='text/javascript'>
+function $nom_func_js_tout_cocher_decocher(mode) {
+	for (var k=0;k<$cpt;k++) {
+		if(document.getElementById('".$nom_champ."_'+k)){
+			document.getElementById('".$nom_champ."_'+k).checked=mode;
+			checkbox_change('".$nom_champ."_'+k);
+		}
+	}
+}
+</script>\n";
+	}
+
+	return $retour;
+}
+
 ?>

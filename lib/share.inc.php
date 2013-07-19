@@ -1446,17 +1446,31 @@ function check_temp_directory(){
  * Test le dossier en écriture et le crée au besoin
  * La fonction est appelée depuis la racine de l'arborescence GEPI (sinon ça peut bugger)
  *
+ * @param string $login_user Le login de l'utilisateur (si vide, on utilise $_SESSION['login'])
+ *
  * @return booleanTRUE si tout c'est bien passé
  */
-function check_user_temp_directory(){
+function check_user_temp_directory($login_user="", $_niveau_arbo=0) {
 	global $multisite;
+
+	$pref_arbo=".";
+	if($_niveau_arbo==1) {
+		$pref_arbo="..";
+	}
+	elseif($_niveau_arbo==2) {
+		$pref_arbo="../..";
+	}
+
+	if($login_user=="") {
+		$login_user=$_SESSION['login'];
+	}
 
 	$pref_multi="";
 	if(($multisite=='y')&&(isset($_COOKIE['RNE']))) {
 		$pref_multi=$_COOKIE['RNE']."_";
 	}
 
-	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
+	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$login_user."'";
 	$res_temp_dir=mysql_query($sql);
 
 	if(mysql_num_rows($res_temp_dir)==0){
@@ -1472,18 +1486,18 @@ function check_user_temp_directory(){
 			// On créé le répertoire temp
 			$length = rand(35, 45);
 			for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-			$dirname = $pref_multi.$_SESSION['login']."_".$r;
-			$create = mkdir("./temp/".$dirname, 0700);
+			$dirname = $pref_multi.$login_user."_".$r;
+			$create = mkdir($pref_arbo."/temp/".$dirname, 0700);
 
 			if($create){
-				$fich=fopen("./temp/".$dirname."/index.html","w+");
+				$fich=fopen($pref_arbo."/temp/".$dirname."/index.html","w+");
 				fwrite($fich,'<html><head><script type="text/javascript">
-	document.location.replace("../../login.php")
+	document.location.replace("'.$pref_arbo.'/login.php")
 </script></head></html>
 ');
 				fclose($fich);
 
-				$sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$_SESSION['login']."'";
+				$sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$login_user."'";
 				$res_update=mysql_query($sql);
 				if($res_update){
 					return TRUE;
@@ -1497,16 +1511,16 @@ function check_user_temp_directory(){
 			}
 		}
 		else {
-			if(($pref_multi!='')&&(!preg_match("/^$pref_multi/", $dirname))&&(file_exists("./temp/".$dirname))) {
+			if(($pref_multi!='')&&(!preg_match("/^$pref_multi/", $dirname))&&(file_exists("$pref_arbo/temp/".$dirname))) {
 				// Il faut renommer le dossier
-				if(!rename("./temp/".$dirname,"./temp/".$pref_multi.$dirname)) {
+				if(!rename("$pref_arbo/temp/".$dirname,"$pref_arbo/temp/".$pref_multi.$dirname)) {
 					return FALSE;
 					exit();
 				}
 				else {
 					$dirname=$pref_multi.$dirname;
 
-					$sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$_SESSION['login']."'";
+					$sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$login_user."'";
 					$res_update=mysql_query($sql);
 					if(!$res_update){
 						return FALSE;
@@ -1515,15 +1529,15 @@ function check_user_temp_directory(){
 				}
 			}
 
-			if(!file_exists("./temp/".$dirname)){
+			if(!file_exists("$pref_arbo/temp/".$dirname)){
 				// Le dossier n'existe pas
 				// On créé le répertoire temp
-				$create = mkdir("./temp/".$dirname, 0700);
+				$create = mkdir("$pref_arbo/temp/".$dirname, 0700);
 
 				if($create){
-					$fich=fopen("./temp/".$dirname."/index.html","w+");
+					$fich=fopen("$pref_arbo/temp/".$dirname."/index.html","w+");
 					fwrite($fich,'<html><head><script type="text/javascript">
-	document.location.replace("../../login.php")
+	document.location.replace("'.$pref_arbo.'/login.php")
 </script></head></html>
 ');
 					fclose($fich);
@@ -1534,11 +1548,11 @@ function check_user_temp_directory(){
 				}
 			}
 			else{
-				$fich=fopen("./temp/".$dirname."/test_ecriture.tmp","w+");
+				$fich=fopen("$pref_arbo/temp/".$dirname."/test_ecriture.tmp","w+");
 				$ecriture=fwrite($fich,'Test d écriture.');
 				$fermeture=fclose($fich);
-				if(file_exists("./temp/".$dirname."/test_ecriture.tmp")){
-					unlink("./temp/".$dirname."/test_ecriture.tmp");
+				if(file_exists("$pref_arbo/temp/".$dirname."/test_ecriture.tmp")){
+					unlink("$pref_arbo/temp/".$dirname."/test_ecriture.tmp");
 				}
 
 				if(($fich)&&($ecriture)&&($fermeture)){
@@ -1555,10 +1569,15 @@ function check_user_temp_directory(){
 /**
  * Renvoie le nom du répertoire temporaire de l'utilisateur
  *
+ * @param string $login_user Le login de l'utilisateur (si vide, on utilise $_SESSION['login'])
+ *
  * @return bool|string retourne FALSE s'il n'existe pas et le nom du répertoire s'il existe, sans le chemin
  */
-function get_user_temp_directory(){
-	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
+function get_user_temp_directory($login_user=""){
+	if($login_user=="") {
+		$login_user=$_SESSION['login'];
+	}
+	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$login_user."'";
 	$res_temp_dir=mysql_query($sql);
 	if(mysql_num_rows($res_temp_dir)>0){
 		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
@@ -7539,5 +7558,54 @@ function get_tab_mef($mode="indice_mef_code") {
 		}
 	}
 	return $tab_mef;
+}
+
+function get_tab_signature_bull($login_user="") {
+	global $niveau_arbo;
+	$tab=array();
+
+	if($login_user=="") {
+		$login_user=$_SESSION['login'];
+	}
+
+	if($niveau_arbo=="") {
+		$niveau_arbo=1;
+	}
+
+	$pref_arbo="..";
+	if($niveau_arbo==0) {
+		$pref_arbo=".";
+	}
+	if($niveau_arbo==1) {
+		$pref_arbo="..";
+	}
+	if($niveau_arbo==2) {
+		$pref_arbo="../..";
+	}
+
+	$user_temp_directory=get_user_temp_directory();
+
+	$sql="SELECT 1=1 FROM signature_droits WHERE login='$login_user';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		$sql="SELECT * FROM signature_fichiers WHERE login='$login_user';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			while($lig=mysql_fetch_object($res)) {
+				$tab['fichier'][$lig->id_fichier]['fichier']=$lig->fichier;
+				$tab['fichier'][$lig->id_fichier]['chemin']=$pref_arbo."/temp/".$user_temp_directory."/".$lig->fichier;
+			}
+		}
+
+		$sql="SELECT * FROM signature_classes WHERE login='$login_user';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			while($lig=mysql_fetch_object($res)) {
+				$tab['classe'][$lig->id_classe]['id_fichier']=$lig->id_fichier;
+			}
+		}
+	}
+
+	return $tab;
 }
 ?>

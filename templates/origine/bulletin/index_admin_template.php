@@ -165,7 +165,7 @@
 
 <?php
 	if(acces("/gestion/gestion_signature.php", $_SESSION['statut'])) {
-		echo "<p style='margin-top:2em;'><a href='../gestion/gestion_signature.php'>Définir, modifier ou supprimer un fichier de signature pour les bulletins.</a></p>\n";
+		echo "<p style='margin-top:2em;'><a href='../gestion/gestion_signature.php'>Définir, modifier ou supprimer un ou des fichiers de signature pour les bulletins.</a></p>\n";
 	}
 ?>
 

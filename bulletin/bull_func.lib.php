@@ -172,8 +172,9 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		// L'affichage des graphes devrait provenir des Paramètres d'impression des bulletins HTML, mais le paramètre a été stocké dans $tab_bull
 		$bull_affiche_signature,	// affichage du nom du PP et du chef d'établissement
 
-		$bull_affiche_img_signature,
-		$url_fich_sign,
+		//$bull_affiche_img_signature,
+		//$url_fich_sign,
+		$signature_bull,
 
 		$bull_affiche_etab,			// Etablissement d'origine
 
@@ -1041,8 +1042,11 @@ width:".$largeur1."%;\n";
 			if($tab_bull['suivi_par']!='') {echo "<span class='bulletin'><i>".$span1.$tab_bull['suivi_par'].$span2."</i></span>";}
 
 			// Si une image de signature doit être insérée...
-			if($url_fich_sign!="") {
-				$fich_sign=$url_fich_sign;
+			//if($url_fich_sign!="") {
+			// 20130719
+			if((isset($signature_bull[$tab_bull['id_classe']]))&&($signature_bull[$tab_bull['id_classe']]!="")) {
+				//$fich_sign=$url_fich_sign;
+				$fich_sign=$signature_bull[$tab_bull['id_classe']];
 
 				$largeur_dispo=getSettingValue('bull_largeur_img_signature');
 				$hauteur_dispo=getSettingValue('bull_hauteur_img_signature');
@@ -1172,6 +1176,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		//$avec_coches_mentions,
 		$gepi_denom_mention,
+
+		$signature_bull,
 
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
@@ -5769,6 +5775,7 @@ $hauteur_pris_app_abs=0;
 				//$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$tab_modele_pdf["Y_sign_chef"][$classe_id]);
 				$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$Y_sign_chef_init);
 
+				/*
 				// 20120715
 				// Si une image de signature doit être insérée...
 				$tmp_fich=getSettingValue('fichier_signature');
@@ -5779,6 +5786,12 @@ $hauteur_pris_app_abs=0;
 					$sql="SELECT 1=1 FROM droits_acces_fichiers WHERE fichier='signature_img' AND ((identite='".$_SESSION['statut']."' AND type='statut') OR (identite='".$_SESSION['login']."' AND type='individu'))";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)>0) {
+				*/
+
+				// 20130719
+				if((isset($signature_bull[$tab_bull['id_classe']]))&&($signature_bull[$tab_bull['id_classe']]!="")&&(file_exists($signature_bull[$tab_bull['id_classe']]))) {
+						$fich_sign=$signature_bull[$tab_bull['id_classe']];
+
 						$X_sign = $tab_modele_pdf["X_sign_chef"][$classe_id];
 						$Y_sign = $Y_sign_chef_init;
 
@@ -5819,7 +5832,7 @@ $hauteur_pris_app_abs=0;
 							//$pdf->Image($fich_sign, $X_sign, $Y_sign, $L_sign, $H_sign);
 							$pdf->Image($fich_sign, round($X_sign), round($Y_sign), round($L_sign), round($H_sign));
 						}
-					}
+					//}
 				}
 
 				$pdf->SetFont('DejaVu','',10);

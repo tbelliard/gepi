@@ -127,4 +127,44 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+if((getSettingValue('fichier_signature')!="")&&(file_exists("../backup/".getSettingValue('backup_directory')."/".getSettingValue('fichier_signature')))) {
+	$result .= "<br /><strong>Modification de la gestion de la signature des bulletins : </strong><br />Transfert du fichier <a href='"."../backup/".getSettingValue('backup_directory')."/".getSettingValue('fichier_signature')."' target='_blank'>".getSettingValue('fichier_signature')."</a> pour votre usage personnel (<em>dans votre dossier temporaire</em>).<br />Pour modifier cela, voyez <a href='../gestion/gestion_signature.php'>Gestion des modules/Bulletins/Fichiers de signature</a>";
+	$user_temp_directory=get_user_temp_directory();
+	if(!$user_temp_directory) {
+		$result.="<br /><span style='color:red'>Votre dossier temporaire n'est pas accessible.</span>";
+	}
+	else {
+		$result.="<br />Déplacement du fichier &nbsp;: ";
+		$ok=copy("../backup/".getSettingValue('backup_directory')."/".getSettingValue('fichier_signature'), "../temp/".$user_temp_directory."/".getSettingValue('fichier_signature'));
+		if($ok) {
+			$result .= msj_ok("Ok !");
+
+			$result.="Enregistrement du nom de fichier dans 'signature_fichiers'&nbsp;: ";
+			$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".getSettingValue('fichier_signature')."';";
+			$insert=mysql_query($sql);
+			if(!$insert) {
+				$result .= msj_erreur();
+			}
+			else {
+				$result .= msj_ok("Ok !");
+
+				$result .= "Suppression de la copie du fichier en backup : ";
+				if(!unlink("../backup/".getSettingValue('backup_directory')."/".getSettingValue('fichier_signature'))) {
+					$result .= msj_erreur();
+				}
+				else {
+					$result .= msj_ok("Ok !");
+
+					$sql="DELETE FROM setting WHERE name='fichier_signature';";
+					$menage=mysql_query($sql);
+				}
+
+			}
+
+		} else {
+				$result .= msj_erreur();
+		}
+	}
+}
+
 ?>
