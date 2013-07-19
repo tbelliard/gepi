@@ -706,7 +706,7 @@ if (!isset($quelles_classes)) {
 
 		echo "<tr>\n";
 		echo "<td>\n";
-		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_elenoet' value='rech_elenoet' onclick='verif2()' checked />\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_elenoet' value='rech_elenoet' onclick='verif2()' />\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		//echo "<label for='' style='cursor: pointer;'>\n";
@@ -723,7 +723,7 @@ if (!isset($quelles_classes)) {
 
 		echo "<tr>\n";
 		echo "<td>\n";
-		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_ele_id' value='rech_ele_id' onclick='verif2()' checked />\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_ele_id' value='rech_ele_id' onclick='verif2()' />\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		//echo "<label for='' style='cursor: pointer;'>\n";
@@ -740,7 +740,7 @@ if (!isset($quelles_classes)) {
 
 		echo "<tr>\n";
 		echo "<td>\n";
-		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_no_gep' value='rech_no_gep' onclick='verif2()' checked />\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_no_gep' value='rech_no_gep' onclick='verif2()' />\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		//echo "<label for='' style='cursor: pointer;'>\n";
@@ -758,7 +758,7 @@ if (!isset($quelles_classes)) {
 		// 20130607
 		echo "<tr>\n";
 		echo "<td>\n";
-		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_mef' value='rech_mef' onclick='verif2()' checked />\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_mef' value='rech_mef' onclick='verif2()' />\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		//echo "<label for='' style='cursor: pointer;'>\n";
