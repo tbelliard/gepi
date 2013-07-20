@@ -1031,6 +1031,226 @@ if (isset($_POST['AlertesAvecSon'])) {
 	}
 }
 
+if (isset($_POST['ajout_fichier_signature'])) {
+	check_token();
+
+	$tab_signature=get_tab_signature_bull();
+
+	$sign_file = isset($_FILES["sign_file"]) ? $_FILES["sign_file"] : NULL;
+
+	$msg_tmp="";
+	$temoin_erreur_sign=0;
+	if((isset($sign_file))&&((!isset($sign_file['error']))||($sign_file['error']!=4))) {
+		if((!preg_match("/\.jpeg$/i", $sign_file['name']))&&(!preg_match("/\.jpg$/i", $sign_file['name']))) {
+			$msg_tmp.= "Seule l'extension JPG est autorisée.<br />";
+			$temoin_erreur_sign++;
+		}
+		else {
+			if(!check_user_temp_directory($_SESSION['login'], 1)) {
+				$msg_tmp.= "Votre dossier temporaire ne peut pas être créé ou n'est pas accessible en écriture.<br />";
+				$temoin_erreur_sign++;
+			}
+			else {
+				$dirname=get_user_temp_directory($_SESSION['login']);
+				if((!$dirname)||($dirname=="")) {
+					$msg_tmp.= "Votre dossier temporaire n'existe pas ou n'est pas accessible en écriture.<br />";
+					$temoin_erreur_sign++;
+				}
+				else {
+					$tmp_dim_img=getimagesize($sign_file['tmp_name']);
+					if((isset($tmp_dim_img[2]))&&($tmp_dim_img[2]==2)) {
+						$dirname="../temp/".$dirname."/signature";
+
+						if(!file_exists($dirname)) {
+							mkdir($dirname);
+							if ($f = @fopen("$dirname/index.html", "w")) {
+								@fputs($f, '<html><head><script type="text/javascript">
+		document.location.replace("../../../login.php")
+	</script></head></html>');
+								@fclose($f);
+							}
+						}
+
+						if(!file_exists($dirname)) {
+							$msg_tmp.= "Il n'a pas été possible de créer un dossier 'signature' dans votre dossier temporaire.<br />";
+							$temoin_erreur_sign++;
+						}
+						else {
+							$ok = false;
+							if ($f = @fopen("$dirname/.test", "w")) {
+								@fputs($f, '<'.'?php $ok = true; ?'.'>');
+								@fclose($f);
+								include("$dirname/.test");
+							}
+
+							//$msg_tmp.=$dirname."<br />";
+
+							if (!$ok) {
+								$msg_tmp.= "Problème d'écriture sur votre répertoire temporaire.<br />Veuillez signaler ce problème à l'administrateur du site.<br />";
+								$temoin_erreur_sign++;
+							} else {
+								if (file_exists($dirname."/".$sign_file['name'])) {
+									@unlink($dirname."/".$sign_file['name']);
+									$sql="DELETE FROM signature_fichiers WHERE fichier='".mysql_real_escape_string($sign_file['name'])."' AND login='".$_SESSION['login']."';";
+									$menage=mysql_query($sql);
+									$msg_tmp.= "Un fichier de même nom existait pour cet utilisateur.<br />Le fichier précédent a été supprimé.<br />";
+								}
+								$ok = @copy($sign_file['tmp_name'], $dirname."/".$sign_file['name']);
+								if (!$ok) {$ok = @move_uploaded_file($sign_file['tmp_name'], $dirname."/".$sign_file['name']);}
+								if (!$ok) {
+									$msg_tmp.= "Problème de transfert : le fichier n'a pas pu être transféré dans votre répertoire temporaire.<br />Veuillez signaler ce problème à l'administrateur du site<br />.";
+									$temoin_erreur_sign++;
+								}
+								else {
+									$msg_tmp.= "Le fichier a été transféré.<br />";
+
+									// Par précaution, pour éviter des blagues avec des scories...
+									$sql="DELETE FROM signature_fichiers WHERE fichier='".mysql_real_escape_string($sign_file['name'])."' AND login='".$_SESSION['login']."';";
+									$menage=mysql_query($sql);
+
+									$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".mysql_real_escape_string($sign_file['name'])."';";
+									$insert=mysql_query($sql);
+									if (!$insert) {
+										$msg_tmp.="Erreur lors de l'enregistrement dans la table 'signature_fichiers'.<br />";
+										$temoin_erreur_sign++;
+									}
+								}
+							}
+						}
+					}
+					else {
+						$msg_tmp.= "Le type de l'image est incorrect.<br />";
+						$temoin_erreur_sign++;
+					}
+				}
+			}
+		}
+	}
+	if($msg_tmp!="") {
+		$msg.=$msg_tmp;
+		if($temoin_erreur_sign>0) {
+			$message_signature_bulletins_ajout="<span style='color:red'>".$msg_tmp."</span>";
+		}
+		else {
+			$message_signature_bulletins_ajout="<span style='color:green'>".$msg_tmp."</span>";
+		}
+	}
+
+
+	// Association classe/fichier:
+	// Il faut faire l'association avant la suppression pour éviter des erreurs.
+	$msg_tmp="";
+	$temoin_erreur_sign=0;
+	$fich_sign_classe = isset($_POST["fich_sign_classe"]) ? $_POST["fich_sign_classe"] : array();
+	foreach($fich_sign_classe as $id_classe => $id_fichier) {
+		if(array_key_exists($id_classe, $tab_signature['classe'])) {
+			if($id_fichier!=$tab_signature['classe'][$id_classe]['id_fichier']) {
+				if(($id_fichier!=-1)&&(!array_key_exists($id_fichier, $tab_signature['fichier']))) {
+					$msg_tmp.="Le fichie de signature n°$id_fichier, pour peu qu'il existe, ne vous appartient pas.<br />";
+					$temoin_erreur_sign++;
+				}
+				else {
+					$sql="UPDATE signature_classes SET id_fichier='".$id_fichier."' WHERE id_classe='$id_classe' AND login='".$_SESSION['login']."';";
+					$update=mysql_query($sql);
+					if($update) {
+						if($id_fichier==-1) {
+							$msg_tmp.="Suppression de l'association de fichier signature avec la classe ".get_nom_classe($id_classe)." effectuée.<br />";
+						}
+						else {
+							$msg_tmp.="Association du fichier de signature n°$id_fichier avec la classe ".get_nom_classe($id_classe)." effectuée.<br />";
+						}
+					}
+					else {
+						$msg_tmp.="Erreur lors de l'association du fichier de signature n°$id_fichier avec la classe ".get_nom_classe($id_classe)."<br />";
+						$temoin_erreur_sign++;
+					}
+				}
+			}
+		}
+		else {
+			$msg_tmp.="Vous n'avez pas le droit d'associer un fichier de signature à la classe ".get_nom_classe($id_classe)."<br />";
+			$temoin_erreur_sign++;
+		}
+	}
+	if($msg_tmp!="") {
+		$msg.=$msg_tmp;
+		if($temoin_erreur_sign>0) {
+			$message_signature_bulletins_assoc_fichier_classe="<span style='color:red'>".$msg_tmp."</span>";
+		}
+		else {
+			$message_signature_bulletins_assoc_fichier_classe="<span style='color:green'>".$msg_tmp."</span>";
+		}
+	}
+
+
+	// Suppression de fichier
+	$msg_tmp="";
+	$cpt_suppr=0;
+	$cpt_fich_suppr=0;
+	$temoin_erreur_sign=0;
+	$suppr_fichier = isset($_POST["suppr_fichier"]) ? $_POST["suppr_fichier"] : array();
+	for($loop=0;$loop<count($suppr_fichier);$loop++) {
+		$sql="SELECT * FROM signature_fichiers WHERE id_fichier='".$suppr_fichier[$loop]."' AND login='".$_SESSION['login']."';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+
+			$dirname=get_user_temp_directory($_SESSION['login']);
+			$fichier_courant="../temp/".$dirname."/signature/".$lig->fichier;
+			if(($dirname)&&($dirname!="")&&(file_exists($fichier_courant))) {
+				$menage=unlink($fichier_courant);
+				if(!$menage) {
+					$msg_tmp.="Erreur lors de la suppression du fichier $fichier_courant<br />";
+					$temoin_erreur_sign++;
+				}
+				else {
+					$cpt_fich_suppr++;
+				}
+			}
+
+			if(isset($tab_signature['fichier'][$suppr_fichier[$loop]]['id_classe'])) {
+				for($loop2=0;$loop2<count($tab_signature['fichier'][$suppr_fichier[$loop]]['id_classe']);$loop2++) {
+					$sql="UPDATE signature_classes WHERE SET id_fichier='-1' WHERE login='".$_SESSION['login']."' AND id_classe='".$tab_signature['fichier'][$suppr_fichier[$loop]]['id_classe'][$loop2]."';";
+					$menage2=mysql_query($sql);
+				}
+			}
+
+			$sql="DELETE FROM signature_fichiers WHERE id_fichier='".$suppr_fichier[$loop]."';";
+			$menage=mysql_query($sql);
+			if($menage) {
+				$cpt_suppr++;
+			}
+			else {
+				$msg_tmp.="Erreur lors de la suppression de l'enregistrement concernant $fichier_courant<br />";
+				$temoin_erreur_sign++;
+			}
+		}
+		else {
+			$msg_tmp.="Le fichier n°".$suppr_fichier[$loop]." ne vous appartient pas.<br />";
+			$temoin_erreur_sign++;
+		}
+	}
+	if($cpt_suppr>0) {
+		$msg_tmp.="$cpt_suppr enregistrement(s) supprimé(s).<br />";
+	}
+	if($cpt_fich_suppr>0) {
+		$msg_tmp.="$cpt_fich_suppr fichier(s) supprimé(s).<br />";
+	}
+	if($msg_tmp!="") {
+		$msg.=$msg_tmp;
+		if($temoin_erreur_sign>0) {
+			$message_signature_bulletins_suppr="<span style='color:red'>".$msg_tmp."</span>";
+		}
+		else {
+			$message_signature_bulletins_suppr="<span style='color:green'>".$msg_tmp."</span>";
+		}
+	}
+
+	// Par précaution:
+	$sql="UPDATE signature_classes SET id_fichier='-1' WHERE login='".$_SESSION['login']."' AND id_fichier NOT IN (SELECT id_fichier FROM signature_fichiers);";
+	$menage=mysql_query($sql);
+}
+
 // On appelle les informations de l'utilisateur pour les afficher :
 $call_user_info = mysql_query("SELECT nom,prenom,statut,email,show_email,civilite FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
 $user_civilite = mysql_result($call_user_info, "0", "civilite");
@@ -2360,6 +2580,133 @@ if(getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut']))) {
 	</form>\n";
 }
 
+
+if(getSettingAOui("active_bulletins")) {
+	$sql="SELECT 1=1 FROM signature_droits WHERE login='".$_SESSION['login']."';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		$tab_signature=get_tab_signature_bull();
+		/*
+		echo "<pre>";
+		print_r($tab_signature);
+		echo "</pre>";
+		*/
+		echo "<br />
+<a name='signature_bulletins'></a>
+<form name='form_signature_bulletins' enctype=\"multipart/form-data\" method='post' action='".$_SERVER['PHP_SELF']."#signature_bulletins'>
+	".add_token_field()."
+	<fieldset style='border: 1px solid grey;
+	background-image: url(\"../images/background/opacite50.png\");'>
+		<legend style='border: 1px solid grey; background-color: white;'>Signature des bulletins</legend>";
+
+		if((isset($tab_signature['fichier']))&&(count($tab_signature['fichier'])>0)) {
+			echo "
+			<p class='bold'>Un ou des fichiers de signature sont en place&nbsp;:</p>
+			<ul>";
+			$cpt=0;
+			foreach($tab_signature['fichier'] as $id_fichier => $tmp_tab) {
+				if(file_exists($tab_signature['fichier'][$id_fichier]['chemin'])) {
+					$texte="<center><img src='".$tab_signature['fichier'][$id_fichier]['chemin']."' width='200' /></center>";
+					$tabdiv_infobulle[]=creer_div_infobulle('fichier_signature_'.$cpt,"Fichier de signature","",$texte,"",14,0,'y','y','n','n');
+
+					echo "
+				<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr_fichier[]' id='suppr_fichier_$cpt' value='".$id_fichier."' onchange='changement()' /><label for='suppr_fichier_$cpt' onmouseover=\"delais_afficher_div('fichier_signature_$cpt','y',-100,20,1000,20,20);\"> ".$tab_signature['fichier'][$id_fichier]['fichier']."</label></li>";
+					$cpt++;
+				}
+				else {
+					echo "
+				<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr_fichier[]' id='suppr_fichier_$cpt' value='".$id_fichier."' onchange='changement()' /><label for='suppr_fichier_$cpt'> ".$tab_signature['fichier'][$id_fichier]['fichier']." <span style='color:red'>ANOMALIE : Le fichier semble absent&nbsp;???</span></label></li>";
+					$cpt++;
+				}
+			}
+			echo "
+			</ul>
+			<p><input type='submit' value='Supprimer le ou les fichiers cochés' /></p>
+
+			".(isset($message_signature_bulletins_suppr) ? $message_signature_bulletins_suppr : "");
+		}
+		else {
+			echo "
+			<p class='bold'>Aucun fichier de signature n'est encore en place.</p>";
+		}
+
+		echo "
+		<hr width='200px' />
+
+		<p class='bold' style='margin-top:3em;'>
+			Ajouter le fichier&nbsp;: 
+			<input type=\"file\" name=\"sign_file\" onchange='changement()' />
+			<input type='hidden' name='ajout_fichier_signature' value='y' />
+			<input type='submit' value='Valider' />
+		</p>
+
+		".(isset($message_signature_bulletins_ajout) ? $message_signature_bulletins_ajout : "")."
+
+		<p style='margin-top:1em'><em>NOTE&nbsp;:</em> Seuls les fichiers JPEG sont autorisés.</p>";
+
+		if((isset($tab_signature['classe']))&&(count($tab_signature['classe'])>0)) {
+				echo "
+		<hr width='200px' />
+
+		<p class='bold' style='margin-top:3em;'>Associer votre(vos) fichier(s) aux classes&nbsp;:</p>
+		<table class='boireaus boireaus_alt' summary='Tableau des associations Fichier/Classe'>
+			<tr>
+				<th>Classe</th>
+				<th>Fichier</th>
+			</tr>";
+			foreach($tab_signature['classe'] as $id_classe => $tmp_tab) {
+				echo "
+			<tr>
+				<td>".get_nom_classe($id_classe)."</td>
+				<td>
+					<select name='fich_sign_classe[$id_classe]' onchange='changement()'>
+						<option value='-1'>---</option>";
+				foreach($tab_signature['fichier'] as $id_fichier => $tmp_tab) {
+					echo "
+						<option value='$id_fichier'";
+					if((isset($tab_signature['classe'][$id_classe]['id_fichier']))&&($tab_signature['classe'][$id_classe]['id_fichier']==$id_fichier)) {
+						echo " selected='selected'";
+					}
+					echo ">".$tmp_tab['fichier']."</option>";
+				}
+				echo "
+					</select>
+				</td>
+			</tr>";
+			}
+			echo "
+		</table>
+
+		<p><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' /></p>
+
+		".(isset($message_signature_bulletins_assoc_fichier_classe) ? $message_signature_bulletins_assoc_fichier_classe : "");
+		}
+		else {
+			echo "
+		<hr width='200px' />
+
+		<p class='bold' style='margin-top:3em;'>Vous n'avez pas de classe associée pour la signature.<br />
+		Contactez l'administrateur.</p>";
+		}
+
+		echo "
+
+		<p style='margin-top:3em;'><em>NOTES&nbsp;:</em></p>
+		<ul>
+			<li>
+				<p>Les fichiers mis en place ne sont pas protégés contre un téléchargement abusif.<br />
+				Toute personne connaissant le chemin (<em>aléatoire tout de même</em>) et le nom du fichier signature pourrait le récupérer.</p>
+			</li>
+			<li>
+				<p>Le chemin d'un fichier mis en place peut se trouver après affichage dans une page web,... dans le cache de votre navigateur ou dans les fichiers temporaires du navigateur.<br />
+				Pensez à effacer vos traces après impression de bulletins avec signature insérée.</p>
+			</li>
+		</ul>
+
+	</fieldset>
+</form>\n";
+	}
+}
 
 echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 

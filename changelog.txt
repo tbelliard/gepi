@@ -7,6 +7,7 @@ Gepi-master (Version de développement)
 ===========================
 Bulletins:
 - Bulletins HTML: Possibilité de définir la taille des textes des cellules Avis du conseil de classe et Signature.
+- Possibilité de gérer plusieurs fichiers de signature des bulletins.
 
 Absences2:
 - Possibilité de modifier les dates/heure de début et fin d'une saisie depuis la page de saisie d'un traitement.

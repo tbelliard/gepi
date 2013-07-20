@@ -169,38 +169,57 @@ if (isset($_POST['ajout_fichier'])) {
 			else {
 				$tmp_dim_img=getimagesize($sign_file['tmp_name']);
 				if((isset($tmp_dim_img[2]))&&($tmp_dim_img[2]==2)) {
-					$dirname="../temp/".$dirname;
-				
-					$ok = false;
-					if ($f = @fopen("$dirname/.test", "w")) {
-						@fputs($f, '<'.'?php $ok = true; ?'.'>');
-						@fclose($f);
-						include("$dirname/.test");
+					$dirname="../temp/".$dirname."/signature";
+
+					if(!file_exists($dirname)) {
+						mkdir($dirname);
+						if ($f = @fopen("$dirname/index.html", "w")) {
+							@fputs($f, '<html><head><script type="text/javascript">
+	document.location.replace("../../../login.php")
+</script></head></html>');
+							@fclose($f);
+						}
 					}
 
-					//$msg.=$dirname."<br />";
-
-					if (!$ok) {
-						$msg.= "Problème d'écriture sur le répertoire temporaire de ".civ_nom_prenom($login_user).".<br />Veuillez signaler ce problème à l'administrateur du site.<br />";
-					} else {
-						if (file_exists($dirname."/".$sign_file['name'])) {
-							@unlink($dirname."/".$sign_file['name']);
-							$sql="DELETE FROM signature_fichiers WHERE fichier='".mysql_real_escape_string($sign_file['name'])."' AND login='$login_user';";
-							$menage=mysql_query($sql);
-							$msg.= "Un fichier de même nom existait pour cet utilisateur.<br />Le fichier précédent a été supprimé.<br />";
+					if(!file_exists($dirname)) {
+						$msg.= "Il n'a pas été possible de créer un dossier 'signature' dans votre dossier temporaire.<br />";
+					}
+					else {
+						$ok = false;
+						if ($f = @fopen("$dirname/.test", "w")) {
+							@fputs($f, '<'.'?php $ok = true; ?'.'>');
+							@fclose($f);
+							include("$dirname/.test");
 						}
-						$ok = @copy($sign_file['tmp_name'], $dirname."/".$sign_file['name']);
-						if (!$ok) {$ok = @move_uploaded_file($sign_file['tmp_name'], $dirname."/".$sign_file['name']);}
+
+						//$msg.=$dirname."<br />";
+
 						if (!$ok) {
-							$msg.= "Problème de transfert : le fichier n'a pas pu être transféré dans le répertoire temporaire de ".civ_nom_prenom($login_user).".<br />Veuillez signaler ce problème à l'administrateur du site<br />.";
-						}
-						else {
-							$msg.= "Le fichier a été transféré.<br />";
+							$msg.= "Problème d'écriture sur le répertoire temporaire de ".civ_nom_prenom($login_user).".<br />Veuillez signaler ce problème à l'administrateur du site.<br />";
+						} else {
+							if (file_exists($dirname."/".$sign_file['name'])) {
+								@unlink($dirname."/".$sign_file['name']);
+								$sql="DELETE FROM signature_fichiers WHERE fichier='".mysql_real_escape_string($sign_file['name'])."' AND login='$login_user';";
+								$menage=mysql_query($sql);
+								$msg.= "Un fichier de même nom existait pour cet utilisateur.<br />Le fichier précédent a été supprimé.<br />";
+							}
+							$ok = @copy($sign_file['tmp_name'], $dirname."/".$sign_file['name']);
+							if (!$ok) {$ok = @move_uploaded_file($sign_file['tmp_name'], $dirname."/".$sign_file['name']);}
+							if (!$ok) {
+								$msg.= "Problème de transfert : le fichier n'a pas pu être transféré dans le répertoire temporaire de ".civ_nom_prenom($login_user).".<br />Veuillez signaler ce problème à l'administrateur du site<br />.";
+							}
+							else {
+								$msg.= "Le fichier a été transféré.<br />";
 
-							$sql="INSERT INTO signature_fichiers SET login='$login_user', fichier='".mysql_real_escape_string($sign_file['name'])."';";
-							$insert=mysql_query($sql);
-							if (!$insert) {
-								$msg.="Erreur lors de l'enregistrement dans la table 'signature_fichiers'.<br />";
+								// Par précaution, pour éviter des blagues avec des scories...
+								$sql="DELETE FROM signature_fichiers WHERE fichier='".mysql_real_escape_string($sign_file['name'])."' AND login='$login_user';";
+								$menage=mysql_query($sql);
+
+								$sql="INSERT INTO signature_fichiers SET login='$login_user', fichier='".mysql_real_escape_string($sign_file['name'])."';";
+								$insert=mysql_query($sql);
+								if (!$insert) {
+									$msg.="Erreur lors de l'enregistrement dans la table 'signature_fichiers'.<br />";
+								}
 							}
 						}
 					}
@@ -231,7 +250,7 @@ if (isset($_POST['suppr_fichier'])) {
 				$lig=mysql_fetch_object($res);
 
 				$dirname=get_user_temp_directory($lig->login);
-				$fichier_courant="../temp/".$dirname."/".$lig->fichier;
+				$fichier_courant="../temp/".$dirname."/signature/".$lig->fichier;
 				if(($dirname)&&($dirname!="")&&(file_exists($fichier_courant))) {
 					$menage=unlink($fichier_courant);
 					if(!$menage) {
@@ -242,13 +261,23 @@ if (isset($_POST['suppr_fichier'])) {
 					}
 				}
 
+				$sql="SELECT * FROM signature_classes WHERE id_fichier='".$suppr_fichier[$loop]."';";
+				$res_sc=mysql_query($sql);
+				if(mysql_num_rows($res_sc)>0) {
+					while($lig_sc=mysql_fetch_object($res_sc)) {
+						$sql="UPDATE signature_classes WHERE SET id_fichier='-1' WHERE login='".$_SESSION['login']."' AND id_classe='".$lig_sc->id_classe."';";
+						$menage2=mysql_query($sql);
+					}
+				}
+
 				$sql="DELETE FROM signature_fichiers WHERE id_fichier='".$suppr[$loop]."';";
 				$menage=mysql_query($sql);
 				if($menage) {
 					$cpt_suppr++;
-
+					/*
 					$sql="DELETE FROM signature_classes WHERE id_fichier='".$suppr[$loop]."';";
 					$menage2=mysql_query($sql);
+					*/
 				}
 				else {
 					$msg.="Erreur lors de la suppression de l'enregistrement concernant $fichier_courant<br />";
@@ -554,7 +583,7 @@ if($mode=='choix_fichier') {
 
 			$tab_fichiers_utilisateurs[$lig->login][$cpt]['id_fichier']=$lig->id_fichier;
 			$tab_fichiers_utilisateurs[$lig->login][$cpt]['fichier']=$lig->fichier;
-			$tab_fichiers_utilisateurs[$lig->login][$cpt]['chemin']="../temp/".$tab_user_temp_dir[$lig->login]."/".$lig->fichier;
+			$tab_fichiers_utilisateurs[$lig->login][$cpt]['chemin']="../temp/".$tab_user_temp_dir[$lig->login]."/signature/".$lig->fichier;
 			$cpt++;
 		}
 	}
@@ -613,12 +642,17 @@ if($mode=='choix_fichier') {
 			echo "
 				<ul>";
 			for($j=0;$j<count($tab_fichiers_utilisateurs[$tab_user[$i]['login']]);$j++) {
-				$texte="<center><img src='".$tab_fichiers_utilisateurs[$tab_user[$i]['login']][$j]['chemin']."' width='200' /></center>";
-				$tabdiv_infobulle[]=creer_div_infobulle('fichier_'.$cpt,"Fichier de signature","",$texte,"",14,0,'y','y','n','n');
+				if(file_exists($tab_fichiers_utilisateurs[$tab_user[$i]['login']][$j]['chemin'])) {
+					$texte="<center><img src='".$tab_fichiers_utilisateurs[$tab_user[$i]['login']][$j]['chemin']."' width='200' /></center>";
+					$tabdiv_infobulle[]=creer_div_infobulle('fichier_'.$cpt,"Fichier de signature","",$texte,"",14,0,'y','y','n','n');
 
-				echo "
+					echo "
 					<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='".$tab_fichiers_utilisateurs[$tab_user[$i]['login']][$j]['id_fichier']."' onchange='changement()' /><label for='suppr_$cpt' onmouseover=\"delais_afficher_div('fichier_$cpt','y',-100,20,1000,20,20);\"> ".$tab_fichiers_utilisateurs[$tab_user[$i]['login']][$j]['fichier']."</label></li>";
-
+				}
+				else {
+					echo "
+					<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='".$tab_fichiers_utilisateurs[$tab_user[$i]['login']][$j]['id_fichier']."' onchange='changement()' /><label for='suppr_$cpt'> ".$tab_fichiers_utilisateurs[$tab_user[$i]['login']][$j]['fichier']." <span style='color:red'>ANOMALIE : Le fichier semble absent&nbsp;???</span></label></li>";
+				}
 				$cpt++;
 			}
 			echo "
@@ -694,7 +728,7 @@ if($mode=='choix_assoc_fichier_user_classe') {
 			$tab_fichiers_utilisateurs[$lig->login][$cpt]['fichier']=$lig->fichier;
 			$tab_fichiers_utilisateurs[$lig->login][$cpt]['chemin']="../temp/".$tab_user_temp_dir[$lig->login]."/".$lig->fichier;
 
-			$tab_fichiers[$lig->id_fichier]="../temp/".$tab_user_temp_dir[$lig->login]."/".$lig->fichier;
+			$tab_fichiers[$lig->id_fichier]="../temp/".$tab_user_temp_dir[$lig->login]."/signature/".$lig->fichier;
 
 			$cpt++;
 		}

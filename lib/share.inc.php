@@ -1674,16 +1674,27 @@ function volume_dir($dir){
  * Supprime les fichiers d'un dossier
  *
  * @param string $dir le répertoire à vider
+ * @param array $tab_exclusion tableau de fichiers ou dossiers à exclure de la suppression
+ *
  * @return boolean TRUE si tout c'est bien passé
+ *                 FALSE si un dossier a été trouvé ou si une erreur s'est produite
+ *         array   si un des fichiers ou dossiers exclus de la suppression a été trouvé
+ *
  * @todo En ajoutant un paramètre à la fonction, on pourrait activer la suppression récursive (avec une profondeur par exemple)
  */
-function vider_dir($dir){
+function vider_dir($dir, $tab_exclusion=array()){
 	$statut=TRUE;
 	$handle = @opendir($dir);
 	while ($file = @readdir ($handle)){
 		if (preg_match("/^\.{1,2}$/i",$file)){
 			continue;
 		}
+
+		if(in_array($file, $tab_exclusion)) {
+			$fichiers_exclus_trouves[]=$file;
+			continue;
+		}
+
 		if(is_dir("$dir/$file")){
 			// On ne cherche pas à vider récursivement.
 			$statut=FALSE;
@@ -1701,7 +1712,12 @@ function vider_dir($dir){
 	}
 	@closedir($handle);
 
-	return $statut;
+	if(isset($fichiers_exclus_trouves)) {
+		return $fichiers_exclus_trouves;
+	}
+	else {
+		return $statut;
+	}
 }
 
 
@@ -7593,7 +7609,7 @@ function get_tab_signature_bull($login_user="") {
 		if(mysql_num_rows($res)>0) {
 			while($lig=mysql_fetch_object($res)) {
 				$tab['fichier'][$lig->id_fichier]['fichier']=$lig->fichier;
-				$tab['fichier'][$lig->id_fichier]['chemin']=$pref_arbo."/temp/".$user_temp_directory."/".$lig->fichier;
+				$tab['fichier'][$lig->id_fichier]['chemin']=$pref_arbo."/temp/".$user_temp_directory."/signature/".$lig->fichier;
 			}
 		}
 
@@ -7602,6 +7618,9 @@ function get_tab_signature_bull($login_user="") {
 		if(mysql_num_rows($res)>0) {
 			while($lig=mysql_fetch_object($res)) {
 				$tab['classe'][$lig->id_classe]['id_fichier']=$lig->id_fichier;
+				if($lig->id_fichier!=-1) {
+					$tab['fichier'][$lig->id_fichier]['id_classe'][]=$lig->id_classe;
+				}
 			}
 		}
 	}
