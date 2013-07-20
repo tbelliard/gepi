@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -44,8 +44,11 @@ if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "ca
   // On efface le dossier temporaire
   if ($temp_perso){
 	foreach (glob($temp_perso."/*") as $filename) {
-	  if (is_file($filename) && (!strstr($filename, 'index.html'))){
+	  if (is_file($filename) && (!strstr($filename, 'index.html'))) {
 		@unlink ($filename);
+		// 'signature' est un dossier et actuellement on ne supprime pas les dossiers au logout.
+		// De la même façon, le dossier contenant les PDF d'archivage de bulletins n'est pas supprimé automatiquement.
+		// Il faut passer par la Gestion des dossiers temporaires
 	  }
 	}
 	unset ($filename);
@@ -119,7 +122,10 @@ if(getSettingValue('temporary_dir_no_cleaning')!='yes') {
 	// On efface le dossier temporaire
 	if ($temp_perso) {
 		foreach (glob($temp_perso."/*") as $filename) {
-			if (is_file($filename) && (!strstr($filename, 'index.html'))){
+			if (is_file($filename) && (!strstr($filename, 'index.html'))) {
+				// 'signature' est un dossier et actuellement on ne supprime pas les dossiers au logout.
+				// De la même façon, le dossier contenant les PDF d'archivage de bulletins n'est pas supprimé automatiquement.
+				// Il faut passer par la Gestion des dossiers temporaires
 				@unlink ($filename);
 			}
 		}
