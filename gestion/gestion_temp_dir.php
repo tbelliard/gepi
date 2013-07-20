@@ -70,17 +70,27 @@ if(isset($reinitialiser)) {
 
 				$temp_dir=$lig_td->temp_dir;
 
-				if(($temp_dir=="")||(mb_strlen(preg_replace("/[A-Za-z0-9_.-]/","",$temp_dir))!=0)){
+				if(($temp_dir=="")||(mb_strlen(preg_replace("/[A-Za-z0-9_.-]/","",$temp_dir))!=0)) {
 					$msg.="La valeur de temp_dir pour $reinit[$i] est inattendue: <font color='green'>'</font>$temp_dir<font color='green'>'</font><br />\n";
 				}
-				else{
+				else {
 					if(file_exists("$chemin_temp/$temp_dir")){
 						//if(unlink("$chemin_temp/$temp_dir")){
 						if(is_file("$chemin_temp/$temp_dir")) {
 							$res_suppr=unlink("$chemin_temp/$temp_dir");
 						}
-						else{
-							if(vider_dir("$chemin_temp/$temp_dir")) {
+						else {
+							$suppression=vider_dir("$chemin_temp/$temp_dir", array("signature"));
+							if(is_array($suppression)) {
+								$res_suppr=false;
+								$msg.="$temp_dir contient des fichiers ou dossiers exclus de la suppression : ";
+								for($loop=0;$loop<count($suppression);$loop++) {
+									if($loop>0) {$msg.=", ";}
+									$msg.=$suppression[$loop];
+								}
+								$msg.=".<br />\n";
+							}
+							elseif($suppression) {
 								$res_suppr=rmdir("$chemin_temp/$temp_dir");
 							}
 							else{
@@ -88,6 +98,7 @@ if(isset($reinitialiser)) {
 								$msg.="Il n'a pas été possible de vider $temp_dir<br />\n";
 							}
 						}
+
 						if($res_suppr){
 							$nb_suppr++;
 						}
@@ -97,13 +108,16 @@ if(isset($reinitialiser)) {
 					}
 					else{
 						$msg.="Le dossier $temp_dir n'existe pas.<br />\n";
+						$res_suppr=true;
 					}
 
-					// On vide le champ temp_dir... une nouvelle valeur sera générée au prochain login
-					$sql="UPDATE utilisateurs SET temp_dir='' WHERE login='".$reinit[$i]."'";
-					$res_update=mysql_query($sql);
-					if(!$res_update){
-						$msg.="Erreur lors de la réinitialisation de temp_dir pour $reinit[$i].<br />\n";
+					if($res_suppr) {
+						// On vide le champ temp_dir... une nouvelle valeur sera générée au prochain login
+						$sql="UPDATE utilisateurs SET temp_dir='' WHERE login='".$reinit[$i]."'";
+						$res_update=mysql_query($sql);
+						if(!$res_update) {
+							$msg.="Erreur lors de la réinitialisation de temp_dir pour $reinit[$i].<br />\n";
+						}
 					}
 				}
 			}
@@ -129,15 +143,31 @@ else{
 						if(is_file("$chemin_temp/$suppr[$i]")) {
 							$res_suppr=unlink("$chemin_temp/$suppr[$i]");
 						}
-						else{
-							if(vider_dir("$chemin_temp/$suppr[$i]")) {
-								$res_suppr=rmdir("$chemin_temp/$suppr[$i]");
+						else {
+							if(isset($_POST['sans_exclusion'])) {
+								$res_suppr=deltree("$chemin_temp/$suppr[$i]");
 							}
-							else{
-								$res_suppr=false;
-								$msg.="Il n'a pas été possible de vider $suppr[$i]<br />\n";
+							else {
+								$suppression=vider_dir("$chemin_temp/$suppr[$i]", array("signature"));
+								if(is_array($suppression)) {
+									$res_suppr=false;
+									$msg.="$suppr[$i] contient des fichiers ou dossiers exclus de la suppression : ";
+									for($loop=0;$loop<count($suppression);$loop++) {
+										if($loop>0) {$msg.=", ";}
+										$msg.=$suppression[$loop];
+									}
+									$msg.=".<br />\n";
+								}
+								elseif($suppression) {
+									$res_suppr=rmdir("$chemin_temp/$suppr[$i]");
+								}
+								else{
+									$res_suppr=false;
+									$msg.="Il n'a pas été possible de vider $suppr[$i]<br />\n";
+								}
 							}
 						}
+
 						if($res_suppr){
 							$nb_suppr++;
 						}
@@ -429,6 +459,7 @@ else{
 	}
 	echo "</table>\n";
 
+	echo "<input type='checkbox' id='sans_exclusion' name='sans_exclusion' value='y' /><label for='sans_exclusion'> Supprimer aussi les sous-dossiers et sans exclure certains dossiers/fichiers protégés (<em>fichiers de signature des bulletins,...</em>)</label><br />\n";
 	echo "<input type='hidden' name=is_posted value = '1' />\n";
 	echo "<center><input type='submit' name='Valider' value='Valider' /></center>\n";
 	echo "</form>\n";
