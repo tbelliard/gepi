@@ -1520,7 +1520,16 @@ function UncheckAll_checkbox(){
             $temp = "visu_app_".$k;
             if (isset($_POST[$temp]) or isset($_GET[$temp])) {
                 $j++;
+                $num_ligne_moyenne[$j]=$nb_lignes;
+                $num_col_app[]=$j;
+                $nb_lignes_moyenne_and_co[$j]=3;
                 $col[$j][$nb_lignes] = '-';
+                $sql="SELECT * FROM matieres_appreciations_grp WHERE id_groupe='$id_groupe' AND periode='$k';";
+                $res_app_grp=mysql_query($sql);
+                if(mysql_num_rows($res_app_grp)>0) {
+                    $lig_app_grp=mysql_fetch_object($res_app_grp);
+                    $col[$j][$nb_lignes] = $lig_app_grp->appreciation;
+                }
                 $col[$j][$nb_lignes+1] = '-';
                 $col[$j][$nb_lignes+2] = '-';
 				//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
@@ -1528,8 +1537,10 @@ function UncheckAll_checkbox(){
 					$col[$j][$nb_lignes+3] = '-';
 					$col[$j][$nb_lignes+4] = '-';
 					$col[$j][$nb_lignes+5] = '-';
+					$nb_lignes_moyenne_and_co[$j]+=3;
 				}
-                $col_csv[$j][$nb_lignes] = '-';
+                //$col_csv[$j][$nb_lignes] = '-';
+                $col_csv[$j][$nb_lignes] = $col[$j][$nb_lignes];
                 $col_csv[$j][$nb_lignes+1] = '-';
                 $col_csv[$j][$nb_lignes+2] = '-';
 				//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
@@ -1995,10 +2006,28 @@ function UncheckAll_checkbox(){
 			}
 			//echo "<br />\n";
 		}
-	
+
 		for($j=0;$j<count($col_csv[1]);$j++) {
 			echo "<input type='hidden' name='lignes_csv[$j]' value=\"".$lignes_csv[$j]."\" />\n";
 			//echo "<br />\n";
+		}
+
+		if(isset($num_ligne_moyenne)) {
+			foreach($num_ligne_moyenne as $key => $value) {
+				echo "<input type='hidden' name='num_ligne_moyenne[$key]' value=\"".$value."\" />\n";
+			}
+		}
+
+		if(isset($nb_lignes_moyenne_and_co)) {
+			foreach($nb_lignes_moyenne_and_co as $key => $value) {
+				echo "<input type='hidden' name='nb_lignes_moyenne_and_co[$key]' value=\"".$value."\" />\n";
+			}
+		}
+
+		if(isset($num_col_app)) {
+			foreach($num_col_app as $key => $value) {
+				echo "<input type='hidden' name='num_col_app[]' value=\"".$value."\" />\n";
+			}
 		}
 
 		echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
@@ -2079,23 +2108,23 @@ function UncheckAll_checkbox(){
 	}
 	elseif(isset($_SESSION['vmm_afficher_mediane'])) {unset($_SESSION['vmm_afficher_mediane']);}
 
-    echo "<input type='hidden' name='couleur_alterne' value='$couleur_alterne' />\n";
+	echo "<input type='hidden' name='couleur_alterne' value='$couleur_alterne' />\n";
 	if($couleur_alterne=="y") {$_SESSION['vmm_couleur_alterne']="y";} else {unset($_SESSION['vmm_couleur_alterne']);}
 
-    echo "</form>\n";
-//    $appel_donnees_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login) ORDER BY e.nom, e.prenom");
-//    $nombre_eleves = mysql_num_rows($appel_donnees_eleves);
+	echo "</form>\n";
+	//    $appel_donnees_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login) ORDER BY e.nom, e.prenom");
+	//    $nombre_eleves = mysql_num_rows($appel_donnees_eleves);
 
 
 
-    //if (isset($col)) affiche_tableau($nb_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord,0,0,"");
+	//if (isset($col)) affiche_tableau($nb_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord,0,0,"");
 
 	//function affiche_tableau_index1($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord, $col1_centre, $col_centre, $couleur_alterne) {
 
 	// On commence en colonne 1: Nom Prénom
 	//echo "$ligne1[1]<br />";
 
-    if (isset($col)) {
+	if (isset($col)) {
 		//$couleur_alterne="y";
 		$col1_centre=0;
 		$col_centre=0;
@@ -2135,13 +2164,33 @@ function UncheckAll_checkbox(){
 
 			$j = 1;
 			while($j < $nb_col+1) {
-				if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))){
-					//echo "<td class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
-					echo "<td class='small'>{$col[$j][$i]}</td>\n";
-				} else {
-					//echo "<td align=\"center\" class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
-					echo "<td align=\"center\" class='small'>{$col[$j][$i]}</td>\n";
+				$affiche_cellule="y";
+				$rowspan="n";
+				if(isset($num_ligne_moyenne[$j])) {
+					if($num_ligne_moyenne[$j]==$i) {
+						$affiche_cellule="y";
+						$rowspan="y";
+					}
+					elseif($num_ligne_moyenne[$j]<$i) {
+						$affiche_cellule="n";
+					}
 				}
+
+				if((($affiche_cellule=="y")&&($rowspan=="n"))||(!in_array($j, $num_col_app))) {
+					if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))){
+						echo "<td class='small'>{$col[$j][$i]}</td>\n";
+					} else {
+						echo "<td align=\"center\" class='small'>{$col[$j][$i]}</td>\n";
+					}
+				}
+				elseif(($affiche_cellule=="y")&&($rowspan=="y")) {
+					if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))){
+						echo "<td class='small' rowspan='".$nb_lignes_moyenne_and_co[$j]."'>{$col[$j][$i]}</td>\n";
+					} else {
+						echo "<td align=\"center\" class='small' rowspan='".$nb_lignes_moyenne_and_co[$j]."'>{$col[$j][$i]}</td>\n";
+					}
+				}
+
 				$j++;
 			}
 			echo "</tr>\n";
