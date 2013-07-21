@@ -127,6 +127,9 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+// Pour tester
+// insert into setting set name='fichier_signature', value='signature.jpg';
+// Et copier un signature.jpg dans "../backup/".getSettingValue('backup_directory')
 if((getSettingValue('fichier_signature')!="")&&(file_exists("../backup/".getSettingValue('backup_directory')."/".getSettingValue('fichier_signature')))) {
 	$result .= "<br /><strong>Modification de la gestion de la signature des bulletins : </strong><br />Transfert du fichier <a href='"."../backup/".getSettingValue('backup_directory')."/".getSettingValue('fichier_signature')."' target='_blank'>".getSettingValue('fichier_signature')."</a> pour votre usage personnel (<em>dans votre dossier temporaire</em>).<br />Pour modifier cela, voyez <a href='../gestion/gestion_signature.php'>Gestion des modules/Bulletins/Fichiers de signature</a>";
 	$user_temp_directory=get_user_temp_directory();
@@ -135,30 +138,74 @@ if((getSettingValue('fichier_signature')!="")&&(file_exists("../backup/".getSett
 	}
 	else {
 		$result.="<br />Déplacement du fichier &nbsp;: ";
-		$ok=copy("../backup/".getSettingValue('backup_directory')."/".getSettingValue('fichier_signature'), "../temp/".$user_temp_directory."/".getSettingValue('fichier_signature'));
-		if($ok) {
-			$result .= msj_ok("Ok !");
-
-			$result.="Enregistrement du nom de fichier dans 'signature_fichiers'&nbsp;: ";
-			$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".getSettingValue('fichier_signature')."';";
-			$insert=mysql_query($sql);
-			if(!$insert) {
-				$result .= msj_erreur();
+		if(!file_exists("../temp/".$user_temp_directory."/signature/")) {
+			if(mkdir("../temp/".$user_temp_directory."/signature/")) {
+				$dir_sign_exist=true;
 			}
 			else {
+				$result .= msj_erreur(" lors de la création de "."../temp/".$user_temp_directory."/signature/");
+				$dir_sign_exist=false;
+			}
+		}
+		else {
+			$dir_sign_exist=true;
+		}
+
+		if($dir_sign_exist) {
+			$ok=copy("../backup/".getSettingValue('backup_directory')."/".getSettingValue('fichier_signature'), "../temp/".$user_temp_directory."/signature/".getSettingValue('fichier_signature'));
+			if($ok) {
 				$result .= msj_ok("Ok !");
 
-				$result .= "Suppression de la copie du fichier en backup : ";
-				if(!unlink("../backup/".getSettingValue('backup_directory')."/".getSettingValue('fichier_signature'))) {
-					$result .= msj_erreur();
+				$result.="Enregistrement du droit d'utiliser un fichier de signature&nbsp;: ";
+				$sql="SELECT 1=1 FROM signature_droits WHERE login='".$_SESSION['login']."';";
+				$test_droit=mysql_query($sql);
+				if(mysql_num_rows($test_droit)==0) {
+					$sql="INSERT INTO signature_droits SET login='".$_SESSION['login']."';";
+					$insert=mysql_query($sql);
+					if(!$insert) {
+						$result .= msj_erreur();
+					}
+					else {
+						$result .= msj_ok("Ok !");
+					}
 				}
 				else {
-					$result .= msj_ok("Ok !");
+					$result .= msj_present("déjà présent");
+				}
+
+				$result.="Enregistrement du nom de fichier dans 'signature_fichiers'&nbsp;: ";
+				$sql="SELECT 1=1 FROM signature_fichiers WHERE login='".$_SESSION['login']."' AND fichier='".getSettingValue('fichier_signature')."';";
+				$test_sf=mysql_query($sql);
+				if(mysql_num_rows($test_droit)==0) {
+					$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".getSettingValue('fichier_signature')."';";
+					$insert=mysql_query($sql);
+					if(!$insert) {
+						$result .= msj_erreur();
+					}
+					else {
+						$result .= msj_ok("Ok !");
+
+						$result .= "Suppression de la copie du fichier en backup : ";
+						if(!unlink("../backup/".getSettingValue('backup_directory')."/".getSettingValue('fichier_signature'))) {
+							$result .= msj_erreur();
+						}
+						else {
+							$result .= msj_ok("Ok !");
+
+							$sql="DELETE FROM setting WHERE name='fichier_signature';";
+							$menage=mysql_query($sql);
+						}
+					}
+				}
+				else {
+					$result .= msj_present("déjà présent");
 
 					$sql="DELETE FROM setting WHERE name='fichier_signature';";
 					$menage=mysql_query($sql);
 				}
-
+			}
+			else {
+				$result .= msj_erreur(" lors de la copie du fichier de signature vers "."../temp/".$user_temp_directory."/signature/");
 			}
 
 		} else {
