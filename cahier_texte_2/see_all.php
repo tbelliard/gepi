@@ -759,7 +759,11 @@ while (true) {
 		$content .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
 		echo "<h3 class='see_all_h3'>\n<strong>\n";
 			if ($not_dev->type == "t") {
+				echo "<a name='travail_".$not_dev->id_ct."'></a>";
 				echo("A faire pour le : ");
+			}
+			else {
+				echo "<a name='compte_rendu_".$not_dev->id_ct."'></a>";
 			}
 			echo(strftime("%a %d %b %y", $not_dev->date_ct));
 		echo "</strong>\n</h3>\n";
