@@ -89,8 +89,13 @@ $display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin']
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : NULL;
 
 if(isset($_GET['id_groupe'])) {
-	$id_groupe=array();
-	$id_groupe[0]=$_GET['id_groupe'];
+	if(is_array($_GET['id_groupe'])) {
+		$id_groupe=$_GET['id_groupe'];
+	}
+	else {
+		$id_groupe=array();
+		$id_groupe[0]=$_GET['id_groupe'];
+	}
 }
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
@@ -148,6 +153,27 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 	echo "<p class='grand centre_texte'>Le cahier de textes n'est pas accessible pour le moment.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
+}
+
+// 20130722
+if(isset($id_groupe)) {
+	if((isset($action))&&($action=='afficher_tous_docs_joints')) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?action=export_html";
+		$texte_lien="Exporter le(s) CDT choisi(s)";
+	}
+	else {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?action=afficher_tous_docs_joints";
+			$texte_lien="Afficher tous les documents joints au(x) groupe(s) choisi(s)";
+	}
+	if(is_array($id_groupe)) {
+		for($loop=0;$loop<count($id_groupe);$loop++) {
+			echo "&amp;id_groupe[$loop]=".$id_groupe[$loop];
+		}
+	}
+	else {
+		echo "&amp;id_groupe=".$id_groupe;
+	}
+	echo "'>$texte_lien</a>";
 }
 
 if(!isset($id_groupe)) {
@@ -744,7 +770,12 @@ else {
 
 echo "<div id='div_archive_zip'></div>\n";
 if($action!='acces2') {
-	echo "<p class='bold'>Affichage des cahiers de textes extraits</p>\n";
+	if($action=='afficher_tous_docs_joints') {
+		echo "<p class='bold'>Affichage des documents joints aux cahiers de textes extraits</p>\n";
+	}
+	else {
+		echo "<p class='bold'>Affichage des cahiers de textes extraits</p>\n";
+	}
 }
 
 // Récupérer le max de getSettingValue("begin_bookings") et $display_date_debut
@@ -824,7 +855,7 @@ if($action=='acces2') {
 	fwrite($f,'<?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
 * This file is part of GEPI.
 *
@@ -898,6 +929,58 @@ require($prefixe_arbo_acces_cdt."/cahier_texte_2/acces_cdt.inc.php");
 	require("../lib/footer.inc.php");
 	die();
 }
+
+// 20130722
+// Lister les docs joints... avec lien vers la/les notices associées
+if($action=='afficher_tous_docs_joints') {
+	// Actuellement, on ne donne pas l'accès parent/élève à cette page, mais dans le cas où on le donnerait, il ne faut pas rendre visibles les documents cachés
+	for($i=0;$i<count($id_groupe);$i++) {
+		$current_group=get_group($id_groupe[$i], array('matieres', 'classes', 'profs'));
+		echo "<h2>".$current_group['name']." (<em>".$current_group['description']."</em>) en ".$current_group['classlist_string']." (<em>".$current_group['profs']['proflist_string']."</em>)</h2>\n";
+
+		$sql="(SELECT cd.id_ct, cd.titre, cd.emplacement,ce.date_ct FROM ct_documents cd, ct_entry ce WHERE cd.id_ct=ce.id_ct AND ce.id_groupe='".$current_group['id']."')";
+		$sql.=" UNION ";
+		$sql.="(SELECT cdd.id_ct_devoir AS id_ct,cdd.titre,cdd.emplacement,cde.date_ct FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$current_group['id']."')";
+		$sql.=" ORDER BY date_ct;";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			echo "<p>Aucun document n'est joint à ce cahier de textes.</p>\n";
+		}
+		else {
+			echo "<table class='boireaus' summary='Tableau des documents joints au CDT du groupe n°".$current_group['id']."'>
+	<tr>
+		<th>Date</th>
+		<th title='Identifiant de la notice à laquelle ce document est associé.'>Id</th>
+		<th>Document</th>
+	</tr>";
+			while($lig=mysql_fetch_object($res)) {
+				if(preg_match("#/cl_dev.*/#", $lig->emplacement)) {
+					$class_ligne="color_fond_notices_t";
+					$ancre="travail_".$lig->id_ct;
+				}
+				else {
+					$class_ligne="color_fond_notices_c";
+					$ancre="compte_rendu_".$lig->id_ct;
+				}
+				echo "
+	<tr class='white_hover $class_ligne'>
+		<td>".strftime("%a %d/%m/%Y", $lig->date_ct)."</td>
+		<td><a href='see_all.php?id_groupe=".$current_group['id']."#$ancre' target='_blank' title='Voir la notice à laquelle le document ci-contre est associé.'>$lig->id_ct</a></td>
+		<td><a href='$lig->emplacement' target='_blank' title='Ouvrir le document'>".$lig->titre."</a></td>
+	</tr>";
+			}
+			echo "
+</table>\n";
+		}
+
+	}
+
+	echo "<p><br /></p>\n";
+	require("../lib/footer.inc.php");
+	die();
+}
+
 
 if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 
