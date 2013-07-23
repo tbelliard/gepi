@@ -102,7 +102,7 @@ for ($i=0;$i<$nb_fiches;$i++) {
 		echo "
 	<tr><td>Responsable de : </td><td class = \"bold\">" . $chaine_enfants . "</td></tr>";
 	}
-	elseif($chaine_classes) {
+	elseif(isset($chaine_classes)) {
 		echo "
 	<tr><td>Classe : </td><td class = \"bold\">" . $chaine_classes . "</td></tr>";
 	}
