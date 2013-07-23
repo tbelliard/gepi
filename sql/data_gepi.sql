@@ -1214,3 +1214,4 @@ INSERT INTO setting SET name='MessagerieLargeurImg', value='16';
 INSERT INTO droits SET id='/mod_abs2/admin/admin_table_totaux_absences.php', administrateur='V', scolarite='F', cpe='F', professeur='F', secours='F', eleve='F', responsable='F';
 INSERT INTO setting SET name='mod_disc_terme_incident', value='incident';
 INSERT INTO setting SET name='mod_disc_terme_sanction', value='sanction';
+INSERT INTO droits SET id='/responsables/infos_parent.php', administrateur='F', scolarite='F', cpe='F', professeur='F', secours='F', eleve='F', responsable='V';

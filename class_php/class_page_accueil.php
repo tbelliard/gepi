@@ -168,6 +168,10 @@ class class_page_accueil {
 
 /***** Outils destinés essentiellement aux parents et aux élèves *****/
 
+// Informations famille
+	$this->verif_exist_ordre_menu('bloc_infos_famille');
+	if ($this->infosFamille())
+	$this->chargeAutreNom('bloc_infos_famille');
 // Cahier de textes
 	$this->verif_exist_ordre_menu('bloc_cahier_texte_famille');
 	if ($this->cahierTexteFamille())
@@ -1020,6 +1024,22 @@ if(getSettingAOui('active_bulletins')) {
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Absences",'images/icons/absences.png');
+	  return true;
+	}
+  }
+
+  protected function infosFamille(){
+	$this->b=0;
+	$conditions = ($this->statutUtilisateur == "responsable");
+
+	if ($conditions) {
+	  $this->creeNouveauItem("/responsables/infos_parent.php",
+			  "Informations",
+			  "Permet de consulter les nom, prénom, date de naissance, adresse, téléphone,... que vous avez fournis pour éventuellement signaler une erreur ou une modification.");
+	}
+
+	if ($this->b>0){
+	  $this->creeNouveauTitre('accueil',"Informations",'images/icons/document.png');
 	  return true;
 	}
   }

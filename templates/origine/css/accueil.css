@@ -81,6 +81,10 @@ tr.white_hover:hover {
 	background-color: #FFE6AA;
 }
 
+.boireaus_th_left th {
+	text-align:left;
+}
+
 /*
 #messagerie {
 	width: 70%;
