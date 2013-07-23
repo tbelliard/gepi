@@ -8,6 +8,12 @@ Gepi-master (Version de développement)
 Bulletins:
 - Bulletins HTML: Possibilité de définir la taille des textes des cellules Avis du conseil de classe et Signature.
 - Possibilité de gérer plusieurs fichiers de signature des bulletins.
+- Affichage de l'appréciation concernant le groupe classe dans la page Mes moyennes et appréciations.
+- Possibilité de modifier l'accès parent/élève aux appréciations depuis les pages 
+  de saisie de l'avis du conseil de classe dans le cas où l'accès est basculé manuellement.
+
+Cahier de textes:
+- Possibilité d'afficher la liste des documents joints à un CDT.
 
 Absences2:
 - Possibilité de modifier les dates/heure de début et fin d'une saisie depuis la page de saisie d'un traitement.
@@ -25,6 +31,7 @@ Gestion:
 - Ajout de la date d'entrée d'un élève dans l'établissement.
 - Possibilité de choisir l'adresse mail destinataire de l'information comme quoi un changement d'adresse mail responsable ou élèev a eu lieu.
 - Possibilité d'ajouter un préfixe au sujet des mails envoyés par Gepi.
+- Possibilité de donner l'accès à l'impression de leur Fiche Bienvenue pour les différents statuts depuis la page Gérer mon compte.
 
 Gepi-1.6.3 (17/06/2013)
 ===========================
