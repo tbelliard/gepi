@@ -1347,6 +1347,33 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
                         <td><?php echo $user_prenom ?></td>
                     </tr>
 <?php
+	if($_SESSION['statut']=='eleve') {
+		$sql="SELECT naissance, lieu_naissance FROM eleves WHERE login='".$_SESSION['login']."';";
+		$res_nais=mysql_query($sql);
+		if(mysql_num_rows($res_nais)>0) {
+			$user_naissance=mysql_result($res_nais, 0, "naissance");
+			echo "
+                    <tr>
+                        <td>Date de naissance : </td>
+                        <td>".formate_date($user_naissance)."</td>
+                    </tr>";
+
+			if(getSettingAOui('ele_lieu_naissance')) {
+				$code_lieu_naissance=mysql_result($res_nais, 0, "lieu_naissance");
+				$sql="SELECT * FROM communes WHERE code_commune_insee='$code_lieu_naissance';";
+				$res_nais=mysql_query($sql);
+				if(mysql_num_rows($res_nais)>0) {
+					$lieu_naissance=mysql_result($res_nais, 0, "commune")." (".mysql_result($res_nais, 0, "departement").")";
+					echo "
+                    <tr>
+                        <td>Lieu de naissance : </td>
+                        <td>".$lieu_naissance."</td>
+                    </tr>";
+				}
+			}
+		}
+	}
+
 	if (($editable_user)&&
 		((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 		(getSettingValue('mode_email_resp')!='sconet'))) {
