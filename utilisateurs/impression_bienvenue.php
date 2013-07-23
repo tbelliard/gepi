@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -40,6 +40,10 @@ if ($resultat_session == 'c') {
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
+}
+
+if($_SESSION['statut']!='administrateur') {
+	$user_login=$_SESSION['login'];
 }
 
 $affiche_adresse_resp=isset($_POST["affiche_adresse_resp"]) ? $_POST["affiche_adresse_resp"] : "n";

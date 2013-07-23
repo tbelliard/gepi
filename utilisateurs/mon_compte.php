@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -1278,7 +1278,11 @@ if ($session_gepi->current_auth_mode == "gepi" || $gepiSettings['ldap_write_acce
 	$affiche_bouton_submit = 'no';
 }
 
-echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if(($_SESSION['statut']!='administrateur')&&(getSettingAOui("AccesFicheBienvenue".ucfirst($_SESSION['statut'])))) {
+	echo " | <a href=\"./impression_bienvenue.php\" target='_blank'>Imprimer ma fiche Bienvenue</a>";
+}
+echo "</p>\n";
 echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
 
 echo "<fieldset id='infosPerso' style='border: 1px solid grey;";

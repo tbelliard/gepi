@@ -213,6 +213,11 @@ $texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon co
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='AccesFicheBienvenueProfesseur';
+$texteItem="a le droit d'imprimer sa Fiche Bienvenue depuis 'Gérer mon compte'";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 
 if(getSettingValue('active_mod_ooo')=='y') {
   $titreItem='OOoUploadProf';
@@ -638,6 +643,11 @@ $texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon co
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='AccesFicheBienvenueScolarite';
+$texteItem="a le droit d'imprimer sa Fiche Bienvenue depuis 'Gérer mon compte'";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -826,6 +836,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesModifMaPhotoCpe';
 $texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesFicheBienvenueCpe';
+$texteItem="a le droit d'imprimer sa Fiche Bienvenue depuis 'Gérer mon compte'";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1113,6 +1128,11 @@ $texteItem="peut réinitialiser lui-même son mot de passe perdu (<em>si fonctio
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='AccesFicheBienvenueEleve';
+$texteItem="a le droit d'imprimer sa Fiche Bienvenue depuis 'Gérer mon compte'";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -1337,6 +1357,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiPasswordReinitParent';
 $texteItem="peut réinitialiser lui-même son mot de passe perdu (<em>si fonction activée</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesFicheBienvenueResponsable';
+$texteItem="a le droit d'imprimer sa Fiche Bienvenue depuis 'Gérer mon compte'";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
