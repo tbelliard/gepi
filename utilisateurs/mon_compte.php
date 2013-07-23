@@ -2380,7 +2380,7 @@ $duree = $_POST['duree'];
 $duree = '7';
 }
 
-//journal_connexions($_SESSION['login'],$duree);
+journal_connexions($_SESSION['login'],$duree);
 
 require("../lib/footer.inc.php");
 ?>
