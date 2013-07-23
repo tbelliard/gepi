@@ -33,6 +33,9 @@ Gestion:
 - Possibilité d'ajouter un préfixe au sujet des mails envoyés par Gepi.
 - Possibilité de donner l'accès à l'impression de leur Fiche Bienvenue pour les différents statuts depuis la page Gérer mon compte.
 
+Divers:
+- Ajout d'une page pour que les parents puissent contrôler les informations élève/resp.
+
 Gepi-1.6.3 (17/06/2013)
 ===========================
 Bulletins:

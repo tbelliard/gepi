@@ -2636,18 +2636,20 @@ if(getSettingAOui("active_bulletins")) {
 			<ul>";
 			$cpt=0;
 			foreach($tab_signature['fichier'] as $id_fichier => $tmp_tab) {
-				if(file_exists($tab_signature['fichier'][$id_fichier]['chemin'])) {
-					$texte="<center><img src='".$tab_signature['fichier'][$id_fichier]['chemin']."' width='200' /></center>";
-					$tabdiv_infobulle[]=creer_div_infobulle('fichier_signature_'.$cpt,"Fichier de signature","",$texte,"",14,0,'y','y','n','n');
+				if(isset($tab_signature['fichier'][$id_fichier]['chemin'])) {
+					if(file_exists($tab_signature['fichier'][$id_fichier]['chemin'])) {
+						$texte="<center><img src='".$tab_signature['fichier'][$id_fichier]['chemin']."' width='200' /></center>";
+						$tabdiv_infobulle[]=creer_div_infobulle('fichier_signature_'.$cpt,"Fichier de signature","",$texte,"",14,0,'y','y','n','n');
 
-					echo "
-				<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr_fichier[]' id='suppr_fichier_$cpt' value='".$id_fichier."' onchange='changement()' /><label for='suppr_fichier_$cpt' onmouseover=\"delais_afficher_div('fichier_signature_$cpt','y',-100,20,1000,20,20);\"> ".$tab_signature['fichier'][$id_fichier]['fichier']."</label></li>";
-					$cpt++;
-				}
-				else {
-					echo "
-				<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr_fichier[]' id='suppr_fichier_$cpt' value='".$id_fichier."' onchange='changement()' /><label for='suppr_fichier_$cpt'> ".$tab_signature['fichier'][$id_fichier]['fichier']." <span style='color:red'>ANOMALIE : Le fichier semble absent&nbsp;???</span></label></li>";
-					$cpt++;
+						echo "
+					<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr_fichier[]' id='suppr_fichier_$cpt' value='".$id_fichier."' onchange='changement()' /><label for='suppr_fichier_$cpt' onmouseover=\"delais_afficher_div('fichier_signature_$cpt','y',-100,20,1000,20,20);\"> ".$tab_signature['fichier'][$id_fichier]['fichier']."</label></li>";
+						$cpt++;
+					}
+					else {
+						echo "
+					<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr_fichier[]' id='suppr_fichier_$cpt' value='".$id_fichier."' onchange='changement()' /><label for='suppr_fichier_$cpt'> ".$tab_signature['fichier'][$id_fichier]['fichier']." <span style='color:red'>ANOMALIE : Le fichier semble absent&nbsp;???</span></label></li>";
+						$cpt++;
+					}
 				}
 			}
 			echo "
@@ -2693,12 +2695,14 @@ if(getSettingAOui("active_bulletins")) {
 					<select name='fich_sign_classe[$id_classe]' onchange='changement()'>
 						<option value='-1'>---</option>";
 				foreach($tab_signature['fichier'] as $id_fichier => $tmp_tab) {
-					echo "
-						<option value='$id_fichier'";
-					if((isset($tab_signature['classe'][$id_classe]['id_fichier']))&&($tab_signature['classe'][$id_classe]['id_fichier']==$id_fichier)) {
-						echo " selected='selected'";
+					if(isset($tmp_tab['fichier'])) {
+						echo "
+							<option value='$id_fichier'";
+						if((isset($tab_signature['classe'][$id_classe]['id_fichier']))&&($tab_signature['classe'][$id_classe]['id_fichier']==$id_fichier)) {
+							echo " selected='selected'";
+						}
+						echo ">".$tmp_tab['fichier']."</option>";
 					}
-					echo ">".$tmp_tab['fichier']."</option>";
 				}
 				echo "
 					</select>
@@ -2764,7 +2768,7 @@ $duree = $_POST['duree'];
 $duree = '7';
 }
 
-journal_connexions($_SESSION['login'],$duree);
+//journal_connexions($_SESSION['login'],$duree);
 
 require("../lib/footer.inc.php");
 ?>
