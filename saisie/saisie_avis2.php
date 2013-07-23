@@ -70,6 +70,11 @@ $current_eleve_mention = isset($_POST["current_eleve_mention"]) ? $_POST["curren
 //================================
 $affiche_message = isset($_GET["affiche_message"]) ? $_GET["affiche_message"] :NULL;
 
+if(($_SESSION['statut']=='professeur')&&(!is_pp($_SESSION['login'], $id_classe))) {
+	header("Location: ../accueil.php?msg=Accès non autorisé.");
+	die();
+}
+
 include "../lib/periodes.inc.php";
 
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
