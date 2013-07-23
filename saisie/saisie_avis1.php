@@ -43,6 +43,11 @@ if (!checkAccess()) {
 // initialisation
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :NULL);
 
+if(($_SESSION['statut']=='professeur')&&(!is_pp($_SESSION['login'], $id_classe))) {
+	header("Location: ../accueil.php?msg=Accès non autorisé.");
+	die();
+}
+
 include "../lib/periodes.inc.php";
 
 $msg="";
