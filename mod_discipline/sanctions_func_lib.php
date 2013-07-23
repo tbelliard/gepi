@@ -610,7 +610,7 @@ function tab_lignes_adresse($ele_login) {
 }
 
 function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
-	global $mod_disc_terme_incident;
+	global $mod_disc_terme_incident, $mod_disc_terme_sanction;
 
 	$retour="";
 
