@@ -1686,6 +1686,14 @@ if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR
 }
 
 //==========================================
+if(getSettingAOui('MonCompteAfficheInfo'.ucfirst($_SESSION['statut']))) {
+	echo "<hr />
+<a hame='MonCompteAfficheInfo'></a>
+<h2>Information ".$_SESSION['statut']."</h2>
+
+".getSettingValue('MonCompteInfo'.ucfirst($_SESSION['statut']));
+}
+//==========================================
 
 // Changement du mot de passe
 if ($editable_user) {

@@ -19,6 +19,9 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+//$variables_non_protegees = 'yes';
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -38,6 +41,8 @@ if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+include("../ckeditor/ckeditor.php");
 
 $msg="";
 
@@ -255,6 +260,55 @@ $tab_auth_mode=array('gepi', 'ldap', 'sso');
 
 $afficher_matiere=isset($_POST['afficher_matiere']) ? $_POST['afficher_matiere'] : (isset($_GET['afficher_matiere']) ? $_GET['afficher_matiere'] : "");
 
+if(isset($_POST['enregistrer_MonCompteAfficheInfo'])) {
+	check_token();
+
+	$nb_reg=0;
+	$tab_statuts_MonCompteAfficheInfo=array('administrateur', 'scolarite', 'cpe', 'professeur', 'secours', 'eleve', 'responsable', 'autre');
+	for($loop=0;$loop<count($tab_statuts_MonCompteAfficheInfo);$loop++) {
+		if(isset($_POST['MonCompteAfficheInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])])) {
+			$valeur="y";
+		}
+		else {
+			$valeur="n";
+		}
+
+		if(!saveSetting('MonCompteAfficheInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]), $valeur)) {
+			$msg.="Erreur lors de l'enregistrement du paramètre 'MonCompteAfficheInfo".ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])."'<br />";
+		}
+		else {
+			$nb_reg++;
+		}
+		/*
+		if (isset($NON_PROTECT['MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])])) {
+			$info = traitement_magic_quotes(corriger_caracteres($NON_PROTECT['MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])]));
+
+			if(!saveSetting('MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]), $info)) {
+				$msg.="Erreur lors de l'enregistrement du paramètre 'MonCompteInfo".ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])."'<br />";
+			}
+			else {
+				$nb_reg++;
+			}
+		}
+		*/
+
+		if(isset($_POST['MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]).'FCK'])) {
+			$info = html_entity_decode($_POST['MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]).'FCK']);
+
+			if(!saveSetting('MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]), $info)) {
+				$msg.="Erreur lors de l'enregistrement du paramètre 'MonCompteInfo".ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])."'<br />";
+			}
+			else {
+				$nb_reg++;
+			}
+		}
+	}
+
+	if($nb_reg>0) {
+		$msg.=$nb_reg." enregistrement(s) effectué(s).<br />";
+	}
+}
+
 //**************** EN-TETE *****************************
 if($mode=='personnels') {
 	$titre_page = "Gestion des personnels";
@@ -290,7 +344,54 @@ $_SESSION['chemin_retour'] = "../utilisateurs/index.php";
 //unset($mode);
 //$mode = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : '');
 
-if ($mode != "personnels") {
+if($mode=="MonCompteAfficheInfo") {
+	echo "<p class='bold'>
+	<a href='./index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+</p>
+
+<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>
+".add_token_field()."
+<p class='bold'>Vous pouvez définir ici des informations particulières à chaque statut à faire apparaître dans la page 'Gérer mon compte&nbsp;:</p>
+<table class='boireaus boireaus_alt' summary=\"Tableau des informations à afficher ou non selon les statuts\">
+	<tr>
+		<th>Statut</th>
+		<th>Afficher</th>
+		<th>Informations</th>
+	</tr>";
+
+	$tab_statuts_MonCompteAfficheInfo=array('administrateur', 'scolarite', 'cpe', 'professeur', 'secours', 'eleve', 'responsable', 'autre');
+	for($loop=0;$loop<count($tab_statuts_MonCompteAfficheInfo);$loop++) {
+		echo "
+	<tr>
+		<th>".ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])."</th>
+		<td><input type='checkbox' name='MonCompteAfficheInfo".ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])."' value='y' ";
+		if(getSettingAOui('MonCompteAfficheInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]))) { echo "checked ";}
+		echo "/></td>
+		<td>";
+
+		//echo "<textarea name='no_anti_inject_MonCompteInfo".ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])."' rows='5' cols='80'>".getSettingValue('MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]))."</textarea>";
+
+			$oCKeditor = new CKeditor('../ckeditor/');
+			$oCKeditor->editor('MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]).'FCK',getSettingValue('MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]))) ;
+
+		echo "
+		</td>
+	</tr>";
+	}
+
+	echo "
+</table>
+<input type='hidden' name='mode' value='MonCompteAfficheInfo' />
+<input type='hidden' name='enregistrer_MonCompteAfficheInfo' value='y' />
+<p><input type='submit' value='Enregistrer' /></p>
+</form>
+
+<p><br /></p>\n";
+
+	require("../lib/footer.inc.php");
+	die();
+}
+elseif ($mode != "personnels") {
 ?>
 <p class="bold">
 <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
@@ -300,6 +401,8 @@ if ($mode != "personnels") {
 <p style='padding-left: 10%; margin-top: 15px;'><a href="index.php?mode=personnels"><img src='../images/icons/forward.png' alt='Personnels' class='back_link' /> Personnels de l'établissement (professeurs, scolarité, CPE, administrateurs)</a></p>
 <p style='padding-left: 10%; margin-top: 15px;'><a href="edit_responsable.php"><img src='../images/icons/forward.png' alt='Responsables' class='back_link' /> Responsables d'élèves (parents)</a></p>
 <p style='padding-left: 10%; margin-top: 15px;'><a href="edit_eleve.php"><img src='../images/icons/forward.png' alt='Eleves' class='back_link' /> Élèves</a></p>
+<br/><br/>
+<p><a href="<?php echo $_SERVER['PHP_SELF'].'?mode=MonCompteAfficheInfo';?>">Définir des informations par statut</a> à afficher dans la page 'Gérer mon compte'.</p>
 <?php
 } else {
 ?>
