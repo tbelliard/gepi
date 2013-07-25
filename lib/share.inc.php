@@ -7627,4 +7627,61 @@ function get_tab_signature_bull($login_user="") {
 
 	return $tab;
 }
+
+/*
+# 1 : session ouverte, mais pas refermée (encore ouverte, ou fermée en fermant le navigateur)
+# 0 : logout normal
+# 2 : logout renvoyé par la fonction checkAccess (problème gepiPath ou accès interdit)
+# 3 : logout lié à un timeout
+# 10 : logout lié à une nouvelle connexion sous un nouveau profil
+
+# 4 : Erreur MDP
+*/
+function get_last_connexion($login, $reussie="y") {
+	$tab=array();
+
+	if($reussie=="y") {
+		$sql="SELECT * FROM log WHERE LOGIN='$login' AND (AUTOCLOSE='0' OR AUTOCLOSE='1' OR AUTOCLOSE='2' OR AUTOCLOSE='3' OR AUTOCLOSE='10') ORDER BY START DESC LIMIT 1;";
+	}
+	else {
+		$sql="SELECT * FROM log WHERE LOGIN='$login' AND AUTOCLOSE='4' ORDER BY START DESC LIMIT 1;";
+	}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+
+		$tab['START']=$lig->START;
+		$tab['REMOTE_ADDR']=$lig->REMOTE_ADDR;
+		$tab['USER_AGENT']=$lig->USER_AGENT;
+		$tab['REFERER']=$lig->REFERER;
+		$tab['AUTOCLOSE']=$lig->AUTOCLOSE;
+		$tab['END']=$lig->END;
+	}
+
+	return $tab;
+}
+
+function get_ele_clas_connexions($id_classe, $timestamp1, $timestamp2, $tab_autoclose=array()) {
+	$tab=array();
+
+	$chaine_autoclose="";
+	if(count($tab_autoclose)>0) {
+		$chaine_autoclose.=" AND (";
+		for($loop=0;$loop<count($tab_autoclose);$loop++) {
+			if($loop>0) {$chaine_autoclose.=" OR ";}
+			$chaine_autoclose.="AUTOCLOSE='".$tab_autoclose[$loop]."'";
+		}
+		$chaine_autoclose.=")";
+	}
+
+	$sql="SELECT DISTINCT jec.login FROM log l, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=l.LOGIN AND l.START>='$timestamp1' AND l.START<='$timestamp2'".$chaine_autoclose.";";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab[]=$lig->login;
+		}
+	}
+	return $tab;
+}
+
 ?>

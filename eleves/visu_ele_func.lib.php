@@ -118,6 +118,14 @@ function info_eleve($ele_login) {
 			$champ=$tab_user[$loop];
 			$tab_ele['compte_utilisateur'][$champ]=$lig_user->$champ;
 		}
+
+		if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesDerniereConnexionEleScolarite')))||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('AccesDerniereConnexionEleCpe')))||
+		(($_SESSION['statut']=='professeur')&&(getSettingAOui('AccesDerniereConnexionEleProfesseur')))) {
+			$tab_ele['compte_utilisateur']['DerniereConnexionEle']=get_last_connexion($ele_login);
+			$tab_ele['compte_utilisateur']['DerniereConnexionEle_Echec']=get_last_connexion($ele_login, "n");
+		}
 	}
 
 
@@ -591,6 +599,14 @@ function info_eleve($ele_login) {
 						$lig_u=mysql_fetch_object($res_u);
 						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
 						$tab_ele['resp'][$cpt]['auth_mode']=$lig_u->auth_mode;
+
+						if(($_SESSION['statut']=='administrateur')||
+						(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesDerniereConnexionRespScolarite')))||
+						(($_SESSION['statut']=='cpe')&&(getSettingAOui('AccesDerniereConnexionRespCpe')))||
+						(($_SESSION['statut']=='professeur')&&(getSettingAOui('AccesDerniereConnexionRespProfesseur')))) {
+							$tab_ele['resp'][$cpt]['DerniereConnexionResp']=get_last_connexion($lig_resp->login);
+							$tab_ele['resp'][$cpt]['DerniereConnexionResp_Echec']=get_last_connexion($lig_resp->login,"n");
+						}
 					}
 				}
 
@@ -647,6 +663,14 @@ function info_eleve($ele_login) {
 						$lig_u=mysql_fetch_object($res_u);
 						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
 						$tab_ele['resp'][$cpt]['auth_mode']=$lig_u->auth_mode;
+
+						if(($_SESSION['statut']=='administrateur')||
+						(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesDerniereConnexionRespScolarite')))||
+						(($_SESSION['statut']=='cpe')&&(getSettingAOui('AccesDerniereConnexionRespCpe')))||
+						(($_SESSION['statut']=='professeur')&&(getSettingAOui('AccesDerniereConnexionRespProfesseur')))) {
+							$tab_ele['resp'][$cpt]['DerniereConnexionResp']=get_last_connexion($lig_resp->login);
+							$tab_ele['resp'][$cpt]['DerniereConnexionResp_Echec']=get_last_connexion($lig_resp->login,"n");
+						}
 					}
 				}
 				

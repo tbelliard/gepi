@@ -198,6 +198,16 @@ $texteItem="a accès aux fiches des ".$gepiSettings['denomination_eleves']." don
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='AccesDerniereConnexionEleProfesseur';
+$texteItem="a accès à la date de la dernière connexion des ".$gepiSettings['denomination_eleves']." dont il est professeur.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesDerniereConnexionRespProfesseur';
+$texteItem="a accès à la date de la dernière connexion des responsables d'".$gepiSettings['denomination_eleves']." dont il est professeur.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='AccesProf_EdtProfs';
 $texteItem="a accès aux emplois du temps des autres professeurs (<em>sous réserve que le <a href='../edt_organisation/edt.php' target='_blank'>module EDT soit activé</a></em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
@@ -542,6 +552,16 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesTouteFicheEleveScolarite';
 $texteItem="a le droit d'accéder à toutes les fiches élève";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesDerniereConnexionEleScolarite';
+$texteItem="a accès à la date de la dernière connexion des ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesDerniereConnexionRespScolarite';
+$texteItem="a accès à la date de la dernière connexion des responsables d'".$gepiSettings['denomination_eleves'].".";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -894,6 +914,16 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 $titreItem='GepiAccesTouteFicheEleveCpe';
 $texteItem="a le droit d'accéder à toutes les fiches élève<br />
 (<em>Par défaut, un CPE ne voit que les fiches des élèves dont il est responsable</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesDerniereConnexionEleCpe';
+$texteItem="a accès à la date de la dernière connexion des ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesDerniereConnexionRespCpe';
+$texteItem="a accès à la date de la dernière connexion des responsables d'".$gepiSettings['denomination_eleves'].".";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

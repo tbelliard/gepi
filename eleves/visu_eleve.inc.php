@@ -1180,6 +1180,22 @@ Patientez pendant l'extraction des données... merci.
 					echo "<tr class='lig$alt'><th style='text-align: left;'>Compte&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['login']."</td></tr>";
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'><th style='text-align: left;'>Etat&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['etat']."</td></tr>";
+					if(isset($tab_ele['compte_utilisateur']['DerniereConnexionEle'])) {
+						$alt=$alt*(-1);
+						if(isset($tab_ele['compte_utilisateur']['DerniereConnexionEle']['START'])) {
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Dernière connexion&nbsp;:</th><td>";
+							echo formate_date($tab_ele['compte_utilisateur']['DerniereConnexionEle']['START'], 'y');
+						}
+						elseif(isset($tab_ele['compte_utilisateur']['DerniereConnexionEle_Echec']['START'])) {
+							echo "<tr style='background-color:red' title=\"Cet utilisateur ne s'est jamais connecté avec succès (du moins, si les log n'ont pas été vidés récemment). En revanche, un échec de connexion est constaté à la date indiquée.\"><th style='text-align: left;'>Dernière tentative de connexion&nbsp;:</th><td>";
+							echo formate_date($tab_ele['compte_utilisateur']['DerniereConnexionEle_Echec']['START'], 'y');
+						}
+						else {
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Dernière connexion&nbsp;:</th><td>";
+							echo "<img src='../images/icons/disabled.png' class='icone20' title=\"Cet élève ne s'est jamais connecté avec succès.\"/>";
+						}
+						echo "</td></tr>";
+					}
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'><th style='text-align: left;'>Authentification&nbsp;:</th><td title=\"Gepi permet selon les configurations plusieurs modes d'authentification:
 - gepi : Authentification sur la base mysql de Gepi,
@@ -1416,6 +1432,18 @@ Patientez pendant l'extraction des données... merci.
 								echo "Auth.: ".$tab_ele['resp'][$i]['auth_mode'];
 								echo "</span>";
 							}
+
+							if(isset($tab_ele['resp'][$i]['DerniereConnexionResp'])) {
+								if(isset($tab_ele['resp'][$i]['DerniereConnexionResp']['START'])) {
+									echo "<br />Dernière connexion&nbsp;: ".formate_date($tab_ele['resp'][$i]['DerniereConnexionResp']['START'], 'y');
+								}
+								elseif(isset($tab_ele['resp'][$i]['DerniereConnexionResp_Echec']['START'])) {
+									echo "<br /><span title=\"Cet utilisateur ne s'est jamais connecté avec succès (du moins, si les log n'ont pas été vidés récemment). En revanche, un échec de connexion est constaté à la date indiquée.\">Dernière tentative de connexion&nbsp;: ".formate_date($tab_ele['resp'][$i]['DerniereConnexionResp_Echec']['START'], 'y')."</span>";
+								}
+								else {
+									echo "<br />Dernière connexion&nbsp;: <img src='../images/icons/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté avec succès.\"/>";
+								}
+							}
 							echo "</td></tr>\n";
 
 							if(($_SESSION['statut']=='administrateur')||
@@ -1550,7 +1578,6 @@ Patientez pendant l'extraction des données... merci.
 									else {
 										echo " <img src='../images/rouge.png' width='16' height='16' title=\"Ce 'responsable/contact' qui n'est pas responsable légal de l'élève, n'a pas accès aux informations de l'élève s'il se connecte.\" />";
 									}
-
 								}
 								else {
 									echo "Oui";
@@ -1573,6 +1600,18 @@ Patientez pendant l'extraction des données... merci.
 	- ldap : Authentification en recherchant la correspondance login/mot_de_passe dans un annuaire LDAP.\">";
 									echo "Auth.: ".$tab_ele['resp'][$i]['auth_mode'];
 									echo "</span>";
+								}
+
+								if(isset($tab_ele['resp'][$i]['DerniereConnexionResp'])) {
+									if(isset($tab_ele['resp'][$i]['DerniereConnexionResp']['START'])) {
+										echo "<br />Dernière connexion&nbsp;: ".formate_date($tab_ele['resp'][$i]['DerniereConnexionResp']['START'], 'y');
+									}
+									elseif(isset($tab_ele['resp'][$i]['DerniereConnexionResp_Echec']['START'])) {
+										echo "<br /><span title=\"Cet utilisateur ne s'est jamais connecté avec succès (du moins, si les log n'ont pas été vidés récemment). En revanche, un échec de connexion est constaté à la date indiquée.\">Dernière tentative de connexion&nbsp;: ".formate_date($tab_ele['resp'][$i]['DerniereConnexionResp_Echec']['START'], 'y')."</span>";
+									}
+									else {
+										echo "<br />Dernière connexion&nbsp;: <img src='../images/icons/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté avec succès.\"/>";
+									}
 								}
 								echo "</td></tr>\n";
 
