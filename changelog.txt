@@ -33,6 +33,7 @@ Gestion:
 - Possibilité d'ajouter un préfixe au sujet des mails envoyés par Gepi.
 - Possibilité de donner l'accès à l'impression de leur Fiche Bienvenue pour les différents statuts depuis la page Gérer mon compte.
 - Possibilité de définir des messages d'information à faire apparaître dans 'Gérer mon compte' (messages éventuellement différents pour chaque statut).
+- Possibilité d'accéder à la date de dernière connexion d'élèves/responsables.
 
 Divers:
 - Ajout d'une page pour que les parents puissent contrôler les informations élève/resp.
