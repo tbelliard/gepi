@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -33,6 +33,8 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+header('Content-Type: text/html; charset=utf-8');
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -86,6 +88,163 @@ if ($mode == null and $id_classe == null) {
 
 foreach ($current_group["periodes"] as $period) {
 	$reg_eleves[$period["num_periode"]] = $current_group["eleves"][$period["num_periode"]]["list"];
+}
+
+function afficher_liste_profs_du_groupe($reg_matiere) {
+	global $current_group, $p, $prof_list, $mode, $themessage, $reg_professeurs, $id_classe;
+
+	// Récupération du prof principal
+
+	$tab_prof_suivi=array();
+	$nb_prof_suivi=0;
+	if(isset($id_classe)) {
+		$tab_prof_suivi=get_tab_prof_suivi($id_classe);
+		$nb_prof_suivi=count($tab_prof_suivi);
+		if($nb_prof_suivi>1) {
+			$liste_prof_suivi="";
+			for($loop=0;$loop<count($tab_prof_suivi);$loop++) {
+				if($loop>0) {$liste_prof_suivi.=", ";}
+				$liste_prof_suivi.=civ_nom_prenom($tab_prof_suivi[$loop]);
+			}
+		}
+	}
+
+	$sql="SELECT u.login, u.nom, u.prenom, u.civilite, u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
+	//echo "$sql<br />";
+	$calldata = mysql_query($sql);
+	$nb = mysql_num_rows($calldata);
+	$prof_list = array();
+	$prof_list["list"] = array();
+	for ($i=0;$i<$nb;$i++) {
+		$prof_login = mysql_result($calldata, $i, "login");
+		$prof_nom = mysql_result($calldata, $i, "nom");
+		$prof_prenom = mysql_result($calldata, $i, "prenom");
+		$civilite = mysql_result($calldata, $i, "civilite");
+		$prof_statut = mysql_result($calldata, $i, "statut");
+
+		$prof_list["list"][] = $prof_login;
+		$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => casse_mot($prof_nom,'maj'), "prenom" => casse_mot($prof_prenom,'majf2'), "civilite" => $civilite, "statut" => $prof_statut);
+	}
+
+	if (count($prof_list["list"]) == "0") {
+		echo "<p><span style='color:red'>ERREUR !</span> Aucun professeur n'a été défini comme compétent dans la matière considérée.<br /><a href='../matieres/modify_matiere.php?current_matiere=$reg_matiere'>Associer des professeurs à $reg_matiere</a></p>\n";
+	} else {
+		$total_profs = array_merge($prof_list["list"], $reg_professeurs);
+		$total_profs = array_unique($total_profs);
+
+		$p = 0;
+		echo "<table class='boireaus'>\n";
+		$alt=1;
+		$temoin_nettoyage_requis='n';
+		foreach($total_profs as $prof_login) {
+			$alt=$alt*(-1);
+			if((isset($prof_list["users"][$prof_login]["statut"]))&&($prof_list["users"][$prof_login]["statut"]=='professeur')) {
+				echo "<tr class='lig$alt'>\n";
+				echo "<td>\n";
+				echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
+				echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' ";
+				echo "onchange='checkbox_change($p);changement();'";
+				if (in_array($prof_login, $reg_professeurs)) {
+					if (array_key_exists($prof_login, $current_group["profs"]["users"])){
+						echo " checked />\n";
+						echo "</td>\n";
+						echo "<td style='text-align:left;'>\n";
+						echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
+							$current_group["profs"]["users"][$prof_login]["nom"] . " " .
+							$current_group["profs"]["users"][$prof_login]["prenom"] . "</label>\n";
+					} else {
+						echo " checked />\n";
+						echo "</td>\n";
+						echo "<td style='text-align:left;'>\n";
+						echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
+							$prof_list["users"][$prof_login]["nom"] . " " .
+							$prof_list["users"][$prof_login]["prenom"] . "</label>\n";
+					}
+				} else {
+					echo " />\n";
+					echo "</td>\n";
+					echo "<td style='text-align:left;'>\n";
+					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
+							$prof_list["users"][$prof_login]["nom"] . " " .
+							$prof_list["users"][$prof_login]["prenom"] . "</label>";
+				}
+
+				if(in_array($prof_login,$tab_prof_suivi)) {
+					echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
+					if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
+					echo "\" />\n";
+				}
+
+				echo "<br />\n";
+
+				echo "</td>\n";
+				echo "</tr>\n";
+				$p++;
+			}
+			else {
+				echo "<tr class='lig$alt'>\n";
+				echo "<td>\n";
+				echo "&nbsp;&nbsp;";
+				echo "</td>\n";
+				echo "<td style='text-align:left;' title=\"Anomalie : Cet utilisateur est associé au groupe, mais n'est pas professeur, ou pas professeur dans cette matière.\">\n";
+				echo "<b>ANOMALIE</b>&nbsp;:";
+				//echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
+				echo " <a href='../utilisateurs/modify_user.php?user_login=$prof_login'  onclick=\"return confirm_abandon (this, change, '$themessage')\">".civ_nom_prenom($prof_login)."</a>";
+				if(isset($prof_list["users"][$prof_login]["statut"])) {
+					echo " (<i style='color:red'>compte ".$prof_list["users"][$prof_login]["statut"]."</i>)";
+				}
+				echo "<br />\n";
+				$temoin_nettoyage_requis='y';
+				//echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
+		}
+		echo "</table>\n";
+		if($temoin_nettoyage_requis!='n') {
+			echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
+		}
+
+		if ($mode == "groupe") {
+			echo "<br />
+	<input type='checkbox' name='associer_tous_les_profs_de_la_classe' id='associer_tous_les_profs_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_la_classe' id='texte_associer_tous_les_profs_de_la_classe'> Associer à cet enseignement tous les professeurs de la classe.</label><br />
+	<input type='checkbox' name='associer_tous_les_profs_de_l_etablissement' id='associer_tous_les_profs_de_l_etablissement' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_l_etablissement' id='texte_associer_tous_les_profs_de_l_etablissement'> Associer à cet enseignement tous les professeurs de l'établissement.</label><br />
+	";
+		}
+		else {
+			echo "<br />
+	<input type='checkbox' name='associer_tous_les_profs_de_la_classe' id='associer_tous_les_profs_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_la_classe' id='texte_associer_tous_les_profs_de_la_classe'> Associer à cet enseignement tous les professeurs de la (<em>ou des</em>) classe(<em>s</em>).</label><br />
+	<input type='checkbox' name='associer_tous_les_profs_de_l_etablissement' id='associer_tous_les_profs_de_l_etablissement' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_l_etablissement' id='texte_associer_tous_les_profs_de_l_etablissement'> Associer à cet enseignement tous les professeurs de l'établissement.</label><br />
+	";
+		}
+	}
+}
+
+if((isset($_GET['maj_liste_profs_matiere']))&&(isset($_GET['matiere']))) {
+	check_token(false);
+
+	$matiere=$_GET['matiere'];
+	afficher_liste_profs_du_groupe($matiere);
+
+	die();
+}
+
+if((isset($_GET['maj_liste_autres_groupes_meme_matiere']))&&(isset($_GET['matiere']))&&(isset($_GET['id_classe']))) {
+	check_token(false);
+
+	$matiere=$_GET['matiere'];
+	$id_classe=$_GET['id_classe'];
+
+	$avec_lien_edit_group="y";
+	$tab_autres_groupes=tableau_html_groupe_matiere_telle_classe($id_classe, $matiere, array($id_groupe));
+	if($tab_autres_groupes!="") {
+		echo "<p>Il existe d'autres enseignements dans la même matière pour cette classe&nbsp;:</p>\n";
+		echo $tab_autres_groupes;
+	}
+	else {
+		echo "";
+	}
+	die();
 }
 
 if (isset($_POST['is_posted'])) {
@@ -623,11 +782,8 @@ if ($mode == "groupe") {
 
 ?>
 
-
-
-<!--p>Sélectionnez la matière enseignée à ce groupe :-->
 <?php
-
+// Visibilité enseignement
 echo "<p>Visibilité de l'enseignement sur&nbsp;: <br />\n";
 for($loop=0;$loop<count($tab_domaines);$loop++) {
 	echo "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."' id='visibilite_groupe_".$tab_domaines[$loop]."' value='y' ";
@@ -645,17 +801,18 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 }
 
 echo "</div>\n";
-// Edition des professeurs
-echo "<div style='width: 45%; float: right;'>\n";
 
 //=================================================
+// Matière
+echo "<div style='width: 45%; float: right;'>\n";
+
 echo "<p>Sélectionnez la matière enseignée à ce groupe : ";
 
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysql_num_rows($query);
 
-echo "<select name='matiere' size='1'";
-echo " onchange='changement();'";
+echo "<select name='matiere' id='matiere' size='1'";
+echo " onchange='changement(); maj_liste_profs_matiere();'";
 echo ">\n";
 
 for ($i=0;$i<$nb_mat;$i++) {
@@ -673,138 +830,13 @@ echo "</p>\n";
 
 //=================================================
 
-// Mettre un témoin pour repérer le prof principal
-
-$tab_prof_suivi=array();
-$nb_prof_suivi=0;
-if(isset($id_classe)) {
-	$tab_prof_suivi=get_tab_prof_suivi($id_classe);
-	$nb_prof_suivi=count($tab_prof_suivi);
-	if($nb_prof_suivi>1) {
-		$liste_prof_suivi="";
-		for($loop=0;$loop<count($tab_prof_suivi);$loop++) {
-			if($loop>0) {$liste_prof_suivi.=", ";}
-			$liste_prof_suivi.=civ_nom_prenom($tab_prof_suivi[$loop]);
-		}
-	}
-}
-
 echo "<p>Cochez les professeurs qui participent à cet enseignement&nbsp;: </p>\n";
 
-//$calldata = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.login");
-$sql="SELECT u.login, u.nom, u.prenom, u.civilite, u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
-//echo "$sql<br />";
-$calldata = mysql_query($sql);
-$nb = mysql_num_rows($calldata);
-$prof_list = array();
-$prof_list["list"] = array();
-for ($i=0;$i<$nb;$i++) {
-	$prof_login = mysql_result($calldata, $i, "login");
-	$prof_nom = mysql_result($calldata, $i, "nom");
-	$prof_prenom = mysql_result($calldata, $i, "prenom");
-	$civilite = mysql_result($calldata, $i, "civilite");
-	$prof_statut = mysql_result($calldata, $i, "statut");
+echo "<div id='div_choix_prof'>\n";
+afficher_liste_profs_du_groupe($reg_matiere);
+echo "</div>\n";
 
-	$prof_list["list"][] = $prof_login;
-	//$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite);
-	//$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite, "statut" => $prof_statut);
-	$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => casse_mot($prof_nom,'maj'), "prenom" => casse_mot($prof_prenom,'majf2'), "civilite" => $civilite, "statut" => $prof_statut);
-}
-
-if (count($prof_list["list"]) == "0") {
-	echo "<p><span style='color:red'>ERREUR !</span> Aucun professeur n'a été défini comme compétent dans la matière considérée.<br /><a href='../matieres/modify_matiere.php?current_matiere=$reg_matiere'>Associer des professeurs à $reg_matiere</a></p>\n";
-} else {
-	$total_profs = array_merge($prof_list["list"], $reg_professeurs);
-	$total_profs = array_unique($total_profs);
-
-	$p = 0;
-	echo "<table class='boireaus'>\n";
-	$alt=1;
-	$temoin_nettoyage_requis='n';
-	foreach($total_profs as $prof_login) {
-		$alt=$alt*(-1);
-		if((isset($prof_list["users"][$prof_login]["statut"]))&&($prof_list["users"][$prof_login]["statut"]=='professeur')) {
-			echo "<tr class='lig$alt'>\n";
-			echo "<td>\n";
-			echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
-			echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' ";
-			echo "onchange='checkbox_change($p);changement();'";
-			if (in_array($prof_login, $reg_professeurs)) {
-				if (array_key_exists($prof_login, $current_group["profs"]["users"])){
-					echo " checked />\n";
-					echo "</td>\n";
-					echo "<td style='text-align:left;'>\n";
-					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
-						$current_group["profs"]["users"][$prof_login]["nom"] . " " .
-						$current_group["profs"]["users"][$prof_login]["prenom"] . "</label>\n";
-				} else {
-					echo " checked />\n";
-					echo "</td>\n";
-					echo "<td style='text-align:left;'>\n";
-					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
-						$prof_list["users"][$prof_login]["nom"] . " " .
-						$prof_list["users"][$prof_login]["prenom"] . "</label>\n";
-				}
-			} else {
-				echo " />\n";
-				echo "</td>\n";
-				echo "<td style='text-align:left;'>\n";
-				echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
-						$prof_list["users"][$prof_login]["nom"] . " " .
-						$prof_list["users"][$prof_login]["prenom"] . "</label>";
-			}
-
-			if(in_array($prof_login,$tab_prof_suivi)) {
-				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
-				if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
-				echo "\" />\n";
-			}
-
-			echo "<br />\n";
-
-			echo "</td>\n";
-			echo "</tr>\n";
-			$p++;
-		}
-		else {
-			echo "<tr class='lig$alt'>\n";
-			echo "<td>\n";
-			echo "&nbsp;&nbsp;";
-			echo "</td>\n";
-			echo "<td style='text-align:left;'>\n";
-			echo "<b>ANOMALIE</b>&nbsp;:";
-			//echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
-			echo " <a href='../utilisateurs/modify_user.php?user_login=$prof_login'  onclick=\"return confirm_abandon (this, change, '$themessage')\">".civ_nom_prenom($prof_login)."</a>";
-			if(isset($prof_list["users"][$prof_login]["statut"])) {
-				echo " (<i style='color:red'>compte ".$prof_list["users"][$prof_login]["statut"]."</i>)";
-			}
-			echo "<br />\n";
-			$temoin_nettoyage_requis='y';
-			//echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
-			echo "</td>\n";
-			echo "</tr>\n";
-		}
-	}
-	echo "</table>\n";
-	if($temoin_nettoyage_requis!='n') {
-		echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
-	}
-
-
-	if ($mode == "groupe") {
-		echo "<br />
-<input type='checkbox' name='associer_tous_les_profs_de_la_classe' id='associer_tous_les_profs_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_la_classe' id='texte_associer_tous_les_profs_de_la_classe'> Associer à cet enseignement tous les professeurs de la classe.</label><br />
-<input type='checkbox' name='associer_tous_les_profs_de_l_etablissement' id='associer_tous_les_profs_de_l_etablissement' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_l_etablissement' id='texte_associer_tous_les_profs_de_l_etablissement'> Associer à cet enseignement tous les professeurs de l'établissement.</label><br />
-";
-	}
-	else {
-		echo "<br />
-<input type='checkbox' name='associer_tous_les_profs_de_la_classe' id='associer_tous_les_profs_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_la_classe' id='texte_associer_tous_les_profs_de_la_classe'> Associer à cet enseignement tous les professeurs de la (<em>ou des</em>) classe(<em>s</em>).</label><br />
-<input type='checkbox' name='associer_tous_les_profs_de_l_etablissement' id='associer_tous_les_profs_de_l_etablissement' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_l_etablissement' id='texte_associer_tous_les_profs_de_l_etablissement'> Associer à cet enseignement tous les professeurs de l'établissement.</label><br />
-";
-	}
-
-
+if (count($prof_list["list"]) != "0") {
 	echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
 	if(document.getElementById('prof_'+cpt)) {
@@ -830,16 +862,45 @@ for(i=0;i<$p;i++) {
 
 }
 
-echo "</div>\n";
+$sql="SELECT 1=1 FROM utilisateurs WHERE statut='professeur';";
+$res_nb_prof=mysql_query($sql);
+$nb_prof_etab=mysql_num_rows($res_nb_prof);
 
+echo "<script type='text/javascript'>
+	function init_checkbox_change() {
+		for(i=0;i<$nb_prof_etab;i++) {
+			checkbox_change(i);
+		}
+	}
+
+	function maj_liste_profs_matiere() {
+		if($('div_choix_prof')&&$('matiere')) {
+			matiere=$('matiere').options[$('matiere').selectedIndex].value;
+			new Ajax.Updater($('div_choix_prof'),'./edit_group.php?id_groupe=$id_groupe&id_classe=$id_classe&mode=$mode&maj_liste_profs_matiere=y&matiere='+matiere+'".add_token_in_url(false)."',{method: 'get'});
+			setTimeout('init_checkbox_change()', 2000);
+			setTimeout('maj_liste_autres_groupes_meme_matiere()', 2000);
+		}
+	}
+
+	function maj_liste_autres_groupes_meme_matiere() {
+		if($('div_autres_groupes_meme_matiere')&&$('matiere')) {
+			matiere=$('matiere').options[$('matiere').selectedIndex].value;
+			new Ajax.Updater($('div_autres_groupes_meme_matiere'),'./edit_group.php?id_groupe=$id_groupe&id_classe=$id_classe&mode=$mode&maj_liste_autres_groupes_meme_matiere=y&matiere='+matiere+'".add_token_in_url(false)."',{method: 'get'});
+		}
+	}
+
+</script>
+
+</div>\n";
+
+echo "<div id='div_autres_groupes_meme_matiere' style='width: 45%; float: right; font-size:small; margin-top:1em;'>\n";
 $avec_lien_edit_group="y";
 $tab_autres_groupes=tableau_html_groupe_matiere_telle_classe($id_classe, $reg_matiere, array($id_groupe));
 if($tab_autres_groupes!="") {
-	echo "<div style='width: 45%; float: right; font-size:small; margin-top:1em;'>\n";
 	echo "<p>Il existe d'autres enseignements dans la même matière pour cette classe&nbsp;:</p>\n";
 	echo $tab_autres_groupes;
-	echo "</div>\n";
 }
+echo "</div>\n";
 
 echo "<div style='float: left; width: 100%'>\n";
 echo "<input type='hidden' name='is_posted' value='1' />\n";
