@@ -2480,4 +2480,39 @@ function $nom_func_js_tout_cocher_decocher(mode) {
 	return $retour;
 }
 
+function js_cdt_modif_etat_travail() {
+	global $class_notice_dev_fait, $class_notice_dev_non_fait;
+
+	$retour="<script type='text/javascript'>
+	function cdt_modif_etat_travail(login_eleve, id_ct) {
+		// Pour éviter trop de clics à la suite:
+		if(document.getElementById('div_etat_travail_'+id_ct)) {
+			document.getElementById('div_etat_travail_'+id_ct).innerHTML='<img src=\'../images/spinner.gif\' class=\'icone16\' />';
+		}
+
+		new Ajax.Updater($('div_etat_travail_'+id_ct),'../cahier_texte_2/ajax_cdt.php?login_eleve='+login_eleve+'&id_ct_devoir='+id_ct+'&mode=changer_etat".add_token_in_url(false)."',{method: 'get'});
+
+		setTimeout('cdt_maj_class_div_dev('+id_ct+')', 2000);
+	}
+
+	function cdt_maj_class_div_dev(id_ct) {
+		if(document.getElementById('div_etat_travail_'+id_ct)) {
+			if(document.getElementById('div_travail_'+id_ct)) {
+				chaine=document.getElementById('div_etat_travail_'+id_ct).innerHTML;
+				//alert(chaine);
+				if(chaine.indexOf('NON FAIT:',1)!='-1') {
+					document.getElementById('div_travail_'+id_ct).className='$class_notice_dev_non_fait';
+				}
+				else {
+					if(chaine.indexOf('FAIT:',1)!='-1') {
+						document.getElementById('div_travail_'+id_ct).className='$class_notice_dev_fait';
+					}
+				}
+			}
+		}
+	}
+</script>\n";
+	return $retour;
+}
+
 ?>

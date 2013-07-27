@@ -847,3 +847,15 @@ commentaires text NOT NULL,
 PRIMARY KEY ( id )
 ) CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel à la modif de notes du bulletin en periode close';
 
+DROP TABLE IF EXISTS ct_devoirs_faits;
+CREATE TABLE ct_devoirs_faits (
+id INT(11) unsigned NOT NULL auto_increment,
+id_ct INT(11) unsigned NOT NULL,
+login VARCHAR( 255 ) NOT NULL ,
+etat VARCHAR( 50 ) NOT NULL,
+date_initiale DATETIME,
+date_modif DATETIME,
+commentaire VARCHAR( 255 ) NOT NULL,
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

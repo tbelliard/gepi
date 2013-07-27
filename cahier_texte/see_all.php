@@ -288,6 +288,16 @@ else {
 $res_notices = mysql_query($req_notices);
 $notice = mysql_fetch_object($res_notices);
 
+// 20130727
+$CDTPeutPointerTravailFait=getSettingAOui('CDTPeutPointerTravailFait'.ucfirst($_SESSION['statut']));
+
+$class_notice_dev_fait="see_all_notice couleur_bord_tableau_notice color_fond_notices_t_fait";
+$class_notice_dev_non_fait="see_all_notice couleur_bord_tableau_notice color_fond_notices_t";
+if(($selected_eleve_login!='')&&($CDTPeutPointerTravailFait)) {
+	$tab_etat_travail_fait=get_tab_etat_travail_fait($selected_eleve_login);
+	echo js_cdt_modif_etat_travail();
+}
+
 $ts_limite_visibilite_devoirs_pour_eleves=time()+getSettingValue('delai_devoirs')*24*3600;
 
 if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
@@ -386,7 +396,42 @@ while (true) {
 			}
 		}
 		// echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\">\n<tr>\n<td>\n$content</td>\n</tr>\n</table>\n<br/>\n");
-		echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_".$not_dev->type."'>";
+		if($type_notice=='devoir') {
+			// 20130727
+			$class_color_fond_notice="color_fond_notices_t";
+			if($CDTPeutPointerTravailFait) {
+				get_etat_et_img_cdt_travail_fait($not_dev->id_ct);
+				/*
+				if(array_key_exists($not_dev->id_ct, $tab_etat_travail_fait)) {
+					if($tab_etat_travail_fait[$not_dev->id_ct]['etat']=='fait') {
+						$image_etat="../images/edit16b.png";
+						$texte_etat_travail="FAIT: Le travail est actuellement pointé comme fait.\n";
+						if($tab_etat_travail_fait[$not_dev->id_ct]['date_modif']!=$tab_etat_travail_fait[$not_dev->id_ct]['date_initiale']) {
+							$texte_etat_travail.="Le travail a été pointé comme fait la première fois le ".formate_date($tab_etat_travail_fait[$not_dev->id_ct]['date_initiale'], "y")."\net modifié pour la dernière fois par la suite le ".formate_date($tab_etat_travail_fait[$not_dev->id_ct]['date_modif'], "y")."\n";
+						}
+						else {
+							$texte_etat_travail.="Le travail a été pointé comme fait le ".formate_date($tab_etat_travail_fait[$not_dev->id_ct]['date_initiale'], "y")."\n";
+						}
+						$texte_etat_travail.="Cliquer pour corriger si le travail n'est pas encore fait.";
+						$class_color_fond_notice="color_fond_notices_t_fait";
+					}
+					else {
+						$image_etat="../images/edit16.png";
+						$texte_etat_travail="NON FAIT: Le travail n'est actuellement pas fait.\nCliquer pour pointer le travail comme fait.";
+					}
+				}
+				else {
+					$image_etat="../images/edit16.png";
+					$texte_etat_travail="NON FAIT: Le travail n'est actuellement pas fait.\nCliquer pour pointer le travail comme fait.";
+				}
+				*/
+			}
+
+			echo "<div id='div_travail_".$not_dev->id_ct."' class='see_all_notice couleur_bord_tableau_notice $class_color_fond_notice' style='min-height:2em;'>";
+		}
+		else {
+			echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_".$not_dev->type."' style='min-height:2em;'>";
+		}
 		/* if ($not_dev->type == "t") {
 			echo "see_all_a_faire'>\n";
 		} else {
@@ -395,6 +440,10 @@ while (true) {
 
 		if(($type_notice=='devoir')&&($not_dev->date_visibilite_eleve!='0000-00-00 00:00:00')) {
 			echo "<div style='float:right; width: 6em; border: 1px solid black; margin: 2px; font-size: xx-small; text-align: center;'>Donné le ".formate_date($not_dev->date_visibilite_eleve)."</div>\n";
+		}
+
+		if(($type_notice=='devoir')&&($CDTPeutPointerTravailFait)) {
+			echo "<div id='div_etat_travail_".$not_dev->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$selected_eleve_login', '".$not_dev->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
 		}
 
 		echo "$content\n</div>\n";

@@ -7684,4 +7684,52 @@ function get_ele_clas_connexions($id_classe, $timestamp1, $timestamp2, $tab_auto
 	return $tab;
 }
 
+function get_tab_etat_travail_fait($eleve_login) {
+	$tab_etat_travail_fait=array();
+	$sql="SELECT * FROM ct_devoirs_faits WHERE login='$eleve_login';";
+	$res_cdf=mysql_query($sql);
+	if(mysql_num_rows($res_cdf)>0) {
+		while($lig_cdf=mysql_fetch_object($res_cdf)) {
+			$tab_etat_travail_fait[$lig_cdf->id_ct]['etat']=$lig_cdf->etat;
+			$tab_etat_travail_fait[$lig_cdf->id_ct]['date_initiale']=$lig_cdf->date_initiale;
+			$tab_etat_travail_fait[$lig_cdf->id_ct]['date_modif']=$lig_cdf->date_modif;
+			$tab_etat_travail_fait[$lig_cdf->id_ct]['commentaire']=$lig_cdf->commentaire;
+		}
+	}
+	return $tab_etat_travail_fait;
+}
+
+function get_etat_et_img_cdt_travail_fait($id_ct) {
+	global $tab_etat_travail_fait,
+	$image_etat,
+	$texte_etat_travail,
+	$class_color_fond_notice;
+
+	if(array_key_exists($id_ct, $tab_etat_travail_fait)) {
+		if($tab_etat_travail_fait[$id_ct]['etat']=='fait') {
+			$image_etat="../images/edit16b.png";
+			$texte_etat_travail="FAIT: Le travail est actuellement pointé comme fait.\n";
+			if($tab_etat_travail_fait[$id_ct]['date_modif']!=$tab_etat_travail_fait[$id_ct]['date_initiale']) {
+				$texte_etat_travail.="Le travail a été pointé comme fait la première fois le ".formate_date($tab_etat_travail_fait[$id_ct]['date_initiale'], "y")."\net modifié pour la dernière fois par la suite le ".formate_date($tab_etat_travail_fait[$id_ct]['date_modif'], "y")."\n";
+			}
+			else {
+				$texte_etat_travail.="Le travail a été pointé comme fait le ".formate_date($tab_etat_travail_fait[$id_ct]['date_initiale'], "y")."\n";
+			}
+			$texte_etat_travail.="Cliquer pour corriger si le travail n'est pas encore fait.";
+			$class_color_fond_notice="color_fond_notices_t_fait";
+		}
+		else {
+			$image_etat="../images/edit16.png";
+			$texte_etat_travail="NON FAIT: Le travail n'est actuellement pas fait.\n";
+			if($tab_etat_travail_fait[$id_ct]['commentaire']!='') {
+				$texte_etat_travail.=$tab_etat_travail_fait[$id_ct]['commentaire']."\n";
+			}
+			$texte_etat_travail.="Cliquer pour pointer le travail comme fait.";
+		}
+	}
+	else {
+		$image_etat="../images/edit16.png";
+		$texte_etat_travail="NON FAIT: Le travail n'est actuellement pas fait.\nCliquer pour pointer le travail comme fait.";
+	}
+}
 ?>

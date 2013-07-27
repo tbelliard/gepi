@@ -381,7 +381,22 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
         if ($contenu_cor == '') {$contenu_cor="...";}
 
         if (!isset($msg_error_date)) {
-          if (isset($id_ct))  {
+          if (isset($id_ct)) {
+			// 20130727:
+			$contenu_precedent="";
+			$sql="SELECT * FROM ct_devoirs_entry WHERE id_ct='$id_ct';";
+			//echo "$sql<br />";
+			$req = mysql_query($sql);
+			if(mysql_num_rows($req)>0) {
+				$contenu_precedent=mysql_result($req, 0, 'contenu');
+				if($contenu_precedent!=$contenu_cor) {
+					$date_modif=strftime("%Y-%m-%d %H:%M:%S");
+					$sql="UPDATE ct_devoirs_faits SET etat='', commentaire='Le professeur a modifié la notice de travail à faire ($date_modif).', date_modif='".$date_modif."' WHERE id_ct='$id_ct';";
+					//echo "$sql<br />";
+					$update=mysql_query($sql);
+				}
+			}
+
             // Modification d'un devoir
             $sql="UPDATE ct_devoirs_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."', date_ct='$date_travail_a_faire'";
 			if((isset($date_visibilite_eleve))&&($date_visibilite_mal_formatee=="n")) {$sql.=", date_visibilite_eleve='$date_visibilite_eleve'";}

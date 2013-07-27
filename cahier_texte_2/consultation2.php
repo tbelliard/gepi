@@ -463,7 +463,9 @@ if($mode=='classe') {
 	}
 
 	// Passage à la semaine précédente/courante/suivante
-	echo "<div style='float: right; width:25em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;id_classe=$id_classe'>Aujourd'hui</a> - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;id_classe=$id_classe'>suivante</a></div>\n";
+	echo "<div style='float: right; width:25em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;id_classe=$id_classe'>Aujourd'hui</a> ";
+
+	echo " - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;id_classe=$id_classe'>suivante</a></div>\n";
 
 	$classe=get_class_from_id($id_classe);
 
@@ -491,7 +493,15 @@ elseif($mode=='eleve') {
 	$groups=get_groups_for_eleve($login_eleve, $id_classe);
 
 	// Passage à la semaine précédente/courante/suivante
-	echo "<div style='float: right; width:25em;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>Aujourd'hui</a> - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>suivante</a></div>\n";
+	echo "<div style='float: right; width:25em;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>Aujourd'hui</a>";
+	/*
+	include("../lib/mincals.inc");
+	$titre_infobulle="Choix d'une date";
+	$texte_infobulle=minicals($year, $month, $day, "-1", 'consultation2.php?mincal=y', "return");
+	$tabdiv_infobulle[]=creer_div_infobulle('div_choix_date',$titre_infobulle,"",$texte_infobulle,"",14,0,'y','y','n','n');
+	echo " <a href=\"javascript:afficher_div('div_choix_date','y',10,-40);\"><img src='../lib/calendrier/petit_calendrier.gif' class='icon16' /></a>";
+	*/
+	echo " - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>suivante</a></div>\n";
 
 	echo "<p>Affichage pour un élève&nbsp;: <strong>".civ_nom_prenom($login_eleve)." (<em>$classe</em>)</strong></p>\n";
 
@@ -615,18 +625,19 @@ for($i=0;$i<14;$i++) {
 			if((($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes)))||
 			($ligne_ct->date_ct<=$ts_aujourdhui)) {
 				//echo "<div style='border:1px solid black; margin:0.5em;'>".$current_group['name']."<br />".$ligne_ct->contenu."</div>\n";
-				$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]="";
+				$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]['id_ct']=$ligne_ct->id_ct;
+				$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]['contenu']="";
 
 				// Lien d'édition de la notice:
 				//if(($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes))) {
 					if(($_SESSION['statut']=='professeur')&&(($ligne_ct->id_login==$_SESSION['login'])||(getSettingAOui('cdt_autoriser_modif_multiprof')))) {
 						if((!getSettingAOui('visa_cdt_inter_modif_notices_visees'))||($ligne_ct->vise!='y')){
-							$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=cr'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
+							$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]['contenu'].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=cr'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
 						}
 					}
 
 					// Notice proprement dite:
-					$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].=$ligne_ct->contenu;
+					$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]['contenu'].=$ligne_ct->contenu;
 				/*
 				}
 				else {
@@ -644,13 +655,13 @@ for($i=0;$i<14;$i++) {
 					$sql="SELECT * FROM ct_documents where id_ct='$ligne_ct->id_ct';";
 					$res_doc=mysql_query($sql);
 					if(mysql_num_rows($res_doc)>0) {
-						$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<br /><strong>Documents joints&nbsp;:</strong>";
+						$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]['contenu'].="<br /><strong>Documents joints&nbsp;:</strong>";
 						while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
 							// Tester si le document est visible ou non dans le cas ele/resp
 							if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 							($ligne_ct_doc->visible_eleve_parent==1))
 							{
-								$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<br />\n<a href='$ligne_ct_doc->emplacement' title=\"$ligne_ct_doc->titre\" target='_blank'>".$ligne_ct_doc->titre."</a>";
+								$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]['contenu'].="<br />\n<a href='$ligne_ct_doc->emplacement' title=\"$ligne_ct_doc->titre\" target='_blank'>".$ligne_ct_doc->titre."</a>";
 							}
 						}
 					}
@@ -667,30 +678,31 @@ for($i=0;$i<14;$i++) {
 			if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 			($ligne_ct->date_ct<=$ts_limite_visibilite_devoirs_pour_eleves)) {
 
-				$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt]="";
+				$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt]['id_ct']=$ligne_ct->id_ct;
+				$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt]['contenu']="";
 
 				// Lien d'édition de la notice:
 				if(($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes))) {
 					if(($ligne_ct->id_login==$_SESSION['login'])||(getSettingAOui('cdt_autoriser_modif_multiprof'))) {
 						if((!getSettingAOui('visa_cdt_inter_modif_notices_visees'))||($ligne_ct->vise!='y')){
-							$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;edit_devoir=yes&amp;type_notice=dev'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
+							$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt]['contenu'].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;edit_devoir=yes&amp;type_notice=dev'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
 						}
 					}
 				}
 
 				// Notice proprement dite:
-				$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt].=$ligne_ct->contenu;
+				$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt]['contenu'].=$ligne_ct->contenu;
 
 				// Documents joints:
 				$sql="SELECT * FROM ct_devoirs_documents where id_ct_devoir='$ligne_ct->id_ct';";
 				$res_doc=mysql_query($sql);
 				if(mysql_num_rows($res_doc)>0) {
-					$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt].="<br /><strong>Documents joints&nbsp;:</strong>";
+					$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt]['contenu'].="<br /><strong>Documents joints&nbsp;:</strong>";
 					while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
 						if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 						($ligne_ct_doc->visible_eleve_parent==1))
 						{
-							$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt].="<br />\n<a href='$ligne_ct_doc->emplacement' title=\"$ligne_ct_doc->titre\" target='_blank'>".$ligne_ct_doc->titre."</a>";
+							$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt]['contenu'].="<br />\n<a href='$ligne_ct_doc->emplacement' title=\"$ligne_ct_doc->titre\" target='_blank'>".$ligne_ct_doc->titre."</a>";
 						}
 					}
 				}
@@ -709,10 +721,10 @@ for($i=0;$i<14;$i++) {
 			// Les notices privées en multiprof??? sont-elles visibles du seul prof ou des profs du groupe?
 			if(($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes))) {
 				if(($ligne_ct->id_login==$_SESSION['login'])||(getSettingAOui('cdt_autoriser_modif_multiprof'))) {
-					$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt]="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=np'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
+					$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt]['contenu']="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=np'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
 
 					// Notice proprement dite:
-					$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt].=$ligne_ct->contenu;
+					$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt]['contenu'].=$ligne_ct->contenu;
 					$cpt++;
 				}
 			}
@@ -729,6 +741,21 @@ foreach($groups as $current_group) {
 	$chaine_id_groupe.="'$id_groupe'";
 }
 //=============================================================
+
+//================================================
+// 20130727
+$class_notice_dev_fait="color_fond_notices_t_fait";
+$class_notice_dev_non_fait="color_fond_notices_t";
+
+$CDTPeutPointerTravailFait=getSettingAOui('CDTPeutPointerTravailFait'.ucfirst($_SESSION['statut']));
+
+if($CDTPeutPointerTravailFait) {
+	if($login_eleve!='') {
+		$tab_etat_travail_fait=get_tab_etat_travail_fait($login_eleve);
+		echo js_cdt_modif_etat_travail();
+	}
+}
+//================================================
 
 //=============================================================
 // Boucle sur les 14 jours affichés
@@ -808,8 +835,20 @@ for($i=0;$i<14;$i++) {
 			if(isset($tab_notice[$i][$id_groupe]['ct_devoirs_entry'])) {
 				// Liste des devoirs donnés pour ce jour dans ce groupe:
 				for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_devoirs_entry']);$j++) {
-					$texte_dev_courant.="<div style='background-color:".$color_fond_notices['t']."; border: 1px solid black; margin: 1px;'>\n";
-					$texte_dev_courant.=$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j];
+					// 20130727
+					$class_color_fond_notice="color_fond_notices_t";
+					if($CDTPeutPointerTravailFait) {
+						get_etat_et_img_cdt_travail_fait($tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j]['id_ct']);
+					}
+
+					//$texte_dev_courant.="<div id='div_travail_".$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j]['id_ct']."' style='background-color:".$color_fond_notices['t']."; border: 1px solid black; margin: 1px;'$chaine_class_color_fond_notice>\n";
+					$texte_dev_courant.="<div id='div_travail_".$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j]['id_ct']."' style='border: 1px solid black; margin: 1px;' class='$class_color_fond_notice'>\n";
+
+					if($CDTPeutPointerTravailFait) {
+						$texte_dev_courant.="<div id='div_etat_travail_".$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j]['id_ct']."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$login_eleve', '".$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j]['id_ct']."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
+					}
+
+					$texte_dev_courant.=$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j]['contenu'];
 					$texte_dev_courant.="</div>\n";
 					$temoin_dev_non_vides++;
 				}
@@ -833,7 +872,7 @@ for($i=0;$i<14;$i++) {
 				// Liste des compte-renddus pour ce jour dans ce groupe:
 				for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_entry']);$j++) {
 					$texte_cr_courant.="<div style='background-color:palegreen; border: 1px solid black; margin: 1px;'>\n";
-					$texte_cr_courant.=$tab_notice[$i][$id_groupe]['ct_entry'][$j];
+					$texte_cr_courant.=$tab_notice[$i][$id_groupe]['ct_entry'][$j]['contenu'];
 					$texte_cr_courant.="</div>\n";
 					$temoin_cr_non_vides++;
 				}
@@ -857,7 +896,7 @@ for($i=0;$i<14;$i++) {
 				// Liste des notices privées pour ce jour dans ce groupe:
 				for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_private_entry']);$j++) {
 					$texte_np_courant.="<div style='background-color:".$color_fond_notices['p']."; border: 1px solid black; margin: 1px;'>\n";
-					$texte_np_courant.=$tab_notice[$i][$id_groupe]['ct_private_entry'][$j];
+					$texte_np_courant.=$tab_notice[$i][$id_groupe]['ct_private_entry'][$j]['contenu'];
 					$texte_np_courant.="</div>\n";
 					$temoin_np_non_vides++;
 				}
@@ -977,21 +1016,21 @@ for($i=0;$i<14;$i++) {
 	if(($temoin_dev_non_vides>0)||($temoin_cr_non_vides>0)||($temoin_np_non_vides>0)) {
 		$ajout="";
 		if($temoin_cr_non_vides>0) {
-			$ajout.="<a id='lien_alterne_affichage_compte_rendu_jour_$i' href='#' onclick=\"alterne_affichage_global('compte_rendu',$i);return false;\" style='background-color: ".$color_fond_notices['c'].";'>";
+			$ajout.="<a id='lien_alterne_affichage_compte_rendu_jour_$i' href='#' onclick=\"alterne_affichage_global('compte_rendu',$i);return false;\" style='background-color: ".$color_fond_notices['c'].";' title=\"Alterner l'affichage/masquage des compte-rendus de séances\">";
 			$ajout.="C";
 			$ajout.="</a>\n";
 		}
 
 		if($temoin_dev_non_vides>0) {
 			$ajout.=" ";
-			$ajout.="<a id='lien_alterne_affichage_devoirs_jour_$i' href='#' onclick=\"alterne_affichage_global('devoirs',$i);return false;\" style='background-color: ".$color_fond_notices['t'].";'>";
+			$ajout.="<a id='lien_alterne_affichage_devoirs_jour_$i' href='#' onclick=\"alterne_affichage_global('devoirs',$i);return false;\" style='background-color: ".$color_fond_notices['t'].";' title=\"Alterner l'affichage/masquage des travaux à faire\">";
 			$ajout.="T";
 			$ajout.="</a>\n";
 		}
 
 		if($temoin_np_non_vides>0) {
 			$ajout.=" ";
-			$ajout.="<a href='#' id='lien_alterne_affichage_notice_privee_jour_$i' onclick=\"alterne_affichage_global('notice_privee',$i);return false;\" style='background-color: ".$color_fond_notices['p'].";'>";
+			$ajout.="<a href='#' id='lien_alterne_affichage_notice_privee_jour_$i' onclick=\"alterne_affichage_global('notice_privee',$i);return false;\" style='background-color: ".$color_fond_notices['p'].";' title=\"Alterner l'affichage/masquage des notices privées\">";
 			$ajout.="P";
 			$ajout.="</a>\n";
 		}
