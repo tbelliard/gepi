@@ -522,6 +522,46 @@ while ($p < $nb_users) {
 			$i++;
 		}
 
+		$liste_elv_resp_0="";
+		$liste_elv_resp_0_non_html="";
+		if(($liste_elv_resp=="")&&(getSettingAOui('GepiMemesDroitsRespNonLegaux'))) {
+			$sql_resp_eleves="SELECT DISTINCT c.id, e.* , c.*
+								FROM responsables2 r2, eleves e, classes c, j_eleves_classes jec
+								WHERE (
+								r2.pers_id = '$resp_pers_id'
+								AND r2.ele_id = e.ele_id
+								AND e.login = jec.login
+								AND jec.id_classe = c.id
+								AND r2.resp_legal='0'
+								)";
+			//echo "<br />\$sql_resp_eleves=".$sql_resp_eleves."<br />";
+			if($debug_create_resp=="y") {echo "<br />$sql_resp_eleves<br />\n";}
+			$call_resp_eleves=mysql_query($sql_resp_eleves);
+			$nb_elv_resp = mysql_num_rows($call_resp_eleves);
+			//echo "\$nb_elv_resp=$nb_elv_resp<br />";
+			if($debug_create_resp=="y") {echo "\$nb_elv_resp=$nb_elv_resp<br />\n";}
+
+			$i = 0;
+			while ($i < $nb_elv_resp){
+
+				$elv_resp0['login'][$i] = mysql_result($call_resp_eleves, $i, "login");
+				$elv_resp0['nom'][$i] = mysql_result($call_resp_eleves, $i, "nom");
+				$elv_resp0['prenom'][$i] = mysql_result($call_resp_eleves, $i, "prenom");
+				$elv_resp0['classe'][$i] = mysql_result($call_resp_eleves, $i, "classe");
+				$elv_resp0['nom_complet_classe'][$i] = mysql_result($call_resp_eleves, $i, "nom_complet");
+
+				if($i>0){
+					$liste_elv_resp_0.=", ";
+					$liste_elv_resp_0_non_html.=", ";
+				}
+				$liste_elv_resp_0.=casse_mot($elv_resp0['nom'][$i],'maj')." ".casse_mot($elv_resp0['prenom'][$i],'majf2')." (<i>".$elv_resp0['classe'][$i]."</i>)";
+				$liste_elv_resp_0_non_html.=casse_mot($elv_resp0['nom'][$i],'maj')." ".casse_mot($elv_resp0['prenom'][$i],'majf2')." (".$elv_resp0['classe'][$i].")";
+
+				$i++;
+			}
+		}
+
+
 		// il va y avoir la classe à récuperer
 		if ($cas_traite==2) {
 			$user_classe = $resp_pers_id=mysql_result($call_user_info, $p, "id_classe");
@@ -862,7 +902,12 @@ width:".$largeur1."%;\n";
 					if ($user_statut == "responsable") {
 						echo "<tr><td>Responsable de : </td><td><span class = \"bold\">";
 						if($liste_elv_resp==""){
-							echo "&nbsp;";
+							if($liste_elv_resp_0==""){
+								echo "&nbsp;";
+							}
+							else{
+								echo $liste_elv_resp_0." (resp.non légal)";
+							}
 						}
 						else{
 							echo $liste_elv_resp;
@@ -1220,7 +1265,12 @@ width:".$largeur1."%;\n";
 					if ($user_statut == "responsable") {
 						echo "<tr><td>Responsable de : </td><td><span class = \"bold\">";
 						if($liste_elv_resp==""){
-							echo "&nbsp;";
+							if($liste_elv_resp_0==""){
+								echo "&nbsp;";
+							}
+							else{
+								echo $liste_elv_resp_0." (resp.non légal)";
+							}
 						}
 						else{
 							echo $liste_elv_resp;
