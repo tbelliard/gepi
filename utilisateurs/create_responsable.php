@@ -321,7 +321,8 @@ $critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççà
 
 $critere_recherche_rl0=isset($_POST['critere_recherche_rl0']) ? $_POST['critere_recherche_rl0'] : (isset($_GET['critere_recherche_rl0']) ? $_GET['critere_recherche_rl0'] : "");
 $critere_recherche_rl0=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche_rl0);
-if(isset($_POST['filtrage_rl0'])) {
+$filtrage_rl0=isset($_POST['filtrage_rl0']) ? $_POST['filtrage_rl0'] : (isset($_GET['filtrage_rl0']) ? $_GET['filtrage_rl0'] : NULL);
+if(isset($filtrage_rl0)) {
 	$critere_recherche=$critere_recherche_rl0;
 	$mode_recherche='rl0';
 }

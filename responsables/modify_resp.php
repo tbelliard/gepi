@@ -808,7 +808,9 @@ echo "<td valign='top'>\n";
 			$lien_image_compte_utilisateur=lien_image_compte_utilisateur($resp_login, "responsable", "_blank", $avec_lien);
 
 			if($_SESSION['statut']=='administrateur') {
-				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a>";
+				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo ">$resp_login</a>";
 				if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
 				echo "</em>)";
 			}
@@ -820,6 +822,29 @@ echo "<td valign='top'>\n";
 		}
 		else {
 			$compte_resp_existe="n";
+
+			if($_SESSION['statut']=="administrateur") {
+				$tmp_tab=get_enfants_from_pers_id($pers_id, 'simple', "n");
+				if(count($tmp_tab)>0) {
+					echo " <a href='../utilisateurs/create_responsable.php?filtrage=Afficher&amp;critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $resp_nom)."'";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo " title=\"Ajouter un compte d'utilisateur pour ce responsable.\"><img src='../images/icons/buddy_plus.png' class='icone16' /></a>";
+				}
+				elseif(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+					// Il ne faut pas "yy" parce que le droit spécial ne peut être donné qu'une fois le compte créé.
+					$tmp_tab=get_enfants_from_pers_id($pers_id, 'simple', "y");
+					/*
+					echo "<pre>";
+					print_r($tmp_tab);
+					echo "</pre>";
+					*/
+					if(count($tmp_tab)>0) {
+						echo " <a href='../utilisateurs/create_responsable.php?filtrage_rl0=Afficher&amp;critere_recherche_rl0=".preg_replace("/[^A-Za-z]/", "%", $resp_nom)."'";
+						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+						echo " title=\"Ajouter un compte d'utilisateur pour ce responsable.\"><img src='../images/icons/buddy_plus.png' class='icone16' /></a>";
+					}
+				}
+			}
 		}
 
 		if(($compte_resp_existe=="y")&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
