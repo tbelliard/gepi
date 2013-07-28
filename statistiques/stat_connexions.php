@@ -178,7 +178,43 @@ elseif($mode==1) {
 		while($lig=mysql_fetch_object($res)) {
 			$tab_parents_connectes_avec_succes[]=$lig->login;
 		}
-	
+
+		/*
+		// Pb: Il ne faut pas compter deux fois des parents d'enfants de 2 classes différentes
+		//$nb_parents_differents_toutes_classes=0;
+		$sql="SELECT DISTINCT e.login FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		$nb_parents_differents_toutes_classes=mysql_num_rows($res);
+		// ERREUR: On compte les enfants et on peut avoir deux enfants d'une même famille
+		*/
+		$tab_ele_id_login_resp=array();
+		$tab_login_resp_ele_id=array();
+
+		$tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter=array();
+		$tab_parents_enfants_differents_connectes_avec_succes=array();
+		$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY r.ele_id, l.login;";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		while($lig=mysql_fetch_object($res)) {
+			$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$lig->pers_id';";
+			$res2=mysql_query($sql);
+			while($lig2=mysql_fetch_object($res2)) {
+				if((!in_array($lig2->ele_id, $tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter))&&(!in_array($lig->login, $tab_parents_enfants_differents_connectes_avec_succes))) {
+					$tab_parents_enfants_differents_connectes_avec_succes[]=$lig->login;
+				}
+				$tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter[]=$lig2->ele_id;
+
+				$tab_ele_id_login_resp[$lig2->ele_id][]=$lig->login;
+				$tab_login_resp_ele_id[$lig->login][]=$lig2->ele_id;
+			}
+		}
+		$nb_parents_differents_toutes_classes=count($tab_parents_enfants_differents_connectes_avec_succes);
+
+		$effectif_total_eleve=0;
+		$effectif_total_eleve_connectes=0;
+
+		$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes=array();
 		// Mettre les pourcentages aussi
 		echo "<p>Nombre d'élèves et responsables connectés au moins une fois&nbsp;:</p>\n";
 		echo "<table class='boireaus'>\n";
@@ -187,7 +223,7 @@ elseif($mode==1) {
 		echo "<th rowspan='2'>Effectif</th>\n";
 		echo "<th colspan='2'>Elèves</th>\n";
 		echo "<th rowspan='2'>Parents</th>\n";
-		echo "<th colspan='2'>Parents d'enfants<br />différents</th>\n";
+		echo "<th colspan='2' title=\"Si les deux parents d'un enfant se sont connectés, on ne les compte dans cette colonne que pour 1 (au sens d'une seule famille).\">Parents d'enfants<br />différents</th>\n";
 		echo "<th rowspan='2'>Parents toujours<br />en échec de<br />mot de passe</th>\n";
 		echo "</tr>\n";
 
@@ -233,7 +269,7 @@ elseif($mode==1) {
 			$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_resp)."</div>";
 			$tabdiv_infobulle[]=creer_div_infobulle('div_resp_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 	
-			$sql="SELECT DISTINCT l.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose='4' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose='4' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			$nb_parents_erreur_mdp=mysql_num_rows($res);
@@ -244,6 +280,20 @@ elseif($mode==1) {
 					if(!in_array(mb_strtoupper($lig->login), $tab_resp)) {
 						$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes++;
 						$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes[]=$lig->login;
+
+						if(!in_array($lig->login, $tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes)) {
+							$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes[]=$lig->login;
+
+							$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$lig->pers_id';";
+							$res2=mysql_query($sql);
+							while($lig2=mysql_fetch_object($res2)) {
+								if(!isset($tab_login_resp_ele_id[$lig->login])) {$tab_login_resp_ele_id[$lig->login]=array();}
+								if(!in_array($lig2->ele_id, $tab_login_resp_ele_id[$lig->login])) {
+									$tab_login_resp_ele_id[$lig->login][]=$lig2->ele_id;
+								}
+							}
+
+						}
 					}
 				}
 			}
@@ -291,6 +341,7 @@ elseif($mode==1) {
 	
 			echo "<td>";
 			echo $tab_classe[$i]['effectif'];
+			$effectif_total_eleve+=$tab_classe[$i]['effectif'];
 			echo "</td>\n";
 	
 			if($nb_ele>0) {
@@ -298,6 +349,7 @@ elseif($mode==1) {
 				//echo "<a href=\"#\" onclick=\"afficher_div('div_ele_$i','y',10,10);return false;\"  onmouseover=\"delais_afficher_div('div_ele_$i','y',10,10,20,20,1000);\"  onmouseout=\"cacher_div('div_ele_$i');\">";
 				echo "<a href=\"#\" onclick=\"afficher_div_stat('div_ele_$i');return false;\"  onmouseover=\"afficher_div_stat('div_ele_$i')\">";
 				echo $nb_ele."/".$tab_classe[$i]['effectif'];
+				$effectif_total_eleve_connectes+=$nb_ele;
 				echo "</a>";
 				echo "</td>\n";
 				echo "<td>\n";
@@ -360,7 +412,52 @@ elseif($mode==1) {
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
+
+		$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes=count($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes);
+
+		echo "<tr>\n";
+		echo "<th>Total</th>\n";
+		echo "<th title=\"Effectif total des élèves\">$effectif_total_eleve</th>\n";
+		echo "<th title=\"Total des élèves connectés avec succès\">$effectif_total_eleve_connectes</th>\n";
+		echo "<th title=\"Pourcentage d'élèves connectés avec succès\">".(100*round($effectif_total_eleve_connectes/$effectif_total_eleve,3))."</th>\n";
+		echo "<th title=\"Total des parents connectés avec succès\">".count($tab_parents_connectes_avec_succes)."</th>\n";
+		echo "<th title=\"Total des familles connectées avec succès\">$nb_parents_differents_toutes_classes</th>\n";
+		echo "<th>-</th>\n";
+		echo "<th title=\"Total des parents ayant échoué à se connecter\">".$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes."</th>\n";
+		echo "</tr>\n";
+
 		echo "</table>\n";
+
+		echo "<p><br /></p>\n";
+		if($nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes>0) {
+			echo "<p><strong>Liste des parents ayant tenté de se connecter, mais jamais avec succès&nbsp;: (<em title=\"$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes responsables ne se sont jamais connectés avec succès.\">$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes</em>) </strong><br />";
+			for($loop=0;$loop<$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes;$loop++) {
+				if($loop>0) {echo ", ";}
+
+/*
+				$tab_ele_id_login_resp[$lig2->ele_id][]=$lig->login;
+				$tab_login_resp_ele_id[$lig->login][]=$lig2->ele_id;
+*/
+				$color="red";
+				for($loop2=0;$loop2<count($tab_login_resp_ele_id[$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes[$loop]]);$loop2++) {
+					if(isset($tab_ele_id_login_resp[$tab_login_resp_ele_id[$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes[$loop]][$loop2]])) {
+						$color="green";
+						break;
+					}
+				}
+				echo "<span style='color:$color'";
+				if($color=="red") {
+					echo " title=\"Ni ce responsable ni son conjoint ou sa conjointe ne s'est connecté(e).\"";
+				}
+				else {
+					echo " title=\"Le conjoint ou la conjointe est parvenu(e) à connecter.\"";
+				}
+				echo ">";
+				echo civ_nom_prenom($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes[$loop]);
+				echo "</span>";
+			}
+			echo ".</p>\n";
+		}
 	}
 
 	echo "<p><br /></p>\n";
@@ -726,7 +823,37 @@ elseif(($mode==2)||($mode==3)) {
 	}
 	
 </script>\n";
-	
+
+
+			$ligne_date="<tr>";
+			$ligne_eff="<tr>";
+			$ligne_personnes="<tr>";
+			$alt=1;
+			$tab_designation=array();
+			foreach($tab_connexions as $date => $tab_login) {
+				$alt=$alt*(-1);
+				$ligne_date.="<td class='lig$alt'>".formate_date($date)."</td>";
+				$ligne_eff.="<td class='lig$alt' title=\"Effectif de connexion\">".count($tab_login['login'])."</td>";
+				$ligne_personnes.="<td class='lig$alt' style='vertical-align:top'>";
+				for($loop=0;$loop<count($tab_login['login']);$loop++) {
+					if($mode==2) {
+						if(!array_key_exists($tab_login['login'][$loop], $tab_designation)) {$tab_designation[$tab_login['login'][$loop]]=civ_nom_prenom($tab_login['login'][$loop]);}
+					}
+					else {
+						if(!array_key_exists($tab_login['login'][$loop], $tab_designation)) {$tab_designation[$tab_login['login'][$loop]]=get_nom_prenom_eleve($tab_login['login'][$loop]);}
+					}
+					$ligne_personnes.=$tab_designation[$tab_login['login'][$loop]]."<br />";
+				}
+				$ligne_personnes.="</td>";
+			}
+			$ligne_date.="</tr>";
+			$ligne_eff.="</tr>";
+			$ligne_personnes.="</tr>";
+			echo "<table class='boireaus' summary='Identité des personnes connectées'>
+	$ligne_date
+	$ligne_eff
+	$ligne_personnes
+</table>";
 		}
 	}
 }
