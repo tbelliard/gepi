@@ -184,7 +184,7 @@ if (!$groupe_col->isEmpty()) {
 }
 
 //on affiche une boite de selection avec les classes
-if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+if ((getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe")||($utilisateur->getStatut() == "autre")) {
     $classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
 } else {
     $classe_col = $utilisateur->getClasses();
@@ -214,7 +214,7 @@ if (!$classe_col->isEmpty()) {
 }
 
 //on affiche une boite de selection avec les aid
-if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+if ((getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe")||($utilisateur->getStatut() == "autre")) {
     $aid_col = AidDetailsQuery::create()->find();
 } else {
     $aid_col = $utilisateur->getAidDetailss();

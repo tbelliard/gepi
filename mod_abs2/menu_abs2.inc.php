@@ -121,6 +121,11 @@ if(($_SESSION['statut']=='cpe')||
 
 	echo "<ul class='css-tabs' id='menutabs'>\n";
 
+    if(acces('/mod_abs2/saisir_groupe.php','autre')) {
+        echo "<li><a href='saisir_groupe.php' ";
+        if($url_end=='saisir_groupe.php') {echo "class='current' ";}
+        echo "title='Saisir pour un groupe'>Saisir un groupe</a></li>\n";        
+    }
     if(acces('/mod_abs2/saisir_eleve.php','autre')) {
         echo "<li><a href='saisir_eleve.php' ";
         if($url_end=='saisir_eleve.php') {echo "class='current' ";}

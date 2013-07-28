@@ -62,10 +62,12 @@ $autorise[18]= array('/mod_discipline/index.php',
 					 '/mod_ooo/rapport_incident.php');
 $autorise[19]= array('/mod_abs2/index.php');
 $autorise[20]= array('/mod_abs2/saisir_eleve.php',
+					 '/mod_abs2/saisir_groupe.php',
 					 '/mod_abs2/visu_saisie.php',
 					 '/mod_abs2/enregistrement_modif_saisie.php',
 					 '/mod_abs2/liste_saisies.php',
-					 '/mod_abs2/enregistrement_saisie_eleve.php');
+					 '/mod_abs2/enregistrement_saisie_eleve.php',
+					 '/mod_abs2/enregistrement_saisie_groupe.php');
 $autorise[21]= array('/mod_abs2/bilan_individuel.php' );
 $autorise[22]= array('/mod_abs2/totaux_du_jour.php' );
 $autorise[23]= array('/bulletin/bull_index.php' );

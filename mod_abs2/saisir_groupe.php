@@ -140,7 +140,7 @@ function redimensionne_image_petit($photo)
  }
  
 $journeePossible = FALSE;
-if ('cpe' == $_SESSION['statut'] || 'scolarite' == $_SESSION['statut']) {
+if ('cpe' == $_SESSION['statut'] || 'scolarite' == $_SESSION['statut'] || 'autre' == $_SESSION['statut']) {
 	$journeePossible = TRUE;
 }
 
@@ -302,7 +302,7 @@ if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
 	//le reglage specifie que le prof n'a pas le droit de saisir autre chose que son cours
 	//donc on affiche pas de selection, le cours est automatiquement selectionné
 } else {
-    if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    if ((getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe")||($utilisateur->getStatut() == "autre")) {
 		$groupe_col = GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()
 							->leftJoinWith('Groupe.JGroupesClasses')
 							->leftJoinWith('JGroupesClasses.Classe')
@@ -325,7 +325,7 @@ if (getSettingValue("abs2_saisie_prof_decale_journee")!='y'
 } else {
 	$edt_cours_aff = new PropelCollection();
     //on affiche une boite de selection avec les cours
-    if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    if ((getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe")||($utilisateur->getStatut() == "autre")) {
 		//la collection entière des cours est trop grosse et inexploitable sous la forme d'une liste. ça consomme de la ressource donc c'est désactivé
 		$edt_cours_col = new PropelCollection();
     } else {
@@ -391,7 +391,7 @@ if (getSettingValue("abs2_saisie_prof_decale_journee")!='y'
 }
 
 //**************** CLASSES *****************
-if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+if ((getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe")||($utilisateur->getStatut() == "autre")) {
     $classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
 } else {
     $classe_col = $utilisateur->getClasses();
