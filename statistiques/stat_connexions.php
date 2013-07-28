@@ -255,12 +255,34 @@ elseif($mode==1) {
 			$titre_infobulle="Parents en échec de connexion\n";
 			$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes)."</div>";
 			$tabdiv_infobulle[]=creer_div_infobulle('div_resp_echec_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
-	
+
+			// **********************************************************************************************
+			/*
+			// ERREUR: On compte les enfants et on peut avoir deux enfants d'une même famille dans une classe
 			$sql="SELECT DISTINCT jec.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			$nb_parents_differents=mysql_num_rows($res);
-	
+			*/
+
+			$tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter_cette_classe=array();
+			$tab_parents_enfants_differents_connectes_avec_succes_cette_classe=array();
+			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			while($lig=mysql_fetch_object($res)) {
+				$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$lig->pers_id';";
+				$res2=mysql_query($sql);
+				while($lig2=mysql_fetch_object($res2)) {
+					if((!in_array($lig2->ele_id, $tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter_cette_classe))&&(!in_array($lig->login, $tab_parents_enfants_differents_connectes_avec_succes_cette_classe))) {
+						$tab_parents_enfants_differents_connectes_avec_succes_cette_classe[]=$lig->login;
+					}
+					$tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter_cette_classe[]=$lig2->ele_id;
+				}
+			}
+			$nb_parents_differents=count($tab_parents_enfants_differents_connectes_avec_succes_cette_classe);
+			// **********************************************************************************************
+
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt white_hover'>\n";
 			echo "<td>";
