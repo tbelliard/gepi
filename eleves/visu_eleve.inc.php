@@ -1192,7 +1192,7 @@ Patientez pendant l'extraction des données... merci.
 						}
 						else {
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Dernière connexion&nbsp;:</th><td>";
-							echo "<img src='../images/icons/disabled.png' class='icone20' title=\"Cet élève ne s'est jamais connecté avec succès.\"/>";
+							echo "<img src='../images/disabled.png' class='icone20' title=\"Cet élève ne s'est jamais connecté avec succès.\"/>";
 						}
 						echo "</td></tr>";
 					}
@@ -1441,7 +1441,7 @@ Patientez pendant l'extraction des données... merci.
 									echo "<br /><span title=\"Cet utilisateur ne s'est jamais connecté avec succès (du moins, si les log n'ont pas été vidés récemment). En revanche, un échec de connexion est constaté à la date indiquée.\">Dernière tentative de connexion&nbsp;: ".formate_date($tab_ele['resp'][$i]['DerniereConnexionResp_Echec']['START'], 'y')."</span>";
 								}
 								else {
-									echo "<br />Dernière connexion&nbsp;: <img src='../images/icons/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté avec succès.\"/>";
+									echo "<br />Dernière connexion&nbsp;: <img src='../images/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté avec succès.\"/>";
 								}
 							}
 							echo "</td></tr>\n";
@@ -1610,7 +1610,7 @@ Patientez pendant l'extraction des données... merci.
 										echo "<br /><span title=\"Cet utilisateur ne s'est jamais connecté avec succès (du moins, si les log n'ont pas été vidés récemment). En revanche, un échec de connexion est constaté à la date indiquée.\">Dernière tentative de connexion&nbsp;: ".formate_date($tab_ele['resp'][$i]['DerniereConnexionResp_Echec']['START'], 'y')."</span>";
 									}
 									else {
-										echo "<br />Dernière connexion&nbsp;: <img src='../images/icons/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté avec succès.\"/>";
+										echo "<br />Dernière connexion&nbsp;: <img src='../images/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté avec succès.\"/>";
 									}
 								}
 								echo "</td></tr>\n";
