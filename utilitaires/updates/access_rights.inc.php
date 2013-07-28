@@ -746,7 +746,7 @@ $tab_req[] = "INSERT INTO droits SET id='/mod_trombinoscopes/trombino_decoupe.ph
 
 $tab_req[] = "INSERT INTO droits SET id='/groupes/menage_eleves_groupes.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Groupes: Desinscription des eleves sans notes ni appreciations',statut='';";
 
-$tab_req[] = "INSERT INTO droits SET id='/eleves/export_donnees_bulletins.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Export de données des bulletins',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/statistiques/export_donnees_bulletins.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Export de données des bulletins',statut='';";
 
 $tab_req[] = "INSERT INTO droits SET id='/statistiques/index.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques: Index',statut='';";
 
@@ -851,8 +851,8 @@ $tab_req[] = "INSERT INTO droits VALUES ('/absences/import_absences_csv.php', 'F
 $tab_req[] = "INSERT INTO droits SET id='/statistiques/stat_connexions.php',
 administrateur='V',
 professeur='F',
-cpe='F',
-scolarite='F',
+cpe='V',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',

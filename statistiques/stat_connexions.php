@@ -3,7 +3,7 @@
  *
  * @version $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -45,8 +45,8 @@ if(mysql_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/statistiques/stat_connexions.php',
 administrateur='V',
 professeur='F',
-cpe='F',
-scolarite='F',
+cpe='V',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',
@@ -61,7 +61,58 @@ if (!checkAccess()) {
     die();
 }
 
+
+if($_SESSION['statut']=='administrateur') {
+	// On n'a pas de restrictions
+}
+elseif($_SESSION['statut']=='scolarite') {
+	if((!getSettingAOui('AccesStatConnexionEleScolarite'))&&
+	(!getSettingAOui('AccesDetailConnexionEleScolarite'))&&
+	(!getSettingAOui('AccesStatConnexionRespScolarite'))&&
+	(!getSettingAOui('AccesDetailConnexionRespScolarite'))) {
+		header("Location: ../accueil.php?msg=Accès non autorisé.");
+		die();
+	}
+}
+elseif($_SESSION['statut']=='cpe') {
+	if((!getSettingAOui('AccesStatConnexionEleCpe'))&&
+	(!getSettingAOui('AccesDetailConnexionEleCpe'))&&
+	(!getSettingAOui('AccesStatConnexionRespCpe'))&&
+	(!getSettingAOui('AccesDetailConnexionRespCpe'))) {
+		header("Location: ../accueil.php?msg=Accès non autorisé.");
+		die();
+	}
+}
+else {
+	// On ne devrait pas arriver là pour le moment
+	header("Location: ../accueil.php?msg=Accès non autorisé.");
+	die();
+}
+
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
+if(isset($mode)) {
+	if($_SESSION['statut']=='administrateur') {
+		// On n'a pas de restrictions
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		if(($mode==2)&&(!getSettingAOui('AccesStatConnexionRespScolarite'))&&(!getSettingAOui('AccesDetailConnexionRespScolarite'))) {
+			unset($mode);
+		}
+
+		if(($mode==3)&&(!getSettingAOui('AccesStatConnexionEleScolarite'))&&(!getSettingAOui('AccesDetailConnexionEleScolarite'))) {
+			unset($mode);
+		}
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		if(($mode==2)&&(!getSettingAOui('AccesStatConnexionRespCpe'))&&(!getSettingAOui('AccesDetailConnexionRespCpe'))) {
+			unset($mode);
+		}
+		if(($mode==3)&&(!getSettingAOui('AccesStatConnexionEleCpe'))&&(!getSettingAOui('AccesDetailConnexionEleCpe'))) {
+			unset($mode);
+		}
+	}
+}
+
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 
 $display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : NULL;
@@ -145,8 +196,16 @@ if(!isset($mode)) {
 	echo "<p>Choisissez&nbsp;:</p>\n";
 	echo "<ul>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=1'>Statistiques globales de connexions élèves et responsables</a></li>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>Statistiques des connexions parents d'une classe</a></li>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=3'>Statistiques des connexions élèves d'une classe</a></li>\n";
+	if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='scolarite')&&((getSettingAOui('AccesStatConnexionRespScolarite'))||(getSettingAOui('AccesDetailConnexionRespScolarite'))))||
+		(($_SESSION['statut']=='cpe')&&((getSettingAOui('AccesStatConnexionRespCpe'))||(getSettingAOui('AccesDetailConnexionRespCpe'))))) {
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>Statistiques des connexions parents d'une classe</a></li>\n";
+	}
+	if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='scolarite')&&((getSettingAOui('AccesStatConnexionEleScolarite'))||(getSettingAOui('AccesDetailConnexionEleScolarite'))))||
+		(($_SESSION['statut']=='cpe')&&((getSettingAOui('AccesStatConnexionEleCpe'))||(getSettingAOui('AccesDetailConnexionEleCpe'))))) {
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=3'>Statistiques des connexions élèves d'une classe</a></li>\n";
+	}
 	echo "</ul>\n";
 
 	echo "<p style='color:red'>Faire une autre graphique avec le nombre de connexions par semaine.</p>";
@@ -825,35 +884,42 @@ elseif(($mode==2)||($mode==3)) {
 </script>\n";
 
 
-			$ligne_date="<tr>";
-			$ligne_eff="<tr>";
-			$ligne_personnes="<tr>";
-			$alt=1;
-			$tab_designation=array();
-			foreach($tab_connexions as $date => $tab_login) {
-				$alt=$alt*(-1);
-				$ligne_date.="<td class='lig$alt'>".formate_date($date)."</td>";
-				$ligne_eff.="<td class='lig$alt' title=\"Effectif de connexion\">".count($tab_login['login'])."</td>";
-				$ligne_personnes.="<td class='lig$alt' style='vertical-align:top'>";
-				for($loop=0;$loop<count($tab_login['login']);$loop++) {
-					if($mode==2) {
-						if(!array_key_exists($tab_login['login'][$loop], $tab_designation)) {$tab_designation[$tab_login['login'][$loop]]=civ_nom_prenom($tab_login['login'][$loop]);}
+			if(($_SESSION['statut']=='administrateur')||
+				(($_SESSION['statut']=='scolarite')&&($mode==2)&&(getSettingAOui('AccesDetailConnexionRespScolarite')))||
+				(($_SESSION['statut']=='cpe')&&($mode==2)&&(getSettingAOui('AccesDetailConnexionRespCpe')))||
+				(($_SESSION['statut']=='scolarite')&&($mode==3)&&(getSettingAOui('AccesDetailConnexionEleScolarite')))||
+				(($_SESSION['statut']=='cpe')&&($mode==3)&&(getSettingAOui('AccesDetailConnexionEleCpe')))) {
+
+				$ligne_date="<tr>";
+				$ligne_eff="<tr>";
+				$ligne_personnes="<tr>";
+				$alt=1;
+				$tab_designation=array();
+				foreach($tab_connexions as $date => $tab_login) {
+					$alt=$alt*(-1);
+					$ligne_date.="<td class='lig$alt'>".formate_date($date)."</td>";
+					$ligne_eff.="<td class='lig$alt' title=\"Effectif de connexion\">".count($tab_login['login'])."</td>";
+					$ligne_personnes.="<td class='lig$alt' style='vertical-align:top'>";
+					for($loop=0;$loop<count($tab_login['login']);$loop++) {
+						if($mode==2) {
+							if(!array_key_exists($tab_login['login'][$loop], $tab_designation)) {$tab_designation[$tab_login['login'][$loop]]=civ_nom_prenom($tab_login['login'][$loop]);}
+						}
+						else {
+							if(!array_key_exists($tab_login['login'][$loop], $tab_designation)) {$tab_designation[$tab_login['login'][$loop]]=get_nom_prenom_eleve($tab_login['login'][$loop]);}
+						}
+						$ligne_personnes.=$tab_designation[$tab_login['login'][$loop]]."<br />";
 					}
-					else {
-						if(!array_key_exists($tab_login['login'][$loop], $tab_designation)) {$tab_designation[$tab_login['login'][$loop]]=get_nom_prenom_eleve($tab_login['login'][$loop]);}
-					}
-					$ligne_personnes.=$tab_designation[$tab_login['login'][$loop]]."<br />";
+					$ligne_personnes.="</td>";
 				}
-				$ligne_personnes.="</td>";
-			}
-			$ligne_date.="</tr>";
-			$ligne_eff.="</tr>";
-			$ligne_personnes.="</tr>";
-			echo "<table class='boireaus' summary='Identité des personnes connectées'>
+				$ligne_date.="</tr>";
+				$ligne_eff.="</tr>";
+				$ligne_personnes.="</tr>";
+				echo "<table class='boireaus' summary='Identité des personnes connectées'>
 	$ligne_date
 	$ligne_eff
 	$ligne_personnes
 </table>";
+			}
 		}
 	}
 }

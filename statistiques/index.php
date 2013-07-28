@@ -73,8 +73,34 @@ echo "</p>\n";
 echo "<ul>\n";
 echo "<li><a href='classes_effectifs.php'>Classes, effectifs,...</a></li>\n";
 if($_SESSION['statut']=='administrateur') {
-	echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
+	if(getSettingAOui('active_bulletins')) {
+		echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
+	}
 	echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
+}
+elseif($_SESSION['statut']=='scolarite') {
+	if(getSettingAOui('active_bulletins')) {
+		echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
+	}
+	if((getSettingAOui('AccesStatConnexionEleScolarite'))||
+	(getSettingAOui('AccesDetailConnexionEleScolarite'))||
+	(getSettingAOui('AccesStatConnexionRespScolarite'))||
+	(getSettingAOui('AccesDetailConnexionRespScolarite'))) {
+		echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
+	}
+}
+elseif($_SESSION['statut']=='cpe') {
+	/*
+	if(getSettingAOui('active_bulletins')) {
+		echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
+	}
+	*/
+	if((getSettingAOui('AccesStatConnexionEleCpe'))||
+	(getSettingAOui('AccesDetailConnexionEleCpe'))||
+	(getSettingAOui('AccesStatConnexionRespCpe'))||
+	(getSettingAOui('AccesDetailConnexionRespCpe'))) {
+		echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
+	}
 }
 
 if(getSettingAOui('active_mod_discipline')) {

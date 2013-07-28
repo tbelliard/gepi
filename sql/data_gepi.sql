@@ -954,7 +954,7 @@ INSERT INTO `setting` VALUES ('sso_cas_table', 'no');
 INSERT INTO droits VALUES ('/mod_sso_table/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion de la table de correspondance sso', '');
 INSERT INTO droits SET id='/gestion/changement_d_annee.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Changement d\'année.',statut='';
 INSERT INTO droits VALUES ('/absences/import_absences_csv.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');
-INSERT INTO droits SET id='/statistiques/stat_connexions.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques de connexion',statut='';
+INSERT INTO droits SET id='/statistiques/stat_connexions.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques de connexion',statut='';
 INSERT INTO droits SET id='/groupes/check_enseignements.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Controle des enseignements',statut='';
 INSERT INTO droits VALUES ('/bulletin/index.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Edition des bulletins', '1');
 INSERT INTO droits SET id='/lib/ajax_corriger_app.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='V',description='Correction appreciation',statut='';

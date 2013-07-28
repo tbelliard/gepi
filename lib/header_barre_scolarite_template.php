@@ -252,6 +252,7 @@ if ($barre_plugin!="") {
 		$menus .= '            </ul>'."\n";
 		$menus .= '       </li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/messagerie/index.php"'.insert_confirm_abandon().'>Panneau affichage</a></li>'."\n";
+		$menus .= '       <li><a href="'.$gepiPath.'/statistiques/index.php"'.insert_confirm_abandon().'>Statistiques</a></li>'."\n";
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================

@@ -560,8 +560,28 @@ $texteItem="a accès à la date de la dernière connexion des ".$gepiSettings['d
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='AccesStatConnexionEleScolarite';
+$texteItem="a accès aux statistiques de connexion des ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesDetailConnexionEleScolarite';
+$texteItem="a accès au détail de connexion des ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='AccesDerniereConnexionRespScolarite';
 $texteItem="a accès à la date de la dernière connexion des responsables d'".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesStatConnexionRespScolarite';
+$texteItem="a accès aux statistiques de connexion des des responsables d'".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesDetailConnexionRespScolarite';
+$texteItem="a accès au détail de connexion des des responsables d'".$gepiSettings['denomination_eleves'].".";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -922,8 +942,28 @@ $texteItem="a accès à la date de la dernière connexion des ".$gepiSettings['d
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='AccesStatConnexionEleCpe';
+$texteItem="a accès aux statistiques de connexion des ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesDetailConnexionEleCpe';
+$texteItem="a accès au détail de connexion des ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='AccesDerniereConnexionRespCpe';
 $texteItem="a accès à la date de la dernière connexion des responsables d'".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesStatConnexionRespCpe';
+$texteItem="a accès aux statistiques de connexion des des responsables d'".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesDetailConnexionRespCpe';
+$texteItem="a accès au détail de connexion des des responsables d'".$gepiSettings['denomination_eleves'].".";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
