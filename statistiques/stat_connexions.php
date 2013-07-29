@@ -121,7 +121,7 @@ $display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin']
 $sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";
 //echo "$sql<br />\n";
 $res_classes=mysql_query($sql);
-$nb_classes=mysql_num_rows($res);
+$nb_classes=mysql_num_rows($res_classes);
 if($nb_classes>0) {
 	$tab_classe=array();
 	$cpt=0;
