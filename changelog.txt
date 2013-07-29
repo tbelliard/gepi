@@ -36,6 +36,7 @@ Gestion:
 - Possibilité de donner l'accès à l'impression de leur Fiche Bienvenue pour les différents statuts depuis la page Gérer mon compte.
 - Possibilité de définir des messages d'information à faire apparaître dans 'Gérer mon compte' (messages éventuellement différents pour chaque statut).
 - Possibilité d'accéder à la date de dernière connexion d'élèves/responsables.
+- Possibilité de donner l'accès aux statistiques, voire aux détails de connexion pour les comptes scolarité, cpe, professeurs principaux et/ou professeurs.
 
 Divers:
 - Ajout d'une page pour que les parents puissent contrôler les informations élève/resp.

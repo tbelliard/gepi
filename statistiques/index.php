@@ -102,6 +102,31 @@ elseif($_SESSION['statut']=='cpe') {
 		echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
 	}
 }
+elseif($_SESSION['statut']=='professeur') {
+	$acces="n";
+
+	if((getSettingAOui('AccesStatConnexionEleProfesseur'))||
+	(getSettingAOui('AccesDetailConnexionEleProfesseur'))||
+	(getSettingAOui('AccesStatConnexionRespProfesseur'))||
+	(getSettingAOui('AccesDetailConnexionRespProfesseur'))) {
+		$acces="y";
+	}
+
+	if($acces=="n") {
+		if(is_pp($_SESSION['login'])) {
+			if((getSettingAOui('AccesStatConnexionEleProfP'))||
+			(getSettingAOui('AccesDetailConnexionEleProfP'))||
+			(getSettingAOui('AccesStatConnexionRespProfP'))||
+			(getSettingAOui('AccesDetailConnexionRespProfP'))) {
+				$acces="y";
+			}
+		}
+	}
+
+	if($acces=="y") {
+		echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
+	}
+}
 
 if(getSettingAOui('active_mod_discipline')) {
 	if(acces("/mod_discipline/stats2/index.php", $_SESSION['statut'])) {

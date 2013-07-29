@@ -642,6 +642,8 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 	$cpt_sous_menu++;
 
+	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/statistiques/index.php' , "texte"=>"Statistiques");
+	$cpt_sous_menu++;
 
 	$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 	$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;

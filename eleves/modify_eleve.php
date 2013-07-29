@@ -177,6 +177,12 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	$rep_photos="../photos/eleves/";
 }
 
+$is_pp=false;
+if(($_SESSION['statut']=="professeur")&&(isset($eleve_login))&&(is_pp($_SESSION['login'], "", $eleve_login))) {
+	$is_pp=true;
+	// Est-ce que dans le cas false, un prof peut accéder à cette page?
+}
+
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 	// Le deuxième responsable prend l'adresse du premier
 	if((isset($modif_adr_pers_id))&&(isset($adr_id))) {
@@ -768,7 +774,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 	//================================================
 }
-elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="cpe")) {
+elseif((($_SESSION['statut']=="professeur")&&($is_pp))||($_SESSION['statut']=="cpe")) {
 	if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		if(!isset($msg)){$msg="";}
 
@@ -1621,7 +1627,7 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 	if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
 	if (isset($mode_rech)) echo "<input type=hidden name=mode_rech value=\"$mode_rech\" />\n";
 
-	if(isset($calldata)) {
+	if((isset($calldata))&&(mysql_num_rows($calldata)>0)) {
 		echo " | <select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
 		$cpt_eleve=0;
 		while($lig_calldata=mysql_fetch_object($calldata)) {
@@ -1635,7 +1641,7 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 		}
 		echo "</select>\n";
 	}
-	elseif(isset($tab_eleve)) {
+	elseif((isset($tab_eleve))&&(count($tab_eleve)>0)) {
 		echo " | <select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
 		$cpt_eleve=0;
 		for($loop=0;$loop<count($tab_eleve);$loop++) {
@@ -1686,6 +1692,7 @@ echo "<script type='text/javascript'>
 </script>\n";
 
 
+$AccesDetailConnexionEle=AccesInfoEle('AccesDetailConnexionEle', $eleve_login);
 
 echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
 echo add_token_field();
@@ -1707,9 +1714,7 @@ if(isset($eleve_login)) {
 	}
 
 	if(($compte_eleve_existe=="y")&&
-		(($_SESSION['statut']=="administrateur")||
-		(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AccesDetailConnexionEleScolarite')))||
-		(($_SESSION['statut']=="cpe")&&(getSettingAOui('AccesDetailConnexionEleCpe'))))) {
+		($AccesDetailConnexionEle)) {
 		//$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
 		//$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
 	
@@ -2097,7 +2102,7 @@ if(isset($reg_no_gep)){
   if ((getSettingValue("active_module_trombinoscopes")=='y') and 
   (($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")||
   (($_SESSION['statut']=='cpe')&&(getSettingValue("CpeAccesUploadPhotosEleves")=='yes'))||
-  (($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')&&(isset($eleve_login))&&(is_pp($_SESSION['login'],"",$eleve_login))))) {
+  (($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')&&(isset($eleve_login))&&($is_pp)))) {
 		echo "<div align='center'>\n";
 		//echo "<span id='lien_photo' style='font-size:xx-small;'>";
 		echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;'>";
@@ -2331,7 +2336,7 @@ if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$elev
 if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />\n";
 
 if($_SESSION['statut']=='professeur'){
-  if ((getSettingValue("active_module_trombinoscopes")=='y') && (getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')){
+  if (($is_pp)&&(getSettingValue("active_module_trombinoscopes")=='y') && (getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')){
 		echo "<center><input type=submit value=Enregistrer /></center>\n";
 	}
 }
@@ -2779,11 +2784,7 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 }
 
 if((isset($eleve_login))&&($compte_eleve_existe=="y")&&($journal_connexions=='n')&&
-		(
-			($_SESSION['statut']=="administrateur")||
-			(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AccesDetailConnexionEleScolarite')))||
-			(($_SESSION['statut']=="cpe")&&(getSettingAOui('AccesDetailConnexionEleCpe')))
-		)
+		($AccesDetailConnexionEle)
 	) {
 		echo "<hr />\n";
 
@@ -2793,11 +2794,7 @@ if((isset($eleve_login))&&($compte_eleve_existe=="y")&&($journal_connexions=='n'
 
 
 if((isset($eleve_login))&&($compte_eleve_existe=="y")&&($journal_connexions=='y')&&
-		(
-			($_SESSION['statut']=="administrateur")||
-			(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AccesDetailConnexionEleScolarite')))||
-			(($_SESSION['statut']=="cpe")&&(getSettingAOui('AccesDetailConnexionEleCpe')))
-		)
+		($AccesDetailConnexionEle)
 	) {
 	echo "<hr />\n";
 	// Journal des connexions

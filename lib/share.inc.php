@@ -4355,15 +4355,28 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
  * @param type string $login_prof login de l'utilisateur à tester
  * @param type integer $id_classe identifiant de la classe
  * @param type string $login_eleve login de l'élève
+ * @param type integer $num_periode numéro de la période
+ * @param type string $login_resp login d'un responsable de l'élève
  * @return boolean 
  */
-function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="") {
+function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="", $login_resp="") {
 	$retour=FALSE;
 
 	if($login_eleve=='') {
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE ";
 		if($id_classe!="") {$sql.="id_classe='$id_classe' AND ";}
 		$sql.="professeur='$login_prof';";
+	}
+	elseif($login_resp!="") {
+		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, 
+							eleves e, 
+							responsables2 r, 
+							resp_pers rp 
+						WHERE jep.professeur='".$login_prof."' AND 
+							jep.login=e.login AND 
+							e.ele_id=r.ele_id AND 
+							r.pers_id=rp.pers_id AND 
+							rp.login='$login_resp'";
 	}
 	else {
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE ";
@@ -7732,4 +7745,181 @@ function get_etat_et_img_cdt_travail_fait($id_ct) {
 		$texte_etat_travail="NON FAIT: Le travail n'est actuellement pas fait.\nCliquer pour pointer le travail comme fait.";
 	}
 }
+
+function is_prof_ele($login_prof, $login_ele="", $login_resp="", $id_classe="") {
+	$is_prof_ele=false;
+
+	if($login_ele!="") {
+		$sql="SELECT 1=1 FROM j_eleves_groupes jeg, 
+							j_groupes_professeurs jgp
+						WHERE jgp.login='".$login_prof."' AND 
+							jgp.id_groupe=jeg.id_groupe AND 
+							jeg.login='$login_ele' LIMIT 1;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$is_prof_ele=true;
+		}
+	}
+	elseif($login_resp!="") {
+		$sql="SELECT 1=1 FROM j_eleves_groupes jeg, 
+							j_groupes_professeurs jgp, 
+							eleves e, 
+							responsables2 r, 
+							resp_pers rp 
+						WHERE jgp.login='".$login_prof."' AND 
+							jgp.id_groupe=jeg.id_groupe AND 
+							jeg.login=e.login AND 
+							e.ele_id=r.ele_id AND 
+							r.pers_id=rp.pers_id AND 
+							rp.login='$login_resp' LIMIT 1";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$is_prof_ele=true;
+		}
+	}
+	elseif($id_classe!="") {
+		$is_prof_ele=is_prof_classe($login_prof, $id_classe);
+	}
+	else {
+		// Est-ce un prof avec des élèves?
+		$sql="SELECT 1=1 FROM j_eleves_groupes jeg, 
+							j_groupes_professeurs jgp
+						WHERE jgp.login='".$login_prof."' AND 
+							jgp.id_groupe=jeg.id_groupe LIMIT 1;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$is_prof_ele=true;
+		}
+	}
+
+	return $is_prof_ele;
+}
+
+function is_prof_classe($login_prof, $id_classe) {
+	$is_prof_classe=false;
+
+	$sql="SELECT 1=1 FROM j_groupes_classes jgc, 
+						j_groupes_professeurs jgp
+					WHERE jgp.login='".$login_prof."' AND 
+						jgp.id_groupe=jgc.id_groupe AND 
+						jgc.id_classe='$id_classe' LIMIT 1;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$is_prof_classe=true;
+	}
+
+	return $is_prof_classe;
+}
+
+function AccesDerniereConnexionEle($login_ele) {
+	$AccesDerniereConnexionEle=false;
+	if(($_SESSION['statut']=='administrateur')||
+	(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesDerniereConnexionEleScolarite')))||
+	(($_SESSION['statut']=='cpe')&&(getSettingAOui('AccesDerniereConnexionEleCpe')))||
+	(($_SESSION['statut']=='professeur')&&(is_prof_ele($_SESSION['login'], $login_ele))&&((getSettingAOui('AccesDerniereConnexionEleProfesseur'))||(getSettingAOui('AccesDetailConnexionEleProfesseur'))))||
+	(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'], "", $login_ele))&&((getSettingAOui('AccesDerniereConnexionEleProfP'))||(getSettingAOui('AccesDetailConnexionEleProfP'))))) {
+		$AccesDerniereConnexionEle=true;
+	}
+	return $AccesDerniereConnexionEle;
+}
+
+function AccesDerniereConnexionResp($login_resp, $login_ele="") {
+	$is_pp=false;
+	$is_prof_ele=false;
+	if($login_ele=="") {
+		if(($_SESSION['statut']=='professeur')&&((getSettingAOui('AccesDerniereConnexionRespProfesseur'))||(getSettingAOui('AccesDetailConnexionRespProfesseur')))) {
+			$is_prof_ele=is_prof_ele($_SESSION['login'], "", $login_resp);
+		}
+
+		if(($_SESSION['statut']=='professeur')&&((getSettingAOui('AccesDerniereConnexionRespProfP'))||(getSettingAOui('AccesDetailConnexionRespProfP')))) {
+			$is_pp=is_pp($_SESSION['login'], "", "", "", $login_resp);
+		}
+	}
+	else {
+		if(($_SESSION['statut']=='professeur')&&((getSettingAOui('AccesDerniereConnexionRespProfesseur'))||(getSettingAOui('AccesDetailConnexionRespProfesseur')))) {
+			$is_prof_ele=is_prof_ele($_SESSION['login'], $login_ele);
+		}
+
+		if(($_SESSION['statut']=='professeur')&&(getSettingAOui('AccesDerniereConnexionRespProfP'))) {
+			$is_pp=is_pp($_SESSION['login'], "", $login_ele);
+		}
+	}
+
+	$AccesDerniereConnexionResp=false;
+	if(($_SESSION['statut']=='administrateur')||
+	(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesDerniereConnexionRespScolarite')))||
+	(($_SESSION['statut']=='cpe')&&(getSettingAOui('AccesDerniereConnexionRespCpe')))||
+	(($_SESSION['statut']=='professeur')&&($is_prof_ele)&&((getSettingAOui('AccesDerniereConnexionRespProfesseur'))||(getSettingAOui('AccesDetailConnexionRespProfesseur'))))||
+	(($_SESSION['statut']=='professeur')&&($is_pp)&&((getSettingAOui('AccesDerniereConnexionRespProfP'))||(getSettingAOui('AccesDetailConnexionRespProfP'))))) {
+		$AccesDerniereConnexionResp=true;
+	}
+	return $AccesDerniereConnexionResp;
+}
+
+function AccesInfoEle($mode, $login_ele="", $id_classe="") {
+	$AccesInfoEle=false;
+	if(($_SESSION['statut']=='administrateur')||
+	(($_SESSION['statut']=='scolarite')&&(getSettingAOui($mode.'Scolarite')))||
+	(($_SESSION['statut']=='cpe')&&(getSettingAOui($mode.'Cpe')))||
+	(($_SESSION['statut']=='professeur')&&(is_prof_ele($_SESSION['login'], $login_ele, "", $id_classe))&&(getSettingAOui($mode.'Professeur')))||
+	(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'], $id_classe, $login_ele))&&(getSettingAOui($mode.'ProfP')))) {
+		$AccesInfoEle=true;
+	}
+	return $AccesInfoEle;
+}
+
+function AccesInfoResp($mode, $login_resp="", $login_ele="", $id_classe="") {
+	$is_pp=false;
+	$is_prof_ele=false;
+	if($login_resp!="") {
+		if(($_SESSION['statut']=='professeur')&&(getSettingAOui($mode.'Professeur'))) {
+			$is_prof_ele=is_prof_ele($_SESSION['login'], "", $login_resp);
+		}
+
+		if(($_SESSION['statut']=='professeur')&&(getSettingAOui($mode.'ProfP'))) {
+			$is_pp=is_pp($_SESSION['login'], "", "", "", $login_resp);
+		}
+	}
+	elseif($id_classe!="") {
+		if(($_SESSION['statut']=='professeur')&&(getSettingAOui($mode.'Professeur'))) {
+			$is_prof_ele=is_prof_ele($_SESSION['login'], $login_ele, "", $id_classe);
+		}
+
+		if(($_SESSION['statut']=='professeur')&&(getSettingAOui($mode.'ProfP'))) {
+			$is_pp=is_pp($_SESSION['login'], $id_classe, $login_ele);
+		}
+	}
+	else {
+		if(($_SESSION['statut']=='professeur')&&(getSettingAOui($mode.'Professeur'))) {
+			$is_prof_ele=is_prof_ele($_SESSION['login'], $login_ele);
+		}
+
+		if(($_SESSION['statut']=='professeur')&&(getSettingAOui($mode.'ProfP'))) {
+			$is_pp=is_pp($_SESSION['login'], "", $login_ele);
+		}
+	}
+
+	$AccesInfoResp=false;
+	if(($_SESSION['statut']=='administrateur')||
+	(($_SESSION['statut']=='scolarite')&&(getSettingAOui($mode.'Scolarite')))||
+	(($_SESSION['statut']=='cpe')&&(getSettingAOui($mode.'Cpe')))||
+	(($_SESSION['statut']=='professeur')&&($is_prof_ele)&&(getSettingAOui($mode.'Professeur')))||
+	(($_SESSION['statut']=='professeur')&&($is_pp)&&(getSettingAOui($mode.'ProfP')))) {
+		$AccesInfoResp=true;
+	}
+	return $AccesInfoResp;
+}
+
+function get_date_debut_log() {
+	$retour="";
+
+	$sql="SELECT START FROM log ORDER BY START LIMIT 1;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$retour=formate_date(mysql_result($res, 0, "START"), "y");
+	}
+
+	return $retour;
+}
+
 ?>

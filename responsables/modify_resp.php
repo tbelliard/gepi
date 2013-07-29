@@ -780,6 +780,8 @@ if (!isset($tel_port)) $tel_port='';
 if (!isset($tel_prof)) $tel_prof='';
 if (!isset($mel)) $mel='';
 
+$AccesDetailConnexionResp=false;
+
 echo "<table>\n";
 echo "<tr>\n";
 // Colonne nom, prénom, adresse, tel du responsable:
@@ -802,6 +804,8 @@ echo "<td valign='top'>\n";
 			$resp_login=$lig_resp_login->login;
 			$resp_u_email=$lig_resp_login->email;
 			$resp_auth_mode=$lig_resp_login->auth_mode;
+
+			$AccesDetailConnexionResp=AccesInfoResp('AccesDetailConnexionResp', $resp_login);
 
 			if($_SESSION['statut']=='administrateur') {$avec_lien="y";}
 			else {$avec_lien="n";}
@@ -848,11 +852,7 @@ echo "<td valign='top'>\n";
 		}
 
 		if(($compte_resp_existe=="y")&&
-				(
-					($_SESSION['statut']=="administrateur")||
-					(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AccesDetailConnexionEleScolarite')))||
-					(($_SESSION['statut']=="cpe")&&(getSettingAOui('AccesDetailConnexionEleCpe')))
-				)
+				($AccesDetailConnexionResp)
 			) {
 			$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
 			$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
@@ -1231,22 +1231,14 @@ echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "</form>\n";
 
 if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='n')&&
-		(
-			($_SESSION['statut']=="administrateur")||
-			(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AccesDetailConnexionEleScolarite')))||
-			(($_SESSION['statut']=="cpe")&&(getSettingAOui('AccesDetailConnexionEleCpe')))
-		)
+		($AccesDetailConnexionResp)
 	) {
 	echo "<hr />\n";
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;journal_connexions=y#connexion' title='Journal des connexions'>Journal des connexions</a></p>\n";
 }
 
 if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='y')&&
-		(
-			($_SESSION['statut']=="administrateur")||
-			(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AccesDetailConnexionEleScolarite')))||
-			(($_SESSION['statut']=="cpe")&&(getSettingAOui('AccesDetailConnexionEleCpe')))
-		)
+		($AccesDetailConnexionResp)
 	) {
 	echo "<hr />\n";
 	// Journal des connexions

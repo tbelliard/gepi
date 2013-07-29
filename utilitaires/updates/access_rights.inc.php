@@ -850,7 +850,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/absences/import_absences_csv.php', 'F
 
 $tab_req[] = "INSERT INTO droits SET id='/statistiques/stat_connexions.php',
 administrateur='V',
-professeur='F',
+professeur='V',
 cpe='V',
 scolarite='V',
 eleve='F',

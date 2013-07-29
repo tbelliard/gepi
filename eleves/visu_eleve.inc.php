@@ -928,6 +928,7 @@ Patientez pendant l'extraction des données... merci.
 		// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
 		$tab_ele=info_eleve($ele_login);
 
+		$date_debut_log=get_date_debut_log();
 		/*
 		echo "<pre>";
 		print_r($tab_ele);
@@ -1171,7 +1172,8 @@ Patientez pendant l'extraction des données... merci.
 		}
 
 		if(isset($tab_ele['compte_utilisateur'])) {
-			if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+			if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
+			(($_SESSION['statut']=='professeur')&&((isset($tab_ele['compte_utilisateur']['DerniereConnexionEle']))||(isset($tab_ele['compte_utilisateur']['DerniereConnexionEle_Echec']))))) {
 				echo "<div style='float:right; width:20em; text-align:center;'>\n";
 					echo "<strong>Compte</strong>\n";
 					echo "<table class='boireaus' summary='Infos compte élève'>\n";
@@ -1187,12 +1189,12 @@ Patientez pendant l'extraction des données... merci.
 							echo formate_date($tab_ele['compte_utilisateur']['DerniereConnexionEle']['START'], 'y');
 						}
 						elseif(isset($tab_ele['compte_utilisateur']['DerniereConnexionEle_Echec']['START'])) {
-							echo "<tr style='background-color:red' title=\"Cet utilisateur ne s'est jamais connecté avec succès (du moins, si les log n'ont pas été vidés récemment). En revanche, un échec de connexion est constaté à la date indiquée.\"><th style='text-align: left;'>Dernière tentative de connexion&nbsp;:</th><td>";
+							echo "<tr style='background-color:red' title=\"Cet utilisateur ne s'est jamais connecté avec succès (du moins, si les log n'ont pas été vidés récemment).\nEn revanche, un échec de connexion est constaté à la date indiquée.\"><th style='text-align: left;'>Dernière tentative de connexion&nbsp;:</th><td>";
 							echo formate_date($tab_ele['compte_utilisateur']['DerniereConnexionEle_Echec']['START'], 'y');
 						}
 						else {
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Dernière connexion&nbsp;:</th><td>";
-							echo "<img src='../images/disabled.png' class='icone20' title=\"Cet élève ne s'est jamais connecté avec succès.\"/>";
+							echo "<img src='../images/disabled.png' class='icone20' title=\"Cet élève ne s'est jamais connecté (aussi loin que remontent les journaux de connexion (à savoir : $date_debut_log)).\"/>";
 						}
 						echo "</td></tr>";
 					}
@@ -1441,7 +1443,7 @@ Patientez pendant l'extraction des données... merci.
 									echo "<br /><span title=\"Cet utilisateur ne s'est jamais connecté avec succès (du moins, si les log n'ont pas été vidés récemment). En revanche, un échec de connexion est constaté à la date indiquée.\">Dernière tentative de connexion&nbsp;: ".formate_date($tab_ele['resp'][$i]['DerniereConnexionResp_Echec']['START'], 'y')."</span>";
 								}
 								else {
-									echo "<br />Dernière connexion&nbsp;: <img src='../images/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté avec succès.\"/>";
+									echo "<br />Dernière connexion&nbsp;: <img src='../images/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté (aussi loin que remontent les journaux de connexion (à savoir : $date_debut_log)).\"/>";
 								}
 							}
 							echo "</td></tr>\n";
@@ -1610,7 +1612,7 @@ Patientez pendant l'extraction des données... merci.
 										echo "<br /><span title=\"Cet utilisateur ne s'est jamais connecté avec succès (du moins, si les log n'ont pas été vidés récemment). En revanche, un échec de connexion est constaté à la date indiquée.\">Dernière tentative de connexion&nbsp;: ".formate_date($tab_ele['resp'][$i]['DerniereConnexionResp_Echec']['START'], 'y')."</span>";
 									}
 									else {
-										echo "<br />Dernière connexion&nbsp;: <img src='../images/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté avec succès.\"/>";
+										echo "<br />Dernière connexion&nbsp;: <img src='../images/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté (aussi loin que remontent les journaux de connexion (à savoir : $date_debut_log)).\"/>";
 									}
 								}
 								echo "</td></tr>\n";
