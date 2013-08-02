@@ -75,7 +75,8 @@ else {
 			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe';";
 			$res_per=mysql_query($sql);
 			if(mysql_num_rows($res_per)==0) {
-				$msg="Aucune période n'existe pour la classe <a href='../classes/periodes.php?id_classe=$id_classe'>$classe</a>.";
+				//$msg="Aucune période n'existe pour la classe <a href='../classes/periodes.php?id_classe=$id_classe'>$classe</a>.";
+				$msg="Aucune période n'existe pour la classe $classe.";
 				$erreur="y";
 			}
 			else {
@@ -100,7 +101,8 @@ else {
 					$test_clas_per=mysql_query($sql);
 					if(mysql_num_rows($test_clas_per)>0) {
 						$lig_clas_per=mysql_fetch_object($test_clas_per);
-						$msg.=$login_eleve." est déjà dans une autre classe&nbsp;: <a href=../classes/classes_const.php?id_classe=$lig_clas_per->id_classe>".get_class_from_id($lig_clas_per->id_classe)."</a> en période $i.<br />\n";
+						//$msg.=$login_eleve." est déjà dans une autre classe&nbsp;: <a href=../classes/classes_const.php?id_classe=$lig_clas_per->id_classe>".get_class_from_id($lig_clas_per->id_classe)."</a> en période $i.<br />\n";
+						$msg.=$login_eleve." est déjà dans une autre classe&nbsp;: ".get_class_from_id($lig_clas_per->id_classe)." en période $i.<br />\n";
 					}
 					else {
 						$sql="SELECT login FROM j_eleves_classes WHERE
@@ -113,8 +115,8 @@ else {
 							$reg_data = mysql_query($sql);
 							if (!($reg_data))  {$msg.="Erreur lors de l'inscription de $nom_prenom dans la classe $classe en période $i.<br />";}
 							else {
-								$msg.="$nom_prenom a été inscrit(e) dans la classe <a href=\"../classes/classes_const.php?id_classe=$id_classe\">$classe</a> en période $i.<br />";
-
+								//$msg.="$nom_prenom a été inscrit(e) dans la classe <a href=\"../classes/classes_const.php?id_classe=$id_classe\">$classe</a> en période $i.<br />";
+								$msg.="$nom_prenom a été inscrit(e) dans la classe $classe en période $i.<br />";
 								// Ménage:
 								$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Ajout dans une classe % effectuer pour %($login_eleve)';";
 								$res_actions=mysql_query($sql);
@@ -138,7 +140,10 @@ else {
 								if(mysql_num_rows($test)==0){
 									$sql="INSERT INTO j_eleves_groupes SET login='$login_eleve',id_groupe='$lig_tmp->id_groupe',periode='$i'";
 									$insert_grp=mysql_query($sql);
-									if (!($insert_grp))  {$msg.="Erreur lors de l'inscription de $nom_prenom dans le groupe n°<a href='../groupes/edit_eleves.php?id_groupe=$lig_tmp->id_groupe&id_classe=$id_classe' target='_blank'>$lig_tmp->id_groupe</a> en période $i.<br />";}
+									if (!($insert_grp)) {
+										//$msg.="Erreur lors de l'inscription de $nom_prenom dans le groupe n°<a href='../groupes/edit_eleves.php?id_groupe=$lig_tmp->id_groupe&id_classe=$id_classe' target='_blank'>$lig_tmp->id_groupe</a> en période $i.<br />";
+										$msg.="Erreur lors de l'inscription de $nom_prenom dans le groupe n°$lig_tmp->id_groupe en période $i.<br />";
+									}
 								}
 							}
 						}
@@ -163,9 +168,12 @@ else {
 						}
 						else {
 							if(!in_array($login_eleve, $tab_ele_sans_cpe_defini)) {
+								/*
 								$msg.="<br />L'élève $login_eleve n'a pas été <a href='";
 								$msg.="classes_const.php?id_classe=$id_classe&amp;quitter_la_page=y";
 								$msg.="' target='_blank'>associé</a> à un CPE.";
+								*/
+								$msg.="<br />L'élève $login_eleve n'a pas été associé à un CPE.";
 								$tab_ele_sans_cpe_defini[]=$login_eleve;
 							}
 						}
@@ -188,6 +196,7 @@ else {
 						}
 						else {
 							if(!in_array($login_eleve, $tab_ele_sans_pp_defini)) {
+								/*
 								$msg.="<br />L'élève $login_eleve n'a pas été <a href='";
 								if(mysql_num_rows($res_pp)==0) {
 									$msg.="prof_suivi.php?id_classe=$id_classe";
@@ -196,6 +205,9 @@ else {
 									$msg.="classes_const.php?id_classe=$id_classe&amp;quitter_la_page=y";
 								}
 								$msg.="' target='_blank'>associé</a> à un ".$gepiProfSuivi.".";
+								*/
+								$msg.="<br />L'élève $login_eleve n'a pas été associé à un ".$gepiProfSuivi.".";
+
 								$tab_ele_sans_pp_defini[]=$login_eleve;
 							}
 						}
