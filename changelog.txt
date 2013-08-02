@@ -12,6 +12,10 @@ Bulletins:
 - Possibilité de modifier l'accès parent/élève aux appréciations depuis les pages 
   de saisie de l'avis du conseil de classe dans le cas où l'accès est basculé manuellement.
 
+Carnets de notes:
+- Visualiser toutes les notes de l'année: Affichage de la moyenne annuelle.
+- Visualiser toutes les notes de l'année: Possibilité d'afficher les moyennes de bulletins en plus des moyennes de carnets de notes.
+
 Cahier de textes:
 - Possibilité d'afficher la liste des documents joints à un CDT.
 - Possibilité pour les parents et élèves de pointer leurs travaux faits ou non.
@@ -37,6 +41,7 @@ Gestion:
 - Possibilité de définir des messages d'information à faire apparaître dans 'Gérer mon compte' (messages éventuellement différents pour chaque statut).
 - Possibilité d'accéder à la date de dernière connexion d'élèves/responsables.
 - Possibilité de donner l'accès aux statistiques, voire aux détails de connexion pour les comptes scolarité, cpe, professeurs principaux et/ou professeurs.
+- Possibilité de choisir le professeur principal depuis la page d'index Élèves.
 
 Divers:
 - Ajout d'une page pour que les parents puissent contrôler les informations élève/resp.
