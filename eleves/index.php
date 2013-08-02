@@ -60,17 +60,104 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 
 //debug_var();
 
-if((isset($_GET['mode']))&&(isset($_GET['id_classe']))) {
-	check_token();
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+	if((isset($_GET['mode']))&&($_GET['mode']=='update_champs_periode')&&(isset($_GET['id_classe']))) {
+		check_token();
 
-	$sql="SELECT * FROM periodes WHERE id_classe='".$_GET['id_classe']."' ORDER BY num_periode;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
-			echo "<input type='checkbox' id='num_periode_".$lig->num_periode."' name='num_periode[]' value='".$lig->num_periode."' /><label for='num_periode_".$lig->num_periode."'>".$lig->nom_periode."</label><br />";
+		$sql="SELECT * FROM periodes WHERE id_classe='".$_GET['id_classe']."' ORDER BY num_periode;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			while($lig=mysql_fetch_object($res)) {
+				echo "<input type='checkbox' id='num_periode_".$lig->num_periode."' name='num_periode[]' value='".$lig->num_periode."' /><label for='num_periode_".$lig->num_periode."'>".$lig->nom_periode."</label><br />";
+			}
 		}
+		die();
 	}
-	die();
+
+	if((isset($_GET['mode']))&&($_GET['mode']=='update_champs_choix_prof_suivi')&&(isset($_GET['login_ele']))) {
+		check_token();
+
+		// Afficher la liste des classes en opt group, puis la liste des profs de chaque classe en mettant en couleur ceux qui sont déjà PP d'autres élèves de la classe
+		$sql="SELECT DISTINCT id_classe, classe FROM j_eleves_classes jec, classes c WHERE jec.login='".$_GET['login_ele']."' AND jec.id_classe=c.id ORDER BY periode;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			echo "<sapn style='color:red'>Cet élève n'est dans aucune classe&nbsp;???</span>";
+		}
+		else {
+			echo "<select name='prof_suivi_choisi' id='prof_suivi_choisi'>";
+			while($lig=mysql_fetch_object($res)) {
+				echo "<optgroup label=\"Classe de $lig->classe\">";
+
+				$tab_pp=array();
+				$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$lig->id_classe';";
+				$res2=mysql_query($sql);
+				if(mysql_num_rows($res2)>0) {
+					while($lig2=mysql_fetch_object($res2)) {
+						$tab_pp[]=$lig2->professeur;
+					}
+				}
+
+				$pp_actuel="";
+				$sql="SELECT professeur FROM j_eleves_professeurs WHERE login='".$_GET['login_ele']."' AND id_classe='$lig->id_classe';";
+				$res2=mysql_query($sql);
+				if(mysql_num_rows($res2)>0) {
+					$pp_actuel=mysql_result($res2, 0, 'professeur');
+				}
+
+				$sql="SELECT DISTINCT u.login FROM j_groupes_classes jgc, j_groupes_professeurs jgp, utilisateurs u WHERE jgc.id_groupe=jgp.id_groupe AND jgc.id_classe='$lig->id_classe' AND u.login=jgp.login ORDER BY u.nom, u.prenom;";
+				$res3=mysql_query($sql);
+				if(mysql_num_rows($res3)>0) {
+					while($lig3=mysql_fetch_object($res3)) {
+						echo "<option value='$lig->id_classe|$lig3->login'";
+						if(in_array($lig3->login, $tab_pp)) {
+							echo " style='background-color:green;' title=\"Ce professeur est ".getSettingValue('gepi_prof_suivi')." d'un ou plusieurs autres élèves de la classe.\"";
+						}
+						if($lig3->login==$pp_actuel) {echo " selected";}
+						echo ">".civ_nom_prenom($lig3->login)."</option>";
+					}
+				}
+				echo "</optgroup>";
+			}
+			echo "</select>";
+		}
+
+		die();
+	}
+
+	if((isset($_GET['mode']))&&($_GET['mode']=='modif_prof_suivi')&&(isset($_GET['login_ele']))&&(isset($_GET['prof_suivi']))) {
+		check_token();
+
+		// On reçoit prof_suivi_choisi au format id_classe|login
+
+		$tab=explode("|", $_GET['prof_suivi']);
+		if(isset($tab[1])) {
+			$sql="SELECT 1=1 FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='$tab[1]' AND jgc.id_classe='$tab[0]'";
+			//echo "$sql<br />";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)>0) {
+				$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$_GET['login_ele']."' AND id_classe='$tab[0]'";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0) {
+					$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='".$_GET['login_ele']."' AND id_classe='$tab[0]'";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)>0) {
+						$sql="UPDATE j_eleves_professeurs SET professeur='$tab[1]' WHERE login='".$_GET['login_ele']."' AND id_classe='$tab[0]'";
+					}
+					else {
+						$sql="INSERT INTO j_eleves_professeurs SET professeur='$tab[1]', login='".$_GET['login_ele']."', id_classe='$tab[0]'";
+					}
+					$res=mysql_query($sql);
+					if($res) {
+						echo civ_nom_prenom($tab[1]);
+					}
+					else {
+						echo "<span style='color:red'>Erreur</span>";
+					}
+				}
+			}
+		}
+		die();
+	}
 }
 
 $mode_rech=isset($_POST['mode_rech']) ? $_POST['mode_rech'] : (isset($_GET['mode_rech']) ? $_GET['mode_rech'] : NULL);
@@ -1628,7 +1715,19 @@ if(isset($quelles_classes)) {
 		//$csv.=";";
 
 		// Professeur principal
-		echo "<td><p>$info_pp</p></td>\n";
+		// 20130802
+		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+			echo "<td><p>";
+			echo "<a href='#' onclick=\"afficher_changement_prof_suivi('$eleve_login') ;return false;\">";
+			echo "<span id='prof_suivi_$eleve_login'>";
+			echo $info_pp;
+			echo "</span>";
+			echo "</a>";
+			echo "</p></td>\n";
+		}
+		else {
+			echo "<td><p>$info_pp</p></td>\n";
+		}
 		$csv.="$info_pp;";
 
 		//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
@@ -1752,6 +1851,29 @@ if(isset($quelles_classes)) {
 			}
 		}
 	}
+
+	function afficher_changement_prof_suivi(login_ele) {
+		if(document.getElementById('prof_suivi_'+login_ele)) {
+			new Ajax.Updater($('span_choix_prof_suivi'),'index.php?login_ele='+login_ele+'&mode=update_champs_choix_prof_suivi".add_token_in_url(false)."',{method: 'get'});
+
+			document.getElementById('login_ele_prof_suivi').value=login_ele;
+			afficher_div('div_form_choix_prof_suivi_ele', 'y',-20,20);
+		}
+	}
+
+	function modifier_prof_suivi() {
+		login_ele=document.getElementById('login_ele_prof_suivi').value;
+		//alert(login_ele);
+		if(document.getElementById('prof_suivi_choisi')) {
+			prof_suivi=document.getElementById('prof_suivi_choisi').options[document.getElementById('prof_suivi_choisi').selectedIndex].value;
+			//alert(prof_suivi);
+
+			if($('prof_suivi_'+login_ele)) {
+				new Ajax.Updater($('prof_suivi_'+login_ele),'index.php?login_ele='+login_ele+'&prof_suivi='+prof_suivi+'&mode=modif_prof_suivi".add_token_in_url(false)."',{method: 'get'});
+				cacher_div('div_form_choix_prof_suivi_ele');
+			}
+		}
+	}
 </script>\n";
 
 	echo "<input type='hidden' name='quelles_classes' value='$quelles_classes' />\n";
@@ -1810,6 +1932,17 @@ if(isset($quelles_classes)) {
 	<input type='submit' value='Inscrire' />
 </form>";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_form_ajout_ele_clas',$titre_infobulle,"",$texte_infobulle,"",20,0,'y','y','n','n');
+	//=========================
+	$titre_infobulle="Choix du ".getSettingValue('gepi_prof_suivi');
+	$texte_infobulle="<form action='./index.php' method='post'>
+	".add_token_field()."
+	<input type='hidden' name='mode' id='modif_prof_suivi' value='' />
+	<input type='hidden' name='login_ele_prof_suivi' id='login_ele_prof_suivi' value='' />
+	<p style='text-align:center;'>Choisissez un ".getSettingValue('gepi_prof_suivi')."&nbsp;: 
+	<span id='span_choix_prof_suivi'></span><br />
+	<input type='button' value='Valider' onclick=\"modifier_prof_suivi()\" />
+</form>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_form_choix_prof_suivi_ele',$titre_infobulle,"",$texte_infobulle,"",20,0,'y','y','n','n');
 	//=========================
 
 	echo "<br />\n";
