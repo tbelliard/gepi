@@ -60,6 +60,19 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 
 //debug_var();
 
+if((isset($_GET['mode']))&&(isset($_GET['id_classe']))) {
+	check_token();
+
+	$sql="SELECT * FROM periodes WHERE id_classe='".$_GET['id_classe']."' ORDER BY num_periode;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			echo "<input type='checkbox' id='num_periode_".$lig->num_periode."' name='num_periode[]' value='".$lig->num_periode."' /><label for='num_periode_".$lig->num_periode."'>".$lig->nom_periode."</label><br />";
+		}
+	}
+	die();
+}
+
 $mode_rech=isset($_POST['mode_rech']) ? $_POST['mode_rech'] : (isset($_GET['mode_rech']) ? $_GET['mode_rech'] : NULL);
 if((isset($quelles_classes))&&(isset($mode_rech))&&($mode_rech=='contient')) {
 	// On initialise des variables pour index_call_data.php
@@ -1729,6 +1742,16 @@ if(isset($quelles_classes)) {
 			}
 		}
 	}
+
+	function update_champs_periode() {
+		if(document.getElementById('form_ajout_ele_clas_id_classe')) {
+			id_classe=document.getElementById('form_ajout_ele_clas_id_classe').options[document.getElementById('form_ajout_ele_clas_id_classe').selectedIndex].value;
+			//alert(id_classe);
+			if((id_classe!='')&&(document.getElementById('span_periodes'))) {
+				new Ajax.Updater($('span_periodes'),'index.php?id_classe='+id_classe+'&mode=update_champs_periode".add_token_in_url(false)."',{method: 'get'});
+			}
+		}
+	}
 </script>\n";
 
 	echo "<input type='hidden' name='quelles_classes' value='$quelles_classes' />\n";
@@ -1767,7 +1790,7 @@ if(isset($quelles_classes)) {
 	".add_token_field()."
 	<input type='hidden' name='login_ele_ajout_classe' id='login_ele_ajout_classe' value='' />
 	<p style='text-align:center;'>Choisissez une classe&nbsp;: 
-	<select name='id_classe'>
+	<select name='id_classe' id='form_ajout_ele_clas_id_classe' onchange='update_champs_periode()'>
 		<option value=''>---</option>";
 	while($lig_classe=mysql_fetch_object($res_classe)) {
 		$texte_infobulle.="
