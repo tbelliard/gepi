@@ -56,7 +56,7 @@ $titre_pdf = urlencode($titre);
 
 
 // Initialisation
-isset($id_groupe);
+unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : NULL);
 $current_group = get_group($id_groupe);
 $id_classe = $current_group["classes"]["list"][0];
@@ -64,6 +64,11 @@ $id_classe = $current_group["classes"]["list"][0];
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
+
+$aff_bull="n";
+if((!isset($current_group['visibilite']['bulletins']))||($current_group['visibilite']['bulletins']!="n")) {
+	$aff_bull="y";
+}
 
 include "../lib/periodes.inc.php";
 
@@ -167,7 +172,6 @@ echo "</p>\n";
 echo "</form>\n";
 
 echo "<p class=cn><b>Classe : $nom_classe | Enseignement : " . $current_group["description"] . "</b></p>\n";
-
 
 // Couleurs utilisées
 /*
@@ -351,11 +355,13 @@ while ($num_per < $nb_cahier_note) {
         }
         if ($nb_dev_s_cont[$i] != 0) echo "<th class=cn colspan='$nb_dev_s_cont[$i]' valign='top'><center><b>$nom_sous_cont[$i]</b></center></th>\n";
         echo "<th class=cn valign='top'><center><b>$nom_sous_cont[$i]</b>";
-        if ($display_bulletin_sous_cont[$i] == '1') echo "<br /><font color='red' title='Cette moyenne apparait sur le bulletin.'>Aff.&nbsp;bull.</font>";
-        echo "</center></th>\n";
+        if (($aff_bull=="y")&&($display_bulletin_sous_cont[$i] == '1')) {echo "<br /><font color='red' title='Cette moyenne apparait sur le bulletin.'>Aff.&nbsp;bull.</font>";}
+        echo "</center></td>\n";
         $i++;
     }
-    echo "<th class=cn  valign='top'><center><b>$nom_conteneur[$num_per]</b><br /><font color='red' title='Cette moyenne apparait sur le bulletin.'>Aff.&nbsp;bull.</font></center></th>\n";
+    echo "<th class=cn  valign='top'><center><b>$nom_conteneur[$num_per]</b>";
+    if ($aff_bull=="y") {echo "<br /><font color='red' title='Cette moyenne apparait sur le bulletin.'>Aff.&nbsp;bull.</font>";}
+    echo "</center></th>\n";
     $num_per++;
 }
 echo "</tr>";
@@ -381,7 +387,7 @@ while ($num_per < $nb_cahier_note) {
 		if ($ramener_sur_referentiel[$i] != 'V') {
 			echo "<font size=-2>Note sur $note_sur[$i]<br />";
 		} else {
-			$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+			$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
 			echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_$i','y',-150,20	);\" >";
 			echo "<font size=-2>Note sur $note_sur[$i]";
 			echo "</a><br />";
@@ -410,7 +416,7 @@ while ($num_per < $nb_cahier_note) {
 		if ($ramener_sur_referentiel_s_dev[$i][$m] != 'V') {
 			echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m]."<br />";
 		} else {
-			$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+			$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
 			echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_s_dev_".$i."_".$m."','y',-150,20	);\" >";
 			echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m];
 			echo "</a><br />";
