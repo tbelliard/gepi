@@ -377,7 +377,7 @@ while ($num_per < $nb_cahier_note) {
 		if ($ramener_sur_referentiel[$i] != 'V') {
 			echo "<font size=-2>Note sur $note_sur[$i]<br />";
 		} else {
-			$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+			$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
 			echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_$i','y',-150,20	);\" >";
 			echo "<font size=-2>Note sur $note_sur[$i]";
 			echo "</a><br />";
@@ -404,7 +404,7 @@ while ($num_per < $nb_cahier_note) {
 		if ($ramener_sur_referentiel_s_dev[$i][$m] != 'V') {
 			echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m]."<br />";
 		} else {
-			$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+			$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
 			echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_s_dev_".$i."_".$m."','y',-150,20	);\" >";
 			echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m];
 			echo "</a><br />";
