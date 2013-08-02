@@ -56,7 +56,7 @@ $titre_pdf = urlencode($titre);
 
 
 // Initialisation
-isset($id_groupe);
+unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : NULL);
 $current_group = get_group($id_groupe);
 $id_classe = $current_group["classes"]["list"][0];
@@ -64,6 +64,11 @@ $id_classe = $current_group["classes"]["list"][0];
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
+
+$aff_bull="n";
+if((!isset($current_group['visibilite']['bulletins']))||($current_group['visibilite']['bulletins']!="n")) {
+	$aff_bull="y";
+}
 
 include "../lib/periodes.inc.php";
 
@@ -167,7 +172,6 @@ echo "</p>\n";
 echo "</form>\n";
 
 echo "<p class=cn><b>Classe : $nom_classe | Enseignement : " . $current_group["description"] . "</b></p>\n";
-
 
 // Couleurs utilisées
 $couleur_devoirs = '#AAE6AA';
@@ -348,11 +352,13 @@ while ($num_per < $nb_cahier_note) {
         }
         if ($nb_dev_s_cont[$i] != 0) echo "<td class=cn colspan='$nb_dev_s_cont[$i]' valign='top'><center><b>$nom_sous_cont[$i]</b></center></td>\n";
         echo "<td class=cn valign='top'><center><b>$nom_sous_cont[$i]</b>";
-        if ($display_bulletin_sous_cont[$i] == '1') echo "<br /><font color='red'>Aff.&nbsp;bull.</font>";
+        if (($aff_bull=="y")&&($display_bulletin_sous_cont[$i] == '1')) {echo "<br /><font color='red'>Aff.&nbsp;bull.</font>";}
         echo "</center></td>\n";
         $i++;
     }
-    echo "<td class=cn  valign='top'><center><b>$nom_conteneur[$num_per]</b><br /><font color='red'>Aff.&nbsp;bull.</font></center></td>\n";
+    echo "<td class=cn  valign='top'><center><b>$nom_conteneur[$num_per]</b>";
+    if ($aff_bull=="y") {echo "<br /><font color='red'>Aff.&nbsp;bull.</font>";}
+    echo "</center></td>\n";
     $num_per++;
 }
 echo "</tr>";
