@@ -97,6 +97,16 @@ if(isset($today)) {
 	$year=strftime("%Y",$today);
 }
 
+$today_jjmmaaaa = isset($_POST["today_jjmmaaaa"]) ? $_POST["today_jjmmaaaa"] : (isset($_GET["today_jjmmaaaa"]) ? $_GET["today_jjmmaaaa"] : NULL);
+if(isset($today_jjmmaaaa)) {
+	$tmp_date=explode("/", $today_jjmmaaaa);
+	if(isset($tmp_date[2])) {
+		$day=$tmp_date[0];
+		$month=$tmp_date[1];
+		$year=$tmp_date[2];
+	}
+}
+
 // Vérification sur les dates: Est-ce une date dans la période d'ouverture des cahiers de textes
 settype($month,"integer");
 settype($day,"integer");
@@ -463,9 +473,37 @@ if($mode=='classe') {
 	}
 
 	// Passage à la semaine précédente/courante/suivante
-	echo "<div style='float: right; width:25em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;id_classe=$id_classe'>Aujourd'hui</a> ";
+	include("../lib/calendrier/calendrier.class.php");
+	$cal1 = new Calendrier("form_choix_date", "today_jjmmaaaa");
 
-	echo " - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;id_classe=$id_classe'>suivante</a></div>\n";
+	echo "<div style='float: right; width:25em;'>
+	<form action='".$_SERVER['PHP_SELF']."' name='form_choix_date' id='form_choix_date' method='post'>
+		<input type='hidden' name='today_jjmmaaaa' id='today_jjmmaaaa' value='' />
+		<input type='hidden' name='id_classe' value='$id_classe' />
+		<input type='hidden' name='mode' value='$mode' />
+
+		<a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;id_classe=$id_classe'>Aujourd'hui</a>
+
+		<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier début\" style=\"border:0;\" /></a>
+
+		 - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;id_classe=$id_classe'>suivante</a>
+	</form>
+
+	<script type='text/javascript'>
+		var today_jjmmaaaa_0='';
+
+		function teste_modif_date() {
+			if(document.getElementById('today_jjmmaaaa').value!=today_jjmmaaaa_0) {
+				document.getElementById('form_choix_date').submit();
+			}
+			else {
+				setTimeout('teste_modif_date()', 1000);
+			}
+		}
+
+		setTimeout('teste_modif_date()', 2000);
+	</script>
+</div>\n";
 
 	$classe=get_class_from_id($id_classe);
 
@@ -493,15 +531,38 @@ elseif($mode=='eleve') {
 	$groups=get_groups_for_eleve($login_eleve, $id_classe);
 
 	// Passage à la semaine précédente/courante/suivante
-	echo "<div style='float: right; width:25em;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>Aujourd'hui</a>";
-	/*
-	include("../lib/mincals.inc");
-	$titre_infobulle="Choix d'une date";
-	$texte_infobulle=minicals($year, $month, $day, "-1", 'consultation2.php?mincal=y', "return");
-	$tabdiv_infobulle[]=creer_div_infobulle('div_choix_date',$titre_infobulle,"",$texte_infobulle,"",14,0,'y','y','n','n');
-	echo " <a href=\"javascript:afficher_div('div_choix_date','y',10,-40);\"><img src='../lib/calendrier/petit_calendrier.gif' class='icon16' /></a>";
-	*/
-	echo " - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>suivante</a></div>\n";
+	include("../lib/calendrier/calendrier.class.php");
+	$cal1 = new Calendrier("form_choix_date", "today_jjmmaaaa");
+
+	echo "<div style='float: right; width:25em;'>
+	<form action='".$_SERVER['PHP_SELF']."' name='form_choix_date' id='form_choix_date' method='post'>
+		<input type='hidden' name='today_jjmmaaaa' id='today_jjmmaaaa' value='' />
+		<input type='hidden' name='login_eleve' value='$login_eleve' />
+		<input type='hidden' name='id_classe' value='$id_classe' />
+		<input type='hidden' name='mode' value='$mode' />
+
+		<a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>Aujourd'hui</a>
+
+		<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier début\" style=\"border:0;\" /></a>
+
+		 - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>suivante</a>
+	</form>
+
+	<script type='text/javascript'>
+		var today_jjmmaaaa_0='';
+
+		function teste_modif_date() {
+			if(document.getElementById('today_jjmmaaaa').value!=today_jjmmaaaa_0) {
+				document.getElementById('form_choix_date').submit();
+			}
+			else {
+				setTimeout('teste_modif_date()', 1000);
+			}
+		}
+
+		setTimeout('teste_modif_date()', 2000);
+	</script>
+ </div>\n";
 
 	echo "<p>Affichage pour un élève&nbsp;: <strong>".civ_nom_prenom($login_eleve)." (<em>$classe</em>)</strong></p>\n";
 
@@ -529,7 +590,34 @@ elseif($mode=='professeur') {
 	$groups=get_groups_for_prof($login_prof);
 
 	// Passage à la semaine précédente/courante/suivante
-	echo "<div style='float: right; width:25em;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_prof=$login_prof'>Aujourd'hui</a> - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_prof=$login_prof'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_prof=$login_prof'>suivante</a></div>\n";
+	include("../lib/calendrier/calendrier.class.php");
+	$cal1 = new Calendrier("form_choix_date", "today_jjmmaaaa");
+
+	echo "<div style='float: right; width:25em;'>
+	<form action='".$_SERVER['PHP_SELF']."' name='form_choix_date' id='form_choix_date' method='post'>
+		<input type='hidden' name='today_jjmmaaaa' id='today_jjmmaaaa' value='' />
+		<input type='hidden' name='login_prof' value='$login_prof' />
+		<input type='hidden' name='mode' value='$mode' />
+		<a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_prof=$login_prof'>Aujourd'hui</a>
+		<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier début\" style=\"border:0;\" /></a>
+		 - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_prof=$login_prof'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_prof=$login_prof'>suivante</a>
+	</form>
+
+	<script type='text/javascript'>
+		var today_jjmmaaaa_0='';
+
+		function teste_modif_date() {
+			if(document.getElementById('today_jjmmaaaa').value!=today_jjmmaaaa_0) {
+				document.getElementById('form_choix_date').submit();
+			}
+			else {
+				setTimeout('teste_modif_date()', 1000);
+			}
+		}
+
+		setTimeout('teste_modif_date()', 2000);
+	</script>
+ </div>\n";
 
 	echo "<p>Affichage pour un professeur&nbsp;: <strong>".$tab_profs2[$login_prof]."</strong></p>\n";
 }
