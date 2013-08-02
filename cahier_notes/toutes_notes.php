@@ -335,6 +335,14 @@ while ($num_per < $nb_cahier_note) {
     echo "<th class=cn colspan='$nb_colspan' valign='top'><center><b>".ucfirst($nom_periode[$num_per])."</b></center></th>\n";
     $num_per++;
 }
+
+// Année
+if($avec_moy_bull=="y") {
+    echo "<th class=cn colspan='2' valign='top'><center><b>Année</b></center></th>\n";
+}
+else {
+    echo "<th class=cn valign='top'><center><b>Année</b></center></th>\n";
+}
 echo "</tr>\n";
 
 // Affichage deuxième ligne
@@ -384,7 +392,15 @@ while ($num_per < $nb_cahier_note) {
         echo "<th class=cn valign='top' title=\"C'est la moyenne qui apparait sur le bulletin\"><center>Moy.<br />Bull.</center></th>\n";
     }
     */
+
     $num_per++;
+}
+// Année
+if($avec_moy_bull=="y") {
+    echo "<th class=cn colspan='2' valign='top'><center><b>".$current_group["name"]."</b></center></th>\n";
+}
+else {
+    echo "<th class=cn valign='top'><center><b>".$current_group["name"]."</b></center></th>\n";
 }
 echo "</tr>";
 
@@ -474,6 +490,15 @@ while ($num_per < $nb_cahier_note) {
 
     $num_per++;
 }
+// Année
+echo "<th class=cn valign='top'><center><b>Moy.<br />CN</b></center></th>\n";
+$header_pdf[] = "Moy.CN (Année)";
+$w_pdf[] = $w2;
+if($avec_moy_bull=="y") {
+    echo "<th class=cn valign='top'><center><b>Moy.<br />Bull.</b></center></th>\n";
+    $header_pdf[] = "Moy.Bull (Année)";
+    $w_pdf[] = $w2;
+}
 echo "</tr>";
 
 
@@ -531,118 +556,162 @@ while ($num_per < $nb_cahier_note) {
         $data_pdf[0][] = "";
     }
 }
+
+// Année
+echo "<th class=cn valign='top'><center>&nbsp;</center></th>\n";
+$data_pdf[0][] = "";
+if($avec_moy_bull=="y") {
+    echo "<th class=cn valign='top'><center>&nbsp;</center></th>\n";
+    $data_pdf[0][] = "";
+}
 echo "</tr>\n";
 
 //
 // Affichage des lignes "elèves"
 //
+$total_points_annee=0;
+$nb_moy_ele_annee=0;
+$total_points_annee_bull=0;
+$nb_moy_ele_annee_bull=0;
+
 $i = 0;
 $tot_data_pdf = 1;
 while($i < $nombre_lignes) {
-        $tot_data_pdf++;
-        $data_pdf[$i+1][] = $eleve_nom[$i]." ".$eleve_prenom[$i];
-        echo "<tr><td class=cn>$eleve_nom[$i] $eleve_prenom[$i]</td>\n";
-        $num_per = 0;
-        while ($num_per < $nb_cahier_note) {
-            $num_periode=$num_per+1;
-            //$moy="";
-            $k=$nb_dev[$num_per-1];
-            while ($k < $nb_dev[$num_per]) {
-                echo $mess_note[$i][$k];
-                $data_pdf[$i+1][] = $mess_note_pdf[$i][$k];
-                $k++;
-            }
-            //
-            // Affichage de la moyenne de tous les sous-conteneurs
-            //
-            $k=$nb_sous_cont[$num_per-1];
-            while ($k < $nb_sous_cont[$num_per]) {
-                $moy="";
-                $m = 0;
-                while ($m < $nb_dev_s_cont[$k]) {
-                    $temp = $id_s_dev[$k][$m];
-                    $note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
-                    $eleve_statut = @mysql_result($note_query, 0, "statut");
-                    $eleve_note = @mysql_result($note_query, 0, "note");
-                    if (($eleve_statut != '') and ($eleve_statut != 'v')) {
-                        $tmp = $eleve_statut;
-                        $data_pdf[$i+1][] = $eleve_statut;
-                    } else if ($eleve_statut == 'v') {
+    $total_point_ele=0;
+    $nb_moy_ele=0;
+    $total_point_ele_bull=0;
+    $nb_moy_ele_bull=0;
+
+    $tot_data_pdf++;
+    $data_pdf[$i+1][] = $eleve_nom[$i]." ".$eleve_prenom[$i];
+    echo "<tr><td class=cn>$eleve_nom[$i] $eleve_prenom[$i]</td>\n";
+    $num_per = 0;
+    while ($num_per < $nb_cahier_note) {
+        $num_periode=$num_per+1;
+        //$moy="";
+        $k=$nb_dev[$num_per-1];
+        while ($k < $nb_dev[$num_per]) {
+            echo $mess_note[$i][$k];
+            $data_pdf[$i+1][] = $mess_note_pdf[$i][$k];
+            $k++;
+        }
+        //
+        // Affichage de la moyenne de tous les sous-conteneurs
+        //
+        $k=$nb_sous_cont[$num_per-1];
+        while ($k < $nb_sous_cont[$num_per]) {
+            $moy="";
+            $m = 0;
+            while ($m < $nb_dev_s_cont[$k]) {
+                $temp = $id_s_dev[$k][$m];
+                $note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
+                $eleve_statut = @mysql_result($note_query, 0, "statut");
+                $eleve_note = @mysql_result($note_query, 0, "note");
+                if (($eleve_statut != '') and ($eleve_statut != 'v')) {
+                    $tmp = $eleve_statut;
+                    $data_pdf[$i+1][] = $eleve_statut;
+                } else if ($eleve_statut == 'v') {
+                    $tmp = "&nbsp;";
+                    $data_pdf[$i+1][] = "";
+                } else {
+                    if ($eleve_note != '') {
+                        $tmp = $eleve_note;
+                        $data_pdf[$i+1][] = $eleve_note;
+                    } else {
                         $tmp = "&nbsp;";
                         $data_pdf[$i+1][] = "";
-                    } else {
-                        if ($eleve_note != '') {
-                            $tmp = $eleve_note;
-                            $data_pdf[$i+1][] = $eleve_note;
-                        } else {
-                            $tmp = "&nbsp;";
-                            $data_pdf[$i+1][] = "";
-                        }
                     }
-                    echo "<td class=cn bgcolor=$couleur_devoirs><center><b>$tmp</b></center></td>\n";
-                    $m++;
                 }
-                $moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
-                $statut_moy = @mysql_result($moyenne_query, 0, "statut");
-                if ($statut_moy == 'y') {
-                    $moy = @mysql_result($moyenne_query, 0, "note");
-                    $data_pdf[$i+1][] = $moy;
-                } else {
-                    $moy = '&nbsp;';
-                    $data_pdf[$i+1][] = "";
-                }
-                echo "<td class=cn bgcolor=$couleur_moy_sous_cont><center>$moy</center></td>\n";
-                $k++;
+                echo "<td class=cn bgcolor=$couleur_devoirs><center><b>$tmp</b></center></td>\n";
+                $m++;
             }
-            //
-            // affichage des moyennes du conteneur
-            //
-            //$moy="";
-            $sql = "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='".$id_conteneur[$num_per]."')";
-            $moyenne_query = mysql_query($sql);
-            if(mysql_num_rows($moyenne_query)==0) {
+            $moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
+            $statut_moy = @mysql_result($moyenne_query, 0, "statut");
+            if ($statut_moy == 'y') {
+                $moy = @mysql_result($moyenne_query, 0, "note");
+                $data_pdf[$i+1][] = $moy;
+            } else {
+                $moy = '&nbsp;';
+                $data_pdf[$i+1][] = "";
+            }
+            echo "<td class=cn bgcolor=$couleur_moy_sous_cont><center>$moy</center></td>\n";
+            $k++;
+        }
+        //
+        // affichage des moyennes du conteneur
+        //
+        //$moy="";
+        $sql = "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='".$id_conteneur[$num_per]."')";
+        $moyenne_query = mysql_query($sql);
+        if(mysql_num_rows($moyenne_query)==0) {
+            $moy = '&nbsp;';
+            $data_pdf[$i+1][] = "";
+        }
+        else {
+	        $statut_moy = @mysql_result($moyenne_query, 0, "statut");
+	        if ($statut_moy == 'y') {
+	            $moy = @mysql_result($moyenne_query, 0, "note");
+	            $data_pdf[$i+1][] = $moy;
+	            // Calcul de la moyenne annuelle
+	            $total_point_ele+=$moy;
+	            $nb_moy_ele++;
+	        } else {
 	            $moy = '&nbsp;';
 	            $data_pdf[$i+1][] = "";
-            }
-            else {
-		        $statut_moy = @mysql_result($moyenne_query, 0, "statut");
-		        if ($statut_moy == 'y') {
-		            $moy = @mysql_result($moyenne_query, 0, "note");
-		            $data_pdf[$i+1][] = $moy;
-		        } else {
-		            $moy = '&nbsp;';
-		            $data_pdf[$i+1][] = "";
-		        }
-		    }
-            echo "<td class='cn couleur_moy_cont'><center><b>$moy</b></center></td>\n";
+	        }
+	    }
+        echo "<td class='cn couleur_moy_cont'><center><b>$moy</b></center></td>\n";
 
-	        //
-	        // Moyenne du bulletin
-	        //
-			if($avec_moy_bull=="y") {
-		        $sql="SELECT * FROM matieres_notes WHERE login='$eleve_login[$i]' AND id_groupe='$id_groupe' AND periode='$num_periode';";
-		        $res_moy_bull=mysql_query($sql);
-		        if(mysql_num_rows($res_moy_bull)==0) {
-		            $moy_bull = '&nbsp;';
-		            $data_pdf[$i+1][] = "";
-		        }
-		        else {
-		            $lig_moy_bull=mysql_fetch_object($res_moy_bull);
-		            if($lig_moy_bull->statut!="") {
-				        $moy_bull = $lig_moy_bull->statut;
-				        $data_pdf[$i+1][] = $lig_moy_bull->statut;
-		            }
-		            else {
-				        $moy_bull = $lig_moy_bull->note;
-				        $data_pdf[$i+1][] = $lig_moy_bull->note;
-		            }
-		        }
+        //
+        // Moyenne du bulletin
+        //
+		if($avec_moy_bull=="y") {
+	        $sql="SELECT * FROM matieres_notes WHERE login='$eleve_login[$i]' AND id_groupe='$id_groupe' AND periode='$num_periode';";
+	        $res_moy_bull=mysql_query($sql);
+	        if(mysql_num_rows($res_moy_bull)==0) {
+	            $moy_bull = '&nbsp;';
+	            $data_pdf[$i+1][] = "";
+	        }
+	        else {
+	            $lig_moy_bull=mysql_fetch_object($res_moy_bull);
+	            if($lig_moy_bull->statut!="") {
+			        $moy_bull = $lig_moy_bull->statut;
+			        $data_pdf[$i+1][] = $lig_moy_bull->statut;
+	            }
+	            else {
+			        $moy_bull = $lig_moy_bull->note;
+			        $data_pdf[$i+1][] = $lig_moy_bull->note;
+		            // Calcul de la moyenne annuelle des bulletins
+		            $total_point_ele_bull+=$moy_bull;
+		            $nb_moy_ele_bull++;
+	            }
+	        }
 
-		        echo "<td class='cn couleur_moy_cont'><center><b>$moy_bull</b></center></td>\n";
-			}
+	        echo "<td class='cn couleur_moy_cont'><center><b>$moy_bull</b></center></td>\n";
+		}
+        $num_per++;
+    }
 
-            $num_per++;
-        }
+	// Année
+	//$data_pdf[$i+1][] = $lig_moy_bull->note;
+	$moy_annee="";
+	if($nb_moy_ele>0) {
+		$moy_annee=round($total_point_ele/$nb_moy_ele,1);
+		$total_points_annee+=$moy_annee;
+		$nb_moy_ele_annee++;
+	}
+	echo "<td class='cn couleur_moy_cont bold'><center>$moy_annee</center></td>\n";
+	$data_pdf[$i+1][] = $moy_annee;
+	if($avec_moy_bull=="y") {
+		$moy_annee_bull="";
+		if($nb_moy_ele_bull>0) {
+			$moy_annee_bull=round($total_point_ele_bull/$nb_moy_ele_bull,1);
+			$total_points_annee_bull+=$moy_annee_bull;
+			$nb_moy_ele_annee_bull++;
+		}
+		echo "<td class='cn couleur_moy_cont bold'><center>$moy_annee_bull</center></td>\n";
+		$data_pdf[$i+1][] = $moy_annee_bull;
+	}
 
     echo "</tr>\n";
     $i++;
@@ -761,6 +830,24 @@ while ($num_per < $nb_cahier_note) {
 	}
     $num_per++;
 }
+
+// Année
+//$data_pdf[$tot_data_pdf][] = "";
+$moy_annee="";
+if($nb_moy_ele_annee>0) {
+	$moy_annee=round($total_points_annee/$nb_moy_ele_annee,1);
+}
+$data_pdf[$tot_data_pdf][] = $moy_annee;
+echo "<td class='cn bold'><center>$moy_annee</center></td>\n";
+if($avec_moy_bull=="y") {
+	$moy_annee_bull="";
+	if($nb_moy_ele_annee_bull>0) {
+		$moy_annee_bull=round($total_points_annee_bull/$nb_moy_ele_annee_bull,1);
+	}
+	echo "<td class='cn bold'><center>$moy_annee_bull</center></td>\n";
+	$data_pdf[$tot_data_pdf][] = $moy_annee_bull;
+}
+
 echo "</tr></table>\n";
 
 // Préparation du pdf
