@@ -12,6 +12,9 @@ Bulletins:
 - Possibilité de modifier l'accès parent/élève aux appréciations depuis les pages 
   de saisie de l'avis du conseil de classe dans le cas où l'accès est basculé manuellement.
 
+Graphes:
+- Possibilité de définir la taille du texte sous le graphique.
+
 Carnets de notes:
 - Visualiser toutes les notes de l'année: Affichage de la moyenne annuelle.
 - Visualiser toutes les notes de l'année: Possibilité d'afficher les moyennes de bulletins en plus des moyennes de carnets de notes.
@@ -19,6 +22,7 @@ Carnets de notes:
 Cahier de textes:
 - Possibilité d'afficher la liste des documents joints à un CDT.
 - Possibilité pour les parents et élèves de pointer leurs travaux faits ou non.
+- Possibilité de redimensionner les infobulles dans l'affichage semaine.
 
 Absences2:
 - Possibilité de modifier les dates/heure de début et fin d'une saisie depuis la page de saisie d'un traitement.
