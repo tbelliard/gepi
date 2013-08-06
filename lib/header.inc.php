@@ -95,6 +95,11 @@ if (isset($dojo)) {
     echo '<script type="text/javascript" src="'.$gepiPath.'/lib/dojo/dojo/dojo.js" djConfig="parseOnLoad: true"></script>'."\n";
     echo '<link rel="stylesheet" href="'.$gepiPath.'/lib/dojo/dijit/themes/claro/claro.css" />';
 }
+if((isset($charger_js_dragresize))&&($charger_js_dragresize=="y")) {
+    echo '<script type="text/javascript" src="'.$gepiPath.'/lib/twinhelix_dragresize.js"></script>'."\n";
+    echo '<link rel="stylesheet" href="'.$gepiPath.'/css/twinhelix_dragresize.css" />'."\n";
+    echo js_dragresize();
+}
 ?>
 
 <!-- Fin des styles -->

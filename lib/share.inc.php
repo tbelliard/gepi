@@ -2798,6 +2798,171 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	return $div;
 }
 
+// Fonction de création d'infobulle redimensionnable (http://www.twinhelix.com/javascript/dragresize/)
+function creer_div_infobulle2($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hauteur,$drag,$bouton_close,$survol_close,$overflow,$zindex_infobulle=1){
+	/*	
+		
+		$overflow:		
+	*/
+	global $posDiv_infobulle;
+	global $tabid_infobulle;
+	global $unite_div_infobulle;
+	global $niveau_arbo;
+	global $pas_de_decalage_infobulle;
+	global $class_special_infobulle;
+
+	$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle;";
+	
+	$style_bar="color: #ffffff; cursor: move; font-weight: bold; padding: 0px;";
+	$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;";
+
+	// On fait la liste des identifiants de DIV pour cacher les Div avec javascript en fin de chargement de la page (dans /lib/footer.inc.php).
+	$tabid_infobulle[]=$id;
+
+	// Conteneur:
+	if($bg_texte==''){
+		$div="<div id='$id' class='drsElement infobulle_corps";
+		if((isset($class_special_infobulle))&&($class_special_infobulle!='')) {$div.=" ".$class_special_infobulle;}
+		$div.="' style='$style_box width: ".$largeur;
+		if(is_numeric($largeur)) {
+			$div.=$unite_div_infobulle;
+		}
+		$div.="; ";
+	}
+	else{
+		$div="<div id='$id' ";
+		if((isset($class_special_infobulle))&&($class_special_infobulle!='')) {$div.="class='drsElement ".$class_special_infobulle."' ";}
+		else {$div.="class='drsElement' ";}
+		$div.="style='$style_box background-color: $bg_texte; width: ".$largeur;
+		if(is_numeric($largeur)) {
+			$div.=$unite_div_infobulle;
+		}
+		$div.="; ";
+	}
+	if(($hauteur!=0)||($hauteur!="")) {
+		$div.="height: ".$hauteur;
+		if(is_numeric($hauteur)) {
+			$div.=$unite_div_infobulle;
+		}
+		$div.=$unite_div_infobulle."; ";
+	}
+	// Position horizontale initiale pour permettre un affichage sans superposition si Javascript est désactivé:
+	$div.="left:".$posDiv_infobulle.$unite_div_infobulle.";";
+	$div.="'>\n";
+
+
+	// Barre de titre:
+	// Elle n'est affichée que si le titre est non vide
+	if($titre!=""){
+		if($bg_titre==''){
+			/*
+			$div.="<div class='drsMoveHandle infobulle_entete' style='$style_bar width: ".$largeur;
+			if(is_numeric($largeur)) {
+				$div.=$unite_div_infobulle;
+			}
+			*/
+			$div.="<div class='drsMoveHandle infobulle_entete' style='$style_bar";
+			$div.=";'";
+		}
+		else{
+			/*
+			$div.="<div class='drsMoveHandle' style='$style_bar background-color: $bg_titre; width: ".$largeur;
+			if(is_numeric($largeur)) {
+				$div.=$unite_div_infobulle;
+			}
+			*/
+			$div.="<div class='drsMoveHandle' style='$style_bar background-color: $bg_titre; ";
+			$div.=";'";
+		}
+
+		/*
+		if(($drag=="y")||($drag=="yy")){
+			// Là on utilise les fonctions de http://www.brainjar.com stockées dans brainjar_drag.js
+			$div.=" onmousedown=\"dragStart(event, '$id')\"";
+		}
+		*/
+		$div.=">\n";
+
+		if($bouton_close=="y"){
+			//$div.="<div style='$style_close'><a href='#' onclick=\"cacher_div('$id'); return false;\">";
+			$div.="<div style='$style_close'><a href=\"javascript:cacher_div('$id')\">";
+			if(isset($niveau_arbo)&&$niveau_arbo==0){
+				$div.="<img src='./images/icons/close16.png' width='16' height='16' alt='Fermer' />";
+			}
+			else if(isset($niveau_arbo)&&$niveau_arbo==1) {
+				$div.="<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />";
+			}
+			else if(isset($niveau_arbo)&&$niveau_arbo==2) {
+				$div.="<img src='../../images/icons/close16.png' width='16' height='16' alt='Fermer' />";
+			}
+			else {
+				$div.="<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />";
+			}
+			$div.="</a></div>\n";
+		}
+		$div.="<span style='padding-left: 1px;'>\n";
+		$div.=$titre."\n";
+		$div.="</span>\n";
+		$div.="</div>\n";
+	}
+
+
+	// Partie texte:
+	//==================
+	// 20110113
+	$div.="<div id='".$id."_contenu_corps'";
+
+	if($drag=="yy"){
+		// Là on utilise les fonctions de http://www.brainjar.com stockées dans brainjar_drag.js
+		//$div.=" onmousedown=\"dragStart(event, '$id')\"";
+		$div.=" class=\"drsMoveHandle\"";
+	}
+
+	//==================
+	if($survol_close=="y"){
+		// On referme le DIV lorsque la souris quitte la zone de texte.
+		$div.=" onmouseout=\"cacher_div('$id');\"";
+	}
+	$div.=">\n";
+	if(($overflow=='y')&&(($hauteur!=0)||($hauteur!=""))) {
+		$hauteur_hors_titre=$hauteur-1; // Le calcul n'est correct que dans le cas où l'unité est 'em'
+		$div.="<div style='width: ".$largeur;
+		if(is_numeric($largeur)) {
+			$div.=$unite_div_infobulle;
+		}
+		// Je n'arrive pas à ce que l'overflow s'adapte au redimensionnement du div via dragresize
+		$div.="; height: ".$hauteur_hors_titre;
+		if(is_numeric($hauteur)) {
+			$div.=$unite_div_infobulle;
+		}
+		
+		$div.="; overflow: auto;'>\n";
+		$div.="<div style='padding-left: 1px;'>\n";
+		$div.=$texte;
+		$div.="</div>\n";
+		$div.="</div>\n";
+	}
+	else{
+		$div.="<div style='padding-left: 1px;'>\n";
+		$div.=$texte;
+		$div.="</div>\n";
+	}
+	$div.="</div>\n";
+
+	$div.="</div>\n";
+
+	// Les div vont s'afficher côte à côte sans superposition en bas de page si JavaScript est désactivé:
+	if (isset($pas_de_decalage_infobulle) AND $pas_de_decalage_infobulle == "oui") {
+		// on ne décale pas les div des infobulles
+		$posDiv_infobulle = $posDiv_infobulle;
+	}else{
+		$posDiv_infobulle = $posDiv_infobulle+$largeur;
+	}
+
+	return $div;
+}
+
+
 /**
  * tableau des variables transmises d'une page à l'autre
  * 

@@ -158,6 +158,10 @@ $tab_couleur_edt=array('','blue','lime','maroon','purple','red','yellow','aqua',
 $style_specifique[] = "cahier_texte_2/consultation2";
 $javascript_specifique[] = "cahier_texte_2/consultation2";
 
+//$chaine_handles="'ml', 'mr'";
+$mode_handles="m";
+$charger_js_dragresize="y";
+
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
 require_once("../lib/header.inc.php");
@@ -1139,7 +1143,8 @@ document.getElementById('p_jour_$i').style.innerHTML='$jour_courant';
 </script>\n";
 	}
 
-	$tabdiv_infobulle[]=creer_div_infobulle("travail_jour_".$i,$titre_infobulle_jour,"",$texte_infobulle_jour,"pink",20,0,'y','y','n','n');
+	//$tabdiv_infobulle[]=creer_div_infobulle("travail_jour_".$i,$titre_infobulle_jour,"",$texte_infobulle_jour,"pink",20,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle2("travail_jour_".$i,$titre_infobulle_jour,"",$texte_infobulle_jour,"pink",20,0,'y','y','n','n');
 
 	echo "</div></td>\n";
 }
