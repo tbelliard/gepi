@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -127,6 +127,7 @@ if(isset($_POST['valider_raz_param'])) {
 'graphe_epaisseur_croissante_traits_periodes',
 'graphe_hauteur_affichage_deroulant',
 'graphe_app_deroulantes_taille_police',
+'graphe_taille_police_nom_sous_graphe',
 'graphe_hauteur_graphe',
 'graphe_largeur_graphe',
 'graphe_largeur_imposee_photo',
@@ -207,6 +208,8 @@ affiche_moy_classe
 
 			if(isset($_POST['graphe_app_deroulantes_taille_police'])) {save_params_graphe('graphe_app_deroulantes_taille_police',$_POST['graphe_app_deroulantes_taille_police']);}
 
+			if(isset($_POST['graphe_taille_police_nom_sous_graphe'])) {save_params_graphe('graphe_taille_police_nom_sous_graphe',$_POST['graphe_taille_police_nom_sous_graphe']);}
+
 			if(isset($_POST['click_plutot_que_survol_aff_app'])) {save_params_graphe('graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
 			if(isset($_POST['graphe_pointille'])) {save_params_graphe('graphe_pointille',$_POST['graphe_pointille']);}
@@ -268,6 +271,8 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['graphe_hauteur_affichage_deroulant'])) {savePref($_SESSION['login'],'graphe_hauteur_affichage_deroulant',$_POST['graphe_hauteur_affichage_deroulant']);}
 
 	if(isset($_POST['graphe_app_deroulantes_taille_police'])) {savePref($_SESSION['login'],'graphe_app_deroulantes_taille_police',$_POST['graphe_app_deroulantes_taille_police']);}
+
+	if(isset($_POST['graphe_taille_police_nom_sous_graphe'])) {savePref($_SESSION['login'],'graphe_taille_police_nom_sous_graphe',$_POST['graphe_taille_police_nom_sous_graphe']);}
 
 	if(isset($_POST['click_plutot_que_survol_aff_app'])) {savePref($_SESSION['login'],'graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
@@ -1503,6 +1508,28 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
+	if(isset($_POST['graphe_taille_police_nom_sous_graphe'])) {
+		$graphe_taille_police_nom_sous_graphe=$_POST['graphe_taille_police_nom_sous_graphe'];
+	}
+	else{
+		$pref_graphe_taille_police_nom_sous_graphe=getPref($_SESSION['login'],'graphe_graphe_taille_police_nom_sous_graphe','');
+		if($pref_graphe_taille_police_nom_sous_graphe!='') {
+			$graphe_taille_police_nom_sous_graphe=$pref_graphe_taille_police_nom_sous_graphe;
+		}
+		else {
+			if(getSettingValue('graphe_taille_police_nom_sous_graphe')) {
+				$graphe_taille_police_nom_sous_graphe=getSettingValue('graphe_taille_police_nom_sous_graphe');
+			}
+			else{
+				$graphe_taille_police_nom_sous_graphe=16;
+			}
+		}
+	}
+	if((mb_strlen(preg_replace("/[0-9]/","",$graphe_taille_police_nom_sous_graphe))!=0)||($graphe_taille_police_nom_sous_graphe=="")) {
+		$graphe_taille_police_nom_sous_graphe=16;
+	}
+
+
 	//======================================================================
 	//======================================================================
 	//======================================================================
@@ -1725,7 +1752,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<label for='mode_graphe_svg' style='cursor: pointer;'><input type='radio' name='mode_graphe' id='mode_graphe_svg' value='svg'$checked /> SVG</label>\n";
 			echo "</td></tr>\n";
 			echo "</table>\n";
-			
+			echo "</blockquote>\n";
+
+			echo "<p><b>Divers</b></p>\n";
+			echo "<blockquote>\n";
 			//Ajout Eric 11/12/10
 			echo "<table border='0' summary='affiche_deroulant_appreciations'>\n";
 			if(($graphe_affiche_deroulant_appreciations=='')||($graphe_affiche_deroulant_appreciations=='oui')) {$checked=" checked='yes'";} else {$checked="";}
@@ -1735,10 +1765,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			echo "<tr><td><label for='graphe_hauteur_affichage_deroulant' style='cursor: pointer;'>Hauteur de la zone déroulante (<i>en pixels</i>):</label></td><td><input type='text' name='graphe_hauteur_affichage_deroulant' id='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
 
-			echo "<tr><td><label for='graphe_app_deroulantes_taille_police' style='cursor: pointer;'>Taille de la police (<i>en points</i>):</label></td><td><input type='text' name='graphe_app_deroulantes_taille_police' id='graphe_app_deroulantes_taille_police' value='$graphe_app_deroulantes_taille_police' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
+			echo "<tr><td><label for='graphe_app_deroulantes_taille_police' style='cursor: pointer;'>Taille de la police (<i>en points</i>)&nbsp;:</label></td><td><input type='text' name='graphe_app_deroulantes_taille_police' id='graphe_app_deroulantes_taille_police' value='$graphe_app_deroulantes_taille_police' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
+
+			echo "<tr><td><label for='graphe_taille_police_nom_sous_graphe' style='cursor: pointer;'>Taille de la police (<i>en points</i>) de la ligne <em>Nom_prénom_né_le_XX/XX/XXXX</em> sous le graphe&nbsp;:</label></td><td><input type='text' name='graphe_taille_police_nom_sous_graphe' id='graphe_taille_police_nom_sous_graphe' value='$graphe_taille_police_nom_sous_graphe' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
 
 			echo "</table>\n";
-			
 			echo "</blockquote>\n";
 
 			
@@ -2185,6 +2216,8 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	echo "<input type='hidden' name='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' />\n";
 
 	echo "<input type='hidden' name='graphe_app_deroulantes_taille_police' value='$graphe_app_deroulantes_taille_police' />\n";
+
+	echo "<input type='hidden' name='graphe_taille_police_nom_sous_graphe' value='$graphe_taille_police_nom_sous_graphe' />\n";
 
 	echo "<input type='hidden' name='affiche_moy_classe' value='$affiche_moy_classe' />\n";
 
@@ -4443,7 +4476,12 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	*/
 
 		if(isset($prenom1)) {
-			echo "<p align='center'>$prenom1 $nom1";
+			// 20130806
+			echo "<p style='text-align:center;";
+			if((isset($graphe_taille_police_nom_sous_graphe))&&(preg_match("/^[0-9]*$/", $graphe_taille_police_nom_sous_graphe))&&($graphe_taille_police_nom_sous_graphe>0)) {
+				echo " font-size: ".$graphe_taille_police_nom_sous_graphe."pt;";
+			}
+			echo "'>$prenom1 $nom1";
 			//if($doublant1!="-") {echo " (<i>$doublant1</i>)";}
 			if(($doublant1!="-")&&($doublant1!="")) {echo " (<i>$doublant1</i>)";}
 			echo " né";
