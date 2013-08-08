@@ -18,6 +18,8 @@ Graphes:
 Carnets de notes:
 - Visualiser toutes les notes de l'année: Affichage de la moyenne annuelle.
 - Visualiser toutes les notes de l'année: Possibilité d'afficher les moyennes de bulletins en plus des moyennes de carnets de notes.
+- Possibilité d'interdire la création/paramétrage de boites/conteneurs par les professeurs.
+- Possibilité, en tant qu'administrateur, de créer des boites/conteneurs par lots dans les carnets de notes d'une sélection d'enseignements.
 
 Cahier de textes:
 - Possibilité d'afficher la liste des documents joints à un CDT.

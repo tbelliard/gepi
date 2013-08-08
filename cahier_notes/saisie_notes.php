@@ -781,12 +781,11 @@ if((isset($id_devoir))&&($id_devoir!=0)) {
 }
 
 if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
-	//echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\">Créer une boîte</a>|";
-	echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> Créer un";
-
-	if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
-
-	echo " ".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))." </a>|";
+	if(getSettingAOui('GepiPeutCreerBoitesProf')) {
+		echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> Créer un";
+		if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
+		echo " ".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))." </a>|";
+	}
 
 	echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> Créer une évaluation </a>|";
 }
@@ -1263,7 +1262,9 @@ if ($id_devoir==0) {
 			echo "<td class=cn valign='top'><center><b>&nbsp;</b><br />\n";
 		}
 		if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 3)||($acces_exceptionnel_saisie)) {
-			echo "<a href=\"./add_modif_conteneur.php?mode_navig=retour_saisie&amp;id_conteneur=$id_sous_cont[$i]&amp;id_retour=$id_conteneur\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">Configuration</a><br />\n";
+			if(getSettingAOui('GepiPeutCreerBoitesProf')) {
+				echo "<a href=\"./add_modif_conteneur.php?mode_navig=retour_saisie&amp;id_conteneur=$id_sous_cont[$i]&amp;id_retour=$id_conteneur\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">Configuration</a><br />\n";
+			}
 		}
 
 		echo "<a href=\"./saisie_notes.php?id_conteneur=$id_sous_cont[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">Visualisation</a>\n";
@@ -1286,7 +1287,11 @@ if ((($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acce
 	else{
 		echo "<td class=cn  valign='top'><center><b>&nbsp;</b><br />";
 	}
-	echo "<a href=\"./add_modif_conteneur.php?mode_navig=retour_saisie&amp;id_conteneur=$id_conteneur&amp;id_retour=$id_conteneur\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">Configuration</a><br /><br /><font color='red'>Aff.&nbsp;bull.</font></center></td>\n";
+
+	if(getSettingAOui('GepiPeutCreerBoitesProf')) {
+		echo "<a href=\"./add_modif_conteneur.php?mode_navig=retour_saisie&amp;id_conteneur=$id_conteneur&amp;id_retour=$id_conteneur\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">Configuration</a><br />";
+	}
+	echo "<br /><font color='red'>Aff.&nbsp;bull.</font></center></td>\n";
 }
 
 echo "</tr>\n";

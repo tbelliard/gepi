@@ -1021,6 +1021,8 @@ $tab_req[] = "INSERT INTO droits SET id='/responsables/infos_parent.php', admini
 
 $tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/ajax_cdt.php', administrateur='F', professeur='F', cpe='F', scolarite='F', eleve='V', responsable='V', secours='F', autre='F', description='Enregistrement des modifications sur CDT',statut='';";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes_admin/creation_conteneurs_par_lots.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Création de conteneurs/boites par lots', '1');";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

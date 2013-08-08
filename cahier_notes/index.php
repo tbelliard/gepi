@@ -281,7 +281,7 @@ if((isset($periode_num))&&($_SESSION['statut']=='professeur')) {
 }
 
 // Recopie de la structure de la periode précédente
-if ((isset($_GET['creer_structure'])) and (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie))) {
+if ((isset($_GET['creer_structure'])) and (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) and (getSettingAOui('GepiPeutCreerBoitesProf'))) {
   check_token();
 
   function recopie_arbo($id_racine, $id_prec,$id_new) {
@@ -668,14 +668,18 @@ var tab_per_cn=new Array();\n";
 	}
 
     if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
-        echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
-        if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
-        echo " ".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
+        if(getSettingAOui('GepiPeutCreerBoitesProf')) {
+            echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
+            if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
+            echo " ".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
+        }
 
         echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'> Créer une évaluation </a> | \n";
         if ($periode_num!='1')  {
             $themessage = 'En cliquant sur OK, vous allez créer la même structure de boîtes que celle de la période précédente. Si des boîtes existent déjà, elles ne seront pas supprimées.';
-            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes".add_token_in_url()."' onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a> | \n";
+            if(getSettingAOui('GepiPeutCreerBoitesProf')) {
+                echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes".add_token_in_url()."' onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a> | \n";
+            }
         }
     }
 
@@ -832,7 +836,7 @@ var tab_per_cn=new Array();\n";
 			echo "<p><br /></p>\n";
 			echo "<p><a href='../utilisateurs/mon_compte.php#cnBoitesModeMoy' target='_blank'>Choisir le mode par défaut pour mes ".getSettingValue('gepi_denom_boite')."s</a>.<br />Cela ne vous empêchera pas de choisir un autre mode pour des ".getSettingValue('gepi_denom_boite')."s particulier(e)s.<br />Cela ne modifie pas non plus le mode de calcul dans les carnets de notes existants.</p>\n";
 			echo "<p><br /></p>\n";
-			if(isset($id_racine)) {
+			if((isset($id_racine))&&(getSettingAOui('GepiPeutCreerBoitesProf'))) {
 				echo "<p><a href='add_modif_conteneur.php?id_conteneur=$id_racine&mode_navig=retour_index' target='_blank'>Paramétrer le mode de calcul pour les ".getSettingValue('gepi_denom_boite')."s</a> de ce carnet de notes (<em>". htmlspecialchars($current_group["description"])." (".$nom_periode[$periode_num].")</em>) en particulier.</p>\n";
 			}
 			echo "</div>";

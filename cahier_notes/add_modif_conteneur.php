@@ -94,6 +94,12 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
 }
 
 
+if(!getSettingAOui('GepiPeutCreerBoitesProf')) {
+    $msg=rawurlencode("Vous n'avez pas le droit de créer des ".getSettingValue('gepi_denom_boite'))."s.";
+    header("Location: ./index.php?id_racine=$id_racine&msg=$msg");
+    die();
+}
+
 
 $appel_cahier_notes = mysql_query("SELECT * FROM cn_cahier_notes WHERE id_cahier_notes = '$id_racine'");
 $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
@@ -658,7 +664,7 @@ if($interface_simplifiee=="y"){
 	echo "</div>\n";
 
 }
-else{
+else {
 	// AFFICHAGE CLASSIQUE COMPLET:
 	echo "<table>\n";
 	echo "<tr><td>Nom court : </td><td><input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";

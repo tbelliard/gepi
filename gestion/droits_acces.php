@@ -107,6 +107,11 @@ $texteItem="a accès aux relevés de notes des ".$gepiSettings['denomination_ele
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiPeutCreerBoitesProf';
+$texteItem="a le droit de créer et paramétrer des ".$gepiSettings['gepi_denom_boite']."s dans ses carnets de notes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';

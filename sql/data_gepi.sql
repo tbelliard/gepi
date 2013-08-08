@@ -1216,3 +1216,5 @@ INSERT INTO setting SET name='mod_disc_terme_incident', value='incident';
 INSERT INTO setting SET name='mod_disc_terme_sanction', value='sanction';
 INSERT INTO droits SET id='/responsables/infos_parent.php', administrateur='F', scolarite='F', cpe='F', professeur='F', secours='F', eleve='F', responsable='V';
 INSERT INTO droits SET id='/cahier_texte_2/ajax_cdt.php', administrateur='F', professeur='F', cpe='F', scolarite='F', eleve='V', responsable='V', secours='F', autre='F', description='Enregistrement des modifications sur CDT',statut='';
+INSERT INTO droits VALUES ('/cahier_notes_admin/creation_conteneurs_par_lots.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Création de conteneurs/boites par lots', '1');
+INSERT INTO setting SET name='GepiPeutCreerBoitesProf', value='yes';

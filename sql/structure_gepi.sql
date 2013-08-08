@@ -17,7 +17,7 @@ CREATE TABLE `classes` (`id` smallint(6) unsigned NOT NULL auto_increment, `clas
 DROP TABLE IF EXISTS `cn_cahier_notes`;
 CREATE TABLE `cn_cahier_notes` ( `id_cahier_notes` int(11) NOT NULL auto_increment, `id_groupe` INT(11) NOT NULL, `periode` int(11) NOT NULL default '0', PRIMARY KEY  (`id_cahier_notes`, `id_groupe`, `periode`), INDEX groupe_periode (`id_groupe`, `periode`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `cn_conteneurs`;
-CREATE TABLE `cn_conteneurs` ( `id` int(11) NOT NULL auto_increment, `id_racine` int(11) NOT NULL default '0', `nom_court` varchar(32) NOT NULL default '', `nom_complet` varchar(64) NOT NULL default '', `description` varchar(128) NOT NULL default '', `mode` char(1) NOT NULL default '2', `coef` decimal(3,1) NOT NULL default '1.0', `arrondir` char(2) NOT NULL default 's1', `ponderation` decimal(3,1) NOT NULL default '0.0', `display_parents` char(1) NOT NULL default '0', `display_bulletin` char(1) NOT NULL default '1', `parent` int(11) NOT NULL default '0', PRIMARY KEY  (`id`), INDEX parent_racine (`parent`,`id_racine`), INDEX racine_bulletin (`id_racine`,`display_bulletin`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE `cn_conteneurs` ( `id` int(11) NOT NULL auto_increment, `id_racine` int(11) NOT NULL default '0', `nom_court` varchar(32) NOT NULL default '', `nom_complet` varchar(64) NOT NULL default '', `description` varchar(128) NOT NULL default '', `mode` char(1) NOT NULL default '2', `coef` decimal(3,1) NOT NULL default '1.0', `arrondir` char(2) NOT NULL default 's1', `ponderation` decimal(3,1) NOT NULL default '0.0', `display_parents` char(1) NOT NULL default '0', `display_bulletin` char(1) NOT NULL default '1', `parent` int(11) NOT NULL default '0', modele_id_conteneur int(11) NOT NULL default '0', PRIMARY KEY  (`id`), INDEX parent_racine (`parent`,`id_racine`), INDEX racine_bulletin (`id_racine`,`display_bulletin`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `cn_devoirs`;
 CREATE TABLE `cn_devoirs` (`id` int(11) NOT NULL auto_increment, `id_conteneur` int(11) NOT NULL default '0', `id_racine` int(11) NOT NULL default '0', `nom_court` varchar(32) NOT NULL default '', `nom_complet` varchar(64) NOT NULL default '', `description` varchar(128) NOT NULL default '', `facultatif` char(1) NOT NULL default '', `date` datetime NOT NULL default '0000-00-00 00:00:00', `coef` decimal(3,1) NOT NULL default '0.0', `note_sur` int(11) default '20', `ramener_sur_referentiel` char(1) NOT NULL default 'F', `display_parents` char(1) NOT NULL default '', `display_parents_app` char(1) NOT NULL default '0', `date_ele_resp` datetime NOT NULL, PRIMARY KEY  (`id`), INDEX conteneur_date (`id_conteneur`, `date`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `cn_notes_conteneurs`;
@@ -857,5 +857,33 @@ date_initiale DATETIME,
 date_modif DATETIME,
 commentaire VARCHAR( 255 ) NOT NULL,
 PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS cn_conteneurs_modele;
+CREATE TABLE cn_conteneurs_modele (
+id_modele int(11) NOT NULL auto_increment, 
+nom_court varchar(32) NOT NULL default '', 
+description varchar(128) NOT NULL default '', 
+PRIMARY KEY  (id_modele)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS cn_conteneurs_modele_conteneurs;
+CREATE TABLE cn_conteneurs_modele_conteneurs (
+id int(11) NOT NULL auto_increment, 
+id_modele int(11) NOT NULL default '0', 
+id_racine int(11) NOT NULL default '0', 
+nom_court varchar(32) NOT NULL default '', 
+nom_complet varchar(64) NOT NULL default '', 
+description varchar(128) NOT NULL default '', 
+mode char(1) NOT NULL default '2', 
+coef decimal(3,1) NOT NULL default '1.0', 
+arrondir char(2) NOT NULL default 's1', 
+ponderation decimal(3,1) NOT NULL default '0.0', 
+display_parents char(1) NOT NULL default '0', 
+display_bulletin char(1) NOT NULL default '1', 
+parent int(11) NOT NULL default '0', 
+PRIMARY KEY  (id), 
+INDEX parent_racine (parent,id_racine), 
+INDEX racine_bulletin (id_racine,display_bulletin)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 

@@ -238,4 +238,85 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'cn_conteneurs_modele' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'cn_conteneurs_modele'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE cn_conteneurs_modele (
+id_modele int(11) NOT NULL auto_increment, 
+nom_court varchar(32) NOT NULL default '', 
+description varchar(128) NOT NULL default '', 
+PRIMARY KEY  (id_modele)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'cn_conteneurs_modele_conteneurs' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'cn_conteneurs_modele_conteneurs'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE cn_conteneurs_modele_conteneurs (
+id int(11) NOT NULL auto_increment, 
+id_modele int(11) NOT NULL default '0', 
+id_racine int(11) NOT NULL default '0', 
+nom_court varchar(32) NOT NULL default '', 
+nom_complet varchar(64) NOT NULL default '', 
+description varchar(128) NOT NULL default '', 
+mode char(1) NOT NULL default '2', 
+coef decimal(3,1) NOT NULL default '1.0', 
+arrondir char(2) NOT NULL default 's1', 
+ponderation decimal(3,1) NOT NULL default '0.0', 
+display_parents char(1) NOT NULL default '0', 
+display_bulletin char(1) NOT NULL default '1', 
+parent int(11) NOT NULL default '0', 
+PRIMARY KEY  (id), 
+INDEX parent_racine (parent,id_racine), 
+INDEX racine_bulletin (id_racine,display_bulletin)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "Initialisation du droit pour un professeur de créer des ".getSettingValue('gepi_denom_boite')."s dans ses carnets de notes : ";
+$test = sql_query1("SELECT 1=1 FROM setting WHERE name='GepiPeutCreerBoitesProf'");
+if ($test == -1) {
+	$result_inter = traite_requete("INSERT INTO setting SET name='GepiPeutCreerBoitesProf', value='yes';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le droit existe déjà (validé ou non)");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'modele_id_conteneur' à la table 'cn_conteneurs' : ";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM cn_conteneurs LIKE 'modele_id_conteneur';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE cn_conteneurs ADD modele_id_conteneur int(11) NOT NULL default '0';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>
