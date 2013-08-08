@@ -402,4 +402,19 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<br />";
+$result .= "Initialisation du mode de calcul de moyenne quand il y a des ".getSettingValue('gepi_denom_boite')."s dans les carnets de notes : ";
+$test = sql_query1("SELECT 1=1 FROM setting WHERE name='cnBoitesModeMoy'");
+if ($test == -1) {
+	$result_inter = traite_requete("INSERT INTO setting SET name='cnBoitesModeMoy', value='2';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Déjà faite.");
+}
+
 ?>
