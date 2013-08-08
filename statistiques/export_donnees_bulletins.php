@@ -791,10 +791,12 @@ elseif(!isset($choix_matieres)) {
 			if(!isset($chaine_array_index[$j])) {
 				//$chaine_array_index[$j]="tab_index_$j=new Array(";
 				$chaine_array_index[$j]="tab_index[$j]=new Array(";
-				$chaine_array_index[$j].=$tab_liste_index_grp_matiere[$tab_id_matiere[$j]][$k];
+				//$chaine_array_index[$j].=$tab_liste_index_grp_matiere[$tab_id_matiere[$j]][$k];
+				$chaine_array_index[$j].="'".$tab_liste_index_grp_matiere[$tab_id_matiere[$j]][$k]."'";
 			}
 			else {
-				$chaine_array_index[$j].=", ".$tab_liste_index_grp_matiere[$tab_id_matiere[$j]][$k];
+				//$chaine_array_index[$j].=", ".$tab_liste_index_grp_matiere[$tab_id_matiere[$j]][$k];
+				$chaine_array_index[$j].=", "."'".$tab_liste_index_grp_matiere[$tab_id_matiere[$j]][$k]."'";
 			}
 		}
 		if(isset($chaine_array_index[$j])) {
