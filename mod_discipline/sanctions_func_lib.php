@@ -1020,33 +1020,42 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 	return $retour;
 }
 
-function get_destinataires_mail_alerte_discipline($tab_id_classe) {
+function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="") {
 	$retour="";
 
+	$id_nature="";
+	if($nature!="") {
+		$sql="SELECT sn.id FROM s_natures sn WHERE sn.nature='".mysql_real_escape_string($nature)."';";
+		$res_nature=mysql_query($sql);
+		if(mysql_num_rows($res_nature)) {
+			$id_nature=mysql_result($res_nature, 0, "id");
+		}
+	}
+
 	$tab_dest=array();
-    $temoin=false;
+	$temoin=false;
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		$sql="SELECT * FROM s_alerte_mail WHERE id_classe='".$tab_id_classe[$i]."';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
 			while($lig=mysql_fetch_object($res)) {
 				if($lig->destinataire=='cpe') {
-					$sql="SELECT DISTINCT u.nom,u.prenom,u.email FROM utilisateurs u, j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jecpe.e_login AND jecpe.cpe_login=u.login AND u.email!='';";
+					$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jecpe.e_login AND jecpe.cpe_login=u.login AND u.email!='';";
 				}
 				elseif($lig->destinataire=='professeurs') {
-					$sql="SELECT DISTINCT u.nom,u.prenom,u.email FROM utilisateurs u, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jeg.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login AND u.email!='';";
+					$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jeg.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login AND u.email!='';";
 				}
 				elseif($lig->destinataire=='pp') {
-					$sql="SELECT DISTINCT u.nom,u.prenom,u.email FROM utilisateurs u, j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.id_classe=jep.id_classe AND jec.login=jep.login AND jep.professeur=u.login AND u.email!='';";
+					$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.id_classe=jep.id_classe AND jec.login=jep.login AND jep.professeur=u.login AND u.email!='';";
 				}
 				elseif($lig->destinataire=='administrateur') {
-					$sql="SELECT DISTINCT u.nom,u.prenom,u.email FROM utilisateurs u WHERE u.statut='administrateur' AND u.email!='';";
+					$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u WHERE u.statut='administrateur' AND u.email!='';";
 				}
 				elseif($lig->destinataire=='scolarite') {
-					$sql="SELECT DISTINCT u.nom,u.prenom,u.email FROM utilisateurs u, j_scol_classes jsc WHERE jsc.id_classe='".$tab_id_classe[$i]."' AND jsc.login=u.login AND u.email!='';";
+					$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_scol_classes jsc WHERE jsc.id_classe='".$tab_id_classe[$i]."' AND jsc.login=u.login AND u.email!='';";
 				}
 				elseif($lig->destinataire=='mail') {
-				    $temoin=true;
+					$temoin=true;
 					$adresse_sup = $lig->adresse;
 				}
 
@@ -1057,9 +1066,26 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe) {
 					$res2=mysql_query($sql);
 					if(mysql_num_rows($res2)>0) {
 						while($lig2=mysql_fetch_object($res2)) {
-							if(!in_array($lig2->email,$tab_dest)) {
-								$tab_dest[]=$lig2->email;
-								//$tab_dest[]="$lig2->prenom $lig2->nom <$lig2->email>";
+						$ajouter_mail="y";
+							if($id_nature!="") {
+								$sql="SELECT * FROM preferences WHERE login='$lig2->login' AND name='mod_discipline_natures_exclues_mail' AND value LIKE '%|$id_nature|%';";
+								$test_nat=mysql_query($sql);
+								if(mysql_num_rows($test_nat)>0) {
+									$ajouter_mail="n";
+								}
+							}
+							else {
+								$mod_discipline_natures_non_categorisees_exclues_mail=getPref($_SESSION['login'],'mod_discipline_natures_non_categorisees_exclues_mail',"n");
+								if($mod_discipline_natures_non_categorisees_exclues_mail=="y") {
+									$ajouter_mail="n";
+								}
+							}
+
+							if($ajouter_mail!="n") {
+								if(!in_array($lig2->email,$tab_dest)) {
+									$tab_dest[]=$lig2->email;
+									//$tab_dest[]="$lig2->prenom $lig2->nom <$lig2->email>";
+								}
 							}
 						}
 					}

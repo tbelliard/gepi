@@ -911,6 +911,59 @@ if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 		$msg.="Enregistrement de mod_discipline_travail_par_defaut.<br />";
 		$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
+
+	debug_var();
+	/*
+	$_POST['mod_disc_mail_cat_incluse']=	Array (*)
+		$_POST[mod_disc_mail_cat_incluse]['0']=	2
+		$_POST[mod_disc_mail_cat_incluse]['1']=	5
+		$_POST[mod_disc_mail_cat_incluse]['2']=	6
+	$_POST['mod_disc_mail_cat_incluse_NC']=	y
+
+	for($loop=0;$loop<count($mod_disc_mail_cat_incluse);$loop++) {
+		
+	}
+	*/
+	$chaine="";
+	$mod_disc_mail_cat_incluse=isset($_POST['mod_disc_mail_cat_incluse']) ? $_POST['mod_disc_mail_cat_incluse'] : array();
+
+	$sql="SELECT * FROM s_categories ORDER BY categorie;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			if(!in_array($lig->id, $mod_disc_mail_cat_incluse)) {
+				$chaine.="|".$lig->id;
+			}
+		}
+		$chaine.="|";
+
+		if(!savePref($_SESSION['login'],'mod_discipline_natures_exclues_mail', $chaine)) {
+			$msg.="Erreur lors de l'enregistrement de mod_discipline_natures_exclues_mail.<br />";
+			$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			$msg.="Enregistrement de mod_discipline_natures_exclues_mail.<br />";
+			$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+	}
+
+
+	if(isset($_POST['mod_disc_mail_cat_incluse_NC'])) {
+		$value="n";
+	}
+	else {
+		$value="y";
+	}
+
+	if(!savePref($_SESSION['login'],'mod_discipline_natures_non_categorisees_exclues_mail', $value)) {
+		$msg.="Erreur lors de l'enregistrement de mod_discipline_natures_non_categorisees_exclues_mail.<br />";
+		$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+	}
+	else {
+		$msg.="Enregistrement de mod_discipline_natures_non_categorisees_exclues_mail.<br />";
+		$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+	}
+
 }
 
 
@@ -2261,7 +2314,8 @@ if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "pro
 }
 
 //==============================================================================
-
+//debug_var();
+$chaine_champs_checkbox_mod_discipline="";
 $tab_statuts_mod_discipline=array('professeur', 'administrateur', 'scolarite', 'cpe');
 if ((getSettingValue('active_mod_discipline')!='n')&&(in_array($_SESSION['statut'], $tab_statuts_mod_discipline))) {
 	$mod_discipline_travail_par_defaut=getPref($_SESSION['login'], 'mod_discipline_travail_par_defaut', 'Travail : ');
@@ -2294,13 +2348,174 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 <?php    
     }
 }
-        
+
+	echo "<p class='bold' style='margin-top:1em;'>Signalement d'incidents par mail&nbsp;:</p>\n";
+	$sql2="";
+	if($_SESSION['statut']=='cpe') {
+		$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, 
+																	classes c, 
+																	j_eleves_cpe jecpe, 
+																	j_eleves_classes jec 
+																WHERE sam.id_classe=c.id AND 
+																	sam.destinataire='cpe' AND
+																	jec.id_classe=sam.id_classe AND
+																	jec.login=jecpe.e_login AND
+																	jecpe.cpe_login='".$_SESSION['login']."'
+																ORDER BY c.classe)";
+		$qualite="CPE";
+	}
+	elseif($_SESSION['statut']=='professeur') {
+		$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, 
+																	classes c, 
+																	j_eleves_groupes jeg, 
+																	j_eleves_classes jec, 
+																	j_groupes_professeurs jgp 
+																WHERE sam.id_classe=c.id AND 
+																	sam.destinataire='professeur' AND 
+																	jec.id_classe=sam.id_classe AND 
+																	jec.login=jeg.login AND 
+																	jeg.id_groupe=jgp.id_groupe AND 
+																	jgp.login='".$_SESSION['login']."'
+																ORDER BY c.classe)";
+		$qualite="professeur";
+		if(is_pp($_SESSION['login'])) {
+			$sql2="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, 
+																	classes c, 
+																	j_eleves_professeurs jep, 
+																	j_eleves_classes jec 
+																WHERE sam.id_classe=c.id AND 
+																	sam.destinataire='professeur' AND 
+																	jec.id_classe=sam.id_classe AND 
+																	jec.login=jep.login AND 
+																	jep.id_classe=jec.id_classe AND 
+																	jep.professeur='".$_SESSION['login']."'
+																ORDER BY c.classe)";
+		}
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, classes c WHERE sam.id_classe=c.id AND destinataire='administrateur' ORDER BY c.classe)";
+		$qualite="Administrateur";
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, 
+																	classes c, 
+																	j_scol_classes jsc 
+																WHERE sam.id_classe=c.id AND 
+																	sam.destinataire='scolarite' AND
+																	jsc.id_classe=sam.id_classe AND
+																	jsc.login='".$_SESSION['login']."'
+																ORDER BY c.classe)";
+		$qualite="compte Scolarité";
+	}
+	$res_mail=mysql_query($sql);
+	if(mysql_num_rows($res_mail)>0) {
+		echo "<p>Vous êtes destinataire, en tant que $qualite, des mail concernant les incidents impliquant des élèves des classes suivantes&nbsp;: <br />";
+		$cpt=0;
+		$tab_classe_mail=array();
+		while($lig_mail=mysql_fetch_object($res_mail)) {
+			if(!in_array($lig_mail->id_classe, $tab_classe_mail)) {
+				if($cpt>0) {
+					echo ", ";
+				}
+				echo $lig_mail->classe;
+				$tab_classe_mail[]=$lig_mail->id_classe;
+			}
+			$cpt++;
+		}
+
+	}
+	else {
+		echo "<p>Vous n'êtes destinataire, en tant que $qualite, d'aucun mail signalant des incidents.<br />Si vous pensez que c'est une erreur, contactez l'administrateur.</p>";
+	}
+
+	echo "<p style='margin-top:1em;'>Dans le cas où vous recevez des signalements par mail, vous pouvez restreindre les catégories d'incidents pour lesquelles vous souhaitez être informé&nbsp;: <br />\n";
+	$tab_id_categories_exclues=array();
+	$mod_discipline_natures_exclues_mail=getPref($_SESSION['login'], 'mod_discipline_natures_exclues_mail', '');
+	if($mod_discipline_natures_exclues_mail!="") {
+		$tmp_tab=explode("|", $mod_discipline_natures_exclues_mail);
+		for($loop=0;$loop<count($tmp_tab);$loop++) {
+			if($tmp_tab[$loop]!="") {
+				$tab_id_categories_exclues[]=$tmp_tab[$loop];
+			}
+		}
+	}
+	$sql="SELECT * FROM s_categories ORDER BY categorie;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		echo "<p>Aucune catégorie n'est définie&nbsp;???</p>";
+	}
+	else {
+		while($lig=mysql_fetch_object($res)) {
+			echo "<input type='checkbox' id='mod_disc_mail_cat_incluse_$lig->id' name='mod_disc_mail_cat_incluse[]' value='$lig->id' onchange=\"checkbox_change('mod_disc_mail_cat_incluse_$lig->id')\" ";
+			if(!in_array($lig->id, $tab_id_categories_exclues)) {
+				echo "checked ";
+			}
+			echo "/><label for='mod_disc_mail_cat_incluse_$lig->id' id='texte_mod_disc_mail_cat_incluse_$lig->id'>$lig->categorie</label><br />";
+			if($chaine_champs_checkbox_mod_discipline!="") {$chaine_champs_checkbox_mod_discipline.=", ";}
+			$chaine_champs_checkbox_mod_discipline.="'mod_disc_mail_cat_incluse_$lig->id'";
+		}
+
+		echo "<input type='checkbox' id='mod_disc_mail_cat_incluse_NC' name='mod_disc_mail_cat_incluse_NC' value='y' onchange=\"checkbox_change('mod_disc_mail_cat_incluse_NC')\" ";
+		if(getPref($_SESSION['login'], 'mod_discipline_natures_non_categorisees_exclues_mail', "")!="y") {
+			echo "checked ";
+		}
+		echo "/><label for='mod_disc_mail_cat_incluse_NC' id='texte_mod_disc_mail_cat_incluse_NC'>Incidents dont la nature n'est pas catégorisée.</label><br />";
+		if($chaine_champs_checkbox_mod_discipline!="") {$chaine_champs_checkbox_mod_discipline.=", ";}
+		$chaine_champs_checkbox_mod_discipline.="'mod_disc_mail_cat_incluse_NC'";
+	}
+
+	if($sql2!="") {
+		$res_mail=mysql_query($sql2);
+		if(mysql_num_rows($res_mail)>0) {
+			echo "<p style='margin-top:1em;'>Vous êtes destinataire, en tant que ".getSettingValue('gepi_prof_suivi').", des mail concernant les incidents impliquant des élèves des classes suivantes&nbsp;: ";
+			$cpt=0;
+			$tab_classe_mail=array();
+			while($lig_mail=mysql_fetch_object($res_mail)) {
+				if(!in_array($lig_mail->id_classe, $tab_classe_mail)) {
+					if($cpt>0) {
+						echo ", ";
+					}
+					echo $lig_mail->classe;
+					$tab_classe_mail[]=$lig_mail->id_classe;
+				}
+				$cpt++;
+			}
+			echo "</p>\n";
+		}
+		else {
+			echo "<p>Vous n'êtes destinataire, en tant que ".getSettingValue('gepi_prof_suivi').", d'aucun mail signalant des incidents.<br />Si vous pensez que c'est une erreur, contactez l'administrateur.</p>";
+		}
+	}
+	//$sql.=" UNION (SELECT c.id, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, classes c WHERE sam.id_classe=c.id AND destinataire='mail' AND adresse='".$_SESSION['adresse']."' ORDER BY c.classe))";
+
+	$sql="(SELECT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, classes c WHERE sam.id_classe=c.id AND destinataire='mail' AND adresse='".$_SESSION['email']."' ORDER BY c.classe)";
+	//echo "$sql<br />";
+	$res_mail=mysql_query($sql);
+	if(mysql_num_rows($res_mail)>0) {
+		echo "<p style='margin-top:1em;'>Vous êtes destinataire, par l'adresse mail saisie directement par l'administrateur, des mail concernant les incidents impliquant des élèves des classes suivantes&nbsp;: ";
+		$cpt=0;
+		$tab_classe_mail=array();
+		while($lig_mail=mysql_fetch_object($res_mail)) {
+			if(!in_array($lig_mail->id_classe, $tab_classe_mail)) {
+				if($cpt>0) {
+					echo ", ";
+				}
+				echo $lig_mail->classe;
+				$tab_classe_mail[]=$lig_mail->id_classe;
+			}
+			$cpt++;
+		}
+		echo "</p>\n";
+
+		echo "<p>Il n'est pas possible actuellement de restreindre les signalements par mail à certaines catégories d'incidents avec ce mode.</p>";
+	}
+
 	echo "<p style='text-align:center;'>\n";
 	echo "<input type='submit' name='Valider' value='Enregistrer' />\n";
 	echo "</p>\n";
 
 	if(isset($message_mod_discipline)) {echo $message_mod_discipline;}
-        
+
 	echo "</fieldset>\n";
 	echo "</form>\n";
 
@@ -2754,7 +2969,7 @@ if(getSettingAOui("active_bulletins")) {
 echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 echo "<script type='text/javascript'>
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n');
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', $chaine_champs_checkbox_mod_discipline);
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);

@@ -929,7 +929,7 @@ $headers);
 						//echo "\$texte_mail=$texte_mail<br />";
 	
 						if(count($tab_alerte_classe)>0) {
-							$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe);
+							$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe, $nature);
 							// La liste des destinataires, admin inclus doivent être définis dans "Définition des destinataires d'alertes"
 							//if($destinataires=="") {
 							//	$destinataires=getSettingValue("gepiAdminAdress");
