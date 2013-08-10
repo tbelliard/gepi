@@ -127,6 +127,67 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'signature_droits' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'signature_droits'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS signature_droits (
+		id INT(11) unsigned NOT NULL auto_increment,
+		login VARCHAR( 255 ) NOT NULL ,
+		PRIMARY KEY ( id )
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'signature_fichiers' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'signature_fichiers'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS signature_fichiers (
+		id_fichier INT(11) unsigned NOT NULL auto_increment,
+		fichier VARCHAR( 255 ) NOT NULL ,
+		login VARCHAR( 255 ) NOT NULL ,
+		type VARCHAR( 255 ) NOT NULL,
+		PRIMARY KEY ( id_fichier )
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'signature_classes' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'signature_classes'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS signature_classes (
+		id INT(11) unsigned NOT NULL auto_increment,
+		login VARCHAR( 255 ) NOT NULL ,
+		id_classe INT( 11 ) NOT NULL ,
+		id_fichier INT( 11 ) NOT NULL ,
+		PRIMARY KEY ( id )
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 // Pour tester
 // insert into setting set name='fichier_signature', value='signature.jpg';
 // Et copier un signature.jpg dans "../backup/".getSettingValue('backup_directory')
