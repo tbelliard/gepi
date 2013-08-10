@@ -233,43 +233,42 @@ echo "</p>\n";
 		echo "</table>\n";
 		echo "<input type='hidden' name='action' value='reg_dest' />\n";
 		echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+
+		//============================================
+		echo "
+		<p style='text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em> Les destinataires (<em>sauf 'Adresses autres'</em>) peuvent choisir dans 'Mon compte' pour quelles catégories d'incidents ils souhaitent être informés.<br />
+		Un utilisateur, le chef d'établissement par exemple, pourra souhaiter être informé des violences,... mais pas d'incidents plus mineurs.</p>
+
+		<script type='text/javascript' language='javascript'>
+			function modif_case(id,statut,mode){
+				// id: numéro de:
+				//					. colonne correspondant au login
+				//					. ligne
+				// statut: true ou false
+				// mode: col ou lig
+				if(mode=='col'){
+					for(k=0;k<$nombre_lignes;k++){
+						if(document.getElementById('case_'+id+'_'+k)){
+							document.getElementById('case_'+id+'_'+k).checked=statut;
+						}
+					}
+				}
+				else{
+					for(k=0;k<".count($tab_statut).";k++){
+						if(document.getElementById('case_'+k+'_'+id)){
+							document.getElementById('case_'+k+'_'+id).checked=statut;
+						}
+					}
+				}
+				changement();
+			}
+		</script>\n";
+		//============================================
+
 	} else {
 		echo "</table>\n";
 		echo "<p class='grand'><b>Attention :</b> aucune classe n'a été définie dans la base GEPI !</p>\n";
 	}
-
-
-
-
-
-
-	//============================================
-	// AJOUT: boireaus
-	echo "<script type='text/javascript' language='javascript'>
-		function modif_case(id,statut,mode){
-			// id: numéro de:
-			//					. colonne correspondant au login
-			//					. ligne
-			// statut: true ou false
-			// mode: col ou lig
-			if(mode=='col'){
-				for(k=0;k<$nombre_lignes;k++){
-					if(document.getElementById('case_'+id+'_'+k)){
-						document.getElementById('case_'+id+'_'+k).checked=statut;
-					}
-				}
-			}
-			else{
-				for(k=0;k<".count($tab_statut).";k++){
-					if(document.getElementById('case_'+k+'_'+id)){
-						document.getElementById('case_'+k+'_'+id).checked=statut;
-					}
-				}
-			}
-			changement();
-		}
-	</script>\n";
-	//============================================
 ?>
 </form>
 <?php require("../lib/footer.inc.php");?>

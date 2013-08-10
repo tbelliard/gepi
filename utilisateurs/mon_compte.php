@@ -2462,6 +2462,10 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		echo "/><label for='mod_disc_mail_cat_incluse_NC' id='texte_mod_disc_mail_cat_incluse_NC'>Incidents dont la nature n'est pas catégorisée.</label><br />";
 		if($chaine_champs_checkbox_mod_discipline!="") {$chaine_champs_checkbox_mod_discipline.=", ";}
 		$chaine_champs_checkbox_mod_discipline.="'mod_disc_mail_cat_incluse_NC'";
+
+		if(getSettingValue('DisciplineNaturesRestreintes')=='2') {
+			echo "<p>Vous utilisez une liste figée/restreinte de natures d'incidents.<br />Vous ne devriez pas avoir d'incidents de nature non catégorisée.</p>\n";
+		}
 	}
 
 	if($sql2!="") {
@@ -2515,6 +2519,12 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 	echo "</p>\n";
 
 	if(isset($message_mod_discipline)) {echo $message_mod_discipline;}
+
+	if(getSettingValue('DisciplineNaturesRestreintes')!='2') {
+		echo "<p style='text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em> Les natures d'incidents ne sont pas figées/restreintes.<br />
+		Les utilisateurs peuvent taper librement de nouvelles natures d'incidents.<br />
+		Si vous refusez de recevoir les incidents de nature non catégorisée, vous risquez de rater un incident qui sera par la suite catégorisé dans une catégorie que vous suivez.</p>";
+	}
 
 	echo "</fieldset>\n";
 	echo "</form>\n";
@@ -2837,6 +2847,7 @@ if(getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut']))) {
 
 if(getSettingAOui("active_bulletins")) {
 	$sql="SELECT 1=1 FROM signature_droits WHERE login='".$_SESSION['login']."';";
+	//echo "$sql<br />";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
 		$tab_signature=get_tab_signature_bull();
