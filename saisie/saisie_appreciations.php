@@ -1899,8 +1899,10 @@ echo "<script type='text/javascript'>
 	}
 \n";
 
-if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
-	echo $chaine_test_vocabulaire;
+if(getSettingValue('active_recherche_lapsus')!='n') {
+	if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
+		echo $chaine_test_vocabulaire;
+	}
 }
 
 echo "

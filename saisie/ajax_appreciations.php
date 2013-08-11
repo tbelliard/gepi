@@ -172,50 +172,62 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 		}
 	}
 
-	// Vérification des fautes de frappe/lapsus que l'on saisisse une appréciation ou un avis du conseil de classe
-	//if($mode=='verif') {
-		$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
-			terme VARCHAR(255) NOT NULL DEFAULT '',
-			terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
-			PRIMARY KEY (id)
-			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		log_ajax_app($sql);
-		$create_table=mysql_query($sql);
-		if(!$create_table) {
-			echo "<span style='color:red'>Erreur lors de la création de la table 'vocabulaire'.</span>";
-		}
-		else {
-			$sql="SELECT * FROM vocabulaire;";
-			//echo "$sql<br />";
+	if(getSettingValue('active_recherche_lapsus')=='n') {
+		// on renvoie une réponse valide
+		header("HTTP/1.0 200 OK");
+		echo ' ';
+	}
+	else {
+		// Vérification des fautes de frappe/lapsus que l'on saisisse une appréciation ou un avis du conseil de classe
+		//if($mode=='verif') {
+			$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
+				terme VARCHAR(255) NOT NULL DEFAULT '',
+				terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
+				PRIMARY KEY (id)
+				) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			log_ajax_app($sql);
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				while($lig_voc=mysql_fetch_object($res)) {
-					$tab_voc[]=$lig_voc->terme;
-					$tab_voc_corrige[]=$lig_voc->terme_corrige;
-					log_ajax_app("Tableau des corrections possibles : ".$lig_voc->terme." -> ".$lig_voc->terme_corrige);
-				}
-
-				/*
-				$tab_tmp=explode(" ",preg_replace("//"," ",$appreciation);
-				for($loop=0;$loop<count($tab_tmp);$loop++) {
-					
-				}
-				*/
-				$appreciation_test=" ".preg_replace("/[',;\.]/"," ",casse_mot($appreciation,'min'))." ";
-				//echo "$appreciation_test<br />";
-				$chaine_retour="";
-				for($loop=0;$loop<count($tab_voc);$loop++) {
-					if(preg_match("/ ".$tab_voc[$loop]." /i",$appreciation_test)) {
-						if($chaine_retour=="") {$chaine_retour.="<span style='font-weight:bold'>Suspicion de faute de frappe&nbsp;: </span>";}
-						$chaine_retour.=$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]."<br />";
-						log_ajax_app("Suspicion de faute de frappe : ".$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]);
+			$create_table=mysql_query($sql);
+			if(!$create_table) {
+				echo "<span style='color:red'>Erreur lors de la création de la table 'vocabulaire'.</span>";
+			}
+			else {
+				$sql="SELECT * FROM vocabulaire;";
+				//echo "$sql<br />";
+				log_ajax_app($sql);
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while($lig_voc=mysql_fetch_object($res)) {
+						$tab_voc[]=$lig_voc->terme;
+						$tab_voc_corrige[]=$lig_voc->terme_corrige;
+						log_ajax_app("Tableau des corrections possibles : ".$lig_voc->terme." -> ".$lig_voc->terme_corrige);
 					}
-				}
 
-				if($chaine_retour!="") {
-					echo $chaine_retour;
-					log_ajax_app("\$chaine_retour=".$chaine_retour);
+					/*
+					$tab_tmp=explode(" ",preg_replace("//"," ",$appreciation);
+					for($loop=0;$loop<count($tab_tmp);$loop++) {
+					
+					}
+					*/
+					$appreciation_test=" ".preg_replace("/[',;\.]/"," ",casse_mot($appreciation,'min'))." ";
+					//echo "$appreciation_test<br />";
+					$chaine_retour="";
+					for($loop=0;$loop<count($tab_voc);$loop++) {
+						if(preg_match("/ ".$tab_voc[$loop]." /i",$appreciation_test)) {
+							if($chaine_retour=="") {$chaine_retour.="<span style='font-weight:bold'>Suspicion de faute de frappe&nbsp;: </span>";}
+							$chaine_retour.=$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]."<br />";
+							log_ajax_app("Suspicion de faute de frappe : ".$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]);
+						}
+					}
+
+					if($chaine_retour!="") {
+						echo $chaine_retour;
+						log_ajax_app("\$chaine_retour=".$chaine_retour);
+					}
+					else {
+						// et on renvoie une réponse valide
+						header("HTTP/1.0 200 OK");
+						echo ' ';
+					}
 				}
 				else {
 					// et on renvoie une réponse valide
@@ -223,14 +235,8 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 					echo ' ';
 				}
 			}
-			else {
-				// et on renvoie une réponse valide
-				header("HTTP/1.0 200 OK");
-				echo ' ';
-			}
-		}
-	//}
-
+		//}
+	}
 }
 else {
 	// et on renvoie une réponse valide

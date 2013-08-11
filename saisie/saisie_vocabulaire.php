@@ -63,6 +63,16 @@ if((isset($export_vocab))&&($export_vocab=="y")) {
 	die();
 }
 
+if((isset($_POST['active_recherche_lapsus']))&&(($_POST['active_recherche_lapsus']=="y")||($_POST['active_recherche_lapsus']=="n"))) {
+	check_token();
+
+	if(!saveSetting('active_recherche_lapsus', $_POST['active_recherche_lapsus'])) {
+		$msg="Erreur lors de l'enregistrement de l'activation/désactivation de la recherche de lapsus.<br />";
+	}
+	else {
+		$msg="Enregistrement de l'activation/désactivation de la recherche de lapsus effectué.<br />";
+	}
+}
 
 //================================
 $titre_page = "Saisie de vocabulaire";
@@ -244,6 +254,20 @@ if(isset($compteur_nb_vocab)) {
 		echo "<span style='color:red;'>$nb_suppr suppression(s) effectuée(s).</span><br />\n";
 	}
 }
+
+$checked1=" checked";
+$checked2="";
+if(getSettingValue('active_recherche_lapsus')=="n") {
+	$checked1="";
+	$checked2=" checked";
+}
+echo "<h2>Recherche de lapsus</h2>
+
+<p>Activation/désactivation de la recherche de lapsus lors de la saisie des appréciations&nbsp;:</p>
+<blockquote>
+	<input type='radio' name='active_recherche_lapsus' id='active_recherche_lapsus_y' value='y'$checked1 /><label for='active_recherche_lapsus_y'>Activer la recherche</label><br />
+	<input type='radio' name='active_recherche_lapsus' id='active_recherche_lapsus_n' value='n'$checked2 /><label for='active_recherche_lapsus_n'>Désactiver la recherche</label>
+</blockquote>\n";
 
 echo "<p>Saisie d'une expression et sa correction&nbsp;:</p>\n";
 echo "<blockquote>\n";

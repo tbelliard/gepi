@@ -380,4 +380,17 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "&nbsp;-> Initialisation du témoin d'activation/désactivation de la recherche de lapsus : ";
+$active_recherche_lapsus=getSettingValue('active_recherche_lapsus');
+if ($active_recherche_lapsus=="") {
+	if (!saveSetting("active_recherche_lapsus", 'y')) {
+		$result .= msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= msj_ok("Ok !");
+	}
+} else {
+	$result .= msj_present("déjà faite");
+}
+
 ?>
