@@ -436,14 +436,14 @@ if(!isset($step)) {
 
 	echo "<p>Vous allez importer des fichiers d'exports XML de Sconet.<br />\nLes fichiers requis au cours de la procédure sont dans un premier temps ElevesAvecAdresses.xml, puis le fichier ResponsablesAvecAdresses.xml</p>\n";
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<form enctype='multipart/form-data' id='form_envoi_xml' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
 
 	//echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=hidden name='step' value='0' />\n";
 	//echo "<input type=hidden name='mode' value='1' />\n";
 	echo "<p>Sélectionnez le fichier <b>ElevesAvecAdresses.xml</b> (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
-	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" /><br />\n";
+	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" id='input_xml_file' /><br />\n";
 	if ($gepiSettings['unzipped_max_filesize']>=0) {
 		echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesAvecAdresses.zip)</p>";
 	}
@@ -596,7 +596,25 @@ if(!isset($step)) {
 	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label>\n";
 	//==============================
 
-	echo "<p><input type='submit' value='Valider' /></p>\n";
+	echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_file() {
+		fichier=document.getElementById('input_xml_file').value;
+		//alert(fichier);
+		if(fichier=='') {
+			alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+		}
+		else {
+			document.getElementById('form_envoi_xml').submit();
+		}
+	}
+</script>\n";
+
 	echo "</form>\n";
 
 	echo "<p>Il est recommandé d'importer les informations élèves et de ne passer qu'ensuite à l'import des informations responsables.<br />\n";
@@ -2727,7 +2745,7 @@ else{
 				//echo "\$nblignes=$nblignes<br />";
 
 
-				echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+				echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' id='formulaire' method='post'>\n";
 				//==============================
 				// AJOUT pour tenir compte de l'automatisation ou non:
 				echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
@@ -2752,7 +2770,9 @@ else{
 				$tabdiv_infobulle[]=creer_div_infobulle('chgt_email_non_pris_en_compte',$titre_infobulle,"",$texte_infobulle,"",18,0,'y','y','n','n');
 
 
-				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+				//echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+				echo "<p><input type='submit' id='input_submit' value='Valider' />
+				<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>";
 				//echo "<p align='center'><input type=submit value='Enregistrer les modifications' /></p>\n";
 
 				//echo "<table border='1'>\n";
@@ -3867,7 +3887,36 @@ else{
 					echo "<input type='hidden' name='step' value='5' />\n";
 				}
 
-				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				echo "<p><input type='submit' id='input_submit2' value='Valider' />
+<input type='button' id='input_button2' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_submit2').style.display='none';
+	document.getElementById('input_button').style.display='';
+	document.getElementById('input_button2').style.display='';
+
+	function check_champ_coche(){
+		var nb_coche=0;
+		for(i=0;i<$cpt;i++){
+			if(document.getElementById('check_'+i)){
+				if(document.getElementById('check_'+i).checked==true) {
+					nb_coche++;
+					break;
+				}
+			}
+		}
+		if(nb_coche==0) {
+			if(confirm(\"Vous n'avez cochez aucune case.\\nSi ce n'est pas une erreur, confirmez en cliquant sur OK.\\nSinon, annulez pour cocher des cases avant de valider.\")) {
+				document.getElementById('formulaire').submit();
+			}
+		}
+		else {
+			document.getElementById('formulaire').submit();
+		}
+	}
+</script>\n";
+				//echo "<p align='center'><input type=submit value='Valider' /></p>\n";
 				//echo "<p align='center'><input type=submit value='Enregistrer les modifications' /></p>\n";
 
 				echo add_token_field();
@@ -5327,14 +5376,14 @@ else{
 			}
 
 
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<form enctype='multipart/form-data' id='form_envoi_xml' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 			echo "<p>Veuillez fournir le fichier <strong>ResponsablesAvecAdresses.xml</strong>&nbsp;:<br />\n";
 			if(isset($_GET['maj_eleve_sautee'])) {echo "<input type=\"hidden\" name=\"maj_eleve_sautee\" value=\"y\" />";}
-			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" /><br />\n";
+			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" id='input_xml_file' /><br />\n";
 			echo "<input type='hidden' name='step' value='10' />\n";
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
@@ -5402,7 +5451,27 @@ else{
 			//echo "</p>\n";
 			//==============================
 
-			echo "<p><input type='submit' value='Valider' /></p>\n";
+			//echo "<p><input type='submit' value='Valider' /></p>\n";
+
+			echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_file() {
+		fichier=document.getElementById('input_xml_file').value;
+		//alert(fichier);
+		if(fichier=='') {
+			alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+		}
+		else {
+			document.getElementById('form_envoi_xml').submit();
+		}
+	}
+</script>\n";
+
 			echo "</form>\n";
 
 			echo "<p><br /></p>\n";
@@ -8340,7 +8409,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 
 			$ne_pas_proposer_redoublonnage_adresse=isset($_POST['ne_pas_proposer_redoublonnage_adresse']) ? $_POST['ne_pas_proposer_redoublonnage_adresse'] : "n";
 
-			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<form action='".$_SERVER['PHP_SELF']."' id='formulaire' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
@@ -8443,7 +8512,9 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 			if(mysql_num_rows($res1)>0) {
 
 				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
-				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+				//echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+				echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>\n";
 
 				// Affichage du tableau
 				//echo "<table border='1'>\n";
@@ -9241,7 +9312,38 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				//echo "<input type='hidden' name='step' value='15' />\n";
 				echo "<input type='hidden' name='step' value='16' />\n";
 				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
-				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+				//echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+
+				echo "<p><input type='submit' id='input_submit2' value='Valider' />
+<input type='button' id='input_button2' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_submit2').style.display='none';
+	document.getElementById('input_button').style.display='';
+	document.getElementById('input_button2').style.display='';
+
+	function check_champ_coche(){
+		var nb_coche=0;
+		for(i=0;i<$cpt;i++){
+			if(document.getElementById('check_'+i)){
+				if(document.getElementById('check_'+i).checked==true) {
+					nb_coche++;
+					break;
+				}
+			}
+		}
+		if(nb_coche==0) {
+			if(confirm(\"Vous n'avez cochez aucune case.\\nSi ce n'est pas une erreur, confirmez en cliquant sur OK.\\nSinon, annulez pour cocher des cases avant de valider.\")) {
+				document.getElementById('formulaire').submit();
+			}
+		}
+		else {
+			document.getElementById('formulaire').submit();
+		}
+	}
+</script>\n";
+
 			}
 			else{
 				// On est à la fin on peut passer à step=12 et effectuer les changements confirmés.
@@ -9936,7 +10038,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			$suppr_resp_non_assoc=isset($_POST['suppr_resp_non_assoc']) ? $_POST['suppr_resp_non_assoc'] : 'y';
 			
 
-			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' id='formulaire' method='post'>\n";
 			echo add_token_field();
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
@@ -10255,7 +10357,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			if(mysql_num_rows($res0)>0){
 
 				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
-				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				//echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				echo "<p><input type='submit' id='input_submit' value='Valider' />
+				<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>\n";
 
 				// Affichage du tableau
 
@@ -10748,7 +10852,38 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					echo "<p>Aucune ligne de différence n'est proposée après contrôle.</p>\n";
 				}
 				else {
-					echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+					//echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+
+					echo "<p><input type='submit' id='input_submit2' value='Valider' />
+<input type='button' id='input_button2' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_submit2').style.display='none';
+	document.getElementById('input_button').style.display='';
+	document.getElementById('input_button2').style.display='';
+
+	function check_champ_coche(){
+		var nb_coche=0;
+		for(i=0;i<$cpt;i++){
+			if(document.getElementById('check_'+i)){
+				if(document.getElementById('check_'+i).checked==true) {
+					nb_coche++;
+					break;
+				}
+			}
+		}
+		if(nb_coche==0) {
+			if(confirm(\"Vous n'avez cochez aucune case.\\nSi ce n'est pas une erreur, confirmez en cliquant sur OK.\\nSinon, annulez pour cocher des cases avant de valider.\")) {
+				document.getElementById('formulaire').submit();
+			}
+		}
+		else {
+			document.getElementById('formulaire').submit();
+		}
+	}
+</script>\n";
+
 				}
 
 				echo "<p><br /></p>\n";

@@ -11,6 +11,7 @@ Bulletins:
 - Affichage de l'appréciation concernant le groupe classe dans la page Mes moyennes et appréciations.
 - Possibilité de modifier l'accès parent/élève aux appréciations depuis les pages 
   de saisie de l'avis du conseil de classe dans le cas où l'accès est basculé manuellement.
+- Possibilité de désactiver la recherche de lapsus lors des saisies d'appréciations et avis du conseil de classe.
 
 Graphes:
 - Possibilité de définir la taille du texte sous le graphique.
