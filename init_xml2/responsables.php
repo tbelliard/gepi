@@ -178,16 +178,34 @@
 
 			echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>\n";
 
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<form enctype='multipart/form-data' id='form_envoi_xml' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo add_token_field();
 			echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml&nbsp;:<br />\n";
-			echo "<input type=\"file\" size=\"65\" name=\"responsables_xml_file\" /><br />\n";
+			echo "<input type=\"file\" size=\"65\" name=\"responsables_xml_file\" id='input_xml_file' /><br />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
 				echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET (<em>Ex&nbsp;: ResponsablesAvecAdresses.zip</em>).</p>";
 			}
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
-			echo "<p><input type='submit' value='Valider' /></p>\n";
+			//echo "<p><input type='submit' value='Valider' /></p>\n";
+			echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_file() {
+		fichier=document.getElementById('input_xml_file').value;
+		//alert(fichier);
+		if(fichier=='') {
+			alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+		}
+		else {
+			document.getElementById('form_envoi_xml').submit();
+		}
+	}
+</script>\n";
 			echo "</form>\n";
 		}
 		else {
