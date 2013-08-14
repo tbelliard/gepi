@@ -83,9 +83,17 @@ if($ne_pas_tester_les_changements_de_classes=="") {$ne_pas_tester_les_changement
 // INSERT INTO setting SET name='no_test_chgt_clas', value='n';
 // UPDATE setting SET value='n' WHERE name='no_test_chgt_clas';
 
+$gepi_non_plugin_lcs_mais_recherche_ldap=false;
+if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("../secure/config_ldap.inc.php"))) {
+	$lcs_ldap_people_dn=$ldap_base_dn;
+	$lcs_ldap_host=$ldap_host;
+	$lcs_ldap_port=$ldap_port;
+	$gepi_non_plugin_lcs_mais_recherche_ldap=true;
+}
+
 $auth_sso=getSettingValue("auth_sso") ? getSettingValue("auth_sso") : "";
 
-if($auth_sso=='lcs') {
+if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 	function connect_ldap($l_adresse,$l_port,$l_login,$l_pwd) {
 		$ds = @ldap_connect($l_adresse, $l_port);
 		if($ds) {
@@ -1258,6 +1266,9 @@ else{
 					}
 					*/
 
+					// A FAIRE: Ajouter une case pour choisir si on désactive le compte de l'élève et des parents quand la date de sortie est passée
+					//          On peut souhaiter laisser l'accès un peu au-delà...
+					//          Pour les parents, il faudrait tester si il reste des élèves associés dont la date de sortie n'est pas passée.
 					$temoin_date_sortie="n";
 					if(isset($eleves[$i]['date_sortie'])) {
 						echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." a quitté l'établissement le ".$eleves[$i]['date_sortie']."<br />\n";
@@ -4236,7 +4247,7 @@ else{
 				$vide_table = mysql_query($sql);
 
 				//echo "<p>\$auth_sso=$auth_sso</p>";
-				if($auth_sso=='lcs') {
+				if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 					// On se connecte au LDAP
 					$ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
 					//echo "<p>CONNEXION AU LDAP</p>";
@@ -4312,7 +4323,7 @@ else{
 							// Initialisation
 							$login_eleve="";
 
-							if($auth_sso=='lcs') {
+							if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 
 								// LDAP attribute
 								$ldap_people_attr = array(
@@ -4670,7 +4681,7 @@ else{
 
 						// J'ai un doute sur la pertinence de faire des requêtes différentes pour les cas LCS ou non
 						// Dans l'annuaire LDAP, une classe de 5 A2 va apparaitre comme 5_A2, mais on ne cherche pas dans le LDAP la classe de l'élève, il me semble.
-						if($auth_sso=='lcs') {
+						if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 							$sql="SELECT c.id FROM classes c WHERE c.classe='".preg_replace("/'/","_",preg_replace("/ /","_",$lig_ele->divcod))."';";
 						}
 						else {
@@ -4687,7 +4698,7 @@ else{
 							echo "<input type='hidden' name='id_classe[$cpt]' value='$lig_classe->id' />\n";
 							echo "</td>\n";
 
-							if($auth_sso=='lcs') {
+							if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 								$sql="SELECT p.num_periode FROM periodes p, classes c
 													WHERE p.id_classe=c.id AND
 															c.classe='".preg_replace("/'/","_",preg_replace("/ /","_",$lig_ele->divcod))."'

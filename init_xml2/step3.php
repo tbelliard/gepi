@@ -41,6 +41,16 @@ if (!checkAccess()) {
     die();
 }
 
+$auth_sso=getSettingValue("auth_sso") ? getSettingValue("auth_sso") : "";
+
+$gepi_non_plugin_lcs_mais_recherche_ldap=false;
+if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("../secure/config_ldap.inc.php"))) {
+	$lcs_ldap_people_dn=$ldap_base_dn;
+	$lcs_ldap_host=$ldap_host;
+	$lcs_ldap_port=$ldap_port;
+	$gepi_non_plugin_lcs_mais_recherche_ldap=true;
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 3";
 require_once("../lib/header.inc.php");
@@ -236,7 +246,8 @@ else {
     $del = @mysql_query("DELETE FROM tempo2");
 
 	//if(getSettingValue('use_sso')=="lcs") {
-	if(getSettingValue('auth_sso')=="lcs") {
+	//if(getSettingValue('auth_sso')=="lcs") {
+	if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 		// On va récupérer les logins du LCS
 		require_once("../lib/lcs.inc.php");
 		$ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
@@ -407,7 +418,8 @@ else {
 
 				//echo "Avant auth_sso<br />";
 				//if(getSettingValue('use_sso')=="lcs") {
-				if(getSettingValue('auth_sso')=="lcs") {
+				//if(getSettingValue('auth_sso')=="lcs") {
+				if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 					$lcs_eleve_en_erreur="y";
 					if($reg_elenoet!='') {
 						$login_eleve=get_lcs_login($reg_elenoet, 'eleve');

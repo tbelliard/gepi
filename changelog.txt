@@ -26,6 +26,7 @@ Cahier de textes:
 - Possibilité d'afficher la liste des documents joints à un CDT.
 - Possibilité pour les parents et élèves de pointer leurs travaux faits ou non.
 - Possibilité de redimensionner les infobulles dans l'affichage semaine.
+- Possibilité d'envoyer par mail une portion du cahier de textes.
 
 Absences2:
 - Possibilité de modifier les dates/heure de début et fin d'une saisie depuis la page de saisie d'un traitement.
