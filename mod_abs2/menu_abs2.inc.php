@@ -68,7 +68,7 @@ if(($_SESSION['statut']=='cpe')||
     echo "title='Liste des saisies'>Saisies</a></li>\n";
 
     echo "<li><a href='liste_traitements.php' ";
-    if($url_end=='liste_traitements.php'|| $url_end=='visu_traitement.php' || $url_end=='enregistrement_modif_traitement.php') {echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";}
+    if($url_end=='liste_traitements.php'|| $url_end=='visu_traitement.php' || $url_end=='enregistrement_modif_traitement.php' || $url_end=='traitements_par_lots.php') {echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";}
     else {echo "style='background-color:#f9f9de;' ";}
     echo "title='Traitement'>Traitements</a></li>\n";
 

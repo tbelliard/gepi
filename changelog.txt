@@ -31,6 +31,7 @@ Cahier de textes:
 Absences2:
 - Possibilité de modifier les dates/heure de début et fin d'une saisie depuis la page de saisie d'un traitement.
 - Accès à l'onglet 'Saisir un groupe' pour les statuts 'autre' avec le droit 'Saisir les absences de tous les élèves'.
+- Possibilité de créer des traitements et notifications par lots.
 
 Discipline:
 - Affichage par tranches des incidents à traiter (pour limiter le temps de chargement de la page).

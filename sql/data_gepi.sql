@@ -1219,3 +1219,4 @@ INSERT INTO droits SET id='/cahier_texte_2/ajax_cdt.php', administrateur='F', pr
 INSERT INTO droits VALUES ('/cahier_notes_admin/creation_conteneurs_par_lots.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Création de conteneurs/boites par lots', '1');
 INSERT INTO setting SET name='GepiPeutCreerBoitesProf', value='yes';
 INSERT INTO setting SET name='active_recherche_lapsus', value='y';
+INSERT INTO droits SET id='/mod_abs2/traitements_par_lots.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Abs2: Creation lot de traitements',statut='';

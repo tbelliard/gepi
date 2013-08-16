@@ -61,6 +61,14 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
     die("acces interdit");
 }
 
+// 20130814
+if ((isset($_POST["creation_lot_traitements"]))&&($_POST["creation_lot_traitements"]=="yes")) {
+    // On ne fait pas un header("Location:...");
+    // Avec include, les variables POSTées sont récupérées dans la page incluse... mais on reste en apparence sur absences_du_jour.php
+    include('traitements_par_lots.php');
+    die();
+}
+
 if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
     include('creation_traitement.php');
 }
@@ -487,14 +495,19 @@ $eleve_col = $query
 			<input type="hidden" id="creation_notification" name="creation_notification" value="no"/>
 			<input type="hidden" id="ajout_traitement" name="ajout_traitement" value="no"/>
 			<input type="hidden" id="id_traitement" name="id_traitement" value=""/>
+			<input type="hidden" id="creation_lot_traitements" name="creation_lot_traitements" value="no"/>
 			<p>
 			<div dojoType="dijit.form.DropDownButton" style="display: inline">
 				<span>Ajouter au traitement</span>
+				<?php
+					// 20130814
+					// Ajouter un type de "traitement" redirigeant vers une nouvelle page sans créer immédiatement de id_traitement... pour les traitements par lots (cas des grèves,...): Même traitements/notifications pour tous
+				?>
 				<div dojoType="dijit.Menu" style="display: inline">
-					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.getElementById('creation_lot_traitements').value = 'no'; document.creer_traitement.submit();">
 						Créer un nouveau traitement
 					</button>
-					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.getElementById('creation_lot_traitements').value = 'no'; document.creer_traitement.submit();">
 						Créer une nouvelle notification
 					</button>
 
@@ -503,21 +516,26 @@ $eleve_col = $query
 	if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
 	$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
 	echo '
-					<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; document.creer_traitement.submit();">
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; document.creer_traitement.submit();">
 						Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')
 					</button>'."\n";
 	}
 ?>
+
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'no'; document.getElementById('ajout_traitement').value = 'no'; document.getElementById('creation_lot_traitements').value = 'yes'; document.creer_traitement.submit();">
+						Créer un lot de traitements
+					</button>
+
 				</div>
 			</div>
 
 			<div dojoType="dijit.form.DropDownButton" style="display: inline">
 				<span>Ajouter au traitement (popup)</span>
 				<div dojoType="dijit.Menu" style="display: inline">
-					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('creation_lot_traitements').value = 'no'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
 						Créer un nouveau traitement
 					</button>
-					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement);">
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_notification').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.getElementById('creation_lot_traitements').value = 'no'; pop_it(document.creer_traitement);">
 						Créer une nouvelle notification
 					</button>
 <?php
@@ -525,7 +543,7 @@ $eleve_col = $query
 	if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
 		$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
 		echo '
-					<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; pop_it(document.creer_traitement);">
+					<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; pop_it(document.creer_traitement);">
 						Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().') dans une popup
 					</button>'."\n";
 	}
@@ -785,7 +803,7 @@ $eleve_col = $query
 				if($nb_checkbox_eleve_courant==1) {
 					$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
 				}
-				$ligne_courante.='document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.creer_traitement.submit();">';
+				$ligne_courante.='document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; document.creer_traitement.submit();">';
 				$ligne_courante.=' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
 				$ligne_courante.='</button>';
 			}
@@ -793,10 +811,10 @@ $eleve_col = $query
 			if($nb_checkbox_eleve_courant==1) {
 				$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
 			}
-			$ligne_courante.='document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
+			$ligne_courante.='document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; document.creer_traitement.submit();">
 				Créer un nouveau traitement
 			</button>';
-			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
+			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; document.creer_traitement.submit();">
 				Créer une nouvelle notification
 			</button>';
 			$ligne_courante.='</div></div><br/>';
@@ -809,7 +827,7 @@ $eleve_col = $query
 				if($nb_checkbox_eleve_courant==1) {
 					$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
 				}
-				$ligne_courante.='document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">';
+				$ligne_courante.='document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">';
 				$ligne_courante.=' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
 				$ligne_courante.='</button>';
 			}
@@ -818,10 +836,10 @@ $eleve_col = $query
 			if($nb_checkbox_eleve_courant==1) {
 				$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
 			}
-			$ligne_courante.='document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
+			$ligne_courante.='document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
 				Créer un nouveau traitement (fenêtre)
 			</button>';
-			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
+			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
 				Créer une nouvelle notification (fenêtre)
 			</button>';
 			$ligne_courante.='</div></div><br/>';
@@ -834,7 +852,7 @@ $eleve_col = $query
 				if($nb_checkbox_eleve_courant==1) {
 					$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
 				}
-				$ligne_courante.='document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; pop_it(document.creer_traitement);">';
+				$ligne_courante.='document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; pop_it(document.creer_traitement);">';
 				$ligne_courante.=' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
 				$ligne_courante.='</button>';
 			}
@@ -843,10 +861,10 @@ $eleve_col = $query
 			if($nb_checkbox_eleve_courant==1) {
 				$ligne_courante.="if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
 			}
-			$ligne_courante.='document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
+			$ligne_courante.='document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; pop_it(document.creer_traitement);">
 				Créer un nouveau traitement (popup)
 			</button>';
-			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
+			$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_notification\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; pop_it(document.creer_traitement);">
 				Créer une nouvelle notification (popup)
 			</button>';
 			$ligne_courante.='</div></div>';
@@ -876,20 +894,20 @@ $eleve_col = $query
     <div dojoType="dijit.form.DropDownButton" style="display: inline">
 	<span>Ajouter Les saisies cochées à un traitement</span>
 	<div dojoType="dijit.Menu" style="display: inline">
-	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
+	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; document.creer_traitement.submit();">
 		Créer un nouveau traitement
 	    </button>
-	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement)">
+	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; pop_it(document.creer_traitement)">
 		Créer un nouveau traitement dans une popup
 	    </button>
     <?php
     $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
     if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
 	$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-	echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; document.creer_traitement.submit();">'."\n";
+	echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; document.creer_traitement.submit();">'."\n";
 	echo '	    Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')'."\n";
 	echo '	</button>'."\n";
-	echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; pop_it(document.creer_traitement);">'."\n";
+	echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; pop_it(document.creer_traitement);">'."\n";
 	echo '	    Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().') dans une popup'."\n";
 	echo '	</button>'."\n";
     }
