@@ -89,6 +89,117 @@ function choix_heure($champ_heure,$div_choix_heure) {
 	}
 }
 
+function recherche_protagoniste($rech_nom,$page) {
+	$rech_nom=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸]/","",$rech_nom);
+
+	echo "<div style='float:left; width:40%'>\n";
+	$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%';";
+	$res_ele=mysql_query($sql);
+
+	$nb_ele=mysql_num_rows($res_ele);
+
+	if($nb_ele==0){
+		// On ne devrait pas arriver là.
+		echo "<p>Aucun nom d'élève ne contient la chaine $rech_nom.</p>\n";
+	}
+	else{
+		echo "<p>La recherche a retourné <strong>$nb_ele</strong> réponse";
+		if($nb_ele>1) {echo "s";}
+		echo ":</p>\n";
+		echo "<table style='border:1px;' class='boireaus'><caption class='invisible'>Liste des élèves</caption>\n";
+		echo "<tr>\n";
+		//echo "<th>Elève</th>\n";
+		echo "<th>Sélectionner</th>\n";
+		echo "<th>Elève</th>\n";
+		echo "<th>Classe(s)</th>\n";
+		echo "</tr>\n";
+		$alt=1;
+		$cpt1=0;
+		while($lig_ele=mysql_fetch_object($res_ele)) {
+			$ele_login=$lig_ele->login;
+			$ele_nom=$lig_ele->nom;
+			$ele_prenom=$lig_ele->prenom;
+			//echo "<strong>$ele_nom $ele_prenom</strong>";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+			echo "<td>\n";
+			echo "<input type='checkbox' name='ele_login[]' id='ele_login_$cpt1' value=\"$ele_login\" />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='ele_login_$cpt1' style='cursor:pointer;'>".htmlspecialchars(casse_mot($ele_nom, 'maj')." ".casse_mot($ele_prenom, 'majf2'))."</label>";
+
+			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
+			$res_clas=mysql_query($sql);
+			if(mysql_num_rows($res_clas)==0) {
+				echo "<td>\n";
+				echo "aucune classe";
+				echo "</td>\n";
+			}
+			else {
+				echo "<td>\n";
+				$cpt=0;
+				while($lig_clas=mysql_fetch_object($res_clas)) {
+					if($cpt>0) {echo ", ";}
+					//echo $lig_clas->classe;
+					echo htmlspecialchars($lig_clas->classe);
+					$cpt++;
+				}
+				echo "</td>\n";
+			}
+			echo "</tr>\n";
+			$cpt1++;
+		}
+		echo "</table>\n";
+	}
+	echo "</div>\n";
+
+	echo "<div style='float:left; width:40%'>\n";
+	$sql="SELECT * FROM utilisateurs WHERE (nom LIKE '%$rech_nom%' AND statut!='responsable' AND statut!='eleve');";
+	$res_utilisateur=mysql_query($sql);
+
+	$nb_utilisateur=mysql_num_rows($res_utilisateur);
+
+	if($nb_utilisateur==0){
+		// On ne devrait pas arriver là.
+		echo "<p>Aucun nom d'utilisateur ne contient la chaine $rech_nom.</p>\n";
+	}
+	else{
+		echo "<p>La recherche a retourné <strong>$nb_utilisateur</strong> réponse";
+		if($nb_utilisateur>1) {echo "s";}
+		echo ":</p>\n";
+		echo "<table style='border:1px;' class='boireaus'><caption class='invisible'>Liste des  utilisateurs</caption>\n";
+		echo "<tr>\n";
+		echo "<th>Sélectionner</th>\n";
+		echo "<th>Utilisateur</th>\n";
+		echo "<th>Statut</th>\n";
+		echo "</tr>\n";
+		$alt=1;
+		$cpt1=0;
+		while($lig_utilisateur=mysql_fetch_object($res_utilisateur)) {
+			$utilisateur_login=$lig_utilisateur->login;
+			$utilisateur_nom=$lig_utilisateur->nom;
+			$utilisateur_prenom=$lig_utilisateur->prenom;
+			$utilisateur_statut=$lig_utilisateur->statut;
+			//echo "<strong>$utilisateur_nom $utilisateur_prenom</strong>";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+			echo "<td>\n";
+			echo "<input type='checkbox' name='u_login[]' id='u_login_$cpt1' value=\"$utilisateur_login\" />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='u_login_$cpt1' style='cursor:pointer;'>".htmlspecialchars(casse_mot($utilisateur_nom, 'maj')." ".casse_mot($utilisateur_prenom, 'majf2'))."</label>";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='u_login_$cpt1' style='cursor:pointer;'>".$utilisateur_statut."</label>";
+			echo "</td>\n";
+			echo "</tr>\n";
+			$cpt1++;
+		}
+		echo "</table>\n";
+	}
+	echo "</div>\n";
+}
+
 function recherche_ele($rech_nom,$page) {
 	$rech_nom=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸]/","",$rech_nom);
 
@@ -385,7 +496,7 @@ if($etat_incident!='clos') {
 	elseif(isset($is_posted)) {
 		//echo "is_posted<br />";
 
-		if((!isset($_POST['recherche_eleve']))&&(!isset($_POST['recherche_utilisateur']))) {
+		if(!isset($_POST['recherche_protagoniste'])) {
 			//echo "Ce n'est pas une recherche_eleve ni recherche_utilisateur<br />";
 
 			if(!isset($id_incident)) {
@@ -599,7 +710,7 @@ if($etat_incident!='clos') {
 	
 			if(isset($id_incident)) {
 				//echo "Ce n'est pas une recherche_eleve ni recherche_utilisateur avec $id_incident (2)<br />";
-
+				// 20130819
 				for($i=0;$i<count($ele_login);$i++) {
 					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."';";
 					//echo "$sql<br />\n";
@@ -735,7 +846,8 @@ $texte_mail,
 $destinataires, 
 $headers);
 </pre>";
-*/		else {
+*/
+								else {
 									$source_file=$document_joint['tmp_name'];
 									$dossier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i];
 									if(!file_exists($dossier_courant)) {
@@ -1122,16 +1234,18 @@ if($etat_incident!='clos') {
 <div id='s_menu' style='float:right; border: 1px solid black; background-color: white; width: 15em; margin-left:0.5em;'>
     <ul style='margin:0px;'>   
 <?php
+// 20130819
 if($step!=0) {  
 ?>
         <li>
             <a href='saisie_incident.php?step=0<?php if(isset($id_incident)) {echo "&amp;id_incident=".$id_incident;} ?>' 
                onclick='return confirm_abandon (this, change, "<?php echo $themessage; ?>")'>
-                Ajouter des élèves
+                Ajouter des protagonistes
             </a>
         </li>
 <?php
 }
+/*
 if($step!=1) { 
 ?>
         <li>
@@ -1143,6 +1257,7 @@ if($step!=1) {
         
 <?php
 }
+*/
 if($step!=2) {
 ?>
         <li>
@@ -1653,6 +1768,7 @@ if(isset($id_incident) ) {
     }
 
 //==========================================
+	// 20130819
     if($step==0) {
 	// AJOUT DE PROTAGONISTES ELEVES A L'INCIDENT
 ?>
@@ -1661,15 +1777,15 @@ if(isset($id_incident) ) {
 <blockquote>
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire1'>
     <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
-    <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Recherche d'élèves</legend>
+    <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Recherche de protagonistes</legend>
     <p>
-            Afficher les élèves dont le <strong>nom</strong> contient: 
+            Afficher les élèves et personnels dont le <strong>nom</strong> contient: 
             <input type='text' name='rech_nom' value='' />
             <input type='hidden' name='page' value='<?php echo $page; ?>' />
             <input type='hidden' name='step' value='<?php echo $step; ?>' />
             <input type='hidden' name='is_posted' value='y' />
             <input type='submit' 
-                   name='recherche_eleve' 
+                   name='recherche_protagoniste' 
                    value='Rechercher'
                    onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')" />
     </p>
@@ -1683,16 +1799,17 @@ if(isset($id_incident) ) {
     </form>
     
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire2'>
-<?php if((isset($_POST['recherche_eleve']))||(isset($id_classe))) {?>
+<?php if((isset($_POST['recherche_protagoniste']))||(isset($id_classe))) {?>
         <fieldset style='border: 1px solid grey; margin-top:0.5em; background-image: url("../images/background/opacite50.png");'>
-        <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Choix des élèves</legend>
+        <legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Choix des protagonistes</legend>
 <?php }?>
         <p>
             <?php echo add_token_field(); ?>
         </p>
  <?php
-         if(isset($_POST['recherche_eleve'])) {
-             recherche_ele($rech_nom,$_SERVER['PHP_SELF']);
+	if(isset($_POST['recherche_protagoniste'])) {
+             //recherche_ele($rech_nom,$_SERVER['PHP_SELF']);
+             recherche_protagoniste($rech_nom,$_SERVER['PHP_SELF']);
 ?>
         <p class='center'><input type='submit' name='Ajouter' value='Ajouter' /></p>
  <?php
@@ -1777,7 +1894,7 @@ if(isset($id_incident) ) {
 ?>
             <input type='hidden' name='is_posted' value='y' />
         </p>
-<?php if((isset($_POST['recherche_eleve']))||(isset($id_classe))) {?>
+<?php if((isset($_POST['recherche_protagoniste']))||(isset($id_classe))) {?>
         </fieldset>
 <?php }?>
     </form>
@@ -1804,7 +1921,8 @@ if(isset($id_incident) ) {
 		$res_clas=mysql_query($sql);
 		if(mysql_num_rows($res_clas)>0) {   
 ?>
-    <p>Ou choisir un élève dans une classe:</p>
+    <div style='float:left; width:58%; padding:0.5em; margin-right:1%; border: 1px solid grey; margin-top:0.5em; background-image: url("../images/background/opacite50.png");'>
+    <p>Ou<br /><span class='bold'>choisir un élève dans une classe&nbsp;:</span></p>
 <?php
 
 			$tab_txt=array();
@@ -1825,17 +1943,177 @@ if(isset($id_incident) ) {
     <blockquote>
         <?php tab_liste($tab_txt,$tab_lien,4);?>
     </blockquote>
+    </div>
 <?php
+		}
 	}
-}
 ?>
-</blockquote>
+<!--/blockquote-->
 <?php
 
-}
+
+
+//================================================================
+echo "<div style='float:left; width: 38%; padding:0.5em; border: 1px solid grey; margin-top:0.5em; background-image: url(\"../images/background/opacite50.png\");'>\n";
+	//$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' ORDER BY statut;";
+	$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' AND statut!='eleve' AND etat='actif' ORDER BY statut;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		// Ca ne doit pas arriver;o)
+?>
+	<p style='color:red;'>La table 'utilisateurs' ne comporte aucun compte???</p>
+	<p><br /></p>
+<?php
+		require("../lib/footer.inc.php");
+		die();
+	}
+?>
+	<!--blockquote-->
+<?php
+	if(isset($categ_u)) {
+		$sql="SELECT login, nom, prenom, civilite FROM utilisateurs WHERE statut='$categ_u' ORDER BY nom, prenom;";
+		$res2=mysql_query($sql);
+		if(mysql_num_rows($res2)==0) {
+			// Ca ne doit pas arriver;o)
+?>
+		<p style='color:red;'>
+			La table 'utilisateurs' ne comporte pas de comptes de statut '<?php echo $categ_u; ?>'.
+		</p>
+		<p><br /></p>
+<?php
+			require("../lib/footer.inc.php");
+			die();
+		}
+?>
+		<form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire'>
+			<fieldset style='border: 1px solid grey; margin-top:0.5em; background-image: url("../images/background/opacite50.png");'>
+			<legend style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>Choix de personnels (<?php echo $categ_u;?>)</legend>
+<?php
+		echo "
+				".add_token_field();
+?>
+				<p>
+					<input type='hidden' name='step' value='<?php echo $step; ?>' />
+					<input type='hidden' name='is_posted' value='y' />
+				</p>
+<?php
+		if(isset($id_incident)) {
+			echo "
+				<p><input type='hidden' name='id_incident' value='$id_incident' /></p>\n";
+		}
+
+		$nombreligne=mysql_num_rows($res2);
+
+		$nbcol=3;
+
+		// Nombre de lignes dans chaque colonne:
+		$nb_par_colonne=round($nombreligne/$nbcol);
+?>
+				<table width='100%'>
+					<caption class="invisible">Tableau de choix des <?php echo $categ_u; ?></caption>
+					<tr valign='top' align='center'>
+						<td align='left'>
+<?php
+		$i = 0;
+		$alt=1;
+?>
+							<table class='boireaus'>
+								<caption class="invisible">Colonne de <?php echo $categ_u; ?></caption>
+<?php
+		while ($i < $nombreligne){
+			$lig2=mysql_fetch_object($res2);
+
+			if(($i>0)&&(round($i/$nb_par_colonne)==$i/$nb_par_colonne)){
+?>
+							</table>
+						</td>
+						<td align='left'>
+<?php
+					$alt=1;
+?>
+							<table class='boireaus'>
+								<caption class="invisible">Colonne de <?php echo $categ_u; ?></caption>
+<?php
+			}
+
+			$alt=$alt*(-1);
+?>
+                        <tr class='lig<?php echo $alt; ?>'>
+                            <td>
+                                <input type='checkbox' 
+                                       name='u_login[]' 
+                                       id='u_login_<?php echo $i; ?>' 
+                                       value="<?php echo $lig2->login; ?>" />
+                            </td>
+                            <td>
+                                <label for='u_login_<?php echo $i; ?>' 
+                                       style='cursor:pointer;'>
+                                    <?php echo $lig2->civilite; ?> 
+                                    <?php echo mb_strtoupper($lig2->nom); ?> 
+                                    <?php echo ucfirst(mb_substr($lig2->prenom,0,1)); ?>.
+                                </label>
+                            </td>
+<?php
+			$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
+											WHERE du.login_user = '".$lig2->login."'
+											AND du.id_statut = ds.id;";
+			$query = mysql_query($sql);
+			$result = mysql_fetch_array($query);
+?>
+                            <td><?php echo $result['nom_statut']; ?></td>
+                        </tr>
+<?php
+			echo "\n";
+
+			$i++;
+		}
+?>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <p>
+            <input type='submit' name='Ajouter' value='Ajouter' />
+        </p>
+        </fieldset>
+    </form>
+    <p><br /></p>
+<?php
+	}
+?>
+    <p>
+        Ou<br />
+        <span class='bold'>Choisir une catégorie de personnels&nbsp;:</span>
+    </p>
+    <blockquote>
+<?php
+	while($lig=mysql_fetch_object($res)) {
+?>
+        <p>
+            <a href='saisie_incident.php?step=0&amp;categ_u=<?php echo $lig->statut; ?><?php if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}; ?>'
+               onclick='return confirm_abandon (this, change, "<?php echo $themessage; ?>")'>
+                <?php echo ucfirst($lig->statut); ?>
+            </a>
+        </p>
+<?php
+	}
+?>
+    </blockquote>
+<!--/blockquote-->
+</blockquote>
+
+</div>
+<?php
+//================================================================
+
+
+
+
+} // Fin du step=0
 elseif($step==1) {
 	//==========================================
 	// AJOUT DE PERSONNELS COMME PROTAGONISTES DE L'INCIDENT
+	// 20130819
 ?>
 <p class='bold'>Ajouter des personnels&nbsp;:</p>
 <?php

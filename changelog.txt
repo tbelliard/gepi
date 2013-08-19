@@ -40,6 +40,7 @@ Discipline:
 - Possibilité de saisir certaines sanctions en tant que professeur (liste à préciser dans Définir les sanctions).
 - Possibilité de restreindre dans Mon compte ce qui a été défini dans Définir les destinataires d'alertes,
   les catégories d'incidents pour lesquelles on souhaite être averti.
+- Saisie d'incident: Recherche des élèves et personnels dans le même formulaire.
 
 Modèles Ooo:
 - Possibilité de gérer des modèles OOo en compte scolarité ou cpe.
