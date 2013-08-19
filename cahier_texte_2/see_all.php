@@ -574,7 +574,7 @@ if(($id_groupe=='Toutes_matieres')&&
 		$lignes_date_courante.="<div class='infobulle_corps' style='border:1px solid black; margin:3px; padding: 3px;'>\n";
 		$lignes_date_courante.="<h3 class='see_all_h3'>$tab_dates[$i]</h3>\n";
 		$alt=1;
-		$lignes_date_courante.="<table class='boireaus' summary='' width='100%'>\n";
+		$lignes_date_courante.="<table class='boireaus' border='1' summary='' width='100%'>\n";
 		$lignes_date_courante.="<tr>\n";
 		$lignes_date_courante.="<th>Enseignement</th>\n";
 		if($afficher_compte_rendus_seulement=='n') {
@@ -733,12 +733,11 @@ if(($id_groupe=='Toutes_matieres')&&
 			$sujet="Cahier de textes";
 			$message="Bonjour(soir),\nVoici le contenu du cahier de textes à compter du ".$date_debut_cdt_mail.":\n".$lignes_cdt_mail;
 			$destinataire=$_POST['mail_dest'];
+			$header_suppl="";
 			if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
-				$envoi=envoi_mail($sujet, $message, $destinataire, "Bcc:".$_SESSION['email']."\r\n");
+				$header_suppl.="Bcc:".$_SESSION['email']."\r\n";
 			}
-			else {
-				$envoi=envoi_mail($sujet, $message, $destinataire);
-			}
+			$envoi=envoi_mail($sujet, $message, $destinataire, $header_suppl, "html");
 			if($envoi) {
 				$message="Le cahier de textes a été expédié à l'adresse mail choisie '".$_POST['mail_dest']."'.";
 				echo "<p style='color:green; text-align:center;'>$message</p>

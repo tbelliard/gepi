@@ -54,7 +54,7 @@ include_once dirname(__FILE__).'/share-pdf.inc.php';
  * @param string $destinataire Le destinataire
  * @param string $ajout_headers Text à ajouter dans le header
  */
-function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
+function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_ou_html="plain") {
 
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 
@@ -65,7 +65,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
   
   $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
   $headers .= "MIME-Version: 1.0\r\n";
-  $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+  $headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
   $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
   $headers .= $ajout_headers;
 
@@ -74,6 +74,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 		$subject,
 		$message,
 	  $headers);
+	return $envoi;
 }
 
 /**
