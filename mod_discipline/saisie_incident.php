@@ -1800,7 +1800,7 @@ if(isset($id_incident) ) {
 				$tab_txt[]=$lig_clas->classe;
 				if(isset($id_incident)) {
 					//$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."&amp;id_incident=$id_incident";
-					$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."&amp;id_incident=$id_incident'onclick='return confirm_abandon (this, change, \"$themessage\")";
+					$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."&amp;id_incident=$id_incident' onclick='return confirm_abandon (this, change, \"$themessage\")";
 				}
 				else {
 					$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
