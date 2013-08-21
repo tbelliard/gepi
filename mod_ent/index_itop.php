@@ -344,9 +344,10 @@ if(isset($_POST['enregistrement_eleves'])) {
 	$ligne=isset($_POST['ligne']) ? $_POST['ligne'] : NULL;
 
 	$nb_reg=0;
+	$nb_pas_dans_eleves=0;
 
 	if(!isset($ligne)) {
-		$msg="Aucun enregistrement d'association n'a été demandée.<br />";
+		$msg="Aucun enregistrement d'association n'a été demandé.<br />";
 	}
 	else {
 		$ligne_tempo2=array();
@@ -409,26 +410,45 @@ if(isset($_POST['enregistrement_eleves'])) {
 					$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
 					$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[0])."';";
+					//echo "$sql<br />";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)==0) {
 						$naissance=(isset($tab[5])) ? $tab[5] : "";
 						if(!preg_match("#[0-9]{2}/[0-9]{2}/[0-9]{4}#", $naissance)) {$naissance="";}
 
+						/*
 						if($naissance!="") {
 							$sql="SELECT * FROM eleves WHERE nom='".mysql_real_escape_string($tab[1])."' AND prenom='".mysql_real_escape_string($tab[2])."' AND naissance='".formate_date2($naissance, "jj/mm/aaaa", "aaaammjj")."'";
 						}
 						else {
 							$sql="SELECT * FROM eleves WHERE nom='".mysql_real_escape_string($tab[1])."' AND prenom='".mysql_real_escape_string($tab[2])."' ORDER BY naissance;";
 						}
+						*/
+						// Les accents ne sont pas correctement interprétés
+						$nom_remplacement=preg_replace("/[^A-Za-z]/","%",$tab[1]);
+						$prenom_remplacement=preg_replace("/[^A-Za-z]/","%",$tab[2]);
+						if($naissance!="") {
+							$sql="SELECT * FROM eleves WHERE nom LIKE '".$nom_remplacement."' AND prenom LIKE '".$prenom_remplacement."' AND naissance='".formate_date2($naissance, "jj/mm/aaaa", "aaaammjj")."'";
+						}
+						else {
+							$sql="SELECT * FROM eleves WHERE nom LIKE '".$nom_remplacement."' AND prenom LIKE '".$prenom_remplacement."' ORDER BY naissance;";
+						}
+						//echo "$sql<br />";
 						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==1) {
+						if(mysql_num_rows($res)==0) {
+							$msg.="Aucun enregistrement dans la table 'eleves' pour ".$tab[1]." ".$tab[2]." !<br />\n";
+							$nb_pas_dans_eleves++;
+						}
+						elseif(mysql_num_rows($res)==1) {
 							// Un seul élève correspond
 							$lig=mysql_fetch_object($res);
 
 							$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='$lig->login';";
+							//echo "$sql<br />";
 							$test=mysql_query($sql);
 							if(mysql_num_rows($test)==0) {
 								$sql="INSERT INTO sso_table_correspondance SET login_gepi='$lig->login', login_sso='".mysql_real_escape_string($tab[0])."';";
+								//echo "$sql<br />";
 								$insert=mysql_query($sql);
 								if(!$insert) {
 									$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$lig->login."<br />\n";
@@ -439,6 +459,7 @@ if(isset($_POST['enregistrement_eleves'])) {
 							}
 							else {
 								$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($tab[0])."' WHERE login_gepi='$lig->login';";
+								//echo "$sql<br />";
 								$update=mysql_query($sql);
 								if(!$update) {
 									$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$lig->login."<br />\n";
@@ -465,8 +486,12 @@ if(isset($_POST['enregistrement_eleves'])) {
 		}
 	}
 
+	if($nb_pas_dans_eleves>0) {
+		$msg.="$nb_pas_dans_eleves comptes de l'ENT n'ont pas été trouvés dans la table 'eleves' de Gepi.<br />Sont-ce des élèves de l'année précédente ?<br />\n";
+	}
+
 	if($nb_reg>0) {
-		$msg.="$nb_reg enregistrement(s) effectué(s).<br />\n";
+		$msg.="<br />$nb_reg enregistrement(s) effectué(s).<br />\n";
 	}
 
 	$mode="consult_eleves";
@@ -914,7 +939,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if($msg!="") {
-	echo "<div style='position:absolute; top:100px; left:20px; width:18px;'><a href='#lien_retour'><img src='../images/down.png' width='18' height='18' title='Passer les messages' /></a></div>\n";
+	echo "<div style='position:absolute; top:100px; left:20px; width:18px;' class='noprint'><a href='#lien_retour'><img src='../images/down.png' width='18' height='18' title='Passer les messages' /></a></div>\n";
 }
 
 $module_suhosin_actif="n";
@@ -951,7 +976,8 @@ $create_table=mysql_query($sql);
 
 <?php
 
-echo "<a name='lien_retour'></a><p class='bold'>
+echo "<a name='lien_retour'></a>
+<p class='bold noprint'>
 <a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 if(!isset($mode)) {
@@ -1008,6 +1034,54 @@ if(!isset($mode)) {
 
 	echo "
 </ul>";
+
+	//======================================================================
+
+	//﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe;Etat;Date de désactivation
+	//DUPRE;Thomas;thomas.dupre;MENESR$12345;mdp&*;Thomas.DUPRE@ent27.fr;6 A;Actif
+	echo "<p> ou générer des Fiches Bienvenue&nbsp;:</p>
+<ul>";
+
+	$sql="SELECT 1=1 FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		echo "
+	<li>Aucune association élève n'est encore enregistrée.</li>";
+	}
+	else {
+		echo "
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_eleves'>Générer les Fiches Bienvenue élèves</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
+	}
+
+	//$sql="SELECT rp.*, s.* FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login ORDER BY rp.nom, rp.prenom LIMIT 1;";
+	$sql="SELECT 1=1 FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		echo "
+	<li>Aucune association responsable n'est encore enregistrée.</li>";
+	}
+	else {
+		echo "
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_responsables'>Générer les Fiches Bienvenue responsables</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
+	}
+
+	//$sql="SELECT u.*, s.* FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable' LIMIT 1;";
+	$sql="SELECT 1=1 FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		echo "
+	<li>Aucune association n'est encore enregistrée pour les personnels de l'établissement.</li>";
+	}
+	else {
+		echo "
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_personnels'>Générer les Fiches Bienvenue personnels</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
+	}
+
+	echo "
+</ul>
+<p>Cette rubrique permet de fournir les fichiers CSV de rénitialisation de mots de passe générés par l'ENT.</p>";
+
+
 
 	$sql="SELECT 1=1 FROM sso_table_correspondance;";
 	$res=mysql_query($sql);
@@ -1502,13 +1576,15 @@ if($mode=="consult_eleves") {
 			<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value=\"$lig->login\" onchange=\"change_graisse($cpt)\" /></td>
 			<td><label for='suppr_$cpt'>$lig->login_sso</label></td>
 			<td><label for='suppr_$cpt'>$lig->login</label></td>
-			<td><label for='suppr_$cpt'>";
+			<td>";
 		$sql="SELECT auth_mode, etat FROM utilisateurs WHERE login='".$lig->login."' AND statut='eleve';";
 		$test_u=mysql_query($sql);
 		if(mysql_num_rows($test_u)==0) {
-			echo "<span title='Pas de compte utilisateur pour cet élève.'>-</span>";
+			echo "<a href='../utilisateurs/create_eleve.php?filtrage=Afficher&amp;critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."&amp;afficher_tous_les_eleves=n' title='Pas de compte utilisateur dans Gepi pour cet élève.
+Créer le compte?' target='_blank'>-</a>";
 		}
 		else {
+			echo "<label for='suppr_$cpt'>";
 			$lig_u=mysql_fetch_object($test_u);
 			if($lig_u->etat=='actif') {
 				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' /></div>\n";
@@ -1517,8 +1593,9 @@ if($mode=="consult_eleves") {
 				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' /></div>\n";
 			}
 			echo $lig_u->auth_mode;
+			echo "</label>";
 		}
-		echo "</label></td>
+		echo "</td>
 			<td><label for='suppr_$cpt'><span id='nom_$cpt'>$lig->nom</span></label></td>
 			<td><label for='suppr_$cpt'><span id='prenom_$cpt'>$lig->prenom</span></label></td>
 			<td><label for='suppr_$cpt'>$classe</label></td>
@@ -2624,6 +2701,357 @@ if($mode=="consult_personnels") {
 	require("../lib/footer.inc.php");
 	die();
 }
+
+//==================================================================================
+if($mode=="publipostage_eleves") {
+	echo "
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+</p>";
+
+	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+
+	echo "
+<h2 class='noprint'>Fiches bienvenue élèves</h2>";
+
+	if(!isset($csv_file)) {
+		echo "<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
+	".add_token_field()."
+	<input type='hidden' name='mode' value='publipostage_eleves' />
+	<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />
+	<input type='submit' value='Envoyer' />
+</form>
+
+<p><br /></p>
+
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Cette rubrique est destinée à générer des Fiches Bienvenue avec compte et mot de passe de l'ENT.<br />
+	<!--
+		Ne seront pris en compte que les comptes ENT pour lesquels le rapprochement avec un compte Gepi est effectué.
+		Ce n'est pas le cas.
+		Il faudrait enregistrer davantage d'informations dans sso_table_correspondance pour s'en assurer.
+	-->
+	</li>
+	<li>Modifier les <a href='../gestion/modify_impression.php?fiche=eleves'>Fiches Bienvenue élèves</a></li>
+	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
+	﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe;Etat;Date de désactivation<br />
+	DUPRE;Thomas;thomas.dupre;MENESR$12345;mdp&*;Thomas.DUPRE@ent27.fr;6 A;Actif<br />
+	...</li>
+</ul>\n";
+	}
+	else {
+		check_token(false);
+		$fp=fopen($csv_file['tmp_name'],"r");
+
+		$impression=getSettingValue('ImpressionFicheEleve');
+
+		if(!$fp){
+			echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		while (!feof($fp)) {
+			$ligne = trim(fgets($fp, 4096));
+			if((substr($ligne,0,3) == "\xEF\xBB\xBF")) {
+				$ligne=substr($ligne,3);
+			}
+
+			if($ligne!='') {
+				$tab=explode(";", ensure_utf8($ligne));
+				if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
+					/*
+					$sql="SELECT e.* FROM eleves e, sso_table_correspondance stc WHERE stc.login_gepi=e.login AND ;";
+					$res_ele=mysql_query($sql);
+					if(mysql_fetch_object($res_ele)>0) {
+					*/
+						echo "<table>
+	<tr>
+		<th style='text-align:left;'>A l'attention de </th>
+		<th>: </th>
+		<td>".$tab[0]." ".$tab[1]."</td>
+	</tr>
+	<tr>
+		<th style='text-align:left;'>Login ENT</th>
+		<th>: </th>
+		<td>".$tab[2]."</td>
+	</tr>
+	<tr>
+		<th style='text-align:left;'>Mot de passe ENT</th>
+		<th>: </th>
+		<td>".$tab[4]."</td>
+	</tr>";
+						/*
+						echo "
+	<tr>
+		<th style='text-align:left;'>Email Gepi</th>
+		<th>: </th>
+		<td>".$tab[4]."</td>
+	</tr>";
+						*/
+						echo "
+	<tr>
+		<th style='text-align:left;'>Email ENT</th>
+		<th>: </th>
+		<td>".$tab[5]."</td>
+	</tr>
+	<tr>
+		<th style='text-align:left;'>Classe</th>
+		<th>: </th>
+		<td>".$tab[6]."</td>
+	</tr>
+</table>
+$impression
+<p class='saut'></p>";
+					//}
+
+				}
+			}
+		}
+
+	}
+
+	require("../lib/footer.inc.php");
+	die();
+}
+
+//==================================================================================
+if($mode=="publipostage_responsables") {
+	echo "
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+</p>";
+
+	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+
+	echo "
+<h2 class='noprint'>Fiches bienvenue responsables</h2>";
+
+	if(!isset($csv_file)) {
+		echo "<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
+	".add_token_field()."
+	<input type='hidden' name='mode' value='publipostage_responsables' />
+	<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />
+	<input type='submit' value='Envoyer' />
+</form>
+
+<p><br /></p>
+
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Cette rubrique est destinée à générer des Fiches Bienvenue avec compte et mot de passe de l'ENT.<br />
+	<!--
+		Ne seront pris en compte que les comptes ENT pour lesquels le rapprochement avec un compte Gepi est effectué.
+		Ce n'est pas le cas.
+		Il faudrait enregistrer davantage d'informations dans sso_table_correspondance pour s'en assurer.
+	-->
+	</li>
+	<li>Modifier les <a href='../gestion/modify_impression.php?fiche=responsables'>Fiches Bienvenue responsables</a></li>
+	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
+	﻿﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Adresse;Code postal;Ville;Nom enfant 1;Prénom enfant 1;Classe enfant 1;Etat;Date de désactivation<br />
+	DUPRE;Denis;denis.dupre1;MENESR$1234567;azerty&*;Denis.DUPRE1@ent27.fr;3 RUE DES PRIMEVERES;27300;BERNAY;DUPRE;Thomas;6 A;Actif<br />
+	...</li>
+</ul>\n";
+	}
+	else {
+		check_token(false);
+		$fp=fopen($csv_file['tmp_name'],"r");
+
+		$impression=getSettingValue('ImpressionFicheParent');
+
+		if(!$fp){
+			echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		while (!feof($fp)) {
+			$ligne = trim(fgets($fp, 4096));
+			if((substr($ligne,0,3) == "\xEF\xBB\xBF")) {
+				$ligne=substr($ligne,3);
+			}
+
+			if($ligne!='') {
+				$tab=explode(";", ensure_utf8($ligne));
+				if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
+					/*
+					$sql="SELECT e.* FROM eleves e, sso_table_correspondance stc WHERE stc.login_gepi=e.login AND ;";
+					$res_ele=mysql_query($sql);
+					if(mysql_fetch_object($res_ele)>0) {
+					*/
+						echo "<table>
+	<tr>
+		<th style='text-align:left;'>A l'attention de </th>
+		<th>: </th>
+		<td>".$tab[0]." ".$tab[1]."</td>
+	</tr>
+	<tr>
+		<th style='text-align:left;'>Login ENT</th>
+		<th>: </th>
+		<td>".$tab[2]."</td>
+	</tr>
+	<tr>
+		<th style='text-align:left;'>Mot de passe ENT</th>
+		<th>: </th>
+		<td>".$tab[4]."</td>
+	</tr>";
+						/*
+						echo "
+	<tr>
+		<th style='text-align:left;'>Email Gepi</th>
+		<th>: </th>
+		<td>".$tab[4]."</td>
+	</tr>";
+						*/
+						echo "
+	<tr>
+		<th style='text-align:left;'>Email ENT</th>
+		<th>: </th>
+		<td>".$tab[5]."</td>
+	</tr>
+	<tr>
+		<th style='text-align:left;'>Adresse</th>
+		<th>: </th>
+		<td>".$tab[6]."<br />".$tab[7]." ".$tab[8]."</td>
+	</tr>
+	<tr>
+		<th style='text-align:left;'>Responsable notamment de</th>
+		<th>: </th>
+		<td>".$tab[9]." ".$tab[10]." (".$tab[11].")</td>
+	</tr>
+</table>
+$impression
+<p class='saut'></p>";
+					//}
+
+				}
+			}
+		}
+
+	}
+
+	require("../lib/footer.inc.php");
+	die();
+}
+
+//==================================================================================
+if($mode=="publipostage_personnels") {
+	echo "
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+</p>";
+
+	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+
+	echo "
+<h2 class='noprint'>Fiches bienvenue professeurs</h2>";
+
+	if(!isset($csv_file)) {
+		echo "<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
+	".add_token_field()."
+	<input type='hidden' name='mode' value='publipostage_personnels' />
+	<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />
+	<input type='submit' value='Envoyer' />
+</form>
+
+<p><br /></p>
+
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Cette rubrique est destinée à générer des Fiches Bienvenue avec compte et mot de passe de l'ENT.<br />
+	<!--
+		Ne seront pris en compte que les comptes ENT pour lesquels le rapprochement avec un compte Gepi est effectué.
+		Ce n'est pas le cas.
+		Il faudrait enregistrer davantage d'informations dans sso_table_correspondance pour s'en assurer.
+	-->
+	</li>
+	<li>Modifier les <a href='../gestion/modify_impression.php'>Fiches Bienvenue professeurs</a></li>
+	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
+	﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe(s);Etat;Date de désactivation<br />
+ZETOFREY;Melanie;melanie.zetofrey;MENESR$12345;azerty&*;Melanie.ZETOFREY@ent27.fr;4 B, 4 D, 5 B, 6 B, 6 D;Actif
+<br />
+	...</li>
+</ul>\n";
+	}
+	else {
+		check_token(false);
+		$fp=fopen($csv_file['tmp_name'],"r");
+
+		$impression=getSettingValue('Impression');
+
+		if(!$fp){
+			echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		while (!feof($fp)) {
+			$ligne = trim(fgets($fp, 4096));
+			if((substr($ligne,0,3) == "\xEF\xBB\xBF")) {
+				$ligne=substr($ligne,3);
+			}
+
+			if($ligne!='') {
+				$tab=explode(";", ensure_utf8($ligne));
+				if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
+					/*
+					$sql="SELECT e.* FROM eleves e, sso_table_correspondance stc WHERE stc.login_gepi=e.login AND ;";
+					$res_ele=mysql_query($sql);
+					if(mysql_fetch_object($res_ele)>0) {
+					*/
+						echo "<table>
+	<tr>
+		<th style='text-align:left;'>A l'attention de </th>
+		<th>: </th>
+		<td>".$tab[0]." ".$tab[1]."</td>
+	</tr>
+	<tr>
+		<th style='text-align:left;'>Login ENT</th>
+		<th>: </th>
+		<td>".$tab[2]."</td>
+	</tr>
+	<tr>
+		<th style='text-align:left;'>Mot de passe ENT</th>
+		<th>: </th>
+		<td>".$tab[4]."</td>
+	</tr>";
+						/*
+						echo "
+	<tr>
+		<th style='text-align:left;'>Email Gepi</th>
+		<th>: </th>
+		<td>".$tab[4]."</td>
+	</tr>";
+						*/
+						echo "
+	<tr>
+		<th style='text-align:left;'>Email ENT</th>
+		<th>: </th>
+		<td>".$tab[5]."</td>
+	</tr>
+	<tr>
+		<th style='text-align:left;'>Classe(s)</th>
+		<th>: </th>
+		<td>".$tab[6]."</td>
+	</tr>
+</table>
+$impression
+<p class='saut'></p>";
+					//}
+
+				}
+			}
+		}
+
+	}
+
+	require("../lib/footer.inc.php");
+	die();
+}
+
+
+
 //==================================================================================
 
 echo "<p style='color:red'>Mode non encore développé</p>\n";
