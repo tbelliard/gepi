@@ -320,7 +320,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	$nouveauItem->chemin='/mod_absences/admin/index.php';	
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->choix_icone('active_module_absence%') ;	
+		$nouveauItem->choix_icone('active_module_absence%',"mod_absences") ;	
 		$nouveauItem->titre="Absences" ;
 		$nouveauItem->expli="Pour gérer le module absences" ;
 		$menuPage[]=$nouveauItem;
@@ -332,7 +332,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	$nouveauItem->chemin='/mod_abs2/admin/index.php';	
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->choix_icone('active_module_absence%') ;	
+		$nouveauItem->choix_icone('active_module_absence',"mod_abs2") ;	
 		$nouveauItem->titre="Absences 2" ;
 		$nouveauItem->expli="Pour gérer le module absences 2 (en cours de developpement)" ;
 		$menuPage[]=$nouveauItem;
