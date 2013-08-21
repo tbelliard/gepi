@@ -107,23 +107,62 @@ class itemGeneral {
  * images/enabled.png ou images/disabled.png
  *
  */
-	function choix_icone($key_setting) 
+	function choix_icone($key_setting, $special="") 
 	{
 		if($key_setting!='')
 		{
-			$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND (value='y' OR value='yes' OR value='2');";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0)
-			{
-				$this->icone['chemin'] = "images/enabled.png";
-				$this->icone['titre'] = "Module actif";
-				$this->icone['alt'] = "Module actif";
+			if($special=="mod_abs2") {
+				$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND value='2';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0)
+				{
+					$this->icone['chemin'] = "images/enabled.png";
+					$this->icone['titre'] = "Module actif";
+					$this->icone['alt'] = "Module actif";
+				}
+				else 
+				{
+					$this->icone['chemin'] = "images/disabled.png";
+					$this->icone['titre'] = "Module inactif";
+					$this->icone['alt'] = "Module inactif";
+				}
 			}
-			else 
-			{
-				$this->icone['chemin'] = "images/disabled.png";
-				$this->icone['titre'] = "Module inactif";
-				$this->icone['alt'] = "Module inactif";
+			elseif($special=="mod_absences") {
+				$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND (value='y' OR value='yes');";
+				$test=mysql_query($sql);
+
+				$sql="SELECT 1=1 FROM setting WHERE name='active_module_absence' AND value='2';";
+				$test2=mysql_query($sql);
+
+				if((mysql_num_rows($test)>0)&&(mysql_num_rows($test2)==0))
+				{
+					$this->icone['chemin'] = "images/enabled.png";
+					$this->icone['titre'] = "Module actif";
+					$this->icone['alt'] = "Module actif";
+				}
+				else 
+				{
+					$this->icone['chemin'] = "images/disabled.png";
+					$this->icone['titre'] = "Module inactif";
+					$this->icone['alt'] = "Module inactif";
+				}
+
+			}
+			else {
+				$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND (value='y' OR value='yes');";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0)
+				{
+					$this->icone['chemin'] = "images/enabled.png";
+					$this->icone['titre'] = "Module actif";
+					$this->icone['alt'] = "Module actif";
+				}
+				else 
+				{
+					$this->icone['chemin'] = "images/disabled.png";
+					$this->icone['titre'] = "Module inactif";
+					$this->icone['alt'] = "Module inactif";
+				}
 			}
 		}
 		else
