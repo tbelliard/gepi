@@ -429,5 +429,21 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'rss_users' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'rss_users'");
+if ($test == -1) {
+	$sql="CREATE TABLE rss_users (id int(11) NOT NULL auto_increment, user_login varchar(30) NOT NULL, user_uri varchar(30) NOT NULL, PRIMARY KEY  (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 $result.="<br />Fin mise à jour<br/>";
 ?>
