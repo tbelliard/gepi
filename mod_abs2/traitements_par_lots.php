@@ -659,8 +659,6 @@ echo "
 			Notification : 
 		</td>
 		<td>
-			Pouvoir saisir les notifications là.<br />
-			Reprendre la page de saisie de notification
 			<table style='background-color:#c7e3ec;'>
 				<tr>
 					<td>
