@@ -72,7 +72,7 @@ $auth_sso=getSettingValue("auth_sso") ? getSettingValue("auth_sso") : "";
 
 $gepi_non_plugin_lcs_mais_recherche_ldap=false;
 if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("../secure/config_ldap.inc.php"))) {
-	$lcs_ldap_people_dn=$ldap_base_dn;
+	$lcs_ldap_base_dn=$ldap_base_dn;
 	$lcs_ldap_host=$ldap_host;
 	$lcs_ldap_port=$ldap_port;
 	$gepi_non_plugin_lcs_mais_recherche_ldap=true;
