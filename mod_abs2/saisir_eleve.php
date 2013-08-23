@@ -443,7 +443,7 @@ foreach($eleve_col as $eleve) {
 ?>
 		  <a href="./saisir_eleve.php?type_selection=id_eleve&amp;id_eleve=<?php echo $eleve->getPrimaryKey() ;?>">
 <?php
-		  echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
+		  echo '<span class="td_abs_eleves" id="label_nom_prenom_eleve_'.$eleve->getPrimaryKey().'" title="Effectuer une saisie pour cet élève.">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
 			if(!isset($current_classe) && $eleve->getClasse()!=null){
                             echo ' '.$eleve->getClasse()->getNom().'';
                         }
@@ -458,7 +458,7 @@ echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: stati
 			echo("</td>");
 
 
-			echo '<td style="vertical-align: top;"><input style="font-size:88%;" name="active_absence_eleve[]" value="'.$eleve->getPrimaryKey().'" type="checkbox"';
+			echo '<td style="vertical-align: top;"><input style="font-size:88%;" name="active_absence_eleve[]" id="active_absence_eleve_'.$eleve->getPrimaryKey().'" value="'.$eleve->getPrimaryKey().'" type="checkbox" onchange="click_active_absence('.$eleve->getPrimaryKey().')" ';
 			if ($eleve_col->count() == 1) {
 			    echo "checked=\"true\" ";
 			}
@@ -476,7 +476,7 @@ echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: stati
 			    }
 			    $valeur = redimensionne_image_petit($photos);
 			    ?>
-		      <div style="float: left;"><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
+		      <div style="float: left;"><label for="active_absence_eleve_<?php echo $eleve->getPrimaryKey(); ?>"><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="" title="Cocher cet élève" id="img_photo_eleve_<?php echo $eleve->getPrimaryKey(); ?>" class='trombine' /></label>
 		      </div>
 <?php
 			}
