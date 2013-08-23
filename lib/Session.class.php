@@ -1505,7 +1505,12 @@ if (getSettingValue("sso_cas_table") == 'yes') {
             $new_compte_utilisateur->setPrenom($user['prenom']);
             $new_compte_utilisateur->setShowEmail('no');
             $new_compte_utilisateur->setStatut($user['statut']);
-            $new_compte_utilisateur->save();
+            //$new_compte_utilisateur->save();
+			if ($new_compte_utilisateur->save()) {
+				return true;
+			} else {
+				return false;
+			}
         }
         
 			} else {
