@@ -3553,7 +3553,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 					}
 					$grandeur_texte='test';
+					// Encadrement
+					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier, "",'LRBT',1,'L');
+					// On repositionne et on inscrit le nom de matière sur la moitié de la hauteur de la cellule
+					$pdf->SetXY($X_bloc_matiere, $Y_decal);
 					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
+					// On note l'ordonnée pour le nom des professeurs
 					$Y_decal = $Y_decal+($espace_entre_matier/2);
 					$pdf->SetXY($X_bloc_matiere, $Y_decal);
 					$pdf->SetFont('DejaVu','',8);
