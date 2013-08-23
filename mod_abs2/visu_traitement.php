@@ -114,6 +114,78 @@ if (isset($message_enregistrement)) {
     echo "<span style='color:green'>".$message_enregistrement."</span>";
 }
 
+//=============================
+$tab_resp_legal_1_ou_2=array();
+$tab_resp_legal_1=array();
+$tab_resp_legal_2=array();
+$select_saisie=array();
+foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
+	/*
+	echo $saisie->getEleve()->getLogin()." - ".$saisie->getEleve()->getEleId()."<br />";
+	echo "<pre>";
+	print_r($saisie->getEleve());
+	echo "</pre><hr />";
+	*/
+	$select_saisie[]=$saisie->getId();
+
+	//$sql="SELECT DISTINCT pers_id FROM responsables2 WHERE ele_id='".$saisie->getEleve()->getEleId()."' AND (resp_legal='1' OR resp_legal='2');";
+	$sql="SELECT DISTINCT pers_id FROM responsables2 WHERE ele_id='".$saisie->getEleve()->getEleId()."' AND resp_legal='1';";
+	//echo "$sql<br />";
+	$res_resp_legal=mysql_query($sql);
+	if(mysql_num_rows($res_resp_legal)>0) {
+		while($lig_resp_legal=mysql_fetch_object($res_resp_legal)) {
+			if(!in_array($lig_resp_legal->pers_id, $tab_resp_legal_1_ou_2)) {
+				$tab_resp_legal_1_ou_2[]=$lig_resp_legal->pers_id;
+			}
+
+			if(!in_array($lig_resp_legal->pers_id, $tab_resp_legal_1)) {
+				$tab_resp_legal_1[]=$lig_resp_legal->pers_id;
+			}
+		}
+	}
+
+	$sql="SELECT DISTINCT pers_id FROM responsables2 WHERE ele_id='".$saisie->getEleve()->getEleId()."' AND resp_legal='2';";
+	//echo "$sql<br />";
+	$res_resp_legal=mysql_query($sql);
+	if(mysql_num_rows($res_resp_legal)>0) {
+		while($lig_resp_legal=mysql_fetch_object($res_resp_legal)) {
+			if(!in_array($lig_resp_legal->pers_id, $tab_resp_legal_1_ou_2)) {
+				$tab_resp_legal_1_ou_2[]=$lig_resp_legal->pers_id;
+			}
+
+			if(!in_array($lig_resp_legal->pers_id, $tab_resp_legal_2)) {
+				$tab_resp_legal_2[]=$lig_resp_legal->pers_id;
+			}
+		}
+	}
+}
+
+if((count($tab_resp_legal_1_ou_2)>2)||(count($tab_resp_legal_1)>1)||(count($tab_resp_legal_2)>1)) {
+
+	echo "
+<form action='traitements_par_lots.php' method='post'>
+	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+
+		<p style='color:red'>Il semble que les saisies sélectionnées concernent plus de deux responsables légaux.<br />
+		Vous devriez peut-être plutôt créer un lot de traitements avec des notifications individuelles plutôt qu'un seul traitement avec une notification commune.</p>
+
+		<input type='hidden' name='menu' value='".$menu."' />
+		<input type='hidden' name='creation_lot_traitements' value='yes' />
+		<input type='hidden' name='suppr_traitement' value='".$traitement->getId()."' />
+		<!--input type='hidden' name='validation_creation_lot_traitements' value='yes' /-->
+		".add_token_field();
+
+for($loop=0;$loop<count($select_saisie);$loop++) {
+	echo "
+		<input type='hidden' name='select_saisie[]' value='".$select_saisie[$loop]."' />";
+}
+	echo "
+		<p><input type='submit' value='Créer un lot de traitements pour les saisies ci-dessous'/></p>
+	</fieldset>
+</form>";
+}
+//=============================
+
 echo '<table class="normal">';
 echo '<tbody>';
 echo '<tr><td>';

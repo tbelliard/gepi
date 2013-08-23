@@ -103,6 +103,76 @@ if ($notification == null) {
     }
 }
 
+//=============================
+if ($notification->getAbsenceEleveTraitement() == null) {
+	echo "plop";
+}
+else {
+	$tab_resp_legal_1=array();
+	$tab_resp_legal_2=array();
+	$tab_resp_legal_1_ou_2=array();
+	$select_saisie=array();
+	foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
+		$select_saisie[]=$saisie->getId();
+
+		//$sql="SELECT DISTINCT pers_id FROM responsables2 WHERE ele_id='".$saisie->getEleve()->getEleId()."' AND (resp_legal='1' OR resp_legal='2');";
+		$sql="SELECT DISTINCT pers_id FROM responsables2 WHERE ele_id='".$saisie->getEleve()->getEleId()."' AND resp_legal='1';";
+		//echo "$sql<br />";
+		$res_resp_legal=mysql_query($sql);
+		if(mysql_num_rows($res_resp_legal)>0) {
+			while($lig_resp_legal=mysql_fetch_object($res_resp_legal)) {
+				if(!in_array($lig_resp_legal->pers_id, $tab_resp_legal_1_ou_2)) {
+					$tab_resp_legal_1_ou_2[]=$lig_resp_legal->pers_id;
+				}
+
+				if(!in_array($lig_resp_legal->pers_id, $tab_resp_legal_1)) {
+					$tab_resp_legal_1[]=$lig_resp_legal->pers_id;
+				}
+			}
+		}
+
+		$sql="SELECT DISTINCT pers_id FROM responsables2 WHERE ele_id='".$saisie->getEleve()->getEleId()."' AND resp_legal='2';";
+		//echo "$sql<br />";
+		$res_resp_legal=mysql_query($sql);
+		if(mysql_num_rows($res_resp_legal)>0) {
+			while($lig_resp_legal=mysql_fetch_object($res_resp_legal)) {
+				if(!in_array($lig_resp_legal->pers_id, $tab_resp_legal_1_ou_2)) {
+					$tab_resp_legal_1_ou_2[]=$lig_resp_legal->pers_id;
+				}
+
+				if(!in_array($lig_resp_legal->pers_id, $tab_resp_legal_2)) {
+					$tab_resp_legal_2[]=$lig_resp_legal->pers_id;
+				}
+			}
+		}
+	}
+
+	if((count($tab_resp_legal_1_ou_2)>2)||(count($tab_resp_legal_1)>1)||(count($tab_resp_legal_2)>1)) {
+		echo "
+<form action='traitements_par_lots.php' method='post'>
+	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+
+		<p style='color:red'>Il semble que les saisies sélectionnées concernent plus de deux responsables légaux.<br />
+		Vous devriez peut-être plutôt créer un lot de traitements avec des notifications individuelles plutôt qu'un seul traitement avec une notification commune.</p>
+
+		<input type='hidden' name='menu' value='".$menu."' />
+		<input type='hidden' name='creation_lot_traitements' value='yes' />
+		<input type='hidden' name='suppr_notification' value='".$notification->getId()."' />
+		<!--input type='hidden' name='validation_creation_lot_traitements' value='yes' /-->
+		".add_token_field();
+
+		for($loop=0;$loop<count($select_saisie);$loop++) {
+			echo "
+		<input type='hidden' name='select_saisie[]' value='".$select_saisie[$loop]."' />";
+		}
+		echo "
+		<p><input type='submit' value='Créer un lot de traitements/notifications pour les saisies ci-dessous'/></p>
+	</fieldset>
+</form>";
+	}
+}
+//=============================
+
 echo '<table class="normal">';
 echo '<tbody>';
 echo '<tr><td>';
@@ -208,7 +278,7 @@ if ($notification->getModifiable()) {
 	if ($type === AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS && (getSettingValue("abs2_sms") != 'y')) {
 	    //pas d'option sms
 	} else {
-	    echo "<option value='$type'";
+	    echo "<option value='$type' id='type_notification_".preg_replace("/[^A-zA-z0-9]/", "_", $type)."'";
 	    if ($notification->getTypeNotification() === $type) {
 		echo ' selected="selected" ';
 	    }
@@ -237,12 +307,28 @@ if ($notification->getErreurMessageEnvoi() != null && $notification->getErreurMe
 echo '<tr><td>';
 echo 'Responsables : ';
 echo '</td><td>';
+$nb_resp_sans_email=0;
+$nb_resp=0;
 foreach ($notification->getResponsableEleves() as $responsable) {
     echo '<div>';
     //$responsable = new ResponsableEleve();
     echo $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom();
 echo ' - Courriel :';
-echo $notification->getEmail();
+//echo $notification->getEmail();
+echo $responsable->getMel();
+/*
+echo "Responsable:<br />
+<pre>";
+print_r($responsable);
+echo "</pre>";
+
+echo "Notification:<br />
+<pre>";
+print_r($notification);
+echo "</pre>";
+*/
+if($notification->getEmail()=="") {$nb_resp_sans_email++;}
+
     if ($notification->getModifiable()) {
 	echo '<div style="float: right;">';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
@@ -260,6 +346,17 @@ echo $notification->getEmail();
     if (!$notification->getResponsableEleves()->isLast()) {
 	echo '<br/>';
     }
+    $nb_resp++;
+}
+if($nb_resp_sans_email==$nb_resp) {
+	echo "<script type='text/javascript'>
+	document.getElementById('type_notification_email').style.color='red';
+</script>";
+}
+elseif($nb_resp_sans_email>0) {
+	echo "<script type='text/javascript'>
+	document.getElementById('type_notification_email').style.color='orange';
+</script>";
 }
 $autresResponsablesInfos=$notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies();
 $nombreResponsablesEligible=0;

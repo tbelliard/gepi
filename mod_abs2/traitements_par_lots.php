@@ -82,6 +82,49 @@ $modif = isset($_POST["modif"]) ? $_POST["modif"] :(isset($_GET["modif"]) ? $_GE
 //$select_saisie = isset($_POST["select_saisie"]) ? $_POST["select_saisie"] :(isset($_GET["select_saisie"]) ? $_GET["select_saisie"] : Null);
 $select_saisie=isset($_POST['select_saisie']) ? $_POST['select_saisie'] : NULL;
 
+// Ménage quand on "transforme" un traitement pour plusieurs parents de familles différentes (visu_traitement.php) en un lot de traitements:
+if(isset($_POST['suppr_traitement'])) {
+	check_token();
+
+	$id_suppr_traitement=$_POST['suppr_traitement'];
+	$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_suppr_traitement);
+	if ($traitement == null) {
+		$message_erreur_traitement="Le traitement initial n'a pas été trouvé, donc non supprimé.<br />";
+	}
+	else {
+		$traitement->delete();
+	}
+}
+
+// Ménage quand on "transforme" une notification pour plusieurs parents de familles différentes (visu_notification.php) en un lot de traitements:
+if(isset($_POST['suppr_notification'])) {
+	check_token();
+
+	$id_suppr_notification=$_POST['suppr_notification'];
+
+	$notification = new AbsenceEleveNotification();
+	$notification = AbsenceEleveNotificationQuery::create()->findPk($id_suppr_notification);
+
+	if ($notification != null) {
+		if ($notification->getAbsenceEleveTraitement() != null) {
+			$id_suppr_traitement=$notification->getATraitementId();
+			$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_suppr_traitement);
+
+			if ($traitement == null) {
+				$message_erreur_traitement="Le traitement initial n'a pas été trouvé, donc non supprimé.<br />";
+			}
+			else {
+				$traitement->delete();
+
+				$notification->delete();
+			}
+		}
+		else {
+			$notification->delete();
+		}
+	}
+}
+
 if ($modif == 'modifier_heures_saisies') {
 
 	$message_enregistrement="";
