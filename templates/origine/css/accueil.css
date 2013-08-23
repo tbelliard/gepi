@@ -160,7 +160,12 @@ background-color: #F00;
 }
 
 .colonne + .colonne {
-	border-left:thin solid #d3d3d3;
+	/*border-left:thin solid #d3d3d3;*/
+	border-left: none;
+}
+
+.div_tableau + .div_tableau > .colonne {
+	border-top: none;
 }
 
 .colonne3 {
