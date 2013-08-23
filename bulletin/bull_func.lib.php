@@ -3627,7 +3627,15 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 						else {
 							// Présentation en ligne des profs
-							$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+							// On n'a pas forcément le formatage choisi pour la classe...
+							//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+							$text_prof="";
+							for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['groupe'][$m]["profs"]["list"]);$loop_prof_grp++) {
+								$tmp_login_prof=$tab_bull['groupe'][$m]["profs"]["list"][$loop_prof_grp];
+								if($loop_prof_grp>0) {$text_prof.=", ";}
+								$text_prof=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+							}
+
 							if($text_prof!="") {
 								$espace_matiere_prof = $espace_entre_matier/2;
 								$hauteur_caractere_prof = 8;
