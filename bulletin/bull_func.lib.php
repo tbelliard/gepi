@@ -3569,7 +3569,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 					}
 					$grandeur_texte='test';
+					// Encadrement
+					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier, "",'LRBT',1,'L');
+					// On repositionne et on inscrit le nom de matière sur la moitié de la hauteur de la cellule
+					$pdf->SetXY($X_bloc_matiere, $Y_decal);
 					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
+					// On note l'ordonnée pour le nom des professeurs
 					$Y_decal = $Y_decal+($espace_entre_matier/2);
 					$pdf->SetXY($X_bloc_matiere, $Y_decal);
 					$pdf->SetFont('DejaVu','',8);
@@ -3638,7 +3643,15 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 						else {
 							// Présentation en ligne des profs
-							$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+							// On n'a pas forcément le formatage choisi pour la classe...
+							//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+							$text_prof="";
+							for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['groupe'][$m]["profs"]["list"]);$loop_prof_grp++) {
+								$tmp_login_prof=$tab_bull['groupe'][$m]["profs"]["list"][$loop_prof_grp];
+								if($loop_prof_grp>0) {$text_prof.=", ";}
+								$text_prof=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+							}
+
 							if($text_prof!="") {
 								$espace_matiere_prof = $espace_entre_matier/2;
 								$hauteur_caractere_prof = 8;
