@@ -140,7 +140,7 @@ echo "<div class='css-panes' id='containDiv'>\n";
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 
 //on affiche une boite de selection pour l'eleve
-echo "<td style='border : 1px solid; padding : 10 px;'>";
+echo "<td style='border : 1px solid; padding : 10px;'>";
 echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 echo '<p>';
 echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
@@ -159,7 +159,7 @@ if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getSta
     $groupe_col = $utilisateur->getGroupes();
 }
 if (!$groupe_col->isEmpty()) {
-	echo "<td style='border : 1px solid; padding : 10 px;'>";
+	echo "<td style='border : 1px solid; padding : 10px;'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
@@ -187,7 +187,7 @@ if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getSta
     $classe_col = $utilisateur->getClasses();
 }
 if (!$classe_col->isEmpty()) {
-	echo "<td style='border : 1px solid; padding : 10 px;'>";
+	echo "<td style='border : 1px solid; padding : 10px;'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_classe"/>';
