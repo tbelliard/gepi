@@ -311,13 +311,13 @@ echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;
 //
 
 echo "<h3 class='gepi'>Mode d'authentification</h3>\n";
-echo "<p><span style='color: red'><strong>Attention !</strong></span> Ne modifiez ces paramètres que si vous savez vraiment ce que vous faites ! Si vous activez l'authentification SSO et que vous ne pouvez plus vous connecter à Gepi en administrateur, vous pouvez utiliser la variable \$block_sso dans le fichier /lib/global.inc pour désactiver le SSO et rebasculer en authentification locale. Il est donc vivement recommandé de créer un compte administrateur local (dont le login n'interfèrera pas avec un login SSO) avant d'activer le SSO.</p>\n";
-echo "<p>Gepi permet d'utiliser plusieurs modes d'authentification en parallèle. Les combinaisons les plus courantes seront une authentification locale avec une authentifcation LDAP, ou bien une authentification locale et une authentification unique (utilisant un serveur d'authentification distinct).</p>\n";
+echo "<p><span style='color: red'><strong>Attention !</strong></span> Ne modifiez ces paramètres que si vous savez vraiment ce que vous faites ! Si vous activez l'authentification SSO et que vous ne pouvez plus vous connecter à Gepi en administrateur, vous pouvez utiliser la variable \$block_sso dans le fichier /lib/global.inc pour désactiver le SSO et rebasculer en authentification locale. Il est donc vivement recommandé de créer un compte administrateur local (<em>dont le login n'interfèrera pas avec un login SSO</em>) avant d'activer le SSO.</p>\n";
+echo "<p>Gepi permet d'utiliser plusieurs modes d'authentification en parallèle. Les combinaisons les plus courantes seront une authentification locale avec une authentification LDAP, ou bien une authentification locale et une authentification unique (<em>utilisant un serveur d'authentification distinct</em>).</p>\n";
 echo "<p>Le mode d'authentification est explicitement spécifié pour chaque utilisateur dans la base de données de Gepi. Assurez-vous que le mode défini correspond effectivement au mode utilisé par l'utilisateur.</p>\n";
-echo "<p>Dans le cas d'une authentification externe (LDAP ou SSO), aucun mot de passe n'est stocké dans la base de données de Gepi.</p>\n";
-echo "<p>Si vous paramétrez un accès LDAP en écriture, les mots de passe des utilisateurs pourront être modifiés directement à travers Gepi, même pour les modes LDAP et SSO. L'administrateur pourra également éditer les données de base de l'utilisateur (nom, prénom, email). Lorsque vous activez l'accès LDAP en écriture, assurez-vous que le paramétrage sur le serveur LDAP permet à l'utilisateur de connexion LDAP de modifier les champs login, mot de passe, nom, prénom et email.</p>\n";
-echo "<p>Si vous utilisez CAS, vous devez entrer les informations de configuration du serveur CAS dans le fichier /secure/config_cas.inc.php (un modèle de configuration se trouve dans le fichier /secure/config_cas.cfg).</p>\n";
-echo "<p>Si vous utilisez l'authentification sur serveur LDAP, ou bien que vous activez l'accès LDAP en écriture, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur (un modèle se trouve dans /secure/config_ldap.cfg).</p>\n";
+echo "<p>Dans le cas d'une authentification externe (<em>LDAP ou SSO</em>), aucun mot de passe n'est stocké dans la base de données de Gepi.</p>\n";
+echo "<p>Si vous paramétrez un accès LDAP en écriture, les mots de passe des utilisateurs pourront être modifiés directement à travers Gepi, même pour les modes LDAP et SSO. L'administrateur pourra également éditer les données de base de l'utilisateur (<em>nom, prénom, email</em>). Lorsque vous activez l'accès LDAP en écriture, assurez-vous que le paramétrage sur le serveur LDAP permet à l'utilisateur de connexion LDAP de modifier les champs login, mot de passe, nom, prénom et email.</p>\n";
+echo "<p>Si vous utilisez CAS, vous devez entrer les informations de configuration du serveur CAS dans le fichier /secure/config_cas.inc.php (<em>un modèle de configuration se trouve dans le fichier /secure/modeles/config_cas-modele.inc.php</em>).</p>\n";
+echo "<p>Si vous utilisez l'authentification sur serveur LDAP, ou bien que vous activez l'accès LDAP en écriture, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur (<em>un modèle se trouve dans /secure/modeles/config_ldap-modele.inc.php</em>).</p>\n";
 echo "<form action=\"options_connect.php\" name=\"form_auth\" method=\"post\">\n";
 echo add_token_field();
 
@@ -389,7 +389,7 @@ echo "<br /><input type='radio' name='auth_sso' value='lemon' id='label_3'";
 if (getSettingValue("auth_sso")=='lemon') echo " checked ";
 echo " /> <label for='label_3' style='cursor: pointer;'>LemonLDAP</label>\n";
 echo "</p>\n";
-echo "<p>Remarque : les changements n'affectent pas les sessions en cours.";
+echo "<p><em>Remarque&nbsp;:</em> les changements n'affectent pas les sessions en cours.";
 
 //on va voir si il y a simplesaml de configuré
 if (file_exists(dirname(__FILE__).'/../lib/simplesaml/metadata/saml20-idp-hosted.php')) {
@@ -398,9 +398,9 @@ if (file_exists(dirname(__FILE__).'/../lib/simplesaml/metadata/saml20-idp-hosted
 	if (getSettingValue("gepiEnableIdpSaml20")=='yes') echo " checked ";
 	echo " /> <label for='gepiEnableIdpSaml20' style='cursor: pointer;'>Fournir une identification SAML 2.0</label>\n";
 	echo "<p>\n";
-	echo "<label for='sacocheUrl' style='cursor: pointer;'>Adresse du service qui va se connecter si possible en https (exemple : https://localhost/mon-appli) </label>\n";
+	echo "<label for='sacocheUrl' style='cursor: pointer;'>Adresse du service qui va se connecter si possible en https (<em>exemple : https://localhost/mon-appli</em>) </label>\n";
 	echo "<input type='text' size='60' name='sacocheUrl' value='".getSettingValue("sacocheUrl")."' id='sacocheUrl' />\n<br/>";
-	echo "<label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (laisser vide si votre instalation de sacoche est mono établissement)</label>\n";
+	echo "<label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (<em>laisser vide si votre instalation de sacoche est mono établissement</em>)</label>\n";
 	echo "<input type='text' size='5' name='sacoche_base' value='".getSettingValue("sacoche_base")."' id='sacoche_base' />\n<br/>";
 	echo 'pour une configuration manuelle, modifier le fichier /lib/simplesaml/metadate/saml20-sp-remote.php';
 	echo "</p>\n";
@@ -420,7 +420,7 @@ echo "</p>\n";
 echo "<p><input type='checkbox' name='sso_scribe' value='yes' id='label_sso_scribe'";
 if (getSettingValue("sso_scribe")=='yes' && $ldap_setup_valid) echo " checked ";
 if (!$ldap_setup_valid) echo " disabled";
-echo " /> <label for='label_sso_scribe' style='cursor: pointer;'>Utilisation avec l'annuaire LDAP de Scribe NG, versions 2.2 et supérieures (permet l'import à la volée de données plus complètes lorsque cet ENT est utilisé et que l'option 'Import à la volée', ci-dessus, est cochée).";
+echo " /> <label for='label_sso_scribe' style='cursor: pointer;'>Utilisation avec l'annuaire LDAP de Scribe NG, versions 2.2 et supérieures (<em>permet l'import à la volée de données plus complètes lorsque cet ENT est utilisé et que l'option 'Import à la volée', ci-dessus, est cochée</em>).";
 if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>\n";
 echo "</label>\n";
 echo "</p>\n";
@@ -450,7 +450,7 @@ echo "</p>\n";
 
 echo "<p><input type='checkbox' name='sso_display_portail' value='yes' id='label_sso_display_portail'";
 if ($gepiSettings['sso_display_portail'] == 'yes') echo " checked ";
-echo " /> <label for='label_sso_display_portail' style='cursor: pointer;'>Sessions SSO uniquement : afficher un lien vers un portail (vous devez renseigner le champ ci-dessous).";
+echo " /> <label for='label_sso_display_portail' style='cursor: pointer;'>Sessions SSO uniquement : afficher un lien vers un portail (<em>vous devez renseigner le champ ci-dessous</em>).";
 echo "</label>\n";
 echo "</p>\n";
 
@@ -461,7 +461,7 @@ echo "</p>\n";
 
 echo "<p><input type='checkbox' name='sso_hide_logout' value='yes' id='label_sso_hide_logout'";
 if ($gepiSettings['sso_hide_logout'] == 'yes') echo " checked='checked' ";
-echo " /> <label for='label_sso_hide_logout' style='cursor: pointer;'>Sessions SSO uniquement : masquer le lien de déconnexion (soyez sûr que l'utilisateur dispose alors d'un moyen alternatif de se déconnecter).";
+echo " /> <label for='label_sso_hide_logout' style='cursor: pointer;'>Sessions SSO uniquement : masquer le lien de déconnexion (<em>soyez sûr que l'utilisateur dispose alors d'un moyen alternatif de se déconnecter</em>).";
 echo "</label>\n";
 echo "</p>\n";
 
@@ -482,7 +482,7 @@ echo "</p>\n";
 
 echo "<br/>\n";
 echo "<p>\n";
-echo "<label for='login_sso_url' style='cursor: pointer;'>Fichier d'identification SSO alternatif (à utiliser à la place de login_sso.php) : </label>\n";
+echo "<label for='login_sso_url' style='cursor: pointer;'>Fichier d'identification SSO alternatif (<em>à utiliser à la place de login_sso.php</em>) : </label>\n";
 echo "<input type='text' size='60' name='login_sso_url' value='".getSettingValue('login_sso_url')."' id='login_sso_url' />\n";
 
 echo "</p>\n";
