@@ -458,6 +458,7 @@ elseif($mode==1) {
 
 		$effectif_total_eleve=0;
 		$effectif_total_eleve_connectes=0;
+		$effectif_total_eleve_en_echec=0;
 
 		$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes=array();
 		// Mettre les pourcentages aussi
@@ -467,6 +468,7 @@ elseif($mode==1) {
 		echo "<th rowspan='2'>Classe</th>\n";
 		echo "<th rowspan='2'>Effectif</th>\n";
 		echo "<th colspan='2'>Elèves</th>\n";
+		echo "<th rowspan='2'>Elèves toujours<br />en échec de<br />mot de passe</th>\n";
 		echo "<th rowspan='2'>Parents</th>\n";
 		echo "<th colspan='2' title=\"Si les deux parents d'un enfant se sont connectés, on ne les compte dans cette colonne que pour 1 (au sens d'une seule famille).\">Parents d'enfants<br />différents</th>\n";
 		echo "<th rowspan='2'>Parents toujours<br />en échec de<br />mot de passe</th>\n";
@@ -499,10 +501,28 @@ elseif($mode==1) {
 				}
 			}
 
+			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec WHERE jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			$nb_ele=mysql_num_rows($res);
+			$tab_ele_en_echec=array();
+			if($nb_ele>0) {
+				while($lig=mysql_fetch_object($res)) {
+					if(!in_array($lig->login, $tab_ele)) {
+						$tab_ele_en_echec[]=$lig->login;
+					}
+				}
+			}
+			$effectif_total_eleve_en_echec+=count($tab_ele_en_echec);
+
 			if(($AccesStatConnexionEle)||($AccesDetailConnexionEle)) {
 				$titre_infobulle="Elèves connectés au moins une fois (<em>".$tab_classe[$i]['classe']."</em>)\n";
 				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_ele)."</div>";
 				$tabdiv_infobulle[]=creer_div_infobulle('div_ele_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+
+				$titre_infobulle="Elèves toujours en échec de connexion (<em>".$tab_classe[$i]['classe']."</em>)\n";
+				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_ele_en_echec)."</div>";
+				$tabdiv_infobulle[]=creer_div_infobulle('div_ele_en_echec_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 			}
 
 			$sql="SELECT DISTINCT l.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
@@ -608,7 +628,7 @@ elseif($mode==1) {
 	
 			if($nb_ele>0) {
 				echo "<td>";
-				if(($AccesStatConnexionEle)||($AccesDetailConnexionEle)) {
+				if(($nb_ele>0)&&(($AccesStatConnexionEle)||($AccesDetailConnexionEle))) {
 					echo "<a href=\"#\" onclick=\"afficher_div_stat('div_ele_$i');return false;\"  onmouseover=\"afficher_div_stat('div_ele_$i')\">";
 					echo $nb_ele."/".$tab_classe[$i]['effectif'];
 					echo "</a>";
@@ -631,7 +651,18 @@ elseif($mode==1) {
 				echo $nb_ele;
 				echo "</td>\n";
 			}
-	
+
+			echo "<td>\n";
+			if((count($tab_ele_en_echec)>0)&&(($AccesStatConnexionEle)||($AccesDetailConnexionEle))) {
+				echo "<a href=\"#\" onclick=\"afficher_div_stat('div_ele_en_echec_$i');return false;\"  onmouseover=\"afficher_div_stat('div_ele_en_echec_$i')\">";
+				echo count($tab_ele_en_echec);
+				echo "</a>";
+			}
+			else {
+				echo count($tab_ele_en_echec);
+			}
+			echo "</td>\n";
+
 			echo "<td>";
 			if($nb_parents>0) {
 				if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
@@ -694,6 +725,7 @@ elseif($mode==1) {
 			echo "<th title=\"Effectif total des élèves\">$effectif_total_eleve</th>\n";
 			echo "<th title=\"Total des élèves connectés avec succès\">$effectif_total_eleve_connectes</th>\n";
 			echo "<th title=\"Pourcentage d'élèves connectés avec succès\">".(100*round($effectif_total_eleve_connectes/$effectif_total_eleve,3))."</th>\n";
+			echo "<th title=\"Total des élèves ayant échoué à se connecter\">".$effectif_total_eleve_en_echec."</th>\n";
 			echo "<th title=\"Total des parents connectés avec succès\">".count($tab_parents_connectes_avec_succes)."</th>\n";
 			echo "<th title=\"Total des familles connectées avec succès\">$nb_parents_differents_toutes_classes</th>\n";
 			echo "<th>-</th>\n";
