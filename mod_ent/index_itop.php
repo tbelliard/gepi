@@ -487,7 +487,7 @@ if(isset($_POST['enregistrement_eleves'])) {
 	}
 
 	if($nb_pas_dans_eleves>0) {
-		$msg.="$nb_pas_dans_eleves comptes de l'ENT n'ont pas été trouvés dans la table 'eleves' de Gepi.<br />Sont-ce des élèves de l'année précédente ?<br />\n";
+		$msg.="<br />$nb_pas_dans_eleves comptes de l'ENT n'ont pas été trouvés dans la table 'eleves' de Gepi.<br />Sont-ce des élèves de l'année précédente ?<br />\n";
 	}
 
 	if($nb_reg>0) {
@@ -1147,11 +1147,13 @@ if($mode=="import_eleves") {
 <h2>Rapprochement des comptes ENT ITOP/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
-	".add_token_field()."
-	<input type='hidden' name='mode' value='import_eleves' />
-	<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />
-	<input type=\"checkbox\" id=\"exclure_classes_anormales\" name=\"exclure_classes_anormales\" value=\"y\" checked /><label for='exclure_classes_anormales'>Exclure les classes nommées BASE_20XXXXXX (<em>plus précisément contenant la chaine 'BASE_20'</em>)</label><br />
-	<input type='submit' value='Envoyer' />
+	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+		".add_token_field()."
+		<input type='hidden' name='mode' value='import_eleves' />
+		<input type=\"file\" size=\"65\" name=\"csv_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />
+		<input type=\"checkbox\" id=\"exclure_classes_anormales\" name=\"exclure_classes_anormales\" value=\"y\" checked /><label for='exclure_classes_anormales'>Exclure les classes nommées BASE_20XXXXXX (<em>plus précisément contenant la chaine 'BASE_20'</em>)</label><br />
+		<input type='submit' value='Envoyer' />
+	</fieldset>
 </form>
 
 <p><br /></p>
@@ -1664,10 +1666,12 @@ if($mode=="import_responsables") {
 <h2>Rapprochement des comptes responsables ENT ITOP/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
-	".add_token_field()."
-	<input type='hidden' name='mode' value='import_responsables' />
-	<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />
-	<input type='submit' value='Envoyer' />
+	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+		".add_token_field()."
+		<input type='hidden' name='mode' value='import_responsables' />
+		<input type=\"file\" size=\"65\" name=\"csv_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />
+		<input type='submit' value='Envoyer' />
+	</fieldset>
 </form>
 
 <p><br /></p>
@@ -2241,10 +2245,12 @@ if($mode=="import_personnels") {
 <h2>Rapprochement des comptes ENT ITOP/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
-	".add_token_field()."
-	<input type='hidden' name='mode' value='import_personnels' />
-	<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />
-	<input type='submit' value='Envoyer' />
+	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+		".add_token_field()."
+		<input type='hidden' name='mode' value='import_personnels' />
+		<input type=\"file\" size=\"65\" name=\"csv_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />
+		<input type='submit' value='Envoyer' />
+	</fieldset>
 </form>
 
 <p><br /></p>
@@ -2715,10 +2721,13 @@ if($mode=="publipostage_eleves") {
 
 	if(!isset($csv_file)) {
 		echo "<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
-	".add_token_field()."
-	<input type='hidden' name='mode' value='publipostage_eleves' />
-	<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />
-	<input type='submit' value='Envoyer' />
+	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+		".add_token_field()."
+		<p>Veuillez fournir le fichier ".getSettingValue("gepiSchoolRne")."_MiseaJour_Motdepasse_Eleve_JJ_MM_AAAA_HH_MM_SS.csv généré par l'ENT.</p>
+		<input type='hidden' name='mode' value='publipostage_eleves' />
+		<input type=\"file\" size=\"65\" name=\"csv_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />
+		<input type='submit' value='Envoyer' />
+	</fieldset>
 </form>
 
 <p><br /></p>
@@ -2737,6 +2746,7 @@ if($mode=="publipostage_eleves") {
 	﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe;Etat;Date de désactivation<br />
 	DUPRE;Thomas;thomas.dupre;MENESR$12345;mdp&*;Thomas.DUPRE@ent27.fr;6 A;Actif<br />
 	...</li>
+	<li style='color:red'>A MODIFIER : Il faut pouvoir trier les élèves par ordre de classe sinon c'est la galère à distribuer.</li>
 </ul>\n";
 	}
 	else {
@@ -2752,6 +2762,8 @@ if($mode=="publipostage_eleves") {
 			die();
 		}
 
+		$cpt=0;
+		$tab_classe_eleve=array();
 		while (!feof($fp)) {
 			$ligne = trim(fgets($fp, 4096));
 			if((substr($ligne,0,3) == "\xEF\xBB\xBF")) {
@@ -2761,52 +2773,58 @@ if($mode=="publipostage_eleves") {
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
 				if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
-					/*
-					$sql="SELECT e.* FROM eleves e, sso_table_correspondance stc WHERE stc.login_gepi=e.login AND ;";
-					$res_ele=mysql_query($sql);
-					if(mysql_fetch_object($res_ele)>0) {
-					*/
-						echo "<table>
+					if(!isset($tab_classe_eleve[$tab[6]])) {
+						$cpt=0;
+					}
+					else {
+						$cpt=count($tab_classe_eleve[$tab[6]]);
+					}
+					$tab_classe_eleve[$tab[6]][$cpt]['nom_prenom']=$tab[0]." ".$tab[1];
+					//echo "\$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']=".$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']."<br />";
+					$tab_classe_eleve[$tab[6]][$cpt]['login_ent']=$tab[2];
+					$tab_classe_eleve[$tab[6]][$cpt]['mdp_ent']=$tab[4];
+					$tab_classe_eleve[$tab[6]][$cpt]['email_ent']=$tab[5];
+					//$cpt++;
+				}
+			}
+		}
+
+		foreach($tab_classe_eleve as $classe => $tab_eleve) {
+			/*
+			echo "<pre>";
+			print_r($tab_parent);
+			echo "</pre>";
+			*/
+			for($loop=0;$loop<count($tab_eleve);$loop++) {
+				echo "<table>
 	<tr>
 		<th style='text-align:left;'>A l'attention de </th>
 		<th>: </th>
-		<td>".$tab[0]." ".$tab[1]."</td>
+		<td>".$tab_eleve[$loop]['nom_prenom']."</td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Login ENT</th>
 		<th>: </th>
-		<td>".$tab[2]."</td>
+		<td>".$tab_eleve[$loop]['login_ent']."</td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Mot de passe ENT</th>
 		<th>: </th>
-		<td>".$tab[4]."</td>
-	</tr>";
-						/*
-						echo "
-	<tr>
-		<th style='text-align:left;'>Email Gepi</th>
-		<th>: </th>
-		<td>".$tab[4]."</td>
-	</tr>";
-						*/
-						echo "
+		<td>".$tab_eleve[$loop]['mdp_ent']."</td>
+	</tr>
 	<tr>
 		<th style='text-align:left;'>Email ENT</th>
 		<th>: </th>
-		<td>".$tab[5]."</td>
+		<td>".$tab_eleve[$loop]['email_ent']."</td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Classe</th>
 		<th>: </th>
-		<td>".$tab[6]."</td>
+		<td>".$classe."</td>
 	</tr>
 </table>
 $impression
 <p class='saut'></p>";
-					//}
-
-				}
 			}
 		}
 
@@ -2829,10 +2847,13 @@ if($mode=="publipostage_responsables") {
 
 	if(!isset($csv_file)) {
 		echo "<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
-	".add_token_field()."
-	<input type='hidden' name='mode' value='publipostage_responsables' />
-	<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />
-	<input type='submit' value='Envoyer' />
+	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+		".add_token_field()."
+		<p>Veuillez fournir le fichier ".getSettingValue("gepiSchoolRne")."_MiseaJour_Motdepasse_Parent_JJ_MM_AAAA_HH_MM_SS.csv généré par l'ENT.</p>
+		<input type='hidden' name='mode' value='publipostage_responsables' />
+		<input type=\"file\" size=\"65\" name=\"csv_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />
+		<input type='submit' value='Envoyer' />
+	</fieldset>
 </form>
 
 <p><br /></p>
@@ -2866,6 +2887,9 @@ if($mode=="publipostage_responsables") {
 			die();
 		}
 
+		$cpt=0;
+		//$classe_precedente="";
+		$tab_classe_parent=array();
 		while (!feof($fp)) {
 			$ligne = trim(fgets($fp, 4096));
 			if((substr($ligne,0,3) == "\xEF\xBB\xBF")) {
@@ -2876,56 +2900,72 @@ if($mode=="publipostage_responsables") {
 				$tab=explode(";", ensure_utf8($ligne));
 				if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
 					/*
-					$sql="SELECT e.* FROM eleves e, sso_table_correspondance stc WHERE stc.login_gepi=e.login AND ;";
-					$res_ele=mysql_query($sql);
-					if(mysql_fetch_object($res_ele)>0) {
+					if($tab[11]!=$classe_precedente) {
+						$cpt=0;
+						$classe_precedente=$tab[11];
+					}
 					*/
-						echo "<table>
+					if(!isset($tab_classe_parent[$tab[11]])) {
+						$cpt=0;
+					}
+					else {
+						$cpt=count($tab_classe_parent[$tab[11]]);
+					}
+					$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']=$tab[0]." ".$tab[1];
+					//echo "\$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']=".$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']."<br />";
+					$tab_classe_parent[$tab[11]][$cpt]['login_ent']=$tab[2];
+					$tab_classe_parent[$tab[11]][$cpt]['mdp_ent']=$tab[4];
+					$tab_classe_parent[$tab[11]][$cpt]['email_ent']=$tab[5];
+					$tab_classe_parent[$tab[11]][$cpt]['adresse']=$tab[6]."<br />".$tab[7]." ".$tab[8];
+					$tab_classe_parent[$tab[11]][$cpt]['resp_de']=$tab[9]." ".$tab[10]." (".$tab[11].")";
+					//$cpt++;
+				}
+			}
+		}
+
+		foreach($tab_classe_parent as $classe => $tab_parent) {
+			/*
+			echo "<pre>";
+			print_r($tab_parent);
+			echo "</pre>";
+			*/
+			for($loop=0;$loop<count($tab_parent);$loop++) {
+				echo "<table>
 	<tr>
 		<th style='text-align:left;'>A l'attention de </th>
 		<th>: </th>
-		<td>".$tab[0]." ".$tab[1]."</td>
+		<td>".$tab_parent[$loop]['nom_prenom']."</td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Login ENT</th>
 		<th>: </th>
-		<td>".$tab[2]."</td>
+		<td>".$tab_parent[$loop]['login_ent']."</td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Mot de passe ENT</th>
 		<th>: </th>
-		<td>".$tab[4]."</td>
-	</tr>";
-						/*
-						echo "
-	<tr>
-		<th style='text-align:left;'>Email Gepi</th>
-		<th>: </th>
-		<td>".$tab[4]."</td>
-	</tr>";
-						*/
-						echo "
+		<td>".$tab_parent[$loop]['mdp_ent']."</td>
+	</tr>
 	<tr>
 		<th style='text-align:left;'>Email ENT</th>
 		<th>: </th>
-		<td>".$tab[5]."</td>
+		<td>".$tab_parent[$loop]['email_ent']."</td>
 	</tr>
 	<tr>
-		<th style='text-align:left;'>Adresse</th>
-		<th>: </th>
-		<td>".$tab[6]."<br />".$tab[7]." ".$tab[8]."</td>
+		<th style='text-align:left; vertical-align:top;'>Adresse</th>
+		<th style='vertical-align:top;'>: </th>
+		<td>".$tab_parent[$loop]['adresse']."</td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Responsable notamment de</th>
 		<th>: </th>
-		<td>".$tab[9]." ".$tab[10]." (".$tab[11].")</td>
+		<td>".$tab_parent[$loop]['resp_de']."</td>
 	</tr>
 </table>
 $impression
 <p class='saut'></p>";
 					//}
-
-				}
+				flush();
 			}
 		}
 
@@ -2948,10 +2988,12 @@ if($mode=="publipostage_personnels") {
 
 	if(!isset($csv_file)) {
 		echo "<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
-	".add_token_field()."
-	<input type='hidden' name='mode' value='publipostage_personnels' />
-	<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />
-	<input type='submit' value='Envoyer' />
+	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+		".add_token_field()."
+		<input type='hidden' name='mode' value='publipostage_personnels' />
+		<input type=\"file\" size=\"65\" name=\"csv_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />
+		<input type='submit' value='Envoyer' />
+	</fieldset>
 </form>
 
 <p><br /></p>
