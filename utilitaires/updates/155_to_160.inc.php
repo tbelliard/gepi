@@ -445,5 +445,29 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'ldap_bx' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'ldap_bx'");
+if ($test == -1) {
+	$sql="CREATE TABLE ldap_bx (
+			id INT( 11 ) NOT NULL AUTO_INCREMENT ,
+			login_u VARCHAR( 200 ) NOT NULL ,
+			nom_u VARCHAR( 200 ) NOT NULL ,
+			prenom_u VARCHAR( 200 ) NOT NULL ,
+			statut_u VARCHAR( 50 ) NOT NULL ,
+			identite_u VARCHAR( 50 ) NOT NULL ,
+			PRIMARY KEY ( id )
+			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 $result.="<br />Fin mise à jour<br/>";
 ?>

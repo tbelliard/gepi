@@ -784,6 +784,17 @@ y INT(11) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS rss_users;
 CREATE TABLE rss_users (id int(11) NOT NULL auto_increment, user_login varchar(30) NOT NULL, user_uri varchar(30) NOT NULL, PRIMARY KEY  (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS ldap_bx;
+CREATE TABLE ldap_bx (
+id INT( 11 ) NOT NULL AUTO_INCREMENT ,
+login_u VARCHAR( 200 ) NOT NULL ,
+nom_u VARCHAR( 200 ) NOT NULL ,
+prenom_u VARCHAR( 200 ) NOT NULL ,
+statut_u VARCHAR( 50 ) NOT NULL ,
+identite_u VARCHAR( 50 ) NOT NULL ,
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 DROP TABLE IF EXISTS droits_acces_fichiers;
 CREATE TABLE IF NOT EXISTS droits_acces_fichiers (
 id INT(11) unsigned NOT NULL auto_increment,
