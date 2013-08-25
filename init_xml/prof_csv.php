@@ -115,7 +115,9 @@ if (!isset($is_posted)) {
 
 	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?</p>\n";
 
-	if(getSettingValue("use_ent")!='y') {
+	//if(getSettingValue("use_ent")!='y') {
+	// A MODIFIER : Pouvoir gérer use_ent et NetCollege ITOP hors 27:
+	if ((getSettingValue("use_ent")!='y')||(preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
 		$default_login_gen_type=getSettingValue('mode_generation_login');
 		if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type='nnnnnnnnnnnnnnnnnnnn';}
 	}
@@ -129,7 +131,8 @@ if (!isset($is_posted)) {
 
 	echo champ_input_choix_format_login('login_gen_type', $default_login_gen_type);
 
-	if (getSettingValue("use_ent") == "y") {
+	// A MODIFIER : Pouvoir gérer use_ent et NetCollege ITOP hors 27:
+	if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
 		echo "<input type='radio' name='login_gen_type' id='login_gen_type_ent' value='ent' checked=\"checked\" />\n";
 		echo "<label for='login_gen_type_ent'  style='cursor: pointer;'>Les logins sont produits par un ENT (<span title=\"cette case permet l'utilisation de la table 'ldap_bx', assurez vous qu'elle soit remplie avec les bonnes informations.\">Attention !</span>)</label>\n";
 		echo "<br />\n";
@@ -319,7 +322,8 @@ if (!isset($is_posted)) {
 								$affiche[1] = nettoyer_caracteres_nom($affiche[1], "a", " _-", "");
 
 								if($_POST['login_gen_type'] == 'ent'){
-									if (getSettingValue("use_ent") == "y") {
+									// A MODIFIER : Pouvoir gérer use_ent et NetCollege ITOP hors 27:
+									if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
 										// Charge à l'organisme utilisateur de pourvoir à cette fonctionnalité
 										// le code suivant n'est qu'une méthode proposée pour relier Gepi à un ENT
 										$bx = 'oui';
