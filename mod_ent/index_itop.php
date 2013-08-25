@@ -2746,7 +2746,6 @@ if($mode=="publipostage_eleves") {
 	﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe;Etat;Date de désactivation<br />
 	DUPRE;Thomas;thomas.dupre;MENESR$12345;mdp&*;Thomas.DUPRE@ent27.fr;6 A;Actif<br />
 	...</li>
-	<li style='color:red'>A MODIFIER : Il faut pouvoir trier les élèves par ordre de classe sinon c'est la galère à distribuer.</li>
 </ul>\n";
 	}
 	else {
