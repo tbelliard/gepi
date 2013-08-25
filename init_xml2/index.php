@@ -74,6 +74,17 @@ require_once("../lib/header.inc.php");
 
 	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";
 
+	$sql="CREATE TABLE IF NOT EXISTS ldap_bx (
+		id INT( 11 ) NOT NULL AUTO_INCREMENT ,
+		login_u VARCHAR( 200 ) NOT NULL ,
+		nom_u VARCHAR( 200 ) NOT NULL ,
+		prenom_u VARCHAR( 200 ) NOT NULL ,
+		statut_u VARCHAR( 50 ) NOT NULL ,
+		identite_u VARCHAR( 50 ) NOT NULL ,
+		PRIMARY KEY ( id )
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$create_table=mysql_query($sql);
+
 	/*
 	$sql="SELECT 1=1 FROM matieres_notes LIMIT 1;";
 	$test=mysql_query($sql);
