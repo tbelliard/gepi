@@ -50,6 +50,8 @@ if ($display != "new") $display = "current";
 //$tri_matiere=isset($_GET['tri_matiere']) ? $_GET['tri_matiere'] : (isset($_POST['tri_matiere']) ? $_POST["tri_matiere"] : "alpha");
 $tri_matiere=isset($_GET['tri_matiere']) ? $_GET['tri_matiere'] : (isset($_POST['tri_matiere']) ? $_POST["tri_matiere"] : "priorite");
 
+$msg="";
+
 // =================================
 // AJOUT: boireaus
 $chaine_options_classes="";
@@ -102,6 +104,8 @@ if (isset($_POST['is_posted'])) {
 
 	echo "<!--count(\$id_matiere)=".count($id_matiere)."-->\n";
 
+	$nb_nouveaux_groupes=0;
+	$nb_grp_maj=0;
 	//for($i=0;$i<count($id_matiere);$i++){
 	for($i=0;$i<$_POST['compteur_matieres'];$i++){
 		unset($reg_clazz);
@@ -127,7 +131,9 @@ if (isset($_POST['is_posted'])) {
                             //echo "<!-- erreur -->\n";
                             $msg .= "Erreur lors de la création du groupe $id_matiere[$i]";
                         }
-                        else{
+                        else {
+                            $nb_nouveaux_groupes++;
+
                             $id_groupe=$create;
                             $sql="INSERT INTO j_groupes_professeurs VALUES('$id_groupe','$prof[$i]','')";
                             $resultat_prof=mysql_query($sql);
@@ -221,8 +227,13 @@ if (isset($_POST['is_posted'])) {
                                 $sql="SELECT * FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$prof[$i]'";
                                 $resultat_verif_prof=mysql_query($sql);
                                 if(mysql_num_rows($resultat_verif_prof)==0){
+                                    // On supprime le professeur précédemment affecté s'il y en avait un pour mettre le nouveau:
+                                    $sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='$id_groupe'";
+                                    $resultat_suppr_prof=mysql_query($sql);
+
                                     $sql="INSERT INTO j_groupes_professeurs VALUES('$id_groupe','$prof[$i]','')";
                                     $resultat_prof=mysql_query($sql);
+                                    $nb_grp_maj++;
                                 }
                                 else{
                                     // Le prof est déjà affecté au groupe.
@@ -239,16 +250,30 @@ if (isset($_POST['is_posted'])) {
                         //echo "Suppression... \$id_groupe=$id_groupe<br />";
                         if(test_before_group_deletion($id_groupe)){
                             if(!delete_group($id_groupe)){
-                                $msg="Erreur lors de la suppression du groupe.";
+                                $msg.="Erreur lors de la suppression du groupe.<br />";
+                            }
+                            else {
+                                $msg.="Groupe n°$id_groupe supprimé.<br />";
                             }
                         }
                         else{
-                            $msg="Des notes sons saisies pour ce groupe. La suppression n'est pas possible.";
+                            $msg.="Des notes sons saisies pour ce groupe. La suppression du groupe n°$id_groupe n'est pas possible.<br />";
                         }
                     }
                 }
             }
         }
+	}
+
+	if($nb_nouveaux_groupes>0) {
+		$msg.="$nb_nouveaux_groupes enseignement(s) ajouté(s).<br />";
+	}
+	if($nb_grp_maj>0) {
+		$msg.="$nb_grp_maj enseignement(s) mis à jour.<br />";
+	}
+
+	if($msg=="") {
+		$msg="Aucune modification n'a été proposée.<br />";
 	}
 }
 
