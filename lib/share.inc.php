@@ -815,8 +815,42 @@ function checkAccess() {
 				fclose($f);
 			}
 
-            if((!isset($_SESSION['email']))||(!check_mail($_SESSION['email']))) {
+			$redir_saisie_mail_requise="n";
+			//if((!isset($_SESSION['email']))||(!check_mail($_SESSION['email']))) {
+			if(!isset($_SESSION['email'])) {
+				$redir_saisie_mail_requise="y";
+				if($debug_test_mail=="y") {
+					$f=fopen("/tmp/debug_check_mail.txt", "a+");
+					fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." \$_SESSION['email'] est vide.\n");
+					fclose($f);
+				}
+			}
+			elseif(getSettingAOui('MailValideRequisCheckDNS')) {
+				if($debug_test_mail=="y") {
+					$f=fopen("/tmp/debug_check_mail.txt", "a+");
+					fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." Avant le test checkdnsrr...\n");
+					fclose($f);
+				}
+				if(!check_mail($_SESSION['email'], 'checkdnsrr', 'y')) {
+					$redir_saisie_mail_requise="y";
+					if($debug_test_mail=="y") {
+						$f=fopen("/tmp/debug_check_mail.txt", "a+");
+						fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." Le test checkdnsrr a échoué.\n");
+						fclose($f);
+					}
+				}
+			}
+			elseif(!check_mail($_SESSION['email'])) {
+				if($debug_test_mail=="y") {
+					$f=fopen("/tmp/debug_check_mail.txt", "a+");
+					fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." Le check_mail() a échoué.\n");
+					fclose($f);
+				}
 
+				$redir_saisie_mail_requise="y";
+			}
+
+			if($redir_saisie_mail_requise=="y") {
 				if($debug_test_mail=="y") {
 					$f=fopen("/tmp/debug_check_mail.txt", "a+");
 					if(!isset($_SESSION['email'])) {
@@ -828,12 +862,12 @@ function checkAccess() {
 					fclose($f);
 				}
 
-                header("Location: $gepiPath/utilisateurs/mon_compte.php?saisie_mail_requise=yes");
-                //getSettingValue('sso_url_portail')
-                die();
-            }
-        }
-    }
+				header("Location: $gepiPath/utilisateurs/mon_compte.php?saisie_mail_requise=yes");
+				//getSettingValue('sso_url_portail')
+				die();
+			}
+		}
+	}
 
     $url = parse_url($_SERVER['SCRIPT_NAME']);
     if ($_SESSION["statut"] == 'autre') {
@@ -4725,7 +4759,7 @@ function deltree($rep,$repaussi=TRUE) {
  * @param type $mode
  * @return boolean  
  */
-function check_mail($email,$mode='simple') {
+function check_mail($email,$mode='simple',$test_mail="n") {
 	$debug_test_mail="n";
 
 	if(!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/" , $email)) {
@@ -4754,7 +4788,10 @@ function check_mail($email,$mode='simple') {
 
 			$tab=explode('@', $email);
 			if(checkdnsrr($tab[1], 'MX')) {return TRUE;}
-			elseif(checkdnsrr($tab[1], 'A')) {return TRUE;}
+			elseif($test_mail=="n") {
+				if(checkdnsrr($tab[1], 'A')) {return TRUE;}
+				else {return FALSE;}
+			}
 			else {return FALSE;}
 		}
 	}

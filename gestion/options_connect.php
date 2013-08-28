@@ -219,6 +219,14 @@ if (isset($_POST['valid_choix_saisie_mail'])) {
 		}
 	}
 	$msg.="Le paramétrage mail requis ou non pour les différents statuts est enregistré.<br />";
+
+	if(isset($_POST['MailValideRequisCheckDNS'])) {
+		$valeur="y";
+	}
+	else {
+		$valeur="n";
+	}
+	saveSetting('MailValideRequisCheckDNS', $valeur);
 }
 
 // Load settings
@@ -473,8 +481,13 @@ echo "<form action=\"options_connect.php\" name=\"form_saisie_mail\" method=\"po
 		echo "
 	<input type='checkbox' name='MailValideRequis".$tab_statuts_MailValideRequis[$i]."' id='MailValideRequis".$tab_statuts_MailValideRequis[$i]."' value='y' ".(getSettingAOui('MailValideRequis'.$tab_statuts_MailValideRequis[$i]) ? "checked " : "" )."/><label for='MailValideRequis".$tab_statuts_MailValideRequis[$i]."'>".$tab_statuts_MailValideRequis[$i]."</label><br />";
 	}
+	if(function_exists('checkdnsrr')) {
+		echo "</p>
+	<br />
+	<p><input type='checkbox' name='MailValideRequisCheckDNS' id='MailValideRequisCheckDNS' value='y' /><label for='MailValideRequisCheckDNS'> Tester si le domaine DNS saisi par l'utilisateur est valide.</label></p>";
+	}
 	echo "
-	<input type=\"submit\" name=\"valid_choix_saisie_mail\" value=\"Valider\" /></p>
+	<p><input type=\"submit\" name=\"valid_choix_saisie_mail\" value=\"Valider\" /></p>
 	<input type=hidden name=mode_navig value='$mode_navig' />
 	<p><br /></p>
 	<p>(*) Cela n'empêchera pas un utilisateur de saisir une adresse \"bidon\".</p>
