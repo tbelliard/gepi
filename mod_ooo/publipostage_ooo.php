@@ -349,7 +349,7 @@ if(!isset($num_fich)) {
 			// Lister les modèles existants
 			echo "<p>Utiliser le modèle&nbsp;:<br />";
 			for($i=0;$i<count($tab_file);$i++) {
-				echo "<a href='".$_SERVER['PHP_SELF']."?num_fich=$i'>".$tab_file[$i]."</a> - <a href='".$_SERVER['PHP_SELF']."?suppr_fich=$i".add_token_in_url()."'><img src='../images/delete16.png' width='16' height='16' title=\"Supprimer le fichier ".$tab_file[$i]."\" /></a><br />";
+				echo "<a href='".$_SERVER['PHP_SELF']."?num_fich=$i' title=\"Effectuer un publipostage OOo avec ce fichier modèle\">".$tab_file[$i]."</a> - <a href='mes_modeles/".$_SESSION['login']."/".$tab_file[$i]."' target='_blank'><img src='../images/edit16.png' width='16' height='16' title=\"Éditer le fichier ".$tab_file[$i]."\" /></a> - <a href='".$_SERVER['PHP_SELF']."?suppr_fich=$i".add_token_in_url()."'><img src='../images/delete16.png' width='16' height='16' title=\"Supprimer le fichier ".$tab_file[$i]."\" /></a><br />";
 			}
 			echo "</p>\n";
 		}

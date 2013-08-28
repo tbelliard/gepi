@@ -45,7 +45,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-
+echo " | <a href='publipostage_ooo.php'>Publipostage OOo</a>";
 echo "</p>\n";
 
 echo "<p>Ce module est destiné à gérer les modèles Open Office de Gepi.</p>\n";
