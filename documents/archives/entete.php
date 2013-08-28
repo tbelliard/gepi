@@ -31,8 +31,20 @@ if(!in_array($_SESSION["statut"],$tab_statuts)) {
 }
 
 if((isset($chaine_login_prof))&&($chaine_login_prof!='')) {
-	$tab_login=array(my_strtolower($chaine_login_prof));
-	if(($_SESSION["statut"]=="professeur")&&(!in_array("'".my_strtolower($_SESSION["login"])."'",$tab_login))) {
+	//$tab_login=array(my_strtolower($chaine_login_prof));
+
+	$tab_login=array();
+	$tmp_tab=explode(",", my_strtolower(preg_replace("/ /", "", $chaine_login_prof)));
+	for($loop=0;$loop<count($tmp_tab);$loop++) {
+		$tab_login[]=preg_replace("/^'/", "", preg_replace("/'$/", "", $tmp_tab[$loop]));
+	}
+	/*
+	echo "<pre>";
+	print_r($tab_login);
+	echo "</pre>";
+	*/
+	//if(($_SESSION["statut"]=="professeur")&&(!in_array("'".my_strtolower($_SESSION["login"])."'",$tab_login))) {
+	if(($_SESSION["statut"]=="professeur")&&(!in_array(my_strtolower($_SESSION["login"]),$tab_login))) {
 		if(getSettingValue('debug_acces_archives_cdt')=='y') {
 			echo "<p style='color:red'>Le login ".$_SESSION["login"]." n'est pas dans la liste autorisée ".$chaine_login_prof."</p>\n";
 		}
