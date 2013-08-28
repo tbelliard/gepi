@@ -1444,7 +1444,8 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
                                    />
                                    <?php
                                        if((isset($_GET['saisie_mail_requise']))&&($_GET['saisie_mail_requise']=='yes')) {
-                                           echo "<p><span style='color:red; text-decoration:blink;'>Une adresse mail valide est requise</span></p>";
+                                           echo "<p><span style='font-weight:bold; color:red; text-decoration:blink;'>Une adresse mail valide est requise !</span></p>";
+                                           if(!isset($_GET['change_mdp'])) {echo "<script type='text/javascript'>alert('Une adresse mail valide est requise !')</script>";}
                                        }
                                    ?>
                         </td>
