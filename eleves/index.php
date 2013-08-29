@@ -1628,7 +1628,15 @@ if(isset($quelles_classes)) {
 			echo "<td><p>$eleve_classe</p></td>\n";
 		}
 
-		echo "<td><p><a href='../classes/eleve_options.php?login_eleve=".$eleve_login."&amp;id_classe=$eleve_id_classe&amp;quitter_la_page=y' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p></td>\n";
+		echo "<td>";
+		if(acces('/classes/eleve_options.php', $_SESSION['statut'])) {
+			echo "<p><a href='../classes/eleve_options.php?login_eleve=".$eleve_login."&amp;id_classe=$eleve_id_classe&amp;quitter_la_page=y' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p>";
+		}
+		else {
+			//https://127.0.0.1/steph/gepi-1.6.0/eleves/visu_eleve.php?ele_login=aubreev&onglet=enseignements
+			echo "<p><a href='../eleves/visu_eleve.php?ele_login=".$eleve_login."&onglet=enseignements' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p>";
+		}
+		echo "</td>\n";
 
 		echo "<td><p>$eleve_profsuivi_nom $eleve_profsuivi_prenom</p></td>\n";
 
