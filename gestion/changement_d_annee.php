@@ -215,7 +215,9 @@ echo "<p class='bold'><a href='index.php#chgt_annee' ".insert_confirm_abandon().
 echo "<p>Au changement d'année, avant d'initialiser la nouvelle année scolaire, il convient d'effectuer quelques opérations.<br />Elles sont en principe détaillées (<i>peut-être même plus à jour si des ajouts y ont été apportés après la sortie de votre version de GEPI</i>) sur le <a href='https://www.sylogix.org/projects/gepi/wiki/GuideAdministrateur' target='_blank'>Wiki</a>.</p>\n";
 
 echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form1' style='width: 100%;'>\n";
-echo "<fieldset>\n";
+echo "<fieldset style='border: 1px solid grey;";
+echo "background-image: url(\"../images/background/opacite50.png\"); ";
+echo "'>\n";
 echo add_token_field();
 
 $msg_svg="Il est recommandé de faire une copie de sauvegarde sur un périphérique externe (à stocker au coffre par exemple)";
@@ -399,7 +401,9 @@ echo "</form>\n";
 echo "<br />\n";
 
 echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form1' style='width: 100%;'>\n";
-echo "<fieldset>\n";
+echo "<fieldset style='border: 1px solid grey;";
+echo "background-image: url(\"../images/background/opacite50.png\"); ";
+echo "'>\n";
 echo add_token_field();
 echo "<p><em>Optionnel&nbsp;:</em> Nettoyer la table 'log'.<br />\n";
 echo "Cette table contient les dates de connexion/déconnexion des utilisateurs.<br />\n";
