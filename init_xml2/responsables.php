@@ -402,6 +402,7 @@
 						$nb_err=0;
 						$stat=0;
 						$i=0;
+						$nb_utilisateurs_responsables_restaures=0;
 						while($i<count($personnes)){
 							//$sql="INSERT INTO temp_resp_pers_import SET ";
 							$sql="INSERT INTO resp_pers SET ";
@@ -468,6 +469,8 @@
 											echo "<span style='color:red;'>Erreur</span> lors de la création du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"]."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
 										}
 										else {
+											$nb_utilisateurs_responsables_restaures++;
+
 											$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
 											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 											$update_rp=mysql_query($sql);
@@ -491,10 +494,14 @@
 							echo "<p>L'importation des personnes (<em>responsables</em>) dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 						}
 
+						if($nb_utilisateurs_responsables_restaures>0) {
+							echo "<p>$nb_utilisateurs_responsables_restaures compte(s) d'utilisateur(s) responsable(s) a(ont) été restauré(s) (<em>avec leur(s) mot(s) de passe</em>), mais ils sont actuellement inactifs.<br />Lorsque vous voudrez rouvrir l'accès responsable, vous devrez activer les comptes responsables dans <a href='../utilisateurs/edit_responsable.php' target='_blank'>Gestion des bases/Comptes utilisateurs/Responsables</a>.</p>\n";
+						}
+
 						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
 						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
 
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
+						echo "<br /><p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
 
 						require("../lib/footer.inc.php");
 						die();

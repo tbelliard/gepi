@@ -62,6 +62,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 	check_token(false);
     $call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP,LIEU_NAISSANCE,MEF_CODE FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
     $nb = mysql_num_rows($call_data);
+    $nb_utilisateurs_eleves_restaures=0;
     $i = "0";
     while ($i < $nb) {
         //$req = mysql_query("select col2 from tempo2 where col1 = '$i'");
@@ -134,6 +135,9 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 					$insert_u=mysql_query($sql);
 					if(!$insert_u) {
 						echo "<span style='color:red'>Erreur lors de la re-création du compte utilisateur pour ".$reg_nom." ".$reg_prenom."</span>.<br />\n";
+					}
+					else {
+						$nb_utilisateurs_eleves_restaures++;
 					}
 				}
 			}
@@ -213,8 +217,13 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 	// On renseigne le témoin: La mise à jour à partir de sconet sera possible.
 	saveSetting("import_maj_xml_sconet", 1);
 
-    //echo "<p>L'importation des données de <b>GEP</b> concernant la constitution des classes est terminée.</p>";
     echo "<p>L'importation des données concernant la constitution des classes est terminée.</p>\n";
+
+	if($nb_utilisateurs_eleves_restaures>0) {
+		echo "<p>$nb_utilisateurs_eleves_restaures compte(s) d'utilisateur(s) élève(s) a(ont) été restauré(s) (<em>avec leur(s) mot(s) de passe</em>), mais ils sont actuellement inactifs.<br />Lorsque vous voudrez rouvrir l'accès élève, vous devrez activer les comptes élèves dans <a href='../utilisateurs/edit_eleve.php' target='_blank'>Gestion des bases/Comptes utilisateurs/Élèves</a>.</p>\n";
+	}
+
+	echo "<br />";
     echo "<center><p><a href='responsables.php'>Procéder à la deuxième phase d'importation des responsables</a></p></center>\n";
 	echo "<p><br /></p>\n";
     require("../lib/footer.inc.php");
