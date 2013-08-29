@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2008 Thomas Belliard
+* Copyright 2001, 2013 Thomas Belliard
 *
 * This file is part of GEPI.
 *
@@ -88,6 +88,7 @@ if ($gepiSettings['auth_sso'] == 'cas') {
     
 		// Le premier argument est la version du protocole CAS
 		// Le dernier argument a été ajouté par patchage manuel de phpCAS.
+		settype($cas_port, "integer");
 		phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, true, $url_base);
 		phpCAS::setLang('french');
 
