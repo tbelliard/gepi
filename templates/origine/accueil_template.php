@@ -538,7 +538,8 @@
 							</td>
 							<td>
 								<?php
-									echo formate_date($newentree['end'], 'y');
+									$date_fin_session=formate_date($newentree['end'], 'y');
+									echo "<span title=\"La session démarrée le ".formate_date($newentree['start'], 'y')." depuis ".$newentree['remote_addr']." devrait se terminer d'elle-même, si l'utilisateur n'agit plus, le ".$date_fin_session.".\">".$date_fin_session."</span>";
 								?>
 							</td>
 						</tr>

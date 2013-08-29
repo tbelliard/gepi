@@ -265,7 +265,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
 
     // * affichage du nombre de connecté *
     // compte le nombre d'enregistrement dans la table
-	$sql = "SELECT u.login, l.END FROM log l, utilisateurs u WHERE u.login=l.login AND l.END > now() ORDER BY u.statut, u.nom, u.prenom;";
+	$sql = "SELECT u.login, l.END, l.START, l.REMOTE_ADDR FROM log l, utilisateurs u WHERE u.login=l.login AND l.END > now() ORDER BY u.statut, u.nom, u.prenom;";
 	$res = sql_query($sql);
 	$afficheAccueil->nb_connect = sql_count($res);
 	if(mysql_num_rows($res)>1) {
@@ -276,7 +276,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
 			//echo "$sql<br />";
 			$res_pers=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-			  $afficheAccueil->nom_connecte[]=array("style"=>'rouge',"courriel"=>"","texte"=>$lig_log->LOGIN,"statut"=>"???","end"=>$lig_log->END);
+			  $afficheAccueil->nom_connecte[]=array("style"=>'rouge',"courriel"=>"","texte"=>$lig_log->LOGIN,"statut"=>"???","end"=>$lig_log->END,"start"=>$lig_log->START,"remote_addr"=>$lig_log->REMOTE_ADDR);
 			}else{
 				$lig_pers=mysql_fetch_object($res_pers);
 				$alt=$alt*(-1);
@@ -285,14 +285,14 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
 					$res_resp=mysql_query($sql);
 					if(mysql_num_rows($res_resp)!=0) {
 						$lig_resp=mysql_fetch_object($res_resp);
-						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"pers_id"=>$lig_resp->pers_id,"end"=>$lig_log->END);
+						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"pers_id"=>$lig_resp->pers_id,"end"=>$lig_log->END,"start"=>$lig_log->START,"remote_addr"=>$lig_log->REMOTE_ADDR);
 					}
 					else {
-						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"end"=>$lig_log->END);
+						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"end"=>$lig_log->END,"start"=>$lig_log->START,"remote_addr"=>$lig_log->REMOTE_ADDR);
 					}
 				}
 				else {
-					$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"end"=>$lig_log->END);
+					$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"end"=>$lig_log->END,"start"=>$lig_log->START,"remote_addr"=>$lig_log->REMOTE_ADDR);
 				}
 			}
 		}
