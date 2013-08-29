@@ -1672,7 +1672,7 @@ if(isset($quelles_classes)) {
 		if($lien_image_compte_utilisateur!="") {echo "<div style='float:right; width: 16px'>".$lien_image_compte_utilisateur."</div>";}
 
 		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='autre')||
-			(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesFichesEleves')))||
+			(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
 			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$eleve_login))&&(getSettingAOui('GepiAccesGestElevesProfP')))) {
 			echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
 			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
@@ -1709,7 +1709,15 @@ if(isset($quelles_classes)) {
 			echo "<td><p>$eleve_classe</p></td>\n";
 		}
 
-		echo "<td><p><a href='../classes/eleve_options.php?login_eleve=".$eleve_login."&amp;id_classe=$eleve_id_classe&amp;quitter_la_page=y' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p></td>\n";
+		echo "<td>";
+		if(acces('/classes/eleve_options.php', $_SESSION['statut'])) {
+			echo "<p><a href='../classes/eleve_options.php?login_eleve=".$eleve_login."&amp;id_classe=$eleve_id_classe&amp;quitter_la_page=y' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p>";
+		}
+		else {
+			//https://127.0.0.1/steph/gepi-1.6.0/eleves/visu_eleve.php?ele_login=aubreev&onglet=enseignements
+			echo "<p><a href='../eleves/visu_eleve.php?ele_login=".$eleve_login."&onglet=enseignements' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p>";
+		}
+		echo "</td>\n";
 
 		echo "<td><p>$eleve_profsuivi_nom $eleve_profsuivi_prenom</p></td>\n";
 
