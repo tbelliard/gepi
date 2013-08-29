@@ -2134,9 +2134,14 @@ if(isset($eleve_login)){
 			echo "L'élève n'est encore associé à aucune classe.";
 		}
 		else {
+			$acces_eleve_options=acces('/classes/eleve_options.php', $_SESSION['statut']);
 			while($lig_classe=mysql_fetch_object($res_grp1)){
-				//echo "Enseignements suivis en <a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe' target='_blank'>$lig_classe->classe</a><br />\n";
-				echo "<a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>Enseignements suivis</a> en ".preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";
+				if($acces_eleve_options) {
+					echo "<a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>Enseignements suivis</a> en ".preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";
+				}
+				else {
+					echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login."&onglet=enseignements' target='_blank'>Enseignements suivis</a> en ".preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";
+				}
 				echo "<br />\n";
 
 				//echo "Définir/consulter <a href='../classes/classes_const.php?id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>le régime, le professeur principal, le CPE responsable</a> de l'élève.\n";
