@@ -2602,9 +2602,9 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			if(!$update) {$nb_erreurs++;}
 			$cpt++;
 		}
+		$texte_info_action.="<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
+		$texte_info_action.="<p>Terminé.</p>\n";
 	}
-	$texte_info_action.="<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
-	$texte_info_action.="<p>Terminé.</p>\n";
 
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
