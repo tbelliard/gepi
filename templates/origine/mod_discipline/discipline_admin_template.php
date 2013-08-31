@@ -166,7 +166,7 @@ if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 				 value='no'
 			 onchange='changement();'
 			   <?php if (getSettingValue("autorise_commentaires_mod_disc") == "no") echo " checked='checked'";?> />
-		<label for='visa_cdt_inter_modif_notices_visees_n' style='cursor: pointer;'>
+		<label for='autorise_commentaires_mod_disc_n' style='cursor: pointer;'>
 		  Désactiver la zone de dialogue relative à chaque incident.
 		</label>
 	  </fieldset>
