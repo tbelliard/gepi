@@ -744,7 +744,7 @@ if(!isset($id_incident)) {
 	echo "</p>\n";
 
 	echo "<div style='float: right; border: 1px solid black;'>";
-	echo "<a href='javascript:afficher_tous_les_incidents()' title=\"Afficher tous ces incidents\">".$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche." ".$mod_disc_terme_incident."s</a>";
+	echo "<a href='javascript:afficher_tous_les_incidents()' title=\"Afficher tous ces incidents\">".$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche." ".$mod_disc_terme_incident.(($nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche>1) ? "s" : "")."</a>";
 	if($chaine_criteres!="") {echo " avec le(s) critère(s) choisi(s)";}
 	echo "</div>\n";
 
