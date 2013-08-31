@@ -7485,10 +7485,10 @@ function affichage_temoin_messages_recus($portee="header_et_fixe") {
 	var nb_millisec_check_message=$nb_sec*1000;
 
 	function function_check_message() {
-		new Ajax.Updater($('span_messages_recus'),'$gepiPath/mod_alerte/form_message.php?mode=check',{method: 'get'});";
+		new Ajax.Updater($('span_messages_recus'),'$gepiPath/mod_alerte/form_message.php?mode_js=y&mode=check',{method: 'get'});";
 	if($portee!="header_seul") {
 		$retour.="
-		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/mod_alerte/form_message.php?mode=check2',{method: 'get'});";
+		new Ajax.Updater($('temoin_messagerie_non_vide'),'$gepiPath/mod_alerte/form_message.php?mode_js=y&mode=check2',{method: 'get'});";
 	}
 	$retour.="
 		setTimeout('function_check_message()', nb_millisec_check_message);

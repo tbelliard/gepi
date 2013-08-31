@@ -38,7 +38,9 @@ if ($resultat_session == 'c') {
 	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 	die();
 } else if ($resultat_session == '0') {
-	header("Location: ../logout.php?auto=1");
+	if(!isset($_GET['mode_js'])) {
+		header("Location: ../logout.php?auto=1");
+	}
 	die();
 }
 
