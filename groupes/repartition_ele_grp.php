@@ -604,7 +604,7 @@ if(!isset($_POST['recopie_select'])) {
 	//===============================
 	echo "<div style='float:right; text-align:center; width:15em;'>\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post'>\n";
-	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;'>\n";
+	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: 3px; margin-right: auto; background-image: url(\"../images/background/opacite50.png\");'>\n";
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
 		echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
@@ -678,7 +678,7 @@ if(!isset($_POST['recopie_select'])) {
 </script>\n";
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
-	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: 1em;'>\n";
+	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: 1em; background-image: url(\"../images/background/opacite50.png\"); '>\n";
 	echo add_token_field();
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
@@ -775,7 +775,8 @@ if(!isset($_POST['recopie_select'])) {
 		}
 	}
 	else {
-		$sql="SELECT jeg.login FROM j_eleves_groupes jeg, eleves e WHERE jeg.login=e.login AND ($chaine_groupes) AND jeg.periode='$num_periode' ORDER BY e.nom, e.prenom;";
+		$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, eleves e WHERE jeg.login=e.login AND ($chaine_groupes) AND jeg.periode='$num_periode' ORDER BY e.nom, e.prenom;";
+		//echo "$sql<br />";
 		$res_ele_grp=mysql_query($sql);
 		if(mysql_num_rows($res_ele_grp)>0) {
 			while($lig_ele_grp=mysql_fetch_object($res_ele_grp)) {
@@ -936,7 +937,7 @@ if(!isset($_POST['recopie_select'])) {
 
 	//===============================
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form3' method='post'>\n";
-	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;'>\n";
+	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background-image: url(\"../images/background/opacite50.png\"); '>\n";
 	echo add_token_field();
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
