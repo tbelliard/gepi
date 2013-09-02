@@ -1172,3 +1172,4 @@ INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',administrateur='V',
 INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Fiches brevet OpenOffice',statut='';
 INSERT INTO droits SET id='/cahier_texte_2/consultation2.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='F',autre='V',description='Cahiers de textes: Consultation',statut='';
 INSERT INTO droits SET id='/mod_trombinoscopes/plan_de_classe.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Plan de classe',statut='';
+INSERT INTO droits VALUES ('/gestion/param_ordre_item.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modifier l ordre des items dans les menus', '');
