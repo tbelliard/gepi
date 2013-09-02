@@ -450,13 +450,14 @@ if(!isset($step)) {
 	echo "<p>Vous allez importer des fichiers d'exports XML de Sconet.<br />\nLes fichiers requis au cours de la procédure sont dans un premier temps ElevesAvecAdresses.xml, puis le fichier ResponsablesAvecAdresses.xml</p>\n";
 
 	echo "<form enctype='multipart/form-data' id='form_envoi_xml' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
 	echo add_token_field();
 
 	//echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=hidden name='step' value='0' />\n";
 	//echo "<input type=hidden name='mode' value='1' />\n";
 	echo "<p>Sélectionnez le fichier <b>ElevesAvecAdresses.xml</b> (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
-	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" id='input_xml_file' /><br />\n";
+	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" id='input_xml_file' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); ' /><br />\n";
 	if ($gepiSettings['unzipped_max_filesize']>=0) {
 		echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesAvecAdresses.zip)</p>";
 	}
@@ -628,6 +629,7 @@ if(!isset($step)) {
 	}
 </script>\n";
 
+	echo "</fieldset>\n";
 	echo "</form>\n";
 
 	echo "<p>Il est recommandé d'importer les informations élèves et de ne passer qu'ensuite à l'import des informations responsables.<br />\n";
@@ -5393,13 +5395,14 @@ else{
 
 
 			echo "<form enctype='multipart/form-data' id='form_envoi_xml' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 			echo "<p>Veuillez fournir le fichier <strong>ResponsablesAvecAdresses.xml</strong>&nbsp;:<br />\n";
 			if(isset($_GET['maj_eleve_sautee'])) {echo "<input type=\"hidden\" name=\"maj_eleve_sautee\" value=\"y\" />";}
-			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" id='input_xml_file' /><br />\n";
+			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" id='input_xml_file' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); ' /><br />\n";
 			echo "<input type='hidden' name='step' value='10' />\n";
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
@@ -5488,6 +5491,7 @@ else{
 	}
 </script>\n";
 
+			echo "</fieldset>\n";
 			echo "</form>\n";
 
 			echo "<p><br /></p>\n";
