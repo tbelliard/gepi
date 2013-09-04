@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
@@ -2453,6 +2453,16 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	echo "<p>Terminé.</p>\n";
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_temp_tables') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<p><b>Nettoyage des tables temporaires&nbsp;:</b> \n";
+	echo clean_temp_tables();
+	echo "</p>\n";
+
+	echo "<p>Terminé.</p>\n";
 } elseif((isset($_POST['action']) AND $_POST['action'] == 'verif_interclassements')||(isset($_POST['maj']) AND $_POST['maj'] == 'verif_interclassements')||(isset($_GET['maj']) AND $_GET['maj'] == 'verif_interclassements')) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
@@ -3610,6 +3620,19 @@ else {
 <ul>
 <li>Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a>, l'<a href='../cahier_texte_2/archivage_cdt.php'>archivage des Cahiers de Textes</a> et l'<a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</li>
 </ul>\n";
+		echo "</form>\n";
+
+		echo "<hr />\n";
+	
+		echo "<p>Vider les tables temporaires utilisées lors de l'initialisation de l'année, lors de l'archivage des cahiers de textes en fin d'année, lors de l'import des absences depuis un XML de Sconet,...<br />
+		Ces tables peuvent prendre inutilement de la place lorsque vous faites une sauvegarde.<br />
+		En revanche, évitez de les vider lorsqu'une opération d'initialisation, archive, import,... est en cours (<em>vous perturberiez cette opération</em>).</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Vider les tables temporaires\" />\n";
+		echo "</center>\n";
+		echo "<input type='hidden' name='action' value='clean_temp_tables' />\n";
 		echo "</form>\n";
 
 	echo "</div>\n";

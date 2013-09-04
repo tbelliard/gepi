@@ -7559,4 +7559,50 @@ function get_tab_mef($mode="indice_mef_code") {
 	}
 	return $tab_mef;
 }
+
+function clean_temp_tables() {
+	$retour="";
+	$tab_table=array("temp_abs_import",
+					"temp_ele_classe",
+					"temp_etab_import",
+					"temp_gep_import",
+					"temp_gep_import2",
+					"temp_grp",
+					"temp_matieres_import",
+					"temp_resp_adr_import",
+					"temp_resp_pers_import",
+					"temp_responsables2_import",
+					"tempo",
+					"tempo2",
+					"tempo3",
+					"tempo3_cdt",
+					"tempo4",
+					"tempo_utilisateurs");
+	$nb_tables_videes=0;
+	for($i=0;$i<count($tab_table);$i++) {
+		$sql="SHOW TABLES LIKE '$tab_table[$i]';";
+		//echo "$sql<br />\n";
+		$res_test=mysql_query($sql);
+		if(mysql_num_rows($res_test)>0) {
+			if($i>0) {$retour.=", ";}
+			$retour.=$tab_table[$i];
+
+			$sql="SELECT 1=1 FROM $tab_table[$i];";
+			//echo "$sql<br />\n";
+			$res_nb=mysql_query($sql);
+			$nb_reg=mysql_num_rows($res_nb);
+			$retour.=" (<em title=\"Nombre d'enregistrement avant vidage\">".$nb_reg."</em>)";
+
+			if($nb_reg>0) {
+				$sql="TRUNCATE TABLE $tab_table[$i];";
+				//echo "$sql<br />\n";
+				$suppr=mysql_query($sql);
+				if(!$suppr) {$retour.=" <span style='color:red'>ERREUR</span>";}
+				else {$nb_tables_videes++;}
+			}
+		}
+	}
+	$retour.="<br />$nb_tables_videes table(s) vidée(s).";
+	return $retour;
+}
 ?>
