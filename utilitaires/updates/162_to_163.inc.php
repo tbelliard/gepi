@@ -103,7 +103,7 @@ if ($test == -1) {
 		vu tinyint(4) NOT NULL,
 		date_vu timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 		PRIMARY KEY (id)
-		) CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -185,7 +185,7 @@ if ($test == -1) {
 			date_limite timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			commentaires text NOT NULL,
 			PRIMARY KEY ( id )
-			) CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel au CN en periode close';");
+			) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel au CN en periode close';");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -207,7 +207,7 @@ if ($test == -1) {
 			date_limite timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			commentaires text NOT NULL,
 			PRIMARY KEY ( id )
-			) CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel à la modif de notes du bulletin en periode close';");
+			) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel à la modif de notes du bulletin en periode close';");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}

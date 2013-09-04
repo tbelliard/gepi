@@ -866,7 +866,7 @@ else{
 					`TEL_PROF` varchar(255) $chaine_mysql_collate NOT NULL default '',
 					DATE_ENTREE DATETIME,
 					MEF_CODE VARCHAR(50) DEFAULT '' NOT NULL
-					);";
+					) ENGINE=MyISAM;";
 					info_debug($sql);
 					$create_table = mysql_query($sql);
 
@@ -2008,7 +2008,7 @@ else{
 
 				//=========================================
 				// 20110911
-				$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(100) NOT NULL default '', col4 varchar(100) NOT NULL default '');";
+				$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(100) NOT NULL default '', col4 varchar(100) NOT NULL default '') ENGINE=MyISAM;";
 				info_debug($sql);
 				$res_tempo4=mysql_query($sql);
 
@@ -4245,7 +4245,7 @@ else{
 				$sql="CREATE TABLE IF NOT EXISTS temp_ele_classe (
 				`ele_id` varchar(40) $chaine_mysql_collate NOT NULL default '',
 				`divcod` varchar(40) $chaine_mysql_collate NOT NULL default ''
-				);";
+				) ENGINE=MyISAM;";
 				info_debug($sql);
 				$create_table = mysql_query($sql);
 
@@ -5672,7 +5672,7 @@ else{
 							`mel` varchar(100) $chaine_mysql_collate NOT NULL,
 							`adr_id` varchar(10) $chaine_mysql_collate NOT NULL,
 							`statut` varchar(100) $chaine_mysql_collate NOT NULL,
-						PRIMARY KEY  (`pers_id`));";
+						PRIMARY KEY  (`pers_id`)) ENGINE=MyISAM;";
 					info_debug($sql);
 					$create_table = mysql_query($sql);
 
@@ -5928,7 +5928,7 @@ else{
 						`pers_id` varchar(10) $chaine_mysql_collate NOT NULL,
 						`resp_legal` varchar(1) $chaine_mysql_collate NOT NULL,
 						`pers_contact` varchar(1) $chaine_mysql_collate NOT NULL
-						);";
+						) ENGINE=MyISAM;";
 				info_debug($sql);
 				$create_table = mysql_query($sql);
 
@@ -6090,7 +6090,7 @@ else{
 						`pays` varchar(50) $chaine_mysql_collate NOT NULL,
 						`commune` varchar(50) $chaine_mysql_collate NOT NULL,
 						`statut` varchar(100) $chaine_mysql_collate NOT NULL,
-					PRIMARY KEY  (`adr_id`));";
+					PRIMARY KEY  (`adr_id`)) ENGINE=MyISAM;";
 				info_debug($sql);
 				//echo "$sql<br />";
 				$create_table = mysql_query($sql);
@@ -9708,7 +9708,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 				//=========================================
 				// 20110911
-				$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) $chaine_mysql_collate NOT NULL default '', col2 varchar(100) $chaine_mysql_collate NOT NULL default '', col3 varchar(100) $chaine_mysql_collate NOT NULL default '', col4 varchar(100) $chaine_mysql_collate NOT NULL default '');";
+				$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) $chaine_mysql_collate NOT NULL default '', col2 varchar(100) $chaine_mysql_collate NOT NULL default '', col3 varchar(100) $chaine_mysql_collate NOT NULL default '', col4 varchar(100) $chaine_mysql_collate NOT NULL default '') ENGINE=MyISAM;";
 				info_debug($sql);
 				$res_tempo4=mysql_query($sql);
 
