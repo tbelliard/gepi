@@ -823,7 +823,7 @@ name varchar(100) NOT NULL,
 value varchar(255) NOT NULL,
 PRIMARY KEY (id),
 UNIQUE KEY id_classe_name (id_classe,name)
-) CHARACTER SET utf8 COLLATE utf8_general_ci;
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS messagerie;
 CREATE TABLE IF NOT EXISTS messagerie (
@@ -838,7 +838,7 @@ date_visibilite timestamp NOT NULL,
 vu tinyint(4) NOT NULL,
 date_vu timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 PRIMARY KEY (id)
-) CHARACTER SET utf8 COLLATE utf8_general_ci;
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS acces_cn;
 CREATE TABLE acces_cn (
@@ -848,7 +848,7 @@ periode INT( 11 ) NOT NULL ,
 date_limite timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 commentaires text NOT NULL,
 PRIMARY KEY ( id )
-) CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel au CN en periode close';
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel au CN en periode close';
 
 DROP TABLE IF EXISTS acces_exceptionnel_matieres_notes;
 CREATE TABLE acces_exceptionnel_matieres_notes (
@@ -858,5 +858,5 @@ periode INT( 11 ) NOT NULL ,
 date_limite timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 commentaires text NOT NULL,
 PRIMARY KEY ( id )
-) CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel à la modif de notes du bulletin en periode close';
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'Acces exceptionnel à la modif de notes du bulletin en periode close';
 
