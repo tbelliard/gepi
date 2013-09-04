@@ -274,7 +274,7 @@ if ($test == -1) {
 										value varchar(255) NOT NULL,
 										PRIMARY KEY (id),
 										UNIQUE KEY id_classe_name (id_classe,name)
-										) CHARACTER SET utf8 COLLATE utf8_general_ci;");
+										) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
