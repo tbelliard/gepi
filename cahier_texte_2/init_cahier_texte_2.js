@@ -451,7 +451,7 @@ function initWysiwyg() {
 			    ['NumberedList','BulletedList'],
 			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 			    ['Outdent','Indent'],
-			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','equation'],
+			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','Equation'],
 			    ['Styles','Format','Font','FontSize'],
 			    ['TextColor','BGColor'],
 			    ['Maximize', 'About','-','Print']
@@ -474,7 +474,7 @@ function initWysiwyg() {
 			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 			    '/',
 			    ['Outdent','Indent'],
-			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','equation'],
+			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','Equation'],
 			    ['Styles','Format','Font','FontSize'],
 			    ['TextColor','BGColor'],
 			    ['Maximize', 'About','-','Print']
