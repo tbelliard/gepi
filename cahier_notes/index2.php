@@ -53,25 +53,45 @@ if (!checkAccess()) {
     die();
 }
 
+$id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
+
 // On fait quelques tests si le statut est 'prof', pour vérifier les restrictions d'accès
 if ($_SESSION['statut'] == "professeur") {
-	if ( (getSettingValue("GepiAccesMoyennesProf") != "yes") AND
-         (getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes") AND
-         (getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes")
-       ) {
-       	tentative_intrusion("1","Tentative d'accès par un prof aux moyennes des carnets de notes sans avoir les autorisations nécessaires.");
-       	echo "Vous n'êtes pas autorisé à être ici.";
-/**
- * inclusion du pied de page
- */
-		require ("../lib/footer.inc.php");
-		die();
-       }
 
+	if ( (getSettingValue("GepiAccesMoyennesProf") != "yes") AND
+	(getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes") AND
+	(getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes")
+	) {
+
+		if((getSettingAOui('GepiAccesReleveProfP'))&&(is_pp($_SESSION['login']))) {
+			if(isset($id_classe)) {
+				if(!is_pp($_SESSION['login'], $id_classe)) {
+					$classe=get_nom_classe($id_classe);
+					tentative_intrusion("1","Tentative d'accès par un ".getSettingValue('gepi_prof_suivi')." aux moyennes des carnets de notes pour une classe qu'il n'a pas en responsabilité (".$classe.").");
+					header("Location: ../accueil.php?msg=Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de la classe de $classe.");
+					//echo "Vous n'êtes pas autorisé à être ici.";
+					//require ("../lib/footer.inc.php");
+					die();
+				}
+			}
+			else {
+				$sql="SELECT DISTINCT id_classe FROM j_eleves_professeurs jep, classes c WHERE jep.id_classe=c.id AND jep.professeur='".$_SESSION['login']."';";
+				$res_clas_pp=mysql_query($sql);
+				if(mysql_num_rows($res_clas_pp)==1) {
+					$id_classe=mysql_result($res_clas_pp, 0, "id_classe");
+				}
+			}
+		}
+		else {
+			tentative_intrusion("1","Tentative d'accès par un prof aux moyennes des carnets de notes sans avoir les autorisations nécessaires.");
+			header("Location: ../accueil.php?msg=Vous n'êtes pas autorisé à être ici.");
+			//echo "Vous n'êtes pas autorisé à être ici.";
+			//require ("../lib/footer.inc.php");
+			die();
+		}
+	}
 }
 
-
-$id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
 if (isset($id_classe)) {
 	// On regarde si le type est correct :
@@ -126,7 +146,18 @@ if (isset($id_classe)) {
 		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	elseif($_SESSION['statut']=='professeur'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+
+		if ( (getSettingValue("GepiAccesMoyennesProf") != "yes") AND
+		(getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes") AND
+		(getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes")
+		) {
+			$sql="SELECT DISTINCT c.id, c.classe FROM j_eleves_professeurs jep, classes c WHERE jep.id_classe=c.id AND jep.professeur='".$_SESSION['login']."';";
+		}
+		else {
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		}
+
 	}
 	elseif($_SESSION['statut']=='cpe'){
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE

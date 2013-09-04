@@ -739,7 +739,7 @@ if(getSettingAOui('active_bulletins')) {
 			  "Visualisation et impression des relevés de notes",
 			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes, ".$this->gepiSettings['denomination_eleve']." par ".$this->gepiSettings['denomination_eleve'].", classe par classe.");
 
-	if ($condition && $condition2)
+	if ($condition && (($condition2)||(is_pp($this->loginUtilisateur))))
 	  $this->creeNouveauItem("/cahier_notes/index2.php",
 			  "Visualisation des moyennes des carnets de notes",
 			  "Cet outil vous permet de visualiser à l'écran les moyennes calculées d'après le contenu des carnets de notes, indépendamment de la saisie des moyennes sur les bulletins.");
