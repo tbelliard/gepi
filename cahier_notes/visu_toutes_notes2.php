@@ -1695,10 +1695,18 @@ if(isset($_GET['mode'])) {
 		$longueur_max_nom_prenom=0;
 		$largeur_col[1]=$largeur_col_nom_ele;
 		for($i=1;$i<=count($col_csv[1]);$i++) {
-			$longueur_courante=$pdf->GetStringWidth($col_csv[1][$i]);
-			if($longueur_courante>$longueur_max_nom_prenom) {
-				$texte_test[1]=$col_csv[1][$i];
-				$longueur_max_nom_prenom=$longueur_courante;
+			/*
+			// Le COL_CSV ne contient pas le nom prénom d'un élève qui n'a aucune note dans aucune matière
+			echo "<pre>";
+			print_r($col_csv);
+			echo "</pre>";
+			*/
+			if(isset($col_csv[1][$i])) {
+				$longueur_courante=$pdf->GetStringWidth($col_csv[1][$i]);
+				if($longueur_courante>$longueur_max_nom_prenom) {
+					$texte_test[1]=$col_csv[1][$i];
+					$longueur_max_nom_prenom=$longueur_courante;
+				}
 			}
 		}
 		$taille_police_col[1]=ajuste_FontSize($texte_test[1], $largeur_col[1], 12, 'B', 3);

@@ -23,12 +23,13 @@ var currentEdit=null;
 		editorFocus:false,
 		exec : function(editor, latex)
 		{
-			currentEdit=CKEDITOR.currentInstance;
+//			currentEdit=CKEDITOR.currentInstance;
+			currentEdit=editor;
 			
 			//open a popup window when the button is clicked
 			if (popupEqnwin==null || popupEqnwin.closed || !popupEqnwin.location) 
 			{
-				var url='http://latex.codecogs.com/editor_json3.php?type=url&editor=CKEditor';
+				var url='https://latex.codecogs.com/editor_json6.php?type=url&editor=CKEditor';
 		
 				//if(language!='') url+='&lang='+language;
 				if(latex!==undefined) 
@@ -41,7 +42,7 @@ var currentEdit=null;
 				popupEqnwin=window.open('','LaTexEditor','width=700,height=450,status=1,scrollbars=yes,resizable=1');
 				if (!popupEqnwin.opener) popupEqnwin.opener = self;
 				popupEqnwin.document.open();
-				popupEqnwin.document.write('<!DOCTYPE html><head><script src="'+url+'" type="text/javascript"></script></head><body></body></html>');
+				popupEqnwin.document.write('<!DOCTYPE html><html><head><script src="'+url+'" type="text/javascript"></script></head><body></body></html>');
 				popupEqnwin.document.close();
 			}
 			else if (window.focus) 
@@ -50,24 +51,18 @@ var currentEdit=null;
 				if(latex!==undefined)
 				{
 					latex=unescape(latex);
-					latex = latex.replace(/\\/g,'\\\\');
-					latex = latex.replace(/\'/g,'\\\'');
-					latex = latex.replace(/\"/g,'\\"');
-					latex = latex.replace(/\0/g,'\\0');
-					
-					eval("var old = popupEqnwin.document.getElementById('JSONload')");
-					if (old != null) {
-						old.parentNode.removeChild(old);
-						delete old;
+	
+					try
+					{
+						popupEqnwin.EqEditor.load(latex);
 					}
-					
-					var head = popupEqnwin.document.getElementsByTagName("head")[0];
-					var script = document.createElement("script"); 
-          script.type = "text/javascript";  
-					script.id = 'JSONload';
-			    script.innerHTML = 'EqEditor.load(\''+(latex)+'\');';
-					head.appendChild(script);
+					catch(err)
+					{
+						alert(err.message);
+					}
 				}
+				popupEqnwin.document.getElementById("latex_formula").focus();
+				popupEqnwin.document.getElementById("latex_formula").select();
 			}
 		}
 	};
@@ -83,11 +78,11 @@ var currentEdit=null;
 			// Add the link and unlink buttons.
 			editor.addCommand( com, createEqnDefinition);
 							
-			editor.ui.addButton( 'equation',
+			editor.ui.addButton( 'Equation',
 				{
 					label : editor.lang.equation.title,
 					command : com,
-					icon: this.path + 'images/equation.gif'
+					icon: this.path + 'icons/equation.png'
 				});
 	
 			// If the "menu" plugin is loaded, register the menu items.
@@ -112,10 +107,10 @@ var currentEdit=null;
 				  	var sName = element.getAttribute('src').match( /(gif|svg)\.latex\?(.*)/ );
 				 	  if(sName!=null)
 						{
-							createEqnDefinition.exec(null, sName[2]);	
+							createEqnDefinition.exec(this, sName[2]);	
 							evt.cancelBubble = true; 
-              evt.returnValue = false; 
-              evt.stopPropagation();
+              evt.returnValue = false;
+	            evt.stop();	
 						}
 			    }
 				}, null, null, 1);
@@ -134,7 +129,8 @@ var currentEdit=null;
 		latex = latex.replace(/@plus;/g,'+');
 		latex = latex.replace(/&plus;/g,'+');
 		latex = latex.replace(/&space;/g,' ');
-		
+		latex = latex.replace(/&hash;/g,'#');
+				
 		currentEdit.insertHtml('<img src="'+name+'" alt="'+latex+'" align="absmiddle" class="formule_tex_latex_codecogs_com" />');
 	}		
 	
