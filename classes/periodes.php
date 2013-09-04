@@ -274,7 +274,7 @@ echo "</form>\n";
 
 ?>
 
-<form enctype="multipart/form-data" method="post" action="periodes.php">
+<form enctype="multipart/form-data" method="post" name="formulaire" action="periodes.php">
 <center><input type='submit' value='Enregistrer' /></center>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
 <p><b>Remarque&nbsp;: </b>Le verrouillage/déverrouillage d'une période est possible en étant connecté sous un compte ayant le statut "scolarité"<br />
@@ -333,9 +333,15 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 <?php
 	$k = '1';
 	$alt=1;
+
+	include("../lib/calendrier/calendrier.class.php");
+
 	while ($k < $nb_periode) {
 		if ($nom_periode[$k] == '') {$nom_periode[$k] = "période ".$k;}
 		$alt=$alt*(-1);
+
+		$cal[$k] = new Calendrier("formulaire", "date_fin_period_".$k);
+
 		echo "<tr class='lig$alt'>\n";
 		echo "<td style='padding: 5px;'>Période $k</td>\n";
 		echo "<td style='padding: 5px;'><input type='text' id='nom_period_$k' name='nom_period[$k]'";
@@ -344,7 +350,11 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		echo "<td style='padding: 5px;'><input type='text' id='date_fin_period_$k' name='date_fin_period[$k]'";
 		echo " onchange='changement()'";
 		echo " onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\"";
-		echo " value=\"".strftime("%d/%m/%Y", mysql_date_to_unix_timestamp($date_fin_periode[$k]))."\" size='10' /></td>\n";
+		echo " value=\"".strftime("%d/%m/%Y", mysql_date_to_unix_timestamp($date_fin_periode[$k]))."\" size='10' />";
+
+		echo "<a href=\"#calend\" onClick=\"".$cal[$k]->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+
+		echo "</td>\n";
 		echo "</tr>\n";
 	$k++;
 	}

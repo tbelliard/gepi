@@ -677,7 +677,7 @@ if($max_periode <= 0) {
 echo "Aucune classe comportant des périodes n'a été définie.";
 die();
 }
-echo "<form action=\"classes_param.php\" method='post'>\n";
+echo "<form action=\"classes_param.php\" method='post' name='formulaire'>\n";
 echo add_token_field();
 echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type='submit' name='enregistrer1' value='Enregistrer' /></p>";
 echo "Sur cette page, vous pouvez modifier différents paramètres par lots de classes cochées ci-dessous.";
@@ -861,16 +861,21 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		</tr>
 
 		<?php
+
+		include("../lib/calendrier/calendrier.class.php");
+
 		$k = '1';
 		$alt=1;
 		while($k < $per+1) {
 			$alt=$alt*(-1);
+			$cal[$per][$k] = new Calendrier("formulaire", "date_fin_".$per."_".$k);
 			echo "<tr class='lig$alt'>\n";
 			echo "<th>Période ".$k."</th>\n";
 			echo "<td><input type='text' name='nb_".$per."_".$k."' value=\"\" size='30' /></td>\n";
 			echo "<td><input type='text' name='date_fin_".$per."_".$k."' id='date_fin_".$per."_".$k."' value=\"\" size='10' ";
 			echo " onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\"";
 			echo "/>";
+			echo "<a href=\"#calend\" onClick=\"".$cal[$per][$k]->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 			echo "</td>\n";
 			echo"</tr>\n";
 			$k++;
