@@ -659,7 +659,11 @@ echo "</p>\n";
 echo "</form>\n";
 
 
-echo "<h3>Gestion des enseignements pour la classe&nbsp;: " . $classe["classe"]."<span id='span_asterisque'></span></h3>\n";
+echo "<h3>Gestion des enseignements pour la classe&nbsp;: " . $classe["classe"]."<span id='span_asterisque'></span>";
+if(acces("/eleves/index.php", $_SESSION['statut'])) {
+	echo " (<a href='../eleves/index.php?quelles_classes=certaines&amp;id_classe=".$id_classe."' title=\"Voir la liste des élèves de cette classe.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Élèves</a>)";
+}
+echo "</h3>\n";
 
 echo "</td>\n";
 echo "<td width='60%' align='center'>\n";

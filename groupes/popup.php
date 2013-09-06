@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -92,6 +92,10 @@ if(isset($id_groupe)) {
 
 		$current_group=get_group($id_groupe);
 		$enseignement=$current_group['description'];
+
+		if(!isset($id_classe)) {
+			$enseignement.=" en ".$current_group['classlist_string'];
+		}
 	}
 
 	if(isset($id_classe)){
@@ -191,21 +195,67 @@ if($gepi_prof_suivi==""){
 		echo "<p style='color:red; text-align:center;'>".$msg."</p>\n";
 	}
 
+	// Récupérer la liste des groupes pour un prof
+	if($_SESSION['statut']=='professeur') {
+		$groups=get_groups_for_prof($_SESSION["login"],'',array('matieres', 'classes'));
+
+		// Groupe précédent/suivant à trouver
+		$id_groupe_boucle_precedent="";
+		$id_groupe_precedent="";
+		$infos_groupe_precedent="";
+		$id_groupe_suivant="";
+		$infos_groupe_suivant="";
+		$id_groupe_courant_trouve="";
+		foreach($groups as $current_group) {
+			if(($id_groupe_courant_trouve=="y")&&($id_groupe_suivant=="")) {
+				$id_groupe_suivant=$current_group['id'];
+				$infos_groupe_suivant=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string'];
+			}
+			if($current_group['id']==$id_groupe) {
+				$id_groupe_courant_trouve="y";
+				if($id_groupe_boucle_precedent!="") {
+					$id_groupe_precedent=$id_groupe_boucle_precedent;
+					$infos_groupe_precedent=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string'];
+				}
+			}
+			$id_groupe_boucle_precedent=$current_group['id'];
+		}
+	}
+
+	echo "<h2>";
+
+	if((isset($id_groupe_precedent))&&($id_groupe_precedent!="")) {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_precedent' title=\"Passer au groupe précédent: ".$infos_groupe_precedent."\" class='noprint'><img src='../images/arrow_left.png' class='icone16' /></a> ";
+	}
+
 	//echo "<h2>Elèves de l'enseignement $enseignement</h2>\n";
 	if(isset($id_classe)){
 		//echo "<h2>Elèves de l'enseignement ".htmlspecialchars($enseignement)." en ".htmlspecialchars($classe)."</h2>\n";
-		echo "<h2>".htmlspecialchars($enseignement)." en ";
+		echo htmlspecialchars($enseignement)." en ";
 		if(acces('/groupes/visu_profs_class.php',$_SESSION['statut'])) {
 			echo "<a href='visu_profs_class.php?id_classe=$id_classe'>".htmlspecialchars($classe)."</a>";
 		}
 		else {
 			echo htmlspecialchars($classe);
 		}
-		echo "</h2>\n";
 	}
 	else{
 		//echo "<h2>Elèves de l'enseignement ".htmlspecialchars($enseignement)."</h2>\n";
-		echo "<h2>".htmlspecialchars($enseignement)."</h2>\n";
+		echo htmlspecialchars($enseignement);
+	}
+
+	if((isset($id_groupe_suivant))&&($id_groupe_suivant!="")) {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_suivant' title=\"Passer au groupe précédent: ".$infos_groupe_suivant."\" class='noprint'><img src='../images/arrow_right.png' class='icone16' /></a> ";
+	}
+
+	echo "</h2>\n";
+
+	if(($_SESSION['statut']=='professeur')&&(isset($id_groupe))&&($id_groupe!="VIE_SCOLAIRE")) {
+		echo "<div class='noprint' style='float:right; width: 20px; height: 20px'>
+	<a href='signalement_eleves.php?id_groupe=$id_groupe' title=\"Signaler des erreurs d'affectation.\">
+		<img src='../images/icons/ico_attention.png' width='22' height='19' alt='Erreur_grp' />
+	</a>
+</div>\n";
 	}
 
 	echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='";
@@ -214,7 +264,7 @@ if($gepi_prof_suivi==""){
 	if(isset($id_groupe)) {echo "&amp;id_groupe=$id_groupe";}
 	if(isset($id_classe)) {echo "&amp;id_classe=$id_classe";}
 	if(isset($periode_num)) {echo "&amp;periode_num=$periode_num";}
-	echo "'>";
+	echo "' title='Afficher/masquer les détails'>";
 	if($avec_details=='y') {echo "<img src='../images/icons/remove.png' width='16' height='16' alt='Sans détails' />";} else {echo "<img src='../images/icons/add.png' width='16' height='16' alt='Avec détails' />";}
 	echo "</a></div>";
 
@@ -228,23 +278,23 @@ if($gepi_prof_suivi==""){
 
 	$tabmail=array();
 
-	if($id_groupe=="VIE_SCOLAIRE"){
-        // Liste des CPE:
-        //$sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
-        $sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.email, jec.cpe_login FROM utilisateurs u, j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
-        $result_cpe=mysql_query($sql);
-        if(mysql_num_rows($result_cpe)>0){
+	if($id_groupe=="VIE_SCOLAIRE") {
+		// Liste des CPE:
+		//$sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
+		$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.email, jec.cpe_login FROM utilisateurs u, j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
+		$result_cpe=mysql_query($sql);
+		if(mysql_num_rows($result_cpe)>0) {
 			echo "<table class='boireaus' border='1'>\n";
 			$alt=1;
-            while($lig_cpe=mysql_fetch_object($result_cpe)){
+			while($lig_cpe=mysql_fetch_object($result_cpe)) {
 				$alt=$alt*(-1);
-                echo "<tr valign='top' class='lig$alt white_hover'><th>CPE:</th>\n";
-                echo "<td>";
-					echo affiche_utilisateur($lig_cpe->login,$id_classe);
-                echo "</td></tr>\n";
-            }
+				echo "<tr valign='top' class='lig$alt white_hover'><th>CPE:</th>\n";
+				echo "<td>";
+				echo affiche_utilisateur($lig_cpe->login,$id_classe);
+				echo "</td></tr>\n";
+			}
 			echo "</table>\n";
-        }
+		}
 
 		if(isset($periode_num)) {
 			//$sql="SELECT DISTINCT e.nom,e.prenom,e.email FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND jec.periode='$periode_num' ORDER BY e.nom,e.prenom";
@@ -264,7 +314,7 @@ if($gepi_prof_suivi==""){
 			$alt=1;
 			while($lig_eleve=mysql_fetch_object($res_eleves)){
 				$alt=$alt*(-1);
-                echo "<tr valign='top' class='lig$alt white_hover'>\n";
+				echo "<tr valign='top' class='lig$alt white_hover'>\n";
 				echo "<td>\n";
 				if($lig_eleve->email!=""){
 					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=[GEPI]")."'>";
