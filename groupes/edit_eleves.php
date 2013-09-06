@@ -699,7 +699,15 @@ foreach ($current_group["periodes"] as $period) {
 		echo "</th>\n";
 	}
 }
-echo "<th>&nbsp;</th><th>&nbsp;</th>\n";
+echo "<th>\n";
+if((isset($tab_sig))&&(count($tab_sig)>0)) {
+	echo "<span id='prise_en_compte_signalement_toutes_periodes'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement('prise_en_compte_signalement_toutes_periodes');changement();griser_degriser(etat_grisage);\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour toutes les périodes.' title='Prendre en compte tous les signalements d erreurs pour toutes les périodes.' /></a></span>";
+}
+else {
+	echo "&nbsp;";
+}
+echo "</th>
+<th>&nbsp;</th>\n";
 echo "</tr>\n";
 
 // Marqueurs pour identifier quand on change de classe dans la liste
@@ -708,7 +716,6 @@ $new_classe = 0;
 $empty_td = false;
 
 //=====================================
-// AJOUT: boireaus 20080229
 $chaine_sql_classe="(";
 for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
 	if($i>0) {$chaine_sql_classe.=" OR ";}
@@ -722,7 +729,6 @@ if(count($total_eleves)>0) {
 	foreach($total_eleves as $e_login) {
 
 		//=========================
-		// AJOUT: boireaus 20071010
 		// Récupération du numéro de l'élève:
 		$num_eleve=-1;
 		for($i=0;$i<count($login_eleve);$i++){
