@@ -319,6 +319,30 @@ if (isset($is_posted) and ($is_posted == '2')) {
 		}
 	}
 }
+elseif ((isset($quelles_classes))&&($quelles_classes == 'certaines')&&(isset($id_classe))&&(is_numeric($id_classe))) {
+	// On efface les enregistrements liés à la session en cours
+	//
+	mysql_query("DELETE FROM tempo WHERE num = '".SESSION_ID()."'");
+	//
+	// On efface les enregistrements obsolètes
+	//
+	$call_data = mysql_query("SELECT * FROM tempo");
+	$nb_enr = mysql_num_rows($call_data);
+	$nb = 0;
+	while ($nb < $nb_enr) {
+		$num = mysql_result($call_data, $nb, 'num');
+		$test = mysql_query("SELECT * FROM log WHERE SESSION_ID = '$num'");
+		$nb_en = mysql_num_rows($test);
+		if ($nb_en == 0) {
+			mysql_query("DELETE FROM tempo WHERE num = '$num'");
+		}
+		$nb++;
+	}
+
+	$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+	$nb_periode = mysql_num_rows($periode_query);
+	$call_reg = mysql_query("insert into tempo Values('$id_classe','$nb_periode', '".SESSION_ID()."')");
+}
 
 // Le statut scolarite ne devrait pas être proposé ici.
 // La page confirm_query.php n'est accessible qu'en administrateur
