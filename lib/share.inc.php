@@ -8170,4 +8170,16 @@ function get_date_debut_log() {
 
 	return $retour;
 }
+
+function get_info_grp($id_groupe, $tab_infos=array('description', 'matieres', 'classes', 'profs')) {
+	$group=get_group($id_groupe, $tab_infos);
+
+	$retour=$group['name'];
+	if(in_array('description', $tab_infos)) {$retour.=" (<em>".$group['description']."</em>)";}
+	if(in_array('matieres', $tab_infos)) {$retour.=" ".$group['matiere']['matiere'];}
+	if(in_array('classes', $tab_infos)) {$retour.=" en ".$group['classlist_string'];}
+	if(in_array('profs', $tab_infos)) {$retour.=" (<em>".$group['profs']['proflist_string']."</em>)";}
+
+	return $retour;
+}
 ?>
