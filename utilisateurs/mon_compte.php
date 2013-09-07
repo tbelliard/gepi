@@ -1784,16 +1784,20 @@ if ($editable_user) {
 <table summary='Mot de passe'>
     <tr>
         <td>Ancien mot de passe : </td>
-        <td><input type=password name=no_anti_inject_password_a size=20 /></td>
+        <td><input type='password' name='no_anti_inject_password_a' id='no_anti_inject_password_a' size='20' /><?php echo input_password_to_text('no_anti_inject_password_a');?></td>
     </tr>
     <tr>
-        <td>Nouveau mot de passe (<?php echo getSettingValue("longmin_pwd") ;?> caractères minimum) :</td>
+        <td>Nouveau mot de passe (<em><?php echo getSettingValue("longmin_pwd") ;?> caractères minimum</em>) :</td>
         <td>
             <input id="mypassword" 
                     type="password" 
                     name="no_anti_inject_password1" 
                     size="20" 
                     onkeyup="runPassword(this.value, 'mypassword');" />
+                    <?php
+                        // Cela merdoie: Il doit y avoir un conflit entre le test de solidité et le changement de type.
+                        echo input_password_to_text('mypassword');
+                    ?>
         </td>
         <td>
             Complexité de votre mot de passe : 
@@ -1804,8 +1808,8 @@ if ($editable_user) {
         </td>
     </tr>
     <tr>
-        <td>Nouveau mot de passe (à confirmer) : </td>
-        <td><input type=password name=reg_password2 size=20 /></td>
+        <td>Nouveau mot de passe (<em>à confirmer</em>) : </td>
+        <td><input type='password' name='reg_password2' id='reg_password2' size='20' /><?php echo input_password_to_text('reg_password2');?></td>
     </tr>
 </table>
 <?php

@@ -2579,4 +2579,40 @@ dragresize.apply(document);
 
 	return $retour;
 }
+
+function input_password_to_text($id_champ) {
+	global $gepiPath;
+
+	$retour="<span id='span_liens_js_".$id_champ."' style='display:none'>
+	<a href='javascript:champ_text_".$id_champ."()' id='lien_text_".$id_champ."' title='Rendre le champ de saisie du mot de passe lisible (afficher en clair).'><img src='$gepiPath/images/icons/visible.png' width='19' height='16' alt='Mot de passe en clair' /></a>
+	<a href='javascript:champ_password_".$id_champ."()' id='lien_password_".$id_champ."' style='display:none' title='Rendre le champ de saisie du mot de passe non lisible par ceux qui regardent par dessus votre épaule (masquer).'><img src='$gepiPath/images/icons/invisible.png' width='19' height='16' alt='Mot de passe masqué' /></a>
+</span>
+
+<script type='text/javascript'>
+	isIE_input_password_to_text = (document.all);
+	if(!isIE_input_password_to_text) {
+		document.getElementById('span_liens_js_".$id_champ."').style.display='';
+	}
+
+	function champ_text_".$id_champ."() {
+		if(confirm(\"Vous allez afficher votre saisie de mot de passe en clair.\\nSi quelqu'un regarde par dessus votre épaule où si vous vidéoprojetez au tableau votre écran, ce n'est pas souhaitable.\\nEtes-vous sûr de vouloir afficher le mot de passe en clair ?\")) {
+			document.getElementById('".$id_champ."').setAttribute('type', 'text');
+			//setTimeout(\"document.getElementById('".$id_champ."').setAttribute('type', 'text')\", 1000);
+
+			document.getElementById('lien_text_".$id_champ."').style.display='none';
+			document.getElementById('lien_password_".$id_champ."').style.display='';
+		}
+	}
+	function champ_password_".$id_champ."() {
+		document.getElementById('".$id_champ."').setAttribute('type','password');
+		//setTimeout(\"document.getElementById('".$id_champ."').setAttribute('type', 'password')\", 1000);
+
+			document.getElementById('lien_text_".$id_champ."').style.display='';
+			document.getElementById('lien_password_".$id_champ."').style.display='none';
+	}
+</script>
+<!--p>Cela fonctionne avec Firefox et Chrome, mais avec MSIE qui interdit les changements de type d'un input.</p-->";
+
+	return $retour;
+}
 ?>
