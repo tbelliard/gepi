@@ -225,20 +225,26 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 	*/
 	echo "</h3>\n";
 
-    echo "<table border='0' summary='Equipe'>\n";
+	echo "<table border='0' class='boireaus boireaus_alt' summary='Equipe'>
+	<tr>
+		<th>Matière</th>
+		<th>Enseignement/groupe</th>
+		<th>Professeur</th>
+	</tr>\n";
 
-    // On commence par le CPE
-    $sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.show_email,jec.cpe_login " .
-    		"FROM utilisateurs u,j_eleves_cpe jec " .
-    		"WHERE jec.e_login='".$login_eleve."' AND " .
-    		"u.login=jec.cpe_login " .
-    		"ORDER BY jec.cpe_login;";
+	// On commence par le CPE
+	$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.show_email,jec.cpe_login " .
+				"FROM utilisateurs u,j_eleves_cpe jec " .
+				"WHERE jec.e_login='".$login_eleve."' AND " .
+				"u.login=jec.cpe_login " .
+				"ORDER BY jec.cpe_login;";
 	//echo "$sql<br />";
 	$req = mysql_query($sql);
 	if(mysql_num_rows($req)>0) {
 		// Il ne doit y en avoir qu'un...
 		$cpe = mysql_fetch_object($req);
 		echo "<tr valign='top'><td>VIE SCOLAIRE</td>\n";
+		echo "<td></td>";
 		echo "<td>";
 		// On affiche l'email s'il est non nul, si le cpe l'a autorisé, et si l'utilisateur est autorisé par les droits d'accès globaux
 		if ($cpe->email!="" AND $cpe->show_email == "yes" AND (
@@ -260,8 +266,9 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 
 	// On passe maintenant les groupes un par un, sans se préoccuper de la période : on affiche tous les groupes
 	// auxquel l'élève appartient ou a appartenu
-	$groupes = mysql_query("SELECT DISTINCT jeg.id_groupe, m.nom_complet " .
-							"FROM j_eleves_groupes jeg, matieres m, j_groupes_matieres jgm, j_groupes_classes jgc WHERE " .
+	$groupes = mysql_query("SELECT DISTINCT jeg.id_groupe, m.nom_complet, g.* " .
+							"FROM j_eleves_groupes jeg, matieres m, j_groupes_matieres jgm, j_groupes_classes jgc, groupes g WHERE " .
+							"g.id=jeg.id_groupe AND ".
 							"jeg.login = '".$login_eleve."' AND " .
 							"m.matiere = jgm.id_matiere AND " .
 							"jgm.id_groupe = jeg.id_groupe AND " .
@@ -273,6 +280,8 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 
         // Matière correspondant au groupe:
         echo "<tr valign='top'><td>".htmlspecialchars($groupe->nom_complet)."</td>\n";
+
+		echo "<td>".$groupe->name." <em style='font-size:small'>(".$groupe->description.")</em>"."</td>";
 
         // Professeurs
         echo "<td>";
