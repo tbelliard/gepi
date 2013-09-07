@@ -924,28 +924,21 @@ echo "<input type=hidden name=max_mat value=$nb_mat />\n";
 
 <?php
 	if((isset($user_login))&&(isset($user_statut))&&($user_statut=='professeur')) {
-		$call_classes = mysql_query("SELECT g.id group_id, g.name name, c.classe classe, c.id classe_id " .
-				"FROM j_groupes_professeurs jgp, j_groupes_classes jgc, groupes g, classes c WHERE (" .
-				"jgp.login = '$user_login' and " .
-				"g.id = jgp.id_groupe and " .
-				"jgc.id_groupe = jgp.id_groupe and " .
-				"c.id = jgc.id_classe) order by jgc.id_classe");
-		$nb_classes = mysql_num_rows($call_classes);
-		if($nb_classes>0) {
+		$groups=get_groups_for_prof($user_login,NULL,array('classes', 'matieres'));
+		if(count($groups)>0) {
 			echo "<p>&nbsp;</p>\n";
 			echo "<form enctype='multipart/form-data' action='modify_user.php' method='post'>\n";
 			echo "<fieldset>\n";
 			echo add_token_field();
 			echo "<p>Le professeur est associé aux enseignements suivants.<br />Vous pouvez supprimer (<i>décocher</i>) l'association avec certains enseignements&nbsp;:</p>";
 			$k = 0;
-			while ($k < $nb_classes) {
-				$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
-				$user_classe['matiere_nom_court'] = mysql_result($call_classes, $k, "name");
-				$user_classe['classe_id'] = mysql_result($call_classes, $k, "classe_id");
-				$user_classe['group_id'] = mysql_result($call_classes, $k, "group_id");
-		
-				echo "<input type='checkbox' id='user_group_$k' name='user_group[]' value='".$user_classe["group_id"]."' checked /><label for='user_group_$k'> ".$user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</label><br />\n";
-	
+			foreach($groups as $current_group) {
+				echo "<input type='checkbox' id='user_group_$k' name='user_group[]' value='".$current_group["id"]."' checked /><label for='user_group_$k'> ".$current_group['name']." (<em>".$current_group['description'];
+				if((($current_group['name']!=$current_group['matiere']['matiere']))&&
+				 (($current_group['description']!=$current_group['matiere']['nom_complet']))) {
+					echo " (".$current_group['matiere']['matiere'].")";
+				}
+				echo "</em>) en ".$current_group['classlist_string']."</label><br />\n";
 				$k++;
 			}
 			echo "<input type='hidden' name='user_login' value='$user_login' />\n";
