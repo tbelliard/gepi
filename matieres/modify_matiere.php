@@ -38,16 +38,19 @@ if (!checkAccess()) {
     die();
 }
 
+//debug_var();
 
 if (isset($_POST['isposted'])) {
 	check_token();
     $ok = 'yes';
+    $ok_categorie = 'yes';
     if (isset($_POST['reg_current_matiere'])) {
         // On vérifie d'abord que l'identifiant est constitué uniquement de lettres et de chiffres :
         $matiere_name = $_POST['reg_current_matiere'];
-        if (!is_numeric($_POST['matiere_categorie'])) {
+        if ((!isset($_POST['matiere_categorie']))||(!is_numeric($_POST['matiere_categorie']))) {
             // On empêche les mise à jour globale automatiques, car on n'est pas sûr de ce qui s'est passé si l'ID n'est pas numérique...
-            $ok = "no";
+            //$ok = "no";
+            $ok_categorie = 'no';
             $matiere_categorie = "0";
         } else {
             $matiere_categorie = $_POST['matiere_categorie'];
@@ -89,8 +92,9 @@ if (isset($_POST['isposted'])) {
 		$matiere_nom_complet = html_entity_decode($_POST['matiere_nom_complet']);
         $matiere_priorite = $_POST['matiere_priorite'];
         $matiere_name = $_POST['matiere_name'];
-        if (!is_numeric($_POST['matiere_categorie'])) {
+        if ((!isset($_POST['matiere_categorie']))||(!is_numeric($_POST['matiere_categorie']))) {
             $matiere_categorie = "0";
+            $ok_categorie = 'no';
         } else {
             $matiere_categorie = $_POST['matiere_categorie'];
         }
@@ -106,6 +110,7 @@ if (isset($_POST['isposted'])) {
             $msg = "Les modifications ont été enregistrées ! <br />";
         }
     }
+
     if ((isset($_POST['force_defaut'])) and ($ok == 'yes')) {
         $sql="UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$matiere_priorite."'
         WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')";
@@ -113,7 +118,8 @@ if (isset($_POST['isposted'])) {
         //$msg = rawurlencode($sql);
         $req = mysql_query($sql);
     }
-    if ((isset($_POST['force_defaut_categorie'])) and ($ok == 'yes')) {
+
+    if ((isset($_POST['force_defaut_categorie'])) and ($ok == 'yes') and ($ok_categorie == 'yes')) {
         $sql="UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$matiere_categorie."'
         WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')";
         //echo "$sql<br />";
@@ -121,13 +127,13 @@ if (isset($_POST['isposted'])) {
         $req = mysql_query($sql);
     }
 
-
 	if($ok=='yes') {
 		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : NULL;
 		if(isset($login_prof)) {
 			// Récupérer la liste des profs actuellement associés
 			$tab_profs_associes=array();
 			$sql="SELECT u.login FROM j_professeurs_matieres jpm, utilisateurs u WHERE jpm.id_professeur=u.login and id_matiere='$matiere_name' ORDER BY u.nom, u.prenom;";
+			//echo "$sql<br />\n";
 			$res_profs=mysql_query($sql);
 			if(mysql_num_rows($res_profs)>0) {
 				while($lig=mysql_fetch_object($res_profs)) {
@@ -140,6 +146,7 @@ if (isset($_POST['isposted'])) {
 				if(!in_array($login_prof[$loop], $tab_profs_associes)) {
 					// Recherche de l'ordre matière le plus élevé pour ce prof
 					$sql="SELECT MAX(ordre_matieres) max_ordre FROM j_professeurs_matieres WHERE id_professeur='".$login_prof[$loop]."';";
+					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
 						$ordre_matieres=1;
@@ -150,6 +157,7 @@ if (isset($_POST['isposted'])) {
 	
 					// On ajoute le prof
 					$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$login_prof[$loop]', id_matiere='$matiere_name', ordre_matieres='$ordre_matieres';";
+					//echo "$sql<br />\n";
 					$insert=mysql_query($sql);
 					if(!$insert) {
 						$msg.="Erreur lors de l'association de ".$login_prof[$loop]." avec la matière $matiere_name<br />";
@@ -178,6 +186,7 @@ if (isset($_POST['isposted'])) {
 						*/
 	
 						$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='".$tab_profs_associes[$loop]."' AND id_matiere='$matiere_name';";
+						//echo "$sql<br />\n";
 						$suppr=mysql_query($sql);
 						if(!$suppr) {
 							$msg.="Erreur lors de la suppression de l'association de ".$tab_profs_associes[$loop]." avec la matière $matiere_name<br />";
