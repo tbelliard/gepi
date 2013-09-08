@@ -129,9 +129,19 @@ if (isset($user_login) and ($user_login!='')) {
 $titre_page = "Gestion des utilisateurs | Modifier un mot de passe";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-?>
-<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a> | <a href="help.php">Aide</a></p>
-<?php
+
+echo "<p class='bold'><a href='";
+if((isset($user_statut))&&($user_statut!='responsable')&&($user_statut!='eleve')) {
+	echo "index.php?mode=personnels";
+}
+elseif((isset($user_statut))&&($user_statut=='responsable')) {
+	echo "edit_responsable.php";
+}
+elseif((isset($user_statut))&&($user_statut=='eleve')) {
+	echo "edit_eleve.php";
+}
+echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a> | <a href='help.php'>Aide</a></p>\n";
+
 // dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
 $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
 if ($testpassword == -1) $testpassword = '';
