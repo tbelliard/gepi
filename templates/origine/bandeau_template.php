@@ -110,7 +110,7 @@
 	<ol>
 		<?php
 
-			if((getSettingAOui('active_mod_alerte'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe')))) {
+			if((getSettingAOui('active_mod_alerte'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe', 'autre')))) {
 				if(isset($_SERVER['SCRIPT_NAME'])) {
 					// Pour éviter de faire apparaitre le témoin de message sur des pages présentées lors des conseils de classe:
 					$tab_pages_temoin_fixe_messagerie_exclu=array("/mod_alerte/form_message.php", "/utilisateurs/mon_compte.php", "/visualisation/", "/bulletin/bull_index.php", "/saisie/saisie_avis", "/prepa_conseil/index3.php", "/prepa_conseil/edit_limite.php");

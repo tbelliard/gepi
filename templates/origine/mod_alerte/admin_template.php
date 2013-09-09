@@ -215,6 +215,17 @@ echo add_token_field();
 		</label>
 		<br />
 
+		<input type='checkbox'
+			   name='PeutPosterMessageAutre'
+			   id='PeutPosterMessageAutre'
+			   value='y'
+			   <?php if (getSettingAOui('PeutPosterMessageAutre')) echo ' checked="checked"'; ?>/>
+		<label for='PeutPosterMessageAutre'>
+		  Les comptes de statut personnalisé (<em>autre</em>) peuvent poster des alertes<br />
+		  <span style='color:red'>Pour le moment ce sont tous les statuts personnalisés indifférement (<em>il faudra gérer plus finement dans la page des statuts personnalisés plus tard</em>).</span>
+		</label>
+		<br />
+
 		<input type='hidden' name='is_posted' value='y' />
 
 		<p class="center">

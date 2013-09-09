@@ -985,7 +985,7 @@ scolarite='V',
 eleve='F',
 responsable='F',
 secours='V',
-autre='F',
+autre='V',
 description='Dispositif d alerte',
 statut='';";
 

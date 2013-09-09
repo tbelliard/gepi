@@ -117,7 +117,7 @@ if (isset($_POST['is_posted'])) {
 
 	saveSetting("PeutPosterMessageAdministrateur", 'y');
 
-	$tab_statut=array('Professeur', 'Scolarite', 'Cpe');
+	$tab_statut=array('Professeur', 'Scolarite', 'Cpe', 'Autre');
 	for($loop=0;$loop<count($tab_statut);$loop++) {
 		if (isset($_POST['PeutPosterMessage'.$tab_statut[$loop]])) {
 			$valeur="y";

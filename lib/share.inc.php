@@ -7436,7 +7436,7 @@ function clore_declore_message($id_msg) {
 function peut_poster_message($statut) {
 	// A FAIRE: Gérer le statut Autre...
 	if(getSettingAOui('active_mod_alerte')) {
-		if(!acces('/mod_alerte/form_message.php', $statut)) {
+		if(($_SESSION['statut']!='autre')&&(!acces('/mod_alerte/form_message.php', $statut))) {
 			return false;
 		}
 		else {
