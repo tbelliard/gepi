@@ -440,8 +440,7 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 	echo add_token_field();
 	echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
-	echo "<p>Décochez les cases de façon à griser les élèves qui ne doivent pas faire partie du groupe<br />
-et cocher pour  dé-griser les élèves qui vous manquent dans le groupe&nbsp;: </p>\n";
+	echo "<p>Cochez les élèves qui vous manquent, décochez ceux que vous avez en trop.&nbsp;: </p>\n";
 
 	echo "<table border='1' class='boireaus' summary='Suivi de cet enseignement par les élèves en fonction des périodes'>\n";
 	echo "<tr>\n";
