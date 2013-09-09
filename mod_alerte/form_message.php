@@ -61,7 +61,9 @@ statut='';";
 $insert=mysql_query($sql);
 }
 
-if (!checkAccess()) {
+// Pour éviter des blagues avec le plugin change_compte (sinon les comptes 'autre' sont désactivés en quelques secondes)
+//if (!checkAccess()) {
+if ((!checkAccess())&&($_SESSION['statut']!='autre')) {
 	// Si in reste sur une page sans se déconnecter, on n'envoie pas, en fin de session, de redir, ni de message par mail du type:
 	/*
 	** Alerte automatique sécurité Gepi **
