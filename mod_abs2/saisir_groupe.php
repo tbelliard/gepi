@@ -823,7 +823,7 @@ include('menu_abs2.inc.php');
 		if((acces("/groupes/signalement_eleves.php", $_SESSION['statut']))&&(isset($id_groupe))) {
 	?>
 	<!--div style='float:right; width:19px;'><a href='../groupes/signalement_eleves.php?id_groupe=<?php echo $id_groupe;?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')"><img src='../images/icons/ico_question.png' width='19' height='19' title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur." /></a></div-->
-	<div style='float:right; width:19px;'><a href='../groupes/signalement_eleves.php?id_groupe=<?php echo $id_groupe;?>' target="_blank"><img src='../images/icons/ico_question.png' width='19' height='19' title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur." /></a></div>
+	<div style='float:right; width:22px;'><a href='../groupes/signalement_eleves.php?id_groupe=<?php echo $id_groupe;?>' target="_blank" title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur."><img src='../images/icons/ico_attention.png' width='22' height='19' title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur." /></a></div>
 	<?php
 		}
 	?>
