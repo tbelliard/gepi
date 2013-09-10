@@ -331,7 +331,8 @@ $k = '0';
 echo "<option value=0>0</option>\n";
 $k='11';
 $j = '1';
-while ($k < '51'){
+//while ($k < '51'){
+while ($k < '61'){
     echo "<option value=$k"; if ($matiere_priorite == $k) {echo " SELECTED";} echo ">$j</option>\n";
     $k++;
     $j = $k - 10;
