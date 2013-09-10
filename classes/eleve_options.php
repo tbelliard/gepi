@@ -305,7 +305,26 @@ $call_data_eleves = mysql_query("SELECT * FROM eleves WHERE (login = '$login_ele
 $nom_eleve = @mysql_result($call_data_eleves, '0', 'nom');
 $prenom_eleve = @mysql_result($call_data_eleves, '0', 'prenom');
 
-echo "<h3>".$nom_eleve." ".$prenom_eleve." - Classe : $classe</h3>\n";
+
+echo "<h3>";
+if(acces("/eleves/modify_eleve.php", $_SESSION['statut'])) {
+	echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' title=\"Voir la fiche élève\"";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo ">".$nom_eleve." ".$prenom_eleve."</a>";
+}
+else {
+	echo $nom_eleve." ".$prenom_eleve;
+}
+echo " - Classe : ";
+if(acces("/classes/classes_const.php", $_SESSION['statut'])) {
+	echo "<a href='../classes/classes_const.php?id_classe=$id_classe' title=\"Voir la composition de la classe (élèves)\"";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo ">".$classe."</a>";
+}
+else {
+	echo $classe;
+}
+echo "</h3>\n";
 
 if($_SESSION['statut']=="administrateur"){
 	//echo "<p>Pour valider les modifications, cliquez sur le bouton qui apparait en bas de la page.</p>\n";
