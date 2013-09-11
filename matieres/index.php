@@ -212,7 +212,7 @@ while ($i < $nombre_lignes){
     $k='11';
     $j = '1';
     //while ($k < '51'){
-    while ($k < '61'){
+    while ($k < 110){
         echo "<option value=$k"; if ($current_matiere_priorite == $j) {echo " SELECTED";} echo ">$j</option>\n";
         $k++;
         $j = $k - 10;

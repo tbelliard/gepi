@@ -1070,7 +1070,7 @@ for($i=0;$i<10;$i++){
 	
 		$k=11;
 		$j = 1;
-		while ($k < 61) {
+		while ($k < 110){
 			echo "<option value=$k";
 			if ($current_group["classes"]["classes"][$id_classe]["priorite"] == $k) {echo " selected";}
 			echo ">".$j;
