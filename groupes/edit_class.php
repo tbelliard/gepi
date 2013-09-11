@@ -686,9 +686,28 @@ echo "<option value='null'>-- Sélectionner matière --</option>\n";
 for ($i=0;$i<$nb_mat;$i++) {
     $matiere = mysql_result($query, $i, "matiere");
     $nom_matiere = mysql_result($query, $i, "nom_complet");
+
+    $sql="SELECT u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$matiere."' ORDER BY u.nom, u.prenom;";
+    $res_profs_matiere=mysql_query($sql);
+    if(mysql_num_rows($res_profs_matiere)==0) {
+        $style_opt=" style='color:grey;'";
+        $texte_opt=" - Aucun professeur n'est associé à cette matière.";
+    }
+    else {
+        $style_opt="";
+        $texte_opt=" - Professeurs associés: ";
+        $cpt_prof_opt=0;
+        while($lig_prof_opt=mysql_fetch_object($res_profs_matiere)) {
+            if($cpt_prof_opt>0) {$texte_opt.=", ";}
+            $texte_opt.=casse_mot($lig_prof_opt->prenom, 'majf2')." ".casse_mot($lig_prof_opt->nom, 'maj');
+            $cpt_prof_opt++;
+        }
+    }
+
     //echo "<option value='" . $matiere . "'";
     echo "<option value='" . $matiere . "'";
-    echo " title=\"$matiere ($nom_matiere)\"";
+    echo " title=\"$matiere ($nom_matiere)$texte_opt\"";
+    echo $style_opt;
     //echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
     echo ">" . htmlspecialchars($nom_matiere,ENT_QUOTES,"UTF-8") . "</option>\n";
 }
@@ -788,7 +807,7 @@ echo add_token_field();
 <li><a href='javascript:ordre_defaut();'>égales aux valeurs définies par défaut</a>,</li>
 <li><a href='javascript:ordre_alpha();'>suivant l'ordre alphabétique des matières.</a></li>
 </ul-->
-<input type='radio' name='ordre' id='ordre_defaut' value='ordre_defaut' /><label for='ordre_defaut' style='cursor: pointer;'> égales aux valeurs définies par défaut,</label><br />
+<input type='radio' name='ordre' id='ordre_defaut' value='ordre_defaut' /><label for='ordre_defaut' style='cursor: pointer;' title="Les valeurs par défaut sont définies dans Gestion des bases/Gestion des matières"> égales aux valeurs définies par défaut,</label><br />
 <input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /><label for='ordre_alpha' style='cursor: pointer;'> suivant l'ordre alphabétique des matières</label>
 </fieldset>
 </td>
