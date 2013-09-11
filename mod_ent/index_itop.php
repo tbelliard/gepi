@@ -996,7 +996,7 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 	foreach($ligne as $id_col1 => $pers_id) {
 		if($pers_id!="") {
 			$sql="SELECT * FROM resp_pers WHERE pers_id='$pers_id';";
-			echo "$sql<br />";
+			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
 				$msg.="ERREUR : Le responsable n°$pers_id n'existe pas dans la table 'resp_pers'.<br />";
@@ -1011,7 +1011,7 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 				}
 				else {
 					$sql="SELECT * FROM utilisateurs WHERE login='".$tab_tempo4[$id_col1]['login']."';";
-					echo "$sql<br />";
+					//echo "$sql<br />";
 					$test_u=mysql_query($sql);
 					if(mysql_num_rows($test_u)>0) {
 						$lig_u=mysql_fetch_object($test_u);
@@ -1022,11 +1022,11 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 					else {
 						if($lig->login!="") {
 							$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login."' AND statut='responsable';";
-							echo "$sql<br />";
+							//echo "$sql<br />";
 							$test_u=mysql_query($sql);
 							if(mysql_num_rows($test_u)>0) {
 								$sql="DELETE FROM utilisateurs WHERE login='".$lig->login."' AND statut='responsable';";
-								echo "$sql<br />";
+								//echo "$sql<br />";
 								$menage=mysql_query($sql);
 								if(!$menage) {
 									$msg.="ERREUR : La suppression de l'ancien compte d'utilisateur $lig->login associé au responsable n°$pers_id (<em>$lig->nom $lig->prenom</em>) a échoué.<br />";
@@ -1044,11 +1044,11 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 												auth_mode='gepi', 
 												statut='responsable', 
 												etat='inactif';";
-									echo "$sql<br />";
+									//echo "$sql<br />";
 									$insert=mysql_query($sql);
 									if($insert) {
 										$sql="UPDATE resp_pers SET login='".$tab_tempo4[$id_col1]['login']."' WHERE pers_id='$pers_id';";
-										echo "$sql<br />";
+										//echo "$sql<br />";
 										$update=mysql_query($sql);
 										if($update) {
 											$nb_comptes_remplaces++;
@@ -1076,11 +1076,11 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 											auth_mode='gepi', 
 											statut='responsable', 
 											etat='inactif';";
-								echo "$sql<br />";
+								//echo "$sql<br />";
 								$insert=mysql_query($sql);
 								if($insert) {
 									$sql="UPDATE resp_pers SET login='".$tab_tempo4[$id_col1]['login']."' WHERE pers_id='$pers_id';";
-									echo "$sql<br />";
+									//echo "$sql<br />";
 									$update=mysql_query($sql);
 									if($update) {
 										$nb_nouveaux_comptes++;
@@ -1107,11 +1107,11 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 										auth_mode='gepi', 
 										statut='responsable', 
 										etat='inactif';";
-							echo "$sql<br />";
+							//echo "$sql<br />";
 							$insert=mysql_query($sql);
 							if($insert) {
 								$sql="UPDATE resp_pers SET login='".$tab_tempo4[$id_col1]['login']."' WHERE pers_id='$pers_id';";
-								echo "$sql<br />";
+								//echo "$sql<br />";
 								$update=mysql_query($sql);
 								if($update) {
 									$nb_nouveaux_comptes++;
