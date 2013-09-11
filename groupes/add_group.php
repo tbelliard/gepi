@@ -225,24 +225,64 @@ echo "</pre>";
 					}
 				}
 
+				//debug_var();
 				// METTRE TOUS LES ELEVES DES CLASSES CONCERNEES DANS LE GROUPE
 				$reg_eleves=array();
 				$current_group=get_group($create);
 				foreach ($current_group["periodes"] as $period) {
 					$reg_eleves[$period['num_periode']]=array();
-					foreach($reg_clazz as $tmp_id_classe){
-						$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$tmp_id_classe' AND periode='".$period['num_periode']."'";
+
+					if((isset($_POST['eleves_order_by']))&&($_POST['eleves_order_by']=='classe')) {
+						$cpt_clas=0;
+						$sql="";
+						foreach($reg_clazz as $tmp_id_classe){
+							if($cpt_clas>0) {$sql.=" UNION ";}
+							$sql.="(SELECT jec.login FROM j_eleves_classes jec, eleves e, classes c WHERE id_classe='$tmp_id_classe' AND periode='".$period['num_periode']."' AND jec.login=e.login AND jec.id_classe=c.id ORDER BY e.nom, e.prenom)";
+							$cpt_clas++;
+						}
+						//$sql.=" ORDER BY c.classe, e.nom, e.prenom;";
+						//echo "$sql<br />";
 						$res_ele=mysql_query($sql);
-						if(mysql_num_rows($res_ele)>0){
-							while($lig_ele=mysql_fetch_object($res_ele)){
-								$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+						$nb_ele=mysql_num_rows($res_ele);
+						if($nb_ele>0){
+							$cpt_ele=1;
+							while($lig_ele=mysql_fetch_object($res_ele)) {
+								if((!isset($_POST['eleves_frac_classe']))||
+									(($_POST['eleves_frac_classe']=='tous'))||
+									(($_POST['eleves_frac_classe']==1)&&($cpt_ele<=ceil($nb_ele/2)))||
+									(($_POST['eleves_frac_classe']==2)&&($cpt_ele>ceil($nb_ele/2)))) {
+									$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+									//echo $lig_ele->login."<br />";
+								}
+								$cpt_ele++;
+							}
+						}
+					}
+					else {
+						foreach($reg_clazz as $tmp_id_classe){
+							$sql="SELECT jec.login FROM j_eleves_classes jec, eleves e, classes c WHERE id_classe='$tmp_id_classe' AND periode='".$period['num_periode']."' AND jec.login=e.login AND jec.id_classe=c.id ORDER BY e.nom, e.prenom;";
+							//echo "$sql<br />";
+							$res_ele=mysql_query($sql);
+							$nb_ele=mysql_num_rows($res_ele);
+							if($nb_ele>0){
+								$cpt_ele=1;
+								while($lig_ele=mysql_fetch_object($res_ele)) {
+									if((!isset($_POST['eleves_frac_classe']))||
+										(($_POST['eleves_frac_classe']=='tous'))||
+										(($_POST['eleves_frac_classe']==1)&&($cpt_ele<=ceil($nb_ele/2)))||
+										(($_POST['eleves_frac_classe']==2)&&($cpt_ele>ceil($nb_ele/2)))) {
+										$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+										//echo $lig_ele->login."<br />";
+									}
+									$cpt_ele++;
+								}
 							}
 						}
 					}
 				}
 
 
-                if (count($reg_professeurs) == 0) {
+                if ((count($reg_professeurs) == 0)&&(count($reg_eleves) == 0)) {
                     header("Location: ./edit_group.php?id_groupe=$create&msg=$msg&id_classe=$id_classe&mode=$mode");
                 } else {
                     //$res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, array());
@@ -255,6 +295,9 @@ echo "</pre>";
 					else{
 						if($res){$msg.="Affectation des professeurs à cet enseignement effectuée. ";}else{$msg.="Echec de l'affectation des professeurs à cet enseignement. ";}
 					}
+
+					//die();
+
                     //header("Location: ./edit_class.php?id_classe=$id_classe");
                     header("Location: ./edit_class.php?id_classe=$id_classe&msg=$msg");
                 }
@@ -418,6 +461,22 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 	echo ">".$tab_domaines_texte[$loop]."</label><br />\n";
 }
 
+echo "<br />
+<p>Affecter dans l'enseignement&nbsp;:<br />
+<input type='radio' name='eleves_frac_classe' id='eleves_frac_classe_tous' value='tous' checked onchange=\"checkbox_change_frac_classe('eleves_frac_classe_tous');checkbox_change_frac_classe('eleves_frac_classe_1');checkbox_change_frac_classe('eleves_frac_classe_2');changement();\" /><label for='eleves_frac_classe_tous' id='texte_eleves_frac_classe_tous' style='font-weight:bold'> tous les élèves</label><br />
+<input type='radio' name='eleves_frac_classe' id='eleves_frac_classe_1' value='1' onchange=\"checkbox_change_frac_classe('eleves_frac_classe_tous');checkbox_change_frac_classe('eleves_frac_classe_1');checkbox_change_frac_classe('eleves_frac_classe_2');changement();\" /><label for='eleves_frac_classe_1' id='texte_eleves_frac_classe_1'> la première moitié</label><br />
+<input type='radio' name='eleves_frac_classe' id='eleves_frac_classe_2' value='2' onchange=\"checkbox_change_frac_classe('eleves_frac_classe_tous');checkbox_change_frac_classe('eleves_frac_classe_1');checkbox_change_frac_classe('eleves_frac_classe_2');changement();\" /><label for='eleves_frac_classe_2' id='texte_eleves_frac_classe_2'> la deuxième moitié</label></p>";
+
+if($mode == "regroupement") {
+	echo "<p>Dans le cas où vous ne mettez qu'une moitié des élèves dans le groupe, veuillez choisir le tri&nbsp;<br />
+	<input type='radio' name='eleves_order_by' id='eleves_order_by_classe' value='classe' onchange=\"checkbox_change_tri_eleves('eleves_order_by_alpha');checkbox_change_tri_eleves('eleves_order_by_classe');changement();\" checked /><label for='eleves_order_by_classe' id='texte_eleves_order_by_classe'>élèves triés par classe puis par ordre alphabétique</label><br />
+	<input type='radio' name='eleves_order_by' id='eleves_order_by_alpha' value='alpha' onchange=\"checkbox_change_tri_eleves('eleves_order_by_alpha');checkbox_change_tri_eleves('eleves_order_by_classe');changement();\" /><label for='eleves_order_by_alpha' id='texte_eleves_order_by_alpha'>élèves triés par ordre alphabétique</label></p>";
+
+}
+else {
+	echo "<input type='hidden' name='eleves_order_by' value='alpha' />";
+}
+
 echo "</div>\n";
 
 // On affiche une sélection des profs si la matière a été choisie
@@ -544,6 +603,8 @@ for(i=0;i<$p;i++) {
 echo "<script type='text/javascript'>\n";
 echo js_checkbox_change_style('checkbox_change_divers');
 echo js_checkbox_change_style('checkbox_change_visibilite');
+echo js_checkbox_change_style('checkbox_change_frac_classe');
+echo js_checkbox_change_style('checkbox_change_tri_eleves');
 echo "</script>\n";
 
 
