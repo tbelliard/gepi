@@ -3036,8 +3036,11 @@ if($mode=="publipostage_eleves") {
 
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
-				//if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
-				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
+				if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
+				// Erreur: Ce n'est pas le fichier Mot de passe parents
+				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
+				// On exclut également les comptes "Désactivé"
+				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&($tab[7]=='Actif')) {
 					if(!isset($tab_classe_eleve[$tab[6]])) {
 						$cpt=0;
 					}
@@ -3164,7 +3167,9 @@ if($mode=="publipostage_responsables") {
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
 				//if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
-				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
+				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
+				// On exclut également les comptes "Désactivé"
+				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[11]=='Actif')) {
 					/*
 					if($tab[11]!=$classe_precedente) {
 						$cpt=0;
@@ -3302,8 +3307,10 @@ ZETOFREY;Melanie;melanie.zetofrey;MENESR$12345;azerty&*;Melanie.ZETOFREY@ent27.f
 
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
-				//if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
-				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
+				if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
+				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
+				// On exclut également les comptes "Désactivé"
+				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&($tab[7]=='Actif')) {
 					/*
 					$sql="SELECT e.* FROM eleves e, sso_table_correspondance stc WHERE stc.login_gepi=e.login AND ;";
 					$res_ele=mysql_query($sql);
@@ -3405,7 +3412,9 @@ if($mode=="forcer_logins_mdp_responsables") {
 				// On exclut la ligne Nom;Prénom
 				//if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
 				// On exclut aussi les classes BASE2012-2013
-				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
+				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
+				// On exclut également les comptes "Désactivé"
+				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[11]=='Actif')) {
 					/*
 					if($tab[11]!=$classe_precedente) {
 						$cpt=0;
