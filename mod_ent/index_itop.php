@@ -3036,7 +3036,7 @@ if($mode=="publipostage_eleves") {
 
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
-				if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
+				//if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
 				// Erreur: Ce n'est pas le fichier Mot de passe parents
 				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
 				// On exclut également les comptes "Désactivé"
@@ -3307,7 +3307,7 @@ ZETOFREY;Melanie;melanie.zetofrey;MENESR$12345;azerty&*;Melanie.ZETOFREY@ent27.f
 
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
-				if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
+				//if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
 				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
 				// On exclut également les comptes "Désactivé"
 				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&($tab[7]=='Actif')) {
