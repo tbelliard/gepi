@@ -242,6 +242,16 @@ require_once("../lib/header.inc.php");
 $nb_periode=$current_group['nb_periode'];
 //=========================
 
+$tab_autres_sig=array();
+$sql="SELECT DISTINCT id_groupe FROM j_signalement WHERE nature='erreur_affect' AND id_groupe!='$id_groupe';";
+//echo "$sql<br />";
+$res_autres_sig=mysql_query($sql);
+if(mysql_num_rows($res_autres_sig)>0) {
+	while($lig_autres_sig=mysql_fetch_object($res_autres_sig)) {
+		$tab_autres_sig[]=$lig_autres_sig->id_groupe;
+	}
+}
+
 $tab_sig=array();
 $sql="SELECT * FROM j_signalement WHERE id_groupe='$id_groupe' AND nature='erreur_affect' ORDER BY periode, login;";
 //echo "$sql<br />";
@@ -353,6 +363,7 @@ if(mysql_num_rows($res_grp)>1) {
 	$cpt_grp=0;
 	$chaine_js=array();
 	//echo "<option value=''>---</option>\n";
+	$indice_grp_courant=0;
 	while($lig_grp=mysql_fetch_object($res_grp)) {
 
 		$tmp_grp=get_group($lig_grp->id_groupe);
@@ -412,6 +423,7 @@ if(mysql_num_rows($res_grp)>1) {
 
 	echo " | ";
 
+	$indice_grp_courant=0;
 	echo "<select name='id_groupe' id='id_groupe_a_passage_autre_grp2' onchange=\"confirm_changement_grp2(change, '$themessage');\">\n";
 	$cpt_grp=0;
 	$chaine_js=array();
@@ -446,6 +458,62 @@ if(mysql_num_rows($res_grp)>1) {
 			}
 			else{
 				document.getElementById('id_groupe_a_passage_autre_grp2').selectedIndex=$indice_grp_courant;
+			}
+		}
+	}
+</script>\n";
+
+	echo "</p>";
+
+	echo "</form>\n";
+	echo "</div>\n";
+}
+
+// Formulaire pour passer à un autre groupe avec erreur d'affectation
+if(count($tab_autres_sig)>0) {
+
+	echo "<div style='float:left;'>";
+	echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_passage_a_un_autre_groupe3' method='post'>\n";
+
+	echo "<p class='bold'>";
+
+	echo " | ";
+
+	echo "<span title=\"Des erreurs d'affectation ont été signalées pour un ou des enseignements\">Erreurs:<select name='id_groupe' id='id_groupe_a_passage_autre_grp3' onchange=\"confirm_changement_grp3(change, '$themessage');\">\n";
+	$cpt_grp=0;
+	$chaine_js=array();
+	$indice_grp_courant=0;
+	echo "<option value=''>---</option>\n";
+	for($loop=0;$loop<count($tab_autres_sig);$loop++) {
+
+		$tmp_grp=get_group($tab_autres_sig[$loop], array('classes'));
+
+		echo "<option value='$lig_grp->id_groupe'";
+		if($tab_autres_sig[$loop]==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
+		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+		$cpt_grp++;
+	}
+	echo "</select><img src='../images/icons/flag2.gif' width='16' height='16' /></span>\n";
+
+	echo " <input type='submit' id='button_submit_passage_autre_groupe3' value='Go'>\n";
+
+	echo "<script type='text/javascript'>
+
+	document.getElementById('button_submit_passage_autre_groupe3').style.display='none';
+
+	function confirm_changement_grp3(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.forms['form_passage_a_un_autre_groupe3'].submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.forms['form_passage_a_un_autre_groupe3'].submit();
+			}
+			else{
+				document.getElementById('id_groupe_a_passage_autre_grp3').selectedIndex=$indice_grp_courant;
 			}
 		}
 	}
