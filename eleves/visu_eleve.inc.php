@@ -2265,12 +2265,12 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="cdt") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['cdt']."; ";
 			echo "'>";
-echo "a";
+			//echo "a";
 			if(isset($tab_ele['classe'])) {
-echo "b";
+				//echo "b";
 				$id_derniere_classe=$tab_ele['classe'][count($tab_ele['classe'])-1]['id_classe'];
 				if(acces("/cahier_texte_2/consultation2.php", $_SESSION['statut'])) {
-echo "c";
+					//echo "c";
 					echo "<div style='float:right; width:16'><a href='../cahier_texte_2/consultation2.php?mode=eleve&amp;login_eleve=$ele_login&amp;id_classe=$id_derniere_classe' title='Affichage semaine du cahier de textes'><img src='../images/icons/date.png' width='16' height='16' /></a></div>\n";
 				}
 			}
