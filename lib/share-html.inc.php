@@ -2615,4 +2615,68 @@ function input_password_to_text($id_champ) {
 
 	return $retour;
 }
+
+function html_ajout_suffixe_ou_renommer($id_nom_court, $id_nom_complet, $id_nom_matiere) {
+	$retour="
+	<p><strong>Ajouter un suffixe</strong> au nom court actuel de l'enseignement et au nom complet actuel&nbsp;:</p>
+	<table class='boireaus'>
+		<tr>
+			<td class='lig1'>
+				<a href=\"javascript:ajout_suffixe_nom_grp('_1', ' (groupe 1)')\">_1 et (groupe 1)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_2', ' (groupe 2)')\">_2 et (groupe 2)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_3', ' (groupe 3)')\">_3 et (groupe 3)</a></p>
+			</td>
+			<td class='lig-1'>
+				<a href=\"javascript:ajout_suffixe_nom_grp('_g1', ' (groupe 1)')\">_g1 et (groupe 1)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_g2', ' (groupe 2)')\">_g2 et (groupe 2)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_g3', ' (groupe 3)')\">_g3 et (groupe 3)</a></p>
+			</td>
+			<td class='lig1'>
+				<a href=\"javascript:ajout_suffixe_nom_grp('_A', ' (groupe A)')\">_A et (groupe A)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_B', ' (groupe B)')\">_B et (groupe B)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_C', ' (groupe C)')\">_C et (groupe C)</a>
+			</td>
+		</tr>
+	</table>
+
+	<br />
+	<p>ou</p>
+
+	<p><strong>Renommer</strong> l'enseignement en&nbsp;:</p>
+	<table class='boireaus'>
+		<tr>
+			<td class='lig1'>
+				<a href=\"javascript:modif_nom_grp('_1', ' (groupe 1)')\">_1 et (groupe 1)</a><br />
+				<a href=\"javascript:modif_nom_grp('_2', ' (groupe 2)')\">_2 et (groupe 2)</a><br />
+				<a href=\"javascript:modif_nom_grp('_3', ' (groupe 3)')\">_3 et (groupe 3)</a></p>
+			</td>
+			<td class='lig-1'>
+				<a href=\"javascript:modif_nom_grp('_g1', ' (groupe 1)')\">_g1 et (groupe 1)</a><br />
+				<a href=\"javascript:modif_nom_grp('_g2', ' (groupe 2)')\">_g2 et (groupe 2)</a><br />
+				<a href=\"javascript:modif_nom_grp('_g3', ' (groupe 3)')\">_g3 et (groupe 3)</a></p>
+			</td>
+			<td class='lig1'>
+				<a href=\"javascript:modif_nom_grp('_A', ' (groupe A)')\">_A et (groupe A)</a><br />
+				<a href=\"javascript:modif_nom_grp('_B', ' (groupe B)')\">_B et (groupe B)</a><br />
+				<a href=\"javascript:modif_nom_grp('_C', ' (groupe C)')\">_C et (groupe C)</a>
+			</td>
+		</tr>
+	</table>
+
+	<script type='text/javascript'>
+		function ajout_suffixe_nom_grp(suffixe_nom_court, suffixe_nom_complet) {
+			document.getElementById('$id_nom_court').value=document.getElementById('$id_nom_court').value+suffixe_nom_court;
+			document.getElementById('$id_nom_complet').value=document.getElementById('$id_nom_complet').value+suffixe_nom_complet;
+		}
+
+		function modif_nom_grp(suffixe_nom_court, suffixe_nom_complet) {
+			prefixe=document.getElementById('$id_nom_matiere').options[document.getElementById('$id_nom_matiere').selectedIndex].value;
+			prefixe_nom_complet=document.getElementById('$id_nom_matiere').options[document.getElementById('$id_nom_matiere').selectedIndex].getAttribute('nom_matiere');
+			document.getElementById('$id_nom_court').value=prefixe+suffixe_nom_court;
+			document.getElementById('$id_nom_complet').value=prefixe_nom_complet+suffixe_nom_complet;
+		}
+	</script>\n";
+
+	return $retour;
+}
 ?>

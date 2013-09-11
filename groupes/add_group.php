@@ -328,9 +328,16 @@ if ($mode == "groupe") {
 <form enctype="multipart/form-data" action="add_group.php" method=post>
 <div style="width: 95%;">
 <div style="width: 45%; float: left;">
-<p>Nom court&nbsp;: <input type="text" size="30" name="groupe_nom_court" onchange="changement();" value = "<?php echo $reg_nom_groupe; ?>" /></p>
+<p>Nom court&nbsp;: <input type="text" size="30" name="groupe_nom_court" id="groupe_nom_court" onchange="changement();" value = "<?php echo $reg_nom_groupe; ?>" /><?php
 
-<p>Nom complet&nbsp;: <input type="text" size="30" name="groupe_nom_complet" onchange="changement();" value = "<?php echo $reg_nom_complet; ?>" /></p>
+$titre_infobulle="Ajouter un suffixe au nom de l'enseignement";
+$texte_infobulle="<div align='center' style='padding:3px;'>".html_ajout_suffixe_ou_renommer('groupe_nom_court', 'groupe_nom_complet', 'matiere')."</div>";
+$tabdiv_infobulle[]=creer_div_infobulle('suffixe_nom_grp',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+echo " <a href=\"javascript:afficher_div('suffixe_nom_grp','y',-100,20)\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Suffixe' title=\"Ajouter un suffixe  ou renommer l'enseignement.\" /></a>";
+
+?></p>
+
+<p>Nom complet&nbsp;: <input type="text" size="30" name="groupe_nom_complet" id="groupe_nom_complet" onchange="changement();" value = "<?php echo $reg_nom_complet; ?>" /></p>
 
 <p>Matière enseignée à ce groupe&nbsp;:
 <?php
@@ -340,7 +347,7 @@ echo add_token_field();
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysql_num_rows($query);
 
-echo "<select name='matiere' size='1' onchange=\"changement();\">\n";
+echo "<select name='matiere' id='matiere' size='1' onchange=\"changement();\">\n";
 
 for ($i=0;$i<$nb_mat;$i++) {
     $matiere = mysql_result($query, $i, "matiere");
@@ -348,7 +355,8 @@ for ($i=0;$i<$nb_mat;$i++) {
     echo "<option value='" . $matiere . "'";
     if ($reg_matiere == $matiere) {echo " SELECTED";}
     //echo ">" . $nom_matiere . "</option>\n";
-    echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
+    echo " nom_matiere=\"$nom_matiere\"";
+    echo ">".$matiere." (".htmlspecialchars($nom_matiere).")"."</option>\n";
 }
 echo "</select>\n";
 echo "</p>\n";
@@ -605,6 +613,7 @@ echo js_checkbox_change_style('checkbox_change_divers');
 echo js_checkbox_change_style('checkbox_change_visibilite');
 echo js_checkbox_change_style('checkbox_change_frac_classe');
 echo js_checkbox_change_style('checkbox_change_tri_eleves');
+
 echo "</script>\n";
 
 

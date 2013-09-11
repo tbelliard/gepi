@@ -642,9 +642,17 @@ Ce paramétrage est global, commun à toutes les classes.\" />";
 <form enctype="multipart/form-data" action="edit_group.php" method="post">
 <div style="width: 95%;">
 <div style="width: 45%; float: left;">
-<p>Nom court : <input type='text' size='30' name='groupe_nom_court' value = "<?php echo $reg_nom_groupe; ?>" onchange="changement()" /><?php echo $message_nom_sur_bulletin1;?></p>
+<p>Nom court : <input type='text' size='30' name='groupe_nom_court' id='groupe_nom_court' value = "<?php echo $reg_nom_groupe; ?>" onchange="changement()" /><?php
+	echo $message_nom_sur_bulletin1;
 
-<p>Nom complet : <input type='text' size='50' name='groupe_nom_complet' value = "<?php echo $reg_nom_complet; ?>" onchange="changement()" /><?php echo $message_nom_sur_bulletin2;?></p>
+	$titre_infobulle="Ajouter un suffixe au nom de l'enseignement";
+	$texte_infobulle="<div align='center' style='padding:3px;'>".html_ajout_suffixe_ou_renommer('groupe_nom_court', 'groupe_nom_complet', 'matiere')."</div>";
+	$tabdiv_infobulle[]=creer_div_infobulle('suffixe_nom_grp',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+	echo " <a href=\"javascript:afficher_div('suffixe_nom_grp','y',-100,20)\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Suffixe' title=\"Ajouter un suffixe ou renommer l'enseignement.\" /></a>";
+
+?></p>
+
+<p>Nom complet : <input type='text' size='50' name='groupe_nom_complet' id='groupe_nom_complet' value = "<?php echo $reg_nom_complet; ?>" onchange="changement()" /><?php echo $message_nom_sur_bulletin2;?></p>
 
 <?php
 
@@ -806,7 +814,7 @@ echo "</div>\n";
 // Matière
 echo "<div style='width: 45%; float: right;'>\n";
 
-echo "<p>Sélectionnez la matière enseignée à ce groupe : ";
+echo "<p>Sélectionnez la matière enseignée à ce groupe&nbsp;: ";
 
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysql_num_rows($query);
@@ -820,7 +828,8 @@ for ($i=0;$i<$nb_mat;$i++) {
 	$nom_matiere = mysql_result($query, $i, "nom_complet");
 	echo "<option value='" . $matiere . "'";
 	if ($reg_matiere == $matiere) echo " SELECTED";
-	echo ">" . $nom_matiere . "</option>\n";
+	echo " nom_matiere=\"$nom_matiere\"";
+	echo ">".$matiere." (".htmlspecialchars($nom_matiere).")"."</option>\n";
 	//echo ">" . html_entity_decode($nom_matiere) . "</option>\n";
 	//echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
 }
@@ -889,6 +898,18 @@ echo "<script type='text/javascript'>
 		}
 	}
 
+	/*
+	function ajout_suffixe_nom_grp(suffixe_nom_court, suffixe_nom_complet) {
+		document.getElementById('groupe_nom_court').value=document.getElementById('groupe_nom_court').value+suffixe_nom_court;
+		document.getElementById('groupe_nom_complet').value=document.getElementById('groupe_nom_complet').value+suffixe_nom_complet;
+	}
+
+	function modif_nom_grp(suffixe_nom_court, suffixe_nom_complet) {
+		prefixe=document.getElementById('matiere').options[document.getElementById('matiere').selectedIndex].value;
+		document.getElementById('groupe_nom_court').value=prefixe+suffixe_nom_court;
+		document.getElementById('groupe_nom_complet').value=prefixe+suffixe_nom_complet;
+	}
+	*/
 </script>
 
 </div>\n";
