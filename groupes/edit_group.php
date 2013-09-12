@@ -754,6 +754,7 @@ Ce paramétrage est global, commun à toutes les classes.\" />";
 
 ?>
 <form enctype="multipart/form-data" action="edit_group.php" method="post">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 <div style="width: 95%;">
 <div style="width: 45%; float: left;">
 <p>Nom court : <input type='text' size='30' name='groupe_nom_court' id='groupe_nom_court' value = "<?php echo $reg_nom_groupe; ?>" onchange="changement()" /><?php
@@ -924,39 +925,41 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 
 echo "
 	<br />
-	<div style='text-indent:-1em; margin-left:1em;'>
+	<div style='border:1px solid white; background-image: url(\"../images/background/opacite50.png\");'>
 		<p><strong>Création de sous-groupes&nbsp;:</strong></p>
 		<p style='text-indent:-2em; margin-left:2em;'>
-		<input type='checkbox' name='creer_sous_groupes' id='creer_sous_groupes' value='y' /><label for='creer_sous_groupes' id='texte_creer_sous_groupes'>Créer de nouveaux sous-groupes<br />
-		en fractionnant l'enseignement en </label>
-		<select name='nb_sous_groupes_a_creer' id='nb_sous_groupes_a_creer' onchange='maj_check_sous_groupes(); changement();'>
-			<option value=''>---</option>
-			<option value='1'>1</option>
-			<option value='2'>2</option>
-			<option value='3'>3</option>
-			<option value='4'>4</option>
-		</select>&nbsp;groupes<br />
-		d'élèves rangés par ordre&nbsp;<select name='ordre_eleves_sous_groupe_a_creer' onchange='changement();'>
-			<option value='classe'>de classe, puis par ordre alphabétique</option>
-			<option value='alpha'>alphabétique</option>
-		</select><br />
-		avec des suffixes&nbsp;<select name='suffixe_sous_groupe_a_creer' id='suffixe_sous_groupe_a_creer' onchange='changement();'>
-			<option value=''>pas de suffixe</option>
-			<option value='1'>_1, _2,...</option>
-			<option value='g1'>_g1, _g2,...</option>
-			<option value='A'>_A, _B,...</option>
-		</select><br />
-		visibles sur<br />";
+			<input type='checkbox' name='creer_sous_groupes' id='creer_sous_groupes' value='y' onchange='affiche_masque_details_sous_groupes(); changement();' /><label for='creer_sous_groupes' id='texte_creer_sous_groupes'>Créer de nouveaux sous-groupes</label><br />
+			<div id='div_details_nouveaux_sous_groupes'>
+				en fractionnant l'enseignement en 
+				<select name='nb_sous_groupes_a_creer' id='nb_sous_groupes_a_creer' onchange='maj_check_sous_groupes(); changement();'>
+					<option value=''>---</option>
+					<option value='1'>1</option>
+					<option value='2'>2</option>
+					<option value='3'>3</option>
+					<option value='4'>4</option>
+				</select>&nbsp;groupes<br />
+				d'élèves rangés par ordre&nbsp;<select name='ordre_eleves_sous_groupe_a_creer' onchange='changement();'>
+					<option value='classe'>de classe, puis par ordre alphabétique</option>
+					<option value='alpha'>alphabétique</option>
+				</select><br />
+				avec des suffixes&nbsp;<select name='suffixe_sous_groupe_a_creer' id='suffixe_sous_groupe_a_creer' onchange='changement();'>
+					<option value=''>pas de suffixe</option>
+					<option value='1'>_1, _2,...</option>
+					<option value='g1'>_g1, _g2,...</option>
+					<option value='A'>_A, _B,...</option>
+				</select><br />
+				visibles sur<br />";
 
 for($loop=0;$loop<count($tab_domaines);$loop++) {
-	echo "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."' id='visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."' value='y' ";
-	echo " onchange=\"checkbox_change_visibilite('visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."'); changement();\"";
-	echo "title='Visibilité ".$tab_domaines[$loop]."' /><label for='visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."' id='texte_visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."'";
-	echo ">".$tab_domaines_texte[$loop]."</label><br />\n";
+	echo "
+				&nbsp;&nbsp;&nbsp;<input type='checkbox' name='visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."' id='visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."' value='y' onchange=\"checkbox_change_visibilite('visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."'); changement();\" title='Visibilité ".$tab_domaines[$loop]."' /><label for='visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."' id='texte_visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."'>".$tab_domaines_texte[$loop]."</label><br />\n";
 }
 
-echo "
+		echo "
 		</p>
+
+		<p><em>NOTE&nbsp;:</em> Ce sont de nouveaux groupes (<em>à part entière</em>), mais créés avec les mêmes professeurs, des noms (<em>au suffixe près</em>) et au partage des élèves près.</p>
+		</div>
 
 		<script type='text/javascript'>
 			function maj_check_sous_groupes() {
@@ -975,9 +978,19 @@ echo "
 					}
 				}
 			}
+
+			document.getElementById('div_details_nouveaux_sous_groupes').style.display='none';
+
+			function affiche_masque_details_sous_groupes() {
+				if(document.getElementById('creer_sous_groupes').checked==true) {
+					document.getElementById('div_details_nouveaux_sous_groupes').style.display='';
+				}
+				else {
+					document.getElementById('div_details_nouveaux_sous_groupes').style.display='none';
+				}
+			}
 		</script>
 
-		<p><em>NOTE&nbsp;:</em> Ce sont de nouveaux groupes (<em>à part entière</em>), mais créés avec les mêmes professeurs, des noms (<em>au suffixe près</em>) et au partage des élèves près.</p>
 	</div>";
 
 echo "</div>\n";
@@ -1111,7 +1124,8 @@ echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 echo "</div>\n";
 echo "</div>\n";
 
-echo "</form>\n";
+echo "</fieldset>
+</form>\n";
 
 echo "<div style='clear:both;'></div>
 <hr />
