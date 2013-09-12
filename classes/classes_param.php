@@ -1104,7 +1104,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<select name='matiere_nouvel_enseignement' id='matiere_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;maj_prof_enseignement();maj_nom_descr_enseignement();\">\n";
 			echo "<option value=''>---</option>\n";
 			while($lig_mat=mysql_fetch_object($res_mat)) {
-				echo "<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+				echo "<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\" nom_matiere=\"$lig_mat->nom_complet\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
 			}
 			echo "</select>\n";
 			echo "</td>\n";
@@ -1132,7 +1132,14 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<td>\n";
 			echo "Nom&nbsp;: ";
 			echo "</td>\n";
-			echo "<td><input type='text' name='nom_nouvel_enseignement' id='nom_nouvel_enseignement' value='' /></td>\n";
+			echo "<td><input type='text' name='nom_nouvel_enseignement' id='nom_nouvel_enseignement' value='' />";
+
+			$titre_infobulle="Ajouter un suffixe au nom de l'enseignement";
+			$texte_infobulle="<div align='center' style='padding:3px;'>".html_ajout_suffixe_ou_renommer('nom_nouvel_enseignement', 'description_nouvel_enseignement', 'matiere_nouvel_enseignement')."</div>";
+			$tabdiv_infobulle[]=creer_div_infobulle('suffixe_nom_grp',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+			echo " <a href=\"javascript:afficher_div('suffixe_nom_grp','y',-100,20)\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Suffixe' title=\"Ajouter un suffixe ou renommer l'enseignement.\" /></a>";
+
+			echo "</td>\n";
 			echo "</tr>\n";
 
 			echo "<tr>\n";
