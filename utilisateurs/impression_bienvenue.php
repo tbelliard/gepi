@@ -78,6 +78,9 @@ if(!isset($user_login)) {
 			echo "<p class='bold'>";
 			echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 			echo " | <a href='".$_SERVER['PHP_SELF']."'> Fiches bienvenue</a>";
+			if(acces("/gestion/modify_impression.php", $_SESSION['statut'])) {
+				echo " | <a href='../gestion/modify_impression.php?fiche=personnels'> Modifier les fiches bienvenue</a>";
+			}
 			echo "</p>\n";
 	
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
@@ -114,6 +117,9 @@ if(!isset($user_login)) {
 			echo "<p class='bold'>";
 			echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 			echo " | <a href='".$_SERVER['PHP_SELF']."'> Fiches bienvenue</a>";
+			if(acces("/gestion/modify_impression.php", $_SESSION['statut'])) {
+				echo " | <a href='../gestion/modify_impression.php?fiche=responsables'> Modifier les fiches bienvenue</a>";
+			}
 			echo "</p>\n";
 
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
@@ -224,6 +230,9 @@ if(!isset($user_login)) {
 			echo "<p class='bold'>";
 			echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 			echo " | <a href='".$_SERVER['PHP_SELF']."'> Fiches bienvenue</a>";
+			if(acces("/gestion/modify_impression.php", $_SESSION['statut'])) {
+				echo " | <a href='../gestion/modify_impression.php?fiche=eleves'> Modifier les fiches bienvenue</a>";
+			}
 			echo "</p>\n";
 
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec, utilisateurs u
@@ -296,6 +305,9 @@ if(!isset($user_login)) {
 
 		echo "<p class='bold'>";
 		echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour index utilisateurs</a>";
+		if(acces("/gestion/modify_impression.php", $_SESSION['statut'])) {
+			echo " | <a href='../gestion/modify_impression.php'> Modifier les fiches bienvenue</a>";
+		}
 		echo "</p>\n";
 
 		echo "<p>Fiches bienvenue&nbsp;:</p>";
@@ -317,6 +329,9 @@ if(!isset($user_login)) {
 		echo "<p class='bold'>";
 		echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour index utilisateurs</a>";
 		echo " | <a href='".$_SERVER['PHP_SELF']."'> Fiches bienvenue</a>";
+		if(acces("/gestion/modify_impression.php", $_SESSION['statut'])) {
+			echo " | <a href='../gestion/modify_impression.php'> Modifier les fiches bienvenue</a>";
+		}
 		echo "</p>\n";
 
 		echo "<p>Aucun utilisateur (<i>$mode</i>) n'a été sélectionné.</p>\n";
