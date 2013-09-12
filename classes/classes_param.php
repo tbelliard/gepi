@@ -674,8 +674,8 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 if($max_periode <= 0) {
-echo "Aucune classe comportant des périodes n'a été définie.";
-die();
+	echo "<p style='color:red'>Aucune classe comportant des périodes n'a été définie.</p>";
+	die();
 }
 echo "<form action=\"classes_param.php\" method='post' name='formulaire'>\n";
 echo add_token_field();
@@ -712,6 +712,8 @@ function UncheckAll(){
 echo "<p><a href='javascript:checkAll();'>Cocher toutes les classes</a> / <a href='javascript:UncheckAll();'>Tout décocher</a></p>\n";
 */
 
+$tab_id_cases_classes_postees_precedemment=array();
+$liste_classes_postees_precedemment="";
 // Première boucle sur le nombre de periodes
 $per = 0;
 while ($per < $max_periode) {
@@ -733,7 +735,7 @@ while ($per < $max_periode) {
 		}
 		$nbc++;
 	}
-	If ($nb != 0) {
+	if ($nb != 0) {
 		echo "<center><p class='grand'>Classes ayant ".$per." période";
 		if ($per > 1) echo "s";
 		echo "</p></center>\n";
@@ -756,6 +758,13 @@ while ($per < $max_periode) {
 				echo "<td>\n";
 				if ($nom_classe != '') {
 					echo "<input type=\"checkbox\" name=\"".$nom_case."\" id='case_".$per."_".$i."_".$j."' onchange=\"change_style_classe('".$per."_".$i."_".$j."')\" checked /><label id='label_case_".$per."_".$i."_".$j."' for='case_".$per."_".$i."_".$j."' style='cursor:pointer; font-weight:bold'>&nbsp;".$nom_classe."</label>\n";
+					if(isset($_POST[$nom_case])) {
+						$tab_id_cases_classes_postees_precedemment[]="case_".$per."_".$i."_".$j;
+						if($liste_classes_postees_precedemment!="") {
+							$liste_classes_postees_precedemment.=", ";
+						}
+						$liste_classes_postees_precedemment.=$nom_classe;
+					}
 				}
 				echo "</td>\n";
 
@@ -838,14 +847,33 @@ while ($per < $max_periode) {
 				document.getElementById('label_case_'+num).style.fontWeight='normal';
 			}
 		}
-	}
+	}";
 
+		if(count($tab_id_cases_classes_postees_precedemment)>0) {
+			echo "
+	function cocher_classes_post_precedent() {
+		tout_cocher($per, false);";
+		for($loop=0;$loop<count($tab_id_cases_classes_postees_precedemment);+$loop++) {
+			echo "
+				if(document.getElementById('".$tab_id_cases_classes_postees_precedemment[$loop]."')){
+					document.getElementById('".$tab_id_cases_classes_postees_precedemment[$loop]."').checked=true;
+					change_style_classe('".preg_replace("/^case_/", "", $tab_id_cases_classes_postees_precedemment[$loop])."');
+				}
+			";
+		}
+		echo "
+	}";
+		}
+
+		echo "
 </script>\n";
 
-
+		if(count($tab_id_cases_classes_postees_precedemment)>0) {
+			echo "<p style='margin-top:1em;margin-bottom:1em;'><a href='javascript:cocher_classes_post_precedent()'>Effectuer la même sélection de classes qu'à l'opération précédente (<em>$liste_classes_postees_precedemment</em>).</a></p>";
+		}
 
 		?>
-		<p style='text-indent:-6em; margin-left:6em;'><em>Remarque&nbsp;:</em> Les modifications ne concernent que les cases cochées ci-dessus.<br />
+		<p style='text-indent:-6em; margin-left:6em;'><em>Remarque&nbsp;:</em> Les modifications qui seront apportées ne concerneront que les cases cochées ci-dessus.<br />
 		Aucune modification n'est apportée aux champs laissés vides ci-dessous.</p>
 		<br />
 
