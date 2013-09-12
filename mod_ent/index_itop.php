@@ -949,7 +949,8 @@ if($mode=='vider') {
 	else {
 		$msg.="Erreur lors du 'vidage' de sso_table_correspondance.<br />";
 	}
-	unset($mode);
+	//unset($mode);
+	$mode="";
 }
 
 if($mode=='valider_forcer_logins_mdp_responsables') {
@@ -1159,7 +1160,8 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 	//$sql="TRUNCATE tempo4;";
 	$menage=mysql_query($sql);
 
-	unset($mode);
+	//unset($mode);
+	$mode="";
 }
 
 //**************** EN-TETE *****************
@@ -1209,7 +1211,7 @@ echo "<a name='lien_retour'></a>
 <p class='bold noprint'>
 <a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
-if(!isset($mode)) {
+if((!isset($mode))||($mode=="")) {
 	echo "
 </p>
 
@@ -1528,6 +1530,19 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		<th>Naissance</th>
 	</tr>
 ";
+
+		//$tab_login_associe_a_un_guid=array();
+		$tab_guid_associe_a_un_login=array();
+		$sql="SELECT u.statut, u.nom, u.prenom, stc.* FROM sso_table_correspondance stc, utilisateurs u WHERE stc.login_gepi=u.login;";
+		$res=mysql_query($sql);
+		while($lig=mysql_fetch_object($res)) {
+			//$tab_login_associe_a_un_guid[$lig->login_sso]['login_gepi']=$lig->login_gepi;
+			//$tab_login_associe_a_un_guid[$lig->login_sso]['info']=$lig->nom." ".$lig->prenom." (".$lig->statut.")";
+
+			$tab_guid_associe_a_un_login[$lig->login_gepi]['login_sso']=$lig->login_sso;
+			$tab_guid_associe_a_un_login[$lig->login_gepi]['info']=$lig->nom." ".$lig->prenom." (".$lig->statut.")";
+		}
+
 		$alt=1;
 		$cpt=0;
 		$cpt_deja_enregistres=0;
@@ -1619,7 +1634,14 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
 									return false;\">
 				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
-			</a>
+			</a>";
+
+							//<!-- 20130912 : AJOUTER UN TEST SUR LE FAIT QUE LE LOGIN EST DEJA ASSOCIE -->
+							if(array_key_exists($lig->login, $tab_guid_associe_a_un_login)) {
+								echo "<img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Ce login est associé à un autre GUID ENT\n".$tab_guid_associe_a_un_login[$lig->login]['login_sso']."\net concerne l'utilisateur Gepi ".$tab_guid_associe_a_un_login[$lig->login]['info']."\" />";
+							}
+
+							echo "
 		</td>
 	</tr>
 ";
@@ -1629,7 +1651,12 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							// Il va falloir choisir
 							$chaine_options="";
 							while($lig=mysql_fetch_object($res)) {
-								$chaine_options.="				<option value=\"$lig->login\">$lig->nom $lig->prenom (".formate_date($lig->naissance).")";
+								$chaine_options.="				<option value=\"$lig->login\"";
+								// 20130912
+								if(array_key_exists($lig->login, $tab_guid_associe_a_un_login)) {
+									$chaine_options.=" title=\"Ce login est associé à un autre GUID ENT\n".$tab_guid_associe_a_un_login[$lig->login]['login_sso']."\net concerne l'utilisateur Gepi ".$tab_guid_associe_a_un_login[$lig->login]['info']."\"";
+								}
+								$chaine_options.=">$lig->nom $lig->prenom (".formate_date($lig->naissance).")";
 								$tab_classe=get_class_from_ele_login($lig->login);
 								if(isset($tab_classe['liste'])) {
 									$chaine_options.=" en ".$tab_classe['liste'];
@@ -1832,7 +1859,7 @@ if($mode=="consult_eleves") {
 
 	<table class='boireaus'>
 		<tr>
-			<th>
+			<th rowspan='2'>
 				<input type='submit' value='Supprimer' />
 				<span id='tout_cocher_decocher' style='display:none;'>
 					<br />
@@ -1841,6 +1868,11 @@ if($mode=="consult_eleves") {
 					<a href=\"javascript:tout_decocher()\" title='Tout décocher'><img src='../images/disabled.png' width='20' height='20' /></a>
 				</span>
 			</th>
+			<th>Informations ENT</th>
+			<th colspan='6'>Informations GEPI</th>
+			<th rowspan='2'>Corriger</th>
+		</tr>
+		<tr>
 			<th>Guid</th>
 			<th>Login</th>
 			<th title=\"Pour une connexion via un ENT, le champ auth_mode doit en principe avoir pour valeur 'sso'\">Auth_mode</th>
@@ -1848,7 +1880,6 @@ if($mode=="consult_eleves") {
 			<th>Prénom</th>
 			<th>Classe</th>
 			<th>Naissance</th>
-			<th>Corriger</th>
 		</tr>
 ";
 
@@ -2051,6 +2082,19 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		<th>Enfants</th>
 	</tr>
 ";
+
+		//$tab_login_associe_a_un_guid=array();
+		$tab_guid_associe_a_un_login=array();
+		$sql="SELECT u.statut, u.nom, u.prenom, stc.* FROM sso_table_correspondance stc, utilisateurs u WHERE stc.login_gepi=u.login;";
+		$res=mysql_query($sql);
+		while($lig=mysql_fetch_object($res)) {
+			//$tab_login_associe_a_un_guid[$lig->login_sso]['login_gepi']=$lig->login_gepi;
+			//$tab_login_associe_a_un_guid[$lig->login_sso]['info']=$lig->nom." ".$lig->prenom." (".$lig->statut.")";
+
+			$tab_guid_associe_a_un_login[$lig->login_gepi]['login_sso']=$lig->login_sso;
+			$tab_guid_associe_a_un_login[$lig->login_gepi]['info']=$lig->nom." ".$lig->prenom." (".$lig->statut.")";
+		}
+
 		$alt=1;
 		$cpt=0;
 		$cpt_deja_enregistres=0;
@@ -2227,7 +2271,14 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 									if(!document.getElementById('login_$cpt')) {ajout_champ_saisie_login($cpt);};
 									return false;\">
 				<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' title='Effectuer une recherche' />
-			</a>
+			</a>";
+
+							//<!-- 20130912 : AJOUTER UN TEST SUR LE FAIT QUE LE LOGIN EST DEJA ASSOCIE -->
+							if(array_key_exists($tab_resp[0]['login'], $tab_guid_associe_a_un_login)) {
+								echo "<img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Ce login est associé à un autre GUID ENT\n".$tab_guid_associe_a_un_login[$tab_resp[0]['login']]['login_sso']."\net concerne l'utilisateur Gepi ".$tab_guid_associe_a_un_login[$tab_resp[0]['login']]['info']."\" />";
+							}
+
+							echo "
 		</td>
 	</tr>
 ";
@@ -2241,7 +2292,12 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 						else {
 							$chaine_options="";
 							for($loop=0;$loop<count($tab_resp);$loop++) {
-								$chaine_options.="				<option value=\"".$tab_resp[$loop]['login']."\">".$tab_resp[$loop]['info']."</option>\n";
+								$chaine_options.="				<option value=\"".$tab_resp[$loop]['login']."\"";
+								// 20130912
+								if(array_key_exists($tab_resp[0]['login'], $tab_guid_associe_a_un_login)) {
+									$chaine_options.=" title=\"Ce login est associé à un autre GUID ENT\n".$tab_guid_associe_a_un_login[$tab_resp[0]['login']]['login_sso']."\net concerne l'utilisateur Gepi ".$tab_guid_associe_a_un_login[$tab_resp[0]['login']]['info']."\"";
+								}
+								$chaine_options.=">".$tab_resp[$loop]['info']."</option>\n";
 							}
 							echo "
 		<td>
@@ -2419,7 +2475,7 @@ if($mode=="consult_responsables") {
 
 	<table class='boireaus'>
 		<tr>
-			<th>
+			<th rowspan='2'>
 				<input type='submit' value='Supprimer' />
 				<span id='tout_cocher_decocher' style='display:none;'>
 					<br />
@@ -2428,13 +2484,18 @@ if($mode=="consult_responsables") {
 					<a href=\"javascript:tout_decocher()\" title='Tout décocher'><img src='../images/disabled.png' width='20' height='20' /></a>
 				</span>
 			</th>
+			<th>Informations ENT</th>
+			<th colspan='5'>Informations GEPI</th>
+			<th rowspan='2'>Corriger</th>
+		</tr>
+
+		<tr>
 			<th>Guid</th>
 			<th>Login</th>
 			<th title=\"Pour une connexion via un ENT, le champ auth_mode doit en principe avoir pour valeur 'sso'\">Auth_mode</th>
 			<th>Nom</th>
 			<th>Prénom</th>
 			<th>Responsable de</th>
-			<th>Corriger</th>
 		</tr>
 ";
 
@@ -2474,9 +2535,14 @@ if($mode=="consult_responsables") {
 		}
 		echo "</label></td>
 			<td><label for='suppr_$cpt'><span id='nom_$cpt'>$lig->nom</span></label></td>
-			<td><label for='suppr_$cpt'><span id='prenom_$cpt'>$lig->prenom</span></label></td>
-			<td><label for='suppr_$cpt'>$chaine_ele</label></td>
-			<td><a href='".$_SERVER['PHP_SELF']."?login_gepi=$lig->login_gepi&amp;login_sso=$lig->login_sso&amp;mode=saisie_manuelle'><img src='../images/edit16.png' width='16' height='16' title=\"Corriger l'association\" /></label></td>
+			<td>
+				<a href='../responsables/modify_resp.php?pers_id=$lig->pers_id' target='_blank' style='float:right;' title=\"Voir la fiche responsable\"><img src='../images/icons/chercher.png' width='16' height='16' /></a>
+				<label for='suppr_$cpt'><span id='prenom_$cpt'>$lig->prenom</span></label>
+			</td>
+			<td>
+				<label for='suppr_$cpt'>$chaine_ele</label>
+			</td>
+			<td><a href='".$_SERVER['PHP_SELF']."?login_gepi=$lig->login_gepi&amp;login_sso=$lig->login_sso&amp;mode=saisie_manuelle'><img src='../images/edit16.png' width='16' height='16' title=\"Corriger l'association\" /></a></td>
 		</tr>
 ";
 		$cpt++;
