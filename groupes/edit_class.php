@@ -682,7 +682,7 @@ $nb_mat = mysql_num_rows($query);
 
 echo "<td>\n";
 echo "<select name='matiere' size='1'>\n";
-echo "<option value='null'>-- Sélectionner matière --</option>\n";
+echo "<option value='null'>-- Sélectionner une matière --</option>\n";
 for ($i=0;$i<$nb_mat;$i++) {
     $matiere = mysql_result($query, $i, "matiere");
     $nom_matiere = mysql_result($query, $i, "nom_complet");
