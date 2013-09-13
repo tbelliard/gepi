@@ -7630,8 +7630,8 @@ function retourneUri($eleve, $https, $type){
 				$rep["text"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$eleve.'&amp;type=cdt&amp;uri='.$uri["user_uri"];
 			}
 
-		}else{
-			$rep["text"] = 'erreur1';
+		} else {
+			$rep["text"] = 'Erreur : Votre URI n\'a peut-être pas encore été générée. Contactez votre administrateur.';
 			$rep["uri"] = '#';
 		}
 	}else{
