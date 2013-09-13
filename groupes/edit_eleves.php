@@ -488,7 +488,7 @@ if(count($tab_autres_sig)>0) {
 
 		$tmp_grp=get_group($tab_autres_sig[$loop], array('classes'));
 
-		echo "<option value='$lig_grp->id_groupe'";
+		echo "<option value='".$tab_autres_sig[$loop]."'";
 		if($tab_autres_sig[$loop]==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
 		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
 		$cpt_grp++;
