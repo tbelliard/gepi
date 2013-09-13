@@ -263,6 +263,12 @@ elseif((isset($id_liste_groupes))&&(count($id_liste_groupes)==1)) {
 	$current_group = get_group($id_liste_groupes[0]);
 }
 
+$flag_groupe_plusieurs_classes = "n";
+if(count($current_group['classes']['list'])>1) {
+	$flag_groupe_plusieurs_classes = "y";
+}
+//$info_tmp=count($current_group['classes']['list']);
+
 //echo $nb_pages;
 
 	// Cette boucle crée les différentes pages du PDF
@@ -598,7 +604,8 @@ echo "</pre>";
 
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont('DejaVu','',9);
-				if ($flag_groupe==true) {
+				//if ($flag_groupe==true) {
+				if ($flag_groupe_plusieurs_classes=="y") {
 					$texte = (($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']." (".$donnees_eleves[$nb_eleves_i]['nom_court'].")"));
 				} else {
 					$texte = (($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']));

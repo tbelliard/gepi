@@ -60,11 +60,11 @@ $reg_professeurs = (array)$current_group["profs"]["list"];
 
 //================================
 $invisibilite_groupe=array();
-$sql="SELECT jgv.* FROM j_groupes_visibilite jgv WHERE jgv.visible='n';";
+$sql="SELECT jgv.* FROM j_groupes_visibilite jgv WHERE id_groupe='$id_groupe' AND jgv.visible='n';";
 $res_jgv=mysql_query($sql);
 if(mysql_num_rows($res_jgv)>0) {
 	while($lig_jgv=mysql_fetch_object($res_jgv)) {
-		$invisibilite_groupe=$lig_jgv->domaine;
+		$invisibilite_groupe[]=$lig_jgv->domaine;
 	}
 }
 //================================
