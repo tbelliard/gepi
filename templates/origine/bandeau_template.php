@@ -113,7 +113,29 @@
 			if((getSettingAOui('active_mod_alerte'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe', 'autre')))) {
 				if(isset($_SERVER['SCRIPT_NAME'])) {
 					// Pour éviter de faire apparaitre le témoin de message sur des pages présentées lors des conseils de classe:
-					$tab_pages_temoin_fixe_messagerie_exclu=array("/mod_alerte/form_message.php", "/utilisateurs/mon_compte.php", "/visualisation/", "/bulletin/bull_index.php", "/saisie/saisie_avis", "/prepa_conseil/index3.php", "/prepa_conseil/edit_limite.php", "/responsables/maj_import3.php");
+					$tab_pages_temoin_fixe_messagerie_exclu=array(
+																// La page de saisie de message elle-même: 
+																// sinon on a le témoin clignotant alors qu'on est en train de cocher "lu", 
+																// en train de rédiger une réponse,...
+																"/mod_alerte/form_message.php", 
+																// Dans Gérer mon compte: les tests alerte perturbent le changement de mot de passe
+																"/utilisateurs/mon_compte.php", 
+																// Les pages que l'on affiche pendant un conseil de classe
+																// On n'a pas le temps pendant les conseils de cocher "lu"
+																"/visualisation/", 
+																"/bulletin/bull_index.php", 
+																"/saisie/saisie_avis", 
+																"/prepa_conseil/index3.php", 
+																"/prepa_conseil/edit_limite.php", 
+																// Dans les pages qui font de gros traitements par tranches 
+																// avec submit automatique via JavaScript
+																"/responsables/maj_import3.php", 
+																"/cahier_texte_2/archivage_cdt.php", 
+																"/utilitaires/",
+																"/gestion/accueil_sauve.php",
+																// Dans les pages d'initialisation de l'année
+																"/init",
+																"/edt_organisation/edt_init");
 					$cpt_tab_pages_temoin_fixe_messagerie_exclu=0;
 					for($loop=0;$loop<count($tab_pages_temoin_fixe_messagerie_exclu);$loop++) {
 						if(preg_match("@$tab_pages_temoin_fixe_messagerie_exclu[$loop]@", $_SERVER['SCRIPT_NAME'])) {
