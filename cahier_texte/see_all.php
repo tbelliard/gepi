@@ -122,7 +122,7 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 (!isset($_GET['imprime']) or (($_GET['imprime'] != 'y') and ($_GET['imprime']!= 'n')))?$current_imprime='n':$current_imprime=$_GET['imprime'];
 if ($current_imprime == 'n') {
 	$imprime='y';
-	$text_imprime="Version imprimmable";
+	$text_imprime="Version imprimable";
 	$largeur = "30%";
 } else {
 	$imprime='n';
