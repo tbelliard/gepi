@@ -588,7 +588,7 @@ if(!$tempdir) {
 											if (!$create) {
 												echo "<span style='color:red'>Erreur lors de la création du groupe.</span></p>\n";
 											} else {
-												echo "Enseignement <a href='edit_group.php?id_groupe=$create'>n°$create ($nom_groupe (<span style='font-size:x-small'>$description_groupe</span>))</a> bien créé.<br />\n";
+												echo "Enseignement <a href='edit_group.php?id_groupe=$create&amp;mode=regroupement'>n°$create ($nom_groupe (<span style='font-size:x-small'>$description_groupe</span>))</a> bien créé.<br />\n";
 
 												if(count($tab_profs)>0) {
 
