@@ -3167,6 +3167,7 @@ if($mode=="publipostage_eleves") {
 	﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe;Etat;Date de désactivation<br />
 	DUPRE;Thomas;thomas.dupre;MENESR$12345;mdp&*;Thomas.DUPRE@ent27.fr;6 A;Actif<br />
 	...</li>
+	<li style='color:red'>A FAIRE : Permettre d'importer les CSV rapportant les nouveaux comptes créés.</li>
 </ul>
 
 
@@ -3393,6 +3394,7 @@ if($mode=="publipostage_responsables") {
 		Le fichier demandé n'associe chaque parent qu'à un seul enfant.<br />
 		Un parent de plusieurs enfants dans l'établissement n'apparaitra que dans les fiches bienvenue de la classe de l'enfant auquel il est associé dans le fichier.
 	</li>
+	<li style='color:red'>A FAIRE : Permettre d'importer les CSV rapportant les nouveaux comptes créés.</li>
 </ul>
 
 

@@ -8254,4 +8254,5 @@ function enregistrer_udt_corresp($champ, $nom_udt, $nom_gepi) {
 		return true;
 	}
 }
+
 ?>
