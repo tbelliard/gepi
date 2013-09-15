@@ -54,7 +54,7 @@ include_once dirname(__FILE__).'/share-pdf.inc.php';
  * @param string $destinataire Le destinataire
  * @param string $ajout_headers Text à ajouter dans le header
  */
-function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
+function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_ou_html="plain") {
 
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 
@@ -65,7 +65,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
   
   $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
   $headers .= "MIME-Version: 1.0\r\n";
-  $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+  $headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
   $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
   $headers .= $ajout_headers;
 
@@ -74,6 +74,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 		$subject,
 		$message,
 	  $headers);
+	return $envoi;
 }
 
 /**
@@ -7605,4 +7606,62 @@ function clean_temp_tables() {
 	$retour.="<br />$nb_tables_videes table(s) vidée(s).";
 	return $retour;
 }
+
+
+function get_adresse_responsable($pers_id) {
+	$tab_adresse=array();
+
+	$tab_adresse['adr_id']="";
+	$tab_adresse['adr1']="";
+	$tab_adresse['adr2']="";
+	$tab_adresse['adr3']="";
+	$tab_adresse['cp']="";
+	$tab_adresse['commune']="";
+	$tab_adresse['pays']="";
+	$tab_adresse['en_ligne']="";
+
+	$sql="SELECT * FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$pers_id';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		$tab_adresse['adr_id']=$lig->adr_id;
+		$tab_adresse['adr1']=$lig->adr1;
+		$tab_adresse['adr2']=$lig->adr2;
+		$tab_adresse['adr3']=$lig->adr3;
+		$tab_adresse['cp']=$lig->cp;
+		$tab_adresse['commune']=$lig->commune;
+		$tab_adresse['pays']=$lig->pays;
+
+		$tab_adresse['en_ligne']=$lig->adr1;
+
+		if($lig->adr2!="") {
+			if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
+			$tab_adresse['en_ligne'].=$lig->adr2;
+		}
+
+		if($lig->adr3!="") {
+			if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
+			$tab_adresse['en_ligne'].=$lig->adr3;
+		}
+
+		if($lig->cp!="") {
+			if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
+			$tab_adresse['en_ligne'].=$lig->cp;
+		}
+
+		if($lig->commune!="") {
+			if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
+			$tab_adresse['en_ligne'].=$lig->commune;
+		}
+
+		if(($tab_adresse['pays']!='')&&($tab_adresse['pays']!=getSettingValue('gepiSchoolPays'))) {
+			if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
+			$tab_adresse['en_ligne'].=$tab_adresse['pays'];
+		}
+
+	}
+
+	return $tab_adresse;
+}
+
 ?>
