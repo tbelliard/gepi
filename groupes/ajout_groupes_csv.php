@@ -119,7 +119,7 @@ if(!$tempdir) {
 		<span style='color:red'>Pour le moment, aucun élève n'est mis dans les groupes créés, mais il faudra permettre de mettre tous/aucun/1ère_moitié/...</span>
 	</li>
 	<li>
-		<span style='color:red'>Si le prof proposé n'est pas prof dans la matière indiquée, faire l'association.</span>
+		<span style='color:red'>Pouvoir choisir le coef et la visibilité.</span>
 	</li>
 </ul>\n";
 
