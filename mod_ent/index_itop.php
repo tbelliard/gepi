@@ -1348,7 +1348,7 @@ if((!isset($mode))||($mode=="")) {
 	<p>Si l'accès SSO de l'ENT vers Gepi tarde à être mis en place, vous pouvez ouvrir l'accès aux parents en limitant les difficultés&nbsp;:<br />
 	Il s'agit de créer des comptes dans Gepi avec les logins et mots de passe proposés par l'ENT.<br />
 	Les parents auront donc les mêmes comptes et mots de passe initiaux dans l'ENT et dans Gepi<br />(<em>s'ils changent leur mot de passe d'un côté ou de l'autre, la synchronisation des mots de passe n'est pas assurée</em>)</p>
-	<p>L'authentification des parents sera locale (<em>non SSO CAS</em>).</p>
+	<p>L'authentification des parents sera locale (<em>sur la base GEPI et non en SSO CAS</em>).</p>
 
 	<p><br /></p>
 
@@ -4016,15 +4016,15 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 if($mode=="envoi_mail_logins_mdp") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
-</p>";
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
-	echo "
+	if(!isset($csv_file)) {
+	echo "</p>
+
 <h2 class='noprint'>Envoi par mail des fiches bienvenue responsables</h2>";
 
-	if(!isset($csv_file)) {
 		echo "<p><strong style='color:red'>ATTENTION&nbsp;:</strong> Cette démarche ne fonctionne que dans le cas où les logins Gepi des responsables et leurs logins ENT coïncident (<em>et si les adresses mail sont correctement renseignées dans votre table 'resp_pers'</em>).</p>";
 
 		// Liste des classes avec élève:
@@ -4132,6 +4132,10 @@ if($mode=="envoi_mail_logins_mdp") {
 </script>\n";
 	}
 	else {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?mode=envoi_mail_logins_mdp'>Envoi par mail</a></p>
+
+<h2 class='noprint'>Envoi par mail des fiches bienvenue responsables</h2>";
+
 		check_token(false);
 		$fp=fopen($csv_file['tmp_name'],"r");
 
