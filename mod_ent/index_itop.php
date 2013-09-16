@@ -1348,6 +1348,7 @@ if((!isset($mode))||($mode=="")) {
 	<p>Si l'accès SSO de l'ENT vers Gepi tarde à être mis en place, vous pouvez ouvrir l'accès aux parents en limitant les difficultés&nbsp;:<br />
 	Il s'agit de créer des comptes dans Gepi avec les logins et mots de passe proposés par l'ENT.<br />
 	Les parents auront donc les mêmes comptes et mots de passe initiaux dans l'ENT et dans Gepi<br />(<em>s'ils changent leur mot de passe d'un côté ou de l'autre, la synchronisation des mots de passe n'est pas assurée</em>)</p>
+	<p>L'authentification des parents sera locale (<em>non SSO CAS</em>).</p>
 
 	<p><br /></p>
 
@@ -1382,7 +1383,9 @@ if((!isset($mode))||($mode=="")) {
 
 	<p><br /></p>
 
-	<p>Si les logins des responsables ont été forcés pour coïncider avec leurs logins dans l'ENT, et si votre base Sconet contenait les adresses email des parents (<em>si elles étaient demandées sur le dossier d'inscription dans l'établissement, si votre secrétaire s'est embêté(e) à les saisir;</em>), vous pouvez <a href='".$_SERVER['PHP_SELF']."?mode=envoi_mail_logins_mdp'>envoyer par mail les fiches bienvenues avec les logins et mots de passe</a>.</p>
+	<p><strong>Si les logins des responsables ont été forcés pour coïncider avec leurs logins dans l'ENT</strong>, et si votre base Sconet contenait les adresses email des parents (<em>si elles étaient demandées sur le dossier d'inscription dans l'établissement, si votre secrétaire s'est embêté(e) à les saisir;</em>), vous pouvez <a href='".$_SERVER['PHP_SELF']."?mode=envoi_mail_logins_mdp'>envoyer par mail les fiches bienvenues avec les logins et mots de passe</a>.</p>
+	<p>Pour que l'envoi fonctionne, il faut que les logins coïncident.<br />
+	En revanche, que les comptes parents soient en authentification locale ou en authentification SSO (<em>CAS</em>) importe peu.</p>
 
 </div>
 \n";
