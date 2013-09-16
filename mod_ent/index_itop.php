@@ -3369,6 +3369,7 @@ if($mode=="publipostage_responsables") {
 
 		echo "
 		<br />
+		<p><input type='checkbox' name='avec_adresse' id='avec_adresse' value='y' /><label for='avec_adresse'> Inclure le rappel de l'adresse.</p>
 
 		<p>Veuillez fournir le fichier <strong>".getSettingValue("gepiSchoolRne")."_MiseaJour_Motdepasse_Parent_JJ_MM_AAAA_HH_MM_SS.csv</strong> généré par l'ENT.</p>
 		<input type='hidden' name='mode' value='publipostage_responsables' />
@@ -3518,12 +3519,16 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		<th style='text-align:left;'>Email ENT</th>
 		<th>: </th>
 		<td>".$tab_parent[$loop]['email_ent']."</td>
-	</tr>
+	</tr>";
+				if(isset($_POST['avec_adresse'])) {
+					echo "
 	<tr>
 		<th style='text-align:left; vertical-align:top;'>Adresse</th>
 		<th style='vertical-align:top;'>: </th>
 		<td>".$tab_parent[$loop]['adresse']."</td>
-	</tr>
+	</tr>";
+				}
+				echo "
 	<tr>
 		<th style='text-align:left;'>Responsable notamment de</th>
 		<th>: </th>
