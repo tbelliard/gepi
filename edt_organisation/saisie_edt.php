@@ -377,7 +377,7 @@ if($_SESSION['statut']!='professeur') {
 		echo "
 	<option value='$current_login_prof'".$current_prof['style_et_title'].$selected.">".$current_prof['designation']."</option>";
 	}
-	echo "</select>";
+	echo "</select> | <a href='index_edt.php?login_edt=$login_prof&amp;type_edt_2=prof&amp;visioedt=prof1'>Voir EDT</a>";
 }
 
 echo "</p>
