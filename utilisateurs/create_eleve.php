@@ -157,6 +157,20 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 							}
 						}
 
+						// Génération de l'URI RSS si l'accès y est donné directement dans la page d'accueil pour le compte élève/resp connecté:
+						if((getSettingValue('rss_acces_ele')=='direct')&&((getSettingAOui('rss_cdt_ele'))||(getSettingAOui('rss_cdt_responsable')))) {
+							$sql="SELECT 1=1 FROM rss_users WHERE user_login='".$current_eleve->login."';";
+							$test_rss = mysql_query($sql);
+							if(mysql_num_rows($test_rss)==0) {
+								$uri_el = md5($current_eleve->login.getSettingValue("gepiSchoolRne").mt_rand());
+								$sql = "INSERT INTO rss_users (id, user_login, user_uri) VALUES ('', '".$current_eleve->login."', '".$uri_el."');";
+								$insert_rss = mysql_query($sql);
+								if (!$insert_rss) {
+									$msg.="Erreur lors de l'initialisation de l'URI RSS pour ".$current_eleve->login."<br />";
+								}
+							}
+						}
+
 						$nb_comptes++;
 					}
 				}
