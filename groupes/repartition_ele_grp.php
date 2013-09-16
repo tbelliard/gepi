@@ -709,7 +709,7 @@ if(!isset($_POST['recopie_select'])) {
 		echo $group[$i]['name'];
 		echo "<br />\n";
 		echo "<span style='font-size:small;'>".$group[$i]['classlist_string']."</span>\n";
-		echo "<br /><span style='font-size:small; color:red;'>".$id_groupe[$i]."</span>";
+		echo "<br /><a href='edit_group.php?id_groupe=".$id_groupe[$i]."&amp;mode=regroupement' title=\"Paramétrer le groupe n°".$id_groupe[$i]."\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><span style='font-size:small; color:red;'>".$id_groupe[$i]."</span></a>";
 		echo "<br />".preg_replace("/,/","<br />",$group[$i]['profs']['proflist_string']);
 
 		/*
@@ -843,7 +843,8 @@ if(!isset($_POST['recopie_select'])) {
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name='login_ele[$cpt]' value='".$login_ele."' />\n";
-		echo get_nom_prenom_eleve($login_ele);
+		$nom_prenom_ele=get_nom_prenom_eleve($login_ele);
+		echo $nom_prenom_ele;
 		echo "</td>\n";
 	
 		echo "<td>\n";
@@ -870,8 +871,8 @@ if(!isset($_POST['recopie_select'])) {
 			echo "</td>\n";
 			*/
 
-			$ligne_si_desinscription_possible.="<td onclick=\"document.getElementById('grp_eleve_".$i."_".$cpt."').checked=true;calcule_effectifs();changement();\">\n";
-			$ligne_si_desinscription_possible.="<input type='radio' name='grp_eleve[$cpt]' id='grp_eleve_".$i."_".$cpt."' value='".$id_groupe[$i]."' onchange='calcule_effectifs();changement()' title=\"$tab_eleve[$j] -&gt; ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\" ";
+			$ligne_si_desinscription_possible.="<td onclick=\"document.getElementById('grp_eleve_".$i."_".$cpt."').checked=true;calcule_effectifs();changement();\" title=\"Mettre $nom_prenom_ele dans le groupe ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\">\n";
+			$ligne_si_desinscription_possible.="<input type='radio' name='grp_eleve[$cpt]' id='grp_eleve_".$i."_".$cpt."' value='".$id_groupe[$i]."' onchange='calcule_effectifs();changement()' ";
 			if(in_array($login_ele,$group[$i]["eleves"][$num_periode]["list"])) {
 				$ligne_si_desinscription_possible.="checked ";
 				if($nb_grp_ele>0) {$info_plusieurs_grp_ele.=", ";}
