@@ -1311,7 +1311,7 @@ if((!isset($mode))||($mode=="")) {
 
 	echo "
 </ul>
-<p>Cette rubrique permet de fournir les fichiers CSV de rénitialisation de mots de passe générés par l'ENT.</p>";
+<p>Cette rubrique permet de fournir les fichiers CSV de rénitialisation de mots de passe générés par l'ENT, ou les CSV des nouveaux élèves.</p>";
 
 
 
@@ -1319,6 +1319,7 @@ if((!isset($mode))||($mode=="")) {
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		echo "
+<br />
 <p>ou <a href='".$_SERVER['PHP_SELF']."?mode=vider".add_token_in_url()."' onclick=\"return confirmlink(this, 'ATTENTION !!! Êtes-vous vraiment sûr de vouloir vider la table sso_table_correspondance ?', 'Confirmation du vidage')\">vider la table des correspondances</a></p>";
 		echo "<p>La table de correspondances contient actuellement ".mysql_num_rows($res)." enregistrements.</p>\n";
 	}
@@ -1335,10 +1336,18 @@ if((!isset($mode))||($mode=="")) {
 ";
 	}
 
-	echo "<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Les CSV réclamés dans les pages d'importation sont accessibles en suivant le cheminement suivant&nbsp;:<br />
-	Se connecter avec un compte administrateur de l'ENT.<br />
-	Menu Administration puis Gérer les utilisateurs puis Outils puis Traitement en masse puis Action (<em>Choisir Exportation SSO au format CSV</em>) puis dans Profil sélectionner le profil (<em>Elève, Parent,...</em>)<br />
-	puis Traiter cette action puis Valider.</p>
+	echo "<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>
+		<p>Les CSV réclamés dans les pages d'importation sont accessibles en suivant le cheminement suivant&nbsp;:<br />
+		Se connecter avec un compte administrateur de l'ENT.<br />
+		Menu Administration puis Gérer les utilisateurs puis Outils puis Traitement en masse puis Action (<em>Choisir Exportation SSO au format CSV</em>) puis dans Profil sélectionner le profil (<em>Elève, Parent,...</em>)<br />
+		puis Traiter cette action puis Valider.</p>
+	</li>
+	<li>
+		<p>Les CSV pour les Fiches bienvenue peuvent aussi être ceux des nouveaux élèves ou parents<br />(<em>[V2]CLG-".getSettingValue('gepiSchoolName')."-ac-ROUEN - [".getSettingValue('gepiSchoolRne')."] - [ANNEEMOISJOURHEURE].xlsx<br />ou ".getSettingValue('gepiSchoolRne')."_CSV_ANNEEMOISJOURHEURE.zip</em>).</p>
+	</li>
+</ul>
 
 </div>
 
@@ -3084,15 +3093,15 @@ if($mode=="consult_personnels") {
 //==================================================================================
 if($mode=="publipostage_eleves") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
-</p>";
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
-	echo "
+	if(!isset($csv_file)) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?mode=publipostage_eleves'>Fiches bienvenue élèves</a></p>
+
 <h2 class='noprint'>Fiches bienvenue élèves</h2>";
 
-	if(!isset($csv_file)) {
 		// Liste des classes avec élève:
 		$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
 		$call_classes=mysql_query($sql);
@@ -3170,9 +3179,38 @@ if($mode=="publipostage_eleves") {
 	﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe;Etat;Date de désactivation<br />
 	DUPRE;Thomas;thomas.dupre;MENESR$12345;mdp&*;Thomas.DUPRE@ent27.fr;6 A;Actif<br />
 	...</li>
-	<li style='color:red'>A FAIRE : Permettre d'importer les CSV rapportant les nouveaux comptes créés.</li>
+	<li>Le fichier CSV attendu doit comporter une ligne d'entête avec au moins les champs <strong>Nom;Prénom;Login;Mot de passe;Classe</strong></li>
+	<li>Le fichier CSV attendu peut être&nbsp;:<br />
+		<ul>
+			<li>
+				<p>celui de regénération de tous les mots de passe élèves.<br />
+				Il aura alors le format suivant&nbsp;:<br />
+				<strong>﻿﻿Nom</strong>;<strong>Prénom</strong>;<strong>Login</strong>;Numéro de jointure;<strong>Mot de passe</strong>;Email;<strong>Classe</strong>;<span style='color:green'>Etat</span>;Date de désactivation<br />
+				<strong>DUPRE</strong>;<strong>Denis</strong>;<strong>denis.dupre1</strong>;MENESR$1234567;<strong>azerty&*</strong>;Denis.DUPRE1@ent27.fr;<strong>6 A</strong>;<span style='color:green'>Actif</span><br />
+				...<br />
+				Avec le champ Etat, on peut exclure les comptes désactivés.</p>
+				<br />
+			</li>
+			<li>
+				<p>un fichier CSV obtenu en enregistrant au format CSV avec séparateur point-virgule (<em>édition des paramètres du filtre requise</em>) le feuillet Elève d'un fichier [V2]CLG-".getSettingValue('gepiSchoolName')."-ac-ROUEN - [".getSettingValue('gepiSchoolRne')."] - [ANNEEMOISJOURHEURE].xlsx de l'espace Documents.
+				Il aura alors le format suivant&nbsp;:<br />
+				<strong>﻿﻿Nom</strong>;<strong>Prénom</strong>;<strong>Login</strong>;<strong>Mot de passe</strong>;Adresse Mail;<strong>Classe</strong><br />
+				<strong>DUPRE</strong>;<strong>Denis</strong>;<strong>denis.dupre1</strong>;<strong>azerty&*</strong>;Denis.DUPRE1@ent27.fr;<strong>6 A</strong><br />
+				...<br />
+				Il manque le champ Etat, mais le reste y est.<br /></p>
+				<br />
+			</li>
+			<li>
+				<p>le fichier CSV ".getSettingValue('gepiSchoolRne')."_Extraction_Elève.csv que vous pouvez trouver dans les fichiers ".getSettingValue('gepiSchoolRne')."_CSV_ANNEEMOISJOURHEURE.zip de l'espace Documents.
+				Il aura alors le format suivant&nbsp;:<br />
+				<strong>﻿﻿Nom</strong>;<strong>Prénom</strong>;<strong>Login</strong>;<strong>Mot de passe</strong>;Email;<strong>Classe</strong><br />
+				<strong>DUPRE</strong>;<strong>Denis</strong>;<strong>denis.dupre1</strong>;<strong>azerty&*</strong>;Thomas.DUPRE@ent27.fr;<strong>6 A</strong><br />
+				...<br />
+				</p>
+			</li>
+		</ul>
+	</li>
 </ul>
-
 
 <script type='text/javascript'>
 	function ModifCase(mode) {
@@ -3203,6 +3241,10 @@ if($mode=="publipostage_eleves") {
 
 	}
 	else {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?mode=publipostage_eleves'>Fiches bienvenue élèves</a></p>
+
+<h2 class='noprint'>Fiches bienvenue élèves</h2>";
+
 		check_token(false);
 		$fp=fopen($csv_file['tmp_name'],"r");
 
@@ -3220,9 +3262,47 @@ if($mode=="publipostage_eleves") {
 		if(!preg_match("/$motif_nom_fichier/", $csv_file['name'])) {
 			echo "<br />
 <span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong>.<br />
-Vous seriez-vous trompé de fichier&nbsp;?</span>";
+Vous seriez-vous trompé de fichier&nbsp;?</span><br />
+<span style='color:blue'>Si vous n'avez fourni qu'un fichier CSV des nouveaux arrivants (<em>sans regénérer tous les mots de passe</em>), le nom de fichier sera celui de votre choix; ne tenez donc pas compte de cette alerte.</span>";
 		}
 		echo "</p>\n";
+
+		// 20130916
+		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
+		$tabchamps = array("Nom", "Prénom", "Prenom", "Login", "Mot de passe", "Email", "Adresse Mail", "Classe", "Etat", "Date de désactivation");
+
+		// Lecture de la ligne 1 et la mettre dans $temp
+		$temp=fgets($fp,4096);
+		//echo "$temp<br />";
+		$en_tete=explode(";", trim($temp));
+
+		$tabindice=array();
+
+		// On range dans tabindice les indices des champs retenus
+		for ($k = 0; $k < count($tabchamps); $k++) {
+			//echo "<br /><p style='text-indent:-4em;margin-left:4em'>Recherche du champ ".$tabchamps[$k]."<br />";
+			for ($i = 0; $i < count($en_tete); $i++) {
+				//echo "\$en_tete[$i]=$en_tete[$i]<br />";
+				//echo casse_mot(remplace_accents($en_tete[$i]),'min')."<br />";
+				//echo casse_mot(remplace_accents($tabchamps[$k]), 'min')."<br />";
+				if (casse_mot(remplace_accents($en_tete[$i]),'min') == casse_mot(remplace_accents($tabchamps[$k]), 'min')) {
+					$tabindice[$tabchamps[$k]] = $i;
+					//echo "\$tabindice[$tabchamps[$k]]=$i<br />";
+				}
+			}
+		}
+		if((!isset($tabindice['Nom']))||((!isset($tabindice['Prénom']))&&(!isset($tabindice['Prenom'])))||(!isset($tabindice['Login']))||(!isset($tabindice['Mot de passe']))||(!isset($tabindice['Classe']))) {
+			echo "<p style='color:red'>La ligne d'entête ne comporte pas un des champs indispensables (<em>Nom, Prénom, Login, Mot de passe, Classe</em>).</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		if(!isset($tabindice['Prénom'])) {
+			$tabindice['Prénom']=$tabindice['Prenom'];
+		}
+
+		echo "
+<hr class='noprint'/>";
 
 		$cpt=0;
 		$tab_classe_eleve=array();
@@ -3234,31 +3314,47 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
-				//if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
-				// Erreur: Ce n'est pas le fichier Mot de passe parents
-				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
-				// On exclut également les comptes "Désactivé"
-				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&($tab[7]=='Actif')) {
-				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(preg_match("/Actif$/", $ligne))) {
 
-					if(($_POST['toutes_les_classes']=="y")||(in_array($tab[6], $_POST['classe']))) {
-						if(!isset($tab_classe_eleve[$tab[6]])) {
+				$ligne_a_prendre_en_compte="y";
+				if(preg_match("/^Nom;Pr/i", trim($ligne))) {
+					$ligne_a_prendre_en_compte="n";
+				}
+				elseif((isset($tabindice['Classe']))&&(preg_match("/^BASE20/",$tab[$tabindice['Classe']]))) {
+					// On exclut l'année précédente
+					$ligne_a_prendre_en_compte="n";
+				}
+				elseif((isset($tabindice['Etat']))&&($tab[$tabindice['Etat']]!='Actif')) {
+					// On exclut les comptes "Désactivé"
+					$ligne_a_prendre_en_compte="n";
+				}
+
+				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(preg_match("/Actif$/", $ligne))) {
+				if($ligne_a_prendre_en_compte=="y") {
+					if(($_POST['toutes_les_classes']=="y")||(in_array($tab[$tabindice['Classe']], $_POST['classe']))) {
+						if(!isset($tab_classe_eleve[$tab[$tabindice['Classe']]])) {
 							$cpt=0;
 						}
 						else {
-							$cpt=count($tab_classe_eleve[$tab[6]]);
+							$cpt=count($tab_classe_eleve[$tab[$tabindice['Classe']]]);
 						}
-						$tab_classe_eleve[$tab[6]][$cpt]['nom_prenom']=$tab[0]." ".$tab[1];
+						$tab_classe_eleve[$tab[$tabindice['Classe']]][$cpt]['nom_prenom']=$tab[$tabindice['Nom']]." ".$tab[$tabindice['Prénom']];
 						//echo "\$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']=".$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']."<br />";
-						$tab_classe_eleve[$tab[6]][$cpt]['login_ent']=$tab[2];
-						$tab_classe_eleve[$tab[6]][$cpt]['mdp_ent']=$tab[4];
-						$tab_classe_eleve[$tab[6]][$cpt]['email_ent']=$tab[5];
+						$tab_classe_eleve[$tab[$tabindice['Classe']]][$cpt]['login_ent']=$tab[$tabindice['Login']];
+						$tab_classe_eleve[$tab[$tabindice['Classe']]][$cpt]['mdp_ent']=$tab[$tabindice['Mot de passe']];
+						if(isset($tabindice['Email'])) {
+							$tab_classe_eleve[$tab[$tabindice['Classe']]][$cpt]['email_ent']=$tab[$tabindice['Email']];
+						}
+						elseif(isset($tabindice['Adresse Mail'])) {
+							$tab_classe_eleve[$tab[$tabindice['Classe']]][$cpt]['email_ent']=$tab[$tabindice['Adresse Mail']];
+						}
 						//$cpt++;
 					}
 				}
 			}
 		}
 
+		$saut=1;
+		$nb_fiches=getSettingValue("ImpressionNombreEleve");
 		foreach($tab_classe_eleve as $classe => $tab_eleve) {
 			/*
 			echo "<pre>";
@@ -3281,20 +3377,35 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		<th style='text-align:left;'>Mot de passe ENT</th>
 		<th>: </th>
 		<td>".$tab_eleve[$loop]['mdp_ent']."</td>
-	</tr>
+	</tr>";
+				if(isset($tab_eleve[$loop]['email_ent'])) {
+					echo "
 	<tr>
 		<th style='text-align:left;'>Email ENT</th>
 		<th>: </th>
 		<td>".$tab_eleve[$loop]['email_ent']."</td>
-	</tr>
+	</tr>";
+				}
+				echo "
 	<tr>
 		<th style='text-align:left;'>Classe</th>
 		<th>: </th>
 		<td>".$classe."</td>
 	</tr>
 </table>
-$impression
-<p class='saut'></p><hr class='noprint'/>";
+$impression";
+
+				// Saut de page toutes les $nb_fiches fiches
+				if ($saut == $nb_fiches) {
+					echo "<p class='saut'>&nbsp;</p>\n";
+					$saut = 1;
+				} else {
+					// Mettre le saut de ligne dans la fiche bienvenue elle-même.
+					//echo "<br />";
+					$saut++;
+				}
+
+				echo "<hr class='noprint'/>";
 			}
 		}
 
@@ -3307,15 +3418,16 @@ $impression
 //==================================================================================
 if($mode=="publipostage_responsables") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
-</p>";
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
-	echo "
+	if(!isset($csv_file)) {
+
+		echo "</p>
+
 <h2 class='noprint'>Fiches bienvenue responsables</h2>";
 
-	if(!isset($csv_file)) {
 		// Liste des classes avec élève:
 		$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
 		$call_classes=mysql_query($sql);
@@ -3370,6 +3482,7 @@ if($mode=="publipostage_responsables") {
 		echo "
 		<br />
 		<p><input type='checkbox' name='avec_adresse' id='avec_adresse' value='y' /><label for='avec_adresse'> Inclure le rappel de l'adresse.</p>
+		<br />
 
 		<p>Veuillez fournir le fichier <strong>".getSettingValue("gepiSchoolRne")."_MiseaJour_Motdepasse_Parent_JJ_MM_AAAA_HH_MM_SS.csv</strong> généré par l'ENT.</p>
 		<input type='hidden' name='mode' value='publipostage_responsables' />
@@ -3390,15 +3503,42 @@ if($mode=="publipostage_responsables") {
 	-->
 	</li>
 	<li>Modifier les <a href='../gestion/modify_impression.php?fiche=responsables'>Fiches Bienvenue responsables</a></li>
-	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
-	﻿﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Adresse;Code postal;Ville;Nom enfant 1;Prénom enfant 1;Classe enfant 1;Etat;Date de désactivation<br />
-	DUPRE;Denis;denis.dupre1;MENESR$1234567;azerty&*;Denis.DUPRE1@ent27.fr;3 RUE DES PRIMEVERES;27300;BERNAY;DUPRE;Thomas;6 A;Actif<br />
-	...</li>
+	<li>Le fichier CSV attendu doit comporter une ligne d'entête avec au moins les champs <strong>Nom;Prénom;Login;Mot de passe</strong></li>
+	<li>Le fichier CSV attendu peut être&nbsp;:<br />
+		<ul>
+			<li>
+				<p>celui de regénération de tous les mots de passe parents.<br />
+				Il aura alors le format suivant&nbsp;:<br />
+				<strong>﻿﻿Nom</strong>;<strong>Prénom</strong>;<strong>Login</strong>;Numéro de jointure;<strong>Mot de passe</strong>;Email;Adresse;Code postal;Ville;<span style='color:blue'>Nom enfant 1</span>;<span style='color:blue'>Prénom enfant 1</span>;<span style='color:blue'>Classe enfant 1</span>;<span style='color:green'>Etat</span>;Date de désactivation<br />
+				<strong>DUPRE</strong>;<strong>Denis</strong>;<strong>denis.dupre1</strong>;MENESR$1234567;<strong>azerty&*</strong>;Denis.DUPRE1@ent27.fr;3 RUE DES PRIMEVERES;27300;BERNAY;<span style='color:blue'>DUPRE</span>;<span style='color:blue'>Thomas</span>;<span style='color:blue'>6 A</span>;<span style='color:green'>Actif</span><br />
+				...<br />
+				Avec les nom, prénom et classe de l'enfant sont présents, il est plus simple de distribuer les Fiches bienvenues aux bonnes personnes.<br />
+				Avec le champ Etat, on peut exclure les comptes désactivés.</p>
+				<br />
+			</li>
+			<li>
+				<p>un fichier CSV obtenu en enregistrant au format CSV avec séparateur point-virgule (<em>édition des paramètres du filtre requise</em>) le feuillet Parent d'un fichier [V2]CLG-".getSettingValue('gepiSchoolName')."-ac-ROUEN - [".getSettingValue('gepiSchoolRne')."] - [ANNEEMOISJOURHEURE].xlsx de l'espace Documents.
+				Il aura alors le format suivant&nbsp;:<br />
+				<strong>﻿﻿Nom</strong>;<strong>Prénom</strong>;<strong>Login</strong>;<strong>Mot de passe</strong>;Email;Adresse;Code postal;Ville;<span style='color:blue'>Nom enfant 1</span>;<span style='color:blue'>Prénom enfant 1</span>;<span style='color:blue'>Classe enfant 1</span><br />
+				<strong>DUPRE</strong>;<strong>Denis</strong>;<strong>denis.dupre1</strong>;<strong>azerty&*</strong>;Denis.DUPRE1@ent27.fr;3 RUE DES PRIMEVERES;27300;BERNAY;<span style='color:blue'>DUPRE</span>;<span style='color:blue'>Thomas</span>;<span style='color:blue'>6 A</span><br />
+				...<br />
+				Il manque le champ Etat, mais le reste y est.<br /></p>
+				<br />
+			</li>
+			<li>
+				<p>le fichier CSV ".getSettingValue('gepiSchoolRne')."_Extraction_Parent.csv que vous pouvez trouver dans les fichiers ".getSettingValue('gepiSchoolRne')."_CSV_ANNEEMOISJOURHEURE.zip de l'espace Documents.
+				Il aura alors le format suivant&nbsp;:<br />
+				<strong>﻿﻿Nom</strong>;<strong>Prénom</strong>;<strong>Login</strong>;<strong>Mot de passe</strong><br />
+				<strong>DUPRE</strong>;<strong>Denis</strong>;<strong>denis.dupre1</strong>;<strong>azerty&*</strong><br />
+				...<br />
+				On a le minimum autorisé de champs... et plus de difficultés pour faire le tri et distribuer.</p>
+			</li>
+		</ul>
+	</li>
 	<li>
 		Le fichier demandé n'associe chaque parent qu'à un seul enfant.<br />
 		Un parent de plusieurs enfants dans l'établissement n'apparaitra que dans les fiches bienvenue de la classe de l'enfant auquel il est associé dans le fichier.
 	</li>
-	<li style='color:red'>A FAIRE : Permettre d'importer les CSV rapportant les nouveaux comptes créés.</li>
 </ul>
 
 
@@ -3429,6 +3569,11 @@ if($mode=="publipostage_responsables") {
 </script>\n";
 	}
 	else {
+
+		echo " | <a href='".$_SERVER['PHP_SELF']."?mode=publipostage_responsables'>Fiches bienvenue responsables</a></p>
+
+<h2 class='noprint'>Fiches bienvenue responsables</h2>";
+
 		check_token(false);
 		$fp=fopen($csv_file['tmp_name'],"r");
 
@@ -3446,9 +3591,41 @@ if($mode=="publipostage_responsables") {
 		if(!preg_match("/$motif_nom_fichier/", $csv_file['name'])) {
 			echo "<br />
 <span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong>.<br />
-Vous seriez-vous trompé de fichier&nbsp;?</span>";
+Vous seriez-vous trompé de fichier&nbsp;?</span><br />
+<span style='color:blue'>Si vous n'avez fourni qu'un fichier CSV des nouveaux arrivants (<em>sans regénérer tous les mots de passe</em>), le nom de fichier sera celui de votre choix; ne tenez donc pas compte de cette alerte.</span>";
 		}
 		echo "</p>\n";
+
+		// 20130916
+		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
+		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Etat", "Date de désactivation");
+
+		// Lecture de la ligne 1 et la mettre dans $temp
+		$temp=fgets($fp,4096);
+		//echo "$temp<br />";
+		$en_tete=explode(";", trim($temp));
+
+		$tabindice=array();
+
+		// On range dans tabindice les indices des champs retenus
+		for ($k = 0; $k < count($tabchamps); $k++) {
+			//echo "<p style='text-indent:-4em;margin-left:4em'>Recherche du champ ".$tabchamps[$k]."<br />";
+			for ($i = 0; $i < count($en_tete); $i++) {
+				//echo "\$en_tete[$i]=$en_tete[$i]<br />";
+				if (casse_mot(remplace_accents($en_tete[$i]),'min') == casse_mot(remplace_accents($tabchamps[$k]), 'min')) {
+					$tabindice[$tabchamps[$k]] = $i;
+					//echo "\$tabindice[$tabchamps[$k]]=$i<br />";
+				}
+			}
+		}
+		if((!isset($tabindice['Nom']))||(!isset($tabindice['Prénom']))||(!isset($tabindice['Login']))||(!isset($tabindice['Mot de passe']))) {
+			echo "<p style='color:red'>La ligne d'entête ne comporte pas un des champs indispensables (<em>Nom, Prénom, Login, Mot de passe</em>).</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		echo "
+<hr class='noprint'/>";
 
 		$cpt=0;
 		//$classe_precedente="";
@@ -3461,37 +3638,67 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
-				//if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
-				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
-				// On exclut également les comptes "Désactivé"
-				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[12]=='Actif')) {
-				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(isset($tab[11]))&&(isset($tab[12]))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[12]=='Actif')) {
-					if(($_POST['toutes_les_classes']=="y")||(in_array($tab[11], $_POST['classe']))) {
-						/*
-						if($tab[11]!=$classe_precedente) {
-							$cpt=0;
-							$classe_precedente=$tab[11];
+
+				$ligne_a_prendre_en_compte="y";
+				if(preg_match("/^Nom;Pr/i", trim($ligne))) {
+					$ligne_a_prendre_en_compte="n";
+				}
+				elseif((isset($tabindice['Classe enfant 1']))&&(preg_match("/^BASE20/",$tab[$tabindice['Classe enfant 1']]))) {
+					// On exclut l'année précédente
+					$ligne_a_prendre_en_compte="n";
+				}
+				elseif((isset($tabindice['Etat']))&&($tab[$tabindice['Etat']]!='Actif')) {
+					// On exclut les comptes "Désactivé"
+					$ligne_a_prendre_en_compte="n";
+				}
+
+				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(isset($tab[11]))&&(isset($tab[12]))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[12]=='Actif')) {
+				if($ligne_a_prendre_en_compte=="y") {
+					if(($_POST['toutes_les_classes']=="y")||
+						(!isset($tabindice['Classe enfant 1']))||
+						((isset($tabindice['Classe enfant 1']))&&(in_array($tab[$tabindice['Classe enfant 1']], $_POST['classe'])))) {
+
+						if(!isset($tabindice['Classe enfant 1'])) {
+							$classe_courante="classe_inconnue";
 						}
-						*/
-						if(!isset($tab_classe_parent[$tab[11]])) {
+						else {
+							$classe_courante=$tab[$tabindice['Classe enfant 1']];
+						}
+
+						if(!isset($tab_classe_parent[$classe_courante])) {
 							$cpt=0;
 						}
 						else {
-							$cpt=count($tab_classe_parent[$tab[11]]);
+							$cpt=count($tab_classe_parent[$classe_courante]);
 						}
-						$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']=$tab[0]." ".$tab[1];
-						//echo "\$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']=".$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']."<br />";
-						$tab_classe_parent[$tab[11]][$cpt]['login_ent']=$tab[2];
-						$tab_classe_parent[$tab[11]][$cpt]['mdp_ent']=$tab[4];
-						$tab_classe_parent[$tab[11]][$cpt]['email_ent']=$tab[5];
-						$tab_classe_parent[$tab[11]][$cpt]['adresse']=$tab[6]."<br />".$tab[7]." ".$tab[8];
-						$tab_classe_parent[$tab[11]][$cpt]['resp_de']=$tab[9]." ".$tab[10]." (".$tab[11].")";
+
+						$tab_classe_parent[$classe_courante][$cpt]['nom_prenom']=$tab[$tabindice['Nom']]." ".$tab[$tabindice['Prénom']];
+						//echo "\$tab_classe_parent[$classe_courante][$cpt]['nom_prenom']=".$tab_classe_parent[$classe_courante][$cpt]['nom_prenom']."<br />";
+						$tab_classe_parent[$classe_courante][$cpt]['login_ent']=$tab[$tabindice['Login']];
+						$tab_classe_parent[$classe_courante][$cpt]['mdp_ent']=$tab[$tabindice['Mot de passe']];
+
+						if(isset($tabindice['Email'])) {
+							$tab_classe_parent[$classe_courante][$cpt]['email_ent']=$tab[$tabindice['Email']];
+						}
+
+						if((isset($tabindice['Adresse']))&&(isset($tabindice['Code postal']))&&(isset($tabindice['Ville']))) {
+							$tab_classe_parent[$classe_courante][$cpt]['adresse']=$tab[$tabindice['Adresse']]."<br />".$tab[$tabindice['Code postal']]." ".$tab[$tabindice['Ville']];
+						}
+
+						if((isset($tabindice['Nom enfant 1']))&&(isset($tabindice['Prénom enfant 1']))) {
+							$tab_classe_parent[$classe_courante][$cpt]['resp_de']=$tab[$tabindice['Nom enfant 1']]." ".$tab[$tabindice['Prénom enfant 1']];
+							if($classe_courante!='classe_inconnue') {
+								$tab_classe_parent[$classe_courante][$cpt]['resp_de'].=" (".$classe_courante.")";
+							}
+						}
 						//$cpt++;
 					}
 				}
 			}
 		}
 
+		$saut=1;
+		$nb_fiches=getSettingValue("ImpressionNombreParent");
 		foreach($tab_classe_parent as $classe => $tab_parent) {
 			/*
 			echo "<pre>";
@@ -3514,13 +3721,18 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		<th style='text-align:left;'>Mot de passe ENT</th>
 		<th>: </th>
 		<td>".$tab_parent[$loop]['mdp_ent']."</td>
-	</tr>
+	</tr>";
+
+				if(isset($tab_parent[$loop]['email_ent'])) {
+					echo "
 	<tr>
 		<th style='text-align:left;'>Email ENT</th>
 		<th>: </th>
 		<td>".$tab_parent[$loop]['email_ent']."</td>
 	</tr>";
-				if(isset($_POST['avec_adresse'])) {
+				}
+
+				if((isset($_POST['avec_adresse']))&&(isset($tab_parent[$loop]['adresse']))) {
 					echo "
 	<tr>
 		<th style='text-align:left; vertical-align:top;'>Adresse</th>
@@ -3528,15 +3740,30 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		<td>".$tab_parent[$loop]['adresse']."</td>
 	</tr>";
 				}
-				echo "
+
+				if(isset($tab_parent[$loop]['resp_de'])) {
+					echo "
 	<tr>
 		<th style='text-align:left;'>Responsable notamment de</th>
 		<th>: </th>
 		<td>".$tab_parent[$loop]['resp_de']."</td>
-	</tr>
+	</tr>";
+				}
+
+				echo "
 </table>
-$impression
-<p class='saut'></p><hr class='noprint'/>";
+$impression";
+
+				// Saut de page toutes les $nb_fiches fiches
+				if ($saut == $nb_fiches) {
+					echo "<p class='saut'>&nbsp;</p>\n";
+					$saut = 1;
+				} else {
+					$saut++;
+				}
+
+				echo "
+<hr class='noprint'/>";
 					//}
 				flush();
 			}
@@ -3551,15 +3778,17 @@ $impression
 //==================================================================================
 if($mode=="publipostage_personnels") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
-</p>";
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
-	echo "
+	if(!isset($csv_file)) {
+
+		echo "</p>
+
 <h2 class='noprint'>Fiches bienvenue professeurs</h2>";
 
-	if(!isset($csv_file)) {
+
 		echo "<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
 	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
 		".add_token_field()."
@@ -3589,6 +3818,10 @@ ZETOFREY;Melanie;melanie.zetofrey;MENESR$12345;azerty&*;Melanie.ZETOFREY@ent27.f
 </ul>\n";
 	}
 	else {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?mode=publipostage_personnels'>Fiches bienvenue personnels</a></p>
+
+<h2 class='noprint'>Fiches bienvenue personnels</h2>";
+
 		check_token(false);
 		$fp=fopen($csv_file['tmp_name'],"r");
 
@@ -3610,6 +3843,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		}
 		echo "</p>\n";
 
+		$saut=1;
+		$nb_fiches=getSettingValue("ImpressionNombre");
 		while (!feof($fp)) {
 			$ligne = trim(fgets($fp, 4096));
 			if((substr($ligne,0,3) == "\xEF\xBB\xBF")) {
@@ -3663,8 +3898,17 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		<td>".$tab[6]."</td>
 	</tr>
 </table>
-$impression
-<p class='saut'></p><hr class='noprint'/>";
+$impression";
+
+						// Saut de page toutes les $nb_fiches fiches
+						if ($saut == $nb_fiches) {
+							echo "<p class='saut'>&nbsp;</p>\n";
+							$saut = 1;
+						} else {
+							$saut++;
+						}
+
+						echo "<hr class='noprint'/>";
 					//}
 
 				}
@@ -4217,6 +4461,9 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 			}
 		}
 
+		$saut=1;
+		$nb_fiches=getSettingValue("ImpressionNombreParent");
+
 		$tab_envoi_reussi=array();
 		foreach($tab_classe_parent as $classe => $tab_parent) {
 			/*
@@ -4263,8 +4510,17 @@ $impression";
 					$tab_envoi_reussi[]=$tab_parent[$loop]['nom_prenom']." (".$tab_parent[$loop]['email_gepi'].") parent de ".$tab_parent[$loop]['resp_de'];
 				}
 				else {
-					echo $chaine."
-<p class='saut'></p><hr class='noprint'/>";
+					echo $chaine."";
+
+					// Saut de page toutes les $nb_fiches fiches
+					if ($saut == $nb_fiches) {
+						echo "<p class='saut'>&nbsp;</p>\n";
+						$saut = 1;
+					} else {
+						$saut++;
+					}
+
+					echo "<hr class='noprint'/>";
 				}
 				flush();
 			}
