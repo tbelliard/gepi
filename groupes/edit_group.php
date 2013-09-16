@@ -76,6 +76,10 @@ echo "\$reg_clazz[$key]=$value<br />";
 $mode = isset($_GET['mode']) ? $_GET['mode'] : (isset($_POST['mode']) ? $_POST["mode"] : null);
 if ($mode == null and $id_classe == null) {
 	$mode = "groupe";
+
+	if ((isset($current_group["classes"]["list"]))&&(count($current_group["classes"]["list"]) > 1)) {
+		$mode = "regroupement";
+	}
 } else if ($mode == null and $current_group) {
 	if (count($current_group["classes"]["list"]) > 1) {
 		$mode = "regroupement";
