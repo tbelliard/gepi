@@ -1004,7 +1004,10 @@ if("$num_resp"=="0"){
 
 				if($lig1->login!="") {
 					$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig1->login, "responsable", "_blank", $avec_lien);
-					if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+					if($lien_image_compte_utilisateur!="") {
+						echo " ".$lien_image_compte_utilisateur;
+						echo temoin_compte_sso($lig1->login);
+					}
 				}
 
 				echo "</td>\n";
@@ -1216,7 +1219,10 @@ else{
 
 							if($lig2->login!="") {
 								$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig2->login, "responsable", "_blank", $avec_lien);
-								if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+								if($lien_image_compte_utilisateur!="") {
+									echo " ".$lien_image_compte_utilisateur;
+									echo temoin_compte_sso($lig2->login);
+								}
 							}
 							echo "</td>\n";
 
@@ -1255,7 +1261,10 @@ else{
 									echo "<td style='text-align:center;'><a href='../eleves/modify_eleve.php?eleve_login=$lig3->login&amp;quelles_classes=toutes&amp;order_type=nom,prenom'>$lig3->nom $lig3->prenom</a>";
 
 									$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig3->login, "eleve", "_blank", $avec_lien);
-									if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+									if($lien_image_compte_utilisateur!="") {
+										echo " ".$lien_image_compte_utilisateur;
+										echo temoin_compte_sso($lig3->login);
+									}
 
 									echo "<br />".liens_class_from_ele_login($lig3->login);
 									echo "</td>\n";
@@ -1284,7 +1293,10 @@ else{
 
 											if($lig4->login!="") {
 												$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig4->login, "responsable", "_blank", $avec_lien);
-												if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+												if($lien_image_compte_utilisateur!="") {
+													echo " ".$lien_image_compte_utilisateur;
+													echo temoin_compte_sso($lig4->login);
+												}
 											}
 
 											echo "</td>\n";
@@ -1412,7 +1424,10 @@ else{
 
 											if($lig4->login!="") {
 												$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig4->login, "responsable", "_blank", $avec_lien);
-												if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+												if($lien_image_compte_utilisateur!="") {
+													echo " ".$lien_image_compte_utilisateur;
+													echo temoin_compte_sso($lig4->login);
+												}
 											}
 
 											echo "</td>\n";
@@ -1448,7 +1463,10 @@ else{
 									echo "<td style='text-align:center;'><a href='../eleves/modify_eleve.php?eleve_login=$lig3->login&amp;quelles_classes=toutes&amp;order_type=nom,prenom'>$lig3->nom $lig3->prenom</a>";
 
 									$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig3->login, "eleve", "_blank", $avec_lien);
-									if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+									if($lien_image_compte_utilisateur!="") {
+										echo " ".$lien_image_compte_utilisateur;
+										echo temoin_compte_sso($lig3->login);
+									}
 
 									echo "</td>\n";
 
@@ -1467,7 +1485,10 @@ else{
 
 										if($lig2->login!="") {
 											$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig2->login, "responsable", "_blank", $avec_lien);
-											if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+											if($lien_image_compte_utilisateur!="") {
+												echo " ".$lien_image_compte_utilisateur;
+												echo temoin_compte_sso($lig2->login);
+											}
 										}
 
 										echo "</td>\n";
@@ -1620,7 +1641,10 @@ else{
 
 						if($lig2->login!="") {
 							$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig2->login, "responsable", "_blank", $avec_lien);
-							if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+							if($lien_image_compte_utilisateur!="") {
+								echo " ".$lien_image_compte_utilisateur;
+								echo temoin_compte_sso($lig2->login);
+							}
 						}
 
 						echo "</td>\n";
@@ -1649,7 +1673,10 @@ else{
 				echo "<td style='text-align:center;'><a href='../eleves/modify_eleve.php?eleve_login=$lig1->login&amp;quelles_classes=toutes&amp;order_type=nom,prenom'>$lig1->nom $lig1->prenom</a>";
 
 				$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig1->login, "eleve", "_blank", $avec_lien);
-				if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+				if($lien_image_compte_utilisateur!="") {
+					echo " ".$lien_image_compte_utilisateur;
+					echo temoin_compte_sso($lig1->login);
+				}
 
 				echo "</td>\n";
 
@@ -1670,7 +1697,10 @@ else{
 
 					if($lig3->login!="") {
 						$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig3->login, "responsable", "_blank", $avec_lien);
-						if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+						if($lien_image_compte_utilisateur!="") {
+							echo " ".$lien_image_compte_utilisateur;
+							echo temoin_compte_sso($lig3->login);
+						}
 					}
 
 					echo "</td>\n";

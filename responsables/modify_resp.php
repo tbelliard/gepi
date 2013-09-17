@@ -823,6 +823,7 @@ echo "<td valign='top'>\n";
 				if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
 				echo "</em>)";
 			}
+			echo temoin_compte_sso($resp_login);
 		}
 		else {
 			$compte_resp_existe="n";

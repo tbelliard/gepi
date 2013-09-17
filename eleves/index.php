@@ -1654,7 +1654,13 @@ if(isset($quelles_classes)) {
 		if($_SESSION['statut']=='administrateur') {$avec_lien="y";}
 		else {$avec_lien="n";}
 		$lien_image_compte_utilisateur=lien_image_compte_utilisateur($eleve_login, "eleve", "", $avec_lien);
-		if($lien_image_compte_utilisateur!="") {echo "<div style='float:right; width: 16px'>".$lien_image_compte_utilisateur."</div>";}
+		if($lien_image_compte_utilisateur!="") {
+			$correspondance_sso=temoin_compte_sso($eleve_login);
+			if($correspondance_sso!="") {
+				echo "<div style='float:right; width: 16px'>".$correspondance_sso."</div>";
+			}
+			echo "<div style='float:right; width: 16px'>".$lien_image_compte_utilisateur."</div>";
+		}
 
 		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='autre')||
 			(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||

@@ -1747,6 +1747,7 @@ if (isset($eleve_login)) {
 		echo $eleve_login;
 		if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
 	}
+	echo temoin_compte_sso($eleve_login);
 	echo "<input type='hidden' name='eleve_login' size='20' ";
 	if ($eleve_login) echo "value='$eleve_login'";
 	echo " /></td>\n";

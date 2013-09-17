@@ -1202,7 +1202,9 @@ Patientez pendant l'extraction des données... merci.
 					echo "<tr class='lig$alt'><th style='text-align: left;'>Authentification&nbsp;:</th><td title=\"Gepi permet selon les configurations plusieurs modes d'authentification:
 - gepi : Authentification sur la base mysql de Gepi,
 - sso : Authentification CAS ou LCS assurée par une autre machine,
-- ldap : Authentification en recherchant la correspondance login/mot_de_passe dans un annuaire LDAP.\">".$tab_ele['compte_utilisateur']['auth_mode']."</td></tr>";
+- ldap : Authentification en recherchant la correspondance login/mot_de_passe dans un annuaire LDAP.\">".$tab_ele['compte_utilisateur']['auth_mode'];
+					echo temoin_compte_sso($tab_ele['login']);
+					echo "</td></tr>";
 
 					if(($_SESSION['statut']=='administrateur')||
 						(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassEle')))||
@@ -1432,6 +1434,7 @@ Patientez pendant l'extraction des données... merci.
 - sso : Authentification CAS ou LCS assurée par une autre machine,
 - ldap : Authentification en recherchant la correspondance login/mot_de_passe dans un annuaire LDAP.\">";
 								echo "Auth.: ".$tab_ele['resp'][$i]['auth_mode'];
+								echo temoin_compte_sso($tab_ele['resp'][$i]['login']);
 								echo "</span>";
 							}
 
@@ -1601,6 +1604,7 @@ Patientez pendant l'extraction des données... merci.
 	- sso : Authentification CAS ou LCS assurée par une autre machine,
 	- ldap : Authentification en recherchant la correspondance login/mot_de_passe dans un annuaire LDAP.\">";
 									echo "Auth.: ".$tab_ele['resp'][$i]['auth_mode'];
+									echo temoin_compte_sso($tab_ele['resp'][$i]['login']);
 									echo "</span>";
 								}
 

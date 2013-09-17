@@ -899,6 +899,7 @@ function checkAccess() {
 			return (FALSE);
 		}
 	}
+
 }
 
 /**
@@ -8253,6 +8254,30 @@ function enregistrer_udt_corresp($champ, $nom_udt, $nom_gepi) {
 	else {
 		return true;
 	}
+}
+
+/**
+ * Affichage si le compte est auth_mode=sso et si on utilise la table de correspondance,
+ * si l'association est faite.
+ *
+ * @global string
+ * @param string $login id de l'utilisateur cherché
+ * @return string Le code html
+ */
+function temoin_compte_sso($login_user) {
+	global $gepiPath;
+
+	$retour="";
+
+	if(getSettingAOui('sso_cas_table')) {
+		$sql="SELECT auth_mode FROM utilisateurs WHERE login='$login_user' AND auth_mode='sso';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$retour.="<img src='".$gepiPath."/images/icons/sens_interdit.png' width='16' height='16' alt=\"Correspondance SSO absente\" title=\"La correspondance SSO n'est pas enregistrée dans la table 'sso_table_correspondance' pour ce compte.\" />";
+		}
+	}
+
+	return $retour;
 }
 
 ?>
