@@ -1292,7 +1292,7 @@ if((!isset($mode))||($mode=="")) {
 </ul>";
 
 	//======================================================================
-
+	// Fiches bienvenue Elèves
 	//﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe;Etat;Date de désactivation
 	//DUPRE;Thomas;thomas.dupre;MENESR$12345;mdp&*;Thomas.DUPRE@ent27.fr;6 A;Actif
 	echo "<p> ou générer des Fiches Bienvenue&nbsp;:</p>
@@ -1300,7 +1300,8 @@ if((!isset($mode))||($mode=="")) {
 
 	$sql="SELECT 1=1 FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login;";
 	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$nb_corresp_ele=mysql_num_rows($res);
+	if($nb_corresp_ele==0) {
 		echo "
 	<li>Aucune association élève n'est encore enregistrée.</li>";
 	}
@@ -1309,10 +1310,13 @@ if((!isset($mode))||($mode=="")) {
 	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_eleves'>Générer les Fiches Bienvenue élèves</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
+	//===================================================
+	// Fiches bienvenue Responsables
 	//$sql="SELECT rp.*, s.* FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login ORDER BY rp.nom, rp.prenom LIMIT 1;";
 	$sql="SELECT 1=1 FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login;";
 	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$nb_corresp_resp=mysql_num_rows($res);
+	if($nb_corresp_resp==0) {
 		echo "
 	<li>Aucune association responsable n'est encore enregistrée.</li>";
 	}
@@ -1321,10 +1325,13 @@ if((!isset($mode))||($mode=="")) {
 	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_responsables'>Générer les Fiches Bienvenue responsables</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
+	//===================================================
+	// Fiches bienvenue Personnels
 	//$sql="SELECT u.*, s.* FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable' LIMIT 1;";
 	$sql="SELECT 1=1 FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable';";
 	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$nb_corresp_pers=mysql_num_rows($res);
+	if($nb_corresp_pers==0) {
 		echo "
 	<li>Aucune association n'est encore enregistrée pour les personnels de l'établissement.</li>";
 	}
@@ -1337,7 +1344,8 @@ if((!isset($mode))||($mode=="")) {
 </ul>
 <p>Cette rubrique permet de fournir les fichiers CSV de rénitialisation de mots de passe générés par l'ENT, ou les CSV des nouveaux élèves.</p>";
 
-
+	//===================================================
+	// Scories:
 	$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_gepi NOT IN (SELECT login FROM utilisateurs);";
 	$res=mysql_query($sql);
 	$nb_scories=mysql_num_rows($res);
@@ -1349,6 +1357,8 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 <a href='".$_SERVER['PHP_SELF']."?mode=suppr_scories".add_token_in_url()."' >Supprimer ces scories</a></p>";
 	}
 
+	//===================================================
+	// Vider:
 	$sql="SELECT 1=1 FROM sso_table_correspondance;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
@@ -1358,6 +1368,65 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 		echo "<p>La table de correspondances contient actuellement ".mysql_num_rows($res)." enregistrements.</p>\n";
 	}
 
+	//===================================================
+	// Associations manquantes
+	if(($nb_corresp_resp>0)||($nb_corresp_ele>0)||($nb_corresp_pers>0)) {
+		echo "<br />
+<p><strong>Associations manquantes&nbsp;:</strong></p>";
+
+		$sql="select distinct e.login, e.nom, e.prenom from eleves e, utilisateurs u where e.login=u.login AND u.auth_mode='sso' and e.login not in (select login_gepi from sso_table_correspondance);";
+		$res=mysql_query($sql);
+		$nb_assoc_manquantes_ele=mysql_num_rows($res);
+		if($nb_assoc_manquantes_ele>0) {
+			echo "
+<br />
+<p>Il manque $nb_assoc_manquantes_ele association(s) élève(s)&nbsp;:";
+			$cpt=0;
+			while($lig=mysql_fetch_object($res)) {
+				if($cpt>0) {echo ", ";}
+				echo "<a href='../eleves/modify_eleve.php?eleve_login=$lig->login' target='_blank'>".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</a>";
+				$cpt++;
+			}
+			echo "</p>";
+		}
+
+		$sql="select distinct rp.login, rp.nom, rp.prenom, rp.civilite, rp.pers_id FROM resp_pers rp, utilisateurs u where u.auth_mode='sso' AND u.login=rp.login AND rp.login!='' and rp.login not in (select login_gepi from sso_table_correspondance);";
+		$res=mysql_query($sql);
+		$nb_assoc_manquantes_resp=mysql_num_rows($res);
+		if($nb_assoc_manquantes_resp>0) {
+			echo "
+<br />
+<p>Il manque $nb_assoc_manquantes_resp association(s) responsable(s)&nbsp;:";
+			$cpt=0;
+			while($lig=mysql_fetch_object($res)) {
+				if($cpt>0) {echo ", ";}
+				echo "<a href='../responsables/modify_resp.php?pers_id=$lig->pers_id' target='_blank'>".$lig->civilite." ".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</a>";
+				$cpt++;
+			}
+			echo "</p>";
+		}
+
+		$sql="select distinct u.login, u.nom, u.prenom, u.civilite from utilisateurs u where u.auth_mode='sso' AND u.statut!='eleve' and u.statut!='responsable' and u.login not in (select login_gepi from sso_table_correspondance);";
+		$res=mysql_query($sql);
+		$nb_assoc_manquantes_resp=mysql_num_rows($res);
+		if($nb_assoc_manquantes_resp>0) {
+			echo "
+<br />
+<p>Il manque $nb_assoc_manquantes_resp association(s) personnel(s)&nbsp;:";
+			$cpt=0;
+			while($lig=mysql_fetch_object($res)) {
+				if($cpt>0) {echo ", ";}
+				echo "<a href='../utilisateurs/modify_user.php?user_login=$lig->login' target='_blank'>".$lig->civilite." ".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</a>";
+				$cpt++;
+			}
+			echo "</p>";
+		}
+
+		echo "<br /><p>Ces utilisateurs disposent d'un compte dans Gepi, mais n'ont pas d'association SSO.<br />
+		Vous devriez refaire un import des fichiers ExportSSO_...</p>";
+	}
+
+	//===================================================
 	echo "
 <br />
 <p style='color:red'>A FAIRE : Détecter et permettre de supprimer des associations pour des élèves,... qui ne sont plus dans le CSV.</p>
@@ -1370,6 +1439,36 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 ";
 	}
 
+	$sql="SELECT 1=1 FROM utilisateurs WHERE statut!='eleve' AND statut!='responsable' AND auth_mode='sso';";
+	$res=mysql_query($sql);
+	$nb_pers_sso=mysql_num_rows($res);
+	$sql="SELECT 1=1 FROM utilisateurs WHERE statut!='eleve' AND statut!='responsable' AND auth_mode='ldap';";
+	$res=mysql_query($sql);
+	$nb_pers_ldap=mysql_num_rows($res);
+	$sql="SELECT 1=1 FROM utilisateurs WHERE statut!='eleve' AND statut!='responsable' AND auth_mode='gepi';";
+	$res=mysql_query($sql);
+	$nb_pers_gepi=mysql_num_rows($res);
+
+	$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.statut='eleve' AND e.login=u.login AND auth_mode='sso';";
+	$res=mysql_query($sql);
+	$nb_ele_sso=mysql_num_rows($res);
+	$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.statut='eleve' AND e.login=u.login AND auth_mode='ldap';";
+	$res=mysql_query($sql);
+	$nb_ele_ldap=mysql_num_rows($res);
+	$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.statut='eleve' AND e.login=u.login AND auth_mode='gepi';";
+	$res=mysql_query($sql);
+	$nb_ele_gepi=mysql_num_rows($res);
+
+	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.statut='responsable' AND rp.login=u.login AND auth_mode='sso';";
+	$res=mysql_query($sql);
+	$nb_resp_sso=mysql_num_rows($res);
+	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.statut='responsable' AND rp.login=u.login AND auth_mode='ldap';";
+	$res=mysql_query($sql);
+	$nb_resp_ldap=mysql_num_rows($res);
+	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.statut='responsable' AND rp.login=u.login AND auth_mode='gepi';";
+	$res=mysql_query($sql);
+	$nb_resp_gepi=mysql_num_rows($res);
+
 	echo "<p><em>NOTES&nbsp;:</em></p>
 <ul>
 	<li>
@@ -1380,6 +1479,39 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 	</li>
 	<li>
 		<p>Les CSV pour les Fiches bienvenue peuvent aussi être ceux des nouveaux élèves ou parents<br />(<em>[V2]CLG-".getSettingValue('gepiSchoolName')."-ac-ROUEN - [".getSettingValue('gepiSchoolRne')."] - [ANNEEMOISJOURHEURE].xlsx<br />ou ".getSettingValue('gepiSchoolRne')."_CSV_ANNEEMOISJOURHEURE.zip</em>).</p>
+	</li>
+	<li>
+		<p>Votre base compte des utilisateurs des statuts suivants avec les modes d'authentification suivants&nbsp;:</p>
+		<table class='boireaus boireaus_alt'>
+			<tr>
+				<th rowspan='2'>Statut</th>
+				<th colspan='3'>Mode d'authentification</th>
+			</tr>
+			<tr>
+				<th>Gepi</th>
+				<th>SSO</th>
+				<th>LDAP</th>
+			</tr>
+			<tr>
+				<td>Personnels</td>
+				<td>$nb_pers_gepi</td>
+				<td>$nb_pers_sso</td>
+				<td>$nb_pers_ldap</td>
+			</tr>
+			<tr>
+				<td>Responsables</td>
+				<td>$nb_resp_gepi</td>
+				<td>$nb_resp_sso</td>
+				<td>$nb_resp_ldap</td>
+			</tr>
+			<tr>
+				<td>Élèves</td>
+				<td>$nb_ele_gepi</td>
+				<td>$nb_ele_sso</td>
+				<td>$nb_ele_ldap</td>
+			</tr>
+		</table>
+		<p>Certains comptes peuvent être inactifs (<em style='color:red'>à détailler dans le futur</em>).</p>
 	</li>
 </ul>
 
