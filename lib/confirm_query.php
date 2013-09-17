@@ -175,6 +175,11 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     $nombre_req = 4;
 
+    $mess[] = "Table de correspondance SSO :";
+    $test_nb[] = "SELECT * FROM sso_table_correspondance WHERE login_gepi='$cible1'";
+    $req[] = "DELETE FROM sso_table_correspondance WHERE login_gepi='$cible1';";
+  	$nombre_req++;
+
     $mess[] = "Table de définition cpe/élève :";
     $test_nb[] = "SELECT * FROM j_eleves_cpe WHERE cpe_login='$cible1'";
     $req[] = "DELETE FROM j_eleves_cpe WHERE cpe_login='$cible1';";

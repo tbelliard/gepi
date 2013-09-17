@@ -179,10 +179,14 @@ if (!$error) {
 			if ($test == "0") {
 				$msg .= "Erreur lors de la suppression de l'utilisateur : celui-ci n'existe pas.";
 			} else {
+				// Suppression du compte proprement dite:
 				$res = mysql_query("DELETE FROM utilisateurs WHERE (login = '".$_GET['parent_login']."')");
 				if ($res) {
 					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été supprimé.";
+					// Réinitialisation du champ login dans la table 'resp_pers':
 					$res2 = mysql_query("UPDATE resp_pers SET login='' WHERE login = '".$_GET['parent_login'] . "'");
+					// Suppression de scorie éventuelle:
+					$res3 = mysql_query("DELETE FROM sso_table_correspondance WHERE login_gepi = '".$_GET['parent_login']."'");
 				} else {
 					$msg .= "Erreur lors de la suppression de l'utilisateur.";
 				}
@@ -193,11 +197,15 @@ if (!$error) {
 				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
 					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
+					// Suppression du compte proprement dite:
 					$res = mysql_query("DELETE FROM utilisateurs WHERE login = '" . $current_parent->login . "'");
 					if (!$res) {
 						$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
 					} else {
+						// Réinitialisation du champ login dans la table 'resp_pers':
 						$res = mysql_query("UPDATE resp_pers SET login = '' WHERE login = '" . $current_parent->login ."'");
+						// Suppression de scorie éventuelle:
+						$res3 = mysql_query("DELETE FROM sso_table_correspondance WHERE login_gepi = '".$current_parent->login."'");
 						$nb_comptes++;
 					}
 				}
