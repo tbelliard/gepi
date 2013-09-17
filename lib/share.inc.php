@@ -870,35 +870,35 @@ function checkAccess() {
 		}
 	}
 
-    $url = parse_url($_SERVER['SCRIPT_NAME']);
-    if ($_SESSION["statut"] == 'autre') {
+	$url = parse_url($_SERVER['SCRIPT_NAME']);
 
-    	$sql = "SELECT autorisation
-	    from droits_speciaux
-    	where nom_fichier = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
-		AND id_statut = '" . $_SESSION['statut_special_id'] . "'";
-
-    }else{
-
-		$sql = "select " . $_SESSION['statut'] . "
-	    from droits
-    	where id = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
-    	;";
-
+	if (mb_substr($url['path'], 0, mb_strlen($gepiPath)) != $gepiPath) {
+		tentative_intrusion(2, "Tentative d'accès avec modification sauvage de gepiPath");
+		return (FALSE);
 	}
-
-    $dbCheckAccess = sql_query1($sql);
-    if (mb_substr($url['path'], 0, mb_strlen($gepiPath)) != $gepiPath) {
-        tentative_intrusion(2, "Tentative d'accès avec modification sauvage de gepiPath");
-        return (FALSE);
-    } else {
-        if ($dbCheckAccess == 'V') {
-            return (TRUE);
-        } else {
-            tentative_intrusion(1, "Tentative d'accès à un fichier sans avoir les droits nécessaires");
-            return (FALSE);
-        }
-    }
+	else {
+		if ($_SESSION["statut"] == 'autre') {
+			$sql = "SELECT autorisation
+					FROM droits_speciaux
+					WHERE nom_fichier = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
+					AND id_statut = '" . $_SESSION['statut_special_id'] . "'
+					AND autorisation='V'";
+		}
+		else {
+			$sql = "SELECT " . $_SESSION['statut'] . " AS autorisation
+					FROM droits
+					WHERE id = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
+					AND ".$_SESSION['statut']."='V';";
+		}
+		$dbCheckAccess = mysql_query($sql);
+		if (mysql_num_rows($dbCheckAccess)>0) {
+			return (TRUE);
+		}
+		else {
+			tentative_intrusion(1, "Tentative d'accès à un fichier sans avoir les droits nécessaires");
+			return (FALSE);
+		}
+	}
 }
 
 /**
