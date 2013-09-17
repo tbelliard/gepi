@@ -953,6 +953,30 @@ if($mode=='vider') {
 	$mode="";
 }
 
+if($mode=='suppr_scories') {
+	check_token();
+
+	$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_gepi NOT IN (SELECT login FROM utilisateurs);";
+	$res=mysql_query($sql);
+	$nb_scories=mysql_num_rows($res);
+	if($nb_scories>0) {
+		$sql="DELETE FROM sso_table_correspondance WHERE login_gepi NOT IN (SELECT login FROM utilisateurs);";
+		$res=mysql_query($sql);
+		if($res) {
+			$msg.="$nb_scories association(s) obsolète(s) supprimée(s).<br />";
+		}
+		else {
+			$msg.="Erreur lors de la suppression des $nb_scories association(s) obsolète(s).<br />";
+		}
+	}
+	else {
+		$msg.="Aucune association .<br />";
+	}
+
+	//unset($mode);
+	$mode="";
+}
+
 if($mode=='valider_forcer_logins_mdp_responsables') {
 	check_token();
 
@@ -1314,6 +1338,16 @@ if((!isset($mode))||($mode=="")) {
 <p>Cette rubrique permet de fournir les fichiers CSV de rénitialisation de mots de passe générés par l'ENT, ou les CSV des nouveaux élèves.</p>";
 
 
+	$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_gepi NOT IN (SELECT login FROM utilisateurs);";
+	$res=mysql_query($sql);
+	$nb_scories=mysql_num_rows($res);
+	if($nb_scories>0) {
+		echo "
+<br />
+<p><strong style='color:red'>SCORIES&nbsp;:</strong> ".$nb_scories." association(s) existent dans la table 'sso_table_correspondance' pour des login qui n'existent plus dans Gepi.<br />
+Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
+<a href='".$_SERVER['PHP_SELF']."?mode=suppr_scories".add_token_in_url()."' >Supprimer ces scories</a></p>";
+	}
 
 	$sql="SELECT 1=1 FROM sso_table_correspondance;";
 	$res=mysql_query($sql);
