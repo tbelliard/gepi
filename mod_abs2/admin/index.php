@@ -418,6 +418,10 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 	Mot de passe <input type="text" name="abs2_sms_password" size="20" value="<?php echo(getSettingValue("abs2_sms_password")); ?>"/><br/>
 </p>
 
+<p style='text-indent:-4em;margin-left:4em;margin-top:1em;'>
+	<em>NOTE&nbsp;:</em> Le fichier modèle de SMS, comme les fichiers modèles OpenOffice.org générés par ce module peuvent être modifiés/remplacés dans la rubrique <a href="../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE">Gérer ses propres modèles de documents du module</a>.
+</p>
+
 <h2>Configuration des saisies</h2>
 <p>
 	<input type="checkbox" id="abs2_saisie_par_defaut_sans_manquement" name="abs2_saisie_par_defaut_sans_manquement" value="y"
@@ -499,7 +503,7 @@ echo "<p style='color:red'>* Le responsable de l'absence, c'est l'élève (et se
 	<a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
     <a href="admin_lieux_absences.php?action=visualiser">Définir les lieux des absences</a><br />
 	<a href="admin_justifications_absences.php?action=visualiser">Définir les justifications</a><br />
-	<a href="../../mod_ooo/gerer_modeles_ooo.php">Gérer ses propres modèles de documents du module</a><br />
+	<a href="../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE">Gérer ses propres modèles de documents du module</a><br />
     <a href="admin_table_agregation.php">Gérér la table d'agrégation des demi-journées d'absences</a>
 </blockquote>
 

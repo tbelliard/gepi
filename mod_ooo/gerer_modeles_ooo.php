@@ -267,6 +267,7 @@ if (!isset($btn)) { //premier passage : formulaire
 	  if ($entete_section[$i] != "") { // Cas d'un entête
 	      echo "<tr>";
 	      echo "<td colspan=\"6\"></br></br><b>$entete_section[$i]";
+	      echo "<a name='".remplace_accents($entete_section[$i], "all")."'></a>";
 	      if($lien_wiki[$i] != "") {echo " <a href='".$lien_wiki[$i]."' target='_blank'><img src='../images/icons/ico_ampoule.png' width='15' height='25' title='Documentation/ressources' /></a>";}
 	      echo "</br></br></b></br></br></td>";
 		  echo "</tr>";
