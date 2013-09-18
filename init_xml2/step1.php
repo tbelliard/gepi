@@ -81,7 +81,7 @@
 
 		echo "<p>Si des fichiers XML existent, ils seront supprimés...</p>\n";
 		//$tabfich=array("f_ele.csv","f_ere.csv");
-		$tabfich=array("eleves.xml","nomenclature.xml");
+		$tabfich=array("eleves.xml","fichier_nomenclature.xml");
 
 		for($i=0;$i<count($tabfich);$i++){
 			if(file_exists("../temp/".$tempdir."/$tabfich[$i]")) {
@@ -1041,7 +1041,7 @@
 
 					//$source_file=stripslashes($xml_file['tmp_name']);
 					$source_file=$xml_file['tmp_name'];
-					$dest_file="../temp/".$tempdir."/nomenclature.xml";
+					$dest_file="../temp/".$tempdir."/fichier_nomenclature.xml";
 					$res_copy=copy("$source_file" , "$dest_file");
 
 					//===============================================================
@@ -1110,7 +1110,7 @@
 					else{
 						// Lecture du fichier Nomenclature... pour changer les codes numériques d'options dans 'temp_gep_import2' en leur code gestion
 
-						$dest_file="../temp/".$tempdir."/nomenclature.xml";
+						$dest_file="../temp/".$tempdir."/fichier_nomenclature.xml";
 
 						$nomenclature_xml=simplexml_load_file($dest_file);
 						if(!$nomenclature_xml) {
@@ -1609,9 +1609,9 @@
 					}
 				}
 
-				if(file_exists("../temp/".$tempdir."/nomenclature.xml")) {
-					echo "<p>Suppression de nomenclature.xml... ";
-					if(unlink("../temp/".$tempdir."/nomenclature.xml")){
+				if(file_exists("../temp/".$tempdir."/fichier_nomenclature.xml")) {
+					echo "<p>Suppression de fichier_nomenclature.xml... ";
+					if(unlink("../temp/".$tempdir."/fichier_nomenclature.xml")){
 						echo "réussie.</p>\n";
 					}
 					else{
