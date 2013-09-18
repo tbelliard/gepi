@@ -1338,6 +1338,8 @@ if(($_SESSION['statut']!='administrateur')&&(getSettingAOui("AccesFicheBienvenue
 echo "</p>\n";
 echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
 
+$tabindex=1;
+
 echo "<fieldset id='infosPerso' style='border: 1px solid grey;";
 echo "background-image: url(\"../images/background/opacite50.png\"); ";
 echo "'>\n";
@@ -1376,7 +1378,7 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
 		($_SESSION['statut']=='scolarite')||
 		($_SESSION['statut']=='cpe')) {
 ?>
-                            <select name='reg_civilite' onchange='changement()'>
+                            <select name='reg_civilite' onchange='changement()' <?php echo "tabindex='$tabindex'";$tabindex++;?>>
                                 <option value='M.'<?php if ($user_civilite=='M.') {echo " selected='selected' ";} ?> >M.</option>
                                 <option value='Mme'<?php if ($user_civilite=='Mme') {echo " selected='selected' ";} ?> >Mme</option>
                                 <option value='Mlle'<?php if ($user_civilite=='Mlle') {echo " selected='selected' ";} ?> >Mlle</option>
@@ -1441,6 +1443,7 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
                                    name=reg_email 
                                    size=30
                                    <?php if ($user_email) { echo " value=\"".$user_email."\"";} ?>
+                                    <?php echo " tabindex='$tabindex'";$tabindex++;?>
                                    />
                                    <?php
                                        if((isset($_GET['saisie_mail_requise']))&&($_GET['saisie_mail_requise']=='yes')) {
@@ -1479,6 +1482,8 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
 		$affiche_bouton_submit = 'yes';
 		echo "<tr><td></td><td><label for='reg_show_email' style='cursor: pointer;'><input type='checkbox' name='reg_show_email' id='reg_show_email' value='yes'";
 		if ($user_show_email == "yes") echo " CHECKED";
+		echo " tabindex='$tabindex'";
+		$tabindex++;
 		echo "/> Autoriser l'affichage de mon adresse email<br />pour les utilisateurs non personnels de l'établissement **</label></td></tr>\n";
 	}
 	echo "<tr><td>Statut : </td><td>".statut_accentue($user_statut)."</td></tr>\n";
@@ -1578,8 +1583,10 @@ if(($_SESSION['statut']=='administrateur')||
 					//echo "</span>\n";
 					echo "</div>\n";
 					echo "<div id='div_upload_photo' style='display:none; width:400px;'>";
-					echo "<input type='file' name='filephoto' size='30' />\n";
-					echo "<input type='submit' name='Envoi_photo' value='Envoyer' />\n";
+					echo "<input type='file' name='filephoto' size='30' tabindex='$tabindex' />\n";
+					$tabindex++;
+					echo "<input type='submit' name='Envoi_photo' value='Envoyer' tabindex='$tabindex' />\n";
+					$tabindex++;
 					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 						echo "<br /><span style='font-size:x-small;'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels). Afin que votre photographie ne soit pas trop réduite, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être de préférence proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>"."<br /><span style='font-size:x-small;'>Les photos doivent de plus être au format JPEG avec l'extension '<strong>.jpg</strong>'.</span>";
 					}
@@ -1588,7 +1595,8 @@ if(($_SESSION['statut']=='administrateur')||
 						if(file_exists($photo)) {
 							echo "<br />\n";
 							//echo "<input type='checkbox' name='suppr_filephoto' value='y' /> Supprimer la photo existante\n";
-							echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' />\n";
+							echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' tabindex='$tabindex' />\n";
+							$tabindex++;
 							echo "&nbsp;<label for='suppr_filephoto' style='cursor: pointer; cursor: hand;'>Supprimer la photo existante</label>\n";
 						}
 					}
@@ -1641,16 +1649,19 @@ if(($_SESSION['statut']=='administrateur')||
 					}
 
 					echo "<div id='div_upload_photo' style='display: none; width:400px;'>\n";
-					echo "<input type='file' name='filephoto' size='30' />\n";
+					echo "<input type='file' name='filephoto' size='30' tabindex='$tabindex' />\n";
+					$tabindex++;
 
-					echo "<input type='submit' name='Envoi_photo' value='Envoyer' />\n";
+					echo "<input type='submit' name='Envoi_photo' value='Envoyer' tabindex='$tabindex' />\n";
+					$tabindex++;
 
 					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 						echo "<br /><span style='font-size:x-small;'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels). Afin que votre photographie ne soit pas trop réduite, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être de préférence proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>"."<br /><span style='font-size:x-small;'>Les photos doivent de plus être au format JPEG avec l'extension '<strong>.jpg</strong>'.</span>";
 					}
 					echo "<br />\n";
 					echo "<span style='text-align:right'>";
-					echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' />\n";
+					echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' tabindex='$tabindex' />\n";
+					$tabindex++;
 					echo "&nbsp;<label for='suppr_filephoto' style='cursor: pointer; cursor: hand; '>Supprimer la photo existante</label>\n";
 					echo "</span>\n";
 					echo "</span>\n";
@@ -1668,7 +1679,8 @@ if(($_SESSION['statut']=='administrateur')||
 echo "</td>\n";
 echo "</table>\n";
 if ($affiche_bouton_submit=='yes') {
-	echo "<p><input type='submit' value='Enregistrer' /></p>\n";
+	echo "<p><input type='submit' value='Enregistrer' tabindex='$tabindex' /></p>\n";
+	$tabindex++;
 }
 
 $groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
@@ -1691,7 +1703,8 @@ if (empty($groups)) {
 	$nb=mysql_num_rows($test);
 	//echo "\$nb=$nb<br />";
 	if ($nb>1) {
-		echo "Matière principale&nbsp;: <select name='matiere_principale'>\n";
+		echo "Matière principale&nbsp;: <select name='matiere_principale' tabindex='$tabindex'>\n";
+		$tabindex++;
 		while($lig_mat=mysql_fetch_object($test)) {
 			echo "<option value='$lig_mat->id_matiere'";
 			if($lig_mat->id_matiere==$_SESSION['matiere']) {echo " selected='selected'";}
@@ -1784,7 +1797,7 @@ if ($editable_user) {
 <table summary='Mot de passe'>
     <tr>
         <td>Ancien mot de passe : </td>
-        <td><input type='password' name='no_anti_inject_password_a' id='no_anti_inject_password_a' size='20' /><?php echo input_password_to_text('no_anti_inject_password_a');?></td>
+        <td><input type='password' name='no_anti_inject_password_a' id='no_anti_inject_password_a' size='20' tabindex='<?php echo $tabindex;$tabindex++;?>' /><?php echo input_password_to_text('no_anti_inject_password_a');?></td>
     </tr>
     <tr>
         <td>Nouveau mot de passe (<em><?php echo getSettingValue("longmin_pwd") ;?> caractères minimum</em>) :</td>
@@ -1793,7 +1806,8 @@ if ($editable_user) {
                     type="password" 
                     name="no_anti_inject_password1" 
                     size="20" 
-                    onkeyup="runPassword(this.value, 'mypassword');" />
+                    onkeyup="runPassword(this.value, 'mypassword');" 
+                    tabindex='<?php echo $tabindex;$tabindex++;?>' />
                     <?php
                         // Cela merdoie: Il doit y avoir un conflit entre le test de solidité et le changement de type.
                         echo input_password_to_text('mypassword');
@@ -1809,7 +1823,7 @@ if ($editable_user) {
     </tr>
     <tr>
         <td>Nouveau mot de passe (<em>à confirmer</em>) : </td>
-        <td><input type='password' name='reg_password2' id='reg_password2' size='20' /><?php echo input_password_to_text('reg_password2');?></td>
+        <td><input type='password' name='reg_password2' id='reg_password2' size='20' tabindex='<?php echo $tabindex;$tabindex++;?>' /><?php echo input_password_to_text('reg_password2');?></td>
     </tr>
 </table>
 <?php
@@ -1820,7 +1834,8 @@ if ($editable_user) {
 <?php
 }
 if ($affiche_bouton_submit=='yes')
-	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
+	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" tabindex='$tabindex' /></center>\n";
+	$tabindex++;
 	echo "<input type=\"hidden\" name=\"valid\" value=\"yes\" />\n";
 echo "</fieldset>\n";
 echo "</form>\n";
@@ -1831,6 +1846,8 @@ echo "<br/>\n";
 
 
 function cellule_checkbox($prof_login,$item,$num,$special){
+	global $tabindex;
+
 	echo "<td align='center'";
 	echo " id='td_".$item."_".$num."' ";
 	$checked="";
@@ -1850,7 +1867,8 @@ function cellule_checkbox($prof_login,$item,$num,$special){
 		}
 	}
 	echo ">";
-	echo "<input type='checkbox' name='$item"."_"."$num' id='$item"."_"."$num' value='y'";
+	echo "<input type='checkbox' name='$item"."_"."$num' id='$item"."_"."$num' value='y' tabindex='$tabindex'";
+	$tabindex++;
 
 	echo $checked;
 	echo " onchange=\"changement_et_couleur('$item"."_"."$num','";
@@ -1896,18 +1914,27 @@ if($_SESSION['statut']=='professeur') {
 			<p>Vous pouvez choisir d'afficher le Nom ou la Description des enseignements/groupes dans différents modules&nbsp;:<br />
 
 				Barre de menu horizontale (<em>si elle est affichée</em>)&nbsp;: 
-				<input type='radio' name='nom_ou_description_groupe_barre_h' id='nom_ou_description_groupe_barre_h_name' value='name' ".($nom_ou_description_groupe_barre_h=='name' ? "checked " : "")."/><label for='nom_ou_description_groupe_barre_h_name'>Nom</label> - 
-				<input type='radio' name='nom_ou_description_groupe_barre_h' id='nom_ou_description_groupe_barre_h_description' value='description' ".($nom_ou_description_groupe_barre_h=='description' ? "checked " : "")."/><label for='nom_ou_description_groupe_barre_h_description'>Description</label>
-				<br />
-
+				<input type='radio' name='nom_ou_description_groupe_barre_h' id='nom_ou_description_groupe_barre_h_name' value='name' ".($nom_ou_description_groupe_barre_h=='name' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_barre_h_name'>Nom</label> - ";
+	$tabindex++;
+	echo "
+				<input type='radio' name='nom_ou_description_groupe_barre_h' id='nom_ou_description_groupe_barre_h_description' value='description' ".($nom_ou_description_groupe_barre_h=='description' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_barre_h_description'>Description</label>
+				<br />";
+	$tabindex++;
+	echo "
 				Cahiers de textes&nbsp;: 
-				<input type='radio' name='nom_ou_description_groupe_cdt' id='nom_ou_description_groupe_cdt_name' value='name' ".($nom_ou_description_groupe_cdt=='name' ? "checked " : "")."/><label for='nom_ou_description_groupe_cdt_name'>Nom</label> - 
-				<input type='radio' name='nom_ou_description_groupe_cdt' id='nom_ou_description_groupe_cdt_description' value='description' ".($nom_ou_description_groupe_cdt=='description' ? "checked " : "")."/><label for='nom_ou_description_groupe_cdt_description'>Description</label>
-				<br />
+				<input type='radio' name='nom_ou_description_groupe_cdt' id='nom_ou_description_groupe_cdt_name' value='name' ".($nom_ou_description_groupe_cdt=='name' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_cdt_name'>Nom</label> - ";
+	$tabindex++;
+	echo "
+				<input type='radio' name='nom_ou_description_groupe_cdt' id='nom_ou_description_groupe_cdt_description' value='description' ".($nom_ou_description_groupe_cdt=='description' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_cdt_description'>Description</label>
+				<br />";
+	$tabindex++;
+	echo "
 
 			</p>
 
-			<p style='text-align:center;'><input type='submit' name='Valider' value='Enregistrer' /></p>\n";
+			<p style='text-align:center;'><input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' /></p>\n";
+
+	$tabindex++;
 
 	if(isset($message_nom_ou_description_groupe)) {echo $message_nom_ou_description_groupe;}
 
@@ -1979,7 +2006,8 @@ if($_SESSION['statut']=='professeur') {
 	echo "</table>\n";
 
 	echo "<p style='text-align:center;'>\n";
-	echo "<input type='submit' name='Valider' value='Enregistrer' />\n";
+	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
+	$tabindex++;
 	echo "</p>\n";
 
 	if(isset($message_accueil_simpl_prof)) {echo $message_accueil_simpl_prof;}
@@ -2015,7 +2043,9 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "<input type='checkbox' name='aff_quartiles_cn' id='aff_quartiles_cn' value='y' ";
 	echo "onchange=\"checkbox_change('aff_quartiles_cn');changement()\" ";
 	if($aff_quartiles_cn=='y') {echo 'checked';}
-	echo "/><label for='aff_quartiles_cn' id='texte_aff_quartiles_cn'> Afficher par défaut l'infobulle contenant les moyenne, médiane, quartiles, min, max sur les carnets de notes.</label>\n";
+	echo " tabindex='$tabindex'";
+	$tabindex++;
+	echo " /><label for='aff_quartiles_cn' id='texte_aff_quartiles_cn'> Afficher par défaut l'infobulle contenant les moyenne, médiane, quartiles, min, max sur les carnets de notes.</label>\n";
 	echo "</p>\n";
 
 	$aff_photo_cn=getPref($_SESSION['login'], 'aff_photo_cn', 'n');
@@ -2023,7 +2053,9 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "<input type='checkbox' name='aff_photo_cn' id='aff_photo_cn' value='y' ";
 	echo "onchange=\"checkbox_change('aff_photo_cn');changement()\" ";
 	if($aff_photo_cn=='y') {echo 'checked';}
-	echo "/><label for='aff_photo_cn' id='texte_aff_photo_cn'> Afficher par défaut la photo des élèves sur les carnets de notes.</label>\n";
+	echo " tabindex='$tabindex'";
+	$tabindex++;
+	echo " /><label for='aff_photo_cn' id='texte_aff_photo_cn'> Afficher par défaut la photo des élèves sur les carnets de notes.</label>\n";
 	echo "</p>\n";
 
 	echo "<p>\n";
@@ -2031,7 +2063,9 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "<input type='checkbox' name='cn_avec_min_max' id='cn_avec_min_max' value='y' ";
 	echo "onchange=\"checkbox_change('cn_avec_min_max');changement()\" ";
 	if($cn_avec_min_max=='y') {echo 'checked';}
-	echo "/><label for='cn_avec_min_max' id='texte_cn_avec_min_max'> Afficher pour chaque colonne de notes les valeurs minimale et maximale.</label>\n";
+	echo " tabindex='$tabindex'";
+	$tabindex++;
+	echo " /><label for='cn_avec_min_max' id='texte_cn_avec_min_max'> Afficher pour chaque colonne de notes les valeurs minimale et maximale.</label>\n";
 	echo "</p>\n";
 
 	echo "<p>\n";
@@ -2039,7 +2073,9 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "<input type='checkbox' name='cn_avec_mediane_q1_q3' id='cn_avec_mediane_q1_q3' value='y' ";
 	echo "onchange=\"checkbox_change('cn_avec_mediane_q1_q3');changement()\" ";
 	if($cn_avec_mediane_q1_q3=='y') {echo 'checked';}
-	echo "/><label for='cn_avec_mediane_q1_q3' id='texte_cn_avec_mediane_q1_q3'> Afficher pour chaque colonne de notes les valeur médiane, 1er et 3è quartiles.</label>\n";
+	echo " tabindex='$tabindex'";
+	$tabindex++;
+	echo " /><label for='cn_avec_mediane_q1_q3' id='texte_cn_avec_mediane_q1_q3'> Afficher pour chaque colonne de notes les valeur médiane, 1er et 3è quartiles.</label>\n";
 	echo "</p>\n";
 
 	echo "<p>Dans la page de saisie des notes de devoirs, trier par défaut <br />\n";
@@ -2047,11 +2083,15 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "<input type='radio' name='cn_order_by' id='cn_order_by_classe' value='classe' ";
 	echo "onchange=\"checkbox_change('cn_order_by_classe');checkbox_change('cn_order_by_nom');changement()\" ";
 	if($cn_order_by=='classe') {echo 'checked';}
-	echo "/><label for='cn_order_by_classe' id='texte_cn_order_by_classe'>par classe puis ordre alphabétique des noms des élèves.</label><br />\n";
+	echo " /><label for='cn_order_by_classe' id='texte_cn_order_by_classe'>par classe puis ordre alphabétique des noms des élèves.</label><br />\n";
+	echo " tabindex='$tabindex'";
+	$tabindex++;
 	echo "<input type='radio' name='cn_order_by' id='cn_order_by_nom' value='nom' ";
 	echo "onchange=\"checkbox_change('cn_order_by_classe');checkbox_change('cn_order_by_nom');changement()\" ";
 	if($cn_order_by=='nom') {echo 'checked';}
-	echo "/><label for='cn_order_by_nom' id='texte_cn_order_by_nom'>par ordre alphabétique des noms des élèves.</label><br />\n";
+	echo " /><label for='cn_order_by_nom' id='texte_cn_order_by_nom'>par ordre alphabétique des noms des élèves.</label><br />\n";
+	echo " tabindex='$tabindex'";
+	$tabindex++;
 	echo "</p>\n";
 
 	echo "<table>";
@@ -2061,7 +2101,8 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "</td>";
 	echo "<td>";
 	$cn_default_nom_court=getPref($_SESSION['login'], 'cn_default_nom_court', 'Nouvelle évaluation');
-	echo "<input type='text' name='cn_default_nom_court' id='cn_default_nom_court' value='$cn_default_nom_court' />\n";
+	echo "<input type='text' name='cn_default_nom_court' id='cn_default_nom_court' value='$cn_default_nom_court' tabindex='$tabindex' />\n";
+	$tabindex++;
 	echo "</td>";
 	echo "</tr>";
 
@@ -2071,7 +2112,8 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "</td>";
 	echo "<td>";
 	$cn_default_nom_complet=getPref($_SESSION['login'], 'cn_default_nom_complet', 'Nouvelle évaluation');
-	echo "<input type='text' name='cn_default_nom_complet' id='cn_default_nom_complet' value='$cn_default_nom_complet' />\n";
+	echo "<input type='text' name='cn_default_nom_complet' id='cn_default_nom_complet' value='$cn_default_nom_complet' tabindex='$tabindex' />\n";
+	$tabindex++;
 	echo "</td>";
 	echo "</tr>";
 
@@ -2081,7 +2123,8 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	$cn_default_coef=getPref($_SESSION['login'], 'cn_default_coef', '1.0');
 	echo "</td>";
 	echo "<td>";
-	echo "<input type='text' name='cn_default_coef' id='cn_default_coef' value='$cn_default_coef' size='3' onkeydown=\"clavier_2(this.id,event,1,20);\" autocomplete='off' />\n";
+	echo "<input type='text' name='cn_default_coef' id='cn_default_coef' value='$cn_default_coef' size='3' onkeydown=\"clavier_2(this.id,event,1,20);\" autocomplete='off' tabindex='$tabindex' />\n";
+	$tabindex++;
 	echo "</td>";
 	echo "</tr>";
 
@@ -2213,10 +2256,14 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 
 <input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_1' value='1' ";
 	if($cnBoitesModeMoy=='1') {echo "checked ";}
+	echo "tabindex='$tabindex' ";
+	$tabindex++;
 	echo "/><label for='cnBoitesModeMoy_1'>la moyenne s'effectue sur toutes les notes contenues à la racine et dans les ".my_strtolower(getSettingValue("gepi_denom_boite"))."s sans tenir compte des options définies dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label><br />
 
 <input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_2' value='2' ";
 	if($cnBoitesModeMoy=='2') {echo "checked ";}
+	echo "tabindex='$tabindex' ";
+	$tabindex++;
 	echo "/><label for='cnBoitesModeMoy_2'>la moyenne s'effectue sur toutes les notes contenues à la racine et sur les moyennes des ".my_strtolower(getSettingValue("gepi_denom_boite"))."s en tenant compte des options dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label><br />
 
 <p style='margin-left:2em;'><em>Explication&nbsp;:</em></p>
@@ -2228,7 +2275,8 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 <p><br /></p>\n";
 
 	echo "<p style='text-align:center;'>\n";
-	echo "<input type='submit' name='Valider' value='Enregistrer' />\n";
+	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
+	$tabindex++;
 	echo "</p>\n";
 
 	if(isset($message_cn)) {echo $message_cn;}
@@ -2258,7 +2306,9 @@ if($_SESSION["statut"] == "professeur") {
 	echo "<input type='checkbox' name='aff_photo_saisie_app' id='aff_photo_saisie_app' value='y' ";
 	echo "onchange=\"checkbox_change('aff_photo_saisie_app');changement()\" ";
 	if($aff_photo_saisie_app=='y') {echo 'checked';}
-	echo "/><label for='aff_photo_saisie_app' id='texte_aff_photo_saisie_app'> Afficher par défaut les photos des élèves lors de la saisie des appréciations sur les bulletins.</label>\n";
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
+	echo " /><label for='aff_photo_saisie_app' id='texte_aff_photo_saisie_app'> Afficher par défaut les photos des élèves lors de la saisie des appréciations sur les bulletins.</label>\n";
 	echo "</p>\n";
 
 
@@ -2268,10 +2318,13 @@ if($_SESSION["statut"] == "professeur") {
 	echo "<input type='text' name='saisie_app_nb_cols_textarea' id='saisie_app_nb_cols_textarea' value='$saisie_app_nb_cols_textarea' ";
 	echo "onchange=\"changement()\" ";
 	echo "size='3' onkeydown=\"clavier_2(this.id,event,20,200);\" autocomplete='off' ";
-	echo "/>";
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
+	echo " />";
 
 	echo "<p style='text-align:center;'>\n";
-	echo "<input type='submit' name='Valider' value='Enregistrer' />\n";
+	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
+	$tabindex++;
 	echo "</p>\n";
 
 	if(isset($message_bulletins)) {echo $message_bulletins;}
@@ -2299,14 +2352,19 @@ if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "pro
 	echo "<input type='radio' name='ouverture_auto_WinDevoirsDeLaClasse' id='ouverture_auto_WinDevoirsDeLaClasse_y' value='y' ";
 	echo "onchange=\"checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_y');checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_n');changement()\" ";
 	if($ouverture_auto_WinDevoirsDeLaClasse=='y') {echo " checked";}
-	echo "/><label for='ouverture_auto_WinDevoirsDeLaClasse_y' id='texte_ouverture_auto_WinDevoirsDeLaClasse_y'> ouvrir automatiquement la fenêtre listant les travaux donnés par les autres professeurs,</label><br />\n";
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
+	echo " /><label for='ouverture_auto_WinDevoirsDeLaClasse_y' id='texte_ouverture_auto_WinDevoirsDeLaClasse_y'> ouvrir automatiquement la fenêtre listant les travaux donnés par les autres professeurs,</label><br />\n";
 	echo "<input type='radio' name='ouverture_auto_WinDevoirsDeLaClasse' id='ouverture_auto_WinDevoirsDeLaClasse_n' value='n' ";
 	echo "onchange=\"checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_y');checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_n');changement()\" ";
 	if($ouverture_auto_WinDevoirsDeLaClasse!='y') {echo " checked";}
-	echo "/><label for='ouverture_auto_WinDevoirsDeLaClasse_n' id='texte_ouverture_auto_WinDevoirsDeLaClasse_n'> ne pas ouvrir automatiquement la fenêtre listant les travaux donnés par les autres professeurs.</label><br />\n";
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
+	echo " /><label for='ouverture_auto_WinDevoirsDeLaClasse_n' id='texte_ouverture_auto_WinDevoirsDeLaClasse_n'> ne pas ouvrir automatiquement la fenêtre listant les travaux donnés par les autres professeurs.</label><br />\n";
 
 	echo "<p style='text-align:center;'>\n";
-	echo "<input type='submit' name='Valider' value='Enregistrer' />\n";
+	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
+	$tabindex++;
 	echo "</p>\n";
 
 	if(isset($message_cdt)) {echo $message_cdt;}
@@ -2334,7 +2392,8 @@ if ((getSettingValue('active_mod_discipline')!='n')&&(in_array($_SESSION['statut
 	echo "background-color: white; ";
 	echo "'>Module Discipline et sanctions</legend>\n";
 	echo "<p>Lors de la saisie de travail à faire, le texte par défaut proposé sera&nbsp;: <br />\n";
-	echo "<input type='text' name='mod_discipline_travail_par_defaut' value='$mod_discipline_travail_par_defaut' size='30' /><br />\n";
+	echo "<input type='text' name='mod_discipline_travail_par_defaut' value='$mod_discipline_travail_par_defaut' size='30' tabindex='$tabindex' /><br />\n";
+	$tabindex++;
 
 if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
     $tab_statuts_cpePeuChanger=array('professeur');
@@ -2345,8 +2404,13 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
                id="cpePeuChanger" 
                name="cpePeuChanger" 
                value="yes" 
-               <?php if (getPref($_SESSION['login'],'cpePeuChanger' ,'yes' ) && getPref($_SESSION['login'],'cpePeuChanger' ,'no' ) == "yes")
-                       echo " checked='checked'"; ?>
+               <?php
+                   if (getPref($_SESSION['login'],'cpePeuChanger' ,'yes' ) && getPref($_SESSION['login'],'cpePeuChanger' ,'no' ) == "yes") {
+                       echo " checked='checked'";
+                   }
+                   echo " tabindex='$tabindex' ";
+                   $tabindex++;
+               ?>
                />
         <input type='hidden' name='autorise_cpe_declarant' value='ok' />
     
@@ -2455,7 +2519,9 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 			if(!in_array($lig->id, $tab_id_categories_exclues)) {
 				echo "checked ";
 			}
-			echo "/><label for='mod_disc_mail_cat_incluse_$lig->id' id='texte_mod_disc_mail_cat_incluse_$lig->id'>$lig->categorie</label><br />";
+			echo " tabindex='$tabindex' ";
+			$tabindex++;
+			echo " /><label for='mod_disc_mail_cat_incluse_$lig->id' id='texte_mod_disc_mail_cat_incluse_$lig->id'>$lig->categorie</label><br />";
 			if($chaine_champs_checkbox_mod_discipline!="") {$chaine_champs_checkbox_mod_discipline.=", ";}
 			$chaine_champs_checkbox_mod_discipline.="'mod_disc_mail_cat_incluse_$lig->id'";
 		}
@@ -2464,7 +2530,9 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		if(getPref($_SESSION['login'], 'mod_discipline_natures_non_categorisees_exclues_mail', "")!="y") {
 			echo "checked ";
 		}
-		echo "/><label for='mod_disc_mail_cat_incluse_NC' id='texte_mod_disc_mail_cat_incluse_NC'>Incidents dont la nature n'est pas catégorisée.</label><br />";
+			echo " tabindex='$tabindex' ";
+			$tabindex++;
+		echo " /><label for='mod_disc_mail_cat_incluse_NC' id='texte_mod_disc_mail_cat_incluse_NC'>Incidents dont la nature n'est pas catégorisée.</label><br />";
 		if($chaine_champs_checkbox_mod_discipline!="") {$chaine_champs_checkbox_mod_discipline.=", ";}
 		$chaine_champs_checkbox_mod_discipline.="'mod_disc_mail_cat_incluse_NC'";
 
@@ -2520,7 +2588,8 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 	}
 
 	echo "<p style='text-align:center;'>\n";
-	echo "<input type='submit' name='Valider' value='Enregistrer' />\n";
+	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
+	$tabindex++;
 	echo "</p>\n";
 
 	if(isset($message_mod_discipline)) {echo $message_mod_discipline;}
@@ -2566,6 +2635,8 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 			echo "<input type='radio' id='visibleMenu' name='afficher_menu' value='yes'";
 			echo " onchange=\"checkbox_change('invisibleMenu');checkbox_change('visibleMenuLight');checkbox_change('visibleMenu');changement()\" ";
 			if($aff_checked=="yes") echo " checked";
+			echo " tabindex='$tabindex' ";
+			$tabindex++;
 			echo " />\n";
 			echo "</p>\n";
 		}
@@ -2575,6 +2646,8 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 		echo "<input type='radio' id='visibleMenuLight' name='afficher_menu' value='light'";
 		echo " onchange=\"checkbox_change('invisibleMenu');checkbox_change('visibleMenuLight');checkbox_change('visibleMenu');changement()\" ";
 		if($aff_checked=="light") echo " checked";
+		echo " tabindex='$tabindex' ";
+		$tabindex++;
 		echo " />\n";
 		echo "</p>\n";
 
@@ -2583,6 +2656,8 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 		echo "<input type='radio' id='invisibleMenu' name='afficher_menu' value='no'";
 		echo " onchange=\"checkbox_change('invisibleMenu');checkbox_change('visibleMenuLight');checkbox_change('visibleMenu');changement()\" ";
 		if($aff_checked=="no") echo " checked";
+		echo " tabindex='$tabindex' ";
+		$tabindex++;
 		echo " />\n";
 		echo "</p>\n";
 
@@ -2590,7 +2665,8 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 				<em>La barre de menu horizontale allégée a une arborescence moins profonde pour que les menus 'professeurs' s'affichent plus rapidement au cas où le serveur serait saturé.</em>
 			</p>\n";
 
-		echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
+		echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" tabindex='$tabindex' /></center>\n";
+		$tabindex++;
 
 		if(isset($message_modifier_barre)) {echo $message_modifier_barre;}
 
@@ -2621,7 +2697,9 @@ $petit_entete=getPref($_SESSION['login'], 'petit_entete', "n");
 if($petit_entete=="y") {
 	echo "checked";
 }
-echo "/>
+echo " tabindex='$tabindex' ";
+$tabindex++;
+echo " />
 		</p>
 		<p>
 			<label for='headerNormal' id='texte_headerNormal'>Utiliser l'entête classique complète</label>
@@ -2631,14 +2709,17 @@ echo "onchange=\"checkbox_change('headerBas');checkbox_change('headerNormal');ch
 if($petit_entete=="n") {
 	echo "checked";
 }
-echo "/>
+echo " tabindex='$tabindex' ";
+$tabindex++;
+echo " />
 		</p>\n";
 
 echo "<p style='text-align:center;'>\n";
-echo "<input type='submit' name='valider' id='change_header_user_button' value='Enregistrer' /></p>
+echo "<input type='submit' name='valider' id='change_header_user_button' value='Enregistrer' tabindex='$tabindex' /></p>
 <script type='text/javascript'>
 //document.getElementById('change_header_user_button').style.display='none';
 </script>\n";
+$tabindex++;
 
 if(isset($message_hauteur_header)) {echo $message_hauteur_header;}
 
@@ -2679,6 +2760,8 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 	echo "<input type='radio' id='choix_encodage_csv_ascii' name='choix_encodage_csv' value='ascii'";
 	echo " onchange=\" checkbox_change('choix_encodage_csv_ascii');checkbox_change('choix_encodage_csv_utf8');checkbox_change('choix_encodage_csv_windows_1252');changement()\"";
 	if($choix_encodage_csv=="ascii") {echo " checked";}
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
 	echo " />\n";
 	//echo "<label for='choix_encodage_csv_ascii' id='texte_choix_encodage_csv_ascii'>ASCII (<em>sans accents</em>)</label>\n";
 	echo "<label for='choix_encodage_csv_ascii' id='texte_choix_encodage_csv_ascii'>Sans accents</label>\n";
@@ -2688,6 +2771,8 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 	echo "<input type='radio' id='choix_encodage_csv_utf8' name='choix_encodage_csv' value='utf-8'";
 	echo " onchange=\" checkbox_change('choix_encodage_csv_ascii');checkbox_change('choix_encodage_csv_utf8');checkbox_change('choix_encodage_csv_windows_1252');changement()\"";
 	if($choix_encodage_csv=="utf-8") {echo " checked";}
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
 	echo " />\n";
 	echo "<label for='choix_encodage_csv_utf8' id='texte_choix_encodage_csv_utf8'>Accents UTF-8</label>\n";
 	echo "</p>\n";
@@ -2696,11 +2781,14 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 	echo "<input type='radio' id='choix_encodage_csv_windows_1252' name='choix_encodage_csv' value='windows-1252'";
 	echo " onchange=\" checkbox_change('choix_encodage_csv_ascii');checkbox_change('choix_encodage_csv_utf8');checkbox_change('choix_encodage_csv_windows_1252');changement()\"";
 	if($choix_encodage_csv=="windows-1252") {echo " checked";}
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
 	echo " />\n";
 	echo "<label for='choix_encodage_csv_windows_1252' id='texte_choix_encodage_csv_windows_1252'>Accents WINDOWS-1252</label>\n";
 	echo "</p>\n";
 
-	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
+	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" tabindex='$tabindex' /></center>\n";
+	$tabindex++;
 
 	if(isset($message_choixEncodageCsv)) {
 		echo $message_choixEncodageCsv;
@@ -2735,6 +2823,8 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 	echo "<input type='radio' id='output_mode_pdf_I' name='output_mode_pdf' value='I'";
 	echo " onchange=\" checkbox_change('output_mode_pdf_I');checkbox_change('output_mode_pdf_D');changement()\"";
 	if($output_mode_pdf!="D") {echo " checked";}
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
 	echo " />\n";
 	echo "<label for='output_mode_pdf_I' id='texte_output_mode_pdf_I'>Affichage interne au navigateur</label>\n";
 	echo "</p>\n";
@@ -2743,11 +2833,14 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 	echo "<input type='radio' id='output_mode_pdf_D' name='output_mode_pdf' value='D'";
 	echo " onchange=\" checkbox_change('output_mode_pdf_I');checkbox_change('output_mode_pdf_D');changement()\"";
 	if($output_mode_pdf=="D") {echo " checked";}
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
 	echo " />\n";
 	echo "<label for='output_mode_pdf_D' id='texte_output_mode_pdf_D'>Fenêtre de téléchargement/ouverture</label>\n";
 	echo "</p>\n";
 
-	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
+	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" tabindex='$tabindex' /></center>\n";
+	$tabindex++;
 
 	if(isset($message_output_mode_pdf)) {
 		echo $message_output_mode_pdf;
@@ -2776,7 +2869,8 @@ if(count($tab_sound)>=0) {
 	//echo "background-image: url(\"../images/background/opacite50.png\"); ";
 	echo "background-color: white; ";
 	echo "'>Choix de l'alerte sonore de fin de session</legend>
-	<p><select name='footer_sound' id='footer_sound' onchange='test_play_footer_sound()'>\n";
+	<p><select name='footer_sound' id='footer_sound' onchange='test_play_footer_sound()' tabindex='$tabindex'>\n";
+	$tabindex++;
 	echo "	<option value=''";
 	if($footer_sound_actuel=='') {echo " selected='true'";}
 	echo ">Aucun son</option>\n";
@@ -2790,7 +2884,8 @@ if(count($tab_sound)>=0) {
 	</p>\n";
 
 	echo "
-	<p align='center'><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' /></p>\n";
+	<p align='center'><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' tabindex='$tabindex' /></p>\n";
+	$tabindex++;
 
 	if(isset($message_footer_sound)) {
 		echo $message_footer_sound;
@@ -2833,20 +2928,28 @@ if(getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut']))) {
 		<legend style='border: 1px solid grey; background-color: white;'>Accompagnement sonore des alertes</legend>
 			<p>Accepter ou non le son émis toutes les ".getSettingValue('MessagerieDelaisTest')."min lorsque le dispositif d'alerte interne signale la présence d'un message non lu&nbsp;:<br/>
 			<input type='radio' id='AlertesAvecSon_y' name='AlertesAvecSon' value='y'
-			 onchange=\"checkbox_change('AlertesAvecSon_y');checkbox_change('AlertesAvecSon_n');changement()\"".(($pref_AlertesAvecSon!="n") ? " checked" : "")." />
+			 onchange=\"checkbox_change('AlertesAvecSon_y');checkbox_change('AlertesAvecSon_n');changement()\"".(($pref_AlertesAvecSon!="n") ? " checked" : "");
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
+	echo " />
 			<label for='AlertesAvecSon_y' id='texte_AlertesAvecSon_y'>Oui</label>
 			<br />
 
 			<input type='radio' id='AlertesAvecSon_n' name='AlertesAvecSon' value='n'
-			 onchange=\" checkbox_change('AlertesAvecSon_n');checkbox_change('AlertesAvecSon_y');changement()\"".(($pref_AlertesAvecSon=="n") ? " checked" : "")." />
+			 onchange=\" checkbox_change('AlertesAvecSon_n');checkbox_change('AlertesAvecSon_y');changement()\"".(($pref_AlertesAvecSon=="n") ? " checked" : "");
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
+	echo " />
 			<label for='AlertesAvecSon_n' id='texte_AlertesAvecSon_n'>Non</label>
 			</p>
 
 	".(isset($message_AlertesAvecSon) ? $message_AlertesAvecSon : "")."
 
-			<p align='center'><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' /></p>
+			<p align='center'><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' tabindex='$tabindex' /></p>
 		</fieldset>
 	</form>\n";
+	$tabindex++;
+
 }
 
 
@@ -2881,21 +2984,28 @@ if(getSettingAOui("active_bulletins")) {
 						$tabdiv_infobulle[]=creer_div_infobulle('fichier_signature_'.$cpt,"Fichier de signature","",$texte,"",14,0,'y','y','n','n');
 
 						echo "
-					<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr_fichier[]' id='suppr_fichier_$cpt' value='".$id_fichier."' onchange='changement()' /><label for='suppr_fichier_$cpt' onmouseover=\"delais_afficher_div('fichier_signature_$cpt','y',-100,20,1000,20,20);\"> ".$tab_signature['fichier'][$id_fichier]['fichier']."</label></li>";
+					<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr_fichier[]' id='suppr_fichier_$cpt' value='".$id_fichier."' onchange='changement()' ";
+						echo " tabindex='$tabindex' ";
+						$tabindex++;
+						echo "/><label for='suppr_fichier_$cpt' onmouseover=\"delais_afficher_div('fichier_signature_$cpt','y',-100,20,1000,20,20);\"> ".$tab_signature['fichier'][$id_fichier]['fichier']."</label></li>";
 						$cpt++;
 					}
 					else {
 						echo "
-					<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr_fichier[]' id='suppr_fichier_$cpt' value='".$id_fichier."' onchange='changement()' /><label for='suppr_fichier_$cpt'> ".$tab_signature['fichier'][$id_fichier]['fichier']." <span style='color:red'>ANOMALIE : Le fichier semble absent&nbsp;???</span></label></li>";
+					<li title=\"Cochez la case pour supprimer ce fichier\"><input type='checkbox' name='suppr_fichier[]' id='suppr_fichier_$cpt' value='".$id_fichier."' onchange='changement()' ";
+						echo " tabindex='$tabindex' ";
+						$tabindex++;
+						echo "/><label for='suppr_fichier_$cpt'> ".$tab_signature['fichier'][$id_fichier]['fichier']." <span style='color:red'>ANOMALIE : Le fichier semble absent&nbsp;???</span></label></li>";
 						$cpt++;
 					}
 				}
 			}
 			echo "
 			</ul>
-			<p><input type='submit' value='Supprimer le ou les fichiers cochés' /></p>
+			<p><input type='submit' value='Supprimer le ou les fichiers cochés' tabindex='$tabindex' /></p>
 
 			".(isset($message_signature_bulletins_suppr) ? $message_signature_bulletins_suppr : "");
+			$tabindex++;
 		}
 		else {
 			echo "
@@ -2907,12 +3017,15 @@ if(getSettingAOui("active_bulletins")) {
 
 		<p class='bold' style='margin-top:3em;'>
 			Ajouter le fichier&nbsp;: 
-			<input type=\"file\" name=\"sign_file\" onchange='changement()' />
+			<input type=\"file\" name=\"sign_file\" onchange='changement()' tabindex='$tabindex' />";
+		$tabindex++;
+		echo "
 			<input type='hidden' name='ajout_fichier_signature' value='y' />
-			<input type='submit' value='Valider' />
-		</p>
+			<input type='submit' value='Valider' tabindex='$tabindex' />
+		</p>";
+		$tabindex++;
 
-		".(isset($message_signature_bulletins_ajout) ? $message_signature_bulletins_ajout : "")."
+		echo (isset($message_signature_bulletins_ajout) ? $message_signature_bulletins_ajout : "")."
 
 		<p style='margin-top:1em'><em>NOTE&nbsp;:</em> Seuls les fichiers JPEG sont autorisés.</p>";
 
@@ -2931,8 +3044,9 @@ if(getSettingAOui("active_bulletins")) {
 			<tr>
 				<td>".get_nom_classe($id_classe)."</td>
 				<td>
-					<select name='fich_sign_classe[$id_classe]' onchange='changement()'>
+					<select name='fich_sign_classe[$id_classe]' onchange='changement()' tabindex='$tabindex'>
 						<option value='-1'>---</option>";
+				$tabindex++;
 				foreach($tab_signature['fichier'] as $id_fichier => $tmp_tab) {
 					if(isset($tmp_tab['fichier'])) {
 						echo "
@@ -2951,9 +3065,10 @@ if(getSettingAOui("active_bulletins")) {
 			echo "
 		</table>
 
-		<p><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' /></p>
+		<p><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' tabindex='$tabindex' /></p>
 
 		".(isset($message_signature_bulletins_assoc_fichier_classe) ? $message_signature_bulletins_assoc_fichier_classe : "");
+			$tabindex++;
 		}
 		else {
 			echo "

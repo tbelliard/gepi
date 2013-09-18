@@ -196,14 +196,14 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
 	<tr>
 		<td>Nouveau mot de passe (<em>".getSettingValue("longmin_pwd")." caractères minimum</em>) : </td>
 		<td>
-			<input type='password' name='no_anti_inject_password' id='no_anti_inject_password' size='20' />
+			<input type='password' name='no_anti_inject_password' id='no_anti_inject_password' size='20' tabindex='1' />
 			".input_password_to_text('no_anti_inject_password')."
 		</td>
 	</tr>
 	<tr>
 		<td>Nouveau mot de passe (<em>à confirmer</em>) :</td>
 		<td>
-			<input type='password' name='reg_password2' id='reg_password2' size='20' />
+			<input type='password' name='reg_password2' id='reg_password2' size='20' tabindex='2' />
 			".input_password_to_text('reg_password2')."
 		</td>
 	</tr>
@@ -211,7 +211,7 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
 <input type='hidden' name='valid' value=\"yes\" />
 <input type='hidden' name='user_login' value='".$user_login."' />\n";
 
-	echo "<br /><center><input type='submit' value='Enregistrer' /></center>";
+	echo "<br /><center><input type='submit' value='Enregistrer' tabindex='3' /></center>";
 
 	$user_statut = sql_query1("select statut from utilisateurs where login='".$user_login."';");
 	if($user_statut=='eleve') {
@@ -221,7 +221,7 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
 			$lig_ine=mysql_fetch_object($res_ine);
 			if($lig_ine->no_gep!='') {
 				echo "<input type='hidden' name='ine_password' value=\"$lig_ine->no_gep\" />\n";
-				echo "<p><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le numéro national de l'élève (<em>INE</em>) comme mot de passe initial lorsqu'il est renseigné.</label></p>\n";
+				echo "<p><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' tabindex='4' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le numéro national de l'élève (<em>INE</em>) comme mot de passe initial lorsqu'il est renseigné.</label></p>\n";
 			}
 		}
 	}
