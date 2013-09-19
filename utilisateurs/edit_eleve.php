@@ -323,7 +323,8 @@ echo " | <a href='edit_responsable.php'>Comptes responsables</a>";
 echo "</p>\n";
 
 //echo "<p><b>Actions par lot</b> :";
-echo "<form action='edit_eleve.php' method='post'>\n";
+echo "<form action='edit_eleve.php' method='post'>
+	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>\n";
 
 echo add_token_field();
 
@@ -382,6 +383,7 @@ echo "<script type='text/javascript'>
 </script>\n";
 
 echo "</blockquote>\n";
+echo "</fieldset>\n";
 echo "</form>\n";
 
 
@@ -403,16 +405,100 @@ $critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherch
 $critere_recherche=nettoyer_caracteres_nom($critere_recherche, 'a', ' -','%');
 
 $critere_id_classe=isset($_POST['critere_id_classe']) ? preg_replace('/[^0-9]/', '', $_POST['critere_id_classe']) : "";
+
+$critere_etat=isset($_POST['critere_etat']) ? $_POST['critere_etat'] : (isset($_GET['critere_etat']) ? $_GET['critere_etat'] : "");
+if(!in_array($critere_etat, array('actif', 'inactif'))) {
+	$critere_etat="";
+}
+
+$critere_auth_mode=isset($_POST['critere_auth_mode']) ? $_POST['critere_auth_mode'] : (isset($_GET['critere_auth_mode']) ? $_GET['critere_auth_mode'] : array());
+
+$critere_limit=isset($_POST['critere_limit']) ? $_POST['critere_limit'] : (isset($_GET['critere_limit']) ? $_GET['critere_limit'] : 20);
+if(($critere_limit=="")||(!preg_match("/^[0-9]*$/", $critere_limit))||($critere_limit<1)) {
+	$critere_limit=20;
+}
+//====================================
+//++++++++++++++++++++++++
+if((isset($critere_recherche))&&($critere_recherche!="")) {
+	$_SESSION['edit_ele_critere_recherche']=$critere_recherche;
+}
+
+if($critere_recherche=="") {
+	if(isset($_SESSION['edit_ele_critere_recherche'])) {
+		if(isset($_GET['test_recup_critere'])) {
+			$critere_recherche=$_SESSION['edit_ele_critere_recherche'];
+		}
+		unset($_SESSION['edit_ele_critere_recherche']);
+	}
+}
+//++++++++++++++++++++++++
+if((isset($critere_id_classe))&&($critere_id_classe!="")) {
+	$_SESSION['edit_ele_critere_id_classe']=$critere_id_classe;
+}
+
+if($critere_id_classe=="") {
+	if(isset($_SESSION['edit_ele_critere_id_classe'])) {
+		if(isset($_GET['test_recup_critere'])) {
+			$critere_id_classe=$_SESSION['edit_ele_critere_id_classe'];
+		}
+		unset($_SESSION['edit_ele_critere_id_classe']);
+	}
+}
+//++++++++++++++++++++++++
+if((isset($critere_etat))&&($critere_etat!="")) {
+	$_SESSION['edit_ele_critere_etat']=$critere_etat;
+}
+
+if($critere_etat=="") {
+	if(isset($_SESSION['edit_ele_critere_etat'])) {
+		if(isset($_GET['test_recup_critere'])) {
+			$critere_etat=$_SESSION['edit_ele_critere_etat'];
+		}
+		unset($_SESSION['edit_ele_critere_etat']);
+	}
+}
+//++++++++++++++++++++++++
+if((isset($critere_auth_mode))&&(is_array($critere_auth_mode))&&(count($critere_auth_mode)>0)) {
+	$_SESSION['edit_ele_critere_auth_mode']=$critere_auth_mode;
+}
+
+if(count($critere_auth_mode)==0) {
+	if(isset($_SESSION['edit_ele_critere_auth_mode'])) {
+		if(isset($_GET['test_recup_critere'])) {
+			$critere_auth_mode=$_SESSION['edit_ele_critere_auth_mode'];
+		}
+		unset($_SESSION['edit_ele_critere_auth_mode']);
+	}
+}
+if((isset($critere_etat))&&($critere_etat!="")) {
+	$_SESSION['edit_ele_critere_etat']=$critere_etat;
+}
+//++++++++++++++++++++++++
+if((isset($critere_limit))&&($critere_limit!="")&&($critere_limit>19)) {
+	$_SESSION['edit_ele_critere_limit']=$critere_limit;
+}
+
+if($critere_limit=="") {
+	if(isset($_SESSION['edit_ele_critere_limit'])) {
+		if(isset($_GET['test_recup_critere'])) {
+			$critere_limit=$_SESSION['edit_ele_critere_limit'];
+		}
+		unset($_SESSION['edit_ele_critere_limit']);
+	}
+}
+//++++++++++++++++++++++++
 //====================================
 
 echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-echo "<table style='border:1px solid black;' summary=\"Filtrage\">\n";
+echo "<table style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");' summary=\"Filtrage\">\n";
 echo "<tr>\n";
-echo "<td valign='top' rowspan='3'>\n";
+echo "<td valign='top' rowspan='5'>\n";
 echo "Filtrage:";
 echo "</td>\n";
 echo "<td>\n";
-echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves ayant un login dont le <b>nom</b> contient: ";
+echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves ayant un login dont le <b>nom</b> contient&nbsp;: ";
+echo "</td>\n";
+echo "<td>\n";
 echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
 echo "</td>\n";
 echo "</tr>\n";
@@ -420,7 +506,9 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td>\n";
-echo "<input type='submit' name='filtrage' value='Afficher' /> les élève de la <b>classe</b> de: ";
+echo "<input type='submit' name='filtrage' value='Afficher' /> les élève de la <b>classe</b> de&nbsp;: ";
+echo "</td>\n";
+echo "<td>\n";
 echo "<select name='critere_id_classe'>\n";
 echo "<option value=''>---</option>\n";
 $sql="SELECT DISTINCT id, classe FROM classes c, j_eleves_classes jec, utilisateurs u WHERE c.id=jec.id_classe AND jec.login=u.login ORDER BY classe;";
@@ -433,6 +521,62 @@ if(mysql_num_rows($res_classes)>0) {
 	}
 }
 echo "</select>\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+
+// 20130919
+echo "<tr>\n";
+echo "<td style='vertical-align:top'>\n";
+echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves le compte est&nbsp;: ";
+echo "</td>\n";
+echo "<td>\n";
+echo "<input type='checkbox' name='critere_etat' id='etat_actif' value='actif' onchange=\"verif_checkbox_etat('etat_actif')\" ";
+if($critere_etat=="actif") {echo "checked ";}
+echo "/><label for='etat_actif'>actif</label><br />\n";
+echo "<input type='checkbox' name='critere_etat' id='etat_inactif' value='inactif' onchange=\"verif_checkbox_etat('etat_inactif')\" ";
+if($critere_etat=="inactif") {echo "checked ";}
+echo "/><label for='etat_inactif'>inactif</label>\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+echo "<tr>\n";
+echo "<td style='vertical-align:top'>\n";
+echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves dont mode d'authentification est&nbsp;: ";
+echo "</td>\n";
+echo "<td>\n";
+echo "<input type='checkbox' name='critere_auth_mode[]' id='auth_mode_gepi' value='gepi' ";
+if(in_array("gepi", $critere_auth_mode)) {echo "checked ";}
+echo "/><label for='auth_mode_gepi'>gepi</label><br />\n";
+echo "<input type='checkbox' name='critere_auth_mode[]' id='auth_mode_sso' value='sso' ";
+if(in_array("sso", $critere_auth_mode)) {echo "checked ";}
+echo "/><label for='auth_mode_sso'>sso</label><br />\n";
+echo "<input type='checkbox' name='critere_auth_mode[]' id='auth_mode_ldap' value='ldap' ";
+if(in_array("ldap", $critere_auth_mode)) {echo "checked ";}
+echo "/><label for='auth_mode_ldap'>ldap</label>\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+
+echo "<tr>\n";
+echo "<td style='vertical-align:top'>\n";
+echo "Restreindre la recherche à \n";
+echo "</td>\n";
+echo "<td>\n";
+echo "<select name='critere_limit'>
+<option value='20'";
+if($critere_limit==20) {echo " selected";}
+echo ">20</option>
+<option value='50'";
+if($critere_limit==50) {echo " selected";}
+echo ">50</option>
+<option value='100'";
+if($critere_limit==100) {echo " selected";}
+echo ">100</option>
+<option value='200'";
+if($critere_limit==200) {echo " selected";}
+echo ">200</option>
+</select> enregistrements\n";
 echo "</td>\n";
 echo "</tr>\n";
 
@@ -481,18 +625,46 @@ if($critere_id_classe!='') {
 	$sql.=" AND jec.id_classe='$critere_id_classe'";
 }
 
+if(($critere_etat!="")&&(in_array($critere_etat, array('actif', 'inactif')))) {
+	$sql.=" AND u.etat='".$_POST['critere_etat']."'";
+}
+
+if(count($critere_auth_mode)>0) {
+	$chaine_auth_mode="";
+	for($loop=0;$loop<count($critere_auth_mode);$loop++) {
+		if(in_array($critere_auth_mode[$loop], array('sso', 'gepi', 'ldap'))) {
+			if($chaine_auth_mode!="") {
+				$chaine_auth_mode.=" OR ";
+			}
+			$chaine_auth_mode.=" u.auth_mode='".$critere_auth_mode[$loop]."'";
+		}
+	}
+
+	if($chaine_auth_mode!="") {
+		$sql.=" AND ($chaine_auth_mode)";
+	}
+}
+
 $sql.=") ORDER BY u.nom,u.prenom";
 
 // Effectif sans login avec filtrage sur le nom:
 $nb1 = mysql_num_rows(mysql_query($sql));
 
 if($afficher_tous_les_eleves!='y'){
-	if(($critere_recherche=="")&&($critere_id_classe=='')) {
-		$sql.=" LIMIT 20";
-	}
+	$nb_lignes_avant_limit=mysql_num_rows(mysql_query($sql));
+	//if(($critere_recherche=="")&&($critere_id_classe=='')) {
+		//$sql.=" LIMIT 20";
+		$sql.=" LIMIT ".$critere_limit;
+	//}
 }
 //echo "$sql<br />";
 $quels_eleves = mysql_query($sql);
+$nb_eleves_aff=mysql_num_rows($quels_eleves);
+
+$complement_nb_lignes="";
+if((isset($nb_lignes_avant_limit))&&($nb_lignes_avant_limit!=$nb_eleves_aff)) {
+	$complement_nb_lignes=" sur ".$nb_lignes_avant_limit;
+}
 
 $alt=1;
 while ($current_eleve = mysql_fetch_object($quels_eleves)) {
@@ -566,6 +738,9 @@ Le mot de passe n'est pas modifié, ni affiché.\">Fiche bienvenue</a>\n";
 ?>
 </table>
 <?php
+
+echo "<p>$nb_eleves_aff ligne(s)".$complement_nb_lignes." affichée(s).</p>\n";
+
 echo "</blockquote>\n";
 
 if (mysql_num_rows($quels_eleves) == "0") {
