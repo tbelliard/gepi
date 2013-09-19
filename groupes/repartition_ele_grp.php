@@ -1180,11 +1180,13 @@ else {
 	*/
 	echo "</th>\n";
 
+	// 20130919
+	$tab_champs_modele_coller=array();
 	for($i=0;$i<count($id_groupe);$i++) {
-
 		for($m=1;$m<=$maxper;$m++) {
 			echo "<th>";
-			echo "<input type='radio' name='modele' id='modele_$i' value='$i.$m' />\n";
+			echo "<input type='radio' name='modele' id='modele_".$i."_".$m."' value='$i.$m' onchange=\"update_liens_coller_visibles();changement();\" />\n";
+			$tab_champs_modele_coller[]=$i."_".$m;
 			echo "</th>\n";
 		}
 	}
@@ -1199,7 +1201,7 @@ else {
 	for($i=0;$i<count($id_groupe);$i++) {
 		for($m=1;$m<=$maxper;$m++) {
 			echo "<th>";
-			echo "<a href='javascript:copier_selection($i,$m);changement();'><img src='../images/icons/coller_23x24.png' width='23' height='24' alt='Coller la sélection' title='Coller la sélection' /></a>\n";
+			echo "<a id='coller_".$i."_".$m."' href='javascript:copier_selection($i,$m);changement();'><img src='../images/icons/coller_23x24.png' width='23' height='24' alt='Coller la sélection' title='Coller la sélection' /></a>\n";
 			echo "</th>\n";
 		}
 
@@ -1374,7 +1376,35 @@ else {
 	echo "</form>\n";
 */
 
+	// 20130919
+	$init_coches="var tab_suffixe_coller=new Array();\n";
+	for($loop=0;$loop<count($tab_champs_modele_coller);$loop++) {
+		$init_coches.="
+		if(document.getElementById('coller_".$tab_champs_modele_coller[$loop]."')) {
+			document.getElementById('coller_".$tab_champs_modele_coller[$loop]."').style.display='none';
+		}
+		tab_suffixe_coller[$loop]='".$tab_champs_modele_coller[$loop]."';\n";
+	}
+
 	echo "<script type='text/javascript'>
+	$init_coches;
+
+	function update_liens_coller_visibles() {
+		for(i=0;i<tab_suffixe_coller.length;i++) {
+			if(document.getElementById('coller_'+tab_suffixe_coller[i])) {
+				document.getElementById('coller_'+tab_suffixe_coller[i]).style.display='';
+			}
+
+			if(document.getElementById('modele_'+tab_suffixe_coller[i])) {
+				if(document.getElementById('modele_'+tab_suffixe_coller[i]).checked==true) {
+					if(document.getElementById('coller_'+tab_suffixe_coller[i])) {
+						document.getElementById('coller_'+tab_suffixe_coller[i]).style.display='none';
+					}
+				}
+			}
+		}
+	}
+
 	function copier_selection(indice_grp,num_per) {
 		// Récupération du bouton radio sélectionné pour trouver la colonne modèle.
 		modele='';
