@@ -743,7 +743,7 @@ if((!isset($_POST['afficher_resp_eleves_sans_classe']))||($_POST['afficher_resp_
 		}
 	}
 
-	if(($_POST['critere_etat']!="")&&(in_array($critere_etat, array('actif', 'inactif')))) {
+	if(($critere_etat!="")&&(in_array($critere_etat, array('actif', 'inactif')))) {
 		$sql.=" AND u.etat='".$_POST['critere_etat']."'";
 	}
 
