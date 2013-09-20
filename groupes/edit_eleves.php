@@ -404,7 +404,11 @@ if(mysql_num_rows($res_grp)>1) {
 
 echo " | <a href='edit_group.php?id_groupe=$id_groupe&amp;id_classe=".$current_group["classes"]["list"][0]."'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-echo ">Éditer l'enseignement</a>";
+echo ">Éditer l'enseignement</a> ";
+
+echo " | <a href='repartition_ele_grp.php'";
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+echo " title=\"Répartir des élèves entre plusieurs groupes\">Répartir</a> ";
 
 echo "</p>";
 echo "</form>\n";
