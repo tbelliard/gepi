@@ -21,8 +21,13 @@ function RecupereNotices(&$tab_data, $entetes) {
 		$tab_data[$jour]['id_ct'][$index_box] = 0;
 		if ($tab_data[$jour]['type'][$index_box] == "cours") {
 			$id_groupe = $tab_data[$jour]['id_groupe'][$index_box];
+			/*
 			$sql_request = "SELECT id_ct , date_ct FROM ct_entry WHERE id_groupe = '".$id_groupe."' AND 
 																date_ct = '".$timestamp."'";
+			*/
+			$sql_request = "SELECT id_ct , date_ct FROM ct_entry WHERE id_groupe = '".$id_groupe."' AND 
+																date_ct >= '".$timestamp."' AND 
+																date_ct < '".($timestamp+24*3600)."' ORDER BY date_ct;";
 			//echo $sql_request."<br/>";
 			$req = mysql_query($sql_request);
 			if ($rep = mysql_fetch_array($req)) {
