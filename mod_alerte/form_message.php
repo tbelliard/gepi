@@ -44,6 +44,14 @@ if ($resultat_session == 'c') {
 	die();
 }
 
+if (($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+	// Précaution pour éviter une désactivation de compte.
+	// Cas vécu: Un professeur fait une démonstration à un élève qui dit "Gepi, ça ne marche pas".
+	//           il ouvre une session dans un onglet, mais sans refermer un onglet prof
+	//           Les tests de présence de nouveau message dans l'onglet prof finissent par désactiver le compte élève
+	die();
+}
+
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_alerte/form_message.php';";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
