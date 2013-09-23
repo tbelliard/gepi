@@ -525,7 +525,18 @@ echo "</td>\n";
 echo "</tr>\n";
 
 
-// 20130919
+$style_etat_actif="";
+$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.etat='actif';";
+$res_etat_actif=mysql_query($sql);
+$nb_etat_actif=mysql_num_rows($res_etat_actif);
+if($nb_etat_actif==0) {$style_etat_actif=" style='color:red'";}
+
+$style_etat_inactif="";
+$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.etat='inactif';";
+$res_etat_inactif=mysql_query($sql);
+$nb_etat_inactif=mysql_num_rows($res_etat_inactif);
+if($nb_etat_inactif==0) {$style_etat_inactif=" style='color:red'";}
+
 echo "<tr>\n";
 echo "<td style='vertical-align:top'>\n";
 echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves le compte est&nbsp;: ";
@@ -533,12 +544,30 @@ echo "</td>\n";
 echo "<td>\n";
 echo "<input type='checkbox' name='critere_etat' id='etat_actif' value='actif' onchange=\"verif_checkbox_etat('etat_actif')\" ";
 if($critere_etat=="actif") {echo "checked ";}
-echo "/><label for='etat_actif'>actif</label><br />\n";
+echo "/><label for='etat_actif'$style_etat_actif>actif (<em title='$nb_etat_actif compte(s) élèves toutes classes confondues.'>$nb_etat_actif</em>)</label><br />\n";
 echo "<input type='checkbox' name='critere_etat' id='etat_inactif' value='inactif' onchange=\"verif_checkbox_etat('etat_inactif')\" ";
 if($critere_etat=="inactif") {echo "checked ";}
-echo "/><label for='etat_inactif'>inactif</label>\n";
+echo "/><label for='etat_inactif'$style_etat_inactif>inactif (<em title='$nb_etat_inactif compte(s) élèves toutes classes confondues.'>$nb_etat_inactif</em>)</label>\n";
 echo "</td>\n";
 echo "</tr>\n";
+
+$style_auth_mode_gepi="";
+$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.auth_mode='gepi';";
+$res_auth_mode_gepi=mysql_query($sql);
+$nb_auth_mode_gepi=mysql_num_rows($res_auth_mode_gepi);
+if($nb_auth_mode_gepi==0) {$style_auth_mode_gepi=" style='color:red'";}
+
+$style_auth_mode_sso="";
+$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.auth_mode='sso';";
+$res_auth_mode_sso=mysql_query($sql);
+$nb_auth_mode_sso=mysql_num_rows($res_auth_mode_sso);
+if($nb_auth_mode_sso==0) {$style_auth_mode_sso=" style='color:red'";}
+
+$style_auth_mode_ldap="";
+$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.auth_mode='ldap';";
+$res_auth_mode_ldap=mysql_query($sql);
+$nb_auth_mode_ldap=mysql_num_rows($res_auth_mode_ldap);
+if($nb_auth_mode_ldap==0) {$style_auth_mode_ldap=" style='color:red'";}
 
 echo "<tr>\n";
 echo "<td style='vertical-align:top'>\n";
@@ -547,16 +576,19 @@ echo "</td>\n";
 echo "<td>\n";
 echo "<input type='checkbox' name='critere_auth_mode[]' id='auth_mode_gepi' value='gepi' ";
 if(in_array("gepi", $critere_auth_mode)) {echo "checked ";}
-echo "/><label for='auth_mode_gepi'>gepi</label><br />\n";
+echo "/><label for='auth_mode_gepi'$style_auth_mode_gepi>gepi (<em title='$nb_auth_mode_gepi compte(s) élèves toutes classes confondues.'>$nb_auth_mode_gepi</em>)</label><br />\n";
 echo "<input type='checkbox' name='critere_auth_mode[]' id='auth_mode_sso' value='sso' ";
 if(in_array("sso", $critere_auth_mode)) {echo "checked ";}
-echo "/><label for='auth_mode_sso'>sso</label><br />\n";
+echo "/><label for='auth_mode_sso'$style_auth_mode_sso>sso (<em title='$nb_auth_mode_sso compte(s) élèves toutes classes confondues.'>$nb_auth_mode_sso</em>)</label><br />\n";
 echo "<input type='checkbox' name='critere_auth_mode[]' id='auth_mode_ldap' value='ldap' ";
 if(in_array("ldap", $critere_auth_mode)) {echo "checked ";}
-echo "/><label for='auth_mode_ldap'>ldap</label>\n";
+echo "/><label for='auth_mode_ldap'$style_auth_mode_ldap>ldap (<em title='$nb_auth_mode_ldap compte(s) élèves toutes classes confondues.'>$nb_auth_mode_ldap</em>)</label>\n";
 echo "</td>\n";
 echo "</tr>\n";
 
+$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login;";
+$res_ele=mysql_query($sql);
+$nb_ele=mysql_num_rows($res_ele);
 
 echo "<tr>\n";
 echo "<td style='vertical-align:top'>\n";
@@ -572,10 +604,18 @@ if($critere_limit==50) {echo " selected";}
 echo ">50</option>
 <option value='100'";
 if($critere_limit==100) {echo " selected";}
-echo ">100</option>
-<option value='200'";
-if($critere_limit==200) {echo " selected";}
-echo ">200</option>
+echo ">100</option>";
+for($loop=0;$loop<ceil($nb_ele/200);$loop++) {
+	$n=200*(1+$loop);
+	if($n>$nb_ele) {
+		$n=$nb_ele;
+	}
+	echo "
+<option value='$n'";
+	if($critere_limit==$n) {echo " selected";}
+	echo ">$n</option>";
+}
+echo "
 </select> enregistrements\n";
 echo "</td>\n";
 echo "</tr>\n";

@@ -416,16 +416,24 @@ else{
 	echo "<input type='hidden' name='afficher_tous_les_eleves' value='$afficher_tous_les_eleves' />\n";
 
 	// Sélection du mode d'authentification
-	echo "<p>Mode d'authentification : <select name='reg_auth_mode' size='1'>";
+	echo "<p>Mode d'authentification : <select name='reg_auth_mode' size='1' title=\"Mode d'authentification pour les comptes à créer avec les boutons ci-dessous.\">";
 	if ($session_gepi->auth_locale) {
-		echo "<option value='auth_locale'>Authentification locale (base Gepi)</option>";
+		echo "<option value='auth_locale'";
+		if((isset($reg_auth_mode))&&($reg_auth_mode=='auth_locale')) {
+			echo " selected";
+		}
+		echo ">Authentification locale (base Gepi)</option>";
 	}
 	if ($session_gepi->auth_ldap) {
-		echo "<option value='auth_ldap'>Authentification LDAP</option>";
+		echo "<option value='auth_ldap'";
+		if((isset($reg_auth_mode))&&($reg_auth_mode=='auth_ldap')) {
+			echo " selected";
+		}
+		echo ">Authentification LDAP</option>";
 	}
 	if ($session_gepi->auth_sso) {
 		echo "<option value='auth_sso'";
-		if((getSettingValue('use_sso')=="lcs")||(getSettingValue('auth_sso')=="lcs")||(getSettingValue('use_sso')=="ldap_scribe")||(getSettingValue('auth_sso')=="ldap_scribe")) {
+		if(((getSettingValue('use_sso')=="lcs")||(getSettingValue('auth_sso')=="lcs")||(getSettingValue('use_sso')=="ldap_scribe")||(getSettingValue('auth_sso')=="ldap_scribe"))||((isset($reg_auth_mode))&&($reg_auth_mode=='auth_sso'))) {
 			echo " selected='selected'";
 		}
 		echo ">Authentification unique (SSO)</option>\n";
