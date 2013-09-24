@@ -315,6 +315,7 @@ echo 'Traitement : ';
 echo '</td><td style="background-color:#ebedb5;" colspan="2">';
 $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
 $total_traitements_modifiable = 0;
+$total_traitements_modifiable_non_prof = 0;
 $tab_traitements_deja_affiches=array();
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 	if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
@@ -347,6 +348,7 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 		}
 		}else {
 		if ($utilisateur->getStatut() != 'professeur') {
+			$total_traitements_modifiable_non_prof++;
 			echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$id_saisie."";
 		    if($menu){
 		            echo"&menu=false";
@@ -516,7 +518,12 @@ if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") 
     echo '<tr><td colspan="3" style="text-align : center;">';
     echo '<button dojoType="dijit.form.Button" type="submit" name="creation_traitement" value="oui"';
     if ($saisie->getDeletedAt() != null) echo 'disabled';
-    echo '>Traiter la saisie</button>';
+    if(($total_traitements_modifiable>0)||($total_traitements_modifiable_non_prof>0)) {
+        echo ' title="Il existe déjà au moins un traitement modifiable pour la saisie, mais vous pouvez aussi en créer un nouveau.">Créer un *nouveau* traitement pour la saisie</button>';
+    }
+    else {
+        echo '>Traiter la saisie</button>';
+    }
     echo '<button dojoType="dijit.form.Button" type="submit" name="creation_notification" value="oui"';
     if ($saisie->getDeletedAt() != null) echo 'disabled';
     echo '>Notifier la saisie</button>';
