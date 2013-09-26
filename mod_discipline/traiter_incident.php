@@ -99,7 +99,7 @@ function liste_sanctions($id_incident,$ele_login) {
 				$retour.="<tr class='lig$alt_b'>\n";
 				//$retour.="<td>Retenue</td>\n";
 				if(($etat_incident!='clos')&&(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))) {
-					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>".ucfirst($lig_sanction->nature)."</a></td>\n";
+					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>".ucfirst($lig_sanction->nature)."</a></td>\n";
 				}
 				else {
 					$retour.="<td>".ucfirst($lig_sanction->nature)."</td>\n";
@@ -168,7 +168,7 @@ function liste_sanctions($id_incident,$ele_login) {
 				$retour.="<tr class='lig$alt_b'>\n";
 				//$retour.="<td>Exclusion</td>\n";
 				if(($etat_incident!='clos')&&(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))) {
-					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=exclusion&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>".ucfirst($lig_sanction->nature)."</a></td>\n";
+					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>".ucfirst($lig_sanction->nature)."</a></td>\n";
 				}
 				else {
 					$retour.="<td>".ucfirst($lig_sanction->nature)."</td>\n";
@@ -225,7 +225,7 @@ function liste_sanctions($id_incident,$ele_login) {
 				$alt_b=$alt_b*(-1);
 				$retour.="<tr class='lig$alt_b'>\n";
 				if (($etat_incident!='clos')&&(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))) {
-					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=travail&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>".ucfirst($lig_sanction->nature)."</a></td>\n";
+					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>".ucfirst($lig_sanction->nature)."</a></td>\n";
 				}
 				else {
 					$retour.="<td>".ucfirst($lig_sanction->nature)."</td>\n";
