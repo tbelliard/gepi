@@ -236,6 +236,22 @@ echo "<p><a href='".$_SERVER['PHP_SELF']."'>Choisir une classe</a></p>\n";
 
 //=====================================================================
 
+$tab_classe=array();
+$chaine_opt_classes="";
+$sql="SELECT DISTINCT id, classe FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY classe;";
+$res_clas=mysql_query($sql);
+while($lig_clas=mysql_fetch_object($res_clas)) {
+	$tab_classe[$lig_clas->id]=$lig_clas->classe;
+
+	$chaine_opt_classes.="<option value='$lig_clas->id'";
+	if((isset($id_classe))&&($lig_clas->id==$id_classe)) {
+		$chaine_opt_classes.=" selected";
+	}
+	$chaine_opt_classes.=">$lig_clas->classe</option>\n";
+}
+
+//=====================================================================
+
 // Choix de la classe et de la période
 if(!isset($id_classe)) {
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?choisir_formule=y'>Saisir une formule</a></p>
@@ -244,18 +260,16 @@ if(!isset($id_classe)) {
 
 <p>Pour quelle classe souhaitez-vous souhaitez-vous calculer des scores d'absences/retards des élèves&nbsp;?<br />\n";
 
-	$sql="SELECT DISTINCT id, classe FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY classe;";
-	$res_clas=mysql_query($sql);
-	while($lig_clas=mysql_fetch_object($res_clas)) {
-		echo "<p><strong>$lig_clas->classe</strong>&nbsp;: ";
-		$sql="SELECT * FROM periodes WHERE id_classe='$lig_clas->id' ORDER BY num_periode;";
+	foreach($tab_classe as $current_id_classe => $current_nom_classe) {
+		echo "<p><strong>$current_nom_classe</strong>&nbsp;: ";
+		$sql="SELECT * FROM periodes WHERE id_classe='$current_id_classe' ORDER BY num_periode;";
 		$res_per=mysql_query($sql);
 		$cpt_per=0;
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_clas->id'>Toutes les périodes</a>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$current_id_classe'>Toutes les périodes</a>";
 		$cpt_per++;
 		while($lig_per=mysql_fetch_object($res_per)) {
 			if($cpt_per>0) {echo " - ";}
-			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_clas->id&amp;num_periode=$lig_per->num_periode'>".$lig_per->nom_periode."</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$current_id_classe&amp;num_periode=$lig_per->num_periode'>".$lig_per->nom_periode."</a>";
 			$cpt_per++;
 		}
 		echo "</p>\n";
@@ -268,8 +282,21 @@ if(!isset($id_classe)) {
 
 //=====================================================================
 
-echo "
-<p><a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a> | <a href='".$_SERVER['PHP_SELF']."?choisir_formule=y'>Saisir une formule</a></p>
+echo "<form id='choix_autre_classe' name='choix_autre_classe' action='".$_SERVER['PHP_SELF']."' method='post'>
+	".add_token_field()."
+	<p><a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe/période</a> | 
+	<select name='id_classe' onchange=\"document.getElementById('choix_autre_classe').submit()\">
+		$chaine_opt_classes
+	</select><input type='submit' id='choix_autre_classe_submit' value='OK' /> | 
+	<a href='".$_SERVER['PHP_SELF']."?choisir_formule=y'>Saisir une formule</a>
+	".((isset($num_periode)) ? "<input type='hidden' name='num_periode' value='$num_periode' />" : "")."
+	</p>
+</form>
+
+<script type='text/javascript'>
+	document.getElementById('choix_autre_classe_submit').style.display='none';
+</script>
+
 <h2>Calcul des scores</h2>
 
 <p>La formule utilisées est&nbsp;: $formule</p>\n";
@@ -308,6 +335,7 @@ if(!isset($num_periode)) {
 			echo $periode_note->getDateFin('d/m/Y');
 			}
 			echo "</td>\n";
+			/*
 			echo "<td>";
 			$nb_abs=$eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count();
 			echo $nb_abs;
@@ -320,6 +348,27 @@ if(!isset($num_periode)) {
 			$nb_ret=$eleve->getRetardsParPeriode($periode_note)->count();
 			echo $nb_ret;
 			echo "</td>\n";
+			*/
+			echo "<td";
+			if($formule_score_abs_scalaire_NBABS==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
+			echo ">";
+			$nb_abs=$eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count();
+			echo $nb_abs;
+			echo "</td>\n";
+			echo "<td";
+			if($formule_score_abs_scalaire_NBNJ==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
+			echo ">";
+			$nb_nj=$eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_note)->count();
+			echo $nb_nj;
+			echo "</td>\n";
+			echo "<td";
+			if($formule_score_abs_scalaire_RET==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
+			echo ">";
+			$nb_ret=$eleve->getRetardsParPeriode($periode_note)->count();
+			echo $nb_ret;
+			echo "</td>\n";
+
+
 			/*
 			echo "<td>";
 			// PROBLEME: On n'a plus accès à cette table si on ne remplit pas la table absences.
@@ -331,10 +380,12 @@ if(!isset($num_periode)) {
 			echo $current_eleve_appreciation_absences;
 			echo "</td>\n";
 			*/
-			echo "<td>";
+
 			//$chaine=preg_replace("|NBABS|",$nb_abs,preg_replace("|NBNJ|",$nb_nj,preg_replace("|RET|",$nb_ret,$formule_score_abs)));
 			//echo $chaine."=";
 			//echo eval($chaine);
+
+			/*
 			$chaine=$formule_score_abs_nb_1;
 			if($formule_score_abs_plus_moins_RET=="+") {$chaine+=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);}
 			else {$chaine-=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);}
@@ -342,6 +393,38 @@ if(!isset($num_periode)) {
 			else {$chaine-=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);}
 			if($formule_score_abs_plus_moins_NBABS=="+") {$chaine+=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);}
 			else {$chaine-=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);}
+			echo "<td>";
+			*/
+
+			$chaine=$formule_score_abs_nb_1;
+			$chaine_title=$formule_score_abs_nb_1;
+			if($formule_score_abs_plus_moins_RET=="+") {
+				$chaine+=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
+				$chaine_title.=" + (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
+			}
+			else {
+				$chaine-=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
+				$chaine_title.=" - (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
+			}
+
+			if($formule_score_abs_plus_moins_NBNJ=="+") {
+				$chaine+=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
+				$chaine_title.=" + (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
+			}
+			else {
+				$chaine-=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
+				$chaine_title.=" - (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
+			}
+
+			if($formule_score_abs_plus_moins_NBABS=="+") {
+				$chaine+=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
+				$chaine_title.=" + (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
+			}
+			else {
+				$chaine-=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
+				$chaine_title.=" - (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
+			}
+			echo "<td title=\"$chaine_title = $chaine\">";
 			echo $chaine;
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -379,27 +462,33 @@ else {
 			*/
 			if($periode_note->getNumPeriode()==$num_periode) {
 				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'>\n";
+				echo "<tr class='lig$alt white_hover'>\n";
 				echo "<td title=\"".$periode_note->getNomPeriode();
 				echo " du ".$periode_note->getDateDebut('d/m/Y');
 				echo " au ";
 				if ($periode_note->getDateFin() == null) {
-				echo '(non précisé)';
+					echo '(non précisé)';
 				} else {
-				echo $periode_note->getDateFin('d/m/Y');
+					echo $periode_note->getDateFin('d/m/Y');
 				}
 				echo "\">";
 				echo $lig_ele->nom." ".$lig_ele->prenom;
 				echo "</td>\n";
-				echo "<td>";
+				echo "<td";
+				if($formule_score_abs_scalaire_NBABS==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
+				echo ">";
 				$nb_abs=$eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count();
 				echo $nb_abs;
 				echo "</td>\n";
-				echo "<td>";
+				echo "<td";
+				if($formule_score_abs_scalaire_NBNJ==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
+				echo ">";
 				$nb_nj=$eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_note)->count();
 				echo $nb_nj;
 				echo "</td>\n";
-				echo "<td>";
+				echo "<td";
+				if($formule_score_abs_scalaire_RET==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
+				echo ">";
 				$nb_ret=$eleve->getRetardsParPeriode($periode_note)->count();
 				echo $nb_ret;
 				echo "</td>\n";
@@ -414,17 +503,39 @@ else {
 				echo $current_eleve_appreciation_absences;
 				echo "</td>\n";
 				*/
-				echo "<td>";
+
 				//$chaine=preg_replace("|NBABS|",$nb_abs,preg_replace("|NBNJ|",$nb_nj,preg_replace("|RET|",$nb_ret,$formule_score_abs)));
 				//echo $chaine."=";
 				//echo eval($chaine);
 				$chaine=$formule_score_abs_nb_1;
-				if($formule_score_abs_plus_moins_RET=="+") {$chaine+=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);}
-				else {$chaine-=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);}
-				if($formule_score_abs_plus_moins_NBNJ=="+") {$chaine+=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);}
-				else {$chaine-=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);}
-				if($formule_score_abs_plus_moins_NBABS=="+") {$chaine+=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);}
-				else {$chaine-=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);}
+				$chaine_title=$formule_score_abs_nb_1;
+				if($formule_score_abs_plus_moins_RET=="+") {
+					$chaine+=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
+					$chaine_title.=" + (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
+				}
+				else {
+					$chaine-=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
+					$chaine_title.=" - (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
+				}
+
+				if($formule_score_abs_plus_moins_NBNJ=="+") {
+					$chaine+=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
+					$chaine_title.=" + (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
+				}
+				else {
+					$chaine-=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
+					$chaine_title.=" - (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
+				}
+
+				if($formule_score_abs_plus_moins_NBABS=="+") {
+					$chaine+=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
+					$chaine_title.=" + (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
+				}
+				else {
+					$chaine-=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
+					$chaine_title.=" - (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
+				}
+				echo "<td title=\"$chaine_title = $chaine\">";
 				echo $chaine;
 				echo "</td>\n";
 				echo "</tr>\n";
