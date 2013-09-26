@@ -84,9 +84,11 @@ if(($_SESSION['statut']=='cpe')||
         echo "title='Exports statistiques'>Exp.stat.</a></li>\n";
     }
 
-    echo "<li><a href='calcul_score.php' ";
-    if($onglet_abs=='calcul_score.php') {echo "class='current' ";}
-    echo "title='Calcul de scores d\'absences'>Scores</a></li>\n";
+    if(acces('/mod_abs2/calcul_score.php', $_SESSION['statut'])) {
+        echo "<li><a href='calcul_score.php' ";
+        if($onglet_abs=='calcul_score.php') {echo "class='current' ";}
+        echo "title='Calcul de scores d\'absences'>Scores</a></li>\n";
+    }
 
     echo "</ul>\n";
 
