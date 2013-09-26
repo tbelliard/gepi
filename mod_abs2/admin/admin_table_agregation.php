@@ -77,7 +77,12 @@ $javascript_specifique[] = "mod_abs2/lib/include";
 require_once("../../lib/header.inc.php");
 
 echo "<p class=bold>";
-echo "<a href=\"index.php\">";
+if($_SESSION['statut']=='administrateur') {
+	echo "<a href=\"index.php\">";
+}
+else {
+	echo "<a href=\"../index.php\">";
+}
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
 ?>
