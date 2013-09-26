@@ -428,6 +428,12 @@ $chaine_rowspan_ligne_entete="";
 if(($pref_accueil_cn=="y")||($pref_accueil_bull=="y")||($pref_accueil_visu=="y")) {
 	$chaine_rowspan_ligne_entete=" rowspan='3'";
 }
+elseif($colspan>0) {
+	if((($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0))||
+		($pref_accueil_bull=="y")||
+		($pref_accueil_visu=="y")) {$chaine_rowspan_ligne_entete=" rowspan='3'";}
+	else {$chaine_rowspan_ligne_entete=" rowspan='2'";}
+}
 
 
 
@@ -447,7 +453,12 @@ echo "Classes</th>\n";
 // mod_abs2
 if ((getSettingValue("active_module_absence_professeur")=='y')&&(getSettingValue("active_module_absence")=='2')) {
 	echo "<th";
-	if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " rowspan='3'";}
+	if($colspan>0) {
+		if((($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0))||
+			($pref_accueil_bull=="y")||
+			($pref_accueil_visu=="y")) {echo " rowspan='3'";}
+		else {echo " rowspan='2'";}
+	}
 	echo ">\n";
 	echo "Absences\n";
 	echo "</th>\n";
@@ -553,7 +564,12 @@ if(($pref_accueil_cn=="y")||
 			}
 	
 			if($pref_accueil_liste_pdf=="y"){
-				echo "<th rowspan='2'>\n";
+				echo "<th";
+				if((($active_carnets_notes=="y")&&($pref_accueil_cn=="y"))||
+						($pref_accueil_bull=="y")||
+						($pref_accueil_visu=="y")
+					) {echo " rowspan='2'";}
+				echo ">\n";
 				echo "<span id='h_liste_pdf_$i'>Liste PDF</span>\n";
 				echo "</th>\n";
 			}
