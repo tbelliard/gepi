@@ -330,8 +330,17 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-function tableau_php_tableau_html($tab, $nb_lig_max=5) {
+//function tableau_php_tableau_html($tab, $nb_lig_max=5) {
+function tableau_php_tableau_html($tab, $avec_lien="n", $statut="") {
 	$retour="";
+
+	$acces_lien=false;
+	if(($avec_lien=="y")&&($statut=='responsable')) {
+		$acces_lien=acces("/responsables/modify_resp.php", $_SESSION['statut']);
+	}
+	elseif(($avec_lien=="y")&&($statut=='eleve')) {
+		$acces_lien=acces("/eleves/modify_eleve.php", $_SESSION['statut']);
+	}
 
 	//$retour.="<div float:left; width: 15em;'>\n";
 	$retour.="<table class='boireaus'>\n";
@@ -350,7 +359,17 @@ function tableau_php_tableau_html($tab, $nb_lig_max=5) {
 		*/
 		$alt=$alt*(-1);
 		$retour.="<tr class='lig$alt white_hover'>\n";
-		$retour.="<td>".civ_nom_prenom($tab[$loop])."</td>\n";
+		$retour.="<td>";
+		if(($avec_lien=="y")&&($statut=='responsable')&&($acces_lien)) {
+			$retour.="<a href='../responsables/modify_resp.php?login_resp=".$tab[$loop]."&amp;journal_connexions=y#connexion' target='_blank' title='Voir le journal des connexions de ce responsable.'>".civ_nom_prenom($tab[$loop])."</a>";
+		}
+		elseif(($avec_lien=="y")&&($statut=='eleve')&&($acces_lien)) {
+			$retour.="<a href='../eleves/modify_eleve.php?eleve_login=".$tab[$loop]."&amp;journal_connexions=y#connexion' target='_blank' title='Voir le journal des connexions de cet(te) élève.'>".civ_nom_prenom($tab[$loop])."</a>";
+		}
+		else {
+			$retour.=civ_nom_prenom($tab[$loop]);
+		}
+		$retour.="</td>\n";
 		$retour.="</tr>\n";
 		//$compteur++;
 	}
@@ -409,7 +428,7 @@ elseif($mode==1) {
 	
 	$begin_bookings=getSettingValue('begin_bookings');
 	$mysql_begin_bookings=strftime("%Y-%m-%d 00:00:00", $begin_bookings);
-	echo "<p>Les logs antérieurs à ".formate_date($mysql_begin_bookings)." ne seront pas pris en compte.</p>\n";
+	echo "<p>Les journaux antérieurs à ".formate_date($mysql_begin_bookings)." ne seront pas pris en compte.</p>\n";
 
 	$sql="SELECT DISTINCT l.login from log l, resp_pers rp where rp.login=l.login and autoclose>='0' AND autoclose<='3' AND START>='$mysql_begin_bookings';";
 	$res=mysql_query($sql);
@@ -517,7 +536,7 @@ elseif($mode==1) {
 
 			if(($AccesStatConnexionEle)||($AccesDetailConnexionEle)) {
 				$titre_infobulle="Elèves connectés au moins une fois (<em>".$tab_classe[$i]['classe']."</em>)\n";
-				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_ele)."</div>";
+				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_ele, "y", "eleve")."</div>";
 				$tabdiv_infobulle[]=creer_div_infobulle('div_ele_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 
 				$titre_infobulle="Elèves toujours en échec de connexion (<em>".$tab_classe[$i]['classe']."</em>)\n";
@@ -543,7 +562,7 @@ elseif($mode==1) {
 			*/
 			if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
 				$titre_infobulle="Parents connectés au moins une fois\n";
-				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_resp)."</div>";
+				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_resp, "y", "responsable")."</div>";
 				$tabdiv_infobulle[]=creer_div_infobulle('div_resp_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 			}
 
