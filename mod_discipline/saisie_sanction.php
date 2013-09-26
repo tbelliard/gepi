@@ -1193,7 +1193,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 
 						}
 						else {
-							echo "-";
+							echo "<span title=\"Le module OpenOffice n'est pas activé. La génération de fichier ODT destiné à l'impression n'est pas possible.\">-</span>";
 						}
 						echo "</td>\n";
 //
