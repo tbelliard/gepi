@@ -689,6 +689,14 @@ if(isset($quitter_la_page)) {
 	echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";
 }
 
+if ((!isset($pers_id))&&(isset($login_resp))&&($login_resp!="")) {
+	$sql="SELECT pers_id FROM resp_pers WHERE login='$login_resp';";
+	$res_pers_id=mysql_query($sql);
+	if(mysql_num_rows($res_pers_id)>0) {
+		$pers_id=mysql_result($res_pers_id, 0, "pers_id");
+	}
+}
+
 //$temoin_compte_utilisateur="n";
 $temoin_adr=0;
 //if (isset($ereno)) {
