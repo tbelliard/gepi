@@ -272,8 +272,8 @@ if (!isset($_POST["action"])) {
 
 				$k = 0;
 				while (!feof($fp)) {
-					$ligne = fgets($fp, 4096);
-					if(trim($ligne)!="") {
+					$ligne = trim(fgets($fp, 4096));
+					if($ligne!="") {
 
 						$tabligne=explode(";",$ligne);
 
