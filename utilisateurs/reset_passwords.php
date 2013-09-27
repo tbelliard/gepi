@@ -602,7 +602,7 @@ while ($p < $nb_users) {
 			if($debug_create_resp=="y") {echo "$sql<br />\n";}
 			$test_pass_non_vide=mysql_query($sql);
 			if(mysql_num_rows($test_pass_non_vide)>0){
-				$new_password="<span style='color:red;'>Non modifié</span>";
+				$new_password="Non modifié";
 				$temoin_user_deja_traite="y";
 			}
 			else{
@@ -651,7 +651,7 @@ while ($p < $nb_users) {
 			$sql="SELECT login FROM utilisateurs WHERE login='$user_login' AND password!='';";
 			$test_pass_non_vide=mysql_query($sql);
 			if(mysql_num_rows($test_pass_non_vide) && $ne_pas_ecraser_passwd>0){
-				$new_password="<span style='color:red;'>Non modifié</span>";
+				$new_password="Non modifié";
 				$ecraser_passwd_user=false;
 			} else {
 				//$new_password = pass_gen();
@@ -895,6 +895,7 @@ width:".$largeur1."%;\n";
 						$texte_email.="Le mot de passe de cet utilisateur n'est pas géré par Gepi.\n";
 					}
 					else {
+						if($new_password=="Non modifié") {$new_password="<span style='color:red;'>Non modifié</span>";}
 						echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
 						$texte_email.="Mot de passe : $new_password\n";
 					}//if($cas_traite!=0){
@@ -912,7 +913,7 @@ width:".$largeur1."%;\n";
 						else{
 							echo $liste_elv_resp;
 						}
-	
+
 						//echo "<br />".$classe_resp;
 	
 						echo "</span></td></tr>\n";
@@ -1249,7 +1250,7 @@ width:".$largeur1."%;\n";
 						echo "'>\n";
 	
 					}
-	
+
 					echo "<table border='0' summary=\"$user_login\">\n";
 					echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 					//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
@@ -1259,9 +1260,10 @@ width:".$largeur1."%;\n";
 						echo "<tr><td>Le mot de passe de cet utilisateur n'est pas géré par Gepi.</td></tr>\n";
 					}
 					else {
+						if($new_password=="Non modifié") {$new_password="<span style='color:red;'>Non modifié</span>";}
 						echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
 					}
-	
+
 					if ($user_statut == "responsable") {
 						echo "<tr><td>Responsable de : </td><td><span class = \"bold\">";
 						if($liste_elv_resp==""){
