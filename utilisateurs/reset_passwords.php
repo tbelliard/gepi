@@ -501,7 +501,7 @@ while ($p < $nb_users) {
 			$sql="SELECT 1=1 FROM utilisateurs WHERE login='$user_login' AND password!='';";
 			$test_pass_non_vide=mysql_query($sql);
 			if(mysql_num_rows($test_pass_non_vide)>0){
-				$new_password="<span style='color:red;'>Non modifié</span>";
+				$new_password="Non modifié";
 				$temoin_user_deja_traite="y";
 			}
 			else{
@@ -546,23 +546,18 @@ while ($p < $nb_users) {
 			$sql="SELECT login FROM utilisateurs WHERE login='$user_login' AND password!='';";
 			$test_pass_non_vide=mysql_query($sql);
 			if(mysql_num_rows($test_pass_non_vide) && $ne_pas_ecraser_passwd>0){
-				$new_password="<span style='color:red;'>Non modifié</span>";
+				$new_password="Non modifié";
 				$ecraser_passwd_user=false;
 			} else {
-					//$new_password = pass_gen();
-					$ecraser_passwd_user=true;
-					if(($user_status=='eleve')&&($mdp_INE=='y')) {
-						$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
-						$res_ine=mysql_query($sql);
-						if(mysql_num_rows($res_ine)>0){
-							$lig_ine=mysql_fetch_object($res_ine);
-							if($lig_ine->no_gep!='') {
-								$new_password=$lig_ine->no_gep;
-							}
-							else {
-								$new_password = pass_gen();
-								$tab_non_INE_password[]="$user_nom $user_prenom";
-							}
+				//$new_password = pass_gen();
+				$ecraser_passwd_user=true;
+				if(($user_status=='eleve')&&($mdp_INE=='y')) {
+					$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
+					$res_ine=mysql_query($sql);
+					if(mysql_num_rows($res_ine)>0){
+						$lig_ine=mysql_fetch_object($res_ine);
+						if($lig_ine->no_gep!='') {
+							$new_password=$lig_ine->no_gep;
 						}
 						else {
 							$new_password = pass_gen();
@@ -571,13 +566,18 @@ while ($p < $nb_users) {
 					}
 					else {
 						$new_password = pass_gen();
+						$tab_non_INE_password[]="$user_nom $user_prenom";
 					}
 				}
+				else {
+					$new_password = pass_gen();
+				}
+			}
 
 			$tab_password[$user_login]=$new_password;
 			if ($user_auth_mode != "gepi") {
 				// L'utilisateur est un utilisateur SSO. On enregistre un mot de passe vide.
-					$save_new_pass = mysql_query("UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
+				$save_new_pass = mysql_query("UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
 				// Si l'accès LDAP en écriture est paramétré, on va mettre à jour le mot de passe de l'utilisateur
 				// directement dans l'annuaire.
 				if ($gepiSettings['ldap_write_access'] == "yes") {
@@ -769,6 +769,7 @@ width:".$largeur1."%;\n";
 				$texte_email.="Le mot de passe de cet utilisateur n'est pas géré par Gepi.\n";
 			}
 			else {
+				if($new_password=="Non modifié") {$new_password="<span style='color:red;'>Non modifié</span>";}
 				echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
 				$texte_email.="Mot de passe : $new_password\n";
 			}//if($cas_traite!=0){
@@ -1125,6 +1126,7 @@ width:".$largeur1."%;\n";
 				echo "<tr><td>Le mot de passe de cet utilisateur n'est pas géré par Gepi.</td></tr>\n";
 			}
 			else {
+				if($new_password=="Non modifié") {$new_password="<span style='color:red;'>Non modifié</span>";}
 				echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
 			}
 	
