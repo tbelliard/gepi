@@ -89,14 +89,15 @@ if (isset($_POST['valid_logo'])) {
 				$old = getSettingValue("logo_etab");
 				if (file_exists($dest.$old)) @unlink($dest.$old);
 				if (file_exists($dest.$doc_file)) @unlink($dest.$doc_file);
-				$ok = @copy($doc_file['tmp_name'], $dest.$doc_file['name']);
-				if (!$ok) $ok = @move_uploaded_file($doc_file['tmp_name'], $dest.$doc_file['name']);
+				// le fichier téléchargé est renommé log_etab.xxx
+				$ok = @copy($doc_file['tmp_name'], $dest."logo_etab.".$ext);
+				if (!$ok) $ok = @move_uploaded_file($doc_file['tmp_name'], $dest."logo_etab.".$ext);
 				if (!$ok) {
 					$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire IMAGES. Veuillez signaler ce problème à l'administrateur du site";
 				} else {
 					$msg = "Le fichier a été transféré.";
 				}
-				if (!saveSetting("logo_etab", $doc_file['name'])) {
+				if (!saveSetting("logo_etab", "logo_etab.".$ext)) {
 				$msg .= "Erreur lors de l'enregistrement dans la table setting !";
 				}
 
@@ -1891,7 +1892,6 @@ echo add_token_field();
 	<input type="file" name="doc_file" onchange='changement()' />
 	<input type="submit" name="valid_logo" value="Enregistrer" /></p>
 	<p class="cellTab">
-		Supprimer le logo : <input type="submit" name="sup_logo" value="Supprimer le logo" />
 <?php
 $nom_fic_logo = getSettingValue("logo_etab");
 
@@ -1902,6 +1902,7 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 	<strong>Logo actuel : </strong>
 		<br />
 		<img src="<?php echo $nom_fic_logo_c; ?>" border='0' alt="logo" />
+		<br /><input type="submit" name="sup_logo" value="Supprimer le logo" />
 <?php } else { ?>
 		<br />
 		<strong><em>Pas de logo actuellement</em></strong>
@@ -1909,11 +1910,11 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 	</p>
 
 	<p>
-		<em>Remarques&nbsp;</em>
-		Les transparences sur les images PNG, GIF ne permettent pas une impression PDF 
-		(<em>canal alpha non supporté par fpdf</em>).
-		<br />
-		Il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la génération de PDF.
+		<em>Remarques&nbsp;:</em>
+		<br />- le fichier sera renommé logo_etab.xxx (<em>où l'extension xxx est fonction du type</em>)
+		<br />- les transparences sur les images PNG, GIF ne permettent pas une impression PDF 
+		(<em>canal alpha non supporté par fpdf</em>)
+		<br />- il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la génération de PDF
 	</p>
 </fieldset>
 </form>
