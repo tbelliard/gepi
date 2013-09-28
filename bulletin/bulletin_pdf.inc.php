@@ -195,6 +195,9 @@
 	//$champ_bull_pdf[]="adresse_resp_fontsize_ligne_1";
 	$champ_bull_pdf[]="adresse_resp_fontsize";
 
+	$champ_bull_pdf[]="cell_ajustee_texte_matiere";
+	$champ_bull_pdf[]="cell_ajustee_texte_matiere_ratio_min_max";
+
 	/*
 		mysql> show fields from modele_bulletin;
 		+--------------------+--------------+------+-----+---------+-------+
@@ -405,6 +408,8 @@
 	//$val_defaut_champ_bull_pdf["adresse_resp_fontsize_ligne_1"]=12;
 	$val_defaut_champ_bull_pdf["adresse_resp_fontsize"]=10;
 
+	$val_defaut_champ_bull_pdf["cell_ajustee_texte_matiere"]=0;
+	$val_defaut_champ_bull_pdf["cell_ajustee_texte_matiere_ratio_min_max"]=3;
 
 	for($loop_champs=0;$loop_champs<count($champ_bull_pdf);$loop_champs++) {
 		$type_champ_pdf["$champ_bull_pdf[$loop_champs]"]="numerique";

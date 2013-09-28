@@ -207,6 +207,34 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['active_graphique_niveau'])) { $active_graphique_niveau = $_GET['active_graphique_niveau']; } if (isset($_POST['active_graphique_niveau'])) { $active_graphique_niveau = $_POST['active_graphique_niveau']; } }
 	if (empty($_GET['active_appreciation']) and empty($_POST['active_appreciation'])) { $active_appreciation = ''; }
 	else { if (isset($_GET['active_appreciation'])) { $active_appreciation = $_GET['active_appreciation']; } if (isset($_POST['active_appreciation'])) { $active_appreciation = $_POST['active_appreciation']; } }
+
+	if (empty($_GET['cell_ajustee_texte_matiere']) and empty($_POST['cell_ajustee_texte_matiere'])) {
+		$cell_ajustee_texte_matiere = 0;
+	}
+	else {
+		if (isset($_GET['cell_ajustee_texte_matiere'])) {
+			$cell_ajustee_texte_matiere = $_GET['cell_ajustee_texte_matiere'];
+		}
+		if (isset($_POST['cell_ajustee_texte_matiere'])) {
+			$cell_ajustee_texte_matiere = $_POST['cell_ajustee_texte_matiere'];
+		}
+	}
+
+	if (empty($_GET['cell_ajustee_texte_matiere_ratio_min_max']) and empty($_POST['cell_ajustee_texte_matiere_ratio_min_max'])) {
+		$cell_ajustee_texte_matiere_ratio_min_max = 3;
+	}
+	else {
+		if (isset($_GET['cell_ajustee_texte_matiere_ratio_min_max'])) {
+			$cell_ajustee_texte_matiere_ratio_min_max = $_GET['cell_ajustee_texte_matiere_ratio_min_max'];
+		}
+		if (isset($_POST['cell_ajustee_texte_matiere_ratio_min_max'])) {
+			$cell_ajustee_texte_matiere_ratio_min_max = $_POST['cell_ajustee_texte_matiere_ratio_min_max'];
+		}
+	}
+	if((!is_numeric($cell_ajustee_texte_matiere_ratio_min_max))||($cell_ajustee_texte_matiere_ratio_min_max<=0)) {
+		$cell_ajustee_texte_matiere_ratio_min_max=3;
+	}
+
 	if (empty($_GET['affiche_doublement']) and empty($_POST['affiche_doublement'])) { $affiche_doublement = ''; }
 	else { if (isset($_GET['affiche_doublement'])) { $affiche_doublement = $_GET['affiche_doublement']; } if (isset($_POST['affiche_doublement'])) { $affiche_doublement = $_POST['affiche_doublement']; } }
 	if (empty($_GET['affiche_date_naissance']) and empty($_POST['affiche_date_naissance'])) { $affiche_date_naissance = ''; }
@@ -1398,7 +1426,12 @@ function DecocheCheckbox() {
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Largeur du bloc matière&nbsp;<input name="largeur_matiere" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_matiere)) { ?>value="<?php echo $largeur_matiere; ?>" <?php } ?> />mm<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte "matière"&nbsp;<input name="taille_texte_matiere" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_matiere)) { ?>value="<?php echo $taille_texte_matiere; ?>" <?php } ?> />pixel<br />
 
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="cell_ajustee_texte_matiere" id="cell_ajustee_texte_matiere" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cell_ajustee_texte_matiere) and $cell_ajustee_texte_matiere=='1') { ?>checked="checked"<?php } ?> /><label for='cell_ajustee_texte_matiere'>&nbsp;Permettre le retour à la ligne dans le nom de matière (<em>avec cell_ajustee()</em>)</label><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ratio entre la taille maximale et la taille minimale de la police pour le nom de matière si cell_ajustee() est utilisée&nbsp;<input name="cell_ajustee_texte_matiere_ratio_min_max" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($cell_ajustee_texte_matiere_ratio_min_max)) { ?>value="<?php echo $cell_ajustee_texte_matiere_ratio_min_max; ?>" <?php } ?> /><br />
+
+
 			<?php
+
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				echo "Présentation des noms de professeurs&nbsp;:<br />\n";
 
