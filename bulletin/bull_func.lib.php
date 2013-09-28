@@ -2412,6 +2412,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		// ============= DEBUT BLOC NOTES ET APPRECIATIONS ==========================
 
 		// Bloc notes et appréciations
+
+		// 20130927
+		if((!isset($tab_modele_pdf["cell_ajustee_texte_matiere_ratio_min_max"][$classe_id]))||(!is_numeric($tab_modele_pdf["cell_ajustee_texte_matiere_ratio_min_max"][$classe_id]))||($tab_modele_pdf["cell_ajustee_texte_matiere_ratio_min_max"][$classe_id]<=0)) {
+			$tab_modele_pdf["cell_ajustee_texte_matiere_ratio_min_max"][$classe_id]=3;
+		}
+
 		//nombre de matieres à afficher
 		//$nb_matiere = $info_bulletin[$ident_eleve_aff][$id_periode]['nb_matiere'];
 		$nb_matiere=0;
@@ -2864,22 +2870,46 @@ fclose($f);
 							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
 						}
 
-						$val = $pdf->GetStringWidth($info_nom_matiere);
-						$taille_texte = $tab_modele_pdf["largeur_matiere"][$classe_id] - 2;
-						$grandeur_texte='test';
-						while($grandeur_texte!='ok') {
-							if($taille_texte<$val)
-							{
-								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
-								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
-								$val = $pdf->GetStringWidth($info_nom_matiere);
-							}
-							else {
-								$grandeur_texte='ok';
-							}
+						// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
+						if((isset($tab_modele_pdf["cell_ajustee_texte_matiere"][$classe_id]))&&($tab_modele_pdf["cell_ajustee_texte_matiere"][$classe_id]==1)) {
+							// Encadrement
+							$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier, "",'LRBT',1,'L');
+
+							// cell_ajustee() ne centre pas verticalement le texte.
+							// On met un décalage pour ne pas coller le texte à la bordure
+							$Y_decal_cell_ajustee=1;
+							// On repositionne et on inscrit le nom de matière sur la moitié de la hauteur de la cellule
+							$pdf->SetXY($X_bloc_matiere, $Y_decal+$Y_decal_cell_ajustee);
+
+							$texte=$info_nom_matiere;
+							$taille_max_police=$hauteur_caractere_matiere;
+							$taille_min_police=ceil($taille_max_police/$tab_modele_pdf["cell_ajustee_texte_matiere_ratio_min_max"][$classe_id]);
+
+							$largeur_dispo=$tab_modele_pdf["largeur_matiere"][$classe_id]-2;
+							$h_cell=$espace_entre_matier/2-$Y_decal_cell_ajustee;
+
+							cell_ajustee("<b>".$texte."</b>",$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+
 						}
-						$grandeur_texte='test';
-						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
+						else {
+							$val = $pdf->GetStringWidth($info_nom_matiere);
+							$taille_texte = $tab_modele_pdf["largeur_matiere"][$classe_id] - 2;
+							$grandeur_texte='test';
+							while($grandeur_texte!='ok') {
+								if($taille_texte<$val)
+								{
+									$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+									$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+									$val = $pdf->GetStringWidth($info_nom_matiere);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
+						}
+						// On note l'ordonnée pour le nom des professeurs
 						$Y_decal = $Y_decal+($espace_entre_matier/2);
 						$pdf->SetXY($X_bloc_matiere, $Y_decal);
 						$pdf->SetFont('DejaVu','',8);
@@ -3773,28 +3803,49 @@ fclose($f);
 						}
 					}
 
+					// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
+					if((isset($tab_modele_pdf["cell_ajustee_texte_matiere"][$classe_id]))&&($tab_modele_pdf["cell_ajustee_texte_matiere"][$classe_id]==1)) {
+						// Encadrement
+						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier, "",'LRBT',1,'L');
 
+						// cell_ajustee() ne centre pas verticalement le texte.
+						// On met un décalage pour ne pas coller le texte à la bordure
+						$Y_decal_cell_ajustee=1;
+						// On repositionne et on inscrit le nom de matière sur la moitié de la hauteur de la cellule
+						$pdf->SetXY($X_bloc_matiere, $Y_decal+$Y_decal_cell_ajustee);
 
-					$val = $pdf->GetStringWidth($info_nom_matiere);
-					$taille_texte = $tab_modele_pdf["largeur_matiere"][$classe_id] - 2;
-					$grandeur_texte='test';
-					while($grandeur_texte!='ok') {
-						if($taille_texte<$val)
-						{
-							$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
-							$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
-							$val = $pdf->GetStringWidth($info_nom_matiere);
-						}
-						else {
-							$grandeur_texte='ok';
-						}
+						$texte=$info_nom_matiere;
+						$taille_max_police=$hauteur_caractere_matiere;
+						$taille_min_police=ceil($taille_max_police/$tab_modele_pdf["cell_ajustee_texte_matiere_ratio_min_max"][$classe_id]);
+
+						$largeur_dispo=$tab_modele_pdf["largeur_matiere"][$classe_id]-2;
+						$h_cell=$espace_entre_matier/2-$Y_decal_cell_ajustee;
+
+						cell_ajustee("<b>".$texte."</b>",$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+
 					}
-					$grandeur_texte='test';
-					// Encadrement
-					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier, "",'LRBT',1,'L');
-					// On repositionne et on inscrit le nom de matière sur la moitié de la hauteur de la cellule
-					$pdf->SetXY($X_bloc_matiere, $Y_decal);
-					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
+					else {
+						$val = $pdf->GetStringWidth($info_nom_matiere);
+						$taille_texte = $tab_modele_pdf["largeur_matiere"][$classe_id] - 2;
+						$grandeur_texte='test';
+						while($grandeur_texte!='ok') {
+							if($taille_texte<$val)
+							{
+								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+								$val = $pdf->GetStringWidth($info_nom_matiere);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						// Encadrement
+						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier, "",'LRBT',1,'L');
+						// On repositionne et on inscrit le nom de matière sur la moitié de la hauteur de la cellule
+						$pdf->SetXY($X_bloc_matiere, $Y_decal);
+						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
+					}
 					// On note l'ordonnée pour le nom des professeurs
 					$Y_decal = $Y_decal+($espace_entre_matier/2);
 					$pdf->SetXY($X_bloc_matiere, $Y_decal);
@@ -4446,22 +4497,45 @@ fclose($f);
 							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
 						}
 
-						$val = $pdf->GetStringWidth($info_nom_matiere);
-						$taille_texte = $tab_modele_pdf["largeur_matiere"][$classe_id] - 2;
-						$grandeur_texte='test';
-						while($grandeur_texte!='ok') {
-							if($taille_texte<$val)
-							{
-								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
-								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
-								$val = $pdf->GetStringWidth($info_nom_matiere);
-							}
-							else {
-								$grandeur_texte='ok';
-							}
+						// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
+						if((isset($tab_modele_pdf["cell_ajustee_texte_matiere"][$classe_id]))&&($tab_modele_pdf["cell_ajustee_texte_matiere"][$classe_id]==1)) {
+							// Encadrement
+							$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier, "",'LRBT',1,'L');
+
+							// cell_ajustee() ne centre pas verticalement le texte.
+							// On met un décalage pour ne pas coller le texte à la bordure
+							$Y_decal_cell_ajustee=1;
+							// On repositionne et on inscrit le nom de matière sur la moitié de la hauteur de la cellule
+							$pdf->SetXY($X_bloc_matiere, $Y_decal+$Y_decal_cell_ajustee);
+
+							$texte=$info_nom_matiere;
+							$taille_max_police=$hauteur_caractere_matiere;
+							$taille_min_police=ceil($taille_max_police/$tab_modele_pdf["cell_ajustee_texte_matiere_ratio_min_max"][$classe_id]);
+
+							$largeur_dispo=$tab_modele_pdf["largeur_matiere"][$classe_id]-2;
+							$h_cell=$espace_entre_matier/2-$Y_decal_cell_ajustee;
+
+							cell_ajustee("<b>".$texte."</b>",$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+
 						}
-						$grandeur_texte='test';
-						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
+						else {
+							$val = $pdf->GetStringWidth($info_nom_matiere);
+							$taille_texte = $tab_modele_pdf["largeur_matiere"][$classe_id] - 2;
+							$grandeur_texte='test';
+							while($grandeur_texte!='ok') {
+								if($taille_texte<$val)
+								{
+									$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+									$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+									$val = $pdf->GetStringWidth($info_nom_matiere);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
+						}
 						$Y_decal = $Y_decal+($espace_entre_matier/2);
 						$pdf->SetXY($X_bloc_matiere, $Y_decal);
 						$pdf->SetFont('DejaVu','',8);
