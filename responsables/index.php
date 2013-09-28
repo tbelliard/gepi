@@ -389,13 +389,17 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 				break;
 		}
 
+		// Pour les recherches alternatives proposées quand on ne trouve personne dans la catégorie choisie:
+		$chaine_recherche_resp="rp.$crit_rech LIKE '$valeur_cherchee'";
+		$chaine_recherche_ele="e.$crit_rech LIKE '$valeur_cherchee'";
+
 		switch($champ_rech){
 			case "resp0":
 					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp=0;
 
 					//$chaine_info_recherche.="le $crit_rech de la personne non responsable $mode_rech $val_rech";
-					$chaine_info_recherche.="le $crit_rech $mode_rech $val_rech";
+					$chaine_info_recherche.="le $crit_rech du responsable non légal $mode_rech $val_rech";
 				break;
 			case "resp1":
 					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
@@ -523,12 +527,24 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 	}
 
 
+	// Dans le cas où la recherche ne retourne rien:
 	if($cpt==0){
-		echo "<p>Aucun ".$gepiSettings['denomination_responsable']." trouvé.</p>\n";
+		// $gepiSettings['denomination_responsables']
+		// On n'a pas forcément une recherche sur les responsables *légaux*
+
+		echo "
+<h2>Résultat de la recherche</h2>
+
+<div style='margin-left:1em;'>
+	<p style='margin-bottom:1em;'>Aucun responsable trouvé ";
+		if((isset($chaine_info_recherche))&&($chaine_info_recherche!="")) {echo "sur \"<strong>$chaine_info_recherche</strong>\"";}
+		echo ".</p>\n";
+
 		//if($chaine_recherche!="") {
 		if((isset($chaine_recherche))&&($chaine_recherche!="")) {
 			// 20130714
-			echo "<p><a href='".$_SERVER['PHP_SELF'];
+			echo "
+	<p><a href='".$_SERVER['PHP_SELF'];
 			$chaine_rech_retour="";
 			if((isset($_POST['champ_rech']))&&($_POST['champ_rech']!="")&&
 			(isset($_POST['crit_rech']))&&($_POST['crit_rech']!="")&&
@@ -541,8 +557,136 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 				$chaine_rech_retour.="&amp;retour_index=y";
 				echo $chaine_rech_retour;
 			}
-			echo "'>Retour à l'index ".$gepiSettings['denomination_responsables']."</a></p>\n";
+			// $gepiSettings['denomination_responsables']
+			// On n'a pas forcément une recherche sur les responsables *légaux*
+			echo "'>Retourner à l'index des responsables</a></p>";
+
+			// Pour le moment, il manque des infos dans le cas où on a fait une recherche sur un resp non légal
+			if($num_resp!='0') {
+				echo "
+	<br />
+	<p>Ou effectuer la même recherche parmi les &nbsp;:</p>
+	<ul>";
+				if($num_resp!="1") {
+					$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
+							rp.pers_id=r.pers_id AND
+							r.resp_legal='1' ";
+					if(isset($chaine_recherche)){
+						$sql.=" AND $chaine_recherche_resp";
+					}
+					$res1=mysql_query($sql);
+					$cpt=mysql_num_rows($res1);
+
+					echo "
+		<li title='$cpt responsable(s) trouvé(s).'><a href='".$_SERVER['PHP_SELF'];
+					$chaine_rech_retour="";
+					if((isset($_POST['champ_rech']))&&($_POST['champ_rech']!="")&&
+					(isset($_POST['crit_rech']))&&($_POST['crit_rech']!="")&&
+					(isset($_POST['val_rech']))&&($_POST['val_rech']!="")&&
+					(isset($_POST['mode_rech']))&&($_POST['mode_rech']!="")) {
+						$chaine_rech_retour.="?champ_rech=resp1";
+						$chaine_rech_retour.="&amp;crit_rech=".$_POST['crit_rech'];
+						$chaine_rech_retour.="&amp;mode_rech=".$_POST['mode_rech'];
+						$chaine_rech_retour.="&amp;val_rech=".$_POST['val_rech'];
+						$chaine_rech_retour.="&amp;debut=0";
+						$chaine_rech_retour.="&amp;limit=20";
+						//$chaine_rech_retour.="&amp;retour_index=y";
+						echo $chaine_rech_retour;
+					}
+					echo "'>responsables légaux 1</a> (<em>$cpt</em>)</li>";
+				}
+
+				if($num_resp!="2") {
+					$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
+							rp.pers_id=r.pers_id AND
+							r.resp_legal='2' ";
+					if(isset($chaine_recherche_resp)){
+						$sql.=" AND $chaine_recherche_resp";
+					}
+					$res1=mysql_query($sql);
+					$cpt=mysql_num_rows($res1);
+
+					echo "
+		<li title='$cpt responsable(s) trouvé(s).'><a href='".$_SERVER['PHP_SELF'];
+					$chaine_rech_retour="";
+					if((isset($_POST['champ_rech']))&&($_POST['champ_rech']!="")&&
+					(isset($_POST['crit_rech']))&&($_POST['crit_rech']!="")&&
+					(isset($_POST['val_rech']))&&($_POST['val_rech']!="")&&
+					(isset($_POST['mode_rech']))&&($_POST['mode_rech']!="")) {
+						$chaine_rech_retour.="?champ_rech=resp2";
+						$chaine_rech_retour.="&amp;crit_rech=".$_POST['crit_rech'];
+						$chaine_rech_retour.="&amp;mode_rech=".$_POST['mode_rech'];
+						$chaine_rech_retour.="&amp;val_rech=".$_POST['val_rech'];
+						$chaine_rech_retour.="&amp;debut=0";
+						$chaine_rech_retour.="&amp;limit=20";
+						//$chaine_rech_retour.="&amp;retour_index=y";
+						echo $chaine_rech_retour;
+					}
+					echo "'>responsables légaux 2</a> (<em>$cpt</em>)</li>";
+				}
+
+				if($num_resp!="0") {
+					$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
+							rp.pers_id=r.pers_id AND
+							r.resp_legal='0' ";
+					if(isset($chaine_recherche_resp)){
+						$sql.=" AND $chaine_recherche_resp";
+					}
+					$res1=mysql_query($sql);
+					$cpt=mysql_num_rows($res1);
+
+					echo "
+		<li title='$cpt responsable(s) trouvé(s).'><a href='".$_SERVER['PHP_SELF'];
+					$chaine_rech_retour="";
+					if((isset($_POST['champ_rech']))&&($_POST['champ_rech']!="")&&
+					(isset($_POST['crit_rech']))&&($_POST['crit_rech']!="")&&
+					(isset($_POST['val_rech']))&&($_POST['val_rech']!="")&&
+					(isset($_POST['mode_rech']))&&($_POST['mode_rech']!="")) {
+						$chaine_rech_retour.="?champ_rech=resp0&amp;num_resp=0";
+						$chaine_rech_retour.="&amp;crit_rech=".$_POST['crit_rech'];
+						$chaine_rech_retour.="&amp;mode_rech=".$_POST['mode_rech'];
+						$chaine_rech_retour.="&amp;val_rech=".$_POST['val_rech'];
+						$chaine_rech_retour.="&amp;debut=0";
+						$chaine_rech_retour.="&amp;limit=20";
+						//$chaine_rech_retour.="&amp;retour_index=y";
+						echo $chaine_rech_retour;
+					}
+					echo "'>responsables non légaux</a> (<em>$cpt</em>)</li>";
+				}
+
+				if($num_resp!="ele") {
+					$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id ";
+					if(isset($chaine_recherche_ele)){
+						$sql.=" AND $chaine_recherche_ele";
+					}
+					$res1=mysql_query($sql);
+					$cpt=mysql_num_rows($res1);
+
+					echo "
+		<li title='$cpt élève(s) trouvé(s).'><a href='".$_SERVER['PHP_SELF'];
+					$chaine_rech_retour="";
+					if((isset($_POST['champ_rech']))&&($_POST['champ_rech']!="")&&
+					(isset($_POST['crit_rech']))&&($_POST['crit_rech']!="")&&
+					(isset($_POST['val_rech']))&&($_POST['val_rech']!="")&&
+					(isset($_POST['mode_rech']))&&($_POST['mode_rech']!="")) {
+						$chaine_rech_retour.="?champ_rech=eleves";
+						$chaine_rech_retour.="&amp;crit_rech=".$_POST['crit_rech'];
+						$chaine_rech_retour.="&amp;mode_rech=".$_POST['mode_rech'];
+						$chaine_rech_retour.="&amp;val_rech=".$_POST['val_rech'];
+						$chaine_rech_retour.="&amp;debut=0";
+						$chaine_rech_retour.="&amp;limit=20";
+						//$chaine_rech_retour.="&amp;retour_index=y";
+						echo $chaine_rech_retour;
+					}
+					echo "'>élèves</a> (<em>$cpt</em>)</li>";
+				}
+
+				echo "
+	</ul>\n";
+			}
 		}
+		echo "
+</div>";
 		require("../lib/footer.inc.php");
 		die();
 	}
