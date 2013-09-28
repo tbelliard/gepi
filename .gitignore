@@ -38,6 +38,9 @@ images/logo.jpg
 images/background/degrade1.png
 images/background/degrade1_small.png
 images/background/degrade1_very_small.png
+images/logo.jpg
+artichow/cache/*
+
 
 # Ignore Les plugins
 mod_plugins/plugin*
