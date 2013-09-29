@@ -1011,6 +1011,13 @@ if (!$classe_col->isEmpty()) {
 
 //**************** ELEVES *****************
 
+$tab_types=array();
+$sql="select * from a_types;";
+$res_types=mysql_query($sql);
+while($lig_type=mysql_fetch_object($res_types)) {
+	$tab_types[$lig_type->id]['manquement_obligation_presence']=$lig_type->manquement_obligation_presence;
+}
+
 if (TRUE == $_SESSION['showJournee']) {
 	include 'lib/saisir_groupe_journee.php';
 } else {
@@ -1256,18 +1263,23 @@ if ($eleve_col->isEmpty()) {
 				</thead>
 				<tbody>
 <?php 
+	//===============================
+	// Boucle sur la liste des élèves
 	$compteur_eleve=0;
 	foreach($afficheEleve as $eleve) {
 		$compteur_eleve++;
 ?>
 <!--tr><td>plop</td></tr-->
 					<tr class='<?php echo $eleve['background'];?>'>
+						<!-- Colonne Veille -->
 						<td class = "<?php echo($eleve['class_hier']);
 							if ($eleve['creneau_courant'] != 0) {
 								echo ' noSmartphone';
 							} ?>">
 							<span class="description" title="<?php echo htmlspecialchars($eleve['bulle_hier']); ?>"><?php echo $eleve['text_hier']; ?></span>
 						</td>
+
+						<!-- Colonne Nom prénom de l'élève -->
 						<td class='td_abs_eleves'>
 							<input type="hidden" 
 								   name="id_eleve_absent[<?php echo $eleve['position']; ?>]" 
@@ -1285,6 +1297,7 @@ if ($eleve_col->isEmpty()) {
 <?php } ?>
 						</td>
 <?php 
+// Boucle sur les créneaux horaires
 for($i = 0; $i<$eleve['creneaux_possibles']; $i++){ ?>
 						<td colspan="<?php echo $eleve['nb_creneaux_a_saisir'][$i]; ?>" 
 							class="<?php echo $eleve['style'][$i];
@@ -1364,17 +1377,34 @@ if (isset ($eleve['type_autorises'][$i])) {
                         $radioButtonTypeHasHidden = true;
                         break;
                 }
-        } ?>
+        }
+
+		/*
+        foreach ($eleve['type_autorises'][$i] as $type) {
+           echo "<p>\$eleve['type_autorises'][$i]:</p>
+           <pre>";
+           print_r($type);
+           echo "</pre><hr />";
+        }
+		*/
+        ?>
 
                                                     <label class="invisible" for="type_absence_eleve_<?php echo $eleve['position']; ?>">Type d'absence</label>
 						    <select class="selects"
 									onchange="this.form.elements['active_absence_eleve_<?php echo $eleve['position']; ?>'].checked = (this.options[this.selectedIndex].value != -1);
-									<?php if ($radioButtonType) {?>this.form.elements['radio_sans_type_absence_eleve_<?php echo $eleve['position']; ?>'].checked = true; <?php } ?>"
+									<?php if ($radioButtonType) {?>this.form.elements['radio_sans_type_absence_eleve_<?php echo $eleve['position']; ?>'].checked = true; <?php } ?>;click_active_absence('<?php echo $eleve['position']; ?>');"
 									name="type_absence_eleve[<?php echo $eleve['position']; ?>]"
 									id="liste_type_absence_eleve_<?php echo $eleve['position']; ?>" >
 								<option class="pc88" value="-1"> </option>
 <?php foreach ($eleve['type_autorises'][$i] as $type) { ?>
-								<option class="pc88" value="<?php echo $type['type']; ?>">
+								<option class="pc88" manquement="<?php
+									if(isset($tab_types[$type['type']]['manquement_obligation_presence'])) {
+										echo $tab_types[$type['type']]['manquement_obligation_presence'];
+									}
+									else {
+										echo 'FAUX';
+									}
+								?>" value="<?php echo $type['type']; ?>">
 								<?php echo $type['nom']; ?> 
 								</option>
 <?php } ?>
@@ -1396,8 +1426,17 @@ foreach ($eleve['type_autorises'][$i] as $type) {
 										echo "
 									   class='type_abs_regime_".$type['type']."_".$indice_tab_regime[$eleve['regime']]."'";
 									}
+									// Nom du champ Radio
+									$id_champ_radio="radio_";
+									if (($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN)||($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN_REGIME)) {
+										$id_champ_radio.='hidden_';
+									}
+									$id_champ_radio.="type_absence_eleve_";
+									$id_champ_radio.=$type['type'];
+									$id_champ_radio.="_";
+									$id_champ_radio.=$eleve['position'];
 									?>
-									   onchange="this.form.elements['liste_type_absence_eleve_<?php echo $eleve['position']; ?>'].selectedIndex = 0; this.form.elements['active_absence_eleve_<?php echo $eleve['position']; ?>'].checked = true;"
+									   onchange="this.form.elements['liste_type_absence_eleve_<?php echo $eleve['position']; ?>'].selectedIndex = 0; this.form.elements['active_absence_eleve_<?php echo $eleve['position']; ?>'].checked = true; change_select_type_absence('<?php echo $id_champ_radio;?>', '<?php echo $eleve['position']; ?>');"
 									   id="radio_<?php if (($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN)||($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN_REGIME)) echo 'hidden_'?>type_absence_eleve_<?php echo $type['type']; ?>_<?php echo $eleve['position']; ?>"
 									   name="check[<?php echo $eleve['position']; ?>]"
 									   <?php if($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN_REGIME) {
@@ -1409,7 +1448,7 @@ foreach ($eleve['type_autorises'][$i] as $type) {
 								</label>
 							</p>
 <?php   }
-    }//on affiche une case vide pour saisier un élève sans option
+    }//on affiche une case vide pour saisir un élève sans option
     if ($radioButtonType) {?>
 							<p>
                                                                 <input type="radio" <?php
@@ -1473,7 +1512,10 @@ if ($eleve['creneau_courant'] == $i) { ?>
 	}
 	
 } ?>
-<?php if (isset ($eleve['nom_photo'])) { ?>
+<?php
+	// Colonne Photo de l'élève
+	if (isset ($eleve['nom_photo'])) {
+?>
 						<td>
 							<label for='active_absence_eleve_<?php echo $eleve['position']; ?>'>
 							<img src="<?php echo $eleve['nom_photo']; ?>"
@@ -1483,8 +1525,11 @@ if ($eleve['creneau_courant'] == $i) { ?>
 								 title="" />
 							</label>
 						</td>
-<?php } ?>
-<?php 				if ($current_creneau != null) {
+<?php
+	}
+
+	// Colonne Saisie d'un commentaire
+	if ($current_creneau != null) {
 ?>
 						<td class="commentaire">
 							<label for="commentaire_absence_eleve_<?php echo $eleve['position']; ?>">Commentaire :</label>
