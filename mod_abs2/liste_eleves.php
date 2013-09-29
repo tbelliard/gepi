@@ -461,7 +461,7 @@ echo '</th>';
 //en tete filtre manqement_obligation
 echo '<th>';
 echo ("<select name=\"filter_manqement_obligation\" onchange='submit()'>");
-echo "<option value=''";
+echo "<option value='' ";
 if (!isFiltreRechercheParam('filter_manqement_obligation')) {echo "selected='selected'";}
 echo "></option>\n";
 echo "<option value='y' ";
@@ -652,7 +652,7 @@ foreach ($results as $eleve) {
             echo ', ';
         }
     }
-    echo "</a>";
+    echo "</td>";
     
     //donnees motif
     echo '<td>';
@@ -663,9 +663,9 @@ foreach ($results as $eleve) {
             echo ', ';
         }
     }
-    echo "</a>";
+    echo "</td>";
     
-    echo '</tr>';
+    echo '</tr>'."\n";
 }
 
 echo '</tbody>';
