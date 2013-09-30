@@ -33,14 +33,32 @@ require_once("lib/auth.php");
 
 unset($id_classe);
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id_classe"]) ? $_GET["id_classe"] : NULL);
+
+if((isset($id_classe))&&($id_classe!=-1)&&(!preg_match("/^[0-9]*$/", $id_classe))) {
+	unset($id_classe);
+}
+
 unset($day);
 $day = isset($_POST["day"]) ? $_POST["day"] : (isset($_GET["day"]) ? $_GET["day"] : date("d"));
+if(!preg_match("/^[0-9]*$/", $day)) {
+	$day=date("d");
+}
+
 unset($month);
 $month = isset($_POST["month"]) ? $_POST["month"] : (isset($_GET["month"]) ? $_GET["month"] : date("m"));
+if(!preg_match("/^[0-9]*$/", $month)) {
+	$month=date("m");
+}
+
 unset($year);
 $year = isset($_POST["year"]) ? $_POST["year"] : (isset($_GET["year"]) ? $_GET["year"] : date("Y"));
+if(!preg_match("/^[0-9]*$/", $year)) {
+	$year=date("Y");
+}
+
 unset($id_matiere);
 $id_matiere = isset($_POST["id_matiere"]) ? $_POST["id_matiere"] : (isset($_GET["id_matiere"]) ? $_GET["id_matiere"] : -1);
+
 unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 if (is_numeric($id_groupe)) {
