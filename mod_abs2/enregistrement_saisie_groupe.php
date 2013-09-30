@@ -319,9 +319,16 @@ for($i=0; $i<$total_eleves; $i++) {
 
     $saisie_discipline = false;
 
+	$info_type_saisie="";
     if (isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1) {
 	$type = AbsenceEleveTypeQuery::create()->findPk($_POST['type_absence_eleve'][$i]);
 	if ($type != null) {
+		$info_type_saisie=$type->getNom();
+		/*
+		echo "<pre>";
+		print_r($type);
+		echo "</pre>";
+		*/
 	    if ($type->isStatutAutorise($utilisateur->getStatut())) {
 		//on va creer un traitement avec le type d'absence associé
 		$traitement = new AbsenceEleveTraitement();
@@ -347,7 +354,11 @@ for($i=0; $i<$total_eleves; $i++) {
 	    if (isset($traitement)) {
 		$traitement->save();
 	    }
-	    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrée pour l'élève : ".$eleve->getNom().' '.$eleve->getPrenom()."</a>";
+	    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'";
+	    if($info_type_saisie!="") {
+		    $message_enregistrement .= " title='".$info_type_saisie."'";
+		}
+	    $message_enregistrement .= ">Saisie enregistrée pour l'élève : ".$eleve->getNom().' '.$eleve->getPrenom()."</a>";
 	    if (isset($saisie_discipline) && $saisie_discipline == true) {
 		$message_enregistrement .= " &nbsp;<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
 		    $saisie->getId()."&return_url=no_return".add_token_in_url()."'>Saisir un incident disciplinaire pour l'élève : ".$eleve->getNom().' '.$eleve->getPrenom()."</a>";
