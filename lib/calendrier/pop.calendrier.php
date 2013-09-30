@@ -8,6 +8,10 @@
 $frm = $_GET['frm'];
 $chm = $_GET['ch'];
 
+if((!preg_match("/^[A-Za-z0-9_]*$/", $frm))||(!preg_match("/^[A-Za-z0-9_]*$/", $chm))) {
+	die();
+}
+
 include("calendrier.class.php");
 
 /**
