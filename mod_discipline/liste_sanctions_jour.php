@@ -75,6 +75,11 @@ if(isset($form_id_sanction)) {
 	}
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Liste des sanctions";
@@ -90,8 +95,8 @@ echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Reto
 
 echo " | Choix de la date&nbsp;: ";
 
-include("../lib/calendrier/calendrier.class.php");
-$cal = new Calendrier("formulaire", "jour_sanction");
+//include("../lib/calendrier/calendrier.class.php");
+//$cal = new Calendrier("formulaire", "jour_sanction");
 
 if(!isset($jour_sanction)) {
 	$annee=strftime("%Y");
@@ -124,9 +129,12 @@ echo ">Jour précédent</a>";
 
 echo " | ";
 echo "<input type='text' name='jour_sanction' id='jour_sanction' size='10' value=\"".$jour_sanction."\" onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
+/*
 echo "<a href=\"#calend\" onclick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";";
 //echo "return confirm_abandon (this, change, '$themessage')";
 echo "\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+*/
+echo img_calendrier_js("jour_sanction", "img_bouton_jour_sanction");
 echo " <input type='submit' name='valide_jour' value=\"Go\" ";
 echo "onclick=\"return confirm_abandon (this, change, '$themessage')\" ";
 echo "/>\n";

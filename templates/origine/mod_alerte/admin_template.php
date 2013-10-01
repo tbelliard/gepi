@@ -247,7 +247,11 @@ echo add_token_field();
 		<p>
 		Supprimer les alertes antérieures au 
 		<input type='text' name='date_limite' id='date_limite' size='10' value = "<?php echo $date_limite;?>" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." />
-		<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>"><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="Petit calendrier" /></a>
+
+		<?php
+			echo img_calendrier_js("date_limite", "img_bouton_date_limite");
+		?>
+
 		</p>
 
 		<input type='hidden' name='is_posted2' value='y' />

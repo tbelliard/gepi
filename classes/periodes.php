@@ -188,6 +188,11 @@ if(mysql_num_rows($res_class_tmp)>0){
 }
 // =================================
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes - Gestion des périodes";
@@ -340,7 +345,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		if ($nom_periode[$k] == '') {$nom_periode[$k] = "période ".$k;}
 		$alt=$alt*(-1);
 
-		$cal[$k] = new Calendrier("formulaire", "date_fin_period_".$k);
+		//$cal[$k] = new Calendrier("formulaire", "date_fin_period_".$k);
 
 		echo "<tr class='lig$alt'>\n";
 		echo "<td style='padding: 5px;'>Période $k</td>\n";
@@ -352,8 +357,8 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		echo " onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\"";
 		echo " value=\"".strftime("%d/%m/%Y", mysql_date_to_unix_timestamp($date_fin_periode[$k]))."\" size='10' />";
 
-		echo "<a href=\"#calend\" onClick=\"".$cal[$k]->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
-
+		//echo "<a href=\"#calend\" onClick=\"".$cal[$k]->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+		echo img_calendrier_js("date_fin_period_".$k, "img_bouton_date_fin_period_".$k);
 		echo "</td>\n";
 		echo "</tr>\n";
 	$k++;

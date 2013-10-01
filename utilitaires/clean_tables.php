@@ -43,6 +43,11 @@ $valid = isset($_POST["valid"]) ? $_POST["valid"] : 'no';
 $id_info=isset($_POST['id_info']) ? $_POST['id_info'] : (isset($_GET['id_info']) ? $_GET['id_info'] : '');
 $mode_auto=isset($_POST['mode_auto']) ? $_POST['mode_auto'] : (isset($_GET['mode_auto']) ? $_GET['mode_auto'] : 'n');
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 //==================================
 // header
 $titre_page = "Vérification/nettoyage des tables de la base de données GEPI";
@@ -3579,13 +3584,17 @@ else {
 		echo add_token_field();
 		echo "<center>\n";
 		echo "<input type=submit value=\"Vider les tables enregistrements du module absences\" />\n";
-		include("../lib/calendrier/calendrier.class.php");
-		$cal = new Calendrier("form_suppr_abs", "date_limite");
+
+		//include("../lib/calendrier/calendrier.class.php");
+		//$cal = new Calendrier("form_suppr_abs", "date_limite");
+
 		$annee=strftime("%Y");
 		$mois=strftime("%m");
 		if($mois<=7) {$annee--;}
 		echo "pour les absences antérieures au <input type='text' name='date_limite' id='date_limite' size='10' value='31/07/$annee' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
-		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>";
+		//echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>";
+		echo img_calendrier_js("date_limite", "img_bouton_date_limite");
+
 		echo "</center>\n";
 		echo "<input type='hidden' name='action' value='clean_absences' />\n";
 		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";

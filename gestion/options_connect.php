@@ -365,6 +365,11 @@ if (isset($_POST['GepiResp_obtenir_compte_et_motdepasse'])) {
 	}
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 // End standart header
 //=====================================
 $titre_page = "Options de connexion";
@@ -829,10 +834,13 @@ echo "<form action=\"options_connect.php\" method=\"post\" id='form_suppr_connex
 echo add_token_field();
 echo "<center>\n";
 echo "<input type=submit value=\"Supprimer les journaux de connexions\" />\n";
-include("../lib/calendrier/calendrier.class.php");
-$cal = new Calendrier("form_suppr_abs", "date_limite");
+//include("../lib/calendrier/calendrier.class.php");
+//$cal = new Calendrier("form_suppr_abs", "date_limite");
 echo " antérieurs au <input type='text' name='date_limite' id='date_limite' size='10' value='$jour/$mois/$annee' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
-echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>";
+
+//echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>";
+echo img_calendrier_js("date_limite", "img_bouton_date_limite");
+
 echo "</center>\n";
 echo "<input type='hidden' name='clean_log_old' value='y' />\n";
 echo "

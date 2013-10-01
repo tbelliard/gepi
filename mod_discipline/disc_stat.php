@@ -88,6 +88,11 @@ $id_mesure=isset($_POST['id_mesure']) ? $_POST['id_mesure'] : NULL;
 $nature_sanction=isset($_POST['nature_sanction']) ? $_POST['nature_sanction'] : NULL;
 $id_nature_sanction=isset($_POST['id_nature_sanction']) ? $_POST['id_nature_sanction'] : NULL;
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Statistiques";
 require_once("../lib/header.inc.php");
@@ -114,22 +119,26 @@ if(!isset($is_posted)) {
 
 	//=======================
 	//Configuration du calendrier
+	/*
 	include("../lib/calendrier/calendrier.class.php");
 	$cal1 = new Calendrier("form1", "date_debut_disc");
 	$cal2 = new Calendrier("form1", "date_fin_disc");
+	*/
 	//=======================
 
 	echo "<p>Intervalle de dates&nbsp;: du ";
 	//echo "<input type='text' name='date_debut_disc' value='' />\n";
 	echo "<input type='text' name = 'date_debut_disc1' id='date_debut_disc' size='10' value = \"".$date_debut_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	//echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	echo "<a href=\"javascript:".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	//echo "<a href=\"javascript:".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("date_debut_disc", "img_bouton_date_debut_disc");
 
 	echo " au ";
 	//echo "<input type='text' name='date_fin_disc' value='' />\n";
 	echo "<input type='text' name = 'date_fin_disc1' id='date_fin_disc' size='10' value = \"".$date_fin_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	//echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	echo "<a href=\"javascript:".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	//echo "<a href=\"javascript:".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("date_fin_disc", "img_bouton_date_fin_disc");
 	echo "</p>\n";
 
 
@@ -255,21 +264,23 @@ if(!isset($is_posted)) {
 	//=======================
 	//Configuration du calendrier
 	//include("../lib/calendrier/calendrier.class.php");
-	$cal3 = new Calendrier("form2", "date_debut_disc");
-	$cal4 = new Calendrier("form2", "date_fin_disc");
+	//$cal3 = new Calendrier("form2", "date_debut_disc");
+	//$cal4 = new Calendrier("form2", "date_fin_disc");
 	//=======================
 
 	echo "<p>Intervalle de dates&nbsp;: du ";
 	//echo "<input type='text' name='date_debut_disc' value='' />\n";
 	echo "<input type='text' name = 'date_debut_disc' id = 'date_debut_disc2' size='10' value = \"".$date_debut_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	//echo "<a href=\"#\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	echo "<a href=\"javascript:".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	//echo "<a href=\"javascript:".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("date_debut_disc2", "img_bouton_date_debut_disc2");
 
 	echo " au ";
 	//echo "<input type='text' name='date_fin_disc' value='' />\n";
 	echo "<input type='text' name = 'date_fin_disc' id = 'date_fin_disc2' size='10' value = \"".$date_fin_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	//echo "<a href=\"#\" onClick=\"".$cal4->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	echo "<a href=\"javascript:".$cal4->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	//echo "<a href=\"javascript:".$cal4->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("date_fin_disc2", "img_bouton_date_fin_disc2");
 	echo "</p>\n";
 
 	echo "<p>Choisissez ce que vous souhaitez afficher&nbsp;:</p>\n";

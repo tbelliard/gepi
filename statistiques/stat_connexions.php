@@ -323,6 +323,11 @@ if($nb_classes>0) {
 	}
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 // ===================== entete Gepi ======================================//
 $titre_page = "Statistiques de connexion";
 require_once("../lib/header.inc.php");
@@ -811,11 +816,9 @@ elseif(($mode==2)||($mode==3)) {
 
 	//=======================
 	//Configuration du calendrier
-	include("../lib/calendrier/calendrier.class.php");
-	//$cal1 = new Calendrier("form_choix_edit", "display_date_debut");
-	//$cal2 = new Calendrier("form_choix_edit", "display_date_fin");
-	$cal1 = new Calendrier("formulaire", "display_date_debut");
-	$cal2 = new Calendrier("formulaire", "display_date_fin");
+	//include("../lib/calendrier/calendrier.class.php");
+	//$cal1 = new Calendrier("formulaire", "display_date_debut");
+	//$cal2 = new Calendrier("formulaire", "display_date_fin");
 	
 	$annee = strftime("%Y");
 	$mois = strftime("%m");
@@ -907,11 +910,15 @@ elseif(($mode==2)||($mode==3)) {
 	
 	echo "<input type='text' name = 'display_date_debut' id = 'display_date_debut' size='10' value = \"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 	
-	echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	
+	//echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("display_date_debut", "img_bouton_display_date_debut");
+
 	echo "&nbsp;à la date&nbsp;: ";
 	echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
-	echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo "<label for='choix_periode_dates' style='cursor: pointer;'>";
+	//echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("display_date_fin", "img_bouton_display_date_fin");
+
 	echo "<br />\n";
 	echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)\n";
 	echo "<input type='hidden' name='mode' value='$mode' />\n";

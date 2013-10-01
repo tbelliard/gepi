@@ -220,8 +220,14 @@ if (isset($_POST['ok'])) {
 /**
  * Configuration du calendrier
  */
+ /*
 include("../lib/calendrier/calendrier.class.php");
 $cal = new Calendrier("formulaire", "display_date");
+*/
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 //**************** EN-TETE *****************
 $titre_page="Carnet de notes - Ajout/modification d'un $nom_cc";
@@ -325,8 +331,11 @@ if($aff_date=='y'){
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
 	echo "<td>\n";
 	echo "<input type='text' name='display_date' id='display_date' size='10' value=\"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
+	/*
 	echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"";
 	echo "><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+	*/
+	echo img_calendrier_js("display_date", "img_bouton_display_date");
 	echo "</td>\n";
 	echo "</tr>\n";
 }

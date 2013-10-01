@@ -65,10 +65,12 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 
 //=======================
 //Configuration du calendrier
+/*
 include("../lib/calendrier/calendrier.class.php");
 $cal1 = new Calendrier("formulaire", "display_date_debut");
 $cal2 = new Calendrier("formulaire", "display_date_fin");
 $cal3 = new Calendrier("formulaire", "date2_acces");
+*/
 //=======================
 
 //=======================
@@ -106,6 +108,11 @@ $action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $
 $inclure_doc_joints=isset($_POST['inclure_doc_joints']) ? $_POST['inclure_doc_joints'] : "n";
 
 $tab_fichiers_a_zipper=array();
+
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes - Export";
@@ -357,12 +364,13 @@ if(!isset($id_groupe)) {
 				echo "Exporter le(s) cahier(s) de textes de la date : ";
 			
 				echo "<input type='text' name = 'display_date_debut' id = 'display_date_debut' size='10' value = \"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
-				echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-			
+				//echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+				echo img_calendrier_js("display_date_debut", "img_bouton_display_date_debut");
+
 				echo "&nbsp;à la date : ";
 				echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
-				echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-
+				//echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+				echo img_calendrier_js("display_date_fin", "img_bouton_display_date_fin");
 
 				$date_end_bookings=strftime("%d/%m/%Y", getSettingValue('end_bookings'));
 				echo " <a href=\"#\" onclick=\"document.getElementById('display_date_fin').value='".$date_end_bookings."';return false;\"><img src='../images/icons/wizard.png' width='16' height='16' alt=\"Prendre la date de fin d'année scolaire : ".getSettingValue('end_bookings')."\" title=\"Prendre la date de fin d'année scolaire : ".getSettingValue('end_bookings')."\" /></a>";
@@ -392,7 +400,8 @@ if(!isset($id_groupe)) {
 				echo "</p>";
 				echo "<p>Date à laquelle vous souhaitez supprimer l'accès&nbsp;: ";
 				echo "<input type='text' name='date2_acces' id='date2_acces' size='10' value=\"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
-				echo "<a href=\"#calend\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+				//echo "<a href=\"#calend\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+				echo img_calendrier_js("date2_acces", "img_bouton_date2_acces");
 				echo "<br />\n";
 				echo "(<i>la suppression n'est pas automatique à la date indiquée, mais fixer une date peut aider à savoir si l'accès doit être conservé ou non</i>)</p>\n";
 
@@ -523,11 +532,13 @@ if(!isset($id_groupe)) {
 				echo "Exporter le(s) cahier(s) de textes de la date : ";
 			
 				echo "<input type='text' name = 'display_date_debut' id = 'display_date_debut2' size='10' value = \"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
-				echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-			
+				//echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+				echo img_calendrier_js("display_date_debut2", "img_bouton_display_date_debut2");
+
 				echo "&nbsp;à la date : ";
 				echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin2' size='10' value = \"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
-				echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+				//echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+				echo img_calendrier_js("display_date_fin2", "img_bouton_display_date_fin2");
 				echo "<br />\n";
 				echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)\n";
 				echo "</p>\n";
@@ -553,7 +564,8 @@ if(!isset($id_groupe)) {
 				echo "</p>";
 				echo "<p>Date à laquelle vous souhaitez supprimer l'accès&nbsp;: ";
 				echo "<input type='text' name='date2_acces' id='date2_acces' size='10' value=\"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
-				echo "<a href=\"#calend\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+				//echo "<a href=\"#calend\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+				echo img_calendrier_js("date2_acces", "img_bouton_date2_acces");
 				echo "<br />\n";
 				echo "(<i>la suppression n'est pas automatique à la date indiquée, mais fixer une date peut aider à savoir si l'accès doit être conservé ou non</i>)</p>\n";
 
@@ -673,12 +685,14 @@ if(!isset($id_groupe)) {
 		echo "<p>";
 		echo "Exporter le(s) cahier(s) de textes de la date : ";
 	
-		echo "<input type='text' name = 'display_date_debut' size='10' value = \"".$display_date_debut."\" />";
-		echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	
+		echo "<input type='text' name = 'display_date_debut' id = 'display_date_debut3' size='10' value = \"".$display_date_debut."\" />";
+		//echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+		echo img_calendrier_js("display_date_debut3", "img_bouton_display_date_debut3");
+
 		echo "&nbsp;à la date : ";
-		echo "<input type='text' name = 'display_date_fin' size='10' value = \"".$display_date_fin."\" />";
-		echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+		echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin3' size='10' value = \"".$display_date_fin."\" />";
+		//echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+		echo img_calendrier_js("display_date_fin3", "img_bouton_display_date_fin3");
 		echo "<br />\n";
 		echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)\n";
 		echo "</p>\n";

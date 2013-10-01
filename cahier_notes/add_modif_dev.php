@@ -92,9 +92,15 @@ if ($id_devoir)  {
 /**
  * Configuration des calendriers
  */
+/*
 include("../lib/calendrier/calendrier.class.php");
 $cal = new Calendrier("formulaire", "display_date");
 $cal2 = new Calendrier("formulaire", "date_ele_resp");
+*/
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 
 // On teste si le carnet de notes appartient bien à la personne connectée
@@ -865,12 +871,19 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" ";
+		if($aff_date_ele_resp!='y'){
+			echo " onchange=\"document.getElementById('date_ele_resp').value=document.getElementById('display_date').value;changement();\"";
+		}
+		echo "/>\n";
+		/*
 		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"";
 		if($aff_date_ele_resp!='y'){
 			echo " onchange=\"document.getElementById('date_ele_resp').value=document.getElementById('display_date').value;changement();\"";
 		}
 		echo "><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+		*/
+		echo img_calendrier_js("display_date", "img_bouton_display_date");
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -888,7 +901,8 @@ if($interface_simplifiee=="y"){
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables:</td>\n";
 		echo "<td>\n";
 		echo "<input type='text' name = 'date_ele_resp' id='date_ele_resp' size='10' value = \"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
-		echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+		//echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+		echo img_calendrier_js("date_ele_resp", "img_bouton_date_ele_resp");
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -1024,13 +1038,14 @@ else{
 	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de l'évaluation (<em>format jj/mm/aaaa</em>) : </h3>
 	<b>Remarque</b> : c'est cette date qui est prise en compte pour l'édition des relevés de notes à différentes périodes de l'année.
 	<input type='text' name = 'display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
-	echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
-
+	//echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+		echo img_calendrier_js("display_date", "img_bouton_display_date");
 
 	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de visibilité de l'évaluation pour les élèves et responsables (<em>format jj/mm/aaaa</em>) : </h3>
 	<b>Remarque</b> : Cette date permet de ne rendre la note visible qu'une fois que le devoir est corrigé en classe.
 	<input type='text' name='date_ele_resp' id='date_ele_resp' size='10' value=\"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
-	echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+	//echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+	echo img_calendrier_js("date_ele_resp", "img_bouton_date_ele_resp");
 
 	//====================================
 	// Relevé de notes

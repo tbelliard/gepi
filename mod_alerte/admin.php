@@ -170,6 +170,10 @@ if (isset($_POST['is_posted2'])) {
 	}
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 // ====== Inclusion des balises head et du bandeau =====
 include_once("../lib/header_template.inc.php");
@@ -180,8 +184,8 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Alertes"))
 			FIN HAUT DE PAGE
 ****************************************************************/
 
-include("../lib/calendrier/calendrier.class.php");
-$cal = new Calendrier("form2", "date_limite");
+//include("../lib/calendrier/calendrier.class.php");
+//$cal = new Calendrier("form2", "date_limite");
 
 /****************************************************************
 			BAS DE PAGE

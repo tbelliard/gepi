@@ -1082,6 +1082,10 @@ $javascript_specifique[]="lib/controls";
 $javascript_specifique[]="lib/builder";
 $style_specifique[]="mod_discipline/mod_discipline";
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
@@ -2410,8 +2414,8 @@ elseif($step==2) {
                 <td style='text-align:left;'>
 <?php
 		//Configuration du calendrier
-		include("../lib/calendrier/calendrier.class.php");
-		$cal = new Calendrier("formulaire", "display_date");
+		//include("../lib/calendrier/calendrier.class.php");
+		//$cal = new Calendrier("formulaire", "display_date");
 ?>
                     <input type='text' 
                            name='display_date' 
@@ -2420,11 +2424,9 @@ elseif($step==2) {
                            value="<?php echo $display_date; ?>" 
                            onkeydown="clavier_date_plus_moins(this.id,event);" 
                            onchange='changement()' />
-                    <a href="#calend" onclick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170); ?>">
-                        <img src="../lib/calendrier/petit_calendrier.gif" 
-                             style="border:0px;"
-                             alt="Petit calendrier" />
-                    </a>
+                    <?php
+                    echo img_calendrier_js("display_date", "img_bouton_display_date");
+                    ?>
                 </td>
 <?php
 /*

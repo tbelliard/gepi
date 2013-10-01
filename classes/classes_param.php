@@ -668,6 +668,11 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes - Paramétrage des classes par lots";
 require_once("../lib/header.inc.php");
@@ -896,14 +901,15 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		$alt=1;
 		while($k < $per+1) {
 			$alt=$alt*(-1);
-			$cal[$per][$k] = new Calendrier("formulaire", "date_fin_".$per."_".$k);
+			//$cal[$per][$k] = new Calendrier("formulaire", "date_fin_".$per."_".$k);
 			echo "<tr class='lig$alt'>\n";
 			echo "<th>Période ".$k."</th>\n";
 			echo "<td><input type='text' name='nb_".$per."_".$k."' value=\"\" size='30' /></td>\n";
 			echo "<td><input type='text' name='date_fin_".$per."_".$k."' id='date_fin_".$per."_".$k."' value=\"\" size='10' ";
 			echo " onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\"";
 			echo "/>";
-			echo "<a href=\"#calend\" onClick=\"".$cal[$per][$k]->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+			//echo "<a href=\"#calend\" onClick=\"".$cal[$per][$k]->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+			echo img_calendrier_js('date_fin_'.$per.'_'.$k, 'img_bouton_date_fin_'.$per.'_'.$k);
 			echo "</td>\n";
 			echo"</tr>\n";
 			$k++;

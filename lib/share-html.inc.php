@@ -2679,4 +2679,19 @@ function html_ajout_suffixe_ou_renommer($id_nom_court, $id_nom_complet, $id_nom_
 
 	return $retour;
 }
+
+function img_calendrier_js($id_champ, $id_img) {
+	global $gepiPath;
+	return '<img id="'.$id_img.'" src="'.$gepiPath.'/images/icons/calendrier.gif" alt="" />
+<script type="text/javascript">
+	Calendar.setup({
+		inputField     :    "'.$id_champ.'",     // id of the input field
+		ifFormat       :    "%d/%m/%Y",      // format of the input field
+		button         :    "'.$id_img.'",  // trigger for the calendar (button ID)
+		align          :    "Tl",           // alignment (defaults to "Bl")
+		singleClick    :    true,
+		showsTime	:   false
+	});
+</script>';
+}
 ?>

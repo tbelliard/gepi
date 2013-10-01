@@ -492,6 +492,11 @@ if ($test_cahier_texte != 0) {
     $contenu = '';
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 // On met le header en petit par défaut
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
@@ -1042,7 +1047,7 @@ $appel_cahier_texte_liste = mysql_query("SELECT * FROM ct_entry WHERE (id_groupe
 //if (mysql_num_rows($appel_cahier__liste) > 1) {
 if (mysql_num_rows($appel_cahier_texte_liste) > 1) {
     $cpt_compte_rendu_liste = "1";
-    While ( $appel_cahier_texte_donne = mysql_fetch_array ($appel_cahier_texte_liste)) {
+    while ( $appel_cahier_texte_donne = mysql_fetch_array ($appel_cahier_texte_liste)) {
         if ($appel_cahier_texte_donne['id_ct'] == $id_ct) {$num_notice = $cpt_compte_rendu_liste;}
         $cpt_compte_rendu_liste++;
     }
@@ -1122,11 +1127,12 @@ if (isset($_GET['info']) or isset($_POST['info']))
     $temp = "Informations Générales : ";
 else if (isset($edit_devoir)) {
     //Configuration du calendrier
-    include("../lib/calendrier/calendrier.class.php");
-    $cal = new Calendrier("mef", "display_date");
+    //include("../lib/calendrier/calendrier.class.php");
+    //$cal = new Calendrier("mef", "display_date");
     $temp = "A faire pour le : ";
-    $temp .= "<input type='text' name = 'display_date' size='10' value = \"".date("d",$today)."/".date("m",$today)."/".date("Y",$today)."\" />\n";
-    $temp .=  "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"calendrier\"/></a>\n";
+    $temp .= "<input type='text' name = 'display_date' id= 'display_date' size='10' value = \"".date("d",$today)."/".date("m",$today)."/".date("Y",$today)."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
+    //$temp .=  "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"calendrier\"/></a>\n";
+    $temp .= img_calendrier_js("display_date", "img_bouton_display_date");;
 } else {
     $temp = strftime("%A %d %B %Y", $today);
 } ?>

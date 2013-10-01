@@ -161,7 +161,12 @@ $javascript_specifique[] = "cahier_texte_2/consultation2";
 //$chaine_handles="'ml', 'mr'";
 $mode_handles="m";
 $charger_js_dragresize="y";
-
+/*
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+*/
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
 require_once("../lib/header.inc.php");
@@ -486,10 +491,14 @@ if($mode=='classe') {
 		<input type='hidden' name='id_classe' value='$id_classe' />
 		<input type='hidden' name='mode' value='$mode' />
 
-		<a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;id_classe=$id_classe'>Aujourd'hui</a>
+		<a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;id_classe=$id_classe'>Aujourd'hui</a>";
 
-		<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier début\" style=\"border:0;\" /></a>
+		echo "
+		<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier début\" style=\"border:0;\" /></a>";
 
+		//echo " ".img_calendrier_js("today_jjmmaaaa", "img_bouton_today_jjmmaaaa");
+
+		echo "
 		 - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;id_classe=$id_classe'>suivante</a>
 	</form>
 
@@ -545,10 +554,14 @@ elseif($mode=='eleve') {
 		<input type='hidden' name='id_classe' value='$id_classe' />
 		<input type='hidden' name='mode' value='$mode' />
 
-		<a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>Aujourd'hui</a>
+		<a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>Aujourd'hui</a>";
+		
+		echo "
+		<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier début\" style=\"border:0;\" /></a>";
+		
+		//echo " ".img_calendrier_js("today_jjmmaaaa", "img_bouton_today_jjmmaaaa");
 
-		<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier début\" style=\"border:0;\" /></a>
-
+		echo "
 		 - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>suivante</a>
 	</form>
 
@@ -602,8 +615,13 @@ elseif($mode=='professeur') {
 		<input type='hidden' name='today_jjmmaaaa' id='today_jjmmaaaa' value='' />
 		<input type='hidden' name='login_prof' value='$login_prof' />
 		<input type='hidden' name='mode' value='$mode' />
-		<a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_prof=$login_prof'>Aujourd'hui</a>
-		<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier début\" style=\"border:0;\" /></a>
+		<a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_prof=$login_prof'>Aujourd'hui</a>";
+	
+	echo "
+		<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier début\" style=\"border:0;\" /></a>";
+	
+	//echo " ".img_calendrier_js("today_jjmmaaaa", "img_bouton_today_jjmmaaaa");
+	echo "
 		 - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_prof=$login_prof'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_prof=$login_prof'>suivante</a>
 	</form>
 

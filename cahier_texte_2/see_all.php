@@ -151,6 +151,11 @@ else {
 	$largeur = "5%";
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 //**************** EN-TETE *****************
 if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
 require_once("../lib/header.inc.php");
@@ -407,8 +412,8 @@ if(($id_groupe=='Toutes_matieres')&&
 			}
 		}
 
-		include("../lib/calendrier/calendrier.class.php");
-		$cal1 = new Calendrier("form_envoi_cdt_mail", "date_debut_cdt_mail");
+		//include("../lib/calendrier/calendrier.class.php");
+		//$cal1 = new Calendrier("form_envoi_cdt_mail", "date_debut_cdt_mail");
 
 		// Choisir qui a le droit
 		if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
@@ -428,9 +433,10 @@ if(($id_groupe=='Toutes_matieres')&&
 	<p>Précisez à quelle adresse vous souhaitez envoyer le contenu du cahier de textes&nbsp;:<br />
 	Mail&nbsp;:&nbsp;<input type='text' name='mail_dest' value='' /><br />
 	Indiquez également, quelle partie du cahier de textes vous souhaitez envoyer&nbsp;:<br />
-	A partir du&nbsp;:&nbsp;<input type='text' name='date_debut_cdt_mail' id='date_debut_cdt_mail' size='10' value='".$date_debut_cdt_mail."' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />
-	<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>
-	<input type='submit' value='Envoyer' />
+	A partir du&nbsp;:&nbsp;<input type='text' name='date_debut_cdt_mail' id='date_debut_cdt_mail' size='10' value='".$date_debut_cdt_mail."' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
+	$texte_infobulle.=img_calendrier_js("date_debut_cdt_mail", "img_bouton_date_debut_cdt_mail");
+	//$texte_infobulle.="<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>";
+		$texte_infobulle.="<input type='submit' value='Envoyer' />
 </form>";
 		$tabdiv_infobulle[]=creer_div_infobulle('div_envoi_cdt_par_mail',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
 		}

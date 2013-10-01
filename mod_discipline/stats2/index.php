@@ -92,8 +92,13 @@ $utilisation_scriptaculous="ok";
 $utilisation_tablekit="ok";
 //$utilisation_win = 'oui';
 $scriptaculous_effet="effects,controls,builder,dragdrop";
-$style_specifique = "mod_discipline/stats2/apps/css/stats";
-$javascript_specifique = "mod_discipline/stats2/apps/js/stats";
+$style_specifique[] = "mod_discipline/stats2/apps/css/stats";
+$javascript_specifique[] = "mod_discipline/stats2/apps/js/stats";
+
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 require_once("../../lib/header.inc.php");
 
