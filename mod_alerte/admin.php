@@ -171,6 +171,48 @@ if (isset($_POST['is_posted2'])) {
 	}
 }
 
+if (isset($_POST['is_posted3'])) {
+	check_token();
+
+	$login_user=isset($_POST['login_user']) ? $_POST['login_user'] : array();
+
+	$tab_user_mae=array();
+
+	$sql="SELECT value FROM mod_alerte_divers WHERE name='login_exclus';";
+	$res_mae=mysql_query($sql);
+	if(mysql_num_rows($res_mae)>0) {
+		while($lig_mae=mysql_fetch_object($res_mae)) {
+			$tab_user_mae[]=$lig_mae->value;
+		}
+	}
+
+	$cpt_comptes_exclus_ajoutes=0;
+	for($loop=0;$loop<count($login_user);$loop++) {
+		if(!in_array($login_user[$loop], $tab_user_mae)) {
+			$sql="INSERT INTO mod_alerte_divers SET name='login_exclus', value='".$login_user[$loop]."';";
+			$insert=mysql_query($sql);
+			if($insert) {
+				$cpt_comptes_exclus_ajoutes++;
+			}
+		}
+	}
+	$msg="$cpt_comptes_exclus_ajoutes compte(s) exclu(s) du module Alertes pris en compte.<br />";
+
+	$cpt_comptes_exclus_supprimes=0;
+	for($loop=0;$loop<count($tab_user_mae);$loop++) {
+		if(!in_array($tab_user_mae[$loop], $login_user)) {
+			$sql="DELETE FROM mod_alerte_divers WHERE name='login_exclus' AND value='".$login_user[$loop]."';";
+			$delete=mysql_query($sql);
+			if($delete) {
+				$cpt_comptes_exclus_supprimes++;
+			}
+		}
+	}
+
+	$msg.="$cpt_comptes_exclus_supprimes compte(s) précédemment exclu(s) du module Alertes ne le sont plus.<br />";
+}
+
+
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";

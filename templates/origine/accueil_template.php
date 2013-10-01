@@ -485,13 +485,24 @@
 							<th>Fin session</th>
 						</tr>
 <?php
+		/*
+		// A REVOIR: Pour pouvoir grouper les connexions multiples d'un même utilisateur
+		$tab_personne_connectee=array();
+		foreach ($afficheAccueil->nom_connecte as $newentree) {
+
+
+		}
+		*/
+
 		foreach ($afficheAccueil->nom_connecte as $newentree) {
 ?>
 						<tr class='<?php echo $newentree['style']; ?>'>
 							<td>
 								<?php
 									if((getSettingAOui('active_mod_alerte'))&&(in_array($newentree['statut'], array("administrateur", "scolarite", "cpe", "professeur", "secours", "autre")))) {
-										echo "<div style='float:right; width:16px;'><a href='./mod_alerte/form_message.php?message_envoye=y&amp;login_dest=".$newentree['login'].add_token_in_url()."' title=\"Déposer un message d'alerte/information à destination de ".$newentree['texte']." .\" target='_blank'><img src='./images/icons/mail.png' width='16' height='16' alt='courriel' /></a></div>";
+										if(check_mae($_SESSION['login'])) {
+											echo "<div style='float:right; width:16px;'><a href='./mod_alerte/form_message.php?message_envoye=y&amp;login_dest=".$newentree['login'].add_token_in_url()."' title=\"Déposer un message d'alerte/information à destination de ".$newentree['texte']." .\" target='_blank'><img src='./images/icons/mail.png' width='16' height='16' alt='courriel' /></a></div>";
+										}
 									}
 
 									if(($newentree['courriel']!="")&&(check_mail($newentree['courriel']))) {

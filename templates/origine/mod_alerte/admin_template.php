@@ -263,7 +263,42 @@ echo add_token_field();
 	  </fieldset>
 	</form>
 
+	<!-- ================================================ -->
 
+	<h2>Comptes exclus du dispositif alertes</h2>
+
+	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" id='form2'>
+	  <fieldset style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>
+	<?php
+		echo add_token_field();
+	?>
+		<legend class="invisible">Comptes_exclus</legend>
+
+	<?php
+		$tab_statuts=array('administrateur', 'cpe', 'scolarite', 'professeur', 'autre');
+		$tab_user_preselectionnes=array();
+
+		$sql="SELECT value FROM mod_alerte_divers WHERE name='login_exclus';";
+		$res_mae=mysql_query($sql);
+		if(mysql_num_rows($res_mae)>0) {
+			while($lig_mae=mysql_fetch_object($res_mae)) {
+				$tab_user_preselectionnes[]=$lig_mae->value;
+			}
+		}
+
+		echo liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes);
+	?>
+
+		<input type='hidden' name='is_posted3' value='y' />
+
+		<p class="center">
+			<input type='submit' name='valider' value='Valider' />
+		</p>
+
+	  </fieldset>
+	</form>
+
+	<!-- ================================================ -->
 
 <!-- Début du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>

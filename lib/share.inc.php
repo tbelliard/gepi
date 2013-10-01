@@ -8284,4 +8284,20 @@ function temoin_compte_sso($login_user) {
 	return $retour;
 }
 
+function check_mae($login_user) {
+	$test = sql_query1("SHOW TABLES LIKE 'mod_alerte_divers'");
+	if ($test == -1) {
+		return true;
+	}
+	else {
+		$sql="SELECT 1=1 FROM mod_alerte_divers WHERE name='login_exclus' AND value='".$login_user."';";
+		$test_mae=mysql_query($sql);
+		if(mysql_num_rows($test_mae)==0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
 ?>
