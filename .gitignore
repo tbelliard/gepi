@@ -34,11 +34,11 @@ nbproject
 # Ignore others files
 style_screen_ajout.css
 photos/eleves/*
-images/logo.jpg
 images/background/degrade1.png
 images/background/degrade1_small.png
 images/background/degrade1_very_small.png
 images/logo.jpg
+images/.test
 artichow/cache/*
 
 
