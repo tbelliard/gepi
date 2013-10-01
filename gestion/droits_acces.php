@@ -609,6 +609,12 @@ $texteItem="a accès à la Visualisation de toutes les équipes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='ScolEditElevesGroupes';
+$texteItem="peut modifier la liste des élèves participant à tel ou tel enseignement<br />
+(<em>cela permet de prendre en compte les signalements d'erreurs d'affectation d'élèves remontés par les professeurs</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesTouteFicheEleveScolarite';
 $texteItem="a le droit d'accéder à toutes les fiches élève";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
@@ -986,6 +992,12 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 $titreItem='GepiAccesVisuToutesEquipCpe';
 $texteItem="a accès à la Visualisation de toutes les équipes<br />
 (<em>Par défaut, un CPE ne voit que les équipes des classes dans lesquelles il est responsable d'au moins un élève</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='CpeEditElevesGroupes';
+$texteItem="peut modifier la liste des élèves participant à tel ou tel enseignement<br />
+(<em>cela permet de prendre en compte les signalements d'erreurs d'affectation d'élèves remontés par les professeurs</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

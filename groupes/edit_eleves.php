@@ -39,6 +39,15 @@ if (!checkAccess()) {
     die();
 }
 
+if(($_SESSION['statut']=='cpe')&&(!getSettingAOui('CpeEditElevesGroupes'))) {
+	header("Location: ../accueil.php?msg=Accès non autorisé");
+	die();
+}
+elseif(($_SESSION['statut']=='scolarite')&&(!getSettingAOui('ScolEditElevesGroupes'))) {
+	header("Location: ../accueil.php?msg=Accès non autorisé");
+	die();
+}
+
 // Initialisation des variables utilisées dans le formulaire
 
 $id_classe = isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
@@ -335,20 +344,27 @@ echo "<div style='float:left;'>";
 echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_passage_a_un_autre_groupe' method='post'>\n";
 
 echo "<p class='bold'>\n";
-if(!$multiclasses) {
-	echo "<a href='edit_class.php?id_classe=$id_classe'";
-	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+if(acces('/groupes/edit_class.php', $_SESSION['statut'])) {
+	if(!$multiclasses) {
+		echo "<a href='edit_class.php?id_classe=$id_classe'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	}
+	else {
+		$cpt_tmp_clas=0;
+		foreach($current_group['classes']['classes'] as $tmp_id_classe => $tmp_tab_clas_grp) {
+			if(	$cpt_tmp_clas>0) {echo " | ";}
+			echo "<a href='edit_class.php?id_classe=".$tmp_id_classe."'";
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+			echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".$tmp_tab_clas_grp['classe']."</a>\n";
+			$cpt_tmp_clas++;
+		}
+	}
 }
 else {
-	$cpt_tmp_clas=0;
-	foreach($current_group['classes']['classes'] as $tmp_id_classe => $tmp_tab_clas_grp) {
-		if(	$cpt_tmp_clas>0) {echo " | ";}
-		echo "<a href='edit_class.php?id_classe=".$tmp_id_classe."'";
-		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".$tmp_tab_clas_grp['classe']."</a>\n";
-		$cpt_tmp_clas++;
-	}
+	echo "<a href='../accueil.php'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 }
 
 //$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe AND g.id=jgc.id_groupe AND jgc.id_groupe!='$id_groupe' ORDER BY g.name;";
@@ -406,10 +422,11 @@ echo " | <a href='edit_group.php?id_groupe=$id_groupe&amp;id_classe=".$current_g
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Éditer l'enseignement</a> ";
 
-echo " | <a href='repartition_ele_grp.php'";
-echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-echo " title=\"Répartir des élèves entre plusieurs groupes\">Répartir</a> ";
-
+if(acces('/groupes/repartition_ele_grp.php', $_SESSION['statut'])) {
+	echo " | <a href='repartition_ele_grp.php'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo " title=\"Répartir des élèves entre plusieurs groupes\">Répartir</a> ";
+}
 echo "</p>";
 echo "</form>\n";
 echo "</div>\n";
@@ -659,10 +676,18 @@ echo "<th><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe
 if ($multiclasses) {
 	echo "<th><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;order_by=classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe</a></th>\n";
 }
+
+$acces_mes_listes="y";
+if(!acces('/groupes/mes_listes.php', $_SESSION['statut'])) {
+	$acces_mes_listes="n";
+}
+
 foreach ($current_group["periodes"] as $period) {
 	if($period["num_periode"]!=""){
 		echo "<th>" . $period["nom_periode"];
-		echo " <a href='mes_listes.php?id_groupe=$id_groupe&amp;periode_num=".$period["num_periode"]."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Exporter la liste des élèves de cet enseignement pour la période ".$period["nom_periode"]." au format '><img src='../images/icons/csv.png' width='16' height='16' /></a>";
+		if($acces_mes_listes=="y") {
+			echo " <a href='mes_listes.php?id_groupe=$id_groupe&amp;periode_num=".$period["num_periode"]."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Exporter la liste des élèves de cet enseignement pour la période ".$period["nom_periode"]." au format '><img src='../images/icons/csv.png' width='16' height='16' /></a>";
+		}
 		echo "</th>\n";
 	}
 }
@@ -796,6 +821,16 @@ for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
 $chaine_sql_classe.=")";
 //=====================================
 
+$acces_eleve_options="y";
+if(!acces('/classes/eleve_options.php', $_SESSION['statut'])) {
+	$acces_eleve_options="n";
+}
+
+$acces_prepa_conseil_edit_limite="y";
+if(!acces('/prepa_conseil/edit_limite.php', $_SESSION['statut'])) {
+	$acces_prepa_conseil_edit_limite="n";
+}
+
 if(count($total_eleves)>0) {
 	$alt=1;
 	foreach($total_eleves as $e_login) {
@@ -856,13 +891,20 @@ if(count($total_eleves)>0) {
 					"</td>";
 				*/
 				echo "<td>";
-				echo "<a href='../classes/eleve_options.php?login_eleve=$e_login&id_classe=".$eleves_list["users"][$e_login]['id_classe']."' title=\"Consulter les matières suivies par ".$eleves_list["users"][$e_login]["nom"]." ".$eleves_list["users"][$e_login]["prenom"]." en classe de ".$eleves_list["users"][$e_login]["classe"]."\"";
-				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">";
-				echo $eleves_list["users"][$e_login]["nom"];
-				echo " ";
-				echo $eleves_list["users"][$e_login]["prenom"];
-				echo "</a>\n";
+				if($acces_eleve_options=="y") {
+					echo "<a href='../classes/eleve_options.php?login_eleve=$e_login&id_classe=".$eleves_list["users"][$e_login]['id_classe']."' title=\"Consulter les matières suivies par ".$eleves_list["users"][$e_login]["nom"]." ".$eleves_list["users"][$e_login]["prenom"]." en classe de ".$eleves_list["users"][$e_login]["classe"]."\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">";
+					echo $eleves_list["users"][$e_login]["nom"];
+					echo " ";
+					echo $eleves_list["users"][$e_login]["prenom"];
+					echo "</a>\n";
+				}
+				else {
+					echo $eleves_list["users"][$e_login]["nom"];
+					echo " ";
+					echo $eleves_list["users"][$e_login]["prenom"];
+				}
 				//echo "<pre>".print_r($eleves_list["users"][$e_login])."</pre>";
 				echo "</td>\n";
 
@@ -915,9 +957,14 @@ if(count($total_eleves)>0) {
 
 						// Test sur la présence de notes dans cn ou de notes/app sur bulletin
 						if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
-							echo "<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$e_login."&id_classe=".$eleves_list["users"][$e_login]["id_classe"]."&periode1=".$period["num_periode"]."&periode2=".$period["num_periode"]."' target='_blank'>";
-							echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
-							echo "</a>";
+							if($acces_prepa_conseil_edit_limite=="y") {
+								echo "<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$e_login."&id_classe=".$eleves_list["users"][$e_login]["id_classe"]."&periode1=".$period["num_periode"]."&periode2=".$period["num_periode"]."' target='_blank'>";
+								echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+								echo "</a>";
+							}
+							else {
+								echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+							}
 						}
 
 						$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";
