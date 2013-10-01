@@ -141,6 +141,7 @@ if (isset($_POST['is_posted'])) {
 
 $date_limite=isset($_POST['date_limite']) ? $_POST['date_limite'] : strftime("%d/%m/%Y");
 if (isset($_POST['is_posted2'])) {
+	check_token();
 	if(isset($date_limite)) {
 		$tmp_tab=explode("/",$date_limite);
 		$jour=$tmp_tab[0];
