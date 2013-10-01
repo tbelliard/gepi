@@ -958,20 +958,33 @@ echo "<script type='text/javascript'>
 	// La fonction est ramenée de saisie_sanction.inc.php dans saisie_sanction.php
 	// parce que les javascript définis dans la page saisie_sanction.inc.php appelée via ajax ne sont pas pris en compte.
 	function occupation_lieu_heure(id_sanction) {
+";
+if(acces("/mod_discipline/occupation_lieu_heure.php", $_SESSION['statut'])) {
+	echo "
 		lieu=document.getElementById('lieu_retenue').value;
 		date_retenue=document.getElementById('date_retenue').value;
 		heure_debut=document.getElementById('heure_debut').options[document.getElementById('heure_debut').selectedIndex].value;
 		duree_retenue=document.getElementById('duree_retenue').value;
 
 		centrerpopup('occupation_lieu_heure.php?id_sanction='+id_sanction+'&lieu='+lieu+'&date='+date_retenue+'&heure='+heure_debut+'&duree='+duree_retenue,600,480,'scrollbars=yes,statusbar=no,resizable=yes');
-	}
+";
+}
+echo "
+	}";
 
+echo "
 	function maj_div_liste_retenues_jour() {
+";
+if(acces("/mod_discipline/liste_retenues_jour.php", $_SESSION['statut'])) {
+echo "
 		if($('date_retenue')) {
 			date=$('date_retenue').value;
 			//alert('date='+date);
 			new Ajax.Updater($('div_liste_retenues_jour'),'liste_retenues_jour.php?date='+date,{method: 'get'});
 		}
+";
+}
+echo "
 	}
 </script>\n";
 
@@ -1472,6 +1485,7 @@ elseif($mode=='ajout') {
 	*/
 
 	echo "</select>\n";
+	echo "<input type='button' value='Go' onclick='maj_traitement()' />";
 	echo "</p>\n";
 	echo "</div>\n";
 
