@@ -38,11 +38,14 @@ images/background/degrade1.png
 images/background/degrade1_small.png
 images/background/degrade1_very_small.png
 images/logo.jpg
-images/.test
 artichow/cache/*
+.test
 
 
 # Ignore Les plugins
-mod_plugins/plugin*
-mod_plugins/change_statut*
+mod_plugins/
+!mod_plugins/index.php
+!mod_plugins/plugins.class.php
+!mod_plugins/traiterRequetes.class.php
+!mod_plugins/traiterXml.class.php
 
