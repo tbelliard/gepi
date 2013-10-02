@@ -181,13 +181,27 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 					}
 	
 					// 20100626
+					/*
 					if($tab_rel['rn_moy_min_max_classe']=='y') {
 						$retour.=" (<i><small>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</small></i>)";
 					}
 					elseif($tab_rel['rn_moy_classe']=='y') {
 						$retour.=" (classe:".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe'].")";
 					}
-	
+					*/
+					if($tab_rel['rn_moy_min_max_classe']=='y') {
+						// 20131002: Mettre des couleurs particulières
+						$retour.=" (";
+						$retour.="<em title=\"".$eleve_nom_court." (".formate_date($eleve_date).")
+Note minimale   : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."
+Moyenne classe : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."
+Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\">";
+						$retour.="<span class='cn_moymin'>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."</span>|<span class='cn_moyclasse'>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."</span>|<span class='cn_moymax'>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</span></em>)";
+					}
+					elseif($tab_rel['rn_moy_classe']=='y') {
+						$retour.=" (<span class='cn_moyclasse' title=\"".$eleve_nom_court." (".formate_date($eleve_date).")\">classe:".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."</span>)";
+					}
+
 					//====================================================================
 					// Après un tour avec affichage dans la boucle:
 					$tiret = "yes";
@@ -1499,13 +1513,15 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 													echo " (<em title=\"".$eleve_nom_court." (".formate_date($eleve_date).")
 Note minimale   : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."
 Moyenne classe : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."
-Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\"><small>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</small></em>)";
+Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\"><small>";
+													//echo $tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max'];
+													echo "<span class='cn_moymin'>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."</span>|<span class='cn_moyclasse'>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."</span>|<span class='cn_moymax'>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</span>";
+													echo "</small></em>)";
 												}
 												elseif($tab_rel['rn_moy_classe']=='y') {
-													echo " (<em>classe:".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."</em>)";
+													echo " (<em class='cn_moyclasse'>classe:".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."</em>)";
 												}
-				
-				
+
 												//====================================================================
 												// Après un tour avec affichage dans la boucle:
 												$tiret = "yes";
@@ -1614,7 +1630,10 @@ Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\">
 										echo " (<em title=\"".$eleve_nom_court." (".formate_date($eleve_date).")
 Note minimale   : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."
 Moyenne classe : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."
-Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\"><small>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</small></em>)";
+Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\"><small>";
+										//echo $tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max'];
+										echo "<span class='cn_moymin'>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."</span>|<span class='cn_moyclasse'>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."</span>|<span class='cn_moymax'>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</span>";
+										echo "</small></em>)";
 										//echo " (<i><small>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</small></i>)";
 									}
 									elseif($tab_rel['rn_moy_classe']=='y') {

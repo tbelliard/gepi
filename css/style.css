@@ -242,4 +242,15 @@ TD.calendarHeader {border:0px; font-size: 10pt}
     width: 15px;
 }
 
+.cn_moymin {
+    color:red;
+}
+
+.cn_moyclasse {
+    color:blue;
+}
+
+.cn_moymax {
+    color:green;
+}
 

@@ -603,7 +603,7 @@ include('menu_bilans.inc.php');
 	</fieldset>
   </form>
   
-  <table  class="sortable" style ="border:3px groove #aaaaaa;">
+  <table  class="sortable boireaus boireaus_alt" style ="border:3px groove #aaaaaa;">
 	<caption style ="font-size:larger;" >
 	  Justifications du
 	  <?php echo unserialize($_SESSION['statJustifie']['date_absence_eleve_debut']); ?>
@@ -644,7 +644,7 @@ include('menu_bilans.inc.php');
 	
 <?php if (count($donnees)) {
 foreach ($donnees as $donnee) { ?>
-	<tr>
+	<tr class='white_hover'>
 	  <td style ="border:1px groove #aaaaaa;">
 		<?php echo $donnee['nom']." ".$donnee['prenom']; ?>
 	  </td>
