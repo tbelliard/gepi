@@ -6145,7 +6145,7 @@ function tableau_tel_resp_ele($ele_login) {
 	$tab_style[1]="impair";
 	$tab_style[-1]="pair";
 
-	if((count($tab_tel['responsable'])>0)||(count($tab_tel['eleve'])>0)) {
+	if(((isset($tab_tel['responsable']))&&(count($tab_tel['responsable'])>0))||((isset($tab_tel['eleve']))&&(count($tab_tel['eleve'])>0))) {
 		$retour.="<table class='boireaus' summary='Tableau des numéros de téléphone'>\n";
 		//$retour.="<table class='tb_absences' summary='Tableau des numéros de telephone'>\n";
 		$retour.="<tr>\n";
@@ -6196,6 +6196,9 @@ function tableau_tel_resp_ele($ele_login) {
 			$retour.="</tr>\n";
 		}
 		$retour.="</table>\n";
+	}
+	else {
+		$retour.="<p style='color:red'>Aucun numéro de téléphone n'a été trouvé.</p>\n";
 	}
 	return $retour;
 }
