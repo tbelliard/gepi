@@ -182,7 +182,7 @@ if($gepi_prof_suivi==""){
 
 ?>
 </head>
-<body>
+<body style='margin-left:2px;'>
 
 <?php
 
