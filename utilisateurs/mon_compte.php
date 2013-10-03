@@ -2083,14 +2083,15 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "<input type='radio' name='cn_order_by' id='cn_order_by_classe' value='classe' ";
 	echo "onchange=\"checkbox_change('cn_order_by_classe');checkbox_change('cn_order_by_nom');changement()\" ";
 	if($cn_order_by=='classe') {echo 'checked';}
-	echo " /><label for='cn_order_by_classe' id='texte_cn_order_by_classe'>par classe puis ordre alphabétique des noms des élèves.</label><br />\n";
 	echo " tabindex='$tabindex'";
+	echo " /><label for='cn_order_by_classe' id='texte_cn_order_by_classe'>par classe puis ordre alphabétique des noms des élèves.</label><br />\n";
 	$tabindex++;
+
 	echo "<input type='radio' name='cn_order_by' id='cn_order_by_nom' value='nom' ";
 	echo "onchange=\"checkbox_change('cn_order_by_classe');checkbox_change('cn_order_by_nom');changement()\" ";
 	if($cn_order_by=='nom') {echo 'checked';}
-	echo " /><label for='cn_order_by_nom' id='texte_cn_order_by_nom'>par ordre alphabétique des noms des élèves.</label><br />\n";
 	echo " tabindex='$tabindex'";
+	echo " /><label for='cn_order_by_nom' id='texte_cn_order_by_nom'>par ordre alphabétique des noms des élèves.</label><br />\n";
 	$tabindex++;
 	echo "</p>\n";
 
