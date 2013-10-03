@@ -38,9 +38,9 @@ images/background/degrade1.png
 images/background/degrade1_small.png
 images/background/degrade1_very_small.png
 images/logo.jpg
+images/logo_etab.*
 artichow/cache/*
 .test
-
 
 # Ignore Les plugins
 mod_plugins/
