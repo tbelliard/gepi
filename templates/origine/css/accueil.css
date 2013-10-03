@@ -32,6 +32,10 @@ h2 {
 	background-color: #DFDFDF;
 }
 
+.div_conteneur_infobulle {
+	box-shadow: 4px 2px 6px #DFDFDF;
+}
+
 table.boireaus {
 	margin-top: 1em;
 	border-style: solid;

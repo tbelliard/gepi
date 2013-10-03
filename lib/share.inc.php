@@ -2706,7 +2706,7 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 
 	// Conteneur:
 	if($bg_texte==''){
-		$div="<div id='$id' class='infobulle_corps";
+		$div="<div id='$id' class='infobulle_corps div_conteneur_infobulle";
 		if((isset($class_special_infobulle))&&($class_special_infobulle!='')) {$div.=" ".$class_special_infobulle;}
 		$div.="' style='$style_box width: ".$largeur;
 		if(is_numeric($largeur)) {
@@ -2716,7 +2716,7 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	}
 	else{
 		$div="<div id='$id' ";
-		if((isset($class_special_infobulle))&&($class_special_infobulle!='')) {$div.="class='".$class_special_infobulle."' ";}
+		if((isset($class_special_infobulle))&&($class_special_infobulle!='')) {$div.="class='".$class_special_infobulle." div_conteneur_infobulle' ";} else {$div.="class='div_conteneur_infobulle' ";}
 		$div.="style='$style_box background-color: $bg_texte; width: ".$largeur;
 		if(is_numeric($largeur)) {
 			$div.=$unite_div_infobulle;
