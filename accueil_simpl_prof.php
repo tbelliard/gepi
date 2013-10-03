@@ -483,7 +483,7 @@ elseif($colspan>0) {
 
 
 //echo "<table border='1'>\n";
-echo "<table class='contenu' summary=\"Tableau de la liste des enseignements avec les liens vers le Carnet de notes, les bulletins, les graphes,...\">\n";
+echo "<table class='contenu boireaus boireaus_alt' summary=\"Tableau de la liste des enseignements avec les liens vers le Carnet de notes, les bulletins, les graphes,...\">\n";
 echo "<tr>\n";
 echo "<th";
 echo $chaine_rowspan_ligne_entete;
@@ -801,7 +801,8 @@ for($i=0;$i<count($groups);$i++){
 							}
 						}
 						else {
-							echo "<td class='$class_style'>\n";
+							//echo "<td class='$class_style'>\n";
+							echo "<td>\n";
 						}
 
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['cahier_notes'])) {
@@ -851,7 +852,8 @@ for($i=0;$i<count($groups);$i++){
 							}
 						}
 						else {
-							echo "<td class='$class_style'>\n";
+							//echo "<td class='$class_style'>\n";
+							echo "<td>\n";
 						}
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['bulletins'])) {
 							echo "<div id='h_bn_".$i."_".$j."'>";
@@ -882,7 +884,12 @@ for($i=0;$i<count($groups);$i++){
 	
 	
 						// Appréciation sur le bulletin:
-						echo "<td class='$class_style'>\n";
+						if($class_style!="deverrouille") {
+							echo "<td class='$class_style'>\n";
+						}
+						else {
+							echo "<td>\n";
+						}
 						echo "<div id='h_ba_".$i."_".$j."'>";
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['bulletins'])) {
 							echo "<a href='saisie/saisie_appreciations.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."'";
@@ -915,7 +922,12 @@ for($i=0;$i<count($groups);$i++){
 	
 					if($pref_accueil_visu=="y"){
 						// Graphe:
-						echo "<td class='$class_style'>\n";
+						if($class_style!="deverrouille") {
+							echo "<td class='$class_style'>\n";
+						}
+						else {
+							echo "<td>\n";
+						}
 						echo "<div id='h_g_".$i."_".$j."'>";
 						$cpt=0;
 						foreach($groups[$i]["classes"]["classes"] as $classe){
@@ -950,7 +962,12 @@ for($i=0;$i<count($groups);$i++){
 						// <input type=hidden name=id_classe value=$id_classe />
 	
 						if($test_acces_bull_simp[$j]=="y") {
-							echo "<td class='$class_style'>\n";
+							if($class_style!="deverrouille") {
+								echo "<td class='$class_style'>\n";
+							}
+							else {
+								echo "<td>\n";
+							}
 							echo "<div id='h_bs_".$i."_".$j."'>";
 							$cpt=0;
 							foreach($groups[$i]["classes"]["classes"] as $classe){
@@ -1003,7 +1020,12 @@ for($i=0;$i<count($groups);$i++){
 	
 	
 					if($pref_accueil_liste_pdf=="y"){
-						echo "<td class='$class_style'>\n";
+						if($class_style!="deverrouille") {
+							echo "<td class='$class_style'>\n";
+						}
+						else {
+							echo "<td>\n";
+						}
 						echo "<div id='h_listes_".$i."_".$j."'>";
 						echo "<a href='impression/liste_pdf.php' onClick=\"valide_liste_pdf('".$groups[$i]['id']."','".$groups[$i]['periodes'][$j]['num_periode']."'); return false;\" target='_blank'";
 						if($pref_accueil_infobulles=="y"){
