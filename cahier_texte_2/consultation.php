@@ -366,6 +366,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
         //$aujourhui = $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
         $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
         $jour = mktime(0, 0, 0, date('m',$aujourdhui), (date('d',$aujourdhui) + $i), date('Y',$aujourdhui) );
+        $jour_suivant=$jour+24*3600;
         if (is_numeric($id_classe) AND $id_classe > 0) {
 	        $sql="SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
 	            "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jc WHERE (" .
@@ -373,7 +374,9 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 	            "g.id = jc.id_groupe and " .
 	            "jc.id_classe = '" . $id_classe . "' and " .
 	            "ct.contenu != '' and " .
-	            "ct.date_ct = '$jour');";
+	            "ct.date_ct >= '$jour' and
+	             ct.date_ct < '$jour_suivant'
+	            );";
 
         } elseif ($selected_eleve) {
 			// Le DISTINCT est quand même utile parce que si plusieurs périodes sont ouvertes en saisie, on a une multiplication des retours par le nombre de périodes ouvertes en saisie
@@ -411,7 +414,9 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
                 "jeg.periode = '".$periode_courante."' and " .
                 "jec.login = '" . $selected_eleve->login ."' and " .
                 "ct.contenu != '' and " .
-                "ct.date_ct = '$jour')";
+                "ct.date_ct >= '$jour' and
+	             ct.date_ct < '$jour_suivant'
+	            )";
 
         }
 		//echo strftime("%a %d/%m/%y",$jour)."<br />";
@@ -556,6 +561,7 @@ echo "<div class=\"centre_cont_texte\">\n";
         $nb_dev = 0;
         for ($i = 0; $i <= $delai; $i++) {
           $jour = mktime(0, 0, 0, date('m',$today), (date('d',$today) + $i), date('Y',$today) );
+          $jour_suivant=$jour+24*3600;
         // On regarde pour chaque jour, s'il y a des devoirs dans à faire
           if ($selected_eleve) {
 			// On détermine la période active, pour ne pas avoir de duplication des entrées
@@ -571,7 +577,9 @@ echo "<div class=\"centre_cont_texte\">\n";
                 "p.id_classe = jec.id_classe and " .
                 "jec.login = '" . $selected_eleve->login ."' and " .
                 "ct.contenu != '' and " .
-                "ct.date_ct = '$jour');";
+                "ct.date_ct >= '$jour' and
+	             ct.date_ct < '$jour_suivant'
+	            );";
           } else {
 	         $sql="SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
 	             "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jgc WHERE (" .
@@ -579,7 +587,9 @@ echo "<div class=\"centre_cont_texte\">\n";
 	             "g.id = jgc.id_groupe and " .
 	             "jgc.id_classe = '" . $id_classe . "' and " .
 	             "ct.contenu != '' and " .
-	             "ct.date_ct = '$jour');";
+	             "ct.date_ct >= '$jour' and
+	             ct.date_ct < '$jour_suivant'
+	            );";
           }
 		//echo strftime("%a %d/%m/%y",$jour)."<br />";
 		//echo "$sql<br /><br />";
