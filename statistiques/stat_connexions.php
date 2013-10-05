@@ -528,7 +528,7 @@ elseif($mode==1) {
 
 			stat_echo_debug("<tr><td>".$tab_classe[$i]['classe']."</td><td colspan='7'>");
 
-			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec WHERE jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY e.nom, e.prenom, l.login;";
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			$nb_ele=mysql_num_rows($res);
@@ -539,7 +539,7 @@ elseif($mode==1) {
 				}
 			}
 
-			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec WHERE jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY e.nom, e.prenom, l.login;";
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			$nb_ele=mysql_num_rows($res);
@@ -565,7 +565,7 @@ elseif($mode==1) {
 
 			stat_echo_debug("<p>Parents connectés au moins une fois&nbsp;:</p>");
 
-			$sql="SELECT DISTINCT l.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+			$sql="SELECT DISTINCT l.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY rp.nom, rp.prenom, l.login;";
 			stat_echo_debug("$sql<br />");
 			$res=mysql_query($sql);
 			$nb_parents=mysql_num_rows($res);
@@ -583,7 +583,7 @@ elseif($mode==1) {
 			*/
 
 			if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
-				$titre_infobulle="Parents connectés au moins une fois\n";
+				$titre_infobulle="Parents connectés au moins une fois (<em>".$tab_classe[$i]['classe']."</em>)\n";
 				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_resp, "y", "responsable")."</div>";
 				$tabdiv_infobulle[]=creer_div_infobulle('div_resp_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 			}
@@ -592,7 +592,7 @@ elseif($mode==1) {
 
 			stat_echo_debug("<p>Parents jamais connectés avec succès&nbsp;:<br />");
 
-			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose='4' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose='4' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY rp.nom, rp.prenom, l.login;";
 			//echo "$sql<br />";
 			stat_echo_debug("$sql<br />");
 			$res=mysql_query($sql);
@@ -634,7 +634,7 @@ elseif($mode==1) {
 			}
 			*/
 			if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
-				$titre_infobulle="Parents en échec de connexion\n";
+				$titre_infobulle="Parents en échec de connexion (<em>".$tab_classe[$i]['classe']."</em>)\n";
 				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes)."</div>";
 				$tabdiv_infobulle[]=creer_div_infobulle('div_resp_echec_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 			}
@@ -650,7 +650,7 @@ elseif($mode==1) {
 
 			$tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter_cette_classe=array();
 			$tab_parents_enfants_differents_connectes_avec_succes_cette_classe=array();
-			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY rp.nom, rp.prenom, l.login;";
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			while($lig=mysql_fetch_object($res)) {
