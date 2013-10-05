@@ -348,7 +348,7 @@ function tableau_php_tableau_html($tab, $avec_lien="n", $statut="") {
 	}
 
 	//$retour.="<div float:left; width: 15em;'>\n";
-	$retour.="<table class='boireaus'>\n";
+	$retour.="<table class='boireaus' style='margin:2px;'>\n";
 	$alt=1;
 	//$compteur=0;
 	for($loop=0;$loop<count($tab);$loop++) {
@@ -362,9 +362,14 @@ function tableau_php_tableau_html($tab, $avec_lien="n", $statut="") {
 			$compteur=0;
 		}
 		*/
+		$info_title="";
+		if($_SESSION['statut']=='administrateur') {
+			$info_title=" title=\"Compte '$tab[$loop]'\"";
+		}
+
 		$alt=$alt*(-1);
 		$retour.="<tr class='lig$alt white_hover'>\n";
-		$retour.="<td>";
+		$retour.="<td".$info_title.">";
 		if(($avec_lien=="y")&&($statut=='responsable')&&($acces_lien)) {
 			$retour.="<a href='../responsables/modify_resp.php?login_resp=".$tab[$loop]."&amp;journal_connexions=y#connexion' target='_blank' title='Voir le journal des connexions de ce responsable.'>".civ_nom_prenom($tab[$loop])."</a>";
 		}
@@ -396,6 +401,13 @@ $AccesStatConnexionEle=AccesInfoEle("AccesStatConnexionEle");
 $AccesDetailConnexionEle=AccesInfoEle("AccesDetailConnexionEle");
 $AccesStatConnexionResp=AccesInfoResp("AccesStatConnexionResp");
 $AccesDetailConnexionResp=AccesInfoResp("AccesDetailConnexionResp");
+
+function stat_echo_debug($chaine) {
+	$debug="n";
+	if($debug=="y") {
+		echo $chaine;
+	}
+}
 
 if(!isset($mode)) {
 	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
@@ -514,6 +526,8 @@ elseif($mode==1) {
 				$AccesDetailConnexionResp=AccesInfoResp("AccesDetailConnexionResp", "", "", $tab_classe[$i]['id']);
 			}
 
+			stat_echo_debug("<tr><td>".$tab_classe[$i]['classe']."</td><td colspan='7'>");
+
 			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec WHERE jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
@@ -549,8 +563,10 @@ elseif($mode==1) {
 				$tabdiv_infobulle[]=creer_div_infobulle('div_ele_en_echec_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 			}
 
+			stat_echo_debug("<p>Parents connectés au moins une fois&nbsp;:</p>");
+
 			$sql="SELECT DISTINCT l.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
-			//echo "$sql<br />";
+			stat_echo_debug("$sql<br />");
 			$res=mysql_query($sql);
 			$nb_parents=mysql_num_rows($res);
 			$tab_resp=array();
@@ -565,21 +581,29 @@ elseif($mode==1) {
 				print_r($tab_resp);
 			}
 			*/
+
 			if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
 				$titre_infobulle="Parents connectés au moins une fois\n";
 				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_resp, "y", "responsable")."</div>";
 				$tabdiv_infobulle[]=creer_div_infobulle('div_resp_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 			}
 
+			//stat_echo_debug("<pre>".print_r($tab_resp)."</pre>");
+
+			stat_echo_debug("<p>Parents jamais connectés avec succès&nbsp;:<br />");
+
 			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose='4' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
 			//echo "$sql<br />";
+			stat_echo_debug("$sql<br />");
 			$res=mysql_query($sql);
 			$nb_parents_erreur_mdp=mysql_num_rows($res);
 			$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes=0;
 			$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes=array();
 			if($nb_parents_erreur_mdp>0) {
 				while($lig=mysql_fetch_object($res)) {
-					if(!in_array(mb_strtoupper($lig->login), $tab_resp)) {
+					stat_echo_debug("Test $lig->login -&gt; ".mb_strtoupper($lig->login)." : ");
+					if(!in_array(trim(mb_strtoupper($lig->login)), $tab_resp)) {
+						stat_echo_debug("<span style='color:red'>$lig->login</span><br />");
 						$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes++;
 						$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes[]=$lig->login;
 
@@ -598,6 +622,9 @@ elseif($mode==1) {
 							}
 
 						}
+					}
+					else {
+						stat_echo_debug("<span style='color:green'>$lig->login</span><br />");
 					}
 				}
 			}
@@ -638,6 +665,8 @@ elseif($mode==1) {
 			}
 			$nb_parents_differents=count($tab_parents_enfants_differents_connectes_avec_succes_cette_classe);
 			// **********************************************************************************************
+
+			stat_echo_debug("</td></tr>");
 
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt white_hover'>\n";
