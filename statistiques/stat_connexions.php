@@ -112,9 +112,14 @@ function tableau_php_tableau_html($tab, $nb_lig_max=5) {
 			$compteur=0;
 		}
 		*/
+		$info_title="";
+		if($_SESSION['statut']=='administrateur') {
+			$info_title=" title=\"Compte '$tab[$loop]'\"";
+		}
+
 		$alt=$alt*(-1);
 		$retour.="<tr class='lig$alt white_hover'>\n";
-		$retour.="<td>".civ_nom_prenom($tab[$loop])."</td>\n";
+		$retour.="<td".$info_title.">".civ_nom_prenom($tab[$loop])."</td>\n";
 		$retour.="</tr>\n";
 		//$compteur++;
 	}
@@ -241,7 +246,7 @@ elseif($mode==1) {
 			$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes=array();
 			if($nb_parents_erreur_mdp>0) {
 				while($lig=mysql_fetch_object($res)) {
-					if(!in_array(mb_strtoupper($lig->login), $tab_resp)) {
+					if(!in_array(trim(mb_strtoupper($lig->login)), $tab_resp)) {
 						$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes++;
 						$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes[]=$lig->login;
 					}
