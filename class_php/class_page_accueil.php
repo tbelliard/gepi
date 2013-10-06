@@ -180,6 +180,12 @@ class class_page_accueil {
 	$this->verif_exist_ordre_menu('bloc_carnet_notes_famille');
 	if ($this->releveNotesFamille())
 	$this->chargeAutreNom('bloc_carnet_notes_famille');
+// Relevés de notes cumulées
+if(getSettingAOui('GepiAccesEvalCumulEleve')) {
+	$this->verif_exist_ordre_menu('bloc_carnet_notes_cumules');
+	if ($this->notesCumulFamille())
+	$this->chargeAutreNom('bloc_carnet_notes_cumules');
+}
 // Equipes pédagogiques
 	$this->verif_exist_ordre_menu('bloc_equipe_peda_famille');
 	if ($this->equipePedaFamille())
@@ -887,6 +893,27 @@ if(getSettingAOui('active_bulletins')) {
 	}
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Carnet de notes",'images/icons/releve.png');
+	  return true;
+	}
+  }
+
+  private function notesCumulFamille(){
+	$this->b=0;
+
+   $condition = (
+		getSettingValue("active_carnets_notes")=='y' AND (
+			($this->statutUtilisateur == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes')
+			OR ($this->statutUtilisateur == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes')
+			OR ($this->statutUtilisateur == "professeur")
+			));
+
+	if ($condition) {
+		  $this->creeNouveauItem("/cahier_notes/visu_cc_elv.php",
+				  "Notes cumulées",
+				  "Permet de consulter les notes cumulées.");
+	}
+	if ($this->b>0){
+	  $this->creeNouveauTitre('accueil',"Notes cumulées",'images/icons/releve.png');
 	  return true;
 	}
   }
