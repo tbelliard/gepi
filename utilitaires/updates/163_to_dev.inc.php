@@ -414,37 +414,5 @@ if ($test == -1) {
 }
 
 
-$result .= "<br />";
-$result .= "<strong>Ajout des droits sur la page d'affichage des évaluations cumules pour les familles :</strong><br />";
-
-/*
- * mysql_query est obsolète depuis PHP 5.5.0, on utilise mysqli à la place
- */
-
-$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
-
-/* Modification du jeu de résultats en utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $mysqli->error);
-    die();
-}
-
-$requete = $mysqli->query("SELECT * FROM `droits` WHERE id = '/cahier_notes/visu_cc_elv.php' ");
-if (!$requete->num_rows) {
-    //$requete->num_rows est toujours à 0, la ligne est effacée dans la table lors de la mise à jour ?????????
-    $requete->close();
-    $requete2 = $mysqli->query("INSERT INTO `gepi`.`droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, `eleve`, `responsable`, `secours`, `autre`, `description`, `statut`) VALUES ('/cahier_notes/visu_cc_elv.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'F', 'Carnet de notes - visualisation par les élèves', '');");
-    if ($requete2 ) {
-		$result .= msj_ok("Succes !");
-	}
-	else {
-		$result .= msj_erreur("Échec !");
-	}
-} else {
-	$result .= msj_present("L'enregistrement existe déjà");
-    $requete->close();
-}
-
-$mysqli->close();
 
 ?>
