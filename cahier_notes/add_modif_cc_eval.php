@@ -370,7 +370,7 @@ else{
 
 
 	echo "<tr>\n";
-	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité:</td>\n";
+	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité (si le droit est ouvert) :</td>\n";
 	echo "<td>\n";
 	echo "<input type='text' name='vision_famille ' id='vision_famille ' size='10' value=\"".$vision_famille ."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	echo img_calendrier_js("vision_famille ", "img_bouton_vision_famille ");

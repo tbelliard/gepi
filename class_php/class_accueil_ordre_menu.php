@@ -129,6 +129,14 @@ class class_accueil_ordre_menu extends class_page_accueil {
 	if ($this->releve_notes())
 	$this->chargeAutreNom('bloc_releve_notes');
 
+/***** Vision des évaluations cumules *****/
+    if(getSettingAOui('GepiAccesEvalCumulEleve')) {
+        $this->verif_exist_ordre_menu('bloc_carnet_notes_cumules');
+        if ($this->notesCumulFamille())
+        $this->chargeAutreNom('bloc_carnet_notes_cumules');
+    }
+
+
 /***** Outils de relevé ECTS *****/
 	$this->verif_exist_ordre_menu('bloc_releve_ects');
 	if ($this->releve_ECTS())
