@@ -46,6 +46,11 @@ $_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['
 
 $mdp_INE=isset($_POST["mdp_INE"]) ? $_POST["mdp_INE"] : (isset($_GET["mdp_INE"]) ? $_GET["mdp_INE"] : NULL);
 
+$order_by=isset($_GET['order_by']) ? $_GET['order_by'] : "nom_prenom";
+if(!in_array($order_by, array('nom_prenom', 'classe'))) {
+	$order_by='nom_prenom';
+}
+
 if ($create_mode == "classe" OR $create_mode == "individual") {
 	// On a une demande de création, on continue
 	check_token();
@@ -352,16 +357,34 @@ else{
 	$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
 
 
-	$sql="SELECT e.* FROM eleves e LEFT JOIN utilisateurs u ON e.login=u.login WHERE (u.login IS NULL";
-	if($afficher_tous_les_eleves!='y'){
-		if($critere_recherche!=""){
-			$sql.=" AND e.nom like '%".$critere_recherche."%'";
+	if($order_by=='classe') {
+		$sql="SELECT DISTINCT e.* FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN utilisateurs u ON e.login=u.login WHERE (u.login IS NULL AND jec.login=e.login AND jec.id_classe=c.id";
+		if($afficher_tous_les_eleves!='y'){
+			if($critere_recherche!=""){
+				$sql.=" AND e.nom like '%".$critere_recherche."%'";
+			}
+		}
+
+		$sql.=") ORDER BY c.classe, e.nom,e.prenom";
+		if($afficher_tous_les_eleves!='y'){
+			if($critere_recherche==""){
+				$sql.=" LIMIT 20";
+			}
 		}
 	}
-	$sql.=") ORDER BY e.nom,e.prenom";
-	if($afficher_tous_les_eleves!='y'){
-		if($critere_recherche==""){
-			$sql.=" LIMIT 20";
+	else {
+		$sql="SELECT e.* FROM eleves e LEFT JOIN utilisateurs u ON e.login=u.login WHERE (u.login IS NULL";
+		if($afficher_tous_les_eleves!='y'){
+			if($critere_recherche!=""){
+				$sql.=" AND e.nom like '%".$critere_recherche."%'";
+			}
+		}
+
+		$sql.=") ORDER BY e.nom,e.prenom";
+		if($afficher_tous_les_eleves!='y'){
+			if($critere_recherche==""){
+				$sql.=" LIMIT 20";
+			}
 		}
 	}
 	//echo "$sql<br />";
@@ -384,7 +407,7 @@ else{
 	echo "Filtrage:";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves sans login dont le <b>nom</b> contient: ";
+	echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves sans compte d'utilisateur dont le <b>nom</b> contient: ";
 	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -395,7 +418,7 @@ else{
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<input type='button' name='afficher_tous' value='Afficher tous les élèves sans login' onClick=\"document.getElementById('afficher_tous_les_eleves').value='y'; document.form_rech.submit();\" />\n";
+	echo "<input type='button' name='afficher_tous' value=\"Afficher tous les élèves sans compte d'utilisateur\" onClick=\"document.getElementById('afficher_tous_les_eleves').value='y'; document.form_rech.submit();\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -441,7 +464,26 @@ else{
 	echo "</select>";
 	echo "</p>";
 
-	echo "<table class='boireaus' border='1' summary='Créer'>\n";
+	echo "<table class='boireaus' border='1' summary='Créer'>
+	<tr>
+		<th colspan='2'>Création du compte</th>
+		<th><a href='".$_SERVER['PHP_SELF']."?order_by=nom_prenom";
+	if($critere_recherche!="") {
+		echo "&amp;critere_recherche=$critere_recherche";
+	}
+	if($afficher_tous_les_eleves=="y") {
+		echo "&amp;afficher_tous_les_eleves=y";
+	}
+	echo "'>Nom prénom</a></th>
+		<th><a href='".$_SERVER['PHP_SELF']."?order_by=classe";
+	if($critere_recherche!="") {
+		echo "&amp;critere_recherche=$critere_recherche";
+	}
+	if($afficher_tous_les_eleves=="y") {
+		echo "&amp;afficher_tous_les_eleves=y";
+	}
+	echo "'>Classe</a></th>
+	</tr>\n";
 	$alt=1;
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		$alt=$alt*(-1);
@@ -451,11 +493,15 @@ else{
 			echo "</td>\n";
 
 			echo "<td>\n";
-			echo "<input type='submit' value=\"Créer d'après INE\" onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='y'; $('form_create_one_eleve').submit();\" />\n";
-			//echo "<input type='submit' value=\"Créer d'après INE\" onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='y';\" />\n";
+			if($current_eleve->no_gep!="") {
+				echo "<input type='submit' value=\"Créer d'après INE\" onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='y'; $('form_create_one_eleve').submit();\" />\n";
+			}
+			else {
+				echo "<span style='color:red'>INE non renseigné</span>";
+			}
 			echo "</td>\n";
 
-			echo "<td>".$current_eleve->nom." ".$current_eleve->prenom."</td>\n";
+			echo "<td><a href='../eleves/modify_eleve.php?eleve_login=$current_eleve->login' style='color:black; text-decoration:none;' title=\"Editer la fiche de l'élève\" target='_blank'>".$current_eleve->nom." ".$current_eleve->prenom."</a></td>\n";
 
 
 			echo "<td>\n";
@@ -471,6 +517,7 @@ else{
 		echo "</tr>\n";
 	}
 	echo "</table>\n";
+	echo "<p>$nb2 élèves affichés.</p>";
 	echo "</form>";
 	echo "</blockquote>\n";
 }
