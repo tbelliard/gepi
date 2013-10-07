@@ -254,3 +254,94 @@ TD.calendarHeader {border:0px; font-size: 10pt}
     color:green;
 }
 
+/* ===================== */
+table.boireaus {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	border-collapse: collapse;
+}
+
+.boireaus th {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	/*background-color: khaki;*/
+	background-color: #fff5b1;
+	font-weight:bold;
+	text-align:center;
+	vertical-align: middle;
+    padding: .2em .5em;
+}
+
+.boireaus td {
+	text-align:center;
+	vertical-align: middle;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+    padding: .2em .5em;
+}
+
+.boireaus .lig-1 {
+	background-color: #C8FFC8;
+}
+.boireaus .lig1 {
+	background-color: #FFE6AA;
+}
+
+
+/* =======================================*
+* Affichage de div sous forme de tableau
+*=========================================*/
+
+/* ===== 2 colonnes → 1ère colonne 30% ===== */
+.colonne {
+	display:table-cell;
+	padding:0.5em;
+	vertical-align:middle;
+	border-width:thin;
+	border-style:solid; 
+	border-color:#d3d3d3; 
+}
+
+.colonne:first-child {
+	width:30%; 
+	font-size:medium;
+	font-weight:normal;
+}
+
+.colonne + .colonne {
+	border-left: none;
+}
+
+
+/* ===== 3 colonnes ===== */
+.ligne3 {
+    display:table-row;
+}
+
+.col3 {
+	display:table-cell;
+	padding:0.5em ;
+}
+
+.col3_0 {
+	width:30%; 
+	font-size:medium;
+	font-weight:normal;
+}
+
+.col3_1  {
+	width:30%; 
+	font-size:medium;
+	font-weight:normal;
+}
+
+.col3_2  {
+	width:30%; 
+	font-size:medium;
+	font-weight:normal;
+}
+
+

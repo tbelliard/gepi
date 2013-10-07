@@ -1035,6 +1035,8 @@ autre='F',
 description='Abs2: Creation lot de traitements',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/visu_cc_elv.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'F', 'Carnet de notes - visualisation par les élèves', '');";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

@@ -413,4 +413,6 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+
+
 ?>

@@ -1245,6 +1245,11 @@ $texteItem="a accès aux moyennes min/classe/max de chaque devoir";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesEvalCumulEleve';
+$texteItem="peut voir les évaluations cumulées (ouvre également le droit aux parents)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
