@@ -192,6 +192,35 @@
 				// Message alternatif depuis modify_eleve.php
 			}
 
+		} else if ($quelles_classes == 'compte_user_manquant') {
+			$sql="select e.*,jer.* FROM j_eleves_regime jer, eleves e
+			LEFT JOIN utilisateurs u ON u.login=e.login
+			WHERE u.login is NULL AND jer.login=e.login
+			ORDER BY $order_type;";
+			//echo "$sql<br />";
+			$calldata = mysql_query($sql);
+
+			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
+				echo "<p align='center'>Liste des élèves ne disposant pas de compte d'utilisateur.</p>\n";
+			}
+			else {
+				// Message alternatif depuis modify_eleve.php
+			}
+
+		} else if ($quelles_classes == 'compte_inactif') {
+			$sql="select e.*,jer.* FROM j_eleves_regime jer, eleves e, utilisateurs u
+			WHERE u.login=e.login AND jer.login=e.login AND u.etat='inactif'
+			ORDER BY $order_type;";
+			//echo "$sql<br />";
+			$calldata = mysql_query($sql);
+
+			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
+				echo "<p align='center'>Liste des élèves dont le compte d'utilisateur est inactif.</p>\n";
+			}
+			else {
+				// Message alternatif depuis modify_eleve.php
+			}
+
 		} else if ($quelles_classes == 'incomplet') {
 			/*
 			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE elenoet='' OR no_gep=''

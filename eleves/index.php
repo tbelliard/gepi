@@ -1314,6 +1314,66 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		}
 
 
+		// 20131007
+		$sql="select 1=1 from eleves e
+		LEFT JOIN utilisateurs u ON u.login=e.login
+		where u.login is NULL;";
+		$test_sans_compte=mysql_query($sql);
+		if(mysql_num_rows($test_sans_compte)==0){
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "&nbsp;\n";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='compte_user_manquant' onclick='verif2()' /></span>\n";
+
+			echo "<span class='norme' title=\"Cela ne préjuge pas de l'état de ces comptes (actifs ou non)\">Tous les élèves ont leur compte d'utilisateur dans la table 'utilisateurs'.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		else{
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='radio' name='quelles_classes' id='quelles_classes_compte_user_manquant' value='compte_user_manquant' onclick='verif2()' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='quelles_classes_compte_user_manquant' style='cursor: pointer;'>\n";
+			echo "<span class='norme'>Les élèves qui n'ont pas de compte d'utilisateur (<i>".mysql_num_rows($test_sans_compte)."</i>).</span><br />\n";
+			echo "</label>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+
+		$sql="select 1=1 from eleves e, utilisateurs u WHERE u.login=e.login AND u.etat='inactif';";
+		$test_compte_inactif=mysql_query($sql);
+		if(mysql_num_rows($test_compte_inactif)==0){
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "&nbsp;\n";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='compte_inactif' onclick='verif2()' /></span>\n";
+
+			echo "<span>Tous les élèves disposant d'un compte d'utilisateur ont leur compte actif.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		else{
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='radio' name='quelles_classes' id='quelles_classes_compte_inactif' value='compte_inactif' onclick='verif2()' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='quelles_classes_compte_inactif' style='cursor: pointer;'>\n";
+			echo "<span class='norme'>Les élèves disposant d'un compte d'utilisateur, mais dont le compte est inactif (<i>".mysql_num_rows($test_compte_inactif)."</i>).</span><br />\n";
+			echo "</label>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+
+
 		echo "<tr>\n";
 		echo "<td>\n";
 		echo "<input type='radio' name='quelles_classes' id='quelles_classes_toutes' value='toutes' onclick='verif2()' />\n";
