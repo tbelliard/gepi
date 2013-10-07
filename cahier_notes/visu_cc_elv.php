@@ -42,23 +42,19 @@ $tbs_pmv = '';
 
 function connectMysqli ($dbHost, $dbUser, $dbPass, $dbDb) {
     $connection = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+/* Modification du jeu de résultats en utf8 */
     if (!$connection->set_charset("utf8")) {
-        printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $mysqli->error);
+        printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $connection->error);
     }
     return $connection;
 }
 
+// ***** Ouverture d'une liaison à la base en utilisant mysqli *****
+$mysqli = connectMysqli ($dbHost, $dbUser, $dbPass, $dbDb);
+
 // ***** En attendant la gestion des droits par les mises à jours *****
 
 // On vérifie si les droits existent et au besoin, on les crée
-$mysqli = connectMysqli ($dbHost, $dbUser, $dbPass, $dbDb);
-
-/* Modification du jeu de résultats en utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $mysqli->error);
-    die();
-}
-
 
 $result = $mysqli->query("SELECT * FROM  `droits` WHERE id = '/cahier_notes/visu_cc_elv.php' ");
 if (!$result->num_rows) {
