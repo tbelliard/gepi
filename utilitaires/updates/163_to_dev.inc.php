@@ -414,5 +414,71 @@ if ($test == -1) {
 }
 
 
+/*
+ * mysql_query est obsolète depuis PHP 5.5.0, on utilise mysqli à la place
+ */
+$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+/* Modification du jeu de résultats en utf8 */
+if (!$mysqli->set_charset("utf8")) {
+    printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $mysqli->error);
+    die();
+}
+
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'un champ pour autoriser l'affichage des évaluations cumules pour les familles :</strong><br />";
+
+$requete = $mysqli->query("SHOW COLUMNS FROM `cc_dev` LIKE 'vision_famille';");
+if (!$requete->num_rows) {
+    $requete2 = $mysqli->query("ALTER TABLE `cc_dev` ADD `vision_famille` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Autorisation de voir pour les familles';");
+    if ($requete2 ) {
+		$result .= msj_ok("Succes !");
+	}
+	else {
+		$result .= msj_erreur("Échec !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+$requete->close();
+
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'un champ date d'affichage pour chaque évaluation cumule, pour les familles :</strong><br />";
+
+$requete = $mysqli->query("SHOW COLUMNS FROM `cc_eval` LIKE 'vision_famille';");
+if (!$requete->num_rows) {
+    $requete2 = $mysqli->query("ALTER TABLE `cc_eval` ADD `vision_famille` DATE NOT NULL COMMENT 'Autorisation de voir pour les familles';");
+    if ($requete2 ) {
+		$result .= msj_ok("Succes !");
+	}
+	else {
+		$result .= msj_erreur("Échec !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+$requete->close();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$mysqli->close();
 
 ?>

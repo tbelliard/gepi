@@ -132,6 +132,7 @@ if(isset($id_eval))  {
 		$description=nettoyage_retours_ligne_surnumeraires(mysql_result($query, 0, 'description'));
 
 		$display_date=mysql_result($query, 0, 'date');
+		$vision_famille =mysql_result($query, 0, 'vision_famille');
 		$note_sur=mysql_result($query, 0, 'note_sur');
 	}
 	else {
@@ -145,6 +146,7 @@ else {
 	$nom_complet="Evaluation n°";
 	$description="";
 	$display_date=strftime('%d/%m/%Y');
+	$vision_famille =strftime('%d/%m/%Y');
 	$note_sur=5;
 }
 
@@ -202,8 +204,26 @@ if (isset($_POST['ok'])) {
 			$jour=strftime("%d");
 		}
 		$date=$annee."-".$mois."-".$jour." 00:00:00";
+        
+        
+        if ($_POST['vision_famille ']) {
+			if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['vision_famille '])) {
+				$annee=mb_substr($_POST['vision_famille '],6,4);
+				$mois=mb_substr($_POST['vision_famille '],3,2);
+				$jour=mb_substr($_POST['vision_famille '],0,2);
+			} else {
+				$annee=strftime("%Y");
+				$mois=strftime("%m");
+				$jour=strftime("%d");
+			}
+		} else {
+			$annee=strftime("%Y");
+			$mois=strftime("%m");
+			$jour=strftime("%d");
+		}
+		$vision_famille  = $annee."-".$mois."-".$jour." 00:00:00";
 
-		$sql="UPDATE cc_eval SET nom_court='$nom_court', nom_complet='$nom_complet', description='$description', note_sur='$note_sur', date='".$date."' WHERE id='$id_eval';";
+		$sql="UPDATE cc_eval SET nom_court='$nom_court', nom_complet='$nom_complet', description='$description', note_sur='$note_sur', date='".$date."', vision_famille ='".$vision_famille ."' WHERE id='$id_eval';";
 		$update=mysql_query($sql);
 		if(!$insert) {
 			$msg="Erreur lors de la création ou mise à jour de l'évaluation associée au $nom_cc n°$id_dev. $sql";
@@ -347,6 +367,16 @@ else{
 	echo "</td>\n";
 	echo "</tr>\n";
 }
+
+
+	echo "<tr>\n";
+	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité:</td>\n";
+	echo "<td>\n";
+	echo "<input type='text' name='vision_famille ' id='vision_famille ' size='10' value=\"".$vision_famille ."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
+	echo img_calendrier_js("vision_famille ", "img_bouton_vision_famille ");
+	echo "</td>\n";
+	echo "</tr>\n";
+
 
 echo "</table>\n";
 echo "</div>\n";

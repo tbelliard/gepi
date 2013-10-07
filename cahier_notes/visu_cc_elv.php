@@ -145,7 +145,7 @@ $titre_page = $nom_cc;
 $tableauNotesCumules=array();
 $NotesCumulesSaisies=array();
 $Notes=array();
-
+$now=new DateTime('NOW');
 
 $query = "SELECT DISTINCT `cc_dev`.* , `jgm`.id_matiere FROM `cc_dev`
         INNER JOIN `j_eleves_groupes` jeg
@@ -153,6 +153,7 @@ $query = "SELECT DISTINCT `cc_dev`.* , `jgm`.id_matiere FROM `cc_dev`
         INNER JOIN `j_groupes_matieres` jgm
             ON (jgm.id_groupe = jeg.id_groupe)
         WHERE jeg.login = '".$eleve->getLogin()."'
+            AND `cc_dev`.vision_famille = 'yes'
         ORDER BY cc_dev.id_cn_dev ASC, cc_dev.id_groupe ASC
     ";
 // echo $query;
@@ -175,26 +176,31 @@ if ($result = $mysqli->query($query)) {
                     ";
                 if ($resultNotes = $mysqli->query($queryNotes)) {
                     while ($objNotes = $resultNotes->fetch_object()) {
-                        $Notes[] = array("nom_court"=>stripslashes($objEval->nom_court), "nom_complet"=>stripslashes($objEval->nom_complet), "description"=>stripslashes($objEval->description), "date"=>$objEval->date , "note_sur"=>$objEval->note_sur , "note"=>$objNotes->note, "statut"=>$objNotes->statut, "comment"=>stripslashes($objNotes->comment));
+                        $d1=new DateTime($objEval->vision_famille."00:00:00");
+                        if ($d1 <= $now) {
+                            $Notes[] = array("nom_court"=>stripslashes($objEval->nom_court), "nom_complet"=>stripslashes($objEval->nom_complet), "description"=>stripslashes($objEval->description), "date"=>$objEval->date , "vision_famille"=>$objEval->vision_famille , "note_sur"=>$objEval->note_sur , "note"=>$objNotes->note, "statut"=>$objNotes->statut, "comment"=>stripslashes($objNotes->comment));
+                        }
                     }
                 }
             }
         }
         $cumulNote = $noteSur = 0;
-        foreach ($Notes as $eval) {
-            if (!$eval["statut"]) {
-                $cumulNote += $eval["note"];
-                $noteSur += $eval["note_sur"];
+        if (isset($Notes)) {
+            foreach ($Notes as $eval) {
+                if (!$eval["statut"]) {
+                    $cumulNote += $eval["note"];
+                    $noteSur += $eval["note_sur"];
+                }
             }
+
+            if ($obj->id_cn_dev) {
+                $NotesCumulesSaisies[] = array("id"=>$obj->id , "id_cn_dev"=>$obj->id_cn_dev , "id_matiere"=>$obj->id_matiere, "id_groupe"=>$obj->id_groupe , "nom_court"=>stripslashes($obj->nom_court) , "nom_complet"=>stripslashes($obj->nom_complet) , "description"=>stripslashes($obj->description) , "arrondir"=>$obj->arrondir, "notes"=>$Notes, "total"=>$cumulNote, "note_sur"=>$noteSur);
+            } else {
+                $tableauNotesCumules[] = array("id"=>$obj->id , "id_cn_dev"=>$obj->id_cn_dev , "id_matiere"=>$obj->id_matiere, "id_groupe"=>$obj->id_groupe , "nom_court"=>stripslashes($obj->nom_court) , "nom_complet"=>stripslashes($obj->nom_complet) , "description"=>stripslashes($obj->description) , "arrondir"=>$obj->arrondir, "notes"=>$Notes, "total"=>$cumulNote, "note_sur"=>$noteSur);
+            }
+
+            unset($Notes);
         }
-                
-        if ($obj->id_cn_dev) {
-            $NotesCumulesSaisies[] = array("id"=>$obj->id , "id_cn_dev"=>$obj->id_cn_dev , "id_matiere"=>$obj->id_matiere, "id_groupe"=>$obj->id_groupe , "nom_court"=>stripslashes($obj->nom_court) , "nom_complet"=>stripslashes($obj->nom_complet) , "description"=>stripslashes($obj->description) , "arrondir"=>$obj->arrondir, "notes"=>$Notes, "total"=>$cumulNote, "note_sur"=>$noteSur);
-        } else {
-            $tableauNotesCumules[] = array("id"=>$obj->id , "id_cn_dev"=>$obj->id_cn_dev , "id_matiere"=>$obj->id_matiere, "id_groupe"=>$obj->id_groupe , "nom_court"=>stripslashes($obj->nom_court) , "nom_complet"=>stripslashes($obj->nom_complet) , "description"=>stripslashes($obj->description) , "arrondir"=>$obj->arrondir, "notes"=>$Notes, "total"=>$cumulNote, "note_sur"=>$noteSur);
-        }
-        
-        unset($Notes);
         $resultEval->close();
     }
 
@@ -280,7 +286,7 @@ $i=0;
     </tr>
     
 <?php $ligne = -1 ;?> 
-<?php foreach ($tableauNotes['notes'] as $notes) {?>
+<?php foreach ($tableauNotes['notes'] as $notes) { ?>
     <tr class='lig<?php echo $ligne ;?>'>
         <td title="<?php echo $notes['nom_complet'] ;?> → <?php echo $notes['description'] ;?>"
             style="cursor:pointer;">
