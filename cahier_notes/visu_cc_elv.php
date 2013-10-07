@@ -243,6 +243,14 @@ ob_start();
 </form>
 <?php } ?>
 
+
+<?php if (!count($NotesCumulesSaisies) && !count($tableauNotesCumules)) {?>
+<p class="rouge center" style="font-weight:bold;">
+    Aucune <?php echo $nom_cc ;?> disponible
+</p>
+<?php } ?>
+
+
 <?php if (count($tableauNotesCumules)) { ?>
 <h2 class="center">Évaluations non intégrées au carnet de notes</h2>
 
@@ -725,6 +733,10 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$nom_cc))
 <?php echo $contenu;?>
 
 </div>
+<div id='note_bas_page' style="background: rgba(225, 225, 225, 1); padding: .3em 2em;">
+    <?php echo $nom_cc ;?> : regroupement de plusieurs évaluations en une seule qui sera ensuite intégré dans le carnet de notes
+</div>
+
 <?php
 			if ($tbs_microtime!="") {
 				echo "
