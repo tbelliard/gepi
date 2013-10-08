@@ -65,6 +65,13 @@ class class_page_accueil {
   function __construct($statut, $gepiSettings, $niveau_arbo,$ordre_menus) {
 
 
+    
+    //$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+/* Modification du jeu de résultats en utf8 
+    if (!$mysqli->set_charset("utf8")) {
+        printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $mysqli->error);
+    } */
+
 	switch ($niveau_arbo){
 	  case 0:
 		$this->cheminRelatif = './';
@@ -81,7 +88,9 @@ class class_page_accueil {
 	  default:
 		$this->cheminRelatif = './';
 	}
-
+    
+    
+    
 	$this->statutUtilisateur = $statut;
 	$this->gepiSettings=$gepiSettings;
 	$this->loginUtilisateur=$_SESSION['login'];
@@ -181,11 +190,33 @@ class class_page_accueil {
 	if ($this->releveNotesFamille())
 	$this->chargeAutreNom('bloc_carnet_notes_famille');
 // Relevés de notes cumulées
-    if(getSettingAOui('GepiAccesEvalCumulEleve')) {
-        $this->verif_exist_ordre_menu('bloc_carnet_notes_cumules');
-        if ($this->notesCumulFamille())
-        $this->chargeAutreNom('bloc_carnet_notes_cumules');
+    if ('eleve' == $this->statutUtilisateur) {
+        $result = sql_count(sql_query("SELECT 1=1 FROM `cc_notes_eval` WHERE login ='".$this->loginUtilisateur."'"));
+        // $result += 1;
+    } elseif ('responsable' == $this->statutUtilisateur) {
+        $result = FALSE;
+        $result = sql_count(sql_query("SELECT 1=1 
+            FROM `cc_notes_eval` ne ,
+                 `resp_pers` rp,
+                 `responsables2` r2,
+                 `eleves` e
+            WHERE rp.login = '".$this->loginUtilisateur."'
+                AND rp.pers_id = r2.pers_id
+                AND r2.ele_id = e.ele_id
+                AND e.login = ne.login
+                "));
+        
+    } else {
+        $result = FALSE;
     }
+    if ($result) {    
+        if(getSettingAOui('GepiAccesEvalCumulEleve')) {
+            $this->verif_exist_ordre_menu('bloc_carnet_notes_cumules');
+            if ($this->notesCumulFamille())
+            $this->chargeAutreNom('bloc_carnet_notes_cumules');
+        }    
+    }
+    
 // Equipes pédagogiques
 	$this->verif_exist_ordre_menu('bloc_equipe_peda_famille');
 	if ($this->equipePedaFamille())
