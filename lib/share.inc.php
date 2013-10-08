@@ -8303,4 +8303,70 @@ function check_mae($login_user) {
 		}
 	}
 }
+
+function clean_table_log($jusque_telle_date) {
+	if(($jusque_telle_date=="")||(!preg_match("#[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}#", $jusque_telle_date))) {
+		return "<span style='color:red'>Date '$jusque_telle_date' invalide.</span>";
+	}
+	else {
+		$tmp_tab=explode("/", $jusque_telle_date);
+		$log_day=$tmp_tab[0];
+		$log_month=$tmp_tab[1];
+		$log_year=$tmp_tab[2];
+		if(!checkdate($log_month, $log_day, $log_year)) {
+			return "<span style='color:red'>Date '$jusque_telle_date' invalide.</span>";
+		}
+		else {
+
+			// Pour éviter de flinguer la session en cours
+			$hier_day=date('d', time() - 24*3600);
+			$hier_month=date('m', time() - 24*3600);
+			$hier_year=date('Y', time() - 24*3600);
+
+			//$sql="SELECT * FROM log WHERE start<'$log_year-$log_month-$log_day 00:00:00' AND start<'".date('Y')."-".date('m')."-".$hier." 00:00:00';";
+			$sql="DELETE FROM log WHERE start<'$log_year-$log_month-$log_day 00:00:00' AND start<'".$hier_year."-".$hier_month."-".$hier_day." 00:00:00';";
+			//echo "$sql<br />\n";
+			$del=mysql_query($sql);
+			if(!$del) {
+				return "<span style='color:red'>Echec du nettoyage.</span>\n";
+			}
+			else {
+				return "<span style='color:green'>Nettoyage effectué.</span>\n";
+			}
+		}
+	}
+}
+
+function clean_table_tentative_intrusion($jusque_telle_date) {
+	if(($jusque_telle_date=="")||(!preg_match("#[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}#", $jusque_telle_date))) {
+		return "<span style='color:red'>Date '$jusque_telle_date' invalide.</span>";
+	}
+	else {
+		$tmp_tab=explode("/", $jusque_telle_date);
+		$log_day=$tmp_tab[0];
+		$log_month=$tmp_tab[1];
+		$log_year=$tmp_tab[2];
+		if(!checkdate($log_month, $log_day, $log_year)) {
+			return "<span style='color:red'>Date '$jusque_telle_date' invalide.</span>";
+		}
+		else {
+
+			// Pour éviter de flinguer la session en cours
+			$hier_day=date('d', time() - 24*3600);
+			$hier_month=date('m', time() - 24*3600);
+			$hier_year=date('Y', time() - 24*3600);
+
+			//$sql="SELECT * FROM log WHERE start<'$log_year-$log_month-$log_day 00:00:00' AND start<'".date('Y')."-".date('m')."-".$hier." 00:00:00';";
+			$sql="DELETE FROM tentatives_intrusion WHERE date<'$log_year-$log_month-$log_day 00:00:00' AND date<'".$hier_year."-".$hier_month."-".$hier_day." 00:00:00';";
+			//echo "$sql<br />\n";
+			$del=mysql_query($sql);
+			if(!$del) {
+				return "<span style='color:red'>Echec du nettoyage.</span>\n";
+			}
+			else {
+				return "<span style='color:green'>Nettoyage effectué.</span>\n";
+			}
+		}
+	}
+}
 ?>

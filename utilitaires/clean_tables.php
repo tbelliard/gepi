@@ -2436,6 +2436,40 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 		echo "<p>Terminé.</p>\n";
 	}
+} elseif (isset($_REQUEST['action']) AND $_REQUEST['action'] == 'clean_table_log') {
+	echo "<p class=bold>";
+	if(isset($_GET['chgt_annee'])) {
+		echo "<a href='../gestion/changement_d_annee.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de Changement d'année</a> ";
+	}
+	else {
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+		echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	}
+	echo "</p>\n";
+
+	$date_limite=isset($_REQUEST['date_limite']) ? $_REQUEST['date_limite'] : NULL;
+	if(isset($date_limite)) {
+		echo "<p><b>Nettoyage des logs antérieurs au $date_limite&nbsp;:</b> ".clean_table_log($date_limite)."</p>\n";
+
+		echo "<p>Terminé.</p>\n";
+	}
+} elseif (isset($_REQUEST['action']) AND $_REQUEST['action'] == 'clean_table_tentative_intrusion') {
+	echo "<p class=bold>";
+	if(isset($_GET['chgt_annee'])) {
+		echo "<a href='../gestion/changement_d_annee.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de Changement d'année</a> ";
+	}
+	else {
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+		echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	}
+	echo "</p>\n";
+
+	$date_limite=isset($_REQUEST['date_limite']) ? $_REQUEST['date_limite'] : NULL;
+	if(isset($date_limite)) {
+		echo "<p><b>Nettoyage des logs de tentatives d'intrusion antérieurs au $date_limite&nbsp;:</b> ".clean_table_tentative_intrusion($date_limite)."</p>\n";
+
+		echo "<p>Terminé.</p>\n";
+	}
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_cdt') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
@@ -3643,6 +3677,46 @@ else {
 		echo "</center>\n";
 		echo "<input type='hidden' name='action' value='clean_temp_tables' />\n";
 		echo "</form>\n";
+
+		//===================================================================
+
+		echo "<hr />\n";
+
+		echo "<form action=\"clean_tables.php\" method=\"post\" id='form_clean_log'>\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Vider les logs de connexion\" />\n";
+
+		$annee=strftime("%Y");
+		$mois=strftime("%m");
+		if($mois<=7) {$annee--;}
+		echo " antérieurs au <input type='text' name='date_limite' id='date_limite_cl' size='10' value='31/07/$annee' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+		echo img_calendrier_js("date_limite_cl", "img_bouton_date_limite_cl");
+
+		echo "</center>\n";
+		echo "<input type='hidden' name='action' value='clean_table_log' />\n";
+		echo "</form>\n";
+	
+		//===================================================================
+
+		echo "<hr />\n";
+
+		echo "<form action=\"clean_tables.php\" method=\"post\" id='form_clean_tentative_intrusion'>\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Vider les logs de tentatives d'intrusion\" />\n";
+
+		$annee=strftime("%Y");
+		$mois=strftime("%m");
+		if($mois<=7) {$annee--;}
+		echo " antérieurs au <input type='text' name='date_limite' id='date_limite_cti' size='10' value='31/07/$annee' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+		echo img_calendrier_js("date_limite_cti", "img_bouton_date_limite_cti");
+
+		echo "</center>\n";
+		echo "<input type='hidden' name='action' value='clean_table_tentative_intrusion' />\n";
+		echo "</form>\n";
+	
+		//===================================================================
 
 	echo "</div>\n";
 
