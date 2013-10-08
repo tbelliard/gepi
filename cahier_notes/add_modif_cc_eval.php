@@ -101,9 +101,9 @@ $sql="SELECT * FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
 $query=mysql_query($sql);
 if($query) {
 	$id_cn_dev=mysql_result($query, 0, 'id_cn_dev');
-	$nom_court_dev=mysql_result($query, 0, 'nom_court');
-	$nom_complet_dev=mysql_result($query, 0, 'nom_complet');
-	$description_dev=mysql_result($query, 0, 'description');
+	$nom_court_dev=stripslashes(mysql_result($query, 0, 'nom_court'));
+	$nom_complet_dev=stripslashes(mysql_result($query, 0, 'nom_complet'));
+	$description_dev=stripslashes(mysql_result($query, 0, 'description'));
 }
 else {
 	header("Location: index.php?msg=".rawurlencode("Le numéro de devoir n est pas associé à ce groupe."));
@@ -127,9 +127,9 @@ if(isset($id_eval))  {
 		}
 
 		//$id_cn_dev=mysql_result($query, 0, 'id_cn_dev');
-		$nom_court=mysql_result($query, 0, 'nom_court');
-		$nom_complet=mysql_result($query, 0, 'nom_complet');
-		$description=nettoyage_retours_ligne_surnumeraires(mysql_result($query, 0, 'description'));
+		$nom_court=stripslashes(mysql_result($query, 0, 'nom_court'));
+		$nom_complet=stripslashes(mysql_result($query, 0, 'nom_complet'));
+		$description=nettoyage_retours_ligne_surnumeraires(stripslashes(mysql_result($query, 0, 'description')));
 
 		$display_date=mysql_result($query, 0, 'date');
 		$vision_famille =mysql_result($query, 0, 'vision_famille');
@@ -225,8 +225,8 @@ if (isset($_POST['ok'])) {
 
 		$sql="UPDATE cc_eval SET nom_court='$nom_court', nom_complet='$nom_complet', description='$description', note_sur='$note_sur', date='".$date."', vision_famille ='".$vision_famille ."' WHERE id='$id_eval';";
 		$update=mysql_query($sql);
-		if(!$insert) {
-			$msg="Erreur lors de la création ou mise à jour de l'évaluation associée au $nom_cc n°$id_dev. $sql";
+		if(!$update) {
+			$msg="Erreur lors de la création ou mise à jour de l'évaluation associée au ".stripslashes($nom_cc)." n°$id_dev. ".stripslashes($sql);
 		}
 		else {
 			$msg="Création ou mise à jour de l'évaluation associée au $nom_cc n°$id_dev effectuée.";

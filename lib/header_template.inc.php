@@ -695,7 +695,8 @@ if(isset($_SESSION['statut'])) {
 
 	$tbs_msg="" ;
 	if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))) {
-		$msg = isset($_POST['msg']) ? unslashes($_POST['msg']) : (isset($_GET['msg']) ? unslashes($_GET['msg']) : $msg);
+		//$msg = isset($_POST['msg']) ? unslashes($_POST['msg']) : (isset($_GET['msg']) ? unslashes($_GET['msg']) : $msg);
+        $msg = isset($_POST['msg']) ? stripslashes($_POST['msg']) : (isset($_GET['msg']) ? stripslashes($_GET['msg']) : $msg);
 		if ($msg != '') {
 			$tbs_msg=$msg ;
 		}
