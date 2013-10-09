@@ -88,7 +88,10 @@ function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
         $id_type = $row[0];
     }
     else {
-        return "Ce type de fichier n'est pas autorisé en téléchargement";
+        return "Erreur : Ce type de fichier n'est pas autorisé en téléchargement.<br />
+Si vous trouvez cela regrettable, contactez l'administrateur.<br />
+Il pourra modifier ce paramétrage dans<br />
+*Gestion des modules/Cahiers de textes/Types de fichiers autorisés en téléchargement*.";
         die();
     }
 

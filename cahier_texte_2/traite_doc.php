@@ -75,7 +75,10 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	if ($row = @sql_row($result,0)) {
 		$id_type = $row[0];
 	} else {
-		echo ("Erreur : Ce type de fichier n'est pas autorisé en téléchargement");
+		echo ("Erreur : Ce type de fichier n'est pas autorisé en téléchargement.
+Si vous trouvez cela regrettable, contactez l'administrateur.
+Il pourra modifier ce paramétrage dans
+   *Gestion des modules/Cahiers de textes/Types de fichiers autorisés en téléchargement*.");
 		die();
 	}
 
