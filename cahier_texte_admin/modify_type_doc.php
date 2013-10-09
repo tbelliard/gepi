@@ -96,6 +96,7 @@ if (isset($_POST['reinit_assoc_fichiers'])) {
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='C source', extension='c', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Debian', extension='deb', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Word', extension='doc', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Word', extension='docx', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='LaTeX DVI', extension='dvi', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PostScript', extension='eps', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='GeoGebra', extension='ggb', upload='oui';";
@@ -119,6 +120,7 @@ if (isset($_POST['reinit_assoc_fichiers'])) {
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PDF', extension='pdf', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PNG', extension='png', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PowerPoint', extension='ppt', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PowerPoint', extension='pptx', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PostScript', extension='ps', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Photoshop', extension='psd', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='QuickTime', extension='qt', upload='oui';";
@@ -141,6 +143,7 @@ if (isset($_POST['reinit_assoc_fichiers'])) {
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Windows Media', extension='wmv', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='GIMP multi-layer', extension='xcf', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Excel', extension='xls', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Excel', extension='xlsx', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='XML', extension='xml', upload='oui';";
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Zip', extension='zip', upload='oui';";
 
