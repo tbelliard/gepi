@@ -39,18 +39,18 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals('3',$periode_col->count());
 		$this->assertNull($florence_eleve->getPeriodeNoteOuverte(),'Après verrouillage la période ouverte de note de florence doit être nulle');
 		
-		$periode = $florence_eleve->getPeriodeNote(new DateTime('2010-10-01'));
+		$periode = $florence_eleve->getPeriodeNote(new DateTime('2012-10-05'));
 		$this->assertNotNull($periode);
 		$this->assertEquals('1',$periode->getNumPeriode());
 		
-		$periode = $florence_eleve->getPeriodeNote(new DateTime('2010-12-05'));
+		$periode = $florence_eleve->getPeriodeNote(new DateTime('2012-12-09'));
 		$this->assertNotNull($periode);
 		$this->assertEquals('2',$periode->getNumPeriode());
 		
 		$michel_eleve = EleveQuery::create()->findOneByLogin('Michel Martin');
 		$this->assertEquals(0,$michel_eleve->getPeriodeNotes()->count());
 		
-		$periode = $michel_eleve->getPeriodeNote(new DateTime('2010-12-05'));
+		$periode = $michel_eleve->getPeriodeNote(new DateTime('2012-12-09'));
 		$this->assertNull($periode);
 		
 		$periode = $michel_eleve->getPeriodeNote();
@@ -65,10 +65,10 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals('6ieme A',$classe->getNom());
 
 		$classe = $florence_eleve->getClasse(5);//on récupère la classe pour la période 1
-		$this->assertNull($classe,'La classe de florence doit pas être nulle pour la période 5');
+		$this->assertNull($classe,'La classe de florence doit être nulle pour la période 5');
 
-		$classe = $florence_eleve->getClasse(new DateTime('2010-10-01'));
-		$this->assertNotNull($classe,'La classe de florence ne doit pas être nulle pour la date 2010-10-01 (période 1)');
+		$classe = $florence_eleve->getClasse(new DateTime('2012-10-05'));
+		$this->assertNotNull($classe,'La classe de florence ne doit pas être nulle pour la date 2012-10-05 (période 1)');
 		$this->assertEquals('6ieme A',$classe->getNom());
 		
 		$classe = $florence_eleve->getClasse(new DateTime('2005-01-01'));
@@ -102,9 +102,9 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals(0,$groupes->count(),'Les groupes de florence sont vides pour la période 5');
 		$this->assertEquals(0,count($groupes->getPrimaryKeys()));
 
-		$groupes = $florence_eleve->getGroupes(new DateTime('2010-10-01'));
+		$groupes = $florence_eleve->getGroupes(new DateTime('2012-10-05'));
 		$this->assertNotNull($groupes,'La collection des groupes ne doit jamais retourner null');
-		$this->assertEquals(1,$groupes->count(),'La collection des groupes de florence doit comporter un groupe pour la date 2010-10-01 (période 1)');
+		$this->assertEquals(1,$groupes->count(),'La collection des groupes de florence doit comporter un groupe pour la date 2012-10-05 (période 1)');
 		
 		$groupes = $florence_eleve->getGroupes(new DateTime('2005-01-01'));
 		$this->assertEquals(0,$groupes->count(),'La collection des groupes de florence doit être vide pour la date 2005-01-01');
@@ -119,22 +119,22 @@ class EleveTest extends GepiEmptyTestBase
 
 	public function testGetAbsenceEleveSaisiesDuJour() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05');
 		$this->assertEquals(1,$saisies->count());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-06');
 		$this->assertEquals(1,$saisies->count());
 								
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-07');
 		$this->assertEquals(1,$saisies->count());
 								
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04');
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-08');
 		$this->assertEquals(1,$saisies->count());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05');
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-09');
 		$saisie = $saisies->getFirst();
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06');
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-10');
 		$this->assertEquals(1,$saisies->count());
 	}
 
@@ -149,142 +149,142 @@ class EleveTest extends GepiEmptyTestBase
 
 	public function testgetAbsenceEleveSaisiesParDate() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-05 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-14 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-18 23:59:59'));
 		$this->assertEquals(17,$saisie_col->count());
 		
 		$michel_eleve = EleveQuery::create()->findOneByLogin('Michel Martin');
 		$saisie_col = $michel_eleve->getAbsenceEleveSaisiesParDate();
 		$this->assertEquals(0,$saisie_col->count());
 				
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-05 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2012-10-06 00:00:00'),new DateTime('2012-10-06 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2010-10-24 00:00:00'),new DateTime('2010-11-7 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2012-10-28 00:00:00'),new DateTime('2012-11-11 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
 	}
 	
 	public function testGetDemiJourneesAbsence() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-05 23:59:59'));
 		$this->assertEquals(1,$demi_j_col->count());
-		$this->assertEquals("2010-10-01 00:00:00",$demi_j_col->getFirst()->format("Y-m-d H:i:s"));
+		$this->assertEquals("2012-10-05 00:00:00",$demi_j_col->getFirst()->format("Y-m-d H:i:s"));
 
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-06 00:00:00'),new DateTime('2012-10-06 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
 		saveSetting('abs2_retard_critere_duree',20);
 		$saisie_col->getFirst()->clearAllReferences();
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		$this->assertEquals(1,$demi_j_col->count());
 		saveSetting('abs2_retard_critere_duree',30);
 		$saisie_col->getFirst()->clearAllReferences();
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 		
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-19 00:00:00'),new DateTime('2010-10-19 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-23 00:00:00'),new DateTime('2012-10-23 23:59:59'));
 		$this->assertEquals(2,$demi_j_col->count());
 		
-		# Absence 20 du jeudi 28-10 au mardi 2-11-2011 1 seule saisie
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-24 00:00:00'),new DateTime('2010-11-7 23:59:59'));
+		# Absence 20 du jeudi 28-10 au mardi 2-11-2013 1 seule saisie
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-28 00:00:00'),new DateTime('2012-11-11 23:59:59'));
 		$this->assertEquals(8,$demi_j_col->count());
 		# La première semaine on ne doit avoir que 4 demi-journées d'absences
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-24 00:00:00'),new DateTime('2010-10-30 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-28 00:00:00'),new DateTime('2012-11-04 23:59:59'));
 		$this->assertEquals(4,$demi_j_col->count());	# période bornée -> 4 demi-journées
 		# La deuxième semaine on ne doit avoir que 4 demi-journées d'absences
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-31 00:00:00'),new DateTime('2010-11-7 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2012-11-05 00:00:00'),new DateTime('2012-11-11 23:59:59'));
 		$this->assertEquals(4,$demi_j_col->count());
 
                 #test de saisies englobant d'autres saisies
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-05-31 00:00:00'),new DateTime('2011-05-31 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2013-05-28 00:00:00'),new DateTime('2013-05-28 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
-                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-08-30 00:00:00'),new DateTime('2010-10-03 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-06 23:59:59'))->count());
-                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-07 00:00:00'),new DateTime('2010-10-09 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-10 00:00:00'),new DateTime('2010-10-12 23:59:59'))->count());
-                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-13 00:00:00'),new DateTime('2010-10-14 23:59:59'))->count());
-                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-15 00:00:00'),new DateTime('2010-10-16 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-17 00:00:00'),new DateTime('2010-10-17 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'))->count());
-                $this->assertEquals(2,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-19 00:00:00'),new DateTime('2010-10-20 23:59:59'))->count());
-                $this->assertEquals(8,$florence_eleve->getDemiJourneesAbsence(new DateTime('2010-10-21 00:00:00'),new DateTime('2010-12-02 00:00:00'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2012-08-30 00:00:00'),new DateTime('2012-10-07 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-10 23:59:59'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-11 00:00:00'),new DateTime('2012-10-13 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-14 00:00:00'),new DateTime('2012-10-16 23:59:59'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-17 00:00:00'),new DateTime('2012-10-18 23:59:59'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-19 00:00:00'),new DateTime('2012-10-20 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-21 00:00:00'),new DateTime('2012-10-21 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-22 00:00:00'),new DateTime('2012-10-22 23:59:59'))->count());
+                $this->assertEquals(2,$florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-23 00:00:00'),new DateTime('2012-10-24 23:59:59'))->count());
+                $this->assertEquals(8,$florence_eleve->getDemiJourneesAbsence(new DateTime('2012-10-25 00:00:00'),new DateTime('2012-12-06 00:00:00'))->count());
                 $this->assertEquals(14,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
 
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-02 00:00:00'),new DateTime('2011-06-02 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2013-05-30 00:00:00'),new DateTime('2013-05-30 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
                 saveSetting('abs2_saisie_multi_type_sans_manquement','y');
-                $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
+                $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2013-05-31 00:00:00'),new DateTime('2013-05-31 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_sans_manquement','n');
-                $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-03');
+                $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2013-05-31');
                 $saisies->getFirst()->clearAllReferences();
                 $saisies->getNext()->clearAllReferences();
-                $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
+                $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2013-05-31 00:00:00'),new DateTime('2013-05-31 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
 
-                $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-06 00:00:00'),new DateTime('2011-06-06 23:59:59'));
+                $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2013-06-03 00:00:00'),new DateTime('2013-06-03 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
 	}
 	
 	public function testGetDemiJourneesNonJustifieesAbsence() {
                 $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-05 23:59:59'));
 		$this->assertEquals(1,$demi_j_col->count());
-		$this->assertEquals("2010-10-01 00:00:00",$demi_j_col->getFirst()->format("Y-m-d H:i:s"));
+		$this->assertEquals("2012-10-05 00:00:00",$demi_j_col->getFirst()->format("Y-m-d H:i:s"));
 
-		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-06 00:00:00'),new DateTime('2012-10-06 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
-		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-05-31 00:00:00'),new DateTime('2011-05-31 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2013-05-28 00:00:00'),new DateTime('2013-05-28 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
-                $this->assertEquals(1,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-08-30 00:00:00'),new DateTime('2010-10-03 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-06 23:59:59'))->count());
-                $this->assertEquals(1,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-07 00:00:00'),new DateTime('2010-10-09 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-10 00:00:00'),new DateTime('2010-10-12 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-13 00:00:00'),new DateTime('2010-10-14 23:59:59'))->count());
-                $this->assertEquals(1,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-15 00:00:00'),new DateTime('2010-10-16 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-17 00:00:00'),new DateTime('2010-10-17 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'))->count());
-                $this->assertEquals(2,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-19 00:00:00'),new DateTime('2010-10-20 23:59:59'))->count());
-                $this->assertEquals(8,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2010-10-21 00:00:00'),new DateTime('2010-12-02 00:00:00'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-08-30 00:00:00'),new DateTime('2012-10-07 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-10 23:59:59'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-11 00:00:00'),new DateTime('2012-10-13 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-14 00:00:00'),new DateTime('2012-10-16 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-17 00:00:00'),new DateTime('2012-10-18 23:59:59'))->count());
+                $this->assertEquals(1,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-19 00:00:00'),new DateTime('2012-10-20 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-21 00:00:00'),new DateTime('2012-10-21 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-22 00:00:00'),new DateTime('2012-10-22 23:59:59'))->count());
+                $this->assertEquals(2,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-23 00:00:00'),new DateTime('2012-10-24 23:59:59'))->count());
+                $this->assertEquals(8,$florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2012-10-25 00:00:00'),new DateTime('2012-12-06 00:00:00'))->count());
                 $this->assertEquals(13,$florence_eleve->getDemiJourneesNonJustifieesAbsenceParPeriode(1)->count());
 
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-02 00:00:00'),new DateTime('2011-06-02 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2013-05-30 00:00:00'),new DateTime('2013-05-30 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 
                 saveSetting('abs2_saisie_multi_type_sans_manquement','y');
-                $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
+                $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2013-05-31 00:00:00'),new DateTime('2013-05-31 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_sans_manquement','n');
-                $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-03');
+                $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2013-05-31');
                 $saisies->getFirst()->clearAllReferences();
                 $saisies->getNext()->clearAllReferences();
-                $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-06-03 00:00:00'),new DateTime('2011-06-03 23:59:59'));
+                $demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2013-05-31 00:00:00'),new DateTime('2013-05-31 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
 
-                $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-06-07 00:00:00'),new DateTime('2011-06-07 23:59:59'));
+                $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2013-06-04 00:00:00'),new DateTime('2013-06-04 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
 
                 saveSetting('abs2_saisie_multi_type_non_justifiee','n');
-                $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-06-08 00:00:00'),new DateTime('2011-06-08 23:59:59'));
+                $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2013-06-05 00:00:00'),new DateTime('2013-06-05 23:59:59'));
                 $this->assertEquals(0,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_non_justifiee','y');
-                $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2011-06-08');
+                $saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2013-06-05');
                 $saisies->getFirst()->clearAllReferences();
                 $saisies->getNext()->clearAllReferences();
-                $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-06-08 00:00:00'),new DateTime('2011-06-08 23:59:59'));
+                $demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2013-06-05 00:00:00'),new DateTime('2013-06-05 23:59:59'));
                 $this->assertEquals(1,$demi_j_col->count());
                 saveSetting('abs2_saisie_multi_type_non_justifiee','n');//n par défaut
 	}
@@ -292,71 +292,71 @@ class EleveTest extends GepiEmptyTestBase
 	public function testGetRetards() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 
-                $saisie_col = $florence_eleve->getRetards(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
+                $saisie_col = $florence_eleve->getRetards(new DateTime('2012-10-06 00:00:00'),new DateTime('2012-10-06 23:59:59'));
 		$this->assertEquals(0,$saisie_col->count());
 
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		saveSetting('abs2_retard_critere_duree',20);
 		$saisie_col->getFirst()->clearAllReferences();
-		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$retard_col = $florence_eleve->getRetards(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
 		saveSetting('abs2_retard_critere_duree',30);
 		$saisie_col->getFirst()->clearAllReferences();
-		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$retard_col = $florence_eleve->getRetards(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		$this->assertEquals(1,$retard_col->count());
                 
-                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-08-30 00:00:00'),new DateTime('2010-10-03 23:59:59'))->count());
-                $this->assertEquals(4,$florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-06 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-07 00:00:00'),new DateTime('2010-10-09 23:59:59'))->count());
-                $this->assertEquals(2,$florence_eleve->getRetards(new DateTime('2010-10-10 00:00:00'),new DateTime('2010-10-12 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-13 00:00:00'),new DateTime('2010-10-14 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-15 00:00:00'),new DateTime('2010-10-16 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-17 00:00:00'),new DateTime('2010-10-17 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-19 00:00:00'),new DateTime('2010-10-20 23:59:59'))->count());
-                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2010-10-21 00:00:00'),new DateTime('2010-12-02 00:00:00'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2012-08-30 00:00:00'),new DateTime('2012-10-07 23:59:59'))->count());
+                $this->assertEquals(4,$florence_eleve->getRetards(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-10 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2012-10-11 00:00:00'),new DateTime('2012-10-13 23:59:59'))->count());
+                $this->assertEquals(2,$florence_eleve->getRetards(new DateTime('2012-10-14 00:00:00'),new DateTime('2012-10-16 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2012-10-17 00:00:00'),new DateTime('2012-10-18 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2012-10-19 00:00:00'),new DateTime('2012-10-20 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2012-10-21 00:00:00'),new DateTime('2012-10-21 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2012-10-22 00:00:00'),new DateTime('2012-10-22 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2012-10-23 00:00:00'),new DateTime('2012-10-24 23:59:59'))->count());
+                $this->assertEquals(0,$florence_eleve->getRetards(new DateTime('2012-10-25 00:00:00'),new DateTime('2012-12-06 00:00:00'))->count());
                 
                 $this->assertEquals(6,$florence_eleve->getRetardsParPeriode(1)->count());
 		
 		//Retard saisi alors que l'élève a quitté l'établissement
 		saveSetting('abs2_retard_critere_duree',30);
-		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$retard_col = $florence_eleve->getRetards(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		$this->assertEquals(1,$retard_col->count());
-		$florence_eleve->setDateSortie(strtotime('2010-10-04 00:00:00'));	# On sort l'élève
-		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$florence_eleve->setDateSortie(strtotime('2012-10-08 00:00:00'));	# On sort l'élève
+		$retard_col = $florence_eleve->getRetards(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
 		
-		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'));
+		$retard_col = $florence_eleve->getRetards(new DateTime('2012-10-22 00:00:00'),new DateTime('2012-10-22 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
                 $florence_eleve->setDateSortie(null);
 
                 //test de saisies englobant d'autres saisies
-                $retard_col = $florence_eleve->getRetards(new DateTime('2011-06-01 00:00:00'),new DateTime('2011-06-01 23:59:59'));
+                $retard_col = $florence_eleve->getRetards(new DateTime('2013-05-29 00:00:00'),new DateTime('2013-05-29 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
 
-                $retard_col = $florence_eleve->getRetards(new DateTime('2011-06-08 00:00:00'),new DateTime('2011-06-09 23:59:59'));
+                $retard_col = $florence_eleve->getRetards(new DateTime('2013-06-05 00:00:00'),new DateTime('2013-06-06 23:59:59'));
 		$this->assertEquals(1,$retard_col->count());
 
-                $retard_col = $florence_eleve->getRetards(new DateTime('2011-06-09 00:00:00'),new DateTime('2011-06-10 23:59:59'));
+                $retard_col = $florence_eleve->getRetards(new DateTime('2013-06-06 00:00:00'),new DateTime('2013-06-07 23:59:59'));
 		$this->assertEquals(2,$retard_col->count());
 
 }
 
 	public function testgetAbsenceEleveSaisiesDecompteDemiJournees() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-05 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-02 00:00:00'),new DateTime('2010-10-02 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2012-10-06 00:00:00'),new DateTime('2012-10-06 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 
 		saveSetting('abs2_retard_critere_duree',20);
 		$saisie_col->getFirst()->clearAllReferences();
-		$manguement_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$manguement_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		$this->assertEquals(1,$manguement_col->count());
 		saveSetting('abs2_retard_critere_duree',30);
 		$manguement_col->getFirst()->clearAllReferences();
-		$manguement_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$manguement_col = $florence_eleve->getAbsenceEleveSaisiesDecompteDemiJournees(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-08 23:59:59'));
 		$this->assertEquals(0,$manguement_col->count());
 				
 	}
@@ -366,24 +366,24 @@ class EleveTest extends GepiEmptyTestBase
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
 	    
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59'));
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59'));
 	    $this->assertEquals(11,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-09-01 00:00:00'),new DateTime('2010-09-02 23:59:59'));//ce test ne se terminait pas
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-09-01 00:00:00'),new DateTime('2012-09-02 23:59:59'));//ce test ne se terminait pas
 	    $this->assertEquals(5,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
-	    $florence_eleve->updateAbsenceAgregationTable(null,new DateTime('2010-10-05 23:59:59'));
+	    $florence_eleve->updateAbsenceAgregationTable(null,new DateTime('2012-10-09 23:59:59'));
 	    $this->assertEquals(11,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 
 	    
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59'));
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59'));
 	    $this->assertEquals(11,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
 	    $this->assertEquals(31,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    $this->assertEquals(4, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->count());
 	    $this->assertEquals(1, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->filterByNonJustifiee(false)->count());
@@ -391,10 +391,10 @@ class EleveTest extends GepiEmptyTestBase
 	    $this->assertEquals(1, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByRetards(2)->count());
 	    $this->assertEquals(4, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByRetardsNonJustifies(1)->count());
 	    $demi_journee =  AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->filterByNonJustifiee(false)->findOne();
-	    $this->assertEquals('2010-10-14 00:00:00', $demi_journee->getDateDemiJounee('Y-m-d H:i:s'));
+	    $this->assertEquals('2012-10-18 00:00:00', $demi_journee->getDateDemiJounee('Y-m-d H:i:s'));
 
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-09-01 00:00:00'),new DateTime('2010-09-02 23:59:59'));
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-09-01 00:00:00'),new DateTime('2012-09-02 23:59:59'));
 	    $this->assertEquals(5,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    $this->assertEquals(0, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->count());
 	    $this->assertEquals(5, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByRetards(0)->count());
@@ -449,106 +449,106 @@ class EleveTest extends GepiEmptyTestBase
 	    //on purge les decompte pour florence
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59')));
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59')));
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59')));
 	    
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
 	    $florence_eleve->updateAbsenceAgregationTable();
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    	    
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->filterByNonJustifiee(false)->delete();
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->filterByNonJustifiee(false)->delete();
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    
 	    //on va modifier une saisie à la main
 	    $tomorow = new DateTime('now');
 	    $tomorow->modify("+1 day");
-        mysql_query("update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst()->getId());
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+        mysql_query("update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05')->getFirst()->getId());
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies set updated_at = now() where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst()->getId());
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+        mysql_query("update a_saisies set updated_at = now() where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05')->getFirst()->getId());
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	    //on va modifier une version de saisie à la main
 	    $tomorow = new DateTime();
 	    $tomorow->modify("+1 day");
         mysql_query("update a_saisies_version set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where eleve_id = ".$florence_eleve->getId());
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_saisies_version set updated_at = now() where eleve_id = ".$florence_eleve->getId());
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	    //on va modifier un traitement à la main
 	    $tomorow = new DateTime();
 	    $tomorow->modify("+1 day");
-	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-06')->getFirst();
 	    $traitement_id = AbsenceEleveTraitementQuery::create()->filterByAbsenceEleveSaisie($saisie)->findOne()->getId();
         mysql_query("update a_traitements set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$traitement_id);
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_traitements set updated_at = now() where id = ".$traitement_id);
-	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	    
 	    //on va modifier à la main une saisie
 	    sleep(1);
-	    $saisie_id = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst()->getId();
+	    $saisie_id = $florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05')->getFirst()->getId();
         mysql_query("update a_saisies set updated_at = now() where id = ".$saisie_id);
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_saisies set updated_at = now()-10 where id = ".$saisie_id);
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-10 23:59:59')));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-14 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_saisies set deleted_at = now() where id = ".$saisie_id);
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_saisies set deleted_at = now()-10 where id = ".$saisie_id);
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-10 23:59:59')));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-14 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	    $traitement_id = AbsenceEleveTraitementQuery::create()->filterByAbsenceEleveSaisie($saisie)->findOne()->getId();
         mysql_query("update a_traitements set updated_at = now() where id = ".$traitement_id);
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_traitements set updated_at = now()-10 where id = ".$traitement_id);
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-10 23:59:59')));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-14 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_traitements set deleted_at = now() where id = ".$traitement_id);
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_traitements set deleted_at = now()-10 where id = ".$traitement_id);
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-10 23:59:59')));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-14 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
-	    $saisie_version_id = AbsenceEleveSaisieVersionQuery::create()->filterByAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst())->findOne()->getId();
+	    $saisie_version_id = AbsenceEleveSaisieVersionQuery::create()->filterByAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05')->getFirst())->findOne()->getId();
         mysql_query("update a_saisies_version set updated_at = now() where id = ".$saisie_version_id);
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_saisies_version set updated_at = now()-10 where id = ".$saisie_version_id);
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-10 23:59:59')));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-14 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_saisies_version set deleted_at = now() where id = ".$saisie_version_id);
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_saisies_version set deleted_at = now()-10 where id = ".$saisie_version_id);
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-10 23:59:59')));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-14 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	}
@@ -557,71 +557,71 @@ class EleveTest extends GepiEmptyTestBase
 	    //on purge les decompte pour florence
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59')));
-	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59')));
+	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59')));
 	    
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
 	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable();
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    	    
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
-	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->filterByNonJustifiee(false)->delete();
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
-	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
+	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->filterByNonJustifiee(false)->delete();
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
-	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
+	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    
 	    //on va modifier une saisie à la main
 	    $tomorow = new DateTime();
 	    $tomorow->modify("+1 day");
-        mysql_query("update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst()->getId());
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+        mysql_query("update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05')->getFirst()->getId());
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies set updated_at = now() where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst()->getId());
-	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+        mysql_query("update a_saisies set updated_at = now() where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05')->getFirst()->getId());
+	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	    //on va modifier une version de saisie à la main
 	    $tomorow = new DateTime();
 	    $tomorow->modify("+1 day");
         mysql_query("update a_saisies_version set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where eleve_id = ".$florence_eleve->getId());
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_saisies_version set updated_at = now() where eleve_id = ".$florence_eleve->getId());
-	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	    //on va modifier un traitement à la main
 	    $tomorow = new DateTime();
 	    $tomorow->modify("+1 day");
-	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-06')->getFirst();
 	    $traitement_id = AbsenceEleveTraitementQuery::create()->filterByAbsenceEleveSaisie($saisie)->findOne()->getId();
         mysql_query("update a_traitements set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$traitement_id);
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
         mysql_query("update a_traitements set updated_at = now() where id = ".$traitement_id);
-	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	    //on va modifier à la main une saisie
 	    sleep(1);
 	    $traitement_id = AbsenceEleveTraitementQuery::create()->filterByAbsenceEleveSaisie($saisie)->findOne()->getId();
         mysql_query("update a_traitements set updated_at = now() where id = ".$traitement_id);
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable();
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-10 23:59:59')));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-14 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	}
@@ -630,51 +630,51 @@ class EleveTest extends GepiEmptyTestBase
 	    //on purge les decompte pour florence
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59')));
-	    $florence_eleve->checkAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-05 23:59:59')));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(null, new DateTime('2010-10-01 00:00:00')));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-06 00:00:00'), null));
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59')));
+	    $florence_eleve->checkAndUpdateSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-09 23:59:59')));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(null, new DateTime('2012-10-05 00:00:00')));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-10 00:00:00'), null));
 	    
 	    //on va modifier à la main une saisie
 	    sleep(1);
-        mysql_query("update a_saisies set updated_at = now() where id = ".$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst()->getId());
-	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
+        mysql_query("update a_saisies set updated_at = now() where id = ".$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05')->getFirst()->getId());
+	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-05 00:00:00'),new DateTime('2012-10-19 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-	    $florence_eleve->checkAndUpdateSynchroAbsenceAgregationTable(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-05 23:59:59'));
-	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-09-30 00:00:00'),new DateTime('2010-10-10 23:59:59')));
+	    $florence_eleve->checkAndUpdateSynchroAbsenceAgregationTable(new DateTime('2012-10-08 00:00:00'),new DateTime('2012-10-09 23:59:59'));
+	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2012-10-04 00:00:00'),new DateTime('2012-10-14 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    	    
 	}
 	
 	public function testSortieEleve() {		
-		# Absence 21 du 2011-05-30 Sortir l'élève du collège et vérifier qu'aucune absence n'est retournée
+		# Absence 21 du 2013-05-27 Sortir l'élève du collège et vérifier qu'aucune absence n'est retournée
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		# table d'agrégation
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
 	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable();
 		
-		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2011-05-30 00:00:00'),new DateTime('2011-05-30 23:59:59'));
+		$saisie_col = $florence_eleve->getAbsenceEleveSaisiesParDate(new DateTime('2013-05-27 00:00:00'),new DateTime('2013-05-27 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-05-30 00:00:00'),new DateTime('2011-05-30 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2013-05-27 00:00:00'),new DateTime('2013-05-27 23:59:59'));
 		$this->assertEquals(2,$demi_j_col->count());	# L'élève est inscrit -> 2 absences
 		# table d'agrégation
 		$nbAbs = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)
-				->filterByDateIntervalle(new DateTime('2011-05-30 00:00:00'),new DateTime('2011-05-30 23:59:59'))
+				->filterByDateIntervalle(new DateTime('2013-05-27 00:00:00'),new DateTime('2013-05-27 23:59:59'))
 				->filterByManquementObligationPresence(true);	
 	    $this->assertEquals(2,$nbAbs->count());
 		
-	    $florence_eleve->setDateSortie(strtotime('30-05-2011 00:00:00'));	# On sort l'élève
+	    $florence_eleve->setDateSortie(strtotime('27-05-2013 00:00:00'));	# On sort l'élève
 		
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2011-05-30 00:00:00'),new DateTime('2011-05-30 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsence(new DateTime('2013-05-27 00:00:00'),new DateTime('2013-05-27 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());	# L'élève n'est plus dans l'établissement -> 0 absence
 		$this->assertEquals(0,$florence_eleve->getDemiJourneesAbsenceParPeriode(3)->count());
-		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-05-30 00:00:00'),new DateTime('2011-05-30 23:59:59'));
+		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2013-05-27 00:00:00'),new DateTime('2013-05-27 23:59:59'));
 		$this->assertEquals(0,$demi_j_col->count());
 		# table d'agrégation
 		$nbAbs = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)
-				->filterByDateIntervalle(new DateTime('2011-05-30 00:00:00'),new DateTime('2011-05-30 23:59:59'))
+				->filterByDateIntervalle(new DateTime('2013-05-27 00:00:00'),new DateTime('2013-05-27 23:59:59'))
 				->filterByManquementObligationPresence(true);	
 	    $this->assertEquals(0,$nbAbs->count());
 		

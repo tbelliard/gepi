@@ -23,12 +23,12 @@ class PeriodeNoteTest extends GepiEmptyTestBase
 		$this->assertEquals('3',$periode_col->getLast()->getNumPeriode());
 		
 		$periode_1 = $periode_col->getFirst();
-		$this->assertEquals('2010-12-01 23:59:59',$periode_1->getDateFin('Y-m-d H:i:s'));
-		$this->assertEquals('2010-08-31 00:00:00',$periode_1->getDateDebut('Y-m-d H:i:s'));
+		$this->assertEquals('2012-12-01 23:59:59',$periode_1->getDateFin('Y-m-d H:i:s'));
+		$this->assertEquals('2012-08-31 00:00:00',$periode_1->getDateDebut('Y-m-d H:i:s'));
 		
 		$periode_3 = $periode_col->getLast();
-		$this->assertEquals('2011-07-01 23:59:59',$periode_3->getDateFin('Y-m-d H:i:s'));
-		$this->assertEquals('2011-03-02 00:00:00',$periode_3->getDateDebut('Y-m-d H:i:s'));
+		$this->assertEquals('2013-07-01 23:59:59',$periode_3->getDateFin('Y-m-d H:i:s'));
+		$this->assertEquals('2013-03-02 00:00:00',$periode_3->getDateDebut('Y-m-d H:i:s'));
 
 	}
 	
