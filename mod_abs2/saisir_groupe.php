@@ -1485,6 +1485,7 @@ if ($eleve['creneau_courant'] == $i) { ?>
 									   id="heure_debut_absence_eleve_<?php echo $eleve['position']; ?>"
 									   value="<?php echo $heure_debut_appel; ?>"
 									   type="text"
+									   onKeyDown="clavier_heure(this.id, event);" AutoComplete="off"
 									   maxlength="5"
 									   size="4"/>
 								<input class="pc88"
@@ -1498,6 +1499,7 @@ if ($eleve['creneau_courant'] == $i) { ?>
 									   name="heure_fin_absence_eleve[<?php echo $eleve['position']; ?>]"
 									   value="<?php echo $heure_fin_appel ?>"
 									   type="text"
+									   onKeyDown="clavier_heure(this.id, event);" AutoComplete="off"
 									   maxlength="5"
 									   size="4"/>
 								<input class="pc88"
