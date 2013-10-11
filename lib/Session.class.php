@@ -571,14 +571,21 @@ global $temoin_pas_d_update_session_table_log;
 
 	// Création d'une entrée de log
 	public function insert_log() {
+  
+    include_once(dirname(__FILE__).'/HTMLPurifier.standalone.php');
+    $config = HTMLPurifier_Config::createDefault();
+    $config->set('Core.Encoding', 'utf-8'); // replace with your encoding
+    $config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+    $purifier = new HTMLPurifier($config);
+    
 		if (!isset($_SERVER['HTTP_REFERRER'])) $_SERVER['HTTP_REFERER'] = '';
 	    $sql = "INSERT INTO log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
 	                '" . $this->login . "',
 	                '" . $this->start . "',
 	                '" . session_id() . "',
-	                '" . $_SERVER['REMOTE_ADDR'] . "',
-	                '" . $_SERVER['HTTP_USER_AGENT'] . "',
-	                '" . $_SERVER['HTTP_REFERER'] . "',
+	                '" . $purifier->purify($_SERVER['REMOTE_ADDR']) . "',
+	                '" . $purifier->purify($_SERVER['HTTP_USER_AGENT']) . "',
+	                '" . $purifier->purify($_SERVER['HTTP_REFERER']) . "',
 	                '1',
 	                '" . $this->start . "' + interval " . $this->maxLength . " minute
 	            )
@@ -1149,6 +1156,13 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 	}
 
 	public function record_failed_login($_login) {
+  
+    include_once(dirname(__FILE__).'/HTMLPurifier.standalone.php');
+    $config = HTMLPurifier_Config::createDefault();
+    $config->set('Core.Encoding', 'utf-8'); // replace with your encoding
+    $config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+    $purifier = new HTMLPurifier($config);
+    
 		# Une tentative de login avec un mot de passe erronnée a été détectée.
 		$test_login = sql_count(sql_query("SELECT login FROM utilisateurs WHERE (login = '".$_login."')"));
 
@@ -1160,9 +1174,9 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 	        	'" . $_login . "',
 	            now(),
 	            '',
-	            '" . $_SERVER['REMOTE_ADDR'] . "',
-	            '" . $_SERVER['HTTP_USER_AGENT'] . "',
-	            '" . $_SERVER['HTTP_REFERER'] . "',
+	            '" . $purifier->purify($_SERVER['REMOTE_ADDR']) . "',
+	            '" . $purifier->purify($_SERVER['HTTP_USER_AGENT']) . "',
+	            '" . $purifier->purify($_SERVER['HTTP_REFERER']) . "',
 	            '4',
 	            now());";
 	        $res = sql_query($sql);
@@ -1185,7 +1199,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 			// Le login n'existe pas. On fait donc un test sur l'IP.
 			$sql = "select LOGIN from log where
                 START > now() - interval " . getSettingValue("temps_compte_verrouille") . " minute and
-                REMOTE_ADDR = '".$_SERVER['REMOTE_ADDR']."'";
+                REMOTE_ADDR = '".$purifier->purify($_SERVER['REMOTE_ADDR'])."'";
             $res_test = sql_query($sql);
             if (sql_count($res_test) <= 10) {
 				// On a moins de 10 enregistrements. On enregistre et on ne renvoie pas de code
@@ -1194,9 +1208,9 @@ if (getSettingValue("sso_cas_table") == 'yes') {
                     '" . $_login . "',
                     now(),
                     '',
-                    '" . $_SERVER['REMOTE_ADDR'] . "',
-                    '" . $_SERVER['HTTP_USER_AGENT'] . "',
-                    '" . $_SERVER['HTTP_REFERER'] . "',
+                    '" . $purifier->purify($_SERVER['REMOTE_ADDR']) . "',
+                    '" . $purifier->purify($_SERVER['HTTP_USER_AGENT']) . "',
+                    '" . $purifier->purify($_SERVER['HTTP_REFERER']) . "',
                     '4',
                     now()
                     )
