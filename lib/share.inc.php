@@ -958,6 +958,13 @@ function detect_browser($HTTP_USER_AGENT) {
 	fwrite($f,date("d/m/Y His").": $HTTP_USER_AGENT\n");
 	fclose($f);
 	*/
+  include_once(dirname(__FILE__).'/HTMLPurifier.standalone.php');
+  $config = HTMLPurifier_Config::createDefault();
+  $config->set('Core.Encoding', 'utf-8'); // replace with your encoding
+  $config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+  $purifier = new HTMLPurifier($config);
+    
+  
 	if(function_exists('preg_match')) {
 		if (preg_match('/Opera(\/| )([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version)) {
 			$BROWSER_VER = $log_version[2];
@@ -987,7 +994,7 @@ function detect_browser($HTTP_USER_AGENT) {
 			}
 		} else {
 			$BROWSER_VER = '';
-			$BROWSER_AGENT = $HTTP_USER_AGENT;
+			$BROWSER_AGENT = $purifier->purify($HTTP_USER_AGENT);
 		}
 	}
 	elseif(function_exists('mb_ereg')) {
@@ -1017,7 +1024,7 @@ function detect_browser($HTTP_USER_AGENT) {
 			$BROWSER_AGENT = 'MOZILLA';
 		} else {
 			$BROWSER_VER = '';
-			$BROWSER_AGENT = $HTTP_USER_AGENT;
+			$BROWSER_AGENT = $purifier->purify($HTTP_USER_AGENT);
 		}
 	}
 	elseif(function_exists('ereg')) {
@@ -1047,12 +1054,12 @@ function detect_browser($HTTP_USER_AGENT) {
 			$BROWSER_AGENT = 'Firefox';
 		} else {
 			$BROWSER_VER = '';
-			$BROWSER_AGENT = $HTTP_USER_AGENT;
+			$BROWSER_AGENT = $purifier->purify($HTTP_USER_AGENT);
 		}
 	}
 	else {
 		$BROWSER_VER = '';
-		$BROWSER_AGENT = $HTTP_USER_AGENT;
+		$BROWSER_AGENT = $purifier->purify($HTTP_USER_AGENT);
 	}
 	return  $BROWSER_AGENT." - ".$BROWSER_VER;
 }
