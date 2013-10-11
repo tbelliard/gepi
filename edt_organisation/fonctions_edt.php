@@ -839,7 +839,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 			$aff_matiere = $rep_2_matiere['id_matiere'];
 		}
 
-		$info_alt="";
+		//$info_alt="";
 		$req_tmp_grp = mysql_query("SELECT * FROM groupes WHERE id='".$enseignement."'");
 		if(mysql_num_rows($req_tmp_grp)>0) {
 		$lig_tmp_grp = mysql_fetch_object($req_tmp_grp);
