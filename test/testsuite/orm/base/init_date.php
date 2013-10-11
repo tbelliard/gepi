@@ -1,14 +1,20 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
-vendredi    2010-10-01 → 2013-10-04 → 2012-10-05
- */ 
-define ('VENDREDI20101001' , '2012-10-05');
-/*
-samedi      2010-10-02 → 2013-10-05 → 2012-10-06
-dimanche    2010-10-03 → 2013-10-06 → 2012-10-07
+if(date('m') > 7) {
+   $annee = date('Y') - 1 ;
+} else {
+   $annee = date('Y') - 2 ;
+}
+
+$date = new DateTime();
+
+/* vendredi    2010-10-01 → 2013-10-04 → 2012-10-05 */ 
+$date->setISODate($annee, 40, 5);
+define ('VENDREDI20101001' , $date->format('Y-m-d'));
+/*samedi      2010-10-02 → 2013-10-05 → 2012-10-06 */
+$date->setISODate($annee, 40, 6);
+define ('SAMEDI20101002' , $date->format('Y-m-d'));
+/* dimanche    2010-10-03 → 2013-10-06 → 2012-10-07
 lundi       2010-10-04 → 2013-10-07 → 2012-10-08
 mardi       2010-10-05 → 2013-10-08 → 2012-10-09
 mercredi    2010-10-06 → 2013-10-09 → 2012-10-10
