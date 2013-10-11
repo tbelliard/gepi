@@ -495,7 +495,14 @@ if(!isset($step)) {
 	$alert_diff_etab_origine=getSettingValue('alert_diff_etab_origine');
 	echo "<br />\n";
 	echo "<p>\n";
-	echo "<strong>Établissement d'origine&nbsp;:</strong>\n";
+
+	$titre_infobulle="Établissement d'origine";
+	$texte_infobulle="Sconet fournit l'établissement \"<em>de l'année précédente</em>\".<br />
+S'il s'agit de l'établissement courant, l'information est ignorée&nbsp;;<br />
+sinon, Gepi le considère comme \"<em>établissement d'origine</em>\".";
+	$tabdiv_infobulle[]=creer_div_infobulle('explication_etab_origine',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+
+	echo "<strong>Établissement d'origine&nbsp;:</strong> <a href='#' onmouseover=\"delais_afficher_div('explication_etab_origine','y',-20,20,1000,20,20);\" onclick=\"afficher_div('explication_etab_origine','y',-20,20);return false;\"><img src='../images/icons/ico_ampoule.png' alt=\"Explication établissement d\'origine.\" height='25' width='15'></a>\n";
 	echo "<br />\n";
 	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_y' value='y' ";
 	if($alert_diff_etab_origine=='y') {
