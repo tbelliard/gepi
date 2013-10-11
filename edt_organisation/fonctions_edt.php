@@ -691,6 +691,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 
 	if (($id_aid != NULL) AND ($id_aid != "")) 
     {
+		//$info_alt.="\C'est un AID\n";
 		//echo "c'est un AID";
 		$req_nom_aid = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$id_aid."'");
 		$rep_nom_aid = mysql_fetch_array($req_nom_aid);
@@ -734,6 +735,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 	}
     else if ($enseignement != "") 
     {
+		//$info_alt.="\nEnseignement $enseignement\n";
 		// on récupère le nom court des groupes en question
 		$req_id_classe = mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe ='".$enseignement."'");
         $res="";
@@ -850,7 +852,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 
     else
     {
-
+		//$info_alt.="\nGroupe non renseigné dans l'appel de la fonction.\n";
 		// le groupe n'est pas renseigné, donc, on affiche en fonction
 		$aff_matiere = 'inc.';
 		$classe_js = NULL;
@@ -915,6 +917,13 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 	$ChaineComplete="";
 	// 20130128
 	if(($contenu_creneaux_edt_avec_span_title!="n")&&($info_alt!="")) {
+		if($aff_sem!="") {
+			$info_alt.="\nEn semaine ".$rep_sem["id_semaine"];
+		}
+		if($enseignement!="") {
+			$info_alt.="\n(enseignement n°".$enseignement.")";
+		}
+
 		$ChaineComplete.="<span title=\"$info_alt\">";
 	}
 
