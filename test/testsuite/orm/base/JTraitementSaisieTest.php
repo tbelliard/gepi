@@ -23,9 +23,9 @@ class JTraitementSaisieTest extends GepiEmptyTestBase
         $traitement = new AbsenceEleveTraitement();
         $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
         $traitement->save();
-        $traitement->addAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst());
+        $traitement->addAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05')->getFirst());
         $traitement->save();
-        $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
+        $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2012-10-05')->findOne();
         $this->assertTrue($decompte->getManquementObligationPresence());
         $traitement->delete();
         $decompte->reload();
@@ -36,7 +36,7 @@ class JTraitementSaisieTest extends GepiEmptyTestBase
         $traitement->save();
         AbsenceEleveSaisiePeer::enableAgregation();
         AbsenceEleveTraitementPeer::enableAgregation();
-        $traitement->addAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst());
+        $traitement->addAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05')->getFirst());
         $traitement->save();
         $decompte->reload();
         $this->assertFalse($decompte->getManquementObligationPresence());
@@ -48,7 +48,7 @@ class JTraitementSaisieTest extends GepiEmptyTestBase
    public function testModification()
     {
         $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-        $saisie = AbsenceEleveSaisieQuery::create()->filterByDebutAbs('2010-10-10 08:00:00')->findOne();
+        $saisie = AbsenceEleveSaisieQuery::create()->filterByDebutAbs('2012-10-14 08:00:00')->findOne();
         $traitements = AbsenceEleveTraitementQuery::create()->useAbsenceEleveTypeQuery()->filterByNom('Infirmerie')->endUse()->find();
         $traitement_1 = $traitements->getFirst();
         $traitement_2 = $traitements->get(1);
@@ -89,9 +89,9 @@ class JTraitementSaisieTest extends GepiEmptyTestBase
         $traitement = new AbsenceEleveTraitement();
         $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
         $traitement->save();
-        $traitement->addAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst());
+        $traitement->addAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour('2012-10-05')->getFirst());
         $traitement->save();
-        $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
+        $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2012-10-05')->findOne();
         $this->assertFalse($decompte->getManquementObligationPresence());
         $j_traitement_saisie = $traitement->getJTraitementSaisieEleves()->getFirst();
         $j_traitement_saisie->delete();

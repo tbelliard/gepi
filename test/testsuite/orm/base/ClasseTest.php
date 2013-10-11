@@ -22,19 +22,19 @@ class ClasseTest extends GepiEmptyTestBase
 		$this->assertEquals('1',$periode_col->getFirst()->getNumPeriode());
 		$this->assertEquals('2',$periode_col->getLast()->getNumPeriode());
 				
-		$periode = $sixieme_A->getPeriodeNote('2009-12-01');
-		$this->assertEquals('2',$periode->getNumPeriode(),'à la date du 2009-12-01, il doit y avoir la derniére période par défaut');
+		$periode = $sixieme_A->getPeriodeNote('2011-12-01');
+		$this->assertEquals('2',$periode->getNumPeriode(),'à la date du 2011-12-01, il doit y avoir la derniére période par défaut');
 		
-		$periode = $sixieme_A->getPeriodeNote('2010-10-01');
-		$this->assertNotNull($periode,'à la date du 2010-10-01, il ne doit y avoir la première période d assignée, donc on doit retourner null');
+		$periode = $sixieme_A->getPeriodeNote('2012-10-02');
+		$this->assertNotNull($periode,'à la date du 2012-10-02, il ne doit y avoir la première période d assignée, donc on doit retourner null');
                 $this->assertEquals('1',$periode->getNumPeriode());
 
-		$periode = $sixieme_A->getPeriodeNote('2010-12-10');
-		$this->assertNotNull($periode,'à la date du 2010-12-10, il ne doit y avoir la deuxième période d assignée, donc on doit retourner null');
+		$periode = $sixieme_A->getPeriodeNote('2012-12-11');
+		$this->assertNotNull($periode,'à la date du 2012-12-11, il ne doit y avoir la deuxième période d assignée, donc on doit retourner null');
                 $this->assertEquals('2',$periode->getNumPeriode());
 
-		$periode = $sixieme_A->getPeriodeNote('2011-05-10');
-		$this->assertEquals('2',$periode->getNumPeriode(),'à la date du 2009-12-01, il doit y avoir la derniére période par défaut');
+		$periode = $sixieme_A->getPeriodeNote('2013-05-11');
+		$this->assertEquals('2',$periode->getNumPeriode(),'à la date du 2013-05-11, il doit y avoir la derniére période par défaut');
                 
                 //on rajoute une autre période, dont la date de fin est non renseignée
                 $periode_6A_3 = new PeriodeNote();
@@ -44,8 +44,8 @@ class ClasseTest extends GepiEmptyTestBase
                 $periode_6A_3->setNomPeriode('troisième trimestre');
                 $periode_6A_3->save();
 
-		$periode = $sixieme_A->getPeriodeNote('2011-05-10');
-		$this->assertNotNull($periode,'à la date du 2011-05-10, il ne doit y avoir la troisième période d assignée meme si elle n est pas terminée');
+		$periode = $sixieme_A->getPeriodeNote('2013-05-11');
+		$this->assertNotNull($periode,'à la date du 2013-05-11, il ne doit y avoir la troisième période d assignée meme si elle n est pas terminée');
                 $this->assertEquals('3',$periode->getNumPeriode());
 	}
 	
