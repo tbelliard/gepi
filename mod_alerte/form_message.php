@@ -539,7 +539,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 						<select name='login_dest[]' onchange='changement()' multiple size='6'>
 							<?php
 								// Cela donne la possibilité à un utilisateur de découvrir le login des autres comptes... pas génial.
-								$tab_statut=array('professeur', 'scolarite', 'cpe', 'administrateur');
+								$tab_statut=array('professeur', 'scolarite', 'cpe', 'administrateur', 'autre');
 								for($loop=0;$loop<count($tab_statut);$loop++) {
 									$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND statut='".$tab_statut[$loop]."' ORDER BY nom, prenom";
 									$res_u=mysql_query($sql);
@@ -640,7 +640,7 @@ Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendema
 <?php
 $titre_infobulle="Choix des destinataires";
 $texte_infobulle="<p>Cochez les destinataires de votre message et validez.</p>";
-$tab_statut=array('professeur', 'scolarite', 'cpe', 'administrateur');
+$tab_statut=array('professeur', 'scolarite', 'cpe', 'administrateur', 'autre');
 $cpt_u=0;
 $chaine_js_login_u="var login_u=new Array(";
 $chaine_js_designation_u="var designation_u=new Array(";
