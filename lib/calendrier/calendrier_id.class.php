@@ -413,10 +413,12 @@ class Calendrier {
         echo "\t */\n";
         echo "\tfunction finOperation(val){\n";
         if ($popup){
-            echo "\t\twindow.opener.document.forms['".$frm."'].elements['".$chm."'].value = val;\n";
+            //echo "\t\twindow.opener.document.forms['".$frm."'].elements['".$chm."'].value = val;\n";
+            echo "\t\twindow.opener.document.getElementById('".$chm."').value = val;\n";
             echo "\t\twindow.close();\n";
         }else{
-            echo "\t\tdocument.forms['".$frm."'].elements['".$chm."'].value = val;\n";
+            //echo "\t\tdocument.forms['".$frm."'].elements['".$chm."'].value = val;\n";
+            echo "\t\tdocument.getElementById('".$chm."').value = val;\n";
         }
         echo "\t}\n";
         echo "</script>\n\n";
