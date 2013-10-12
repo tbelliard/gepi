@@ -381,12 +381,61 @@ $quels_parents = mysql_query($sql);
 // Effectif sans login avec filtrage sur le nom et limitation à un max de 20:
 $nb2 = mysql_num_rows($quels_parents);
 
-if($nb==0){
-	echo "<p>Tous les responsables ont un login, ou bien aucun responsable n'est présent dans la base de Gepi.</p>\n";
+
+$nb_resp_legal_0_sans_compte=0;
+if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+	$sql="SELECT DISTINCT rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.login='' AND rp.pers_id=r.pers_id AND r.resp_legal='0';";
+	$res_resp_legal_0=mysql_query($sql);
+	$nb_resp_legal_0_sans_compte=mysql_num_rows($res_resp_legal_0);
+}
+
+$nb_resp_legal_1_ou_2_sans_compte=0;
+$sql="SELECT DISTINCT rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.login='' AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2');";
+$res_resp_legal_1_ou_2=mysql_query($sql);
+$nb_resp_legal_1_ou_2_sans_compte=mysql_num_rows($res_resp_legal_1_ou_2);
+
+
+if(($nb_resp_legal_1_ou_2_sans_compte==0)&&($nb_resp_legal_0_sans_compte==0)) {
+	echo "<p class='bold'>Informations&nbsp;:</p>
+<blockquote>
+	<p>Tous les responsables légaux 1 et 2 ont un login, ou bien aucun responsable n'est présent dans la base de Gepi.</p>
+</blockquote>\n";
 }
 else{
+	echo "<p class='bold'>Informations&nbsp;:</p>
+<blockquote>\n";
+
 	//echo "<p>Les $nb responsables ci-dessous n'ont pas encore de compte utilisateur.</p>\n";
-	echo "<p>$nb responsables n'ont pas encore de compte utilisateur.</p>\n";
+	if($nb_resp_legal_1_ou_2_sans_compte>1) {
+		echo "<p>$nb_resp_legal_1_ou_2_sans_compte responsables légaux 1 ou 2 n'ont pas encore de compte utilisateur.</p>\n";
+	}
+	elseif($nb_resp_legal_1_ou_2_sans_compte==1) {
+		echo "<p>$nb_resp_legal_1_ou_2_sans_compte responsable légal 1 ou 2 n'a pas encore de compte utilisateur.</p>\n";
+	}
+	else {
+		echo "<p>Tous les responsables légaux 1 ou 2 ont un compte utilisateur.</p>\n";
+	}
+
+	if($nb_resp_legal_0_sans_compte>0) {
+		echo "<p>$nb_resp_legal_0_sans_compte responsables non légaux n'ont pas encore de compte utilisateur.</p>\n";
+	}
+	elseif($nb_resp_legal_0_sans_compte==1) {
+		echo "<p>$nb_resp_legal_0_sans_compte responsable non légal n'a pas encore de compte utilisateur.</p>\n";
+	}
+
+	if($critere_recherche!="") {
+		if($nb>1) {
+			echo "<p>$nb responsables correspondent à votre recherche.</p>\n";
+		}
+		elseif($nb==1) {
+			echo "<p>$nb responsable correspond à votre recherche.</p>\n";
+		}
+		else {
+			echo "<p>Aucun responsable ne correspond à votre recherche.</p>\n";
+		}
+	}
+
+
 	echo "<p><em>Note : vous ne pouvez créer de comptes d'accès que pour les responsables d'élèves associés à des classes.</em></p>\n";
 
 	if ((getSettingValue("mode_generation_login_responsable") == null)||(getSettingValue("mode_generation_login_responsable") == "")) {
@@ -395,6 +444,8 @@ else{
 	if (!$session_gepi->auth_locale && $gepiSettings['ldap_write_access'] != "yes") {
 		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (LDAP ou SSO) sans avoir défini d'accès en écriture à l'annuaire LDAP. Aucun mot de passe ne sera donc assigné aux utilisateurs que vous vous apprêtez à créer. Soyez certain de générer les login selon le même format que pour votre source d'authentification SSO.</p>\n";
 	}
+
+	echo "</blockquote>\n";
 
 	echo "<p><b>Créer des comptes par lot</b> :</p>\n";
 	echo "<blockquote>\n";
@@ -442,7 +493,7 @@ else{
 
 	include("randpass.php");
 
-	echo "<p style='font-size:small;'>Lors de la création, les comptes reçoivent un mot de passe aléatoire choisi parmi les caractères suivants: ";
+	echo "<p style='font-size:small;'>Lors de la création, les comptes reçoivent un mot de passe aléatoire choisi parmi les caractères suivants&nbsp;: ";
 	if (LOWER_AND_UPPER) {
 		if(EXCLURE_CARACT_CONFUS) {
 			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -505,12 +556,16 @@ else{
 	echo "Filtrage:";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<input type='submit' name='filtrage' value='Afficher' /> les responsables (<em>légaux 1 et 2</em>) sans login dont le <b>nom</b> contient: ";
-	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
+	echo "<input type='submit' name='filtrage' value='Afficher' /> les responsables (<em>légaux 1 et 2</em>) sans login dont le <b>nom</b> contient&nbsp;: ";
+	echo "<input type='text' name='critere_recherche' value='";
+	//if((isset($filtrage))&&($filtrage==)) {
+		echo $critere_recherche;
+	//}
+	echo "' />\n";
 
 	echo "<br />\n";
 
-	echo "<input type='submit' name='filtrage_rl0' value='Afficher' /> les responsables non responsables légaux (<em>resp_legal=0</em>) sans login dont le <b>nom</b> contient: ";
+	echo "<input type='submit' name='filtrage_rl0' value='Afficher' /> les responsables non responsables légaux (<em>resp_legal=0</em>) sans login dont le <b>nom</b> contient&nbsp;: ";
 	echo "<input type='text' name='critere_recherche_rl0' value='$critere_recherche' />\n";
 
 	echo "</td>\n";
