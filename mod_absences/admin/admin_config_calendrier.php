@@ -253,13 +253,16 @@ if ($action == "modifier")
  }
 
  //Configuration du calendrier
-         include("../../lib/calendrier/calendrier.class.php");
+         //include("../../lib/calendrier/calendrier.class.php");
+         include("../../lib/calendrier/calendrier_id.class.php");
 
 	 $i = '0';
          while ( $i<$nb_ajout )
            {
-               $cal_a[$i] = new Calendrier("form2", "jourdebut_calendrier[$i]");
-               $cal_b[$i] = new Calendrier("form2", "jourfin_calendrier[$i]");
+               //$cal_a[$i] = new Calendrier("form2", "jourdebut_calendrier[$i]");
+               //$cal_b[$i] = new Calendrier("form2", "jourfin_calendrier[$i]");
+               $cal_a[$i] = new Calendrier("form2", "jourdebut_calendrier_$i");
+               $cal_b[$i] = new Calendrier("form2", "jourfin_calendrier_$i");
                $i = $i+1;
            }
 
@@ -388,13 +391,19 @@ echo "</p>";
 	     <tr style="white-space: nowrap;">
 		<td>commence le</td>
 		<td><input name="jourdebut_calendrier[<?php echo $nb; ?>]" type="text" id="jourdebut_calendrier_<?php echo $nb; ?>" size="10" maxlength="10" value="<?php if($action=="modifier") { echo $jourdebut_calendrier['0']; } elseif (isset($jourdebut_calendrier_erreur[$nb])) { echo $jourdebut_calendrier_erreur[$nb]; } else { ?>00/00/0000<?php } ?>" class="input_sans_bord" onchange="decoche('<?php echo $nb; ?>');" />
-			<a href="#calend" onClick="<?php echo $cal_a[$nb]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>; decoche('<?php echo $nb; ?>');"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
+			<a href="#calend" onClick="<?php
+	//echo $cal_a[$nb]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170);
+	echo $cal_a[$nb]->get_strPopup('../../lib/calendrier/pop.calendrier_id.php', 350, 170);
+?>; decoche('<?php echo $nb; ?>');"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
 		</td>
              </tr>
 	     <tr><td colspan="2"><input name="lajournee[<?php echo $nb; ?>]" id="lajournee_<?php echo $nb; ?>" value="1" type="checkbox" <?php if ( isset($lajournee_erreur[$nb]) and $lajournee[$nb] === '1' ) { ?>checked="checked"<?php } ?> title="Concerne la journée entière" onclick="preremplis('<?php echo $nb; ?>')" /> toute la journée</td></tr>
              <tr><td>heure de début</td><td><input name="heuredebut_calendrier[<?php echo $nb; ?>]" type="text" id="heuredebut_calendrier_<?php echo $nb; ?>" size="5" maxlength="5" value="<?php if($action=="modifier") { echo $heuredebut_calendrier['0']; } elseif (isset($heuredebut_calendrier_erreur[$nb])) { echo $heuredebut_calendrier_erreur[$nb]; } else { ?>00:00<?php } ?>" class="input_sans_bord" /></td></tr>
              <tr><td>termine le</td><td><input name="jourfin_calendrier[<?php echo $nb; ?>]" type="text" id="jourfin_calendrier_<?php echo $nb; ?>" size="10" maxlength="10" value="<?php if($action=="modifier") { echo $jourfin_calendrier['0']; } elseif (isset($jourfin_calendrier_erreur[$nb])) { echo $jourfin_calendrier_erreur[$nb]; } else { ?>00/00/0000<?php } ?>" class="input_sans_bord" />
-			<a href="#calend" onClick="<?php echo $cal_b[$nb]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
+			<a href="#calend" onClick="<?php
+	//echo $cal_b[$nb]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170);
+	echo $cal_b[$nb]->get_strPopup('../../lib/calendrier/pop.calendrier_id.php', 350, 170);
+?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
 		 </td>
 	     </tr>
              <tr><td>heure de fin</td><td><input name="heurefin_calendrier[<?php echo $nb; ?>]" type="text" id="heurefin_calendrier_<?php echo $nb; ?>" size="5" maxlength="5" value="<?php if($action=="modifier") { echo $heurefin_calendrier['0']; } elseif (isset($heurefin_calendrier_erreur[$nb])) { echo $heurefin_calendrier_erreur[$nb]; } else { ?>00:00<?php } ?>" class="input_sans_bord" /></td></tr>
