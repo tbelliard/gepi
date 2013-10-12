@@ -218,9 +218,12 @@ if (empty($eleve_absent[1])==true) {
 $i = 0;
 
         //Configuration du calendrier
-          include("../../lib/calendrier/calendrier.class.php");
-          $cal_1 = new Calendrier("form1", "d_date_absence_eleve[0]");
-          $cal_2 = new Calendrier("form1", "a_date_absence_eleve[0]");
+          //include("../../lib/calendrier/calendrier.class.php");
+          //$cal_1 = new Calendrier("form1", "d_date_absence_eleve[0]");
+          //$cal_2 = new Calendrier("form1", "a_date_absence_eleve[0]");
+          include("../../lib/calendrier/calendrier_id.class.php");
+          $cal_1 = new Calendrier("form1", "d_date_absence_eleve_0");
+          $cal_2 = new Calendrier("form1", "a_date_absence_eleve_0");
 
 /* div de centrage du tableau pour ie5 */
 ?><div style="text-align:center"><?php
@@ -293,7 +296,7 @@ $i = 0;
                   <td><strong>Heure</strong></td>
                 </tr>
                 <tr class="td_tableau_absence_1">
-                  <td>le <input type="text" onfocus="javascript:this.select()" name="d_date_absence_eleve[<?php echo $i; ?>]" size="15" maxlength="15" value="<?php if(isset($d_date_absence_eleve[$i]) and !empty($d_date_absence_eleve[$i])) { echo $d_date_absence_eleve[$i]; } else { echo $datejour; } ?>" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
+                  <td>le <input type="text" onfocus="javascript:this.select()" name="d_date_absence_eleve[<?php echo $i; ?>]" id="d_date_absence_eleve_<?php echo $i; ?>" size="15" maxlength="15" value="<?php if(isset($d_date_absence_eleve[$i]) and !empty($d_date_absence_eleve[$i])) { echo $d_date_absence_eleve[$i]; } else { echo $datejour; } ?>" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier_id.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
                   <td>de <input onfocus="javascript:this.select()" name="d_heure_absence_eleve[<?php echo $i; ?>]" type="text" id="d_heure_absence_eleve" value="<?php if (isset($d_heure_absence_eleve[$i]) and !empty($d_heure_absence_eleve[$i])) { echo $d_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" size="8" maxlength="8" /><br />&agrave; &nbsp;&nbsp;<input name="a_heure_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" id="a_heure_absence_eleve" value="<?php if (isset($a_heure_absence_eleve[$i]) and !empty($a_heure_absence_eleve[$i])) { echo $a_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" size="8" maxlength="8" /></td>
                 </tr>
                 <tr class="tr_tableau_absence_titre">

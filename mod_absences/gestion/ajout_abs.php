@@ -950,9 +950,12 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
     $i = '0';
 
 	//Configuration du calendrier
-	include("../../lib/calendrier/calendrier.class.php");
-	$cal_1 = new Calendrier("form1", "d_date_absence_eleve[0]");
-	$cal_2 = new Calendrier("form1", "a_date_absence_eleve[0]");
+	//include("../../lib/calendrier/calendrier.class.php");
+	include("../../lib/calendrier/calendrier_id.class.php");
+	//$cal_1 = new Calendrier("form1", "d_date_absence_eleve[0]");
+	//$cal_2 = new Calendrier("form1", "a_date_absence_eleve[0]");
+	$cal_1 = new Calendrier("form1", "d_date_absence_eleve_0");
+	$cal_2 = new Calendrier("form1", "a_date_absence_eleve_0");
 
 /* div de centrage du tableau pour ie5 */
 ?><div style="text-align:center"><?php
@@ -981,7 +984,7 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
                          </tr>
                         </table>
         <?php } ?>
-    <form method="post" action="ajout_abs.php?type=<?php echo $type; ?>&amp;id=<?php echo $id; ?>&amp;mode=<?php echo $mode; ?>" name="form1">
+    <form method="post" action="ajout_abs.php?type=<?php echo $type; ?>&amp;id=<?php echo $id; ?>&amp;mode=<?php echo $mode; ?>" name="form1" id="form1">
      <fieldset class="fieldset_efface">
       <table class="entete_tableau_absence" border="0" cellspacing="0" cellpadding="1">
         <tr>
@@ -1063,7 +1066,10 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
                   <td><strong>P&eacute;riode</strong></td>
                 </tr>
                 <tr class="td_tableau_absence_1">
-					<td>du&nbsp;<input name="d_date_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if(isset($d_date_absence_eleve) and !empty($d_date_absence_eleve)) { echo $d_date_absence_eleve[$i]; } else { echo $datejour; } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
+					<td>du&nbsp;<input name="d_date_absence_eleve[<?php echo $i; ?>]" id="d_date_absence_eleve_<?php echo $i; ?>" onfocus="javascript:this.select()" type="text" value="<?php if(isset($d_date_absence_eleve) and !empty($d_date_absence_eleve)) { echo $d_date_absence_eleve[$i]; } else { echo $datejour; } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php
+	//echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170);
+	echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier_id.php', 350, 170);
+?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
 					<td>de&nbsp;<input name="d_heure_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if (isset($d_heure_absence_eleve[$i]) and !empty($d_heure_absence_eleve[$i])) { echo $d_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" size="5" maxlength="5" /></td>
 					<td>
 		
@@ -1083,7 +1089,10 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
 		           </td>
                 </tr>
                 <tr>
-					<td>au&nbsp;<input name="a_date_absence_eleve[<?php echo $i; ?>]"  onfocus="javascript:this.select()" type="text" value="<?php if (isset($a_date_absence_eleve[$i]) and !empty($a_date_absence_eleve[$i])) { echo $a_date_absence_eleve[$i]; } else { ?>JJ/MM/AAAA<?php } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_2->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
+					<td>au&nbsp;<input name="a_date_absence_eleve[<?php echo $i; ?>]" id="a_date_absence_eleve_<?php echo $i; ?>"  onfocus="javascript:this.select()" type="text" value="<?php if (isset($a_date_absence_eleve[$i]) and !empty($a_date_absence_eleve[$i])) { echo $a_date_absence_eleve[$i]; } else { ?>JJ/MM/AAAA<?php } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php
+	//echo $cal_2->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170);
+	echo $cal_2->get_strPopup('../../lib/calendrier/pop.calendrier_id.php', 350, 170);
+?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
 					<td>&agrave;&nbsp;&nbsp;<input name="a_heure_absence_eleve[<?php echo $i; ?>]"  onfocus="javascript:this.select()" type="text" value="<?php if (isset($a_heure_absence_eleve[$i]) and !empty($a_heure_absence_eleve[$i])) { echo $a_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" size="5" maxlength="5" /></td>
 					<td>
 		
@@ -1221,18 +1230,21 @@ $i = '0';
 if (isset($eleve_absent[1]) and !empty($eleve_absent[1]) or $mode === 'classe') {
 
        //Configuration du calendrier
-         include("../../lib/calendrier/calendrier.class.php");
+         //include("../../lib/calendrier/calendrier.class.php");
+         include("../../lib/calendrier/calendrier_id.class.php");
          while(empty($eleve_absent[$i])== false)
            {
-               $cal_a[$i] = new Calendrier("form1", "d_date_absence_eleve[$i]");
-               $cal_b[$i] = new Calendrier("form1", "a_date_absence_eleve[$i]");
+               //$cal_a[$i] = new Calendrier("form1", "d_date_absence_eleve[$i]");
+               //$cal_b[$i] = new Calendrier("form1", "a_date_absence_eleve[$i]");
+               $cal_a[$i] = new Calendrier("form1", "d_date_absence_eleve_$i");
+               $cal_b[$i] = new Calendrier("form1", "a_date_absence_eleve_$i");
                $i = $i+1;
            }
     ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
   <div style="text-align:center">
 <?php $entete_absence_1 = 'Ajout un ou plusieurs absences'; ?>
-  <form method="post" action="ajout_abs.php?type=<?php echo $type; ?>" name="form1">
+  <form method="post" action="ajout_abs.php?type=<?php echo $type; ?>" name="form1" id="form1">
    <fieldset class="fieldset_efface">
     <table class="entete_tableau_absence" border="0" cellspacing="0" cellpadding="1">
         <tr>
@@ -1293,8 +1305,14 @@ if (isset($eleve_absent[1]) and !empty($eleve_absent[1]) or $mode === 'classe') 
               </td>     
             
             <td><?php if(($mode === "classe" and $i === '0') or $mode != "classe") { ?>
-              du&nbsp;&nbsp;<a href="#calend" onClick="<?php echo $cal_a[$i]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br /><input name="d_date_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if(empty($d_date_absence_eleve)) { echo $datejour; } else { if($action == "modifier" ) { echo $d_date_absence_eleve[$i]; } else { if(isset($d_date_absence_eleve_erreur[$i])) { echo $d_date_absence_eleve_erreur[$i]; } else { echo date_fr($d_date_absence_eleve); } } } ?>" size="10" maxlength="10" /><br />
-              au&nbsp;&nbsp;<a href="#calend" onClick="<?php echo $cal_b[$i]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br /><input name="a_date_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if(isset($a_date_absence_eleve_erreur[$i])) { echo $a_date_absence_eleve_erreur[$i]; } else { ?>JJ/MM/AAAA<?php } ?>" size="10" maxlength="10" />
+              du&nbsp;&nbsp;<a href="#calend" onClick="<?php
+	//echo $cal_a[$i]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170);
+	echo $cal_a[$i]->get_strPopup('../../lib/calendrier/pop.calendrier_id.php', 350, 170);
+?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br /><input name="d_date_absence_eleve[<?php echo $i; ?>]" id="d_date_absence_eleve_<?php echo $i; ?>" onfocus="javascript:this.select()" type="text" value="<?php if(empty($d_date_absence_eleve)) { echo $datejour; } else { if($action == "modifier" ) { echo $d_date_absence_eleve[$i]; } else { if(isset($d_date_absence_eleve_erreur[$i])) { echo $d_date_absence_eleve_erreur[$i]; } else { echo date_fr($d_date_absence_eleve); } } } ?>" size="10" maxlength="10" /><br />
+              au&nbsp;&nbsp;<a href="#calend" onClick="<?php
+	//echo $cal_b[$i]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170);
+	echo $cal_b[$i]->get_strPopup('../../lib/calendrier/pop.calendrier_id.php', 350, 170);
+?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br /><input name="a_date_absence_eleve[<?php echo $i; ?>]" id="a_date_absence_eleve_<?php echo $i; ?>" onfocus="javascript:this.select()" type="text" value="<?php if(isset($a_date_absence_eleve_erreur[$i])) { echo $a_date_absence_eleve_erreur[$i]; } else { ?>JJ/MM/AAAA<?php } ?>" size="10" maxlength="10" />
            </td><?php } ?>
             <td><?php if(($mode === "classe" and $i === '0') or $mode != "classe") { ?>
               de<br /><input name="d_heure_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if(isset($d_heure_absence_eleve_erreur[$i]) and $dp_absence_eleve == "") { echo $d_heure_absence_eleve_erreur[$i]; } else { ?>00:00<?php } ?>" size="5" maxlength="5" /><br />

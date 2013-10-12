@@ -285,9 +285,11 @@ require_once("../../lib/header.inc");
 
 $i = '0';
 //Configuration du calendrier
-include("../../lib/calendrier/calendrier.class.php");
+//include("../../lib/calendrier/calendrier.class.php");
+include("../../lib/calendrier/calendrier_id.class.php");
 while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== false) {
-    $cal_[$i] = new Calendrier("form1", "d_date_absence_eleve[$i]");
+    //$cal_[$i] = new Calendrier("form1", "d_date_absence_eleve[$i]");
+    $cal_[$i] = new Calendrier("form1", "d_date_absence_eleve_$i");
     $i = $i+1;
 }
 
@@ -357,7 +359,7 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
                    </tr>
                  </table>
       </td>
-      <td>le <input name="d_date_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" size="12" maxlength="12" value="<?php if(isset($d_date_absence_eleve[$i]) and !empty($d_date_absence_eleve[$i])) { echo $d_date_absence_eleve[$i]; } else { echo $datejour; } ?>" /><a href="#calend" onClick="<?php echo $cal_[$i]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br /><br />à <input name="d_heure_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" size="5" maxlength="5" value="<?php if(isset($d_heure_absence_eleve[$i]) and !empty($d_heure_absence_eleve[$i])) { echo $d_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" /></td>
+      <td>le <input name="d_date_absence_eleve[<?php echo $i; ?>]" id="d_date_absence_eleve_<?php echo $i; ?>" onfocus="javascript:this.select()" type="text" size="12" maxlength="12" value="<?php if(isset($d_date_absence_eleve[$i]) and !empty($d_date_absence_eleve[$i])) { echo $d_date_absence_eleve[$i]; } else { echo $datejour; } ?>" /><a href="#calend" onClick="<?php echo $cal_[$i]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br /><br />à <input name="d_heure_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" size="5" maxlength="5" value="<?php if(isset($d_heure_absence_eleve[$i]) and !empty($d_heure_absence_eleve[$i])) { echo $d_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" /></td>
       <td><?php echo "Motif :"; ?><br />
           <select name="motif_absence_eleve[<?php echo $i; ?>]" >
           <?php
