@@ -76,7 +76,7 @@ if (isset($_SESSION["login"])) {
 
 	}elseif($_SESSION['statut'] == "responsable"){
 
-		$tab_tmp_ele = get_enfants_from_resp_login($_SESSION['login']);
+		$tab_tmp_ele = get_enfants_from_resp_login($_SESSION['login'], 'simple', 'y');
 		$nbre_enfants_brut = count($tab_tmp_ele);
 		$liens_autres_enfants = "";
 		// On vérifie que le login demandé est autorisé pour ce responsable
