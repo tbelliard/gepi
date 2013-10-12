@@ -909,6 +909,9 @@ function delete_group($_id_groupe) {
     $del9 = mysql_query("DELETE from acces_cdt_groupes WHERE id_groupe = '" . $_id_groupe . "'");
     if (!$del9) $errors .= "Erreur lors de la suppression des accès CDT pour ce groupe.<br/>";
 
+    $del10 = mysql_query("DELETE from edt_cours WHERE id_groupe = '" . $_id_groupe . "'");
+    if (!$del10) $errors .= "Erreur lors de la suppression des cours dans l'EDT pour ce groupe.<br/>";
+
     $del5 = mysql_query("DELETE from groupes WHERE id = '" . $_id_groupe . "'");
     if (!$del5) $errors .= "Erreur lors de la suppression du groupe.<br/>";
 
