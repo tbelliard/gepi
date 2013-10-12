@@ -714,7 +714,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	foreach($groups as $group) {
 		if(!empty($classe) and $classe == $group["id"]) {
 			$selected = ' selected="selected"';
-		}else if ($_SESSION['id_groupe_session'] != "" and $_SESSION['id_groupe_session'] == $group["id"])  {
+		}else if (isset($_SESSION['id_groupe_session']) and $_SESSION['id_groupe_session'] != "" and $_SESSION['id_groupe_session'] == $group["id"])  {
 			$selected = ' selected="selected"';
 		} else {
 			$selected = '';
