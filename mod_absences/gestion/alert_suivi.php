@@ -111,7 +111,10 @@ die();
 
         //Configuration du calendrier
         include("../../lib/calendrier/calendrier.class.php");
-        $cal_1 = new Calendrier("form3", "date_debut_comptage[0]");
+        //$cal_1 = new Calendrier("form3", "date_debut_comptage[0]");
+        $cal_1 = new Calendrier("form3", "date_debut_comptage");
+        //include("../../lib/calendrier/calendrier_id.class.php");
+        //$cal_1 = new Calendrier("form3", "date_debut_comptage_0");
 
 	// Variable prédéfinit
 	$date_ce_jour = date('d/m/Y');
@@ -715,7 +718,7 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo 
 		</optgroup>
 		  </select></span>
 			<br />
-			à partir du&nbsp;<input name="date_debut_comptage" onfocus="javascript:this.select()" type="text" value="<?php if ( isset($date_debut_comptage) and !empty($date_debut_comptage) ) { echo $date_debut_comptage; } else { echo $date_ce_jour; } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
+			à partir du&nbsp;<input name="date_debut_comptage" id="date_debut_comptage" onfocus="javascript:this.select()" type="text" value="<?php if ( isset($date_debut_comptage) and !empty($date_debut_comptage) ) { echo $date_debut_comptage; } else { echo $date_ce_jour; } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
 			au bout d'<input name="nb_comptage_limit" type="text" value="<?php if(isset($nb_comptage_limit) and !empty($nb_comptage_limit)) { echo $nb_comptage_limit; } else { ?>1<?php } ?>" size="2" maxlength="10" />fois
 				<?php if ( $action === 'modifier_alert_type' ) { ?>
 					<input type="hidden" name="id_alert_type" value="<?php echo $id_alert_type; ?>" />
