@@ -442,6 +442,25 @@ if (isset($current_groupe) && $current_groupe != null) {
             ->distinct();
     $eleve_col = $query->find();
 }
+$eleve_col->uasort(function($a, $b) {
+    $aclasseNom='';
+    $aclasse = $a->getClasse();
+    if ($aclasse != null) {
+        $aclasseNom = $aclasse->getNom();
+    }
+    $bclasseNom='';
+    $bclasse = $b->getClasse();
+    if ($bclasse != null) {
+        $bclasseNom = $bclasse->getNom();
+    }
+
+    if ($aclasseNom != $bclasseNom) {
+        return $aclasseNom > $bclasseNom;
+    } else {
+        //on tri par nom
+        return $a->getNom().''.$a->getPrenom() > $b->getNom().''.$b->getPrenom();
+    }
+});
 
 //l'utilisateurs a-t-il deja saisie ce creneau ?
 $deja_saisie = false;
