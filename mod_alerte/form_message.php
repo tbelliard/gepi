@@ -439,7 +439,7 @@ $titre_page = "Alertes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-echo "<p class='bold'><a href='../accueil.php'>Retour à l'accueil</a> ";
+echo "<p class='bold'><a href='javascript:self.close()'>Refermer cette page</a> | <a href='../accueil.php'>Retour à l'accueil</a> ";
 if(((!isset($mode))||($mode!='rediger_message'))&&(peut_poster_message($_SESSION['statut']))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?mode=rediger_message'>Rédiger un message</a>";
 }
