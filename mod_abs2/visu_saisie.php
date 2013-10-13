@@ -141,6 +141,15 @@ echo $saisie->getPrimaryKey();
     	echo ')</font> ';
     }
 echo '</td><td>';
+
+if (($saisie->getEleve() != null)&&($saisie->getGroupe() != null)) {
+	if(!is_eleve_du_groupe($saisie->getEleve()->getLogin(), $saisie->getGroupe()->getId())) {
+		echo "<div style='float:right; width:22px;'><img src='../images/icons/ico_attention.png' width='22' height='19' alt='Attention' title=\"L'élève n'est plus membre du groupe ".$saisie->getGroupe()->getNameAvecClasses()." actuellement.
+Il en a peut-être été membre plus tôt dans l'année.
+Mais il n'en n'est plus membre aujourd'hui.\" /></div>";
+	}
+}
+
 if ($modifiable) {   
     echo '<form dojoType="dijit.form.Form" jsId="suppression_restauration" id="suppression_restauration"  method="post" action="./enregistrement_modif_saisie.php">';
     echo '<input type="hidden" name="id_saisie" value="' . $saisie->getPrimaryKey() . '"/>';
@@ -519,7 +528,9 @@ if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") 
     echo '<button dojoType="dijit.form.Button" type="submit" name="creation_traitement" value="oui"';
     if ($saisie->getDeletedAt() != null) echo 'disabled';
     if(($total_traitements_modifiable>0)||($total_traitements_modifiable_non_prof>0)) {
-        echo ' title="Il existe déjà au moins un traitement modifiable pour la saisie, mais vous pouvez aussi en créer un nouveau.">Créer un *nouveau* traitement pour la saisie</button>';
+        echo ' title="Il existe déjà au moins un traitement modifiable pour la saisie.
+Il serait sans doute préférable de modifier le traitement existant ci-dessus,
+mais vous pouvez aussi en créer un nouveau.">Créer un *nouveau* traitement pour la saisie</button>';
     }
     else {
         echo '>Traiter la saisie</button>';

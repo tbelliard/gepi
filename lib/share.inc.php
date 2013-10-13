@@ -8376,4 +8376,15 @@ function clean_table_tentative_intrusion($jusque_telle_date) {
 		}
 	}
 }
+
+function is_eleve_du_groupe($login_ele, $id_groupe) {
+	$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='$login_ele' AND id_groupe='$id_groupe';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
 ?>
