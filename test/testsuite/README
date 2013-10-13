@@ -6,6 +6,7 @@ Pour que les tests fonctionnent, les dates d'absences doivent être inférieure 
 GepiDataPopulator
 *****************
 2010-12-20 → 2013-12-23 → 2012-12-24
+
 2010-12-01 → 2013-12-01 → 2012-12-01
 2011-03-01 → 2014-03-01 → 2013-03-01
 2011-07-01 → 2014-07-01 → 2013-07-01
