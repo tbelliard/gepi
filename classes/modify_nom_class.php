@@ -88,6 +88,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (!isset($ects_fonction_signataire_attestation)) $ects_fonction_signataire_attestation = '';
 
 	// =========================
+	if (!isset($rn_type_par_defaut)) $rn_type_par_defaut = "html";
 	// 20121027
 	// Paramètres enregistrés dans la table 'classes_param':
 	if (!isset($rn_aff_classe_nom)) $rn_aff_classe_nom = 1;
@@ -185,7 +186,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -288,7 +289,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -493,11 +494,12 @@ if (isset($id_classe)) {
 	// =========================
 	// 20121027
 	// Paramètres enregistrés dans la table 'classes_param':
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
 	}
+	if($rn_type_par_defaut=="") {$rn_type_par_defaut="html";}
 	if($rn_aff_classe_nom=="") {$rn_aff_classe_nom=1;}
 	if($rn_rapport_standard_min_font=="") {$rn_rapport_standard_min_font=3;}
 	// =========================
@@ -533,7 +535,7 @@ if (isset($id_classe)) {
 	$rn_abs_2='n';
 	// =========================
 	// 20121027
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		/*
@@ -542,6 +544,7 @@ if (isset($id_classe)) {
 		*/
 		$$tmp_name="n";
 	}
+	if($rn_type_par_defaut=="") {$rn_type_par_defaut="html";}
 	if($rn_aff_classe_nom=="") {$rn_aff_classe_nom=1;}
 	if($rn_rapport_standard_min_font=="") {$rn_rapport_standard_min_font=3;}
 	// =========================
@@ -846,7 +849,18 @@ Afficher une case pour la signature du prof principal
 Afficher une case pour la signature du chef d'établissement
 -->
 
-<!-- 20121027 -->
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Type de relevé à produire par défaut&nbsp;:<br />
+		<em style='font-size:small'>(si plusieurs classes sont sélectionnées, c'est le type de la première qui est proposé par défaut)</em>
+	</td>
+	<td>
+		<input type="radio" value="html" name="rn_type_par_defaut" id="rn_type_par_defaut_html"  <?php   if ($rn_type_par_defaut!="pdf") echo " checked='checked ' "; ?> onchange='changement()' /><label for='rn_type_par_defaut_html' style='cursor: pointer;'>HTML</label><br />
+		<input type="radio" value="pdf" name="rn_type_par_defaut" id="rn_type_par_defaut_pdf"  <?php   if ($rn_type_par_defaut=="pdf") echo " checked='checked ' "; ?> onchange='changement()' /><label for='rn_type_par_defaut_pdf' style='cursor: pointer;'>PDF</label>
+	</td>
+</tr>
+
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">

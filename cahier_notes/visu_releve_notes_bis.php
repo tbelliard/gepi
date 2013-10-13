@@ -921,8 +921,18 @@ echo "</p>";
 	//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
 	//echo "<input type='hidden' name='un_seul_bull_par_famille' value='non' />\n";
 
-	echo "<p><input type='radio' id='releve_html' name='mode_bulletin' value='html' checked='checked' onchange='griser_lignes_specifiques_pdf();' /><label for='releve_html'> Relevé HTML</label><br />\n";
-	echo "<input type='radio' id='releve_pdf' name='mode_bulletin' value='pdf' onchange='display_div_param_pdf();griser_lignes_specifiques_html();' /><label for='releve_pdf'> Relevé PDF</label></p>\n";
+	// 20131013
+	if(getParamClasse($tab_id_classe[0], "rn_type_par_defaut", "html")=="html") {
+		$checked_html=" checked='checked'";
+		$checked_pdf="";
+	}
+	else {
+		$checked_html="";
+		$checked_pdf=" checked='checked'";
+	}
+
+	echo "<p><input type='radio' id='releve_html' name='mode_bulletin' value='html'$checked_html onchange='griser_lignes_specifiques_pdf();' /><label for='releve_html'> Relevé HTML</label><br />\n";
+	echo "<input type='radio' id='releve_pdf' name='mode_bulletin' value='pdf'$checked_pdf onchange='display_div_param_pdf();griser_lignes_specifiques_html();' /><label for='releve_pdf'> Relevé PDF</label></p>\n";
 
 	echo "<div id='div_param_pdf'>\n";
 		//echo "<br />\n";

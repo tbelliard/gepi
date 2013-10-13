@@ -239,7 +239,7 @@ if (isset($_POST['is_posted'])) {
 
 					// 20121027
 					//$tab_param=array('rn_aff_classe_nom');
-					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
+					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
 					for($loop=0;$loop<count($tab_param);$loop++) {
 						if (isset($_POST[$tab_param[$loop].'_'.$per])) {
 							if ($_POST[$tab_param[$loop].'_'.$per]!='') {
@@ -1449,6 +1449,18 @@ td {
 <tr>
 	<td colspan='3'>
 	<h2><b>Paramètres des relevés de notes&nbsp;: </b></h2>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Type de relevé à produire par défaut&nbsp;:<br />
+		<em style='font-size:small'>(si plusieurs classes sont sélectionnées, c'est le type de la première qui est proposé par défaut)</em>
+	</td>
+	<td>
+		<input type="radio" value="html" name="rn_type_par_defaut_<?php echo $per;?>" id="rn_type_par_defaut_html" onchange='changement()' /><label for='rn_type_par_defaut_html' style='cursor: pointer;'>HTML</label><br />
+		<input type="radio" value="pdf" name="rn_type_par_defaut_<?php echo $per;?>" id="rn_type_par_defaut_pdf" onchange='changement()' /><label for='rn_type_par_defaut_pdf' style='cursor: pointer;'>PDF</label>
 	</td>
 </tr>
 
