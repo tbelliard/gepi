@@ -528,182 +528,233 @@ if(isset($_POST['enregistrement_responsables'])) {
 		$msg="Aucun enregistrement d'association n'a été demandée.<br />";
 	}
 	else {
-		$ligne_tempo2=array();
-		$sql="SELECT * FROM tempo2_sso;";
+		$sql="SELECT col2 FROM tempo2_sso WHERE col1='Ligne_entete';";
 		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
-			$ligne_tempo2[$lig->col1]=$lig->col2;
+		if(mysql_num_rows($res)==0) {
+			$msg="La ligne d'entête du CSV n'a pas été trouvée.<br />";
 		}
+		else {
 
-		for($loop=0;$loop<count($ligne);$loop++) {
-			// On a eu un choix de login
-			if((isset($_POST['login_'.$ligne[$loop]]))&&($_POST['login_'.$ligne[$loop]]!='')) {
-				if(isset($ligne_tempo2[$ligne[$loop]])) {
-					$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
+			// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
+			$tabchamps = array("Guid", "Nom", "Prénom", "Prenom", "Profil", "Groupe", "Guid_Enfant1", "Guid_Enfant2", "Guid_Enfant3");
 
-					$sql="SELECT login FROM resp_pers WHERE login='".mysql_real_escape_string($_POST['login_'.$ligne[$loop]])."';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0) {
-						$msg.="Le login responsable Gepi ".$_POST['login_'.$ligne[$loop]]." proposé n'existe pas.<br />\n";
+			$ligne_entete=mysql_fetch_object($res);
+			$en_tete=explode(";", trim($ligne_entete->col2));
+
+			$tabindice=array();
+
+			// On range dans tabindice les indices des champs retenus
+			for ($k = 0; $k < count($tabchamps); $k++) {
+				for ($i = 0; $i < count($en_tete); $i++) {
+					if (casse_mot(remplace_accents($en_tete[$i]),'min') == casse_mot(remplace_accents($tabchamps[$k]), 'min')) {
+						$tabindice[$tabchamps[$k]] = $i;
 					}
-					else {
-						$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[0])."';";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)==0) {
-							$sql="SELECT * FROM sso_table_correspondance WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+				}
+			}
+
+			if((!isset($tabindice['Nom']))||((!isset($tabindice['Prénom']))&&(!isset($tabindice['Prenom'])))||(!isset($tabindice['Guid']))||(!isset($tabindice['Guid_Enfant1']))||(!isset($tabindice['Profil']))) {
+				$msg="La ligne d'entête ne comporte pas un des champs indispensables (<em>Guid, Nom, Prénom, Profil, Guid_enfant1</em>).<br />";
+			}
+			else {
+				$ligne_tempo2=array();
+				$sql="SELECT * FROM tempo2_sso;";
+				$res=mysql_query($sql);
+				while($lig=mysql_fetch_object($res)) {
+					$ligne_tempo2[$lig->col1]=$lig->col2;
+				}
+
+				for($loop=0;$loop<count($ligne);$loop++) {
+					// On a eu un choix de login
+					if((isset($_POST['login_'.$ligne[$loop]]))&&($_POST['login_'.$ligne[$loop]]!='')) {
+						if(isset($ligne_tempo2[$ligne[$loop]])) {
+							$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
+
+							$guid_courant=$tab[$tabindice['Guid']];
+							$nom_courant=$tab[$tabindice['Nom']];
+							$prenom_courant=$tab[$tabindice['Prénom']];
+
+							$sql="SELECT login FROM resp_pers WHERE login='".mysql_real_escape_string($_POST['login_'.$ligne[$loop]])."';";
 							$test=mysql_query($sql);
 							if(mysql_num_rows($test)==0) {
-								$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysql_real_escape_string($tab[0])."';";
-								$insert=mysql_query($sql);
-								if(!$insert) {
-									$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
-								}
-								else {
-									$nb_reg++;
-								}
+								$msg.="Le login responsable Gepi ".$_POST['login_'.$ligne[$loop]]." proposé n'existe pas.<br />\n";
 							}
 							else {
-								$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($tab[0])."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
-								$update=mysql_query($sql);
-								if(!$update) {
-									$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
+								$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($guid_courant)."';";
+								$test=mysql_query($sql);
+								if(mysql_num_rows($test)==0) {
+									$sql="SELECT * FROM sso_table_correspondance WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+									$test=mysql_query($sql);
+									if(mysql_num_rows($test)==0) {
+										$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysql_real_escape_string($guid_courant)."';";
+										$insert=mysql_query($sql);
+										if(!$insert) {
+											$msg.="Erreur lors de l'insertion de l'association ".$guid_courant." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
+										}
+										else {
+											$nb_reg++;
+										}
+									}
+									else {
+										$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($guid_courant)."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+										$update=mysql_query($sql);
+										if(!$update) {
+											$msg.="Erreur lors de la mise à jour de l'association ".$guid_courant." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
+										}
+										else {
+											$nb_reg++;
+										}
+									}
 								}
 								else {
-									$nb_reg++;
+									$lig=mysql_fetch_object($test);
+									$msg.="Le GUID $guid_courant est déjà associé à $lig->login_gepi<br />\n";
 								}
 							}
 						}
 						else {
-							$lig=mysql_fetch_object($test);
-							$msg.="Le GUID $tab[0] est déjà associé à $lig->login_gepi<br />\n";
+							$msg.="Aucun enregistrement pour la ligne $loop<br />";
 						}
 					}
-				}
-				else {
-					$msg.="Aucun enregistrement pour la ligne $loop<br />";
-				}
-			}
-			else {
-				if(isset($ligne_tempo2[$ligne[$loop]])) {
-					$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
+					else {
+						if(isset($ligne_tempo2[$ligne[$loop]])) {
+							$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
-					$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[0])."';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0) {
+							$guid_courant=$tab[$tabindice['Guid']];
+							$nom_courant=$tab[$tabindice['Nom']];
+							$prenom_courant=$tab[$tabindice['Prénom']];
 
-						$chaine="";
-						if((isset($tab[5]))&&($tab[5]!="")) {
-							$chaine.="s.login_sso='".mysql_real_escape_string($tab[5])."'";
-						}
-						if((isset($tab[6]))&&($tab[6]!="")) {
-							if($chaine!="") {$chaine.=" OR ";}
-							$chaine.="s.login_sso='".mysql_real_escape_string($tab[6])."'";
-						}
-						if((isset($tab[7]))&&($tab[7]!="")) {
-							if($chaine!="") {$chaine.=" OR ";}
-							$chaine.="s.login_sso='".mysql_real_escape_string($tab[7])."'";
-						}
+							$guid_enfant1="";
+							$guid_enfant2="";
+							$guid_enfant3="";
+							if(isset($tab[$tabindice['Guid_Enfant1']])) {
+								$guid_enfant1=$tab[$tabindice['Guid_Enfant1']];
+							}
+							if(isset($tab[$tabindice['Guid_Enfant2']])) {
+								$guid_enfant2=$tab[$tabindice['Guid_Enfant2']];
+							}
+							if(isset($tab[$tabindice['Guid_Enfant3']])) {
+								$guid_enfant3=$tab[$tabindice['Guid_Enfant3']];
+							}
 
-						$cpt_resp=0;
-						$tab_resp=array();
-						$tab_resp_login=array();
-						if($chaine!="") {
-							$sql="SELECT e.* FROM eleves e, sso_table_correspondance s WHERE ($chaine) AND e.login=s.login_gepi ORDER BY e.nom, e.prenom;";
-							echo_debug_itop("$sql<br />");
-							$res_ele=mysql_query($sql);
-							if(mysql_num_rows($res_ele)>0) {
-								$cpt_ele=0;
-								while($lig_ele=mysql_fetch_object($res_ele)) {
-									$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".mysql_real_escape_string($tab[1])."' AND rp.prenom='".mysql_real_escape_string($tab[2])."' AND rp.login!='';";
+							$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($guid_courant)."';";
+							$test=mysql_query($sql);
+							if(mysql_num_rows($test)==0) {
+
+								$chaine="";
+								if($guid_enfant1!="") {
+									$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant1)."'";
+								}
+								if($guid_enfant2!="") {
+									if($chaine!="") {$chaine.=" OR ";}
+									$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant2)."'";
+								}
+								if($guid_enfant3!="") {
+									if($chaine!="") {$chaine.=" OR ";}
+									$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant3)."'";
+								}
+
+								$cpt_resp=0;
+								$tab_resp=array();
+								$tab_resp_login=array();
+								if($chaine!="") {
+									$sql="SELECT e.* FROM eleves e, sso_table_correspondance s WHERE ($chaine) AND e.login=s.login_gepi ORDER BY e.nom, e.prenom;";
 									echo_debug_itop("$sql<br />");
-									$res_resp=mysql_query($sql);
-									if(mysql_num_rows($res_resp)>0) {
-										while($lig_resp=mysql_fetch_object($res_resp)) {
-											if(!in_array($lig_resp->login, $tab_resp_login)) {
-												$tab_resp_login[]=$lig_resp->login;
-												$tab_resp[$cpt_resp]['login']=$lig_resp->login;
-												$tab_resp[$cpt_resp]['civilite']=$lig_resp->civilite;
-												$tab_resp[$cpt_resp]['nom']=$lig_resp->nom;
-												$tab_resp[$cpt_resp]['prenom']=$lig_resp->prenom;
-												$tab_resp[$cpt_resp]['resp_legal']=$lig_resp->resp_legal;
-												$tab_resp[$cpt_resp]['info']=$lig_resp->civilite." ".casse_mot($lig_resp->nom,'maj')." ".casse_mot($lig_resp->prenom,'majf2');
-												$tab_resp[$cpt_resp]['info'].=" (N° ".$lig_resp->pers_id.")";
+									$res_ele=mysql_query($sql);
+									if(mysql_num_rows($res_ele)>0) {
+										$cpt_ele=0;
+										while($lig_ele=mysql_fetch_object($res_ele)) {
+											$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".mysql_real_escape_string($nom_courant)."' AND rp.prenom='".mysql_real_escape_string($prenom_courant)."' AND rp.login!='';";
+											echo_debug_itop("$sql<br />");
+											$res_resp=mysql_query($sql);
+											if(mysql_num_rows($res_resp)>0) {
+												while($lig_resp=mysql_fetch_object($res_resp)) {
+													if(!in_array($lig_resp->login, $tab_resp_login)) {
+														$tab_resp_login[]=$lig_resp->login;
+														$tab_resp[$cpt_resp]['login']=$lig_resp->login;
+														$tab_resp[$cpt_resp]['civilite']=$lig_resp->civilite;
+														$tab_resp[$cpt_resp]['nom']=$lig_resp->nom;
+														$tab_resp[$cpt_resp]['prenom']=$lig_resp->prenom;
+														$tab_resp[$cpt_resp]['resp_legal']=$lig_resp->resp_legal;
+														$tab_resp[$cpt_resp]['info']=$lig_resp->civilite." ".casse_mot($lig_resp->nom,'maj')." ".casse_mot($lig_resp->prenom,'majf2');
+														$tab_resp[$cpt_resp]['info'].=" (N° ".$lig_resp->pers_id.")";
 
-												$tab_resp[$cpt_resp]['info'].=" (Légal ".$lig_resp->resp_legal.")";
-												$cpt_resp++;
+														$tab_resp[$cpt_resp]['info'].=" (Légal ".$lig_resp->resp_legal.")";
+														$cpt_resp++;
+													}
+												}
 											}
-										}
-									}
-									else {
-										$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.login!='';";
-										echo_debug_itop("$sql<br />");
-										$res_resp=mysql_query($sql);
-										if(mysql_num_rows($res_resp)>0) {
-											while($lig_resp=mysql_fetch_object($res_resp)) {
-												if(!in_array($lig_resp->login, $tab_resp_login)) {
-													$tab_resp_login[]=$lig_resp->login;
-													$tab_resp[$cpt_resp]['login']=$lig_resp->login;
-													$tab_resp[$cpt_resp]['civilite']=$lig_resp->civilite;
-													$tab_resp[$cpt_resp]['nom']=$lig_resp->nom;
-													$tab_resp[$cpt_resp]['prenom']=$lig_resp->prenom;
-													$tab_resp[$cpt_resp]['resp_legal']=$lig_resp->resp_legal;
-													$tab_resp[$cpt_resp]['info']=$lig_resp->civilite." ".casse_mot($lig_resp->nom,'maj')." ".casse_mot($lig_resp->prenom,'majf2');
-													$tab_resp[$cpt_resp]['info'].=" (N° ".$lig_resp->pers_id.")";
-													$tab_resp[$cpt_resp]['info'].=" (Légal ".$lig_resp->resp_legal.")";
-													$cpt_resp++;
+											else {
+												$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.login!='';";
+												echo_debug_itop("$sql<br />");
+												$res_resp=mysql_query($sql);
+												if(mysql_num_rows($res_resp)>0) {
+													while($lig_resp=mysql_fetch_object($res_resp)) {
+														if(!in_array($lig_resp->login, $tab_resp_login)) {
+															$tab_resp_login[]=$lig_resp->login;
+															$tab_resp[$cpt_resp]['login']=$lig_resp->login;
+															$tab_resp[$cpt_resp]['civilite']=$lig_resp->civilite;
+															$tab_resp[$cpt_resp]['nom']=$lig_resp->nom;
+															$tab_resp[$cpt_resp]['prenom']=$lig_resp->prenom;
+															$tab_resp[$cpt_resp]['resp_legal']=$lig_resp->resp_legal;
+															$tab_resp[$cpt_resp]['info']=$lig_resp->civilite." ".casse_mot($lig_resp->nom,'maj')." ".casse_mot($lig_resp->prenom,'majf2');
+															$tab_resp[$cpt_resp]['info'].=" (N° ".$lig_resp->pers_id.")";
+															$tab_resp[$cpt_resp]['info'].=" (Légal ".$lig_resp->resp_legal.")";
+															$cpt_resp++;
+														}
+													}
 												}
 											}
 										}
 									}
-								}
-							}
-							/*
-							echo "<pre>";
-							print_r($tab_resp);
-							echo "</pre>";
-							*/
-							if(count($tab_resp)==1) {
-								// Un seul responsable correspond
-								$lig=mysql_fetch_object($res);
+									/*
+									echo "<pre>";
+									print_r($tab_resp);
+									echo "</pre>";
+									*/
+									if(count($tab_resp)==1) {
+										// Un seul responsable correspond
+										$lig=mysql_fetch_object($res);
 
-								$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='".$tab_resp_login[0]."';";
-								$test=mysql_query($sql);
-								if(mysql_num_rows($test)==0) {
-									$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$tab_resp_login[0]."', login_sso='".mysql_real_escape_string($tab[0])."';";
-									$insert=mysql_query($sql);
-									if(!$insert) {
-										$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$tab_resp_login[0]."<br />\n";
+										$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='".$tab_resp_login[0]."';";
+										$test=mysql_query($sql);
+										if(mysql_num_rows($test)==0) {
+											$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$tab_resp_login[0]."', login_sso='".mysql_real_escape_string($guid_courant)."';";
+											$insert=mysql_query($sql);
+											if(!$insert) {
+												$msg.="Erreur lors de l'insertion de l'association ".$guid_courant." &gt; ".$tab_resp_login[0]."<br />\n";
+											}
+											else {
+												$nb_reg++;
+											}
+										}
+										else {
+											$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($guid_courant)."' WHERE login_gepi='".$tab_resp_login[0]."';";
+											$update=mysql_query($sql);
+											if(!$update) {
+												$msg.="Erreur lors de la mise à jour de l'association ".$guid_courant." &gt; ".$tab_resp_login[0]."<br />\n";
+											}
+											else {
+												$nb_reg++;
+											}
+										}
 									}
 									else {
-										$nb_reg++;
+										$msg.="Responsable ".$nom_courant." ".$prenom_courant." non identifié.<br />\n";
 									}
 								}
 								else {
-									$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($tab[0])."' WHERE login_gepi='".$tab_resp_login[0]."';";
-									$update=mysql_query($sql);
-									if(!$update) {
-										$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$tab_resp_login[0]."<br />\n";
-									}
-									else {
-										$nb_reg++;
-									}
+									$msg.="Aucun élève associé n'a été trouvé.<br />\n";
 								}
 							}
 							else {
-								$msg.="Responsable ".$tab[1]." ".$tab[2]." non identifié.<br />\n";
+								$lig=mysql_fetch_object($test);
+								$msg.="Le GUID $guid_courant est déjà associé à $lig->login_gepi<br />\n";
 							}
 						}
 						else {
-							$msg.="Aucun élève associé n'a été trouvé.<br />\n";
+							$msg.="Aucun enregistrement pour la ligne $loop<br />";
 						}
 					}
-					else {
-						$lig=mysql_fetch_object($test);
-						$msg.="Le GUID $tab[0] est déjà associé à $lig->login_gepi<br />\n";
-					}
-				}
-				else {
-					$msg.="Aucun enregistrement pour la ligne $loop<br />";
 				}
 			}
 		}
@@ -2202,8 +2253,48 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		}
 		echo "</p>\n";
 
+
+		// 20131014
+		// ﻿Guid;Nom;Prénom;Profil;Classes;Groupe;Guid_Enfant1;Guid_Enfant2;Guid_Enfant3
+
+		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
+		$tabchamps = array("Guid", "Nom", "Prénom", "Prenom", "Profil", "Groupe", "Guid_Enfant1", "Guid_Enfant2", "Guid_Enfant3");
+
+		// Lecture de la ligne 1 et la mettre dans $temp
+		$ligne_entete=trim(fgets($fp,4096));
+		//echo "$ligne_entete<br />";
+		$en_tete=explode(";", $ligne_entete);
+
+		$tabindice=array();
+
+		// On range dans tabindice les indices des champs retenus
+		for ($k = 0; $k < count($tabchamps); $k++) {
+			//echo "<br /><p style='text-indent:-4em;margin-left:4em'>Recherche du champ ".$tabchamps[$k]."<br />";
+			for ($i = 0; $i < count($en_tete); $i++) {
+				//echo "\$en_tete[$i]=$en_tete[$i]<br />";
+				//echo casse_mot(remplace_accents($en_tete[$i]),'min')."<br />";
+				//echo casse_mot(remplace_accents($tabchamps[$k]), 'min')."<br />";
+				if (casse_mot(remplace_accents($en_tete[$i]),'min') == casse_mot(remplace_accents($tabchamps[$k]), 'min')) {
+					$tabindice[$tabchamps[$k]] = $i;
+					//echo "\$tabindice[$tabchamps[$k]]=$i<br />";
+				}
+			}
+		}
+		if((!isset($tabindice['Nom']))||((!isset($tabindice['Prénom']))&&(!isset($tabindice['Prenom'])))||(!isset($tabindice['Guid']))||(!isset($tabindice['Guid_Enfant1']))||(!isset($tabindice['Profil']))) {
+			echo "<p style='color:red'>La ligne d'entête ne comporte pas un des champs indispensables (<em>Guid, Nom, Prénom, Profil, Guid_enfant1</em>).</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		if(!isset($tabindice['Prénom'])) {
+			$tabindice['Prénom']=$tabindice['Prenom'];
+		}
+
 		$sql="TRUNCATE tempo2_sso;";
 		$menage=mysql_query($sql);
+
+		$sql="INSERT INTO tempo2_sso SET col1='Ligne_entete', col2='".mysql_real_escape_string($ligne_entete)."';";
+		$insert=mysql_query($sql);
 
 		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'resp_pers'","","<p>Saisir une portion du nom à rechercher...</p>
 <form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -2293,15 +2384,45 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					// Juste stocker ce qui est déjà associé et l'afficher dans un 2è tableau.
 					// Pouvoir supprimer une association du 2è tableau (ou voir dans mode=consult_eleves)
 
-					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[0])."';";
+					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[$tabindice['Guid']])."';";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
 					}
 					else {
+/*
+// 20131014
+echo "<tr>
+<td><pre>";
+print_r($tab);
+echo "</pre></td>
+</tr>";
+*/
+						$guid_courant=$tab[$tabindice['Guid']];
+						$nom_courant=$tab[$tabindice['Nom']];
+						$prenom_courant=$tab[$tabindice['Prénom']];
+						$profil_courant=$tab[$tabindice['Profil']];
 
-						if(in_array_i($tab[1]." ".$tab[2], $tab_nom_prenom_deja_aff)) {
-							$chaine_tmp=$cpt."_".remplace_accents($tab[1]." ".$tab[2],"all");
+						$groupe_courant="";
+						if(isset($tab[$tabindice['Groupe']])) {
+							$groupe_courant=$tab[$tabindice['Groupe']];
+						}
+
+						$guid_enfant1="";
+						$guid_enfant2="";
+						$guid_enfant3="";
+						if(isset($tab[$tabindice['Guid_Enfant1']])) {
+							$guid_enfant1=$tab[$tabindice['Guid_Enfant1']];
+						}
+						if(isset($tab[$tabindice['Guid_Enfant2']])) {
+							$guid_enfant2=$tab[$tabindice['Guid_Enfant2']];
+						}
+						if(isset($tab[$tabindice['Guid_Enfant3']])) {
+							$guid_enfant3=$tab[$tabindice['Guid_Enfant3']];
+						}
+
+						if(in_array_i($nom_courant." ".$prenom_courant, $tab_nom_prenom_deja_aff)) {
+							$chaine_tmp=$cpt."_".remplace_accents($nom_courant." ".$prenom_courant,"all");
 							$tab_doublon_possible[]=$chaine_tmp;
 							$ancre_doublon_ou_pas="<a name='doublon_possible_$chaine_tmp'></a>";
 							$style_css=" style='background-color:red' title=\"Il existe au moins un homonyme dans le CSV.
@@ -2313,30 +2434,30 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							$ancre_doublon_ou_pas="";
 							$style_css="";
 						}
-						$tab_nom_prenom_deja_aff[]=$tab[1]." ".$tab[2];
+						$tab_nom_prenom_deja_aff[]=$nom_courant." ".$prenom_courant;
 
 						$alt=$alt*(-1);
 						echo "
 	<tr class='lig$alt white_hover'$style_css>
 		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" />$ancre_doublon_ou_pas</td>
-		<td><label for='ligne_$cpt'>".$tab[0]."</label></td>
-		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$tab[1]."</span></label></td>
-		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[2]."</span></label></td>
-		<td><label for='ligne_$cpt'>".$tab[3]."</label></td>
-		<td><label for='ligne_$cpt'>".(isset($tab[4])?$tab[4]:"")."</label></td>
+		<td><label for='ligne_$cpt'>".$guid_courant."</label></td>
+		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$nom_courant."</span></label></td>
+		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$prenom_courant."</span></label></td>
+		<td><label for='ligne_$cpt'>".$profil_courant."</label></td>
+		<td><label for='ligne_$cpt'>".$groupe_courant."</label></td>
 		<td><label for='ligne_$cpt'>";
 
 						$chaine="";
-						if((isset($tab[5]))&&($tab[5]!="")) {
-							$chaine.="s.login_sso='".mysql_real_escape_string($tab[5])."'";
+						if($guid_enfant1!="") {
+							$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant1)."'";
 						}
-						if((isset($tab[6]))&&($tab[6]!="")) {
+						if($guid_enfant2!="") {
 							if($chaine!="") {$chaine.=" OR ";}
-							$chaine.="s.login_sso='".mysql_real_escape_string($tab[6])."'";
+							$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant2)."'";
 						}
-						if((isset($tab[7]))&&($tab[7]!="")) {
+						if($guid_enfant3!="") {
 							if($chaine!="") {$chaine.=" OR ";}
-							$chaine.="s.login_sso='".mysql_real_escape_string($tab[7])."'";
+							$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant3)."'";
 						}
 
 						$temoin_eleve_associe="n";
@@ -2357,7 +2478,7 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 									$tab_classe=get_class_from_ele_login($lig_ele->login);
 									if(isset($tab_classe['liste_nbsp'])) {echo " (<em>".$tab_classe['liste_nbsp']."</em>)";}
 
-									$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".mysql_real_escape_string($tab[1])."' AND rp.prenom='".mysql_real_escape_string($tab[2])."' AND rp.login!='';";
+									$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".mysql_real_escape_string($nom_courant)."' AND rp.prenom='".mysql_real_escape_string($prenom_courant)."' AND rp.login!='';";
 									echo_debug_itop("$sql<br />");
 									$res_resp=mysql_query($sql);
 									if(mysql_num_rows($res_resp)>0) {
