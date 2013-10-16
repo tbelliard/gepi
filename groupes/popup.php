@@ -64,6 +64,9 @@ if(isset($id_classe)) {
 		unset($id_classe);
 		//$msg.="Identifiant de classe invalide.<br />\n";
 	}
+	else {
+		include("../lib/periodes.inc.php");
+	}
 }
 
 if(isset($periode_num)) {
@@ -233,7 +236,7 @@ if($gepi_prof_suivi==""){
 		//echo "<h2>Elèves de l'enseignement ".htmlspecialchars($enseignement)." en ".htmlspecialchars($classe)."</h2>\n";
 		echo htmlspecialchars($enseignement)." en ";
 		if(acces('/groupes/visu_profs_class.php',$_SESSION['statut'])) {
-			echo "<a href='visu_profs_class.php?id_classe=$id_classe'>".htmlspecialchars($classe)."</a>";
+			echo "<a href='visu_profs_class.php?id_classe=$id_classe' title=\"Voir l'équipe pédagogique de la classe.\">".htmlspecialchars($classe)."</a>";
 		}
 		else {
 			echo htmlspecialchars($classe);
@@ -242,6 +245,23 @@ if($gepi_prof_suivi==""){
 	else{
 		//echo "<h2>Elèves de l'enseignement ".htmlspecialchars($enseignement)."</h2>\n";
 		echo htmlspecialchars($enseignement);
+	}
+
+	if(isset($periode_num)) {
+		if(isset($nom_periode)) {
+			echo " <em title='Période $periode_num'>(";
+			if($periode_num>1) {
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;id_groupe=$id_groupe&amp;periode_num=".($periode_num-1)."' title='Voir la période précédente'><img src='../images/icons/arrow-left.png' class='icone16' /></a>";
+			}
+			echo "P.$periode_num";
+			if($periode_num<$nb_periode-1) {
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;id_groupe=$id_groupe&amp;periode_num=".($periode_num+1)."' title='Voir la période suivante'><img src='../images/icons/arrow-right.png' class='icone16' /></a>";
+			}
+			echo ")</em>";
+		}
+		else {
+			echo " <em title='Période $periode_num'>(P.$periode_num)</em>";
+		}
 	}
 
 	if((isset($id_groupe_suivant))&&($id_groupe_suivant!="")) {
@@ -275,6 +295,13 @@ if($gepi_prof_suivi==""){
 	//echo "<p>Effectif de l'enseignement: ".$_GET['effectif']."</p>\n";
 	//echo "<p>".urldecode($_GET['chaine'])."</p>\n";
 	//echo "<p>".rawurldecode($_GET['chaine'])."</p>";
+
+	if(acces("/groupes/get_csv.php", $_SESSION['statut'])) {
+		echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='../groupes/get_csv.php?id_groupe=$id_groupe";
+		if(isset($periode_num)) {echo "&amp;periode_num=$periode_num";}
+		echo "' title=\"Exporter la liste des élèves au format CSV (tableur)\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>\n";
+	}
+	https://127.0.0.1/steph/gepi_git_trunk/groupes/get_csv.php?id_groupe=2697&periode_num=1
 
 	$tabmail=array();
 
