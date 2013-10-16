@@ -655,6 +655,10 @@ echo " | <a href='../init_xml2/init_alternatif.php?cat=classes' onclick=\"return
 
 echo " | <a href='../classes/classes_param.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrage par lots</a>";
 
+if(acces("/groupes/visu_profs_class.php", $_SESSION['statut'])) {
+	echo " | <a href='../groupes/visu_profs_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Voir l'équipe pédagogique\">Équipe</a>";
+}
+
 echo "</p>\n";
 echo "</form>\n";
 
