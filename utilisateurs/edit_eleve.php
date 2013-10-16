@@ -420,7 +420,7 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td>\n";
-echo "<input type='submit' name='filtrage' value='Afficher' /> les élève de la <b>classe</b> de: ";
+echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves de la <b>classe</b> de: ";
 echo "<select name='critere_id_classe'>\n";
 echo "<option value=''>---</option>\n";
 $sql="SELECT DISTINCT id, classe FROM classes c, j_eleves_classes jec, utilisateurs u WHERE c.id=jec.id_classe AND jec.login=u.login ORDER BY classe;";
