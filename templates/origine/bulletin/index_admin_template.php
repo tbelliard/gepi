@@ -163,11 +163,25 @@
 	<p>(*) Les nombre de demi-journées d'absences, nombre d'absences non justifiées, nombre de retards et observation du CPE seront supprimées.</p>
 </form>
 
+	<br />
+	<div style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
+	<h2 class="colleHaut">Divers</h2>
+
+	<ul>
+		<li>
+			<p><a href='../gestion/param_gen.php#mode_ouverture_acces_appreciations'>Définir le mode d'ouverture de l'accès parents/élèves aux appréciations et avis du conseil de classe</a><br />
+			et <a href='../classes/acces_appreciations.php'>consulter/modifier l'accès pour les différentes classes et périodes</a></p>
+		</li>
 <?php
 	if(acces("/gestion/gestion_signature.php", $_SESSION['statut'])) {
-		echo "<p style='margin-top:2em;'><a href='../gestion/gestion_signature.php'>Définir, modifier ou supprimer un ou des fichiers de signature pour les bulletins.</a></p>\n";
+		echo "
+		<li>
+			<p style='margin-top:2em;'><a href='../gestion/gestion_signature.php'>Définir, modifier ou supprimer un ou des fichiers de signature pour les bulletins.</a></p>
+		</li>\n";
 	}
 ?>
+	</ul>
+	</div>
 
 <!-- Début du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
