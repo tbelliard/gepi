@@ -506,7 +506,7 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td>\n";
-echo "<input type='submit' name='filtrage' value='Afficher' /> les élève de la <b>classe</b> de&nbsp;: ";
+echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves de la <b>classe</b> de&nbsp;: ";
 echo "</td>\n";
 echo "<td>\n";
 echo "<select name='critere_id_classe'>\n";
