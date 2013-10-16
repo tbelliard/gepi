@@ -144,18 +144,27 @@ include("menu_plugins.inc.php");
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
-		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/classes/index.php" '.insert_confirm_abandon().'>Classes</a>'."\n";
+		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/classes/index.php" '.insert_confirm_abandon().' title="Gestion des classes, périodes, enseignements associés,...">Classes</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
-		$menus .= '                <li class="plus"><a href="'.$gepiPath.'/classes/index.php" '.insert_confirm_abandon().'>Gestion des classes</a>'."\n";
+		$menus .= '                <li class="plus"><a href="'.$gepiPath.'/classes/index.php" '.insert_confirm_abandon().' title="Gestion des classes, périodes, enseignements associés,...">Gestion des classes</a>'."\n";
 		$menus .= '                    <ul class="niveau4">'."\n";
-		$menus .= '                        <li><a href="'.$gepiPath.'/classes/classes_param.php" '.insert_confirm_abandon().'>Paramétrage par lots</a></li>'."\n";
-		$menus .= '                        <li><a href="'.$gepiPath.'/classes/prof_suivi.php" '.insert_confirm_abandon().'>Param.'.getSettingValue('gepi_prof_suivi').'</a></li>'."\n";
-		$menus .= '                        <li><a href="'.$gepiPath.'/classes/cpe_resp.php" '.insert_confirm_abandon().'>Param.CPE resp</a></li>'."\n";
-		$menus .= '                        <li><a href="'.$gepiPath.'/classes/scol_resp.php" '.insert_confirm_abandon().'>Param.SCOL resp</a></li>'."\n";
-		$menus .= '                        <li><a href="'.$gepiPath.'/classes/acces_appreciations.php" '.insert_confirm_abandon().'>Accès appréciations</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/classes/classes_param.php" '.insert_confirm_abandon().' title="Modification des paramètres des classes par lots de classes.">Paramétrage par lots</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/init_xml2/init_alternatif.php?cat=classes" '.insert_confirm_abandon().' title="Création d\'enseignements par lots.">Créations par lots</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/groupes/repartition_ele_grp.php" '.insert_confirm_abandon().' title="Répartition d\'élèves entre plusieurs enseignements/groupes.">Répartition entre groupes</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/classes/prof_suivi.php" '.insert_confirm_abandon().' title="Définition des '.getSettingValue('gepi_prof_suivi').' des élèves dans les différentes classes.">Param.'.getSettingValue('gepi_prof_suivi').'</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/classes/cpe_resp.php" '.insert_confirm_abandon().' title="Définition du CPE responsable des élèves de telle ou telle classe.'.getSettingValue('gepi_prof_suivi').' des élèves dans les différentes classes.">Param.CPE resp</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/classes/scol_resp.php" '.insert_confirm_abandon().' title="Définition des classes visibles par défaut par les différents comptes de statut scolarité.">Param.SCOL resp</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/classes/acces_appreciations.php" '.insert_confirm_abandon().' title="Définition des appréciations et avis des conseils de classe visibles à telle date ou ouvertes manuellement en consultation selon ce qui a été paramétré dans la Configuration générale.">Accès appréciations</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/groupes/check_enseignements.php" '.insert_confirm_abandon().' title="Vérification des coefficients, visibilité,... des enseignements de l\'ensemble des classes.">Vérifications</a></li>'."\n";
+
+		if(getSettingAOui("active_carnets_notes")) {
+			$menus .= '                        <li><a href="'.$gepiPath.'/cahier_notes_admin/creation_conteneurs_par_lots.php" '.insert_confirm_abandon().' title="Création de '.getSettingValue("gepi_denom_boite").' par lots dans les carnets de notes de certains enseignements (par exemple pour Oral/Ecrit, Travaux en classe/Travaux à la maison,...).">Création de '.getSettingValue("gepi_denom_boite").'</a></li>'."\n";
+		}
+
+
 		$menus .= '                    </ul>'."\n";
 		$menus .= '                </li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php" '.insert_confirm_abandon().'>Equipes pédago</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php" '.insert_confirm_abandon().' title="Consulter les équipes pédagogiques">Equipes pédago</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/mef/admin_mef.php" '.insert_confirm_abandon().'>MEF</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";

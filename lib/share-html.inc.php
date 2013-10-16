@@ -249,7 +249,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 						$cpt_ele_anomalie=0;
 						while($lig_anomalie=mysql_fetch_object($test_anomalie)) {
 							if($cpt_ele_anomalie>0) {$texte_infobulle.=", ";}
-							$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i>";
+							$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i title=\"Note enregistrée\">";
 							if($lig_anomalie->statut=='') {$texte_infobulle.=$lig_anomalie->note;}
 							elseif($lig_anomalie->statut=='v') {$texte_infobulle.="_";}
 							else {$texte_infobulle.=$lig_anomalie->statut;}
@@ -260,7 +260,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 						$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
 						$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\"><img src='../images/icons/flag.png' width='17' height='18' alt='' /></a>";
+						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\" title=\"Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement.
+Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='17' height='18' alt='' /></a>";
 					}
 
 					if (getSettingValue("utiliser_sacoche") == 'yes') {
@@ -378,7 +379,7 @@ En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('g
 								$cpt_ele_anomalie=0;
 								while($lig_anomalie=mysql_fetch_object($test_anomalie)) {
 									if($cpt_ele_anomalie>0) {$texte_infobulle.=", ";}
-									$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i>";
+									$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i title=\"Note enregistrée\">";
 									if($lig_anomalie->statut=='') {$texte_infobulle.=$lig_anomalie->note;}
 									elseif($lig_anomalie->statut=='v') {$texte_infobulle.="_";}
 									else {$texte_infobulle.=$lig_anomalie->statut;}
@@ -389,7 +390,8 @@ En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('g
 								$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
 								$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 		
-								echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return FALSE;\"><img src='../images/icons/flag.png' width='17' height='18' alt='' /></a>";
+								echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return FALSE;\" title=\"Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement.
+Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='17' height='18' alt='' /></a>";
 							}
 
 							echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
@@ -2693,5 +2695,58 @@ function img_calendrier_js($id_champ, $id_img) {
 		showsTime	:   false
 	});
 </script>';
+}
+
+/**
+ * Fonction destinée à présenter une liste de liens répartis en $nbcol colonnes
+ * 
+ *
+ * @param type $tab_txt tableau des textes
+ * @param type $tab_nom_champ tableau des noms des champs chechbox
+ * @param type $tab_id_champ tableau des id des champs chechbox
+ * @param type $tab_valeur_champ tableau des valeurs des champs chechbox
+ * @param int $nbcol Nombre de colonnes
+ * @param type $extra_options Options supplémentaires
+ */
+function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, $nom_js_func = "") {
+
+	// Nombre d'enregistrements à afficher
+	$nombreligne=count($tab_txt);
+
+	if(!is_int($nbcol)){
+		$nbcol=3;
+	}
+
+	// Nombre de lignes dans chaque colonne:
+	$nb_class_par_colonne=round($nombreligne/$nbcol);
+
+	echo "<table width='100%' summary=\"Tableau de choix\">\n";
+	echo "<tr valign='top' align='center'>\n";
+	echo "<td align='left'>\n";
+
+	$i = 0;
+	while ($i < $nombreligne){
+
+		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+			echo "</td>\n";
+			echo "<td align='left'>\n";
+		}
+
+		//echo "<br />\n";
+		echo "<input type='checkbox' name='".$tab_nom_champ[$i]."' id='".$tab_id_acces[$i]."' value='".$tab_valeur_champ[$i]."' ";
+		if($nom_js_func!="") {
+			echo " onchange=\"$nom_js_func($tab_id_champ[$i])\"";
+		}
+		echo "/><label for='' id='label_".$tab_id_champ[$i]."'>".$tab_txt[$i]."</label>";
+		echo "<br />\n";
+		$i++;
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	if($nom_js_func!="") {
+		echo js_checkbox_change_style($nom_js_func, 'label_', "y");
+	}
 }
 ?>
