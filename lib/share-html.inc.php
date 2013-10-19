@@ -1778,7 +1778,7 @@ function affiche_reinit_password($login) {
  * Sur les checkbox, insérer onchange="checkbox_change(this.id)"
  * @return string Le texte de la fonction javascript
  */
-function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n") {
+function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n", $perc_opacity=1) {
 	$retour="";
 	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
 	$retour.="
@@ -1787,9 +1787,11 @@ function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte
 			if(document.getElementById('$prefixe_texte'+id)) {
 				if(document.getElementById(id).checked) {
 					document.getElementById('$prefixe_texte'+id).style.fontWeight='bold';
+					document.getElementById('$prefixe_texte'+id).style.opacity=1;
 				}
 				else {
 					document.getElementById('$prefixe_texte'+id).style.fontWeight='normal';
+					document.getElementById('$prefixe_texte'+id).style.opacity=$perc_opacity;
 				}
 			}
 		}
@@ -2708,7 +2710,7 @@ function img_calendrier_js($id_champ, $id_img) {
  * @param int $nbcol Nombre de colonnes
  * @param type $extra_options Options supplémentaires
  */
-function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, $nom_js_func = "") {
+function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, $nom_js_func = "", $nom_func_tout_cocher="modif_coche", $nbcol=3) {
 
 	// Nombre d'enregistrements à afficher
 	$nombreligne=count($tab_txt);
@@ -2725,6 +2727,7 @@ function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur
 	echo "<td align='left'>\n";
 
 	$i = 0;
+	$chaine_var_js="var tab_id_$nom_func_tout_cocher=new Array(";
 	while ($i < $nombreligne){
 
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
@@ -2733,11 +2736,16 @@ function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur
 		}
 
 		//echo "<br />\n";
-		echo "<input type='checkbox' name='".$tab_nom_champ[$i]."' id='".$tab_id_acces[$i]."' value='".$tab_valeur_champ[$i]."' ";
-		if($nom_js_func!="") {
-			echo " onchange=\"$nom_js_func($tab_id_champ[$i])\"";
+		//$chaine_var_js.="tab_id_".$nom_func_tout_cocher."[$i]='".$tab_id_champ[$i]."';\n";
+		if($i>0) {
+			$chaine_var_js.=", ";
 		}
-		echo "/><label for='' id='label_".$tab_id_champ[$i]."'>".$tab_txt[$i]."</label>";
+		$chaine_var_js.="'".$tab_id_champ[$i]."'";
+		echo "<input type='checkbox' name='".$tab_nom_champ[$i]."' id='".$tab_id_champ[$i]."' value='".$tab_valeur_champ[$i]."' ";
+		if($nom_js_func!="") {
+			echo " onchange=\"$nom_js_func('$tab_id_champ[$i]')\"";
+		}
+		echo "/><label for='".$tab_id_champ[$i]."' id='label_".$tab_id_champ[$i]."'>".$tab_txt[$i]."</label>";
 		echo "<br />\n";
 		$i++;
 	}
@@ -2747,6 +2755,37 @@ function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur
 
 	if($nom_js_func!="") {
 		echo js_checkbox_change_style($nom_js_func, 'label_', "y");
+	}
+	$chaine_var_js.=");\n";
+
+	if($nom_func_tout_cocher!="") {
+		echo "<p><a href=\"javascript:$nom_func_tout_cocher('true')\">Tout cocher</a> - <a href=\"javascript:$nom_func_tout_cocher('false')\">Tout décocher</a></p>
+<script type='text/javascript'>
+	$chaine_var_js
+	function $nom_func_tout_cocher(mode) {
+		for(i=0;i<$i;i++) {
+			//if(i<5) {alert(tab_id_".$nom_func_tout_cocher."[i])}
+			if(document.getElementById(tab_id_".$nom_func_tout_cocher."[i])) {
+				if(mode=='true') {
+					document.getElementById(tab_id_".$nom_func_tout_cocher."[i]).checked=true;";
+		if($nom_js_func!="") {
+			echo "
+					$nom_js_func(tab_id_".$nom_func_tout_cocher."[i]);";
+		}
+		echo "
+				}
+				else {
+					document.getElementById(tab_id_".$nom_func_tout_cocher."[i]).checked=false;";
+		if($nom_js_func!="") {
+			echo "
+					$nom_js_func(tab_id_".$nom_func_tout_cocher."[i]);";
+		}
+		echo "
+				}
+			}
+		}
+	}
+</script>";
 	}
 }
 ?>
