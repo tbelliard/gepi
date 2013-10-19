@@ -6901,7 +6901,7 @@ function maintien_de_la_session() {
 function get_profs_for_matiere($matiere) {
 	$tab=array();
 
-	$sql="SELECT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$matiere."' ORDER BY u.nom, u.prenom;";
+	$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$matiere."' ORDER BY u.nom, u.prenom;";
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
@@ -6911,7 +6911,30 @@ function get_profs_for_matiere($matiere) {
 			$tab[$cpt]['nom']=$lig->nom;
 			$tab[$cpt]['prenom']=$lig->prenom;
 			$tab[$cpt]['civilite']=$lig->civilite;
-			$tab[$cpt]['civ_nom_prenom']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
+			$tab[$cpt]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+/** Fonction destinée à récupérer la liste des enseignants associés à une classe
+ */
+function get_profs_for_classe($id_classe) {
+	$tab=array();
+
+	$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe."' ORDER BY u.nom, u.prenom;";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$cpt]['login']=$lig->login;
+			$tab[$cpt]['nom']=$lig->nom;
+			$tab[$cpt]['prenom']=$lig->prenom;
+			$tab[$cpt]['civilite']=$lig->civilite;
+			$tab[$cpt]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
 			$cpt++;
 		}
 	}
