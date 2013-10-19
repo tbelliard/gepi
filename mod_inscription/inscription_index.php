@@ -71,7 +71,6 @@ if (isset($_POST['is_posted'])) {
     $msg = "Les modifications ont été enregistrées.";
 }
 
-
 //**************** EN-TETE *****************
 $titre_page = getSettingValue("mod_inscription_titre")." - Inscription";
 require_once("../lib/header.inc.php");
@@ -80,6 +79,11 @@ require_once("../lib/header.inc.php");
 
 <p class=bold>
 <a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+<?php
+	if($_SESSION['statut']=='administrateur') {
+		echo " | <a href='inscription_config.php'> Configurer/ajouter des entités</a>";
+	}
+?>
 </p>
 <?php
 echo getSettingValue("mod_inscription_explication");
