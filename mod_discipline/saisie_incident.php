@@ -1205,6 +1205,12 @@ if ($step==2) {   //Eric Ajout génération du modèle Ooo pour imprimer le rapp
     </a>
 <?php
 }
+
+if(acces("/mod_discipline/aide.php", $_SESSION['statut'])) {
+?>
+<a href='./aide.php'> | Aide</a>
+<?php
+}
 ?>
 </p>
 <?php
@@ -1401,6 +1407,7 @@ if(isset($id_incident) ) {
                 ((($_SESSION['statut']=='professeur')&&(getSettingValue('imprDiscProfRetenueOOo')=='yes'))
                 ||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
 ?>
+                <th>Rapport</th>               
                 <th>Retenue</th>               
 <?php
         }
@@ -1560,6 +1567,45 @@ if(isset($id_incident) ) {
                 if(($gepiSettings['active_mod_ooo'] == 'y')&&
                         ((($_SESSION['statut']=='professeur')&&(getSettingValue('imprDiscProfRetenueOOo')=='yes'))
                         ||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
+
+                    echo "<td id='td_rapport_$cpt'>";
+					if($lig->statut=='eleve') {
+		                $tmp_tab_resp=get_resp_from_ele_login($lig->login);
+						/*
+						echo "<pre>";
+						print_r($tmp_tab_resp);
+						echo "</pre>";
+						*/
+		                if(responsables_adresses_separees($lig->login)) {
+
+				            for($loop_resp=0;$loop_resp<count($tmp_tab_resp);$loop_resp++) {
+				                if($loop_resp>0) {echo "&nbsp;";}
+		?>
+			<a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=<?php echo $id_incident; ?>&amp;ele_login=<?php echo $lig->login."&amp;pers_id=".$tmp_tab_resp[$loop_resp]['pers_id'].add_token_in_url(); ?>' title="Imprimer le rapport d'<?php echo $mod_disc_terme_incident;?> pour <?php echo $tmp_tab_resp[$loop_resp]['designation'];?>">
+				<img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Rapport' />
+			</a>
+		<?php
+				            }
+						}
+						else {
+							$pers_id_courant="";
+							$designation_resp_courant="";
+							for($loop_resp=0;$loop_resp<count($tmp_tab_resp);$loop_resp++) {
+								if($loop_resp==0) {$pers_id_courant=$tmp_tab_resp[$loop_resp]['pers_id'];}
+								else {
+									$designation_resp_courant.=", ";
+								}
+								$designation_resp_courant.=$tmp_tab_resp[$loop_resp]['designation'];
+							}
+		?>
+			<a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=<?php echo $id_incident; ?>&amp;ele_login=<?php echo $lig->login."&amp;pers_id=".$pers_id_courant.add_token_in_url(); ?>' title="Imprimer le rapport d'<?php echo $mod_disc_terme_incident;?> pour <?php echo $designation_resp_courant;?>">
+				<img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Rapport' />
+			</a>
+		<?php
+						}
+					}
+                    echo "</td>\n";
+
                     echo "<td id='td_retenue_$cpt'>";
                     if ($lig->qualite=='Responsable') { //une retenue seulement pour un responsable !
                         if(responsables_adresses_separees($lig->login)) {
