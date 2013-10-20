@@ -1037,6 +1037,8 @@ statut='';";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/visu_cc_elv.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'F', 'Carnet de notes - visualisation par les élèves', '');";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_discipline/aide.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='V',autre='V',description='Discipline : Aide',statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {
