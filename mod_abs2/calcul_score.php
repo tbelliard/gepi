@@ -282,6 +282,8 @@ if(!isset($id_classe)) {
 
 //=====================================================================
 
+require("../lib/periodes.inc.php");
+
 echo "<form id='choix_autre_classe' name='choix_autre_classe' action='".$_SERVER['PHP_SELF']."' method='post'>
 	".add_token_field()."
 	<p><a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe/période</a> | 
@@ -299,7 +301,7 @@ echo "<form id='choix_autre_classe' name='choix_autre_classe' action='".$_SERVER
 
 <h2>Calcul des scores</h2>
 
-<p>La formule utilisées est&nbsp;: $formule</p>\n";
+<p>La formule utilisée est&nbsp;: $formule</p>\n";
 
 if(!isset($num_periode)) {
 	$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
@@ -433,8 +435,14 @@ if(!isset($num_periode)) {
 	}
 }
 else {
+	if($num_periode==1) {
+		$info_dates_per=" (<em title=\"Les dates de fin de période correspondent à ce qui est paramétré en colonne 'Date de fin' de la page de Verrouillage des périodes de notes (page accessible en compte scolarité).\">du début de l'année jusqu'au ".formate_date($date_fin_periode[$num_periode])."</em>)";
+	}
+	else {
+		$info_dates_per=" (<em title=\"Les dates de fin de période correspondent à ce qui est paramétré en colonne 'Date de fin' de la page de Verrouillage des périodes de notes (page accessible en compte scolarité).\">du ".formate_date($date_fin_periode[$num_periode-1])." au ".formate_date($date_fin_periode[$num_periode])."</em>)";
+	}
 	echo "<table class='boireaus'>\n";
-	echo "<caption>Bilan des absences en période $num_periode</caption>\n";
+	echo "<caption><strong>Bilan des absences en période $num_periode</strong>".$info_dates_per."</caption>\n";
 	echo "<tr>\n";
 	echo "<th title=\"Les dates de fin de période correspondent à ce qui est paramétré en colonne 'Date de fin' de la page de Verrouillage des périodes de notes (page accessible en compte scolarité).\">Période</th>\n";
 	echo "<th>Nombre d'absences<br/>(1/2 journées)</th>\n";
