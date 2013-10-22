@@ -1613,23 +1613,30 @@ while($i < $nombre_lignes) {
 				while ($m < $nb_dev_s_cont[$k]) {
 					$temp = $id_s_dev[$k][$m];
 					$note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
-					
-                    if($note_query){
+					if($note_query){
 						$eleve_statut = @mysql_result($note_query, 0, "statut");
 						$eleve_note = @mysql_result($note_query, 0, "note");
 						if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 							$tmp = $eleve_statut;
 							$data_pdf[$pointer][] = $eleve_statut;
+
+							$tab_ele_notes[$i][]=$eleve_statut;
 						} else if ($eleve_statut == 'v') {
 							$tmp = "&nbsp;";
 							$data_pdf[$pointer][] = "";
+
+							$tab_ele_notes[$i][]="";
 						} else {
 							if ($eleve_note != '') {
 								$tmp = number_format($eleve_note,1, ',', ' ');
 								$data_pdf[$pointer][] = number_format($eleve_note,1, ',', ' ');
+
+								$tab_ele_notes[$i][]=$eleve_note;
 							} else {
 								$tmp = "&nbsp;";
 								$data_pdf[$pointer][] = "";
+
+								$tab_ele_notes[$i][]="";
 							}
 						}
 					}
@@ -1638,8 +1645,10 @@ while($i < $nombre_lignes) {
 						$eleve_note = "";
 						$tmp = "&nbsp;";
 						$data_pdf[$pointer][] = "";
+
+						$tab_ele_notes[$i][]="";
 					}
-					$tab_ele_notes[$i][]=$eleve_note;
+					//$tab_ele_notes[$i][]=$eleve_note;
 
 					echo "<td class='cn' bgcolor='$couleur_devoirs'><center><b>$tmp</b></center></td>\n";
 
