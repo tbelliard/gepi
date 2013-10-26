@@ -203,6 +203,8 @@ if ($barre_plugin!="") {
 		$menus .= '</li>'."\n";
 		//=======================================================
 
+		$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/eleves/recherche.php"'.insert_confirm_abandon().' title="Effectuer une recherche sur une personne (élève, responsable ou personnel)">&nbsp;Rechercher</a>'."</li>\n";
+
 		//=======================================================
 		$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Listes</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
