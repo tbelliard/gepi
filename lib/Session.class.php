@@ -605,9 +605,12 @@ global $temoin_pas_d_update_session_table_log;
 
 	// Dans le cas du multisite on vérifie si la session a été initialisée dans la bonne base
 	private function verif_CAS_multisite(){
-
 		if (isset($_GET['rne']) AND $GLOBALS['multisite'] == 'y' AND isset($_SESSION["login"]) && getSettingValue("auth_simpleSAML") != 'yes') {
 			// Alors, on initialise la session ici
+
+			if (!preg_match("/^[0-9A-Za-z]*$/", $_GET["rne"])) {
+				die("RNE invalide.");
+			}
 
 			$this->start = mysql_result(mysql_query("SELECT now();"),0);
 			$_SESSION['start'] = $this->start;
