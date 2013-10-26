@@ -214,7 +214,12 @@ if (isset($_REQUEST["source"])) {
 /**
  * Connection à la base
  */
-   require_once($chemin_relatif_gepi."/lib/mysql.inc");
+if(isset($useMysqli) && (TRUE == $useMysqli)) {
+    require_once($chemin_relatif_gepi."/lib/mysqli.inc.php");
+} else {
+    require_once($chemin_relatif_gepi."/lib/mysql.inc");
+}
+   
 
 /**
  * Pour permettre de caser Gepi dans un iframe avec M$IE sur certains ENT
@@ -263,11 +268,22 @@ if (isset($_REQUEST["source"])) {
   * @see settings.inc
   * @see loadSettings()
   */
-   require_once($chemin_relatif_gepi."/lib/settings.inc");
-   // Load settings
-   if (!loadSettings()) {
-     die("Erreur chargement settings");
-   }
+    if(isset($useMysqli) && (TRUE == $useMysqli)) {
+        require_once($chemin_relatif_gepi."/lib/settings.inc.php");
+        // Load settings
+        if (!loadSettings()) {
+          die("Erreur chargement settings");
+        }
+    } else {
+        require_once($chemin_relatif_gepi."/lib/settings.inc");
+        // Load settings
+        if (!loadSettings()) {
+          die("Erreur chargement settings");
+        }
+        
+    }
+   
+   
    /**
     * Fonctions relatives à l'identification via LDAP
     */
