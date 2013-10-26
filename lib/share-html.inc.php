@@ -2788,4 +2788,64 @@ function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur
 </script>";
 	}
 }
+
+
+/**
+ * Fonction destinée à présenter en tableau HTML un tableau d'élèves
+ * 
+ *
+ * @param type $tab tableau des élèves au format
+ *                  $tab[$cpt]['login']
+ *                  $tab[$cpt]['nom']
+ *                  $tab[$cpt]['prenom']
+ *                  $tab[$cpt]['classe'][]
+ */
+function tableau_eleves($tab) {
+	global $gepiPath;
+
+	$retour="";
+	if(count($tab)==0) {
+		$retour.="<p style='color:red'>Aucun élève.</p>";
+	}
+	else {
+		$acces_modify_eleve=acces('/eleves/modify_eleve.php', $_SESSION['statut']);
+
+		$retour.="<table class='boireaus boireaus_alt' summary='Tableau des élèves'>
+	<tr>
+		<th>Login</th>
+		<th>Nom</th>
+		<th>Prénom</th>
+		<th>Classe</th>
+	</tr>";
+		for($loop=0;$loop<count($tab);$loop++) {
+			$retour.="
+	<tr>";
+
+			if($acces_modify_eleve) {
+				$retour.="
+		<th><a href='$gepiPath/eleves/modify_eleve.php?eleve_login=".$tab[$loop]['login']."' title=\"\" target='_blank'>".$tab[$loop]['login']."</a></th>";
+			}
+			else {
+				$retour.="
+		<th>".$tab[$loop]['login']."</th>";
+			}
+
+			$retour.="
+		<th>".$tab[$loop]['nom']."</th>
+		<th>".$tab[$loop]['prenom']."</th>
+		<th>";
+			if(isset($tab[$loop]['classe'])) {
+				for($loop2=0;$loop2<count($tab[$loop]['classe']);$loop2++) {
+					if($loop2>0) {$retour.=", ";}
+					$retour.=$tab[$loop]['classe'][$loop2];
+				}
+			}
+		$retour.="</th>
+	</tr>";
+		}
+		$retour.="
+</table>";
+	}
+	return $retour;
+}
 ?>

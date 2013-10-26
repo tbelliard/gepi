@@ -100,7 +100,7 @@
 	</em>
   </p>
   <form action="ooo_admin.php" id="form1" method="post">
-	<fieldset class="no_bordure">
+	<fieldset style="background-image:url("../<?php echo $gepiPath;?>/images/background/opacite50.png");">
 <?php
 echo add_token_field();
 ?>

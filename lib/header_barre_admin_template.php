@@ -58,6 +58,7 @@ include("menu_plugins.inc.php");
 	if ($_SESSION['statut'] == "administrateur") {
 
 		$menus = null;
+		// Choix Initialisation
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Initialisation</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/changement_d_annee.php" '.insert_confirm_abandon().'>Changement d\'année</a></li>'."\n";
@@ -74,18 +75,22 @@ include("menu_plugins.inc.php");
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches bienvenue</a></li>'."\n";
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
+
+		// Choix Paramètres
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Paramètres</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_gen.php" '.insert_confirm_abandon().'>Config. générale</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/mod_serveur/test_serveur.php" '.insert_confirm_abandon().'>Config. serveur</a></li>'."\n";
-		$menus .= '     <li><a href="'.$gepiPath.'/gestion/droits_acces.php" '.insert_confirm_abandon().'>Droits d\'accès</a></li>'."\n";
+		$menus .= '     <li><a href="'.$gepiPath.'/gestion/droits_acces.php" '.insert_confirm_abandon().' title="Cette page permet de définir à quelles informations, à quels modules de Gepi,... les différents statuts (administrateur, scolarité, cpe, professeur, secours, élève, responsable, autre) ont droit d\'accéder.">Droits d\'accès</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/options_connect.php" '.insert_confirm_abandon().'>Options connexions</a></li>'."\n";
-		$menus .= '     <li><a href="'.$gepiPath.'/gestion/config_prefs.php" '.insert_confirm_abandon().'>Interface Profs</a></li>'."\n";
+		$menus .= '     <li><a href="'.$gepiPath.'/gestion/config_prefs.php" '.insert_confirm_abandon().' title="Paramétrage de l\'interface simplifiée des professeurs et interfaces et dispositifs complémentaires pour les personnels (pas seulement professeurs).">Interface Profs</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_couleurs.php" '.insert_confirm_abandon().'>Couleurs</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_ordre_item.php" '.insert_confirm_abandon().'>Ordre des menus</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
+
+		// Choix Maintenance
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Maintenance</a>'."\n";
 		$menus .= '  <ul class="niveau2">'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/accueil_sauve.php" '.insert_confirm_abandon().'>Sauvegardes</a></li>'."\n";
@@ -106,11 +111,14 @@ include("menu_plugins.inc.php");
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/gestion_temp_dir.php" '.insert_confirm_abandon().'>Dossiers temp.</a></li>'."\n";
 		$menus .= '</ul>'."\n";
 		$menus .= '</li>'."\n";
+
+		// Choix Données
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Données</a>'."\n";
 		$menus .= '  <ul class="niveau2">'."\n";
-		
+
+		$menus .= '        <li><a href="'.$gepiPath.'/eleves/recherche.php" '.insert_confirm_abandon().' title="Effectuer une recherche sur une personne (élève, responsable ou personnel)">Rechercher</a></li>'."\n";
 		$menus .= '        <li><a href="'.$gepiPath.'/matieres/index.php" '.insert_confirm_abandon().'>Matières</a></li>'."\n";
-		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/utilisateurs/index.php" '.insert_confirm_abandon().'>Utilisateurs</a>'."\n";
+		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/utilisateurs/index.php" '.insert_confirm_abandon().' title="Les comptes d\'utilisateurs permettent de se connecter dans Gepi">Utilisateurs</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/index.php?mode=personnels" '.insert_confirm_abandon().'>Comptes Personnels</a></li>'."\n";
 		if (getSettingValue("statuts_prives") == "y") {
@@ -122,7 +130,7 @@ include("menu_plugins.inc.php");
 			$menus .= '                <li><a href="'.$gepiPath.'/mod_sso_table/index.php" '.insert_confirm_abandon().'>Correspondances identifiants SSO</a></li>'."\n";
 		}
 		$menus .= '                <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches bienvenue</a></li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/index.php?mode=MonCompteAfficheInfo" '.insert_confirm_abandon().'>Infos par statut</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/index.php?mode=MonCompteAfficheInfo" '.insert_confirm_abandon().' title="Vous pouvez faire apparaître des informations spécifique à chaque statut dans la rubrique Gérer mon compte de l\'utilisateur.">Infos par statut</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
@@ -194,6 +202,8 @@ include("menu_plugins.inc.php");
 		}
 		$menus .= '  </ul>'."\n";
 		$menus .= '</li>'."\n";
+
+		// Choix Modules
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Modules</a>'."\n";
 		$menus .= '<ul class="niveau2">'."\n";
 		$menus .= '  <li class="plus"><a href="'.$gepiPath.'/accueil_modules.php" '.insert_confirm_abandon().'>Paramétrages</a>'."\n";
@@ -263,7 +273,7 @@ include("menu_plugins.inc.php");
 		if(getSettingAOui('active_annees_anterieures')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_annees_anterieures/index.php" '.insert_confirm_abandon().'>Années antérieures</a></li>'."\n";
 		}
-		$menus .= '  <li><a href="'.$gepiPath.'/messagerie/index.php" '.insert_confirm_abandon().'>Panneau d\'affichage</a></li>'."\n";
+		$menus .= '  <li><a href="'.$gepiPath.'/messagerie/index.php" '.insert_confirm_abandon().' title="Le Panneau d\'affichage permet de faire apparaître en page d\'accueil des messages destinés à certains utilisateurs ou catégories d\'utilisateurs à compter d\'une date à choisir et pour une durée à choisir également.">Panneau d\'affichage</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_ooo/index.php" '.insert_confirm_abandon().'>Modèles OpenOffice</a></li>'."\n";
 		if(getSettingAOui('active_mod_discipline')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_discipline/index.php" '.insert_confirm_abandon().'>Discipline/Sanctions</a></li>'."\n";
@@ -287,14 +297,16 @@ include("menu_plugins.inc.php");
 		}
 		$menus .= '</ul>'."\n";	
 		$menus .= '</li>'."\n";
-		
+
+		// Choix Plugins
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Plugins</a>'."\n";
 		$menus .= '    <ul class="niveau2">'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_plugins/index.php" '.insert_confirm_abandon().'>Gestion des plugins</a></li>'."\n";
 		$menus.='		'.menu_plugins();
 		$menus .= '    </ul>'."\n";		
 		$menus .= '</li>'."\n";	
-		
+
+		// Choix Sécurité
 		$menus .= '  <li class="li_inline"><a href="'.$gepiPath.'/gestion/index.php" '.insert_confirm_abandon().'>Sécurité</a>'."\n";
 		$menus .= '    <ul class="niveau2">'."\n";
 		$menus .= '          <li><a href="'.$gepiPath.'/gestion/gestion_connect.php" '.insert_confirm_abandon().'>Connexions</a></li>'."\n";

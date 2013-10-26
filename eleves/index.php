@@ -601,11 +601,39 @@ else{
 if (isset($quelles_classes)) {
 	$retour = "index.php";
 }
-echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
+echo "<form action='index.php' method='post' name='form_lien_sous_bandeau'>
+<p class='bold'><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
 
+if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
+	$tab_classe=array();
+	$sql="SELECT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
+	$res_classe=mysql_query($sql);
+	if(mysql_num_rows($res_classe)>0) {
+		echo " | <select name='id_classe' id='id_classe_form_lien_sous_bandeau' onchange='change_classe()' title=\"Afficher les élèves de telle classe\">
+	<option value=''>---</option>";
+		while($lig_classe=mysql_fetch_object($res_classe)) {
+			echo "
+	<option value='$lig_classe->id'>$lig_classe->classe</option>";
+		}
 
+		echo "
+</select>
+
+<input type='hidden' name='quelles_classes' value='certaines' />
+
+<script type='text/javascript'>
+	function change_classe() {
+		if(document.getElementById('id_classe_form_lien_sous_bandeau').selectedIndex>0) {
+			document.forms['form_lien_sous_bandeau'].submit();
+		}
+	}
+</script>";
+	}
+}
 
 if(!getSettingValue('conv_new_resp_table')){
+	echo "</p></form>";
+
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0){
@@ -692,8 +720,10 @@ if(($_SESSION['statut']=="administrateur")&&(getSettingValue('exp_imp_chgt_etab'
 	echo "Changement d'établissement: <a href='export_bull_eleve.php'>Export des bulletins</a>\n";
 	echo " et <a href='import_bull_eleve.php'>Import des bulletins</a>\n";
 }
-echo "</p>\n";
+echo "</p>
+</form>\n";
 
+// Titre dans le corps de la page 
 echo "<center><p class='grand'>Visualiser \ modifier une fiche élève</p></center>\n";
 
 $req = mysql_query("SELECT login FROM eleves");

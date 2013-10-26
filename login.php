@@ -81,10 +81,27 @@ if (version_compare(PHP_VERSION, '5') < 0) {
 
 
 
-
 // Pour le tbs_multisite
 if (isset($_GET["rne"])) {
-	setcookie('RNE', $_GET["rne"], null, '/');
+	if (!preg_match("/^[0-9A-Za-z]*$/", $_GET['rne'])) {
+		die('RNE invalide 0.');
+	}
+
+	/*
+	include_once(dirname(__FILE__).'/lib/HTMLPurifier.standalone.php');
+	$config = HTMLPurifier_Config::createDefault();
+	$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
+	$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+	$purifier = new HTMLPurifier($config);
+
+	if($purifier->purify($_GET['rne'])!=$_GET['rne']) {
+		die('RNE invalide.');
+	}
+
+	if (preg_match("/^[0-9A-Za-z]*$/", $_GET['rne'])) {
+	*/
+		setcookie('RNE', $_GET['rne'], null, '/');
+	//}
 }
 
 // Vérification de la bonne installation de GEPI
@@ -171,7 +188,7 @@ $test = 'templates/accueil_externe.php' ;
 //==================================
 //Utilisation tbs_multisite
 	$tbs_multisite = "";
-	if ($multisite == "y" AND isset($_GET["rne"]) AND $_GET["rne"] != '') {
+	if ($multisite == "y" AND isset($_GET["rne"]) AND $_GET["rne"] != '' AND preg_match("/^[0-9A-Za-z]*$/", $_GET["rne"])) {
 		$tbs_multisite = $_GET["rne"];
 	}
 

@@ -1039,6 +1039,20 @@ $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/visu_cc_elv.php', 'F', '
 
 $tab_req[] = "INSERT INTO droits SET id='/mod_discipline/aide.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='V',autre='V',description='Discipline : Aide',statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/eleves/recherche.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='V',
+autre='V',
+description='Effectuer une recherche sur une personne',
+statut='';";
+
+//$tab_req[] = "";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

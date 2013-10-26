@@ -198,10 +198,46 @@ $session_class = "/lib/Session.class.php";
 
 // Pour le multisite
 if (isset($_REQUEST['rne'])) {
+	if(!preg_match("/^[0-9A-Za-z]*$/", $_REQUEST["rne"])) {
+		die("RNE invalide.");
+	}
+
 	setcookie('RNE', $_REQUEST['rne'], null, '/');
 } elseif (isset($_REQUEST['RNE'])) {
+	if(!preg_match("/^[0-9A-Za-z]*$/", $_REQUEST["RNE"])) {
+		die("RNE invalide.");
+	}
+
 	setcookie('RNE', $_REQUEST['RNE'], null, '/');
 }
+/*
+if ((isset($_REQUEST['rne']))||(isset($_REQUEST['RNE']))) {
+	include_once(dirname(__FILE__).'/HTMLPurifier.standalone.php');
+	$config = HTMLPurifier_Config::createDefault();
+	$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
+	$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+	$purifier = new HTMLPurifier($config);
+
+	if (isset($_REQUEST['rne'])) {
+		if($purifier->purify($_REQUEST['rne'])!=$_REQUEST['rne']) {
+			die('RNE invalide.');
+		}
+
+		if(preg_match("/^[0-9A-Za-z]*$/", $_REQUEST["rne"])) {
+			setcookie('RNE', $_REQUEST['rne'], null, '/');
+		}
+	} elseif (isset($_REQUEST['RNE'])) {
+		if($purifier->purify($_REQUEST['RNE'])!=$_REQUEST['RNE']) {
+			die('RNE invalide.');
+		}
+
+		if(preg_match("/^[0-9A-Za-z]*$/", $_REQUEST["RNE"])) {
+			setcookie('RNE', $_REQUEST['RNE'], null, '/');
+		}
+	}
+}
+*/
+
 // Pour le choix de la préférence de source d'authentification pour l'authentification multiauth
 if (isset($_REQUEST["source"])) {
 	setcookie('source', $_REQUEST["source"], null, '/');

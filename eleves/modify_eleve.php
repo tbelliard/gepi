@@ -121,7 +121,6 @@ if(($definir_resp!=1)&&($definir_resp!=2)){$definir_resp=NULL;}
 
 $definir_etab = isset($_POST["definir_etab"]) ? $_POST["definir_etab"] : (isset($_GET["definir_etab"]) ? $_GET["definir_etab"] : NULL);
 
-
 //=========================
 // Pour l'arrivée depuis la page index.php suite à une recherche
 $motif_rech=isset($_POST['motif_rech']) ? $_POST['motif_rech'] : (isset($_GET['motif_rech']) ? $_GET['motif_rech'] : NULL);
@@ -168,6 +167,28 @@ if (!checkAccess()) {
 if(!isset($eleve_login)) {
     header("Location: ./index.php?msg=Élève non choisi.");
     die();
+}
+
+if($_SESSION['statut']=='professeur') {
+	if((!getSettingAOui('GepiAccesGestElevesProf'))&&(!getSettingAOui('GepiAccesGestElevesProfP'))) {
+		header("Location: ../accueil.php?msg=Accès aux fiches élèves non autorisé.");
+		die();
+	}
+
+	if((getSettingAOui('GepiAccesGestElevesProfP'))&&(is_pp($_SESSION['login'], "", $eleve_login))) {
+		// C'est OK
+	}
+	else {
+		if(!getSettingAOui('GepiAccesGestElevesProf')) {
+			header("Location: ../accueil.php?msg=Accès aux fiches élèves non autorisé.");
+			die();
+		}
+
+		if(!is_prof_ele($_SESSION['login'], $eleve_login)) {
+			header("Location: ../accueil.php?msg=Vous n êtes pas professeur de l élève ".civ_nom_prenom($eleve_login));
+			die();
+		}
+	}
 }
 
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
