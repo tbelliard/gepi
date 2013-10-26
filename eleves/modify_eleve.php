@@ -170,14 +170,24 @@ if(!isset($eleve_login)) {
 }
 
 if($_SESSION['statut']=='professeur') {
-	if(!getSettingAOui('GepiAccesGestElevesProf')) {
+	if((!getSettingAOui('GepiAccesGestElevesProf'))&&(!getSettingAOui('GepiAccesGestElevesProfP'))) {
 		header("Location: ../accueil.php?msg=Accès aux fiches élèves non autorisé.");
 		die();
 	}
 
-	if(!is_prof_ele($_SESSION['login'], $eleve_login)) {
-		header("Location: ../accueil.php?msg=Vous n êtes pas professeur de l élève ".civ_nom_prenom($eleve_login));
-		die();
+	if((getSettingAOui('GepiAccesGestElevesProfP'))&&(is_pp($_SESSION['login'], "", $eleve_login))) {
+		// C'est OK
+	}
+	else {
+		if(!getSettingAOui('GepiAccesGestElevesProf')) {
+			header("Location: ../accueil.php?msg=Accès aux fiches élèves non autorisé.");
+			die();
+		}
+
+		if(!is_prof_ele($_SESSION['login'], $eleve_login)) {
+			header("Location: ../accueil.php?msg=Vous n êtes pas professeur de l élève ".civ_nom_prenom($eleve_login));
+			die();
+		}
 	}
 }
 

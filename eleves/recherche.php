@@ -105,8 +105,14 @@ if(isset($_POST['is_posted_recherche'])) {
 	<tr>";
 
 					$restriction_acces="n";
-					if(($_SESSION['statut']=='professeur')&&(!is_prof_ele($_SESSION['login'], $lig->login))) {
-						$restriction_acces="y";
+					if(($_SESSION['statut']=='professeur')&&
+					((!getSettingAOui('GepiAccesGestElevesProf'))||(!is_prof_ele($_SESSION['login'], $lig->login)))) {
+						if((getSettingAOui('GepiAccesGestElevesProfP'))&&(is_pp($_SESSION['login'], "", $lig->login))) {
+							$restriction_acces="n";
+						}
+						else {
+							$restriction_acces="y";
+						}
 					}
 
 					if(($acces_modify_eleve)&&($restriction_acces=="n")) {
@@ -403,6 +409,7 @@ Pb pour tri?</p>
 <script type='text/javascript'>
 	document.getElementById('submit_chercher').style.display='none';
 	document.getElementById('button_chercher').style.display='';
+	document.getElementById('rech_nom').focus();
 
 	function valider_form_recherche() {
 		if((document.getElementById('rech_nom').value=='')&&(document.getElementById('rech_prenom').value=='')) {
