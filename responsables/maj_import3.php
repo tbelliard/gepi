@@ -3680,7 +3680,17 @@ else{
 
 								echo "<td style='text-align: center;'><input type='checkbox' id='check_".$cpt."' name='new[]' value='$affiche[5]' /></td>\n";
 
-								echo "<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label></td>\n";
+								echo "<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label>";
+								$tmp_tab_homonyme=chercher_homonyme($affiche[0], $affiche[1], "eleve");
+								if(count($tmp_tab_homonyme)>0) {
+									$titre_infobulle="Homonyme pour ".$affiche[0]." ".$affiche[1];
+									$texte_infobulle="<p>Un ou plusieurs homonymes possibles ont été trouvés.<br />Vous devriez contrôler qu'il n'y a pas eu une double saisie dans Sconet/Siècle avant d'ajouter cet élève.</p>";
+									$texte_infobulle.=tableau_eleves($tmp_tab_homonyme);
+									$tabdiv_infobulle[]=creer_div_infobulle('div_homonymes_'.$cpt, $titre_infobulle, "", $texte_infobulle, "",18,0,'y','y','n','n');
+
+									echo "<a href=\"javascript:afficher_div('div_homonymes_$cpt','y',20,20)\" title=\"Homonyme(s) trouvé(s)\"><img src='../images/icons/ico_attention.png' width='22' height='19' /></a>";
+								}
+								echo "</td>\n";
 
 
 								echo "<td style='text-align: center;'>";
