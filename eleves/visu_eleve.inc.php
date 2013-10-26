@@ -1247,7 +1247,7 @@ Patientez pendant l'extraction des données... merci.
 			(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
 			(($_SESSION['statut']=='cpe')&&(is_cpe($_SESSION['login'],'',$ele_login)))||
 			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$ele_login))&&(getSettingAOui('GepiAccesGestElevesProfP')))) {
-				echo "<a href='modify_eleve.php?eleve_login=".$ele_login."&amp;quelles_classes=certaines&amp;order_type=nom,prenom&amp;motif_rech='>".$tab_ele['nom']."</a>";
+				echo "<a href='modify_eleve.php?eleve_login=".$ele_login."&amp;quelles_classes=certaines&amp;order_type=nom,prenom&amp;motif_rech=' title=\"Modifier la fiche élève\">".$tab_ele['nom']."</a>";
 			}
 			else {
 				echo $tab_ele['nom'];
@@ -1369,7 +1369,7 @@ Patientez pendant l'extraction des données... merci.
 						echo "<tr class='lig$alt'><th style='text-align: left;'>Nom:</th><td>";
 
 						if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
-							echo "<a href='../responsables/modify_resp.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."'>".$tab_ele['resp'][$i]['nom']."</a>";
+							echo "<a href='../responsables/modify_resp.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."' title=\"Modifier la fiche responsable\">".$tab_ele['resp'][$i]['nom']."</a>";
 						}
 						else {
 							echo $tab_ele['resp'][$i]['nom'];
@@ -1532,7 +1532,7 @@ Patientez pendant l'extraction des données... merci.
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Nom:</th><td>";
 
 							if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
-								echo "<a href='../responsables/modify_resp.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."'>".$tab_ele['resp'][$i]['nom']."</a>";
+								echo "<a href='../responsables/modify_resp.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."' title=\"Modifier la fiche responsable\">".$tab_ele['resp'][$i]['nom']."</a>";
 							}
 							else {
 								echo $tab_ele['resp'][$i]['nom'];
