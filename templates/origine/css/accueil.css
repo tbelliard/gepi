@@ -250,3 +250,10 @@ background-color: #F00;
 	right: 2em;
 	text-align:center;
 }
+
+.opacity_50 {
+	background-image:url("/steph/gepi_git_trunk/images/background/opacite50.png");
+	border: 13px dashed green;
+}
+
+
