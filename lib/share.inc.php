@@ -1617,13 +1617,28 @@ function check_user_temp_directory($login_user="", $_niveau_arbo=0) {
  * @return bool|string retourne FALSE s'il n'existe pas et le nom du répertoire s'il existe, sans le chemin
  */
 function get_user_temp_directory($login_user=""){
-	if($login_user=="") {
+    global $mysqli;
+    if($login_user=="") {
 		$login_user=$_SESSION['login'];
 	}
 	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$login_user."'";
-	$res_temp_dir=mysql_query($sql);
-	if(mysql_num_rows($res_temp_dir)>0){
-		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
+        
+	if($mysqli !="") {
+		$resultat = mysqli_query($mysqli, $sql);  
+        $nb_lignes = $resultat->num_rows;
+	} else {
+		$res_temp_dir = mysql_query($sql);
+        $nb_lignes = mysql_num_rows($res_temp_dir);
+	} 
+    
+	if($nb_lignes > 0){
+        
+        if($mysqli !="") {
+            $lig_temp_dir = $resultat->fetch_object();
+        } else {
+            $lig_temp_dir=mysql_fetch_object($res_temp_dir);
+        }
+        
 		$dirname=$lig_temp_dir->temp_dir;
 
 		if(($dirname!="")&&(mb_strlen(preg_replace("/[A-Za-z0-9_.]/","",$dirname))==0)) {
