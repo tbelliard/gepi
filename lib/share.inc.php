@@ -8410,4 +8410,173 @@ function is_eleve_du_groupe($login_ele, $id_groupe) {
 		return true;
 	}
 }
+
+function chercher_homonyme($nom, $prenom, $statut="eleve") {
+	$tab=array();
+
+	$tmp_nom=preg_replace("/[^A-Za-z]/", "%", $nom);
+	$tmp_prenom=preg_replace("/[^A-Za-z]/", "%", $prenom);
+
+	if($statut=="eleve") {
+		$sql="SELECT * FROM eleves WHERE nom LIKE '$tmp_nom' AND prenom LIKE '$tmp_prenom';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$cpt=0;
+			while($lig=mysql_fetch_object($res)) {
+				$tab[$cpt]['login']=$lig->login;
+				$tab[$cpt]['nom']=$lig->nom;
+				$tab[$cpt]['prenom']=$lig->prenom;
+
+				$sql="SELECT DISTINCT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig->login' ORDER BY periode;";
+				$res2=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while($lig2=mysql_fetch_object($res2)) {
+						$tab[$cpt]['classe'][]=$lig2->classe;
+					}
+				}
+				$cpt++;
+			}
+		}
+	}
+	elseif($statut=="responsable") {
+		$sql="SELECT * FROM resp_pers WHERE nom LIKE '$tmp_nom' AND prenom LIKE '$tmp_prenom';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$cpt=0;
+			while($lig=mysql_fetch_object($res)) {
+				$tab[$cpt]['login']=$lig->login;
+				$tab[$cpt]['nom']=$lig->nom;
+				$tab[$cpt]['prenom']=$lig->prenom;
+
+				// Chercher les enfants associés
+				$tab[$cpt]['responsable_de']=get_enfants_from_resp_login($lig->login);
+			}
+		}
+	}
+
+	return $tab;
+}
+
+function get_classes_from_prof($login) {
+	$tab=array();
+
+	$sql="SELECT DISTINCT id, classe FROM classes c, 
+								j_groupes_classes jgc, 
+								j_groupes_professeurs jgp 
+							WHERE c.id=jgc.id_classe AND 
+								jgc.id_groupe=jgp.id_groupe AND 
+								jgp.login='$login'
+							ORDER BY c.classe;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$lig->id]=$lig->classe;
+			//$tab[$lig->id]['classe']=$lig->classe;
+			//$tab[$lig->id]['is_prof']="y";
+		}
+	}
+
+	/*
+	// Repérer si PP
+	$sql="SELECT DISTINCT id, classe FROM classes c, 
+								j_eleves_classes jec, 
+								j_eleves_professeurs jep 
+							WHERE c.id=jec.id_classe AND 
+								jec.login=jep.login AND 
+								jep.professeur='$login'
+							ORDER BY c.classe;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$lig->id]['classe']=$lig->classe;
+			$tab[$lig->id]['is_pp']="y";
+		}
+	}
+	*/
+
+	return $tab;
+}
+
+function get_matieres_from_prof($login) {
+	$tab=array();
+
+	$tmp_tab=array();
+	$sql="SELECT DISTINCT id_matiere FROM j_groupes_matieres jgm, 
+								j_groupes_professeurs jgp
+							WHERE jgm.id_groupe=jgp.id_groupe AND 
+								jgp.login='$login';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tmp_tab[]=$lig->id_matiere;
+		}
+	}
+
+	$sql="SELECT DISTINCT matiere, nom_complet FROM matieres m, 
+								j_professeurs_matieres jpm
+							WHERE m.matiere=jpm.id_matiere AND 
+								jpm.id_professeur='$login'
+							ORDER BY jpm.ordre_matieres, m.matiere;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$cpt]['matiere']=$lig->matiere;
+			$tab[$cpt]['nom_complet']=$lig->nom_complet;
+			if(in_array($lig->matiere, $tmp_tab)) {
+				$tab[$cpt]['enseignee']="y";
+			}
+			else {
+				$tab[$cpt]['enseignee']="n";
+			}
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+function get_profs_from_matiere($matiere) {
+	$tab=array();
+
+	$tmp_tab=array();
+	$sql="SELECT DISTINCT login FROM j_groupes_matieres jgm, 
+								j_groupes_professeurs jgp
+							WHERE jgm.id_groupe=jgp.id_groupe AND 
+								jgm.id_matiere='$matiere';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tmp_tab[]=$lig->login;
+		}
+	}
+
+	$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.civilite, u.etat FROM utilisateurs u, 
+								j_professeurs_matieres jpm
+							WHERE u.login=jpm.id_professeur AND 
+								jpm.id_matiere='$matiere'
+							ORDER BY u.login;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$cpt]['login']=$lig->login;
+			$tab[$cpt]['nom']=casse_mot($lig->nom, 'maj');
+			$tab[$cpt]['prenom']=casse_mot($lig->prenom, 'majf2');
+			$tab[$cpt]['civilite']=$lig->civilite;
+			$tab[$cpt]['designation']=$lig->civilite." ".$tab[$cpt]['nom']." ".$tab[$cpt]['prenom'];
+			if(in_array($lig->login, $tmp_tab)) {
+				$tab[$cpt]['enseignee']="y";
+			}
+			else {
+				$tab[$cpt]['enseignee']="n";
+			}
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+
 ?>
