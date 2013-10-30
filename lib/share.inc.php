@@ -6500,4 +6500,61 @@ function get_class_dates_from_ele_login($login_eleve) {
 
 	return $tab;
 }
+
+/** Fonction destinée à tester si un utilisateur a le droit d'accéder au CDT de tel élève
+ *
+ * @param string $login_user Login de l'utilisateur
+ * @param string $login_eleve Login de l'élève
+ *
+ * @return boolean true/false
+ */
+function acces_cdt_eleve($login_user, $login_eleve) {
+	$retour=false;
+
+	$sql="SELECT statut FROM utilisateurs WHERE login='$login_user';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$statut=mysql_result($res, 0, "statut");
+
+		if(($statut=="eleve")&&($login_user==$login_eleve)&&(getSettingAOui('GepiAccesCahierTexteEleve'))) {
+			$retour=true;
+		}
+		elseif(($statut=="responsable")&&(getSettingAOui('GepiAccesCahierTexteParent'))&&(is_responsable($login_eleve, $login_user))) {
+			$retour=true;
+		}
+		elseif(($statut=="professeur")&&(getSettingAOui('GepiAccesCDTToutesClasses'))) {
+			$retour=true;
+		}
+		elseif($statut=="professeur") {
+			$sql="SELECT 1=1 FROM j_groupes_professeurs jgp, j_eleves_groupes jeg WHERE jgp.id_groupe=jeg.id_groupe AND jeg.login='$login_eleve' AND jgp.login='$login_user';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$retour=true;
+			}
+			// Donner le droit au PP?
+		}
+		elseif(($statut=="cpe")&&(getSettingAOui('GepiAccesCdtCpe'))) {
+			$retour=true;
+		}
+		elseif(($statut=="cpe")&&(getSettingAOui('GepiAccesCdtCpeRestreint'))) {
+			$sql="SELECT 1=1 FROM j_eleves_cpe WHERE e_login='$login_eleve' AND cpe_login='$login_user';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$retour=true;
+			}
+		}
+		elseif(($statut=="scolarite")&&(getSettingAOui('GepiAccesCdtScol'))) {
+			$retour=true;
+		}
+		elseif(($statut=="scolarite")&&(getSettingAOui('GepiAccesCdtScolRestreint'))) {
+			$sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jsc.id_classe=jec.id_classe AND jsc.login='$login_user' AND jec.login='$login_eleve';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$retour=true;
+			}
+		}
+	}
+
+	return $retour;
+}
 ?>
