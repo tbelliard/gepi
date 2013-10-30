@@ -777,7 +777,11 @@ Patientez pendant l'extraction des données... merci.
 		// A REVOIR par la suite
 		$active_cahiers_texte=getSettingValue("active_cahiers_texte");
 		if($active_cahiers_texte=='y') {
-			$acces_cdt="y";
+			$acces_cdt="n";
+
+			if(acces_cdt_eleve($_SESSION['login'], $ele_login)) {
+				$acces_cdt="y";
+			}
 		}
 		else {
 			$acces_cdt="n";
