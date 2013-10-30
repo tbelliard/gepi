@@ -1821,6 +1821,8 @@ Patientez pendant l'extraction des données... merci.
 		//========================
 
 		if($acces_cdt=="y") {
+			$contexte_affichage_docs_joints="visu_eleve";
+
 			echo "<div id='cdt' class='onglet' style='";
 			if($onglet!="cdt") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['cdt']."; ";
