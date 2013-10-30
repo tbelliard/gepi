@@ -776,7 +776,11 @@ Patientez pendant l'extraction des données... merci.
 		// A REVOIR par la suite
 		$active_cahiers_texte=getSettingValue("active_cahiers_texte");
 		if($active_cahiers_texte=='y') {
-			$acces_cdt="y";
+			$acces_cdt="n";
+
+			if(acces_cdt_eleve($_SESSION['login'], $ele_login)) {
+				$acces_cdt="y";
+			}
 		}
 		else {
 			$acces_cdt="n";
@@ -2261,6 +2265,8 @@ Patientez pendant l'extraction des données... merci.
 		//========================
 
 		if($acces_cdt=="y") {
+			$contexte_affichage_docs_joints="visu_eleve";
+
 			echo "<div id='cdt' class='onglet' style='";
 			if($onglet!="cdt") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['cdt']."; ";
