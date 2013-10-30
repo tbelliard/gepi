@@ -412,6 +412,10 @@ if(($id_groupe=='Toutes_matieres')&&
 			}
 		}
 
+		if($envoi_mail=="y") {
+			$contexte_affichage_docs_joints="visu_eleve";
+		}
+
 		//include("../lib/calendrier/calendrier.class.php");
 		//$cal1 = new Calendrier("form_envoi_cdt_mail", "date_debut_cdt_mail");
 
