@@ -180,7 +180,7 @@ if(isset($javascript_specifique)) {
 		foreach($javascript_specifique as $current_javascript_specifique) {
 			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
 				// Javascript spécifique à une page:
-			echo '<!-- $javascript specifique '.$javascript_specifique.' -->';
+				echo '<!-- $javascript specifique '.$current_javascript_specifique.' -->';
 				echo "<script type='text/javascript' src='$gepiPath/$current_javascript_specifique.js'></script>\n";
 			}
 		}
