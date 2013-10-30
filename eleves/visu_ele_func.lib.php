@@ -678,10 +678,13 @@ function info_eleve($ele_login) {
 	}
 
 	if(($active_cahiers_texte=="y")&&($acces_cdt=='y')) {
+		$ts_limite_visibilite_comptes_rendus_pour_eleves=time();
+		$ts_limite_visibilite_devoirs_pour_eleves=time()+getSettingValue('delai_devoirs')*24*3600;
+
 		$cpt1=0; // pour initialiser la variable
 		$tab_date_ct=array();
 		// Un DISTINCT pour éviter les trois exemplaires dûs à j_eleves_groupes
-		$sql="SELECT DISTINCT cte.* FROM  ct_entry cte, j_eleves_groupes jeg WHERE cte.id_groupe=jeg.id_groupe AND jeg.login='".$ele_login."' AND cte.date_ct>=$date_ct1 AND cte.date_ct<=$date_ct2 ORDER BY cte.date_ct, cte.id_groupe;";
+		$sql="SELECT DISTINCT cte.* FROM  ct_entry cte, j_eleves_groupes jeg WHERE cte.id_groupe=jeg.id_groupe AND jeg.login='".$ele_login."' AND cte.date_ct>=$date_ct1 AND cte.date_ct<=$date_ct2 AND cte.date_ct<=$ts_limite_visibilite_comptes_rendus_pour_eleves ORDER BY cte.date_ct, cte.id_groupe;";
 		//echo "$sql<br />";
 		$res_ct=mysql_query($sql);
 		if(mysql_num_rows($res_ct)>0) {
@@ -706,7 +709,7 @@ function info_eleve($ele_login) {
 			}
 		}
 
-		$sql="SELECT DISTINCT ctde.* FROM ct_devoirs_entry ctde, j_eleves_groupes jeg WHERE ctde.id_groupe=jeg.id_groupe AND jeg.login='".$ele_login."' AND ctde.date_ct>=$date_ct1 AND ctde.date_ct<=$date_ct2 ORDER BY ctde.date_ct, ctde.id_groupe;";
+		$sql="SELECT DISTINCT ctde.* FROM ct_devoirs_entry ctde, j_eleves_groupes jeg WHERE ctde.id_groupe=jeg.id_groupe AND jeg.login='".$ele_login."' AND ctde.date_ct>=$date_ct1 AND ctde.date_ct<=$date_ct2 AND ctde.date_ct<=$ts_limite_visibilite_devoirs_pour_eleves ORDER BY ctde.date_ct, ctde.id_groupe;";
 		//echo "$sql<br />";
 		$res_ct=mysql_query($sql);
 		$cpt2=0;
