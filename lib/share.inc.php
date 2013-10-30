@@ -799,11 +799,13 @@ function genDateSelector($prefix, $day, $month, $year, $option)
  * Vérifie que la page est bien accessible par l'utilisateur
  *
  * @global string 
- * @return booleanTRUE si la page est accessible, FALSE sinon
+ * @return boolean TRUE si la page est accessible, FALSE sinon
  * @see tentative_intrusion()
  */
 function checkAccess() {
     global $gepiPath;
+    
+    global $mysqli;
 
     if(!preg_match("/mon_compte.php/", $_SERVER['SCRIPT_NAME'])) {
         if((isset($_SESSION['statut']))&&($_SESSION['statut']!="administrateur")&&(getSettingAOui('MailValideRequis'.ucfirst($_SESSION['statut'])))) {
@@ -890,8 +892,17 @@ function checkAccess() {
 					WHERE id = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
 					AND ".$_SESSION['statut']."='V';";
 		}
-		$dbCheckAccess = mysql_query($sql);
-		if (mysql_num_rows($dbCheckAccess)>0) {
+            
+        if($mysqli !="") {
+            $resultat = mysqli_query($mysqli, $sql);  
+            $nb_lignes = $resultat->num_rows;
+            $resultat->close();
+        } else {
+            $dbCheckAccess = mysql_query($sql);
+            $nb_lignes = mysql_num_rows($dbCheckAccess);
+        }  
+        
+		if ($nb_lignes > 0) {
 			return (TRUE);
 		}
 		else {
@@ -1495,6 +1506,7 @@ function check_temp_directory(){
  */
 function check_user_temp_directory($login_user="", $_niveau_arbo=0) {
 	global $multisite;
+    global $mysqli;
 
 	$pref_arbo=".";
 	if($_niveau_arbo==1) {
@@ -1514,98 +1526,189 @@ function check_user_temp_directory($login_user="", $_niveau_arbo=0) {
 	}
 
 	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$login_user."'";
-	$res_temp_dir=mysql_query($sql);
+            
+	if($mysqli !="") {
+        $res_temp_dir =  mysqli_query($mysqli, $sql);  
+        if($res_temp_dir->num_rows == 0){
+            // Cela revient à dire que l'utilisateur n'est pas dans la table utilisateurs???
+            return FALSE;
+        } else {
+            $lig_temp_dir = $res_temp_dir->fetch_object();
+            $dirname=$lig_temp_dir->temp_dir;
 
-	if(mysql_num_rows($res_temp_dir)==0){
-		// Cela revient à dire que l'utilisateur n'est pas dans la table utilisateurs???
-		return FALSE;
-	}
-	else{
-		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
-		$dirname=$lig_temp_dir->temp_dir;
+            if($dirname=="") {
+                // Le dossier n'existe pas
+                // On créé le répertoire temp
+                $length = rand(35, 45);
+                for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+                $dirname = $pref_multi.$login_user."_".$r;
+                $create = mkdir($pref_arbo."/temp/".$dirname, 0700);
 
-		if($dirname=="") {
-			// Le dossier n'existe pas
-			// On créé le répertoire temp
-			$length = rand(35, 45);
-			for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-			$dirname = $pref_multi.$login_user."_".$r;
-			$create = mkdir($pref_arbo."/temp/".$dirname, 0700);
+                if($create){
+                    $fich=fopen($pref_arbo."/temp/".$dirname."/index.html","w+");
+                    fwrite($fich,'<html><head><script type="text/javascript">
+        document.location.replace("'.$pref_arbo.'/login.php")
+    </script></head></html>
+    ');
+                    fclose($fich);
 
-			if($create){
-				$fich=fopen($pref_arbo."/temp/".$dirname."/index.html","w+");
-				fwrite($fich,'<html><head><script type="text/javascript">
-	document.location.replace("'.$pref_arbo.'/login.php")
-</script></head></html>
-');
-				fclose($fich);
+                    $sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$login_user."'";
+                    $res_update = mysqli_query($mysqli, $sql);
+                    if($res_update) {
+                        return TRUE;
+                    } else {
+                        return FALSE;
+                    }
+                } else {
+                    return FALSE;
+                }
+            } else {
+                if(($pref_multi!='')&&(!preg_match("/^$pref_multi/", $dirname))&&(file_exists("$pref_arbo/temp/".$dirname))) {
+                    // Il faut renommer le dossier
+                    if(!rename("$pref_arbo/temp/".$dirname,"$pref_arbo/temp/".$pref_multi.$dirname)) {
+                        return FALSE;
+                        exit();
+                    } else {
+                        $dirname=$pref_multi.$dirname;
+                        $sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$login_user."'";
+                        $res_update = mysqli_query($mysqli, $sql);
+                        if(!$res_update){
+                            return FALSE;
+                            exit();
+                        }
+                    }
+                }
 
-				$sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$login_user."'";
-				$res_update=mysql_query($sql);
-				if($res_update){
-					return TRUE;
-				}
-				else{
-					return FALSE;
-				}
-			}
-			else{
-				return FALSE;
-			}
-		}
-		else {
-			if(($pref_multi!='')&&(!preg_match("/^$pref_multi/", $dirname))&&(file_exists("$pref_arbo/temp/".$dirname))) {
-				// Il faut renommer le dossier
-				if(!rename("$pref_arbo/temp/".$dirname,"$pref_arbo/temp/".$pref_multi.$dirname)) {
-					return FALSE;
-					exit();
-				}
-				else {
-					$dirname=$pref_multi.$dirname;
+                if(!file_exists("$pref_arbo/temp/".$dirname)){
+                    // Le dossier n'existe pas
+                    // On créé le répertoire temp
+                    $create = mkdir("$pref_arbo/temp/".$dirname, 0700);
 
-					$sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$login_user."'";
-					$res_update=mysql_query($sql);
-					if(!$res_update){
-						return FALSE;
-						exit();
-					}
-				}
-			}
+                    if($create){
+                        $fich=fopen("$pref_arbo/temp/".$dirname."/index.html","w+");
+                        fwrite($fich,'<html><head><script type="text/javascript">
+        document.location.replace("'.$pref_arbo.'/login.php")
+    </script></head></html>
+    ');
+                        fclose($fich);
+                        return TRUE;
+                    }
+                    else{
+                        return FALSE;
+                    }
+                }
+                else{
+                    $fich=fopen("$pref_arbo/temp/".$dirname."/test_ecriture.tmp","w+");
+                    $ecriture=fwrite($fich,'Test d écriture.');
+                    $fermeture=fclose($fich);
+                    if(file_exists("$pref_arbo/temp/".$dirname."/test_ecriture.tmp")){
+                        unlink("$pref_arbo/temp/".$dirname."/test_ecriture.tmp");
+                    }
 
-			if(!file_exists("$pref_arbo/temp/".$dirname)){
-				// Le dossier n'existe pas
-				// On créé le répertoire temp
-				$create = mkdir("$pref_arbo/temp/".$dirname, 0700);
+                    if(($fich)&&($ecriture)&&($fermeture)){
+                        return TRUE;
+                    }
+                    else{
+                        return FALSE;
+                    }
+                }
+            }                    
+        }
+		$res_temp_dir->close();
+	} else {
+        $res_temp_dir=mysql_query($sql);
 
-				if($create){
-					$fich=fopen("$pref_arbo/temp/".$dirname."/index.html","w+");
-					fwrite($fich,'<html><head><script type="text/javascript">
-	document.location.replace("'.$pref_arbo.'/login.php")
-</script></head></html>
-');
-					fclose($fich);
-					return TRUE;
-				}
-				else{
-					return FALSE;
-				}
-			}
-			else{
-				$fich=fopen("$pref_arbo/temp/".$dirname."/test_ecriture.tmp","w+");
-				$ecriture=fwrite($fich,'Test d écriture.');
-				$fermeture=fclose($fich);
-				if(file_exists("$pref_arbo/temp/".$dirname."/test_ecriture.tmp")){
-					unlink("$pref_arbo/temp/".$dirname."/test_ecriture.tmp");
-				}
+        if(mysql_num_rows($res_temp_dir)==0){
+            // Cela revient à dire que l'utilisateur n'est pas dans la table utilisateurs???
+            return FALSE;
+        }
+        else{
+            $lig_temp_dir=mysql_fetch_object($res_temp_dir);
+            $dirname=$lig_temp_dir->temp_dir;
 
-				if(($fich)&&($ecriture)&&($fermeture)){
-					return TRUE;
-				}
-				else{
-					return FALSE;
-				}
-			}
-		}
+            if($dirname=="") {
+                // Le dossier n'existe pas
+                // On créé le répertoire temp
+                $length = rand(35, 45);
+                for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+                $dirname = $pref_multi.$login_user."_".$r;
+                $create = mkdir($pref_arbo."/temp/".$dirname, 0700);
+
+                if($create){
+                    $fich=fopen($pref_arbo."/temp/".$dirname."/index.html","w+");
+                    fwrite($fich,'<html><head><script type="text/javascript">
+        document.location.replace("'.$pref_arbo.'/login.php")
+    </script></head></html>
+    ');
+                    fclose($fich);
+
+                    $sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$login_user."'";
+                    $res_update=mysql_query($sql);
+                    if($res_update){
+                        return TRUE;
+                    }
+                    else{
+                        return FALSE;
+                    }
+                }
+                else{
+                    return FALSE;
+                }
+            }
+            else {
+                if(($pref_multi!='')&&(!preg_match("/^$pref_multi/", $dirname))&&(file_exists("$pref_arbo/temp/".$dirname))) {
+                    // Il faut renommer le dossier
+                    if(!rename("$pref_arbo/temp/".$dirname,"$pref_arbo/temp/".$pref_multi.$dirname)) {
+                        return FALSE;
+                        exit();
+                    }
+                    else {
+                        $dirname=$pref_multi.$dirname;
+
+                        $sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$login_user."'";
+                        $res_update=mysql_query($sql);
+                        if(!$res_update){
+                            return FALSE;
+                            exit();
+                        }
+                    }
+                }
+
+                if(!file_exists("$pref_arbo/temp/".$dirname)){
+                    // Le dossier n'existe pas
+                    // On créé le répertoire temp
+                    $create = mkdir("$pref_arbo/temp/".$dirname, 0700);
+
+                    if($create){
+                        $fich=fopen("$pref_arbo/temp/".$dirname."/index.html","w+");
+                        fwrite($fich,'<html><head><script type="text/javascript">
+        document.location.replace("'.$pref_arbo.'/login.php")
+    </script></head></html>
+    ');
+                        fclose($fich);
+                        return TRUE;
+                    }
+                    else{
+                        return FALSE;
+                    }
+                }
+                else{
+                    $fich=fopen("$pref_arbo/temp/".$dirname."/test_ecriture.tmp","w+");
+                    $ecriture=fwrite($fich,'Test d écriture.');
+                    $fermeture=fclose($fich);
+                    if(file_exists("$pref_arbo/temp/".$dirname."/test_ecriture.tmp")){
+                        unlink("$pref_arbo/temp/".$dirname."/test_ecriture.tmp");
+                    }
+
+                    if(($fich)&&($ecriture)&&($fermeture)){
+                        return TRUE;
+                    }
+                    else{
+                        return FALSE;
+                    }
+                }
+            }
+        }
 	}
 }
 
@@ -2541,16 +2644,28 @@ function traite_regime_sconet($code_regime){
  * @return string La valeur de l'item
  */
 function getPref($login,$item,$default){
-	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
-	$res_prefs=mysql_query($sql);
+    global $mysqli;
+    $sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
+           
+	if($mysqli !="") {
+        $res_prefs = mysqli_query($mysqli, $sql);
+        if($res_prefs->num_rows > 0){
+            $ligne = $res_prefs->fetch_object();
+            return $ligne->value;
+        } else {
+            return $default;
+        }			
+	} else {
+        $res_prefs=mysql_query($sql);
 
-	if(mysql_num_rows($res_prefs)>0){
-		$ligne=mysql_fetch_object($res_prefs);
-		return $ligne->value;
-	}
-	else{
-		return $default;
-	}
+        if(mysql_num_rows($res_prefs)>0){
+            $ligne=mysql_fetch_object($res_prefs);
+            return $ligne->value;
+        }
+        else{
+            return $default;
+        }		
+	}    
 }
 
 /**
@@ -4583,6 +4698,7 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
  * @return boolean 
  */
 function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="", $login_resp="") {
+    global $mysqli;
 	$retour=FALSE;
 
 	if($login_eleve=='') {
@@ -4605,9 +4721,15 @@ function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="", $logi
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE ";
 		if($id_classe!="") {$sql.="id_classe='$id_classe' AND ";}
 		$sql.="professeur='$login_prof' AND login='$login_eleve';";
-	}
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0) {$retour=TRUE;}
+	}       
+	if($mysqli !="") {
+        $resultat = mysqli_query($mysqli, $sql);  
+        $nb_lignes = $resultat->num_rows;		
+	} else {
+		$test=mysql_query($sql);
+        $nb_lignes = mysql_num_rows($test);
+	} 
+	if($nb_lignes>0) {$retour=TRUE;}
 
 	return $retour;
 }
@@ -5271,6 +5393,7 @@ function suppression_sauts_de_lignes_surnumeraires($chaine) {
  * @return string le nombre de notes ou commentaires saisis
  */
 function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
+    global $mysqli;
 	$retour="";
 
 	if($type=="notes") {
@@ -5278,29 +5401,52 @@ function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
 	}
 	else {
 		$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='".$id_groupe."' AND periode='".$periode_num."';";
-	}
-	$test=mysql_query($sql);
-	$nb_saisies_bulletin=mysql_num_rows($test);
+	}        
+	if($mysqli !="") {
+        $test = mysqli_query($mysqli, $sql);
+        $nb_saisies_bulletin = $test->num_rows;
+        $tab_champs=array('eleves');
+        $current_group=get_group($id_groupe, $tab_champs);
+        $effectif_groupe=count($current_group["eleves"][$periode_num]["users"]);
+        if($mode=="couleur") {
+            if($nb_saisies_bulletin==$effectif_groupe){
+                $retour="<span style='font-size: x-small;' title='Saisies complètes'>";
+                $retour.="($nb_saisies_bulletin/$effectif_groupe)";
+                $retour.="</span>";
+            }
+            else {
+                $retour="<span style='font-size: x-small; background-color: orangered;' title='Saisies incomplètes ou non encore effectuées'>";
+                $retour.="($nb_saisies_bulletin/$effectif_groupe)";
+                $retour.="</span>";
+            }
+        }
+        else {
+            $retour="($nb_saisies_bulletin/$effectif_groupe)";
+        }		
+	} else  {
+        $test=mysql_query($sql);
+        $nb_saisies_bulletin=mysql_num_rows($test);
 
-	$tab_champs=array('eleves');
-	$current_group=get_group($id_groupe, $tab_champs);
-	$effectif_groupe=count($current_group["eleves"][$periode_num]["users"]);
+        $tab_champs=array('eleves');
+        $current_group=get_group($id_groupe, $tab_champs);
+        $effectif_groupe=count($current_group["eleves"][$periode_num]["users"]);
 
-	if($mode=="couleur") {
-		if($nb_saisies_bulletin==$effectif_groupe){
-			$retour="<span style='font-size: x-small;' title='Saisies complètes'>";
-			$retour.="($nb_saisies_bulletin/$effectif_groupe)";
-			$retour.="</span>";
-		}
-		else {
-			$retour="<span style='font-size: x-small; background-color: orangered;' title='Saisies incomplètes ou non encore effectuées'>";
-			$retour.="($nb_saisies_bulletin/$effectif_groupe)";
-			$retour.="</span>";
-		}
-	}
-	else {
-		$retour="($nb_saisies_bulletin/$effectif_groupe)";
-	}
+        if($mode=="couleur") {
+            if($nb_saisies_bulletin==$effectif_groupe){
+                $retour="<span style='font-size: x-small;' title='Saisies complètes'>";
+                $retour.="($nb_saisies_bulletin/$effectif_groupe)";
+                $retour.="</span>";
+            }
+            else {
+                $retour="<span style='font-size: x-small; background-color: orangered;' title='Saisies incomplètes ou non encore effectuées'>";
+                $retour.="($nb_saisies_bulletin/$effectif_groupe)";
+                $retour.="</span>";
+            }
+        }
+        else {
+            $retour="($nb_saisies_bulletin/$effectif_groupe)";
+        }
+	}    
 
 	return $retour;
 }
@@ -7504,6 +7650,7 @@ function peut_poster_message($statut) {
 
 function affichage_temoin_messages_recus($portee="header_et_fixe") {
 	global $gepiPath;
+    global $mysqli;
 
 	$MessagerieDelaisTest=getSettingValue('MessagerieDelaisTest');
 	if(($MessagerieDelaisTest=='')||(!preg_match('/^[0-9]$/', $MessagerieDelaisTest))||($MessagerieDelaisTest==0)) {
@@ -7520,8 +7667,17 @@ function affichage_temoin_messages_recus($portee="header_et_fixe") {
 	}
 	else {
 		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+        
+                
+        if($mysqli !="") {
+            $resultat = mysqli_query($mysqli, $sql);  
+            $nb_lignes = $resultat->num_rows;
+        } else {
+            $test=mysql_query($sql);
+            $nb_lignes = mysql_num_rows($test);
+        }           
+        
+		if($nb_lignes > 0) {
 			$retour.="<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='Aucun message' /></a></span>";
 		}
 		else {
@@ -8333,20 +8489,30 @@ function temoin_compte_sso($login_user) {
 }
 
 function check_mae($login_user) {
-	$test = sql_query1("SHOW TABLES LIKE 'mod_alerte_divers'");
-	if ($test == -1) {
-		return true;
-	}
-	else {
-		$sql="SELECT 1=1 FROM mod_alerte_divers WHERE name='login_exclus' AND value='".$login_user."';";
-		$test_mae=mysql_query($sql);
-		if(mysql_num_rows($test_mae)==0) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+    global $mysqli;
+            
+    $test = sql_query1("SHOW TABLES LIKE 'mod_alerte_divers'");
+    if ($test == -1) {
+        return true;
+    }
+    else {
+        $sql="SELECT 1=1 FROM mod_alerte_divers WHERE name='login_exclus' AND value='".$login_user."';";
+        if($mysqli !="") {
+            $resultat = mysqli_query($mysqli, $sql);  
+            $nb_lignes = $resultat->num_rows;
+
+        } else {
+            $test_mae=mysql_query($sql);
+            $nb_lignes = mysql_num_rows($test_mae);
+        }
+            
+        if($nb_lignes == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+	}  
 }
 
 function clean_table_log($jusque_telle_date) {

@@ -185,23 +185,35 @@ class class_page_accueil_autre {
   }
 
   private function itemPermis($chemin){
+      global $mysqli;
 	$sql="SELECT ds.autorisation FROM `droits_speciaux` ds,  `droits_utilisateurs` du
 				WHERE (ds.nom_fichier='".$chemin."'
 				  AND ds.id_statut=du.id_statut
 				  AND du.login_user='".$this->loginUtilisateur."');" ;
 	//echo "$sql<br />";
-	$result=mysql_query($sql);
-	if (!$result) {
-	  return FALSE;
+           
+	if($mysqli !="") {
+		$result = mysqli_query($mysqli, $sql);
+        if (!$result) {
+          return FALSE;
+        } else {
+          $row = $result->fetch_row() ;
+          $result->close();
+        }		
 	} else {
-	  $row = mysql_fetch_row($result) ;
+        $result=mysql_query($sql);
+        if (!$result) {
+          return FALSE;
+        } else {
+          $row = mysql_fetch_row($result) ;
+        }		
+	}  
 	  if ($row[0]=='V' || $row[0]=='v'){
 		//if ($chemin=='bulletin/bull_index.php') {echo ("on a bien les bulletins");}
 		return TRUE;
 	  } else {
 		return FALSE;
 	  }
-	}
   }
 
   protected function creeNouveauTitre($classe,$texte,$icone,$titre="",$alt=""){
@@ -242,17 +254,35 @@ class class_page_accueil_autre {
   }
 
   protected function chargeOrdreMenu($ordre_menus){
+      global $mysqli;
 	//$this->ordre_menus=$ordre_menus;
 	$sql="SHOW TABLES LIKE 'mn_ordre_accueil'";
-	$resp = mysql_query($sql);
+            
+	if($mysqli !="") {
+		$resp = mysqli_query($mysqli, $sql);
+        $nb_lignes = $resp->num_rows;
+		$resp->close();
+	} else {
+		$resp = mysql_query($sql);
+        $nb_lignes = mysql_num_rows($resp);
+	}           
+	
 
-	if(mysql_num_rows($resp)>0) {
+	if($nb_lignes > 0) {
 	  $sql2="SELECT bloc, num_menu
 			FROM mn_ordre_accueil
 			WHERE statut
 			LIKE '$this->statutUtilisateur' " ;
-	  $resp2 = mysql_query($sql2);
-	  if (mysql_num_rows($resp2)>0){
+              
+	if($mysqli !="") {
+		$resp2 =mysqli_query($mysqli, $sql2);
+        $nb_lignes2 = $resp2->num_rows;
+	} else {
+		$resp2 = mysql_query($sql2);
+        $nb_lignes2 = mysql_num_rows($resp2);
+	}           
+	  
+	  if ($nb_lignes2 > 0){
 		while($lig_log=mysql_fetch_object($resp2)) {
 		  $this->ordre_menus[$lig_log->bloc]=$lig_log->num_menu;
 		}
@@ -271,18 +301,40 @@ class class_page_accueil_autre {
   }
 
   private function chargeAutreNom($bloc){
+      global $mysqli;
 	$sql1="SHOW TABLES LIKE 'mn_ordre_accueil'";
-	$resp1 = mysql_query($sql1);
-	if(mysql_num_rows($resp1)>0) {
+    
+	if($mysqli !="") {
+		$resp1 = mysqli_query($mysqli, $sql1);
+        $nb_lignes1 = $resp1->num_rows;
+		$resp1->close();
+	} else {
+		$resp1 = mysql_query($sql1);
+        $nb_lignes1 = mysql_num_rows($resp1);
+	}
+    
+	if($nb_lignes1 > 0) {
 	  $sql="SELECT nouveau_nom FROM mn_ordre_accueil
 			WHERE bloc LIKE '$bloc'
 			AND statut LIKE 'autre'
 			AND nouveau_nom NOT LIKE ''
 			;";
-	  $resp=mysql_query($sql);
-	  if (mysql_num_rows($resp)>0){
-		$this->titre_Menu[$this->a]->texte=mysql_fetch_object($resp)->nouveau_nom;
-	  }
+      
+	if($mysqli !="") {
+		$resp = mysqli_query($mysqli, $sql);
+        $nb_lignes = $resp->num_rows;
+        if ($nb_lignes > 0){
+            $this->titre_Menu[$this->a]->texte=$resp->fetch_object($resp)->nouveau_nom;
+            $resp->close();
+        };
+	} else {
+		$resp = mysql_query($sql);
+        $nb_lignes = mysql_num_rows($resp);
+        if ($nb_lignes > 0){
+          $this->titre_Menu[$this->a]->texte=mysql_fetch_object($resp)->nouveau_nom;
+        }
+	}
+    
 	}
   }
   
@@ -365,7 +417,10 @@ class class_page_accueil_autre {
 	  $this->creeNouveauTitre('accueil',"Emploi du temps",'images/icons/document.png');
 	  return true;
 	}
-  }  private function trombinoscope(){
+  }
+  
+  private function trombinoscope(){
+     global $mysqli; 
 	//On vérifie si le module est activé
 
 	$active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes");
@@ -382,25 +437,49 @@ class class_page_accueil_autre {
 			  "Cet outil vous permet de visualiser les trombinoscopes des classes.");
 
 	  // On appelle les aid "trombinoscope"
-	  $call_data = mysql_query("SELECT * FROM aid_config
+      $sql_call_data = "SELECT * FROM aid_config
 								WHERE indice_aid= '".getSettingValue("num_aid_trombinoscopes")."'
-								ORDER BY nom");
-	  $nb_aid = mysql_num_rows($call_data);
-	  $i=0;
-	  while ($i < $nb_aid) {
-		$indice_aid = @mysql_result($call_data, $i, "indice_aid");
-		$call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs_gest
-								  WHERE (id_utilisateur = '" . $this->loginUtilisateur . "'
-								  AND indice_aid = '$indice_aid')");
-		$nb_result = mysql_num_rows($call_prof);
-		if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
-		  $nom_aid = @mysql_result($call_data, $i, "nom");
-		  $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
-				  $nom_aid,
-				  "Cet outil vous permet de visualiser quels ".$this->gepiSettings['denomination_eleves']." ont le droit d'envoyer/modifier leur photo.");
-		}
-		$i++;
-	  }
+								ORDER BY nom";
+            
+        if($mysqli !="") {
+            $call_data = mysqli_query($mysqli, $sql_call_data);
+            $nb_aid = $call_data->num_rows;
+            
+            while ($obj_aid = $call_data->fetch_object()) {
+                $indice_aid = $obj_aid->indice_aid;
+                $sql_call_prof = "SELECT * FROM j_aid_utilisateurs_gest
+                                          WHERE (id_utilisateur = '" . $this->loginUtilisateur . "'
+                                          AND indice_aid = '$indice_aid')";
+                $call_prof = mysql_query($sql_call_prof);
+                $nb_result = $call_prof->num_rows;
+                if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
+                  $nom_aid = $obj_aid->nom;
+                  $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
+                          $nom_aid,
+                          "Cet outil vous permet de visualiser quels ".$this->gepiSettings['denomination_eleves']." ont le droit d'envoyer/modifier leur photo.");
+                }
+            }            
+            $call_data->close();
+        } else {
+            $call_data = mysql_query($sql_call_data);
+            $nb_aid = mysql_num_rows($call_data);
+            
+            $i=0;
+            while ($i < $nb_aid) {
+                $indice_aid = @mysql_result($call_data, $i, "indice_aid");
+                $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs_gest
+                                          WHERE (id_utilisateur = '" . $this->loginUtilisateur . "'
+                                          AND indice_aid = '$indice_aid')");
+                $nb_result = mysql_num_rows($call_prof);
+                if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
+                  $nom_aid = @mysql_result($call_data, $i, "nom");
+                  $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
+                          $nom_aid,
+                          "Cet outil vous permet de visualiser quels ".$this->gepiSettings['denomination_eleves']." ont le droit d'envoyer/modifier leur photo.");
+                }
+                $i++;
+            }
+        }
 	}
 
 	  if ($this->b>0){
@@ -409,15 +488,8 @@ class class_page_accueil_autre {
 	  }
   }
 
-
-
-
-
-
-
-
-
   private function impression(){
+      global $mysqli;
 	$this->b=0;
 
 	$this->creeNouveauItem("/groupes/visu_profs_class.php",
@@ -453,26 +525,50 @@ class class_page_accueil_autre {
 	$this->creeNouveauItem("/prepa_conseil/index3.php",
 			"Visualiser les bulletins simplifiés",
 			"Bulletins simplifiés d'une classe.");
-  	$call_data = mysql_query("SELECT * FROM aid_config 
+    $sql_call_data = "SELECT * FROM aid_config 
 					WHERE display_bulletin = 'y' 
 					OR bull_simplifie = 'y' 
-					ORDER BY nom");
-	$nb_aid = mysql_num_rows($call_data);
-	$i=0;
-	while ($i < $nb_aid) {
-	  $indice_aid = @mysql_result($call_data, $i, "indice_aid");
-	  $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs 
-								WHERE (id_utilisateur = '".$this->loginUtilisateur."'
-								AND indice_aid = '".$indice_aid."')");
-	  $nb_result = mysql_num_rows($call_prof);
-	  if ($nb_result != 0) {
-		$nom_aid = @mysql_result($call_data, $i, "nom");	 
-		$this->creeNouveauItem("/prepa_conseil/visu_aid.php?indice_aid=".$indice_aid,
-				"Visualiser des appréciations ".$nom_aid,
-				"Cet outil permet la visualisation et l'impression des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les ".$nom_aid.".");
-	  }
-	  $i++;
-	}
+					ORDER BY nom";
+            
+	if($mysqli !="") {
+        $resultat = mysqli_query($mysqli, $sql_call_data);  
+        $nb_lignes = $resultat->num_rows;
+        while ($obj_call_data = $resultat->fetch_object()) {
+          $indice_aid = $obj_call_data->indice_aid;
+          $sql_call_prof = "SELECT * FROM j_aid_utilisateurs 
+                                WHERE (id_utilisateur = '".$this->loginUtilisateur."'
+                                AND indice_aid = '".$indice_aid."')";
+          $call_prof = mysqli_query($mysqli, $sql_call_prof);
+          $nb_result = $call_prof->num_rows;
+          if ($nb_result != 0) {
+            $nom_aid = $obj_call_data->nom;
+            $this->creeNouveauItem("/prepa_conseil/visu_aid.php?indice_aid=".$indice_aid,
+                    "Visualiser des appréciations ".$nom_aid,
+                    "Cet outil permet la visualisation et l'impression des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les ".$nom_aid.".");
+            }          
+        }
+        $resultat->close();
+	} else {
+        $call_data = mysql_query($sql_call_data);
+        $nb_aid = mysql_num_rows($call_data);	
+    
+        $i=0;
+        while ($i < $nb_aid) {
+          $indice_aid = @mysql_result($call_data, $i, "indice_aid");
+          $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs 
+                                    WHERE (id_utilisateur = '".$this->loginUtilisateur."'
+                                    AND indice_aid = '".$indice_aid."')");
+          $nb_result = mysql_num_rows($call_prof);
+          if ($nb_result != 0) {
+            $nom_aid = @mysql_result($call_data, $i, "nom");	 
+            $this->creeNouveauItem("/prepa_conseil/visu_aid.php?indice_aid=".$indice_aid,
+                    "Visualiser des appréciations ".$nom_aid,
+                    "Cet outil permet la visualisation et l'impression des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les ".$nom_aid.".");
+          }
+          $i++;
+        }	
+	}           
+    
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Visualisation - Impression",'images/icons/print.png');
 	  return true;
@@ -499,38 +595,73 @@ class class_page_accueil_autre {
   }
 
   protected function gestionAID(){
+     global $mysqli; 
 	$this->b=0;
-
-	$call_data = sql_query("SELECT distinct ac.indice_aid, ac.nom
+    
+    $sql_call_data = "SELECT distinct ac.indice_aid, ac.nom
 		  FROM aid_config ac, aid a
 		  WHERE ac.outils_complementaires = 'y'
 		  AND a.indice_aid=ac.indice_aid
-		  ORDER BY ac.nom_complet");
-	$nb_aid = mysql_num_rows($call_data);
+		  ORDER BY ac.nom_complet";
+    
+    $sql_call_data2 = "SELECT id
+              FROM archivage_types_aid
+              WHERE outils_complementaires = 'y'";
 
-	$call_data2 = sql_query("SELECT id
-		  FROM archivage_types_aid
-		  WHERE outils_complementaires = 'y'");
-	$nb_aid_annees_anterieures = mysql_num_rows($call_data2);
-	$nb_total=$nb_aid+$nb_aid_annees_anterieures;
+            
+	if($mysqli !="") {
+		$call_data = mysqli_query($mysqli, $sql_call_data);  
+        $nb_aid = $call_data->num_rows;
+		$call_data2 = mysqli_query($mysqli, $sql_call_data2);
+        $nb_aid_annees_anterieures =  $call_data2->num_rows;
+        $nb_total=$nb_aid+$nb_aid_annees_anterieures;
+        if ($nb_total != 0) {
+            
+            while ($obj_call_data = $call_data->fetch_object()) {
+                $indice_aid = $obj_call_data->indice_aid;
+                $nom_aid = $obj_call_data->nom;
+                if ($this->AfficheAid($indice_aid)) {
+                    $this->creeNouveauItem("/aid/index_fiches.php?indice_aid=".$indice_aid,
+                      $nom_aid,
+                      "Tableau récapitulatif, liste des ".$this->gepiSettings['denomination_eleves'].", ...");
+                }
+            }
+            if (($nb_aid_annees_anterieures > 0)) {
+              $this->creeNouveauItem("/aid/annees_anterieures_accueil.php",
+                      "Fiches projets des années antérieures",
+                      "Accès aux fiches projets des années antérieures");
+            }
+        }
+        
+        
+        $call_data->close();
+	} else {
+        $call_data = sql_query($sql_call_data);
+        
+        $nb_aid = mysql_num_rows($call_data);
 
-	if ($nb_total != 0) {
-	  $i = 0;
-	  while ($i<$nb_aid) {
-		$indice_aid = mysql_result($call_data,$i,"indice_aid");
-		$nom_aid = mysql_result($call_data,$i,"nom");
-		if ($this->AfficheAid($indice_aid)) {
-		  $this->creeNouveauItem("/aid/index_fiches.php?indice_aid=".$indice_aid,
-				  $nom_aid,
-				  "Tableau récapitulatif, liste des ".$this->gepiSettings['denomination_eleves'].", ...");
-		}
-		$i++;
-	  }
-	  if (($nb_aid_annees_anterieures > 0)) {
-		$this->creeNouveauItem("/aid/annees_anterieures_accueil.php",
-				"Fiches projets des années antérieures",
-				"Accès aux fiches projets des années antérieures");
-	  }
+        $call_data2 = sql_query($sql_call_data2);
+        $nb_aid_annees_anterieures = mysql_num_rows($call_data2);
+        $nb_total=$nb_aid+$nb_aid_annees_anterieures;
+
+        if ($nb_total != 0) {
+          $i = 0;
+          while ($i<$nb_aid) {
+            $indice_aid = mysql_result($call_data,$i,"indice_aid");
+            $nom_aid = mysql_result($call_data,$i,"nom");
+            if ($this->AfficheAid($indice_aid)) {
+              $this->creeNouveauItem("/aid/index_fiches.php?indice_aid=".$indice_aid,
+                      $nom_aid,
+                      "Tableau récapitulatif, liste des ".$this->gepiSettings['denomination_eleves'].", ...");
+            }
+            $i++;
+          }
+          if (($nb_aid_annees_anterieures > 0)) {
+            $this->creeNouveauItem("/aid/annees_anterieures_accueil.php",
+                    "Fiches projets des années antérieures",
+                    "Accès aux fiches projets des années antérieures");
+          }
+        }
 	}
 
 	if ($this->b>0){
@@ -543,9 +674,10 @@ class class_page_accueil_autre {
   
   private function AfficheAid($indice_aid){
     if ($this->statutUtilisateur == "eleve") {
-        $test = sql_query1("SELECT count(login) FROM j_aid_eleves
+        $sql = "SELECT count(login) FROM j_aid_eleves
 				  WHERE login='".$this->loginUtilisateur."'
-				  AND indice_aid='".$indice_aid."' ");
+				  AND indice_aid='".$indice_aid."' ";
+        $test = sql_query1($sql);
         if ($test == 0)
             return false;
         else
@@ -682,46 +814,87 @@ class class_page_accueil_autre {
   }
 
   private function plugins(){
+      
+      global $mysqli;
 	$this->b=0;
+    
+    $sql = 'SELECT * FROM plugins WHERE ouvert = "y" order by description';
+            
+	if($mysqli !="") {
+        $resultat = mysqli_query($mysqli, $sql);
+        while ($plugin = $resultat->fetch_object()){
+            $this->b=0;
+            $nomPlugin=$plugin->nom;
+            $this->verif_exist_ordre_menu('bloc_plugin_'.$nomPlugin);
+            // On offre la possibilité d'inclure un fichier functions_nom_du_plugin.php
+            // Ce fichier peut lui-même contenir une fonction calcul_autorisation_nom_du_plugin voir plus bas.
+          if (file_exists($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php"))
+                  include_once($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php");
+          
+          $sql_menu = 'SELECT * FROM plugins_menus
+                                    WHERE plugin_id = "'.$plugin->id.'"
+                                    ORDER by titre_item';
+          $querymenu = mysqli_query($mysqli, $sql_menu);
+          while ($menuItem = $querymenu->fetch_object()){
+              // On regarde si le plugin a prévu une surcharge dans le calcul de l'affichage de l'item dans le menu
+            // On commence par regarder si une fonction du type calcul_autorisation_nom_du_plugin existe
+            $nom_fonction_autorisation = "calcul_autorisation_".$nomPlugin;
 
-	$query = mysql_query('SELECT * FROM plugins WHERE ouvert = "y" order by description');
+            if (function_exists($nom_fonction_autorisation))
+              // Si une fonction du type calcul_autorisation_nom_du_plugin existe, on calcule le droit de l'utilisateur à afficher cet item dans le menu
+              $result_autorisation = $nom_fonction_autorisation($this->loginUtilisateur,$menuItem->lien_item);
+            else
+              $result_autorisation=true;
 
-	while ($plugin = mysql_fetch_object($query)){
-	$this->b=0;
-	  $nomPlugin=$plugin->nom;
-	  $this->verif_exist_ordre_menu('bloc_plugin_'.$nomPlugin);
-	  // On offre la possibilité d'inclure un fichier functions_nom_du_plugin.php
-	  // Ce fichier peut lui-même contenir une fonction calcul_autorisation_nom_du_plugin voir plus bas.
-	  if (file_exists($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php"))
-		include_once($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php");
+            if (($menuItem->user_statut == $this->statutUtilisateur) and ($result_autorisation)) {
+              $this->creeNouveauItemPlugin("/".$menuItem->lien_item,
+                    supprimer_numero($menuItem->titre_item),$menuItem->description_item);
+            }
 
-	  $querymenu = mysql_query('SELECT * FROM plugins_menus
-								WHERE plugin_id = "'.$plugin->id.'"
-								ORDER by titre_item');
+            
+          }
+          
+        }
+        $resultat->close();
+	} else {
+        $query = mysql_query($sql);
+        while ($plugin = mysql_fetch_object($query)){
+        $this->b=0;
+          $nomPlugin=$plugin->nom;
+          $this->verif_exist_ordre_menu('bloc_plugin_'.$nomPlugin);
+          // On offre la possibilité d'inclure un fichier functions_nom_du_plugin.php
+          // Ce fichier peut lui-même contenir une fonction calcul_autorisation_nom_du_plugin voir plus bas.
+          if (file_exists($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php"))
+            include_once($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php");
 
-	  while ($menuItem = mysql_fetch_object($querymenu)){
-		// On regarde si le plugin a prévu une surcharge dans le calcul de l'affichage de l'item dans le menu
-		// On commence par regarder si une fonction du type calcul_autorisation_nom_du_plugin existe
-		$nom_fonction_autorisation = "calcul_autorisation_".$nomPlugin;
+          $querymenu = mysql_query('SELECT * FROM plugins_menus
+                                    WHERE plugin_id = "'.$plugin->id.'"
+                                    ORDER by titre_item');
 
-		if (function_exists($nom_fonction_autorisation))
-		  // Si une fonction du type calcul_autorisation_nom_du_plugin existe, on calcule le droit de l'utilisateur à afficher cet item dans le menu
-		  $result_autorisation = $nom_fonction_autorisation($this->loginUtilisateur,$menuItem->lien_item);
-		else
-		  $result_autorisation=true;
+          while ($menuItem = mysql_fetch_object($querymenu)){
+            // On regarde si le plugin a prévu une surcharge dans le calcul de l'affichage de l'item dans le menu
+            // On commence par regarder si une fonction du type calcul_autorisation_nom_du_plugin existe
+            $nom_fonction_autorisation = "calcul_autorisation_".$nomPlugin;
 
-		if (($menuItem->user_statut == $this->statutUtilisateur) and ($result_autorisation)) {
-		  $this->creeNouveauItemPlugin("/".$menuItem->lien_item,
-				supprimer_numero($menuItem->titre_item),$menuItem->description_item);
-		}
+            if (function_exists($nom_fonction_autorisation))
+              // Si une fonction du type calcul_autorisation_nom_du_plugin existe, on calcule le droit de l'utilisateur à afficher cet item dans le menu
+              $result_autorisation = $nom_fonction_autorisation($this->loginUtilisateur,$menuItem->lien_item);
+            else
+              $result_autorisation=true;
 
-	  }
+            if (($menuItem->user_statut == $this->statutUtilisateur) and ($result_autorisation)) {
+              $this->creeNouveauItemPlugin("/".$menuItem->lien_item,
+                    supprimer_numero($menuItem->titre_item),$menuItem->description_item);
+            }
 
-	  if ($this->b>0){
-		$this->creeNouveauTitre('accueil',$plugin->description,'images/icons/package.png');
-	  }
+          }
 
-	}
+          if ($this->b>0){
+            $this->creeNouveauTitre('accueil',$plugin->description,'images/icons/package.png');
+          }
+
+        }	
+	} 
 
   }
 
@@ -773,6 +946,7 @@ class class_page_accueil_autre {
 	}
   }
  private function gestionEleveAID(){
+     global $mysqli;
 	$this->b=0;
 
 	if (getSettingValue("active_mod_gest_aid")=='y') {
@@ -796,27 +970,52 @@ class class_page_accueil_autre {
 		  $sql .= "and indice_aid!= '".getSettingValue("indice_aid_autorisations_publi")."'";
 
 	  $sql .= " ORDER BY nom";
-	  $call_data = mysql_query($sql);
-	  $nb_aid = mysql_num_rows($call_data);
-	  $i=0;
+              
+        if($mysqli !="") {
+            $call_data = mysqli_query($mysqli, $sql);
+            $nb_aid = $call_data->num_rows;
+            while ($obj_call_data = $call_data->fetch_object()) {
+                $indice_aid = $obj_call_data->indice_aid;
+                $sql_call_prof = "SELECT *
+                        FROM j_aid_utilisateurs_gest
+                        WHERE (id_utilisateur = '" . $this->loginUtilisateur . "'
+                        AND indice_aid = '$indice_aid')";
+                $call_prof = mysqli_query($mysqli,$sql_call_prof);
+                $nb_result = $call_prof->num_rows;
+                if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
+                    $nom_aid = $call_prof->nom;
+                    $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
+                      $nom_aid,
+                      "Cet outil vous permet de gérer l'appartenance des élèves aux différents groupes.");
+                }
+                
+            }
+            $call_data->close();
+            
+        } else {
 
-	  while ($i < $nb_aid) {
-		$indice_aid = @mysql_result($call_data, $i, "indice_aid");
-		$call_prof = mysql_query("SELECT *
-					FROM j_aid_utilisateurs_gest
-					WHERE (id_utilisateur = '" . $this->loginUtilisateur . "'
-					AND indice_aid = '$indice_aid')");
-		$nb_result = mysql_num_rows($call_prof);
+          $call_data = mysql_query($sql);
+          $nb_aid = mysql_num_rows($call_data);
+          $i=0;
 
-		if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
-		  $nom_aid = @mysql_result($call_data, $i, "nom");
-		  $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
-				  $nom_aid,
-				  "Cet outil vous permet de gérer l'appartenance des élèves aux différents groupes.");
-		}
+          while ($i < $nb_aid) {
+            $indice_aid = @mysql_result($call_data, $i, "indice_aid");
+            $call_prof = mysql_query("SELECT *
+                        FROM j_aid_utilisateurs_gest
+                        WHERE (id_utilisateur = '" . $this->loginUtilisateur . "'
+                        AND indice_aid = '$indice_aid')");
+            $nb_result = mysql_num_rows($call_prof);
 
-		$i++;
-	  }
+            if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
+              $nom_aid = @mysql_result($call_data, $i, "nom");
+              $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
+                      $nom_aid,
+                      "Cet outil vous permet de gérer l'appartenance des élèves aux différents groupes.");
+            }
+
+            $i++;
+          }
+        }
 
 	}
 

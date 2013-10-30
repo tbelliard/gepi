@@ -23,8 +23,13 @@ if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
 
 }
 
-// manque la gestion des connexion 
-$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+if (!isset($db_nopersist) || $db_nopersist) {
+    $mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+}
+else {
+    $mysqli = new mysqli("p:".$dbHost, $dbUser, $dbPass, $dbDb);
+}
+
 if ($mysqli->connect_errno) {
     printf("Echec lors de la connexion à MySQL : (" . $mysqli->connect_errno . ") " . $mysqli->connect_error);
     exit();
@@ -34,7 +39,6 @@ if ($mysqli->connect_errno) {
 if (!$mysqli->set_charset("utf8")) {
     printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $mysqli->error);
 }
-
 
 // Fonctions GEPI
 
@@ -84,6 +88,33 @@ function sql_query1 ($sql)
     return $result;
 }
 
+/**
+ *  Return a row from a result. The first row is 0.
+* The row is returned as an array with index 0=first column, etc.
+* When called with i >= number of rows in the result, cleans up from
+* the query and returns 0.
+* Typical usage: $i = 0; while ((a = sql_row($r, $i++))) { ... }
+ */
+function sql_row ($r, $i)
+{
+    global $mysqli;
 
+    if ($i >= $r->num_rows) {
+        $r->free();
+        return 0;
+    }
+    $r->data_seek($i);
+    return $r->fetch_row();
+}
+
+/** 
+ * Retourne le nombre de lignes d'un objet mysqli.
+ * @param type $r
+ * @return type 
+ */
+function sql_count ($r)
+{
+    return ($r->num_rows);
+}
 
 ?>

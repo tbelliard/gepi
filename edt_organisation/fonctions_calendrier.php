@@ -49,15 +49,31 @@ ou si on est avant auquel cas on est en année scolaire AA-1 - AA
  * @param type $date_ts 
  */
 function AffichePeriode($date_ts) {
-	$req_periode = mysql_query("SELECT * FROM edt_calendrier");
-	$endprocess = false;
-	while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
-		if (($rep_periode['debut_calendrier_ts'] <= $date_ts) AND ($rep_periode['fin_calendrier_ts'] >= $date_ts)) { 
-			echo $rep_periode['nom_calendrier'];
-			$endprocess = true;
-		}
-	}	
-    
+    global $mysqli;
+       
+	if($mysqli !="") {
+		$sql = "SELECT * FROM edt_calendrier";
+        $req_periode = mysqli_query($mysqli, $sql);
+        $endprocess = false;        
+        while (($obj = $req_periode->fetch_object()) AND (!$endprocess)) {
+            if (($rep_periode->debut_calendrier_ts <= $date_ts) 
+                    AND ($rep_periode->fin_calendrier_ts >= $date_ts)) { 
+                echo $rep_periode->nom_calendrier;
+                $endprocess = true;
+            }
+        }
+        $req_periode->close();
+	} else {
+        $req_periode = mysql_query("SELECT * FROM edt_calendrier");
+        $endprocess = false;
+        while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
+            if (($rep_periode['debut_calendrier_ts'] <= $date_ts) 
+                    AND ($rep_periode['fin_calendrier_ts'] >= $date_ts)) { 
+                echo $rep_periode['nom_calendrier'];
+                $endprocess = true;
+            }
+        }
+	}
 }
 
 /**
@@ -224,14 +240,21 @@ function RecupereJoursSemaine () {
  * @return boolean 
  */
 function PeriodesExistent() {
-	$req_periode = mysql_query("SELECT * FROM edt_calendrier");
-    if (mysql_num_rows($req_periode) > 0) {
-        $retour = true;
-    }
-    else {
-        $retour = false;
-    }
-    return $retour;
+    global $mysqli;
+	$sql_periode = "SELECT * FROM edt_calendrier";
+            
+	if($mysqli !="") {
+        $req_periode = mysqli_query($mysqli, $sql_periode);
+        $nb_lignes = $req_periode->num_rows;
+        $req_periode->close();
+	} else {    
+        $req_periode = mysql_query($sql_periode);
+        $nb_lignes = mysql_num_rows($req_periode);
+	}     
+    if ($nb_lignes > 0) {
+        return TRUE;
+    }	
+    return FALSE;
 }
 
 /**
@@ -240,14 +263,20 @@ function PeriodesExistent() {
  * @return boolean 
  */
 function PeriodExistsInDB($period) {
-	$req_periode = mysql_query("SELECT id_calendrier FROM edt_calendrier WHERE id_calendrier='".$period."' ");
-    if (mysql_num_rows($req_periode) > 0) {
-        $retour = true;
-    }
-    else {
-        $retour = false;
-    }
-    return $retour;
+    global $mysqli;
+	$sql_periode = "SELECT id_calendrier FROM edt_calendrier WHERE id_calendrier='".$period."' ";	       
+	if($mysqli !="") {
+        $req_periode = mysqli_query($mysqli, $sql_periode);
+        $nb_lignes = $req_periode->num_rows;
+        $req_periode->close();		
+	} else {
+		$req_periode = mysql_query($sql_periode);
+        $nb_lignes = mysql_num_rows($req_periode);
+	}                 
+    if ($nb_lignes > 0) {
+        return TRUE;
+    }	
+    return FALSE;
 }
 
 /**
@@ -255,11 +284,22 @@ function PeriodExistsInDB($period) {
  * @return int 
  */
 function ReturnFirstIdPeriod() {
-	$req_periode = mysql_query("SELECT id_calendrier FROM edt_calendrier");
-    $retour = 0;
-	if ($rep_periode = mysql_fetch_array($req_periode)) {
-    	$retour = $rep_periode['id_calendrier'];
-	}
+    global $mysqli;
+    $sql_periode = "SELECT id_calendrier FROM edt_calendrier";	       
+	if($mysqli !="") {
+		$req_periode = mysqli_query($mysqli, $sql_periode);
+        $retour = 0;
+        if ($rep_periode = $req_periode->fetch_object()) {
+            $retour = $rep_periode->id_calendrier;
+        }    
+        $req_periode->close();		    
+	} else {
+        $req_periode = mysql_query($sql_periode); 
+        $retour = 0;
+        if ($rep_periode = mysql_fetch_array($req_periode)) {
+            $retour = $rep_periode['id_calendrier'];
+        }
+	}          
     return $retour;    
 }
 
@@ -269,14 +309,29 @@ function ReturnFirstIdPeriod() {
  * @return int 
  */
 function ReturnIdPeriod($date_ts) {
-	$req_periode = mysql_query("SELECT * FROM edt_calendrier");
-	$endprocess = false;
-    $retour = 0;
-	while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
-		if (($rep_periode['debut_calendrier_ts'] < $date_ts) AND ($rep_periode['fin_calendrier_ts'] > $date_ts)) { 
-			$retour = $rep_periode['id_calendrier'];
-			$endprocess = true;
-		}
+    global $mysqli;
+    $sql_periode = "SELECT * FROM edt_calendrier";
+        $endprocess = false;
+        $retour = 0;
+    if($mysqli !="") { 
+        $req_periode = mysqli_query($mysqli, $sql_periode);
+        while (($rep_periode = $req_periode->fetch_object()) AND (!$endprocess)) {
+            if (($rep_periode->debut_calendrier_ts < $date_ts) 
+                    AND ($rep_periode->fin_calendrier_ts > $date_ts)) { 
+                $retour = $rep_periode->id_calendrier;
+                $endprocess = true;
+            }
+        }
+        $req_periode->close();
+	} else {
+        $req_periode = mysql_query($sql_periode);
+        while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
+            if (($rep_periode['debut_calendrier_ts'] < $date_ts) 
+                    AND ($rep_periode['fin_calendrier_ts'] > $date_ts)) { 
+                $retour = $rep_periode['id_calendrier'];
+                $endprocess = true;
+            }
+        }
 	}
     return $retour;    
 }
@@ -288,22 +343,41 @@ function ReturnIdPeriod($date_ts) {
  * @see ReturnIdPeriod()
  */
 function ReturnNextIdPeriod($current_id_period) {
-	$req_periode = mysql_query("SELECT * FROM edt_calendrier ORDER BY debut_calendrier_ts ASC");
-	$endprocess = false;
+    global $mysqli;
+    $sql_periode = "SELECT * FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";            
+    $endprocess = false;
     $retour = ReturnIdPeriod(date("U"));
-	while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
-		if ($rep_periode['id_calendrier'] == $current_id_period) { 
-			$endprocess = true;
-            if ($rep_periode = mysql_fetch_array($req_periode)) {
-                $retour = $rep_periode['id_calendrier'];
+	if($mysqli !="") {
+        $req_periode = mysqli_query($mysqli, $sql_periode);
+        while (($rep_periode = $req_periode->fetch_object()) AND (!$endprocess)) {
+            if ($rep_periode->id_calendrier == $current_id_period) {
+                $endprocess = true;
+                if ($rep_periode = $req_periode->fetch_object()) {
+                    $retour = $rep_periode->id_calendrier;
+                } else {
+                    $rep_periode->data_seek(0);
+                    $rep_periode = $req_periode->fetch_object();
+                    $retour = $rep_periode->id_calendrier;
+                }
             }
-            else {
-                mysql_data_seek($req_periode,0);
-                $rep_periode = mysql_fetch_array($req_periode);
-                $retour = $rep_periode['id_calendrier'];
+        }
+        $req_periode->close();
+	} else {    
+        $req_periode = mysql_query($sql_periode);
+        while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
+            if ($rep_periode['id_calendrier'] == $current_id_period) {
+                $endprocess = true;
+                if ($rep_periode = mysql_fetch_array($req_periode)) {
+                    $retour = $rep_periode['id_calendrier'];
+                }
+                else {
+                    mysql_data_seek($req_periode,0);
+                    $rep_periode = mysql_fetch_array($req_periode);
+                    $retour = $rep_periode['id_calendrier'];
+                }
             }
-		}
-	}
+        }
+	} 
     return $retour;    
 }
 
@@ -314,22 +388,41 @@ function ReturnNextIdPeriod($current_id_period) {
  * @see ReturnIdPeriod()
  */
 function ReturnPreviousIdPeriod($current_id_period) {
-	$req_periode = mysql_query("SELECT * FROM edt_calendrier ORDER BY debut_calendrier_ts DESC");
-	$endprocess = false;
-    $retour = ReturnIdPeriod(date("U"));
-	while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
-		if ($rep_periode['id_calendrier'] == $current_id_period) { 
-			$endprocess = true;
-            if ($rep_periode = mysql_fetch_array($req_periode)) {
-                $retour = $rep_periode['id_calendrier'];
+    global $mysqli;
+    $sql_periode = "SELECT * FROM edt_calendrier ORDER BY debut_calendrier_ts DESC";
+    $endprocess = FALSE;
+    $retour = ReturnIdPeriod(date("U"));            
+	if($mysqli !="") {
+        $req_periode = mysqli_query($mysqli, $sql_periode);
+        while (($rep_periode = $req_periode->fetch_object()) AND (!$endprocess)) {
+            if ($rep_periode->id_calendrier == $current_id_period) { 
+                $endprocess = TRUE;
+                if ($rep_periode = $req_periode->fetch_object()) {
+                    $retour = $rep_periode->id_calendrier;
+                } else {
+                    $rep_periode->data_seek(0);
+                    $rep_periode = $req_periode->fetch_object();
+                    $retour = $rep_periode->id_calendrier;
+                }
+            }            
+        }
+		$req_periode->close();
+	} else {
+        $req_periode = mysql_query($sql_periode);
+        while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
+            if ($rep_periode['id_calendrier'] == $current_id_period) { 
+                $endprocess = true;
+                if ($rep_periode = mysql_fetch_array($req_periode)) {
+                    $retour = $rep_periode['id_calendrier'];
+                }
+                else {
+                    mysql_data_seek($req_periode,0);
+                    $rep_periode = mysql_fetch_array($req_periode);
+                    $retour = $rep_periode['id_calendrier'];
+                }
             }
-            else {
-                mysql_data_seek($req_periode,0);
-                $rep_periode = mysql_fetch_array($req_periode);
-                $retour = $rep_periode['id_calendrier'];
-            }
-		}
-	}
+        }
+	}  
     return $retour;    
 }
 
@@ -337,17 +430,30 @@ function ReturnPreviousIdPeriod($current_id_period) {
  * Retourne le type de la semaine en cours
  * @return string 
  */
-function typeSemaineActu(){
-		$retour = '0';
+function typeSemaineActu() {
+    global $mysqli;
+	$retour = '0';
 	$numero_sem_actu = date("W");
-	$query = mysql_query("SELECT type_edt_semaine FROM edt_semaines WHERE num_edt_semaine = '".$numero_sem_actu."'");
-
-	if (count($query) != 1) {
-		$retour = '0';
-	}else{
-		$type = mysql_result($query, 0);
-		$retour = $type;
-	}
+    $sql = "SELECT type_edt_semaine FROM edt_semaines WHERE num_edt_semaine = '".$numero_sem_actu."'";
+             
+	if($mysqli !="") {
+		$query = mysqli_query($mysqli, $sql);
+        if ($query->num_rows != 1) {
+            $retour = '0';
+        } else {
+            $type = $query->fetch_row();
+            $retour = $type[0];
+        }
+        $query->close();
+	} else {
+        $query = mysql_query($sql);
+        if (count($query) != 1) {
+            $retour = '0';
+        }else{
+            $type = mysql_result($query, 0);
+            $retour = $type;
+        }
+	}     
 	return $retour;
 }
 
@@ -377,7 +483,8 @@ function retourneJour($jour){
  * @return int 
  */
 function retourneCreneau(){
-		$retour = 'non';
+    global $mysqli;
+	$retour = 'non';
 	$heure = date("H:i:s");
 	// On vérifie si on est dans un jour différent ou pas
 	if (date("w") == getSettingValue("creneau_different")) {
@@ -385,16 +492,34 @@ function retourneCreneau(){
 	}else{
 		$table = 'edt_creneaux';
 	}
-	$query = mysql_query("SELECT id_definie_periode FROM ".$table." WHERE
+    $sql = "SELECT id_definie_periode FROM ".$table." WHERE
 			heuredebut_definie_periode <= '".$heure."' AND
-			heurefin_definie_periode > '".$heure."'")
-				OR DIE('Le creneau n\'est pas trouvé : '.mysql_error());
-	if ($query) {
-		$reponse = mysql_fetch_array($query);
-		$retour = $reponse["id_definie_periode"];
-	}else {
-		$retour = "non";
-	}
+			heurefin_definie_periode > '".$heure."'";
+            
+	if($mysqli !="") {
+		$query = mysqli_query($mysqli, $sql)
+                    OR DIE('Le creneau n\'est pas trouvé : '.mysql_error());
+        if ($query) {
+            $reponse = $query->fetch_object();
+            if ($reponse) {
+                $retour = $reponse->id_definie_periode;
+            } else {
+                $retour = "non";
+            }
+        } else {
+            $retour = "non";
+        }
+        $query->close();
+	} else {
+        $query = mysql_query($sql)
+                    OR DIE('Le creneau n\'est pas trouvé : '.mysql_error());
+        if ($query) {
+            $reponse = mysql_fetch_array($query);
+            $retour = $reponse["id_definie_periode"];
+        } else {
+            $retour = "non";
+        }
+	}  
 	return $retour;
 }
 
@@ -403,7 +528,8 @@ function retourneCreneau(){
  * @return float 0 ou 0.5
  */
 function heureDeb(){
-		$retour = '0';
+    global $mysqli;
+	$retour = '0';
 	// On compare des minutes car c'est plus simple
 	$heureMn = (date("H") * 60) + date("i");
 	$creneauId = retourneCreneau();
@@ -414,24 +540,49 @@ function heureDeb(){
 		$table = "edt_creneaux";
 	}
 	// On récupère l'heure de début et celle de fin du créneau
-	$query = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM ".$table." WHERE id_definie_periode = '".$creneauId."'");
-	if ($query) {
-		$reponse = mysql_fetch_array($query);
-		// On enlève les secondes
-		$explodeDeb = explode(":", $reponse["heuredebut_definie_periode"]);
-		$explodeFin = explode(":", $reponse["heurefin_definie_periode"]);
-		$dureeCreneau = (($explodeFin[0] - $explodeDeb[0]) * 60) + ($explodeFin[1] - $explodeDeb[1]);
-		$miCreneau = $dureeCreneau / 2;
-		$heureMilieu = ($explodeDeb[0] * 60) + $explodeDeb[1] + $miCreneau;
-		// et on compare
-		if ($heureMn > $heureMilieu) {
-			$retour = '0.5';
-		}elseif($heureMn < $heureMilieu){
-			$retour = '0';
-		}else{
-			$retour = '0';
-		}
-	}
+    $sql = "SELECT heuredebut_definie_periode, heurefin_definie_periode 
+        FROM ".$table." WHERE id_definie_periode = '".$creneauId."'";
+          
+	if($mysqli !="") {
+		$query = mysqli_query($mysqli, $sql);
+        if ($query) {
+            $reponse = $query->fetch_object();
+            // On enlève les secondes
+            $explodeDeb = explode(":", $reponse->heuredebut_definie_periode);
+            $explodeFin = explode(":", $reponse->heurefin_definie_periode);
+            $dureeCreneau = (($explodeFin[0] - $explodeDeb[0]) * 60) + ($explodeFin[1] - $explodeDeb[1]);
+            $miCreneau = $dureeCreneau / 2;
+            $heureMilieu = ($explodeDeb[0] * 60) + $explodeDeb[1] + $miCreneau;
+            // et on compare
+            if ($heureMn > $heureMilieu) {
+                $retour = '0.5';
+            }elseif($heureMn < $heureMilieu){
+                $retour = '0';
+            }else{
+                $retour = '0';
+            }
+        }
+        $query->close();
+	} else {
+        $query = mysql_query($sql);
+        if ($query) {
+            $reponse = mysql_fetch_array($query);
+            // On enlève les secondes
+            $explodeDeb = explode(":", $reponse["heuredebut_definie_periode"]);
+            $explodeFin = explode(":", $reponse["heurefin_definie_periode"]);
+            $dureeCreneau = (($explodeFin[0] - $explodeDeb[0]) * 60) + ($explodeFin[1] - $explodeDeb[1]);
+            $miCreneau = $dureeCreneau / 2;
+            $heureMilieu = ($explodeDeb[0] * 60) + $explodeDeb[1] + $miCreneau;
+            // et on compare
+            if ($heureMn > $heureMilieu) {
+                $retour = '0.5';
+            }elseif($heureMn < $heureMilieu){
+                $retour = '0';
+            }else{
+                $retour = '0';
+            }
+        }
+	}   
 	return $retour;
 }
 
@@ -441,38 +592,72 @@ function heureDeb(){
  * @return int l'id du cours
  */
 function retourneCours($prof){
-		$retour = 'non';
-	$query = mysql_query("SELECT id_cours FROM edt_cours, j_groupes_professeurs WHERE
+    global $mysqli;
+	$retour = 'non';
+	$sql = "SELECT id_cours FROM edt_cours, j_groupes_professeurs WHERE
 			edt_cours.jour_semaine='".retourneJour('')."' AND
 			edt_cours.id_definie_periode='".retourneCreneau()."' AND
 			edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND
 			login='".$prof."' AND
 			edt_cours.heuredeb_dec = '0' AND
 			(edt_cours.id_semaine = '".typeSemaineActu()."' OR edt_cours.id_semaine = '0')
-			ORDER BY edt_cours.id_semaine")
-				or die('Erreur : retourneCours(prof) !'.mysql_error());
-	$nbreCours = mysql_num_rows($query);
-	if ($nbreCours >= 1) {
-		$reponse = mysql_fetch_array($query);
-		$retour = $reponse["id_cours"];
-	}else{
-		// On teste les AID
-		$query_aid = mysql_query("SELECT id_cours FROM edt_cours WHERE
-			jour_semaine = '".retourneJour('')."' AND
-			id_definie_periode = '".retourneCreneau()."' AND
-			id_aid != NULL AND
-            id_aid != '' AND
-			login_prof = '".$prof."' AND
-			heuredeb_dec = '0' AND
-			(id_semaine = '".typeSemaineActu()."' OR id_semaine = '0')
-			ORDER BY id_semaine")
-				or die('Erreur : retourneCours(prof) !'.mysql_error());
-			$nbreCours = mysql_num_rows($query_aid);
-		if ($nbreCours >= 1) {
-			$reponse = mysql_fetch_array($query_aid);
-			$retour = $reponse["id_cours"];
-		}
-	}
+			ORDER BY edt_cours.id_semaine";
+             
+	if($mysqli !="") {
+		$query = mysqli_query($mysqli, $sql)
+                    or die('Erreur : retourneCours(prof) !'.mysql_error());
+        $nbreCours = $query->num_rows;
+        if ($nbreCours >= 1) {
+            $reponse = $query->fetch_object();
+            $retour = $reponse->id_cours;
+        } else {
+            // On teste les AID
+            $sql_aid = "SELECT id_cours FROM edt_cours WHERE
+                jour_semaine = '".retourneJour('')."' AND
+                id_definie_periode = '".retourneCreneau()."' AND
+                id_aid != NULL AND
+                id_aid != '' AND
+                login_prof = '".$prof."' AND
+                heuredeb_dec = '0' AND
+                (id_semaine = '".typeSemaineActu()."' OR id_semaine = '0')
+                ORDER BY id_semaine";
+            $query_aid = mysqli_query($mysqli, $sql_aid)
+                    or die('Erreur : retourneCours(prof) !'.mysql_error());
+            $nbreCours = $query_aid->num_rows;
+            if ($nbreCours >= 1) {
+                $reponse_aid = $query_aid->fetch_object();
+                $retour = $reponse_aid->id_cours;
+            }
+            $query_aid->close();
+        }
+        $query->close();
+	} else {
+        $query = mysql_query($sql)
+                    or die('Erreur : retourneCours(prof) !'.mysql_error());
+
+        $nbreCours = mysql_num_rows($query);
+        if ($nbreCours >= 1) {
+            $reponse = mysql_fetch_array($query);
+            $retour = $reponse["id_cours"];
+        }else{
+            // On teste les AID
+            $query_aid = mysql_query("SELECT id_cours FROM edt_cours WHERE
+                jour_semaine = '".retourneJour('')."' AND
+                id_definie_periode = '".retourneCreneau()."' AND
+                id_aid != NULL AND
+                id_aid != '' AND
+                login_prof = '".$prof."' AND
+                heuredeb_dec = '0' AND
+                (id_semaine = '".typeSemaineActu()."' OR id_semaine = '0')
+                ORDER BY id_semaine")
+                    or die('Erreur : retourneCours(prof) !'.mysql_error());
+                $nbreCours = mysql_num_rows($query_aid);
+            if ($nbreCours >= 1) {
+                $reponse = mysql_fetch_array($query_aid);
+                $retour = $reponse["id_cours"];
+            }
+        }	
+	} 
 	return $retour;
 }
 

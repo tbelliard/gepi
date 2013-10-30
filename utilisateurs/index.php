@@ -65,6 +65,8 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
   $rep_photos='../photos/personnels/';
 }
 
+// PHP_VERSION_ID est disponible depuis PHP 5.2.7, 
+if (!defined('PHP_VERSION_ID') || (PHP_VERSION_ID < 50500)) {
 
 function ImageFlip($imgsrc, $type)
 	{
@@ -106,6 +108,8 @@ function ImageFlip($imgsrc, $type)
 	   return( $imgdest );
 	}
 
+}
+    
 function ImageRotateRightAngle( $imgSrc, $angle )
 {
 	//source de cette fonction : http://www.developpez.net/forums/showthread.php?t=54169
