@@ -1042,6 +1042,8 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
  * @see getSettingValue()
  */
 function affiche_docs_joints($id_ct,$type_notice) {
+  global $contexte_affichage_docs_joints;
+
   // documents joints
   $html = '';
   $architecture="/documents/cl_dev";
@@ -1058,7 +1060,8 @@ function affiche_docs_joints($id_ct,$type_notice) {
       for ($i=0; ($row = sql_row($res,$i)); $i++) {
           if(((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y'))||
               ((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE))||
-              ((isset($_SESSION['statut']))&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+              ((isset($_SESSION['statut']))&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')&&($contexte_affichage_docs_joints!="visu_eleve"))||
+              (($contexte_affichage_docs_joints=="visu_eleve")&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE))||
               ((isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
               ((isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
           ) {

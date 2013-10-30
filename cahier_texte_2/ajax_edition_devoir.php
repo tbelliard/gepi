@@ -446,7 +446,7 @@ echo "<script type='text/javascript'>
 			// Les devoirs ne sont pas visibles par les élèves/responsables dans le futur au delà de getSettingValue('delai_devoirs')
 			if($today>time()+getSettingValue('delai_devoirs')*24*3600) {
 				$message_visibilite="Les devoirs à faire ne sont visibles des élèves que pour les ".getSettingValue('delai_devoirs')." jours suivant la date courante.";
-				$message_visibilite.="\nCe message ne sera donc visible qu'à compter du ".strftime("%d/%m/%Y",$today-getSettingValue('delai_devoirs')*24*3600);
+				$message_visibilite.="\nCette notice ne sera donc visible qu'à compter du ".strftime("%d/%m/%Y",$today-getSettingValue('delai_devoirs')*24*3600);
 				echo " <img src='../images/icons/ico_attention.png' width='22' height='19' alt=\"$message_visibilite\" title=\"$message_visibilite\" />\n";
 			}
 		?>

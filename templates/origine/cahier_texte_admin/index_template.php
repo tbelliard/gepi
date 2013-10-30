@@ -360,9 +360,13 @@ echo add_token_field();
 		Délai :
 		<input type="text"
 			   name="delai_devoirs"
+			   id="delai_devoirs"
 			 onchange='changement();'
 			 title="Délai des devoirs"
-			   value="<?php echo getSettingValue("delai_devoirs"); ?>"
+			 onKeyDown="clavier_2(this.id,event,0,365);"
+			 AutoComplete="off"
+			 title="Délai des devoirs : Vous pouvez le modifier à l'aide des flèches Up et Down du pavé de direction."
+ 			   value="<?php echo getSettingValue("delai_devoirs"); ?>"
 			   size="2" />
 		jours
 	  </p>
