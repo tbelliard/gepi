@@ -443,22 +443,22 @@ if (getSettingValue("statuts_prives") == "y") {
 <a href="import_prof_csv.php?export_statut=professeur" title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">professeurs</a> 
 <a href='import_prof_csv.php?export_statut=professeur&amp;sans_entete=y'><img src='../images/disabled.png' width='16' height='16' title='Export CSV professeurs sans entête' alt='CSV professeurs sans entête'></a>, 
 
-<a href="import_prof_csv.php?export_statut=scolarite"title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">"scolarité"</a>
+<a href="import_prof_csv.php?export_statut=scolarite" title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">"scolarité"</a>
 <a href='import_prof_csv.php?export_statut=scolarite&amp;sans_entete=y' title='Export sans entête'><img src='../images/disabled.png' width='16' height='16' title='Export CSV scolarité sans entête' alt='CSV scolarité sans entête'></a>, 
 
-<a href="import_prof_csv.php?export_statut=cpe"title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">cpe</a> 
+<a href="import_prof_csv.php?export_statut=cpe" title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">cpe</a> 
 <a href='import_prof_csv.php?export_statut=cpe&amp;sans_entete=y' title='Export sans entête'><img src='../images/disabled.png' width='16' height='16' title='Export CSV CPE sans entête' alt='CSV sans entête'></a>, 
 
-<a href="import_prof_csv.php?export_statut=secours"title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">secours</a> 
+<a href="import_prof_csv.php?export_statut=secours" title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">secours</a> 
 <a href='import_prof_csv.php?export_statut=secours&amp;sans_entete=y' title='Export sans entête'><img src='../images/disabled.png' width='16' height='16' title='Export CSV Secours sans entête' alt='CSV sans entête'></a>, 
 
-<a href="import_prof_csv.php?export_statut=administrateur"title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">administrateurs</a> 
+<a href="import_prof_csv.php?export_statut=administrateur" title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">administrateurs</a> 
 <a href='import_prof_csv.php?export_statut=administrateur&amp;sans_entete=y' title='Export sans entête'><img src='../images/disabled.png' width='16' height='16' title='Export CSV sans entête' alt='CSV Administrateurs sans entête'></a>, 
 
-<a href="import_prof_csv.php?export_statut=autre"title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">autres</a> 
+<a href="import_prof_csv.php?export_statut=autre" title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">autres</a> 
 <a href='import_prof_csv.php?export_statut=autre&amp;sans_entete=y' title='Export sans entête'><img src='../images/disabled.png' width='16' height='16' title='Export CSV Autres sans entête' alt='CSV Autres sans entête'></a>, 
 
-<a href="import_prof_csv.php?export_statut=personnels"title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">personnels</a> <a href='import_prof_csv.php?export_statut=personnels&amp;sans_entete=y' title='Export sans entête'><img src='../images/disabled.png' width='16' height='16' title='Export CSV sans entête' alt='CSV sans entête'></a></p>
+<a href="import_prof_csv.php?export_statut=personnels" title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">personnels</a> <a href='import_prof_csv.php?export_statut=personnels&amp;sans_entete=y' title='Export sans entête'><img src='../images/disabled.png' width='16' height='16' title='Export CSV sans entête' alt='CSV sans entête'></a></p>
 
 <form enctype="multipart/form-data" action="index.php" name="form1" method="post">
 <?php
