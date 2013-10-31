@@ -5527,7 +5527,7 @@ function check_compte_actif($login) {
  * @see get_infos_from_login_utilisateur()
  * @todo si $target='_blank' il faudrait ajouter un argument title pour prévenir
  */
-function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lien='y') {
+function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lien='y', $avec_span_invisible='n') {
 	global $gepiPath;
 
 	$retour="";
@@ -5551,13 +5551,22 @@ function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lie
 		}
 		else {
 			$tmp_statut=get_statut_from_login($login);
-			if($tmp_statut!=$statut) {$retour.="<img src='../images/icons/flag2.gif' width='17' height='18' alt='' title=\"ANOMALIE : Le statut du compte ne coïncide pas avec le statut attendu.
+			if($tmp_statut!=$statut) {
+				if($avec_span_invisible=="y") {
+					$retour.="<span style='display:none'>Anomalie</span>";
+				}
+				$retour.="<img src='../images/icons/flag2.gif' width='17' height='18' alt='' title=\"ANOMALIE : Le statut du compte ne coïncide pas avec le statut attendu.
                     Le compte est '$tmp_statut' alors que vous avez fait
-                    une recherche pour un compte '$statut'.\" /> ";}
+                    une recherche pour un compte '$statut'.\" /> ";
+			}
 		}
 
 		if($statut!="") {
 			$refermer_lien="y";
+
+			if($avec_span_invisible=="y") {
+				$retour.="<span style='display:none'>Compte ".(($test==1) ? "actif" : "inactif")."</span>";
+			}
 
 			if($avec_lien=="y") {
 				if($statut=='eleve') {
