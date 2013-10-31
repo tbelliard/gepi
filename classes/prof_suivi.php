@@ -162,7 +162,7 @@ $titre_page = "Gestion des classes | ".ucfirst($gepi_prof_suivi);
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
-debug_var();
+//debug_var();
 
 //=========================================================================
 // Ligne de liens sous l'entête avec choix de classes
