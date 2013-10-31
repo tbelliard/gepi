@@ -65,46 +65,47 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
   $rep_photos='../photos/personnels/';
 }
 
+if(!function_exists('imageFlip')) {
+	function ImageFlip($imgsrc, $type)
+		{
+		  //source de cette fonction : http://www.developpez.net/forums/showthread.php?t=54169
+		   $width = imagesx($imgsrc);
+		   $height = imagesy($imgsrc);
 
-function ImageFlip($imgsrc, $type)
-	{
-	  //source de cette fonction : http://www.developpez.net/forums/showthread.php?t=54169
-	   $width = imagesx($imgsrc);
-	   $height = imagesy($imgsrc);
+		   $imgdest = imagecreatetruecolor($width, $height);
 
-	   $imgdest = imagecreatetruecolor($width, $height);
+		   switch( $type )
+			   {
+			   // mirror wzgl. osi
+			   case IMAGE_FLIP_HORIZONTAL:
+				   for( $y=0 ; $y<$height ; $y++ )
+					   imagecopy($imgdest, $imgsrc, 0, $height-$y-1, 0, $y, $width, 1);
+				   break;
 
-	   switch( $type )
-		   {
-		   // mirror wzgl. osi
-		   case IMAGE_FLIP_HORIZONTAL:
-			   for( $y=0 ; $y<$height ; $y++ )
-				   imagecopy($imgdest, $imgsrc, 0, $height-$y-1, 0, $y, $width, 1);
-			   break;
+			   case IMAGE_FLIP_VERTICAL:
+				   for( $x=0 ; $x<$width ; $x++ )
+					   imagecopy($imgdest, $imgsrc, $width-$x-1, 0, $x, 0, 1, $height);
+				   break;
 
-		   case IMAGE_FLIP_VERTICAL:
-			   for( $x=0 ; $x<$width ; $x++ )
-				   imagecopy($imgdest, $imgsrc, $width-$x-1, 0, $x, 0, 1, $height);
-			   break;
+			   case IMAGE_FLIP_BOTH:
+				   for( $x=0 ; $x<$width ; $x++ )
+					   imagecopy($imgdest, $imgsrc, $width-$x-1, 0, $x, 0, 1, $height);
 
-		   case IMAGE_FLIP_BOTH:
-			   for( $x=0 ; $x<$width ; $x++ )
-				   imagecopy($imgdest, $imgsrc, $width-$x-1, 0, $x, 0, 1, $height);
+				   $rowBuffer = imagecreatetruecolor($width, 1);
+				   for( $y=0 ; $y<($height/2) ; $y++ )
+					   {
+					   imagecopy($rowBuffer, $imgdest  , 0, 0, 0, $height-$y-1, $width, 1);
+					   imagecopy($imgdest  , $imgdest  , 0, $height-$y-1, 0, $y, $width, 1);
+					   imagecopy($imgdest  , $rowBuffer, 0, $y, 0, 0, $width, 1);
+					   }
 
-			   $rowBuffer = imagecreatetruecolor($width, 1);
-			   for( $y=0 ; $y<($height/2) ; $y++ )
-				   {
-				   imagecopy($rowBuffer, $imgdest  , 0, 0, 0, $height-$y-1, $width, 1);
-				   imagecopy($imgdest  , $imgdest  , 0, $height-$y-1, 0, $y, $width, 1);
-				   imagecopy($imgdest  , $rowBuffer, 0, $y, 0, 0, $width, 1);
-				   }
+				   imagedestroy( $rowBuffer );
+				   break;
+			   }
 
-			   imagedestroy( $rowBuffer );
-			   break;
-		   }
-
-	   return( $imgdest );
-	}
+		   return( $imgdest );
+		}
+}
 
 function ImageRotateRightAngle( $imgSrc, $angle )
 {
