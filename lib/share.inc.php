@@ -8642,4 +8642,17 @@ function acces_cdt_eleve($login_user, $login_eleve) {
 
 	return $retour;
 }
+
+function get_mail_user($login_user) {
+	$retour="";
+
+	$sql="SELECT email FROM utilisateurs WHERE login='$login_user';";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$retour=mysql_result($res, 0, "email");
+	}
+
+	return $retour;
+}
 ?>
