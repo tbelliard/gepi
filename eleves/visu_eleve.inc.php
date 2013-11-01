@@ -2311,6 +2311,10 @@ Patientez pendant l'extraction des données... merci.
 
 		if($acces_cdt=="y") {
 			$contexte_affichage_docs_joints="visu_eleve";
+			$lignes_cdt_mail="";
+
+			$mail_dest=isset($_POST['mail_dest']) ? $_POST['mail_dest'] : NULL;
+			$envoi_mail=isset($_POST['envoi_mail']) ? $_POST['envoi_mail'] : "n";
 
 			echo "<div id='cdt' class='onglet' style='";
 			if($onglet!="cdt") {echo " display:none;";}
@@ -2326,11 +2330,19 @@ Patientez pendant l'extraction des données... merci.
 				}
 			}
 
-			echo "<h2>Cahier de textes de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			$chaine_tmp="<h2>Cahier de textes de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			$lignes_cdt_mail.=$chaine_tmp;
+			echo $chaine_tmp;
+
+			echo "<div id='div_compte_rendu_envoi_mail' style='text-align:center;'></div>";
 
 			echo "<p align='center'>";
 			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_prec&amp;month=$m_sem_prec&amp;year=$y_sem_prec".$chaine_quitter_page_ou_non."'><img src='../images/icons/back.png' width='16' height='16' alt='Semaine précédente' /></a> ";
-			echo "Du ".jour_en_fr(date("D",$date_ct1))." ".date("d/m/Y",$date_ct1)." au ".jour_en_fr(date("D",$date_ct2))." ".date("d/m/Y",$date_ct2);
+
+			$chaine_tmp="Du ".jour_en_fr(date("D",$date_ct1))." ".date("d/m/Y",$date_ct1)." au ".jour_en_fr(date("D",$date_ct2))." ".date("d/m/Y",$date_ct2);
+			$lignes_cdt_mail.=$chaine_tmp;
+			echo $chaine_tmp;
+
 			echo " <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_suiv&amp;month=$m_sem_suiv&amp;year=$y_sem_suiv".$chaine_quitter_page_ou_non."'><img src='../images/icons/forward.png' width='16' height='16' alt='Semaine suivante' /></a>";
 			echo "</p>\n";
 
@@ -2338,8 +2350,8 @@ Patientez pendant l'extraction des données... merci.
 			$couleur_entry="#C7FF99";
 
 			echo "<div align='center'>\n";
-			echo "<table class='boireaus' border='1' summary='CDT'>\n";
-			echo "<tr><th>Date</th><th>Travail à effectuer</th><th>Compte rendu de séance</th></tr>\n";
+			$chaine_tmp="<table class='boireaus' border='1' summary='CDT'>\n";
+			$chaine_tmp.="<tr><th>Date</th><th>Travail à effectuer</th><th>Compte rendu de séance</th></tr>\n";
 
 			// On compte les entrées du cdt
 			if (isset($tab_ele['cdt'])) {
@@ -2350,52 +2362,52 @@ Patientez pendant l'extraction des données... merci.
 
 			for($j=0;$j<$nbre_cdt;$j++) {
 
-				echo "<tr>\n";
-				echo "<td>\n";
+				$chaine_tmp.="<tr>\n";
+				$chaine_tmp.="<td>\n";
 				//echo "Date ".jour_en_fr(date("D",$tab_ele['cdt'][$j]['date_ct']))." ".date("d/m/Y",$tab_ele['cdt'][$j]['date_ct'])."<br />\n";
-				echo ucfirst(jour_en_fr(date("D",$tab_ele['cdt'][$j]['date_ct'])))." ".date("d/m/Y",$tab_ele['cdt'][$j]['date_ct'])."<br />\n";
-				echo "</td>\n";
+				$chaine_tmp.=ucfirst(jour_en_fr(date("D",$tab_ele['cdt'][$j]['date_ct'])))." ".date("d/m/Y",$tab_ele['cdt'][$j]['date_ct'])."<br />\n";
+				$chaine_tmp.="</td>\n";
 
 				//echo "<td valign='top' style='padding:3px;'>\n";
-				echo "<td valign='top'>\n";
+				$chaine_tmp.="<td valign='top'>\n";
 				//echo "<div style='border:1px solid black; padding:2px;'>\n";
 				if(isset($tab_ele['cdt'][$j]['dev'])) {
 					for($k=0;$k<count($tab_ele['cdt'][$j]['dev']);$k++) {
 						//echo "<div style='border:1px solid black; background-color: lightyellow; margin:1px; display:block; width:40%;'>\n";
-						echo "<table class='boireaus' border='1' style='margin:3px; width:100%;' summary='CDT'>\n";
-						echo "<tr style='background-color:$couleur_dev;'>\n";
-						echo "<td>\n";
-						echo $tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['matiere_nom_complet']." <span style='font-size:x-small;'>(".$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['name'].")</span>";
-						echo "</td>\n";
+						$chaine_tmp.="<table class='boireaus' border='1' style='margin:3px; width:100%;' summary='CDT'>\n";
+						$chaine_tmp.="<tr style='background-color:$couleur_dev;'>\n";
+						$chaine_tmp.="<td>\n";
+						$chaine_tmp.=$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['matiere_nom_complet']." <span style='font-size:x-small;'>(".$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['name'].")</span>";
+						$chaine_tmp.="</td>\n";
 
-						echo "<td>\n";
+						$chaine_tmp.="<td>\n";
 						//echo "Prof ".$tab_ele['cdt'][$j]['dev'][$k]['id_login']."<br />\n";
-						echo $tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['prof_liste']."<br />\n";
-						echo "</td>\n";
-						echo "</tr>\n";
+						$chaine_tmp.=$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['prof_liste']."<br />\n";
+						$chaine_tmp.="</td>\n";
+						$chaine_tmp.="</tr>\n";
 
-						echo "<tr style='background-color:$couleur_dev;'>\n";
-						echo "<td colspan='2' style='text-align:left;'>\n";
+						$chaine_tmp.="<tr style='background-color:$couleur_dev;'>\n";
+						$chaine_tmp.="<td colspan='2' style='text-align:left;'>\n";
 						//echo "Date ".jour_en_fr(date("D",$tab_ele['cdt'][$j]['dev'][$k]['date_ct']))." ".date("d/m/Y",$tab_ele['cdt'][$j]['dev'][$k]['date_ct'])."<br />\n";
-						echo nl2br($tab_ele['cdt'][$j]['dev'][$k]['contenu']);
+						$chaine_tmp.=nl2br($tab_ele['cdt'][$j]['dev'][$k]['contenu']);
 
 						$adj=affiche_docs_joints($tab_ele['cdt'][$j]['dev'][$k]['id_ct'],"t");
 						if($adj!='') {
-							echo "<div style='border: 1px dashed black'>\n";
-							echo $adj;
-							echo "</div>\n";
+							$chaine_tmp.="<div style='border: 1px dashed black'>\n";
+							$chaine_tmp.=$adj;
+							$chaine_tmp.="</div>\n";
 						}
 
 						//echo "</div>\n";
-						echo "</td>\n";
-						echo "</tr>\n";
-						echo "</table>\n";
+						$chaine_tmp.="</td>\n";
+						$chaine_tmp.="</tr>\n";
+						$chaine_tmp.="</table>\n";
 					}
 				}
-				echo "</td>\n";
+				$chaine_tmp.="</td>\n";
 
 				//echo "<td valign='top' style='padding:3px;'>\n";
-				echo "<td valign='top'>\n";
+				$chaine_tmp.="<td valign='top'>\n";
 				if(isset($tab_ele['cdt'][$j]['entry'])) {
 					for($k=0;$k<count($tab_ele['cdt'][$j]['entry']);$k++) {
 						//echo "<div style='border:1px solid black; background-color: lightgreen; margin:1px; display:block; width:40%;'>\n";
@@ -2403,40 +2415,108 @@ Patientez pendant l'extraction des données... merci.
 						//echo "Prof ".$tab_ele['cdt'][$j]['entry'][$k]['id_login']."<br />\n";
 						//echo "Date ".jour_en_fr(date("D",$tab_ele['cdt'][$j]['dev'][$k]['date_ct']))." ".date("d/m/Y",$tab_ele['cdt'][$j]['dev'][$k]['date_ct'])."<br />\n";
 						//echo $tab_ele['cdt'][$j]['entry'][$k]['contenu'];
-						echo "<table class='boireaus' border='1' style='margin:3px; width:100%;' summary='CDT'>\n";
-						echo "<tr style='background-color:$couleur_entry;'>\n";
-						echo "<td>\n";
-						echo $tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['matiere_nom_complet']." <span style='font-size:x-small;'>(".$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['name'].")</span>";
-						echo "</td>\n";
+						$chaine_tmp.="<table class='boireaus' border='1' style='margin:3px; width:100%;' summary='CDT'>\n";
+						$chaine_tmp.="<tr style='background-color:$couleur_entry;'>\n";
+						$chaine_tmp.="<td>\n";
+						$chaine_tmp.=$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['matiere_nom_complet']." <span style='font-size:x-small;'>(".$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['name'].")</span>";
+						$chaine_tmp.="</td>\n";
 
-						echo "<td>\n";
-						echo $tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['prof_liste']."<br />\n";
-						echo "</td>\n";
-						echo "</tr>\n";
+						$chaine_tmp.="<td>\n";
+						$chaine_tmp.=$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['prof_liste']."<br />\n";
+						$chaine_tmp.="</td>\n";
+						$chaine_tmp.="</tr>\n";
 
-						echo "<tr style='background-color:$couleur_entry;'>\n";
-						echo "<td colspan='2' style='text-align:left;'>\n";
-						echo nl2br($tab_ele['cdt'][$j]['entry'][$k]['contenu']);
+						$chaine_tmp.="<tr style='background-color:$couleur_entry;'>\n";
+						$chaine_tmp.="<td colspan='2' style='text-align:left;'>\n";
+						$chaine_tmp.=nl2br($tab_ele['cdt'][$j]['entry'][$k]['contenu']);
 
 						$adj=affiche_docs_joints($tab_ele['cdt'][$j]['entry'][$k]['id_ct'],"c");
 						if($adj!='') {
-							echo "<div style='border: 1px dashed black'>\n";
-							echo $adj;
-							echo "</div>\n";
+							$chaine_tmp.="<div style='border: 1px dashed black'>\n";
+							$chaine_tmp.=$adj;
+							$chaine_tmp.="</div>\n";
 						}
-						echo "</td>\n";
-						echo "</tr>\n";
-						echo "</table>\n";
+						$chaine_tmp.="</td>\n";
+						$chaine_tmp.="</tr>\n";
+						$chaine_tmp.="</table>\n";
 					}
 				}
 
 				//echo "</div>\n";
-				echo "</tr>\n";
+				$chaine_tmp.="</tr>\n";
 			}
 
 			//echo "</div>\n";
-			echo "</table>\n";
-			echo "</div>\n";
+			$chaine_tmp.="</table>\n";
+			$chaine_tmp.="</div>\n";
+			$lignes_cdt_mail.=$chaine_tmp;
+			echo $chaine_tmp;
+
+			if($envoi_mail=="y") {
+				if(!check_mail($_POST['mail_dest'])) {
+					$message="L'adresse mail choisie '".$_POST['mail_dest']."' est invalide.";
+					echo "<p style='color:red; text-align:center;'>$message</p>
+					<script type='text/javascript'>
+						document.getElementById('div_compte_rendu_envoi_mail').innerHTML=\"<span style='color:red'>$message</span>\";
+					</script>\n";
+				}
+				else {
+					$sujet="Cahier de textes";
+					$message="Bonjour(soir),\nVoici le contenu du cahier de textes pour pour la semaine choisie :\n".$lignes_cdt_mail;
+					$destinataire=$_POST['mail_dest'];
+					$header_suppl="";
+					if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+						$header_suppl.="Bcc:".$_SESSION['email']."\r\n";
+					}
+					$envoi=envoi_mail($sujet, $message, $destinataire, $header_suppl, "html");
+					if($envoi) {
+						$message="Le cahier de textes de la semaine choisie a été expédié à l'adresse mail choisie '".$_POST['mail_dest']."'.";
+						echo "<p style='color:green; text-align:center;'>$message</p>
+						<script type='text/javascript'>
+							document.getElementById('div_compte_rendu_envoi_mail').innerHTML=\"<span style='color:green'>$message</span>\";
+						</script>\n";
+					}
+					else {
+						$message="Echec de l'envoi du cahier de textes à l'adresse mail choisie '".$_POST['mail_dest']."'.";
+						echo "<p style='color:red; text-align:center;'>$message</p>
+						<script type='text/javascript'>
+							document.getElementById('div_compte_rendu_envoi_mail').innerHTML=\"<span style='color:red'>$message</span>\";
+						</script>\n";
+					}
+				}
+
+				// DEBUG:
+				//echo "<div style='border: 1px solid red; text-align:center;'>$lignes_cdt_mail</div>";
+			}
+
+			//++++++++++++++++++++++++++++++
+			echo "<div id='lien_mail' style='text-align:right; display:none'><a href=\"javascript:afficher_div('div_envoi_cdt_par_mail','y',10,10)\" title=\"Envoyer par mail *la semaine affichée* du cahier de textes
+(par exemple pour envoyer à un parent d'élève qui a oublié ses compte et mot de passe).
+Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consultation des cahiers de textes.\"><img src='../images/icons/courrier_envoi.png' class='icon16' alt='Mail' /></a></div>
+			<script type='text/javascript'>document.getElementById('lien_mail').style.display=''</script>\n";
+			//echo "</div>\n";
+
+			$titre_infobulle="Envoi du CDT par mail";
+			$texte_infobulle="<form action='".$_SERVER['PHP_SELF']."' name='form_envoi_cdt_mail' method='post'>
+		<input type='hidden' name='envoi_mail' value='y' />
+		<input type='hidden' name='ele_login' value='$ele_login' />
+		<input type='hidden' name='onglet' value='cdt' />";
+
+			//https://127.0.0.1/steph/gepi_git_trunk/eleves/visu_eleve.php?ele_login=allaixe&onglet=cdt&day=25&month=10&year=2013
+			if((isset($day))&&(isset($month))&&(isset($year))) {
+				$texte_infobulle.="
+		<input type='hidden' name='day' value='$day' />
+		<input type='hidden' name='month' value='$month' />
+		<input type='hidden' name='year' value='$year' />";
+			}
+
+			$texte_infobulle.="
+		<p>Précisez à quelle adresse vous souhaitez envoyer le contenu du cahier de textes&nbsp;:<br />
+		Mail&nbsp;:&nbsp;<input type='text' name='mail_dest' value='' />
+		<input type='submit' value='Envoyer' />
+</form>";
+			$tabdiv_infobulle[]=creer_div_infobulle('div_envoi_cdt_par_mail',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+			//++++++++++++++++++++++++++++++
 
 			if((getSettingAOui('rss_cdt_eleve'))||(getSettingAOui('rss_cdt_responsable'))) {
 				if($_SESSION['statut']=='administrateur') {
@@ -2448,7 +2528,7 @@ Patientez pendant l'extraction des données... merci.
 						$test_https = 'n';
 					}
 
-					echo "<div style='text-align:right; width:16;'>\n";
+					echo "<div style='text-align:right;'>\n";
 					$uri_el = retourneUri($ele_login, $test_https, 'cdt');
 					if($uri_el['uri']!="#") {
 						echo "<a href='".$uri_el['uri']."' title='Flux RSS du cahier de textes de cet élève' target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
@@ -2469,7 +2549,7 @@ Patientez pendant l'extraction des données... merci.
 						$test_https = 'n';
 					}
 
-					echo "<div style='text-align:right; width:16;'>\n";
+					echo "<div style='text-align:right;'>\n";
 					$uri_el = retourneUri($ele_login, $test_https, 'cdt');
 					if($uri_el['uri']!="#") {
 						echo "<a href='".$uri_el['uri']."' title='Flux RSS du cahier de textes de cet élève' target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
