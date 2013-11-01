@@ -308,6 +308,10 @@ require_once("'.$pref_arbo.'/entete.php");
 						}
 						*/
 					}
+					elseif(!$res) {
+							echo "<span style='color:red; margin-left: 3em;'>Il semble que la copie du fichier $tab_documents_joints[$loop] vers $dossier_documents/$dossier_courant/$fichier_courant ait échoué.</span><br />\n";
+							$temoin_erreur="y";
+					}
 				}
 				else {
 						echo "<span style='color:red; margin-left: 3em;'>Il semble que le fichier $tab_documents_joints[$loop] n'existe pas.</span><br />\n";
@@ -880,4 +884,79 @@ require_once("'.$pref_arbo.'/entete.php");
 		return $tab_dates;
 	}
 
+	// Archivage des images de formules mathématiques insérées dans les notices
+	// (téléchargées dans les docs joints, mais sans enregistrement dans les tables ct_*documents,
+	// elles n'étaient pas copiées)
+	function archiver_images_formules_maths($id_groupe) {
+		global $dossier_documents;
+
+		// A vérifier: chemin source dans le cas multisite?
+		if(file_exists("../documents/cl".$id_groupe)) {
+			if(!file_exists($dossier_documents)) {
+				//echo "Création de $dossier_documents<br />";
+				mkdir($dossier_documents, 0777);
+				@chmod($dossier_documents, 0777);
+			}
+
+			$destination=$dossier_documents."/cl".$id_groupe;
+			if(!file_exists($destination)) {
+				//echo "Création de $destination<br />";
+				mkdir($destination, 0777);
+				// Sans le chmod, je me retrouve avec des droits bizarres ne permettant pas de copier les fichiers:
+				// dr----x--t 2 www-data www-data 4,0K nov.   1 15:20 cl2675
+				@chmod($destination, 0777);
+			}
+
+			if(file_exists($destination)) {
+				// Parcours des fichiers "joints":
+				$handle=opendir("../documents/cl".$id_groupe);
+				$n=0;
+				while ($file = readdir($handle)) {
+					if((preg_match("/^[0-9]{8}_[0-9]{6}.gif$/", $file))||
+					(preg_match("/^[0-9]{8}_[0-9]{6}.png$/", $file))||
+					(preg_match("/^[0-9]{8}_[0-9]{6}.emf$/", $file))||
+					(preg_match("/^[0-9]{8}_[0-9]{6}.swf$/", $file))||
+					(preg_match("/^[0-9]{8}_[0-9]{6}.svg$/", $file))||
+					(preg_match("/^[0-9]{8}_[0-9]{6}.pdf$/", $file))) {
+						//echo "copy(\"../documents/cl\".$id_groupe.\"/\".$file, $destination.\"/\".$file);<br />";
+						copy("../documents/cl".$id_groupe."/".$file, $destination."/".$file);
+						//echo "'".$file."'<br />";
+						$n++;
+					}
+				}
+				closedir($handle);
+			}
+		}
+
+		if(file_exists("../documents/cl_dev".$id_groupe)) {
+			if(!file_exists($dossier_documents)) {
+				mkdir($dossier_documents, 0777);
+				@chmod($dossier_documents, 0777);
+			}
+
+			$destination=$dossier_documents."/cl_dev".$id_groupe;
+			if(!file_exists($destination)) {
+				mkdir($destination, 0777);
+				@chmod($destination, 0777);
+			}
+
+			if(file_exists($destination)) {
+				// Parcours des fichiers "joints":
+				$handle=opendir("../documents/cl_dev".$id_groupe);
+				$n=0;
+				while ($file = readdir($handle)) {
+					if((preg_match("/^[0-9]{8}_[0-9]{6}.gif$/", $file))||
+					(preg_match("/^[0-9]{8}_[0-9]{6}.png$/", $file))||
+					(preg_match("/^[0-9]{8}_[0-9]{6}.emf$/", $file))||
+					(preg_match("/^[0-9]{8}_[0-9]{6}.swf$/", $file))||
+					(preg_match("/^[0-9]{8}_[0-9]{6}.svg$/", $file))||
+					(preg_match("/^[0-9]{8}_[0-9]{6}.pdf$/", $file))) {
+						copy("../documents/cl_dev".$id_groupe."/".$file, $destination."/".$file);
+						$n++;
+					}
+				}
+				closedir($handle);
+			}
+		}
+	}
 ?>

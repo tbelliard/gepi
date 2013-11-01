@@ -389,6 +389,8 @@ else {
 
 				echo $nom_detaille_groupe."<br />";
 
+				archiver_images_formules_maths($id_groupe);
+
 				$nom_fichier=$nom_page_html_groupe;
 
 				$tab_dates=array();
