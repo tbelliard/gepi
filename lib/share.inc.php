@@ -6108,7 +6108,8 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 
 	$contenu_cor=$texte;
 
-	if(preg_match('|src="http://latex.codecogs.com/|', $contenu_cor)) {
+	if((preg_match('|src="http://latex.codecogs.com/|', $contenu_cor))||
+	(preg_match('|src="https://latex.codecogs.com/|', $contenu_cor))) {
 
 		$niv_arbo_tmp=2;
 		$dest_documents = '../documents/';
@@ -6139,25 +6140,32 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 		$chaine="";
 		$tab_tmp=preg_split('/"/',$contenu_cor);
 		for($loop=0;$loop<count($tab_tmp);$loop++) {
-			if(preg_match("|^http://latex.codecogs.com/|",$tab_tmp[$loop])) {
+			if((preg_match("|^http://latex.codecogs.com/|",$tab_tmp[$loop]))||
+			(preg_match("|^https://latex.codecogs.com/|",$tab_tmp[$loop]))) {
 				$erreur="n";
 				$extension_fichier_formule="gif";
-				if(preg_match("|^http://latex.codecogs.com/gif.latex|",$tab_tmp[$loop])) {
+				if((preg_match("|^http://latex.codecogs.com/gif.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/gif.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="gif";
 				}
-				elseif(preg_match("|^http://latex.codecogs.com/png.latex|",$tab_tmp[$loop])) {
+				elseif((preg_match("|^http://latex.codecogs.com/png.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/png.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="png";
 				}
-				elseif(preg_match("|^http://latex.codecogs.com/swf.latex|",$tab_tmp[$loop])) {
+				elseif((preg_match("|^http://latex.codecogs.com/swf.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/swf.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="swf";
 				}
-				elseif(preg_match("|^http://latex.codecogs.com/emf.latex|",$tab_tmp[$loop])) {
+				elseif((preg_match("|^http://latex.codecogs.com/emf.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/emf.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="emf";
 				}
-				elseif(preg_match("|^http://latex.codecogs.com/pdf.latex|",$tab_tmp[$loop])) {
+				elseif((preg_match("|^http://latex.codecogs.com/pdf.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/pdf.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="pdf";
 				}
-				elseif(preg_match("|^http://latex.codecogs.com/svg.latex|",$tab_tmp[$loop])) {
+				elseif((preg_match("|^http://latex.codecogs.com/svg.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/svg.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="svg";
 				}
 
@@ -6174,6 +6182,14 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 				// Telechargement du fichier:
 				if($erreur=="n") {
 					$morceau_courant=$dest_documents."/".$nom_tmp.".".$extension_fichier_formule;
+					// On a tendance à récupérer des chemins du type ../documents//cl2675/20131101_142603.gif
+					// Le // n'est pas très propre...
+					$morceau_courant=preg_replace("|/{2,}|","/",$morceau_courant);
+					/*
+					$f=fopen("/tmp/formule.txt", "a+");
+					fwrite($f, strftime('%Y%m%d %H%M%S')." : ".$morceau_courant."\n");
+					fclose($f);
+					*/
 					if(!copy($tab_tmp[$loop],$morceau_courant)) {$morceau_courant=$tab_tmp[$loop];}
 				}
 				else {
