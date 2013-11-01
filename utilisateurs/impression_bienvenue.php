@@ -645,8 +645,8 @@ else {
 	//echo "</div>\n";
 
 	$titre_infobulle="Envoi Fiche Bienvenue par mail";
-	$texte_infobulle="<form action='".$_SERVER['PHP_SELF']."' name='form_envoi_cdt_mail' method='post'>
-<p>Fiche bienvenue de $user_login</p>
+	$texte_infobulle="<form action='".$_SERVER['PHP_SELF']."' name='form_envoi_fb_mail' method='post'>
+<p>Fiche bienvenue de <strong>$user_login</strong></p>
 <input type='hidden' name='envoi_mail' value='y' />
 <input type='hidden' name='user_login' value='$user_login' />";
 
@@ -658,8 +658,15 @@ else {
 	$texte_infobulle.="
 <p>Précisez à quelle adresse vous souhaitez envoyer la fiche bienvenue&nbsp;:<br />
 Mail&nbsp;:&nbsp;<input type='text' name='mail_dest' value='$mail_user' />
-<input type='submit' value='Envoyer' />
-</form>";
+<input type='submit' value='Envoyer' id='button_submit_form_envoi_fb_mail' onclick='afficher_envoi_mail_en_cours()' />
+<img src='../images/spinner.gif' class='icon16' title='Envoi en cours' alt='Envoi en cours' style='display:none' id='img_envoi_fb_mail' />
+</form>
+<script type='text/javascript'>
+	function afficher_envoi_mail_en_cours() {
+		document.getElementById('button_submit_form_envoi_fb_mail').style.display='none';
+		document.getElementById('img_envoi_fb_mail').style.display='';
+	}
+</script>";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_envoi_FB_par_mail',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
 	//++++++++++++++++++++++++++++++
 	if(isset($mot_de_passe)) {
