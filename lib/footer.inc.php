@@ -146,6 +146,12 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 
 ?>
 <?php
+// On ferme la connexion à la base
+if (isset($mysqli) && $mysqli!=""){
+    $mysqli->close();
+}
+?>
+<?php
 //ajout pour dojo
 if (isset($javascript_footer_texte_specifique)) {
     echo $javascript_footer_texte_specifique;
