@@ -5688,7 +5688,7 @@ function check_compte_actif($login) {
  * @see get_infos_from_login_utilisateur()
  * @todo si $target='_blank' il faudrait ajouter un argument title pour prévenir
  */
-function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lien='y') {
+function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lien='y', $avec_span_invisible='n') {
 	global $gepiPath;
 
 	$retour="";
@@ -5712,13 +5712,22 @@ function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lie
 		}
 		else {
 			$tmp_statut=get_statut_from_login($login);
-			if($tmp_statut!=$statut) {$retour.="<img src='../images/icons/flag2.gif' width='17' height='18' alt='' title=\"ANOMALIE : Le statut du compte ne coïncide pas avec le statut attendu.
+			if($tmp_statut!=$statut) {
+				if($avec_span_invisible=="y") {
+					$retour.="<span style='display:none'>Anomalie</span>";
+				}
+				$retour.="<img src='../images/icons/flag2.gif' width='17' height='18' alt='' title=\"ANOMALIE : Le statut du compte ne coïncide pas avec le statut attendu.
                     Le compte est '$tmp_statut' alors que vous avez fait
-                    une recherche pour un compte '$statut'.\" /> ";}
+                    une recherche pour un compte '$statut'.\" /> ";
+			}
 		}
 
 		if($statut!="") {
 			$refermer_lien="y";
+
+			if($avec_span_invisible=="y") {
+				$retour.="<span style='display:none'>Compte ".(($test==1) ? "actif" : "inactif")."</span>";
+			}
 
 			if($avec_lien=="y") {
 				if($statut=='eleve') {
@@ -6260,7 +6269,8 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 
 	$contenu_cor=$texte;
 
-	if(preg_match('|src="http://latex.codecogs.com/|', $contenu_cor)) {
+	if((preg_match('|src="http://latex.codecogs.com/|', $contenu_cor))||
+	(preg_match('|src="https://latex.codecogs.com/|', $contenu_cor))) {
 
 		$niv_arbo_tmp=2;
 		$dest_documents = '../documents/';
@@ -6291,25 +6301,32 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 		$chaine="";
 		$tab_tmp=preg_split('/"/',$contenu_cor);
 		for($loop=0;$loop<count($tab_tmp);$loop++) {
-			if(preg_match("|^http://latex.codecogs.com/|",$tab_tmp[$loop])) {
+			if((preg_match("|^http://latex.codecogs.com/|",$tab_tmp[$loop]))||
+			(preg_match("|^https://latex.codecogs.com/|",$tab_tmp[$loop]))) {
 				$erreur="n";
 				$extension_fichier_formule="gif";
-				if(preg_match("|^http://latex.codecogs.com/gif.latex|",$tab_tmp[$loop])) {
+				if((preg_match("|^http://latex.codecogs.com/gif.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/gif.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="gif";
 				}
-				elseif(preg_match("|^http://latex.codecogs.com/png.latex|",$tab_tmp[$loop])) {
+				elseif((preg_match("|^http://latex.codecogs.com/png.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/png.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="png";
 				}
-				elseif(preg_match("|^http://latex.codecogs.com/swf.latex|",$tab_tmp[$loop])) {
+				elseif((preg_match("|^http://latex.codecogs.com/swf.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/swf.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="swf";
 				}
-				elseif(preg_match("|^http://latex.codecogs.com/emf.latex|",$tab_tmp[$loop])) {
+				elseif((preg_match("|^http://latex.codecogs.com/emf.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/emf.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="emf";
 				}
-				elseif(preg_match("|^http://latex.codecogs.com/pdf.latex|",$tab_tmp[$loop])) {
+				elseif((preg_match("|^http://latex.codecogs.com/pdf.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/pdf.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="pdf";
 				}
-				elseif(preg_match("|^http://latex.codecogs.com/svg.latex|",$tab_tmp[$loop])) {
+				elseif((preg_match("|^http://latex.codecogs.com/svg.latex|",$tab_tmp[$loop]))||
+				(preg_match("|^https://latex.codecogs.com/svg.latex|",$tab_tmp[$loop]))) {
 					$extension_fichier_formule="svg";
 				}
 
@@ -6326,6 +6343,14 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 				// Telechargement du fichier:
 				if($erreur=="n") {
 					$morceau_courant=$dest_documents."/".$nom_tmp.".".$extension_fichier_formule;
+					// On a tendance à récupérer des chemins du type ../documents//cl2675/20131101_142603.gif
+					// Le // n'est pas très propre...
+					$morceau_courant=preg_replace("|/{2,}|","/",$morceau_courant);
+					/*
+					$f=fopen("/tmp/formule.txt", "a+");
+					fwrite($f, strftime('%Y%m%d %H%M%S')." : ".$morceau_courant."\n");
+					fclose($f);
+					*/
 					if(!copy($tab_tmp[$loop],$morceau_courant)) {$morceau_courant=$tab_tmp[$loop];}
 				}
 				else {
@@ -8810,6 +8835,19 @@ function acces_cdt_eleve($login_user, $login_eleve) {
 				$retour=true;
 			}
 		}
+	}
+
+	return $retour;
+}
+
+function get_mail_user($login_user) {
+	$retour="";
+
+	$sql="SELECT email FROM utilisateurs WHERE login='$login_user';";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$retour=mysql_result($res, 0, "email");
 	}
 
 	return $retour;

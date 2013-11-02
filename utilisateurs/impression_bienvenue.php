@@ -347,8 +347,10 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //function fiche_bienvenue($user_login, $mot_de_passe=NULL,$user_statut='personnels') {
-function fiche_bienvenue($user_login, $mot_de_passe=NULL) {
+function fiche_bienvenue($user_login, $mot_de_passe=NULL, $mode_retour="echo") {
 	global $affiche_adresse_resp;
+
+	$lignes_FB="";
 
 	$call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE login='$user_login'");
 	
@@ -462,16 +464,16 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL) {
 
 		}
 
-		echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
+		$lignes_FB.="<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
 
 		// Cadre adresse du responsable:
-		echo "<div style='float:right;
+		$lignes_FB.="<div style='float:right;
 width:".$addressblock_length."mm;
 padding-top:".$addressblock_padding_top."mm;
 padding-bottom:".$addressblock_padding_text."mm;
 padding-right:".$addressblock_padding_right."mm;\n";
-		if($addressblock_debug=="y"){echo "border: 1px solid blue;\n";}
-		echo "font-size: ".$addressblock_font_size."pt;
+		if($addressblock_debug=="y"){$lignes_FB.="border: 1px solid blue;\n";}
+		$lignes_FB.="font-size: ".$addressblock_font_size."pt;
 '>
 <div align='left'>
 $ligne1<br />
@@ -483,65 +485,65 @@ $ligne3
 
 
 		// Cadre contenant le tableau Logo+Ad_etab et le nom, prénom,... de l'élève:
-		echo "<div style='float:left;
+		$lignes_FB.="<div style='float:left;
 left:0px;
 top:0px;
 width:".$largeur1."%;\n";
-		if($addressblock_debug=="y"){echo "border: 1px solid green;\n";}
-		echo "'>\n";
+		if($addressblock_debug=="y"){$lignes_FB.="border: 1px solid green;\n";}
+		$lignes_FB.="'>\n";
 
 	}
 
-	echo "<table border='0' summary='Destinataire fiche bienvenue $user_login'>\n";
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "A l'attention de&nbsp;: \n";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<span class=\"bold\">$user_prenom $user_nom</span>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	$lignes_FB.="<table border='0' summary='Destinataire fiche bienvenue $user_login'>\n";
+	$lignes_FB.="<tr>\n";
+	$lignes_FB.="<td>\n";
+	$lignes_FB.="A l'attention de&nbsp;: \n";
+	$lignes_FB.="</td>\n";
+	$lignes_FB.="<td>\n";
+	$lignes_FB.="<span class=\"bold\">$user_prenom $user_nom</span>\n";
+	$lignes_FB.="</td>\n";
+	$lignes_FB.="</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "Nom de login&nbsp;: \n";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<span class = \"bold\">$user_login</span>";
-	echo "</td>\n";
-	echo "</tr>\n";
+	$lignes_FB.="<tr>\n";
+	$lignes_FB.="<td>\n";
+	$lignes_FB.="Nom de login&nbsp;: \n";
+	$lignes_FB.="</td>\n";
+	$lignes_FB.="<td>\n";
+	$lignes_FB.="<span class = \"bold\">$user_login</span>";
+	$lignes_FB.="</td>\n";
+	$lignes_FB.="</tr>\n";
 
 	if (isset($mot_de_passe)) {
 		$mot_de_passe = urldecode($mot_de_passe);
-		echo "<tr>\n";
-		echo "<td>\n";
-		echo "Mot de passe&nbsp;: \n";
-		echo "</td>\n";
-		echo "<td>\n";
-		echo "<span class = \"bold\">".stripslashes($mot_de_passe)."</span>";
-		echo "</td>\n";
-		echo "</tr>\n";
+		$lignes_FB.="<tr>\n";
+		$lignes_FB.="<td>\n";
+		$lignes_FB.="Mot de passe&nbsp;: \n";
+		$lignes_FB.="</td>\n";
+		$lignes_FB.="<td>\n";
+		$lignes_FB.="<span class = \"bold\">".stripslashes($mot_de_passe)."</span>";
+		$lignes_FB.="</td>\n";
+		$lignes_FB.="</tr>\n";
 	}
 	
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "Adresse E-mail&nbsp;: ";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<span class = \"bold\">$user_email</span>";
-	echo "</td>\n";
-	echo "</tr>\n";
+	$lignes_FB.="<tr>\n";
+	$lignes_FB.="<td>\n";
+	$lignes_FB.="Adresse E-mail&nbsp;: ";
+	$lignes_FB.="</td>\n";
+	$lignes_FB.="<td>\n";
+	$lignes_FB.="<span class = \"bold\">$user_email</span>";
+	$lignes_FB.="</td>\n";
+	$lignes_FB.="</tr>\n";
 
 	if($user_statut=='eleve') {
 		$tab_tmp_info_classes=get_noms_classes_from_ele_login($user_login);
-		echo "<tr>\n";
-		echo "<td>\n";
-		echo "Élève de&nbsp;: \n";
-		echo "</td>\n";
-		echo "<td>\n";
-		echo "<span class = \"bold\">".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</span>";
-		echo "</td>\n";
-		echo "</tr>\n";
+		$lignes_FB.="<tr>\n";
+		$lignes_FB.="<td>\n";
+		$lignes_FB.="Élève de&nbsp;: \n";
+		$lignes_FB.="</td>\n";
+		$lignes_FB.="<td>\n";
+		$lignes_FB.="<span class = \"bold\">".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</span>";
+		$lignes_FB.="</td>\n";
+		$lignes_FB.="</tr>\n";
 	}
 	elseif($user_statut=='responsable') {
 		$tab_tmp_ele=get_enfants_from_resp_login($user_login);
@@ -561,36 +563,43 @@ width:".$largeur1."%;\n";
 				}
 			}
 		}
-		echo "<tr>\n";
-		echo "<td>\n";
-		echo "Responsable de&nbsp;: \n";
-		echo "</td>\n";
-		echo "<td>\n";
-		echo "<span class = \"bold\">$chaine_enfants</span>";
-		echo "</td>\n";
-		echo "</tr>\n";
+		$lignes_FB.="<tr>\n";
+		$lignes_FB.="<td>\n";
+		$lignes_FB.="Responsable de&nbsp;: \n";
+		$lignes_FB.="</td>\n";
+		$lignes_FB.="<td>\n";
+		$lignes_FB.="<span class = \"bold\">$chaine_enfants</span>";
+		$lignes_FB.="</td>\n";
+		$lignes_FB.="</tr>\n";
 	}
 
-	echo "</table>\n";
+	$lignes_FB.="</table>\n";
 
 	if($affiche_adresse_resp=='y') {
-		echo "</div>\n";
+		$lignes_FB.="</div>\n";
 
 		// Pour que le texte de la fiche bienvenue ne remonte pas au delà de l'adresse
-		echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
+		$lignes_FB.="<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
 	}
 
 	// La fiche bienvenue:
-	echo $impression;
+	$lignes_FB.=$impression;
 
 	if($impression=='') {
-		echo "<div class='info_fiche_bienvenue'><div align='center'>Information (<i>non imprimée</i>) : La fiche bienvenue pour <b
+		$lignes_FB.="<div class='info_fiche_bienvenue'><div align='center'>Information (<i>non imprimée</i>) : La fiche bienvenue pour <b
 	>$user_statut</b> n'est pas renseignée.<br />Vous pouvez paramétrer les fiches bienvenue à la page suivante&nbsp;: <a href='../gestion/modify_impression.php?fiche=";
-		if($user_statut=='responsable') {echo 'responsables';}
-		elseif($user_statut=='eleve') {echo 'eleves';}
-		else {echo 'personnels';}
-		echo "' target='_blank'>Clic</a></div></div>\n";
+		if($user_statut=='responsable') {$lignes_FB.='responsables';}
+		elseif($user_statut=='eleve') {$lignes_FB.='eleves';}
+		else {$lignes_FB.='personnels';}
+		$lignes_FB.="' target='_blank'>Clic</a></div></div>\n";
 
+	}
+
+	if($mode_retour=="return") {
+		return $lignes_FB;
+	}
+	else {
+		echo $lignes_FB;
 	}
 }
 
@@ -625,12 +634,87 @@ if(is_array($user_login)) {
 	}
 }
 else {
+
+	//++++++++++++++++++++++++++++++
+	$mail_user=get_mail_user($user_login);
+
+	echo "<div id='div_compte_rendu_envoi_mail' style='text-align:center;' class='noprint'></div>\n";
+
+	echo "<div id='lien_mail' style='float:right; width:16px; display:none' class='noprint'><a href=\"javascript:afficher_div('div_envoi_FB_par_mail','y',10,10)\" title=\"Envoyer par mail la Fiche Bienvenue de $user_login.\"><img src='../images/icons/courrier_envoi.png' class='icon16' alt='Mail' /></a></div>
+	<script type='text/javascript'>document.getElementById('lien_mail').style.display=''</script>\n";
+	//echo "</div>\n";
+
+	$titre_infobulle="Envoi Fiche Bienvenue par mail";
+	$texte_infobulle="<form action='".$_SERVER['PHP_SELF']."' name='form_envoi_fb_mail' method='post'>
+<p>Fiche bienvenue de <strong>$user_login</strong></p>
+<input type='hidden' name='envoi_mail' value='y' />
+<input type='hidden' name='user_login' value='$user_login' />";
+
 	if(isset($mot_de_passe)) {
-		fiche_bienvenue($user_login, $mot_de_passe);
+		$texte_infobulle.="
+<input type='hidden' name='mot_de_passe' value='$mot_de_passe' />";
+	}
+
+	$texte_infobulle.="
+<p>Précisez à quelle adresse vous souhaitez envoyer la fiche bienvenue&nbsp;:<br />
+Mail&nbsp;:&nbsp;<input type='text' name='mail_dest' value='$mail_user' />
+<input type='submit' value='Envoyer' id='button_submit_form_envoi_fb_mail' onclick='afficher_envoi_mail_en_cours()' />
+<img src='../images/spinner.gif' class='icon16' title='Envoi en cours' alt='Envoi en cours' style='display:none' id='img_envoi_fb_mail' />
+</form>
+<script type='text/javascript'>
+	function afficher_envoi_mail_en_cours() {
+		document.getElementById('button_submit_form_envoi_fb_mail').style.display='none';
+		document.getElementById('img_envoi_fb_mail').style.display='';
+	}
+</script>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_envoi_FB_par_mail',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+	//++++++++++++++++++++++++++++++
+	if(isset($mot_de_passe)) {
+		$lignes_FB=fiche_bienvenue($user_login, $mot_de_passe, "return");
 	}
 	else {
-		fiche_bienvenue($user_login);
+		$lignes_FB=fiche_bienvenue($user_login, NULL, "return");
 	}
+	echo $lignes_FB;
+	//++++++++++++++++++++++++++++++
+	$mail_dest=isset($_POST['mail_dest']) ? $_POST['mail_dest'] : NULL;
+	$envoi_mail=isset($_POST['envoi_mail']) ? $_POST['envoi_mail'] : "n";
+
+	if($envoi_mail=="y") {
+		if(!check_mail($_POST['mail_dest'])) {
+			$message="L'adresse mail choisie '".$_POST['mail_dest']."' est invalide.";
+			echo "<p style='color:red; text-align:center;' class='noprint'>$message</p>
+			<script type='text/javascript'>
+				document.getElementById('div_compte_rendu_envoi_mail').innerHTML=\"<span style='color:red'>$message</span>\";
+			</script>\n";
+		}
+		else {
+			$sujet="Fiche Bienvenue Gepi";
+			$message="Bonjour(soir),\nVoici votre Fiche Bienvenue Gepi :\n".$lignes_FB;
+			$destinataire=$_POST['mail_dest'];
+			$header_suppl="";
+			if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+				$header_suppl.="Bcc:".$_SESSION['email']."\r\n";
+			}
+			$envoi=envoi_mail($sujet, $message, $destinataire, $header_suppl, "html");
+			if($envoi) {
+				$message="La Fiche Bienvenue a été expédié à l'adresse mail choisie '".$_POST['mail_dest']."'.";
+				echo "<p style='color:green; text-align:center;' class='noprint'>$message</p>
+				<script type='text/javascript'>
+					document.getElementById('div_compte_rendu_envoi_mail').innerHTML=\"<span style='color:green'>$message</span>\";
+				</script>\n";
+			}
+			else {
+				$message="Echec de l'envoi de la Fiche Bienvenue à l'adresse mail choisie '".$_POST['mail_dest']."'.";
+				echo "<p style='color:red; text-align:center;' class='noprint'>$message</p>
+				<script type='text/javascript'>
+					document.getElementById('div_compte_rendu_envoi_mail').innerHTML=\"<span style='color:red'>$message</span>\";
+				</script>\n";
+			}
+		}
+	}
+	//++++++++++++++++++++++++++++++
+
 }
 
 echo "<style type='text/css'>
@@ -646,6 +730,10 @@ echo "<style type='text/css'>
 
 @media print{
 	.info_fiche_bienvenue {
+		display:none;
+	}
+
+	.noprint {
 		display:none;
 	}
 }
