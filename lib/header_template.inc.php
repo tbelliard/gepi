@@ -598,6 +598,8 @@ $tbs_menu_prof= array();
 $tbs_menu_admin = array();
 $tbs_menu_scol = array();
 $tbs_menu_cpe = array();
+$tbs_menu_responsable = array();
+$tbs_menu_eleve = array();
 if (!isset($nobar)) { $nobar = "non"; }
 if(isset($_SESSION['statut'])) {
 	if (getSettingValue("utiliserMenuBarre") != "no" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
@@ -685,7 +687,46 @@ if(isset($_SESSION['statut'])) {
 		         */
 				include("header_barre_cpe_template.php");
 			}
-	
+	} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "responsable") AND ($nobar != 'oui')) {
+			// Il n'y a pas de préférence enregistrée pour des non_prof
+			// Du coup, on récupère la valeur par défaut: 'yes'
+			if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+				if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once($prefix."edt_organisation/fonctions_calendrier.php");
+				} else if(file_exists("fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once("./fonctions_calendrier.php");
+				}
+		        /**
+		         * Barre de menu de cpe
+		         */
+				include("header_barre_responsable_template.php");
+			}
+	} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "eleve") AND ($nobar != 'oui')) {
+			// Il n'y a pas de préférence enregistrée pour des non_prof
+			// Du coup, on récupère la valeur par défaut: 'yes'
+			if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+				if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once($prefix."edt_organisation/fonctions_calendrier.php");
+				} else if(file_exists("fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once("./fonctions_calendrier.php");
+				}
+		        /**
+		         * Barre de menu de cpe
+		         */
+				include("header_barre_eleve_template.php");
+			}
 	} else {
 		$tbs_menu_prof=array();
 	}
