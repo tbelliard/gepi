@@ -6031,7 +6031,7 @@ function correction_notices_cdt_formules_maths($eff_parcours) {
 	$tab_grp=array();
 
 	$nb_corr=0;
-	$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%http://latex.codecogs.com/%' LIMIT $eff_parcours;";
+	$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%' LIMIT $eff_parcours;";
 	$res=mysql_query($sql);
 	while($lig=mysql_fetch_object($res)) {
 		$id_ct=$lig->id_ct;
@@ -6060,7 +6060,7 @@ function correction_notices_cdt_formules_maths($eff_parcours) {
 	echo "<p>$nb_corr corrections effectuées sur 'ct_entry'.</p>";
 
 	$nb_corr=0;
-	$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%http://latex.codecogs.com/%' LIMIT $eff_parcours;";
+	$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%' LIMIT $eff_parcours;";
 	$res=mysql_query($sql);
 	while($lig=mysql_fetch_object($res)) {
 		$id_ct=$lig->id_ct;
