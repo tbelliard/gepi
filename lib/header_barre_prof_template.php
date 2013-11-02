@@ -457,7 +457,6 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
                         }
                         $tmp_cpt_aid++;
                     }
-                    $tmp_call_data->close();
 				}
                 
 				if($tmp_nb_aid_a_afficher>0) {
