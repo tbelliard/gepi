@@ -1503,7 +1503,7 @@ function affiche_infos_actions() {
         <div id='info_action_<?php echo $lig->id; ?>' style='border: 1px solid black; margin:2px; min-height:16px;'>
             <div id='info_action_titre_<?php echo $lig->id; ?>' style='font-weight: bold; min-height:16px; padding-right:8px;' class='infobulle_entete'>
                 <div id='info_action_pliage_<?php echo $lig->id; ?>' style='float:right; width: 1em;'>
-                    <a href="javascript:div_alterne_affichage('$lig->id')" title="Plier/déplier l'action en attente"><span id='img_pliage_<?php echo $lig->id; ?>'><img src='images/icons/remove.png' width='16' height='16' alt='Réduire' /></span></a>
+                    <a href="javascript:div_alterne_affichage('<?php echo $lig->id; ?>')" title="Plier/déplier l'action en attente"><span id='img_pliage_<?php echo $lig->id; ?>'><img src='images/icons/remove.png' style="width:16px; height:16px;" alt='Réduire' /></span></a>
                 </div>
                 <?php echo $lig->titre; ?>
             </div>
