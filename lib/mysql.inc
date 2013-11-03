@@ -1,4 +1,8 @@
 <?php
+
+// Si l'api mysql est désactivée ou absente
+if (!function_exists("mysql_connect")) require("mysql2mysqli.php");
+
 /**
  * Initialisation de mysql
  * 
@@ -20,9 +24,9 @@ if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
 
 }
 if (!isset($db_nopersist) || $db_nopersist)
-    $db_c = mysql_connect($dbHost, $dbUser, $dbPass);
+    $db_c = mysql_connect($dbHost, $dbUser, $dbPass,true);
 else
-    $db_c = mysql_pconnect($dbHost, $dbUser, $dbPass);
+    $db_c = mysql_pconnect($dbHost, $dbUser, $dbPass,true);
 
 if (!$db_c || !mysql_select_db ($dbDb))
 {

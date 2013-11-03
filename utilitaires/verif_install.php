@@ -20,6 +20,10 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+// Si l'api mysql est désactivée ou absente
+if (!function_exists("mysql_connect")) require("./lib/mysql2mysqli.php");
+
 header('Content-Type: text/html; charset=UTF-8');
 if (file_exists("./secure/connect.inc.php")) {
     require_once("./secure/connect.inc.php");
