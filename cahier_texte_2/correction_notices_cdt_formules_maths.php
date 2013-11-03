@@ -25,7 +25,7 @@ $accessibilite="y";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-require_once("../lib/transform_functions.php");
+//require_once("../lib/transform_functions.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -85,22 +85,22 @@ echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Ret
 echo "<p>Pendant un temps, la génération d'images de formule mathématiques dans le CDT2 fonctionnait en dynamique (<em>sans téléchargement des images dans l'arborescence des documents Gepi</em>).<br />Cela ne permet pas une consultation hors ligne d'un Export CDT et cela surcharge inutilement le serveur générant les images.</p>\n";
 echo "<br />\n";
 
-$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%http://latex.codecogs.com/%';";
+$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
 $res=mysql_query($sql);
 $nb_ct_entry=mysql_num_rows($res);
 
-$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%http://latex.codecogs.com/%';";
+$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
 $res=mysql_query($sql);
 $nb_ct_devoirs_entry=mysql_num_rows($res);
 
 if(!isset($telecharger_et_corriger)) {
 	if(($nb_ct_entry>0)||($nb_ct_devoirs_entry>0)) {
-		echo "<p><strong>$nb_ct_entry</strong> compte-rendus et <strong>$nb_ct_devoirs_entry</strong> notices de devoirs comportent des images pointant vers <a href='http://latex.codecogs.com/'>http://latex.codecogs.com/</a></p>\n";
+		echo "<p><strong>$nb_ct_entry</strong> compte-rendus et <strong>$nb_ct_devoirs_entry</strong> notices de devoirs comportent des images pointant vers <a href='http://latex.codecogs.com/'>http://latex.codecogs.com/</a> ou <a href='https://latex.codecogs.com/'>https://latex.codecogs.com/</a></p>\n";
 		echo "<p><a href='".$_SERVER['PHP_SELF']."?telecharger_et_corriger=y".add_token_in_url()."'>Procéder à la correction</a></p>\n";
 		echo "<p>Les notices vont être parcourues par tranches de $eff_parcours.</p>\n";
 	}
 	else {
-		echo "<p>Aucune image ne pointe vers http://latex.codecogs.com/<br />Aucune correction n'est nécessaire.</p>\n";
+		echo "<p>Aucune image ne pointe vers http://latex.codecogs.com/ ni https://latex.codecogs.com/ <br />Aucune correction n'est nécessaire.</p>\n";
 	}
 }
 else {
@@ -108,11 +108,11 @@ else {
 
 	correction_notices_cdt_formules_maths($eff_parcours);
 
-	$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%http://latex.codecogs.com/%';";
+	$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
 	$res=mysql_query($sql);
 	$nb_ct_entry=mysql_num_rows($res);
 
-	$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%http://latex.codecogs.com/%';";
+	$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
 	$res=mysql_query($sql);
 	$nb_ct_devoirs_entry=mysql_num_rows($res);
 

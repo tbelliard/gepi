@@ -210,6 +210,10 @@ if((isset($_GET['modif_ajax']))&&(isset($_GET['domaine']))&&(isset($_GET['id_gro
 	die();
 }
 
+$javascript_specifique[] = "lib/tablekit";
+$dojo=true;
+$utilisation_tablekit="ok";
+
 $themessage  = 'Des paramètres ont été modifiés. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Enseignements";
@@ -360,15 +364,17 @@ while($lig_classe=mysql_fetch_object($res_classe)) {
 		echo "<p style='color:red'>Aucun enseignement n'a été trouvé.</p>\n";
 	}
 	else {
-		echo "<table class='boireaus'>\n";
+		echo "<table class='boireaus sortable resizable'>\n";
 		echo "<tr>\n";
-		echo "<th colspan='2'>Enseignement</th>\n";
-		echo "<th>Classes</th>\n";
-		echo "<th>Catégorie</th>\n";
-		echo "<th>Coefficient</th>\n";
-		echo "<th>Visu.CN</th>\n";
-		echo "<th>Visu.Bull</th>\n";
-		echo "<th>Visu.CDT</th>\n";
+		//echo "<th colspan='2'>Enseignement</th>\n";
+		echo "<th class='text'>Ens.</th>\n";
+		echo "<th class='text'>Enseignement</th>\n";
+		echo "<th class='text'>Classes</th>\n";
+		echo "<th class='text'>Catégorie</th>\n";
+		echo "<th class='text'>Coefficient</th>\n";
+		echo "<th class='text'>Visu.CN</th>\n";
+		echo "<th class='text'>Visu.Bull</th>\n";
+		echo "<th class='text'>Visu.CDT</th>\n";
 		echo "</tr>\n";
 		$alt=1;
 		foreach ($groups as $group) {

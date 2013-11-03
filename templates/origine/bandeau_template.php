@@ -373,6 +373,34 @@
 </div>
 <?php endif ?>
 
+<!-- menu responsable -->
+<?php if (count($tbs_menu_responsable)) : ?>
+<div id="menu_barre">
+	<div class="menu_barre_bottom"></div>
+	<div class="menu_barre_container">
+		<ul class="niveau1">
+			<?php foreach ($tbs_menu_responsable as $value) { if ("$value[li]"!="") { ?>
+			<?php echo $value['li']; ?>
+			<?php }} unset($value); ?>
+		</ul>
+	</div>
+</div>
+<?php endif ?>
+
+<!-- menu eleve -->
+<?php if (count($tbs_menu_eleve)) : ?>
+<div id="menu_barre">
+	<div class="menu_barre_bottom"></div>
+	<div class="menu_barre_container">
+		<ul class="niveau1">
+			<?php foreach ($tbs_menu_eleve as $value) { if ("$value[li]"!="") { ?>
+			<?php echo $value['li']; ?>
+			<?php }} unset($value); ?>
+		</ul>
+	</div>
+</div>
+<?php endif ?>
+
 
 <!-- fil d'ariane -->
 <?php
