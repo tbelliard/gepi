@@ -140,16 +140,39 @@ function verif_mot_de_passe($password,$flag) {
  * @return string yes si le login existe, no sinon
  */
 function test_unique_login($s) {
+    global $mysqli;
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
-    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')"));
+    $sql1 = "SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')";
+    if ($mysqli != "") {
+        $resultat = mysqli_query($mysqli, $sql1);  
+        $test1 = $resultat->num_rows;
+        $resultat->close();
+    } else {
+        $test1 = mysql_num_rows(mysql_query($sql1));
+    }
+    
     if ($test1 != "0") {
         return 'no';
     } else {
-        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s' OR login = '".my_strtoupper($s)."')"));
+        $sql2 = "SELECT login FROM eleves WHERE (login='$s' OR login = '".my_strtoupper($s)."')";
+        if ($mysqli != "") {
+            $resultat = mysqli_query($mysqli, $sql2);  
+            $test2 = $resultat->num_rows;
+            $resultat->close();
+        } else {
+            $test2 = mysql_num_rows(mysql_query($sql2));
+        }
         if ($test2 != "0") {
             return 'no';
         } else {
-			$test3 = mysql_num_rows(mysql_query("SELECT login FROM resp_pers WHERE (login='$s' OR login='".my_strtoupper($s)."')"));
+			$sql3 = "SELECT login FROM resp_pers WHERE (login='$s' OR login='".my_strtoupper($s)."')";
+        if ($mysqli != "") {
+            $resultat = mysqli_query($mysqli, $sql2);  
+            $test3 = $resultat->num_rows;
+            $resultat->close();
+        } else {
+            $test3 = mysql_num_rows(mysql_query($sql2));
+        }
 			if ($test3 != "0") {
 				return 'no';
 			} else {
@@ -169,6 +192,7 @@ function test_unique_login($s) {
  * @return string yes si le login existe, no sinon
  */
 function test_unique_e_login($s, $indice) {
+    global $mysqli;
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
     //$test7 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
     //if ($test7 != "0") {
@@ -181,7 +205,15 @@ function test_unique_e_login($s, $indice) {
     } else {
         // Si le login ne figure pas dans une des bases élève des années passées ni dans la base
         // utilisateurs, on vérifie qu'un même login ne vient pas d'être attribué !
-        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".my_strtoupper($s)."')"));
+        $sql_tempo2 = "SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".my_strtoupper($s)."')";
+        
+        if ($mysqli != "") {
+            $resultat = mysqli_query($mysqli, $sql_tempo2);  
+            $test_tempo2 = $resultat->num_rows;
+            $resultat->close();
+        } else {
+            $test_tempo2 = mysql_num_rows(mysql_query($sql_tempo2));
+        }
         if ($test_tempo2 != "0") {
             return 'no';
         } else {
@@ -670,25 +702,60 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse='') {
  * @return string nom, prénom, civilité formaté
  */
 function affiche_utilisateur($login,$id_classe) {
-    $req = mysql_query("select nom, prenom, civilite from utilisateurs where login = '".$login."'");
-	$nom = @mysql_result($req, 0, 'nom');
-    $prenom = @mysql_result($req, 0, 'prenom');
-    $civilite = @mysql_result($req, 0, 'civilite');
-    $req_format = mysql_query("select format_nom from classes where id = '".$id_classe."'");
-	if(mysql_num_rows($req_format)>0) {
-		$format = mysql_result($req_format, 0, 'format_nom');
-		$result = "";
-		$i='';
-		if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
-		    $temp = explode("-", $prenom);
-		    $i = mb_substr($temp[0], 0, 1);
-		    if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
-		    $i .= ". ";
-		}
-	}
-	else {
-		$format="";
-	}
+    global $mysqli;
+    $sql = "select nom, prenom, civilite from utilisateurs where login = '".$login."'";
+    
+    if ($mysqli != "") {        
+        $resultat = mysqli_query($mysqli, $sql); 
+        $obj = $resultat->fetch_object();
+        $nom = $obj->nom;
+        $prenom = $obj->prenom;
+        $civilite = $obj->civilite;
+        $resultat->close();
+    } else {
+        $req = mysql_query($sql);
+        $nom = @mysql_result($req, 0, 'nom');
+        $prenom = @mysql_result($req, 0, 'prenom');
+        $civilite = @mysql_result($req, 0, 'civilite');
+    }
+    
+    $sql_format = "select format_nom from classes where id = '".$id_classe."'";
+	if($mysqli !="") {
+        $resultat = mysqli_query($mysqli, $sql); 
+        if($resultat->num_rows > 0) {
+            $obj_format = $resultat->fetch_object();
+            $format = $obj_format->format_nom;
+            $result = "";
+            $i='';
+            if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) 
+                  AND ($prenom != '')) {
+                $temp = explode("-", $prenom);
+                $i = mb_substr($temp[0], 0, 1);
+                if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
+                $i .= ". ";
+            }
+        }
+        else {
+            $format="";
+        }
+        $resultat->close();
+	} else {
+        $req_format = mysql_query($sql_format);
+        if(mysql_num_rows($req_format)>0) {
+            $format = mysql_result($req_format, 0, 'format_nom');
+            $result = "";
+            $i='';
+            if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
+                $temp = explode("-", $prenom);
+                $i = mb_substr($temp[0], 0, 1);
+                if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
+                $i .= ". ";
+            }
+        }
+        else {
+            $format="";
+        }
+	}        
 
     switch( $format ) {
     case 'np':
@@ -920,9 +987,19 @@ function checkAccess() {
  * @return string adresse courriel de l'utilisateur
  */
 function retourne_email ($login_u) {
-$call = mysql_query("SELECT email FROM utilisateurs WHERE login = '$login_u'");
-$email = @mysql_result($call, 0, "email");
-return $email;
+    global $mysqli;
+    $sql_call = "SELECT email FROM utilisateurs WHERE login = '$login_u'";
+             
+	if($mysqli !="") {		
+        $resultat = mysqli_query($mysqli, $sql_call);
+        $obj_call = $resultat->fetch_object();
+        $email = $obj_call->email;
+        $resultat->close();
+	} else {
+		$call = mysql_query($sql_call);
+        $email = @mysql_result($call, 0, "email");
+	}
+    return $email;
 
 }
 
@@ -1295,8 +1372,18 @@ function check_backup_directory() {
  * @return int Nombre de periodes définies pour cette classe
  */
 function get_period_number($_id_classe) {
-    $periode_query = mysql_query("SELECT count(*) FROM periodes WHERE id_classe = '" . $_id_classe . "'");
-    $nb_periode = mysql_result($periode_query, 0);
+    global $mysqli;
+    $sql_periode = "SELECT count(*) FROM periodes WHERE id_classe = '" . $_id_classe . "'";
+             
+	if($mysqli !="") {		
+        $resultat = mysqli_query($mysqli, $sql_periode);  
+        $nb_periode = $resultat->num_rows;
+        $resultat->close();
+	} else {
+		$periode_query = mysql_query($sql_periode);
+        $nb_periode = mysql_result($periode_query, 0);
+	}           
+    
     return $nb_periode;
 }
 
@@ -1307,8 +1394,18 @@ function get_period_number($_id_classe) {
  * @return array numéro de la période 'num' et son nom 'nom'
  */
 function get_periode_active($_id_classe){
-  $periode_query  = mysql_query("SELECT num_periode, nom_periode FROM periodes WHERE id_classe = '" . $_id_classe . "' AND verouiller = 'N'");
-  $reponse        = mysql_fetch_array($periode_query);
+    global $mysqli;
+    $sql_periode = "SELECT num_periode, nom_periode FROM periodes WHERE id_classe = '" . $_id_classe . "' AND verouiller = 'N'";
+            
+	if($mysqli !="") {
+		$periode_query = mysqli_query($mysqli, $sql_periode);
+        $reponse = $periode_query->fetch_array();
+	} else {
+		$periode_query  = mysql_query($sql_periode);
+        $reponse        = mysql_fetch_array($periode_query);
+	}           
+    
+    
 
   return $retour = array('nom' => $reponse["num_periode"], 'nom' => $reponse["nom_periode"]);
 
@@ -1330,7 +1427,7 @@ function get_periode_active($_id_classe){
  * @see mail()
  */
 function tentative_intrusion($_niveau, $_description, $_login_a_enregistrer="") {
-
+    global $mysqli;
 	global $gepiPath;
 
 	// On commence par enregistrer la tentative en question
@@ -1346,14 +1443,21 @@ function tentative_intrusion($_niveau, $_description, $_login_a_enregistrer="") 
 	$date = strftime("%Y-%m-%d %H:%M:%S");
 	$url = parse_url($_SERVER['REQUEST_URI']);
     $fichier = mb_substr($url['path'], mb_strlen($gepiPath));
-	$res = mysql_query("INSERT INTO tentatives_intrusion SET " .
-			"login = '".$user_login."', " .
-			"adresse_ip = '".$adresse_ip."', " .
-			"date = '".$date."', " .
-			"niveau = '".(int)$_niveau."', " .
-			"fichier = '".$fichier."', " .
-			"description = '".addslashes($_description)."', " .
-			"statut = 'new'");
+    $sql = "INSERT INTO tentatives_intrusion SET 
+                login = '".$user_login."', 
+                    adresse_ip = '".$adresse_ip."', 
+                        date = '".$date."', 
+                            niveau = '".(int)$_niveau."', 
+                                fichier = '".$fichier."', 
+                                    description = '".addslashes($_description)."', 
+                                        statut = 'new'";
+           
+	if($mysqli !="") {
+		$res = mysql_query($mysqli, $sql);
+	} else {
+		$res = mysql_query($sql);
+	}           
+	
 
 	// On a enregistré.
 
@@ -1374,8 +1478,17 @@ function tentative_intrusion($_niveau, $_description, $_login_a_enregistrer="") 
 
 	if ($user_login != "-") {
 		// On récupère quelques infos
-		$req = mysql_query("SELECT nom, prenom, statut, niveau_alerte, observation_securite FROM utilisateurs WHERE (login = '".$user_login."')");
-		$user = mysql_fetch_object($req);
+        $sql = "SELECT nom, prenom, statut, niveau_alerte, observation_securite FROM utilisateurs WHERE (login = '".$user_login."')";
+               
+	if($mysqli !="") {
+        $result = mysqli_query($mysqli, $sql);
+		$user = $result->fetch_object();
+        $result->close();
+	} else {         
+		$req = mysql_query($sql);
+		$user = mysql_fetch_object($req);		
+	}  
+    
 		// On va utiliser ça pour générer automatiquement les noms de settings, ça fait du code en moins...
 		if ($user->observation_securite == "1") {
 			$obs = "probation";
@@ -1385,8 +1498,15 @@ function tentative_intrusion($_niveau, $_description, $_login_a_enregistrer="") 
 
 		// D'abord, on met à jour le niveau cumulé
 		$nouveau_cumul = (int)$user->niveau_alerte+(int)$_niveau;
-
-		$res = mysql_query("UPDATE utilisateurs SET niveau_alerte = '".$nouveau_cumul ."' WHERE (login = '".$user_login."')");
+        
+        $sql = "UPDATE utilisateurs SET niveau_alerte = '".$nouveau_cumul ."' WHERE (login = '".$user_login."')";
+                
+        if($mysqli !="") {
+            $res = mysqli_query($mysqli, $sql);
+        } else {
+            $res = mysql_query($sql);
+        }           
+		
 
 		$seuil1 = FALSE;
 		$seuil2 = FALSE;
@@ -1407,7 +1527,12 @@ function tentative_intrusion($_niveau, $_description, $_login_a_enregistrer="") 
 
 		// On désactive le compte de l'utilisateur si nécessaire :
 		if ($block_user) {
-			$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE (login = '".$user_login."')");
+            $sql = "UPDATE utilisateurs SET etat = 'inactif' WHERE (login = '".$user_login."')";
+            if($mysqli !="") {
+                $res = mysqli_query($mysqli, $sql);
+            } else {
+                $res = mysql_query($sql);
+            }
 		}
 	} // Fin : if ($user_login != "-")
 
@@ -1889,26 +2014,8 @@ function vider_dir($dir, $tab_exclusion=array()){
  * @return int la taille totale des documents joints
  */
 function volume_docs_joints($id_groupe, $mode="all"){
+    global $mysqli;
 	$volume_cdt_groupe=0;
-
-	/*
-	$sql="SELECT DISTINCT cd.id_ct FROM ct_documents cd, ct_entry ce WHERE cd.id_ct=ce.id_ct AND ce.id_groupe='".$groupe->getId()."';";
-	//echo "$sql<br />";
-	$res_doc=mysql_query($sql);
-	if(mysql_num_rows($res_doc)>0) {
-		while($lig_doc=mysql_fetch_object($res_doc)) {
-			$volume_cdt_groupe+=volume_dir("../documents/cl".$lig_doc->id_ct);
-		}
-	}
-	$sql="SELECT DISTINCT cde.id_ct FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$groupe->getId()."';";
-	//echo "$sql<br />";
-	$res_doc=mysql_query($sql);
-	if(mysql_num_rows($res_doc)>0) {
-		while($lig_doc=mysql_fetch_object($res_doc)) {
-			$volume_cdt_groupe+=volume_dir("../documents/cl_dev".$lig_doc->id_ct);
-		}
-	}
-	*/
 
 	if($mode=="devoirs") {
 		$sql="SELECT DISTINCT cdd.emplacement FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$id_groupe."';";
@@ -1920,18 +2027,35 @@ function volume_docs_joints($id_groupe, $mode="all"){
 		$sql="(SELECT DISTINCT cd.emplacement FROM ct_documents cd, ct_entry ce WHERE cd.id_ct=ce.id_ct AND ce.id_groupe='".$id_groupe."') UNION (SELECT DISTINCT cdd.emplacement FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$id_groupe."');";
 	}
 	//echo "$sql<br />";
-	$res_doc=mysql_query($sql);
-	if(mysql_num_rows($res_doc)>0) {
-		while($lig_doc=mysql_fetch_object($res_doc)) {
-			if(file_exists($lig_doc->emplacement)) {
-				$tabtmpsize=stat($lig_doc->emplacement);
-				if(isset($tabtmpsize[7])) {
-					$size=$tabtmpsize[7];
-					$volume_cdt_groupe+=$size;
-				}
-			}
-		}
-	}
+           
+	if($mysqli !="") {
+		$res_doc=mysqli_query($mysqli, $sql);
+        if ($res_doc->num_rows > 0) {
+            while($lig_doc = $res_doc->fetch_object()) {
+                if(file_exists($lig_doc->emplacement)) {
+                    $tabtmpsize=stat($lig_doc->emplacement);
+                    if(isset($tabtmpsize[7])) {
+                        $size=$tabtmpsize[7];
+                        $volume_cdt_groupe+=$size;
+                    }
+                }                
+            }
+        }
+	} else { 
+        $res_doc=mysql_query($sql);
+        if(mysql_num_rows($res_doc)>0) {
+            while($lig_doc=mysql_fetch_object($res_doc)) {
+                if(file_exists($lig_doc->emplacement)) {
+                    $tabtmpsize=stat($lig_doc->emplacement);
+                    if(isset($tabtmpsize[7])) {
+                        $size=$tabtmpsize[7];
+                        $volume_cdt_groupe+=$size;
+                    }
+                }
+            }
+        }
+		
+	}          
 
 	return($volume_cdt_groupe);
 }
@@ -2272,28 +2396,58 @@ function nettoyer_caracteres_nom($chaine, $mode="a", $chaine_autres_caracteres_a
  * @return array Tableau des classes en fonction des périodes
  */
 function get_class_from_ele_login($ele_login){
+    global $mysqli;
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
-	$res_class=mysql_query($sql);
-	$a = 0;
-	$tab_classe=array();
-	if(mysql_num_rows($res_class)>0){
-		$tab_classe['liste'] = "";
-		$tab_classe['liste_nbsp'] = "";
-		while($lig_tmp=mysql_fetch_object($res_class)){
+             
+	if($mysqli !="") {     
+        $res_class=mysqli_query($mysqli, $sql);
+        $a = 0;
+        $tab_classe=array();
+        if($res_class->num_rows > 0) {
+            $tab_classe['liste'] = "";
+            $tab_classe['liste_nbsp'] = "";
+            while($lig_tmp=$res_class->fetch_object()) {
 
-			$tab_classe[$lig_tmp->id_classe]=$lig_tmp->classe;
+                $tab_classe[$lig_tmp->id_classe]=$lig_tmp->classe;
 
-			if($a>0) {$tab_classe['liste'].=", ";}
-			$tab_classe['liste'].=$lig_tmp->classe;
+                if($a>0) {$tab_classe['liste'].=", ";}
+                $tab_classe['liste'].=$lig_tmp->classe;
 
-			if($a>0) {$tab_classe['liste_nbsp'].=", ";}
-			$tab_classe['liste_nbsp'].=preg_replace("/ /","&nbsp;",$lig_tmp->classe);
+                if($a>0) {$tab_classe['liste_nbsp'].=", ";}
+                $tab_classe['liste_nbsp'].=preg_replace("/ /","&nbsp;",$lig_tmp->classe);
 
-			$tab_classe['id'.$a] = $lig_tmp->id_classe;
-			//$a = $a++;
-			$a++;
-		}
-	}
+                $tab_classe['id'.$a] = $lig_tmp->id_classe;
+                //$a = $a++;
+                $a++;
+                
+            }
+            
+        }
+		
+	} else {
+		        
+        $res_class=mysql_query($sql);
+        $a = 0;
+        $tab_classe=array();
+        if(mysql_num_rows($res_class)>0){
+            $tab_classe['liste'] = "";
+            $tab_classe['liste_nbsp'] = "";
+            while($lig_tmp=mysql_fetch_object($res_class)){
+
+                $tab_classe[$lig_tmp->id_classe]=$lig_tmp->classe;
+
+                if($a>0) {$tab_classe['liste'].=", ";}
+                $tab_classe['liste'].=$lig_tmp->classe;
+
+                if($a>0) {$tab_classe['liste_nbsp'].=", ";}
+                $tab_classe['liste_nbsp'].=preg_replace("/ /","&nbsp;",$lig_tmp->classe);
+
+                $tab_classe['id'.$a] = $lig_tmp->id_classe;
+                //$a = $a++;
+                $a++;
+            }
+        }
+	}   
 	return $tab_classe;
 }
 
@@ -2305,14 +2459,25 @@ function get_class_from_ele_login($ele_login){
  */
 function get_noms_classes_from_ele_login($ele_login){
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
-	$res_class=mysql_query($sql);
+            
+	if($mysqli !="") {
+		$res_class=mysqli_query($mysqli, $sql);
+        $tab_classe=array();
+        if($res_class->num_rows > 0){
+            while($lig_tmp = $res_class->fetch_object()){
+                $tab_classe[]=$lig_tmp->classe;
+            }
+        }
+	} else {       
+        $res_class=mysql_query($sql);
 
-	$tab_classe=array();
-	if(mysql_num_rows($res_class)>0){
-		while($lig_tmp=mysql_fetch_object($res_class)){
-			$tab_classe[]=$lig_tmp->classe;
-		}
-	}
+        $tab_classe=array();
+        if(mysql_num_rows($res_class)>0){
+            while($lig_tmp=mysql_fetch_object($res_class)){
+                $tab_classe[]=$lig_tmp->classe;
+            }
+        }		
+	}    
 	return $tab_classe;
 }
 
@@ -2323,16 +2488,31 @@ function get_noms_classes_from_ele_login($ele_login){
  * @return string 
  */
 function get_chaine_liste_noms_classes_from_ele_login($ele_login) {
+    global $mysqli;
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
-	$res_class=mysql_query($sql);
+          
+	if($mysqli !="") {
+        $res_class=mysqli_query($mysqli, $sql);
+        $chaine="";
+        if($res_class->num_rows > 0) {
+            while($lig_tmp = $res_class->fetch_object()) {
+                if($chaine!="") {$chaine.=", ";}
+                $chaine=$lig_tmp->classe;                
+            }
+            
+        }
+	} else {
+	         
+        $res_class=mysql_query($sql);
 
-	$chaine="";
-	if(mysql_num_rows($res_class)>0){
-		while($lig_tmp=mysql_fetch_object($res_class)){
-			if($chaine!="") {$chaine.=", ";}
-			$chaine=$lig_tmp->classe;
-		}
-	}
+        $chaine="";
+        if(mysql_num_rows($res_class)>0){
+            while($lig_tmp=mysql_fetch_object($res_class)){
+                if($chaine!="") {$chaine.=", ";}
+                $chaine=$lig_tmp->classe;
+            }
+        }	
+	}  
 	return $chaine;
 }
 
@@ -2349,6 +2529,7 @@ function get_chaine_liste_noms_classes_from_ele_login($ele_login) {
  * @see get_class_from_ele_login()
  */
 function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_legal_0="n") {
+    global $mysqli;
 	$sql="(SELECT e.nom,e.prenom,e.login FROM eleves e,
 											responsables2 r,
 											resp_pers rp
@@ -2376,27 +2557,51 @@ function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_
 										r.resp_legal='0' ORDER BY e.nom,e.prenom)";
 	}
 	//echo "$sql<br />";
-	$res_ele=mysql_query($sql);
+            
+	if($mysqli !="") {	       
+        $res_ele=mysqli_query($mysqli, $sql);
+        $tab_ele=array();
+        if($res_ele->num_rows > 0){
+            while($lig_tmp = $res_ele->fetch_object()){
+                $tab_ele[]=$lig_tmp->login;
+                if($mode=='avec_classe') {
+                    $tmp_chaine_classes="";
 
-	$tab_ele=array();
-	if(mysql_num_rows($res_ele)>0){
-		while($lig_tmp=mysql_fetch_object($res_ele)){
-			$tab_ele[]=$lig_tmp->login;
-			if($mode=='avec_classe') {
-				$tmp_chaine_classes="";
+                    $tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+                    if(isset($tmp_tab_clas['liste'])) {
+                        $tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+                    }
 
-				$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
-				if(isset($tmp_tab_clas['liste'])) {
-					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
-				}
+                    $tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+                }
+                else {
+                    $tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
+                }                
+            }            
+        }		
+	} else {		       
+        $res_ele=mysql_query($sql);
 
-				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
-			}
-			else {
-				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
-			}
-		}
-	}
+        $tab_ele=array();
+        if(mysql_num_rows($res_ele)>0){
+            while($lig_tmp=mysql_fetch_object($res_ele)){
+                $tab_ele[]=$lig_tmp->login;
+                if($mode=='avec_classe') {
+                    $tmp_chaine_classes="";
+
+                    $tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+                    if(isset($tmp_tab_clas['liste'])) {
+                        $tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+                    }
+
+                    $tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+                }
+                else {
+                    $tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
+                }
+            }
+        }
+	}    
 	return $tab_ele;
 }
 
@@ -2412,6 +2617,7 @@ function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_
  * @return array 
  * @see get_class_from_ele_login()
  */
+global $mysqli;
 function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_0="n"){
 	$sql="(SELECT e.nom,e.prenom,e.login FROM eleves e,
 											responsables2 r,
@@ -2442,46 +2648,91 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 											r.resp_legal='0' 
 										ORDER BY e.nom,e.prenom)";
 	}
-	$res_ele=mysql_query($sql);
+         
+	if($mysqli !="") {
+        $res_ele=mysqli_query($mysqli, $sql);
+        $tab_ele=array();
+        if($res_ele->num_rows > 0) {
+            while($lig_tmp = $res_ele->fetch_object()){
+                if($mode=='csv') {
+                    $tab_ele[]=$lig_tmp->login;
 
-	$tab_ele=array();
-	if(mysql_num_rows($res_ele)>0){
-		while($lig_tmp=mysql_fetch_object($res_ele)){
-			if($mode=='csv') {
-				$tab_ele[]=$lig_tmp->login;
+                    $tmp_chaine_classes="";
+                    $tmp_chaine_classes2="";
+                    $tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+                    if(isset($tmp_tab_clas['liste'])) {
+                        $tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+                        $tmp_chaine_classes2=$tmp_tab_clas['liste'];
+                    }
 
-				$tmp_chaine_classes="";
-				$tmp_chaine_classes2="";
-				$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
-				if(isset($tmp_tab_clas['liste'])) {
-					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
-					$tmp_chaine_classes2=$tmp_tab_clas['liste'];
-				}
+                    $chaine_prenom_nom=casse_mot($lig_tmp->prenom, 'majf2')." ".casse_mot($lig_tmp->nom, 'maj');
+                    $tab_ele[]=$chaine_prenom_nom.$tmp_chaine_classes.";".
+                                $lig_tmp->login.";".
+                                $chaine_prenom_nom.";".
+                                $tmp_chaine_classes2;
+                }
+                else {
+                    $tab_ele[]=$lig_tmp->login;
+                    if($mode=='avec_classe') {
+                        $tmp_chaine_classes="";
 
-				$chaine_prenom_nom=casse_mot($lig_tmp->prenom, 'majf2')." ".casse_mot($lig_tmp->nom, 'maj');
-				$tab_ele[]=$chaine_prenom_nom.$tmp_chaine_classes.";".
-							$lig_tmp->login.";".
-							$chaine_prenom_nom.";".
-							$tmp_chaine_classes2;
-			}
-			else {
-				$tab_ele[]=$lig_tmp->login;
-				if($mode=='avec_classe') {
-					$tmp_chaine_classes="";
+                        $tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+                        if(isset($tmp_tab_clas['liste'])) {
+                            $tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+                        }
 
-					$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
-					if(isset($tmp_tab_clas['liste'])) {
-						$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
-					}
+                        $tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+                    }
+                    else {
+                        $tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
+                    }
+                }                
+            }
+        }
+		
+	} else {
+	          
+        $res_ele=mysql_query($sql);
 
-					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
-				}
-				else {
-					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
-				}
-			}
-		}
-	}
+        $tab_ele=array();
+        if(mysql_num_rows($res_ele)>0){
+            while($lig_tmp=mysql_fetch_object($res_ele)){
+                if($mode=='csv') {
+                    $tab_ele[]=$lig_tmp->login;
+
+                    $tmp_chaine_classes="";
+                    $tmp_chaine_classes2="";
+                    $tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+                    if(isset($tmp_tab_clas['liste'])) {
+                        $tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+                        $tmp_chaine_classes2=$tmp_tab_clas['liste'];
+                    }
+
+                    $chaine_prenom_nom=casse_mot($lig_tmp->prenom, 'majf2')." ".casse_mot($lig_tmp->nom, 'maj');
+                    $tab_ele[]=$chaine_prenom_nom.$tmp_chaine_classes.";".
+                                $lig_tmp->login.";".
+                                $chaine_prenom_nom.";".
+                                $tmp_chaine_classes2;
+                }
+                else {
+                    $tab_ele[]=$lig_tmp->login;
+                    if($mode=='avec_classe') {
+                        $tmp_chaine_classes="";
+
+                        $tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+                        if(isset($tmp_tab_clas['liste'])) {
+                            $tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+                        }
+
+                        $tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+                    }
+                    else {
+                        $tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
+                    }
+                }
+            }
+        }	
+	} 
 	return $tab_ele;
 }
 
@@ -2530,16 +2781,32 @@ function statut_accentue($user_statut){
  * @return string|bool Le nom d'une classe ou FALSE
  */
 function get_nom_classe($id_classe){
+    global $mysqli;
 	$sql="SELECT classe FROM classes WHERE id='$id_classe';";
-	$res_class=mysql_query($sql);
-
-	if(mysql_num_rows($res_class)>0){
-		$lig_tmp=mysql_fetch_object($res_class);
-		$classe=$lig_tmp->classe;
-		return $classe;
-	}
-	else{
-		return FALSE;
+         
+	if($mysqli !="") {
+        $resultat = mysqli_query($mysqli, $sql);  
+        if($resultat->num_rows>0){
+            $lig_tmp = $resultat->fetch_object();
+            $classe=$lig_tmp->classe;
+            return $classe;
+        }
+        else{
+            return FALSE;
+            
+        }        
+        $resultat->close();		
+	} else {
+        $res_class=mysql_query($sql);
+        
+        if(mysql_num_rows($res_class)>0){
+            $lig_tmp=mysql_fetch_object($res_class);
+            $classe=$lig_tmp->classe;
+            return $classe;
+        }
+        else{
+            return FALSE;
+        }
 	}
 }
 
@@ -2677,16 +2944,30 @@ function getPref($login,$item,$default){
  * @return boolean TRUE si tout c'est bien passé
  */
 function savePref($login,$item,$valeur){
+    global $mysqli;
 	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
-	$res_prefs=mysql_query($sql);
-
-	if(mysql_num_rows($res_prefs)>0){
+           
+	if($mysqli !="") {
+		$res_prefs=mysqli_query($mysqli, $sql); 
+        $nb_lignes = $res_prefs->num_rows;
+        $res_prefs->close();
+	} else {
+		$res_prefs=mysql_query($sql);
+        $nb_lignes = mysql_num_rows($res_prefs);
+	}
+    
+	if($nb_lignes>0){
 		$sql="UPDATE preferences SET value='$valeur' WHERE login='$login' AND name='$item';";
 	}
 	else{
 		$sql="INSERT INTO preferences SET login='$login', name='$item', value='$valeur';";
 	}
-	$res=mysql_query($sql);
+	if($mysqli !="") {
+        $res=mysqli_query($mysqli, $sql);
+	} else {
+        $res=mysql_query($sql);
+	}
+	
 	if($res) {return TRUE;} else {return FALSE;}
 }
 
@@ -2697,14 +2978,27 @@ function savePref($login,$item,$valeur){
  * @return array Tableau associatif des paramètres name=>value
  */
 function getAllParamClasse($id_classe) {
+    global $mysqli;
 	$sql="SELECT * FROM classes_param WHERE id_classe='$id_classe' ORDER BY name;";
-	$res_param=mysql_query($sql);
+    
+	if($mysqli !="") {
+        $res_param= mysqli_query($mysqli,$sql);
+        $tab_param=array();
+        if($res_param->num_rows >0){
+            while($ligne=$res_param->fetch_object()){
+                $tab_param[$ligne->name]=$ligne->value;
+            }
+        }
+        $res_param->close();
+	} else {
+        $res_param=mysql_query($sql);
 
-	$tab_param=array();
-	if(mysql_num_rows($res_param)>0){
-		while($ligne=mysql_fetch_object($res_param)) {
-			$tab_param[$ligne->name]=$ligne->value;
-		}
+        $tab_param=array();
+        if(mysql_num_rows($res_param)>0){
+            while($ligne=mysql_fetch_object($res_param)) {
+                $tab_param[$ligne->name]=$ligne->value;
+            }
+        }
 	}
 
 	return $tab_param;
@@ -2719,15 +3013,29 @@ function getAllParamClasse($id_classe) {
  * @return string La valeur de l'item
  */
 function getParamClasse($id_classe,$item,$default) {
+    global $mysqli;
 	$sql="SELECT value FROM classes_param WHERE id_classe='$id_classe' AND name='$item'";
-	$res_param=mysql_query($sql);
+    
+            
+	if($mysqli !="") {
+        $res_param=mysqli_query($mysqli, $sql);
+        if($res_param->num_rows>0){
+            $ligne=$res_param->fetch_object();
+            return $ligne->value;
+        }
+        else{
+            return $default;            
+        }		
+	} else {
+        $res_param=mysql_query($sql);
 
-	if(mysql_num_rows($res_param)>0){
-		$ligne=mysql_fetch_object($res_param);
-		return $ligne->value;
-	}
-	else{
-		return $default;
+        if(mysql_num_rows($res_param)>0){
+            $ligne=mysql_fetch_object($res_param);
+            return $ligne->value;
+        }
+        else{
+            return $default;
+        }		
 	}
 }
 
@@ -2740,16 +3048,34 @@ function getParamClasse($id_classe,$item,$default) {
  * @return boolean TRUE si tout c'est bien passé
  */
 function saveParamClasse($id_classe,$item,$valeur) {
+    global $mysqli;
 	$sql="SELECT value FROM classes_param WHERE id_classe='$id_classe' AND name='$item'";
-	$res_param=mysql_query($sql);
+           
+	if($mysqli !="") {
+        $resultat = mysqli_query($mysqli, $sql);  
+        $nb_lignes = $resultat->num_rows;
+        $resultat->close();
+		
+	} else {
+		$res_param=mysql_query($sql);
+        $nb_lignes = mysql_num_rows($res_param);
+	}           
+	
 
-	if(mysql_num_rows($res_param)>0){
+	if($nb_lignes > 0){
 		$sql="UPDATE classes_param SET value='$valeur' WHERE id_classe='$id_classe' AND name='$item';";
 	}
 	else{
 		$sql="INSERT INTO classes_param SET id_classe='$id_classe', name='$item', value='$valeur';";
 	}
-	$res=mysql_query($sql);
+    
+	if($mysqli !="") {
+        $res = mysqli_query($mysqli, $sql);  
+    
+	} else {
+        $res=mysql_query($sql);
+	}           
+	
 	if($res) {return TRUE;} else {return FALSE;}
 }
 
@@ -3542,39 +3868,42 @@ $GLOBALS['photo_hauteur_max'] = 0;
  * @return type nom de la classe (classe.classes)
  */
 function get_class_from_id($id_classe) {
+    global $mysqli;
 	$sql="SELECT classe FROM classes c WHERE id='$id_classe';";
-	$res_class=mysql_query($sql);
+          
+	if($mysqli !="") {
+		$res_class=mysqli_query($mysqli, $sql);
+        if($res_class->num_rows>0){
+            $lig_tmp = $res_class->fetch_object();
+            $classe=$lig_tmp->classe;
+            $res_class->close();
+            return $classe;
+        }
+        else{
+            return FALSE;
+        }
+	} else {    
+        $res_class=mysql_query($sql);
 
-	if(mysql_num_rows($res_class)>0){
-		$lig_tmp=mysql_fetch_object($res_class);
-		$classe=$lig_tmp->classe;
-		return $classe;
-	}
-	else{
-		return FALSE;
-	}
+        if(mysql_num_rows($res_class)>0){
+            $lig_tmp=mysql_fetch_object($res_class);
+            $classe=$lig_tmp->classe;
+            return $classe;
+        }
+        else{
+            return FALSE;
+        }
+		
+	}       
 }
 
-
-
-
-/*
-function fdebug_mail_connexion($texte){
-	// Passer la variable à "y" pour activer le remplissage du fichier de debug pour calcule_moyenne()
-	$local_debug="n";
-	if($local_debug=="y") {
-		$fich=fopen("/tmp/mail_connexion.txt","a+");
-		fwrite($fich,$texte);
-		fclose($fich);
-	}
-}
-*/
 
 /**
  *
  * @global string  
  */
 function mail_connexion() {
+    global $mysqli;
 	global $active_hostbyaddr;
 
 	$test_envoi_mail=getSettingValue("envoi_mail_connexion");
@@ -3587,57 +3916,113 @@ function mail_connexion() {
 		$user_login = $_SESSION['login'];
 
 		$sql="SELECT nom,prenom,email FROM utilisateurs WHERE login='$user_login';";
-		$res_user=mysql_query($sql);
-		if (mysql_num_rows($res_user)>0) {
-			$lig_user=mysql_fetch_object($res_user);
+              
+        if($mysqli !="") {
+            $res_user = mysqli_query($mysqli, $sql);
+            if ($res_user->num_rows > 0) {
+                $lig_user = $res_user->fetch_object();
+                 if(check_mail($lig_user->email)) {
+                    $adresse_ip = $_SERVER['REMOTE_ADDR'];
+                    $date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
 
-			if(check_mail($lig_user->email)) {
-				$adresse_ip = $_SERVER['REMOTE_ADDR'];
-				$date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
+                    if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
+                        $result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+                    }
+                    else if($active_hostbyaddr == "no_local") {
+                        if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
+                            $result_hostbyaddr = "";
+                        }
+                        else{
+                            $tabip=explode(".",$adresse_ip);
+                            if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+                                $result_hostbyaddr = "";
+                            }
+                            else{
+                                $result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+                            }
+                        }
+                    }
+                    else{
+                        $result_hostbyaddr = "";
+                    }
 
-				if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
-					$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
-				}
-				else if($active_hostbyaddr == "no_local") {
-					if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
-						$result_hostbyaddr = "";
-					}
-					else{
-						$tabip=explode(".",$adresse_ip);
-						if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
-							$result_hostbyaddr = "";
-						}
-						else{
-							$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
-						}
-					}
-				}
-				else{
-					$result_hostbyaddr = "";
-				}
+                    $message = "** Mail connexion Gepi **\n\n";
+                    $message .= "\n";
+                    $message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
+                    $message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
+                    $message .= "Login                   : ".$user_login."\n";
+                    $message .= "Date                    : ".$date."\n";
+                    $message .= "Origine de la connexion : ".$adresse_ip."\n";
+                    if($result_hostbyaddr!="") {
+                        $message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
+                    }
+                    $message .= "\n";
+                    $message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
+                    $message .= "\n";
+                    $message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
 
-				$message = "** Mail connexion Gepi **\n\n";
-				$message .= "\n";
-				$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
-				$message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
-				$message .= "Login                   : ".$user_login."\n";
-				$message .= "Date                    : ".$date."\n";
-				$message .= "Origine de la connexion : ".$adresse_ip."\n";
-				if($result_hostbyaddr!="") {
-					$message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
-				}
-				$message .= "\n";
-				$message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
-				$message .= "\n";
-				$message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
+                    // On envoie le mail
+                    //fdebug_mail_connexion("\$message=$message\n====================\n");
+                    $destinataire=$lig_user->email;
+                    $sujet="GEPI : Connexion $date";
+                    envoi_mail($sujet, $message, $destinataire);
+                }
+                $res_user->close();
+            }
+        } else {
+        
+            $res_user=mysql_query($sql);
+            if (mysql_num_rows($res_user)>0) {
+                $lig_user=mysql_fetch_object($res_user);
 
-				// On envoie le mail
-				//fdebug_mail_connexion("\$message=$message\n====================\n");
-				$destinataire=$lig_user->email;
-				$sujet="GEPI : Connexion $date";
-				envoi_mail($sujet, $message, $destinataire);
-			}
-		}
+                if(check_mail($lig_user->email)) {
+                    $adresse_ip = $_SERVER['REMOTE_ADDR'];
+                    $date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
+
+                    if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
+                        $result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+                    }
+                    else if($active_hostbyaddr == "no_local") {
+                        if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
+                            $result_hostbyaddr = "";
+                        }
+                        else{
+                            $tabip=explode(".",$adresse_ip);
+                            if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+                                $result_hostbyaddr = "";
+                            }
+                            else{
+                                $result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+                            }
+                        }
+                    }
+                    else{
+                        $result_hostbyaddr = "";
+                    }
+
+                    $message = "** Mail connexion Gepi **\n\n";
+                    $message .= "\n";
+                    $message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
+                    $message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
+                    $message .= "Login                   : ".$user_login."\n";
+                    $message .= "Date                    : ".$date."\n";
+                    $message .= "Origine de la connexion : ".$adresse_ip."\n";
+                    if($result_hostbyaddr!="") {
+                        $message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
+                    }
+                    $message .= "\n";
+                    $message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
+                    $message .= "\n";
+                    $message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
+
+                    // On envoie le mail
+                    //fdebug_mail_connexion("\$message=$message\n====================\n");
+                    $destinataire=$lig_user->email;
+                    $sujet="GEPI : Connexion $date";
+                    envoi_mail($sujet, $message, $destinataire);
+                }
+            }
+        } 
 	}
 }
 
@@ -3652,71 +4037,141 @@ function mail_connexion() {
  * @see getSettingValue()
  */
 function mail_alerte($sujet,$texte,$informer_admin='n') {
+    global $mysqli;
 	global $active_hostbyaddr;
 
 	$user_login = $_SESSION['login'];
 
 	$sql="SELECT nom,prenom,email FROM utilisateurs WHERE login='$user_login';";
-	$res_user=mysql_query($sql);
-	if (mysql_num_rows($res_user)>0) {
-		$lig_user=mysql_fetch_object($res_user);
+          
+	if($mysqli !="") {
+        $res_user=mysqli_query($mysqli, $sql);
+        if ($res_user->num_rows > 0) {
+            $lig_user = $res_user->fetch_object();
+            
+            $adresse_ip = $_SERVER['REMOTE_ADDR'];
+            //$date = strftime("%Y-%m-%d %H:%M:%S");
+            $date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
+            //$url = parse_url($_SERVER['REQUEST_URI']);
 
-		$adresse_ip = $_SERVER['REMOTE_ADDR'];
-		//$date = strftime("%Y-%m-%d %H:%M:%S");
-		$date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
-		//$url = parse_url($_SERVER['REQUEST_URI']);
-
-		if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
-			$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
-		}
-		else if($active_hostbyaddr == "no_local") {
-			if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
-				$result_hostbyaddr = "";
-			}
-			else{
-				$tabip=explode(".",$adresse_ip);
-				if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
-					$result_hostbyaddr = "";
-				}
-				else{
-					$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
-				}
-			}
-		}
-		else{
-			$result_hostbyaddr = "";
-		}
+            if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
+                $result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+            }
+            else if($active_hostbyaddr == "no_local") {
+                if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
+                    $result_hostbyaddr = "";
+                }
+                else{
+                    $tabip=explode(".",$adresse_ip);
+                    if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+                        $result_hostbyaddr = "";
+                    }
+                    else{
+                        $result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+                    }
+                }
+            }
+            else{
+                $result_hostbyaddr = "";
+            }
 
 
-		//$message = "** Mail connexion Gepi **\n\n";
-		$message=$texte;
-		$message .= "\n";
-		$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
-		$message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
-		$message .= "Login                   : ".$user_login."\n";
-		$message .= "Date                    : ".$date."\n";
-		$message .= "Origine de la connexion : ".$adresse_ip."\n";
-		if($result_hostbyaddr!="") {
-			$message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
-		}
-		$message .= "\n";
-		$message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
-		$message .= "\n";
-		$message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
+            //$message = "** Mail connexion Gepi **\n\n";
+            $message=$texte;
+            $message .= "\n";
+            $message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
+            $message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
+            $message .= "Login                   : ".$user_login."\n";
+            $message .= "Date                    : ".$date."\n";
+            $message .= "Origine de la connexion : ".$adresse_ip."\n";
+            if($result_hostbyaddr!="") {
+                $message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
+            }
+            $message .= "\n";
+            $message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
+            $message .= "\n";
+            $message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
 
-		$ajout="";
-		if(($informer_admin!='n')&&(getSettingValue("gepiAdminAdress")!='')) {
-			$ajout="Bcc: ".getSettingValue("gepiAdminAdress")."\r\n";
-		}
+            $ajout="";
+            if(($informer_admin!='n')&&(getSettingValue("gepiAdminAdress")!='')) {
+                $ajout="Bcc: ".getSettingValue("gepiAdminAdress")."\r\n";
+            }
 
-		// On envoie le mail
-		//fdebug_mail_connexion("\$message=$message\n====================\n");
+            // On envoie le mail
+            //fdebug_mail_connexion("\$message=$message\n====================\n");
 
-		$destinataire=$lig_user->email;
-		$sujet="GEPI : $sujet $date";
-		envoi_mail($sujet, $message, $destinataire, $ajout);
+            $destinataire=$lig_user->email;
+            $sujet="GEPI : $sujet $date";
+            envoi_mail($sujet, $message, $destinataire, $ajout);
+            
+            $res_user->close();
+        }
+	} else {
+		
+        $res_user=mysql_query($sql);
+        if (mysql_num_rows($res_user)>0) {
+            $lig_user=mysql_fetch_object($res_user);
 
-	}
+            $adresse_ip = $_SERVER['REMOTE_ADDR'];
+            //$date = strftime("%Y-%m-%d %H:%M:%S");
+            $date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
+            //$url = parse_url($_SERVER['REQUEST_URI']);
+
+            if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
+                $result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+            }
+            else if($active_hostbyaddr == "no_local") {
+                if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
+                    $result_hostbyaddr = "";
+                }
+                else{
+                    $tabip=explode(".",$adresse_ip);
+                    if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+                        $result_hostbyaddr = "";
+                    }
+                    else{
+                        $result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+                    }
+                }
+            }
+            else{
+                $result_hostbyaddr = "";
+            }
+
+
+            //$message = "** Mail connexion Gepi **\n\n";
+            $message=$texte;
+            $message .= "\n";
+            $message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
+            $message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
+            $message .= "Login                   : ".$user_login."\n";
+            $message .= "Date                    : ".$date."\n";
+            $message .= "Origine de la connexion : ".$adresse_ip."\n";
+            if($result_hostbyaddr!="") {
+                $message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
+            }
+            $message .= "\n";
+            $message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
+            $message .= "\n";
+            $message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
+
+            $ajout="";
+            if(($informer_admin!='n')&&(getSettingValue("gepiAdminAdress")!='')) {
+                $ajout="Bcc: ".getSettingValue("gepiAdminAdress")."\r\n";
+            }
+
+            // On envoie le mail
+            //fdebug_mail_connexion("\$message=$message\n====================\n");
+
+            $destinataire=$lig_user->email;
+            $sujet="GEPI : $sujet $date";
+            envoi_mail($sujet, $message, $destinataire, $ajout);
+
+        }
+	}           
+    
+    
+    
 }
 
 /**
@@ -3984,32 +4439,62 @@ function my_strtoupper($mot) {
  * @see casse_mot()
  */
 function get_nom_prenom_eleve($login_ele,$mode='simple') {
+    global $mysqli;
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
-		// Si ce n'est pas un élève, c'est peut-être un utilisateur prof, cpe, responsable,...
-		$sql="SELECT 1=1 FROM utilisateurs WHERE login='$login_ele';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			return civ_nom_prenom($login_ele)." (non-élève)";
-		}
-		else {
-			return "Elève inconnu ($login_ele)";
-		}
-	}
-	else {
-		$lig=mysql_fetch_object($res);
+            
+	if($mysqli !="") {
+        $res=mysqli_query($mysqli, $sql);
+        if($res->num_rows == 0) {
+            // Si ce n'est pas un élève, c'est peut-être un utilisateur prof, cpe, responsable,...
+            $sql_ = "SELECT 1=1 FROM utilisateurs WHERE login='$login_ele';";
+            $res = mysqli_query($mysqli, $sql);
+            if($res->num_rows > 0) {
+                return civ_nom_prenom($login_ele)." (non-élève)";
+            } else {
+                return "Elève inconnu ($login_ele)";
+            }
+        } else {
+            $lig=$res->fetch_object();
+            $ajout="";
+            if($mode=='avec_classe') {
+                $tmp_tab_clas=get_class_from_ele_login($login_ele);
+                if((isset($tmp_tab_clas['liste']))&&($tmp_tab_clas['liste']!='')) {
+                    $ajout=" (".$tmp_tab_clas['liste'].")";
+                }
+            }
+            $res->close();
+            return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').$ajout;
+        }
+		
+	} else {
 
-		$ajout="";
-		if($mode=='avec_classe') {
-			$tmp_tab_clas=get_class_from_ele_login($login_ele);
-			if((isset($tmp_tab_clas['liste']))&&($tmp_tab_clas['liste']!='')) {
-				$ajout=" (".$tmp_tab_clas['liste'].")";
-			}
-		}
+        $res=mysql_query($sql);
+        if(mysql_num_rows($res)==0) {
+            // Si ce n'est pas un élève, c'est peut-être un utilisateur prof, cpe, responsable,...
+            $sql="SELECT 1=1 FROM utilisateurs WHERE login='$login_ele';";
+            $res=mysql_query($sql);
+            if(mysql_num_rows($res)>0) {
+                return civ_nom_prenom($login_ele)." (non-élève)";
+            }
+            else {
+                return "Elève inconnu ($login_ele)";
+            }
+        }
+        else {
+            $lig=mysql_fetch_object($res);
 
-		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').$ajout;
+            $ajout="";
+            if($mode=='avec_classe') {
+                $tmp_tab_clas=get_class_from_ele_login($login_ele);
+                if((isset($tmp_tab_clas['liste']))&&($tmp_tab_clas['liste']!='')) {
+                    $ajout=" (".$tmp_tab_clas['liste'].")";
+                }
+            }
+
+            return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').$ajout;
+        }
 	}
+        
 }
 
 /**
@@ -4023,24 +4508,45 @@ function get_nom_prenom_eleve($login_ele,$mode='simple') {
  * @see casse_mot()
  */
 function get_nom_prenom_eleve_from_ele_id($ele_id, $mode='simple') {
+    global $mysqli;
 	$sql="SELECT login, nom,prenom FROM eleves WHERE ele_id='$ele_id';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
-		return "Elève inconnu ($ele_id)";
-	}
-	else {
-		$lig=mysql_fetch_object($res);
+            
+	if($mysqli !="") {
+		$res=mysqli_query($mysqli, $sql);
+        if($res->num_rows==0) {
+            return "Elève inconnu ($ele_id)";
+        } else {
+            $lig=$res->fetch_object();
+            $ajout="";
+            if($mode=='avec_classe') {
+                $tmp_tab_clas=get_class_from_ele_login($lig->login);
+                if((isset($tmp_tab_clas['liste']))&&($tmp_tab_clas['liste']!='')) {
+                    $ajout=" (".$tmp_tab_clas['liste'].")";
+                }
+            }
+            $res->close();
+            return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').$ajout;
+        }
+	} else {
+		        
+        $res=mysql_query($sql);
+        if(mysql_num_rows($res)==0) {
+            return "Elève inconnu ($ele_id)";
+        }
+        else {
+            $lig=mysql_fetch_object($res);
 
-		$ajout="";
-		if($mode=='avec_classe') {
-			$tmp_tab_clas=get_class_from_ele_login($lig->login);
-			if((isset($tmp_tab_clas['liste']))&&($tmp_tab_clas['liste']!='')) {
-				$ajout=" (".$tmp_tab_clas['liste'].")";
-			}
-		}
+            $ajout="";
+            if($mode=='avec_classe') {
+                $tmp_tab_clas=get_class_from_ele_login($lig->login);
+                if((isset($tmp_tab_clas['liste']))&&($tmp_tab_clas['liste']!='')) {
+                    $ajout=" (".$tmp_tab_clas['liste'].")";
+                }
+            }
 
-		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').$ajout;
-	}
+            return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').$ajout;
+        }
+	}   
 }
 
 /**
@@ -4056,6 +4562,7 @@ function get_nom_prenom_eleve_from_ele_id($ele_id, $mode='simple') {
  * @return string La commune
  */
 function get_commune($code_commune_insee,$mode){
+    global $mysqli;
 	$retour="";
 
 	if(strstr($code_commune_insee,'@')) {
