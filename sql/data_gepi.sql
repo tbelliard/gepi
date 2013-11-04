@@ -1206,9 +1206,11 @@ INSERT INTO droits SET id='/cahier_texte_2/consultation2.php',administrateur='V'
 INSERT INTO droits SET id='/mod_trombinoscopes/plan_de_classe.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Plan de classe',statut='';
 INSERT INTO droits VALUES ('/gestion/param_ordre_item.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modifier l ordre des items dans les menus', '');
 INSERT INTO droits VALUES ('/mod_annees_anterieures/gerer_annees_anterieures.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gérer les années antérieures', '');
+INSERT INTO droits SET id='/eleves/cherche_login.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Ajax: Recherche d un login',statut='';
 INSERT INTO droits SET id='/classes/ajout_eleve_classe.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Enregistrement des inscriptions élève/classe',statut='';
 INSERT INTO droits SET id='/mod_abs2/export_stat.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Exports statistiques',statut='';
 INSERT INTO droits SET id='/mod_abs2/calcul_score.php',administrateur='V',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Exports statistiques',statut='';
 INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'V', 'F', 'F', 'V', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');
 INSERT INTO setting SET name='MessagerieDelaisTest', value='1';
 INSERT INTO setting SET name='MessagerieLargeurImg', value='16';
+
