@@ -40,7 +40,7 @@ if(mysql_num_rows($test)==0) {
 	administrateur='V',
 	professeur='F',
 	cpe='F',
-	scolarite='F',
+	scolarite='V',
 	eleve='F',
 	responsable='F',
 	secours='F',
