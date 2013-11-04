@@ -1179,3 +1179,4 @@ INSERT INTO droits SET id='/mod_notanet/verif_saisies.php',administrateur='V',pr
 INSERT INTO droits SET id='/cahier_texte_2/consultation2.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='F',autre='V',description='Cahiers de textes: Consultation',statut='';
 INSERT INTO droits SET id='/mod_trombinoscopes/plan_de_classe.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Plan de classe',statut='';
 INSERT INTO droits VALUES ('/gestion/param_ordre_item.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modifier l ordre des items dans les menus', '');
+INSERT INTO droits SET id='/eleves/cherche_login.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Ajax: Recherche d un login',statut='';
