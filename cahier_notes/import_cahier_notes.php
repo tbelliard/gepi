@@ -224,9 +224,9 @@ else {
 					echo "<p><b>ERREUR:</b> La ligne d'entête du fichier n'est pas conforme à ce qui est attendu.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 					/**
-                     * Pied de page
-                     */
-                    require("../lib/footer.inc.php");
+					* Pied de page
+					*/
+					require("../lib/footer.inc.php");
 					die();
 				}
 
@@ -376,9 +376,9 @@ else {
 					echo "<p><b>Erreur:</b> Aucun nom de devoir n'a été trouvé.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 					/**
-                     * Pied de page
-                     */
-                    require("../lib/footer.inc.php");
+					* Pied de page
+					*/
+					require("../lib/footer.inc.php");
 					die();
 				}
 
@@ -389,9 +389,9 @@ else {
 					echo "<p><b>Erreur:</b> Le nombre de champs ne coïncide pas pour les noms courts, coefficients et dates.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 					/**
-                     * Pied de page
-                     */
-                    require("../lib/footer.inc.php");
+					* Pied de page
+					*/
+					require("../lib/footer.inc.php");
 					die();
 				}
 
@@ -519,45 +519,50 @@ else {
 		if(!isset($nomc_dev)){
 			echo "<p>ERREUR: Aucun devoir importé.</p>\n";
 			/**
-             * Pied de page
-             */
-            require("../lib/footer.inc.php");
+			* Pied de page
+			*/
+			require("../lib/footer.inc.php");
+			die();
 		}
 
 		$date_dev=isset($_POST['date_dev']) ? $_POST['date_dev'] : NULL;
 		if(!isset($date_dev)){
 			echo "<p>ERREUR: Aucune date définie.</p>\n";
 			/**
-             * Pied de page
-             */
-            require("../lib/footer.inc.php");
+			* Pied de page
+			*/
+			require("../lib/footer.inc.php");
+			die();
 		}
 
 		$coef_dev=isset($_POST['coef_dev']) ? $_POST['coef_dev'] : NULL;
 		if(!isset($coef_dev)){
 			echo "<p>ERREUR: Aucun coefficient défini.</p>\n";
 			/**
-             * Pied de page
-             */
-            require("../lib/footer.inc.php");
+			* Pied de page
+			*/
+			require("../lib/footer.inc.php");
+			die();
 		}
 
 		$note_sur_dev=isset($_POST['note_sur_dev']) ? $_POST['note_sur_dev'] : NULL;
 		if(!isset($note_sur_dev)){
 			echo "<p>ERREUR: Aucun référentiel de notation défini.</p>\n";
 			/**
-             * Pied de page
-             */
-            require("../lib/footer.inc.php");
+			* Pied de page
+			*/
+			require("../lib/footer.inc.php");
+			die();
 		}
 
 		$login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : NULL;
 		if(!isset($login_ele)){
 			echo "<p>ERREUR: Aucun élève importé.</p>\n";
 			/**
-             * Pied de page
-             */
-            require("../lib/footer.inc.php");
+			* Pied de page
+			*/
+			require("../lib/footer.inc.php");
+			die();
 		}
 
 		$valide_import_dev=isset($_POST['valide_import_dev']) ? $_POST['valide_import_dev'] : NULL;
@@ -586,18 +591,20 @@ else {
 						echo "<p><b>Erreur</b> lors de la création du devoir n°$i (<i>$nomc_dev[$i]</i>).</p>\n";
 						echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 						/**
-                         * Pied de page
-                         */
-                require("../lib/footer.inc.php");
+						* Pied de page
+						*/
+						require("../lib/footer.inc.php");
 						die();
 					}
 
+					// facultatif='O' : Le O signifie en fait que le devoir compte normalement dans la moyenne
 					$sql="UPDATE cn_devoirs SET nom_court='".$nomc_dev[$i]."',
 												nom_complet='".$nomc_dev[$i]."',
 												date='".$date_dev[$i]."',
 												coef='".$coef_dev[$i]."',
 												note_sur='".$note_sur_dev[$i]."',
-												display_parents='1'
+												display_parents='1',
+												facultatif='O'
 											WHERE id='$id_dev[$i]';";
 					echo "Création du devoir n°$i: $nomc_dev[$i]<br />\n";
 					//echo "$sql<br />\n";
@@ -606,9 +613,9 @@ else {
 						echo "<p><b>Erreur</b> lors de la création du devoir n°$i (<i>$nomc_dev[$i]</i>).</p>\n";
 						echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 						/**
-                         * Pied de page
-                         */
-                    require("../lib/footer.inc.php");
+						* Pied de page
+						*/
+						require("../lib/footer.inc.php");
 						die();
 					}
 					flush();
