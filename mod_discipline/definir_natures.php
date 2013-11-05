@@ -52,6 +52,8 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 	die();
 }
 
+require('sanctions_func_lib.php');
+
 $acces_ok="n";
 if(($_SESSION['statut']=='administrateur')||
 (($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirNaturesCpe')))||
@@ -59,12 +61,10 @@ if(($_SESSION['statut']=='administrateur')||
 	$acces_ok="y";
 }
 else {
-	$msg="Vous n'avez pas le droit de définir les natures d'incidents.";
+	$msg="Vous n'avez pas le droit de définir les natures d'".$mod_disc_terme_incident."s.";
 	header("Location: ./index.php?msg=$msg");
 	die();
 }
-
-require('sanctions_func_lib.php');
 
 $msg = "";
 
@@ -250,7 +250,6 @@ if($DisciplineNaturesRestreintes=='') {
 
 $themessage = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-//$titre_page = "Sanctions: Définition des qualités";
 $titre_page = "Discipline: Définition des natures";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
@@ -262,7 +261,7 @@ echo "</p>\n";
 echo "<form enctype='multipart/form-data' action='" . $_SERVER['PHP_SELF'] . "' method='post' name='formulaire'>\n";
 echo add_token_field();
 
-echo "<p class='bold'>Saisie des natures d'incidents&nbsp;:</p>\n";
+echo "<p class='bold'>Saisie des natures d'".$mod_disc_terme_incident."s&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
 $cpt = 0;
@@ -327,15 +326,15 @@ echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 echo "<p>\n";
 echo "<input type='radio' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes_0' value='0' ";
 if($DisciplineNaturesRestreintes=="0") {echo "checked ";}
-echo "/><label for='DisciplineNaturesRestreintes_0'> Ne pas utiliser la liste de natures proposées ici.<br />Les utilisateurs pourront saisir des natures d'incident librement et ne se verront proposer que des natures parmi celles saisies précédemment lors d'autres incidents.</label><br />\n";
+echo "/><label for='DisciplineNaturesRestreintes_0'> Ne pas utiliser la liste de natures proposées ici.<br />Les utilisateurs pourront saisir des natures d'".$mod_disc_terme_incident." librement et ne se verront proposer que des natures parmi celles saisies précédemment lors d'autres ".$mod_disc_terme_incident."s.</label><br />\n";
 
 echo "<input type='radio' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes_1' value='1' ";
 if($DisciplineNaturesRestreintes=="1") {echo "checked ";}
-echo "/><label for='DisciplineNaturesRestreintes_1'> Les utilisateurs pourront saisir des natures d'incident librement, mais ne se verront proposer que les natures de la liste ci-dessus.</label><br />\n";
+echo "/><label for='DisciplineNaturesRestreintes_1'> Les utilisateurs pourront saisir des natures d'".$mod_disc_terme_incident." librement, mais ne se verront proposer que les natures de la liste ci-dessus.</label><br />\n";
 
 echo "<input type='radio' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes_2' value='2' ";
 if($DisciplineNaturesRestreintes=="2") {echo "checked ";}
-echo "/><label for='DisciplineNaturesRestreintes_2'> Restreindre les natures d'incidents pouvant être sélectionnées aux seules natures ci-dessus.<br />Les utilisateurs devront choisir une des natures de la liste ci-dessus.</label><br />\n";
+echo "/><label for='DisciplineNaturesRestreintes_2'> Restreindre les natures d'".$mod_disc_terme_incident."s pouvant être sélectionnées aux seules natures ci-dessus.<br />Les utilisateurs devront choisir une des natures de la liste ci-dessus.</label><br />\n";
 echo "</p>\n";
 
 echo "<p><br /><input type='hidden' name='is_posted' value='y' /></p>\n";
@@ -347,7 +346,7 @@ echo "<p><br /></p>\n";
 echo "<p><em>NOTES&nbsp;:</em></p>
 <ul>
 	<li>
-		<p>Restreindre les natures d'incidents pouvant être sélectionnées aux seules natures ci-dessus permet d'éviter une trop grande dispersion des natures (<i>on peut sinon avoir 'Insolence', 'Comportement insolent', 'insolent',...</i>).<br />
+		<p>Restreindre les natures d'".$mod_disc_terme_incident."s pouvant être sélectionnées aux seules natures ci-dessus permet d'éviter une trop grande dispersion des natures (<i>on peut sinon avoir 'Insolence', 'Comportement insolent', 'insolent',...</i>).<br />
 		Cependant, trop les restreindre peut gêner les utilisateurs.</p>
 	</li>
 </ul>\n";

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -40,7 +40,7 @@ if(mysql_num_rows($test)==0) {
 	administrateur='V',
 	professeur='F',
 	cpe='F',
-	scolarite='F',
+	scolarite='V',
 	eleve='F',
 	responsable='F',
 	secours='F',
@@ -59,6 +59,19 @@ header('Content-Type: text/html; charset=utf-8');
 
 $auth_sso=getSettingValue("auth_sso") ? getSettingValue("auth_sso") : "";
 
+$gepi_non_plugin_lcs_mais_recherche_ldap=false;
+if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("../secure/config_ldap.inc.php"))) {
+	include("../secure/config_ldap.inc.php");
+
+	$lcs_ldap_base_dn=$ldap_base_dn;
+	$lcs_ldap_host=$ldap_host;
+	$lcs_ldap_port=$ldap_port;
+	$gepi_non_plugin_lcs_mais_recherche_ldap=true;
+
+	$lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
+	$lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
+}
+
 $nom=isset($_POST['nom']) ? $_POST['nom'] : (isset($_GET['nom']) ? $_GET['nom'] : "");
 $prenom=isset($_POST['prenom']) ? $_POST['prenom'] : (isset($_GET['prenom']) ? $_GET['prenom'] : "");
 
@@ -67,7 +80,7 @@ if(($nom!="")||($prenom!="")) {
 	$nom=preg_replace("[A-Za-z]","*",$nom);
 	$prenom=preg_replace("[A-Za-z]","*",$prenom);
 
-	if($auth_sso=='lcs') {
+	if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 		function connect_ldap($l_adresse,$l_port,$l_login,$l_pwd) {
 			$ds = @ldap_connect($l_adresse, $l_port);
 			if($ds) {

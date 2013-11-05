@@ -99,18 +99,18 @@
 <!-- Identifiant -->				
 				<p class='droite' title="Saisissez l'identifiant qui vous a été donné.">
 					<label for='login'>Identifiant</label>
-					<input type='text' id='login' name='login' size='17' />
+					<input type='text' id='login' name='login' size='17' tabindex='1' />
 				</p>
 						
 <!-- Mot de passe -->				
 				<p class='droite' title="Saisissez votre mot de passe en respectant les minuscules et les majuscules." >
-					<label for='no_anti_inject_password'>Mot de passe</label>
-					<input type='password' id='no_anti_inject_password' name='no_anti_inject_password' size='17' onkeypress='capsDetect(arguments[0]);'/>
+					<label for='no_anti_inject_password'>Mot de passe</label>[onshow.tbs_input_password_to_text;magnet=p;htmlconv=no]
+					<input type='password' id='no_anti_inject_password' name='no_anti_inject_password' size='16' onkeypress='capsDetect(arguments[0]);' tabindex='2' />
 				</p>
 					
 <!-- Bouton valider -->				
 				<p class='droite' title="Envoyer les identifiants">
-					<input type='submit' name='submit' id='soumettre' value='Valider' />
+					<input type='submit' name='submit' id='soumettre' value='Valider' tabindex='3' />
 				</p>
 									
 <!-- Mot de passe oublié -->

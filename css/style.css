@@ -216,9 +216,132 @@ TD.calendar {border:0px; font-size: 7pt}
 TD.calendarcol1 {border:0px; font-size: 8pt}
 TD.calendarHeader {border:0px; font-size: 10pt}
 
-/* Styles utilisés ici et là... peut-être faudrait-il en remplacer certains par H1, H2,... */
+/* Styles utilisés ici et là... peut-être faudrait-il en remplacer certains par h1, h2,... */
 .grand {
 	color: #330033;
 	font-size: 16pt;
 }
+
+/* Icones */
+.icone15 {
+    height: 15px;
+    width: 15px;
+}
+
+.icone16 {
+    height: 16px;
+    width: 16px;
+}
+
+.icone20 {
+    height: 20px;
+    width: 20px;
+}
+.icone15x25 {
+    height: 25px;
+    width: 15px;
+}
+
+.cn_moymin {
+    color:red;
+}
+
+.cn_moyclasse {
+    color:blue;
+}
+
+.cn_moymax {
+    color:green;
+}
+
+/* ===================== */
+table.boireaus {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	border-collapse: collapse;
+}
+
+.boireaus th {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	/*background-color: khaki;*/
+	background-color: #fff5b1;
+	font-weight:bold;
+	text-align:center;
+	vertical-align: middle;
+    padding: .2em .5em;
+}
+
+.boireaus td {
+	text-align:center;
+	vertical-align: middle;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+    padding: .2em .5em;
+}
+
+.boireaus .lig-1 {
+	background-color: #C8FFC8;
+}
+.boireaus .lig1 {
+	background-color: #FFE6AA;
+}
+
+
+/* =======================================*
+* Affichage de div sous forme de tableau
+*=========================================*/
+
+/* ===== 2 colonnes → 1ère colonne 30% ===== */
+.colonne {
+	display:table-cell;
+	padding:0.5em;
+	vertical-align:middle;
+	border-width:thin;
+	border-style:solid; 
+	border-color:#d3d3d3; 
+}
+
+.colonne:first-child {
+	width:30%; 
+	font-size:medium;
+	font-weight:normal;
+}
+
+.colonne + .colonne {
+	border-left: none;
+}
+
+
+/* ===== 3 colonnes ===== */
+.ligne3 {
+    display:table-row;
+}
+
+.col3 {
+	display:table-cell;
+	padding:0.5em ;
+}
+
+.col3_0 {
+	width:30%; 
+	font-size:medium;
+	font-weight:normal;
+}
+
+.col3_1  {
+	width:30%; 
+	font-size:medium;
+	font-weight:normal;
+}
+
+.col3_2  {
+	width:30%; 
+	font-size:medium;
+	font-weight:normal;
+}
+
 

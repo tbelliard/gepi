@@ -155,6 +155,7 @@ if(!empty($creer_pdf) and !empty($_SESSION['date_debut_exp']) and !empty($_SESSI
 // FIN Christian renvoye vers le fichier PDF
 
 //Configuration du calendrier
+/*
 include("../lib/calendrier/calendrier.class.php");
 $cal1 = new Calendrier("form_choix_edit", "display_date_debut");
 $cal2 = new Calendrier("form_choix_edit", "display_date_fin");
@@ -162,6 +163,7 @@ $cal2 = new Calendrier("form_choix_edit", "display_date_fin");
 $cal3 = new Calendrier("imprime_pdf", "display_date_debut");
 $cal4 = new Calendrier("imprime_pdf", "display_date_fin");
 // fin rajout christian
+*/
 
 // Initialisation des variables
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :NULL);
@@ -840,6 +842,11 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	}
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 //**************** EN-TETE *******************************
 if (!isset($_POST['display_entete'])) $titre_page = "Visualisation des relevés de notes";
 require_once("../lib/header.inc.php");
@@ -1023,16 +1030,23 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		  					echo "<a name='calend'></a>Du : \n";
 							echo "<input type='text' id='display_date_debut' name='display_date_debut' size='10' value='$display_date_debut' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 							echo "<label for='display_date_debut' class='invisible'>Date de début</label>\n";
+							/*
 							echo "<a href=\"#calend\" onclick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier_id.php', 350, 170)."\">\n";
 							//echo "<a href=\"#calend\" onclick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\">\n";
 								echo "<img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' />\n";
 							echo "</a>\n";
+							*/
+							echo img_calendrier_js("display_date_debut", "img_bouton_display_date_debut");
+
 							echo "&nbsp;au :\n";
 							echo "<input type='text' id='display_date_fin' name ='display_date_fin' size='10' value='$display_date_fin' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 							echo "<label for='display_date_fin' class='invisible'>Date de fin</label>\n";
+							/*
 							echo "<a href=\"#calend\" onclick=\"".$cal4->get_strPopup('../lib/calendrier/pop.calendrier_id.php', 350, 170)."\">\n";
 								echo "<img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' />\n";
 							echo "</a>\n";
+							*/
+							echo img_calendrier_js("display_date_fin", "img_bouton_display_date_fin");
 							echo "<br />\n";
 							echo "<p class='info'>\n";
 								echo "(Veillez à respecter le format jj/mm/aaaa)\n";
@@ -1855,19 +1869,25 @@ function aff_lig_adresse_parent(mode){
 	echo "<label for='choix_periode_dates' class='curseur_pointeur'> \nDe la date : </label>\n";
 	echo "<input type='text' id='display_date_debut' name = 'display_date_debut' size='10' value = \"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	echo "<label for='display_date_debut' class='curseur_pointeur'>\n";
+		/*
 		echo "<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier_id.php', 350, 170)."\">\n";
 			// echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" />\n";
 			echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" />\n";
 		echo "</a>\n";
+		*/
+		echo img_calendrier_js("display_date_debut", "img_bouton_display_date_debut");
 
 		echo "&nbsp;à la date : \n";
 	echo "</label>";
 	echo "<input type='text' id='display_date_fin' name='display_date_fin' size='10' value = \"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 	echo "<label for='display_date_fin' class='curseur_pointeur'>\n";
+		/*
 		echo "<a href=\"#calend\" onclick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier_id.php', 350, 170)."\">\n";
 			// echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" />\n";
 			echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" />\n";
 		echo "</a>\n";
+		*/
+	echo img_calendrier_js("display_date_fin", "img_bouton_display_date_fin");
 
 		echo " (Veillez à respecter le format jj/mm/aaaa)\n";
 	echo "</label>\n";

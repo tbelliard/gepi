@@ -484,6 +484,9 @@ table.menu td {
 .color_fond_notices_t {
 	background-color: #FFCCCF;
 }
+.color_fond_notices_t_fait {
+	background-color:grey;
+}
 .couleur_entete_fond_t {
 	background-color: #FFCCCF;
 }

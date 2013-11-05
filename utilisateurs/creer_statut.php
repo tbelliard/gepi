@@ -3,7 +3,7 @@
 /**
  *
  * Modif table `droits` : ALTER TABLE `droits` ADD `autre` VARCHAR( 1 ) NOT NULL DEFAULT 'F' AFTER `secours` ;
- * @copyright 2008
+ * @copyright 2008-2013
  */
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
@@ -187,6 +187,8 @@ if ($action == 'modifier') {
         $test[$a][22] = isset($_POST["abs_totaux|".$b]) ? $_POST["abs_totaux|".$b] : NULL;
         $test[$a][23] = isset($_POST["bul_print|".$b]) ? $_POST["bul_print|".$b] : NULL;
         $test[$a][24] = isset($_POST["visu_equipes_peda|".$b]) ? $_POST["visu_equipes_peda|".$b] : NULL;
+        $test[$a][25] = isset($_POST["visu_listes_ele|".$b]) ? $_POST["visu_listes_ele|".$b] : NULL;
+        $test[$a][26] = isset($_POST["listes_ele_csv|".$b]) ? $_POST["listes_ele_csv|".$b] : NULL;
 
 		// On assure les différents traitements
 		if ($test[$a][0] == 'on') {

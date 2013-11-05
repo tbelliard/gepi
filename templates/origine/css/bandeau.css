@@ -227,7 +227,7 @@ background-color: #F00;
 #menu_barre ul ul {
 	border-right: #b0b0b0 1px solid; 
 	padding-right: 0px; 
-	border-top: #b0b0b0 1px solid; 
+	border-top: #b0b0b0 1px solid;
 	display: none; 
 	padding-left: 0px; 
 	left: 0px; 
@@ -245,6 +245,8 @@ background-color: #F00;
 
 	color: white;
 	background-color: #4a4a59;
+
+	box-shadow: 4px 2px 6px #aaa;
 
 	z-index:1000;
 }

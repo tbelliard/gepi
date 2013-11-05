@@ -4,7 +4,7 @@
  *
  * $Id$
  *
- * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+ * @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
  * @todo Les bulletins HTML utilisent les infos display_rang, display_coef,... de la table 'classes'.
  *Les bulletins PDF utilisent plutôt les infos de la table 'modele_bulletin' il me semble.
  *Il faudrait peut-être revoir le dispositif pour adopter la même stratégie.
@@ -815,6 +815,33 @@ function ToutDeCocher() {
 
 	}
 
+	$tab_signature=get_tab_signature_bull();
+	if(count($tab_signature)>0) {
+		echo "<p class='bold'>Signature des bulletins&nbsp;: <a href='#'><img src='../images/edit16.png' class='icone16' title=\"Éditer/Modifier les signatures.
+Le dépot de fichiers de signature pour les différents utilisateurs et classes n'est pour le moment possible qu'en tant qu'administrateur dans Gestion des modules/Bulletins\" /></a></p>\n";
+		echo "<table class='boireaus boireaus_alt' summary='Tableau des signatures possibles'>\n";
+		echo "<tr><th>Classe</th><th>Signer</th></tr>\n";
+		for($i=0;$i<count($tab_id_classe);$i++) {
+			echo "<tr><td>".get_nom_classe($tab_id_classe[$i])."</td><td>";
+			if((isset($tab_signature['classe']))&&(array_key_exists($tab_id_classe[$i] ,$tab_signature['classe']))) {
+				if((isset($tab_signature['fichier']))&&(array_key_exists($tab_signature['classe'][$tab_id_classe[$i]]['id_fichier'] ,$tab_signature['fichier']))) {
+					echo "<input type='checkbox' name='signer[]' id='signer_".$tab_id_classe[$i]."' value= '".$tab_id_classe[$i]."' onchange=\"checkbox_change(this.id)\" /><label for='signer_".$tab_id_classe[$i]."' id='texte_signer_".$tab_id_classe[$i]."'> Signer avec l'image ci-contre ";
+					echo "<img src='".$tab_signature['fichier'][$tab_signature['classe'][$tab_id_classe[$i]]['id_fichier']]['chemin']."' width='100' style='vertical-align:middle;' />";
+					echo "</label>";
+				}
+				else {
+					echo "Le droit de signer est présent,<br />mais aucun fichier de signature n'est associé à la classe.";
+				}
+			}
+			else {
+				echo "<img src='../images/disabled.png' class='icone20' title=\"Vous n'avez pas le droit de signer d'un fichier les bulletins de cette classe.\" />";
+			}
+			echo "</td></tr>\n";
+			//$sql="SELECT ";
+		}
+		echo "</table>\n";
+	}
+
 
 	echo "<p align='center'><input type='submit' name='bouton_valide_select_eleves1' value='Valider' /></p>\n";
 	echo "</div>\n";
@@ -1163,6 +1190,8 @@ else {
 
 	$tri_par_etab_orig=isset($_POST['tri_par_etab_orig']) ? $_POST['tri_par_etab_orig'] : "n";
 
+	$signer=isset($_POST['signer']) ? $_POST['signer'] : array();
+
 	//$avec_coches_mentions=isset($_POST['avec_coches_mentions']) ? $_POST['avec_coches_mentions'] : "n";
 
 
@@ -1397,6 +1426,24 @@ else {
 			}
 		}
 	}
+
+
+	$signature_bull=array();
+	if(count($signer)>0) {
+		$tab_signature=get_tab_signature_bull();
+		if((count($tab_signature)>0)&&(isset($tab_signature['classe']))) {
+			for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+
+				if(array_key_exists($tab_id_classe[$loop_classe], $tab_signature['classe'])) {
+					if(array_key_exists($tab_signature['classe'][$tab_id_classe[$loop_classe]]['id_fichier'], $tab_signature['fichier'])) {
+						$signature_bull[$tab_id_classe[$loop_classe]]=$tab_signature['fichier'][$tab_signature['classe'][$tab_id_classe[$loop_classe]]['id_fichier']]['chemin'];
+					}
+				}
+
+			}
+		}
+	}
+
 
 	$nb_bulletins_edites=0;
 	// Boucle sur les classes
@@ -3402,6 +3449,7 @@ else {
 		die();
 	}
 
+	/*
 	if($mode_bulletin=="html") {
 		// 20120716
 		// Si une image de signature doit être insérée...
@@ -3424,6 +3472,7 @@ else {
 			}
 		}
 	}
+	*/
 
 	if($mode_bulletin=="pdf") {
 		// définition d'une variable

@@ -122,16 +122,41 @@
 			echo "<p>Cette page permet de remplir des tables temporaires avec les informations élèves.<br />\n";
 			echo "</p>\n";
 
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi_xml' method='post'>\n";
+			echo "<fieldset style='border: 1px solid grey;";
+			echo "background-image: url(\"../images/background/opacite50.png\"); ";
+			echo "'>\n";
 			echo add_token_field();
 			echo "<p>Veuillez fournir le fichier ElevesAvecAdresses.xml (<em>ou ElevesSansAdresses.xml</em>):<br />\n";
-			echo "<input type=\"file\" size=\"65\" name=\"eleves_xml_file\" /><br />\n";
+			echo "<input type=\"file\" size=\"65\" name=\"eleves_xml_file\" id='input_xml_file' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
 				echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex : ElevesSansAdresses.zip</em>)</p>";
 			}
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
-			echo "<p><input type='submit' value='Valider' /></p>\n";
+
+			//echo "<p><input type='submit' value='Valider' /></p>\n";
+
+			echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+</fieldset>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_file() {
+		fichier=document.getElementById('input_xml_file').value;
+		//alert(fichier);
+		if(fichier=='') {
+			alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+		}
+		else {
+			document.getElementById('form_envoi_xml').submit();
+		}
+	}
+</script>\n";
+
 			echo "</form>\n";
 
 
@@ -305,7 +330,9 @@
 						`ELEOPT11` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default '',
-						`MEF_CODE` varchar(50) $chaine_mysql_collate NOT NULL default ''
+						`MEF_CODE` varchar(50) $chaine_mysql_collate NOT NULL default '',
+						DATE_SORTIE DATETIME,
+						DATE_ENTREE DATETIME
 						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 						$create_table = mysql_query($sql);
 
@@ -428,7 +455,7 @@
 								//echo "$sql<br />\n";
 								$res_insert=mysql_query($sql);
 								if(!$res_insert){
-									echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+									echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 									$nb_err++;
 								}
 								$id_tempo++;
@@ -508,6 +535,7 @@
 				"DATE_NAISS",
 				"DOUBLEMENT",
 				"DATE_SORTIE",
+				"DATE_ENTREE",
 				"CODE_REGIME",
 				"DATE_ENTREE",
 				"CODE_MOTIF_SORTIE",
@@ -674,12 +702,14 @@
 
 							if(isset($eleves[$i]["code_mef"])){$sql.="mef_code='".$eleves[$i]["code_mef"]."', ";}
 
+							if(isset($eleves[$i]["date_entree"])){$sql.="date_entree='".get_mysql_date_from_slash_date($eleves[$i]["date_entree"])."', ";}
+
 							$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 								$nb_err++;
 								flush();
 							}
@@ -801,7 +831,7 @@
 
 										$res_insert_etab=mysql_query($sql);
 										if(!$res_insert_etab){
-											echo "Erreur lors de la requête $sql<br />\n";
+											echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 											$nb_err_etab++;
 											flush();
 										}
@@ -944,7 +974,7 @@
 							affiche_debug("$sql<br />\n");
 							$res_update=mysql_query($sql);
 							if(!$res_update){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 								flush();
 								$nb_err++;
 							}
@@ -974,11 +1004,14 @@
 			}
 			elseif($step==3){
 
-				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi_xml' method='post'>\n";
+				echo "<fieldset id='infosPerso' style='border: 1px solid grey;";
+				echo "background-image: url(\"../images/background/opacite50.png\"); ";
+				echo "'>\n";
 				echo add_token_field();
 				echo "<p>Les codes numériques des options doivent maintenant être traduits en leurs équivalents alphabétiques (<em>ex.: 030201 -&gt; AGL1</em>).</p>\n";
 				echo "<p>Veuillez fournir le fichier Nomenclature.xml:<br />\n";
-				echo "<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" /></p>\n";
+				echo "<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" id='input_xml_file' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /></p>\n";
 				if ($gepiSettings['unzipped_max_filesize']>=0) {
 					echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex&nbsp;: Nomenclature.zip</em>)</p>";
 				}
@@ -986,7 +1019,27 @@
 				echo "<input type='hidden' name='step' value='4' />\n";
 				echo "<input type='hidden' name='is_posted' value='yes' />\n";
 				//echo "</p>\n";
-				echo "<p><input type='submit' value='Valider' /></p>\n";
+				//echo "<p><input type='submit' value='Valider' /></p>\n";
+				echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+</fieldset>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_file() {
+		fichier=document.getElementById('input_xml_file').value;
+		//alert(fichier);
+		if(fichier=='') {
+			alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+		}
+		else {
+			document.getElementById('form_envoi_xml').submit();
+		}
+	}
+</script>\n";
+
 				echo "</form>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -1296,7 +1349,7 @@
 								affiche_debug($sql."<br />\n");
 								$res2=mysql_query($sql);
 								if(!$res2){
-									echo "Erreur lors de la requête $sql<br />\n";
+									echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 									flush();
 									$nb_err++;
 								}
@@ -1533,7 +1586,7 @@
 						$res=mysql_query($sql);
 
 						if(!$res){
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 							flush();
 							$nb_err++;
 						}
@@ -1568,7 +1621,7 @@
 						$res=mysql_query($sql);
 
 						if(!$res){
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 							flush();
 							$nb_err++;
 						}

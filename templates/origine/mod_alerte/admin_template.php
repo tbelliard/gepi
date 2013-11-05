@@ -215,6 +215,17 @@ echo add_token_field();
 		</label>
 		<br />
 
+		<input type='checkbox'
+			   name='PeutPosterMessageAutre'
+			   id='PeutPosterMessageAutre'
+			   value='y'
+			   <?php if (getSettingAOui('PeutPosterMessageAutre')) echo ' checked="checked"'; ?>/>
+		<label for='PeutPosterMessageAutre'>
+		  Les comptes de statut personnalisé (<em>autre</em>) peuvent poster des alertes<br />
+		  <span style='color:red'>Pour le moment ce sont tous les statuts personnalisés indifférement (<em>il faudra gérer plus finement dans la page des statuts personnalisés plus tard</em>).</span>
+		</label>
+		<br />
+
 		<input type='hidden' name='is_posted' value='y' />
 
 		<p class="center">
@@ -236,7 +247,11 @@ echo add_token_field();
 		<p>
 		Supprimer les alertes antérieures au 
 		<input type='text' name='date_limite' id='date_limite' size='10' value = "<?php echo $date_limite;?>" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." />
-		<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>"><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="Petit calendrier" /></a>
+
+		<?php
+			echo img_calendrier_js("date_limite", "img_bouton_date_limite");
+		?>
+
 		</p>
 
 		<input type='hidden' name='is_posted2' value='y' />
@@ -248,7 +263,42 @@ echo add_token_field();
 	  </fieldset>
 	</form>
 
+	<!-- ================================================ -->
 
+	<h2>Comptes exclus du dispositif alertes</h2>
+
+	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" id='form2'>
+	  <fieldset style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>
+	<?php
+		echo add_token_field();
+	?>
+		<legend class="invisible">Comptes_exclus</legend>
+
+	<?php
+		$tab_statuts=array('administrateur', 'cpe', 'scolarite', 'professeur', 'autre');
+		$tab_user_preselectionnes=array();
+
+		$sql="SELECT value FROM mod_alerte_divers WHERE name='login_exclus';";
+		$res_mae=mysql_query($sql);
+		if(mysql_num_rows($res_mae)>0) {
+			while($lig_mae=mysql_fetch_object($res_mae)) {
+				$tab_user_preselectionnes[]=$lig_mae->value;
+			}
+		}
+
+		echo liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes);
+	?>
+
+		<input type='hidden' name='is_posted3' value='y' />
+
+		<p class="center">
+			<input type='submit' name='valider' value='Valider' />
+		</p>
+
+	  </fieldset>
+	</form>
+
+	<!-- ================================================ -->
 
 <!-- Début du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>

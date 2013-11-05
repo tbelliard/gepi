@@ -381,7 +381,22 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
         if ($contenu_cor == '') {$contenu_cor="...";}
 
         if (!isset($msg_error_date)) {
-          if (isset($id_ct))  {
+          if (isset($id_ct)) {
+			// 20130727:
+			$contenu_precedent="";
+			$sql="SELECT * FROM ct_devoirs_entry WHERE id_ct='$id_ct';";
+			//echo "$sql<br />";
+			$req = mysql_query($sql);
+			if(mysql_num_rows($req)>0) {
+				$contenu_precedent=mysql_result($req, 0, 'contenu');
+				if($contenu_precedent!=$contenu_cor) {
+					$date_modif=strftime("%Y-%m-%d %H:%M:%S");
+					$sql="UPDATE ct_devoirs_faits SET etat='', commentaire='Le professeur a modifié la notice de travail à faire ($date_modif).', date_modif='".$date_modif."' WHERE id_ct='$id_ct';";
+					//echo "$sql<br />";
+					$update=mysql_query($sql);
+				}
+			}
+
             // Modification d'un devoir
             $sql="UPDATE ct_devoirs_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."', date_ct='$date_travail_a_faire'";
 			if((isset($date_visibilite_eleve))&&($date_visibilite_mal_formatee=="n")) {$sql.=", date_visibilite_eleve='$date_visibilite_eleve'";}
@@ -476,7 +491,13 @@ if ($test_cahier_texte != 0) {
     // Il s'agit d'une nouvelle notice
     $contenu = '';
 }
-
+/*
+// PB: Cela fait sauter le mini-calendrier...
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+*/
 // On met le header en petit par défaut
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
@@ -1027,7 +1048,7 @@ $appel_cahier_texte_liste = mysql_query("SELECT * FROM ct_entry WHERE (id_groupe
 //if (mysql_num_rows($appel_cahier__liste) > 1) {
 if (mysql_num_rows($appel_cahier_texte_liste) > 1) {
     $cpt_compte_rendu_liste = "1";
-    While ( $appel_cahier_texte_donne = mysql_fetch_array ($appel_cahier_texte_liste)) {
+    while ( $appel_cahier_texte_donne = mysql_fetch_array ($appel_cahier_texte_liste)) {
         if ($appel_cahier_texte_donne['id_ct'] == $id_ct) {$num_notice = $cpt_compte_rendu_liste;}
         $cpt_compte_rendu_liste++;
     }
@@ -1110,8 +1131,9 @@ else if (isset($edit_devoir)) {
     include("../lib/calendrier/calendrier.class.php");
     $cal = new Calendrier("mef", "display_date");
     $temp = "A faire pour le : ";
-    $temp .= "<input type='text' name = 'display_date' size='10' value = \"".date("d",$today)."/".date("m",$today)."/".date("Y",$today)."\" />\n";
+    $temp .= "<input type='text' name = 'display_date' id= 'display_date' size='10' value = \"".date("d",$today)."/".date("m",$today)."/".date("Y",$today)."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
     $temp .=  "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"calendrier\"/></a>\n";
+    //$temp .= img_calendrier_js("display_date", "img_bouton_display_date");;
 } else {
     $temp = strftime("%A %d %B %Y", $today);
 } ?>

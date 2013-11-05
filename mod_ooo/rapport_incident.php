@@ -75,6 +75,10 @@ $id_incident=isset($_POST['id_incident']) ? $_POST['id_incident'] : (isset($_GET
 //$ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL); 
 //$id_sanction=isset($_POST['id_sanction']) ? $_POST['id_sanction'] : (isset($_GET['id_sanction']) ? $_GET['id_sanction'] : NULL); 
 
+// Identifiant du responsable pour lequel faire l'impression
+$pers_id=isset($_POST['pers_id']) ? $_POST['pers_id'] : (isset($_GET['pers_id']) ? $_GET['pers_id'] : NULL); 
+$ele_login_pour_adresse=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : ""); 
+
 //Initialisation des données
 $date ='';
 $objet_rapport ='';
@@ -89,6 +93,12 @@ $mesures_prises = '';
 $autres_mesures_prises = '';
 $incident_clos = '';
 
+$ad_nom_resp="";
+$adr1_resp="";
+$adr2_resp="";
+$adr3_resp="";
+$cp_resp="";
+$commune_resp="";
 
 // mode = module_discipline, on vient de la page saisie incident du module discipline
 // mode = module_retenue, on vient de la partie sanction du module discipline et de la sanction : retenue
@@ -112,8 +122,8 @@ if ($mode=='module_discipline') {
 			//echo "$sql<br />\n";
 			$res3=mysql_query($sql);
 			if(mysql_num_rows($res3)>0) {
-				$lig3=mysql_fetch_object($res3);					
-				$donnee_tab_protagonistes[$cpt]['nom']=ucfirst(mb_strtolower($lig3->prenom))." ".strtoupper($lig3->nom);				
+				$lig3=mysql_fetch_object($res3);
+				$donnee_tab_protagonistes[$cpt]['nom']=ucfirst(mb_strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
 			}
 			else {
 				echo "ERREUR: Login $lig2->login inconnu";
@@ -122,6 +132,68 @@ if ($mode=='module_discipline') {
 			$tmp_tab=get_class_from_ele_login($lig2->login);
 			if(isset($tmp_tab['liste'])) {
 				$donnee_tab_protagonistes[$cpt]['statut']=$tmp_tab['liste'];
+			}
+
+			// Il peut y avoir plusieurs protagonistes à l'incident.
+			// Si on ne précise pas de pers_id, on ne met pas d'adresse
+			if((isset($pers_id))&&($lig2->login==$ele_login_pour_adresse)) {
+					$sql="SELECT rp.civilite,rp.nom,rp.prenom,ra.adr1,ra.adr2,ra.adr3,ra.cp,ra.commune FROM resp_pers rp, resp_adr ra, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND e.login='$lig2->login' AND r.pers_id='$pers_id' ORDER BY r.resp_legal;";
+				$res_resp=mysql_query($sql);
+				if(mysql_num_rows($res_resp)==0) {
+					$ad_nom_resp="";
+					$adr1_resp="";
+					$adr2_resp="";
+					$adr3_resp="";
+					$cp_resp="";
+					$commune_resp="";
+				}
+				else {
+					$lig_resp=mysql_fetch_object($res_resp);
+					$ad_nom_resp=$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom;
+					$adr1_resp=$lig_resp->adr1;
+					$adr2_resp=$lig_resp->adr2;
+					$adr3_resp=$lig_resp->adr3;
+					$cp_resp=$lig_resp->cp;
+					$commune_resp=$lig_resp->commune;
+
+					if(!responsables_adresses_separees($lig2->login)) {
+						$tmp_tab_resp=get_resp_from_ele_login($lig2->login);
+						$tmp_nom_precedent="";
+						$nb_nom_parents=0;
+						for($loop_resp=0;$loop_resp<count($tmp_tab_resp);$loop_resp++) {
+							if($tmp_nom_precedent!=$tmp_tab_resp[$loop_resp]['nom']){$nb_nom_parents++;}
+							$tmp_nom_precedent=$tmp_tab_resp[$loop_resp]['nom'];
+						}
+
+						if($nb_nom_parents==1) {
+							$ad_nom_resp="";
+							$nom_resp="";
+							$prenom_resp="";
+							$civ_nom_resp="";
+							for($loop_resp=0;$loop_resp<count($tmp_tab_resp);$loop_resp++) {
+								if($loop_resp>0) {
+									$civ_nom_resp.=" et ";
+									$prenom_resp.=" et ";
+								}
+								else {
+									$nom_resp.=$tmp_tab_resp[$loop_resp]['nom'];
+								}
+								$civ_nom_resp.=$tmp_tab_resp[$loop_resp]['civilite'];
+								$prenom_resp.=$tmp_tab_resp[$loop_resp]['prenom'];
+							}
+							$ad_nom_resp=$civ_nom_resp." ".$nom_resp." ".$prenom_resp;
+						}
+						else {
+							$ad_nom_resp="";
+							for($loop_resp=0;$loop_resp<count($tmp_tab_resp);$loop_resp++) {
+								if($loop_resp>0) {
+									$ad_nom_resp.=" et ";
+								}
+								$ad_nom_resp.=$tmp_tab_resp[$loop_resp]['designation'];
+							}
+						}
+					}
+				}
 			}
 		}
 		else {

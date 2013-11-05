@@ -60,17 +60,104 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 
 //debug_var();
 
-if((isset($_GET['mode']))&&(isset($_GET['id_classe']))) {
-	check_token();
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+	if((isset($_GET['mode']))&&($_GET['mode']=='update_champs_periode')&&(isset($_GET['id_classe']))) {
+		check_token();
 
-	$sql="SELECT * FROM periodes WHERE id_classe='".$_GET['id_classe']."' ORDER BY num_periode;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
-			echo "<input type='checkbox' id='num_periode_".$lig->num_periode."' name='num_periode[]' value='".$lig->num_periode."' /><label for='num_periode_".$lig->num_periode."'>".$lig->nom_periode."</label><br />";
+		$sql="SELECT * FROM periodes WHERE id_classe='".$_GET['id_classe']."' ORDER BY num_periode;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			while($lig=mysql_fetch_object($res)) {
+				echo "<input type='checkbox' id='num_periode_".$lig->num_periode."' name='num_periode[]' value='".$lig->num_periode."' /><label for='num_periode_".$lig->num_periode."'>".$lig->nom_periode."</label><br />";
+			}
 		}
+		die();
 	}
-	die();
+
+	if((isset($_GET['mode']))&&($_GET['mode']=='update_champs_choix_prof_suivi')&&(isset($_GET['login_ele']))) {
+		check_token();
+
+		// Afficher la liste des classes en opt group, puis la liste des profs de chaque classe en mettant en couleur ceux qui sont déjà PP d'autres élèves de la classe
+		$sql="SELECT DISTINCT id_classe, classe FROM j_eleves_classes jec, classes c WHERE jec.login='".$_GET['login_ele']."' AND jec.id_classe=c.id ORDER BY periode;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			echo "<sapn style='color:red'>Cet élève n'est dans aucune classe&nbsp;???</span>";
+		}
+		else {
+			echo "<select name='prof_suivi_choisi' id='prof_suivi_choisi'>";
+			while($lig=mysql_fetch_object($res)) {
+				echo "<optgroup label=\"Classe de $lig->classe\">";
+
+				$tab_pp=array();
+				$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$lig->id_classe';";
+				$res2=mysql_query($sql);
+				if(mysql_num_rows($res2)>0) {
+					while($lig2=mysql_fetch_object($res2)) {
+						$tab_pp[]=$lig2->professeur;
+					}
+				}
+
+				$pp_actuel="";
+				$sql="SELECT professeur FROM j_eleves_professeurs WHERE login='".$_GET['login_ele']."' AND id_classe='$lig->id_classe';";
+				$res2=mysql_query($sql);
+				if(mysql_num_rows($res2)>0) {
+					$pp_actuel=mysql_result($res2, 0, 'professeur');
+				}
+
+				$sql="SELECT DISTINCT u.login FROM j_groupes_classes jgc, j_groupes_professeurs jgp, utilisateurs u WHERE jgc.id_groupe=jgp.id_groupe AND jgc.id_classe='$lig->id_classe' AND u.login=jgp.login ORDER BY u.nom, u.prenom;";
+				$res3=mysql_query($sql);
+				if(mysql_num_rows($res3)>0) {
+					while($lig3=mysql_fetch_object($res3)) {
+						echo "<option value='$lig->id_classe|$lig3->login'";
+						if(in_array($lig3->login, $tab_pp)) {
+							echo " style='background-color:green;' title=\"Ce professeur est ".getSettingValue('gepi_prof_suivi')." d'un ou plusieurs autres élèves de la classe.\"";
+						}
+						if($lig3->login==$pp_actuel) {echo " selected";}
+						echo ">".civ_nom_prenom($lig3->login)."</option>";
+					}
+				}
+				echo "</optgroup>";
+			}
+			echo "</select>";
+		}
+
+		die();
+	}
+
+	if((isset($_GET['mode']))&&($_GET['mode']=='modif_prof_suivi')&&(isset($_GET['login_ele']))&&(isset($_GET['prof_suivi']))) {
+		check_token();
+
+		// On reçoit prof_suivi_choisi au format id_classe|login
+
+		$tab=explode("|", $_GET['prof_suivi']);
+		if(isset($tab[1])) {
+			$sql="SELECT 1=1 FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='$tab[1]' AND jgc.id_classe='$tab[0]'";
+			//echo "$sql<br />";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)>0) {
+				$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$_GET['login_ele']."' AND id_classe='$tab[0]'";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0) {
+					$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='".$_GET['login_ele']."' AND id_classe='$tab[0]'";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)>0) {
+						$sql="UPDATE j_eleves_professeurs SET professeur='$tab[1]' WHERE login='".$_GET['login_ele']."' AND id_classe='$tab[0]'";
+					}
+					else {
+						$sql="INSERT INTO j_eleves_professeurs SET professeur='$tab[1]', login='".$_GET['login_ele']."', id_classe='$tab[0]'";
+					}
+					$res=mysql_query($sql);
+					if($res) {
+						echo civ_nom_prenom($tab[1]);
+					}
+					else {
+						echo "<span style='color:red'>Erreur</span>";
+					}
+				}
+			}
+		}
+		die();
+	}
 }
 
 $mode_rech=isset($_POST['mode_rech']) ? $_POST['mode_rech'] : (isset($_GET['mode_rech']) ? $_GET['mode_rech'] : NULL);
@@ -231,6 +318,30 @@ if (isset($is_posted) and ($is_posted == '2')) {
 			$i++;
 		}
 	}
+}
+elseif ((isset($quelles_classes))&&($quelles_classes == 'certaines')&&(isset($id_classe))&&(is_numeric($id_classe))) {
+	// On efface les enregistrements liés à la session en cours
+	//
+	mysql_query("DELETE FROM tempo WHERE num = '".SESSION_ID()."'");
+	//
+	// On efface les enregistrements obsolètes
+	//
+	$call_data = mysql_query("SELECT * FROM tempo");
+	$nb_enr = mysql_num_rows($call_data);
+	$nb = 0;
+	while ($nb < $nb_enr) {
+		$num = mysql_result($call_data, $nb, 'num');
+		$test = mysql_query("SELECT * FROM log WHERE SESSION_ID = '$num'");
+		$nb_en = mysql_num_rows($test);
+		if ($nb_en == 0) {
+			mysql_query("DELETE FROM tempo WHERE num = '$num'");
+		}
+		$nb++;
+	}
+
+	$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+	$nb_periode = mysql_num_rows($periode_query);
+	$call_reg = mysql_query("insert into tempo Values('$id_classe','$nb_periode', '".SESSION_ID()."')");
 }
 
 // Le statut scolarite ne devrait pas être proposé ici.
@@ -490,11 +601,39 @@ else{
 if (isset($quelles_classes)) {
 	$retour = "index.php";
 }
-echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
+echo "<form action='index.php' method='post' name='form_lien_sous_bandeau'>
+<p class='bold'><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
 
+if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
+	$tab_classe=array();
+	$sql="SELECT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
+	$res_classe=mysql_query($sql);
+	if(mysql_num_rows($res_classe)>0) {
+		echo " | <select name='id_classe' id='id_classe_form_lien_sous_bandeau' onchange='change_classe()' title=\"Afficher les élèves de telle classe\">
+	<option value=''>---</option>";
+		while($lig_classe=mysql_fetch_object($res_classe)) {
+			echo "
+	<option value='$lig_classe->id'>$lig_classe->classe</option>";
+		}
 
+		echo "
+</select>
+
+<input type='hidden' name='quelles_classes' value='certaines' />
+
+<script type='text/javascript'>
+	function change_classe() {
+		if(document.getElementById('id_classe_form_lien_sous_bandeau').selectedIndex>0) {
+			document.forms['form_lien_sous_bandeau'].submit();
+		}
+	}
+</script>";
+	}
+}
 
 if(!getSettingValue('conv_new_resp_table')){
+	echo "</p></form>";
+
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0){
@@ -581,8 +720,10 @@ if(($_SESSION['statut']=="administrateur")&&(getSettingValue('exp_imp_chgt_etab'
 	echo "Changement d'établissement: <a href='export_bull_eleve.php'>Export des bulletins</a>\n";
 	echo " et <a href='import_bull_eleve.php'>Import des bulletins</a>\n";
 }
-echo "</p>\n";
+echo "</p>
+</form>\n";
 
+// Titre dans le corps de la page 
 echo "<center><p class='grand'>Visualiser \ modifier une fiche élève</p></center>\n";
 
 $req = mysql_query("SELECT login FROM eleves");
@@ -1203,6 +1344,66 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		}
 
 
+		// 20131007
+		$sql="select 1=1 from eleves e
+		LEFT JOIN utilisateurs u ON u.login=e.login
+		where u.login is NULL;";
+		$test_sans_compte=mysql_query($sql);
+		if(mysql_num_rows($test_sans_compte)==0){
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "&nbsp;\n";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='compte_user_manquant' onclick='verif2()' /></span>\n";
+
+			echo "<span class='norme' title=\"Cela ne préjuge pas de l'état de ces comptes (actifs ou non)\">Tous les élèves ont leur compte d'utilisateur dans la table 'utilisateurs'.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		else{
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='radio' name='quelles_classes' id='quelles_classes_compte_user_manquant' value='compte_user_manquant' onclick='verif2()' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='quelles_classes_compte_user_manquant' style='cursor: pointer;'>\n";
+			echo "<span class='norme'>Les élèves qui n'ont pas de compte d'utilisateur (<i>".mysql_num_rows($test_sans_compte)."</i>).</span><br />\n";
+			echo "</label>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+
+		$sql="select 1=1 from eleves e, utilisateurs u WHERE u.login=e.login AND u.etat='inactif';";
+		$test_compte_inactif=mysql_query($sql);
+		if(mysql_num_rows($test_compte_inactif)==0){
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "&nbsp;\n";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='compte_inactif' onclick='verif2()' /></span>\n";
+
+			echo "<span>Tous les élèves disposant d'un compte d'utilisateur ont leur compte actif.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		else{
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='radio' name='quelles_classes' id='quelles_classes_compte_inactif' value='compte_inactif' onclick='verif2()' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='quelles_classes_compte_inactif' style='cursor: pointer;'>\n";
+			echo "<span class='norme'>Les élèves disposant d'un compte d'utilisateur, mais dont le compte est inactif (<i>".mysql_num_rows($test_compte_inactif)."</i>).</span><br />\n";
+			echo "</label>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+
+
 		echo "<tr>\n";
 		echo "<td>\n";
 		echo "<input type='radio' name='quelles_classes' id='quelles_classes_toutes' value='toutes' onclick='verif2()' />\n";
@@ -1543,7 +1744,13 @@ if(isset($quelles_classes)) {
 		if($_SESSION['statut']=='administrateur') {$avec_lien="y";}
 		else {$avec_lien="n";}
 		$lien_image_compte_utilisateur=lien_image_compte_utilisateur($eleve_login, "eleve", "", $avec_lien);
-		if($lien_image_compte_utilisateur!="") {echo "<div style='float:right; width: 16px'>".$lien_image_compte_utilisateur."</div>";}
+		if($lien_image_compte_utilisateur!="") {
+			$correspondance_sso=temoin_compte_sso($eleve_login);
+			if($correspondance_sso!="") {
+				echo "<div style='float:right; width: 16px'>".$correspondance_sso."</div>";
+			}
+			echo "<div style='float:right; width: 16px'>".$lien_image_compte_utilisateur."</div>";
+		}
 
 		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='autre')||
 			(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
@@ -1636,7 +1843,19 @@ if(isset($quelles_classes)) {
 		//$csv.=";";
 
 		// Professeur principal
-		echo "<td><p>$info_pp</p></td>\n";
+		// 20130802
+		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+			echo "<td><p>";
+			echo "<a href='#' onclick=\"afficher_changement_prof_suivi('$eleve_login') ;return false;\">";
+			echo "<span id='prof_suivi_$eleve_login'>";
+			echo $info_pp;
+			echo "</span>";
+			echo "</a>";
+			echo "</p></td>\n";
+		}
+		else {
+			echo "<td><p>$info_pp</p></td>\n";
+		}
 		$csv.="$info_pp;";
 
 		//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
@@ -1760,6 +1979,29 @@ if(isset($quelles_classes)) {
 			}
 		}
 	}
+
+	function afficher_changement_prof_suivi(login_ele) {
+		if(document.getElementById('prof_suivi_'+login_ele)) {
+			new Ajax.Updater($('span_choix_prof_suivi'),'index.php?login_ele='+login_ele+'&mode=update_champs_choix_prof_suivi".add_token_in_url(false)."',{method: 'get'});
+
+			document.getElementById('login_ele_prof_suivi').value=login_ele;
+			afficher_div('div_form_choix_prof_suivi_ele', 'y',-20,20);
+		}
+	}
+
+	function modifier_prof_suivi() {
+		login_ele=document.getElementById('login_ele_prof_suivi').value;
+		//alert(login_ele);
+		if(document.getElementById('prof_suivi_choisi')) {
+			prof_suivi=document.getElementById('prof_suivi_choisi').options[document.getElementById('prof_suivi_choisi').selectedIndex].value;
+			//alert(prof_suivi);
+
+			if($('prof_suivi_'+login_ele)) {
+				new Ajax.Updater($('prof_suivi_'+login_ele),'index.php?login_ele='+login_ele+'&prof_suivi='+prof_suivi+'&mode=modif_prof_suivi".add_token_in_url(false)."',{method: 'get'});
+				cacher_div('div_form_choix_prof_suivi_ele');
+			}
+		}
+	}
 </script>\n";
 
 	echo "<input type='hidden' name='quelles_classes' value='$quelles_classes' />\n";
@@ -1818,6 +2060,17 @@ if(isset($quelles_classes)) {
 	<input type='submit' value='Inscrire' />
 </form>";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_form_ajout_ele_clas',$titre_infobulle,"",$texte_infobulle,"",20,0,'y','y','n','n');
+	//=========================
+	$titre_infobulle="Choix du ".getSettingValue('gepi_prof_suivi');
+	$texte_infobulle="<form action='./index.php' method='post'>
+	".add_token_field()."
+	<input type='hidden' name='mode' id='modif_prof_suivi' value='' />
+	<input type='hidden' name='login_ele_prof_suivi' id='login_ele_prof_suivi' value='' />
+	<p style='text-align:center;'>Choisissez un ".getSettingValue('gepi_prof_suivi')."&nbsp;: 
+	<span id='span_choix_prof_suivi'></span><br />
+	<input type='button' value='Valider' onclick=\"modifier_prof_suivi()\" />
+</form>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_form_choix_prof_suivi_ele',$titre_infobulle,"",$texte_infobulle,"",20,0,'y','y','n','n');
 	//=========================
 
 	echo "<br />\n";

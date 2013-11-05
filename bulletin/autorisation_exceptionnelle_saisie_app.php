@@ -193,6 +193,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 	}
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 //**************** EN-TETE *****************
 $titre_page = "Autorisation exceptionnelle de saisie d'appréciations";
@@ -418,8 +422,8 @@ else {
 		}
 
 		echo "<p>Quelle doit être la date/heure limite de cette autorisation de proposition d'appréciation&nbsp;?<br />\n";
-		include("../lib/calendrier/calendrier.class.php");
-		$cal = new Calendrier("formulaire", "display_date_limite");
+		//include("../lib/calendrier/calendrier.class.php");
+		//$cal = new Calendrier("formulaire", "display_date_limite");
 
 		if(isset($refermer_page)) {
 			echo "<input type='hidden' name='refermer_page' value='y' />\n";
@@ -429,7 +433,9 @@ else {
 		echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
 		echo "<input type='hidden' name='periode' value='$periode' />\n";
 		echo "<input type='text' name = 'display_date_limite' id = 'display_date_limite' size='8' value = \"".$display_date_limite."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
-		echo "<a href=\"#\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
+		//echo "<a href=\"#\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
+		echo img_calendrier_js("display_date_limite", "img_bouton_display_date_limite");
+
 		echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" autocomplete=\"off\" />\n";
 		echo "<input type='submit' name='Valider' value='Valider' />\n";
 		echo "</p>\n";

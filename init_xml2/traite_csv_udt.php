@@ -152,12 +152,16 @@
 			echo "<p class='bold'>Upload du fichier d'export d'UDT.</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<fieldset style='border: 1px solid grey;";
+			echo "background-image: url(\"../images/background/opacite50.png\"); ";
+			echo "'>\n";
 			echo "<p>Veuillez fournir le fichier d'export CSV d'UDT&nbsp;:<br />\n";
-			echo "<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />\n";
+			echo "<input type=\"file\" size=\"65\" name=\"csv_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />\n";
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo add_token_field();
 			echo "<p><input type='submit' value='Valider' /></p>\n";
+			echo "</fieldset>\n";
 			echo "</form>\n";
 
 			echo "<p><i>Remarques</i>&nbsp;:</p>\n";

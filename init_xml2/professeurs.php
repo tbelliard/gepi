@@ -68,6 +68,21 @@ function createRandomPassword() {
 }
 //================================================
 
+$auth_sso=getSettingValue("auth_sso") ? getSettingValue("auth_sso") : "";
+
+$gepi_non_plugin_lcs_mais_recherche_ldap=false;
+if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("../secure/config_ldap.inc.php"))) {
+	include("../secure/config_ldap.inc.php");
+
+	$lcs_ldap_base_dn=$ldap_base_dn;
+	$lcs_ldap_host=$ldap_host;
+	$lcs_ldap_port=$ldap_port;
+	$gepi_non_plugin_lcs_mais_recherche_ldap=true;
+
+	$lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
+	$lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
+}
+
 include("../lib/initialisation_annee.inc.php");
 $liste_tables_del = $liste_tables_del_etape_professeurs;
 
@@ -202,6 +217,9 @@ if (!isset($is_posted)) {
 	if(getSettingValue('auth_sso')=="lcs") {
 		echo "<span style='color:red'>Votre Gepi utilise une authentification LCS; Le format de login ci-dessous ne sera pas pris en compte. Les comptes doivent avoir été importés dans l'annuaire LDAP du LCS avant d'effectuer l'import dans GEPI.</span><br />\n";
 	}
+	elseif($gepi_non_plugin_lcs_mais_recherche_ldap) {
+		echo "<span style='color:red'>Bien que votre Gepi ne soit pas en plugin du LCS, vous avez choisi d'utiliser pour vos élèves et professeurs les mêmes logins que ceux du LCS; Le format de login ci-dessous ne sera pas pris en compte. Les comptes doivent avoir été importés dans l'annuaire LDAP du LCS avant d'effectuer l'import dans GEPI.</span><br />\n";
+	}
 
 	//echo champs_radio_choix_format_login('login_gen_type', $default_login_gen_type);
 	echo champ_input_choix_format_login('login_gen_type', $default_login_gen_type);
@@ -213,9 +231,8 @@ if (!isset($is_posted)) {
 		echo "<br />\n";
 	}
 	echo "<br />\n";
-
 	// Modifications jjocal dans le cas où c'est un serveur CAS qui s'occupe de tout
-	if((getSettingValue("use_sso") == "cas")||(getSettingValue('auth_sso')=="lcs")) {
+	if((getSettingValue("use_sso") == "cas")||(getSettingValue('auth_sso')=="lcs")||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 		$checked1 = ' checked="checked"';
 		$checked0 = '';
 	}else{
@@ -379,7 +396,7 @@ else {
 	$req = mysql_query("DELETE from setting where NAME = 'display_users'");
 
 
-	if(getSettingValue('auth_sso')=='lcs') {
+	if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 		require_once("../lib/lcs.inc.php");
 		$ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
 	}
@@ -460,7 +477,7 @@ else {
 				if (isset($prenoms[1])) $prenom_compose = $prenoms[0]."-".$prenoms[1];
 
 				$lcs_prof_en_erreur="n";
-				if(getSettingValue('auth_sso')=='lcs') {
+				if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 					$lcs_prof_en_erreur="y";
 					$exist = 'no';
 					if($prof[$k]["id"]!='') {
@@ -583,7 +600,7 @@ else {
 							$temp1=generate_unique_login($prof[$k]["nom_usage"], $prof[$k]["prenom"], $_POST['login_gen_type'], $_POST['login_gen_type_casse']);
 						}
 
-						if(getSettingValue('auth_sso')=='lcs') {
+						if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 							// On ne devrait jamais arriver là.
 							$login_prof=$login_prof_gepi;
 						}
@@ -612,7 +629,7 @@ else {
 	
 						$changemdp = 'y';
 	
-						if(getSettingValue('auth_sso')=="lcs") {
+						if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 							$pwd = '';
 							$mess_mdp = "aucun (sso)";
 							$changemdp = 'n';
@@ -646,7 +663,7 @@ else {
 						// utilise le prénom composé s'il existe, plutôt que le premier prénom
 	
 						$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".mysql_real_escape_string($prof[$k]["nom_usage"])."', prenom='".mysql_real_escape_string($premier_prenom)."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."'";
-						if(getSettingValue('auth_sso')=='lcs') {
+						if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 							$sql.=", auth_mode='sso'";
 						}
 						$res = mysql_query($sql);
@@ -664,7 +681,7 @@ else {
 					} else {
 						// On corrige aussi les nom/prénom/civilité et numind parce que la reconnaissance a aussi pu se faire sur le nom/prénom
 						$sql="UPDATE utilisateurs set etat='actif', nom='".mysql_real_escape_string($prof[$k]["nom_usage"])."', prenom='".mysql_real_escape_string($premier_prenom)."', civilite='$civilite', numind='P".$prof[$k]["id"]."'";
-						if(getSettingValue('auth_sso')=='lcs') {
+						if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 							$sql.=", auth_mode='sso'";
 						}
 						$sql.=" where login = '".$login_prof_gepi."';";

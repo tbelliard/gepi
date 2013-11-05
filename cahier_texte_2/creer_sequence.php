@@ -126,6 +126,12 @@ elseif($nb_reg>0) {
 /**
  * Header en include
  */
+
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 $use_observeur = "ok";
 $titre_page = "Créer des séquences pour le cahier de textes";
 include '../lib/header.inc.php';
@@ -178,7 +184,9 @@ echo '
   <p>
     <label for="idCR'.$a.'" style="font-weight: bold;color: red;">Compte-rendu '.($a+1).'</label> -
     <label for="idDate'.$a.'">Date</label>
-    <input type="text" id="idDate'.$a.'" name="dateseance['.$a.']" value="'.date("d/m/Y", $ts).'" />
+    <input type="text" id="idDate'.$a.'" name="dateseance['.$a.']" value="'.date("d/m/Y", $ts).'" size="12" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />';
+echo img_calendrier_js("idDate".$a, "img_bouton_idDate".$a);
+echo '
   </p>
 
   <p>';

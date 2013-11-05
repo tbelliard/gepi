@@ -68,6 +68,15 @@ if ($date_absence_eleve != null) {
     $dt_date_absence_eleve = new DateTime('now');
 }
 
+$afficher_retard="y";
+$afficher_manquement="y";
+$afficher_non_manquement="y";
+if(isset($_POST["date_absence_eleve"])) {
+	$afficher_retard=isset($_POST['afficher_retard']) ? "y" : "n";
+	$afficher_manquement=isset($_POST['afficher_manquement']) ? "y" : "n";
+	$afficher_non_manquement=isset($_POST['afficher_non_manquement']) ? "y" : "n";
+}
+
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
@@ -80,21 +89,27 @@ require_once("../lib/header.inc.php");
 include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
 ?>
+
 <div id="contain_div" class="css-panes">
-<div class="legende">
-    <h3 class="legende">Légende  </h3>
-    <font color="orange">&#9632;</font> Retard<br />
-    <font color="red">&#9632;</font> Manquement aux obligations de présence<br />
-    <font color="blue">&#9632;</font> Non manquement aux obligations de présence<br />     
-</div>        
+	<div class="legende">
+		<h3 class="legende">Légende</h3>
+		<font color="orange">&#9632;</font> Retard<br />
+		<font color="red">&#9632;</font> Manquement aux obligations de présence<br />
+		<font color="blue">&#9632;</font> Non manquement aux obligations de présence<br />
+	</div>
+
 <form dojoType="dijit.form.Form" id="choix_date" name="choix_date" action="<?php $_SERVER['PHP_SELF']?>" method="post">
-<h2>Les saisies du
-    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" onchange="document.choix_date.submit()" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
-    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Changer</button>
-</h2>
+	<h2>Les saisies du
+		<input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" onchange="document.choix_date.submit()" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
+		<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Changer</button>
+
+		 - Afficher&nbsp;:<input type='checkbox' name='afficher_retard' id='afficher_retard' value='y' <?php if($afficher_retard=="y") {echo "checked ";}?>/><label for='afficher_retard'>Retards</label>
+		 - <input type='checkbox' name='afficher_manquement' id='afficher_manquement' value='y' <?php if($afficher_manquement=="y") {echo "checked ";}?>/><label for='afficher_manquement'>Manquements</label>
+		 - <input type='checkbox' name='afficher_non_manquement' id='afficher_non_manquement' value='y' <?php if($afficher_non_manquement=="y") {echo "checked ";}?>/><label for='afficher_non_manquement'>Non-manquements</label>
+	</h2>
 </form>
 
-<table style="border: 1px solid black;" cellpadding="5" cellspacing="5">
+<table style="border: 1px solid black; background-color:lightgrey" cellpadding="5" cellspacing="5">
 <?php $creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();?>
 	<tr>
 		<th style="border: 1px solid black; background-color: gray;">Classe</th>
@@ -144,20 +159,67 @@ foreach($classe_col as $classe) {
 	    $eleve_query->filterByUtilisateurProfessionnel($utilisateur);
 	}
 	$eleve_col = $eleve_query->find();
+	$cpt_eleve=0;
 	foreach($eleve_col as $eleve){
 			$affiche = false;
 			foreach($eleve->getAbsenceEleveSaisiesDuJour($dt_debut) as $abs) {
 			    $affiche = false;
 			    if (!$abs->getManquementObligationPresenceSpecifie_NON_PRECISE() ) {
-				$affiche = true;
-				break;
+					$affiche = true;
+					break;
 			    }
-			}			
+			}
+
 			if (!$affiche) {
                 continue;
-			}	
-            echo '<tr>
-                <td></td>
+			}
+
+			if(($afficher_retard!="y")||($afficher_manquement!="y")||($afficher_non_manquement!="y")) {
+				// On passe en revue les "absences" de cet élève pour déterminer si l'une d'elle doit être affichée
+				$au_moins_une_a_afficher="n";
+				foreach($creneau_col as $creneau) {
+					if($au_moins_une_a_afficher=="y") {break;}
+					$abs_col = $eleve->getAbsenceEleveSaisiesDuCreneau($creneau, $dt_date_absence_eleve);
+					if (!$abs_col->isEmpty()) {
+						foreach($abs_col as $abs) {
+							if (!$abs->getManquementObligationPresenceSpecifie_NON_PRECISE()){
+								if(($abs->getColor()=='red')&&($afficher_manquement=="y")) {
+									$au_moins_une_a_afficher="y";
+									break;
+								}
+								elseif(($abs->getColor()=='orange')&&($afficher_retard=="y")) {
+									$au_moins_une_a_afficher="y";
+									break;
+								}
+								elseif(($abs->getColor()=='blue')&&($afficher_non_manquement=="y")) {
+									$au_moins_une_a_afficher="y";
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				if($au_moins_une_a_afficher=="n") {$affiche=false;}
+			}
+
+			if (!$affiche) {
+                continue;
+			}
+
+			if ($cpt_eleve%2==0) {
+				//$background_couleur="rgb(220, 220, 220);";
+				$background_couleur="silver;";
+			} else {
+				//$background_couleur="rgb(210, 220, 230);";
+				$background_couleur="lightblue;";
+			}
+			$cpt_eleve++;
+
+            echo '<tr style="background-color :'.$background_couleur.'">
+                <td><pre>';
+            //print_r($abs);
+            echo '</pre></td>
 			<td>';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
 			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";

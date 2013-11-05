@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -67,6 +67,14 @@ $date_sortie_mois = isset($_POST["date_sortie_mois"]) ? $_POST["date_sortie_mois
 unset($date_sortie_annee);
 $date_sortie_annee = isset($_POST["date_sortie_annee"]) ? $_POST["date_sortie_annee"] : "0000";
 
+//Gestion de la date d'entrée dans l'établissement
+unset($date_entree_jour);
+$date_entree_jour = isset($_POST["date_entree_jour"]) ? $_POST["date_entree_jour"] : "00";
+unset($date_entree_mois);
+$date_entree_mois = isset($_POST["date_entree_mois"]) ? $_POST["date_entree_mois"] : "00";
+unset($date_entree_annee);
+$date_entree_annee = isset($_POST["date_entree_annee"]) ? $_POST["date_entree_annee"] : "0000";
+
 //=========================
 // AJOUT: boireaus 20071107
 unset($reg_regime);
@@ -112,7 +120,6 @@ $definir_resp = isset($_POST["definir_resp"]) ? $_POST["definir_resp"] : (isset(
 if(($definir_resp!=1)&&($definir_resp!=2)){$definir_resp=NULL;}
 
 $definir_etab = isset($_POST["definir_etab"]) ? $_POST["definir_etab"] : (isset($_GET["definir_etab"]) ? $_GET["definir_etab"] : NULL);
-
 
 //=========================
 // Pour l'arrivée depuis la page index.php suite à une recherche
@@ -162,11 +169,39 @@ if(!isset($eleve_login)) {
     die();
 }
 
+if($_SESSION['statut']=='professeur') {
+	if((!getSettingAOui('GepiAccesGestElevesProf'))&&(!getSettingAOui('GepiAccesGestElevesProfP'))) {
+		header("Location: ../accueil.php?msg=Accès aux fiches élèves non autorisé.");
+		die();
+	}
+
+	if((getSettingAOui('GepiAccesGestElevesProfP'))&&(is_pp($_SESSION['login'], "", $eleve_login))) {
+		// C'est OK
+	}
+	else {
+		if(!getSettingAOui('GepiAccesGestElevesProf')) {
+			header("Location: ../accueil.php?msg=Accès aux fiches élèves non autorisé.");
+			die();
+		}
+
+		if(!is_prof_ele($_SESSION['login'], $eleve_login)) {
+			header("Location: ../accueil.php?msg=Vous n êtes pas professeur de l élève ".civ_nom_prenom($eleve_login));
+			die();
+		}
+	}
+}
+
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	// On récupère le RNE de l'établissement
 	$rep_photos="../photos/".$_COOKIE['RNE']."/eleves/";
 } else {
 	$rep_photos="../photos/eleves/";
+}
+
+$is_pp=false;
+if(($_SESSION['statut']=="professeur")&&(isset($eleve_login))&&(is_pp($_SESSION['login'], "", $eleve_login))) {
+	$is_pp=true;
+	// Est-ce que dans le cas false, un prof peut accéder à cette page?
 }
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
@@ -370,21 +405,25 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 		}
 		
 		//gestion de la date de sortie de l'élève
-		//echo "date_sortie_annee".$date_sortie_annee."<br/>";
-		//echo "date_sortie_mois".$date_sortie_mois."<br/>";
-		//echo "date_sortie_jour".$date_sortie_jour."<br/>";
-		
+		//echo "date_sortie_annee=".$date_sortie_annee."<br/>";
+		//echo "date_sortie_mois=".$date_sortie_mois."<br/>";
+		//echo "date_sortie_jour=".$date_sortie_jour."<br/>";
 		if (!preg_match ("/^[0-9]{4}$/", $date_sortie_annee)) {$date_sortie_annee = "0000";}
-		if (!preg_match ("/^[0-9]{2}$/", $date_sortie_mois)) {$date_sortie_mois = "00";}
-		if (!preg_match ("/^[0-9]{2}$/", $date_sortie_jour)) {$date_sortie_jour = "00";}
-		
-		//echo "date_sortie_annee".$date_sortie_annee."<br/>";
-		//echo "date_sortie_mois".$date_sortie_mois."<br/>";
-		//echo "date_sortie_jour".$date_sortie_jour."<br/>";
+		if (!preg_match ("/^[0-9]{1,2}$/", $date_sortie_mois)) {$date_sortie_mois = "00";}
+		if (!preg_match ("/^[0-9]{1,2}$/", $date_sortie_jour)) {$date_sortie_jour = "00";}
+		//echo "date_sortie_annee=".$date_sortie_annee."<br/>";
+		//echo "date_sortie_mois=".$date_sortie_mois."<br/>";
+		//echo "date_sortie_jour=".$date_sortie_jour."<br/>";
 
 		//création de la chaine au format timestamp
 		$date_de_sortie_eleve = $date_sortie_annee."-".$date_sortie_mois."-".$date_sortie_jour." 00:00:00"; 
 		
+		//gestion de la date d'entrée de l'élève
+		if (!preg_match ("/^[0-9]{4}$/", $date_entree_annee)) {$date_entree_annee = "0000";}
+		if (!preg_match ("/^[0-9]{1,2}$/", $date_entree_mois)) {$date_entree_mois = "00";}
+		if (!preg_match ("/^[0-9]{1,2}$/", $date_entree_jour)) {$date_entree_jour = "00";}
+		//création de la chaine au format timestamp
+		$date_entree_eleve = $date_entree_annee."-".$date_entree_mois."-".$date_entree_jour." 00:00:00"; 
 		
 		//===========================
 		//AJOUT:
@@ -535,7 +574,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 			}
 		} else if ($continue == 'yes') {
 			// C'est une mise à jour pour un élève qui existait déjà dans la table 'eleves'.
-			$sql="UPDATE eleves SET date_sortie = '$date_de_sortie_eleve', no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."'";
+			$sql="UPDATE eleves SET date_sortie = '$date_de_sortie_eleve', date_entree = '$date_entree_eleve', no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."'";
 
 			if(isset($reg_tel_pers)) {$sql.=",tel_pers='".$reg_tel_pers."'";}
 			if(isset($reg_tel_port)) {$sql.=",tel_port='".$reg_tel_port."'";}
@@ -584,7 +623,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 					//$msg.="TEMOIN test_login puis update<br />";
 				}
 			}
-			
+
 			if ($date_sortie_annee != "0000") {
 				// On a une date de sortie, on met à jour la table d'agrégation
 				require_once("../lib/initialisationsPropel.inc.php");
@@ -756,7 +795,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 	//================================================
 }
-elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="cpe")) {
+elseif((($_SESSION['statut']=="professeur")&&($is_pp))||($_SESSION['statut']=="cpe")) {
 	if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		if(!isset($msg)){$msg="";}
 
@@ -968,25 +1007,41 @@ if (isset($eleve_login)) {
 
     $eleve_lieu_naissance = mysql_result($call_eleve_info, "0", "lieu_naissance");
 
+	//=======================================
 	//Date de sortie de l'élève (timestamps), à zéro par défaut
 	$eleve_date_de_sortie =mysql_result($call_eleve_info, "0", "date_sortie"); 
-	
+
 	//echo "Date de sortie de l'élève dans la base :  $eleve_date_de_sortie <br/>";
-    //conversion en seconde (timestamp)
-    $eleve_date_de_sortie_time=strtotime($eleve_date_de_sortie);
+	//conversion en seconde (timestamp)
+	$eleve_date_de_sortie_time=strtotime($eleve_date_de_sortie);
 
 	if ($eleve_date_de_sortie!=0) {
-	//récupération du jour, du mois et de l'année
-	    $eleve_date_sortie_jour=date('j', $eleve_date_de_sortie_time); 
-	    $eleve_date_sortie_mois=date('m', $eleve_date_de_sortie_time);
-	    $eleve_date_sortie_annee=date('Y', $eleve_date_de_sortie_time); 
+		//récupération du jour, du mois et de l'année
+		$eleve_date_sortie_jour=date('d', $eleve_date_de_sortie_time); 
+		$eleve_date_sortie_mois=date('m', $eleve_date_de_sortie_time);
+		$eleve_date_sortie_annee=date('Y', $eleve_date_de_sortie_time); 
 		//echo "La date n'est pas nulle J:$eleve_date_sortie_jour   M:$eleve_date_sortie_mois   A:$eleve_date_sortie_annee";
 	} else {
-	    $eleve_date_sortie_jour="00"; 
-	    $eleve_date_sortie_mois="00";
-	    $eleve_date_sortie_annee="0000"; 
+		$eleve_date_sortie_jour="00"; 
+		$eleve_date_sortie_mois="00";
+		$eleve_date_sortie_annee="0000"; 
 	}
-	
+	//=======================================
+	// Date d'entrée de l'élève dans l'établissement
+	$eleve_date_entree =mysql_result($call_eleve_info, "0", "date_entree"); 
+	$eleve_date_entree_time=strtotime($eleve_date_entree);
+	if ($eleve_date_entree!=0) {
+	//récupération du jour, du mois et de l'année
+		$eleve_date_entree_jour=date('d', $eleve_date_entree_time); 
+		$eleve_date_entree_mois=date('m', $eleve_date_entree_time);
+		$eleve_date_entree_annee=date('Y', $eleve_date_entree_time); 
+	} else {
+		$eleve_date_entree_jour="00"; 
+		$eleve_date_entree_mois="00";
+		$eleve_date_entree_annee="0000"; 
+	}
+	//=======================================
+
     //$eleve_no_resp = mysql_result($call_eleve_info, "0", "ereno");
     $reg_no_nat = mysql_result($call_eleve_info, "0", "no_gep");
     $reg_no_gep = mysql_result($call_eleve_info, "0", "elenoet");
@@ -1593,7 +1648,7 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 	if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
 	if (isset($mode_rech)) echo "<input type=hidden name=mode_rech value=\"$mode_rech\" />\n";
 
-	if(isset($calldata)) {
+	if((isset($calldata))&&(mysql_num_rows($calldata)>0)) {
 		echo " | <select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
 		$cpt_eleve=0;
 		while($lig_calldata=mysql_fetch_object($calldata)) {
@@ -1607,7 +1662,7 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 		}
 		echo "</select>\n";
 	}
-	elseif(isset($tab_eleve)) {
+	elseif((isset($tab_eleve))&&(count($tab_eleve)>0)) {
 		echo " | <select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
 		$cpt_eleve=0;
 		for($loop=0;$loop<count($tab_eleve);$loop++) {
@@ -1658,6 +1713,7 @@ echo "<script type='text/javascript'>
 </script>\n";
 
 
+$AccesDetailConnexionEle=AccesInfoEle('AccesDetailConnexionEle', $eleve_login);
 
 echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
 echo add_token_field();
@@ -1678,7 +1734,8 @@ if(isset($eleve_login)) {
 		$compte_eleve_existe="n";
 	}
 
-	if(($compte_eleve_existe=="y")&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+	if(($compte_eleve_existe=="y")&&
+		($AccesDetailConnexionEle)) {
 		//$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
 		//$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
 	
@@ -1711,6 +1768,7 @@ if (isset($eleve_login)) {
 		echo $eleve_login;
 		if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
 	}
+	echo temoin_compte_sso($eleve_login);
 	echo "<input type='hidden' name='eleve_login' size='20' ";
 	if ($eleve_login) echo "value='$eleve_login'";
 	echo " /></td>\n";
@@ -1792,7 +1850,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		$tmp_date=getdate();
 		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
 		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-		echo ",%0d%0aCordialement.'>";
+		echo ",%0d%0aCordialement.' title=\"Envoyer un courriel\">";
 		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
 		echo "</a>";
 	}
@@ -1883,21 +1941,58 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	</td>
 </tr>\n";
 
-	//Date de sortie de l'établissement
-    echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/>(<em style='font-weight:normal'>respecter format JJ/MM/AAAA</em>)</th>";
-	echo "<td><div class='norme'>";	
-	echo "Jour  <input type='text' name='date_sortie_jour' id='date_sortie_jour' size='2' onchange='changement();' value=\"";
-	if (isset($eleve_date_sortie_jour) and ($eleve_date_sortie_jour!="00") ) {echo $eleve_date_sortie_jour;}
-	echo "\" onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off'  title=\"Vous pouvez modifier le jour de sortie à l'aide des flèches Up et Down du pavé de direction.\" />";
-	echo " Mois  <input type='text' name='date_sortie_mois' id='date_sortie_mois' size='2' onchange='changement();' value=\"";
-	if (isset($eleve_date_sortie_mois) and ($eleve_date_sortie_mois!="00")) {echo $eleve_date_sortie_mois;}
-	echo "\" onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off'  title=\"Vous pouvez modifier le mois de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
-	echo " Année <input type='text' name='date_sortie_annee' id='date_sortie_annee' size='4' onchange='changement();' value=\"";
-	if (isset($eleve_date_sortie_annee) and ($eleve_date_sortie_annee!="0000")) {echo $eleve_date_sortie_annee;}
-	echo "\" onKeyDown='clavier_2(this.id,event,2000,2100);' AutoComplete='off'  title=\"Vous pouvez modifier l'année de naissance à l'aide des flèches Up et Down du pavé de direction.\" />";
+	//Date dentrée dans l'établissement
+	echo "<tr>
+	<th style='text-align:left;'>Date d'entrée dans l'établissement : <br/>(<em style='font-weight:normal'>respecter format JJ/MM/AAAA</em>)</th>
+	<td>
+		<div class='norme'>
+			Jour  <input type='text' name='date_entree_jour' id='date_entree_jour' size='2' onchange='changement();' value=\"";
+	if (isset($eleve_date_entree_jour) and ($eleve_date_entree_jour!="00") ) {echo $eleve_date_entree_jour;}
+	echo "\" onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off'  title=\"Vous pouvez modifier le jour de sortie à l'aide des flèches Up et Down du pavé de direction.\" /> 
+		Mois  <input type='text' name='date_entree_mois' id='date_entree_mois' size='2' onchange='changement();' value=\"";
+	if (isset($eleve_date_entree_mois) and ($eleve_date_entree_mois!="00")) {echo $eleve_date_entree_mois;}
+	echo "\" onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off'  title=\"Vous pouvez modifier le mois de naissance à l'aide des flèches Up et Down du pavé de direction.\" /> 
+		Année <input type='text' name='date_entree_annee' id='date_entree_annee' size='4' onchange='changement();' value=\"";
+	if (isset($eleve_date_entree_annee) and ($eleve_date_entree_annee!="0000")) {echo $eleve_date_entree_annee;}
+	echo "\" onKeyDown='clavier_2(this.id,event,2000,2100);' AutoComplete='off'  title=\"Vous pouvez modifier l'année de naissance à l'aide des flèches Up et Down du pavé de direction.\" />
+		<a href='javascript:date_entree_aujourdhui()' title=\"Aujourd'hui\"><img src='../images/icons/wizard.png' width='20' height='20' title=\"Aujourd'hui\" /></a>
+	</td>
+</tr>\n";
 
-	echo "<a href='javascript:date_sortie_aujourdhui()' title=\"Aujourd'hui\"><img src='../images/disabled.png' width='20' height='20' title=\"Aujourd'hui\" /></a>\n";
-	echo "<script type='text/javascript'>
+	//Date de sortie de l'établissement
+	echo "<tr>
+	<th style='text-align:left;'>Date de sortie de l'établissement : <br/>(<em style='font-weight:normal'>respecter format JJ/MM/AAAA</em>)</th>
+	<td>
+		<div class='norme'>
+			Jour  <input type='text' name='date_sortie_jour' id='date_sortie_jour' size='2' onchange='changement();' value=\"";
+	if (isset($eleve_date_sortie_jour) and ($eleve_date_sortie_jour!="00") ) {echo $eleve_date_sortie_jour;}
+	echo "\" onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off'  title=\"Vous pouvez modifier le jour de sortie à l'aide des flèches Up et Down du pavé de direction.\" /> 
+		Mois  <input type='text' name='date_sortie_mois' id='date_sortie_mois' size='2' onchange='changement();' value=\"";
+	if (isset($eleve_date_sortie_mois) and ($eleve_date_sortie_mois!="00")) {echo $eleve_date_sortie_mois;}
+	echo "\" onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off'  title=\"Vous pouvez modifier le mois de naissance à l'aide des flèches Up et Down du pavé de direction.\" /> 
+		Année <input type='text' name='date_sortie_annee' id='date_sortie_annee' size='4' onchange='changement();' value=\"";
+	if (isset($eleve_date_sortie_annee) and ($eleve_date_sortie_annee!="0000")) {echo $eleve_date_sortie_annee;}
+	echo "\" onKeyDown='clavier_2(this.id,event,2000,2100);' AutoComplete='off'  title=\"Vous pouvez modifier l'année de naissance à l'aide des flèches Up et Down du pavé de direction.\" />
+		<a href='javascript:date_sortie_aujourdhui()' title=\"Aujourd'hui\"><img src='../images/disabled.png' width='20' height='20' title=\"Aujourd'hui\" /></a>
+		<script type='text/javascript'>
+function date_entree_aujourdhui() {
+	aujourdhui=new Date();
+	document.getElementById('date_entree_jour').value=aujourdhui.getDate();
+	document.getElementById('date_entree_mois').value=aujourdhui.getMonth()+1;
+	annee=aujourdhui.getYear();
+	if(annee<1000) {
+		//alert(annee);
+		if(annee>70) {
+			annee=1900+annee;
+		}
+		else {
+			annee=2000+annee;
+		}
+	}
+	document.getElementById('date_entree_annee').value=annee;
+	changement();
+}
+
 function date_sortie_aujourdhui() {
 	aujourdhui=new Date();
 	document.getElementById('date_sortie_jour').value=aujourdhui.getDate();
@@ -1915,9 +2010,9 @@ function date_sortie_aujourdhui() {
 	document.getElementById('date_sortie_annee').value=annee;
 	changement();
 }
-</script>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+</script>
+	</td>
+</tr>\n";
 
 }
 else {
@@ -1948,7 +2043,7 @@ else {
 		$tmp_date=getdate();
 		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
 		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-		echo ",%0d%0aCordialement.'>";
+		echo ",%0d%0aCordialement.' title=\"Envoyer un courriel\">";
 		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
 		echo "</a>";
 	}
@@ -1973,10 +2068,22 @@ else {
 	}
     echo "</td>\n";
 	echo "</tr>\n";
-	
+
+	if ((isset($eleve_date_entree))&&($eleve_date_entree!=0)) {
+		//Date d'entrée dans l'établissement
+		echo "<tr><th style='text-align:left;'>Date d'entrée dans l'établissement : <br/></th>";
+		echo "<td><div class='norme'>";	
+		
+		if ((isset($eleve_date_entree_jour)) and ($eleve_date_entree_jour!="00")) echo $eleve_date_entree_jour."/";
+		if ((isset($eleve_date_entree_mois)) and ($eleve_date_entree_mois!="00")) echo $eleve_date_entree_mois."/";
+		if ((isset($eleve_date_entree_annee)) and ($eleve_date_entree_annee!="00")) echo $eleve_date_entree_annee; 
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
 	if ((isset($eleve_date_de_sortie))&&($eleve_date_de_sortie!=0)) {
 		//Date de sortie de l'établissement
-	    echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/></th>";
+		echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/></th>";
 		echo "<td><div class='norme'>";	
 		
 		if ((isset($eleve_date_sortie_jour)) and ($eleve_date_sortie_jour!="00")) echo $eleve_date_sortie_jour."/";
@@ -1984,7 +2091,7 @@ else {
 		if ((isset($eleve_date_sortie_annee)) and ($eleve_date_sortie_annee!="00")) echo $eleve_date_sortie_annee; 
 		echo "</td>\n";
 		echo "</tr>\n";
-    }
+	}
 }
 echo "</table>\n";
 
@@ -2017,7 +2124,7 @@ if(isset($reg_no_gep)){
   if ((getSettingValue("active_module_trombinoscopes")=='y') and 
   (($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")||
   (($_SESSION['statut']=='cpe')&&(getSettingValue("CpeAccesUploadPhotosEleves")=='yes'))||
-  (($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')&&(isset($eleve_login))&&(is_pp($_SESSION['login'],"",$eleve_login))))) {
+  (($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')&&(isset($eleve_login))&&($is_pp)))) {
 		echo "<div align='center'>\n";
 		//echo "<span id='lien_photo' style='font-size:xx-small;'>";
 		echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;'>";
@@ -2256,7 +2363,7 @@ if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$elev
 if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />\n";
 
 if($_SESSION['statut']=='professeur'){
-  if ((getSettingValue("active_module_trombinoscopes")=='y') && (getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')){
+  if (($is_pp)&&(getSettingValue("active_module_trombinoscopes")=='y') && (getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')){
 		echo "<center><input type=submit value=Enregistrer /></center>\n";
 	}
 }
@@ -2703,24 +2810,19 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 	echo "<p><br /></p>\n";
 }
 
-if((isset($eleve_login))&&($compte_eleve_existe=="y")&&($journal_connexions=='n')&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
-	//$sql="SELECT 1=1 FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
-	//$sql="SELECT 1=1 FROM utilisateurs WHERE login='$eleve_login';";
-	//$test_compte=mysql_query($sql);
-	//if(mysql_num_rows($test_compte)>0) {$compte_eleve_existe="y";} else {$compte_eleve_existe="n";}
-
-	//if(($compte_eleve_existe=="y")&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
-		//$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
-		//$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
-
+if((isset($eleve_login))&&($compte_eleve_existe=="y")&&($journal_connexions=='n')&&
+		($AccesDetailConnexionEle)
+	) {
 		echo "<hr />\n";
-	
+
 		echo "<p><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;journal_connexions=y#connexion' title='Journal des connexions'>Journal des connexions</a></p>\n";
 	//}
 }
 
 
-if((isset($eleve_login))&&($compte_eleve_existe=="y")&&($journal_connexions=='y')&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+if((isset($eleve_login))&&($compte_eleve_existe=="y")&&($journal_connexions=='y')&&
+		($AccesDetailConnexionEle)
+	) {
 	echo "<hr />\n";
 	// Journal des connexions
 	echo "<a name=\"connexion\"></a>\n";

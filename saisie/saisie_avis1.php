@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
 *
 * This file is part of GEPI.
 *
@@ -43,11 +43,6 @@ if (!checkAccess()) {
 // initialisation
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :NULL);
 
-if(($_SESSION['statut']=='professeur')&&(!is_pp($_SESSION['login'], $id_classe))) {
-	header("Location: ../accueil.php?msg=Accès non autorisé.");
-	die();
-}
-
 include "../lib/periodes.inc.php";
 
 $msg="";
@@ -70,10 +65,58 @@ if (($_SESSION['statut'] == 'cpe') and getSettingValue("GepiRubConseilCpe")!='ye
    die("Droits insuffisants pour effectuer cette opération");
 }
 
+if(($_SESSION['statut']=='professeur')&&(!is_pp($_SESSION['login'], $id_classe))) {
+	header("Location: ../accueil.php?msg=Accès non autorisé.");
+	die();
+}
 
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
 if($gepi_denom_mention=="") {
 	$gepi_denom_mention="mention";
+}
+
+$date_du_jour=strftime("%d/%m/%Y");
+$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
+//$acces_classes_acces_appreciations=acces("/classes/acces_appreciations.php", $_SESSION['statut']);
+$acces_classes_acces_appreciations=false;
+if(($_SESSION['statut']=='administrateur')||
+($_SESSION['statut']=='scolarite')||
+(($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiAccesRestrAccesAppProfP'))&&(is_pp($_SESSION['login'], $id_classe)))) {
+	$acces_classes_acces_appreciations=true;
+}
+//echo "\$acces_classes_acces_appreciations=$acces_classes_acces_appreciations<br />";
+if((isset($id_classe))&&(isset($_GET['periode_num']))&&(isset($_GET['mode']))&&($_GET['mode']=='modifier_visibilite_parents')&&($acces_classes_acces_appreciations)) {
+	check_token();
+	$periode_num=$_GET['periode_num'];
+
+	if($acces_app_ele_resp=='manuel') {
+		$acces_app_classe=acces_appreciations($periode_num, $periode_num, $id_classe, 'responsable');
+		//echo "\$acces_app_classe[$periode_num]=$acces_app_classe[$periode_num]<br />";
+		if($acces_app_classe[$periode_num]=="y") {
+			$sql="UPDATE matieres_appreciations_acces SET acces='n' WHERE id_classe='$id_classe' AND periode='$periode_num';";
+			$msg="L'accès parent/élève n'est pas/plus ouvert pour la période n°$periode_num.<br />";
+			$msg_no_js="<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." ne sont pas visibles des parents/élèves.\" />";
+		}
+		else {
+			$sql="UPDATE matieres_appreciations_acces SET acces='y' WHERE id_classe='$id_classe' AND periode='$periode_num';";
+			$msg="L'accès parent/élève est maintenant ouvert pour la période n°$periode_num.<br />";
+			$msg_no_js="<img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." sont visibles des parents/élèves.' />";
+		}
+		$res=mysql_query($sql);
+		if(!$res) {
+			$msg="Erreur lors de la modification de la visibilité parent/élève.<br />";
+			$msg_no_js="<img src='../images/icons/ico_attention.png' width='22' height='19' title='Erreur lors de la modification de la visibilité parent/élève.' alt='Erreur'>";
+		}
+	}
+	else {
+		$msg="L'accès ou non n'est pas modifié manuellement.<br />";
+		$msg_no_js="<img src='../images/icons/ico_attention.png' width='22' height='19' title=\"L'accès ou non n'est pas modifié manuellement.\" alt='Erreur'>";
+	}
+
+	if(isset($_GET['mode_js'])) {
+		echo $msg_no_js;
+		die();
+	}
 }
 
 if (isset($_POST['is_posted'])) {
@@ -447,7 +490,6 @@ if ($id_classe) {
 
 //=================================
 // 20121118
-$date_du_jour=strftime("%d/%m/%Y");
 // Si les parents ont accès aux bulletins ou graphes,... on va afficher un témoin
 $tab_acces_app_classe=array();
 // L'accès est donné à la même date pour parents et responsables.
@@ -695,6 +737,7 @@ if ($insert_mass_appreciation_type=="y") {
 		$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
 		$current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
 		$current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
+		$current_eleve_sexe = mysql_result($appel_donnees_eleves, $i, "sexe");
 
 		//========================
 		// AJOUT boireaus 20071115
@@ -741,7 +784,14 @@ if ($insert_mass_appreciation_type=="y") {
 			//echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
 			echo " <a href=\"$photo\" onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\" onclick=\"afficher_div('photo_$current_eleve_login','y',-100,20); return false;\" target='_blank' title=\"Afficher la photo de l'élève.\"";
 			echo ">";
-			echo "<img src='../images/icons/buddy.png' alt='$current_eleve_nom $current_eleve_prenom' />";
+			echo "<img src='../mod_trombinoscopes/images/";
+			if($current_eleve_sexe=="F") {
+				echo "photo_f.png";
+			}
+			else{
+				echo "photo_g.png";
+			}
+			echo "' class='icone20' alt='$current_eleve_nom $current_eleve_prenom' />";
 			echo "</a>";
 		}
 		//==========================
@@ -781,12 +831,24 @@ if ($insert_mass_appreciation_type=="y") {
 				(getSettingAOui('GepiAccesGraphParent'))||
 				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
 				(getSettingAOui('GepiAccesGraphEleve'))) {
+					$affiche_slash_a="n";
+					if(($acces_app_ele_resp=='manuel')&&($acces_classes_acces_appreciations)) {
+						//echo "<a href='./saisie_avis1.php?id_classe=$id_classe&periode_num=$k&mode=modifier_visibilite_parents".add_token_in_url()."' onclick=\"alterner_visibilite_parent('span_acces_resp_".$i."_".$k."', $k);return false;\" target='_blank'>";
+						//echo "<a href=\"javascript:alterner_visibilite_parent('span_acces_resp_".$i."_".$k."', $k)\">";
+						echo "<a href=\"javascript:alterner_visibilite_parent($i, $k)\">";
+						$affiche_slash_a="y";
+					}
+					echo " <span id='span_acces_resp_".$i."_".$k."'>";
 					if($tab_acces_app_classe[$id_classe][$k]=="y") {
-						echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
+						echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
 					}
 					else {
-						echo " <img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
 $msg_acces_app_ele_resp\" />";
+					}
+					echo " </span>";
+					if($affiche_slash_a=="y") {
+						echo " </a>";
 					}
 				}
 
@@ -841,9 +903,10 @@ $msg_acces_app_ele_resp\" />";
 					echo "<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$current_eleve_login_t[$k]."\" />\n";
 					echo "<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_avis_eleve_".$k."_".$i."\" rows='2' cols='120' class='wrap' onchange=\"changement()\"";
 
-					echo " onBlur=\"ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\"";
-		
-					$chaine_test_vocabulaire.="ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\n";
+					if(getSettingValue('active_recherche_lapsus')!='n') {
+						echo " onBlur=\"ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\"";
+						$chaine_test_vocabulaire.="ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\n";
+					}
 
 					echo ">";
 					//=========================
@@ -947,6 +1010,28 @@ $msg_acces_app_ele_resp\" />";
 		<br /><br /><br /><br />
 
 		<?php
+			if(($acces_app_ele_resp=='manuel')&&($acces_classes_acces_appreciations)) {
+				echo "<script type='text/javascript'>
+	function alterner_visibilite_parent(num_ele, periode_num) {
+		identifiant='span_acces_resp_'+num_ele+'_'+periode_num;
+
+		new Ajax.Updater($(identifiant),'./saisie_avis1.php?id_classe=$id_classe&periode_num='+periode_num+'&mode=modifier_visibilite_parents&mode_js=y".add_token_in_url(false)."',{method: 'get'});
+
+		setTimeout('maj_acces_resp('+num_ele+', '+periode_num+')', 3000);
+	}
+
+	function maj_acces_resp(num_ele, periode_num) {
+		for(j=0;j<$i;j++) {
+			if(j!=num_ele) {
+				if(document.getElementById('span_acces_resp_'+j+'_'+periode_num)) {
+					document.getElementById('span_acces_resp_'+j+'_'+periode_num).innerHTML=document.getElementById(identifiant).innerHTML;
+				}
+			}
+		}
+	}
+</script>\n";
+			}
+
 			// Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
 
 			echo "<script type='text/javascript'>

@@ -1022,7 +1022,13 @@ if($truncate_tables=='y') {
 */
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$javascript_specifique='mod_examen_blanc/lib_exb';
+$javascript_specifique[]='mod_examen_blanc/lib_exb';
+
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Examen blanc: Accueil";
@@ -1041,7 +1047,7 @@ echo ">Accueil</a>";
 //echo "</p>\n";
 //echo "</div>\n";
 
-include("../lib/calendrier/calendrier.class.php");
+//include("../lib/calendrier/calendrier.class.php");
 
 if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($acces_mod_exb_prof=="y")) {
 	if(!isset($id_exam)) {
@@ -1111,7 +1117,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			echo "<td><input type='text' name='intitule' value='Examen blanc' onchange='changement()' /></td>\n";
 			echo "</tr>\n";
 
-			$cal = new Calendrier("form1", "date");
+			//$cal = new Calendrier("form1", "date");
 		
 			$annee=strftime("%Y");
 			$mois=strftime("%m");
@@ -1122,8 +1128,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			echo "<td>Date de l'examen&nbsp;:</td>\n";
 			echo "<td>\n";
 			//echo "<input type='text' name='date' value='$date_defaut' />\n";
-			echo "<input type='text' name='date' id='date_examen' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
-			echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+			//echo "<input type='text' name='date' id='date_examen' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
+			//echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+
+			echo "<input type='text' name='date' id='date_examen' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date(this.id,event);\" />\n";
+			echo img_calendrier_js("date_examen", "img_bouton_date_examen");
 			echo "</td>\n";
 			echo "</tr>\n";
 
@@ -1275,7 +1284,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			//}
 			echo "</tr>\n";
 	
-			$cal = new Calendrier("form1", "date");
+			//$cal = new Calendrier("form1", "date");
 	
 			/*
 			$annee = strftime("%Y");
@@ -1295,8 +1304,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 			//if($etat!='clos') {
 				//echo "<input type='text' name='date' value='$date_defaut' size='10' onchange='changement()' />\n";
-				echo "<input type='text' name='date' id='date_examen' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
-				echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+				//echo "<input type='text' name='date' id='date_examen' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
+				//echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+
+				echo "<input type='text' name='date' id='date_examen' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date(this.id,event);\" />\n";
+				echo img_calendrier_js("date_examen", "img_bouton_date_examen");
+
 			//}
 			//else {
 			//	echo $date_defaut;

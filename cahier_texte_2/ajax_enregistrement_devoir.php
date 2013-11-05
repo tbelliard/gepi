@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2011 Josselin Jacquard
+ * Copyright 2009-2013 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -155,6 +155,13 @@ if ($contenu_cor == "" or $contenu_cor == "<br>") $contenu_cor = "...";
 //if(getSettingValue('get_img_formules_math')=='y') {
 	$contenu_cor=get_img_formules_math($contenu_cor, $id_groupe, "t");
 //}
+
+// 20130727
+if($ctTravailAFaire->getContenu()!=$contenu_cor) {
+	$date_modif=strftime("%Y-%m-%d %H:%M:%S");
+	$sql="UPDATE ct_devoirs_faits SET etat='', commentaire='Le professeur a modifié la notice de travail à faire ($date_modif).', date_modif='".$date_modif."' WHERE id_ct='$id_devoir';";
+	$update=mysql_query($sql);
+}
 
 $ctTravailAFaire->setContenu($contenu_cor);
 $ctTravailAFaire->setDateCt($date_devoir);

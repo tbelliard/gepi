@@ -110,53 +110,55 @@
 	<ol>
 		<?php
 
-			if((getSettingAOui('active_mod_alerte'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe')))) {
-				if(isset($_SERVER['SCRIPT_NAME'])) {
-					// Pour éviter de faire apparaitre le témoin de message sur des pages présentées lors des conseils de classe:
-					$tab_pages_temoin_fixe_messagerie_exclu=array(
-																// La page de saisie de message elle-même: 
-																// sinon on a le témoin clignotant alors qu'on est en train de cocher "lu", 
-																// en train de rédiger une réponse,...
-																"/mod_alerte/form_message.php", 
-																// Dans Gérer mon compte: les tests alerte perturbent le changement de mot de passe
-																"/utilisateurs/mon_compte.php", 
-																// Les pages que l'on affiche pendant un conseil de classe
-																// On n'a pas le temps pendant les conseils de cocher "lu"
-																"/visualisation/", 
-																"/bulletin/bull_index.php", 
-																"/saisie/saisie_avis", 
-																"/prepa_conseil/index3.php", 
-																"/prepa_conseil/edit_limite.php", 
-																// Dans les pages qui font de gros traitements par tranches 
-																// avec submit automatique via JavaScript
-																"/responsables/maj_import3.php", 
-																"/cahier_texte_2/archivage_cdt.php", 
-																"/utilitaires/",
-																"/gestion/accueil_sauve.php",
-																// Dans les pages d'initialisation de l'année
-																"/init",
-																"/edt_organisation/edt_init");
-					$cpt_tab_pages_temoin_fixe_messagerie_exclu=0;
-					for($loop=0;$loop<count($tab_pages_temoin_fixe_messagerie_exclu);$loop++) {
-						if(preg_match("@$tab_pages_temoin_fixe_messagerie_exclu[$loop]@", $_SERVER['SCRIPT_NAME'])) {
-							$cpt_tab_pages_temoin_fixe_messagerie_exclu++;
-							break;
+			if((getSettingAOui('active_mod_alerte'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe', 'autre')))) {
+				if(check_mae($_SESSION['login'])) {
+					if(isset($_SERVER['SCRIPT_NAME'])) {
+						// Pour éviter de faire apparaitre le témoin de message sur des pages présentées lors des conseils de classe:
+						$tab_pages_temoin_fixe_messagerie_exclu=array(
+																	// La page de saisie de message elle-même: 
+																	// sinon on a le témoin clignotant alors qu'on est en train de cocher "lu", 
+																	// en train de rédiger une réponse,...
+																	"/mod_alerte/form_message.php", 
+																	// Dans Gérer mon compte: les tests alerte perturbent le changement de mot de passe
+																	"/utilisateurs/mon_compte.php", 
+																	// Les pages que l'on affiche pendant un conseil de classe
+																	// On n'a pas le temps pendant les conseils de cocher "lu"
+																	"/visualisation/", 
+																	"/bulletin/bull_index.php", 
+																	"/saisie/saisie_avis", 
+																	"/prepa_conseil/index3.php", 
+																	"/prepa_conseil/edit_limite.php", 
+																	// Dans les pages qui font de gros traitements par tranches 
+																	// avec submit automatique via JavaScript
+																	"/responsables/maj_import3.php", 
+																	"/cahier_texte_2/archivage_cdt.php", 
+																	"/utilitaires/",
+																	"/gestion/accueil_sauve.php",
+																	// Dans les pages d'initialisation de l'année
+																	"/init",
+																	"/edt_organisation/edt_init");
+						$cpt_tab_pages_temoin_fixe_messagerie_exclu=0;
+						for($loop=0;$loop<count($tab_pages_temoin_fixe_messagerie_exclu);$loop++) {
+							if(preg_match("@$tab_pages_temoin_fixe_messagerie_exclu[$loop]@", $_SERVER['SCRIPT_NAME'])) {
+								$cpt_tab_pages_temoin_fixe_messagerie_exclu++;
+								break;
+							}
 						}
-					}
-					if($cpt_tab_pages_temoin_fixe_messagerie_exclu==0) {
-						echo "
+						if($cpt_tab_pages_temoin_fixe_messagerie_exclu==0) {
+							echo "
 	<li class='ligne_premier_menu'>".affichage_temoin_messages_recus()."
 	</li>
-						";
-					}
-					else {
-						// Il se passe un truc bizarre sur /utilisateurs/mon_compte.php dans le cas où on doit changer de mot de passe
-						/*
-						echo "
-	<li class='ligne_premier_menu'>".affichage_temoin_messages_recus("header_seul")."
-	</li>
-						";
-						*/
+							";
+						}
+						else {
+							// Il se passe un truc bizarre sur /utilisateurs/mon_compte.php dans le cas où on doit changer de mot de passe
+							/*
+							echo "
+		<li class='ligne_premier_menu'>".affichage_temoin_messages_recus("header_seul")."
+		</li>
+							";
+							*/
+						}
 					}
 				}
 			}
@@ -167,7 +169,7 @@
 						echo "
 	<li class='ligne_premier_menu'>
 		<a href='$value[lien]'".insert_confirm_abandon().">
-			<img src='$value[image]' alt='$value[alt]' title='$value[title]' height='16' width='16' />
+			<img src='$value[image]' alt='$value[alt]' title='$value[title]' class='icone16' />
 			<span class='menu_bandeau'>
 				&nbsp;$value[texte]
 			</span>
@@ -265,10 +267,18 @@
 				echo $tab['texte']."\n";
 			}
 			elseif (mb_substr($tab['lien'],0,4) == 'http') {
-				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
+				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				if(isset($tab['target'])) {
+					echo " target='".$tab['target']."'";
+				}
+				echo ">".$tab['texte']."</a>\n";
 			}
 			else {
-				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
+				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				if(isset($tab['target'])) {
+					echo " target='".$tab['target']."'";
+				}
+				echo ">".$tab['texte']."</a>\n";
 			}
 
 			echo "<ul class='niveau".$tab['niveau_sous_menu']."'>\n";
@@ -290,10 +300,18 @@
 				echo $tab['texte']."\n";
 			}
 			elseif (mb_substr($tab['lien'],0,4) == 'http') {
-				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
+				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				if(isset($tab['target'])) {
+					echo " target='".$tab['target']."'";
+				}
+				echo ">".$tab['texte']."</a>\n";
 			}
 			else {
-				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>";
+				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				if(isset($tab['target'])) {
+					echo " target='".$tab['target']."'";
+				}
+				echo ">".$tab['texte']."</a>";
 			}
 			echo "</li>\n";
 		}
@@ -348,6 +366,34 @@
 	<div class="menu_barre_container">
 		<ul class="niveau1">
 			<?php foreach ($tbs_menu_cpe as $value) { if ("$value[li]"!="") { ?>
+			<?php echo $value['li']; ?>
+			<?php }} unset($value); ?>
+		</ul>
+	</div>
+</div>
+<?php endif ?>
+
+<!-- menu responsable -->
+<?php if (count($tbs_menu_responsable)) : ?>
+<div id="menu_barre">
+	<div class="menu_barre_bottom"></div>
+	<div class="menu_barre_container">
+		<ul class="niveau1">
+			<?php foreach ($tbs_menu_responsable as $value) { if ("$value[li]"!="") { ?>
+			<?php echo $value['li']; ?>
+			<?php }} unset($value); ?>
+		</ul>
+	</div>
+</div>
+<?php endif ?>
+
+<!-- menu eleve -->
+<?php if (count($tbs_menu_eleve)) : ?>
+<div id="menu_barre">
+	<div class="menu_barre_bottom"></div>
+	<div class="menu_barre_container">
+		<ul class="niveau1">
+			<?php foreach ($tbs_menu_eleve as $value) { if ("$value[li]"!="") { ?>
 			<?php echo $value['li']; ?>
 			<?php }} unset($value); ?>
 		</ul>

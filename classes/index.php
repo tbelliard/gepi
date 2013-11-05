@@ -54,6 +54,9 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 | <a href='acces_appreciations.php'>Paramétrage de l'accès aux appréciations</a>
 | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>
 | <a href='../groupes/check_enseignements.php'>Vérifications</a>
+<?php
+	if(getSettingAOui('active_carnets_notes')) {echo "| <a href='../cahier_notes_admin/creation_conteneurs_par_lots.php'>Créer des ".casse_mot(getSettingValue("gepi_denom_boite"), 'min')."s par lots</a>";}
+?>
 </p>
 <p style='margin-top: 10px;'>
 <img src='../images/icons/add.png' alt='' class='back_link' /> <a href="modify_nom_class.php">Ajouter une classe</a>

@@ -46,6 +46,12 @@ if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+$nom_cc=getSettingValue('nom_cc');
+if($nom_cc=='') {
+	$nom_cc="evaluation-cumul";
+}
+
 /*
 if(($_SESSION['statut']=='autre')&&(!acces("/cahier_notes/visu_releve_notes_ter.php", $_SESSION['statut']))) {
 	header("Location: ../accueil.php?msg=Acces_non_autorise");
@@ -112,6 +118,22 @@ include("visu_releve_notes_func.lib.php");
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'>Retour à l'accueil</a>";
 echo " | <a href='visu_releve_notes_bis.php' title=\"Par opposition à l'interface simplifiée propsoée ici.\">Interface classique</a>";
+
+// l'élève a-t-il des évaluations cumules
+
+if ($ele_login) {
+    $mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+/* Modification du jeu de résultats en utf8 */
+    if (!$mysqli->set_charset("utf8")) {
+        printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $mysqli->error);
+    }
+    
+    $result = $mysqli->query("SELECT 1=1 FROM `cc_notes_eval` WHERE login ='".$ele_login."'");
+    if ($result->num_rows) {
+        echo " | <a href='visu_cc_elv.php' title=\"\">$nom_cc</a>";
+    }
+}
+
 
 if($_SESSION['statut']=='eleve') {
 	echo "</p>\n";

@@ -158,8 +158,8 @@ if ($windows == 'oui') {
 	$tbs_librairies[]=$gepiPath."/edt_effets/javascripts/effects.js";
 	$tbs_librairies[]=$gepiPath."/edt_effets/javascripts/window.js";
 	$tbs_librairies[]=$gepiPath."/edt_effets/javascripts/window_effects.js";
-	$tbs_CSS[]=array("fichier"=> $gepiPath."/edt_effets/themes/default.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
-	$tbs_CSS[]=array("fichier"=> $gepiPath."/edt_effets/themes/alphacube.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+	$tbs_CSS[]=array("fichier"=> $gepiPath."/edt_effets/themes/default.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
+	$tbs_CSS[]=array("fichier"=> $gepiPath."/edt_effets/themes/alphacube.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 }
 
 // Utilisation de tablekit
@@ -243,7 +243,7 @@ if(isset($style_specifique)) {
 	foreach($style_specifique as $current_style_specifique) {
 	  if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
 		//// Styles spécifiques à une page:
-		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 
 	  }
 
@@ -251,7 +251,7 @@ if(isset($style_specifique)) {
   } else {
 	if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
 	  // Styles spécifiques à une page:
-	  $tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+	  $tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 	}
   }
 }
@@ -259,7 +259,7 @@ if(isset($style_specifique)) {
 // vérifie si on est dans le modules absences
 $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs", "statistiques", "alert_suivi", "admin_config_semaines", "admin_motifs_absences", "admin_horaire_ouverture", "admin_actions_absences", "admin_periodes_absences");
 if(in_array(basename($_SERVER['PHP_SELF'],".php"), $files)) {
-	$tbs_CSS[]=array("fichier"=> $gepiPath."/mod_absences/styles/mod_absences.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+	$tbs_CSS[]=array("fichier"=> $gepiPath."/mod_absences/styles/mod_absences.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 }
 
 
@@ -300,12 +300,12 @@ if (isset($style_screen_ajout))  {
 		
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			if (@file_exists($gepiPath2.'/style_screen_ajout_'.getSettingValue("gepiSchoolRne").'.css')) {
-				$Style_CSS[]=array("fichier"=>$gepiPath."/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css"  , "rel"=>"stylesheet" , "type"=>"text/css","media"=>"" , "title"=>"");
+				$Style_CSS[]=array("fichier"=>$gepiPath."/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css"  , "rel"=>"stylesheet" , "type"=>"text/css","media"=>"all" , "title"=>"");
 				
 			}
 		} else {
 			if (@file_exists($gepiPath2.'/style_screen_ajout.css')) {
-				$Style_CSS[]=array("fichier"=>$gepiPath."/style_screen_ajout.css"  , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+				$Style_CSS[]=array("fichier"=>$gepiPath."/style_screen_ajout.css"  , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 			}
 		}
 	}
@@ -598,6 +598,8 @@ $tbs_menu_prof= array();
 $tbs_menu_admin = array();
 $tbs_menu_scol = array();
 $tbs_menu_cpe = array();
+$tbs_menu_responsable = array();
+$tbs_menu_eleve = array();
 if (!isset($nobar)) { $nobar = "non"; }
 if(isset($_SESSION['statut'])) {
 	if (getSettingValue("utiliserMenuBarre") != "no" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
@@ -685,7 +687,46 @@ if(isset($_SESSION['statut'])) {
 		         */
 				include("header_barre_cpe_template.php");
 			}
-	
+	} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "responsable") AND ($nobar != 'oui')) {
+			// Il n'y a pas de préférence enregistrée pour des non_prof
+			// Du coup, on récupère la valeur par défaut: 'yes'
+			if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+				if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once($prefix."edt_organisation/fonctions_calendrier.php");
+				} else if(file_exists("fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once("./fonctions_calendrier.php");
+				}
+		        /**
+		         * Barre de menu de cpe
+		         */
+				include("header_barre_responsable_template.php");
+			}
+	} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "eleve") AND ($nobar != 'oui')) {
+			// Il n'y a pas de préférence enregistrée pour des non_prof
+			// Du coup, on récupère la valeur par défaut: 'yes'
+			if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+				if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once($prefix."edt_organisation/fonctions_calendrier.php");
+				} else if(file_exists("fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once("./fonctions_calendrier.php");
+				}
+		        /**
+		         * Barre de menu de cpe
+		         */
+				include("header_barre_eleve_template.php");
+			}
 	} else {
 		$tbs_menu_prof=array();
 	}
@@ -695,7 +736,8 @@ if(isset($_SESSION['statut'])) {
 
 	$tbs_msg="" ;
 	if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))) {
-		$msg = isset($_POST['msg']) ? unslashes($_POST['msg']) : (isset($_GET['msg']) ? unslashes($_GET['msg']) : $msg);
+		//$msg = isset($_POST['msg']) ? unslashes($_POST['msg']) : (isset($_GET['msg']) ? unslashes($_GET['msg']) : $msg);
+        $msg = isset($_POST['msg']) ? stripslashes($_POST['msg']) : (isset($_GET['msg']) ? stripslashes($_GET['msg']) : $msg);
 		if ($msg != '') {
 			$tbs_msg=$msg ;
 		}

@@ -437,7 +437,7 @@ if(!isset($id_groupe)) {
 				$current_group=get_group($group["id"]);
 		
 				//echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='".$current_group['id']."' onchange='change_style_grp($cpt)' /><label id='label_id_groupe_$cpt' for='id_groupe_$cpt'>".$current_group['name'];
-				echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='".$current_group['id']."' onchange='change_style_grp($cpt);controle_doublons($cpt);' /><label id='label_id_groupe_$cpt' for='id_groupe_$cpt'>".$current_group['name'];
+			echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='".$current_group['id']."' onchange='change_style_grp($cpt);controle_doublons($cpt);' /><label id='label_id_groupe_$cpt' for='id_groupe_$cpt' title=\"Enseignement de ".$current_group['matiere']['matiere']." dispensé en ".$current_group['classlist_string']." par ".$current_group['profs']['proflist_string']."\">".$current_group['name'];
 				echo "<span style='font-size:x-small;'>";
 				echo " (<i>".$current_group['description']."</i>)";
 				if(count($current_group["classes"]["list"])>1) {echo " en ".$current_group['classlist_string'];}
@@ -709,7 +709,7 @@ if(!isset($_POST['recopie_select'])) {
 		echo $group[$i]['name'];
 		echo "<br />\n";
 		echo "<span style='font-size:small;'>".$group[$i]['classlist_string']."</span>\n";
-		echo "<br /><span style='font-size:small; color:red;'>".$id_groupe[$i]."</span>";
+		echo "<br /><a href='edit_group.php?id_groupe=".$id_groupe[$i]."&amp;mode=regroupement' title=\"Paramétrer le groupe n°".$id_groupe[$i]."\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><span style='font-size:small; color:red;'>".$id_groupe[$i]."</span></a>";
 		echo "<br />".preg_replace("/,/","<br />",$group[$i]['profs']['proflist_string']);
 
 		/*
@@ -843,7 +843,8 @@ if(!isset($_POST['recopie_select'])) {
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name='login_ele[$cpt]' value='".$login_ele."' />\n";
-		echo get_nom_prenom_eleve($login_ele);
+		$nom_prenom_ele=get_nom_prenom_eleve($login_ele);
+		echo $nom_prenom_ele;
 		echo "</td>\n";
 	
 		echo "<td>\n";
@@ -870,8 +871,8 @@ if(!isset($_POST['recopie_select'])) {
 			echo "</td>\n";
 			*/
 
-			$ligne_si_desinscription_possible.="<td onclick=\"document.getElementById('grp_eleve_".$i."_".$cpt."').checked=true;calcule_effectifs();changement();\">\n";
-			$ligne_si_desinscription_possible.="<input type='radio' name='grp_eleve[$cpt]' id='grp_eleve_".$i."_".$cpt."' value='".$id_groupe[$i]."' onchange='calcule_effectifs();changement()' title=\"$tab_eleve[$j] -&gt; ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\" ";
+			$ligne_si_desinscription_possible.="<td onclick=\"document.getElementById('grp_eleve_".$i."_".$cpt."').checked=true;calcule_effectifs();changement();\" title=\"Mettre $nom_prenom_ele dans le groupe ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\">\n";
+			$ligne_si_desinscription_possible.="<input type='radio' name='grp_eleve[$cpt]' id='grp_eleve_".$i."_".$cpt."' value='".$id_groupe[$i]."' onchange='calcule_effectifs();changement()' ";
 			if(in_array($login_ele,$group[$i]["eleves"][$num_periode]["list"])) {
 				$ligne_si_desinscription_possible.="checked ";
 				if($nb_grp_ele>0) {$info_plusieurs_grp_ele.=", ";}
@@ -1179,11 +1180,13 @@ else {
 	*/
 	echo "</th>\n";
 
+	// 20130919
+	$tab_champs_modele_coller=array();
 	for($i=0;$i<count($id_groupe);$i++) {
-
 		for($m=1;$m<=$maxper;$m++) {
 			echo "<th>";
-			echo "<input type='radio' name='modele' id='modele_$i' value='$i.$m' />\n";
+			echo "<input type='radio' name='modele' id='modele_".$i."_".$m."' value='$i.$m' onchange=\"update_liens_coller_visibles();changement();\" />\n";
+			$tab_champs_modele_coller[]=$i."_".$m;
 			echo "</th>\n";
 		}
 	}
@@ -1198,7 +1201,7 @@ else {
 	for($i=0;$i<count($id_groupe);$i++) {
 		for($m=1;$m<=$maxper;$m++) {
 			echo "<th>";
-			echo "<a href='javascript:copier_selection($i,$m);changement();'><img src='../images/icons/coller_23x24.png' width='23' height='24' alt='Coller la sélection' title='Coller la sélection' /></a>\n";
+			echo "<a id='coller_".$i."_".$m."' href='javascript:copier_selection($i,$m);changement();'><img src='../images/icons/coller_23x24.png' width='23' height='24' alt='Coller la sélection' title='Coller la sélection' /></a>\n";
 			echo "</th>\n";
 		}
 
@@ -1373,7 +1376,35 @@ else {
 	echo "</form>\n";
 */
 
+	// 20130919
+	$init_coches="var tab_suffixe_coller=new Array();\n";
+	for($loop=0;$loop<count($tab_champs_modele_coller);$loop++) {
+		$init_coches.="
+		if(document.getElementById('coller_".$tab_champs_modele_coller[$loop]."')) {
+			document.getElementById('coller_".$tab_champs_modele_coller[$loop]."').style.display='none';
+		}
+		tab_suffixe_coller[$loop]='".$tab_champs_modele_coller[$loop]."';\n";
+	}
+
 	echo "<script type='text/javascript'>
+	$init_coches;
+
+	function update_liens_coller_visibles() {
+		for(i=0;i<tab_suffixe_coller.length;i++) {
+			if(document.getElementById('coller_'+tab_suffixe_coller[i])) {
+				document.getElementById('coller_'+tab_suffixe_coller[i]).style.display='';
+			}
+
+			if(document.getElementById('modele_'+tab_suffixe_coller[i])) {
+				if(document.getElementById('modele_'+tab_suffixe_coller[i]).checked==true) {
+					if(document.getElementById('coller_'+tab_suffixe_coller[i])) {
+						document.getElementById('coller_'+tab_suffixe_coller[i]).style.display='none';
+					}
+				}
+			}
+		}
+	}
+
 	function copier_selection(indice_grp,num_per) {
 		// Récupération du bouton radio sélectionné pour trouver la colonne modèle.
 		modele='';

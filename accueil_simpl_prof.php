@@ -107,6 +107,51 @@ if($pref_accueil_visu=="y") {
 if($pref_accueil_liste_pdf=="y"){$colspan++;}
 
 
+$afficher_col_notanet="n";
+/*
+$sql="SELECT nv.*, jgc.id_groupe FROM notanet_verrou nv, 
+					j_groupes_classes jgc, 
+					j_groupes_professeurs jgp
+				WHERE nv.verrouillage='N' AND 
+						nv.id_classe=jgc.id_classe AND 
+						jgc.id_groupe=jgp.id_groupe AND 
+						jgp.login='".$_SESSION['login']."';";
+*/
+$sql="SELECT nv.*, jgc.id_groupe FROM notanet_verrou nv, 
+					j_groupes_classes jgc, 
+					j_groupes_professeurs jgp
+				WHERE nv.id_classe=jgc.id_classe AND 
+						jgc.id_groupe=jgp.id_groupe AND 
+						jgp.login='".$_SESSION['login']."';";
+//echo "$sql<br />";
+$res_notanet=mysql_query($sql);
+if(mysql_num_rows($res_notanet)>0) {
+	//$afficher_col_notanet="y";
+	$tab_groupes_notanet=array();
+	while($lig_notanet=mysql_fetch_object($res_notanet)) {
+		// On peut avoir plusieurs lignes retournées, s'il y a plusieurs types_brevet dans une classe/groupe
+		if(isset($tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage'])) {
+			if($lig_notanet->verrouillage=="N") {
+				$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']=$lig_notanet->verrouillage;
+			}
+		}
+		else {
+			$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']=$lig_notanet->verrouillage;
+		}
+		//echo "\$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']=".$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']."<br />";
+
+		if($lig_notanet->verrouillage=="N") {
+			$afficher_col_notanet="y";
+		}
+		// mod_notanet/saisie_app.php?id_groupe=2253
+	}
+}
+/*
+echo "<pre>";
+print_r($tab_groupes_notanet);
+echo "</pre>";
+*/
+
 // Préférences des profs à récupérer par la suite dans la table 'preferences':
 // 1: icones
 // 2: textes
@@ -118,7 +163,7 @@ $accueil_aff_txt_icon=1;
 // CELA A ETE DESACTIVE... PARCE QUE LISIBLE UNIQUEMENT EN MODE icones seuls
 
 
-// Styles spacifiques à la page avec chemin relatif à la racine du Gepi:
+// Styles specifiques à la page avec chemin relatif à la racine du Gepi:
 //$style_specifique="accueil_simpl_prof.css";
 $style_specifique="accueil_simpl_prof";
 
@@ -438,7 +483,7 @@ elseif($colspan>0) {
 
 
 //echo "<table border='1'>\n";
-echo "<table class='contenu' summary=\"Tableau de la liste des enseignements avec les liens vers le Carnet de notes, les bulletins, les graphes,...\">\n";
+echo "<table class='contenu boireaus boireaus_alt' summary=\"Tableau de la liste des enseignements avec les liens vers le Carnet de notes, les bulletins, les graphes,...\">\n";
 echo "<tr>\n";
 echo "<th";
 echo $chaine_rowspan_ligne_entete;
@@ -529,6 +574,13 @@ if(($pref_accueil_cn=="y")||
 			}
 		}
 	}
+}
+if($afficher_col_notanet=="y") {
+	echo "<th";
+	if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " rowspan='3'";}
+	echo ">\n";
+	echo "Notanet\n";
+	echo "</th>\n";
 }
 echo "</tr>\n";
 
@@ -749,7 +801,8 @@ for($i=0;$i<count($groups);$i++){
 							}
 						}
 						else {
-							echo "<td class='$class_style'>\n";
+							//echo "<td class='$class_style'>\n";
+							echo "<td>\n";
 						}
 
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['cahier_notes'])) {
@@ -799,7 +852,8 @@ for($i=0;$i<count($groups);$i++){
 							}
 						}
 						else {
-							echo "<td class='$class_style'>\n";
+							//echo "<td class='$class_style'>\n";
+							echo "<td>\n";
 						}
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['bulletins'])) {
 							echo "<div id='h_bn_".$i."_".$j."'>";
@@ -830,7 +884,12 @@ for($i=0;$i<count($groups);$i++){
 	
 	
 						// Appréciation sur le bulletin:
-						echo "<td class='$class_style'>\n";
+						if($class_style!="deverrouille") {
+							echo "<td class='$class_style'>\n";
+						}
+						else {
+							echo "<td>\n";
+						}
 						echo "<div id='h_ba_".$i."_".$j."'>";
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['bulletins'])) {
 							echo "<a href='saisie/saisie_appreciations.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."'";
@@ -863,7 +922,12 @@ for($i=0;$i<count($groups);$i++){
 	
 					if($pref_accueil_visu=="y"){
 						// Graphe:
-						echo "<td class='$class_style'>\n";
+						if($class_style!="deverrouille") {
+							echo "<td class='$class_style'>\n";
+						}
+						else {
+							echo "<td>\n";
+						}
 						echo "<div id='h_g_".$i."_".$j."'>";
 						$cpt=0;
 						foreach($groups[$i]["classes"]["classes"] as $classe){
@@ -898,7 +962,12 @@ for($i=0;$i<count($groups);$i++){
 						// <input type=hidden name=id_classe value=$id_classe />
 	
 						if($test_acces_bull_simp[$j]=="y") {
-							echo "<td class='$class_style'>\n";
+							if($class_style!="deverrouille") {
+								echo "<td class='$class_style'>\n";
+							}
+							else {
+								echo "<td>\n";
+							}
 							echo "<div id='h_bs_".$i."_".$j."'>";
 							$cpt=0;
 							foreach($groups[$i]["classes"]["classes"] as $classe){
@@ -951,7 +1020,12 @@ for($i=0;$i<count($groups);$i++){
 	
 	
 					if($pref_accueil_liste_pdf=="y"){
-						echo "<td class='$class_style'>\n";
+						if($class_style!="deverrouille") {
+							echo "<td class='$class_style'>\n";
+						}
+						else {
+							echo "<td>\n";
+						}
 						echo "<div id='h_listes_".$i."_".$j."'>";
 						echo "<a href='impression/liste_pdf.php' onClick=\"valide_liste_pdf('".$groups[$i]['id']."','".$groups[$i]['periodes'][$j]['num_periode']."'); return false;\" target='_blank'";
 						if($pref_accueil_infobulles=="y"){
@@ -976,6 +1050,22 @@ for($i=0;$i<count($groups);$i++){
 					echo "<td>-</td>\n";
 				}
 			}
+		}
+	}
+
+	if($afficher_col_notanet=="y") {
+		if(isset($tab_groupes_notanet[$groups[$i]['id']]['verrouillage'])) {
+			if($tab_groupes_notanet[$groups[$i]['id']]['verrouillage']=="N") {
+				//style='background-color:green'
+				echo "<td class='deverrouille'><a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_edit.png' width='34' height='34' title=\"Saisir les appréciations pour les Fiches Brevet\" /></a></td>\n";
+			}
+			else {
+				//style='background-color:orange'
+				echo "<td class='verrouillagepart'><a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos appréciations pour les Fiches Brevet\" /></a></td>\n";
+			}
+		}
+		else {
+			echo "<td>&nbsp;</td>\n";
 		}
 	}
 

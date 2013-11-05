@@ -680,7 +680,9 @@ function change_display(id) {
 	$classe_fut[]=""; // Vide pour les Non Affectés
 
 
-	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='' /><label for='clas_fut_$cpt'>Non encore affecté</label><br />\n";
+	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='' ";
+	if(in_array("",$clas_fut)) {echo "checked ";}
+	echo "/><label for='clas_fut_$cpt'>Non encore affecté</label><br />\n";
 	$cpt++;
 	echo "</td>\n";
 
@@ -1333,11 +1335,28 @@ $_POST['projet']=	4eme_vers_3eme
 	<option value='lv1'>LV1</option>
 	<option value='lv2'>LV2</option>
 	<option value='profil'>Profil</option>
+	<option value='aucune'>Aucune</option>
 	</select>\n";
 	
 	echo "</p>\n";
 
+	if((isset($projet))&&(isset($choix_affich))&&(isset($requete_definie))&&(isset($id_aff))&&(isset($id_req))) {
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix_affich=$choix_affich&amp;requete_definie=$requete_definie&amp;id_aff=$id_aff&amp;id_req=$id_req'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Rafraichir sans enregistrer</a></p>\n";
+	}
+	//affect_eleves_classes.php?projet=futures_3emes&choix_affich=Valider&clas_fut[0]=
+	/*
 
+	$_POST['clas_fut']=	Array (*)
+		$_POST[clas_fut]['0']=	
+	$_POST['avec_lv1']=	Array (*)
+		$_POST[avec_lv1]['0']=	ALL1
+	$_POST['projet']=	futures_3emes
+	$_POST['choix_affich']=	Valider
+
+	Nombre de valeurs en POST: 4
+	*/
 
 	$eff_fut_classe_hors_selection=array();
 	$eff_fut_classe_hors_selection_F=array();
@@ -2096,6 +2115,7 @@ $_POST['projet']=	4eme_vers_3eme
 		}
 	}
 
+
 	function colorise_ligne2(cpt) {
 		// On va coloriser d'après ce qui est sélectionné dans le champ de colorisation.
 		cat=document.forms['form_affect_eleves_classes'].elements['colorisation'].options[document.forms['form_affect_eleves_classes'].elements['colorisation'].selectedIndex].value;
@@ -2231,21 +2251,26 @@ echo "
 		for(k=0;k<n;k++) {
 			for(i=0;i<$cpt;i++) {
 				if(mode!='profil') {
-					if(document.getElementById(mode+'_'+k+'_'+i)) {
-						if(document.getElementById(mode+'_'+k+'_'+i).checked) {
-							if(mode=='classe_fut') {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
-							}
-							if(mode=='lv1') {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
-							}
-							if(mode=='lv2') {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
-							}
-							if(mode=='lv3') {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+					if(mode!='aucune') {
+						if(document.getElementById(mode+'_'+k+'_'+i)) {
+							if(document.getElementById(mode+'_'+k+'_'+i).checked) {
+								if(mode=='classe_fut') {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
+								}
+								if(mode=='lv1') {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
+								}
+								if(mode=='lv2') {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
+								}
+								if(mode=='lv3') {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+								}
 							}
 						}
+					}
+					else {
+						document.getElementById('tr_eleve_'+i).style.backgroundColor='white';
 					}
 				}
 				else {
@@ -2304,6 +2329,10 @@ echo "
 		}
 		if(cat=='profil') {
 			colorise(cat,".count($tab_profil).");
+		}
+		if(cat=='aucune') {
+			// Il faut au moins 1 pour faire un tour dans colorise()
+			colorise(cat,1);
 		}
 	}
 

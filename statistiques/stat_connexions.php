@@ -3,7 +3,7 @@
  *
  * @version $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -44,9 +44,9 @@ $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/statistiques/stat_connexions.php',
 administrateur='V',
-professeur='F',
-cpe='F',
-scolarite='F',
+professeur='V',
+cpe='V',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',
@@ -61,16 +61,252 @@ if (!checkAccess()) {
     die();
 }
 
+
+if($_SESSION['statut']=='administrateur') {
+	// On n'a pas de restrictions
+}
+elseif($_SESSION['statut']=='scolarite') {
+	if((!getSettingAOui('AccesStatConnexionEleScolarite'))&&
+	(!getSettingAOui('AccesDetailConnexionEleScolarite'))&&
+	(!getSettingAOui('AccesStatConnexionRespScolarite'))&&
+	(!getSettingAOui('AccesDetailConnexionRespScolarite'))) {
+		header("Location: ../accueil.php?msg=Accès non autorisé.");
+		die();
+	}
+}
+elseif($_SESSION['statut']=='cpe') {
+	if((!getSettingAOui('AccesStatConnexionEleCpe'))&&
+	(!getSettingAOui('AccesDetailConnexionEleCpe'))&&
+	(!getSettingAOui('AccesStatConnexionRespCpe'))&&
+	(!getSettingAOui('AccesDetailConnexionRespCpe'))) {
+		header("Location: ../accueil.php?msg=Accès non autorisé.");
+		die();
+	}
+}
+elseif($_SESSION['statut']=='professeur') {
+	$acces="n";
+
+	if((getSettingAOui('AccesStatConnexionEleProfesseur'))||
+	(getSettingAOui('AccesDetailConnexionEleProfesseur'))||
+	(getSettingAOui('AccesStatConnexionRespProfesseur'))||
+	(getSettingAOui('AccesDetailConnexionRespProfesseur'))) {
+		$acces="y";
+	}
+
+	if($acces=="n") {
+		if(is_pp($_SESSION['login'])) {
+			if((getSettingAOui('AccesStatConnexionEleProfP'))||
+			(getSettingAOui('AccesDetailConnexionEleProfP'))||
+			(getSettingAOui('AccesStatConnexionRespProfP'))||
+			(getSettingAOui('AccesDetailConnexionRespProfP'))) {
+				$acces="y";
+			}
+		}
+	}
+
+	if($acces=="n") {
+		header("Location: ../accueil.php?msg=Accès non autorisé.");
+		die();
+	}
+}
+else {
+	// On ne devrait pas arriver là pour le moment
+	header("Location: ../accueil.php?msg=Accès non autorisé.");
+	die();
+}
+
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
+
+if(isset($mode)) {
+	if($_SESSION['statut']=='administrateur') {
+		// On n'a pas de restrictions
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		if(($mode==2)&&(!getSettingAOui('AccesStatConnexionRespScolarite'))&&(!getSettingAOui('AccesDetailConnexionRespScolarite'))) {
+			unset($mode);
+		}
+
+		if(($mode==3)&&(!getSettingAOui('AccesStatConnexionEleScolarite'))&&(!getSettingAOui('AccesDetailConnexionEleScolarite'))) {
+			unset($mode);
+		}
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		if(($mode==2)&&(!getSettingAOui('AccesStatConnexionRespCpe'))&&(!getSettingAOui('AccesDetailConnexionRespCpe'))) {
+			unset($mode);
+		}
+		if(($mode==3)&&(!getSettingAOui('AccesStatConnexionEleCpe'))&&(!getSettingAOui('AccesDetailConnexionEleCpe'))) {
+			unset($mode);
+		}
+	}
+	elseif($_SESSION['statut']=='professeur') {
+		if($mode==2) {
+			if(!isset($id_classe)) {
+				$is_pp=is_pp($_SESSION['login']);
+
+				$acces="n";
+				if((getSettingAOui('AccesStatConnexionRespProfesseur'))||(getSettingAOui('AccesDetailConnexionRespProfesseur'))||
+					(($is_pp)&&((getSettingAOui('AccesStatConnexionRespProfP'))||(getSettingAOui('AccesDetailConnexionRespProfP'))))) {
+					$acces="y";
+				}
+
+				if($acces=="n") {
+					unset($mode);
+					$msg="Accès non autorisé<br />";
+				}
+			}
+			else {
+				$is_pp=is_pp($_SESSION['login'], $id_classe);
+				$is_prof_classe=is_prof_classe($_SESSION['login'], $id_classe);
+
+				$acces="n";
+				if(($is_prof_classe)&&(getSettingAOui('AccesStatConnexionRespProfesseur'))||(getSettingAOui('AccesDetailConnexionRespProfesseur'))||
+					(($is_pp)&&((getSettingAOui('AccesStatConnexionRespProfP'))||(getSettingAOui('AccesDetailConnexionRespProfP'))))) {
+					$acces="y";
+				}
+
+				if($acces=="n") {
+					unset($mode);
+					$msg="Accès non autorisé<br />";
+				}
+			}
+		}
+
+		if($mode==3) {
+			if(!isset($id_classe)) {
+				$is_pp=is_pp($_SESSION['login']);
+
+				$acces="n";
+				if((getSettingAOui('AccesStatConnexionEleProfesseur'))||(getSettingAOui('AccesDetailConnexionEleProfesseur'))||
+					(($is_pp)&&((getSettingAOui('AccesStatConnexionEleProfP'))||(getSettingAOui('AccesDetailConnexionEleProfP'))))) {
+					$acces="y";
+				}
+
+				if($acces=="n") {
+					unset($mode);
+					$msg="Accès non autorisé<br />";
+				}
+			}
+			else {
+				$is_pp=is_pp($_SESSION['login'], $id_classe);
+				$is_prof_classe=is_prof_classe($_SESSION['login'], $id_classe);
+
+				$acces="n";
+				if(($is_prof_classe)&&(getSettingAOui('AccesStatConnexionEleProfesseur'))||(getSettingAOui('AccesDetailConnexionEleProfesseur'))||
+					(($is_pp)&&((getSettingAOui('AccesStatConnexionEleProfP'))||(getSettingAOui('AccesDetailConnexionEleProfP'))))) {
+					$acces="y";
+				}
+
+				if($acces=="n") {
+					unset($mode);
+					$msg="Accès non autorisé<br />";
+				}
+			}
+		}
+	}
+}
 
 $display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : NULL;
 $display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : NULL;
 
+
 $sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";
 //echo "$sql<br />\n";
 $res_classes=mysql_query($sql);
+$nb_classes_0=mysql_num_rows($res_classes);
+
+if($_SESSION['statut']=='administrateur') {
+	$sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";
+}
+elseif($_SESSION['statut']=='scolarite') {
+	$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_scol_classes jsc WHERE c.id=jsc.id_classe AND jsc.login='".$_SESSION['login']."' ORDER BY c.classe;";
+}
+elseif($_SESSION['statut']=='cpe') {
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+}
+elseif($_SESSION['statut']=='professeur') {
+	//***********
+	// A FAIRE
+	//***********
+	// Il faut restreindre la liste des classes selon qu'on a donné des accès PP ou Prof
+	if(!isset($mode)) {
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgp.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+	}
+	elseif($mode==1) {
+		if((getSettingAOui('AccesStatConnexionEleProfesseur'))||
+		(getSettingAOui('AccesStatConnexionRespProfesseur'))||
+		(getSettingAOui('AccesDetailConnexionEleProfesseur'))||
+		(getSettingAOui('AccesDetailConnexionRespProfesseur'))
+		) {
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgp.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+		}
+		elseif((is_pp($_SESSION['login']))&&(
+				(getSettingAOui('AccesStatConnexionEleProfP'))||
+				(getSettingAOui('AccesStatConnexionRespProfP'))||
+				(getSettingAOui('AccesDetailConnexionEleProfP'))||
+				(getSettingAOui('AccesDetailConnexionRespProfP'))
+				)) {
+					$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec, j_eleves_professeurs jep WHERE jep.professeur = '".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe";
+		}
+		else {
+			header("Location: ./index.php?msg=Aucune classe n'a été trouvée pour vous.");
+			die();
+		}
+	}
+	elseif($mode==2) {
+		if((getSettingAOui('AccesStatConnexionRespProfesseur'))||
+		(getSettingAOui('AccesDetailConnexionRespProfesseur'))
+		) {
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgp.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+		}
+		elseif((is_pp($_SESSION['login']))&&(
+				(getSettingAOui('AccesStatConnexionRespProfP'))||
+				(getSettingAOui('AccesDetailConnexionRespProfP'))
+				)) {
+					$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec, j_eleves_professeurs jep WHERE jep.professeur = '".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe";
+		}
+		else {
+			header("Location: ./index.php?msg=Aucune classe n'a été trouvée pour vous.");
+			die();
+		}
+	}
+	elseif($mode==3) {
+		if((getSettingAOui('AccesStatConnexionEleProfesseur'))||
+		(getSettingAOui('AccesDetailConnexionEleProfesseur'))
+		) {
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgp.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+		}
+		elseif((is_pp($_SESSION['login']))&&(
+				(getSettingAOui('AccesStatConnexionEleProfP'))||
+				(getSettingAOui('AccesDetailConnexionEleProfP'))
+				)) {
+					$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec, j_eleves_professeurs jep WHERE jep.professeur = '".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe";
+		}
+		else {
+			header("Location: ./index.php?msg=Aucune classe n'a été trouvée pour vous.");
+			die();
+		}
+	}
+	else {
+		// On ne devrait pas arriver là
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgp.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+	}
+}
+else {
+	// On ne devrait pas arriver là.
+	header("Location: ../accueil.php?msg=Accès non autorisé.");
+	die();
+}
+//echo "$sql<br />\n";
+$res_classes=mysql_query($sql);
 $nb_classes=mysql_num_rows($res_classes);
+
+$acces_toutes_classes="n";
+if($nb_classes==$nb_classes_0) {
+	$acces_toutes_classes="y";
+}
+//echo "\$acces_toutes_classes=$acces_toutes_classes<br />";
+
 if($nb_classes>0) {
 	$tab_classe=array();
 	$cpt=0;
@@ -87,6 +323,11 @@ if($nb_classes>0) {
 	}
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 // ===================== entete Gepi ======================================//
 $titre_page = "Statistiques de connexion";
 require_once("../lib/header.inc.php");
@@ -94,8 +335,17 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-function tableau_php_tableau_html($tab, $nb_lig_max=5) {
+//function tableau_php_tableau_html($tab, $nb_lig_max=5) {
+function tableau_php_tableau_html($tab, $avec_lien="n", $statut="") {
 	$retour="";
+
+	$acces_lien=false;
+	if(($avec_lien=="y")&&($statut=='responsable')) {
+		$acces_lien=acces("/responsables/modify_resp.php", $_SESSION['statut']);
+	}
+	elseif(($avec_lien=="y")&&($statut=='eleve')) {
+		$acces_lien=acces("/eleves/modify_eleve.php", $_SESSION['statut']);
+	}
 
 	//$retour.="<div float:left; width: 15em;'>\n";
 	$retour.="<table class='boireaus' style='margin:2px;'>\n";
@@ -119,7 +369,17 @@ function tableau_php_tableau_html($tab, $nb_lig_max=5) {
 
 		$alt=$alt*(-1);
 		$retour.="<tr class='lig$alt white_hover'>\n";
-		$retour.="<td".$info_title.">".civ_nom_prenom($tab[$loop])."</td>\n";
+		$retour.="<td".$info_title.">";
+		if(($avec_lien=="y")&&($statut=='responsable')&&($acces_lien)) {
+			$retour.="<a href='../responsables/modify_resp.php?login_resp=".$tab[$loop]."&amp;journal_connexions=y#connexion' target='_blank' title='Voir le journal des connexions de ce responsable.'>".civ_nom_prenom($tab[$loop])."</a>";
+		}
+		elseif(($avec_lien=="y")&&($statut=='eleve')&&($acces_lien)) {
+			$retour.="<a href='../eleves/modify_eleve.php?eleve_login=".$tab[$loop]."&amp;journal_connexions=y#connexion' target='_blank' title='Voir le journal des connexions de cet(te) élève.'>".civ_nom_prenom($tab[$loop])."</a>";
+		}
+		else {
+			$retour.=civ_nom_prenom($tab[$loop]);
+		}
+		$retour.="</td>\n";
 		$retour.="</tr>\n";
 		//$compteur++;
 	}
@@ -136,6 +396,11 @@ function tableau_php_tableau_html($tab, $nb_lig_max=5) {
 # 3 : logout lié à un timeout
 # 4 : logout lié à une nouvelle connexion sous un nouveau profil
 */
+
+$AccesStatConnexionEle=AccesInfoEle("AccesStatConnexionEle");
+$AccesDetailConnexionEle=AccesInfoEle("AccesDetailConnexionEle");
+$AccesStatConnexionResp=AccesInfoResp("AccesStatConnexionResp");
+$AccesDetailConnexionResp=AccesInfoResp("AccesDetailConnexionResp");
 
 function stat_echo_debug($chaine) {
 	$debug="n";
@@ -157,8 +422,12 @@ if(!isset($mode)) {
 	echo "<p>Choisissez&nbsp;:</p>\n";
 	echo "<ul>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=1'>Statistiques globales de connexions élèves et responsables</a></li>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>Statistiques des connexions parents d'une classe</a></li>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=3'>Statistiques des connexions élèves d'une classe</a></li>\n";
+	if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>Statistiques des connexions parents d'une classe</a></li>\n";
+	}
+	if(($AccesStatConnexionEle)||($AccesDetailConnexionEle)) {
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=3'>Statistiques des connexions élèves d'une classe</a></li>\n";
+	}
 	echo "</ul>\n";
 
 	echo "<p style='color:red'>Faire une autre graphique avec le nombre de connexions par semaine.</p>";
@@ -176,7 +445,7 @@ elseif($mode==1) {
 	
 	$begin_bookings=getSettingValue('begin_bookings');
 	$mysql_begin_bookings=strftime("%Y-%m-%d 00:00:00", $begin_bookings);
-	echo "<p>Les logs antérieurs à ".formate_date($mysql_begin_bookings)." ne seront pas pris en compte.</p>\n";
+	echo "<p>Les journaux antérieurs à ".formate_date($mysql_begin_bookings)." ne seront pas pris en compte.</p>\n";
 
 	$sql="SELECT DISTINCT l.login from log l, resp_pers rp where rp.login=l.login and autoclose>='0' AND autoclose<='3' AND START>='$mysql_begin_bookings';";
 	$res=mysql_query($sql);
@@ -184,13 +453,50 @@ elseif($mode==1) {
 		echo "<p>Aucun compte parent n'a encore essayé de (<em>ou réussi à</em>) se connecter.</p>\n";
 	}
 	else {
-		echo "<p>".mysql_num_rows($res)." parent(s) a(ont) réussi à se connecter à ce jour.</p>\n";
+		echo "<p>".mysql_num_rows($res)." parent(s) a(ont) réussi à se connecter à ce jour (<em>pour toutes les classes de l'établissement</em>).</p>\n";
 	
 		$tab_parents_connectes_avec_succes=array();
 		while($lig=mysql_fetch_object($res)) {
 			$tab_parents_connectes_avec_succes[]=$lig->login;
 		}
-	
+
+		/*
+		// Pb: Il ne faut pas compter deux fois des parents d'enfants de 2 classes différentes
+		//$nb_parents_differents_toutes_classes=0;
+		$sql="SELECT DISTINCT e.login FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		$nb_parents_differents_toutes_classes=mysql_num_rows($res);
+		// ERREUR: On compte les enfants et on peut avoir deux enfants d'une même famille
+		*/
+		$tab_ele_id_login_resp=array();
+		$tab_login_resp_ele_id=array();
+
+		$tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter=array();
+		$tab_parents_enfants_differents_connectes_avec_succes=array();
+		$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY r.ele_id, l.login;";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		while($lig=mysql_fetch_object($res)) {
+			$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$lig->pers_id';";
+			$res2=mysql_query($sql);
+			while($lig2=mysql_fetch_object($res2)) {
+				if((!in_array($lig2->ele_id, $tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter))&&(!in_array($lig->login, $tab_parents_enfants_differents_connectes_avec_succes))) {
+					$tab_parents_enfants_differents_connectes_avec_succes[]=$lig->login;
+				}
+				$tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter[]=$lig2->ele_id;
+
+				$tab_ele_id_login_resp[$lig2->ele_id][]=$lig->login;
+				$tab_login_resp_ele_id[$lig->login][]=$lig2->ele_id;
+			}
+		}
+		$nb_parents_differents_toutes_classes=count($tab_parents_enfants_differents_connectes_avec_succes);
+
+		$effectif_total_eleve=0;
+		$effectif_total_eleve_connectes=0;
+		$effectif_total_eleve_en_echec=0;
+
+		$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes=array();
 		// Mettre les pourcentages aussi
 		echo "<p>Nombre d'élèves et responsables connectés au moins une fois&nbsp;:</p>\n";
 		echo "<table class='boireaus'>\n";
@@ -198,8 +504,9 @@ elseif($mode==1) {
 		echo "<th rowspan='2'>Classe</th>\n";
 		echo "<th rowspan='2'>Effectif</th>\n";
 		echo "<th colspan='2'>Elèves</th>\n";
+		echo "<th rowspan='2'>Elèves toujours<br />en échec de<br />mot de passe</th>\n";
 		echo "<th rowspan='2'>Parents</th>\n";
-		echo "<th colspan='2'>Parents d'enfants<br />différents</th>\n";
+		echo "<th colspan='2' title=\"Si les deux parents d'un enfant se sont connectés, on ne les compte dans cette colonne que pour 1 (au sens d'une seule famille).\">Parents d'enfants<br />différents</th>\n";
 		echo "<th rowspan='2'>Parents toujours<br />en échec de<br />mot de passe</th>\n";
 		echo "</tr>\n";
 
@@ -212,9 +519,16 @@ elseif($mode==1) {
 		$alt=1;
 		for($i=0;$i<count($tab_classe);$i++) {
 
+			if($_SESSION['statut']=='professeur') {
+				$AccesStatConnexionEle=AccesInfoEle("AccesStatConnexionEle", "", $tab_classe[$i]['id']);
+				$AccesDetailConnexionEle=AccesInfoEle("AccesDetailConnexionEle", "", $tab_classe[$i]['id']);
+				$AccesStatConnexionResp=AccesInfoResp("AccesStatConnexionResp", "", "", $tab_classe[$i]['id']);
+				$AccesDetailConnexionResp=AccesInfoResp("AccesDetailConnexionResp", "", "", $tab_classe[$i]['id']);
+			}
+
 			stat_echo_debug("<tr><td>".$tab_classe[$i]['classe']."</td><td colspan='7'>");
 
-			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec WHERE jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY e.nom, e.prenom, l.login;";
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			$nb_ele=mysql_num_rows($res);
@@ -224,12 +538,34 @@ elseif($mode==1) {
 					$tab_ele[]=$lig->login;
 				}
 			}
-			$titre_infobulle="Elèves connectés au moins une fois (<em>".$tab_classe[$i]['classe']."</em>)\n";
-			$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_ele)."</div>";
-			$tabdiv_infobulle[]=creer_div_infobulle('div_ele_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+
+			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY e.nom, e.prenom, l.login;";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			$nb_ele=mysql_num_rows($res);
+			$tab_ele_en_echec=array();
+			if($nb_ele>0) {
+				while($lig=mysql_fetch_object($res)) {
+					if(!in_array($lig->login, $tab_ele)) {
+						$tab_ele_en_echec[]=$lig->login;
+					}
+				}
+			}
+			$effectif_total_eleve_en_echec+=count($tab_ele_en_echec);
+
+			if(($AccesStatConnexionEle)||($AccesDetailConnexionEle)) {
+				$titre_infobulle="Elèves connectés au moins une fois (<em>".$tab_classe[$i]['classe']."</em>)\n";
+				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_ele, "y", "eleve")."</div>";
+				$tabdiv_infobulle[]=creer_div_infobulle('div_ele_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+
+				$titre_infobulle="Elèves toujours en échec de connexion (<em>".$tab_classe[$i]['classe']."</em>)\n";
+				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_ele_en_echec)."</div>";
+				$tabdiv_infobulle[]=creer_div_infobulle('div_ele_en_echec_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+			}
 
 			stat_echo_debug("<p>Parents connectés au moins une fois&nbsp;:</p>");
-			$sql="SELECT DISTINCT l.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+
+			$sql="SELECT DISTINCT l.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY rp.nom, rp.prenom, l.login;";
 			stat_echo_debug("$sql<br />");
 			$res=mysql_query($sql);
 			$nb_parents=mysql_num_rows($res);
@@ -245,14 +581,19 @@ elseif($mode==1) {
 				print_r($tab_resp);
 			}
 			*/
-			//stat_echo_debug("<pre>".print_r($tab_resp)."</pre>");
-			$titre_infobulle="Parents connectés au moins une fois\n";
-			$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_resp)."</div>";
-			$tabdiv_infobulle[]=creer_div_infobulle('div_resp_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 
+			if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
+				$titre_infobulle="Parents connectés au moins une fois (<em>".$tab_classe[$i]['classe']."</em>)\n";
+				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_resp, "y", "responsable")."</div>";
+				$tabdiv_infobulle[]=creer_div_infobulle('div_resp_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+			}
+
+			//stat_echo_debug("<pre>".print_r($tab_resp)."</pre>");
 
 			stat_echo_debug("<p>Parents jamais connectés avec succès&nbsp;:<br />");
-			$sql="SELECT DISTINCT l.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose='4' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+
+			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose='4' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY rp.nom, rp.prenom, l.login;";
+			//echo "$sql<br />";
 			stat_echo_debug("$sql<br />");
 			$res=mysql_query($sql);
 			$nb_parents_erreur_mdp=mysql_num_rows($res);
@@ -265,6 +606,22 @@ elseif($mode==1) {
 						stat_echo_debug("<span style='color:red'>$lig->login</span><br />");
 						$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes++;
 						$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes[]=$lig->login;
+
+						if(!in_array($lig->login, $tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes)) {
+							if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
+								$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes[]=$lig->login;
+							}
+
+							$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$lig->pers_id';";
+							$res2=mysql_query($sql);
+							while($lig2=mysql_fetch_object($res2)) {
+								if(!isset($tab_login_resp_ele_id[$lig->login])) {$tab_login_resp_ele_id[$lig->login]=array();}
+								if(!in_array($lig2->ele_id, $tab_login_resp_ele_id[$lig->login])) {
+									$tab_login_resp_ele_id[$lig->login][]=$lig2->ele_id;
+								}
+							}
+
+						}
 					}
 					else {
 						stat_echo_debug("<span style='color:green'>$lig->login</span><br />");
@@ -276,9 +633,11 @@ elseif($mode==1) {
 				print_r($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes);
 			}
 			*/
-			$titre_infobulle="Parents en échec de connexion\n";
-			$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes)."</div>";
-			$tabdiv_infobulle[]=creer_div_infobulle('div_resp_echec_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+			if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
+				$titre_infobulle="Parents en échec de connexion (<em>".$tab_classe[$i]['classe']."</em>)\n";
+				$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes)."</div>";
+				$tabdiv_infobulle[]=creer_div_infobulle('div_resp_echec_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+			}
 
 			// **********************************************************************************************
 			/*
@@ -291,7 +650,7 @@ elseif($mode==1) {
 
 			$tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter_cette_classe=array();
 			$tab_parents_enfants_differents_connectes_avec_succes_cette_classe=array();
-			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
+			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY rp.nom, rp.prenom, l.login;";
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			while($lig=mysql_fetch_object($res)) {
@@ -317,14 +676,20 @@ elseif($mode==1) {
 	
 			echo "<td>";
 			echo $tab_classe[$i]['effectif'];
+			$effectif_total_eleve+=$tab_classe[$i]['effectif'];
 			echo "</td>\n";
 	
 			if($nb_ele>0) {
 				echo "<td>";
-				//echo "<a href=\"#\" onclick=\"afficher_div('div_ele_$i','y',10,10);return false;\"  onmouseover=\"delais_afficher_div('div_ele_$i','y',10,10,20,20,1000);\"  onmouseout=\"cacher_div('div_ele_$i');\">";
-				echo "<a href=\"#\" onclick=\"afficher_div_stat('div_ele_$i');return false;\"  onmouseover=\"afficher_div_stat('div_ele_$i')\">";
-				echo $nb_ele."/".$tab_classe[$i]['effectif'];
-				echo "</a>";
+				if(($nb_ele>0)&&(($AccesStatConnexionEle)||($AccesDetailConnexionEle))) {
+					echo "<a href=\"#\" onclick=\"afficher_div_stat('div_ele_$i');return false;\"  onmouseover=\"afficher_div_stat('div_ele_$i')\">";
+					echo $nb_ele."/".$tab_classe[$i]['effectif'];
+					echo "</a>";
+				}
+				else {
+					echo $nb_ele."/".$tab_classe[$i]['effectif'];
+				}
+				$effectif_total_eleve_connectes+=$nb_ele;
 				echo "</td>\n";
 				echo "<td>\n";
 				echo (round(100*10*$nb_ele/$tab_classe[$i]['effectif'])/10);
@@ -339,14 +704,28 @@ elseif($mode==1) {
 				echo $nb_ele;
 				echo "</td>\n";
 			}
-	
+
+			echo "<td>\n";
+			if((count($tab_ele_en_echec)>0)&&(($AccesStatConnexionEle)||($AccesDetailConnexionEle))) {
+				echo "<a href=\"#\" onclick=\"afficher_div_stat('div_ele_en_echec_$i');return false;\"  onmouseover=\"afficher_div_stat('div_ele_en_echec_$i')\">";
+				echo count($tab_ele_en_echec);
+				echo "</a>";
+			}
+			else {
+				echo count($tab_ele_en_echec);
+			}
+			echo "</td>\n";
+
 			echo "<td>";
 			if($nb_parents>0) {
-				//echo "<a href=\"#\" onclick=\"afficher_div('div_resp_$i','y',10,10);return false;\" onmouseover=\"delais_afficher_div('div_resp_$i','y',10,10,20,20,1000);\" onmouseout=\"cacher_div('div_resp_$i');\">";
-				echo "<a href=\"#\" onclick=\"afficher_div_stat('div_resp_$i');return false;\"  onmouseover=\"afficher_div_stat('div_resp_$i')\">";
-				echo $nb_parents;
-				//echo "<br />".(round(100*10*$nb_parents/$tab_classe[$i]['effectif'])/10)."%";
-				echo "</a>";
+				if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
+					echo "<a href=\"#\" onclick=\"afficher_div_stat('div_resp_$i');return false;\"  onmouseover=\"afficher_div_stat('div_resp_$i')\">";
+					echo $nb_parents;
+					echo "</a>";
+				}
+				else {
+					echo $nb_parents;
+				}
 			}
 			else {
 				echo $nb_parents;
@@ -374,19 +753,71 @@ elseif($mode==1) {
 	
 			echo "<td>";
 			if($nb_parents_erreur_mdp_et_jamais_connectes_avec_succes>0) {
-				//echo "<a href=\"#\" onclick=\"afficher_div('div_resp_echec_$i','y',10,10);return false;\"  onmouseover=\"delais_afficher_div('div_resp_echec_$i','y',10,10,20,20,1000);\"  onmouseout=\"cacher_div('div_resp_echec_$i');\" style='color:red'>";
-				echo "<a href=\"#\" onclick=\"afficher_div_stat('div_resp_echec_$i');return false;\"  onmouseover=\"afficher_div_stat('div_resp_echec_$i')\" style='color:red'>";
-				echo $nb_parents_erreur_mdp_et_jamais_connectes_avec_succes;
-				//echo "<br />".(round(100*10*$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes/$tab_classe[$i]['effectif'])/10)."%";
-				echo "</a>";
+				if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
+					echo "<a href=\"#\" onclick=\"afficher_div_stat('div_resp_echec_$i');return false;\"  onmouseover=\"afficher_div_stat('div_resp_echec_$i')\" style='color:red'>";
+					echo $nb_parents_erreur_mdp_et_jamais_connectes_avec_succes;
+					echo "</a>";
+				}
+				else {
+					echo $nb_parents_erreur_mdp_et_jamais_connectes_avec_succes;
+				}
 			}
 			else {
 				echo $nb_parents_erreur_mdp_et_jamais_connectes_avec_succes;
 			}
 			echo "</td>\n";
 			echo "</tr>\n";
+			flush();
 		}
+
+		$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes=count($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes);
+
+		if($acces_toutes_classes=="y") {
+			echo "<tr>\n";
+			echo "<th>Total</th>\n";
+			echo "<th title=\"Effectif total des élèves\">$effectif_total_eleve</th>\n";
+			echo "<th title=\"Total des élèves connectés avec succès\">$effectif_total_eleve_connectes</th>\n";
+			echo "<th title=\"Pourcentage d'élèves connectés avec succès\">".(100*round($effectif_total_eleve_connectes/$effectif_total_eleve,3))."</th>\n";
+			echo "<th title=\"Total des élèves ayant échoué à se connecter\">".$effectif_total_eleve_en_echec."</th>\n";
+			echo "<th title=\"Total des parents connectés avec succès\">".count($tab_parents_connectes_avec_succes)."</th>\n";
+			echo "<th title=\"Total des familles connectées avec succès\">$nb_parents_differents_toutes_classes</th>\n";
+			echo "<th>-</th>\n";
+			echo "<th title=\"Total des parents ayant échoué à se connecter\">".$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes."</th>\n";
+			echo "</tr>\n";
+		}
+
 		echo "</table>\n";
+
+		echo "<p><br /></p>\n";
+		if($nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes>0) {
+			echo "<p><strong>Liste des parents ayant tenté de se connecter, mais jamais avec succès&nbsp;: (<em title=\"$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes responsables ne se sont jamais connectés avec succès.\">$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes</em>) </strong><br />";
+			for($loop=0;$loop<$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes;$loop++) {
+				if($loop>0) {echo ", ";}
+
+/*
+				$tab_ele_id_login_resp[$lig2->ele_id][]=$lig->login;
+				$tab_login_resp_ele_id[$lig->login][]=$lig2->ele_id;
+*/
+				$color="red";
+				for($loop2=0;$loop2<count($tab_login_resp_ele_id[$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes[$loop]]);$loop2++) {
+					if(isset($tab_ele_id_login_resp[$tab_login_resp_ele_id[$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes[$loop]][$loop2]])) {
+						$color="green";
+						break;
+					}
+				}
+				echo "<span style='color:$color'";
+				if($color=="red") {
+					echo " title=\"Ni ce responsable ni son conjoint ou sa conjointe ne s'est connecté(e).\"";
+				}
+				else {
+					echo " title=\"Le conjoint ou la conjointe est parvenu(e) à connecter.\"";
+				}
+				echo ">";
+				echo civ_nom_prenom($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes_toutes_classes[$loop]);
+				echo "</span>";
+			}
+			echo ".</p>\n";
+		}
 	}
 
 	echo "<p><br /></p>\n";
@@ -414,11 +845,9 @@ elseif(($mode==2)||($mode==3)) {
 
 	//=======================
 	//Configuration du calendrier
-	include("../lib/calendrier/calendrier.class.php");
-	//$cal1 = new Calendrier("form_choix_edit", "display_date_debut");
-	//$cal2 = new Calendrier("form_choix_edit", "display_date_fin");
-	$cal1 = new Calendrier("formulaire", "display_date_debut");
-	$cal2 = new Calendrier("formulaire", "display_date_fin");
+	//include("../lib/calendrier/calendrier.class.php");
+	//$cal1 = new Calendrier("formulaire", "display_date_debut");
+	//$cal2 = new Calendrier("formulaire", "display_date_fin");
 	
 	$annee = strftime("%Y");
 	$mois = strftime("%m");
@@ -443,14 +872,36 @@ elseif(($mode==2)||($mode==3)) {
 	// =================================
 	// AJOUT: boireaus
 	$chaine_options_classes="";
-	$sql="SELECT id, classe FROM classes ORDER BY classe";
-	$res_class_tmp=mysql_query($sql);
-	if(mysql_num_rows($res_class_tmp)>0){
+
+	if(count($tab_classe)>0) {
 		$id_class_prec=0;
 		$id_class_suiv=0;
 		$temoin_tmp=0;
-		$cpt_classe=0;
+		//$cpt_classe=0;
 		$num_classe=-1;
+		for($loop=0;$loop<count($tab_classe);$loop++) {
+			if((isset($id_classe))&&($tab_classe[$loop]['id']==$id_classe)) {
+				// Index de la classe dans les <option>
+				$num_classe=$loop;
+
+				$chaine_options_classes.="<option value='".$tab_classe[$loop]['id']."' selected='true'>".$tab_classe[$loop]['classe']."</option>\n";
+				$temoin_tmp=1;
+				if($loop+1<count($tab_classe)) {
+					$id_class_suiv=$tab_classe[$loop+1]['id'];
+				}
+				else{
+					$id_class_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_classes.="<option value='".$tab_classe[$loop]['id']."'>".$tab_classe[$loop]['classe']."</option>\n";
+			}
+	
+			if($temoin_tmp==0){
+				$id_class_prec=$tab_classe[$loop]['id'];
+			}
+		}
+		/*
 		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
 			if((isset($id_classe))&&($lig_class_tmp->id==$id_classe)) {
 				// Index de la classe dans les <option>
@@ -475,6 +926,7 @@ elseif(($mode==2)||($mode==3)) {
 			}
 			$cpt_classe++;
 		}
+		*/
 	}// =================================
 	
 	echo "Classe&nbsp;: <select name='id_classe' id='id_classe'>\n";
@@ -487,11 +939,15 @@ elseif(($mode==2)||($mode==3)) {
 	
 	echo "<input type='text' name = 'display_date_debut' id = 'display_date_debut' size='10' value = \"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 	
-	echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	
+	//echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("display_date_debut", "img_bouton_display_date_debut");
+
 	echo "&nbsp;à la date&nbsp;: ";
 	echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
-	echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo "<label for='choix_periode_dates' style='cursor: pointer;'>";
+	//echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("display_date_fin", "img_bouton_display_date_fin");
+
 	echo "<br />\n";
 	echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)\n";
 	echo "<input type='hidden' name='mode' value='$mode' />\n";
@@ -517,6 +973,24 @@ elseif(($mode==2)||($mode==3)) {
 	$date_mysql_fin="$annee_fin-$mois_fin-$jour_fin 00:00:00";
 
 	if($id_classe!='') {
+
+		$AccesStatConnexionEle=AccesInfoEle("AccesStatConnexionEle", "", $id_classe);
+		$AccesDetailConnexionEle=AccesInfoEle("AccesDetailConnexionEle", "", $id_classe);
+		$AccesStatConnexionResp=AccesInfoResp("AccesStatConnexionResp", "", "", $id_classe);
+		$AccesDetailConnexionResp=AccesInfoResp("AccesDetailConnexionResp", "", "", $id_classe);
+
+		if(($mode==2)&&(!$AccesStatConnexionResp)&&(!$AccesDetailConnexionResp)) {
+			echo "<p style='color:red'>Vous n'avez pas accès à cette classe.</p>\n";
+			require_once("../lib/footer.inc.php");
+			die();
+		}
+
+		if(($mode==3)&&(!$AccesStatConnexionEle)&&(!$AccesDetailConnexionEle)) {
+			echo "<p style='color:red'>Vous n'avez pas accès à cette classe.</p>\n";
+			require_once("../lib/footer.inc.php");
+			die();
+		}
+
 		$sql_partie[2]="SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
 
 		$sql_partie[3]="SELECT DISTINCT l.login, l.START from log l, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND e.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
@@ -528,6 +1002,7 @@ elseif(($mode==2)||($mode==3)) {
 			echo "<p>Aucun compte ".$categorie_utilisateur[$mode]." n'a encore essayé de (<em>ou réussi à</em>) se connecter.</p>\n";
 		}
 		else {
+
 			$tab_connexions=array();
 			while($lig=mysql_fetch_object($res)) {
 				$tab=explode(" ", $lig->START);
@@ -752,7 +1227,41 @@ elseif(($mode==2)||($mode==3)) {
 	}
 	
 </script>\n";
-	
+
+
+			if((($mode==2)&&($AccesDetailConnexionResp))||
+				(($mode==3)&&($AccesDetailConnexionEle))) {
+
+				$ligne_date="<tr>";
+				$ligne_eff="<tr>";
+				$ligne_personnes="<tr>";
+				$alt=1;
+				$tab_designation=array();
+				foreach($tab_connexions as $date => $tab_login) {
+					$alt=$alt*(-1);
+					$ligne_date.="<td class='lig$alt'>".formate_date($date)."</td>";
+					$ligne_eff.="<td class='lig$alt' title=\"Effectif de connexion\">".count($tab_login['login'])."</td>";
+					$ligne_personnes.="<td class='lig$alt' style='vertical-align:top'>";
+					for($loop=0;$loop<count($tab_login['login']);$loop++) {
+						if($mode==2) {
+							if(!array_key_exists($tab_login['login'][$loop], $tab_designation)) {$tab_designation[$tab_login['login'][$loop]]=civ_nom_prenom($tab_login['login'][$loop]);}
+						}
+						else {
+							if(!array_key_exists($tab_login['login'][$loop], $tab_designation)) {$tab_designation[$tab_login['login'][$loop]]=get_nom_prenom_eleve($tab_login['login'][$loop]);}
+						}
+						$ligne_personnes.=$tab_designation[$tab_login['login'][$loop]]."<br />";
+					}
+					$ligne_personnes.="</td>";
+				}
+				$ligne_date.="</tr>";
+				$ligne_eff.="</tr>";
+				$ligne_personnes.="</tr>";
+				echo "<table class='boireaus' summary='Identité des personnes connectées'>
+	$ligne_date
+	$ligne_eff
+	$ligne_personnes
+</table>";
+			}
 		}
 	}
 }

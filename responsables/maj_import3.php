@@ -83,9 +83,22 @@ if($ne_pas_tester_les_changements_de_classes=="") {$ne_pas_tester_les_changement
 // INSERT INTO setting SET name='no_test_chgt_clas', value='n';
 // UPDATE setting SET value='n' WHERE name='no_test_chgt_clas';
 
+$gepi_non_plugin_lcs_mais_recherche_ldap=false;
+if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("../secure/config_ldap.inc.php"))) {
+	include("../secure/config_ldap.inc.php");
+
+	$lcs_ldap_base_dn=$ldap_base_dn;
+	$lcs_ldap_host=$ldap_host;
+	$lcs_ldap_port=$ldap_port;
+	$gepi_non_plugin_lcs_mais_recherche_ldap=true;
+
+	$lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
+	$lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
+}
+
 $auth_sso=getSettingValue("auth_sso") ? getSettingValue("auth_sso") : "";
 
-if($auth_sso=='lcs') {
+if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 	function connect_ldap($l_adresse,$l_port,$l_login,$l_pwd) {
 		$ds = @ldap_connect($l_adresse, $l_port);
 		if($ds) {
@@ -165,6 +178,9 @@ saveSetting('alert_diff_etab_origine', $alert_diff_etab_origine);
 
 $alert_diff_mef=isset($_POST['alert_diff_mef']) ? $_POST['alert_diff_mef'] : (isset($_GET['alert_diff_mef']) ? $_GET['alert_diff_mef'] : (isset($_SESSION['alert_diff_mef']) ? $_SESSION['alert_diff_mef'] : "y"));
 saveSetting('alert_diff_mef', $alert_diff_mef);
+
+$alert_diff_date_entree=isset($_POST['alert_diff_date_entree']) ? $_POST['alert_diff_date_entree'] : (isset($_GET['alert_diff_date_entree']) ? $_GET['alert_diff_date_entree'] : (isset($_SESSION['alert_diff_date_entree']) ? $_SESSION['alert_diff_date_entree'] : "y"));
+saveSetting('alert_diff_date_entree', $alert_diff_date_entree);
 
 // =====================================================
 // Test sur les modifications de telephone élève
@@ -433,14 +449,15 @@ if(!isset($step)) {
 
 	echo "<p>Vous allez importer des fichiers d'exports XML de Sconet.<br />\nLes fichiers requis au cours de la procédure sont dans un premier temps ElevesAvecAdresses.xml, puis le fichier ResponsablesAvecAdresses.xml</p>\n";
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<form enctype='multipart/form-data' id='form_envoi_xml' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
 	echo add_token_field();
 
 	//echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=hidden name='step' value='0' />\n";
 	//echo "<input type=hidden name='mode' value='1' />\n";
 	echo "<p>Sélectionnez le fichier <b>ElevesAvecAdresses.xml</b> (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
-	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" /><br />\n";
+	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" id='input_xml_file' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); ' /><br />\n";
 	if ($gepiSettings['unzipped_max_filesize']>=0) {
 		echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesAvecAdresses.zip)</p>";
 	}
@@ -523,6 +540,26 @@ sinon, Gepi le considère comme \"<em>établissement d'origine</em>\".";
 	echo "<label for='alert_diff_mef_n' style='cursor: pointer;'> ne pas signaler";
 	echo " les modifications de MEF.</label></p>\n";
 
+	$alert_diff_date_entree=getSettingValue('alert_diff_date_entree');
+	echo "<br />\n";
+	echo "<p>\n";
+	echo "<strong>Date d'entrée dans l'établissement&nbsp;:</strong>\n";
+	echo "<br />\n";
+	echo "<input type='radio' name='alert_diff_date_entree' id='alert_diff_date_entree_y' value='y' ";
+	if($alert_diff_date_entree=='y') {
+		echo "checked ";
+	}
+	echo "/>\n";
+	echo "<label for='alert_diff_date_entree_y' style='cursor: pointer;'> signaler";
+	echo " les modifications de date d'entrée dans l'établissement.</label><br />\n";
+	echo "<input type='radio' name='alert_diff_date_entree' id='alert_diff_date_entree_n' value='n' ";
+	if($alert_diff_date_entree!='y') {
+		echo "checked ";
+	}
+	echo "/>\n";
+	echo "<label for='alert_diff_date_entree_n' style='cursor: pointer;'> ne pas signaler";
+	echo " les modifications de date d'entrée dans l'établissement.</label></p>\n";
+
 	// 20120630
 	$nb_types_tel_ele_utilises=0;
 	if(getSettingAOui('ele_tel_pers')) {$nb_types_tel_ele_utilises++;}
@@ -580,7 +617,26 @@ sinon, Gepi le considère comme \"<em>établissement d'origine</em>\".";
 	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label>\n";
 	//==============================
 
-	echo "<p><input type='submit' value='Valider' /></p>\n";
+	echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_file() {
+		fichier=document.getElementById('input_xml_file').value;
+		//alert(fichier);
+		if(fichier=='') {
+			alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+		}
+		else {
+			document.getElementById('form_envoi_xml').submit();
+		}
+	}
+</script>\n";
+
+	echo "</fieldset>\n";
 	echo "</form>\n";
 
 	echo "<p>Il est recommandé d'importer les informations élèves et de ne passer qu'ensuite à l'import des informations responsables.<br />\n";
@@ -815,6 +871,7 @@ else{
 					`TEL_PERS` varchar(255) $chaine_mysql_collate NOT NULL default '',
 					`TEL_PORT` varchar(255) $chaine_mysql_collate NOT NULL default '',
 					`TEL_PROF` varchar(255) $chaine_mysql_collate NOT NULL default '',
+					DATE_ENTREE DATETIME,
 					MEF_CODE VARCHAR(50) DEFAULT '' NOT NULL
 					) ENGINE=MyISAM;";
 					info_debug($sql);
@@ -1079,6 +1136,7 @@ else{
 			"PRENOM",
 			"DATE_NAISS",
 			"DOUBLEMENT",
+			"DATE_ENTREE",
 			"DATE_SORTIE",
 			"CODE_REGIME",
 			"DATE_ENTREE",
@@ -1222,6 +1280,9 @@ else{
 					}
 					*/
 
+					// A FAIRE: Ajouter une case pour choisir si on désactive le compte de l'élève et des parents quand la date de sortie est passée
+					//          On peut souhaiter laisser l'accès un peu au-delà...
+					//          Pour les parents, il faudrait tester si il reste des élèves associés dont la date de sortie n'est pas passée.
 					$temoin_date_sortie="n";
 					if(isset($eleves[$i]['date_sortie'])) {
 						echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." a quitté l'établissement le ".$eleves[$i]['date_sortie']."<br />\n";
@@ -1245,7 +1306,7 @@ else{
 						info_debug($sql);
 						$insert=mysql_query($sql);
 						//Eric	
-						// Enregistrement de l'information de la date de sortie pour l'élève (à partir de son id)					
+						// Enregistrement de l'information de la date de sortie pour l'élève (à partir de son id)
 						$sql="INSERT INTO tempo2 SET col1='".$eleves[$i]['eleve_id']."', col2='".$eleves[$i]['date_sortie']."';";
 						info_debug($sql);
 						$insert=mysql_query($sql);
@@ -1299,6 +1360,10 @@ else{
 						if(isset($eleves[$i]['tel_portable'])) {$sql.=", tel_port='".$eleves[$i]['tel_portable']."'";}
 						if(isset($eleves[$i]['tel_professionnel'])) {$sql.=", tel_prof='".$eleves[$i]['tel_professionnel']."'";}
 
+						if(isset($eleves[$i]['date_entree'])) {
+							$sql.=", date_entree='".get_mysql_date_from_slash_date($eleves[$i]['date_entree'])."'";
+						}
+
 						$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 						affiche_debug("$sql<br />\n");
 						info_debug($sql);
@@ -1313,7 +1378,7 @@ else{
 						}
 					}
 				}
-				else{
+				else {
 					// echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." n'est pas dans \$tab_ele_id donc pas dans une classe..."."<br />";
 
 
@@ -2194,6 +2259,9 @@ else{
 					if(getSettingAOui('alert_diff_mef')) {
 						$sql.="						OR e.mef_code!=t.MEF_CODE";
 					}
+					if(getSettingAOui('alert_diff_date_entree')) {
+						$sql.="						OR e.date_entree!=t.DATE_ENTREE";
+					}
 					if((getSettingValue('ele_tel_pers')=='yes')) {
 						$sql.="						OR e.tel_pers!=t.TEL_PERS";
 					}
@@ -2223,6 +2291,9 @@ else{
 					// 20130607
 					if(getSettingAOui('alert_diff_mef')) {
 						$sql.="						OR e.mef_code!=t.MEF_CODE";
+					}
+					if(getSettingAOui('alert_diff_date_entree')) {
+						$sql.="						OR e.date_entree!=t.DATE_ENTREE";
 					}
 					if((getSettingValue('ele_tel_pers')=='yes')) {
 						$sql.="						OR e.tel_pers!=t.TEL_PERS";
@@ -2284,8 +2355,20 @@ else{
 					}
 				}
 
+				$temoin_init_date_entree="n";
+				if((mysql_num_rows($test)==0)&&($temoin_chgt_ancien_etab!="y")&&(getSettingAOui('alert_diff_date_entree'))) {
+					// On teste aussi le cas d'une initialisation de date_entree
+					$sql="SELECT e.ele_id FROM eleves e, temp_gep_import2 t
+							WHERE e.ele_id=t.ELE_ID AND 
+									e.date_entree IS NULL AND
+									t.DATE_ENTREE IS NOT NULL AND
+									e.ele_id='$tab_ele_id[$i]';";
+					$test2=mysql_query($sql);
+					if(mysql_num_rows($test2)>0) {$temoin_init_date_entree="y";}
+				}
+
 				//if(mysql_num_rows($test)>0) {
-				if((mysql_num_rows($test)>0)||($temoin_chgt_ancien_etab=="y")) {
+				if((mysql_num_rows($test)>0)||($temoin_chgt_ancien_etab=="y")||($temoin_init_date_entree=="y")) {
 					if($cpt==0){
 						echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
 						echo "<br />\n";
@@ -2687,7 +2770,7 @@ else{
 				//echo "\$nblignes=$nblignes<br />";
 
 
-				echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+				echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' id='formulaire' method='post'>\n";
 				//==============================
 				// AJOUT pour tenir compte de l'automatisation ou non:
 				echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
@@ -2712,7 +2795,9 @@ else{
 				$tabdiv_infobulle[]=creer_div_infobulle('chgt_email_non_pris_en_compte',$titre_infobulle,"",$texte_infobulle,"",18,0,'y','y','n','n');
 
 
-				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+				//echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+				echo "<p><input type='submit' id='input_submit' value='Valider' />
+				<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>";
 				//echo "<p align='center'><input type=submit value='Enregistrer les modifications' /></p>\n";
 
 				//echo "<table border='1'>\n";
@@ -2758,6 +2843,11 @@ else{
 				if(getSettingAOui('alert_diff_mef')) {
 					echo "<th>MEF</th>\n";
 				}
+
+				if(getSettingAOui('alert_diff_date_entree')) {
+					echo "<th title=\"Date d'entrée de l'élève dans l'établissement\">Date entrée</th>\n";
+				}
+
 				echo "<th>Etablissement d'origine</th>\n";
 				echo "</tr>\n";
 				$cpt=0;
@@ -2824,6 +2914,9 @@ else{
 							$affiche[16]=nettoyer_caracteres_nom($lig->MEF_CODE, "an", " @._-", "");
 						}
 
+						if(getSettingAOui('alert_diff_date_entree')) {
+							$affiche[17]=$lig->DATE_ENTREE;
+						}
 
 							//$sql="SELECT * FROM eleves WHERE elenoet='$affiche[4]'";
 							$sql="SELECT * FROM eleves WHERE (elenoet='$affiche[4]' OR elenoet='".sprintf("%05d",$affiche[4])."')";
@@ -3016,6 +3109,13 @@ else{
 									}
 								}
 
+								if(getSettingAOui('alert_diff_date_entree')) {
+									if($lig_ele->date_entree!=$affiche[17]) {
+										$temoin_modif='y';
+										$cpt_modif++;
+									}
+								}
+
 								// 20120919
 								$sql="SELECT 1=1 FROM eleves
 										WHERE ele_id='$tab_ele_id_diff[$w]' AND
@@ -3185,7 +3285,7 @@ else{
 										echo "<label for='check_".$cpt."'>";
 										if(($lig_ele->naissance!='')||($lig_ele->lieu_naissance!='')) {
 											if($lig_ele->naissance!='') {
-												echo "$lig_ele->naissance ";
+												echo formate_date($lig_ele->naissance)." ";
 											}
 											if($lig_ele->lieu_naissance!='') {
 												echo "à ".get_commune($lig_ele->lieu_naissance,1)." ";
@@ -3198,7 +3298,7 @@ else{
 										echo ">";
 										echo "<label for='check_".$cpt."'>";
 									}
-									echo "$new_date";
+									echo formate_date($new_date);
 
 									//echo "_".$ele_lieu_naissance;
 
@@ -3215,7 +3315,7 @@ else{
 										echo " class='modif'>";
 										echo "<label for='check_".$cpt."'>";
 										if($lig_ele->naissance!=''){
-											echo "$lig_ele->naissance <font color='red'>-&gt;</font>\n";
+											echo formate_date($lig_ele->naissance)." <font color='red'>-&gt;</font>\n";
 										}
 									}
 									else{
@@ -3223,7 +3323,7 @@ else{
 										echo ">";
 										echo "<label for='check_".$cpt."'>";
 									}
-									echo "$new_date";
+									echo formate_date($new_date);
 //									echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
 									echo "</label>";
 									echo "</td>\n";
@@ -3336,7 +3436,7 @@ else{
 										echo "<table class='boireaus'>\n";
 										if((getSettingValue('ele_tel_pers')=='yes')&&(getSettingAOui('ele_tel_pers_signaler_modif'))) {
 											echo "<tr>\n";
-											echo "<td>Pe</td>\n";
+											echo "<td title=\"Numéro de téléphone personnel\">Pe</td>\n";
 											echo "<td";
 											if(stripslashes($lig_ele->tel_pers)!=stripslashes($affiche[13])){
 												echo " class='modif'>";
@@ -3354,7 +3454,7 @@ else{
 										}
 										if((getSettingValue('ele_tel_port')=='yes')&&(getSettingAOui('ele_tel_port_signaler_modif'))) {
 											echo "<tr>\n";
-											echo "<td>Po</td>\n";
+											echo "<td title=\"Numéro de téléphone portable\">Po</td>\n";
 											echo "<td";
 											if(stripslashes($lig_ele->tel_port)!=stripslashes($affiche[14])){
 												echo " class='modif'>";
@@ -3372,7 +3472,7 @@ else{
 										}
 										if((getSettingValue('ele_tel_prof')=='yes')&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {
 											echo "<tr>\n";
-											echo "<td>Pr</td>\n";
+											echo "<td title=\"Numéro de téléphone professionnel\">Pr</td>\n";
 											echo "<td";
 											if(stripslashes($lig_ele->tel_prof)!=stripslashes($affiche[15])){
 												echo " class='modif'>";
@@ -3525,6 +3625,20 @@ else{
 									echo "</td>\n";
 								}
 
+								if(getSettingAOui('alert_diff_date_entree')) {
+									echo "<td";
+									if($lig_ele->date_entree!=$affiche[17]){
+										echo " class='modif'>";
+										if($lig_ele->date_entree!=''){
+											echo formate_date($lig_ele->date_entree)." <font color='red'>-&gt;</font>\n";
+										}
+									}
+									else{
+										echo ">";
+									}
+									echo formate_date($affiche[17]);
+									echo "</td>\n";
+								}
 
 								$sql="SELECT id_etablissement FROM j_eleves_etablissements WHERE id_eleve='$lig_ele->elenoet';";
 								info_debug($sql);
@@ -3566,7 +3680,17 @@ else{
 
 								echo "<td style='text-align: center;'><input type='checkbox' id='check_".$cpt."' name='new[]' value='$affiche[5]' /></td>\n";
 
-								echo "<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label></td>\n";
+								echo "<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label>";
+								$tmp_tab_homonyme=chercher_homonyme($affiche[0], $affiche[1], "eleve");
+								if(count($tmp_tab_homonyme)>0) {
+									$titre_infobulle="Homonyme pour ".$affiche[0]." ".$affiche[1];
+									$texte_infobulle="<p>Un ou plusieurs homonymes possibles ont été trouvés.<br />Vous devriez contrôler qu'il n'y a pas eu une double saisie dans Sconet/Siècle avant d'ajouter cet élève.</p>";
+									$texte_infobulle.=tableau_eleves($tmp_tab_homonyme);
+									$tabdiv_infobulle[]=creer_div_infobulle('div_homonymes_'.$cpt, $titre_infobulle, "", $texte_infobulle, "",18,0,'y','y','n','n');
+
+									echo "<a href=\"javascript:afficher_div('div_homonymes_$cpt','y',20,20)\" title=\"Homonyme(s) trouvé(s)\"><img src='../images/icons/ico_attention.png' width='22' height='19' /></a>";
+								}
+								echo "</td>\n";
 
 
 								echo "<td style='text-align: center;'>";
@@ -3742,6 +3866,11 @@ else{
 									echo "</td>\n";
 								}
 
+								if(getSettingAOui('alert_diff_date_entree')) {
+									echo "<td>";
+									echo formate_date($affiche[17]);
+									echo "</td>\n";
+								}
 
 								echo "<td style='text-align: center;'>";
 								if(my_strtolower($affiche[10])!=my_strtolower($gepiSchoolRne)) {
@@ -3793,7 +3922,36 @@ else{
 					echo "<input type='hidden' name='step' value='5' />\n";
 				}
 
-				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				echo "<p><input type='submit' id='input_submit2' value='Valider' />
+<input type='button' id='input_button2' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_submit2').style.display='none';
+	document.getElementById('input_button').style.display='';
+	document.getElementById('input_button2').style.display='';
+
+	function check_champ_coche(){
+		var nb_coche=0;
+		for(i=0;i<$cpt;i++){
+			if(document.getElementById('check_'+i)){
+				if(document.getElementById('check_'+i).checked==true) {
+					nb_coche++;
+					break;
+				}
+			}
+		}
+		if(nb_coche==0) {
+			if(confirm(\"Vous n'avez cochez aucune case.\\nSi ce n'est pas une erreur, confirmez en cliquant sur OK.\\nSinon, annulez pour cocher des cases avant de valider.\")) {
+				document.getElementById('formulaire').submit();
+			}
+		}
+		else {
+			document.getElementById('formulaire').submit();
+		}
+	}
+</script>\n";
+				//echo "<p align='center'><input type=submit value='Valider' /></p>\n";
 				//echo "<p align='center'><input type=submit value='Enregistrer les modifications' /></p>\n";
 
 				echo add_token_field();
@@ -3915,6 +4073,10 @@ else{
 					// 20130607
 					if(getSettingAOui('alert_diff_mef')) {
 						$sql.=", mef_code='".$lig->MEF_CODE."'";
+					}
+
+					if(getSettingAOui('alert_diff_date_entree')) {
+						$sql.=", date_entree='".$lig->DATE_ENTREE."'";
 					}
 
 					// Si on a validé des modifs, on a un élève qui est dans l'établissement... pas sorti
@@ -4109,7 +4271,7 @@ else{
 				$vide_table = mysql_query($sql);
 
 				//echo "<p>\$auth_sso=$auth_sso</p>";
-				if($auth_sso=='lcs') {
+				if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 					// On se connecte au LDAP
 					$ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
 					//echo "<p>CONNEXION AU LDAP</p>";
@@ -4185,7 +4347,7 @@ else{
 							// Initialisation
 							$login_eleve="";
 
-							if($auth_sso=='lcs') {
+							if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 
 								// LDAP attribute
 								$ldap_people_attr = array(
@@ -4305,6 +4467,10 @@ else{
 								// 20130607
 								if(getSettingAOui('alert_diff_mef')) {
 									$sql.=", mef_code='".$lig->MEF_CODE."'";
+								}
+
+								if(getSettingAOui('alert_diff_date_entree')) {
+									$sql.=", date_entree='".$lig->DATE_ENTREE."'";
 								}
 
 								$sql.=";";
@@ -4539,7 +4705,7 @@ else{
 
 						// J'ai un doute sur la pertinence de faire des requêtes différentes pour les cas LCS ou non
 						// Dans l'annuaire LDAP, une classe de 5 A2 va apparaitre comme 5_A2, mais on ne cherche pas dans le LDAP la classe de l'élève, il me semble.
-						if($auth_sso=='lcs') {
+						if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 							$sql="SELECT c.id FROM classes c WHERE c.classe='".preg_replace("/'/","_",preg_replace("/ /","_",$lig_ele->divcod))."';";
 						}
 						else {
@@ -4556,7 +4722,7 @@ else{
 							echo "<input type='hidden' name='id_classe[$cpt]' value='$lig_classe->id' />\n";
 							echo "</td>\n";
 
-							if($auth_sso=='lcs') {
+							if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 								$sql="SELECT p.num_periode FROM periodes p, classes c
 													WHERE p.id_classe=c.id AND
 															c.classe='".preg_replace("/'/","_",preg_replace("/ /","_",$lig_ele->divcod))."'
@@ -5245,14 +5411,15 @@ else{
 			}
 
 
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<form enctype='multipart/form-data' id='form_envoi_xml' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 			echo "<p>Veuillez fournir le fichier <strong>ResponsablesAvecAdresses.xml</strong>&nbsp;:<br />\n";
 			if(isset($_GET['maj_eleve_sautee'])) {echo "<input type=\"hidden\" name=\"maj_eleve_sautee\" value=\"y\" />";}
-			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" /><br />\n";
+			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" id='input_xml_file' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); ' /><br />\n";
 			echo "<input type='hidden' name='step' value='10' />\n";
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
@@ -5320,7 +5487,28 @@ else{
 			//echo "</p>\n";
 			//==============================
 
-			echo "<p><input type='submit' value='Valider' /></p>\n";
+			//echo "<p><input type='submit' value='Valider' /></p>\n";
+
+			echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_file() {
+		fichier=document.getElementById('input_xml_file').value;
+		//alert(fichier);
+		if(fichier=='') {
+			alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+		}
+		else {
+			document.getElementById('form_envoi_xml').submit();
+		}
+	}
+</script>\n";
+
+			echo "</fieldset>\n";
 			echo "</form>\n";
 
 			echo "<p><br /></p>\n";
@@ -8258,7 +8446,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 
 			$ne_pas_proposer_redoublonnage_adresse=isset($_POST['ne_pas_proposer_redoublonnage_adresse']) ? $_POST['ne_pas_proposer_redoublonnage_adresse'] : "n";
 
-			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<form action='".$_SERVER['PHP_SELF']."' id='formulaire' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
@@ -8361,7 +8549,9 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 			if(mysql_num_rows($res1)>0) {
 
 				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
-				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+				//echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+				echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>\n";
 
 				// Affichage du tableau
 				//echo "<table border='1'>\n";
@@ -9159,7 +9349,38 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				//echo "<input type='hidden' name='step' value='15' />\n";
 				echo "<input type='hidden' name='step' value='16' />\n";
 				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
-				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+				//echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+
+				echo "<p><input type='submit' id='input_submit2' value='Valider' />
+<input type='button' id='input_button2' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_submit2').style.display='none';
+	document.getElementById('input_button').style.display='';
+	document.getElementById('input_button2').style.display='';
+
+	function check_champ_coche(){
+		var nb_coche=0;
+		for(i=0;i<$cpt;i++){
+			if(document.getElementById('check_'+i)){
+				if(document.getElementById('check_'+i).checked==true) {
+					nb_coche++;
+					break;
+				}
+			}
+		}
+		if(nb_coche==0) {
+			if(confirm(\"Vous n'avez cochez aucune case.\\nSi ce n'est pas une erreur, confirmez en cliquant sur OK.\\nSinon, annulez pour cocher des cases avant de valider.\")) {
+				document.getElementById('formulaire').submit();
+			}
+		}
+		else {
+			document.getElementById('formulaire').submit();
+		}
+	}
+</script>\n";
+
 			}
 			else{
 				// On est à la fin on peut passer à step=12 et effectuer les changements confirmés.
@@ -9854,7 +10075,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			$suppr_resp_non_assoc=isset($_POST['suppr_resp_non_assoc']) ? $_POST['suppr_resp_non_assoc'] : 'y';
 			
 
-			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' id='formulaire' method='post'>\n";
 			echo add_token_field();
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
@@ -10173,7 +10394,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			if(mysql_num_rows($res0)>0){
 
 				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
-				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				//echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				echo "<p><input type='submit' id='input_submit' value='Valider' />
+				<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>\n";
 
 				// Affichage du tableau
 
@@ -10666,7 +10889,38 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					echo "<p>Aucune ligne de différence n'est proposée après contrôle.</p>\n";
 				}
 				else {
-					echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+					//echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+
+					echo "<p><input type='submit' id='input_submit2' value='Valider' />
+<input type='button' id='input_button2' value='Valider' style='display:none;' onclick=\"check_champ_coche()\" /></p>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_submit2').style.display='none';
+	document.getElementById('input_button').style.display='';
+	document.getElementById('input_button2').style.display='';
+
+	function check_champ_coche(){
+		var nb_coche=0;
+		for(i=0;i<$cpt;i++){
+			if(document.getElementById('check_'+i)){
+				if(document.getElementById('check_'+i).checked==true) {
+					nb_coche++;
+					break;
+				}
+			}
+		}
+		if(nb_coche==0) {
+			if(confirm(\"Vous n'avez cochez aucune case.\\nSi ce n'est pas une erreur, confirmez en cliquant sur OK.\\nSinon, annulez pour cocher des cases avant de valider.\")) {
+				document.getElementById('formulaire').submit();
+			}
+		}
+		else {
+			document.getElementById('formulaire').submit();
+		}
+	}
+</script>\n";
+
 				}
 
 				echo "<p><br /></p>\n";

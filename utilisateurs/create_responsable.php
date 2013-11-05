@@ -321,7 +321,8 @@ $critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççà
 
 $critere_recherche_rl0=isset($_POST['critere_recherche_rl0']) ? $_POST['critere_recherche_rl0'] : (isset($_GET['critere_recherche_rl0']) ? $_GET['critere_recherche_rl0'] : "");
 $critere_recherche_rl0=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche_rl0);
-if(isset($_POST['filtrage_rl0'])) {
+$filtrage_rl0=isset($_POST['filtrage_rl0']) ? $_POST['filtrage_rl0'] : (isset($_GET['filtrage_rl0']) ? $_GET['filtrage_rl0'] : NULL);
+if(isset($filtrage_rl0)) {
 	$critere_recherche=$critere_recherche_rl0;
 	$mode_recherche='rl0';
 }
@@ -449,16 +450,10 @@ else{
 	echo "<p><b>Créer des comptes par lot</b> :</p>\n";
 	echo "<blockquote>\n";
 	echo "<form action='create_responsable.php' method='post' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px;'>\n";
-	//=====================
-	// Sécurité: 20101118
 	echo add_token_field();
-	//=====================
 
 	echo "<input type='hidden' name='mode' value='classe' />\n";
-	//===========================
-	// AJOUT: boireaus 20071102
 	echo "<input type='hidden' name='creation_comptes_classe' value='y' />\n";
-	//===========================
 	echo "<p>Sélectionnez le mode d'authentification appliqué aux comptes :</p>";
 
 	echo "<select name='reg_auth_mode' size='1'>";
@@ -606,15 +601,27 @@ else{
 	echo "<input type='hidden' name='afficher_tous_les_resp' value='$afficher_tous_les_resp' />\n";
 
 	// Sélection du mode d'authentification
-	echo "<p>Mode d'authentification : <select name='reg_auth_mode' size='1'>";
+	echo "<p>Mode d'authentification : <select name='reg_auth_mode' size='1' title=\"Mode d'authentification pour les comptes à créer avec les boutons ci-dessous.\">";
 	if ($session_gepi->auth_locale) {
-		echo "<option value='auth_locale'>Authentification locale (base Gepi)</option>";
+		echo "<option value='auth_locale'";
+		if((isset($reg_auth_mode))&&($reg_auth_mode=='auth_locale')) {
+			echo " selected";
+		}
+		echo ">Authentification locale (base Gepi)</option>";
 	}
 	if ($session_gepi->auth_ldap) {
-		echo "<option value='auth_ldap'>Authentification LDAP</option>";
+		echo "<option value='auth_ldap'";
+		if((isset($reg_auth_mode))&&($reg_auth_mode=='auth_ldap')) {
+			echo " selected";
+		}
+		echo ">Authentification LDAP</option>";
 	}
 	if ($session_gepi->auth_sso) {
-		echo "<option value='auth_sso'>Authentification unique (SSO)</option>";
+		echo "<option value='auth_sso'";
+		if((isset($reg_auth_mode))&&($reg_auth_mode=='auth_sso')) {
+			echo " selected";
+		}
+		echo ">Authentification unique (SSO)</option>";
 	}
 	echo "</select>";
 	echo "</p>";

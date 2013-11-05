@@ -82,6 +82,19 @@ if (!checkAccess()) {
 
 $auth_sso=getSettingValue("auth_sso") ? getSettingValue("auth_sso") : "";
 
+$gepi_non_plugin_lcs_mais_recherche_ldap=false;
+if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("../secure/config_ldap.inc.php"))) {
+	include("../secure/config_ldap.inc.php");
+
+	$lcs_ldap_base_dn=$ldap_base_dn;
+	$lcs_ldap_host=$ldap_host;
+	$lcs_ldap_port=$ldap_port;
+	$gepi_non_plugin_lcs_mais_recherche_ldap=true;
+
+	$lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
+	$lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
+}
+
 //================================================
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 	check_token();
@@ -610,14 +623,14 @@ echo "<td>\n";
 		<td>Nom *&nbsp;: </td>
 		<td>
 			<input type='text' name='reg_nom' id='nom' size='20' <?php
-				if($auth_sso=='lcs') {
+				if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 					if (isset($eleve_nom)) {
 						echo " value=\"".$eleve_nom."\"";
 					}
 
-					if($auth_sso=='lcs') {
+					//if($auth_sso=='lcs') {
 						echo " onblur=\"affiche_login_lcs('nom')\"";
-					}
+					//}
 					echo " />";
 
 					echo "
@@ -660,7 +673,7 @@ echo "<td>\n";
 	<td><input type='text' name='reg_prenom' id='prenom' size='20' <?php
 		if (isset($eleve_prenom)) { echo "value=\"".$eleve_prenom."\"";}
 
-		if($auth_sso=='lcs') {
+		if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 			echo " onblur=\"affiche_login_lcs('prenom')\"";
 		}
 		echo " />";

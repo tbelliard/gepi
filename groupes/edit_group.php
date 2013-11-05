@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -33,6 +33,8 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+header('Content-Type: text/html; charset=utf-8');
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -90,6 +92,163 @@ if ($mode == null and $id_classe == null) {
 
 foreach ($current_group["periodes"] as $period) {
 	$reg_eleves[$period["num_periode"]] = $current_group["eleves"][$period["num_periode"]]["list"];
+}
+
+function afficher_liste_profs_du_groupe($reg_matiere) {
+	global $current_group, $p, $prof_list, $mode, $themessage, $reg_professeurs, $id_classe;
+
+	// Récupération du prof principal
+
+	$tab_prof_suivi=array();
+	$nb_prof_suivi=0;
+	if(isset($id_classe)) {
+		$tab_prof_suivi=get_tab_prof_suivi($id_classe);
+		$nb_prof_suivi=count($tab_prof_suivi);
+		if($nb_prof_suivi>1) {
+			$liste_prof_suivi="";
+			for($loop=0;$loop<count($tab_prof_suivi);$loop++) {
+				if($loop>0) {$liste_prof_suivi.=", ";}
+				$liste_prof_suivi.=civ_nom_prenom($tab_prof_suivi[$loop]);
+			}
+		}
+	}
+
+	$sql="SELECT u.login, u.nom, u.prenom, u.civilite, u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
+	//echo "$sql<br />";
+	$calldata = mysql_query($sql);
+	$nb = mysql_num_rows($calldata);
+	$prof_list = array();
+	$prof_list["list"] = array();
+	for ($i=0;$i<$nb;$i++) {
+		$prof_login = mysql_result($calldata, $i, "login");
+		$prof_nom = mysql_result($calldata, $i, "nom");
+		$prof_prenom = mysql_result($calldata, $i, "prenom");
+		$civilite = mysql_result($calldata, $i, "civilite");
+		$prof_statut = mysql_result($calldata, $i, "statut");
+
+		$prof_list["list"][] = $prof_login;
+		$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => casse_mot($prof_nom,'maj'), "prenom" => casse_mot($prof_prenom,'majf2'), "civilite" => $civilite, "statut" => $prof_statut);
+	}
+
+	if (count($prof_list["list"]) == "0") {
+		echo "<p><span style='color:red'>ERREUR !</span> Aucun professeur n'a été défini comme compétent dans la matière considérée.<br /><a href='../matieres/modify_matiere.php?current_matiere=$reg_matiere'>Associer des professeurs à $reg_matiere</a></p>\n";
+	} else {
+		$total_profs = array_merge($prof_list["list"], $reg_professeurs);
+		$total_profs = array_unique($total_profs);
+
+		$p = 0;
+		echo "<table class='boireaus'>\n";
+		$alt=1;
+		$temoin_nettoyage_requis='n';
+		foreach($total_profs as $prof_login) {
+			$alt=$alt*(-1);
+			if((isset($prof_list["users"][$prof_login]["statut"]))&&($prof_list["users"][$prof_login]["statut"]=='professeur')) {
+				echo "<tr class='lig$alt'>\n";
+				echo "<td>\n";
+				echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
+				echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' ";
+				echo "onchange='checkbox_change($p);changement();'";
+				if (in_array($prof_login, $reg_professeurs)) {
+					if (array_key_exists($prof_login, $current_group["profs"]["users"])){
+						echo " checked />\n";
+						echo "</td>\n";
+						echo "<td style='text-align:left;'>\n";
+						echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
+							$current_group["profs"]["users"][$prof_login]["nom"] . " " .
+							$current_group["profs"]["users"][$prof_login]["prenom"] . "</label>\n";
+					} else {
+						echo " checked />\n";
+						echo "</td>\n";
+						echo "<td style='text-align:left;'>\n";
+						echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
+							$prof_list["users"][$prof_login]["nom"] . " " .
+							$prof_list["users"][$prof_login]["prenom"] . "</label>\n";
+					}
+				} else {
+					echo " />\n";
+					echo "</td>\n";
+					echo "<td style='text-align:left;'>\n";
+					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
+							$prof_list["users"][$prof_login]["nom"] . " " .
+							$prof_list["users"][$prof_login]["prenom"] . "</label>";
+				}
+
+				if(in_array($prof_login,$tab_prof_suivi)) {
+					echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
+					if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
+					echo "\" />\n";
+				}
+
+				echo "<br />\n";
+
+				echo "</td>\n";
+				echo "</tr>\n";
+				$p++;
+			}
+			else {
+				echo "<tr class='lig$alt'>\n";
+				echo "<td>\n";
+				echo "&nbsp;&nbsp;";
+				echo "</td>\n";
+				echo "<td style='text-align:left;' title=\"Anomalie : Cet utilisateur est associé au groupe, mais n'est pas professeur, ou pas professeur dans cette matière.\">\n";
+				echo "<b>ANOMALIE</b>&nbsp;:";
+				//echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
+				echo " <a href='../utilisateurs/modify_user.php?user_login=$prof_login'  onclick=\"return confirm_abandon (this, change, '$themessage')\">".civ_nom_prenom($prof_login)."</a>";
+				if(isset($prof_list["users"][$prof_login]["statut"])) {
+					echo " (<i style='color:red'>compte ".$prof_list["users"][$prof_login]["statut"]."</i>)";
+				}
+				echo "<br />\n";
+				$temoin_nettoyage_requis='y';
+				//echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
+		}
+		echo "</table>\n";
+		if($temoin_nettoyage_requis!='n') {
+			echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
+		}
+
+		if ($mode == "groupe") {
+			echo "<br />
+	<input type='checkbox' name='associer_tous_les_profs_de_la_classe' id='associer_tous_les_profs_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_la_classe' id='texte_associer_tous_les_profs_de_la_classe'> Associer à cet enseignement tous les professeurs de la classe.</label><br />
+	<input type='checkbox' name='associer_tous_les_profs_de_l_etablissement' id='associer_tous_les_profs_de_l_etablissement' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_l_etablissement' id='texte_associer_tous_les_profs_de_l_etablissement'> Associer à cet enseignement tous les professeurs de l'établissement.</label><br />
+	";
+		}
+		else {
+			echo "<br />
+	<input type='checkbox' name='associer_tous_les_profs_de_la_classe' id='associer_tous_les_profs_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_la_classe' id='texte_associer_tous_les_profs_de_la_classe'> Associer à cet enseignement tous les professeurs de la (<em>ou des</em>) classe(<em>s</em>).</label><br />
+	<input type='checkbox' name='associer_tous_les_profs_de_l_etablissement' id='associer_tous_les_profs_de_l_etablissement' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_l_etablissement' id='texte_associer_tous_les_profs_de_l_etablissement'> Associer à cet enseignement tous les professeurs de l'établissement.</label><br />
+	";
+		}
+	}
+}
+
+if((isset($_GET['maj_liste_profs_matiere']))&&(isset($_GET['matiere']))) {
+	check_token(false);
+
+	$matiere=$_GET['matiere'];
+	afficher_liste_profs_du_groupe($matiere);
+
+	die();
+}
+
+if((isset($_GET['maj_liste_autres_groupes_meme_matiere']))&&(isset($_GET['matiere']))&&(isset($_GET['id_classe']))) {
+	check_token(false);
+
+	$matiere=$_GET['matiere'];
+	$id_classe=$_GET['id_classe'];
+
+	$avec_lien_edit_group="y";
+	$tab_autres_groupes=tableau_html_groupe_matiere_telle_classe($id_classe, $matiere, array($id_groupe));
+	if($tab_autres_groupes!="") {
+		echo "<p>Il existe d'autres enseignements dans la même matière pour cette classe&nbsp;:</p>\n";
+		echo $tab_autres_groupes;
+	}
+	else {
+		echo "";
+	}
+	die();
 }
 
 if (isset($_POST['is_posted'])) {
@@ -276,6 +435,69 @@ if (isset($_POST['is_posted'])) {
 
 	$reg_clazz = $clazz;
 
+
+	if(isset($_POST['associer_tous_les_profs_de_la_classe'])) {
+		for($loo=0;$loo<count($clazz);$loo++) {
+			$sql="SELECT DISTINCT u.login FROM utilisateurs u, 
+										j_groupes_professeurs jgp, 
+										j_groupes_classes jgc 
+								WHERE u.statut='professeur' AND 
+									u.etat='actif' AND
+									u.login=jgp.login AND
+									jgp.id_groupe=jgc.id_groupe AND
+									jgc.id_classe='".$clazz[$loo]."';";
+			$res_prof=mysql_query($sql);
+			if(mysql_num_rows($res_prof)>0) {
+				while($lig_prof=mysql_fetch_object($res_prof)) {
+					if(!in_array($lig_prof->login, $reg_professeurs)) {
+						$reg_professeurs[]=$lig_prof->login;
+					}
+				}
+			}
+		}
+	}
+	elseif(isset($_POST['associer_tous_les_profs_de_l_etablissement'])) {
+		$sql="SELECT login FROM utilisateurs WHERE statut='professeur' AND etat='actif';";
+		$res_prof=mysql_query($sql);
+		if(mysql_num_rows($res_prof)>0) {
+			while($lig_prof=mysql_fetch_object($res_prof)) {
+				if(!in_array($lig_prof->login, $reg_professeurs)) {
+					$reg_professeurs[]=$lig_prof->login;
+				}
+			}
+		}
+	}
+
+	$tab_profs_matiere=array();
+	$sql="SELECT DISTINCT id_professeur FROM j_professeurs_matieres WHERE id_matiere='$reg_matiere';";
+	$res_prof_matiere=mysql_query($sql);
+	if(mysql_num_rows($res_prof_matiere)>0){
+		while($lig_prof_matiere=mysql_fetch_object($res_prof_matiere)){
+			$tab_profs_matiere[]=$lig_prof_matiere->id_professeur;
+		}
+	}
+
+	// On vérifie que les profs de la liste sont bien associés à la matière:
+	for($loo=0;$loo<count($reg_professeurs);$loo++) {
+		if(!in_array($reg_professeurs[$loo], $tab_profs_matiere)) {
+			$sql="SELECT MAX(ordre_matieres) AS max_ordre_matiere FROM j_professeurs_matieres WHERE id_professeur='".$reg_professeurs[$loo]."';";
+			//echo "$sql<br />";
+			$res_ordre=mysql_query($sql);
+			if(mysql_num_rows($res_ordre)==0) {
+				$ordre_matiere=1;
+			}
+			else {
+				$ordre_matiere=mysql_result($res_ordre, 0, "max_ordre_matiere")+1;
+			}
+
+			$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$reg_professeurs[$loo]."', id_matiere='$reg_matiere', ordre_matieres='$ordre_matiere';";
+			//echo "$sql<br />";
+			$insert=mysql_query($sql);
+		}
+	}
+
+
+
 	/*
 	echo "Apres modif:<br />";
 	foreach($reg_clazz as $key => $value) {
@@ -294,10 +516,124 @@ if (isset($_POST['is_posted'])) {
 		if (!$create) {
 			$msg .= "Erreur lors de la mise à jour du groupe.";
 		} else {
+
 			//======================================
 			// MODIF: boireaus
 			//$msg = "Le groupe a bien été mis à jour.";
-			$msg = "Enseignement ". stripslashes($reg_nom_complet) . " bien mis à jour.";
+			$msg = "Enseignement ". stripslashes($reg_nom_complet) . " bien mis à jour.<br />";
+
+			if(isset($_POST['creer_sous_groupes'])) {
+				if((!isset($_POST['nb_sous_groupes_a_creer']))||($_POST['nb_sous_groupes_a_creer']=='')||(!preg_match("/^[0-9]*$/", $_POST['nb_sous_groupes_a_creer']))||($_POST['nb_sous_groupes_a_creer']<1)) {
+					$msg.="Erreur : Le nombre de sous-groupes demandés est invalide.<br />";
+				}
+				else {
+					//20130912 $reg_categorie à récupérer...
+					$current_group=get_group($id_groupe);
+					$reg_categorie=$current_group["classes"]["classes"][$reg_clazz[0]]["categorie_id"];
+
+					$nb_sous_groupes_a_creer=$_POST['nb_sous_groupes_a_creer'];
+
+					$suffixe_sous_groupe_a_creer=isset($_POST['suffixe_sous_groupe_a_creer']) ? $_POST['suffixe_sous_groupe_a_creer'] : "";
+
+					for($loop=0;$loop<$nb_sous_groupes_a_creer;$loop++) {
+						$reg_nom_sous_groupe=$reg_nom_groupe;
+						$reg_nom_complet_sous_groupe=$reg_nom_complet;
+
+						if($suffixe_sous_groupe_a_creer=="1") {
+							$reg_nom_sous_groupe.="_".($loop+1);
+							$reg_nom_complet_sous_groupe=$reg_nom_complet." (groupe ".($loop+1).")";
+						}
+						elseif($suffixe_sous_groupe_a_creer=="g1") {
+							$reg_nom_sous_groupe.="_g".($loop+1);
+							$reg_nom_complet_sous_groupe=$reg_nom_complet." (groupe ".($loop+1).")";
+						}
+						elseif($suffixe_sous_groupe_a_creer=="A") {
+							$alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+							$reg_nom_sous_groupe.="_".substr($alphabet, $loop, 1);
+							$reg_nom_complet_sous_groupe=$reg_nom_complet." (groupe ".substr($alphabet, $loop, 1).")";
+						}
+
+						$create = create_group($reg_nom_sous_groupe, $reg_nom_complet_sous_groupe, $reg_matiere, $reg_clazz, $reg_categorie);
+						if (!$create) {
+							$msg .= "Erreur lors de la création du sous-groupe $reg_nom_sous_groupe.<br />";
+						} else {
+							// Puis mise à jour avec la liste des élèves, la visibilité
+							$id_sous_groupe=$create;
+
+							// Visibilité du sous-groupe
+							for($loo=0;$loo<count($tab_domaines);$loo++) {
+								$visibilite_groupe_domaine_courant=isset($_POST['visibilite_nouveaux_sous_groupes_'.$tab_domaines[$loo]]) ? $_POST['visibilite_nouveaux_sous_groupes_'.$tab_domaines[$loo]] : "n";
+
+								if(in_array($tab_domaines[$loo], $invisibilite_groupe)) {
+									if($visibilite_groupe_domaine_courant!='n') {
+										$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='".$id_sous_groupe."' AND domaine='".$tab_domaines[$loo]."';";
+										//echo "$sql<br />";
+										$suppr=mysql_query($sql);
+										if(!$suppr) {$msg.="Erreur lors de la suppression de l'invisibilité du groupe n°".$id_sous_groupe." sur les ".$tab_domaines_texte[$loo].".<br />";}
+									}
+								}
+								else {
+									if($visibilite_groupe_domaine_courant=='n') {
+										$sql="INSERT j_groupes_visibilite SET id_groupe='".$id_sous_groupe."', domaine='".$tab_domaines[$loo]."', visible='n';";
+										//echo "$sql<br />";
+										$insert=mysql_query($sql);
+										if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilité du groupe n°".$id_sous_groupe." sur les ".$tab_domaines_texte[$loo].".<br />";}
+									}
+								}
+							}
+
+							// Elèves du sous-groupe
+							$reg_eleves_sous_groupe=array();
+							if($nb_sous_groupes_a_creer==1) {
+								$reg_eleves_sous_groupe=$reg_eleves;
+							}
+							else {
+								foreach ($current_group["periodes"] as $period) {
+									$reg_eleves_sous_groupe[$period["num_periode"]]=array();
+
+									$nb_ele_restants=count($current_group["eleves"][$period["num_periode"]]["list"]);
+									$nb_sous_groupes_restants=$nb_sous_groupes_a_creer;
+									$rang_prec=0;
+									$rang[-1]=0;
+									for($loop_grp=0;$loop_grp<$nb_sous_groupes_a_creer;$loop_grp++) {
+										$tranche[$loop_grp]=ceil($nb_ele_restants/$nb_sous_groupes_restants);
+
+										$rang[$loop_grp]=$rang_prec+$tranche[$loop_grp];
+
+										$nb_ele_restants-=$tranche[$loop_grp];
+										$nb_sous_groupes_restants--;
+										$rang_prec=$rang[$loop_grp];
+									}
+
+									for($loop_ele=$rang[$loop-1];$loop_ele<$rang[$loop];$loop_ele++) {
+											$reg_eleves_sous_groupe[$period["num_periode"]][]=$current_group["eleves"][$period["num_periode"]]["list"][$loop_ele];
+									}
+
+									/*
+									for($loop_ele=0;$loop_ele<count($current_group["eleves"][$period["num_periode"]]["list"]);$loop_ele++) {
+
+										$tranche=floor(count($current_group["eleves"][$period["num_periode"]]["list"])/$nb_sous_groupes_a_creer);
+
+										if(($loop_ele+1>=$loop*$tranche+1)&&
+										($loop_ele+1<($loop+1)*$tranche+1)) {
+											$reg_eleves_sous_groupe[$period["num_periode"]][]=$current_group["eleves"][$period["num_periode"]]["list"][$loop_ele];
+										}
+									}
+									*/
+								}
+							}
+
+							$update = update_group($id_sous_groupe, $reg_nom_sous_groupe, $reg_nom_complet_sous_groupe, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves_sous_groupe);
+							if (!$update) {
+								$msg .= "Erreur lors de la mise à jour du sous-groupe ".$reg_nom_sous_groupe.".<br />";
+							}
+
+						}
+					}
+
+				}
+			}
+
 			$msg = urlencode($msg);
 
 			if(isset($chemin_retour)) {
@@ -374,6 +710,11 @@ echo "<a href='mes_listes.php?id_groupe=$id_groupe'>Exporter la composition du g
 <a href="edit_class.php?id_classe=<?php echo $id_classe;?>&amp;action=delete_group&amp;id_groupe=<?php echo $id_groupe;?><?php echo add_token_in_url();?>" onclick="return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')"> Supprimer le groupe</a>
 <?php
 echo " | <a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=".$id_classe."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Modifier la liste des élèves</a>";
+
+echo " | <a href='repartition_ele_grp.php'";
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+echo " title=\"Répartir des élèves entre plusieurs groupes\">Répartir</a> ";
+
 /*
 if(count($current_group["classes"]["list"])==1) {
 	echo " | <a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=".$current_group["classes"]["list"][0]."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Modifier la liste des élèves</a>";
@@ -422,11 +763,20 @@ Ce paramétrage est global, commun à toutes les classes.\" />";
 
 ?>
 <form enctype="multipart/form-data" action="edit_group.php" method="post">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 <div style="width: 95%;">
 <div style="width: 45%; float: left;">
-<p>Nom court : <input type='text' size='30' name='groupe_nom_court' value = "<?php echo $reg_nom_groupe; ?>" onchange="changement()" /><?php echo $message_nom_sur_bulletin1;?></p>
+<p>Nom court : <input type='text' size='30' name='groupe_nom_court' id='groupe_nom_court' value = "<?php echo $reg_nom_groupe; ?>" onchange="changement()" /><?php
+	echo $message_nom_sur_bulletin1;
 
-<p>Nom complet : <input type='text' size='50' name='groupe_nom_complet' value = "<?php echo $reg_nom_complet; ?>" onchange="changement()" /><?php echo $message_nom_sur_bulletin2;?></p>
+	$titre_infobulle="Ajouter un suffixe au nom de l'enseignement";
+	$texte_infobulle="<div align='center' style='padding:3px;'>".html_ajout_suffixe_ou_renommer('groupe_nom_court', 'groupe_nom_complet', 'matiere')."</div>";
+	$tabdiv_infobulle[]=creer_div_infobulle('suffixe_nom_grp',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+	echo " <a href=\"javascript:afficher_div('suffixe_nom_grp','y',-100,20)\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Suffixe' title=\"Ajouter un suffixe ou renommer l'enseignement.\" /></a>";
+
+?></p>
+
+<p>Nom complet : <input type='text' size='50' name='groupe_nom_complet' id='groupe_nom_complet' value = "<?php echo $reg_nom_complet; ?>" onchange="changement()" /><?php echo $message_nom_sur_bulletin2;?></p>
 
 <?php
 
@@ -542,39 +892,6 @@ if ($mode == "groupe") {
 			}
 			echo "<br />\n";
 		}
-
-		/*
-		echo "<table width='100%'>\n";
-		echo "<tr valign='top' align='left'>\n";
-		echo "<td>\n";
-		$nb_class_par_colonne=round($nombre_lignes/3);
-		while ($i < $nombre_lignes){
-			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-				echo "</td>\n";
-				echo "<td>\n";
-			}
-
-			$id_classe_temp = mysql_result($call_data, $i, "id");
-			$classe = mysql_result($call_data, $i, "classe");
-			if (get_period_number($id_classe_temp) == get_period_number($id_classe)) {
-				//echo "<br /><input type='checkbox' name='classe_" . $id_classe_temp . "' value='yes'";
-				echo "<input type='checkbox' name='classe_" . $id_classe_temp . "' id='classe_" . $id_classe_temp . "' value='yes'";
-				if (in_array($id_classe_temp, $reg_clazz)){
-					echo " checked";
-				}
-				//echo " />$classe</option>\n";
-				echo " onchange='changement();'";
-				echo " /><label for='classe_".$id_classe_temp."' style='cursor: pointer;'>$classe</label>\n";
-				if (in_array($id_classe_temp, $reg_clazz)){
-					// Pour contrôler les suppressions de classes.
-					// On conserve la liste des classes précédemment cochées:
-					echo "<input type='hidden' name='precclasse_".$id_classe_temp."' value='y' />\n";
-				}
-				echo "<br />\n";
-			}
-			$i++;
-		}
-		*/
 		//echo "</p>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -597,40 +914,8 @@ if ($mode == "groupe") {
 
 ?>
 
-
-
-<!--p>Sélectionnez la matière enseignée à ce groupe :-->
 <?php
-/*
-$query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
-$nb_mat = mysql_num_rows($query);
-
-echo "<select name='matiere' size='1'>\n";
-
-for ($i=0;$i<$nb_mat;$i++) {
-	$matiere = mysql_result($query, $i, "matiere");
-	$nom_matiere = mysql_result($query, $i, "nom_complet");
-	echo "<option value='" . $matiere . "'";
-	if ($reg_matiere == $matiere) echo " SELECTED";
-	//echo ">" . $nom_matiere . "</option>\n";
-	echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
-}
-echo "</select>\n";
-//echo "</p>\n";
-*/
-
-/*
-// Le coefficient peut différer d'une classe à l'autre.
-// On ne va pas l'éditer ici
-echo "<p>Coefficient de l'enseignement&nbsp;: ";
-echo "<select name='coef' id='coef'>\n";
-for($i=0;$i<max(10,      );$i++){
-	echo "<option value='$i'";
-	echo ">$i</option>\n";
-}
-echo "</select>\n";
-*/
-
+// Visibilité enseignement
 echo "<p>Visibilité de l'enseignement sur&nbsp;: <br />\n";
 for($loop=0;$loop<count($tab_domaines);$loop++) {
 	echo "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."' id='visibilite_groupe_".$tab_domaines[$loop]."' value='y' ";
@@ -647,18 +932,89 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 	echo ">".$tab_domaines_texte[$loop]."</label><br />\n";
 }
 
+echo "
+	<br />
+	<div style='border:1px solid white; background-image: url(\"../images/background/opacite50.png\");'>
+		<p><strong>Création de sous-groupes&nbsp;:</strong></p>
+		<p style='text-indent:-2em; margin-left:2em;'>
+			<input type='checkbox' name='creer_sous_groupes' id='creer_sous_groupes' value='y' onchange='affiche_masque_details_sous_groupes(); changement();' /><label for='creer_sous_groupes' id='texte_creer_sous_groupes'>Créer de nouveaux sous-groupes</label><br />
+			<div id='div_details_nouveaux_sous_groupes'>
+				en fractionnant l'enseignement en 
+				<select name='nb_sous_groupes_a_creer' id='nb_sous_groupes_a_creer' onchange='maj_check_sous_groupes(); changement();'>
+					<option value=''>---</option>
+					<option value='1'>1</option>
+					<option value='2'>2</option>
+					<option value='3'>3</option>
+					<option value='4'>4</option>
+				</select>&nbsp;groupes<br />
+				d'élèves rangés par ordre&nbsp;<select name='ordre_eleves_sous_groupe_a_creer' onchange='changement();'>
+					<option value='classe'>de classe, puis par ordre alphabétique</option>
+					<option value='alpha'>alphabétique</option>
+				</select><br />
+				avec des suffixes&nbsp;<select name='suffixe_sous_groupe_a_creer' id='suffixe_sous_groupe_a_creer' onchange='changement();'>
+					<option value=''>pas de suffixe</option>
+					<option value='1'>_1, _2,...</option>
+					<option value='g1'>_g1, _g2,...</option>
+					<option value='A'>_A, _B,...</option>
+				</select><br />
+				visibles sur<br />";
+
+for($loop=0;$loop<count($tab_domaines);$loop++) {
+	echo "
+				&nbsp;&nbsp;&nbsp;<input type='checkbox' name='visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."' id='visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."' value='y' onchange=\"checkbox_change_visibilite('visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."'); changement();\" title='Visibilité ".$tab_domaines[$loop]."' /><label for='visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."' id='texte_visibilite_nouveaux_sous_groupes_".$tab_domaines[$loop]."'>".$tab_domaines_texte[$loop]."</label><br />\n";
+}
+
+		echo "
+		</p>
+
+		<p><em>NOTE&nbsp;:</em> Ce sont de nouveaux groupes (<em>à part entière</em>), mais créés avec les mêmes professeurs, des noms (<em>au suffixe près</em>) et au partage des élèves près.</p>
+		</div>
+
+		<script type='text/javascript'>
+			function maj_check_sous_groupes() {
+				if(document.getElementById('nb_sous_groupes_a_creer').options[document.getElementById('nb_sous_groupes_a_creer').selectedIndex].value==0) {
+					document.getElementById('creer_sous_groupes').checked=false;
+				}
+				else {
+					document.getElementById('creer_sous_groupes').checked=true;
+
+					if(document.getElementById('nb_sous_groupes_a_creer').options[document.getElementById('nb_sous_groupes_a_creer').selectedIndex].value>1) {
+						document.getElementById('suffixe_sous_groupe_a_creer').selectedIndex=1;
+					}
+
+					if(document.getElementById('nb_sous_groupes_a_creer').options[document.getElementById('nb_sous_groupes_a_creer').selectedIndex].value==1) {
+						document.getElementById('suffixe_sous_groupe_a_creer').selectedIndex=0;
+					}
+				}
+			}
+
+			document.getElementById('div_details_nouveaux_sous_groupes').style.display='none';
+
+			function affiche_masque_details_sous_groupes() {
+				if(document.getElementById('creer_sous_groupes').checked==true) {
+					document.getElementById('div_details_nouveaux_sous_groupes').style.display='';
+				}
+				else {
+					document.getElementById('div_details_nouveaux_sous_groupes').style.display='none';
+				}
+			}
+		</script>
+
+	</div>";
+
 echo "</div>\n";
-// Edition des professeurs
-echo "<div style='width: 45%; float: right;'>\n";
 
 //=================================================
-echo "<p>Sélectionnez la matière enseignée à ce groupe : ";
+// Matière
+echo "<div style='width: 45%; float: right;'>\n";
+
+echo "<p>Sélectionnez la matière enseignée à ce groupe&nbsp;: ";
 
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysql_num_rows($query);
 
-echo "<select name='matiere' size='1'";
-echo " onchange='changement();'";
+echo "<select name='matiere' id='matiere' size='1'";
+echo " onchange='changement(); maj_liste_profs_matiere();'";
 echo ">\n";
 
 for ($i=0;$i<$nb_mat;$i++) {
@@ -666,7 +1022,8 @@ for ($i=0;$i<$nb_mat;$i++) {
 	$nom_matiere = mysql_result($query, $i, "nom_complet");
 	echo "<option value='" . $matiere . "'";
 	if ($reg_matiere == $matiere) echo " SELECTED";
-	echo ">" . $nom_matiere . "</option>\n";
+	echo " nom_matiere=\"$nom_matiere\"";
+	echo ">".$matiere." (".htmlspecialchars($nom_matiere).")"."</option>\n";
 	//echo ">" . html_entity_decode($nom_matiere) . "</option>\n";
 	//echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
 }
@@ -676,122 +1033,13 @@ echo "</p>\n";
 
 //=================================================
 
-// Mettre un témoin pour repérer le prof principal
+echo "<p>Cochez les professeurs qui participent à cet enseignement&nbsp;: </p>\n";
 
-$tab_prof_suivi=array();
-$nb_prof_suivi=0;
-if(isset($id_classe)) {
-	$tab_prof_suivi=get_tab_prof_suivi($id_classe);
-	$nb_prof_suivi=count($tab_prof_suivi);
-	if($nb_prof_suivi>1) {
-		$liste_prof_suivi="";
-		for($loop=0;$loop<count($tab_prof_suivi);$loop++) {
-			if($loop>0) {$liste_prof_suivi.=", ";}
-			$liste_prof_suivi.=civ_nom_prenom($tab_prof_suivi[$loop]);
-		}
-	}
-}
+echo "<div id='div_choix_prof'>\n";
+afficher_liste_profs_du_groupe($reg_matiere);
+echo "</div>\n";
 
-echo "<p>Cochez les professeurs qui participent à cet enseignement : </p>\n";
-
-//$calldata = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.login");
-$sql="SELECT u.login, u.nom, u.prenom, u.civilite, u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
-//echo "$sql<br />";
-$calldata = mysql_query($sql);
-$nb = mysql_num_rows($calldata);
-$prof_list = array();
-$prof_list["list"] = array();
-for ($i=0;$i<$nb;$i++) {
-	$prof_login = mysql_result($calldata, $i, "login");
-	$prof_nom = mysql_result($calldata, $i, "nom");
-	$prof_prenom = mysql_result($calldata, $i, "prenom");
-	$civilite = mysql_result($calldata, $i, "civilite");
-	$prof_statut = mysql_result($calldata, $i, "statut");
-
-	$prof_list["list"][] = $prof_login;
-	//$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite);
-	$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite, "statut" => $prof_statut);
-}
-
-if (count($prof_list["list"]) == "0") {
-	echo "<p><span style='color:red'>ERREUR !</span> Aucun professeur n'a été défini comme compétent dans la matière considérée.<br /><a href='../matieres/modify_matiere.php?current_matiere=$reg_matiere'>Associer des professeurs à $reg_matiere</a></p>\n";
-} else {
-	$total_profs = array_merge($prof_list["list"], $reg_professeurs);
-	$total_profs = array_unique($total_profs);
-
-	$p = 0;
-	echo "<table class='boireaus'>\n";
-	$alt=1;
-	$temoin_nettoyage_requis='n';
-	foreach($total_profs as $prof_login) {
-		$alt=$alt*(-1);
-		if((isset($prof_list["users"][$prof_login]["statut"]))&&($prof_list["users"][$prof_login]["statut"]=='professeur')) {
-			echo "<tr class='lig$alt'>\n";
-			echo "<td>\n";
-			echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
-			echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' ";
-			echo "onchange='checkbox_change($p);changement();'";
-			if (in_array($prof_login, $reg_professeurs)) {
-				if (array_key_exists($prof_login, $current_group["profs"]["users"])){
-					echo " checked />\n";
-					echo "</td>\n";
-					echo "<td style='text-align:left;'>\n";
-					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
-						casse_mot($current_group["profs"]["users"][$prof_login]["prenom"],'majf2') . " " .
-						$current_group["profs"]["users"][$prof_login]["nom"] . "</label>\n";
-				} else {
-					echo " checked />\n";
-					echo "</td>\n";
-					echo "<td style='text-align:left;'>\n";
-					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
-						casse_mot($prof_list["users"][$prof_login]["prenom"],'majf2') . " " .
-						$prof_list["users"][$prof_login]["nom"] . "</label>\n";
-				}
-			} else {
-				echo " />\n";
-				echo "</td>\n";
-				echo "<td style='text-align:left;'>\n";
-				echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
-						casse_mot($prof_list["users"][$prof_login]["prenom"],'majf2') . " " .
-						$prof_list["users"][$prof_login]["nom"] . "</label>";
-			}
-
-			if(in_array($prof_login,$tab_prof_suivi)) {
-				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
-				if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
-				echo "\" />\n";
-			}
-
-			echo "<br />\n";
-
-			echo "</td>\n";
-			echo "</tr>\n";
-			$p++;
-		}
-		else {
-			echo "<tr class='lig$alt'>\n";
-			echo "<td>\n";
-			echo "&nbsp;&nbsp;";
-			echo "</td>\n";
-			echo "<td style='text-align:left;'>\n";
-			echo "<b>ANOMALIE</b>&nbsp;:";
-			//echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
-			echo " <a href='../utilisateurs/modify_user.php?user_login=$prof_login'  onclick=\"return confirm_abandon (this, change, '$themessage')\">".civ_nom_prenom($prof_login)."</a>";
-			if(isset($prof_list["users"][$prof_login]["statut"])) {
-				echo " (<i style='color:red'>compte ".$prof_list["users"][$prof_login]["statut"]."</i>)";
-			}
-			echo "<br />\n";
-			$temoin_nettoyage_requis='y';
-			//echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
-			echo "</td>\n";
-			echo "</tr>\n";
-		}
-	}
-	echo "</table>\n";
-	if($temoin_nettoyage_requis!='n') {
-		echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
-	}
-
+if (count($prof_list["list"]) != "0") {
 	echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
 	if(document.getElementById('prof_'+cpt)) {
@@ -805,6 +1053,7 @@ function checkbox_change(cpt) {
 }
 ";
 
+echo js_checkbox_change_style('checkbox_change_divers');
 echo js_checkbox_change_style('checkbox_change_classe');
 echo js_checkbox_change_style('checkbox_change_visibilite');
 
@@ -816,16 +1065,57 @@ for(i=0;i<$p;i++) {
 
 }
 
-echo "</div>\n";
+$sql="SELECT 1=1 FROM utilisateurs WHERE statut='professeur';";
+$res_nb_prof=mysql_query($sql);
+$nb_prof_etab=mysql_num_rows($res_nb_prof);
 
+echo "<script type='text/javascript'>
+	function init_checkbox_change() {
+		for(i=0;i<$nb_prof_etab;i++) {
+			checkbox_change(i);
+		}
+	}
+
+	function maj_liste_profs_matiere() {
+		if($('div_choix_prof')&&$('matiere')) {
+			matiere=$('matiere').options[$('matiere').selectedIndex].value;
+			new Ajax.Updater($('div_choix_prof'),'./edit_group.php?id_groupe=$id_groupe&id_classe=$id_classe&mode=$mode&maj_liste_profs_matiere=y&matiere='+matiere+'".add_token_in_url(false)."',{method: 'get'});
+			setTimeout('init_checkbox_change()', 2000);
+			setTimeout('maj_liste_autres_groupes_meme_matiere()', 2000);
+		}
+	}
+
+	function maj_liste_autres_groupes_meme_matiere() {
+		if($('div_autres_groupes_meme_matiere')&&$('matiere')) {
+			matiere=$('matiere').options[$('matiere').selectedIndex].value;
+			new Ajax.Updater($('div_autres_groupes_meme_matiere'),'./edit_group.php?id_groupe=$id_groupe&id_classe=$id_classe&mode=$mode&maj_liste_autres_groupes_meme_matiere=y&matiere='+matiere+'".add_token_in_url(false)."',{method: 'get'});
+		}
+	}
+
+	/*
+	function ajout_suffixe_nom_grp(suffixe_nom_court, suffixe_nom_complet) {
+		document.getElementById('groupe_nom_court').value=document.getElementById('groupe_nom_court').value+suffixe_nom_court;
+		document.getElementById('groupe_nom_complet').value=document.getElementById('groupe_nom_complet').value+suffixe_nom_complet;
+	}
+
+	function modif_nom_grp(suffixe_nom_court, suffixe_nom_complet) {
+		prefixe=document.getElementById('matiere').options[document.getElementById('matiere').selectedIndex].value;
+		document.getElementById('groupe_nom_court').value=prefixe+suffixe_nom_court;
+		document.getElementById('groupe_nom_complet').value=prefixe+suffixe_nom_complet;
+	}
+	*/
+</script>
+
+</div>\n";
+
+echo "<div id='div_autres_groupes_meme_matiere' style='width: 45%; float: right; font-size:small; margin-top:1em;'>\n";
 $avec_lien_edit_group="y";
 $tab_autres_groupes=tableau_html_groupe_matiere_telle_classe($id_classe, $reg_matiere, array($id_groupe));
 if($tab_autres_groupes!="") {
-	echo "<div style='width: 45%; float: right; font-size:small; margin-top:1em;'>\n";
 	echo "<p>Il existe d'autres enseignements dans la même matière pour cette classe&nbsp;:</p>\n";
 	echo $tab_autres_groupes;
-	echo "</div>\n";
 }
+echo "</div>\n";
 
 echo "<div style='float: left; width: 100%'>\n";
 echo "<input type='hidden' name='is_posted' value='1' />\n";
@@ -843,7 +1133,8 @@ echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 echo "</div>\n";
 echo "</div>\n";
 
-echo "</form>\n";
+echo "</fieldset>
+</form>\n";
 
 echo "<div style='clear:both;'></div>
 <hr />

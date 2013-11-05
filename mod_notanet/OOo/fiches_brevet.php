@@ -251,6 +251,16 @@ $fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
 	echo "</td>";
 	echo "<td>";
 
+	echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_3' value='3' ";
+	if($fb_dezip_ooo=="3"){
+	  echo "checked='checked' />";
+	}
+	else{
+	  echo "/>";
+	}
+	echo "<label for='fb_dezip_ooo_3'> Zlib + openTBS : le meilleur choix mais nécessite que php ait été compilé avec l'extension zlib (voir la configuration du serveur)</label><br />\n";
+	
+
 	echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_0' value='0' ";
 	if($fb_dezip_ooo=="0"){
 	  echo "checked='checked' />";
@@ -258,7 +268,7 @@ $fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
 	else{
 	  echo "/>";
 	}
-	echo "<label for='fb_dezip_ooo_0'> ZIPARCHIVE et TinyDoc : le choix par défaut mais peut créer des fichiers corrompus si votre version de PHP est inférieure à 5.2.8 (utiliser OOo 3.2 pour réparer les fichiers) </label><br />\n";
+	echo "<label for='fb_dezip_ooo_0'> ZIPARCHIVE et TinyDoc : peut créer des fichiers corrompus si votre version de PHP est inférieure à 5.2.8 (utiliser OOo 3.2 pour réparer les fichiers) </label><br />\n";
 	
 	echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_1' value='1' ";
 	if($fb_dezip_ooo=="1"){

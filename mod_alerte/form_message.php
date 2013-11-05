@@ -129,7 +129,8 @@ if((isset($mode))&&($mode=='maj_span_nom_jour_semaine')) {
 if((isset($mode))&&($mode=='check')) {
 	$messages_non_lus=check_messages_recus($_SESSION['login']);
 	if($messages_non_lus!="") {
-		echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='16' height='16' alt='Nouveau mail' title='Vous avez $messages_non_lus' /></a>";
+
+		echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' style='width:16px; height:16px' alt='Nouveaux messages' title='Vous avez $messages_non_lus' /></a>";
 		if((getSettingAOui('MessagerieAvecSon'))&&(!isset($_GET['sound']))) {
 			$AlertesAvecSon=getPref($_SESSION['login'], "AlertesAvecSon","y");
 			if((!getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut'])))||
@@ -143,10 +144,11 @@ if((isset($mode))&&($mode=='check')) {
 		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."' ;";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
-			echo "<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='Aucun message' /></a></span>";
+
+			echo "<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' style='width:16px; height:16px' alt='Aucun message' title='Aucun message' /></a></span>";
 		}
 		else {
-			echo "<img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='Aucun message' />";
+			echo "<img src='$gepiPath/images/icons/no_mail.png'  style='width:16px; height:16px' alt='Aucun message' title='Aucun message' />";
 		}
 	}
 	die();
@@ -157,8 +159,8 @@ if((isset($mode))&&($mode=='check2')) {
 	if($messages_non_lus!="") {
 		$MessagerieLargeurImg=getSettingValue('MessagerieLargeurImg');
 		//echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='$MessagerieLargeurImg' height='$MessagerieLargeurImg' title='Vous avez $messages_non_lus' /></a>";
-		echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/temoin_message_non_lu.gif' width='$MessagerieLargeurImg' height='$MessagerieLargeurImg' title='Vous avez $messages_non_lus non lus' alt='$messages_non_lus  message(s) non lus' /></a>";
-	}
+echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/temoin_message_non_lu.gif' style='width:$MessagerieLargeurImg px; height:$MessagerieLargeurImg px' alt='messages non lus'  title='Vous avez $messages_non_lus' /></a>";
+}
 	else {
 		echo "";
 	}
@@ -177,7 +179,7 @@ if((isset($mode))&&($mode=='marquer_lu')) {
 				echo "<span style='color:red'>Erreur</span>";
 			}
 			else {
-				echo "<img src='../images/enabled.png' width='20' height='20' title='Lu/vu' alt='Lu/vu' />";
+                echo "<img src='../images/enabled.png'  style='width:20px; height:20px' title='Lu/vu' alt='Activer' />";
 			}
 		}
 		else {
@@ -206,7 +208,7 @@ if((isset($mode))&&($mode=='relancer')) {
 				echo "<span style='color:red'>Erreur</span>";
 			}
 			else {
-				echo "<img src='../images/disabled.png' width='20' height='20' title='Lu/vu' alt='Lu/vu' />";
+                echo "<img src='../images/disabled.png' style='width:16px; height:16px' alt='Désactiver' title='Lu/vu' />";
 			}
 		}
 		else {
@@ -235,10 +237,10 @@ if((isset($mode))&&($mode=='clore')) {
 				echo "<span style='color:red'>Erreur</span>";
 			}
 			elseif($retour==2) {
-				echo "<img src='../images/icons/securite.png' width='16' height='16' title='Message clos/traité.' alt='Message clos/traité' />";
+                echo "<img src='../images/icons/securite.png' style='width:16px; height:16px' alt='Message traité' title='Message clos/traité.' />";
 			}
 			else {
-				echo "<img src='../images/disabled.png' width='20' height='20' title='Non lu/vu' alt='Non lu/vu' />";
+				echo "<img src='../images/disabled.png' style='width:20px; height:20px' alt='Non lu' title='Non lu/vu' />";
 			}
 		}
 		else {
@@ -284,10 +286,29 @@ $message=isset($_POST['message']) ? $_POST['message'] : (isset($_GET['message'])
 $date_visibilite=isset($_POST['date_visibilite']) ? $_POST['date_visibilite'] : (isset($_GET['date_visibilite']) ? $_GET['date_visibilite'] : NULL);
 $heure_visibilite=isset($_POST['heure_visibilite']) ? $_POST['heure_visibilite'] : (isset($_GET['heure_visibilite']) ? $_GET['heure_visibilite'] : NULL);
 
+$login_dest=isset($_POST['login_dest']) ? $_POST['login_dest'] : (isset($_GET['login_dest']) ? $_GET['login_dest'] : NULL);
+
+if((isset($_GET['id_incident']))&&(!isset($message))) {
+	$sql="SELECT * FROM s_incidents WHERE id_incident='".$_GET['id_incident']."';";
+	$res_incident=mysql_query($sql);
+	if(mysql_num_rows($res_incident)>0) {
+		$lig_incident=mysql_fetch_object($res_incident);
+		//A propos de l'incident n°<a href='$gepiPath/mod_discipline/saisie_incident.php?step=2&id_incident".$_GET['id_incident']."'></a> du ".formate_date
+		$message="Bonjour, 
+
+A propos de l'incident n°".$_GET['id_incident']." du ".formate_date($lig_incident->date)."
+================================================
+".$lig_incident->description."
+================================================
+
+Cordialement.
+-- 
+".civ_nom_prenom($_SESSION['login']);
+	}
+}
+
 if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 	check_token();
-
-	$login_dest=isset($_POST['login_dest']) ? $_POST['login_dest'] : (isset($_GET['login_dest']) ? $_GET['login_dest'] : NULL);
 
 	$msg="";
 
@@ -366,7 +387,7 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 				$msg.="Message pour ".civ_nom_prenom($login_dest)." enregistré.<br />";
 
 				if(isset($_GET['envoi_js'])) {
-					echo "<img src='$gepiPath/images/icons/mail_succes.png' width='16' height='16' title='Message envoyé' alt='Message envoyé' />";
+                    echo "<img src='$gepiPath/images/icons/mail_succes.png' style='width:16px; height:16px' alt='Succès title='Message envoyé' />";
 					die();
 				}
 			}
@@ -374,7 +395,7 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 				$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($login_dest).".<br />";
 
 				if(isset($_GET['envoi_js'])) {
-					echo "<img src='$gepiPath/images/icons/mail_echec.png' width='16' height='16' title='Erreur lors de l envoi du message' alt='Erreur' />";
+                    echo "<img src='$gepiPath/images/icons/mail_echec.png' style='width:16px; height:16px' alt='Échec' title='Erreur lors de l envoi du message' />";
 					die();
 				}
 			}
@@ -418,7 +439,7 @@ $titre_page = "Alertes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-echo "<p class='bold'><a href='../accueil.php'>Retour à l'accueil</a> ";
+echo "<p class='bold'><a href='javascript:self.close()'>Refermer cette page</a> | <a href='../accueil.php'>Retour à l'accueil</a> ";
 if(((!isset($mode))||($mode!='rediger_message'))&&(peut_poster_message($_SESSION['statut']))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?mode=rediger_message'>Rédiger un message</a>";
 }
@@ -478,7 +499,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 				<td style='text-align:left;'>
 					<!-- ======================================================= -->
 					<!-- Balises concernant JavaScript -->
-					<div id='p_ajout_dest_js' style='display:none;float:right;whidth:16px;'><a href="javascript:affiche_ajout_dest();"><img src='../images/icons/add.png' width='16' height='16' title='Ajouter un ou des destinataires' alt='Ajouter' /></a></div>
+                    <div id='p_ajout_dest_js' style='display:none;float:right;whidth:16px;'><a href="javascript:affiche_ajout_dest();"><img src='../images/icons/add.png'  style='width:16px; height:16px' alt='Ajouter' title='Ajouter un ou des destinataires' /></a></div>
 
 					<div id='div_login_dest_js'>
 						<span style='color:red' id='span_ajoutez_un_ou_des_destinataires'><a href='javascript:affiche_ajout_dest();' style='color:red'>Ajoutez un ou des destinataires --&gt;</a></span>
@@ -499,7 +520,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 										//echo civ_nom_prenom($login_dest[$loop]);
 										echo "<input type='hidden' name='login_dest[]' value='".$value."' />";
 										echo civ_nom_prenom($value);
-										echo " <a href=\"javascript:removeElement('span_login_u_choisi_special_$loop')\"><img src='../images/icons/delete.png' width='16' height='16' alt='Enlever' /></a></span>";
+                                        echo " <a href=\"javascript:removeElement('span_login_u_choisi_special_$loop')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
 										$loop++;
 									}
 								}
@@ -507,7 +528,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 									echo "<br /><span id='span_login_u_choisi_special'>";
 									echo "<input type='hidden' name='login_dest[]' value='".$login_dest."' />";
 									echo civ_nom_prenom($login_dest);
-									echo " <a href=\"javascript:removeElement('span_login_u_choisi_special')\"><img src='../images/icons/delete.png' width='16' height='16' alt='Enlever' /></a></span>";
+                                    echo " <a href=\"javascript:removeElement('span_login_u_choisi_special')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
 								}
 							}
 						?>
@@ -518,7 +539,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 						<select name='login_dest[]' onchange='changement()' multiple size='6'>
 							<?php
 								// Cela donne la possibilité à un utilisateur de découvrir le login des autres comptes... pas génial.
-								$tab_statut=array('professeur', 'scolarite', 'cpe', 'administrateur');
+								$tab_statut=array('professeur', 'scolarite', 'cpe', 'administrateur', 'autre');
 								for($loop=0;$loop<count($tab_statut);$loop++) {
 									$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND statut='".$tab_statut[$loop]."' ORDER BY nom, prenom";
 									$res_u=mysql_query($sql);
@@ -600,11 +621,11 @@ Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendema
 							}
 						}
 					?>
-					<div style='float:right; width:16px;'><a href='javascript:date_visibilite_maintenant()' title="Fixer la date/heure de visibilité à l'instant présent."><img src='../images/icons/wizard.png' width='16' height='16' alt="Instant présent" /></a></div>
+                    <div style='float:right; width:16px;'><a href='javascript:date_visibilite_maintenant()' title="Fixer la date/heure de visibilité à l'instant présent."><img src='../images/icons/wizard.png'  style='width:16px; height:16px' alt='date de visibilité'  /></a></div>
 					<span id='span_nom_jour_semaine'></span> 
 					<input type='text' name='date_visibilite' id='date_visibilite' size='10' value = "<?php echo $date_visibilite;?>" onKeyDown="clavier_date(this.id,event);maj_span_nom_jour_semaine();" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." onchange="changement();maj_span_nom_jour_semaine();" onblur="maj_span_nom_jour_semaine();" />
 					<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>;document.getElementById('span_nom_jour_semaine').innerHTML='';"
-					><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="Petit calendrier" /></a>
+					><img src="../lib/calendrier/petit_calendrier.gif" style="border:0px" alt="Petit calendrier" /></a>
 					à
 					<input name="heure_visibilite" value="<?php echo $heure_visibilite;?>" type="text" maxlength="5" size="4" id="heure_visibilite" onKeyDown="clavier_heure2(this.id,event,1,30);" AutoComplete="off" title="Vous pouvez modifier l'heure à l'aide des flèches Up et Down du pavé de direction et les flèches PageUp/PageDown." />
 				</td>
@@ -619,7 +640,7 @@ Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendema
 <?php
 $titre_infobulle="Choix des destinataires";
 $texte_infobulle="<p>Cochez les destinataires de votre message et validez.</p>";
-$tab_statut=array('professeur', 'scolarite', 'cpe', 'administrateur');
+$tab_statut=array('professeur', 'scolarite', 'cpe', 'administrateur', 'autre');
 $cpt_u=0;
 $chaine_js_login_u="var login_u=new Array(";
 $chaine_js_designation_u="var designation_u=new Array(";
@@ -695,7 +716,7 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 			for(i=0;i<<?php echo $cpt_u;?>;i++) {
 				if(document.getElementById('login_dest_'+i)) {
 					if(document.getElementById('login_dest_'+i).checked==true) {
-						document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"'><input type='hidden' name='login_dest[]' value='"+login_u[i]+"' />"+designation_u[i]+" <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' width='16' height='16' alt='Enlever' /></a></span>";
+						document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"'><input type='hidden' name='login_dest[]' value='"+login_u[i]+"' />"+designation_u[i]+" <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
 
 						// On décoche les cases pour que si on ajoute par la suite d'autres destinataires,
 						// ils ne soient pas pré-sélectionnés, au risque de faire apparaitre des doublons.

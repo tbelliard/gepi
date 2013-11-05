@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -689,6 +689,14 @@ if(isset($quitter_la_page)) {
 	echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";
 }
 
+if ((!isset($pers_id))&&(isset($login_resp))&&($login_resp!="")) {
+	$sql="SELECT pers_id FROM resp_pers WHERE login='$login_resp';";
+	$res_pers_id=mysql_query($sql);
+	if(mysql_num_rows($res_pers_id)>0) {
+		$pers_id=mysql_result($res_pers_id, 0, "pers_id");
+	}
+}
+
 //$temoin_compte_utilisateur="n";
 $temoin_adr=0;
 //if (isset($ereno)) {
@@ -780,6 +788,8 @@ if (!isset($tel_port)) $tel_port='';
 if (!isset($tel_prof)) $tel_prof='';
 if (!isset($mel)) $mel='';
 
+$AccesDetailConnexionResp=false;
+
 echo "<table>\n";
 echo "<tr>\n";
 // Colonne nom, prénom, adresse, tel du responsable:
@@ -803,12 +813,16 @@ echo "<td valign='top'>\n";
 			$resp_u_email=$lig_resp_login->email;
 			$resp_auth_mode=$lig_resp_login->auth_mode;
 
+			$AccesDetailConnexionResp=AccesInfoResp('AccesDetailConnexionResp', $resp_login);
+
 			if($_SESSION['statut']=='administrateur') {$avec_lien="y";}
 			else {$avec_lien="n";}
 			$lien_image_compte_utilisateur=lien_image_compte_utilisateur($resp_login, "responsable", "_blank", $avec_lien);
 
 			if($_SESSION['statut']=='administrateur') {
-				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a>";
+				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo ">$resp_login</a>";
 				if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
 				echo "</em>)";
 			}
@@ -817,12 +831,38 @@ echo "<td valign='top'>\n";
 				if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
 				echo "</em>)";
 			}
+			echo temoin_compte_sso($resp_login);
 		}
 		else {
 			$compte_resp_existe="n";
+
+			if($_SESSION['statut']=="administrateur") {
+				$tmp_tab=get_enfants_from_pers_id($pers_id, 'simple', "n");
+				if(count($tmp_tab)>0) {
+					echo " <a href='../utilisateurs/create_responsable.php?filtrage=Afficher&amp;critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $resp_nom)."'";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo " title=\"Ajouter un compte d'utilisateur pour ce responsable.\"><img src='../images/icons/buddy_plus.png' class='icone16' /></a>";
+				}
+				elseif(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+					// Il ne faut pas "yy" parce que le droit spécial ne peut être donné qu'une fois le compte créé.
+					$tmp_tab=get_enfants_from_pers_id($pers_id, 'simple', "y");
+					/*
+					echo "<pre>";
+					print_r($tmp_tab);
+					echo "</pre>";
+					*/
+					if(count($tmp_tab)>0) {
+						echo " <a href='../utilisateurs/create_responsable.php?filtrage_rl0=Afficher&amp;critere_recherche_rl0=".preg_replace("/[^A-Za-z]/", "%", $resp_nom)."'";
+						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+						echo " title=\"Ajouter un compte d'utilisateur pour ce responsable.\"><img src='../images/icons/buddy_plus.png' class='icone16' /></a>";
+					}
+				}
+			}
 		}
 
-		if(($compte_resp_existe=="y")&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+		if(($compte_resp_existe=="y")&&
+				($AccesDetailConnexionResp)
+			) {
 			$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
 			$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
 		
@@ -1199,13 +1239,16 @@ echo "<p>(*): saisie obligatoire<br />(**): un des deux champs au moins doit êt
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "</form>\n";
 
-if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='n')&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
-
+if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='n')&&
+		($AccesDetailConnexionResp)
+	) {
 	echo "<hr />\n";
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;journal_connexions=y#connexion' title='Journal des connexions'>Journal des connexions</a></p>\n";
 }
 
-if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='y')&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='y')&&
+		($AccesDetailConnexionResp)
+	) {
 	echo "<hr />\n";
 	// Journal des connexions
 	echo "<a name=\"connexion\"></a>\n";

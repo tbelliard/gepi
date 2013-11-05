@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -64,6 +64,11 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 /****************************************************************
 
 ****************************************************************/
+
+$mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
+if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
+$mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
+if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 
 //debug_var();
 /*
@@ -374,7 +379,7 @@ if(($_SESSION['statut']=='administrateur')||
 			$acces_ok="y";
 
 			$nouveauItem->titre="Définition des lieux" ;
-			$nouveauItem->expli="Définir la liste des lieux des incidents." ;
+			$nouveauItem->expli="Définir la liste des lieux des ".$mod_disc_terme_incident."s." ;
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 		}
@@ -423,7 +428,7 @@ if(($_SESSION['statut']=='administrateur')||
 			$acces_ok="y";
 
 			$nouveauItem->titre="Définition des mesures" ;
-			$nouveauItem->expli="Définir la liste des mesures prises comme suite à un incident." ;
+			$nouveauItem->expli="Définir la liste des mesures prises comme suite à un ".$mod_disc_terme_incident."." ;
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 		}
@@ -447,8 +452,8 @@ if(($_SESSION['statut']=='administrateur')||
 		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirSanctionsScol')))) {
 			$acces_ok="y";
 
-			$nouveauItem->titre="Définition des types de sanctions" ;
-			$nouveauItem->expli="Définir la liste des sanctions pouvant être prises comme suite à un incident." ;
+			$nouveauItem->titre="Définition des types de ".$mod_disc_terme_sanction."s" ;
+			$nouveauItem->expli="Définir la liste des ".$mod_disc_terme_sanction."s pouvant être prises comme suite à un ".$mod_disc_terme_incident."." ;
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 		}
@@ -466,8 +471,8 @@ if(($_SESSION['statut']=='administrateur')||
 		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirNaturesScol')))) {
 			$acces_ok="y";
 
-			$nouveauItem->titre="Définition des natures d'incidents" ;
-			$nouveauItem->expli="Définir les natures d'incidents (<em>liste indicative ou liste imposée</em>)." ;
+			$nouveauItem->titre="Définition des natures d'".$mod_disc_terme_incident."s" ;
+			$nouveauItem->expli="Définir les natures d'".$mod_disc_terme_incident."s (<em>liste indicative ou liste imposée</em>)." ;
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 		}
@@ -485,8 +490,8 @@ if(($_SESSION['statut']=='administrateur')||
 		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirCategoriesScol')))) {
 			$acces_ok="y";
 
-			$nouveauItem->titre="Définition des catégories d'incidents" ;
-			$nouveauItem->expli="Définir les catégories d'incidents (<em>à des fins de statistiques</em>)." ;
+			$nouveauItem->titre="Définition des catégories d'".$mod_disc_terme_incident."s" ;
+			$nouveauItem->expli="Définir les catégories d'".$mod_disc_terme_incident."s (<em>à des fins de statistiques</em>)." ;
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 		}
@@ -514,7 +519,7 @@ if(($_SESSION['statut']=='administrateur')||
 			$acces_ok="y";
 
 			$nouveauItem->titre="Définition des destinataires d'alertes" ;
-			$nouveauItem->expli="Permet de définir la liste des utilisateurs recevant un mail lors de la saisie/modification d'un incident." ;
+			$nouveauItem->expli="Permet de définir la liste des utilisateurs recevant un mail lors de la saisie/modification d'un ".$mod_disc_terme_incident."." ;
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 		}
@@ -532,7 +537,22 @@ if(($_SESSION['statut']=='administrateur')||
 	}
 	unset($nouveauItem);
 
-
+	if(($_SESSION['statut']=='administrateur')||
+	(($_SESSION['statut']=='cpe')&&(getSettingAOui('OOoUploadCpeDiscipline')))||
+	(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OOoUploadScolDiscipline')))) {
+		$nouveauItem = new itemGeneral();
+		// L'ancre pose un pb de test de droit.
+		$nouveauItem->chemin='/mod_ooo/gerer_modeles_ooo.php#MODULE_DISCIPLINE';
+		//$nouveauItem->chemin='/mod_ooo/gerer_modeles_ooo.php';
+		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+		{
+			$nouveauItem->titre="Gestion des modèles OOo" ;
+			$nouveauItem->expli="Permet de gérer les modèles OOo associés au module Discipline." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
+		unset($nouveauItem);
+	}
 }
 //fin de la table configuration
 
@@ -555,7 +575,7 @@ echo "</tr>\n";
   $menuTitre[$a]->icone['chemin']='../images/icons/saisie.png';
   $menuTitre[$a]->icone['titre']='';
   $menuTitre[$a]->icone['alt']="";
-  $menuTitre[$a]->texte=' Signaler ou saisir un incident';
+  $menuTitre[$a]->texte=' Signaler ou saisir un '.$mod_disc_terme_incident;
   $menuTitre[$a]->indexMenu=$a;
 	
 /* ===== Item du menu ===== */
@@ -571,8 +591,8 @@ echo "</tr>\n";
 	$nouveauItem->chemin='/mod_discipline/saisie_incident.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Signaler/saisir un incident" ;
-		$nouveauItem->expli="Signaler et décrire (<em>nature, date, horaire, lieu,...</em>) un incident.<br />Indiquer les mesures prises ou demandées" ;
+		$nouveauItem->titre="Signaler/saisir un ".$mod_disc_terme_incident ;
+		$nouveauItem->expli="Signaler et décrire (<em>nature, date, horaire, lieu,...</em>) un ".$mod_disc_terme_incident.".<br />Indiquer les mesures prises ou demandées" ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -607,8 +627,8 @@ if(($_SESSION['statut']=='administrateur')||
 	  $nouveauItem->chemin='/mod_discipline/incidents_sans_protagonistes.php';
 	  if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	  {
-		  $nouveauItem->titre="Incidents sans protagonistes" ;
-		  $nouveauItem->expli="Liste des incidents signalés sans protagonistes." ;
+		  $nouveauItem->titre=ucfirst($mod_disc_terme_incident)."s sans protagonistes" ;
+		  $nouveauItem->expli="Liste des ".$mod_disc_terme_incident."s signalés sans protagonistes." ;
 		  $nouveauItem->indexMenu=$a;
 		  $menuPage[]=$nouveauItem;
 	  }
@@ -631,12 +651,12 @@ if($nb_incidents_incomplets>0) {
 		$nouveauItem->chemin="/mod_discipline/traiter_incident.php?declarant_incident=".$_SESSION['login']."&amp;nature_incident=" ;
 		$nouveauItem->titre="Incidents incomplets" ;
 		if($nb_incidents_incomplets==1) {
-			$aff_incident = "un incident";
+			$aff_incident = "un ".$mod_disc_terme_incident;
 		}
 		else {
-			$aff_incident = $nb_incidents_incomplets." incidents";
+			$aff_incident = $nb_incidents_incomplets." ".$mod_disc_terme_incident."s";
 		}
-		$nouveauItem->expli="Vous avez signalé ".$aff_incident." sans préciser la nature de l'incident.<br />Pour faciliter la gestion des incidents, il faudrait compléter." ;
+		$nouveauItem->expli="Vous avez signalé ".$aff_incident." sans préciser la nature de l'".$mod_disc_terme_incident.".<br />Pour faciliter la gestion des ".$mod_disc_terme_incident."s, il faudrait compléter." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	  }
@@ -682,7 +702,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
   $menuTitre[$a]->icone['chemin']='../images/icons/saisie.png';
   $menuTitre[$a]->icone['titre']='';
   $menuTitre[$a]->icone['alt']="";
-  $menuTitre[$a]->texte='Traiter un incident';
+  $menuTitre[$a]->texte='Traiter un '.$mod_disc_terme_incident;
   $menuTitre[$a]->indexMenu=$a;
 	
 /* ===== Item du menu ===== */
@@ -709,8 +729,8 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 		
 	$ajout_titre= "";
 	if ($temoin) $ajout_titre= "(<em>avec protagonistes</em>)";
-		  $nouveauItem->titre="Traiter les suites d'un incident ".$ajout_titre;
-		  $nouveauItem->expli="Traiter les suites d'un incident : définir une punition ou une sanction" ;
+		  $nouveauItem->titre="Traiter les suites d'un ".$mod_disc_terme_incident." ".$ajout_titre;
+		  $nouveauItem->expli="Traiter les suites d'un ".$mod_disc_terme_incident." : définir une punition ou une ".$mod_disc_terme_sanction ;
 		  $nouveauItem->indexMenu=$a;
 		  $menuPage[]=$nouveauItem;
 	  }
@@ -734,7 +754,7 @@ echo "</tr>\n";
   $menuTitre[$a]->icone['chemin']='../images/icons/chercher.png';
   $menuTitre[$a]->icone['titre']='';
   $menuTitre[$a]->icone['alt']="";
-  $menuTitre[$a]->texte='Consulter les incidents';
+  $menuTitre[$a]->texte='Consulter les '.$mod_disc_terme_incident.'s';
   $menuTitre[$a]->indexMenu=$a;
 
 /* ===== Item du menu ===== */
@@ -751,8 +771,8 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	$nouveauItem->chemin='/mod_discipline/liste_sanctions_jour.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Liste des sanctions du jour" ;
-		$nouveauItem->expli="Visualiser la liste des sanctions du jour (<em>Exclusion, retenue,...</em>)" ;
+		$nouveauItem->titre="Liste des ".$mod_disc_terme_sanction."s du jour" ;
+		$nouveauItem->expli="Visualiser la liste des ".$mod_disc_terme_sanction."s du jour (<em>Exclusion, retenue,...</em>)" ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -765,7 +785,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Extraction ODS" ;
-		$nouveauItem->expli="Extraction ODS des incidents et de leurs suites." ;
+		$nouveauItem->expli="Extraction ODS des ".$mod_disc_terme_incident."s et de leurs suites." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -797,7 +817,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Effectuer des recherches/statistiques diverses" ;
-		$nouveauItem->expli="Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<em>en précisant ou non le rôle dans l'incident</em>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,..." ;
+		$nouveauItem->expli="Pouvoir lister les ".$mod_disc_terme_incident."s ayant eu tel élève pour protagoniste (<em>en précisant ou non le rôle dans l'".$mod_disc_terme_incident."</em>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,..." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -827,8 +847,8 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 	  $nouveauItem->chemin='/mod_discipline/traiter_incident.php';
 	  if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	  {
-		  $nouveauItem->titre="Consulter les suites des incidents" ;
-		  $nouveauItem->expli="Visualiser la liste des incidents déclarés et leurs traitements." ;
+		  $nouveauItem->titre="Consulter les suites des ".$mod_disc_terme_incident."s" ;
+		  $nouveauItem->expli="Visualiser la liste des ".$mod_disc_terme_incident."s déclarés et leurs traitements." ;
 		  $nouveauItem->indexMenu=$a;
 		  $menuPage[]=$nouveauItem;
 	  }
@@ -880,8 +900,8 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 		  $nouveauItem->chemin='/mod_discipline/traiter_incident.php';
 		  if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 		  {
-			  $nouveauItem->titre="Consulter les suites des incidents" ;
-			  $nouveauItem->expli="Visualiser la liste des incidents déclarés et leurs traitements." ;
+			  $nouveauItem->titre="Consulter les suites des ".$mod_disc_terme_incident."s" ;
+			  $nouveauItem->expli="Visualiser la liste des ".$mod_disc_terme_incident."s déclarés et leurs traitements." ;
 			  $nouveauItem->indexMenu=$a;
 			  $menuPage[]=$nouveauItem;
 		  }
@@ -895,8 +915,8 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 			echo "</tr>\n";
 		   */
 			$nouveauItem->chemin='/mod_discipline/index.php';
-			$nouveauItem->titre="Consulter les suites des incidents" ;
-			$nouveauItem->expli="Aucun incident (<em>avec protagoniste</em>) vous concernant n'est encore déclaré." ;
+			$nouveauItem->titre="Consulter les suites des ".$mod_disc_terme_incident."s" ;
+			$nouveauItem->expli="Aucun ".$mod_disc_terme_incident." (<em>avec protagoniste</em>) vous concernant n'est encore déclaré." ;
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 

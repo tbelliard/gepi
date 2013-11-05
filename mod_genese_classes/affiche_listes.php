@@ -1159,12 +1159,41 @@ else {
 	echo "<input type='hidden' name='profil_courant' id='profil_courant' value='-1' />\n";
 
 	// Colorisation
+	/*
+		echo "<select name='colorisation' id='colorisation' onchange=\"lance_colorisation();document.getElementById('colorisation_chgt_classe').value=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value\">
+	*/
+	$colorisation_courante="classe_fut";
+	$classe_fut_checked_ou_pas="";
+	$lv1_checked_ou_pas="";
+	$lv2_checked_ou_pas="";
+	$profil_checked_ou_pas="";
+	$aucune_checked_ou_pas="";
+	if((isset($_POST['colorisation_chgt_classe']))&&($_POST['colorisation_chgt_classe']!="")) {
+		$colorisation_courante=$_POST['colorisation_chgt_classe'];
+
+		if($colorisation_courante=='classe_fut') {
+			$classe_fut_checked_ou_pas=" selected";
+		}
+		elseif($colorisation_courante=='lv1') {
+			$lv1_checked_ou_pas=" selected";
+		}
+		elseif($colorisation_courante=='lv2') {
+			$lv2_checked_ou_pas=" selected";
+		}
+		elseif($colorisation_courante=='profil') {
+			$profil_checked_ou_pas=" selected";
+		}
+		elseif($colorisation_courante=='aucune') {
+			$aucune_fut_checked_ou_pas=" selected";
+		}
+	}
 	echo "<p>Colorisation&nbsp;: ";
-	echo "<select name='colorisation' onchange='lance_colorisation()'>
-	<option value='classe_fut' selected>Classe future</option>
-	<option value='lv1'>LV1</option>
-	<option value='lv2'>LV2</option>
-	<option value='profil'>Profil</option>
+	echo "<select name='colorisation' id='colorisation' onchange=\"lance_colorisation();update_champs_colorisation_chgt_classe();\">
+	<option value='classe_fut'$classe_fut_checked_ou_pas>Classe future</option>
+	<option value='lv1'$lv1_checked_ou_pas>LV1</option>
+	<option value='lv2'$lv2_checked_ou_pas>LV2</option>
+	<option value='profil'$profil_checked_ou_pas>Profil</option>
+	<option value='aucune'$aucune_checked_ou_pas>Aucune</option>
 	</select>\n";
 	echo "</p>\n";
 
@@ -1720,6 +1749,7 @@ else {
 						$texte_chgt_classe.="<input type='hidden' name='chgt_classe' value='y' >\n";
 						$texte_chgt_classe.="<input type='hidden' name='projet' value='$projet' >\n";
 						$texte_chgt_classe.="<input type='hidden' name='id_aff' value='$id_aff' >\n";
+						$texte_chgt_classe.="<input type='hidden' name='colorisation_chgt_classe' id='colorisation_chgt_classe_$cpt' value='$colorisation_courante' >\n";
 						$texte_chgt_classe.="<input type='hidden' name='afficher_listes' value='y' >\n";
 						$texte_chgt_classe.="<input type='submit' value='Valider' />\n";
 						$texte_chgt_classe.="</div>\n";
@@ -1987,32 +2017,37 @@ echo "
 
 		for(i=0;i<$cpt;i++) {
 			if(mode!='profil') {
-				if(document.getElementById(mode+'_'+i)) {
-					for(k=0;k<n;k++) {
-						if(mode=='classe_fut') {
-							if(document.getElementById(mode+'_'+i).value==tab_classes_fut[k]) {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
+				if(mode!='aucune') {
+					if(document.getElementById(mode+'_'+i)) {
+						for(k=0;k<n;k++) {
+							if(mode=='classe_fut') {
+								if(document.getElementById(mode+'_'+i).value==tab_classes_fut[k]) {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_classe_fut[k];
+								}
 							}
-						}
 	
-						if(mode=='lv1') {
-							if(document.getElementById(mode+'_'+i).value==tab_lv1[k]) {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
+							if(mode=='lv1') {
+								if(document.getElementById(mode+'_'+i).value==tab_lv1[k]) {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv1[k];
+								}
 							}
-						}
 	
-						if(mode=='lv2') {
-							if(document.getElementById(mode+'_'+i).value==tab_lv2[k]) {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
+							if(mode=='lv2') {
+								if(document.getElementById(mode+'_'+i).value==tab_lv2[k]) {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv2[k];
+								}
 							}
-						}
 	
-						if(mode=='lv3') {
-							if(document.getElementById(mode+'_'+i).value==tab_lv3[k]) {
-								document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+							if(mode=='lv3') {
+								if(document.getElementById(mode+'_'+i).value==tab_lv3[k]) {
+									document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_lv3[k];
+								}
 							}
 						}
 					}
+				}
+				else {
+					document.getElementById('tr_eleve_'+i).style.backgroundColor='white';
 				}
 			}
 			else {
@@ -2045,9 +2080,22 @@ echo "
 		if(cat=='profil') {
 			colorise(cat,".count($tab_profil).");
 		}
+		if(cat=='aucune') {
+			colorise(cat,0);
+		}
 	}
 
-	</script>\n";
+	function update_champs_colorisation_chgt_classe() {
+		colorisation_courante=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value;
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('colorisation_chgt_classe_'+i)){
+				document.getElementById('colorisation_chgt_classe_'+i).value=colorisation_courante;
+			}
+		}
+	}
+
+	//document.getElementById('colorisation_chgt_classe').value='$colorisation_courante';
+</script>\n";
 
 	// A METTRE DANS UNE INFOBULLE?
 	echo "<p style='bold'>Récapitulatif des effectifs&nbsp;:</p>\n";

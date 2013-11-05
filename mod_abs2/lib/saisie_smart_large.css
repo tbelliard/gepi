@@ -103,11 +103,14 @@ thead td .td_nom_creneau {
 	text-align: center;
 }
 
-	
 .policeRouge {
 	display: none;
 }
-	
+
+.policeJaune {
+	display: none;
+}
+
 .policeBlack {
 	display: none;
 }	

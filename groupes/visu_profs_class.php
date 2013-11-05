@@ -53,11 +53,219 @@ else {
 	$ajout_form="<input type='hidden' name='no_header' value='y' />\n";
 
 }
+
+$id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
+$export=isset($_GET['export']) ? $_GET["export"] : (isset($_POST['export']) ? $_POST["export"] : NULL);
+
+// Remplissage d'un tableau pour la classe choisie
+if((isset($id_classe))&&(is_numeric($id_classe))) {
+	$acces_classe="y";
+
+	if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf")!="yes")){
+		$test_prof_classe = sql_count(sql_query("SELECT login FROM j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe='$id_classe'"));
+		if($test_prof_classe==0) {
+			$acces_classe="n";
+		}
+	}
+	// On vérifie les droits donnés par l'administrateur
+	if((getSettingValue("GepiAccesVisuToutesEquipCpe") == "yes") AND $_SESSION['statut']=='cpe'){
+		echo '<p style="font-size: 0.7em; color: green;">L\'administrateur vous a donné l\'accès à toutes les classes.</p>';
+	}elseif($_SESSION['statut']=='cpe'){
+		$test_cpe_classe = sql_count(sql_query("SELECT e_login FROM j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe='$id_classe'"));
+		if($test_cpe_classe==0){
+			$acces_classe="n";
+		}
+	}
+
+	if($acces_classe=="y") {
+		$classe=get_classe($id_classe);
+
+		include("../lib/periodes.inc.php");
+
+		$tab_enseignements=array();
+		$tab_mail=array();
+		$cpt=0;
+
+		// Liste des CPE:
+		$sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY u.nom, u.prenom, jec.cpe_login";
+		$result_cpe=mysql_query($sql);
+		if(mysql_num_rows($result_cpe)>0){
+			$tab_enseignements[$cpt]['id_groupe']="VIE_SCOLAIRE";
+			$tab_enseignements[$cpt]['grp_name']="VIE SCOLAIRE";
+			$tab_enseignements[$cpt]['grp_description']="VIE SCOLAIRE";
+
+			for($loop=0;$loop<count($nom_periode);$loop++) {
+				$sql="SELECT DISTINCT nom,prenom FROM eleves e,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jec.e_login=e.login AND jecl.id_classe='$id_classe' AND jecl.periode='".($loop+1)."';";
+				$result_eleve=mysql_query($sql);
+				$tab_enseignements[$cpt]['nb_eleves'][$loop+1]=mysql_num_rows($result_eleve);
+			}
+
+			$cpt2=0;
+			while($lig_cpe=mysql_fetch_object($result_cpe)) {
+
+				$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof']=my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2');
+				if($lig_cpe->email!=""){
+					$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof_mailto']="<a href='mailto:$lig_cpe->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."' title=\"Envoyer un mail\">".my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2')."</a>";
+					$tab_enseignements[$cpt]['prof'][$cpt2]['mail']=$lig_cpe->email;
+					$tabmail[]=$lig_cpe->email;
+				}
+
+				for($loop=0;$loop<count($nom_periode);$loop++) {
+					$sql="SELECT DISTINCT nom,prenom FROM eleves e,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jec.e_login=e.login AND jecl.id_classe='$id_classe' AND jec.cpe_login='$lig_cpe->cpe_login' AND jecl.periode='".($loop+1)."';";
+					$result_eleve=mysql_query($sql);
+					$tab_enseignements[$cpt]['prof'][$cpt2]['nb_eleves'][$loop+1]=mysql_num_rows($result_eleve);
+				}
+
+				$cpt2++;
+			}
+			$cpt++;
+		}
+
+		// Liste des enseignements et professeurs:
+		$sql="SELECT m.nom_complet,jgm.id_groupe, g.name, g.description FROM j_groupes_classes jgc, j_groupes_matieres jgm, matieres m, groupes g WHERE jgc.id_groupe=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY jgc.priorite, m.matiere";
+		//echo "$sql<br />";
+		$result_grp=mysql_query($sql);
+		while($lig_grp=mysql_fetch_object($result_grp)){
+			$tab_enseignements[$cpt]['id_groupe']=$lig_grp->id_groupe;
+			$tab_enseignements[$cpt]['grp_name']=$lig_grp->name;
+			$tab_enseignements[$cpt]['matiere_nom_complet']=$lig_grp->nom_complet;
+			$tab_enseignements[$cpt]['grp_description']=$lig_grp->description;
+
+			// Le groupe est-il composé uniquement d'élèves de la classe?
+			$sql="SELECT * FROM j_groupes_classes jgc WHERE jgc.id_groupe='$lig_grp->id_groupe'";
+			$res_nb_class_grp=mysql_query($sql);
+			$nb_class_grp=mysql_num_rows($res_nb_class_grp);
+			$tab_enseignements[$cpt]['nb_class_grp']=$nb_class_grp;
+
+			for($loop=0;$loop<count($nom_periode);$loop++) {
+				// Récupération des effectifs du groupe...
+				// ... parmi les membres de la classe
+				$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, 
+																	eleves e, 
+																	j_eleves_classes jec, 
+																	j_groupes_classes jgc, 
+																	classes c 
+																WHERE jeg.login=e.login AND 
+																	jeg.id_groupe='$lig_grp->id_groupe' AND 
+																	jgc.id_classe=c.id AND 
+																	jgc.id_groupe=jeg.id_groupe AND 
+																	jec.id_classe=c.id AND 
+																	jec.login=e.login AND 
+																	c.id='$id_classe' AND 
+																	jeg.periode=jec.periode AND 
+																	jec.periode='".($loop+1)."' 
+																ORDER BY e.nom,e.prenom";
+				$res_eleves=mysql_query($sql);
+				$nb_eleves=mysql_num_rows($res_eleves);
+				$tab_enseignements[$cpt]['nb_eleves'][$loop+1]=$nb_eleves;
+
+				if($nb_class_grp>1){
+					// Effectif...
+					// ... pour tout le groupe
+					$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, 
+																		eleves e, 
+																		j_eleves_classes jec, 
+																		j_groupes_classes jgc, 
+																		classes c 
+																	WHERE jeg.login=e.login AND 
+																		jeg.id_groupe='$lig_grp->id_groupe' AND 
+																		jgc.id_classe=c.id AND 
+																		jgc.id_groupe=jeg.id_groupe AND 
+																		jec.id_classe=c.id AND 
+																		jeg.periode=jec.periode AND 
+																		jec.periode='".($loop+1)."' AND 
+																		jec.login=e.login 
+																	ORDER BY e.nom,e.prenom";
+					$res_tous_eleves_grp=mysql_query($sql);
+					$nb_tous_eleves_grp=mysql_num_rows($res_tous_eleves_grp);
+
+					$tab_enseignements[$cpt]['nb_tous_eleves_grp'][$loop+1]=$nb_tous_eleves_grp;
+				}
+			}
+
+
+			// Professeurs
+			$sql="SELECT jgp.login,u.nom,u.prenom,u.email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$lig_grp->id_groupe' AND u.login=jgp.login";
+			//echo "$sql<br />";
+			$result_prof=mysql_query($sql);
+			$cpt2=0;
+			while($lig_prof=mysql_fetch_object($result_prof)){
+
+				$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof']=my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2');
+				if($lig_prof->email!=""){
+					$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof_mailto']="<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."' title=\"Envoyer un mail\">".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</a>";
+					$tab_enseignements[$cpt]['prof'][$cpt2]['mail']=$lig_prof->email;
+					$tabmail[]=$lig_prof->email;
+				}
+
+				// Le prof est-il PP d'au moins un élève de la classe?
+				$tab_enseignements[$cpt]['prof'][$cpt2]['is_pp']="n";
+				$sql="SELECT * FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$lig_prof->login'";
+				//echo " (<i>$sql</i>)\n";
+				$res_pp=mysql_query($sql);
+				if(mysql_num_rows($res_pp)>0){
+					$tab_enseignements[$cpt]['prof'][$cpt2]['is_pp']="y";
+				}
+				$cpt2++;
+			}
+			$cpt++;
+		}
+	}
+}
+
+// Export CSV: on utilise le tableau $tab_enseignements
+if((isset($id_classe))&&(is_numeric($id_classe))&&(isset($export))&&($export=='csv')&&($acces_classe=="y")) {
+	$msg="";
+
+	$csv="Identifiant;";
+	$csv.="Enseignement;";
+	$csv.="Matière;";
+	for($loop=0;$loop<count($nom_periode);$loop++) {
+		$csv.="Eff.".$nom_periode[$loop+1].";";
+	}
+	$csv.="Enseignants;Mails;\r\n";
+
+	for($i=0;$i<count($tab_enseignements);$i++) {
+		$csv.=$tab_enseignements[$i]['id_groupe'].";";
+		$csv.=$tab_enseignements[$i]['grp_name'].";";
+		if(isset($tab_enseignements[$i]['matiere_nom_complet'])) {
+			$csv.=$tab_enseignements[$i]['matiere_nom_complet'].";";
+		}
+		else {
+			$csv.=";";
+		}
+		for($loop=0;$loop<count($nom_periode);$loop++) {
+			$csv.=$tab_enseignements[$i]['nb_eleves'][$loop+1].";";
+		}
+
+		for($loop=0;$loop<count($tab_enseignements[$i]['prof']);$loop++) {
+			if($loop>0) {$csv.=", ";}
+			$csv.=$tab_enseignements[$i]['prof'][$loop]['designation_prof'];
+		}
+		$csv.=";";
+
+		$nb_mail=0;
+		for($loop=0;$loop<count($tab_enseignements[$i]['prof']);$loop++) {
+			if($nb_mail>0) {$csv.=", ";}
+			if(isset($tab_enseignements[$i]['prof'][$loop]['mail'])) {
+				$csv.=$tab_enseignements[$i]['prof'][$loop]['mail'];
+				$nb_mail++;
+			}
+		}
+		$csv.=";\r\n";
+	}
+
+	$nom_fic=remplace_accents("Equipe_pedagogique_".$classe['classe'], "all").".csv";
+	send_file_download_headers('text/x-csv',$nom_fic);
+	echo echo_csv_encoded($csv);
+	die();
+
+}
+
 //**************** EN-TETE **************************************
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
-$id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
 if(isset($id_classe)){
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
@@ -174,7 +382,7 @@ if(isset($id_classe)){
 			}
 		}
 
-		echo "<h3>Equipe pédagogique de la classe de ".$classe["classe"]."</h3>\n";
+		echo "<h3>Equipe pédagogique de la classe de ".$classe["classe"]." <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;export=csv' class='noprint' title=\"Exporter l'équipe au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></h3>\n";
 
 		echo "<script type='text/javascript' language='JavaScript'>
 	var fen;
@@ -182,15 +390,141 @@ if(isset($id_classe)){
 		eval(\"fen=window.open('popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
 		setTimeout('fen.focus()',500);
 	}
+
+	function ouvre_popup2(id_groupe,id_classe, periode_num){
+		eval(\"fen=window.open('popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"&periode_num=\"+periode_num+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
+		setTimeout('fen.focus()',500);
+	}
 </script>\n";
-
-
-		unset($tabmail);
-		$tabmail=array();
 
 		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe'";
 		$res_eleves_classe=mysql_query($sql);
 		$nb_eleves_classe=mysql_num_rows($res_eleves_classe);
+
+		if(count($tab_enseignements)==0) {
+			echo "<p style='color:red'>Aucun enseignement.</p>\n";
+			echo "<p><br /></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		$acces_edit_group=acces("/groupes/edit_group.php", $_SESSION['statut']);
+
+		//echo "<div style='float:right; width:45%'>";
+		echo "<table class='boireaus boireaus_alt boireaus_white_hover' border='1' summary='Equipe'>
+	<tr>
+		<th rowspan='2'>Enseignement</th>
+		<th colspan='".count($nom_periode)."'>Effectifs</th>
+		<th rowspan='2'>Personnel</th>
+	</tr>
+	<tr>";
+		for($loop=0;$loop<count($nom_periode);$loop++) {
+			echo "
+		<th>".$nom_periode[$loop+1]."</th>";
+		}
+		echo "
+	</tr>";
+
+		for($i=0;$i<count($tab_enseignements);$i++) {
+			// Enseignements
+			echo "
+	<tr class='white_hover' onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor=''\">
+	<!--tr-->
+		<td>";
+			// AJOUTER DES LIENS VERS L'ENSEIGNEMENT SI ON A LE DROIT
+			if(($acces_edit_group)&&($tab_enseignements[$i]['id_groupe']!="")&&(is_numeric($tab_enseignements[$i]['id_groupe']))) {
+				echo "<a href='edit_group.php?id_groupe=".$tab_enseignements[$i]['id_groupe']."' title=\"Editer cet enseignement.";
+				if(isset($tab_enseignements[$i]['matiere_nom_complet'])) {
+					echo "\nMatière : ".$tab_enseignements[$i]['matiere_nom_complet']."\">".htmlspecialchars($tab_enseignements[$i]['grp_name'])."<br /><span style='font-size: x-small;'>".htmlspecialchars($tab_enseignements[$i]['grp_description'])."</a>\n";
+				}
+				else {
+					echo "\">";
+					echo htmlspecialchars($tab_enseignements[$i]['grp_name']);
+					echo "</a>";
+				}
+			}
+			else {
+				if(isset($tab_enseignements[$i]['matiere_nom_complet'])) {
+					echo "<span title=\"Matière : ".$tab_enseignements[$i]['matiere_nom_complet']."\">".htmlspecialchars($tab_enseignements[$i]['grp_name'])."<br /><span style='font-size: x-small;'>".htmlspecialchars($tab_enseignements[$i]['grp_description'])."</span></span>\n";
+				}
+				else {
+					echo htmlspecialchars($tab_enseignements[$i]['grp_name']);
+				}
+			}
+
+			echo "</td>";
+
+			// Effectifs
+			for($loop=0;$loop<count($nom_periode);$loop++) {
+				echo "
+		<td>";
+
+				echo "<a href='javascript:ouvre_popup2(\"".$tab_enseignements[$i]['id_groupe']."\",\"$id_classe\", \"".($loop+1)."\");' style='font-weight:bold' title=\"";
+				if($tab_enseignements[$i]['nb_class_grp']>1) {
+					echo "Dans ce groupe de ".$tab_enseignements[$i]['nb_tous_eleves_grp'][$loop+1]." élèves, ".$tab_enseignements[$i]['nb_eleves'][$loop+1]." élèves sont en ".$classe['classe'].".\n";
+				}
+				echo "Afficher un listing de l'enseignement\"> ".$tab_enseignements[$i]['nb_eleves'][$loop+1]." ";
+				//if ($tab_enseignements[$i]['nb_eleves'][$loop+1] > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
+				echo " </a>";
+
+				if((isset($tab_enseignements[$i]['nb_class_grp']))&&($tab_enseignements[$i]['nb_class_grp']>1)) {
+					echo "<span style='font-size:x-small;'> sur <a href='javascript:ouvre_popup(\"".$tab_enseignements[$i]['id_groupe']."\",\"\");' title='Groupe de ".$tab_enseignements[$i]['nb_tous_eleves_grp'][$loop+1]." élèves'>".$tab_enseignements[$i]['nb_tous_eleves_grp'][$loop+1]."</a></span>";
+				}
+
+				echo "</td>";
+			}
+
+			// Professeurs
+			echo "
+		<td>";
+
+			if(isset($tab_enseignements[$i]['prof'])) {
+				for($loop=0;$loop<count($tab_enseignements[$i]['prof']);$loop++) {
+					if($loop>0) {
+						echo "
+			<br />";
+					}
+
+					if(isset($tab_enseignements[$i]['prof'][$loop]['designation_prof_mailto'])) {
+						echo $tab_enseignements[$i]['prof'][$loop]['designation_prof_mailto'];
+					}
+					else {
+						echo $tab_enseignements[$i]['prof'][$loop]['designation_prof'];
+					}
+
+					if((isset($tab_enseignements[$i]['prof'][$loop]['is_pp']))&&($tab_enseignements[$i]['prof'][$loop]['is_pp']=="y")) {
+						echo " (<i>".$gepi_prof_suivi."</i>)";
+					}
+				}
+			}
+
+			echo "</td>
+	</tr>";
+		}
+		echo "
+</table>\n";
+
+		$chaine_mail="";
+		if(count($tabmail)>0){
+			unset($tabmail2);
+			$tabmail2=array();
+			//$tabmail=array_unique($tabmail);
+			//sort($tabmail);
+			$chaine_mail=$tabmail[0];
+			for ($i=1;$i<count($tabmail);$i++) {
+				if((isset($tabmail[$i]))&&(!in_array($tabmail[$i],$tabmail2))) {
+					$chaine_mail.=",".$tabmail[$i];
+					$tabmail2[]=$tabmail[$i];
+				}
+			}
+			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI] classe ".$classe['classe'])."'>mail à tous les membres de l'équipe</a>.</p>\n";
+		}
+
+		//echo "</div>";
+
+		/*
+		unset($tabmail);
+		$tabmail=array();
 
 		echo "<table class='boireaus' border='1' summary='Equipe'>\n";
 		$alt=1;
@@ -224,7 +558,7 @@ if(isset($id_classe)){
 		}
 		//echo "</table>\n";
 
-		echo "<tr><td colspan='3'>&nbsp;</td></tr>\n";
+		echo "<tr><td colspan='3' class='infobulle_corps'>&nbsp;</td></tr>\n";
 		//echo "<br />\n";
 
 		//echo "<table border='0'>\n";
@@ -271,14 +605,6 @@ if(isset($id_classe)){
 			echo "</a>\n";
 
 			if($nb_class_grp>1){
-				/*
-				// Effectif...
-				// ... pour tout le groupe
-				$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$lig_grp->id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login ORDER BY e.nom,e.prenom";
-				$res_tous_eleves_grp=mysql_query($sql);
-				$nb_tous_eleves_grp=mysql_num_rows($res_tous_eleves_grp);
-				*/
-
 				echo " sur <a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"\");' title='Groupe de $nb_tous_eleves_grp élèves'>".$nb_tous_eleves_grp." ";
 				if ($nb_tous_eleves_grp > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
 				echo "</a>\n";
@@ -330,6 +656,7 @@ if(isset($id_classe)){
 			}
 			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI] classe ".$classe['classe'])."'>mail à tous les membres de l'équipe</a>.</p>\n";
 		}
+		*/
 	}
 }
 else {

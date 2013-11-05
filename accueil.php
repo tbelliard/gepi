@@ -265,7 +265,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
 
     // * affichage du nombre de connecté *
     // compte le nombre d'enregistrement dans la table
-	$sql = "SELECT u.login, l.END FROM log l, utilisateurs u WHERE u.login=l.login AND l.END > now() ORDER BY u.statut, u.nom, u.prenom;";
+	$sql = "SELECT u.login, l.END, l.START, l.REMOTE_ADDR FROM log l, utilisateurs u WHERE u.login=l.login AND l.END > now() ORDER BY u.statut, u.nom, u.prenom;";
 	$res = sql_query($sql);
 	$afficheAccueil->nb_connect = sql_count($res);
 	if(mysql_num_rows($res)>1) {
@@ -276,7 +276,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
 			//echo "$sql<br />";
 			$res_pers=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-			  $afficheAccueil->nom_connecte[]=array("style"=>'rouge',"courriel"=>"","texte"=>$lig_log->LOGIN,"statut"=>"???","end"=>$lig_log->END);
+			  $afficheAccueil->nom_connecte[]=array("style"=>'rouge',"courriel"=>"","texte"=>$lig_log->LOGIN,"statut"=>"???","end"=>$lig_log->END,"start"=>$lig_log->START,"remote_addr"=>$lig_log->REMOTE_ADDR);
 			}else{
 				$lig_pers=mysql_fetch_object($res_pers);
 				$alt=$alt*(-1);
@@ -285,14 +285,14 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
 					$res_resp=mysql_query($sql);
 					if(mysql_num_rows($res_resp)!=0) {
 						$lig_resp=mysql_fetch_object($res_resp);
-						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"pers_id"=>$lig_resp->pers_id,"end"=>$lig_log->END);
+						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"pers_id"=>$lig_resp->pers_id,"end"=>$lig_log->END,"start"=>$lig_log->START,"remote_addr"=>$lig_log->REMOTE_ADDR);
 					}
 					else {
-						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"end"=>$lig_log->END);
+						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"end"=>$lig_log->END,"start"=>$lig_log->START,"remote_addr"=>$lig_log->REMOTE_ADDR);
 					}
 				}
 				else {
-					$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"end"=>$lig_log->END);
+					$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"end"=>$lig_log->END,"start"=>$lig_log->START,"remote_addr"=>$lig_log->REMOTE_ADDR);
 				}
 			}
 		}
@@ -377,6 +377,25 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
 		$_SESSION['user_temp_directory']='n';
 	}else{
 		$_SESSION['user_temp_directory']='y';
+	}
+}
+
+// Cas particulier CPE et SCOL:
+if((($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeEditElevesGroupes'))&&(acces('/groupes/edit_eleves.php', 'cpe')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolEditElevesGroupes'))&&(acces('/groupes/edit_eleves.php', 'scolarite')))) {
+
+	$sql="SELECT DISTINCT id_groupe, declarant FROM j_signalement WHERE nature='erreur_affect';";
+	$res_sign=mysql_query($sql);
+	if(mysql_num_rows($res_sign)>0) {
+		$tbs_signalement="<p class='tbs_signalement'>Une ou des erreurs d'affectation d'élèves ont été signalées dans le ou les enseignements suivants&nbsp;:<br />\n";
+		while($lig_sign=mysql_fetch_object($res_sign)) {
+			$tmp_tab_champ=array('classes');
+			$current_group_sign=get_group($lig_sign->id_groupe,$tmp_tab_champ);
+			$current_group_sign['description']=str_replace  ( "&"  , "&amp;"  , $current_group_sign['description'] );
+			$tbs_signalement.="<a href='groupes/edit_eleves.php?id_groupe=".$lig_sign->id_groupe."&amp;id_classe=".$current_group_sign['classes']['list'][0]."'>".$current_group_sign['name']." (<em>".$current_group_sign['description']." ".$current_group_sign['classlist_string']."</em>)</a> signalé par ".affiche_utilisateur($lig_sign->declarant,$current_group_sign['classes']['list'][0])."<br />\n";
+		}
+		$tbs_signalement.="</p>\n";
+		$afficheAccueil->signalement=$tbs_signalement;
 	}
 }
 

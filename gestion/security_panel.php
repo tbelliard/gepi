@@ -95,19 +95,20 @@ if(mysql_num_rows($test_arch)>0) {
 		$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut, count(t.login) AS nb FROM utilisateurs u, tentatives_intrusion t WHERE t.login=u.login GROUP BY u.login ORDER BY u.nom, u.prenom;";
 	}
 	else {
-		$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut, count(t.login) AS nb FROM utilisateurs u, tentatives_intrusion t WHERE t.login=u.login GROUP BY u.login ORDER BY nb, u.nom, u.prenom;";
+		$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut, count(t.login) AS nb FROM utilisateurs u, tentatives_intrusion t WHERE t.login=u.login GROUP BY u.login ORDER BY nb DESC, u.nom, u.prenom;";
 	}
 
 	$res_login_alerte=mysql_query($sql);
 	if(mysql_num_rows($res_login_alerte)>0) {
 		echo " | ";
 
-		echo "<select name='user_login' onchange=\"document.forms['form1'].submit();\">\n";
+		echo "<label for='user_login' class='invisible'>Utilisateur</label>";
+		echo "<select id='user_login' name='user_login' onchange=\"document.forms['form1'].submit();\">\n";
 		echo "<option value=''>---</option>\n";
 		while($lig_login_alerte=mysql_fetch_object($res_login_alerte)) {
 			echo "<option value='$lig_login_alerte->login'";
 			if((isset($user_login))&&($lig_login_alerte->login==$user_login)) {echo " selected='true'";}
-			echo ">$lig_login_alerte->nom $lig_login_alerte->prenom ($lig_login_alerte->nb)</option>\n";
+			echo " title=\"$lig_login_alerte->nom $lig_login_alerte->prenom ($lig_login_alerte->nb) - Compte $lig_login_alerte->statut\">$lig_login_alerte->nom $lig_login_alerte->prenom ($lig_login_alerte->nb)</option>\n";
 		}
 		echo "</select>\n";
 	}
@@ -130,8 +131,8 @@ if(mysql_num_rows($test_arch)>0) {
 	if(mysql_num_rows($res_erreur_mdp)>0) {
 		echo " | ";
 
-		echo "Erreur mot de passe&nbsp;: ";
-		echo "<select name='user_login2' onchange=\"document.forms['form1'].submit();\">\n";
+		echo "<label for='user_login2'>Erreur mot de passe&nbsp;: </label>";
+		echo "<select id='user_login2' name='user_login2' onchange=\"document.forms['form1'].submit();\">\n";
 		echo "<option value=''>---</option>\n";
 		while($lig_erreur_login=mysql_fetch_object($res_erreur_mdp)) {
 			$tab_tmp=explode(':', $lig_erreur_login->description);
@@ -373,6 +374,7 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 
 		echo "</td>\n";
 		echo "</tr>\n";
+		flush();
 	}
 	echo "</table>\n";
 
@@ -456,7 +458,17 @@ while ($row = mysql_fetch_object($req)) {
 	}
 
 	if (!empty($user)) {
-		echo $user->login ." - ".$row->adresse_ip."<br/>\n";
+		if($user->statut=='eleve') {
+			echo "<a href='../eleves/modify_eleve.php?eleve_login=".$user->login."'>".$user->login."</a>";
+		}
+		elseif($user->statut=='responsable') {
+			echo "<a href='../responsables/modify_resp.php?login_resp=".$user->login."'>".$user->login."</a>";
+		}
+		else {
+			echo "<a href='../utilisateurs/modify_user.php?user_login=".$user->login."'>".$user->login."</a>";
+		}
+
+		echo " - ".$row->adresse_ip."<br/>\n";
 		echo "<b>".$user->prenom . " " . $user->nom."</b>";
 		echo "<br/>".$user->statut;
 		if ($user->etat == "actif") {
@@ -512,11 +524,12 @@ while ($row = mysql_fetch_object($req)) {
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
+	flush();
 }
 echo "</table>\n";
 
 
-echo "<a name='utilisateurs_en_observation'></a>\n";
+echo "<a id='utilisateurs_en_observation'></a>\n";
 if(mysql_num_rows($req_observation)==0) {
 	echo "<p>Aucun utilisateur n'est en observation.</p>\n";
 }
@@ -582,12 +595,13 @@ else {
 			echo "</p>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
+		flush();
 	}
 	echo "</table>\n";
 }
 
 
-echo "<a name='utilisateurs_desactives'></a>\n";
+echo "<a id='utilisateurs_desactives'></a>\n";
 if(mysql_num_rows($req_desactive)==0) {
 	echo "<p>Aucun utilisateur avec alerte dans cette page n'est désactivé.</p>\n";
 }
@@ -653,6 +667,7 @@ else {
 			echo "</p>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
+		flush();
 	}
 	echo "</table>\n";
 	echo "<p><br /></p>\n";

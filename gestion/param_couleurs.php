@@ -686,6 +686,10 @@ div.conteneur_infobulle_css:hover div.infobulle_css {
    border: 1px solid #$couleur_infobulle_fond_entete;
    border-top: 4px solid #$couleur_infobulle_fond_entete;
 }
+
+.div_conteneur_infobulle {
+	box-shadow: 4px 2px 6px #$couleur_infobulle_fond_entete;
+}
 /*=====================================================*/
 /* Style des DIV d'aide,... accessibles par F2,... */
 div.info_abs {
@@ -698,6 +702,18 @@ div.info_abs {
 	background-color: #$couleur_infobulle_fond_corps;
 }
 /*=====================================================*/
+
+#menu_barre ul ul {
+	box-shadow: 4px 2px 6px #$couleur_infobulle_fond_entete;
+	border-right: #$couleur_infobulle_fond_corps 1px solid; 
+	border-top: #$couleur_infobulle_fond_corps 1px solid;
+	border-left: #$couleur_infobulle_fond_corps 1px solid; 
+	border-bottom: #$couleur_infobulle_fond_corps 1px solid; 
+}
+
+#menu_barre li.plus {
+	border-bottom: #$couleur_infobulle_fond_entete 1px solid; 
+}
 ");
 				fclose($fich);
 			}

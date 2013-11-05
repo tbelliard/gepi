@@ -152,7 +152,7 @@ if ($barre_plugin!="") {
 				$menus .= '            <ul class="niveau3">'."\n";
 				if(getSettingValue('GepiScolImprBulSettings')=='yes') {
 				if(getSettingValue('type_bulletin_par_defaut')=="pdf") {
-					$menus .= '                <li><a href="'.$gepiPath.'/bulletin/param_bull_pdf.php" '.insert_confirm_abandon().'>Param. impression bull</a></li>'."\n";
+					$menus .= '                <li><a href="'.$gepiPath.'/bulletin/param_bull_pdf.php" '.insert_confirm_abandon().'>Param. impr. bull</a></li>'."\n";
 				}
 				else {
 					$menus .= '                <li><a href="'.$gepiPath.'/bulletin/param_bull.php" '.insert_confirm_abandon().'>Param. impression bull</a></li>'."\n";
@@ -165,8 +165,8 @@ if ($barre_plugin!="") {
 	
 				$menus .= '     <li class="plus">Moyennes'."\n";
 				$menus .= '            <ul class="niveau3">'."\n";
-				$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index1.php"'.insert_confirm_abandon().'>Mes moyennes et app.</a></li>'."\n";
-				$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index2.php"'.insert_confirm_abandon().'>Moyennes une classe</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index1.php"'.insert_confirm_abandon().' title="Consulter les moyennes et appréciations d\'un professeur dans un enseignement en particulier.">Mes moy. et app.</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index2.php"'.insert_confirm_abandon().' title="Consulter le tableau des moyennes apparaissant sur les bulletins pour une classe en particulier.">Moy.d\'une classe</a></li>'."\n";
 				$menus .= '            </ul>'."\n";
 				$menus .= '     </li>'."\n";
 	
@@ -193,7 +193,9 @@ if ($barre_plugin!="") {
 			$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Carnets de notes</a>'."\n";
 			$menus .= '   <ul class="niveau2">'."\n";
 			$menus .= '       <li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_bis.php"'.insert_confirm_abandon().'>Relevés de notes</a></li>'."\n";
-			$menus .= '       <li><a href="'.$gepiPath.'/cahier_notes/index2.php"'.insert_confirm_abandon().'>Moyennes des CN</a></li>'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/cahier_notes/index2.php"'.insert_confirm_abandon().' title="Consulter le tableau des moyennes des Carnets de notes pour une classe en particulier.
+Ces moyennes sont des moyennes à un instant T.
+Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,... par les professeurs.">Moyennes des CN</a></li>'."\n";
 			$menus .= '   </ul>'."\n";
 			$menus .= '</li>'."\n";
 			//=======================================================
@@ -225,6 +227,7 @@ if ($barre_plugin!="") {
 		// Gestion
 		$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Gestion</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
+		$menus .= '       <li class="niveau3"><a href="'.$gepiPath.'/eleves/recherche.php"'.insert_confirm_abandon().' title="Effectuer une recherche sur une personne (élève, responsable ou personnel)">Rechercher</a>'."</li>\n";
 		$menus .= '       <li class="plus"><a href="'.$gepiPath.'/eleves/index.php"'.insert_confirm_abandon().'>Elèves</a>'."\n";
 		$menus .= '           <ul class="niveau3">'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/eleves/index.php"'.insert_confirm_abandon().'>Gestion élèves</a></li>'."\n";
@@ -236,7 +239,7 @@ if ($barre_plugin!="") {
 			$menus .= '       <li class="plus"><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscopes</a>'."\n";
 			$menus .= '            <ul class="niveau4">'."\n";
 			for($loop=0;$loop<count($tmp_liste_classes_scol);$loop++) {
-				$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe='.$tmp_liste_classes_scol[$loop]['id'].'&amp;groupe=&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline="'.insert_confirm_abandon().'>'.$tmp_liste_classes_scol[$loop]['classe'].' ('.$tmp_liste_classes_scol[$loop]['nom_complet'].')</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe='.$tmp_liste_classes_scol[$loop]['id'].'&amp;groupe=&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline="'.insert_confirm_abandon().' target="_blank">'.$tmp_liste_classes_scol[$loop]['classe'].' ('.$tmp_liste_classes_scol[$loop]['nom_complet'].')</a></li>'."\n";
 			}
 			$menus .= '            </ul>'."\n";
 			$menus .= '       </li>'."\n";
@@ -251,7 +254,8 @@ if ($barre_plugin!="") {
 		$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès appréciations</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
 		$menus .= '       </li>'."\n";
-		$menus .= '       <li><a href="'.$gepiPath.'/messagerie/index.php"'.insert_confirm_abandon().'>Panneau affichage</a></li>'."\n";
+		$menus .= '       <li><a href="'.$gepiPath.'/messagerie/index.php"'.insert_confirm_abandon().' title="Le Panneau d\'affichage permet de faire apparaître en page d\'accueil des messages destinés à certains utilisateurs ou catégories d\'utilisateurs à compter d\'une date à choisir et pour une durée à choisir également.">Panneau d\'affichage</a></li>'."\n";
+		$menus .= '       <li><a href="'.$gepiPath.'/statistiques/index.php"'.insert_confirm_abandon().'>Statistiques</a></li>'."\n";
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================
@@ -261,14 +265,14 @@ if ($barre_plugin!="") {
 		$menus .= '   <ul class="niveau2">'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Visu. équipes péda</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/groupes/visu_mes_listes.php"'.insert_confirm_abandon().'>Visu. mes élèves</a></li>'."\n";
-		$menus .= '       <li><a href="'.$gepiPath.'/mod_ooo/publipostage_ooo.php"'.insert_confirm_abandon().'>Publipostage OOo</a></li>'."\n";
+		$menus .= '       <li><a href="'.$gepiPath.'/mod_ooo/publipostage_ooo.php"'.insert_confirm_abandon().' title="Publipostage au format OpenOffice.org d\'après des données élèves">Publipostage OOo</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Impression PDF listes</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Export CSV listes</a></li>'."\n";
 		if(getSettingValue('active_module_trombinoscopes')=='y') {
 			$menus .= '       <li class="plus"><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscopes</a>'."\n";
 			$menus .= '            <ul class="niveau3">'."\n";
 			for($loop=0;$loop<count($tmp_liste_classes_scol);$loop++) {
-				$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe='.$tmp_liste_classes_scol[$loop]['id'].'&amp;groupe=&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline="'.insert_confirm_abandon().'>'.$tmp_liste_classes_scol[$loop]['classe'].' ('.$tmp_liste_classes_scol[$loop]['nom_complet'].')</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe='.$tmp_liste_classes_scol[$loop]['id'].'&amp;groupe=&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline="'.insert_confirm_abandon().' target="_blank">'.$tmp_liste_classes_scol[$loop]['classe'].' ('.$tmp_liste_classes_scol[$loop]['nom_complet'].')</a></li>'."\n";
 			}
 			$menus .= '            </ul>'."\n";
 			$menus .= '       </li>'."\n";

@@ -1210,6 +1210,7 @@ foreach ($liste_eleves as $eleve_login) {
 			//
 			$eleve_nom = $current_group["eleves"][$k]["users"][$eleve_login]["nom"];
 			$eleve_prenom = $current_group["eleves"][$k]["users"][$eleve_login]["prenom"];
+			$eleve_sexe = $current_group["eleves"][$k]["users"][$eleve_login]["sexe"];
 			$eleve_classe = $current_group["classes"]["classes"][$current_group["eleves"]["all"]["users"][$eleve_login]["classe"]]["classe"];
 			$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$eleve_login]["classe"]]["id"];
 
@@ -1612,7 +1613,15 @@ foreach ($liste_eleves as $eleve_login) {
 			echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-100,20,1000,10,10);\"";
 			echo " onclick=\"afficher_div('photo_$eleve_login','y',-100,20); return false;\" title=\"Afficher la photo de l'élève.\"";
 			echo ">";
-			echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
+			//echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
+			echo "<img src='../mod_trombinoscopes/images/";
+			if($eleve_sexe=="F") {
+				echo "photo_f.png";
+			}
+			else{
+				echo "photo_g.png";
+			}
+			echo "' class='icone20' alt='$eleve_nom $eleve_prenom' />";
 			echo "</a>";
 		}
 		//==========================
@@ -1890,8 +1899,10 @@ echo "<script type='text/javascript'>
 	}
 \n";
 
-if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
-	echo $chaine_test_vocabulaire;
+if(getSettingValue('active_recherche_lapsus')!='n') {
+	if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
+		echo $chaine_test_vocabulaire;
+	}
 }
 
 echo "

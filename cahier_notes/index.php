@@ -281,7 +281,7 @@ if((isset($periode_num))&&($_SESSION['statut']=='professeur')) {
 }
 
 // Recopie de la structure de la periode précédente
-if ((isset($_GET['creer_structure'])) and (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie))) {
+if ((isset($_GET['creer_structure'])) and (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) and (getSettingAOui('GepiPeutCreerBoitesProf'))) {
   check_token();
 
   function recopie_arbo($id_racine, $id_prec,$id_new) {
@@ -560,15 +560,16 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 			if((isset($id_grp_prec))&&($id_grp_prec!=0)) {
 				//onclick=\"return confirm_abandon (this, 'yes', '$themessage')\" 
 				//arrow-left.png
-				echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num' title='Groupe précédent'><img src='../images/icons/back.png' width='16' height='16' alt='Groupe précédent' /></a>\n";
+				echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num' title='Groupe précédent'><img src='../images/icons/back.png' class='icone16' alt='Groupe précédent' /></a>\n";
 			}
+			echo "<label for='id_groupe' class='invisible' >Changer de groupe</label>\n";
 			echo "<select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 			echo $chaine_options_classes;
 			echo "</select>\n";
 			if((isset($id_grp_suiv))&&($id_grp_suiv!=0)) {
 				//onclick=\"return confirm_abandon (this, 'yes', '$themessage')\" 
 				//arrow-right.png
-				echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num' title='Groupe suivant'><img src='../images/icons/forward.png' width='16' height='16' alt='Groupe suivant' /></a>\n";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num' title='Groupe suivant'><img src='../images/icons/forward.png' class='icone16' alt='Groupe suivant' /></a>\n";
 			}
 			echo " | \n";
 		}
@@ -630,17 +631,17 @@ var tab_per_cn=new Array();\n";
 	}
 </script>\n";
 	
-		echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période</span>&nbsp;:";
+		echo "<label for='id_racine' title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période</label>&nbsp;:";
 		if($periode_num>1) {
 			$periode_prec=$periode_num-1;
-			echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_prec' title='Période précédente'><img src='../images/icons/back.png' width='16' height='16' alt='Période précédente' /></a>\n";
+			echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_prec' title='Période précédente'><img src='../images/icons/back.png' class='icone16' alt='Période précédente' /></a>\n";
 		}
 		echo "<select name='id_racine' id='id_racine' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
 		echo $chaine_options_periodes;
 		echo "</select>";
 		if($periode_num<$max_per) {
 			$periode_suiv=$periode_num+1;
-			echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_suiv' title='Période suivante'><img src='../images/icons/forward.png' width='16' height='16' alt='Période suivante' /></a>\n";
+			echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_suiv' title='Période suivante'><img src='../images/icons/forward.png' class='icone16' alt='Période suivante' /></a>\n";
 		}
 		echo " | \n";
 	}
@@ -667,20 +668,24 @@ var tab_per_cn=new Array();\n";
 	}
 
     if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
-        echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
-        if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
-        echo " ".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
+        if(getSettingAOui('GepiPeutCreerBoitesProf')) {
+            echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
+            if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
+            echo " ".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
+        }
 
         echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'> Créer une évaluation </a> | \n";
         if ($periode_num!='1')  {
             $themessage = 'En cliquant sur OK, vous allez créer la même structure de boîtes que celle de la période précédente. Si des boîtes existent déjà, elles ne seront pas supprimées.';
-            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes".add_token_in_url()."' onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a> | \n";
+            if(getSettingAOui('GepiPeutCreerBoitesProf')) {
+                echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes".add_token_in_url()."' onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a> | \n";
+            }
         }
     }
 
 	// Le retour n'est pas parfait... il faudrait aussi periode_num dans chemin_retour
 	// ou alors stocker ici l'info en session pour la période...
-	echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\"> Signaler des erreurs d'affectation</a>";
+	echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
 
 	echo " | ";
 	echo "<a href=\"index_cc.php?id_racine=$id_racine\"> ".ucfirst($nom_cc)."</a>";
@@ -738,7 +743,7 @@ var tab_per_cn=new Array();\n";
 						$info_anomalie.=" - <a href='export_cahier_notes.php?id_racine=".$tmp_cn."' target='_blank'>Exporter les notes</a> - ";
 					}
 
-					$info_anomalie.="<a href='".$_SERVER['PHP_SELF']."?clean_anomalie_cn=y&amp;&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;suppr_id_dev=".$lig_dev->id.add_token_in_url()."'><img src='../images/delete16.png' width='16' height='16' alt='Supprimer ce devoir' title='Supprimer ce devoir' /></a>\n";
+					$info_anomalie.="<a href='".$_SERVER['PHP_SELF']."?clean_anomalie_cn=y&amp;&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;suppr_id_dev=".$lig_dev->id.add_token_in_url()."'><img src='../images/delete16.png' class='icone16' alt='Supprimer ce devoir' title='Supprimer ce devoir' /></a>\n";
 					$info_anomalie.="</li>\n";
 				}
 				$info_anomalie.="</ul>\n";
@@ -831,7 +836,7 @@ var tab_per_cn=new Array();\n";
 			echo "<p><br /></p>\n";
 			echo "<p><a href='../utilisateurs/mon_compte.php#cnBoitesModeMoy' target='_blank'>Choisir le mode par défaut pour mes ".getSettingValue('gepi_denom_boite')."s</a>.<br />Cela ne vous empêchera pas de choisir un autre mode pour des ".getSettingValue('gepi_denom_boite')."s particulier(e)s.<br />Cela ne modifie pas non plus le mode de calcul dans les carnets de notes existants.</p>\n";
 			echo "<p><br /></p>\n";
-			if(isset($id_racine)) {
+			if((isset($id_racine))&&(getSettingAOui('GepiPeutCreerBoitesProf'))) {
 				echo "<p><a href='add_modif_conteneur.php?id_conteneur=$id_racine&mode_navig=retour_index' target='_blank'>Paramétrer le mode de calcul pour les ".getSettingValue('gepi_denom_boite')."s</a> de ce carnet de notes (<em>". htmlspecialchars($current_group["description"])." (".$nom_periode[$periode_num].")</em>) en particulier.</p>\n";
 			}
 			echo "</div>";

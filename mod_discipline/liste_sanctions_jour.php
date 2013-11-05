@@ -75,6 +75,11 @@ if(isset($form_id_sanction)) {
 	}
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Liste des sanctions";
@@ -90,8 +95,8 @@ echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Reto
 
 echo " | Choix de la date&nbsp;: ";
 
-include("../lib/calendrier/calendrier.class.php");
-$cal = new Calendrier("formulaire", "jour_sanction");
+//include("../lib/calendrier/calendrier.class.php");
+//$cal = new Calendrier("formulaire", "jour_sanction");
 
 if(!isset($jour_sanction)) {
 	$annee=strftime("%Y");
@@ -124,9 +129,12 @@ echo ">Jour précédent</a>";
 
 echo " | ";
 echo "<input type='text' name='jour_sanction' id='jour_sanction' size='10' value=\"".$jour_sanction."\" onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
+/*
 echo "<a href=\"#calend\" onclick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";";
 //echo "return confirm_abandon (this, change, '$themessage')";
 echo "\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+*/
+echo img_calendrier_js("jour_sanction", "img_bouton_jour_sanction");
 echo " <input type='submit' name='valide_jour' value=\"Go\" ";
 echo "onclick=\"return confirm_abandon (this, change, '$themessage')\" ";
 echo "/>\n";
@@ -159,6 +167,72 @@ $annee = mb_substr($jour_sanction,6,4);
 */
 $mysql_jour_sanction=$annee."-".$mois."-".$jour;
 
+//===============================================
+// Incidents dont le prof est le déclarant ou un protagoniste
+$tab_incidents_prof=array();
+$tab_incidents_prof_declarant=array();
+if($_SESSION['statut']=='professeur') {
+	//$sql="(SELECT si.id_incident FROM s_incidents si WHERE si.declarant='".$_SESSION['login']."') UNION (SELECT sp.id_incident FROM s_protagonistes sp WHERE sp.login='".$_SESSION['login']."');";
+	$sql="SELECT si.id_incident FROM s_incidents si WHERE si.declarant='".$_SESSION['login']."';";
+	//echo "$sql<br />";
+	$res_incidents_prof=mysql_query($sql);
+	if(mysql_num_rows($res_incidents_prof)>0) {
+		while($lig_tmp=mysql_fetch_object($res_incidents_prof)) {
+			$tab_incidents_prof[]=$lig_tmp->id_incident;
+		}
+	}
+	$tab_incidents_prof_declarant=$tab_incidents_prof;
+
+	$sql="SELECT sp.id_incident FROM s_protagonistes sp WHERE sp.login='".$_SESSION['login']."';";
+	//echo "$sql<br />";
+	$res_incidents_prof=mysql_query($sql);
+	if(mysql_num_rows($res_incidents_prof)>0) {
+		while($lig_tmp=mysql_fetch_object($res_incidents_prof)) {
+			$tab_incidents_prof[]=$lig_tmp->id_incident;
+		}
+	}
+
+	// Incidents dont des protagonistes sont dans des classes du prof
+	//$tab_incidents_classes_prof=array();
+	if(getSettingAOui('visuDiscProfClasses')) {
+		$sql="SELECT DISTINCT sp.id_incident FROM s_protagonistes sp, 
+									j_groupes_professeurs jgp, 
+									j_groupes_classes jgc, 
+									j_eleves_classes jec 
+							WHERE jgp.login='".$_SESSION['login']."' AND 
+									jgp.id_groupe=jgc.id_groupe AND 
+									jgc.id_classe=jec.id_classe AND 
+									jec.login=sp.login;";
+		//echo "$sql<br />";
+		// Il faudrait peut-être une restriction sur le rôle du protagoniste dans l'incident
+		$res_incidents_prof=mysql_query($sql);
+		if(mysql_num_rows($res_incidents_prof)>0) {
+			while($lig_tmp=mysql_fetch_object($res_incidents_prof)) {
+				$tab_incidents_prof[]=$lig_tmp->id_incident;
+			}
+		}
+	}
+	if(getSettingAOui('visuDiscProfGroupes')) {
+		// Incidents dont des protagonistes sont dans des groupes du prof
+		//$tab_incidents_groupes_prof=array();
+		$sql="SELECT DISTINCT sp.id_incident FROM s_protagonistes sp, 
+									j_groupes_professeurs jgp, 
+									j_eleves_groupes jeg 
+							WHERE jgp.login='".$_SESSION['login']."' AND 
+									jgp.id_groupe=jeg.id_groupe AND 
+									jeg.login=sp.login;";
+		//echo "$sql<br />";
+		// Il faudrait peut-être une restriction sur le rôle du protagoniste dans l'incident
+		$res_incidents_prof=mysql_query($sql);
+		if(mysql_num_rows($res_incidents_prof)>0) {
+			while($lig_tmp=mysql_fetch_object($res_incidents_prof)) {
+				$tab_incidents_prof[]=$lig_tmp->id_incident;
+			}
+		}
+	}
+}
+//===============================================
+
 // Retenues
 $sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date='".$mysql_jour_sanction."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut, sr.lieu, s.login;";
 //$retour.="$sql<br />\n";
@@ -169,6 +243,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
 	echo "<tr>\n";
+	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
 	echo "<th>Nature</th>\n";
 	echo "<th>Heure</th>\n";
 	echo "<th>Durée</th>\n";
@@ -182,77 +257,111 @@ if(mysql_num_rows($res_sanction)>0) {
 	$alt_b=1;
 	$num=0;
 	while($lig_sanction=mysql_fetch_object($res_sanction)) {
-		$alt_b=$alt_b*(-1);
-		if($lig_sanction->effectuee=="O") {
-			echo "<tr style='background-color: lightgrey;'>\n";
-		}
-		else {
-			echo "<tr class='lig$alt_b'>\n";
-		}
-		// \$lig_sanction->effectuee=$lig_sanction->effectuee et \$lig_sanction->id_sanction=$lig_sanction->id_sanction
-		echo "<td>$lig_sanction->nature</td>\n";
-		echo "<td>$lig_sanction->heure_debut</td>\n";
-		echo "<td>$lig_sanction->duree</td>\n";
-		echo "<td>$lig_sanction->lieu</td>\n";
-		echo "<td>";
-		echo p_nom($lig_sanction->login);
-		echo " (<i>";
-		$tmp_tab=get_class_from_ele_login($lig_sanction->login);
-		//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
-		if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
-		echo "</i>)";
-		echo "</td>\n";
-		echo "<td style='text-align:left;'>";
-		$travail=$lig_sanction->travail;
-
-		$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-		if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
-			$texte="Aucun travail";
-		}
-		else {
-			$texte=nl2br($lig_sanction->travail);
-			if($tmp_doc_joints!="") {
-				if($texte!="") {$texte.="<br />";}
-				$texte.="<b>Documents joints</b>&nbsp;:<br />";
-				$texte.=$tmp_doc_joints;
-			}
-
-			if($details=="y") {
-				echo $texte;
+		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
+			$alt_b=$alt_b*(-1);
+			if($lig_sanction->effectuee=="O") {
+				echo "<tr style='background-color: lightgrey;'>\n";
 			}
 			else {
-				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
-	
-				echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
-				//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">Détails</a>";
+				echo "<tr class='lig$alt_b'>\n";
 			}
-		}
-		echo "</td>\n";
+			// \$lig_sanction->effectuee=$lig_sanction->effectuee et \$lig_sanction->id_sanction=$lig_sanction->id_sanction
 
-		echo "<td>\n";
-		echo lien_envoi_mail_rappel($lig_sanction->id_sanction, $num);
 
-        echo "</td>\n";
+			echo "<td>";
 
-		echo "<td>\n";
-		echo nombre_reports($lig_sanction->id_sanction,"Néant");
-        echo "</td>\n";
+			$texte=rappel_incident($lig_sanction->id_incident, 'retour');
+			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig_sanction->id_incident,"".ucfirst($mod_disc_terme_incident)." n°$lig_sanction->id_incident","",$texte,"",30,0,'y','y','n','n');
 
-		echo "<td>\n";
-		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
-		if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
-		echo "onchange='changement();' ";
-		echo "/>\n";
-		echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
-		echo "</td>\n";
+			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof_declarant))) {
+				echo "<a href='saisie_incident.php?id_incident=$lig_sanction->id_incident&amp;step=2'";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo ">$lig_sanction->id_incident</a>";
+			}
+			else {
+				echo "<a href='#'";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onclick='return false;'";
+				echo ">";
+				echo $lig_sanction->id_incident;
+				echo "</a>";
+			}
+			echo "</td>\n";
+
+			echo "<td>$lig_sanction->nature</td>\n";
+			echo "<td>$lig_sanction->heure_debut</td>\n";
+			echo "<td>$lig_sanction->duree</td>\n";
+			echo "<td>$lig_sanction->lieu</td>\n";
+			echo "<td>";
+			echo p_nom($lig_sanction->login);
+			echo " (<i>";
+			$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+			//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
+			if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
+			echo "</i>)";
+			echo "</td>\n";
+			echo "<td style='text-align:left;'>";
+			$travail=$lig_sanction->travail;
+
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+				$texte="Aucun travail";
+			}
+			else {
+				$texte=nl2br($lig_sanction->travail);
+				if($tmp_doc_joints!="") {
+					if($texte!="") {$texte.="<br />";}
+					$texte.="<b>Documents joints</b>&nbsp;:<br />";
+					$texte.=$tmp_doc_joints;
+				}
+
+				if($details=="y") {
+					echo $texte;
+				}
+				else {
+					$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+	
+					echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
+					//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
+					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">Détails</a>";
+				}
+			}
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo lien_envoi_mail_rappel($lig_sanction->id_sanction, $num);
+
+		    echo "</td>\n";
+
+			echo "<td>\n";
+			echo nombre_reports($lig_sanction->id_sanction,"Néant");
+		    echo "</td>\n";
+
+			echo "<td>\n";
+			$marquer_sanction_effectuee_possible="y";
+			if(($_SESSION['statut']=='professeur')&&(!sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login']))) {
+				$marquer_sanction_effectuee_possible="n";
+			}
+
+			if($marquer_sanction_effectuee_possible=="y") {
+				echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
+				if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
+				echo "onchange='changement();' ";
+				echo "/>\n";
+				echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
+			}
+			else {
+				if($lig_sanction->effectuee=="O") {echo "<span style='color:green'>O</span>";} else {echo "<span style='color:red'>N</span>";}
+			}
+			echo "</td>\n";
 		
-		echo "</tr>\n";
-		$cpt_sanctions++;
-		$num++;
+			echo "</tr>\n";
+			$cpt_sanctions++;
+			$num++;
+		}
 	}
 	echo "</table>\n";
 	echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
@@ -270,6 +379,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Exclusions' style='margin:2px;'>\n";
 	echo "<tr>\n";
+	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
 	echo "<th>Nature</th>\n";
 	echo "<th>Elève</th>\n";
 	echo "<th>Date début</th>\n";
@@ -282,66 +392,98 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "</tr>\n";
 	$alt_b=1;
 	while($lig_sanction=mysql_fetch_object($res_sanction)) {
-		$alt_b=$alt_b*(-1);
-		echo "<tr class='lig$alt_b'>\n";
+		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
+			$alt_b=$alt_b*(-1);
+			echo "<tr class='lig$alt_b'>\n";
 
-		echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
+			echo "<td>";
 
-		echo "<td>";
-		echo p_nom($lig_sanction->login);
-		echo " (<i>";
-		$tmp_tab=get_class_from_ele_login($lig_sanction->login);
-		//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
-		if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
-		echo "</i>)";
-		echo "</td>\n";
+			$texte=rappel_incident($lig_sanction->id_incident, 'retour');
+			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig_sanction->id_incident,"".ucfirst($mod_disc_terme_incident)." n°$lig_sanction->id_incident","",$texte,"",30,0,'y','y','n','n');
 
-		echo "<td>".formate_date($lig_sanction->date_debut)."</td>\n";
-		echo "<td>$lig_sanction->heure_debut</td>\n";
-		echo "<td>".formate_date($lig_sanction->date_fin)."</td>\n";
-		echo "<td>$lig_sanction->heure_fin</td>\n";
-		echo "<td>$lig_sanction->lieu</td>\n";
-		//echo "<td>".nl2br($lig_sanction->travail)."</td>\n";
-		echo "<td style='text-align:left;'>";
-		$travail=$lig_sanction->travail;
-
-		$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-		if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
-			$texte="Aucun travail";
-		}
-		else {
-			$texte=nl2br($lig_sanction->travail);
-			if($tmp_doc_joints!="") {
-				if($texte!="") {$texte.="<br />";}
-				$texte.="<b>Documents joints</b>&nbsp;:<br />";
-				$texte.=$tmp_doc_joints;
-			}
-
-			if($details=="y") {
-				echo $texte;
+			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof_declarant))) {
+				echo "<a href='saisie_incident.php?id_incident=$lig_sanction->id_incident&amp;step=2'";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo ">$lig_sanction->id_incident</a>";
 			}
 			else {
-				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
-	
-				echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
-				//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">Détails</a>";
+				echo "<a href='#'";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onclick='return false;'";
+				echo ">";
+				echo $lig_sanction->id_incident;
+				echo "</a>";
 			}
+			echo "</td>\n";
+
+			echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
+
+			echo "<td>";
+			echo p_nom($lig_sanction->login);
+			echo " (<i>";
+			$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+			//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
+			if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
+			echo "</i>)";
+			echo "</td>\n";
+
+			echo "<td>".formate_date($lig_sanction->date_debut)."</td>\n";
+			echo "<td>$lig_sanction->heure_debut</td>\n";
+			echo "<td>".formate_date($lig_sanction->date_fin)."</td>\n";
+			echo "<td>$lig_sanction->heure_fin</td>\n";
+			echo "<td>$lig_sanction->lieu</td>\n";
+			//echo "<td>".nl2br($lig_sanction->travail)."</td>\n";
+			echo "<td style='text-align:left;'>";
+			$travail=$lig_sanction->travail;
+
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+				$texte="Aucun travail";
+			}
+			else {
+				$texte=nl2br($lig_sanction->travail);
+				if($tmp_doc_joints!="") {
+					if($texte!="") {$texte.="<br />";}
+					$texte.="<b>Documents joints</b>&nbsp;:<br />";
+					$texte.=$tmp_doc_joints;
+				}
+
+				if($details=="y") {
+					echo $texte;
+				}
+				else {
+					$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+	
+					echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
+					//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
+					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">Détails</a>";
+				}
+			}
+
+			echo "<td>\n";
+			$marquer_sanction_effectuee_possible="y";
+			if(($_SESSION['statut']=='professeur')&&(!sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login']))) {
+				$marquer_sanction_effectuee_possible="n";
+			}
+
+			if($marquer_sanction_effectuee_possible=="y") {
+				echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
+				if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
+				echo "onchange='changement();' ";
+				echo "/>\n";
+				echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
+			}
+			else {
+				if($lig_sanction->effectuee=="O") {echo "<span style='color:green'>O</span>";} else {echo "<span style='color:red'>N</span>";}
+			}
+			echo "</td>\n";
+
+			echo "</tr>\n";
+			$cpt_sanctions++;
 		}
-
-		echo "<td>\n";
-		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
-		if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
-		echo "onchange='changement();' ";
-		echo "/>\n";
-		echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
-		echo "</td>\n";
-
-		echo "</tr>\n";
-		$cpt_sanctions++;
 	}
 	echo "</table>\n";
     echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
@@ -357,6 +499,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Travail' style='margin:2px;'>\n";
 	echo "<tr>\n";
+	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
 	echo "<th>Nature</th>\n";
 	echo "<th>Elève</th>\n";
 	echo "<th>Travail</th>\n";
@@ -365,70 +508,102 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "</tr>\n";
 	$alt_b=1;
 	while($lig_sanction=mysql_fetch_object($res_sanction)) {
-		$alt_b=$alt_b*(-1);
-		if($lig_sanction->effectuee=="O") {
-			echo "<tr style='background-color: lightgrey;'>\n";
-		}
-		else {
-			echo "<tr class='lig$alt_b'>\n";
-		}
-
-		echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
-
-		echo "<td>";
-		echo p_nom($lig_sanction->login);
-		echo " (<i>";
-		$tmp_tab=get_class_from_ele_login($lig_sanction->login);
-		//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
-		if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
-		echo "</i>)";
-		echo "</td>\n";
-
-		echo "<td style='text-align:left;'>\n";
-		$travail=$lig_sanction->travail;
-
-		$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-		if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
-			$texte="Aucun travail";
-		}
-		else {
-			$texte=nl2br($lig_sanction->travail);
-			if($tmp_doc_joints!="") {
-				if($texte!="") {$texte.="<br />";}
-				$texte.="<b>Documents joints</b>&nbsp;:<br />";
-				$texte.=$tmp_doc_joints;
-			}
-
-			if($details=="y") {
-				echo $texte;
+		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
+			$alt_b=$alt_b*(-1);
+			if($lig_sanction->effectuee=="O") {
+				echo "<tr style='background-color: lightgrey;'>\n";
 			}
 			else {
-				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
-	
-				echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
-				//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">Détails</a>";
+				echo "<tr class='lig$alt_b'>\n";
 			}
-		}
-		echo "</td>\n";
-		
-		echo "<td>\n";
-		echo civ_nom_prenom(get_login_declarant_incident($lig_sanction->id_incident));
-        echo "</td>\n";
-		
-		echo "<td>\n";
-		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
-		if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
-		echo "onchange='changement();' ";
-		echo "/>\n";
-		echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
-		echo "</td>\n";
 
-		echo "</tr>\n";
-		$cpt_sanctions++;
+			echo "<td>";
+
+			$texte=rappel_incident($lig_sanction->id_incident, 'retour');
+			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig_sanction->id_incident,"".ucfirst($mod_disc_terme_incident)." n°$lig_sanction->id_incident","",$texte,"",30,0,'y','y','n','n');
+
+			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof_declarant))) {
+				echo "<a href='saisie_incident.php?id_incident=$lig_sanction->id_incident&amp;step=2'";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo ">$lig_sanction->id_incident</a>";
+			}
+			else {
+				echo "<a href='#'";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onclick='return false;'";
+				echo ">";
+				echo $lig_sanction->id_incident;
+				echo "</a>";
+			}
+			echo "</td>\n";
+
+			echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
+
+			echo "<td>";
+			echo p_nom($lig_sanction->login);
+			echo " (<i>";
+			$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+			//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
+			if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
+			echo "</i>)";
+			echo "</td>\n";
+
+			echo "<td style='text-align:left;'>\n";
+			$travail=$lig_sanction->travail;
+
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+				$texte="Aucun travail";
+			}
+			else {
+				$texte=nl2br($lig_sanction->travail);
+				if($tmp_doc_joints!="") {
+					if($texte!="") {$texte.="<br />";}
+					$texte.="<b>Documents joints</b>&nbsp;:<br />";
+					$texte.=$tmp_doc_joints;
+				}
+
+				if($details=="y") {
+					echo $texte;
+				}
+				else {
+					$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+	
+					echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
+					//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
+					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">Détails</a>";
+				}
+			}
+			echo "</td>\n";
+		
+			echo "<td>\n";
+			echo civ_nom_prenom(get_login_declarant_incident($lig_sanction->id_incident));
+		    echo "</td>\n";
+		
+			echo "<td>\n";
+			$marquer_sanction_effectuee_possible="y";
+			if(($_SESSION['statut']=='professeur')&&(!sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login']))) {
+				$marquer_sanction_effectuee_possible="n";
+			}
+
+			if($marquer_sanction_effectuee_possible=="y") {
+				echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
+				if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
+				echo "onchange='changement();' ";
+				echo "/>\n";
+				echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
+			}
+			else {
+				if($lig_sanction->effectuee=="O") {echo "<span style='color:green'>O</span>";} else {echo "<span style='color:red'>N</span>";}
+			}
+			echo "</td>\n";
+
+			echo "</tr>\n";
+			$cpt_sanctions++;
+		}
 	}
 	echo "</table>\n";
 	echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
@@ -446,6 +621,19 @@ echo "<p><br /></p>\n";
 
 //================================================================
 // Liste des sanctions en souffrance... pouvoir les reprogrammer...
+
+// Tableau des sanctions données par le prof
+$tab_sanctions_prof=array();
+if($_SESSION['statut']=='professeur') {
+	$sql="SELECT id_sanction FROM s_sanctions WHERE saisie_par='".$_SESSION['login']."';";
+	$res_sanctions_prof=mysql_query($sql);
+	if(mysql_num_rows($res_sanctions_prof)>0) {
+		while($lig_tmp=mysql_fetch_object($res_sanctions_prof)) {
+			$tab_sanctions_prof[]=$lig_tmp->id_sanction;
+		}
+	}
+}
+
 echo "<a name='retenues_en_souffrance'></a>\n";
 // Retenues
 $sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date<'$annee-$mois-$jour' AND s.effectuee!='O' AND sr.id_sanction=s.id_sanction ORDER BY sr.date $order_by_date, sr.heure_debut, sr.lieu, s.login;";
@@ -457,6 +645,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
 	echo "<tr>\n";
 	//echo "<th>Date</th>\n";
+	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
 	echo "<th>Nature</th>\n";
 	echo "<th><a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=$details&amp;order_by_date=";
 	if($order_by_date=='asc') {echo "desc";} else {echo "asc";}
@@ -472,75 +661,103 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "</tr>\n";
 	$alt_b=1;
 	while($lig_sanction=mysql_fetch_object($res_sanction)) {
-		$alt_b=$alt_b*(-1);
-		echo "<tr class='lig$alt_b'>\n";
-		echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
-		//echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
-		echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
-		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo ">".formate_date($lig_sanction->date)."</a></td>\n";
-		echo "<td>$lig_sanction->heure_debut</td>\n";
-		echo "<td>$lig_sanction->duree</td>\n";
-		echo "<td>$lig_sanction->lieu</td>\n";
-		echo "<td>";
-		echo p_nom($lig_sanction->login);
-		echo " (<i>";
-		$tmp_tab=get_class_from_ele_login($lig_sanction->login);
-		//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
-		if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
-		echo "</i>)";
-		echo "</td>\n";
-		echo "<td style='text-align:left;'>";
-		$travail=$lig_sanction->travail;
+		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
+			$alt_b=$alt_b*(-1);
+			echo "<tr class='lig$alt_b'>\n";
 
-		$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-		if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
-			$texte="Aucun travail";
-		}
-		else {
-			$texte=nl2br($lig_sanction->travail);
-			if($tmp_doc_joints!="") {
-				if($texte!="") {$texte.="<br />";}
-				$texte.="<b>Documents joints</b>&nbsp;:<br />";
-				$texte.=$tmp_doc_joints;
-			}
+			echo "<td>";
 
-			if($details=="y") {
-				echo $texte;
+			$texte=rappel_incident($lig_sanction->id_incident, 'retour');
+			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig_sanction->id_incident,"".ucfirst($mod_disc_terme_incident)." n°$lig_sanction->id_incident","",$texte,"",30,0,'y','y','n','n');
+
+			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof_declarant))) {
+				echo "<a href='saisie_incident.php?id_incident=$lig_sanction->id_incident&amp;step=2'";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo ">$lig_sanction->id_incident</a>";
 			}
 			else {
-				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
-	
-				echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
-				//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">Détails</a>";
+				echo "<a href='#'";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onclick='return false;'";
+				echo ">";
+				echo $lig_sanction->id_incident;
+				echo "</a>";
 			}
+			echo "</td>\n";
+
+			echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
+			//echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
+			echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+			echo ">".formate_date($lig_sanction->date)."</a></td>\n";
+			echo "<td>$lig_sanction->heure_debut</td>\n";
+			echo "<td>$lig_sanction->duree</td>\n";
+			echo "<td>$lig_sanction->lieu</td>\n";
+			echo "<td>";
+			echo p_nom($lig_sanction->login);
+			echo " (<i>";
+			$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+			//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
+			if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
+			echo "</i>)";
+			echo "</td>\n";
+			echo "<td style='text-align:left;'>";
+			$travail=$lig_sanction->travail;
+
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+				$texte="Aucun travail";
+			}
+			else {
+				$texte=nl2br($lig_sanction->travail);
+				if($tmp_doc_joints!="") {
+					if($texte!="") {$texte.="<br />";}
+					$texte.="<b>Documents joints</b>&nbsp;:<br />";
+					$texte.=$tmp_doc_joints;
+				}
+
+				if($details=="y") {
+					echo $texte;
+				}
+				else {
+					$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+	
+					echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
+					//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
+					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">Détails</a>";
+				}
+			}
+			echo "</td>\n";
+		
+			echo "<td>\n";
+			$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
+			echo u_p_nom($login_declarant);
+		    echo "</td>\n";
+		
+			echo "<td>\n";
+			echo nombre_reports($lig_sanction->id_sanction,"Néant");
+		    echo "</td>\n";
+
+
+			echo "<td>\n";
+			if(($_SESSION['statut']=='professeur')&&(in_array($lig_sanction->id_sanction, $tab_sanctions_prof))) {
+				echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
+				if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
+				echo "onchange='changement();' ";
+				echo "/>\n";
+				echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
+			}
+			else {
+				if($lig_sanction->effectuee=="O") {echo "<span style='color:green'>O</span>";} else {echo "<span style='color:red'>N</span>";}
+			}
+			echo "</td>\n";
+
+			echo "</tr>\n";
+			$cpt_sanctions++;
 		}
-		echo "</td>\n";
-		
-		echo "<td>\n";
-		$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
-		echo u_p_nom($login_declarant);
-        echo "</td>\n";
-		
-		echo "<td>\n";
-		echo nombre_reports($lig_sanction->id_sanction,"Néant");
-        echo "</td>\n";
-
-
-		echo "<td>\n";
-		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
-		if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
-		echo "onchange='changement();' ";
-		echo "/>\n";
-		echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
-		echo "</td>\n";
-
-		echo "</tr>\n";
-		$cpt_sanctions++;
 	}
 	echo "</table>\n";
 	echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
@@ -557,6 +774,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Travail' style='margin:2px;'>\n";
 	echo "<tr>\n";
+	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
 	echo "<th>Nature</th>\n";
 	echo "<th>Elève</th>\n";
 	//echo "<th>Date de retour</th>\n";
@@ -569,70 +787,97 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "</tr>\n";
 	$alt_b=1;
 	while($lig_sanction=mysql_fetch_object($res_sanction)) {
-		$alt_b=$alt_b*(-1);
-		echo "<tr class='lig$alt_b'>\n";
+		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
+			$alt_b=$alt_b*(-1);
+			echo "<tr class='lig$alt_b'>\n";
 
-		echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
+			echo "<td>";
 
-		echo "<td>";
-		echo p_nom($lig_sanction->login);
-		echo " (<i>";
-		$tmp_tab=get_class_from_ele_login($lig_sanction->login);
-		//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
-		if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
-		echo "</i>)";
-		echo "</td>\n";
+			$texte=rappel_incident($lig_sanction->id_incident, 'retour');
+			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig_sanction->id_incident,"".ucfirst($mod_disc_terme_incident)." n°$lig_sanction->id_incident","",$texte,"",30,0,'y','y','n','n');
 
-		echo "<td>";
-		echo formate_date($lig_sanction->date_retour);
-		echo "</td>\n";
-
-		echo "<td style='text-align:left;'>\n";
-		$travail=$lig_sanction->travail;
-
-		$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-		if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
-			$texte="Aucun travail";
-		}
-		else {
-			$texte=nl2br($lig_sanction->travail);
-			if($tmp_doc_joints!="") {
-				if($texte!="") {$texte.="<br />";}
-				$texte.="<b>Documents joints</b>&nbsp;:<br />";
-				$texte.=$tmp_doc_joints;
-			}
-
-			if($details=="y") {
-				echo $texte;
+			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof_declarant))) {
+				echo "<a href='saisie_incident.php?id_incident=$lig_sanction->id_incident&amp;step=2'";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo ">$lig_sanction->id_incident</a>";
 			}
 			else {
-				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
-	
-				echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
-				//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">Détails</a>";
+				echo "<a href='#'";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onclick='return false;'";
+				echo ">";
+				echo $lig_sanction->id_incident;
+				echo "</a>";
 			}
+			echo "</td>\n";
+
+			echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
+
+			echo "<td>";
+			echo p_nom($lig_sanction->login);
+			echo " (<i>";
+			$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+			//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
+			if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
+			echo "</i>)";
+			echo "</td>\n";
+
+			echo "<td>";
+			echo formate_date($lig_sanction->date_retour);
+			echo "</td>\n";
+
+			echo "<td style='text-align:left;'>\n";
+			$travail=$lig_sanction->travail;
+
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+				$texte="Aucun travail";
+			}
+			else {
+				$texte=nl2br($lig_sanction->travail);
+				if($tmp_doc_joints!="") {
+					if($texte!="") {$texte.="<br />";}
+					$texte.="<b>Documents joints</b>&nbsp;:<br />";
+					$texte.=$tmp_doc_joints;
+				}
+
+				if($details=="y") {
+					echo $texte;
+				}
+				else {
+					$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+	
+					echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
+					//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
+					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">Détails</a>";
+				}
+			}
+			echo "</td>\n";
+
+			echo "<td>\n";
+			$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
+			echo u_p_nom($login_declarant);
+		    echo "</td>\n";
+
+			echo "<td>\n";
+			if(($_SESSION['statut']=='professeur')&&(in_array($lig_sanction->id_sanction, $tab_sanctions_prof))) {
+				echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
+				if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
+				echo "onchange='changement();' ";
+				echo "/>\n";
+				echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
+			}
+			else {
+				if($lig_sanction->effectuee=="O") {echo "<span style='color:green'>O</span>";} else {echo "<span style='color:red'>N</span>";}
+			}
+			echo "</td>\n";
+
+			echo "</tr>\n";
+			$cpt_sanctions++;
 		}
-		echo "</td>\n";
-
-		echo "<td>\n";
-		$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
-		echo u_p_nom($login_declarant);
-        echo "</td>\n";
-
-		echo "<td>\n";
-		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
-		if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
-		echo "onchange='changement();' ";
-		echo "/>\n";
-		echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
-		echo "</td>\n";
-
-		echo "</tr>\n";
-		$cpt_sanctions++;
 	}
 	echo "</table>\n";
 	echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";

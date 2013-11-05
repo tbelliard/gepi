@@ -168,10 +168,13 @@
 
 			echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
 
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi_xml' method='post'>\n";
+			echo "<fieldset style='border: 1px solid grey;";
+			echo "background-image: url(\"../images/background/opacite50.png\"); ";
+			echo "'>\n";
 			echo add_token_field();
 			echo "<p>Veuillez fournir le fichier XML <b>sts_emp_<i>RNE</i>_<i>ANNEE</i>.xml</b>&nbsp;: \n";
-			echo "<p><input type=\"file\" size=\"65\" name=\"xml_file\" />\n";
+			echo "<p><input type=\"file\" size=\"65\" name=\"xml_file\" id='input_xml_file' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' />\n";
 			echo "<p><input type=\"hidden\" name=\"step\" value=\"0\" />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "</p>\n";
@@ -179,7 +182,28 @@
 
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 
-			echo "<p><input type='submit' value='Valider' /></p>\n";
+			//echo "<p><input type='submit' value='Valider' /></p>\n";
+
+			echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+</fieldset>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_file() {
+		fichier=document.getElementById('input_xml_file').value;
+		//alert(fichier);
+		if(fichier=='') {
+			alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+		}
+		else {
+			document.getElementById('form_envoi_xml').submit();
+		}
+	}
+</script>\n";
+
 			echo "</form>\n";
 		}
 		else{

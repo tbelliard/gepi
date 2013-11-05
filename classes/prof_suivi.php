@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -24,8 +24,8 @@
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-extract($_GET, EXTR_OVERWRITE);
-extract($_POST, EXTR_OVERWRITE);
+//extract($_GET, EXTR_OVERWRITE);
+//extract($_POST, EXTR_OVERWRITE);
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -42,6 +42,20 @@ if (!checkAccess()) {
 	die();
 }
 
+$tab_id_classe=isset($_POST['tab_id_classe']) ? $_POST['tab_id_classe'] : (isset($_GET['tab_id_classe']) ? $_GET['tab_id_classe'] : NULL);
+
+$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
+$nb_prof=isset($_POST['nb_prof']) ? $_POST['nb_prof'] : (isset($_GET['nb_prof']) ? $_GET['nb_prof'] : NULL);
+$etape2=isset($_POST['etape2']) ? $_POST['etape2'] : (isset($_GET['etape2']) ? $_GET['etape2'] : NULL);
+$etape3=isset($_POST['etape3']) ? $_POST['etape3'] : (isset($_GET['etape3']) ? $_GET['etape3'] : NULL);
+$prof_suivi=isset($_POST['prof_suivi']) ? $_POST['prof_suivi'] : (isset($_GET['prof_suivi']) ? $_GET['prof_suivi'] : NULL);
+$is_posted=isset($_POST['is_posted']) ? $_POST['is_posted'] : NULL;
+$log_eleve=isset($_POST['log_eleve']) ? $_POST['log_eleve'] : NULL;
+$prof_principal=isset($_POST['prof_principal']) ? $_POST['prof_principal'] : NULL;
+$nb_prof_suivi=isset($_POST['nb_prof_suivi']) ? $_POST['nb_prof_suivi'] : NULL;
+
+$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+/*
 if(!isset($id_classe)) {
 	$sql="SELECT id FROM classes ORDER BY classe LIMIT 1;";
 	$res=mysql_query($sql);
@@ -50,8 +64,45 @@ if(!isset($id_classe)) {
 		$id_classe=$lig->id;
 	}
 }
+*/
 
-include "../lib/periodes.inc.php";
+if(isset($id_classe)) {
+	include "../lib/periodes.inc.php";
+}
+
+if((isset($tab_id_classe))&&(isset($prof_principal))) {
+	check_token();
+
+	$msg="";
+
+	for($i=0;$i<count($tab_id_classe);$i++) {
+		if($prof_principal[$i]=="") {
+			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
+			$res_ele=mysql_query($sql);
+			$nb_ele=mysql_num_rows($res_ele);
+
+			$sql="DELETE FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
+			$suppr=mysql_query($sql);
+			$msg.="$nb_ele associations supprimées en ".get_nom_classe($tab_id_classe[$i])."<br />";
+		}
+		else {
+			$sql="DELETE FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
+			$suppr=mysql_query($sql);
+
+			$nb_ele=0;
+			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$tab_id_classe[$i]."';";
+			$res_ele_classe=mysql_query($sql);
+			while($lig=mysql_fetch_object($res_ele_classe)) {
+				$sql="INSERT INTO j_eleves_professeurs SET id_classe='".$tab_id_classe[$i]."', login='".$lig->login."', professeur='".$prof_principal[$i]."';";
+				$insert=mysql_query($sql);
+				if($insert) {
+					$nb_ele++;
+				}
+			}
+			$msg.="$nb_ele élèves associés à ".civ_nom_prenom($prof_principal[$i])." en ".get_nom_classe($tab_id_classe[$i])."<br />";
+		}
+	}
+}
 
 if (isset($is_posted) and ($is_posted == '1')) {
 	check_token();
@@ -64,7 +115,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	$prof_principal=isset($_POST['prof_principal']) ? $_POST['prof_principal'] : NULL;
 	//=========================
 	$k = 0;
-	While ($k < $nombreligne) {
+	while ($k < $nombreligne) {
 		$login_eleve = mysql_result($call_eleves, $k, 'login');
 
 		//=========================
@@ -107,16 +158,29 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
-$titre_page = "Gestion des classes | ".ucfirst(getSettingValue("gepi_prof_suivi"));
+$titre_page = "Gestion des classes | ".ucfirst($gepi_prof_suivi);
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
-$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
-$classe = mysql_result($call_classe, "0", "classe");
 
+//debug_var();
+
+//=========================================================================
+// Ligne de liens sous l'entête avec choix de classes
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
-echo "<p class='bold'><a href='classes_const.php?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
+if(isset($id_classe)) {
+	$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
+	$classe = mysql_result($call_classe, "0", "classe");
+
+	echo "<p class='bold'><a href='classes_const.php?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
+}
+else {
+	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
+}
 
 $chaine_options_classes="";
+if(!isset($id_classe)) {
+	$chaine_options_classes.="<option value=''>---</option>\n";
+}
 $sql="SELECT id, classe FROM classes ORDER BY classe";
 $res_class_tmp=mysql_query($sql);
 $num_classe=-1;
@@ -126,7 +190,7 @@ if(mysql_num_rows($res_class_tmp)>0){
     $temoin_tmp=0;
     $cpt_classe=0;
     while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-        if($lig_class_tmp->id==$id_classe){
+        if((isset($id_classe))&&($lig_class_tmp->id==$id_classe)) {
 			// Index de la classe dans les <option>
 			$num_classe=$cpt_classe;
 
@@ -151,13 +215,18 @@ if(mysql_num_rows($res_class_tmp)>0){
     }
 }
 
-echo "| <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">
+echo "| <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\" title=\"Définir le $gepi_prof_suivi pour une classe en particulier.
+Vous pouvez aussi en définir plusieurs pour la classe choisie.\">
 $chaine_options_classes
-</select> \n";
+</select> 
+<input type='submit' id='valid_form_choix_une_classe' value='Go' />\n";
 
 echo "<script type='text/javascript'>
 	// Initialisation
 	change='no';
+
+	// Si JS est actif, on masque le bouton submit (onchange() suffit alors):
+	document.getElementById('valid_form_choix_une_classe').style.display='none';
 
 	function confirm_changement_classe(thechange, themessage)
 	{
@@ -177,8 +246,148 @@ echo "<script type='text/javascript'>
 	}
 </script>\n";
 
+if(isset($tab_id_classe)) {
+	echo "|<a href='".$_SERVER['PHP_SELF']."'> Choisir d'autres classes </a>";
+}
+elseif(isset($id_classe)) {
+	echo "|<a href='".$_SERVER['PHP_SELF']."' title=\"Définir le $gepi_prof_suivi pour une sélection de plusieurs classes\"> Effectuer une sélection de classes </a>";
+}
 echo "|<a href='help.php'> Aide </a></p>\n";
 echo "</form>\n";
+//=========================================================================
+
+//=========================================================================
+// Choix de classes
+if(!isset($id_classe)) {
+
+	if((!isset($tab_id_classe))||(!is_array($tab_id_classe))||(count($tab_id_classe)==0)) {
+
+		echo "<h2>Choix de classes</h2>
+
+<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post'>
+
+<div style='margin-left:3em;'>
+
+	<p>Vous pouvez effectuer le paramétrage par lots du <strong>".$gepi_prof_suivi."</strong> pour un ensemble de classes ci-dessous,<br />
+	ou sélectionner une classe en particulier ci-dessus.</p>";
+
+		$tab_txt=array();
+		$tab_nom_champ=array();
+		$tab_id_champ=array();
+		$tab_valeur_champ=array();
+		$nom_js_func="check_bold_classe";
+
+		$sql="SELECT * FROM classes ORDER BY classe, nom_complet;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			echo "<p style='color:red'>Il n'existe encore aucune classe.</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		while($lig=mysql_fetch_object($res)) {
+			// Récupérer le nombre de PP définis sur la classe avec le nombre d'élèves en charge... repérer si des élèves n'ont aucun PP
+
+			$tab_txt[]=$lig->classe;
+			$tab_id_champ[]="tab_id_classe_".$lig->id;
+			$tab_nom_champ[]="tab_id_classe[]";
+			$tab_valeur_champ[]=$lig->id;
+
+		}
+
+		echo tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, $nom_js_func);
+
+		echo "
+	<p><input type='submit' value='Valider' /></p>
+</div>
+</form>\n";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	// Choix de PP pour une liste de classes
+
+	// Boucle sur les classes choisies
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form3' method='post'>
+
+".add_token_field()."
+
+<h2>Définition d'un $gepi_prof_suivi pour la ou les classes choisies</h2>
+
+<div style='margin-left:3em;'>
+	<p>Choisissez le $gepi_prof_suivi et validez&nbsp;:</p>
+	<p>";
+
+	$chaine_decoche="";
+	for($i=0;$i<count($tab_id_classe);$i++) {
+		echo "
+		<span id='span_tab_id_classe_".$i."'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_".$i."' value='".$tab_id_classe[$i]."' onchange=\"checkbox_change('tab_id_classe_".$i."');\" checked /><label for='tab_id_classe_".$i."' id='label_tab_id_classe_".$i."'>".get_nom_classe($tab_id_classe[$i])."</label>\n";
+
+		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$tab_id_classe[$i]."';";
+		$res_ele_classe=mysql_query($sql);
+		$nb_ele_classe=mysql_num_rows($res_ele_classe);
+
+		// Liste des professeurs principaux de la classe
+		$tab_prof_suivi=get_tab_prof_suivi($tab_id_classe[$i]);
+		// Liste des professeurs de la classe
+		$tab_profs_classe=get_profs_for_classe($tab_id_classe[$i]);
+		if(count($tab_profs_classe)==0) {
+			echo " <span style='color:red'>Aucun professeur n'est défini dans cette classe</span>";
+		}
+		else {
+			echo "
+			<select name='prof_principal[".$i."]'>
+				<option value='' title=\"En effectuant ce choix, vous supprimez l'association. pour tous les élèves de la classe.\">---</option>";
+			for($j=0;$j<count($tab_profs_classe);$j++) {
+				echo "
+				<option value='".$tab_profs_classe[$j]['login']."'";
+				if(in_array($tab_profs_classe[$j]['login'] ,$tab_prof_suivi)) {
+					$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$tab_profs_classe[$j]['login']."' AND id_classe='".$tab_id_classe[$i]."';";
+					$res_ele_pp=mysql_query($sql);
+					$nb_ele_pp=mysql_num_rows($res_ele_pp);
+
+					echo " selected='selected' style='background-color: lightgreen' title=\"Ce professeur est $gepi_prof_suivi de $nb_ele_pp élèves sur $nb_ele_classe élèves dans la classe.\">".$tab_profs_classe[$j]['civ_nom_prenom']." ($nb_ele_pp/$nb_ele_classe)</option>";
+				}
+				else {
+					echo ">".$tab_profs_classe[$j]['civ_nom_prenom']."</option>";
+				}
+			}
+			echo "</select>";
+		}
+		echo "</span>";
+		if(count($tab_prof_suivi)>1) {
+			$chaine_decoche.="document.getElementById('tab_id_classe_$i').checked=false;\n";
+			$chaine_decoche.="checkbox_change('tab_id_classe_$i');\n";
+			echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=".$tab_id_classe[$i]."' target='_blank'><img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Il y a plusieurs '$gepi_prof_suivi' dans cette classe.
+Si vous voulez conserver plusieurs '$gepi_prof_suivi', effectuez un paramétrage individuel de la classe\" /></a>";
+		}
+
+		echo "<br />";
+	}
+
+	echo "
+	</p>
+
+	<script type='text/javascript'>
+		".js_checkbox_change_style('checkbox_change', 'span_', "n", 0.5)."
+
+		for(i=0;i<$i;i++) {
+			checkbox_change('tab_id_classe_'+i);
+		}
+
+		$chaine_decoche
+	</script>
+
+	<p><input type='submit' value='Valider' /></p>
+</div>
+</form>";
+
+	require("../lib/footer.inc.php");
+	die();
+}
+//=========================================================================
+
 ?>
 
 <p class='bold'>Classe : <?php echo $classe; ?></p>

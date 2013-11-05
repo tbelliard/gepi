@@ -249,7 +249,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 						$cpt_ele_anomalie=0;
 						while($lig_anomalie=mysql_fetch_object($test_anomalie)) {
 							if($cpt_ele_anomalie>0) {$texte_infobulle.=", ";}
-							$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i>";
+							$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i title=\"Note enregistrée\">";
 							if($lig_anomalie->statut=='') {$texte_infobulle.=$lig_anomalie->note;}
 							elseif($lig_anomalie->statut=='v') {$texte_infobulle.="_";}
 							else {$texte_infobulle.=$lig_anomalie->statut;}
@@ -260,7 +260,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 						$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
 						$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
+						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\" title=\"Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement.
+Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='17' height='18' alt='' /></a>";
 					}
 
 					if (getSettingValue("utiliser_sacoche") == 'yes') {
@@ -289,7 +290,7 @@ Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et �
 						echo " - <a href='index_cc.php?id_racine=".$id_racine."' title=\"Voir l'évaluation cumul associée $lig_cc_dev->nom_court ($lig_cc_dev->nom_complet)\">".$lig_cc_dev->nom_court."</a>";
 					}
 
-					echo " - <a href='copie_dev.php?id_devoir=".$id_dev."' title=\"Copier le devoir et les notes vers une autre période ou un autre enseignement (Les notes ne sont copiées que si les élèves sont les mêmes).\"><img src='../images/icons/copy-16.png' width='16' height='16' /></a>\n";
+					echo " - <a href='copie_dev.php?id_devoir=".$id_dev."' title=\"Copier le devoir et les notes vers une autre période ou un autre enseignement (Les notes ne sont copiées que si les élèves sont les mêmes).\"><img src='../images/icons/copy-16.png' width='16' height='16' alt='' /></a>\n";
 
 					echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo "</li>\n";
@@ -378,7 +379,7 @@ En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('g
 								$cpt_ele_anomalie=0;
 								while($lig_anomalie=mysql_fetch_object($test_anomalie)) {
 									if($cpt_ele_anomalie>0) {$texte_infobulle.=", ";}
-									$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i>";
+									$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i title=\"Note enregistrée\">";
 									if($lig_anomalie->statut=='') {$texte_infobulle.=$lig_anomalie->note;}
 									elseif($lig_anomalie->statut=='v') {$texte_infobulle.="_";}
 									else {$texte_infobulle.=$lig_anomalie->statut;}
@@ -389,7 +390,8 @@ En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('g
 								$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
 								$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 		
-								echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return FALSE;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
+								echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return FALSE;\" title=\"Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement.
+Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='17' height='18' alt='' /></a>";
 							}
 
 							echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
@@ -414,7 +416,7 @@ Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et �
 								echo " - <a href='index_cc.php?id_racine=".$id_racine."' title=\"Voir l'évaluation cumul associée $lig_cc_dev->nom_court ($lig_cc_dev->nom_complet)\">".$lig_cc_dev->nom_court."</a>";
 							}
 
-							echo " - <a href='copie_dev.php?id_devoir=".$id_dev."' title=\"Copier le devoir et les notes vers une autre période ou un autre enseignement (Les notes ne sont copiées que si les élèves sont les mêmes).\"><img src='../images/icons/copy-16.png' width='16' height='16' /></a>\n";
+							echo " - <a href='copie_dev.php?id_devoir=".$id_dev."' title=\"Copier le devoir et les notes vers une autre période ou un autre enseignement (Les notes ne sont copiées que si les élèves sont les mêmes).\"><img src='../images/icons/copy-16.png' width='16' height='16' alt='' /></a>\n";
 
 							echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 							echo "</li>\n";
@@ -604,7 +606,7 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
         $quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
         $quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
         $quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
-        echo "<td style=\"text-align: center; \"><img height=40 witdh=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&temp1=$quartile1_classe&temp2=$quartile2_classe&temp3=$quartile3_classe&temp4=$quartile4_classe&temp5=$quartile5_classe&temp6=$quartile6_classe&nb_data=7' /></td>\n";
+        echo "<td style=\"text-align: center; \"><img height=40 witdh=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&temp1=$quartile1_classe&temp2=$quartile2_classe&temp3=$quartile3_classe&temp4=$quartile4_classe&temp5=$quartile5_classe&temp6=$quartile6_classe&nb_data=7' alt='' /></td>\n";
      } else
       echo "<td style=\"text-align: center; \"><span class='".$style_bulletin."'>-</span></td>\n";
     }
@@ -1182,7 +1184,7 @@ function test_ecriture_dossier($tab_restriction=array()) {
 	$nom_fichier_test='test_acces_rw';
 
 	echo "<table class='boireaus'>\n";
-    echo "<caption style='display:none;'>dossiers devant être accessibles en écriture<caption>\n";
+    echo "<caption style='display:none;'>dossiers devant être accessibles en écriture</caption>\n";
 	echo "<tr>\n";
 	echo "<th>Dossier</th>\n";
 	echo "<th>Ecriture</th>\n";
@@ -1477,13 +1479,15 @@ function affiche_infos_actions() {
 		echo "<div id='div_infos_actions' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%;'>\n";
 		echo "<div id='info_action_titre' style='font-weight: bold; min-height:16px; padding-right:8px;' class='infobulle_entete'>\n";
 			echo "<div id='info_action_pliage' style='float:right; width: 1em;'>\n";
+
 			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\" title=\"Plier/déplier le cadre des actions en attente\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' alt='Réduire' /></span></a>";
 			echo "</div>\n";
 
 			//if($_SESSION['statut']=='administrateur') {
 			if(acces("/gestion/gestion_infos_actions.php", $_SESSION['statut'])) {
 				echo "<div style='float:right; width: 1em; margin-right:0.5em;'>\n";
-				echo "<a href=\"gestion/gestion_infos_actions.php\" title=\"Consulter, supprimer par lots les actions en attente\"><span id='img_pliage_conteneur'><img src='images/disabled.png' width='16' height='16' alt='Supprimer par lots' /></span></a>";
+
+				echo "<a href=\"gestion/gestion_infos_actions.php\" title=\"Consulter, supprimer par lots les actions en attente\"><span id='img_supprimer_conteneur'><img src='images/disabled.png' width='16' height='16' alt='Supprimer par lots' /></span></a>";
 				echo "</div>\n";
 			}
 
@@ -1504,7 +1508,7 @@ function affiche_infos_actions() {
 
 				echo "<div id='info_action_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
 					echo "<div style='float:right; width: 9em; text-align: right;'>\n";
-					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\" title=\"Supprimer cette notification d'action en attente\">Supprimer</span></a>";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\" title=\"Supprimer cette notification d'action en attente\">Supprimer</a>";
 					echo "</div>\n";
 
 					echo preg_replace("/\\\\n/","<br />",nl2br($lig->description));
@@ -1574,7 +1578,7 @@ function affiche_acces_cdt() {
 				$retour.="<div id='div_infos_acces_cdt' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%; margin-top:3px;'>\n";
 				$retour.="<div id='info_acces_cdt_titre' style='font-weight: bold;' class='infobulle_entete'>\n";
 					$retour.="<div id='info_acces_cdt_pliage' style='float:right; width: 1em'>\n";
-					$retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('conteneur')\"><span id='img_pliage_acces_cdt_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+					$retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('conteneur')\"><span id='img_pliage_acces_cdt_conteneur'><img src='images/icons/remove.png' width='16' height='16' alt='enlever' /></span></a>";
 					$retour.="</div>\n";
 					$retour.="Accès ouvert à des CDT";
 				$retour.="</div>\n";
@@ -1592,7 +1596,7 @@ function affiche_acces_cdt() {
 						$retour.="<div id='info_acces_cdt_$lig->id' style='border: 1px solid black; margin:2px;'>\n";
 							$retour.="<div id='info_acces_cdt_titre_$lig->id' style='font-weight: bold;' class='infobulle_entete'>\n";
 								$retour.="<div id='info_acces_cdt_pliage_$lig->id' style='float:right; width: 1em'>\n";
-								$retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('$lig->id')\"><span id='img_pliage_acces_cdt_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+								$retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('$lig->id')\"><span id='img_pliage_acces_cdt_$lig->id'><img src='images/icons/remove.png' width='16' height='16' alt='enlever' /></span></a>";
 								$retour.="</div>\n";
 								$retour.="Accès CDT jusqu'au ".formate_date($lig->date2);
 							$retour.="</div>\n";
@@ -1650,11 +1654,11 @@ function affiche_acces_cdt() {
 				if(document.getElementById('info_acces_cdt_corps_'+id)) {
 					if(document.getElementById('info_acces_cdt_corps_'+id).style.display=='none') {
 						document.getElementById('info_acces_cdt_corps_'+id).style.display='';
-						document.getElementById('img_pliage_acces_cdt_'+id).innerHTML='<img src=\'images/icons/remove.png\' width=\'16\' height=\'16\' />'
+						document.getElementById('img_pliage_acces_cdt_'+id).innerHTML='<img src=\'images/icons/remove.png\' width=\'16\' height=\'16\' alt=\'enlever\' />'
 					}
 					else {
 						document.getElementById('info_acces_cdt_corps_'+id).style.display='none';
-						document.getElementById('img_pliage_acces_cdt_'+id).innerHTML='<img src=\'images/icons/add.png\' width=\'16\' height=\'16\' />'
+						document.getElementById('img_pliage_acces_cdt_'+id).innerHTML='<img src=\'images/icons/add.png\' width=\'16\' height=\'16\' alt=\'ajouter\' />'
 					}
 				}
 			}
@@ -1777,7 +1781,7 @@ function affiche_reinit_password($login) {
  * Sur les checkbox, insérer onchange="checkbox_change(this.id)"
  * @return string Le texte de la fonction javascript
  */
-function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n") {
+function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n", $perc_opacity=1) {
 	$retour="";
 	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
 	$retour.="
@@ -1786,9 +1790,11 @@ function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte
 			if(document.getElementById('$prefixe_texte'+id)) {
 				if(document.getElementById(id).checked) {
 					document.getElementById('$prefixe_texte'+id).style.fontWeight='bold';
+					document.getElementById('$prefixe_texte'+id).style.opacity=1;
 				}
 				else {
 					document.getElementById('$prefixe_texte'+id).style.fontWeight='normal';
+					document.getElementById('$prefixe_texte'+id).style.opacity=$perc_opacity;
 				}
 			}
 		}
@@ -2415,4 +2421,434 @@ function retourne_html_histogramme_svg($tab_graph_note, $titre, $id, $nb_tranche
 	return $retour;
 }
 
+function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=array(), $nom_champ='login_user', $nom_func_js_tout_cocher_decocher='cocher_decocher') {
+	$retour="";
+
+	$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE (";
+	for($loop=0;$loop<count($tab_statuts);$loop++) {
+		if($loop>0) {
+			$sql.=" OR ";
+		}
+		$sql.="statut='".$tab_statuts[$loop]."'";
+	}
+	$sql.=") AND etat='actif' ORDER BY statut, login, nom, prenom;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$nombreligne=mysql_num_rows($res);
+		$nbcol=3;
+		$nb_par_colonne=round($nombreligne/$nbcol);
+
+		$retour.="<table width='100%' summary=\"Tableau de choix des utilisateurs\">\n";
+		$retour.="<tr valign='top' align='center'>\n";
+		$retour.="<td align='left'>\n";
+
+		$cpt=0;
+		$statut_prec="";
+		while($lig=mysql_fetch_object($res)) {
+			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
+				$retour.="</td>\n";
+				$retour.="<td align='left'>\n";
+			}
+
+			if($lig->statut!=$statut_prec) {
+				$retour.="<p><b>".ucfirst($lig->statut)."</b><br />\n";
+				$statut_prec=$lig->statut;
+			}
+
+			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->login' ";
+			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
+			if(in_array($lig->login, $tab_user_preselectionnes)) {
+				$retour.="checked ";
+				$temp_style=" style='font-weight: bold;'";
+			}
+			else {
+				$temp_style="";
+			}
+			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->login\"><span id='texte_".$nom_champ."_$cpt'$temp_style>$lig->civilite $lig->nom $lig->prenom</span></label><br />\n";
+
+			$cpt++;
+		}
+		$retour.="</td>\n";
+		$retour.="</tr>\n";
+		$retour.="</table>\n";
+
+		$retour.="<script type='text/javascript'>
+function $nom_func_js_tout_cocher_decocher(mode) {
+	for (var k=0;k<$cpt;k++) {
+		if(document.getElementById('".$nom_champ."_'+k)){
+			document.getElementById('".$nom_champ."_'+k).checked=mode;
+			checkbox_change('".$nom_champ."_'+k);
+		}
+	}
+}
+</script>\n";
+	}
+
+	return $retour;
+}
+
+function js_cdt_modif_etat_travail() {
+	global $class_notice_dev_fait, $class_notice_dev_non_fait;
+
+	$retour="<script type='text/javascript'>
+	function cdt_modif_etat_travail(login_eleve, id_ct) {
+		// Pour éviter trop de clics à la suite:
+		if(document.getElementById('div_etat_travail_'+id_ct)) {
+			document.getElementById('div_etat_travail_'+id_ct).innerHTML='<img src=\'../images/spinner.gif\' class=\'icone16\' />';
+		}
+
+		new Ajax.Updater($('div_etat_travail_'+id_ct),'../cahier_texte_2/ajax_cdt.php?login_eleve='+login_eleve+'&id_ct_devoir='+id_ct+'&mode=changer_etat".add_token_in_url(false)."',{method: 'get'});
+
+		setTimeout('cdt_maj_class_div_dev('+id_ct+')', 2000);
+	}
+
+	function cdt_maj_class_div_dev(id_ct) {
+		if(document.getElementById('div_etat_travail_'+id_ct)) {
+			if(document.getElementById('div_travail_'+id_ct)) {
+				chaine=document.getElementById('div_etat_travail_'+id_ct).innerHTML;
+				//alert(chaine);
+				if(chaine.indexOf('NON FAIT:',1)!='-1') {
+					document.getElementById('div_travail_'+id_ct).className='$class_notice_dev_non_fait';
+				}
+				else {
+					if(chaine.indexOf('FAIT:',1)!='-1') {
+						document.getElementById('div_travail_'+id_ct).className='$class_notice_dev_fait';
+					}
+				}
+			}
+		}
+	}
+</script>\n";
+	return $retour;
+}
+
+function js_dragresize($minWidth=50, $minHeight=50, $minLeft=0, $minTop=0, $maxLeft=10000, $maxTop=100000) {
+	/*
+	global $chaine_handles;
+	if($chaine_handles=="") {
+		$chaine_handles="'tl', 'tm', 'tr', 'ml', 'mr', 'bl', 'bm', 'br'";
+	}
+
+	// Reserve...
+	var dragresize = new DragResize('dragresize',
+	 { minWidth: $minWidth, minHeight: $minHeight, minLeft: $minLeft, minTop: $minTop, maxLeft: $maxLeft, maxTop: $maxTop },
+	 \"$chaine_handles\");
+
+	*/
+	global $mode_handles;
+
+	$retour="<script type='text/javascript'>
+// Using DragResize is simple!
+// You first declare a new DragResize() object, passing its own name and an object
+// whose keys constitute optional parameters/settings:
+
+var dragresize = new DragResize('dragresize',
+ { minWidth: $minWidth, minHeight: $minHeight, minLeft: $minLeft, minTop: $minTop, maxLeft: $maxLeft, maxTop: $maxTop },
+ \"$mode_handles\");
+
+// Optional settings/properties of the DragResize object are:
+//  enabled: Toggle whether the object is active.
+//  handles[]: An array of drag handles to use (see the .JS file).
+//  minWidth, minHeight: Minimum size to which elements are resized (in pixels).
+//  minLeft, maxLeft, minTop, maxTop: Bounding box (in pixels).
+
+// Next, you must define two functions, isElement and isHandle. These are passed
+// a given DOM element, and must \"return true\" if the element in question is a
+// draggable element or draggable handle. Here, I'm checking for the CSS classname
+// of the elements, but you have have any combination of conditions you like:
+
+dragresize.isElement = function(elm)
+{
+ if (elm.className && elm.className.indexOf('drsElement') > -1) return true;
+};
+dragresize.isHandle = function(elm)
+{
+ if (elm.className && elm.className.indexOf('drsMoveHandle') > -1) return true;
+};
+
+// You can define optional functions that are called as elements are dragged/resized.
+// Some are passed true if the source event was a resize, or false if it's a drag.
+// The focus/blur events are called as handles are added/removed from an object,
+// and the others are called as users drag, move and release the object's handles.
+// You might use these to examine the properties of the DragResize object to sync
+// other page elements, etc.
+
+dragresize.ondragfocus = function() { };
+dragresize.ondragstart = function(isResize) { };
+dragresize.ondragmove = function(isResize) { };
+dragresize.ondragend = function(isResize) { };
+dragresize.ondragblur = function() { };
+
+// Finally, you must apply() your DragResize object to a DOM node; all children of this
+// node will then be made draggable. Here, I'm applying to the entire document.
+dragresize.apply(document);
+</script>";
+
+	return $retour;
+}
+
+function input_password_to_text($id_champ) {
+	global $gepiPath;
+
+	$retour="<span id='span_liens_js_".$id_champ."' style='display:none'>
+	<a href='javascript:champ_text_".$id_champ."()' id='lien_text_".$id_champ."' title='Rendre le champ de saisie du mot de passe lisible (afficher en clair).'><img src='$gepiPath/images/icons/visible.png' width='19' height='16' alt='Mot de passe en clair' /></a>
+	<a href='javascript:champ_password_".$id_champ."()' id='lien_password_".$id_champ."' style='display:none' title='Rendre le champ de saisie du mot de passe non lisible par ceux qui regardent par dessus votre épaule (masquer).'><img src='$gepiPath/images/icons/invisible.png' width='19' height='16' alt='Mot de passe masqué' /></a>
+</span>
+
+<script type='text/javascript'>
+	isIE_input_password_to_text = (document.all);
+	if(!isIE_input_password_to_text) {
+		document.getElementById('span_liens_js_".$id_champ."').style.display='';
+	}
+
+	function champ_text_".$id_champ."() {
+		if(confirm(\"Vous allez afficher votre saisie de mot de passe en clair.\\nSi quelqu'un regarde par dessus votre épaule où si vous vidéoprojetez au tableau votre écran, ce n'est pas souhaitable.\\nEtes-vous sûr de vouloir afficher le mot de passe en clair ?\")) {
+			document.getElementById('".$id_champ."').setAttribute('type', 'text');
+			//setTimeout(\"document.getElementById('".$id_champ."').setAttribute('type', 'text')\", 1000);
+
+			document.getElementById('lien_text_".$id_champ."').style.display='none';
+			document.getElementById('lien_password_".$id_champ."').style.display='';
+		}
+	}
+	function champ_password_".$id_champ."() {
+		document.getElementById('".$id_champ."').setAttribute('type','password');
+		//setTimeout(\"document.getElementById('".$id_champ."').setAttribute('type', 'password')\", 1000);
+
+			document.getElementById('lien_text_".$id_champ."').style.display='';
+			document.getElementById('lien_password_".$id_champ."').style.display='none';
+	}
+</script>
+<!--p>Cela fonctionne avec Firefox et Chrome, mais avec MSIE qui interdit les changements de type d'un input.</p-->";
+
+	return $retour;
+}
+
+function html_ajout_suffixe_ou_renommer($id_nom_court, $id_nom_complet, $id_nom_matiere) {
+	$retour="
+	<p><strong>Ajouter un suffixe</strong> au nom court actuel de l'enseignement et au nom complet actuel&nbsp;:</p>
+	<table class='boireaus'>
+		<tr>
+			<td class='lig1'>
+				<a href=\"javascript:ajout_suffixe_nom_grp('_1', ' (groupe 1)')\">_1 et (groupe 1)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_2', ' (groupe 2)')\">_2 et (groupe 2)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_3', ' (groupe 3)')\">_3 et (groupe 3)</a></p>
+			</td>
+			<td class='lig-1'>
+				<a href=\"javascript:ajout_suffixe_nom_grp('_g1', ' (groupe 1)')\">_g1 et (groupe 1)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_g2', ' (groupe 2)')\">_g2 et (groupe 2)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_g3', ' (groupe 3)')\">_g3 et (groupe 3)</a></p>
+			</td>
+			<td class='lig1'>
+				<a href=\"javascript:ajout_suffixe_nom_grp('_A', ' (groupe A)')\">_A et (groupe A)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_B', ' (groupe B)')\">_B et (groupe B)</a><br />
+				<a href=\"javascript:ajout_suffixe_nom_grp('_C', ' (groupe C)')\">_C et (groupe C)</a>
+			</td>
+		</tr>
+	</table>
+
+	<br />
+	<p>ou</p>
+
+	<p><strong>Renommer</strong> l'enseignement en&nbsp;:</p>
+	<table class='boireaus'>
+		<tr>
+			<td class='lig1'>
+				<a href=\"javascript:modif_nom_grp('_1', ' (groupe 1)')\">_1 et (groupe 1)</a><br />
+				<a href=\"javascript:modif_nom_grp('_2', ' (groupe 2)')\">_2 et (groupe 2)</a><br />
+				<a href=\"javascript:modif_nom_grp('_3', ' (groupe 3)')\">_3 et (groupe 3)</a></p>
+			</td>
+			<td class='lig-1'>
+				<a href=\"javascript:modif_nom_grp('_g1', ' (groupe 1)')\">_g1 et (groupe 1)</a><br />
+				<a href=\"javascript:modif_nom_grp('_g2', ' (groupe 2)')\">_g2 et (groupe 2)</a><br />
+				<a href=\"javascript:modif_nom_grp('_g3', ' (groupe 3)')\">_g3 et (groupe 3)</a></p>
+			</td>
+			<td class='lig1'>
+				<a href=\"javascript:modif_nom_grp('_A', ' (groupe A)')\">_A et (groupe A)</a><br />
+				<a href=\"javascript:modif_nom_grp('_B', ' (groupe B)')\">_B et (groupe B)</a><br />
+				<a href=\"javascript:modif_nom_grp('_C', ' (groupe C)')\">_C et (groupe C)</a>
+			</td>
+		</tr>
+	</table>
+
+	<script type='text/javascript'>
+		function ajout_suffixe_nom_grp(suffixe_nom_court, suffixe_nom_complet) {
+			document.getElementById('$id_nom_court').value=document.getElementById('$id_nom_court').value+suffixe_nom_court;
+			document.getElementById('$id_nom_complet').value=document.getElementById('$id_nom_complet').value+suffixe_nom_complet;
+		}
+
+		function modif_nom_grp(suffixe_nom_court, suffixe_nom_complet) {
+			prefixe=document.getElementById('$id_nom_matiere').options[document.getElementById('$id_nom_matiere').selectedIndex].value;
+			prefixe_nom_complet=document.getElementById('$id_nom_matiere').options[document.getElementById('$id_nom_matiere').selectedIndex].getAttribute('nom_matiere');
+			document.getElementById('$id_nom_court').value=prefixe+suffixe_nom_court;
+			document.getElementById('$id_nom_complet').value=prefixe_nom_complet+suffixe_nom_complet;
+		}
+	</script>\n";
+
+	return $retour;
+}
+
+function img_calendrier_js($id_champ, $id_img) {
+	global $gepiPath;
+	return '<img id="'.$id_img.'" src="'.$gepiPath.'/images/icons/calendrier.gif" alt="" />
+<script type="text/javascript">
+	Calendar.setup({
+		inputField     :    "'.$id_champ.'",     // id of the input field
+		ifFormat       :    "%d/%m/%Y",      // format of the input field
+		button         :    "'.$id_img.'",  // trigger for the calendar (button ID)
+		align          :    "Tl",           // alignment (defaults to "Bl")
+		singleClick    :    true,
+		showsTime	:   false
+	});
+</script>';
+}
+
+/**
+ * Fonction destinée à présenter une liste de liens répartis en $nbcol colonnes
+ * 
+ *
+ * @param type $tab_txt tableau des textes
+ * @param type $tab_nom_champ tableau des noms des champs chechbox
+ * @param type $tab_id_champ tableau des id des champs chechbox
+ * @param type $tab_valeur_champ tableau des valeurs des champs chechbox
+ * @param int $nbcol Nombre de colonnes
+ * @param type $extra_options Options supplémentaires
+ */
+function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, $nom_js_func = "", $nom_func_tout_cocher="modif_coche", $nbcol=3) {
+
+	// Nombre d'enregistrements à afficher
+	$nombreligne=count($tab_txt);
+
+	if(!is_int($nbcol)){
+		$nbcol=3;
+	}
+
+	// Nombre de lignes dans chaque colonne:
+	$nb_class_par_colonne=round($nombreligne/$nbcol);
+
+	echo "<table width='100%' summary=\"Tableau de choix\">\n";
+	echo "<tr valign='top' align='center'>\n";
+	echo "<td align='left'>\n";
+
+	$i = 0;
+	$chaine_var_js="var tab_id_$nom_func_tout_cocher=new Array(";
+	while ($i < $nombreligne){
+
+		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+			echo "</td>\n";
+			echo "<td align='left'>\n";
+		}
+
+		//echo "<br />\n";
+		//$chaine_var_js.="tab_id_".$nom_func_tout_cocher."[$i]='".$tab_id_champ[$i]."';\n";
+		if($i>0) {
+			$chaine_var_js.=", ";
+		}
+		$chaine_var_js.="'".$tab_id_champ[$i]."'";
+		echo "<input type='checkbox' name='".$tab_nom_champ[$i]."' id='".$tab_id_champ[$i]."' value='".$tab_valeur_champ[$i]."' ";
+		if($nom_js_func!="") {
+			echo " onchange=\"$nom_js_func('$tab_id_champ[$i]')\"";
+		}
+		echo "/><label for='".$tab_id_champ[$i]."' id='label_".$tab_id_champ[$i]."'>".$tab_txt[$i]."</label>";
+		echo "<br />\n";
+		$i++;
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	if($nom_js_func!="") {
+		echo js_checkbox_change_style($nom_js_func, 'label_', "y");
+	}
+	$chaine_var_js.=");\n";
+
+	if($nom_func_tout_cocher!="") {
+		echo "<p><a href=\"javascript:$nom_func_tout_cocher('true')\">Tout cocher</a> - <a href=\"javascript:$nom_func_tout_cocher('false')\">Tout décocher</a></p>
+<script type='text/javascript'>
+	$chaine_var_js
+	function $nom_func_tout_cocher(mode) {
+		for(i=0;i<$i;i++) {
+			//if(i<5) {alert(tab_id_".$nom_func_tout_cocher."[i])}
+			if(document.getElementById(tab_id_".$nom_func_tout_cocher."[i])) {
+				if(mode=='true') {
+					document.getElementById(tab_id_".$nom_func_tout_cocher."[i]).checked=true;";
+		if($nom_js_func!="") {
+			echo "
+					$nom_js_func(tab_id_".$nom_func_tout_cocher."[i]);";
+		}
+		echo "
+				}
+				else {
+					document.getElementById(tab_id_".$nom_func_tout_cocher."[i]).checked=false;";
+		if($nom_js_func!="") {
+			echo "
+					$nom_js_func(tab_id_".$nom_func_tout_cocher."[i]);";
+		}
+		echo "
+				}
+			}
+		}
+	}
+</script>";
+	}
+}
+
+
+/**
+ * Fonction destinée à présenter en tableau HTML un tableau d'élèves
+ * 
+ *
+ * @param type $tab tableau des élèves au format
+ *                  $tab[$cpt]['login']
+ *                  $tab[$cpt]['nom']
+ *                  $tab[$cpt]['prenom']
+ *                  $tab[$cpt]['classe'][]
+ */
+function tableau_eleves($tab) {
+	global $gepiPath;
+
+	$retour="";
+	if(count($tab)==0) {
+		$retour.="<p style='color:red'>Aucun élève.</p>";
+	}
+	else {
+		$acces_modify_eleve=acces('/eleves/modify_eleve.php', $_SESSION['statut']);
+
+		$retour.="<table class='boireaus boireaus_alt' summary='Tableau des élèves'>
+	<tr>
+		<th>Login</th>
+		<th>Nom</th>
+		<th>Prénom</th>
+		<th>Classe</th>
+	</tr>";
+		for($loop=0;$loop<count($tab);$loop++) {
+			$retour.="
+	<tr>";
+
+			if($acces_modify_eleve) {
+				$retour.="
+		<th><a href='$gepiPath/eleves/modify_eleve.php?eleve_login=".$tab[$loop]['login']."' title=\"\" target='_blank'>".$tab[$loop]['login']."</a></th>";
+			}
+			else {
+				$retour.="
+		<th>".$tab[$loop]['login']."</th>";
+			}
+
+			$retour.="
+		<th>".$tab[$loop]['nom']."</th>
+		<th>".$tab[$loop]['prenom']."</th>
+		<th>";
+			if(isset($tab[$loop]['classe'])) {
+				for($loop2=0;$loop2<count($tab[$loop]['classe']);$loop2++) {
+					if($loop2>0) {$retour.=", ";}
+					$retour.=$tab[$loop]['classe'][$loop2];
+				}
+			}
+		$retour.="</th>
+	</tr>";
+		}
+		$retour.="
+</table>";
+	}
+	return $retour;
+}
 ?>

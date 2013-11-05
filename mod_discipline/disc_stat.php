@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -45,6 +45,8 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 	die();
 }
 
+require('sanctions_func_lib.php');
+
 function get_denomination_prof($login) {
 	$sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$login';";
 	$res=mysql_query($sql);
@@ -86,6 +88,11 @@ $id_mesure=isset($_POST['id_mesure']) ? $_POST['id_mesure'] : NULL;
 $nature_sanction=isset($_POST['nature_sanction']) ? $_POST['nature_sanction'] : NULL;
 $id_nature_sanction=isset($_POST['id_nature_sanction']) ? $_POST['id_nature_sanction'] : NULL;
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Statistiques";
 require_once("../lib/header.inc.php");
@@ -104,7 +111,7 @@ if(!isset($is_posted)) {
 	//echo "<div style='border:1px solid black; padding: 1em;'>\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form1'>\n";
 	echo "<fieldset id='effectifsIncidents' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
-	echo "<legend style='border: 1px solid grey; background-color: white;  '>Effectifs par incidents,...</legend>\n";
+	echo "<legend style='border: 1px solid grey; background-color: white;  '>Effectifs par ".$mod_disc_terme_incident."s,...</legend>\n";
 
 	//echo "<p class='bold'>Totaux&nbsp;:</p>\n";
 
@@ -112,22 +119,26 @@ if(!isset($is_posted)) {
 
 	//=======================
 	//Configuration du calendrier
+	/*
 	include("../lib/calendrier/calendrier.class.php");
 	$cal1 = new Calendrier("form1", "date_debut_disc");
 	$cal2 = new Calendrier("form1", "date_fin_disc");
+	*/
 	//=======================
 
 	echo "<p>Intervalle de dates&nbsp;: du ";
 	//echo "<input type='text' name='date_debut_disc' value='' />\n";
 	echo "<input type='text' name = 'date_debut_disc1' id='date_debut_disc' size='10' value = \"".$date_debut_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	//echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	echo "<a href=\"javascript:".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	//echo "<a href=\"javascript:".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("date_debut_disc", "img_bouton_date_debut_disc");
 
 	echo " au ";
 	//echo "<input type='text' name='date_fin_disc' value='' />\n";
 	echo "<input type='text' name = 'date_fin_disc1' id='date_fin_disc' size='10' value = \"".$date_fin_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	//echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	echo "<a href=\"javascript:".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	//echo "<a href=\"javascript:".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("date_fin_disc", "img_bouton_date_fin_disc");
 	echo "</p>\n";
 
 
@@ -135,7 +146,7 @@ if(!isset($is_posted)) {
 	echo "<table class='boireaus' summary='Choix des affichages'>\n";
 	echo "<tr>\n";
 	echo "<th>\n";
-	echo "Nature<br />d'incidents\n";
+	echo "Nature<br />d'".$mod_disc_terme_incident."s\n";
 	echo "<br />\n";
 	echo "<a href='javascript:modif_case(\"nature\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 	echo "<a href='javascript:modif_case(\"nature\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
@@ -147,7 +158,7 @@ if(!isset($is_posted)) {
 	echo "<a href='javascript:modif_case(\"id_mesure\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 	echo "</th>\n";
 	echo "<th>\n";
-	echo "Sanctions\n";
+	echo ucfirst($mod_disc_terme_sanction)."s\n";
 	echo "<br />\n";
 	echo "<a href='javascript:modif_case(\"nature_sanction\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 	echo "<a href='javascript:modif_case(\"nature_sanction\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
@@ -253,21 +264,23 @@ if(!isset($is_posted)) {
 	//=======================
 	//Configuration du calendrier
 	//include("../lib/calendrier/calendrier.class.php");
-	$cal3 = new Calendrier("form2", "date_debut_disc");
-	$cal4 = new Calendrier("form2", "date_fin_disc");
+	//$cal3 = new Calendrier("form2", "date_debut_disc");
+	//$cal4 = new Calendrier("form2", "date_fin_disc");
 	//=======================
 
 	echo "<p>Intervalle de dates&nbsp;: du ";
 	//echo "<input type='text' name='date_debut_disc' value='' />\n";
 	echo "<input type='text' name = 'date_debut_disc' id = 'date_debut_disc2' size='10' value = \"".$date_debut_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	//echo "<a href=\"#\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	echo "<a href=\"javascript:".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	//echo "<a href=\"javascript:".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("date_debut_disc2", "img_bouton_date_debut_disc2");
 
 	echo " au ";
 	//echo "<input type='text' name='date_fin_disc' value='' />\n";
 	echo "<input type='text' name = 'date_fin_disc' id = 'date_fin_disc2' size='10' value = \"".$date_fin_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	//echo "<a href=\"#\" onClick=\"".$cal4->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
-	echo "<a href=\"javascript:".$cal4->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	//echo "<a href=\"javascript:".$cal4->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+	echo img_calendrier_js("date_fin_disc2", "img_bouton_date_fin_disc2");
 	echo "</p>\n";
 
 	echo "<p>Choisissez ce que vous souhaitez afficher&nbsp;:</p>\n";
@@ -276,8 +289,8 @@ if(!isset($is_posted)) {
 	echo "<a href='javascript:topten_coche(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 	echo "<a href='javascript:topten_coche(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 	echo "<br />\n";
-	echo "<input type='checkbox' name='topten_incidents' id='topten_incidents' value='y' /><label for='topten_incidents'>responsables du plus grand nombre d'incidents,</label><br />\n";
-	echo "<input type='checkbox' name='topten_sanctions' id='topten_sanctions' value='y' /><label for='topten_sanctions'>qui ont le plus de sanctions (<i>travail, retenue, exclusion,...</i>),</label><br />\n";
+	echo "<input type='checkbox' name='topten_incidents' id='topten_incidents' value='y' /><label for='topten_incidents'>responsables du plus grand nombre d'".$mod_disc_terme_incident."s,</label><br />\n";
+	echo "<input type='checkbox' name='topten_sanctions' id='topten_sanctions' value='y' /><label for='topten_sanctions'>qui ont le plus de ".$mod_disc_terme_sanction."s (<i>travail, retenue, exclusion,...</i>),</label><br />\n";
 	echo "<input type='checkbox' name='topten_retenues' id='topten_retenues' value='y' /><label for='topten_retenues'>qui ont le plus de retenues (<em>et assimilées</em>),</label><br />\n";
 	echo "<input type='checkbox' name='topten_exclusions' id='topten_exclusions' value='y' /><label for='topten_exclusions'>qui ont le plus d'exclusions (<em>et assimilées</em>).</label><br />\n";
 
@@ -391,11 +404,11 @@ elseif($mode=='totaux') {
 		$restriction_date.=" AND (si.date<='$date_fin_disc') ";
 	}
 
-	echo "<p class='bold'>Incidents&nbsp;:</p>\n";
-	echo "<table class='boireaus' summary='Incidents'>\n";
+	echo "<p class='bold'>".ucfirst($mod_disc_terme_incident)."s&nbsp;:</p>\n";
+	echo "<table class='boireaus' summary='".ucfirst($mod_disc_terme_incident)."s'>\n";
 	echo "<tr>\n";
 	echo "<th>Nature</th>\n";
-	echo "<th>Nombre d'incidents</th>\n";
+	echo "<th>Nombre d'".$mod_disc_terme_incident."s</th>\n";
 	/*
 	echo "<th>Classes</th>\n";
 	*/
@@ -476,11 +489,11 @@ elseif($mode=='totaux') {
 	echo "</table>\n";
 
 
-	echo "<p class='bold'>Sanctions&nbsp;:</p>\n";
-	echo "<table class='boireaus' summary='Sanctions'>\n";
+	echo "<p class='bold'>".ucfirst($mod_disc_terme_sanction)."s&nbsp;:</p>\n";
+	echo "<table class='boireaus' summary='".ucfirst($mod_disc_terme_sanction)."s'>\n";
 	echo "<tr>\n";
-	echo "<th>Sanction</th>\n";
-	echo "<th>Nombre de sanctions</th>\n";
+	echo "<th>".ucfirst($mod_disc_terme_sanction)."</th>\n";
+	echo "<th>Nombre de ".$mod_disc_terme_sanction."s</th>\n";
 	echo "</tr>\n";
 	$alt=1;
 	/*
@@ -554,7 +567,7 @@ elseif($mode=='totaux') {
 		$sql="SELECT * FROM s_types_sanctions2 WHERE id_nature='$id_nature_sanction[$i]';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<span style='color:red;'>Anomalie&nbsp;: Sanction inconnue</span>";
+			echo "<span style='color:red;'>Anomalie&nbsp;: ".ucfirst($mod_disc_terme_sanction)." inconnue</span>";
 		}
 		else {
 			$lig=mysql_fetch_object($res);
@@ -737,15 +750,15 @@ elseif($mode=='topten') {
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucun incident avec élève responsable n'est enregistré.</p>\n";
+		echo "<p>Aucun ".$mod_disc_terme_incident." avec élève responsable n'est enregistré.</p>\n";
 	}
 	else {
-		echo "<p>Les $nb_ele élèves responsables du plus grand nombre d'incidents&nbsp;:</p>\n";
-		echo "<table class='boireaus' summary='Tableau des fauteurs d incidents'>\n";
+		echo "<p>Les $nb_ele élèves responsables du plus grand nombre d'".$mod_disc_terme_incident."s&nbsp;:</p>\n";
+		echo "<table class='boireaus' summary='Tableau des fauteurs d ".$mod_disc_terme_incident."s'>\n";
 		echo "<tr>\n";
 		echo "<th>Elève</th>\n";
 		echo "<th>Classe</th>\n";
-		echo "<th>Nombre d'incidents</th>\n";
+		echo "<th>Nombre d'".$mod_disc_terme_incident."s</th>\n";
 		echo "</tr>\n";
 		$alt=1;
 		while($lig=mysql_fetch_object($res)) {
@@ -776,15 +789,15 @@ elseif($mode=='topten') {
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucun avec élève avec sanction n'est enregistré.</p>\n";
+		echo "<p>Aucun avec élève avec ".$mod_disc_terme_sanction." n'est enregistré.</p>\n";
 	}
 	else {
-		echo "<p>Les $nb_ele élèves qui ont le plus de sanctions&nbsp;:</p>\n";
-		echo "<table class='boireaus' summary='Tableau des sanctionnés'>\n";
+		echo "<p>Les $nb_ele élèves qui ont le plus de ".$mod_disc_terme_sanction."s&nbsp;:</p>\n";
+		echo "<table class='boireaus' summary='Tableau des ".$mod_disc_terme_sanction."nés'>\n";
 		echo "<tr>\n";
 		echo "<th>Elève</th>\n";
 		echo "<th>Classe</th>\n";
-		echo "<th>Nombre de sanctions</th>\n";
+		echo "<th>Nombre de ".$mod_disc_terme_sanction."s</th>\n";
 		echo "</tr>\n";
 		$alt=1;
 		while($lig=mysql_fetch_object($res)) {

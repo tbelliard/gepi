@@ -6,6 +6,8 @@ require_once dirname(__FILE__) . '/../../../tools/helpers/orm/GepiEmptyTestBase.
  * Test class for UtilisateurProfessionnel.
  *
  */
+require_once dirname(__FILE__) . '/init_date.php';
+
 class AbsenceEleveNotificationTest extends GepiEmptyTestBase
 {
     protected function setUp()
@@ -17,7 +19,7 @@ class AbsenceEleveNotificationTest extends GepiEmptyTestBase
     public function testPreremplirResponsables()
     {
         $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour(SAMEDI_s40j6)->getFirst();
         $traitement = $saisie->getAbsenceEleveTraitements()->getFirst();
         $notification = $traitement->getAbsenceEleveNotifications()->getFirst();
         $this->assertEquals($notification->getEmail(), null);

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <?php
 /**
  * header.inc.php
@@ -95,6 +95,11 @@ if (isset($dojo)) {
     echo '<script type="text/javascript" src="'.$gepiPath.'/lib/dojo/dojo/dojo.js" djConfig="parseOnLoad: true"></script>'."\n";
     echo '<link rel="stylesheet" href="'.$gepiPath.'/lib/dojo/dijit/themes/claro/claro.css" />';
 }
+if((isset($charger_js_dragresize))&&($charger_js_dragresize=="y")) {
+    echo '<script type="text/javascript" src="'.$gepiPath.'/lib/twinhelix_dragresize.js"></script>'."\n";
+    echo '<link rel="stylesheet" href="'.$gepiPath.'/css/twinhelix_dragresize.css" />'."\n";
+    echo js_dragresize();
+}
 ?>
 
 <!-- Fin des styles -->
@@ -129,7 +134,7 @@ if (isset($dojo)) {
 
 <div id='container'>
 
-<a name='haut_de_page'></a>
+<a id='haut_de_page'></a>
 	
 	
 	

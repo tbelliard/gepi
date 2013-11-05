@@ -39,6 +39,15 @@ if (!checkAccess()) {
     die();
 }
 
+if(($_SESSION['statut']=='cpe')&&(!getSettingAOui('CpeEditElevesGroupes'))) {
+	header("Location: ../accueil.php?msg=Accès non autorisé");
+	die();
+}
+elseif(($_SESSION['statut']=='scolarite')&&(!getSettingAOui('ScolEditElevesGroupes'))) {
+	header("Location: ../accueil.php?msg=Accès non autorisé");
+	die();
+}
+
 // Initialisation des variables utilisées dans le formulaire
 
 $id_classe = isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
@@ -242,6 +251,16 @@ require_once("../lib/header.inc.php");
 $nb_periode=$current_group['nb_periode'];
 //=========================
 
+$tab_autres_sig=array();
+$sql="SELECT DISTINCT id_groupe FROM j_signalement WHERE nature='erreur_affect' AND id_groupe!='$id_groupe';";
+//echo "$sql<br />";
+$res_autres_sig=mysql_query($sql);
+if(mysql_num_rows($res_autres_sig)>0) {
+	while($lig_autres_sig=mysql_fetch_object($res_autres_sig)) {
+		$tab_autres_sig[]=$lig_autres_sig->id_groupe;
+	}
+}
+
 $tab_sig=array();
 $sql="SELECT * FROM j_signalement WHERE id_groupe='$id_groupe' AND nature='erreur_affect' ORDER BY periode, login;";
 //echo "$sql<br />";
@@ -325,20 +344,27 @@ echo "<div style='float:left;'>";
 echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_passage_a_un_autre_groupe' method='post'>\n";
 
 echo "<p class='bold'>\n";
-if(!$multiclasses) {
-	echo "<a href='edit_class.php?id_classe=$id_classe'";
-	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+if(acces('/groupes/edit_class.php', $_SESSION['statut'])) {
+	if(!$multiclasses) {
+		echo "<a href='edit_class.php?id_classe=$id_classe'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	}
+	else {
+		$cpt_tmp_clas=0;
+		foreach($current_group['classes']['classes'] as $tmp_id_classe => $tmp_tab_clas_grp) {
+			if(	$cpt_tmp_clas>0) {echo " | ";}
+			echo "<a href='edit_class.php?id_classe=".$tmp_id_classe."'";
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+			echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".$tmp_tab_clas_grp['classe']."</a>\n";
+			$cpt_tmp_clas++;
+		}
+	}
 }
 else {
-	$cpt_tmp_clas=0;
-	foreach($current_group['classes']['classes'] as $tmp_id_classe => $tmp_tab_clas_grp) {
-		if(	$cpt_tmp_clas>0) {echo " | ";}
-		echo "<a href='edit_class.php?id_classe=".$tmp_id_classe."'";
-		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".$tmp_tab_clas_grp['classe']."</a>\n";
-		$cpt_tmp_clas++;
-	}
+	echo "<a href='../accueil.php'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 }
 
 //$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe AND g.id=jgc.id_groupe AND jgc.id_groupe!='$id_groupe' ORDER BY g.name;";
@@ -353,6 +379,7 @@ if(mysql_num_rows($res_grp)>1) {
 	$cpt_grp=0;
 	$chaine_js=array();
 	//echo "<option value=''>---</option>\n";
+	$indice_grp_courant=0;
 	while($lig_grp=mysql_fetch_object($res_grp)) {
 
 		$tmp_grp=get_group($lig_grp->id_groupe);
@@ -393,8 +420,13 @@ if(mysql_num_rows($res_grp)>1) {
 
 echo " | <a href='edit_group.php?id_groupe=$id_groupe&amp;id_classe=".$current_group["classes"]["list"][0]."'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-echo ">Éditer l'enseignement</a>";
+echo ">Éditer l'enseignement</a> ";
 
+if(acces('/groupes/repartition_ele_grp.php', $_SESSION['statut'])) {
+	echo " | <a href='repartition_ele_grp.php'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo " title=\"Répartir des élèves entre plusieurs groupes\">Répartir</a> ";
+}
 echo "</p>";
 echo "</form>\n";
 echo "</div>\n";
@@ -412,6 +444,7 @@ if(mysql_num_rows($res_grp)>1) {
 
 	echo " | ";
 
+	$indice_grp_courant=0;
 	echo "<select name='id_groupe' id='id_groupe_a_passage_autre_grp2' onchange=\"confirm_changement_grp2(change, '$themessage');\">\n";
 	$cpt_grp=0;
 	$chaine_js=array();
@@ -446,6 +479,62 @@ if(mysql_num_rows($res_grp)>1) {
 			}
 			else{
 				document.getElementById('id_groupe_a_passage_autre_grp2').selectedIndex=$indice_grp_courant;
+			}
+		}
+	}
+</script>\n";
+
+	echo "</p>";
+
+	echo "</form>\n";
+	echo "</div>\n";
+}
+
+// Formulaire pour passer à un autre groupe avec erreur d'affectation
+if(count($tab_autres_sig)>0) {
+
+	echo "<div style='float:left;'>";
+	echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_passage_a_un_autre_groupe3' method='post'>\n";
+
+	echo "<p class='bold'>";
+
+	echo " | ";
+
+	echo "<span title=\"Des erreurs d'affectation ont été signalées pour un ou des enseignements\">Erreurs:<select name='id_groupe' id='id_groupe_a_passage_autre_grp3' onchange=\"confirm_changement_grp3(change, '$themessage');\">\n";
+	$cpt_grp=0;
+	$chaine_js=array();
+	$indice_grp_courant=0;
+	echo "<option value=''>---</option>\n";
+	for($loop=0;$loop<count($tab_autres_sig);$loop++) {
+
+		$tmp_grp=get_group($tab_autres_sig[$loop], array('classes'));
+
+		echo "<option value='".$tab_autres_sig[$loop]."'";
+		if($tab_autres_sig[$loop]==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
+		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+		$cpt_grp++;
+	}
+	echo "</select><img src='../images/icons/flag2.gif' width='16' height='16' /></span>\n";
+
+	echo " <input type='submit' id='button_submit_passage_autre_groupe3' value='Go'>\n";
+
+	echo "<script type='text/javascript'>
+
+	document.getElementById('button_submit_passage_autre_groupe3').style.display='none';
+
+	function confirm_changement_grp3(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.forms['form_passage_a_un_autre_groupe3'].submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.forms['form_passage_a_un_autre_groupe3'].submit();
+			}
+			else{
+				document.getElementById('id_groupe_a_passage_autre_grp3').selectedIndex=$indice_grp_courant;
 			}
 		}
 	}
@@ -587,10 +676,18 @@ echo "<th><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe
 if ($multiclasses) {
 	echo "<th><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;order_by=classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe</a></th>\n";
 }
+
+$acces_mes_listes="y";
+if(!acces('/groupes/mes_listes.php', $_SESSION['statut'])) {
+	$acces_mes_listes="n";
+}
+
 foreach ($current_group["periodes"] as $period) {
 	if($period["num_periode"]!=""){
 		echo "<th>" . $period["nom_periode"];
-		echo " <a href='mes_listes.php?id_groupe=$id_groupe&amp;periode_num=".$period["num_periode"]."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Exporter la liste des élèves de cet enseignement pour la période ".$period["nom_periode"]." au format '><img src='../images/icons/csv.png' width='16' height='16' /></a>";
+		if($acces_mes_listes=="y") {
+			echo " <a href='mes_listes.php?id_groupe=$id_groupe&amp;periode_num=".$period["num_periode"]."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Exporter la liste des élèves de cet enseignement pour la période ".$period["nom_periode"]." au format '><img src='../images/icons/csv.png' width='16' height='16' /></a>";
+		}
 		echo "</th>\n";
 	}
 }
@@ -699,7 +796,15 @@ foreach ($current_group["periodes"] as $period) {
 		echo "</th>\n";
 	}
 }
-echo "<th>&nbsp;</th><th>&nbsp;</th>\n";
+echo "<th>\n";
+if((isset($tab_sig))&&(count($tab_sig)>0)) {
+	echo "<span id='prise_en_compte_signalement_toutes_periodes'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement('prise_en_compte_signalement_toutes_periodes');changement();griser_degriser(etat_grisage);\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour toutes les périodes.' title='Prendre en compte tous les signalements d erreurs pour toutes les périodes.' /></a></span>";
+}
+else {
+	echo "&nbsp;";
+}
+echo "</th>
+<th>&nbsp;</th>\n";
 echo "</tr>\n";
 
 // Marqueurs pour identifier quand on change de classe dans la liste
@@ -708,7 +813,6 @@ $new_classe = 0;
 $empty_td = false;
 
 //=====================================
-// AJOUT: boireaus 20080229
 $chaine_sql_classe="(";
 for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
 	if($i>0) {$chaine_sql_classe.=" OR ";}
@@ -717,12 +821,21 @@ for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
 $chaine_sql_classe.=")";
 //=====================================
 
+$acces_eleve_options="y";
+if(!acces('/classes/eleve_options.php', $_SESSION['statut'])) {
+	$acces_eleve_options="n";
+}
+
+$acces_prepa_conseil_edit_limite="y";
+if(!acces('/prepa_conseil/edit_limite.php', $_SESSION['statut'])) {
+	$acces_prepa_conseil_edit_limite="n";
+}
+
 if(count($total_eleves)>0) {
 	$alt=1;
 	foreach($total_eleves as $e_login) {
 
 		//=========================
-		// AJOUT: boireaus 20071010
 		// Récupération du numéro de l'élève:
 		$num_eleve=-1;
 		for($i=0;$i<count($login_eleve);$i++){
@@ -778,13 +891,20 @@ if(count($total_eleves)>0) {
 					"</td>";
 				*/
 				echo "<td>";
-				echo "<a href='../classes/eleve_options.php?login_eleve=$e_login&id_classe=".$eleves_list["users"][$e_login]['id_classe']."' title=\"Consulter les matières suivies par ".$eleves_list["users"][$e_login]["nom"]." ".$eleves_list["users"][$e_login]["prenom"]." en classe de ".$eleves_list["users"][$e_login]["classe"]."\"";
-				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">";
-				echo $eleves_list["users"][$e_login]["nom"];
-				echo " ";
-				echo $eleves_list["users"][$e_login]["prenom"];
-				echo "</a>\n";
+				if($acces_eleve_options=="y") {
+					echo "<a href='../classes/eleve_options.php?login_eleve=$e_login&id_classe=".$eleves_list["users"][$e_login]['id_classe']."' title=\"Consulter les matières suivies par ".$eleves_list["users"][$e_login]["nom"]." ".$eleves_list["users"][$e_login]["prenom"]." en classe de ".$eleves_list["users"][$e_login]["classe"]."\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">";
+					echo $eleves_list["users"][$e_login]["nom"];
+					echo " ";
+					echo $eleves_list["users"][$e_login]["prenom"];
+					echo "</a>\n";
+				}
+				else {
+					echo $eleves_list["users"][$e_login]["nom"];
+					echo " ";
+					echo $eleves_list["users"][$e_login]["prenom"];
+				}
 				//echo "<pre>".print_r($eleves_list["users"][$e_login])."</pre>";
 				echo "</td>\n";
 
@@ -837,9 +957,14 @@ if(count($total_eleves)>0) {
 
 						// Test sur la présence de notes dans cn ou de notes/app sur bulletin
 						if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
-							echo "<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$e_login."&id_classe=".$eleves_list["users"][$e_login]["id_classe"]."&periode1=".$period["num_periode"]."&periode2=".$period["num_periode"]."' target='_blank'>";
-							echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
-							echo "</a>";
+							if($acces_prepa_conseil_edit_limite=="y") {
+								echo "<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$e_login."&id_classe=".$eleves_list["users"][$e_login]["id_classe"]."&periode1=".$period["num_periode"]."&periode2=".$period["num_periode"]."' target='_blank'>";
+								echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+								echo "</a>";
+							}
+							else {
+								echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+							}
 						}
 
 						$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";

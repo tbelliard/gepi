@@ -206,6 +206,8 @@ $test = 'templates/accueil_externe.php' ;
 		$tbs_message[] =array("classe"=>"","texte" => "Afin d'utiliser Gepi, vous devez vous identifier.");
 	}
 
+	$tbs_input_password_to_text= input_password_to_text('no_anti_inject_password');
+
 //==================================
 //	Mot de passe oublié
 	$tbs_password_recovery = "";

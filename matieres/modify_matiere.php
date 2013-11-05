@@ -332,7 +332,7 @@ echo "<option value=0>0</option>\n";
 $k='11';
 $j = '1';
 //while ($k < '51'){
-while ($k < '61'){
+while ($k < 110){
     echo "<option value=$k"; if ($matiere_priorite == $k) {echo " SELECTED";} echo ">$j</option>\n";
     $k++;
     $j = $k - 10;
@@ -394,7 +394,7 @@ if((isset($current_matiere))&&($current_matiere!="")) {
 				$cpt_clas=0;
 				while($lig_clas=mysql_fetch_object($res_clas)) {
 					if($cpt_clas>0) {$chaine_clas.=", ";}
-					$chaine_clas.="<a href='../groupes/edit_class.php?id_classe=$lig_clas->id'>$lig_clas->classe</a>";
+					$chaine_clas.="<a href='../groupes/edit_class.php?id_classe=$lig_clas->id' title=\"Accéder à la liste des enseignements de $lig_clas->classe\">$lig_clas->classe</a>";
 					$cpt_clas++;
 				}
 			}
@@ -406,12 +406,12 @@ if((isset($current_matiere))&&($current_matiere!="")) {
 				$cpt_prof=0;
 				while($lig_prof=mysql_fetch_object($res_prof)) {
 					if($cpt_prof>0) {$chaine_prof.=", ";}
-					$chaine_prof.="<a href='../utilisateurs/modify_user.php?user_login=$lig_prof->login'>$lig_prof->civilite $lig_prof->nom ".mb_substr($lig_prof->prenom,0,1)."</a>";
+					$chaine_prof.="<a href='../utilisateurs/modify_user.php?user_login=$lig_prof->login' title=\"Modifier l'utilisateur $lig_prof->login\">$lig_prof->civilite $lig_prof->nom ".mb_substr($lig_prof->prenom,0,1)."</a>";
 					$cpt_prof++;
 				}
 			}
 
-			echo "<a href='../groupes/edit_group.php?id_groupe=$lig_ens->id'>$lig_ens->name (<em>$lig_ens->description</em>)</a>";
+			echo "<a href='../groupes/edit_group.php?id_groupe=$lig_ens->id' title=\"Modifier l'enseignement n°$lig_ens->id\">$lig_ens->name (<em>$lig_ens->description</em>)</a>";
 			if($chaine_clas!="") {
 				echo " en $chaine_clas";
 			}

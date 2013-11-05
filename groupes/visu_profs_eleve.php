@@ -201,121 +201,133 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 	$prenom_eleve = mysql_result($eleve, 0, "prenom");
 	//$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
 
-	echo "<h3>Equipe pédagogique de l'élève : <strong>".$prenom_eleve ." " . $nom_eleve."</strong>";
-
-	$sql="SELECT jec.id_classe, c.* FROM j_eleves_classes jec, classes c WHERE jec.login='".$login_eleve."' AND jec.id_classe=c.id ORDER BY periode DESC LIMIT 1";
+	//$sql="SELECT DISTINCT jec.id_classe, c.* FROM j_eleves_classes jec, classes c WHERE jec.login='".$login_eleve."' AND jec.id_classe=c.id ORDER BY periode DESC LIMIT 1";
+	$sql="SELECT DISTINCT jec.id_classe, c.* FROM j_eleves_classes jec, classes c WHERE jec.login='".$login_eleve."' AND jec.id_classe=c.id ORDER BY periode;";
 	$res_class=mysql_query($sql);
 	if(mysql_num_rows($res_class)==0) {
+		echo "<h3>Equipe pédagogique de l'élève : <strong>".$prenom_eleve ." " . $nom_eleve."</strong>";
 		echo "</h3>\n";
 		echo "<p>L'élève n'est dans aucune classe???</p>\n";
 		require "../lib/footer.inc.php";
 		die();
 	}
-	$lig_clas=mysql_fetch_object($res_class);
-	$id_classe=$lig_clas->id_classe;
-	echo " de ".$lig_clas->nom_complet." (<i>".$lig_clas->classe."</i>)";
-	/*
-	$tmp_classes=get_noms_classes_from_ele_login($login_eleve);
-	echo " (<i>";
-	for($i=0;$i<count($tmp_classes);$i++) {
-		if($i>0) {echo ", ";}
-		echo $tmp_classes[$i];
-	}
-	echo "</i>)";
-	*/
-	echo "</h3>\n";
 
-    echo "<table border='0' summary='Equipe'>\n";
+	while($lig_clas=mysql_fetch_object($res_class)) {
+		echo "<h3>Equipe pédagogique de l'élève : <strong>".$prenom_eleve ." " . $nom_eleve."</strong>";
 
-    // On commence par le CPE
-    $sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.show_email,jec.cpe_login " .
-    		"FROM utilisateurs u,j_eleves_cpe jec " .
-    		"WHERE jec.e_login='".$login_eleve."' AND " .
-    		"u.login=jec.cpe_login " .
-    		"ORDER BY jec.cpe_login;";
-	//echo "$sql<br />";
-	$req = mysql_query($sql);
-	if(mysql_num_rows($req)>0) {
-		// Il ne doit y en avoir qu'un...
-		$cpe = mysql_fetch_object($req);
-		echo "<tr valign='top'><td>VIE SCOLAIRE</td>\n";
-		echo "<td>";
-		// On affiche l'email s'il est non nul, si le cpe l'a autorisé, et si l'utilisateur est autorisé par les droits d'accès globaux
-		if ($cpe->email!="" AND $cpe->show_email == "yes" AND (
-			($_SESSION['statut'] == "responsable" AND
-					(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes" OR
-					getSettingValue("GepiAccesCpePPEmailParent") == "yes"))
-			OR
-			($_SESSION['statut'] == "eleve" AND
-				(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes" OR
-				getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes")
-				)
-			)){
-		    echo "<a href='mailto:".$cpe->email."?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " ".$nom_eleve)."'>".affiche_utilisateur($cpe->cpe_login,$id_classe)."</a>";
-		} else {
-			echo affiche_utilisateur($cpe->cpe_login,$id_classe);
+		$id_classe=$lig_clas->id_classe;
+		echo " de ".$lig_clas->nom_complet." (<i>".$lig_clas->classe."</i>)";
+		/*
+		$tmp_classes=get_noms_classes_from_ele_login($login_eleve);
+		echo " (<i>";
+		for($i=0;$i<count($tmp_classes);$i++) {
+			if($i>0) {echo ", ";}
+			echo $tmp_classes[$i];
 		}
-		echo "</td></tr>\n";
+		echo "</i>)";
+		*/
+		echo "</h3>\n";
+
+		echo "<table border='0' class='boireaus boireaus_alt' summary='Equipe'>
+		<tr>
+			<th>Matière</th>
+			<th>Enseignement/groupe</th>
+			<th>Professeur</th>
+		</tr>\n";
+
+		// On commence par le CPE
+		$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.show_email,jec.cpe_login " .
+					"FROM utilisateurs u,j_eleves_cpe jec " .
+					"WHERE jec.e_login='".$login_eleve."' AND " .
+					"u.login=jec.cpe_login " .
+					"ORDER BY jec.cpe_login;";
+		//echo "$sql<br />";
+		$req = mysql_query($sql);
+		if(mysql_num_rows($req)>0) {
+			// Il ne doit y en avoir qu'un...
+			$cpe = mysql_fetch_object($req);
+			echo "<tr valign='top'><td>VIE SCOLAIRE</td>\n";
+			echo "<td></td>";
+			echo "<td>";
+			// On affiche l'email s'il est non nul, si le cpe l'a autorisé, et si l'utilisateur est autorisé par les droits d'accès globaux
+			if ($cpe->email!="" AND $cpe->show_email == "yes" AND (
+				($_SESSION['statut'] == "responsable" AND
+						(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes" OR
+						getSettingValue("GepiAccesCpePPEmailParent") == "yes"))
+				OR
+				($_SESSION['statut'] == "eleve" AND
+					(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes" OR
+					getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes")
+					)
+				)){
+				echo "<a href='mailto:".$cpe->email."?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " ".$nom_eleve)."'>".affiche_utilisateur($cpe->cpe_login,$id_classe)."</a>";
+			} else {
+				echo affiche_utilisateur($cpe->cpe_login,$id_classe);
+			}
+			echo "</td></tr>\n";
+		}
+
+		// On passe maintenant les groupes un par un, sans se préoccuper de la période : on affiche tous les groupes
+		// auxquel l'élève appartient ou a appartenu
+		$groupes = mysql_query("SELECT DISTINCT jeg.id_groupe, m.nom_complet, g.* " .
+								"FROM j_eleves_groupes jeg, matieres m, j_groupes_matieres jgm, j_groupes_classes jgc, groupes g WHERE " .
+								"g.id=jeg.id_groupe AND ".
+								"jeg.login = '".$login_eleve."' AND " .
+								"m.matiere = jgm.id_matiere AND " .
+								"jgm.id_groupe = jeg.id_groupe AND " .
+								"jgc.id_groupe = jeg.id_groupe AND " .
+								"jgc.id_classe = '".$id_classe . "' " .
+								"ORDER BY jgc.priorite, m.matiere");
+		while ($groupe = mysql_fetch_object($groupes)) {
+			// On est dans la boucle 'groupes'. On traite les groupes un par un.
+
+		    // Matière correspondant au groupe:
+		    echo "<tr valign='top'><td>".htmlspecialchars($groupe->nom_complet)."</td>\n";
+
+			echo "<td>".$groupe->name." <em style='font-size:small'>(".$groupe->description.")</em>"."</td>";
+
+		    // Professeurs
+		    echo "<td>";
+		    $sql="SELECT jgp.login,u.nom,u.prenom,u.email,u.show_email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='".$groupe->id_groupe."' AND u.login=jgp.login";
+		    $result_prof=mysql_query($sql);
+		    while($lig_prof=mysql_fetch_object($result_prof)){
+
+		        // Le prof est-il PP de l'élève ?
+		        $sql="SELECT * FROM j_eleves_professeurs WHERE login = '".$login_eleve."' AND professeur='".$lig_prof->login."'";
+		        $res_pp=mysql_query($sql);
+
+				if($lig_prof->email!="" AND $lig_prof->show_email == "yes" AND
+					(($_SESSION['statut'] == "responsable" AND
+						(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes"
+							OR
+						 (getSettingValue("GepiAccesCpePPEmailParent") == "yes" AND mysql_num_rows($res_pp)>0)
+						 )
+		    		) OR (
+					  $_SESSION['statut'] == "eleve" AND
+						(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes"
+							OR
+						 (getSettingValue("GepiAccesCpePPEmailEleve") == "yes" AND mysql_num_rows($res_pp)>0)
+						 )
+					)
+					)){
+		            echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>".affiche_utilisateur($lig_prof->login,$id_classe)."</a>";
+		        }
+		        else{
+					echo affiche_utilisateur($lig_prof->login,$id_classe);
+		        }
+
+
+		        if(mysql_num_rows($res_pp)>0){
+		             echo " (<i>".getSettingValue('gepi_prof_suivi')."</i>)";
+		        }
+		        echo "<br />\n";
+		    }
+		    echo "</td>\n";
+		    echo "</tr>\n";
+		}
+		// On a fini le traitement.
+		echo "</table>\n";
 	}
-
-	// On passe maintenant les groupes un par un, sans se préoccuper de la période : on affiche tous les groupes
-	// auxquel l'élève appartient ou a appartenu
-	$groupes = mysql_query("SELECT DISTINCT jeg.id_groupe, m.nom_complet " .
-							"FROM j_eleves_groupes jeg, matieres m, j_groupes_matieres jgm, j_groupes_classes jgc WHERE " .
-							"jeg.login = '".$login_eleve."' AND " .
-							"m.matiere = jgm.id_matiere AND " .
-							"jgm.id_groupe = jeg.id_groupe AND " .
-							"jgc.id_groupe = jeg.id_groupe AND " .
-							"jgc.id_classe = '".$id_classe . "' " .
-							"ORDER BY jgc.priorite, m.matiere");
-	while ($groupe = mysql_fetch_object($groupes)) {
-		// On est dans la boucle 'groupes'. On traite les groupes un par un.
-
-        // Matière correspondant au groupe:
-        echo "<tr valign='top'><td>".htmlspecialchars($groupe->nom_complet)."</td>\n";
-
-        // Professeurs
-        echo "<td>";
-        $sql="SELECT jgp.login,u.nom,u.prenom,u.email,u.show_email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='".$groupe->id_groupe."' AND u.login=jgp.login";
-        $result_prof=mysql_query($sql);
-        while($lig_prof=mysql_fetch_object($result_prof)){
-
-            // Le prof est-il PP de l'élève ?
-            $sql="SELECT * FROM j_eleves_professeurs WHERE login = '".$login_eleve."' AND professeur='".$lig_prof->login."'";
-            $res_pp=mysql_query($sql);
-
-			if($lig_prof->email!="" AND $lig_prof->show_email == "yes" AND
-		    	(($_SESSION['statut'] == "responsable" AND
-		    		(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes"
-		    			OR
-		    		 (getSettingValue("GepiAccesCpePPEmailParent") == "yes" AND mysql_num_rows($res_pp)>0)
-		    		 )
-        		) OR (
-				  $_SESSION['statut'] == "eleve" AND
-		    		(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes"
-		    			OR
-		    		 (getSettingValue("GepiAccesCpePPEmailEleve") == "yes" AND mysql_num_rows($res_pp)>0)
-		    		 )
-		    	)
-		    	)){
-                echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>".affiche_utilisateur($lig_prof->login,$id_classe)."</a>";
-            }
-            else{
-				echo affiche_utilisateur($lig_prof->login,$id_classe);
-            }
-
-
-            if(mysql_num_rows($res_pp)>0){
-                 echo " (<i>".getSettingValue('gepi_prof_suivi')."</i>)";
-            }
-            echo "<br />\n";
-        }
-        echo "</td>\n";
-        echo "</tr>\n";
-	}
-	// On a fini le traitement.
-	echo "</table>\n";
-
 }
 
 require "../lib/footer.inc.php";

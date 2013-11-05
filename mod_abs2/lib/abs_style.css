@@ -162,6 +162,10 @@ img.bord_rouge {
 	border: 3px solid red;
 }
 
+img.bord_jaune {
+	border: 3px solid yellow;
+}
+
 img.sans_bord {
 	border: 0px solid black;
 }

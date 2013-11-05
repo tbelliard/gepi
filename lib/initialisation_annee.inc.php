@@ -154,6 +154,7 @@ $liste_tables_del_etape_matieres = array(
 "cn_notes_conteneurs",
 "cn_notes_devoirs",
 "ct_devoirs_entry",
+"ct_devoirs_faits",
 "ct_documents",
 "ct_entry",
 "ct_devoirs_documents",

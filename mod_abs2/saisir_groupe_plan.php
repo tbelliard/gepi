@@ -602,7 +602,9 @@ foreach($eleve_col as $eleve) {
 	
 	if ($utilisateur->getAccesFicheEleve($eleve)) {
 		$afficheEleve[$elv]['accesFiche'] = $eleve->getLogin();
-	}
+	} else {
+		$afficheEleve[$elv]['accesFiche'] = $eleve->getLogin();        
+    }
 	
 	$col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 	$afficheEleve[$elv]['creneaux_possibles'] = $col_creneaux->count();
@@ -850,7 +852,7 @@ $tbs_last_connection = "";
 require_once("../lib/header_template.inc.php");
 //include("../templates/origine/bandeau_template.php");
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
@@ -903,30 +905,21 @@ include('../templates/origine/header_template.php');
 include('menu_abs2.inc.php');
 //===========================
 ?>
-<a name='haut_de_page'></a>
+<a id='haut_de_page'></a>
 <div class='css-panes' id='containDiv'>
 
 <div style='float:right; width:20px'>
-<img src="../images/icons/ico_question.png" width="19" height="19" title="Légende des couleurs: Une fois coché, un élève qui apparait en rouge
-                                      est considéré en Manquement à son obligation
-                                      de présence dans l'établissement.
-
-                                      En jaune, il n'est pas considéré comme
-                                      manquant à ses obligations.
-
-                                      Les couleurs dépendent du type choisi.">
+<img src="../images/icons/ico_question.png" 
+     style="width:19px; height:19px;"
+     alt="aide"
+     title="Légende des couleurs : Une fois coché, un élève qui apparait 
+     en rouge est considéré en Manquement à son obligation de présence dans l'établissement.
+     
+     En jaune, il n'est pas considéré comme manquant à ses obligations.
+     
+     Les couleurs dépendent du type choisi." />
 </div>
 
-	<!--
-	<form class="center" action="./saisir_groupe_plan.php" method="post" style="width: 100%;">
-		<p>
-			  <button type='submit' 
-					  style='width:25em;margin:0 auto;' 
-					  name='initialise' 
-					  value='<?php echo TRUE; ?>'
-					  title="Efface tous les filtres puis recharge la page">
-				  Ré-initialiser la page
-			  </button>
 <?php if ($journeePossible) { ?>			
 	<?php if ($_SESSION['showJournee']) { ?>
 			  <button type='submit' 
@@ -946,9 +939,6 @@ include('menu_abs2.inc.php');
 			  </button>
 	<?php } ?>
 <?php } ?>
-		</p>
-	</form>
-	-->
 
 	<!-- Choix du groupe à afficher -->
 	<div class="choix">
@@ -982,92 +972,6 @@ foreach ($groupe_col as $group) {
 			</p>
 		</form>	
 <?php }
-
-// ===== Affichage des AID ======
-/*
-if (isset ($aid_col) && !$aid_col->isEmpty()) {
-?>	
-		<form class="colonne" action="./saisir_groupe.php" method="post">
-			<p>
-				<input type="hidden" name="type_selection" value="id_aid"/>
-				<label for="id_aid">Aid : </label>
-				<select id="id_aid" name="id_aid" class="small">
-					<option value='-1'>choisissez une aid</option>
-<?php foreach ($aid_col as $aid) { ?>
-					<option value='<?php echo $aid->getPrimaryKey(); ?>'
-						<?php if ($id_aid == $aid->getPrimaryKey()) { ?>
-							selected='selected'
-						<?php } ?>>
-						<?php echo $aid->getNom(); ?>
-					</option>
-<?php 
-}
-?>
-				</select>
-				<?php echo format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve, "aid"); ?>
-				<button type="submit">Afficher les élèves</button>
-			</p>
-		</form>	
-<?php 
-}
-*/
-
-// ===== Affichage des cours ======	
-/*
-if (isset ($edt_cours_aff) && !$edt_cours_aff->isEmpty()) { 
-?>
-		<form class="colonne" action="./saisir_groupe_plan.php" method="post">
-			<p>
-				<input type="hidden" name="type_selection" value="id_cours"/>
-				<label for="id_cours">Cours :</label>
-				<select id="id_cours" name="id_cours" class="small">
-					<option value='-1'>choisissez un cours</option>
-<?php foreach ($edt_cours_aff as $edt_cours) { ?>
-					<option value='<?php echo $edt_cours->getIdCours(); ?>'
-						<?php if ($id_cours == $edt_cours->getIdCours()) { ?>
-							selected='selected'
-						<?php } ?>>
-						<?php echo $edt_cours->getDescription(); ?>
-					</option>
-<?php } ?>
-				</select>
-<?php 
- if (isset ($semaineAff) && !$semaineAff->isEmpty()) {
-	if (count($semaineAff) > 1) {
-?>
-				<label class="invisible" for="id_semaine">Semaine :</label>
-				<select id="id_semaine" name="id_semaine" class="small">
-					<option value='-1'>choisissez une semaine</option>
-<?php foreach ($semaineAff as $semaine) { ?>
-					<option value='<?php echo $semaine->getPrimaryKey(); ?>'
-						<?php if ($id_semaine == $semaine->getPrimaryKey()) { ?>
-							selected='selected'
-						<?php } ?>>
-						Semaine <?php echo $semaine->getNumEdtSemaine(); ?> <?php echo $semaine->getTypeEdtSemaine(); ?>
-						du <?php echo $semaine->getLundi('d/m'); ?>
-						au <?php echo $semaine->getSamedi('d/m'); ?>
-					</option>
-<?php } ?>
-				</select>
-						
-<?php } else { ?>
-				<label for="id_semaine">
-					Semaine <?php echo $current_semaine->getNumEdtSemaine(); ?>
-					<?php echo $current_semaine->getTypeEdtSemaine(); ?>
-				</label>
-				<input id="id_semaine" type="hidden" name="id_semaine" value="<?php echo $id_semaine; ?>"/>	
-<?php } ?>
-				<button type="submit">Afficher les élèves</button>
-<?php if(isset ($erreurSemaine) && $erreurSemaine ==TRUE) { ?>
-				<br />
-				Erreur : le cours ne correspond pas au type de semaine.
-<?php } ?>
-			</p>
-		</form>
-<?php 	
-	}
-}
-*/
 
 // ===== Affichage des classes ======	
 if (!$classe_col->isEmpty()) {
@@ -1164,8 +1068,8 @@ if ($eleve_col->isEmpty()) {
 							echo "   <td>".$type['nom']."</td>\n";
 							for($loop=0;$loop<count($tab_regimes);$loop++) {
 								echo "   <td style='text-align:center'>\n";
-								echo "      <a href=\"javascript:cocher_decocher_regime(".$type['type'].", ".$loop.", 'true')\"><img src='../images/enabled.png' width='20' height='20' title=\"Cocher ".$type['nom']." pour les ".$tab_regimes[$loop]."\" /></a> \n";
-								echo "      <a href=\"javascript:cocher_decocher_regime(".$type['type'].", ".$loop.", 'false')\"><img src='../images/disabled.png' width='20' height='20' title=\"Décocher ".$type['nom']." pour les ".$tab_regimes[$loop]."\" /></a> \n";
+								echo "      <a href=\"javascript:cocher_decocher_regime(".$type['type'].", ".$loop.", 'true')\"><img src='../images/enabled.png' style='width:20px; height:20px;' alt='activer' title=\"Cocher ".$type['nom']." pour les ".$tab_regimes[$loop]."\" /></a> \n";
+								echo "      <a href=\"javascript:cocher_decocher_regime(".$type['type'].", ".$loop.", 'false')\"><img src='../images/disabled.png' style='width:20px; height:20px;' alt='désactiver' title=\"Décocher ".$type['nom']." pour les ".$tab_regimes[$loop]."\" /></a> \n";
 								echo "   </td>\n";
 							}
 							echo "   <td id='td_total_regime_".$type['type']."' style='text-align:center'></td>\n";
@@ -1176,7 +1080,7 @@ if ($eleve_col->isEmpty()) {
 					echo "   <th>Décocher</th>\n";
 					for($loop=0;$loop<count($tab_regimes);$loop++) {
 						echo "   <th>\n";
-						echo "      <a href=\"javascript:cocher_decocher_regime('decoche', ".$loop.", 'false')\"><img src='../images/disabled.png' width='20' height='20' title=\"Décocher tous les ".$tab_regimes[$loop]."\" /></a> \n";
+						echo "      <a href=\"javascript:cocher_decocher_regime('decoche', ".$loop.", 'false')\"><img src='../images/disabled.png' style='width:20px; height:20px;' alt='décocher' title=\"Décocher tous les ".$tab_regimes[$loop]."\" /></a> \n";
 						echo "</th>\n";
 					}
 					echo "<th></th>\n";
@@ -1187,7 +1091,7 @@ if ($eleve_col->isEmpty()) {
 				}
 
 				if(count($temoin_saisie_veille_et_creneaux_precedents)>0) {
-					echo "			<div style='float:right;width:17px;'><a href=\"javascript:alterner_affichage_div('div_infobulle_saisie_veille_tous_eleves','y',-500,10);\"><img src='../images/icons/flag.png' width='17' height='18' title='Saisies précédentes de la journée.' /></a></div>";
+					echo "			<div style='float:right;width:17px;'><a href=\"javascript:alterner_affichage_div('div_infobulle_saisie_veille_tous_eleves','y',-500,10);\"><img src='../images/icons/flag.png' style='width:17px; height:18px;' alt='saisies' title='Saisies précédentes de la journée.' /></a></div>";
 				}
 			?>
 
@@ -1292,7 +1196,8 @@ if ($eleve_col->isEmpty()) {
 			<?php
 
 				// 20121121
-				echo "<p id='p_choix_type' class='center' style='display:none'><span title=\"Type de saisie.
+				echo "<p id='p_choix_type' class='center' style='display:none'>
+                    <label for=\"type_courant\" title=\"Type de saisie.
 Sans type, on laisse la Vie scolaire préciser le type.
 Pour vous, cet élève est juste non présent sans autre précision.
 
@@ -1300,8 +1205,9 @@ Légende des couleurs: Une fois coché, un élève qui apparait en rouge
                                       est considéré en Manquement à son obligation
                                       de présence dans l'établissement.
 
-                                      En jaune, il n'est pas considéré comme
-                                      manquant à ses obligations.\">Type&nbsp;:</span> <select name='type_courant' id='type_courant' onchange='modif_type_courant()'>
+En jaune, il n'est pas considéré comme
+                                      manquant à ses obligations.\">Type&nbsp;:</label>
+                     <select name='type_courant' id='type_courant' onchange='modif_type_courant()'>
 	<option value='-1'>---</option>\n";
 				foreach($tab_types_autorises as $key => $value) {
 					echo "	<option value='".$value['type']."'>".$value['nom']."</option>\n";
@@ -1380,7 +1286,7 @@ echo "</pre>";
 					$valeur[0]=$nouvelle_largeur;
 					$valeur[1]=$nouvelle_hauteur;
 
-					echo "<img src='$photo' width='".$valeur[0]."' height='".$valeur[1]."' alt='".$eleve['login']."' title=\"".$eleve['nom']." ".$eleve['prenom']."\" id='photo_".$eleve['position']."' />\n";
+					echo "<img src='$photo' style='width:".$valeur[0]."px; height:".$valeur[1]."px;' alt='".$eleve['accesFiche']."' title=\"".$eleve['nom']." ".$eleve['prenom']."\" id='photo_".$eleve['position']."' />\n";
 					echo "</label><br />\n";
 
 					echo "<input class='pc88'
@@ -1391,7 +1297,7 @@ echo "</pre>";
 							   onchange=\"cocher_div_abs(".$eleve['position'].")\"
 							   type=\"checkbox\" />\n";
 
-					echo "<label for='active_absence_eleve_".$eleve['position']."' style='font-size:small'>".$eleve['nom']."</label>\n";
+					echo "<span style='font-size:small'>".$eleve['nom']."</span>\n";
 
 					echo "<input type=\"hidden\" 
 							   name=\"id_eleve_absent[".$eleve['position']."]\" 
@@ -1446,9 +1352,9 @@ echo "</pre>";
 						else {
 							echo "flag.png";
 						}
-						echo "' width='17' height='18' title='Saisies précédentes.
+						echo "' style='width:17px; height:18px;' title='Saisies précédentes.
 Cliquez une fois sur le drapeau pour afficher le tableau des saisies précédentes.
-Cliquez une deuxième fois pour masquer ce tableau.' /></a>";
+Cliquez une deuxième fois pour masquer ce tableau.' alt='Saisies' /></a>";
 						echo "</div>\n";
 
 						$titre_infobulle=$eleve['nom']." ".$eleve['prenom'];

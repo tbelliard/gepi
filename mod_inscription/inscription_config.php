@@ -83,24 +83,38 @@ if (isset($_POST['is_posted_notes'])) {
 }
 
 if (isset($_POST['is_posted'])) {
-    check_token();
+	check_token();
 
-    $msg = "";
-    if ($_POST['is_posted'] == "ajout") {
-        $req = mysql_query("insert into inscription_items set
-        date='".$_POST['date']."',
-        heure='".$_POST['heure']."',
-        description='".$_POST['description']."'
-        ");
-    } else {
-        $req = mysql_query("update inscription_items set
-        date='".$_POST['date']."',
-        heure='".$_POST['heure']."',
-        description='".$_POST['description']."'
-        where id = '".$_POST['id_inter']."'
-        ");
-    }
-    $msg .= "Les modifications ont été enregistrées.";
+	if((!preg_match("#[0-9]{2}/[0-9]{2}/[0-9]{4}#", $_POST['date']))&&(!preg_match("#[0-9]{4}/[0-9]{2}/[0-9]{2}#", $_POST['date']))) {
+		$msg="La date saisie (<em>".$_POST['date']."</em>) est invalide (<em>pas au format attendu.</em>)<br />";
+	}
+	else {
+
+		if(preg_match("#[0-9]{4}/[0-9]{2}/[0-9]{2}#", $_POST['date'])) {
+			$date_choisie=$_POST['date'];
+		}
+		else {
+			$tmp_tab=explode("/", $_POST['date']);
+			$date_choisie=$tmp_tab[2]."/".$tmp_tab[1]."/".$tmp_tab[0];
+		}
+
+		$msg = "";
+		if ($_POST['is_posted'] == "ajout") {
+		    $req = mysql_query("insert into inscription_items set
+		    date='".$date_choisie."',
+		    heure='".$_POST['heure']."',
+		    description='".$_POST['description']."'
+		    ");
+		} else {
+		    $req = mysql_query("update inscription_items set
+		    date='".$date_choisie."',
+		    heure='".$_POST['heure']."',
+		    description='".$_POST['description']."'
+		    where id = '".$_POST['id_inter']."'
+		    ");
+		}
+		$msg .= "Les modifications ont été enregistrées.";
+	}
 }
 
 $call_data = mysql_query("SELECT * FROM inscription_items ORDER BY $order_by");
@@ -109,6 +123,12 @@ $nombre_lignes = mysql_num_rows($call_data);
 if (!loadSettings()) {
     die("Erreur chargement settings");
 }
+
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 //**************** EN-TETE *****************
 $titre_page = "Configuration du module Inscription";
 require_once("../lib/header.inc.php");
@@ -139,7 +159,9 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
     echo "<H2>Ajout d'un item</H2>\n";
     echo "<p>un item correspond à une entité (<em>stage, intervention dans les établissements, réunion,...</em>) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
     echo "<table cellpadding=\"6\">\n";
-    echo "<tr><td>Date (<em>au format AAAA/MM/JJ</em>) : </td><td><input type=\"text\" name=\"date\" value=\"$date\" size=\"20\" /></td></tr>\n";
+    echo "<tr><td>Date<br />(<em>au format AAAA/MM/JJ ou JJ/MM/AAAA</em>) : </td><td style='vertical-align:bottom;'><input type=\"text\" name=\"date\" id=\"date_item\" value=\"$date\" size=\"20\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
+    echo img_calendrier_js("date_item", "img_bouton_date_item");
+    echo "</td></tr>\n";
     echo "<tr><td>Heure : </td><td><input type=\"text\" name=\"heure\" value=\"$heure\" size=\"20\" /></td></tr>\n";
     echo "<tr><td>Description (<em>lieu, ...</em>) : </td><td><input type=\"text\" name=\"description\" value=\"$description\" size=\"50\" /></td></tr>\n";
 

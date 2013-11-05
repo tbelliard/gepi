@@ -349,7 +349,7 @@ if(!isset($num_fich)) {
 			// Lister les modèles existants
 			echo "<p>Utiliser le modèle&nbsp;:<br />";
 			for($i=0;$i<count($tab_file);$i++) {
-				echo "<a href='".$_SERVER['PHP_SELF']."?num_fich=$i'>".$tab_file[$i]."</a> - <a href='".$_SERVER['PHP_SELF']."?suppr_fich=$i".add_token_in_url()."'><img src='../images/delete16.png' width='16' height='16' title=\"Supprimer le fichier ".$tab_file[$i]."\" /></a><br />";
+				echo "<a href='".$_SERVER['PHP_SELF']."?num_fich=$i' title=\"Effectuer un publipostage OOo avec ce fichier modèle\">".$tab_file[$i]."</a> - <a href='mes_modeles/".$_SESSION['login']."/".$tab_file[$i]."' target='_blank'><img src='../images/edit16.png' width='16' height='16' title=\"Éditer le fichier ".$tab_file[$i]."\" /></a> - <a href='".$_SERVER['PHP_SELF']."?suppr_fich=$i".add_token_in_url()."'><img src='../images/delete16.png' width='16' height='16' title=\"Supprimer le fichier ".$tab_file[$i]."\" /></a><br />";
 			}
 			echo "</p>\n";
 		}
@@ -385,6 +385,9 @@ if(!isset($num_fich)) {
 			echo "<p>Pour quel(s) utilisateur(s) souhaitez-vous mettre en place le modèle&nbsp;? ";
 			echo "<a href='javascript:cocher_decocher(true)'>Tout cocher</a> / <a href='javascript:cocher_decocher(false)'>Tout décocher</a>\n";
 			echo "</p>\n";
+
+			echo liste_checkbox_utilisateurs(array('administrateur', 'scolarite', 'cpe', 'professeur'), array($_SESSION['login']));
+			/*
 			$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE statut='administrateur' OR statut='scolarite' OR statut='cpe' OR statut='professeur' AND etat='actif' ORDER BY statut, login, nom, prenom;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
@@ -438,6 +441,7 @@ function cocher_decocher(mode) {
 </script>\n";
 
 			}
+			*/
 		}
 	
 		echo "<p>Fichier modèle&nbsp;:&nbsp;<input type='file' name='monfichier' value='il a cliqué le bougre'></p>\n";

@@ -362,9 +362,9 @@ echo add_token_field();
 $tab_mef=get_tab_mef();
 ?>
     	</p>
-      <table cellpadding="2" cellspacing="2" class="menu">
+      <table style='border-spacing: 2px;' class="menu">
         <tr>
-          <td>Id extérieur (nomenclature EN)</td>
+          <td style='padding : 2px;'>Id extérieur (nomenclature EN)</td>
           <td>Libellé court</td>
           <td>Libellé long</td>
           <td>Libellé d'édition</td>
@@ -441,7 +441,7 @@ $tab_mef=get_tab_mef();
 	<br/><br/>
 	<a href="admin_mef.php?action=importnomenclature<?php echo add_token_in_url();?>"><img src='../images/icons/add.png' alt='' class='back_link' /> Importer les mef depuis un fichier Nomenclature.xml</a>
 	<br/><br/>
-    <table cellpadding="0" cellspacing="1" class="menu">
+    <table style='border-spacing: 1px;' class="menu">
       <tr>
         <th>Id</th>
         <th>Numéro mef nomenclature EN</th>
@@ -450,7 +450,14 @@ $tab_mef=get_tab_mef();
         <th>Libelle Edition</th>
         <th>Mef rattachement</th>
         <th style="width: 25px;"></th>
-        <th style="width: 25px;"><a href="admin_mef.php?action=supprimer_tous_mef<?php echo add_token_in_url();?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer tous les MEF ?')"><img src="../images/icons/delete.png" width="22" height="22" title="Supprimer tous les MEF" alt="" /></a></th>
+        <th style="width: 25px;">
+            <a href="admin_mef.php?action=supprimer_tous_mef<?php echo add_token_in_url();?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer tous les MEF ?')">
+                <img src="../images/icons/delete.png" 
+                     class="icone20"
+                     title="Supprimer tous les MEF" 
+                     alt="Supprimer tout" />
+            </a>
+        </th>
      </tr>
     <?php
     $tab_mef=array();
@@ -503,8 +510,19 @@ $tab_mef=get_tab_mef();
               }
           ?>
           </td>
-          <td><a href="admin_mef.php?action=modifier&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>"><img src="../images/icons/configure.png" title="Modifier" alt="" /></a></td>
-          <td><a href="admin_mef.php?action=supprimer&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer ce mef ?')"><img src="../images/icons/delete.png" width="22" height="22" title="Supprimer" alt="" /></a></td>
+          <td><a href="admin_mef.php?action=modifier&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>">
+                  <img src="../images/icons/configure.png" 
+                       title="Modifier" 
+                       alt="Modifier" />
+              </a>
+          </td>
+          <td><a href="admin_mef.php?action=supprimer&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer ce mef ?')">
+                  <img src="../images/icons/delete.png"
+                       class="icone20"
+                       title="Supprimer" 
+                       alt="Supprimer" />
+              </a>
+          </td>
        </tr>
      <?php } ?>
     </table>

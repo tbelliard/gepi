@@ -88,7 +88,7 @@
 	<a name="contenu" class="invisible">Début de la page</a>
 	
 	<p class="center">
-	  Ce module est destiné à saisir et suivre les incidents et sanctions.
+	  Ce module est destiné à saisir et suivre les <?php echo $mod_disc_terme_incident;?>s et <?php echo $mod_disc_terme_sanction;?>s.
 	</p>
 
 <!-- début corps menu	-->
@@ -133,35 +133,31 @@
 <ul>
   <li>
 	<p>
-	  Une fois un incident clos, il ne peut plus être modifié et aucune sanction liée ne peut être ajoutée/modifiée/supprimée.
+	  Une fois un <?php echo $mod_disc_terme_incident;?> clos, il ne peut plus être modifié et aucune <?php echo $mod_disc_terme_sanction;?> liée ne peut être ajoutée/modifiée/supprimée.<br />
+	  En revanche, il est possible de rouvrir si nécessaire l'<?php echo $mod_disc_terme_incident;?>.
 	</p>
   </li>
   <li>
 	<p>
-	  Le module ne conserve pas un historique des modifications d'un incident.<br />Si plusieurs personnes modifient un incident, elles doivent le faire en bonne intelligence.
+	  Le module ne conserve pas un historique des modifications d'un <?php echo $mod_disc_terme_incident;?>.<br />Si plusieurs personnes modifient un <?php echo $mod_disc_terme_incident;?>, elles doivent le faire en bonne intelligence.
 	</p>
   </li>
   <li>
-	<p>Un professeur peut saisir un incident, mais ne peut pas saisir les sanctions.<br />
-Un professeur ne peut modifier que les incidents (<em>non clos</em>) qu'il a lui-même déclaré.<br />Il ne peut consulter que les incidents (<em>et leurs suites</em>) qu'il a déclarés, ou dont il est protagoniste, ou encore dont un des élèves, dont il est professeur principal, est protagoniste.
+	<p>Un professeur peut saisir un <?php echo $mod_disc_terme_incident;?>, mais ne peut pas saisir les <?php echo $mod_disc_terme_sanction;?>s sauf paramétrage contraire dans la page de définition des <?php echo $mod_disc_terme_sanction;?>s.<br />
+Un professeur ne peut modifier que les <?php echo $mod_disc_terme_incident;?>s (<em>non clos</em>) qu'il a lui-même déclaré.<br />Il ne peut consulter que les <?php echo $mod_disc_terme_incident;?>s (<em>et leurs suites</em>) qu'il a déclarés, ou dont il est protagoniste, ou encore dont un des élèves, dont il est professeur principal, est protagoniste.
 	</p>
   </li>
   <li>
 	<p>
-	  <em>A FAIRE:</em>
+	  <em style='color:red'>A FAIRE:</em>
 	  Ajouter des tests 'changement()' dans les pages de saisie pour ne pas quitter une étape sans enregistrer.
+	  C'est fait au moins en partie... contrôler plus à fond.
 	</p>
   </li>
   <li>
 	<p>
-	  <em>A FAIRE:</em>
-	  Permettre de consulter d'autres incidents que les siens propres.<br />Eventuellement avec limitation aux élèves de ses classes.
-	</p>
-  </li>
-  <li>
-	<p>
-	  <em>A FAIRE ENCORE:</em>
-	  Permettre d'archiver les incidents/sanctions d'une année et vider les tables incidents/sanctions lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<em>homonymie,...</em>)
+	  <em style='color:red'>A FAIRE:</em>
+	  Permettre d'archiver les <?php echo $mod_disc_terme_incident;?>s/<?php echo $mod_disc_terme_sanction;?>s d'une année et vider les tables <?php echo $mod_disc_terme_incident;?>s/<?php echo $mod_disc_terme_sanction;?>s lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<em>homonymie,...</em>)
 	</p>
   </li>
 </ul>

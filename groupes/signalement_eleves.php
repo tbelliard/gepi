@@ -264,6 +264,10 @@ echo "</pre>";
 			$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
 		}
 		if($envoi_mail_actif=='y') {
+			if(getSettingValue('url_racine_gepi')!="") {
+				$texte_mail.="\nPrendre en compte la proposition : ".getSettingValue('url_racine_gepi')."/groupes/edit_eleves.php?id_groupe=".$current_group["id"]." \n(vous devez être connecté(e) dans GEPI avant de cliquer sur ce lien).\n";
+			}
+
 			// On utilise un témoin
 			if((isset($nom_eleve))&&($nom_eleve!="")&&(getSettingValue("gepiAdminAdress")!='')) {
 				$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
@@ -438,7 +442,7 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 	echo add_token_field();
-	echo "<p><input type='submit' value='Enregistrer' /></p>\n";
+	echo "<p><input type='submit' value='Enregistrer' onclick=\"document.getElementById('temoin_enregistrement_1').style.display=''\" /><span id='temoin_enregistrement_1' style='display:none;'><img src='../images/spinner.gif' width='16' height='16' title='Enregistrement en cours' /></span></p>\n";
 
 	echo "<p>Cochez les élèves qui vous manquent, décochez ceux que vous avez en trop.&nbsp;: </p>\n";
 
@@ -768,7 +772,7 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 	//echo "<input type='hidden' name='mode' value='" . $mode . "' />\n";
 	echo "<input type='hidden' name='id_groupe' value='" . $id_groupe . "' />\n";
 	//echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
-	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+	echo "<p align='center'><input type='submit' value='Enregistrer' onclick=\"document.getElementById('temoin_enregistrement_2').style.display=''\" /><span id='temoin_enregistrement_2' style='display:none;'><img src='../images/spinner.gif' width='16' height='16' title='Enregistrement en cours' /></span></p>\n";
 
 	echo "<input type='hidden' name='mode_signalement' value='".$mode_signalement."' />\n";
 	
@@ -880,7 +884,7 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 echo add_token_field();
-echo "<p><input type='submit' value='Enregistrer' /></p>\n";
+echo "<p><input type='submit' value='Enregistrer' onclick=\"document.getElementById('temoin_enregistrement_3').style.display=''\" /><span id='temoin_enregistrement_3' style='display:none;'><img src='../images/spinner.gif' width='16' height='16' title='Enregistrement en cours' /></span></p>\n";
 
 // Edition des élèves
 
@@ -1181,7 +1185,7 @@ if(count($total_eleves)>0) {
 	//echo "<input type='hidden' name='mode' value='" . $mode . "' />\n";
 	echo "<input type='hidden' name='id_groupe' value='" . $id_groupe . "' />\n";
 	//echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
-	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+	echo "<p align='center'><input type='submit' value='Enregistrer' onclick=\"document.getElementById('temoin_enregistrement_4').style.display=''\" /><span id='temoin_enregistrement_4' style='display:none;'><img src='../images/spinner.gif' width='16' height='16' title='Enregistrement en cours' /></span></p>\n";
 
 	echo "<input type='hidden' name='mode_signalement' value='1' />\n";
 

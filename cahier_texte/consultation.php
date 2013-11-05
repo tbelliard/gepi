@@ -185,6 +185,16 @@ $titre_page = "Cahier de textes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
+// 20130727
+$CDTPeutPointerTravailFait=getSettingAOui('CDTPeutPointerTravailFait'.ucfirst($_SESSION['statut']));
+
+$class_notice_dev_fait="cdt_fond_not_dev color_fond_notices_t_fait";
+$class_notice_dev_non_fait="cdt_fond_not_dev couleur_cellule_gen";
+if(($selected_eleve_login!='')&&($CDTPeutPointerTravailFait)) {
+	$tab_etat_travail_fait=get_tab_etat_travail_fait($selected_eleve_login);
+	echo js_cdt_modif_etat_travail();
+}
+
 //debug_var();
 
 //echo "<p>\$selected_eleve_login=$selected_eleve_login</p>";
@@ -391,6 +401,10 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
             //echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><font color='".$color_police_travaux."' style='font-variant: small-caps;'><strong>Travaux personnels pour le ".strftime("%a %d %b", $jour)."</strong></font>\n";
             echo "<h3 class=\"titre_a_faire couleur_bord_tableau_notice color_fond_notices_f color_police_travaux\">\nTravaux personnels pour le ".strftime("%a %d %b", $jour)."</h3>\n";
 
+			// 20130727
+			$class_notice_dev_fait="matiere_a_faire couleur_bord_tableau_notice color_police_matieres color_fond_notices_t_fait";
+			$class_notice_dev_non_fait="matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres";
+
             // Affichage des devoirs dans chaque matière
             while ($ind < $nb_devoirs_cahier_texte) {
                 $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
@@ -412,7 +426,22 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 					// ???????????????????????????????
                 }
                 //$content = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><strong><u>".$matiere_devoirs." (".$chaine."):</u></strong></small></font>".$content;
-                $content = "<div class=\"matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres\">\n<h4 class=\"souligne\">".$matiere_devoirs." (".$chaine."):</h4>\n".$content;
+
+				// 20130727
+				$class_color_fond_notice="couleur_cellule_f";
+				if($CDTPeutPointerTravailFait) {
+					get_etat_et_img_cdt_travail_fait($id_devoirs);
+				}
+
+                $content_ini=$content;
+
+                $content = "<div id='div_travail_".$id_devoirs."' class=\"matiere_a_faire couleur_bord_tableau_notice $class_color_fond_notice color_police_matieres\">\n<h4 class=\"souligne\">".$matiere_devoirs." (".$chaine."):</h4>\n";
+
+				if($CDTPeutPointerTravailFait) {
+                     $content.="<div id='div_etat_travail_".$id_devoirs."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('".$selected_eleve->login."', '".$id_devoirs."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
+				}
+
+                $content .= $content_ini;
                 // fichier joint
                 $content .= affiche_docs_joints($id_devoirs,"t");
                 $content .="</div>";
@@ -750,7 +779,50 @@ $td = date("d",$i);
 //            echo "<tr>\n";
 // ---------------------------- Titre notices (div div div div div div) --
 // choisir le fond en fonction de $devoir ou $notice
-              	 echo "<div class='cdt_titre_not_dev couleur_bord_tableau_notice color_fond_notices_".$not_dev->type."'>";
+
+             if ($not_dev->type == "c") {
+                echo "<div class='cdt_titre_not_dev couleur_bord_tableau_notice color_fond_notices_".$not_dev->type."'>";
+             }
+             else {
+				// 20130727
+				//$class_color_fond_notice="color_fond_notices_t";
+				$class_color_fond_notice="couleur_cellule_gen";
+				if($CDTPeutPointerTravailFait) {
+					get_etat_et_img_cdt_travail_fait($not_dev->id_ct);
+					/*
+					if(array_key_exists($not_dev->id_ct, $tab_etat_travail_fait)) {
+						if($tab_etat_travail_fait[$not_dev->id_ct]['etat']=='fait') {
+							$image_etat="../images/edit16b.png";
+							$texte_etat_travail="FAIT: Le travail est actuellement pointé comme fait.\n";
+							if($tab_etat_travail_fait[$not_dev->id_ct]['date_modif']!=$tab_etat_travail_fait[$not_dev->id_ct]['date_initiale']) {
+								$texte_etat_travail.="Le travail a été pointé comme fait la première fois le ".formate_date($tab_etat_travail_fait[$not_dev->id_ct]['date_initiale'], "y")."\net modifié pour la dernière fois par la suite le ".formate_date($tab_etat_travail_fait[$not_dev->id_ct]['date_modif'], "y")."\n";
+							}
+							else {
+								$texte_etat_travail.="Le travail a été pointé comme fait le ".formate_date($tab_etat_travail_fait[$not_dev->id_ct]['date_initiale'], "y")."\n";
+							}
+							$texte_etat_travail.="Cliquer pour corriger si le travail n'est pas encore fait.";
+							$class_color_fond_notice="color_fond_notices_t_fait";
+						}
+						else {
+							$image_etat="../images/edit16.png";
+							$texte_etat_travail="NON FAIT: Le travail n'est actuellement pas fait.\nCliquer pour pointer le travail comme fait.";
+						}
+					}
+					else {
+						$image_etat="../images/edit16.png";
+						$texte_etat_travail="NON FAIT: Le travail n'est actuellement pas fait.\nCliquer pour pointer le travail comme fait.";
+					}
+					*/
+				}
+
+				echo "<div class='cdt_titre_not_dev couleur_bord_tableau_notice color_fond_notices_t' style='min-height:2em;'>";
+
+				if($CDTPeutPointerTravailFait) {
+					echo "<div id='div_etat_travail_".$not_dev->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$selected_eleve_login', '".$not_dev->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
+				}
+
+             }
+
              /* if ($not_dev->type == "c") {
                 echo "c'>";
               } else {
@@ -761,7 +833,12 @@ $td = date("d",$i);
 //            echo "</tr>\n";
 // ---------------------------- contenu notices (div div div div div div) --
 //            echo "<tr>\n";
-              echo "<div class='cdt_fond_not_dev couleur_cellule_gen'>".$content."</div>\n";
+             if ($not_dev->type == "c") {
+                 echo "<div class='cdt_fond_not_dev couleur_cellule_gen'>".$content."</div>\n";
+              }
+              else {
+                 echo "<div id='div_travail_".$not_dev->id_ct."' class='cdt_fond_not_dev $class_color_fond_notice'>".$content."</div>\n";
+              }
 // ---------------------------- Fin contenu notices (div div div div div /div) --
 //            echo "</tr>\n";
            echo "</div>\n";

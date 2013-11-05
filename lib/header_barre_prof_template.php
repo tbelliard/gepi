@@ -608,6 +608,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 			else {
 				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 			}
+			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
 			$cpt_sous_menu2++;
 		}
 
@@ -641,6 +642,8 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 	$cpt_sous_menu++;
 
+	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/statistiques/index.php' , "texte"=>"Statistiques");
+	$cpt_sous_menu++;
 
 	$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 	$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;

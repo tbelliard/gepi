@@ -1431,7 +1431,7 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 		if($nb_assoc_manquantes_ele>0) {
 			echo "
 <br />
-<p>Il manque $nb_assoc_manquantes_ele association(s) élève(s)&nbsp;:";
+<p>Il manque $nb_assoc_manquantes_ele association(s) élève(s)&nbsp;: ";
 			$cpt=0;
 			while($lig=mysql_fetch_object($res)) {
 				if($cpt>0) {echo ", ";}
@@ -1447,7 +1447,7 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 		if($nb_assoc_manquantes_resp>0) {
 			echo "
 <br />
-<p>Il manque $nb_assoc_manquantes_resp association(s) responsable(s)&nbsp;:";
+<p>Il manque $nb_assoc_manquantes_resp association(s) responsable(s)&nbsp;: ";
 			$cpt=0;
 			while($lig=mysql_fetch_object($res)) {
 				if($cpt>0) {echo ", ";}
@@ -1463,7 +1463,7 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 		if($nb_assoc_manquantes_resp>0) {
 			echo "
 <br />
-<p>Il manque $nb_assoc_manquantes_resp association(s) personnel(s)&nbsp;:";
+<p>Il manque $nb_assoc_manquantes_resp association(s) personnel(s)&nbsp;: ";
 			$cpt=0;
 			while($lig=mysql_fetch_object($res)) {
 				if($cpt>0) {echo ", ";}

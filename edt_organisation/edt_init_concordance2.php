@@ -87,6 +87,9 @@ if ($etape != NULL) {
 			if ($nom_gepi[$a] != '' AND $nom_gepi[$a] != 'none') {
 				$values .= "('', '".$etape."', '".$nom_export[$a]."', '".$nom_gepi[$a]."'), ";
 
+				if($etape==3) {
+					enregistrer_udt_corresp('matiere', $nom_export[$a], $nom_gepi[$a]);
+				}
 			}
 		}
 		// On envoie toutes les requêtes d'un coup

@@ -108,6 +108,13 @@ function info_eleve($ele_login) {
 		$tab_ele['lieu_naissance']="";
 	}
 
+	if($_SESSION['statut']=="professeur") {
+		$is_pp=is_pp($_SESSION['login'], "", $ele_login);
+	}
+
+	$AccesDerniereConnexionEle=AccesDerniereConnexionEle($ele_login);
+	$AccesDerniereConnexionResp=AccesDerniereConnexionResp("", $ele_login);
+
 	$sql="SELECT * FROM utilisateurs WHERE statut='eleve' AND login='$ele_login';";
 	$res_user=mysql_query($sql);
 	if(mysql_num_rows($res_user)==1) {
@@ -117,6 +124,11 @@ function info_eleve($ele_login) {
 		for($loop=0;$loop<count($tab_user);$loop++) {
 			$champ=$tab_user[$loop];
 			$tab_ele['compte_utilisateur'][$champ]=$lig_user->$champ;
+		}
+
+		if($AccesDerniereConnexionEle) {
+			$tab_ele['compte_utilisateur']['DerniereConnexionEle']=get_last_connexion($ele_login);
+			$tab_ele['compte_utilisateur']['DerniereConnexionEle_Echec']=get_last_connexion($ele_login, "n");
 		}
 	}
 
@@ -591,6 +603,11 @@ function info_eleve($ele_login) {
 						$lig_u=mysql_fetch_object($res_u);
 						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
 						$tab_ele['resp'][$cpt]['auth_mode']=$lig_u->auth_mode;
+
+						if($AccesDerniereConnexionResp) {
+							$tab_ele['resp'][$cpt]['DerniereConnexionResp']=get_last_connexion($lig_resp->login);
+							$tab_ele['resp'][$cpt]['DerniereConnexionResp_Echec']=get_last_connexion($lig_resp->login,"n");
+						}
 					}
 				}
 
@@ -647,6 +664,11 @@ function info_eleve($ele_login) {
 						$lig_u=mysql_fetch_object($res_u);
 						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
 						$tab_ele['resp'][$cpt]['auth_mode']=$lig_u->auth_mode;
+
+						if($AccesDerniereConnexionResp) {
+							$tab_ele['resp'][$cpt]['DerniereConnexionResp']=get_last_connexion($lig_resp->login);
+							$tab_ele['resp'][$cpt]['DerniereConnexionResp_Echec']=get_last_connexion($lig_resp->login,"n");
+						}
 					}
 				}
 				

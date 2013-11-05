@@ -89,14 +89,15 @@ if (isset($_POST['valid_logo'])) {
 				$old = getSettingValue("logo_etab");
 				if (file_exists($dest.$old)) @unlink($dest.$old);
 				if (file_exists($dest.$doc_file)) @unlink($dest.$doc_file);
-				$ok = @copy($doc_file['tmp_name'], $dest.$doc_file['name']);
-				if (!$ok) $ok = @move_uploaded_file($doc_file['tmp_name'], $dest.$doc_file['name']);
+				// le fichier téléchargé est renommé log_etab.xxx
+				$ok = @copy($doc_file['tmp_name'], $dest."logo_etab.".$ext);
+				if (!$ok) $ok = @move_uploaded_file($doc_file['tmp_name'], $dest."logo_etab.".$ext);
 				if (!$ok) {
 					$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire IMAGES. Veuillez signaler ce problème à l'administrateur du site";
 				} else {
 					$msg = "Le fichier a été transféré.";
 				}
-				if (!saveSetting("logo_etab", $doc_file['name'])) {
+				if (!saveSetting("logo_etab", "logo_etab.".$ext)) {
 				$msg .= "Erreur lors de l'enregistrement dans la table setting !";
 				}
 
@@ -265,10 +266,12 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['gepiPrefixeSujetMail'])) {
+			if (!saveSetting("gepiPrefixeSujetMail", $_POST['gepiPrefixeSujetMail'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre gepiPrefixeSujetMail !";
+			}
+		}
 
-
-	
-	
 		if (isset($_POST['longmin_pwd'])) {
 			if (!saveSetting("longmin_pwd", $_POST['longmin_pwd'])) {
 				$msg .= "Erreur lors de l'enregistrement de la longueur minimale du mot de passe !";
@@ -336,6 +339,12 @@ if (isset($_POST['is_posted'])) {
 		if (isset($_POST['informer_scolarite_modif_mail'])) {
 			if (!saveSetting("informer_scolarite_modif_mail", $_POST['informer_scolarite_modif_mail'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre informer_scolarite_modif_mail !";
+			}
+		}
+
+		if (isset($_POST['email_dest_info_modif_mail'])) {
+			if (!saveSetting("email_dest_info_modif_mail", $_POST['email_dest_info_modif_mail'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre email_dest_info_modif_mail !";
 			}
 		}
 
@@ -726,6 +735,8 @@ require_once("../lib/header.inc.php");
 ?>
 
 <form action="param_gen.php" method="post" id="form1" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
+
 	<p>
 <?php
 echo add_token_field();
@@ -923,7 +934,18 @@ echo add_token_field();
 	onchange='changement()' />
 		</span>
 	</p>
-		
+
+	<p class="ligneCaps">
+		<label for='gepiPrefixeSujetMail' class="cellTab70">
+			Ajouter un préfixe au sujet des mails envoyés par Gepi :<br />
+			<span class="plusPetit">Cela peut être utile si vous recevez des mails de plusieurs Gepi.<br />
+			Notez que le préfixe 'GEPI :' est de toutes façons ajouté.</span>
+		</label>
+		<span class="cellTab plusPetit">
+			<input type="text" id='gepiPrefixeSujetMail' name="gepiPrefixeSujetMail" value="<?php echo getSettingValue('gepiPrefixeSujetMail');?>" onchange='changement()' />
+		</span>
+	</p>
+
 	<p class="ligneCaps">
 		<label for='contact_admin_mailto' class="cellTab70">
 			Remplacer le formulaire [Contacter l'administrateur] par un lien mailto :
@@ -936,7 +958,7 @@ echo add_token_field();
 	onchange='changement()' />
 		</span>
 	</p>
-		
+
 	<p class="ligneCaps">
 		<label for='envoi_mail_liste' class="cellTab70">
 			Permettre d'envoyer des mails à une liste d'élèves :
@@ -1258,18 +1280,21 @@ echo add_token_field();
 	<p class="ligneCaps">
 		<span class="cellTab70">
 			<a name='informer_scolarite_modif_mail'></a>
-			Dans le cas où vous choisissez ci-dessus Mise à jour du mail depuis Gérer mon compte, envoyer un mail à <?php
-			if(getSettingValue('gepiSchoolEmail')!='') {
-				echo getSettingValue('gepiSchoolEmail');
-			}
-			else {
-				echo "(<em>gepiSchoolEmail non renseigné</em>)";
-			}
-		?> pour signaler le changement de mail de façon à permettre de reporter la saisie dans Sconet.
+			Dans le cas où vous choisissez ci-dessus Mise à jour du mail depuis Gérer mon compte, envoyer un mail pour signaler le changement de mail de façon à permettre de reporter la saisie dans Sconet.
 		</span>
 		<span class="cellTab plusPetit">
-		<input type="radio" name="informer_scolarite_modif_mail" id="informer_scolarite_modif_mail_y" value="y" <?php if((getSettingValue("informer_scolarite_modif_mail")=="y")||(getSettingValue("informer_scolarite_modif_mail")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='informer_scolarite_modif_mail_y' style='cursor: pointer;'>Oui</label><br />
+		<input type="radio" name="informer_scolarite_modif_mail" id="informer_scolarite_modif_mail_y" value="y" <?php if((getSettingValue("informer_scolarite_modif_mail")=="y")||(getSettingValue("informer_scolarite_modif_mail")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='informer_scolarite_modif_mail_y' style='cursor: pointer;'>Oui</label> - 
 		<input type="radio" name="informer_scolarite_modif_mail" id="informer_scolarite_modif_mail_n" value="n" <?php if(getSettingValue("informer_scolarite_modif_mail")=="n"){echo 'checked';} ?> onchange='changement()' /> <label for='informer_scolarite_modif_mail_n' style='cursor: pointer;'>Non</label><br />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			<a name='email_dest_info_modif_mail'></a>
+			Adresse mail du destinataire de l'information de changement de mail
+		</span>
+		<span class="cellTab plusPetit">
+		<input type="text" name="email_dest_info_modif_mail" value="<?php if(getSettingValue("email_dest_info_modif_mail")!="") {echo getSettingValue("email_dest_info_modif_mail");} else {echo getSettingValue('gepiSchoolEmail');} ?>" onchange='changement()' /><br />
 		</span>
 	</p>
 
@@ -1712,6 +1737,7 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 			   style="font-variant: small-caps; display:none;" 
 			   onclick="test_puis_submit()" />
 	</p>
+</fieldset>
 </form>
 
 <script type='text/javascript'>
@@ -1852,6 +1878,7 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 
 <hr />
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form2" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p class="cellTab70">
 <?php
 echo add_token_field();
@@ -1865,7 +1892,6 @@ echo add_token_field();
 	<input type="file" name="doc_file" onchange='changement()' />
 	<input type="submit" name="valid_logo" value="Enregistrer" /></p>
 	<p class="cellTab">
-		Supprimer le logo : <input type="submit" name="sup_logo" value="Supprimer le logo" />
 <?php
 $nom_fic_logo = getSettingValue("logo_etab");
 
@@ -1876,20 +1902,22 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 	<strong>Logo actuel : </strong>
 		<br />
 		<img src="<?php echo $nom_fic_logo_c; ?>" border='0' alt="logo" />
+		<br /><input type="submit" name="sup_logo" value="Supprimer le logo" />
 <?php } else { ?>
 		<br />
 		<strong><em>Pas de logo actuellement</em></strong>
 <?php } ?>
 	</p>
-</form>
 
-<p>
-	<em>Remarques&nbsp;</em>
-	Les transparences sur les images PNG, GIF ne permettent pas une impression PDF 
-	(<em>canal alpha non supporté par fpdf</em>).
-	<br />
-	Il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la génération de PDF.
-</p>
+	<p>
+		<em>Remarques&nbsp;:</em>
+		<br />- le fichier sera renommé logo_etab.xxx (<em>où l'extension xxx est fonction du type</em>)
+		<br />- les transparences sur les images PNG, GIF ne permettent pas une impression PDF 
+		(<em>canal alpha non supporté par fpdf</em>)
+		<br />- il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la génération de PDF
+	</p>
+</fieldset>
+</form>
 
 <hr />
 
@@ -1900,6 +1928,7 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 <hr />
 
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form3" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p>
 <?php
 echo add_token_field();
@@ -1945,10 +1974,12 @@ echo add_token_field();
 		Il arrive que ce test de présence provoque un affichage d'erreur (<em>à propos de pmv.php</em>).
 		Dans ce cas, désactivez simplement le test.
 	</p>
+</fieldset>
 </form>
 <hr />
 
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form4" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p>
 <?php
 echo add_token_field();
@@ -1999,6 +2030,7 @@ echo add_token_field();
 		Si git est installé sur votre serveur et accessible par le serveur web, alors vous pouvez afficher dans l'entête administrateur sur la page d'accueil, la date de la révision en place.<br />
 		Cela peut être commode pour apporter des précisions sur votre version quand vous posez une question sur la liste gepi-users, mais l'absence éventuelle de git n'enlèvera aucune fonctionnalité à votre Gepi.
 	</p>
+</fieldset>
 </form>
 
 
@@ -2006,6 +2038,7 @@ echo add_token_field();
 
 <a name='gepi_en_production'></a>
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form4" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p>
 <?php
 echo add_token_field();
@@ -2056,6 +2089,7 @@ echo add_token_field();
 		Sur un serveur Gepi en production, avec des données que l'on ne veut pas perdre accidentellement, on désactive l'accès à quelques liens sensibles de Gepi comme <strong>Effacer la base</strong> et <strong>Données de test</strong>.<br />
 		Sur un Gepi de test en revanche, on peut souhaiter effectuer ces actions sensibles.
 	</p>
+</fieldset>
 </form>
 
 <?php

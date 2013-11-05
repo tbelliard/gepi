@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -58,6 +58,8 @@ else {
 	header("Location: ./index.php?msg=$msg");
 	die();
 }
+
+require('sanctions_func_lib.php');
 
 if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
 	check_token();
@@ -129,8 +131,8 @@ echo "<a href='index.php' onClick=\"if(confirm_abandon (this, change, '$themessa
 echo "</p>\n";
 ?>
 
-<p>Choisissez les destinataires des mails d'alerte pour des incidents dont des élèves sont protagonistes.</p>
 <?php
+	echo "<p>Choisissez les destinataires des mails d'alerte pour des ".$mod_disc_terme_incident."s dont des élèves sont protagonistes.</p>\n";
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	echo add_token_field();
@@ -231,43 +233,42 @@ echo "</p>\n";
 		echo "</table>\n";
 		echo "<input type='hidden' name='action' value='reg_dest' />\n";
 		echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+
+		//============================================
+		echo "
+		<p style='text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em> Les destinataires (<em>sauf 'Adresses autres'</em>) peuvent choisir dans 'Mon compte' pour quelles catégories d'incidents ils souhaitent être informés.<br />
+		Un utilisateur, le chef d'établissement par exemple, pourra souhaiter être informé des violences,... mais pas d'incidents plus mineurs.</p>
+
+		<script type='text/javascript' language='javascript'>
+			function modif_case(id,statut,mode){
+				// id: numéro de:
+				//					. colonne correspondant au login
+				//					. ligne
+				// statut: true ou false
+				// mode: col ou lig
+				if(mode=='col'){
+					for(k=0;k<$nombre_lignes;k++){
+						if(document.getElementById('case_'+id+'_'+k)){
+							document.getElementById('case_'+id+'_'+k).checked=statut;
+						}
+					}
+				}
+				else{
+					for(k=0;k<".count($tab_statut).";k++){
+						if(document.getElementById('case_'+k+'_'+id)){
+							document.getElementById('case_'+k+'_'+id).checked=statut;
+						}
+					}
+				}
+				changement();
+			}
+		</script>\n";
+		//============================================
+
 	} else {
 		echo "</table>\n";
 		echo "<p class='grand'><b>Attention :</b> aucune classe n'a été définie dans la base GEPI !</p>\n";
 	}
-
-
-
-
-
-
-	//============================================
-	// AJOUT: boireaus
-	echo "<script type='text/javascript' language='javascript'>
-		function modif_case(id,statut,mode){
-			// id: numéro de:
-			//					. colonne correspondant au login
-			//					. ligne
-			// statut: true ou false
-			// mode: col ou lig
-			if(mode=='col'){
-				for(k=0;k<$nombre_lignes;k++){
-					if(document.getElementById('case_'+id+'_'+k)){
-						document.getElementById('case_'+id+'_'+k).checked=statut;
-					}
-				}
-			}
-			else{
-				for(k=0;k<".count($tab_statut).";k++){
-					if(document.getElementById('case_'+k+'_'+id)){
-						document.getElementById('case_'+k+'_'+id).checked=statut;
-					}
-				}
-			}
-			changement();
-		}
-	</script>\n";
-	//============================================
 ?>
 </form>
 <?php require("../lib/footer.inc.php");?>

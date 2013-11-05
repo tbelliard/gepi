@@ -155,7 +155,12 @@ if(isset($_POST['submit'])) {
 }
 */
 
-$javascript_specifique="classes/acces_appreciations";
+$javascript_specifique[]="classes/acces_appreciations";
+
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 //include "../lib/periodes.inc.php";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -335,8 +340,10 @@ echo "<li><img src='../images/icons/securite.png' width='16' height='16' alt=\"P
 
 //=============================================
 
+/*
 include("../lib/calendrier/calendrier.class.php");
 $cal = new Calendrier("form", "choix_date");
+*/
 
 $titre="Choix de la date";
 //$texte="<input type='text' name='choix_date' id='choix_date' size='10' value='$display_date'";
@@ -350,7 +357,8 @@ $texte.="<input type='hidden' name='statut' id='choix_date_statut' value='' />\n
 $texte.="<input type='hidden' name='id_classe' id='choix_date_id_classe' value='' />\n";
 $texte.="<input type='hidden' name='periode' id='choix_date_periode' value='' />\n";
 $texte.="<input type='text' name='choix_date' id='choix_date' size='10' value='' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
-$texte.="<a href='#calend' onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";document.getElementById('choix_date').checked='true';\"><img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' border='0' /></a>\n";
+//$texte.="<a href='#calend' onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";document.getElementById('choix_date').checked='true';\"><img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' border='0' /></a>\n";
+$texte.=img_calendrier_js("choix_date", "img_bouton_choix_date");
 $texte.="<br />\n";
 $texte.="<input type='button' name='choix_date_valider' value='Valider' onclick=\"g_date()\" />\n";
 $texte.="</p>\n";
@@ -360,7 +368,7 @@ $tabdiv_infobulle[]=creer_div_infobulle('infobulle_choix_date',$titre,"",$texte,
 
 //=============================================
 
-$cal2 = new Calendrier("form3", "choix_date2");
+//$cal2 = new Calendrier("form3", "choix_date2");
 
 $titre="Choix de la date";
 //$texte="<input type='text' name='choix_date' id='choix_date' size='10' value='$display_date'";
@@ -374,7 +382,8 @@ $texte.="<p align='center'>\n";
 $texte.=add_token_field(true);
 $texte.="<input type='hidden' name='periode2' id='choix_date_periode2' value='' />\n";
 $texte.="<input type='text' name='choix_date2' id='choix_date2' size='10' value='' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
-$texte.="<a href='#calend' onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' border='0' /></a>\n";
+//$texte.="<a href='#calend' onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' border='0' /></a>\n";
+$texte.=img_calendrier_js("choix_date2", "img_bouton_choix_date2");
 $texte.="<br />\n";
 //$texte.="<input type='button' name='choix_date_valider2' value='Valider' onclick=\"g_date()\" />\n";
 $texte.="<input type='submit' name='choix_date_valider2' value='Valider' />\n";

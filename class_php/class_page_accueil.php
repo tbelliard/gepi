@@ -65,6 +65,13 @@ class class_page_accueil {
   function __construct($statut, $gepiSettings, $niveau_arbo,$ordre_menus) {
 
 
+    
+    //$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+/* Modification du jeu de résultats en utf8 
+    if (!$mysqli->set_charset("utf8")) {
+        printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $mysqli->error);
+    } */
+
 	switch ($niveau_arbo){
 	  case 0:
 		$this->cheminRelatif = './';
@@ -81,7 +88,9 @@ class class_page_accueil {
 	  default:
 		$this->cheminRelatif = './';
 	}
-
+    
+    
+    
 	$this->statutUtilisateur = $statut;
 	$this->gepiSettings=$gepiSettings;
 	$this->loginUtilisateur=$_SESSION['login'];
@@ -168,6 +177,10 @@ class class_page_accueil {
 
 /***** Outils destinés essentiellement aux parents et aux élèves *****/
 
+// Informations famille
+	$this->verif_exist_ordre_menu('bloc_infos_famille');
+	if ($this->infosFamille())
+	$this->chargeAutreNom('bloc_infos_famille');
 // Cahier de textes
 	$this->verif_exist_ordre_menu('bloc_cahier_texte_famille');
 	if ($this->cahierTexteFamille())
@@ -176,6 +189,34 @@ class class_page_accueil {
 	$this->verif_exist_ordre_menu('bloc_carnet_notes_famille');
 	if ($this->releveNotesFamille())
 	$this->chargeAutreNom('bloc_carnet_notes_famille');
+// Relevés de notes cumulées
+    if ('eleve' == $this->statutUtilisateur) {
+        $result = sql_count(sql_query("SELECT 1=1 FROM `cc_notes_eval` WHERE login ='".$this->loginUtilisateur."'"));
+        // $result += 1;
+    } elseif ('responsable' == $this->statutUtilisateur) {
+        $result = FALSE;
+        $result = sql_count(sql_query("SELECT 1=1 
+            FROM `cc_notes_eval` ne ,
+                 `resp_pers` rp,
+                 `responsables2` r2,
+                 `eleves` e
+            WHERE rp.login = '".$this->loginUtilisateur."'
+                AND rp.pers_id = r2.pers_id
+                AND r2.ele_id = e.ele_id
+                AND e.login = ne.login
+                "));
+        
+    } else {
+        $result = FALSE;
+    }
+    if ($result) {    
+        if(getSettingAOui('GepiAccesEvalCumulEleve')) {
+            $this->verif_exist_ordre_menu('bloc_carnet_notes_cumules');
+            if ($this->notesCumulFamille())
+            $this->chargeAutreNom('bloc_carnet_notes_cumules');
+        }    
+    }
+    
 // Equipes pédagogiques
 	$this->verif_exist_ordre_menu('bloc_equipe_peda_famille');
 	if ($this->equipePedaFamille())
@@ -735,7 +776,7 @@ if(getSettingAOui('active_bulletins')) {
 			  "Visualisation et impression des relevés de notes",
 			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes, ".$this->gepiSettings['denomination_eleve']." par ".$this->gepiSettings['denomination_eleve'].", classe par classe.");
 
-	if ($condition && $condition2)
+	if ($condition && (($condition2)||(is_pp($this->loginUtilisateur))))
 	  $this->creeNouveauItem("/cahier_notes/index2.php",
 			  "Visualisation des moyennes des carnets de notes",
 			  "Cet outil vous permet de visualiser à l'écran les moyennes calculées d'après le contenu des carnets de notes, indépendamment de la saisie des moyennes sur les bulletins.");
@@ -887,6 +928,26 @@ if(getSettingAOui('active_bulletins')) {
 	}
   }
 
+  protected function notesCumulFamille(){
+	$this->b=0;
+
+   $condition = (
+		getSettingValue("active_carnets_notes")=='y' AND (
+			($this->statutUtilisateur == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes')
+			OR ($this->statutUtilisateur == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes')
+			));
+
+	if ($condition) {
+		  $this->creeNouveauItem("/cahier_notes/visu_cc_elv.php",
+				  "Notes cumulées",
+				  "Permet de consulter les notes cumulées.");
+	}
+	if ($this->b>0){
+	  $this->creeNouveauTitre('accueil',"Notes cumulées",'images/icons/releve.png');
+	  return true;
+	}
+  }
+
 
   private function modDiscFamille(){
 	$this->b=0;
@@ -1020,6 +1081,22 @@ if(getSettingAOui('active_bulletins')) {
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Absences",'images/icons/absences.png');
+	  return true;
+	}
+  }
+
+  protected function infosFamille(){
+	$this->b=0;
+	$conditions = ($this->statutUtilisateur == "responsable");
+
+	if ($conditions) {
+	  $this->creeNouveauItem("/responsables/infos_parent.php",
+			  "Informations",
+			  "Permet de consulter les nom, prénom, date de naissance, adresse, téléphone,... que vous avez fournis pour éventuellement signaler une erreur ou une modification.");
+	}
+
+	if ($this->b>0){
+	  $this->creeNouveauTitre('accueil',"Informations",'images/icons/document.png');
 	  return true;
 	}
   }

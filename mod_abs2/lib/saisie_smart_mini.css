@@ -55,6 +55,12 @@
 	color: red;
 }
 
+.policeJaune {
+	display: inline;
+	font-size: 150%;
+	color: yellow;
+}
+
 .policeBlack {
 	display: inline;
 	font-size: 150%;

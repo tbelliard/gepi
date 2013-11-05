@@ -99,8 +99,6 @@ echo '
 			// On n'utilise pas getGroup() car elle est trop longue et récupère trop de choses dont on n'a pas besoin
 
 			$query1 = mysql_query("SELECT classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe = c.id AND jgc.id_groupe = '".$id_groupe[$a]["id"]."'");
-			//$classe = mysql_fetch_array($query1);
-			//echo "<!-- ".print_r($classe)." -->\n";
 			$chaine_classe="";
 			$cpt_classe=0;
 			while($lig_classe=mysql_fetch_object($query1)) {
@@ -118,21 +116,24 @@ echo '
 					$selected = '';
 				}
 
+			$info_groupe=get_info_grp($id_groupe[$a]["id"]);
+
 			//echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected.'>'.$id_groupe[$a]["description"].'('.$classe[0].')</option>';
 			echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected;
-			if(in_array($id_groupe[$a]["id"], $tab_mat_ligne)) {
+			if((in_array($id_groupe[$a]["id"], $tab_mat_ligne))||((strstr($val, "?")==false)&&(preg_match("/$val/", $info_groupe)))) {
 				echo ' style="color:blue;"';
 			}
 			//echo '>'.$id_groupe[$a]["description"].'('.$classe[0].') ('.$id_groupe[$a]["name"].')</option>';
-			echo '>'.$id_groupe[$a]["name"].' - '.$id_groupe[$a]["description"].' (';
-			echo $chaine_classe;
+			echo '>';
+
 			/*
-			echo $classe[0];
-			for($loop=1;$loop<count($classe);$loop++) {
-				echo ", ".$classe[$loop];
-			}
+			echo $id_groupe[$a]["name"].' - '.$id_groupe[$a]["description"].' (';
+			echo $chaine_classe;
+			echo ') ('.$id_groupe[$a]["name"].')';
 			*/
-			echo ') ('.$id_groupe[$a]["name"].')</option>';
+			echo $info_groupe;
+
+			echo '</option>';
 		}
 		echo '
 			</optgroup>
@@ -173,16 +174,25 @@ echo '
 				$selected = '';
 			}
 
+		$info_groupe=get_info_grp($id_groupe[$a]["id"]);
+
 		//echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected.'>'.$id_groupe[$a]["description"].'('.$classe[0].')</option>';
 		echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected;
-		if(in_array($id_groupe[$a]["id"], $tab_mat_ligne)) {
+		if((in_array($id_groupe[$a]["id"], $tab_mat_ligne))||((strstr($val, "?")==false)&&(preg_match("/$val/", $info_groupe)))) {
 			echo ' style="color:blue;"';
 		}
 		//echo '>'.$id_groupe[$a]["description"].'('.$classe[0].') ('.$id_groupe[$a]["name"].')</option>';
 		//echo '>'.$id_groupe[$a]["description"].' (';
-		echo '>'.$id_groupe[$a]["name"].' - '.$id_groupe[$a]["description"].' (';
+		echo '>';
+
+		/*
+		echo $id_groupe[$a]["name"].' - '.$id_groupe[$a]["description"].' (';
 		echo $chaine_classe;
-		echo ') ('.$id_groupe[$a]["name"].')</option>';
+		echo ') ('.$id_groupe[$a]["name"].')';
+		*/
+		echo $info_groupe;
+
+		echo '</option>';
 	}
 echo '
 			</optgroup>

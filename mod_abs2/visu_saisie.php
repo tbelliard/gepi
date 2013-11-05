@@ -141,6 +141,15 @@ echo $saisie->getPrimaryKey();
     	echo ')</font> ';
     }
 echo '</td><td>';
+
+if (($saisie->getEleve() != null)&&($saisie->getGroupe() != null)) {
+	if(!is_eleve_du_groupe($saisie->getEleve()->getLogin(), $saisie->getGroupe()->getId())) {
+		echo "<div style='float:right; width:22px;'><img src='../images/icons/ico_attention.png' width='22' height='19' alt='Attention' title=\"L'élève n'est plus membre du groupe ".$saisie->getGroupe()->getNameAvecClasses()." actuellement.
+Il en a peut-être été membre plus tôt dans l'année.
+Mais il n'en n'est plus membre aujourd'hui.\" /></div>";
+	}
+}
+
 if ($modifiable) {   
     echo '<form dojoType="dijit.form.Form" jsId="suppression_restauration" id="suppression_restauration"  method="post" action="./enregistrement_modif_saisie.php">';
     echo '<input type="hidden" name="id_saisie" value="' . $saisie->getPrimaryKey() . '"/>';
@@ -247,7 +256,7 @@ echo '</td><td colspan="2">';
 if (!$modifiable || $saisie->getDeletedAt() != null ) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDebutAbs('U')));
 } else {
-    echo '<nobr><input name="heure_debut" id="heure_debut" value="'.$saisie->getDebutAbs("H:i").'" type="text" maxlength="5" size="4" onkeydown="clavier_heure(this.id,event);" autocomplete="off" />&nbsp;';
+    echo '<nobr><input name="heure_debut" id="heure_debut" value="'.$saisie->getDebutAbs("H:i").'" type="text" maxlength="5" size="4" onkeydown="clavier_heure(this.id,event);" autocomplete="off" title="Vous pouvez modifier l\'heure en utilisant les flèches Haut/Bas et PageUp/PageDown du clavier" />&nbsp;';
     if ($utilisateur->getStatut() == 'professeur') {//on autorise pas au professeur a changer la date
 	echo (strftime(" %a %d/%m/%Y", $saisie->getDebutAbs('U')));
 	echo '<input name="date_debut" value="'.$saisie->getDebutAbs('d/m/Y').'" type="hidden"/></nobr> ';
@@ -281,7 +290,7 @@ echo '</td><td colspan="2">';
 if (!$modifiable || $saisie->getDeletedAt() != null) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getFinAbs('U')));
 } else {
-    echo '<nobr><input name="heure_fin" id="heure_fin" value="'.$saisie->getFinAbs("H:i").'" type="text" maxlength="5" size="4" onkeydown="clavier_heure(this.id,event);" autocomplete="off" />&nbsp;';
+    echo '<nobr><input name="heure_fin" id="heure_fin" value="'.$saisie->getFinAbs("H:i").'" type="text" maxlength="5" size="4" onkeydown="clavier_heure(this.id,event);" autocomplete="off" title="Vous pouvez modifier l\'heure en utilisant les flèches Haut/Bas et PageUp/PageDown du clavier" />&nbsp;';
     //if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
     if ($utilisateur->getStatut() == 'professeur') {
 	echo (strftime(" %a %d/%m/%Y", $saisie->getFinAbs('U')));
@@ -315,6 +324,7 @@ echo 'Traitement : ';
 echo '</td><td style="background-color:#ebedb5;" colspan="2">';
 $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
 $total_traitements_modifiable = 0;
+$total_traitements_modifiable_non_prof = 0;
 $tab_traitements_deja_affiches=array();
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 	if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
@@ -347,6 +357,7 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 		}
 		}else {
 		if ($utilisateur->getStatut() != 'professeur') {
+			$total_traitements_modifiable_non_prof++;
 			echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$id_saisie."";
 		    if($menu){
 		            echo"&menu=false";
@@ -516,7 +527,14 @@ if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") 
     echo '<tr><td colspan="3" style="text-align : center;">';
     echo '<button dojoType="dijit.form.Button" type="submit" name="creation_traitement" value="oui"';
     if ($saisie->getDeletedAt() != null) echo 'disabled';
-    echo '>Traiter la saisie</button>';
+    if(($total_traitements_modifiable>0)||($total_traitements_modifiable_non_prof>0)) {
+        echo ' title="Il existe déjà au moins un traitement modifiable pour la saisie.
+Il serait sans doute préférable de modifier le traitement existant ci-dessus,
+mais vous pouvez aussi en créer un nouveau.">Créer un *nouveau* traitement pour la saisie</button>';
+    }
+    else {
+        echo '>Traiter la saisie</button>';
+    }
     echo '<button dojoType="dijit.form.Button" type="submit" name="creation_notification" value="oui"';
     if ($saisie->getDeletedAt() != null) echo 'disabled';
     echo '>Notifier la saisie</button>';

@@ -55,10 +55,15 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
             </p>
             <label for="du">du</label>
             <input name="du"  id="du"  type="text" tabindex="4" value="<?php  echo $_SESSION['stats_periodes']['du']; ?>" size="10" maxlength="10" style="border: 1px solid #000000;" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />
-            <a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
+            <?php
+            echo img_calendrier_js("du", "img_bouton_du");
+            ?>
             <label for="au">au</label>
             <input name="au"  id="au" type="text" tabindex="5"  value="<?php echo $_SESSION['stats_periodes']['au']; ?>" size="10" maxlength="10" style="border: 1px solid #000000;" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />
-            <a href="#calend" onClick="<?php echo $cal_2->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br />
+            <?php
+            echo img_calendrier_js("au", "img_bouton_au");
+            ?>
+            <br />
             <br />            
             <input type="submit" value="Enregistrer" class="submit"/>
           </fieldset>

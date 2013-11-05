@@ -32,6 +32,10 @@ h2 {
 	background-color: #DFDFDF;
 }
 
+.div_conteneur_infobulle {
+	box-shadow: 4px 2px 6px #DFDFDF;
+}
+
 table.boireaus {
 	margin-top: 1em;
 	border-style: solid;
@@ -56,6 +60,7 @@ table.boireaus {
 	border-style: solid;
 	border-width: 1px;
 	border-color: black;
+    padding: 5px;
 }
 .boireaus .lig-1 {
 	background-color: #C8FFC8;
@@ -78,6 +83,14 @@ tr.white_hover:hover {
 }
 .boireaus_alt tr:nth-child(odd) {
 	background-color: #FFE6AA;
+}
+
+.boireaus_th_left th {
+	text-align:left;
+}
+
+.boireaus_white_hover tr:hover {
+	background-color:white;
 }
 
 /*
@@ -237,3 +250,10 @@ background-color: #F00;
 	right: 2em;
 	text-align:center;
 }
+
+.opacity_50 {
+	background-image:url("/steph/gepi_git_trunk/images/background/opacite50.png");
+	border: 13px dashed green;
+}
+
+

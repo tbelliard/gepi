@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -129,9 +129,19 @@ if (isset($user_login) and ($user_login!='')) {
 $titre_page = "Gestion des utilisateurs | Modifier un mot de passe";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-?>
-<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a> | <a href="help.php">Aide</a></p>
-<?php
+
+echo "<p class='bold'><a href='";
+if((isset($user_statut))&&($user_statut!='responsable')&&($user_statut!='eleve')) {
+	echo "index.php?mode=personnels";
+}
+elseif((isset($user_statut))&&($user_statut=='responsable')) {
+	echo "edit_responsable.php";
+}
+elseif((isset($user_statut))&&($user_statut=='eleve')) {
+	echo "edit_eleve.php";
+}
+echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a> | <a href='help.php'>Aide</a></p>\n";
+
 // dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
 $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
 if ($testpassword == -1) $testpassword = '';
@@ -182,12 +192,26 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
         echo "Il doit comporter au moins une lettre et au moins un chiffre.";
     echo "</b></p>\n";
     echo "<br />\n";
-	echo "<table summary='Mot de passe'>\n<tr><td>Nouveau mot de passe (<em>".getSettingValue("longmin_pwd")." caractères minimum</em>) : </td>\n<td><input type='password' name='no_anti_inject_password' size='20' /></td></tr>\n";
-    echo "<tr><td>Nouveau mot de passe (<em>à confirmer</em>) :</td><td><input type='password' name='reg_password2' size='20' /></td></tr>\n";
-    echo "</table><input type='hidden' name='valid' value=\"yes\" />\n";
-    echo "<input type='hidden' name='user_login' value='".$user_login."' />\n";
+	echo "<table summary='Mot de passe'>
+	<tr>
+		<td>Nouveau mot de passe (<em>".getSettingValue("longmin_pwd")." caractères minimum</em>) : </td>
+		<td>
+			<input type='password' name='no_anti_inject_password' id='no_anti_inject_password' size='20' tabindex='1' />
+			".input_password_to_text('no_anti_inject_password')."
+		</td>
+	</tr>
+	<tr>
+		<td>Nouveau mot de passe (<em>à confirmer</em>) :</td>
+		<td>
+			<input type='password' name='reg_password2' id='reg_password2' size='20' tabindex='2' />
+			".input_password_to_text('reg_password2')."
+		</td>
+	</tr>
+</table>
+<input type='hidden' name='valid' value=\"yes\" />
+<input type='hidden' name='user_login' value='".$user_login."' />\n";
 
-    echo "<br /><center><input type='submit' value='Enregistrer' /></center>";
+	echo "<br /><center><input type='submit' value='Enregistrer' tabindex='3' /></center>";
 
 	$user_statut = sql_query1("select statut from utilisateurs where login='".$user_login."';");
 	if($user_statut=='eleve') {
@@ -197,7 +221,7 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
 			$lig_ine=mysql_fetch_object($res_ine);
 			if($lig_ine->no_gep!='') {
 				echo "<input type='hidden' name='ine_password' value=\"$lig_ine->no_gep\" />\n";
-				echo "<p><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le numéro national de l'élève (<em>INE</em>) comme mot de passe initial lorsqu'il est renseigné.</label></p>\n";
+				echo "<p><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' tabindex='4' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le numéro national de l'élève (<em>INE</em>) comme mot de passe initial lorsqu'il est renseigné.</label></p>\n";
 			}
 		}
 	}

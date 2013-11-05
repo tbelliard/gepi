@@ -511,7 +511,7 @@ if(isset($_POST['valide_modif_model'])) {
 	if (empty($_GET['affiche_numero_responsable']) and empty($_POST['affiche_numero_responsable'])) { $affiche_numero_responsable = ''; }
 	else { if (isset($_GET['affiche_numero_responsable'])) { $affiche_numero_responsable = $_GET['affiche_numero_responsable']; } if (isset($_POST['affiche_numero_responsable'])) { $affiche_numero_responsable = $_POST['affiche_numero_responsable']; } }
 
-	$signature_img=isset($_POST['signature_img']) ? $_POST['signature_img'] : (isset($_GET['signature_img']) ? $_GET['signature_img'] : "");
+	//$signature_img=isset($_POST['signature_img']) ? $_POST['signature_img'] : (isset($_GET['signature_img']) ? $_GET['signature_img'] : "");
 
 	/*
 	if (empty($_GET['adresse_resp_fontsize_ligne_1']) and empty($_POST['adresse_resp_fontsize_ligne_1'])) { $adresse_resp_fontsize_ligne_1 = 12; }
@@ -1763,6 +1763,7 @@ function DecocheCheckbox() {
 			<input name="cadre_sign_chef" id="cadre_sign_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_sign_chef) and $cadre_sign_chef==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_sign_chef'>&nbsp;Ajouter un encadrement</label><br /><br />
 
 			<?php
+				/*
 				echo "<input type='checkbox' name='signature_img' id='signature_img' value='1' ";
 				if(isset($signature_img) and $signature_img=='1') { 
 					echo "checked='checked'";
@@ -1776,6 +1777,7 @@ function DecocheCheckbox() {
 					echo "image de signature";
 				}
 				echo " ait été uploadée en administrateur<br />et que vous soyez autorisé à utiliser cette signature</em>)";
+				*/
 			?>
 
 			</td>

@@ -239,7 +239,7 @@ if (isset($_POST['is_posted'])) {
 
 					// 20121027
 					//$tab_param=array('rn_aff_classe_nom');
-					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
+					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
 					for($loop=0;$loop<count($tab_param);$loop++) {
 						if (isset($_POST[$tab_param[$loop].'_'.$per])) {
 							if ($_POST[$tab_param[$loop].'_'.$per]!='') {
@@ -668,16 +668,21 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes - Paramétrage des classes par lots";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 if($max_periode <= 0) {
-echo "Aucune classe comportant des périodes n'a été définie.";
-die();
+	echo "<p style='color:red'>Aucune classe comportant des périodes n'a été définie.</p>";
+	die();
 }
-echo "<form action=\"classes_param.php\" method='post'>\n";
+echo "<form action=\"classes_param.php\" method='post' name='formulaire'>\n";
 echo add_token_field();
 echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type='submit' name='enregistrer1' value='Enregistrer' /></p>";
 echo "Sur cette page, vous pouvez modifier différents paramètres par lots de classes cochées ci-dessous.";
@@ -712,6 +717,8 @@ function UncheckAll(){
 echo "<p><a href='javascript:checkAll();'>Cocher toutes les classes</a> / <a href='javascript:UncheckAll();'>Tout décocher</a></p>\n";
 */
 
+$tab_id_cases_classes_postees_precedemment=array();
+$liste_classes_postees_precedemment="";
 // Première boucle sur le nombre de periodes
 $per = 0;
 while ($per < $max_periode) {
@@ -733,7 +740,7 @@ while ($per < $max_periode) {
 		}
 		$nbc++;
 	}
-	If ($nb != 0) {
+	if ($nb != 0) {
 		echo "<center><p class='grand'>Classes ayant ".$per." période";
 		if ($per > 1) echo "s";
 		echo "</p></center>\n";
@@ -756,6 +763,13 @@ while ($per < $max_periode) {
 				echo "<td>\n";
 				if ($nom_classe != '') {
 					echo "<input type=\"checkbox\" name=\"".$nom_case."\" id='case_".$per."_".$i."_".$j."' onchange=\"change_style_classe('".$per."_".$i."_".$j."')\" checked /><label id='label_case_".$per."_".$i."_".$j."' for='case_".$per."_".$i."_".$j."' style='cursor:pointer; font-weight:bold'>&nbsp;".$nom_classe."</label>\n";
+					if(isset($_POST[$nom_case])) {
+						$tab_id_cases_classes_postees_precedemment[]="case_".$per."_".$i."_".$j;
+						if($liste_classes_postees_precedemment!="") {
+							$liste_classes_postees_precedemment.=", ";
+						}
+						$liste_classes_postees_precedemment.=$nom_classe;
+					}
 				}
 				echo "</td>\n";
 
@@ -838,14 +852,33 @@ while ($per < $max_periode) {
 				document.getElementById('label_case_'+num).style.fontWeight='normal';
 			}
 		}
-	}
+	}";
 
+		if(count($tab_id_cases_classes_postees_precedemment)>0) {
+			echo "
+	function cocher_classes_post_precedent() {
+		tout_cocher($per, false);";
+		for($loop=0;$loop<count($tab_id_cases_classes_postees_precedemment);+$loop++) {
+			echo "
+				if(document.getElementById('".$tab_id_cases_classes_postees_precedemment[$loop]."')){
+					document.getElementById('".$tab_id_cases_classes_postees_precedemment[$loop]."').checked=true;
+					change_style_classe('".preg_replace("/^case_/", "", $tab_id_cases_classes_postees_precedemment[$loop])."');
+				}
+			";
+		}
+		echo "
+	}";
+		}
+
+		echo "
 </script>\n";
 
-
+		if(count($tab_id_cases_classes_postees_precedemment)>0) {
+			echo "<p style='margin-top:1em;margin-bottom:1em;'><a href='javascript:cocher_classes_post_precedent()'>Effectuer la même sélection de classes qu'à l'opération précédente (<em>$liste_classes_postees_precedemment</em>).</a></p>";
+		}
 
 		?>
-		<p style='text-indent:-6em; margin-left:6em;'><em>Remarque&nbsp;:</em> Les modifications ne concernent que les cases cochées ci-dessus.<br />
+		<p style='text-indent:-6em; margin-left:6em;'><em>Remarque&nbsp;:</em> Les modifications qui seront apportées ne concerneront que les cases cochées ci-dessus.<br />
 		Aucune modification n'est apportée aux champs laissés vides ci-dessous.</p>
 		<br />
 
@@ -861,16 +894,22 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		</tr>
 
 		<?php
+
+		include("../lib/calendrier/calendrier.class.php");
+
 		$k = '1';
 		$alt=1;
 		while($k < $per+1) {
 			$alt=$alt*(-1);
+			//$cal[$per][$k] = new Calendrier("formulaire", "date_fin_".$per."_".$k);
 			echo "<tr class='lig$alt'>\n";
 			echo "<th>Période ".$k."</th>\n";
 			echo "<td><input type='text' name='nb_".$per."_".$k."' value=\"\" size='30' /></td>\n";
 			echo "<td><input type='text' name='date_fin_".$per."_".$k."' id='date_fin_".$per."_".$k."' value=\"\" size='10' ";
 			echo " onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\"";
 			echo "/>";
+			//echo "<a href=\"#calend\" onClick=\"".$cal[$per][$k]->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+			echo img_calendrier_js('date_fin_'.$per.'_'.$k, 'img_bouton_date_fin_'.$per.'_'.$k);
 			echo "</td>\n";
 			echo"</tr>\n";
 			$k++;
@@ -1071,7 +1110,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<select name='matiere_nouvel_enseignement' id='matiere_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;maj_prof_enseignement();maj_nom_descr_enseignement();\">\n";
 			echo "<option value=''>---</option>\n";
 			while($lig_mat=mysql_fetch_object($res_mat)) {
-				echo "<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+				echo "<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\" nom_matiere=\"$lig_mat->nom_complet\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
 			}
 			echo "</select>\n";
 			echo "</td>\n";
@@ -1099,7 +1138,14 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<td>\n";
 			echo "Nom&nbsp;: ";
 			echo "</td>\n";
-			echo "<td><input type='text' name='nom_nouvel_enseignement' id='nom_nouvel_enseignement' value='' /></td>\n";
+			echo "<td><input type='text' name='nom_nouvel_enseignement' id='nom_nouvel_enseignement' value='' />";
+
+			$titre_infobulle="Ajouter un suffixe au nom de l'enseignement";
+			$texte_infobulle="<div align='center' style='padding:3px;'>".html_ajout_suffixe_ou_renommer('nom_nouvel_enseignement', 'description_nouvel_enseignement', 'matiere_nouvel_enseignement')."</div>";
+			$tabdiv_infobulle[]=creer_div_infobulle('suffixe_nom_grp',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+			echo " <a href=\"javascript:afficher_div('suffixe_nom_grp','y',-100,20)\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Suffixe' title=\"Ajouter un suffixe ou renommer l'enseignement.\" /></a>";
+
+			echo "</td>\n";
 			echo "</tr>\n";
 
 			echo "<tr>\n";
@@ -1403,6 +1449,18 @@ td {
 <tr>
 	<td colspan='3'>
 	<h2><b>Paramètres des relevés de notes&nbsp;: </b></h2>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Type de relevé à produire par défaut&nbsp;:<br />
+		<em style='font-size:small'>(si plusieurs classes sont sélectionnées, c'est le type de la première qui est proposé par défaut)</em>
+	</td>
+	<td>
+		<input type="radio" value="html" name="rn_type_par_defaut_<?php echo $per;?>" id="rn_type_par_defaut_html" onchange='changement()' /><label for='rn_type_par_defaut_html' style='cursor: pointer;'>HTML</label><br />
+		<input type="radio" value="pdf" name="rn_type_par_defaut_<?php echo $per;?>" id="rn_type_par_defaut_pdf" onchange='changement()' /><label for='rn_type_par_defaut_pdf' style='cursor: pointer;'>PDF</label>
 	</td>
 </tr>
 
