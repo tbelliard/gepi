@@ -1006,7 +1006,7 @@ else{
 		echo "Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span><br /><br />\n";
 		echo "</td>";
 		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V' onchange=\"changement();\""; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
-		echo "</td></tr>\n";
+		echo "</td></tr></table>\n";
 	} else {
 		echo "<input type='hidden' name = 'note_sur' value = '".$note_sur."' />\n";
 		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = '$ramener_sur_referentiel' />\n";
@@ -1017,15 +1017,24 @@ else{
 	// ======
 
 	echo "<h3 class='gepi'>Statut de l'évaluation</h3>\n";
-	echo "<table summary='Statut du devoir'><tr><td><input type='radio' name='facultatif' id='facultatif_O' value='O' onchange=\"changement();\" "; if ($facultatif=='O') echo "checked"; echo " /></td><td>";
+	if(!in_array($facultatif, array("O", "B", "N"))) {
+		echo "<p style='color:red'><strong>Anomalie&nbsp;:</strong> Aucun choix n'est effectué ci-dessous.<br />Cela risque de perturber le calcul de la moyenne du carnet de notes.</p>";
+	}
+	echo "<table summary='Statut du devoir'><tr><td><input type='radio' name='facultatif' id='facultatif_O' value='O' onchange=\"changement();\" ";
+	if ($facultatif=='O') {echo "checked";}
+	echo " /></td><td>";
 	echo "<label for='facultatif_O' style='cursor: pointer;'>";
 	echo "La note de l'évaluation entre dans le calcul de la moyenne.";
 	echo "</label>";
-	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_B' value='B' onchange=\"changement();\" "; if ($facultatif=='B') echo "checked"; echo " /></td><td>";
+	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_B' value='B' onchange=\"changement();\" ";
+	if ($facultatif=='B') {echo "checked";}
+	echo " /></td><td>";
 	echo "<label for='facultatif_B' style='cursor: pointer;'>";
 	echo "Seules les notes de l'évaluation supérieures à 10 entrent dans le calcul de la moyenne.";
 	echo "</label>";
-	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_N' value='N' onchange=\"changement();\" "; if ($facultatif=='N') echo "checked"; echo " /></td><td>";
+	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_N' value='N' onchange=\"changement();\" ";
+	if ($facultatif=='N') {echo "checked";}
+	echo " /></td><td>";
 	echo "<label for='facultatif_N' style='cursor: pointer;'>";
 	echo "La note de l'évaluation n'entre dans le calcul de la moyenne que si elle améliore la moyenne.";
 	echo "</label>";
