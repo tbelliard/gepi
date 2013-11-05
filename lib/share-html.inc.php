@@ -257,7 +257,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							$cpt_ele_anomalie++;
 						}
 						$texte_infobulle.="<br />";
-						$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
+						$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."' class='bold'>ici</a> pour supprimer les notes associées?";
 						$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
 						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\" title=\"Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement.
@@ -269,6 +269,18 @@ Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='1
 					}
 
 					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
+
+					// Autre anomalie
+					 $sql="SELECT * FROM cn_devoirs WHERE id='$id_dev' AND facultatif!='O' AND facultatif!='N' AND facultatif!='B';";
+					$test_anomalie=mysql_query($sql);
+					if(mysql_num_rows($test_anomalie)>0) {
+						$titre_infobulle="Devoir facultatif ou pas ?";
+						$texte_infobulle="Le devoir n'est pas 'catégorisé' comme facultatif ou non.<br />Son mode de prise en compte ou non dans la moyenne n'est pas défini.<br />";
+						$texte_infobulle.="Cliquer <a href='add_modif_dev.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev&amp;mode_navig=retour_index&amp;interface_simplifiee=n".add_token_in_url()."#statut_evaluation' class='bold'>ici</a> pour choisir un mode.";
+						$tabdiv_infobulle[]=creer_div_infobulle('anomalie2_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+						echo " <a href=\"#\" onclick=\"afficher_div('anomalie2_$id_dev','y',100,100);return false;\" title=\"Mode de prise en compte ou non dans la moyenne non défini.\"><img src='../images/icons/flag.png' width='17' height='18' alt='' /></a>";
+					}
 
 					$note_sur=mysql_result($appel_dev, $j, 'note_sur');
 					if($note_sur!='20') {
@@ -387,7 +399,7 @@ En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('g
 									$cpt_ele_anomalie++;
 								}
 								$texte_infobulle.="<br />";
-								$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
+								$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."' class='bold'>ici</a> pour supprimer les notes associées?";
 								$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 		
 								echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return FALSE;\" title=\"Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement.
@@ -395,6 +407,18 @@ Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='1
 							}
 
 							echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
+
+							// Autre anomalie
+							 $sql="SELECT * FROM cn_devoirs WHERE id='$id_dev' AND facultatif!='O' AND facultatif!='N' AND facultatif!='B';";
+							$test_anomalie=mysql_query($sql);
+							if(mysql_num_rows($test_anomalie)>0) {
+								$titre_infobulle="Devoir facultatif ou pas ?";
+								$texte_infobulle="Le devoir n'est pas 'catégorisé' comme facultatif ou non.<br />Son mode de prise en compte ou non dans la moyenne n'est pas défini.<br />";
+								$texte_infobulle.="Cliquer <a href='add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index&amp;interface_simplifiee=n".add_token_in_url()."#statut_evaluation' class='bold'>ici</a> pour choisir un mode.";
+								$tabdiv_infobulle[]=creer_div_infobulle('anomalie2_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+								echo " <a href=\"#\" onclick=\"afficher_div('anomalie2_$id_dev','y',100,100);return false;\" title=\"Mode de prise en compte ou non dans la moyenne non défini.\"><img src='../images/icons/flag.png' width='17' height='18' alt='' /></a>";
+							}
 
 							$note_sur=mysql_result($appel_dev, $j, 'note_sur');
 							if($note_sur!='20') {
