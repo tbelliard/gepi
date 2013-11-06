@@ -480,7 +480,7 @@ if (!extension_loaded('mysql')) {
 	# mysql_result - Get result data
 	# string mysql_result ( resource $result , int $row [, mixed $field = 0 ] )
 	# no equivalent function exists in mysqli - mysqli_data_seek() in conjunction with mysqli_field_seek() and mysqli_fetch_field()
-	function mysql_result ($result , $row , $field = 0) {
+	function __mysql_result ($result , $row , $field = 0) {
 	
 		# try to seek position
 		if (mysqli_data_seek($result, $row) === false) return false;
@@ -491,6 +491,15 @@ if (!extension_loaded('mysql')) {
 		if (!isset($row[$field])) return false;
 		
 		return $row[$field];			
+	}
+	// Correctifs :
+	// - le paramètre $row doit être facultatif
+	// - suivant le type du paramètre $field il faut lire un tableau indicé ou associatif
+	function mysql_result ($result , $row = 0 , $field = 0) {
+		if (mysqli_data_seek($result, $row) === false) return false;
+		if (is_int($field)) $line=mysqli_fetch_array($result); else $line=mysqli_fetch_assoc($result);
+		if (!isset($line[$field])) return false;
+		return $line[$field];
 	}
 
 	# mysql_select_db - Select a MySQL database
