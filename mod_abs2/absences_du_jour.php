@@ -488,7 +488,10 @@ $eleve_col = $query
 la date qui ne s'affiche pas au format jj/mm/aaaa, mais aaaa-mm-jj
 et des boutons de sélection qui n'ont pas le format habituel,
 vous pouvez ne pas afficher les formulaires de choix de la classe, du groupe ou du régime en cochant cette case.
-Cela devrait permettre de contourner le problème.\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Bug dojo' /></label>\n";
+Cela devrait permettre de contourner le problème.\">
+<img src='../images/icons/flag2.gif' width='17' height='18' alt='Bug dojo' id='img_bug_dojo' />
+<img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Bug dojo' style='display:none' id='img_bug_dojo2' />
+</label>\n";
 				//==========================================
 
 				// Pour quand même afficher le bouton validant les checkbox ci-dessus:
@@ -1031,6 +1034,13 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 	    node.appendChild(button.domNode);
 	});	
     });
+
+	if(document.getElementById("img_bug_dojo2")) {
+		document.getElementById("img_bug_dojo2").style.display="";
+		if(document.getElementById("img_bug_dojo")) {
+			document.getElementById("img_bug_dojo").style.display="none";
+		}
+	}
 </script>';
 
 require_once("../lib/footer.inc.php");
