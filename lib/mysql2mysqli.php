@@ -492,10 +492,9 @@ if (!extension_loaded('mysql')) {
 		
 		return $row[$field];			
 	}
-	// Correctifs :
-	// - le paramètre $row doit être facultatif
-	// - suivant le type du paramètre $field il faut lire un tableau indicé ou associatif
-	function mysql_result ($result , $row = 0 , $field = 0) {
+	// Correctif :
+	// suivant le type du paramètre $field il faut lire un tableau indicé ou associatif
+	function mysql_result ($result , $row , $field = 0) {
 		if (mysqli_data_seek($result, $row) === false) return false;
 		if (is_int($field)) $line=mysqli_fetch_array($result); else $line=mysqli_fetch_assoc($result);
 		if (!isset($line[$field])) return false;
