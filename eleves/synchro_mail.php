@@ -209,7 +209,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	while($lig=mysql_fetch_object($res)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
-		echo "<td><a href='modify_ele.php?eleve_login=$lig->login'>$lig->nom</a></td>\n";
+		echo "<td><a href='modify_eleve.php?eleve_login=$lig->login'>$lig->nom</a></td>\n";
 		echo "<td>$lig->prenom</td>\n";
 		echo "<td>$lig->email</td>\n";
 		echo "<td>$lig->e_email</td>\n";
