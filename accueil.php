@@ -218,6 +218,11 @@ if((($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))
 	}
 }
 
+if ($_SESSION['statut'] == "administrateur") {
+	$utilisation_tablekit="ok";
+	$tbs_librairies[]="lib/tablekit";
+}
+
 $post_reussi=FALSE;
 // ====== Inclusion des balises head et du bandeau =====
 include_once("./lib/header_template.inc.php");
