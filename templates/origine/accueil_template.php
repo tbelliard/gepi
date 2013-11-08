@@ -185,26 +185,25 @@
 <?php
 
 	if((getSettingValue('active_cahiers_texte')=='y')&&(getSettingValue('GepiCahierTexteVersion')=='2')) {
-		if(!file_exists("./temp/info_jours.js")) {
+        if(!file_exists("./temp/info_jours.js")) {
 			creer_info_jours_js();
 			if(!file_exists("./temp/info_jours.js")) {
-				$sql="SELECT * FROM infos_actions WHERE titre='Fichier info_jours.js absent'";
-				$test_info_jours=mysql_query($sql);
-				if(mysql_num_rows($test_info_jours)==0) {
-					enregistre_infos_actions("Fichier info_jours.js absent","Le fichier info_jours.js destiné à tenir compte des jours ouvrés dans les saisies du cahier de textes n'est pas renseigné.\nVous pouvez le renseigner en <a href='$gepiPath/edt_organisation/admin_horaire_ouverture.php?action=visualiser'>saisissant ou re-validant les horaires d'ouverture</a> de l'établissement.","administrateur",'statut');
-				}
-			}
-		}
-		else {
-			$sql="SELECT * FROM infos_actions WHERE titre='Fichier info_jours.js absent'";
-			$test_info_jours=mysql_query($sql);
-			if(mysql_num_rows($test_info_jours)>0) {
-				while($lig_action=mysql_fetch_object($test_info_jours)) {
+                $sql="SELECT * FROM infos_actions WHERE titre='Fichier info_jours.js absent'";
+                $test_info_jours = mysqli_query($mysqli, $sql);
+                if($test_info_jours->num_rows == 0) {
+                    enregistre_infos_actions("Fichier info_jours.js absent","Le fichier info_jours.js destiné à tenir compte des jours ouvrés dans les saisies du cahier de textes n'est pas renseigné.\nVous pouvez le renseigner en <a href='$gepiPath/edt_organisation/admin_horaire_ouverture.php?action=visualiser'>saisissant ou re-validant les horaires d'ouverture</a> de l'établissement.","administrateur",'statut');
+                }
+            }
+        } else {
+            $sql="SELECT * FROM infos_actions WHERE titre='Fichier info_jours.js absent'";
+            $test_info_jours = mysqli_query($mysqli, $sql);
+            if($test_info_jours->num_rows > 0) {
+				while($lig_action=$test_info_jours->fetch_object($test_info_jours)) {
 					del_info_action($lig_action->id);
 				}
-			}
-		}
-	}
+            }
+        }
+    }
 
 	affiche_infos_actions();
 ?>
@@ -247,26 +246,7 @@
 	<?php endif; ?>
 
 	<!-- <div id='messagerie'> -->
-<?php
-		  /* foreach ($afficheAccueil->message as $value) {
 
-		  if ($value['suite']=='') {
-			  echo "";
-		  }else{
-			  echo "<hr>";
-		  }
-		  echo "
-			$value[message]
-		  ";
-		  if ($value['suite']=='') {
-			  echo "";
-		  }else{
-			  echo "</hr>";
-		  }
-
-		}
-		unset ($value); */
-?>
 	<!--	</div> -->
 <?php /* } */ ?>
 	
@@ -299,6 +279,7 @@
 
 
 <?php
+
 		if ($newEntreeMenu->texte=="Votre flux RSS") {
 ?>
 		  <div class='div_tableau'>
@@ -393,59 +374,11 @@
 	  }
 	  unset($newEntreeMenu);
 	}
+    
 ?>
 
 <!-- début RSS	-->
-		<?php
-/*
-
-
-			if ($tbs_canal_rss_flux==1) {
-							echo "
-	<div>
-		<h2 class='accueil'>
-			<img src='./images/icons/rss.png' alt=''/> - Votre flux rss
-		</h2>
-				";
-
-		echo "
-<div class='div_tableau'>
-			";
-		if ($tbs_canal_rss[0]["mode"]==1) {
-			echo "
-	<h3 class=\"colonne ie_gauche flux_rss\" title=\"A utiliser avec un lecteur de flux rss\" onclick=\"changementDisplay('divuri', 'divexpli')\" >
-		Votre uri pour les cahiers de textes
-	</h3>
-	<p class=\"colonne ie_droite vert\">
-		<span id=\"divexpli\" style=\"display: block;\">
-				";
-				echo $tbs_canal_rss[0]['expli'];
-				echo "
-		</span>
-		<span id=\"divuri\" style=\"display: none;\">
-	<a onclick=\"window.open(this.href, '_blank'); return false;\" href=\""; echo $tbs_canal_rss[0]['lien']; echo";\">
-							"; echo $tbs_canal_rss[0]['texte']; echo"
-	</a>
-		</span>
-	</p>
-
-</div>
-	</div>
-				";
-		}else if ($tbs_canal_rss[0]["mode"]==2){
-			echo "
-	<h3 class=\"colonne ie_gauche\">
-			Votre uri pour les cahiers de textes
-	</h3>
-	<p class=\"colonne ie_droite vert\">
-					Veuillez la demander à l'administration de votre établissement.
-	</p>
-				";
-		}
-	}
- *
- */
-?>
+		
 <!-- fin RSS	-->
 
 <!-- Début du pied -->

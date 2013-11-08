@@ -110,7 +110,7 @@
 	<ol>
 		<?php
 
-			if((getSettingAOui('active_mod_alerte'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe', 'autre')))) {
+			if((1==2)&&(getSettingAOui('active_mod_alerte'))&&(in_array($_SESSION['statut'], array('professeur', 'administrateur', 'scolarite', 'cpe', 'autre')))) {
 				if(check_mae($_SESSION['login'])) {
 					if(isset($_SERVER['SCRIPT_NAME'])) {
 						// Pour éviter de faire apparaitre le témoin de message sur des pages présentées lors des conseils de classe:

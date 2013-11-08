@@ -9,15 +9,29 @@ $modifier_mb="n";
 $initialiser_mb="n";
 $sql="SELECT value FROM setting WHERE name='utiliser_mb';";
 //echo "$sql<br />";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
-	$initialiser_mb="y";
-	//$modifier_mb="y";
-}
-else {
-	$lig_tmp=mysql_fetch_object($res);
-	$utiliser_mb=$lig_tmp->value;
-	if(($utiliser_mb!='y')&&($utiliser_mb!='n')) {$modifier_mb="y";}
+
+if(isset($useMysqli) && (TRUE == $useMysqli)) {    
+    $res = mysqli_query($mysqli, $sql);
+    if($res->num_rows == 0) {
+        $initialiser_mb = "y";
+    }
+    else {
+        $lig_tmp = $res->fetch_object();
+        $utiliser_mb = $lig_tmp->value;
+        if(($utiliser_mb != 'y') && ($utiliser_mb != 'n')) {
+            $modifier_mb = "y";
+        }
+    }    
+} else {
+    $res=mysql_query($sql);
+    if(mysql_num_rows($res)==0) {
+        $initialiser_mb="y";
+    }
+    else {
+        $lig_tmp=mysql_fetch_object($res);
+        $utiliser_mb=$lig_tmp->value;
+        if(($utiliser_mb!='y')&&($utiliser_mb!='n')) {$modifier_mb="y";}
+    }
 }
 
 $phpversion=phpversion();

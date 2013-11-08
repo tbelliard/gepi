@@ -70,6 +70,10 @@ NULL , 'Interface de GEPI', 'origine', 'n'
 
 */
 
+// On utilise mysqli
+$useMysqli = TRUE;
+
+
 //test version de php
 if (version_compare(PHP_VERSION, '5') < 0) {
     die('GEPI nécessite PHP5 pour fonctionner');

@@ -64,6 +64,7 @@ class Session {
 	public $auth_simpleSAML = false; # false, cas, lemon, lcs
 	private $login_sso = false; //login (ou uid) du sso auquel on est connecté (peut être différent du login gepi, la correspondance est faite dans mod_sso_table) 
 	public $current_auth_mode = false;  # gepi, ldap, sso, ou false : le mode d'authentification
+    public $mysqli = '';
 
 	private $etat = false; 	# actif/inactif. Utilisé simplement en interne pour vérifier que
 							# l'utilisateur authentifié de source externe est bien actif dans Gepi.
@@ -72,7 +73,9 @@ class Session {
 
 	public function __construct($login_CAS_en_cours = false) {
 
-global $temoin_pas_d_update_session_table_log;
+    global $temoin_pas_d_update_session_table_log;
+    global $mysqli;
+    $this->mysqli = $mysqli;
 
     if (!$login_CAS_en_cours) {
       # On initialise la session
@@ -140,8 +143,17 @@ global $temoin_pas_d_update_session_table_log;
 			$debug_maintien_session="n";
 			if($debug_maintien_session=="y") {
 				$sql = "SELECT END from log where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "';";
-				$tmp_res_fin_session=mysql_query($sql);
-				$tmp_fin_session=mysql_result($tmp_res_fin_session,0,'END');
+                
+                if($this->mysqli !="") {
+                    $result = mysqli_query($this->mysqli, $sql);
+                    $tmp_fin_session = $result->fetch_object();
+                    $tmp_fin_session = $tmp_fin_session->END;
+                    $result->close();
+                } else {
+                    $tmp_res_fin_session=mysql_query($sql);
+                    $tmp_fin_session=mysql_result($tmp_res_fin_session,0,'END');
+                }  
+                
 			}
 
 			if((!isset($temoin_pas_d_update_session_table_log))||($temoin_pas_d_update_session_table_log!="y")) {
@@ -189,6 +201,7 @@ global $temoin_pas_d_update_session_table_log;
 	# 9 : échec de l'authentification (mauvais couple login/mot de passe, sans doute).
 	public function authenticate($_login = null, $_password = null) {
 		global $debug_test_mdp, $debug_test_mdp_file, $debug_login_nouveaux_comptes, $loguer_nouveau_login;
+        global $mysqli;
 
 		// Quelques petits tests de sécurité
 
@@ -213,14 +226,22 @@ global $temoin_pas_d_update_session_table_log;
 			$loguer_nouveau_login="n";
 			if(preg_match("/[A-Za-z0-9_\.-]/", $_login)) {
 				$sql="SELECT 1=1 FROM utilisateurs WHERE login='$_login' AND change_mdp='y';";
-				$test_new_login=mysql_query($sql);
-				if(mysql_num_rows($test_new_login)>0) {
-					$loguer_nouveau_login="y";
+                       
+                if($mysqli !="") {
+                    $resultat = mysqli_query($mysqli, $sql);  
+                    $nb_lignes = $resultat->num_rows;
+                    $resultat->close();
+                } else {
+                    $test_new_login=mysql_query($sql);
+                    $nb_lignes = mysql_num_rows($test_new_login);
+                }  
+                if($nb_lignes>0) {
+                    $loguer_nouveau_login="y";
 
-					$f_tmp=fopen($debug_test_mdp_file,"a+");
-					fwrite($f_tmp,strftime("%a %d/%m/%Y - %H%M%S").": \$_login=$_login et \$_password=$_password : ");
-					fclose($f_tmp);
-				}
+                    $f_tmp=fopen($debug_test_mdp_file,"a+");
+                    fwrite($f_tmp,strftime("%a %d/%m/%Y - %H%M%S").": \$_login=$_login et \$_password=$_password : ");
+                    fclose($f_tmp);
+                }
 			}
 		}
 
@@ -428,12 +449,26 @@ global $temoin_pas_d_update_session_table_log;
       }
 
 			# Tout est bon. On valide définitivement la session.
-			$this->start = mysql_result(mysql_query("SELECT now();"),0);
+              
+            if($mysqli !="") {
+                $sql_start = mysqli_query($mysqli, "SELECT now();");
+                $row = $sql_start->fetch_row();
+                $this->start = $row[0];
+                $sql_start->close();
+            } else {
+                $this->start = mysql_result(mysql_query("SELECT now();"),0);
+            }    
+			
 			$_SESSION['start'] = $this->start;
 			$this->insert_log();
 			# On supprime l'historique des logs conformément à la durée définie.
-			sql_query("delete from log where START < now() - interval " . getSettingValue("duree_conservation_logs") . " day and END < now()");
-
+            if($mysqli !="") {
+                $sql_del = "delete from log where START < now() - interval " . getSettingValue("duree_conservation_logs") . " day and END < now()";
+                $resultat = mysqli_query($mysqli, $sql_del);
+            } else {
+                sql_query("delete from log where START < now() - interval " . getSettingValue("duree_conservation_logs") . " day and END < now()");
+            }    
+			
 			# On envoie un mail, si l'option a été activée
 			mail_connexion();
 			return "1";
@@ -463,6 +498,7 @@ global $temoin_pas_d_update_session_table_log;
 	# l'être. Elle remplace la fonction resumeSession qui était préalablement utilisée.
 	public function security_check() {
 		global $pas_acces_a_une_page_sans_etre_logue;
+        global $mysqli;
 		# Codes renvoyés :
 		# 0 = logout automatique
 		# 1 = session valide
@@ -484,8 +520,16 @@ global $temoin_pas_d_update_session_table_log;
 		}
 
 		$sql = "SELECT statut, change_mdp, etat FROM utilisateurs where login = '" . $this->login . "'";
-		$res = sql_query($sql);
-		$row = mysql_fetch_object($res);
+		
+		
+          
+        if($mysqli !="") {
+            $result = mysqli_query($mysqli, $sql);
+            $row = $result->fetch_object();
+        } else {
+            $res = sql_query($sql);
+            $row = mysql_fetch_object($res);
+        }       
 
 		$change_password = $row->change_mdp != "n" ? true : false;
 		$statut_ok = $this->statut == $row->statut ? true : false;
@@ -525,16 +569,28 @@ global $temoin_pas_d_update_session_table_log;
 	# On regarde si l'utilisateur existe dans la base de données,
 	# et on vérifie quel est le mode d'authentification défini.
 	public static function user_auth_mode($_login) {
+        global $mysqli;
 		if ($_login == null) {
 			return false;
 			die();
 		}
-
-		$req = mysql_query("SELECT auth_mode FROM utilisateurs WHERE UPPER(login) = '".mb_strtoupper($_login)."'");
-		if (mysql_num_rows($req) == 0) {
+        
+        $sql = "SELECT auth_mode FROM utilisateurs WHERE UPPER(login) = '".mb_strtoupper($_login)."'";
+        if($mysqli !="") {
+            $resultat = mysqli_query($mysqli, $sql);  
+            $nb_lignes = $resultat->num_rows;
+            $result = $resultat->fetch_object();
+            $retour = $result->auth_mode;
+            $resultat->close();
+        } else {
+            $req = mysql_query($sql);
+            $nb_lignes = mysql_num_rows($req);
+            $retour = mysql_result($req, 0, "auth_mode");
+        }   
+		if ($nb_lignes == 0) {
 			return false;
 		} else {
-			return mysql_result($req, 0, "auth_mode");
+			return $retour;
 		}
 	}
 
@@ -558,7 +614,17 @@ global $temoin_pas_d_update_session_table_log;
 		if ($this->login == '') {
 			return false;
 		} else {
-			$test = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE login = '".$this->login."'"));
+            global $mysqli;
+            $sql = "SELECT login FROM utilisateurs WHERE login = '".$this->login."'";
+                    
+            if($mysqli !="") {		         
+                $resultat = mysqli_query($mysqli, $sql);  
+                $nb_lignes = $resultat->num_rows;
+                $resultat->close();
+            } else {
+                $test = mysql_num_rows(mysql_query());
+            }  
+			
 			if ($test == 0) {
 				return false;
 			} else {
@@ -571,7 +637,7 @@ global $temoin_pas_d_update_session_table_log;
 
 	// Création d'une entrée de log
 	public function insert_log() {
-  
+        global $mysqli;
     include_once(dirname(__FILE__).'/HTMLPurifier.standalone.php');
     $config = HTMLPurifier_Config::createDefault();
     $config->set('Core.Encoding', 'utf-8'); // replace with your encoding
@@ -589,30 +655,49 @@ global $temoin_pas_d_update_session_table_log;
 	                '1',
 	                '" . $this->start . "' + interval " . $this->maxLength . " minute
 	            )
-	        ;";
-	    $res = sql_query($sql);
+	        ;";        
+        if($mysqli !="") {
+            $res = mysqli_query($mysqli, $sql); 
+        } else {
+            $res = sql_query($sql);
+        }           
+	    
 	}
 
 	// Mise à jour du log de l'utilisateur
 	private function update_log() {
+        global $mysqli;
 		if ($this->is_anonymous()) {
 			return false;
 		} else {
 			$sql = "UPDATE log SET END = now() + interval " . $this->maxLength . " minute where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
-        	$res = sql_query($sql);
+            if($mysqli !="") {
+                $res = mysqli_query($mysqli, $sql); 
+            } else {
+                $res = sql_query($sql);
+            }         
 		}
 	}
 
 	// Dans le cas du multisite on vérifie si la session a été initialisée dans la bonne base
 	private function verif_CAS_multisite(){
+        global $mysqli;
 		if (isset($_GET['rne']) AND $GLOBALS['multisite'] == 'y' AND isset($_SESSION["login"]) && getSettingValue("auth_simpleSAML") != 'yes') {
 			// Alors, on initialise la session ici
 
 			if (!preg_match("/^[0-9A-Za-z]*$/", $_GET["rne"])) {
 				die("RNE invalide.");
 			}
-
-			$this->start = mysql_result(mysql_query("SELECT now();"),0);
+         
+            if($mysqli !="") {
+                $resultat = mysqli_query($mysqli, "SELECT now();");
+                $result = $resultat->fetch_row();
+                $this->start = $row[0];
+                $resultat->close();
+            } else {
+                $this->start = mysql_result(mysql_query("SELECT now();"),0);
+            }           
+			
 			$_SESSION['start'] = $this->start;
 			$this->recreate_log();
 
@@ -637,8 +722,15 @@ global $temoin_pas_d_update_session_table_log;
 
   // Enregistrement de la fin de la session dans la base de données
   private function register_logout($_auto) {
+      global $mysqli;
       $sql = "UPDATE log SET AUTOCLOSE = '" . $_auto . "', END = now() where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
-              $res = sql_query($sql);
+              
+        if($mysqli !="") {
+            $res = mysqli_query($mysqli, $sql);
+        } else {
+            $res = sql_query($sql);
+        }           
+              
 
 			if((getSettingValue('csrf_log')=='y')&&(isset($_SESSION['login']))) {
 				$csrf_log_chemin=getSettingValue('csrf_log_chemin');
@@ -745,108 +837,206 @@ global $temoin_pas_d_update_session_table_log;
 	function authenticate_gepi($_login,$_password) {
 		global $debug_test_mdp, $debug_test_mdp_file;
 		global $debug_login_nouveaux_comptes, $loguer_nouveau_login;
+        global $mysqli;
 
         $sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
-		$query = mysql_query($sql);
-		if (mysql_num_rows($query) == "1") {
-			$sql = "SELECT salt FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
-			$query_salt = mysql_query($sql);
-                if ($query_salt !== false) {
-                    $db_salt = mysql_result($query_salt, 0, "salt");
+               
+        if($mysqli !="") {
+            $resultat = mysqli_query($mysqli, $sql);  
+            $nb_lignes = $resultat->num_rows;
+            if ($nb_lignes == "1") {
+                $result_query = $resultat->fetch_object();
+                $sql_salt = "SELECT salt FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
+                $query_salt = mysqli_query($mysqli, $sql_salt);
+                    if ($query_salt !== false) {
+                        $row = $query_salt->fetch_row();
+                        $db_salt = $row[0];
+                        $query_salt->close();
+                    } else {
+                        $db_salt = '';
+                    }
+                $db_password = $result_query->password;
+                # Un compte existe avec ce login
+                if ($db_salt == '') {
+                    //on va tester avec le md5
+                    if ($db_password == md5($_password)) {
+                    } else {
+                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Recu: '.$_password."\n");
+                        $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
+                        $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
+                        if ($db_password == md5($_password_unhtmlentities)) {
+                            $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec unhtmlentities()'."\n");
+                        } else {
+                            $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification unhtmlentities'."\n");
+                            return false;
+                        }
+                    }
+                    //l'authentification est réussie sinon on serait déjà sorti de la fonction
+                     $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK'."\n");
+                     $sql_show = "SHOW COLUMNS FROM utilisateurs LIKE 'salt';";
+                     $query_show = mysqli_query($mysqli, $sql_show);
+                     if ($query_show->num_rows > 0) {
+                        //on va passer le hash en hmac scha256
+                        $salt = md5(uniqid(rand(), 1));
+                        $hmac_password = hash_hmac('sha256', $_password, $salt);
+                        $sql_update = "UPDATE utilisateurs SET password = '".$hmac_password."', salt = '".$salt."' WHERE login = '".$_login."'";
+                        $update_query = mysqli_query($mysqli, $sql_update);
+                        if ($update_query) {
+                            $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Password ameliore en hmac'."\n");
+                        } else {
+                            $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Echec password ameliore en hmac'."\n");
+                        }
+                    }            
+                    
                 } else {
-                    $db_salt = '';
+                    //login deja en hmac sha256
+                    if ($db_password == hash_hmac('sha256', $_password, $db_salt)) {
+                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK sans modification'."\n");
+                    } else {
+                        $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
+                        $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
+                        if ($db_password == hash_hmac('sha256', $_password_unhtmlentities, $db_salt)) {
+                            $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec unhtmlentities()'."\n");
+                        } else {
+                            $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification unhtmlentities'."\n");
+                            return false;
+                        }
+                    }
                 }
-			$db_password = mysql_result($query, 0, "password");
-			# Un compte existe avec ce login
-                        if ($db_salt == '') {
-                            //on va tester avec le md5
-                            if ($db_password == md5($_password)) {
-                            } else {
-		                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Recu: '.$_password."\n");
-                                    //if(getSettingValue('filtrage_html')=='htmlpurifier') {//utilse pour les ancienne base (2011-05-14)
-                                            $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
-                                            $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
-					                        //$this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'md5: \$_password_unhtmlentities='.$_password_unhtmlentities."\n");
-                                            if ($db_password == md5($_password_unhtmlentities)) {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec unhtmlentities()'."\n");
-                                            } else {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification unhtmlentities'."\n");
-                                                    return false;
-                                            }
-                                            /*
-                                    } else {
-                                            if ($db_password == md5(htmlentities($_password))) {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec htmlentities()'."\n");
-                                            } else {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification htmlentities'."\n");
-                                                    return false;
-                                            }
-                                    }
-                                    */
-                            }
-                            
-                            //l'authentification est réussie sinon on serait déjà sorti de la fonction
-                            $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK'."\n");
-                            if (mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"))>0) {
-                                //on va passer le hash en hmac scha256
-                                $salt = md5(uniqid(rand(), 1));
-                                $hmac_password = hash_hmac('sha256', $_password, $salt);
-                                $update_query = mysql_query("UPDATE utilisateurs SET password = '".$hmac_password."', salt = '".$salt."' WHERE login = '".$_login."'");
-                                if ($update_query) {
-                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Password ameliore en hmac'."\n");
+                //si le login fait échec, la fonction a déjà retourné avec false
+                $this->login = $result_query->login;
+                $this->current_auth_mode = "gepi";
+                return true;
+              
+            } else {
+                # Le login est erroné (n'existe pas dans la base)
+                return false;
+            }             
+            $resultat->close();
+        } else {
+            $query = mysql_query($sql);
+            $nb_lignes = mysql_num_rows($query);
+		
+            if ($nb_lignes == "1") {
+                $sql = "SELECT salt FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
+                $query_salt = mysql_query($sql);
+                    if ($query_salt !== false) {
+                        $db_salt = mysql_result($query_salt, 0, "salt");
+                    } else {
+                        $db_salt = '';
+                    }
+                $db_password = mysql_result($query, 0, "password");
+                # Un compte existe avec ce login
+                            if ($db_salt == '') {
+                                //on va tester avec le md5
+                                if ($db_password == md5($_password)) {
                                 } else {
-                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Echec password ameliore en hmac'."\n");
+                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Recu: '.$_password."\n");
+                                        //if(getSettingValue('filtrage_html')=='htmlpurifier') {//utilse pour les ancienne base (2011-05-14)
+                                                $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
+                                                $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
+                                                //$this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'md5: \$_password_unhtmlentities='.$_password_unhtmlentities."\n");
+                                                if ($db_password == md5($_password_unhtmlentities)) {
+                                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec unhtmlentities()'."\n");
+                                                } else {
+                                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification unhtmlentities'."\n");
+                                                        return false;
+                                                }
+                                                /*
+                                        } else {
+                                                if ($db_password == md5(htmlentities($_password))) {
+                                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec htmlentities()'."\n");
+                                                } else {
+                                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification htmlentities'."\n");
+                                                        return false;
+                                                }
+                                        }
+                                        */
+                                }
+
+                                //l'authentification est réussie sinon on serait déjà sorti de la fonction
+                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK'."\n");
+                                if (mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"))>0) {
+                                    //on va passer le hash en hmac scha256
+                                    $salt = md5(uniqid(rand(), 1));
+                                    $hmac_password = hash_hmac('sha256', $_password, $salt);
+                                    $update_query = mysql_query("UPDATE utilisateurs SET password = '".$hmac_password."', salt = '".$salt."' WHERE login = '".$_login."'");
+                                    if ($update_query) {
+                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Password ameliore en hmac'."\n");
+                                    } else {
+                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Echec password ameliore en hmac'."\n");
+                                    }
+                                }
+                            } else {
+                                //login deja en hmac sha256
+                                if ($db_password == hash_hmac('sha256', $_password, $db_salt)) {
+                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK sans modification'."\n");
+                                } else {
+    //                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {
+                                                $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
+                                                $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
+                                                //$this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'sha256: \$_password_unhtmlentities='.$_password_unhtmlentities."\n");
+                                                if ($db_password == hash_hmac('sha256', $_password_unhtmlentities, $db_salt)) {
+                                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec unhtmlentities()'."\n");
+                                                } else {
+                                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification unhtmlentities'."\n");
+                                                       return false;
+                                                }
+                                                /*
+                                        } else {
+                                                if ($db_password == hash_hmac('sha256', htmlentities($_password), $db_salt)) {
+                                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec htmlentities()'."\n");
+                                                } else {
+                                                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification htmlentities'."\n");
+                                                        return false;
+                                                }
+                                        }
+                                        */
                                 }
                             }
-                        } else {
-                            //login deja en hmac sha256
-                            if ($db_password == hash_hmac('sha256', $_password, $db_salt)) {
-                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK sans modification'."\n");
-                            } else {
-//                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {
-                                            $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
-                                            $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
-					                        //$this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'sha256: \$_password_unhtmlentities='.$_password_unhtmlentities."\n");
-                                            if ($db_password == hash_hmac('sha256', $_password_unhtmlentities, $db_salt)) {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec unhtmlentities()'."\n");
-                                            } else {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification unhtmlentities'."\n");
-                                                   return false;
-                                            }
-                                            /*
-                                    } else {
-                                            if ($db_password == hash_hmac('sha256', htmlentities($_password), $db_salt)) {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec htmlentities()'."\n");
-                                            } else {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification htmlentities'."\n");
-                                                    return false;
-                                            }
-                                    }
-                                    */
-                            }
-                        }
-                        //si le login fait échec, la fonction a déjà retourné avec false
-                        $this->login = mysql_result($query, 0, "login");
-                        $this->current_auth_mode = "gepi";
-                        return true;
-		} else {
-			# Le login est erroné (n'existe pas dans la base)
-			return false;
-		}
+                            //si le login fait échec, la fonction a déjà retourné avec false
+                            $this->login = mysql_result($query, 0, "login");
+                            $this->current_auth_mode = "gepi";
+                            return true;
+
+
+            } else {
+                # Le login est erroné (n'existe pas dans la base)
+                return false;
+            }
+        }      
 	}
 
-        static function change_password_gepi($user_login,$password) {
-                if (mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"))>0) {
-                    $salt = md5(uniqid(rand(), 1));
-                    $hmac_password = hash_hmac('sha256', $password, $salt);
-                    $result = mysql_query("UPDATE utilisateurs SET password='$hmac_password', salt = '$salt' WHERE login='" . $user_login . "'");
-                    return $result;
-                } else {
-                    $result = mysql_query("UPDATE utilisateurs SET password='".md5($password)."' WHERE login='" . $user_login . "'");
-                    return $result;
-                }
+    static function change_password_gepi($user_login,$password) {
+        global $mysqli;
+        $sql = "SHOW COLUMNS FROM utilisateurs LIKE 'salt';";
+               
+        if($mysqli !="") {
+            $resultat = mysqli_query($mysqli, $sql); 
+            if ($resultat->num_rows > 0) {
+                $salt = md5(uniqid(rand(), 1));
+                $hmac_password = hash_hmac('sha256', $password, $salt);
+                $result = mysqli_query($mysqli, "UPDATE utilisateurs SET password='$hmac_password', salt = '$salt' WHERE login='" . $user_login . "'");
+                $resultat->close();
+                return $result;                
+            } else {
+                $result = mysqli_query($mysqli, "UPDATE utilisateurs SET password='".md5($password)."' WHERE login='" . $user_login . "'");
+                $resultat->close();
+                return $result;                
+            }
+        } else {        
+            if (mysql_num_rows(mysql_query($sql)) > 0) {
+                $salt = md5(uniqid(rand(), 1));
+                $hmac_password = hash_hmac('sha256', $password, $salt);
+                $result = mysql_query("UPDATE utilisateurs SET password='$hmac_password', salt = '$salt' WHERE login='" . $user_login . "'");
+                return $result;
+            } else {
+                $result = mysql_query("UPDATE utilisateurs SET password='".md5($password)."' WHERE login='" . $user_login . "'");
+                return $result;
+            }
+        }   
 
-        }
+    }
 
 	private function authenticate_ldap($_login,$_password) {
 		if ($_login == null || $_password == null) {
@@ -950,15 +1140,28 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 
     private function test_loginsso()
   {
-      $requete = "SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='$this->login_sso'";
-      $result = mysql_query($requete);
-      $valeur = mysql_fetch_array($result);
-      if ($valeur[0] == '') {
-          return "0";
-      } else {
-          return $valeur[0];
-      }
+        global $mysqli;
+        $requete = "SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='$this->login_sso'";
+                   
+        if($mysqli !="") {
+            $result = mysqli_query($mysqli, $requete);
+            $valeur = $result->fetch_row();
+            if ($valeur[0] == '') {
+                return "0";
+            } else {
+                return $valeur[0];
+            }
+        } else  {
+            $result = mysql_query($requete);
+            $valeur = mysql_fetch_array($result);
+            if ($valeur[0] == '') {
+                return "0";
+            } else {
+                return $valeur[0];
+            }
+        }  
   }
+
 	public function logout_cas() {
 		include_once('CAS.php');
 
@@ -1085,6 +1288,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 	# Cette méthode charge en session les données de l'utilisateur,
 	# à la suite d'une authentification réussie.
 	public function load_user_data() {
+        global $mysqli;
 		# Petit test de départ pour être sûr :
 		if (!$this->login || $this->login == null) {
 			return false;
@@ -1101,18 +1305,32 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		}
 
 		# On interroge la base de données
-		$query = mysql_query("SELECT login, nom, prenom, email, statut, etat, now() start, change_mdp, auth_mode FROM utilisateurs WHERE (login = '".$this->login."')");
+        $sql = "SELECT login, nom, prenom, email, statut, etat, now() start, change_mdp, auth_mode FROM utilisateurs WHERE (login = '".$this->login."')";
+                
+        if($this->mysqli !="") {
+            $query = mysqli_query($this->mysqli, $sql);
+            # Est-ce qu'on a bien une entrée ?
+            if ($query->num_rows != "1") {
+                return false;
+                exit();
+            }
+            $sql = "SELECT id_matiere FROM j_professeurs_matieres WHERE (id_professeur = '" . $this->login . "') ORDER BY ordre_matieres LIMIT 1";
+            $matiere_principale = sql_query1($sql);
+            $row = $query->fetch_object();
+        } else {
+            $query = mysql_query($sql);
 
-		# Est-ce qu'on a bien une entrée ?
-		if (mysql_num_rows($query) != "1") {
-			return false;
-			exit();
-		}
+            # Est-ce qu'on a bien une entrée ?
+            if (mysql_num_rows($query) != "1") {
+                return false;
+                exit();
+            }
 
-		$sql = "SELECT id_matiere FROM j_professeurs_matieres WHERE (id_professeur = '" . $this->login . "') ORDER BY ordre_matieres LIMIT 1";
-        $matiere_principale = sql_query1($sql);
+            $sql = "SELECT id_matiere FROM j_professeurs_matieres WHERE (id_professeur = '" . $this->login . "') ORDER BY ordre_matieres LIMIT 1";
+            $matiere_principale = sql_query1($sql);
 
-		$row = mysql_fetch_object($query);
+            $row = mysql_fetch_object($query);	
+        }
 
 	    $_SESSION['login'] = $this->login;
 		if ($row->login != null) {
@@ -1141,11 +1359,19 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 	    	$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
 											WHERE du.login_user = '".$this->login."'
 											AND du.id_statut = ds.id";
-			$query = mysql_query($sql);
-			$result = mysql_fetch_array($query);
+                    
+            if($mysqli !="") {
+                $query = mysqli_query($mysqli, $sql);
+                $result = $query->fetch_object();
 
-			$_SESSION['statut_special'] = $result['nom_statut'];
-			$_SESSION['statut_special_id'] = $result['id'];
+            } else {
+                $query = mysql_query($sql);
+                $result = mysql_fetch_object($query);
+
+            }           
+            
+			$_SESSION['statut_special'] = $result->nom_statut;
+			$_SESSION['statut_special_id'] = $result->id;
 
 	    }
 
@@ -1158,7 +1384,9 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 	    return true;
 	}
 
+
 	public function record_failed_login($_login) {
+        global $mysqli;
   
     include_once(dirname(__FILE__).'/HTMLPurifier.standalone.php');
     $config = HTMLPurifier_Config::createDefault();
@@ -1167,8 +1395,75 @@ if (getSettingValue("sso_cas_table") == 'yes') {
     $purifier = new HTMLPurifier($config);
     
 		# Une tentative de login avec un mot de passe erronnée a été détectée.
-		$test_login = sql_count(sql_query("SELECT login FROM utilisateurs WHERE (login = '".$_login."')"));
-
+    $sql_login = "SELECT login FROM utilisateurs WHERE (login = '".$_login."')";
+       
+	if($mysqli !="") {
+        $resultat = mysqli_query($mysqli, $sql_login);  
+        $test_login = $resultat->num_rows;
+		if ($test_login != "0") {
+            tentative_intrusion(1, "Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n'est significative qu'en cas de répétition. (login : ".$_login.")");
+			# On a un vrai login.
+			# On enregistre un log d'erreur de connexion.
+	        $sql = "insert into log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
+	        	'" . $_login . "',
+	            now(),
+	            '',
+	            '" . $purifier->purify($_SERVER['REMOTE_ADDR']) . "',
+	            '" . $purifier->purify($_SERVER['HTTP_USER_AGENT']) . "',
+	            '" . $purifier->purify($_SERVER['HTTP_REFERER']) . "',
+	            '4',
+	            now());";
+	        $res = mysqli_query($mysqli, $sql);
+            
+	        // On compte de nombre de tentatives infructueuse issues de la même adresse IP
+	        $sql = "select LOGIN from log where
+	                LOGIN = '" . $_login . "' and
+	                START > now() - interval " . getSettingValue("temps_compte_verrouille") . " minute and
+	                REMOTE_ADDR = '".$_SERVER['REMOTE_ADDR']."'
+	                ";
+	        $res_test = mysqli_query($mysqli, $sql);
+	        if ($res_test->num_rows > getSettingValue("nombre_tentatives_connexion")) {
+	        	$this->lock_account($_login);
+                $resultat->close(); 
+	        	return true;
+            } else {
+                $resultat->close(); 
+	        	return false;
+            }
+        } else {
+            tentative_intrusion(1, "Tentative de connexion avec un login incorrect (n'existe pas dans la base Gepi). Ce peut être simplement une faute de frappe. Cette alerte n'est significative qu'en cas de répétition. (login utilisé : ".$_login.")");
+            // Le login n'existe pas. On fait donc un test sur l'IP.
+            $sql = "select LOGIN from log where
+                START > now() - interval " . getSettingValue("temps_compte_verrouille") . " minute and
+                REMOTE_ADDR = '".$purifier->purify($_SERVER['REMOTE_ADDR'])."'";
+            $res_test = mysqli_query($mysqli, $sql);
+            if ($res_test->num_rows <= 10) {
+                // On a moins de 10 enregistrements. On enregistre et on ne renvoie pas de code
+                // de verrouillage.
+                $sql = "insert into log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
+                    '" . $_login . "',
+                    now(),
+                    '',
+                    '" . $purifier->purify($_SERVER['REMOTE_ADDR']) . "',
+                    '" . $purifier->purify($_SERVER['HTTP_USER_AGENT']) . "',
+                    '" . $purifier->purify($_SERVER['HTTP_REFERER']) . "',
+                    '4',
+                    now()
+                    )
+                    ;";
+                $res = mysqli_query($mysqli, $sql);
+                $resultat->close(); 
+                return false;
+            } else {
+                // On a 10 entrées, on renvoie un code d'erreur de verouillage.
+                $resultat->close(); 
+                return true;
+            }  
+        }
+        
+        $resultat->close();        
+	} else {		
+		$test_login = sql_count(sql_query($sql_login));
 		if ($test_login != "0") {
 			tentative_intrusion(1, "Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n'est significative qu'en cas de répétition. (login : ".$_login.")");
 			# On a un vrai login.
@@ -1197,44 +1492,59 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 	        } else {
 	        	return false;
 	        }
-		} else {
-			tentative_intrusion(1, "Tentative de connexion avec un login incorrect (n'existe pas dans la base Gepi). Ce peut être simplement une faute de frappe. Cette alerte n'est significative qu'en cas de répétition. (login utilisé : ".$_login.")");
-			// Le login n'existe pas. On fait donc un test sur l'IP.
-			$sql = "select LOGIN from log where
-                START > now() - interval " . getSettingValue("temps_compte_verrouille") . " minute and
-                REMOTE_ADDR = '".$purifier->purify($_SERVER['REMOTE_ADDR'])."'";
-            $res_test = sql_query($sql);
-            if (sql_count($res_test) <= 10) {
-				// On a moins de 10 enregistrements. On enregistre et on ne renvoie pas de code
-				// de verrouillage.
-            	$sql = "insert into log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
-                    '" . $_login . "',
-                    now(),
-                    '',
-                    '" . $purifier->purify($_SERVER['REMOTE_ADDR']) . "',
-                    '" . $purifier->purify($_SERVER['HTTP_USER_AGENT']) . "',
-                    '" . $purifier->purify($_SERVER['HTTP_REFERER']) . "',
-                    '4',
-                    now()
-                    )
-                    ;";
-                $res = sql_query($sql);
-                return false;
             } else {
-            	// On a 10 entrées, on renvoie un code d'erreur de verouillage.
-            	return true;
+                tentative_intrusion(1, "Tentative de connexion avec un login incorrect (n'existe pas dans la base Gepi). Ce peut être simplement une faute de frappe. Cette alerte n'est significative qu'en cas de répétition. (login utilisé : ".$_login.")");
+                // Le login n'existe pas. On fait donc un test sur l'IP.
+                $sql = "select LOGIN from log where
+                    START > now() - interval " . getSettingValue("temps_compte_verrouille") . " minute and
+                    REMOTE_ADDR = '".$purifier->purify($_SERVER['REMOTE_ADDR'])."'";
+                $res_test = sql_query($sql);
+
+                if (sql_count($res_test) <= 10) {
+                    // On a moins de 10 enregistrements. On enregistre et on ne renvoie pas de code
+                    // de verrouillage.
+                    $sql = "insert into log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
+                        '" . $_login . "',
+                        now(),
+                        '',
+                        '" . $purifier->purify($_SERVER['REMOTE_ADDR']) . "',
+                        '" . $purifier->purify($_SERVER['HTTP_USER_AGENT']) . "',
+                        '" . $purifier->purify($_SERVER['HTTP_REFERER']) . "',
+                        '4',
+                        now()
+                        )
+                        ;";
+                    $res = sql_query($sql);
+                    return false;
+                  
+                } else {
+                    // On a 10 entrées, on renvoie un code d'erreur de verouillage.
+                    return true;
+                }
             }
-		}
+        }
 	}
+  
 
 	# Verrouillage d'un compte en raison d'un trop grand nombre d'échec de connexion.
 	private function lock_account($_login) {
+        global $mysqli;
        if ((!isset($GLOBALS['bloque_compte_admin'])) or ($GLOBALS['bloque_compte_admin'] != "n")) {
-          // On verrouille le compte même si c'est un admin
-          $reg_data = sql_query("UPDATE utilisateurs SET date_verrouillage=now() WHERE login='".$_login."'");
+          // On verrouille le compte même si c'est un admin        
+            if($mysqli !="") {
+                $reg_data = mysqli_query($mysqli,"UPDATE utilisateurs SET date_verrouillage=now() WHERE login='".$_login."'" );
+            } else {
+                $reg_data = sql_query("UPDATE utilisateurs SET date_verrouillage=now() WHERE login='".$_login."'");
+            }           
+          
        } else {
-          // on ne bloque pas le compte d'un administrateur
-          $reg_data = sql_query("UPDATE utilisateurs SET date_verrouillage=now() WHERE login='".$_login."' and statut!='administrateur'");
+          // on ne bloque pas le compte d'un administrateur       
+            if($mysqli !="") {
+                $reg_data = mysqli_query($mysqli,"UPDATE utilisateurs SET date_verrouillage=now() WHERE login='".$_login."' and statut!='administrateur'");
+            } else {
+                $reg_data = sql_query("UPDATE utilisateurs SET date_verrouillage=now() WHERE login='".$_login."' and statut!='administrateur'");
+            }           
+          
        }
        # On enregistre une alerte de sécurité.
        tentative_intrusion(2, "Verrouillage du compte ".$_login." en raison d'un trop grand nombre de tentatives de connexion infructueuses. Ce peut être une tentative d'attaque brute-force.", $_login);
@@ -1243,10 +1553,13 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 
 	# Renvoie true ou false selon que le compte est bloqué ou non.
 	private function account_is_locked() {
-		$test_verrouillage = sql_query1("select login, statut from utilisateurs where
+        global $mysqli;
+        $sql_verrouillage = "select login, statut from utilisateurs where
 			login = '" . $this->login . "' and
-			date_verrouillage > now() - interval " . getSettingValue("temps_compte_verrouille") . " minute ");
+			date_verrouillage > now() - interval " . getSettingValue("temps_compte_verrouille") . " minute ";
 
+        $test_verrouillage = sql_query1($sql_verrouillage);
+        
 		if ($test_verrouillage != "-1") {
 			// Le compte est verrouillé.
 			if ($this->statut == "administrateur" and $GLOBALS['bloque_compte_admin'] != "n") {
@@ -1261,6 +1574,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 	}
 
 	private function import_user_profile() {
+        global $mysqli;
 		# On ne peut arriver ici quand dans le cas où on a une authentification réussie.
 		# L'import d'un utilisateur ne peut se faire qu'à partir d'un LDAP
 		if (!LDAPServer::is_setup()) {
@@ -1270,18 +1584,31 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 			# Le serveur LDAP est configuré, on y va.
 			# Encore un dernier petit test quand même : est-ce que l'utilisateur
 			# est bien absent de la base.
-			$sql = mysql_query("SELECT login FROM utilisateurs WHERE (login = '".$this->login."')");
-			if (mysql_num_rows($sql) != "0") {
-				return false;
-				die();
-			}
+			$sql = "SELECT login FROM utilisateurs WHERE (login = '".$this->login."')";
+                    
+            if($mysqli !="") {
+                $resultat = mysqli_query($mysqli, $sql); 
+                if ($resultat->num_rows != "0") {
+                    $resultat->close();
+                    return false;
+                    die();
+                }
+                $resultat->close();
+            } else {
+                if (mysql_num_rows(mysql_query($sql)) != "0") {
+                    return false;
+                    die();
+                }
+            }           
+            
+            
 
 			$ldap_server = new LDAPServer;
 			$user = $ldap_server->get_user_profile($this->login);
 			if ($user) {
 				# On ne refait pas de tests ou de formattage. La méthode get_user_profile
 				# s'occupe de tout.
-				$res = mysql_query("INSERT INTO utilisateurs SET
+                $sql = "INSERT INTO utilisateurs SET
 										login = '".$this->login."',
 										prenom = '".$user["prenom"]."',
 										nom = '".$user["nom"]."',
@@ -1291,7 +1618,14 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 										password = '',
 										etat = 'actif',
 										auth_mode = '".$this->current_auth_mode."',
-										change_mdp = 'n'");
+										change_mdp = 'n'";
+                        
+                if($mysqli !="") {
+                    $res = mysqli_query($mysqli, $sql);
+                } else {
+                    $res = mysql_query($sql);
+                }
+                
 				if (!$res) {
 					return false;
 				} else {
@@ -1305,6 +1639,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 
 
 	private function import_user_profile_from_scribe() {
+        global $mysqli;
 		# On ne peut arriver ici quand dans le cas où on a une authentification réussie.
 		# L'import d'un utilisateur ne peut se faire qu'à partir d'un LDAP de Scribe, ici.
 		if (!LDAPServer::is_setup()) {
@@ -1319,11 +1654,21 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 			# Le serveur LDAP est configuré, on y va.
 			# Encore un dernier petit test quand même : est-ce que l'utilisateur
 			# est bien absent de la base.
-			$sql = mysql_query("SELECT login FROM utilisateurs WHERE (login = '".$this->login."')");
-			if (mysql_num_rows($sql) != "0") {
-				return false;
-				die();
-			}
+			$sql = "SELECT login FROM utilisateurs WHERE (login = '".$this->login."')";        
+            if($mysqli !="") {
+                $resultat = mysqli_query($mysqli, $sql);  
+                if ($resultat->num_rows != "0") {
+                    $resultat->close();
+                    return false;
+                    die();                    
+                }
+                $resultat->close();
+            } else {
+                if (mysql_num_rows(mysql_query($sql)) != "0") {
+                    return false;
+                    die();
+                }
+            }           
 
 			$ldap_server = new LDAPServerScribe;
       
@@ -1340,9 +1685,18 @@ if (getSettingValue("sso_cas_table") == 'yes') {
         if ($user['statut'] == 'eleve') {
           // On a un élève : on vérifie s'il existe dans la table 'eleves',
           // sur la base de son INE, ou nom et prénom.
-          $test = mysql_num_rows(mysql_query("SELECT * FROM eleves
-                                                WHERE (no_gep = '".$user['raw']['ine'][0]."'
-                                                        OR (nom = '".$user['nom']."' AND prenom = '".$user['prenom']."'))"));
+          $sql_test = "SELECT * FROM eleves
+                            WHERE (no_gep = '".$user['raw']['ine'][0]."'
+                                OR (nom = '".$user['nom']."' AND prenom = '".$user['prenom']."'))";
+                 
+            if($mysqli !="") {
+                $resultat = mysqli_query($mysqli, $sql);  
+                $test = $resultat->num_rows;
+                $resultat->close();
+            } else {
+                $test = mysql_num_rows(mysql_query());
+            }           
+          
           if ($test == 0) {
             // L'élève n'existe pas du tout. On va donc le créer.
             $nouvel_eleve = new Eleve();
@@ -1405,10 +1759,18 @@ if (getSettingValue("sso_cas_table") == 'yes') {
                       
                       foreach($classe_courante->getPeriodeNotes() as $periode) {
                           // On associe l'élève à la classe
-                          $res = mysql_query("INSERT INTO j_eleves_classes SET
+                          $sql_classe = "INSERT INTO j_eleves_classes SET
                               login = '".$this->login."', 
                               id_classe = '".$classe_courante->getId()."',
-                              periode = '".$periode->getNumPeriode()."'");
+                              periode = '".$periode->getNumPeriode()."'";
+                                  
+                        if($mysqli !="") {
+                            $res = mysqli_query($mysqli, $sql); 
+                            $res->close();
+                        } else {
+                            $res = mysql_query($sql_classe);
+                        }           
+                          
                       } // Fin boucle périodes
                       $eleve_added_to_classe = true;
                     } // Fin test classe
@@ -1428,9 +1790,20 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           } else {
             // L'élève existe déjà dans la base. On ne créé que l'utilisateur correspondant.
             // Pour ça, on va devoir s'assurer que l'identifiant est identique !
-            $test_login = mysql_result(mysql_query("SELECT login FROM eleves
-                                                WHERE (no_gep = '".$user['raw']['ine'][0]."'
-                                                        OR (nom = '".$user['nom']."' AND prenom = '".$user['prenom']."'))"), 0);
+            $sql_login = "SELECT login FROM eleves
+                            WHERE (no_gep = '".$user['raw']['ine'][0]."'
+                                OR (nom = '".$user['nom']."' AND prenom = '".$user['prenom']."'))";
+                    
+            if($mysqli !="") {
+                $resultat = mysqli_query($mysqli, $sql);
+                $res = $resultatè->fetch_object();
+                $test_login = $res->login;
+                $resultat->close();
+            } else {
+                $test_login = mysql_result(mysql_query($sql_login), 0);
+            }           
+            
+            
             if ($test_login != $this->login) {
               // Le login est différent, on ne peut rien faire... Il faudrait renommer
               // le login partout dans l'application, mais il n'existe pas de mécanisme
@@ -1475,30 +1848,58 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           for ($i=0;$i<$nb_eleves_a_charge;$i++) {
               $eleve_uid = explode(",",$user['raw']['entauxpersreleleveeleve'][$i]);
               $eleve_associe_login = mb_substr($eleve_uid[0], 4);
-              $eleve_query = mysql_query("SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'");
-              if (mysql_num_rows($eleve_query) == 1) {
-                $eleve_associe_ele_id = mysql_result($eleve_query, 0);
-                  
-                // Gepi donne un ordre aux responsables, il faut donc verifier combien de responsables sont deja enregistres pour l'eleve
-                // On initialise le numero de responsable
-                $numero_responsable = 1;
-                $req_nb_resp_deja_presents = "SELECT count(*) FROM responsables2 WHERE ele_id = '$eleve_associe_ele_id'";
-                $res_nb_resp = mysql_query($req_nb_resp_deja_presents);
-                $nb_resp = mysql_fetch_array($res_nb_resp);
-                if ($nb_resp[0] > 0) {
-                    // Si deja 1 ou plusieurs responsables legaux pour cet eleve,on ajoute le nouveau responsable en incrementant son numero
-                    $numero_responsable += $nb_resp[0];
+              $eleve_sql = "SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'";
+                      
+                if($mysqli !="") {
+                    $eleve_query = mysqli_query($mysqli, $sql);
+                    if ($eleve_query->num_rows == 1) {
+                        $eleve_associe_obj = $eleve_query->fetch_object();
+                        $eleve_associe_ele_id = $eleve_associe_obj->ele_id;
+                        // Gepi donne un ordre aux responsables, il faut donc verifier combien de responsables sont deja enregistres pour l'eleve
+                        // On initialise le numero de responsable
+                        $numero_responsable = 1;
+                        $req_nb_resp_deja_presents = "SELECT count(*) FROM responsables2 WHERE ele_id = '$eleve_associe_ele_id'";
+                        $res_nb_resp = mysqli_query($mysqli, $req_nb_resp_deja_presents);
+                        $nb_resp = $res_nb_resp->fetch_array($res_nb_resp);
+                        if ($nb_resp[0] > 0) {
+                            // Si deja 1 ou plusieurs responsables legaux pour cet eleve,on ajoute le nouveau responsable en incrementant son numero
+                            $numero_responsable += $nb_resp[0];
 
-                    //--
-                    // TODO: tester si on a des adresses identiques, et n'utiliser qu'un seul objet adresse dans ce cas.
-                    //--
+                            //--
+                            // TODO: tester si on a des adresses identiques, et n'utiliser qu'un seul objet adresse dans ce cas.
+                            //--
+                        }
+
+                        // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
+                        $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getResponsableEleveId()."','$numero_responsable','')";
+                        $insert_lien = mysqli_query($mysqli, $req_ajout_lien_eleve_resp);
+                    }
+                } else {
+                    $eleve_query = mysql_query($eleve_sql);
+                    if (mysql_num_rows($eleve_query) == 1) {
+                        $eleve_associe_ele_id = mysql_result($eleve_query, 0);
+
+                        // Gepi donne un ordre aux responsables, il faut donc verifier combien de responsables sont deja enregistres pour l'eleve
+                        // On initialise le numero de responsable
+                        $numero_responsable = 1;
+                        $req_nb_resp_deja_presents = "SELECT count(*) FROM responsables2 WHERE ele_id = '$eleve_associe_ele_id'";
+                        $res_nb_resp = mysql_query($req_nb_resp_deja_presents);
+                        $nb_resp = mysql_fetch_array($res_nb_resp);
+                        if ($nb_resp[0] > 0) {
+                            // Si deja 1 ou plusieurs responsables legaux pour cet eleve,on ajoute le nouveau responsable en incrementant son numero
+                            $numero_responsable += $nb_resp[0];
+
+                            //--
+                            // TODO: tester si on a des adresses identiques, et n'utiliser qu'un seul objet adresse dans ce cas.
+                            //--
+                        }
+
+                        // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
+                        $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getResponsableEleveId()."','$numero_responsable','')";
+                        mysql_query($req_ajout_lien_eleve_resp);
+                    } // Fin test si élève existe
                 }
-
-                // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
-                $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getResponsableEleveId()."','$numero_responsable','')";
-                mysql_query($req_ajout_lien_eleve_resp);
-              } // Fin test si élève existe
-          }
+            }
           
         } elseif ($user['statut'] == 'professeur') {
           // Rien de spécial à ce stade.
@@ -1539,6 +1940,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
   # Mise à jour de quelques attributs de l'utilisateur à partir des attributs transmis
   # par CAS directement.
   private function update_user_with_cas_attributes(){
+      global $mysqli;
     $need_update = false;
     if (isset($GLOBALS['debug_log_file'])){
     error_log("Mise à jour de l'utilisateur à partir des attributs CAS\n", 3, $GLOBALS['debug_log_file']);
@@ -1564,15 +1966,25 @@ if (getSettingValue("sso_cas_table") == 'yes') {
       }
       $query .= " WHERE login = '$this->login'";
 			error_log("Détail requête : ".$query."\n", 3, $GLOBALS['debug_log_file']);
-      if ($need_update) $res = mysql_query($query); // On exécute la mise à jour, si nécessaire
+              
+    if($mysqli !="") {
+        if ($need_update) $res = mysqli_query($mysqli, $query);
+    } else {
+        if ($need_update) $res = mysql_query($query); // On exécute la mise à jour, si nécessaire
+    } 
       if ($need_update && $this->statut == 'eleve') {
         # On a eu une mise à jour qui concerne un élève, il faut synchroniser l'info dans la table eleves
-        mysql_query("UPDATE eleves, utilisateurs
+        $sql = "UPDATE eleves, utilisateurs
                       SET eleves.nom = utilisateurs.nom,
                           eleves.prenom = utilisateurs.prenom,
                           eleves.email = utilisateurs.email
                       WHERE eleves.login = utilisateurs.login
-                        AND utilisateurs.login = '".$this->login."'");
+                        AND utilisateurs.login = '".$this->login."'";       
+        if($mysqli !="") {
+            mysqli_query($mysqli, $sql);
+        } else {
+            mysql_query($sql);
+        }
       }
       return $res;
     }

@@ -18,6 +18,7 @@
  * @see get_group()
  */
 function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
+    global $mysqli;
 	// Par discipline puis par classe
 	if(!isset($mode)){
 		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere, jgc.id_classe
@@ -41,20 +42,38 @@ function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
 						"GROUP BY jgp.id_groupe ".
 						"ORDER BY c.classe, jgm.id_matiere" ;
 	}
-	$query = mysql_query($requete_sql);
+         
+	if($mysqli !="") {
+        $resultat = mysqli_query($mysqli, $requete_sql);  
+        $nb = $resultat->num_rows;
+        $groups = array();
+        while ($obj = $resultat->fetch_object()) {
+            $_id_groupe = $obj->id_groupe;
+            if(count($tab_champs)>0) {
+                $groups[] = get_group($_id_groupe,$tab_champs);
+            } else {
+                $groups[] = get_group($_id_groupe);
+            }
+        }
+		
+	} else {
+        $query = mysql_query($requete_sql);
 
-    $nb = mysql_num_rows($query);
+        $nb = mysql_num_rows($query);
 
-    $groups = array();
-    for ($i=0;$i<$nb;$i++) {
-        $_id_groupe = mysql_result($query, $i, "id_groupe");
-		if(count($tab_champs)>0) {
-			$groups[] = get_group($_id_groupe,$tab_champs);
-		}
-		else {
-			$groups[] = get_group($_id_groupe);
-		}
-    }
+        $groups = array();
+        for ($i=0;$i<$nb;$i++) {
+            $_id_groupe = mysql_result($query, $i, "id_groupe");
+            if(count($tab_champs)>0) {
+                $groups[] = get_group($_id_groupe,$tab_champs);
+            }
+            else {
+                $groups[] = get_group($_id_groupe);
+            }
+        }
+		
+	}        
+    
     return $groups;
 }
 
@@ -332,6 +351,7 @@ function get_visibilite_for_group($_id_groupe) {
  * @return array Tableaux imbriques des informations du groupe
  */
 function get_group($_id_groupe,$tab_champs=array('all')) {
+    global $mysqli;
 	$temp=array();
 
 	$get_matieres='n';
@@ -364,211 +384,429 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                             "from groupes ".
                             "where (" .
                             "id = '" . $_id_groupe . "'".
-                            ")";
-    $query = mysql_query($sql);
-	if(mysql_num_rows($query)==0) {
-		echo "<span style='color:red'>Le groupe n°$_id_groupe n'existe pas.</span><br />";
+                            ")";            
+	if($mysqli !="") {
+		$resultat = mysqli_query($mysqli, $sql);
+        if($resultat->num_rows==0) {
+            echo "<span style='color:red'>Le groupe n°$_id_groupe n'existe pas.</span><br />";
+        } else {
+            $obj = $resultat->fetch_object();
+            $temp["name"] = $obj->name;
+            $temp["description"] = $obj->description;
+            $temp["id"] = $obj->id;
+            if($get_visibilite=='y') {
+                $temp["visibilite"]=array();
+                $sql="SELECT * FROM j_groupes_visibilite WHERE id_groupe='" . $_id_groupe . "';";
+                $res_vis = mysqli_query($mysqli, $sql);
+                if($res_vis->num_rows > 0) {
+                    while($lig_vis = $res_vis->fetch_object()) {
+                        $temp["visibilite"][$lig_vis->domaine]=$lig_vis->visible;
+                    }
+                } 
+                $res_vis->close();
+            }            
+            if($get_matieres=='y') {
+                $sql_matieres = "SELECT m.matiere, m.nom_complet, m.categorie_id FROM matieres m, j_groupes_matieres j " .
+                                                                "WHERE (" .
+                                                                "m.matiere = j.id_matiere and " .
+                                                                "j.id_groupe = '" . $_id_groupe . "')";
+                $matiere = mysqli_query($mysqli, $sql_matieres);
+                if ($matiere->num_rows > 0) {
+                    $obj_matieres = $matiere->fetch_object();
+                    $temp["matiere"]["matiere"] = $obj_matieres->matiere;
+                    $temp["matiere"]["nom_complet"] = $obj_matieres->nom_complet;
+                    $temp["matiere"]["categorie_id"] = $obj_matieres->categorie_id;                    
+                }
+                $matiere->close();
+            }
+            if($get_classes=='y') {
+                // Classes
+                $sql_classes="SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.mode_moy, j.categorie_id, j.saisie_ects, j.valeur_ects 
+                  FROM classes c, j_groupes_classes j 
+                    WHERE (c.id = j.id_classe AND j.id_groupe = '".$_id_groupe."') 
+                      ORDER BY c.classe, c.nom_complet;";
+                $get_classes = mysqli_query($mysqli, $sql_classes);
+                $nb_classes = $get_classes->num_rows;                
+                while ($obj_classe = $get_classes->fetch_object()) {
+                    $c_id = $obj_classe->id;
+                    $c_classe = $obj_classe->classe;
+                    $c_nom_complet = $obj_classe->nom_complet;
+                    $c_priorite = $obj_classe->priorite;
+                    $c_coef = $obj_classe->coef;
+                    $c_mode_moy = $obj_classe->mode_moy;
+                    $c_saisie_ects = ($obj_classe->saisie_ects > '0') ? TRUE : FALSE;
+                    $c_valeur_ects = $obj_classe->valeur_ects;
+                    $c_cat_id = $obj_classe->categorie_id;
+                    $temp["classes"]["list"][] = $c_id;
+                    $temp["classes"]["classes"][$c_id] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet, "priorite" => $c_priorite, "coef" => $c_coef, "mode_moy" => $c_mode_moy, "saisie_ects" => $c_saisie_ects, "valeur_ects" => $c_valeur_ects, "categorie_id" => $c_cat_id);
+                }
+
+                if(isset($temp["classes"]["classes"])) {
+                    $str = NULL;
+                    foreach ($temp["classes"]["classes"] as $classe) {
+                        $str .= $classe["classe"] . ", ";
+                    }
+                    $str = mb_substr($str, 0, -2);
+                    $temp["classlist_string"] = $str;
+                }
+                
+                $get_classes->close();
+            }
+            if($get_profs=='y') {
+                // Professeurs
+                $temp["profs"]["list"] = array();
+                $temp["profs"]["users"] = array();
+                $temp["profs"]["proflist_string"] = "";
+
+                $sql_profs = "SELECT u.login, u.nom, u.prenom, u.civilite 
+                  FROM utilisateurs u, j_groupes_professeurs j 
+                  WHERE (u.login = j.login and j.id_groupe = '".$_id_groupe."') 
+                    ORDER BY u.nom, u.prenom";
+                $get_profs = mysqli_query($mysqli, $sql_profs);
+                $nb = $get_profs->num_rows; 
+                $i = 0;
+                while ($obj_prof = $get_profs->fetch_object()) {
+                    if($i>0) {$temp["profs"]["proflist_string"].=", "; }
+                    $p_login = $get_profs->login;
+                    $p_nom = casse_mot($get_profs->nom,'maj');
+                    $p_prenom = casse_mot($get_profs->prenom,'majf2');
+                    $civilite = $get_profs->civilite;$temp["profs"]["list"][] = $p_login;
+                    $temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
+                    $temp["profs"]["proflist_string"].=$civilite." ".$p_nom." ".my_strtoupper(mb_substr($p_prenom,0,1));
+                    $i++;
+                }
+                $get_profs->close();
+            }
+            if($get_periodes=='y') {
+                // Périodes
+                $temp["periodes"]=array();
+                // Pour le nom et le nombre de periodes, on suppose qu'elles sont identiques dans toutes les classes du groupe
+                $sql_periode = "SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["list"][0] ."' ORDER BY num_periode";
+                $periode_query = mysqli_query($mysqli, $sql_periode);
+                $nb_periode = $periode_query->num_rows + 1;
+                $i = "1";
+                while ($obj_period = $periode_query->fetch_object()) {
+                    $temp["periodes"][$i]["nom_periode"] = $obj_period->nom_periode;
+                    $temp["periodes"][$i]["num_periode"] = $i;
+                    $i++;
+                }
+                $temp["nb_periode"] = $nb_periode;
+                // Verrouillage
+                
+                // Initialisation
+                $i = "1";
+                $all_clos = "";
+                $all_open = "";
+                $all_clos_part = "";
+                while ($i < $nb_periode) {
+                    $liste_ver_per[$i] = "";
+                    $i++;
+                }
+
+                foreach ($temp["classes"]["list"] as $c_id) {
+                    $sql_periode2 = "SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["classes"][$c_id]["id"] ."' ORDER BY num_periode";
+                    $periode_query2 = mysqli_query($mysqli, $sql_periode2);
+                    $nb_periode = $periode_query2->num_rows + 1 ;
+                    $i = "1";
+                    while ($obj_period2 = $periode_query2->fetch_object()) {
+                        $temp["classe"]["ver_periode"][$c_id][$i] = $obj_period2->verouiller;
+                        $liste_ver_per[$i] .= $temp["classe"]["ver_periode"][$c_id][$i];
+                        $i++;
+                    }
+                    $all_clos .= "O";
+                    $all_open .= "N";
+                    $all_clos_part .= "P";
+                    $periode_query2->close();
+                }
+                $i = "1";
+                while ($i < $nb_periode) {
+                    if ($liste_ver_per[$i] == $all_clos)
+                        // Toutes les classes sont closes
+                        $temp["classe"]["ver_periode"]["all"][$i] = 0;
+                    else if ($liste_ver_per[$i] == $all_clos_part)
+                        // Toutes les classes sont partiellement closes
+                        $temp["classe"]["ver_periode"]["all"][$i] = 1;
+                    else if ($liste_ver_per[$i] == $all_open)
+                        // Toutes les classes sont ouvertes
+                        $temp["classe"]["ver_periode"]["all"][$i] = 3;
+                    else if (substr_count($liste_ver_per[$i], "N") > 0)
+                        // Au moins une classe est ouverte
+                        $temp["classe"]["ver_periode"]["all"][$i] = 2;
+                    else
+                        $temp["classe"]["ver_periode"]["all"][$i] = -1;
+                    $i++;
+                }
+                $periode_query->close();
+            }
+            
+            if($get_eleves=='y') {
+                // Elèves
+                foreach ($temp["periodes"] as $key => $period) {
+                    $temp["eleves"][$key]["list"] = array();
+                    $temp["eleves"][$key]["users"] = array();
+
+                    $temp["eleves"][$key]["telle_classe"] = array();
+                    foreach($temp["classes"]["list"] as $tmp_id_classe) {
+                        $temp["eleves"][$key]["telle_classe"][$tmp_id_classe] = array();
+                    }
+                    
+                    $sql_eleves = "SELECT distinct j.login, e.nom, e.prenom, e.ele_id, e.elenoet, e.sexe FROM eleves e, j_eleves_groupes j WHERE (" .
+                                                "e.login = j.login and j.id_groupe = '" . $_id_groupe . "' and j.periode = '" . $period["num_periode"] . "') " .
+                                                "ORDER BY e.nom, e.prenom";
+                    $get_eleves = mysqli_query($mysqli, $sql_eleves);
+                    $nb = $get_eleves->num_rows;
+                    while ($obj_eleve = $get_eleves->fetch_object()) {
+                        $e_login = $obj_eleve->login;
+                        $e_nom = $obj_eleve->nom;
+                        $e_prenom = $obj_eleve->prenom;
+                        $e_sexe = $obj_eleve->sexe;
+                        $sql="SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $e_login . "' and periode = '" . $key . "')";
+                        $res_classe_eleve_periode =  mysqli_query($mysqli, $sql);
+                        if($res_classe_eleve_periode->num_rows > 0) {
+                            $row_classe = $res_classe_eleve_periode->fetch_row();
+                            $e_classe = $row_classe[0];
+                            $temp["eleves"][$key]["telle_classe"][$e_classe][] = $e_login;
+                        } else {
+                            $e_classe=-1;
+                        }
+                        $e_sconet_id = $obj_eleve->ele_id;
+                        $e_elenoet = $obj_eleve->elenoet;
+                        $temp["eleves"][$key]["list"][] = $e_login;
+                        $temp["eleves"][$key]["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "classe" => $e_classe, "sconet_id" => $e_sconet_id, "elenoet" => $e_elenoet, "sexe" => $e_sexe);
+                        $res_classe_eleve_periode->close();
+                    }
+                    
+                    $get_eleves->close();
+                }
+                
+                $sql_all_eleves = "SELECT distinct j.login, e.nom, e.prenom FROM eleves e, j_eleves_groupes j WHERE (" .
+                                                "e.login = j.login and j.id_groupe = '" . $_id_groupe . "') " .
+                                                "ORDER BY e.nom, e.prenom";
+                $get_all_eleves = mysqli_query($mysqli, $sql_all_eleves);
+                $nb = $get_all_eleves->num_rows;
+                $temp["eleves"]["all"]["list"] = array();
+                while ($obj_all_eleve = $get_all_eleves->fetch_object()) {
+                    $e_login = $obj_all_eleve->login;
+                    $temp["eleves"]["all"]["list"][] = $e_login;
+                    foreach ($temp["periodes"] as $key => $period) {
+                        if (in_array($e_login, $temp["eleves"][$key]["list"])) {
+                            $temp["eleves"]["all"]["users"][$e_login] = $temp["eleves"][$key]["users"][$e_login];
+                            break 1;                            
+                        }                        
+                    }
+                }
+                $get_all_eleves->close();                
+            }
+        }
+        $resultat->close();
+	} else {
+		         
+
+        $query = mysql_query($sql);
+        if(mysql_num_rows($query)==0) {
+            echo "<span style='color:red'>Le groupe n°$_id_groupe n'existe pas.</span><br />";
+        }
+        else {
+            $temp["name"] = mysql_result($query, 0, "name");
+            $temp["description"] = mysql_result($query, 0, "description");
+            $temp["id"] = mysql_result($query, 0, "id");
+
+            if($get_visibilite=='y') {
+                $temp["visibilite"]=array();
+                $sql="SELECT * FROM j_groupes_visibilite WHERE id_groupe='" . $_id_groupe . "';";
+                $res_vis=mysql_query($sql);
+                if(mysql_num_rows($res_vis)>0) {
+                    while($lig_vis=mysql_fetch_object($res_vis)) {
+                        $temp["visibilite"][$lig_vis->domaine]=$lig_vis->visible;
+                    }
+                }
+            }
+
+            if($get_matieres=='y') {
+                // Matières
+                $matiere = mysql_query("SELECT m.matiere, m.nom_complet, m.categorie_id FROM matieres m, j_groupes_matieres j " .
+                                                                "WHERE (" .
+                                                                "m.matiere = j.id_matiere and " .
+                                                                "j.id_groupe = '" . $_id_groupe . "')");
+                if (mysql_num_rows($matiere) > 0) {
+                    $temp["matiere"]["matiere"] = mysql_result($matiere, 0, "matiere");
+                    $temp["matiere"]["nom_complet"] = mysql_result($matiere, 0, "nom_complet");
+                    $temp["matiere"]["categorie_id"] = mysql_result($matiere, 0, "categorie_id");
+                }
+            }
+
+            if($get_classes=='y') {
+                // Classes
+
+                $sql="SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.mode_moy, j.categorie_id, j.saisie_ects, j.valeur_ects 
+                  FROM classes c, j_groupes_classes j 
+                    WHERE (c.id = j.id_classe AND j.id_groupe = '".$_id_groupe."') 
+                      ORDER BY c.classe, c.nom_complet;";
+                $get_classes = mysql_query($sql);
+                $nb_classes = mysql_num_rows($get_classes);
+                for ($k=0;$k<$nb_classes;$k++) {
+                    $c_id = mysql_result($get_classes, $k, "id");
+                    $c_classe = mysql_result($get_classes, $k, "classe");
+                    $c_nom_complet = mysql_result($get_classes, $k, "nom_complet");
+                    $c_priorite = mysql_result($get_classes, $k, "priorite");
+                    $c_coef = mysql_result($get_classes, $k, "coef");
+                    $c_mode_moy = mysql_result($get_classes, $k, "mode_moy");
+                    $c_saisie_ects = mysql_result($get_classes, $k, "saisie_ects") > '0' ? TRUE : FALSE;
+                    $c_valeur_ects = mysql_result($get_classes, $k, "valeur_ects");
+                    $c_cat_id = mysql_result($get_classes, $k, "categorie_id");
+                    $temp["classes"]["list"][] = $c_id;
+                    $temp["classes"]["classes"][$c_id] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet, "priorite" => $c_priorite, "coef" => $c_coef, "mode_moy" => $c_mode_moy, "saisie_ects" => $c_saisie_ects, "valeur_ects" => $c_valeur_ects, "categorie_id" => $c_cat_id);
+                }
+
+                if(isset($temp["classes"]["classes"])) {
+                    $str = NULL;
+                    foreach ($temp["classes"]["classes"] as $classe) {
+                        $str .= $classe["classe"] . ", ";
+                    }
+                    $str = mb_substr($str, 0, -2);
+                    $temp["classlist_string"] = $str;
+                }
+            }
+
+            if($get_profs=='y') {
+                // Professeurs
+                $temp["profs"]["list"] = array();
+                $temp["profs"]["users"] = array();
+                $temp["profs"]["proflist_string"] = "";
+
+                $get_profs = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite 
+                  FROM utilisateurs u, j_groupes_professeurs j 
+                  WHERE (u.login = j.login and j.id_groupe = '".$_id_groupe."') 
+                    ORDER BY u.nom, u.prenom");
+
+                $nb = mysql_num_rows($get_profs);
+                for ($i=0;$i<$nb;$i++){
+                    if($i>0) {$temp["profs"]["proflist_string"].=", ";}
+                    $p_login = mysql_result($get_profs, $i, "login");
+                    $p_nom = casse_mot(mysql_result($get_profs, $i, "nom"),'maj');
+                    $p_prenom = casse_mot(mysql_result($get_profs, $i, "prenom"),'majf2');
+                    $civilite = mysql_result($get_profs, $i, "civilite");
+                    $temp["profs"]["list"][] = $p_login;
+                    $temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
+                    $temp["profs"]["proflist_string"].=$civilite." ".$p_nom." ".my_strtoupper(mb_substr($p_prenom,0,1));
+                }
+            }
+
+            if($get_periodes=='y') {
+                // Périodes
+                $temp["periodes"]=array();
+                // Pour le nom et le nombre de periodes, on suppose qu'elles sont identiques dans toutes les classes du groupe
+                $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["list"][0] ."' ORDER BY num_periode");
+                $nb_periode = mysql_num_rows($periode_query) + 1 ;
+                $i = "1";
+                while ($i < $nb_periode) {
+                    $temp["periodes"][$i]["nom_periode"] = mysql_result($periode_query, $i-1, "nom_periode");
+                    $temp["periodes"][$i]["num_periode"] = $i;
+                    $i++;
+                }
+                $temp["nb_periode"] = $nb_periode;
+                // Verrouillage
+
+                // Initialisation
+                $i = "1";
+                $all_clos = "";
+                $all_open = "";
+                $all_clos_part = "";
+                while ($i < $nb_periode) {
+                    $liste_ver_per[$i] = "";
+                    $i++;
+                }
+
+                foreach ($temp["classes"]["list"] as $c_id) {
+                $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["classes"][$c_id]["id"] ."' ORDER BY num_periode");
+                $nb_periode = mysql_num_rows($periode_query) + 1 ;
+                $i = "1";
+                while ($i < $nb_periode) {
+                    $temp["classe"]["ver_periode"][$c_id][$i] = mysql_result($periode_query, $i-1, "verouiller");
+                    $liste_ver_per[$i] .= $temp["classe"]["ver_periode"][$c_id][$i];
+                    $i++;
+                }
+                $all_clos .= "O";
+                $all_open .= "N";
+                $all_clos_part .= "P";
+                }
+                $i = "1";
+                while ($i < $nb_periode) {
+                    if ($liste_ver_per[$i] == $all_clos)
+                        // Toutes les classes sont closes
+                        $temp["classe"]["ver_periode"]["all"][$i] = 0;
+                    else if ($liste_ver_per[$i] == $all_clos_part)
+                        // Toutes les classes sont partiellement closes
+                        $temp["classe"]["ver_periode"]["all"][$i] = 1;
+                    else if ($liste_ver_per[$i] == $all_open)
+                        // Toutes les classes sont ouvertes
+                        $temp["classe"]["ver_periode"]["all"][$i] = 3;
+                    else if (substr_count($liste_ver_per[$i], "N") > 0)
+                        // Au moins une classe est ouverte
+                        $temp["classe"]["ver_periode"]["all"][$i] = 2;
+                    else
+                        $temp["classe"]["ver_periode"]["all"][$i] = -1;
+                    $i++;
+                }
+            }
+
+            if($get_eleves=='y') {
+                // Elèves
+                foreach ($temp["periodes"] as $key => $period) {
+                    $temp["eleves"][$key]["list"] = array();
+                    $temp["eleves"][$key]["users"] = array();
+
+                    $temp["eleves"][$key]["telle_classe"] = array();
+                    foreach($temp["classes"]["list"] as $tmp_id_classe) {
+                        $temp["eleves"][$key]["telle_classe"][$tmp_id_classe] = array();
+                    }
+
+                    $get_eleves = mysql_query("SELECT distinct j.login, e.nom, e.prenom, e.ele_id, e.elenoet, e.sexe FROM eleves e, j_eleves_groupes j WHERE (" .
+                                                "e.login = j.login and j.id_groupe = '" . $_id_groupe . "' and j.periode = '" . $period["num_periode"] . "') " .
+                                                "ORDER BY e.nom, e.prenom");
+
+                    $nb = mysql_num_rows($get_eleves);
+                    for ($i=0;$i<$nb;$i++){
+                        $e_login = mysql_result($get_eleves, $i, "login");
+                        $e_nom = mysql_result($get_eleves, $i, "nom");
+                        $e_prenom = mysql_result($get_eleves, $i, "prenom");
+                        $e_sexe = mysql_result($get_eleves, $i, "sexe");
+                        $sql="SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $e_login . "' and periode = '" . $key . "')";
+                        $res_classe_eleve_periode=mysql_query($sql);
+                        if(mysql_num_rows($res_classe_eleve_periode)>0) {
+                            $e_classe = mysql_result($res_classe_eleve_periode, 0);
+                            $temp["eleves"][$key]["telle_classe"][$e_classe][] = $e_login;
+                        }
+                        else {
+                            $e_classe=-1;
+                        }
+                        $e_sconet_id = mysql_result($get_eleves, $i, "ele_id");
+                        $e_elenoet = mysql_result($get_eleves, $i, "elenoet");
+                        $temp["eleves"][$key]["list"][] = $e_login;
+                        $temp["eleves"][$key]["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "classe" => $e_classe, "sconet_id" => $e_sconet_id, "elenoet" => $e_elenoet, "sexe" => $e_sexe);
+                    }
+                }
+
+                $get_all_eleves = mysql_query("SELECT distinct j.login, e.nom, e.prenom FROM eleves e, j_eleves_groupes j WHERE (" .
+                                                "e.login = j.login and j.id_groupe = '" . $_id_groupe . "') " .
+                                                "ORDER BY e.nom, e.prenom");
+                $nb = mysql_num_rows($get_all_eleves);
+                $temp["eleves"]["all"]["list"] = array();
+                for ($i=0;$i<$nb;$i++){
+                    $e_login = mysql_result($get_all_eleves, $i, "login");
+                    $temp["eleves"]["all"]["list"][] = $e_login;
+
+                    foreach ($temp["periodes"] as $key => $period) {
+                        if (in_array($e_login, $temp["eleves"][$key]["list"])) {
+                            $temp["eleves"]["all"]["users"][$e_login] = $temp["eleves"][$key]["users"][$e_login];
+                            break 1;
+                        }
+                    }
+                }
+            }
+        }
+
 	}
-	else {
-		$temp["name"] = mysql_result($query, 0, "name");
-		$temp["description"] = mysql_result($query, 0, "description");
-		$temp["id"] = mysql_result($query, 0, "id");
-
-		if($get_visibilite=='y') {
-			$temp["visibilite"]=array();
-			$sql="SELECT * FROM j_groupes_visibilite WHERE id_groupe='" . $_id_groupe . "';";
-			$res_vis=mysql_query($sql);
-			if(mysql_num_rows($res_vis)>0) {
-				while($lig_vis=mysql_fetch_object($res_vis)) {
-					$temp["visibilite"][$lig_vis->domaine]=$lig_vis->visible;
-				}
-			}
-		}
-
-		if($get_matieres=='y') {
-			// Matières
-			$matiere = mysql_query("SELECT m.matiere, m.nom_complet, m.categorie_id FROM matieres m, j_groupes_matieres j " .
-															"WHERE (" .
-															"m.matiere = j.id_matiere and " .
-															"j.id_groupe = '" . $_id_groupe . "')");
-			if (mysql_num_rows($matiere) > 0) {
-				$temp["matiere"]["matiere"] = mysql_result($matiere, 0, "matiere");
-				$temp["matiere"]["nom_complet"] = mysql_result($matiere, 0, "nom_complet");
-				$temp["matiere"]["categorie_id"] = mysql_result($matiere, 0, "categorie_id");
-			}
-		}
-	
-		if($get_classes=='y') {
-			// Classes
-		
-			$sql="SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.mode_moy, j.categorie_id, j.saisie_ects, j.valeur_ects 
-              FROM classes c, j_groupes_classes j 
-                WHERE (c.id = j.id_classe AND j.id_groupe = '".$_id_groupe."') 
-                  ORDER BY c.classe, c.nom_complet;";
-			$get_classes = mysql_query($sql);
-			$nb_classes = mysql_num_rows($get_classes);
-			for ($k=0;$k<$nb_classes;$k++) {
-				$c_id = mysql_result($get_classes, $k, "id");
-				$c_classe = mysql_result($get_classes, $k, "classe");
-				$c_nom_complet = mysql_result($get_classes, $k, "nom_complet");
-				$c_priorite = mysql_result($get_classes, $k, "priorite");
-				$c_coef = mysql_result($get_classes, $k, "coef");
-				$c_mode_moy = mysql_result($get_classes, $k, "mode_moy");
-				$c_saisie_ects = mysql_result($get_classes, $k, "saisie_ects") > '0' ? TRUE : FALSE;
-				$c_valeur_ects = mysql_result($get_classes, $k, "valeur_ects");
-				$c_cat_id = mysql_result($get_classes, $k, "categorie_id");
-				$temp["classes"]["list"][] = $c_id;
-				$temp["classes"]["classes"][$c_id] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet, "priorite" => $c_priorite, "coef" => $c_coef, "mode_moy" => $c_mode_moy, "saisie_ects" => $c_saisie_ects, "valeur_ects" => $c_valeur_ects, "categorie_id" => $c_cat_id);
-			}
-
-			if(isset($temp["classes"]["classes"])) {
-				$str = NULL;
-				foreach ($temp["classes"]["classes"] as $classe) {
-					$str .= $classe["classe"] . ", ";
-				}
-				$str = mb_substr($str, 0, -2);
-				$temp["classlist_string"] = $str;
-			}
-		}
-	
-		if($get_profs=='y') {
-			// Professeurs
-			$temp["profs"]["list"] = array();
-			$temp["profs"]["users"] = array();
-			$temp["profs"]["proflist_string"] = "";
-		
-			$get_profs = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite 
-              FROM utilisateurs u, j_groupes_professeurs j 
-              WHERE (u.login = j.login and j.id_groupe = '".$_id_groupe."') 
-                ORDER BY u.nom, u.prenom");
-		
-			$nb = mysql_num_rows($get_profs);
-			for ($i=0;$i<$nb;$i++){
-				if($i>0) {$temp["profs"]["proflist_string"].=", ";}
-				$p_login = mysql_result($get_profs, $i, "login");
-				$p_nom = casse_mot(mysql_result($get_profs, $i, "nom"),'maj');
-				$p_prenom = casse_mot(mysql_result($get_profs, $i, "prenom"),'majf2');
-				$civilite = mysql_result($get_profs, $i, "civilite");
-				$temp["profs"]["list"][] = $p_login;
-				$temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
-				$temp["profs"]["proflist_string"].=$civilite." ".$p_nom." ".my_strtoupper(mb_substr($p_prenom,0,1));
-			}
-		}
-	
-		if($get_periodes=='y') {
-			// Périodes
-			$temp["periodes"]=array();
-			// Pour le nom et le nombre de periodes, on suppose qu'elles sont identiques dans toutes les classes du groupe
-			$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["list"][0] ."' ORDER BY num_periode");
-			$nb_periode = mysql_num_rows($periode_query) + 1 ;
-			$i = "1";
-			while ($i < $nb_periode) {
-				$temp["periodes"][$i]["nom_periode"] = mysql_result($periode_query, $i-1, "nom_periode");
-				$temp["periodes"][$i]["num_periode"] = $i;
-				$i++;
-			}
-			$temp["nb_periode"] = $nb_periode;
-			// Verrouillage
-		
-			// Initialisation
-			$i = "1";
-			$all_clos = "";
-			$all_open = "";
-			$all_clos_part = "";
-			while ($i < $nb_periode) {
-				$liste_ver_per[$i] = "";
-				$i++;
-			}
-		
-			foreach ($temp["classes"]["list"] as $c_id) {
-			$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["classes"][$c_id]["id"] ."' ORDER BY num_periode");
-			$nb_periode = mysql_num_rows($periode_query) + 1 ;
-			$i = "1";
-			while ($i < $nb_periode) {
-				$temp["classe"]["ver_periode"][$c_id][$i] = mysql_result($periode_query, $i-1, "verouiller");
-				$liste_ver_per[$i] .= $temp["classe"]["ver_periode"][$c_id][$i];
-				$i++;
-			}
-			$all_clos .= "O";
-			$all_open .= "N";
-			$all_clos_part .= "P";
-			}
-			$i = "1";
-			while ($i < $nb_periode) {
-				if ($liste_ver_per[$i] == $all_clos)
-					// Toutes les classes sont closes
-					$temp["classe"]["ver_periode"]["all"][$i] = 0;
-				else if ($liste_ver_per[$i] == $all_clos_part)
-					// Toutes les classes sont partiellement closes
-					$temp["classe"]["ver_periode"]["all"][$i] = 1;
-				else if ($liste_ver_per[$i] == $all_open)
-					// Toutes les classes sont ouvertes
-					$temp["classe"]["ver_periode"]["all"][$i] = 3;
-				else if (substr_count($liste_ver_per[$i], "N") > 0)
-					// Au moins une classe est ouverte
-					$temp["classe"]["ver_periode"]["all"][$i] = 2;
-				else
-					$temp["classe"]["ver_periode"]["all"][$i] = -1;
-				$i++;
-			}
-		}
-	
-		if($get_eleves=='y') {
-			// Elèves
-			foreach ($temp["periodes"] as $key => $period) {
-				$temp["eleves"][$key]["list"] = array();
-				$temp["eleves"][$key]["users"] = array();
-
-				$temp["eleves"][$key]["telle_classe"] = array();
-				foreach($temp["classes"]["list"] as $tmp_id_classe) {
-					$temp["eleves"][$key]["telle_classe"][$tmp_id_classe] = array();
-				}
-
-				$get_eleves = mysql_query("SELECT distinct j.login, e.nom, e.prenom, e.ele_id, e.elenoet, e.sexe FROM eleves e, j_eleves_groupes j WHERE (" .
-											"e.login = j.login and j.id_groupe = '" . $_id_groupe . "' and j.periode = '" . $period["num_periode"] . "') " .
-											"ORDER BY e.nom, e.prenom");
-		
-				$nb = mysql_num_rows($get_eleves);
-				for ($i=0;$i<$nb;$i++){
-					$e_login = mysql_result($get_eleves, $i, "login");
-					$e_nom = mysql_result($get_eleves, $i, "nom");
-					$e_prenom = mysql_result($get_eleves, $i, "prenom");
-					$e_sexe = mysql_result($get_eleves, $i, "sexe");
-					$sql="SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $e_login . "' and periode = '" . $key . "')";
-					$res_classe_eleve_periode=mysql_query($sql);
-					if(mysql_num_rows($res_classe_eleve_periode)>0) {
-						$e_classe = mysql_result($res_classe_eleve_periode, 0);
-						$temp["eleves"][$key]["telle_classe"][$e_classe][] = $e_login;
-					}
-					else {
-						$e_classe=-1;
-					}
-					$e_sconet_id = mysql_result($get_eleves, $i, "ele_id");
-					$e_elenoet = mysql_result($get_eleves, $i, "elenoet");
-					$temp["eleves"][$key]["list"][] = $e_login;
-					$temp["eleves"][$key]["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "classe" => $e_classe, "sconet_id" => $e_sconet_id, "elenoet" => $e_elenoet, "sexe" => $e_sexe);
-				}
-			}
-		
-			$get_all_eleves = mysql_query("SELECT distinct j.login, e.nom, e.prenom FROM eleves e, j_eleves_groupes j WHERE (" .
-											"e.login = j.login and j.id_groupe = '" . $_id_groupe . "') " .
-											"ORDER BY e.nom, e.prenom");
-			$nb = mysql_num_rows($get_all_eleves);
-			$temp["eleves"]["all"]["list"] = array();
-			for ($i=0;$i<$nb;$i++){
-				$e_login = mysql_result($get_all_eleves, $i, "login");
-				$temp["eleves"]["all"]["list"][] = $e_login;
-		
-				foreach ($temp["periodes"] as $key => $period) {
-					if (in_array($e_login, $temp["eleves"][$key]["list"])) {
-						$temp["eleves"]["all"]["users"][$e_login] = $temp["eleves"][$key]["users"][$e_login];
-						break 1;
-					}
-				}
-			}
-		}
-	}
-
     return $temp;
 }
 

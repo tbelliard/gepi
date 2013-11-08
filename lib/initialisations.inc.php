@@ -7,7 +7,12 @@
  * @subpackage initialisation
  */
 
+
 ini_set('error_reporting',E_ALL ^ E_DEPRECATED);
+
+if(isset($useMysqli) && (TRUE == $useMysqli)) {
+    global $mysqli;
+}
 
 /* Utilise l'encodage interne UTF-8 */
 header('Content-type: text/html; charset=UTF-8');
@@ -213,33 +218,6 @@ if (isset($_REQUEST['rne'])) {
 
 	setcookie('RNE', $_REQUEST['RNE'], null, '/');
 }
-/*
-if ((isset($_REQUEST['rne']))||(isset($_REQUEST['RNE']))) {
-	include_once(dirname(__FILE__).'/HTMLPurifier.standalone.php');
-	$config = HTMLPurifier_Config::createDefault();
-	$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
-	$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
-	$purifier = new HTMLPurifier($config);
-
-	if (isset($_REQUEST['rne'])) {
-		if($purifier->purify($_REQUEST['rne'])!=$_REQUEST['rne']) {
-			die('RNE invalide.');
-		}
-
-		if(preg_match("/^[0-9A-Za-z]*$/", $_REQUEST["rne"])) {
-			setcookie('RNE', $_REQUEST['rne'], null, '/');
-		}
-	} elseif (isset($_REQUEST['RNE'])) {
-		if($purifier->purify($_REQUEST['RNE'])!=$_REQUEST['RNE']) {
-			die('RNE invalide.');
-		}
-
-		if(preg_match("/^[0-9A-Za-z]*$/", $_REQUEST["RNE"])) {
-			setcookie('RNE', $_REQUEST['RNE'], null, '/');
-		}
-	}
-}
-*/
 
 // Pour le choix de la préférence de source d'authentification pour l'authentification multiauth
 if (isset($_REQUEST["source"])) {
@@ -253,17 +231,37 @@ if (isset($_REQUEST["source"])) {
 /**
  * Connection à la base
  */
-   require_once($chemin_relatif_gepi."/lib/mysql.inc");
+if(isset($useMysqli) && (TRUE == $useMysqli)) {
+    require_once($chemin_relatif_gepi."/lib/mysqli.inc.php");
+} else {
+    require_once($chemin_relatif_gepi."/lib/mysql.inc");
+}
+   
 
 /**
  * Pour permettre de caser Gepi dans un iframe avec M$IE sur certains ENT
  */
-   $sql="SELECT 1=1 FROM setting WHERE name='header_p3p' AND value='yes';";
-   $test=mysql_query($sql);
-   if(mysql_num_rows($test)>0) {
-      //header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
-      header('P3P:CP="NON DSP COR CURa OUR NOR UNI"');
-   }
+    $sql="SELECT 1=1 FROM setting WHERE name='header_p3p' AND value='yes';";
+    
+    if(isset($useMysqli) && (TRUE == $useMysqli)) {
+        $test = mysqli_query($mysqli, $sql);
+        if ($test->num_rows > 0) {
+           header('P3P:CP="NON DSP COR CURa OUR NOR UNI"');
+        }        
+    } else {
+        $test=mysql_query($sql);
+        if(mysql_num_rows($test)>0) {
+           //header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
+           header('P3P:CP="NON DSP COR CURa OUR NOR UNI"');
+        }        
+    }
+   
+   
+   
+   
+   
+   
+   
 
  /**
   * Ajout pour utiliser ou pas les fonctions mb_
@@ -302,11 +300,22 @@ if (isset($_REQUEST["source"])) {
   * @see settings.inc
   * @see loadSettings()
   */
-   require_once($chemin_relatif_gepi."/lib/settings.inc");
-   // Load settings
-   if (!loadSettings()) {
-     die("Erreur chargement settings");
-   }
+    if(isset($useMysqli) && (TRUE == $useMysqli)) {
+        require_once($chemin_relatif_gepi."/lib/settings.inc.php");
+        // Load settings
+        if (!loadSettings()) {
+          die("Erreur chargement settings");
+        }
+    } else {
+        require_once($chemin_relatif_gepi."/lib/settings.inc");
+        // Load settings
+        if (!loadSettings()) {
+          die("Erreur chargement settings");
+        }
+        
+    }
+   
+   
    /**
     * Fonctions relatives à l'identification via LDAP
     */

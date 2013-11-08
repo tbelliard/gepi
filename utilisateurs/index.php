@@ -105,8 +105,10 @@ if(!function_exists('imageFlip')) {
 
 		   return( $imgdest );
 		}
-}
 
+
+}
+    
 function ImageRotateRightAngle( $imgSrc, $angle )
 {
 	//source de cette fonction : http://www.developpez.net/forums/showthread.php?t=54169

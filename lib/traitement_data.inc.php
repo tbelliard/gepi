@@ -30,19 +30,29 @@ function unslashes($s)
 # Nettoyage des variables dans $_POST et $_GET pour prévenir tout problème
 # d'injection SQL
 function anti_inject(&$_value, $_key) {
-   if (is_array($_value)) {
+    global $mysqli;
+
+    if (is_array($_value)) {
        foreach ($_value as $key2 => $value2) {
            $value2 = corriger_caracteres($value2);
            if (get_magic_quotes_gpc()) $_value[$key2] = stripslashes($value2);
            if (!is_numeric($_value[$key2])) {
-               $_value[$key2] = mysql_real_escape_string($_value[$key2]);
+                if($mysqli != "") {
+                    $_value[$key2] = $mysqli->real_escape_string($_value[$key2]);
+                } else {
+                    $_value[$key2] = mysql_real_escape_string($_value[$key2]);
+                }    
            }
        }
    } else {
        $_value = corriger_caracteres($_value);
        if (get_magic_quotes_gpc())    $_value = stripslashes($_value);
-       if (!is_numeric($_value)) {
-           $_value = mysql_real_escape_string($_value);
+       if (!is_numeric($_value)) {           
+            if($mysqli != "") {
+                $_value = $mysqli->real_escape_string($_value);
+            } else {
+                $_value = mysql_real_escape_string($_value);
+            }           
        }
    }
 }
@@ -282,11 +292,23 @@ if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non
 // On nettoie aussi $_SERVER et $_COOKIE de manière systématique
 $anti_inject_var_SERVER="y";
 $sql="SELECT 1=1 FROM setting WHERE name='anti_inject_var_SERVER' AND value='n';";
-$test_anti_inject_var_SERVER=mysql_query($sql);
-if(mysql_num_rows($test_anti_inject_var_SERVER)>0) {$anti_inject_var_SERVER="n";}
-if($anti_inject_var_SERVER!="n") {
-  array_walk($_SERVER, 'anti_inject');
+
+if(isset($useMysqli) && (TRUE == $useMysqli)) {
+    $test_anti_inject_var_SERVER = mysqli_query($mysqli, $sql);
+    if ($test_anti_inject_var_SERVER->num_rows > 0) {
+        $anti_inject_var_SERVER="n";
+    }
+    if ($anti_inject_var_SERVER!="n") {
+        array_walk($_SERVER, 'anti_inject');
+    }
+} else {
+    $test_anti_inject_var_SERVER = mysql_query($sql);
+    if(mysql_num_rows($test_anti_inject_var_SERVER)>0) {$anti_inject_var_SERVER="n";}
+    if($anti_inject_var_SERVER!="n") {
+        array_walk($_SERVER, 'anti_inject');
+    }
 }
+
 /*
  * foreach($_SERVER as $key => $value) {
 	echo "<p>\$_SERVER[$key]=$value<br />\n";
@@ -309,11 +331,19 @@ if((isset($filtrage_extensions_fichiers_table_ct_types_documents))&&($filtrage_e
 }
 else {
 	$sql="SELECT 1=1 FROM setting WHERE name='filtrage_extensions_fichiers' AND value='n';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)==0) {
+               
+    if($mysqli !="") {
+        $test = mysqli_query($mysqli, $sql);
+        $nb_lignes = $test->num_rows;
+    } else {
+        $test = mysql_query($sql);
+        $nb_lignes = mysql_num_rows($test);
+    }   
+    
+    
+	if($nb_lignes == 0) {
 		// Et on traite les fichiers uploadés
 		if (!isset($AllowedFilesExtensions)) {
-			//$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif","ico","jpg","odg","odp","ods","odt","pdf","png","ppt","swf","txt","xcf","xls","zip","pps");
 			$AllowedFilesExtensions = array("bmp","csv","doc","dot","epg","gif","ggb","gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","pptx","sql","swf","txt","xcf","xls","xlsx","xml","zip","pps","docx");
 		}
 		

@@ -20,7 +20,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// Passage à mysqli
+$useMysqli = TRUE;
+
 // Begin standart header
+
 
 $titre_page = "Gestion des connexions";
 
@@ -213,16 +217,17 @@ if ($res) {
 				<a href="../eleves/modify_eleve.php?eleve_login=<?php echo $row[0]; ?>" ><?php echo $row[1]; ?></a>
 <?php
 			$sql= " SELECT id_classe FROM j_eleves_classes WHERE login='$row[0]'";
-			$res1 = sql_query($sql);
-			$id = mysql_fetch_array($res1);
+            $res1 = mysqli_query($mysqli, $sql);
+			$id = $res1->fetch_array();
+            
 			$sql= " SELECT classe FROM classes WHERE id='$id[id_classe]'";
-			$res2 = sql_query($sql);
-			$classe_eleve = mysql_fetch_array($res2);
+			$res2 = mysqli_query($mysqli, $sql);
+            $classe_eleve = $res2->fetch_array();
 		}
 		elseif ($row[4]=="responsable") {
 			$sql= " SELECT pers_id FROM resp_pers where login='$row[0]'";
-			$res3 = sql_query($sql);
-			$id = mysql_fetch_array($res3);
+			$res3 =  mysqli_query($mysqli, $sql);
+			$id = $res3->fetch_array();
 			echo "<a href=\"../responsables/modify_resp.php?pers_id=" .$id['pers_id']. "\" />".$row[1]."</a>";
 		}
 		else {
@@ -395,8 +400,8 @@ $message_login=getSettingValue("message_login");
 if($message_login=='') {$message_login=0; saveSetting('message_login',$message_login);}
 
 $sql="SELECT * FROM message_login ORDER BY texte;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($mysqli, $sql);
+if($res->num_rows == 0) {
 ?>
 <p>Aucun message n'a encore été saisi.</p>
 <p><a href='saisie_message_connexion.php'>Saisir de nouveaux messages.</a></p>
@@ -416,7 +421,7 @@ if(mysql_num_rows($res)==0) {
 		</p>
 	</div>
 <?php 
-	while($lig=mysql_fetch_object($res)) { ?>
+	while($lig=$res->fetch_object()) { ?>
 	<div style='border:1px dashed black; margin:1em;'>
 		<p>
 			<input type='radio' 
@@ -547,108 +552,7 @@ if(mysql_num_rows($res)==0) {
 <hr />
 
 <?php 
-/*
-//
-// Changement du mot de passe obligatoire
-//
-if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
-echo "<h3 class='gepi'>Changement du mot de passe obligatoire lors de la prochaine connexion</h3>";
-echo "<p><span style='font-weight:bold'>ATTENTION : </span>En validant le bouton ci-dessous, <span style='font-weight:bold'>tous les utilisateurs</span> seront amenés à changer leur mot de passe lors de leur prochaine connexion.</p>";
-echo "<form action=\"gestion_connect.php\" name=\"form_chgt_mdp\" method=\"post\">";
-echo "<center><input type=\"submit\" name=\"valid_chgt_mdp\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir forcer le changement de mot de passe de tous les utilisateurs ?', 'Confirmation')\" /></center>";
-echo "<input type=hidden name=mode_navig value='$mode_navig' />";
-echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
-}
-//
-// Paramétrage du Single Sign-On
-//
 
-echo "<h3 class='gepi'>Mode d'authentification</h3>";
-echo "<p><span style='font-weight:bold'>ATTENTION :</span> Dans le cas d'une authentification en Single Sign-On avec CAS, LemonLDAP ou LCS, seuls les utilisateurs pour lesquels aucun mot de passe n'est présent dans la base de données pourront se connecter. Toutefois, il est recommandé de conserver un compte administrateur avec un mot de passe afin de pouvoir vous connecter en bloquant le SSO par le biais de la variable 'block_sso' du fichier /lib/global.inc.</p>";
-echo "<p>Si vous utilisez CAS, vous devez entrer les coordonnées du serveur CAS dans le fichier /secure/config_cas.inc.php.</p>";
-echo "<p>Si vous utilisez l'authentification sur serveur LDAP, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur.</p>";
-echo "<form action=\"gestion_connect.php\" name=\"form_auth\" method=\"post\">";
-
-echo "<input type='radio' name='use_sso' value='no' id='label_1'";
-if (getSettingValue("use_sso")=='no' OR !getSettingValue("use_sso")) echo " checked ";
-echo " /> <label for='label_1'>Authentification autonome (sur la base de données de Gepi) [défaut]</label>";
-
-echo "<br/><input type='radio' name='use_sso' value='lcs' id='lcs'";
-if (getSettingValue("use_sso")=='lcs') echo " checked ";
-echo " /> <label for='lcs'>Authentification sur serveur LCS</label>";
-
-echo "<br/><input type='radio' name='use_sso' value='ldap_scribe' id='label_ldap_scribe'";
-if (getSettingValue("use_sso")=='ldap_scribe') echo " checked ";
-echo " /> <label for='label_ldap_scribe'>Authentification sur serveur Eole SCRIBE (LDAP)</label>";
-
-echo "<br /><input type='radio' name='use_sso' value='cas' id='label_2'";
-if (getSettingValue("use_sso")=='cas') echo " checked ";
-echo " /> <label for='label_2'>Authentification SSO par un serveur CAS</label>";
-
-echo "<br /><input type='radio' name='use_sso' value='lemon' id='label_3'";
-if (getSettingValue("use_sso")=='lemon') echo " checked ";
-echo " /> <label for='label_3'>Authentification SSO par LemonLDAP</label>";
-
-echo "<p>Remarque : les changements n'affectent pas les sessions en cours.";
-
-echo "<center><input type=\"submit\" name=\"auth_mode_submit\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir changer le mode d\' authentification ?', 'Confirmation')\" /></center>";
-
-echo "<input type=hidden name=mode_navig value='$mode_navig' />";
-
-echo "</form>
-
-<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />";
-
-
-
-//
-// Durée de conservation des logs
-//
-echo "<h3 class='gepi'>Durée de conservation des connexions</h3>";
-echo "<p>Conformément à la loi loi informatique et liberté 78-17 du 6 janvier 1978, la durée de conservation de ces données doit être déterminée et proportionnée aux finalités de leur traitement.
-Cependant par sécurité, il est conseillé de conserver une trace des connexions sur un laps de temps suffisamment long.
-</p>";
-echo "<form action=\"gestion_connect.php\" name=\"form_chgt_duree\" method=\"post\">";
-echo "Durée de conservation des informations sur les connexions : <select name=\"duree\" size=\"1\">";
-echo "<option ";
-$duree = getSettingValue("duree_conservation_logs");
-if ($duree == 30) echo "selected";
-echo " value=30>Un mois</option>";
-echo "<option ";
-if ($duree == 60) echo "selected";
-echo " value=60>Deux mois</option>";
-echo "<option ";
-if ($duree == 183) echo "selected";
-echo " value=183>Six mois</option>";
-echo "<option ";
-if ($duree == 365) echo "selected";
-echo " value=365>Un an</option>";
-echo "</select>";
-echo "<input type=\"submit\" name=\"Valider\" value=\"Enregistrer\" />";
-echo "<input type=hidden name=mode_navig value='$mode_navig' />";
-echo "</form>";
-//
-// Nettoyage du journal
-//
-?>
-<hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/>
-<h3 class='gepi'>Suppression de toutes les entrées du journal de connexion</h3>
-<?php
-$sql = "select START from log order by END";
-$res = sql_query($sql);
-$logs_number = sql_count($res);
-$row = sql_row($res, 0);
-$annee = mb_substr($row[0],0,4);
-$mois =  mb_substr($row[0],5,2);
-$jour =  mb_substr($row[0],8,2);
-echo "<p>Nombre d'entrées actuellement présentes dans le journal de connexion : <span style='font-weight:bold'>".$logs_number."</span><br />";
-echo "Actuellement, le journal contient l'historique des connexions depuis le <span style='font-weight:bold'>".$jour."/".$mois."/".$annee."</span></p>";
-echo "<p><span style='font-weight:bold'>ATTENTION : </span>En validant le bouton ci-dessous, <span style='font-weight:bold'>toutes les entrées du journal de connexion (hormis les connexions en cours) seront supprimées</span>.</p>";
-echo "<form action=\"gestion_connect.php\" name=\"form_sup_logs\" method=\"post\">";
-echo "<center><input type=\"submit\" name=\"valid_sup_logs\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir supprimer tout l\'historique du journal de connexion ?', 'Confirmation')\" /></center>";
-echo "<input type=hidden name=mode_navig value='$mode_navig' />";
-echo "</form>";
-*/
 //
 // Journal des connections
 //
@@ -806,14 +710,16 @@ $year_now  = date("Y");
 $hour_now  = date("H");
 $minute_now = date("i");
 $now = mktime($hour_now, $minute_now, 0, $month_now, $day_now, $year_now);
-$res = sql_query($sql);
+//$res = sql_query($sql);
+$res = mysqli_query($mysqli, $sql);
 
 $ligne_csv[0] = "statut;login;debut_session;fin_session;adresse_ip;navigateur;provenance\n";
 $nb_ligne = 1;
 
 if ($res) {
     $alt=1;
-    for ($i = 0; ($row = sql_row($res, $i)); $i++) {
+    // for ($i = 0; ($row = sql_row($res, $i)); $i++) {
+    while ($row = $res->fetch_row()) {
         $alt=$alt*(-1);
         $annee_f = mb_substr($row[8],0,4);
         $mois_f =  mb_substr($row[8],5,2);
