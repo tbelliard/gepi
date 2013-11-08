@@ -1848,7 +1848,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 	if((isset($eleve_email))&&($eleve_email!='')) {
 		$tmp_date=getdate();
-		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
+		echo " <a href='mailto:".$eleve_email."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 		echo ",%0d%0aCordialement.' title=\"Envoyer un courriel\">";
 		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
@@ -2041,7 +2041,7 @@ else {
 	}
 	if((isset($eleve_email))&&($eleve_email!='')) {
 		$tmp_date=getdate();
-		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
+		echo " <a href='mailto:".$eleve_email."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 		echo ",%0d%0aCordialement.' title=\"Envoyer un courriel\">";
 		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
