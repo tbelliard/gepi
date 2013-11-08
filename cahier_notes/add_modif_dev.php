@@ -990,14 +990,17 @@ else{
 	// =====
 
 	echo "<h3 class='gepi'>Coefficient de l'évaluation</h3>\n";
+	echo "<div style='margin-left:2em;'>\n";
 	echo "<table summary='Ponderation'><tr><td>Valeur de la pondération dans le calcul de la moyenne (<em>si 0, la note de l'évaluation n'intervient pas dans le calcul de la moyenne</em>)&nbsp;: </td>";
 	echo "<td><input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr></table>\n";
+	echo "</div>\n";
 
 	//====================================
 	// Note autre que sur 20
 	// =====
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 	    echo "<h3 class='gepi'>Notation</h3>\n";
+	    echo "<div style='margin-left:2em;'>\n";
 	    echo "<table summary='Referentiel'><tr><td>Note sur : </td>";
 	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr>\n";
 	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <br />";
@@ -1006,7 +1009,8 @@ else{
 		echo "Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span><br /><br />\n";
 		echo "</td>";
 		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V' onchange=\"changement();\""; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
-		echo "</td></tr>\n";
+		echo "</td></tr></table>\n";
+		echo "</div>\n";
 	} else {
 		echo "<input type='hidden' name = 'note_sur' value = '".$note_sur."' />\n";
 		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = '$ramener_sur_referentiel' />\n";
@@ -1016,42 +1020,59 @@ else{
 	// Statut
 	// ======
 
-	echo "<h3 class='gepi'>Statut de l'évaluation</h3>\n";
-	echo "<table summary='Statut du devoir'><tr><td><input type='radio' name='facultatif' id='facultatif_O' value='O' onchange=\"changement();\" "; if ($facultatif=='O') echo "checked"; echo " /></td><td>";
+	echo "<a name='statut_evaluation'></a><h3 class='gepi'>Statut de l'évaluation</h3>\n";
+	echo "<div style='margin-left:2em;'>\n";
+	if(!in_array($facultatif, array("O", "B", "N"))) {
+		echo "<p style='color:red'><strong>Anomalie&nbsp;:</strong> Aucun choix n'est effectué ci-dessous.<br />Cela risque de perturber le calcul de la moyenne du carnet de notes.</p>";
+	}
+	echo "<table summary='Statut du devoir'><tr><td><input type='radio' name='facultatif' id='facultatif_O' value='O' onchange=\"changement();\" ";
+	if ($facultatif=='O') {echo "checked";}
+	echo " /></td><td>";
 	echo "<label for='facultatif_O' style='cursor: pointer;'>";
 	echo "La note de l'évaluation entre dans le calcul de la moyenne.";
 	echo "</label>";
-	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_B' value='B' onchange=\"changement();\" "; if ($facultatif=='B') echo "checked"; echo " /></td><td>";
+	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_B' value='B' onchange=\"changement();\" ";
+	if ($facultatif=='B') {echo "checked";}
+	echo " /></td><td>";
 	echo "<label for='facultatif_B' style='cursor: pointer;'>";
 	echo "Seules les notes de l'évaluation supérieures à 10 entrent dans le calcul de la moyenne.";
 	echo "</label>";
-	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_N' value='N' onchange=\"changement();\" "; if ($facultatif=='N') echo "checked"; echo " /></td><td>";
+	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_N' value='N' onchange=\"changement();\" ";
+	if ($facultatif=='N') {echo "checked";}
+	echo " /></td><td>";
 	echo "<label for='facultatif_N' style='cursor: pointer;'>";
 	echo "La note de l'évaluation n'entre dans le calcul de la moyenne que si elle améliore la moyenne.";
 	echo "</label>";
-	echo "</td></tr></table>\n";
+	echo "</td></tr></table></div>\n";
 
 	//====================================
 	// Date
 	// ====
 
 	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de l'évaluation (<em>format jj/mm/aaaa</em>) : </h3>
-	<b>Remarque</b> : c'est cette date qui est prise en compte pour l'édition des relevés de notes à différentes périodes de l'année.
-	<input type='text' name = 'display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
+	<div style='margin-left:2em;'>
+	Date&nbsp;: <input type='text' name = 'display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
 	//echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 		echo img_calendrier_js("display_date", "img_bouton_display_date");
+	echo "<br />\n";
+	echo "<b>Remarque</b> : c'est cette date qui est prise en compte pour l'édition des relevés de notes à différentes périodes de l'année.";
+	echo "</div>\n";
 
 	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de visibilité de l'évaluation pour les élèves et responsables (<em>format jj/mm/aaaa</em>) : </h3>
-	<b>Remarque</b> : Cette date permet de ne rendre la note visible qu'une fois que le devoir est corrigé en classe.
-	<input type='text' name='date_ele_resp' id='date_ele_resp' size='10' value=\"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
+	<div style='margin-left:2em;'>
+	Date&nbsp;: <input type='text' name='date_ele_resp' id='date_ele_resp' size='10' value=\"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />";
 	//echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 	echo img_calendrier_js("date_ele_resp", "img_bouton_date_ele_resp");
+	echo "<br />\n";
+	echo "<b>Remarque</b> : Cette date permet de ne rendre la note visible qu'une fois que le devoir est corrigé en classe.";
+	echo "</div>\n";
 
 	//====================================
 	// Relevé de notes
 	// ===============
 
 	echo "<h3 class='gepi'>Affichage sur le relevé de notes</h3>\n";
+	echo "<div style='margin-left:2em;'>\n";
 	echo "<table summary='Visibilité'>\n";
 	echo "<tr><td><label for='display_parents' style='cursor: pointer;'>";
 	echo "Faire <b>apparaître cette évaluation</b> sur le <b>relevé de notes</b> de l'élève : ";
@@ -1064,6 +1085,7 @@ else{
 	echo "</td><td><input type='checkbox' name='display_parents_app' id='display_parents_app' value='1' onchange=\"changement();\" "; if ($display_parents_app == 1) echo " checked"; echo " /></td></tr>\n";
 
   echo "</table>\n";
+	echo "</div>\n";
 
 	echo "<script type='text/javascript'>
 	document.formulaire.nom_court.focus();

@@ -1231,6 +1231,10 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 		$msg.="$nb_comptes_remplaces comptes d'utilisateurs ont été remplacés.<br />";
 	}
 
+	$msg.="<br />";
+	$msg.="NOTE : Les comptes créés ou modifiés n'ont pas été activés.<br />";
+	$msg.="Vous devrez activer ces comptes dans Gestion des bases/Gestion des comptes d'utilisateurs/Responsables.<br />";
+
 	// Ménage:
 	//$sql="TRUNCATE tempo4;";
 	$menage=mysql_query($sql);
@@ -4245,6 +4249,37 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		}
 		echo "</p>\n";
 
+
+		// 20131106
+		//﻿﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Adresse;Code postal;Ville;Nom enfant 1;Prénom enfant 1;Classe enfant 1;Etat;Date de désactivation<br />
+		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
+		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Etat", "Date de désactivation");
+
+		// Lecture de la ligne 1 et la mettre dans $temp
+		$temp=fgets($fp,4096);
+		//echo "$temp<br />";
+		$en_tete=explode(";", trim($temp));
+
+		$tabindice=array();
+
+		// On range dans tabindice les indices des champs retenus
+		for ($k = 0; $k < count($tabchamps); $k++) {
+			//echo "<p style='text-indent:-4em;margin-left:4em'>Recherche du champ ".$tabchamps[$k]."<br />";
+			for ($i = 0; $i < count($en_tete); $i++) {
+				//echo "\$en_tete[$i]=$en_tete[$i]<br />";
+				if (casse_mot(remplace_accents($en_tete[$i]),'min') == casse_mot(remplace_accents($tabchamps[$k]), 'min')) {
+					$tabindice[$tabchamps[$k]] = $i;
+					//echo "\$tabindice[$tabchamps[$k]]=$i<br />";
+				}
+			}
+		}
+		if((!isset($tabindice['Nom']))||(!isset($tabindice['Prénom']))||(!isset($tabindice['Login']))||(!isset($tabindice['Mot de passe']))) {
+			echo "<p style='color:red'>La ligne d'entête ne comporte pas un des champs indispensables (<em>Nom, Prénom, Login, Mot de passe</em>).</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+
 		$sql="TRUNCATE tempo4;";
 		$menage=mysql_query($sql);
 
@@ -4266,34 +4301,73 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 				// On exclut aussi les classes BASE2012-2013
 				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
 				// On exclut également les comptes "Désactivé"
-				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(isset($tab[11]))&&(isset($tab[12]))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[12]=='Actif')) {
+				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(isset($tab[11]))&&(isset($tab[12]))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[12]=='Actif')) {
+
+				$ligne_a_prendre_en_compte="y";
+				if(preg_match("/^Nom;Pr/i", trim($ligne))) {
+					$ligne_a_prendre_en_compte="n";
+				}
+				elseif((isset($tabindice['Classe enfant 1']))&&(preg_match("/^BASE20/",$tab[$tabindice['Classe enfant 1']]))) {
+					// On exclut l'année précédente
+					$ligne_a_prendre_en_compte="n";
+				}
+				elseif((isset($tabindice['Etat']))&&($tab[$tabindice['Etat']]!='Actif')) {
+					// On exclut les comptes "Désactivé"
+					$ligne_a_prendre_en_compte="n";
+				}
+
+
+				if($ligne_a_prendre_en_compte=="y") {
+
+					if(!isset($tabindice['Classe enfant 1'])) {
+						$classe_courante="classe_inconnue";
+					}
+					else {
+						$classe_courante=$tab[$tabindice['Classe enfant 1']];
+					}
+
 					/*
 					if($tab[11]!=$classe_precedente) {
 						$cpt=0;
 						$classe_precedente=$tab[11];
 					}
 					*/
-					if(!isset($tab_classe_parent[$tab[11]])) {
+					if(!isset($tab_classe_parent[$classe_courante])) {
 						$cpt=0;
 					}
 					else {
-						$cpt=count($tab_classe_parent[$tab[11]]);
+						$cpt=count($tab_classe_parent[$classe_courante]);
 					}
-					$tab_classe_parent[$tab[11]][$cpt]['nom']=$tab[0];
-					$tab_classe_parent[$tab[11]][$cpt]['prenom']=$tab[1];
-					$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']=$tab[0]." ".$tab[1];
-					//echo "\$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']=".$tab_classe_parent[$tab[11]][$cpt]['nom_prenom']."<br />";
-					$tab_classe_parent[$tab[11]][$cpt]['login_ent']=$tab[2];
-					$tab_classe_parent[$tab[11]][$cpt]['mdp_ent']=$tab[4];
-					$tab_classe_parent[$tab[11]][$cpt]['email_ent']=$tab[5];
-					$tab_classe_parent[$tab[11]][$cpt]['adresse']=$tab[6]."<br />".$tab[7]." ".$tab[8];
-					$tab_classe_parent[$tab[11]][$cpt]['enfant']=$tab[9]." ".$tab[10];
-					$tab_classe_parent[$tab[11]][$cpt]['classe']=$tab[11];
-					$tab_classe_parent[$tab[11]][$cpt]['resp_de']=$tab[9]." ".$tab[10]." (".$tab[11].")";
 
-					$tab_classe_parent[$tab[11]][$cpt]['cpt_tempo4']=$cpt2;
+					$tab_classe_parent[$classe_courante][$cpt]['nom']=$tab[$tabindice['Nom']];
+					$tab_classe_parent[$classe_courante][$cpt]['prenom']=$tab[$tabindice['Prénom']];
+					$tab_classe_parent[$classe_courante][$cpt]['nom_prenom']=$tab[$tabindice['Nom']]." ".$tab[$tabindice['Prénom']];
+					//echo "\$tab_classe_parent[$classe_courante][$cpt]['nom_prenom']=".$tab_classe_parent[$classe_courante][$cpt]['nom_prenom']."<br />";
+					$tab_classe_parent[$classe_courante][$cpt]['login_ent']=$tab[$tabindice['Login']];
+					$tab_classe_parent[$classe_courante][$cpt]['mdp_ent']=$tab[$tabindice['Mot de passe']];
 
-					$sql="INSERT INTO tempo4 SET col1='$cpt2', col2='".$tab[2]."', col3=MD5('".$tab[4]."');";
+					$tab_classe_parent[$classe_courante][$cpt]['email_ent']="";
+					if(isset($tabindice['Email'])) {
+						$tab_classe_parent[$classe_courante][$cpt]['email_ent']=$tab[$tabindice['Email']];
+					}
+
+					$tab_classe_parent[$classe_courante][$cpt]['adresse']="";
+					if((isset($tabindice['Adresse']))&&(isset($tabindice['Code postal']))&&(isset($tabindice['Ville']))) {
+						$tab_classe_parent[$classe_courante][$cpt]['adresse']=$tab[$tabindice['Adresse']]."<br />".$tab[$tabindice['Code postal']]." ".$tab[$tabindice['Ville']];
+					}
+
+					$tab_classe_parent[$classe_courante][$cpt]['classe']=$classe_courante;
+
+					$tab_classe_parent[$classe_courante][$cpt]['enfant']="";
+					$tab_classe_parent[$classe_courante][$cpt]['resp_de']="";
+					if((isset($tabindice['Nom enfant 1']))&&(isset($tabindice['Prénom enfant 1']))) {
+						$tab_classe_parent[$classe_courante][$cpt]['enfant']=$tab[$tabindice['Nom enfant 1']]." ".$tab[$tabindice['Prénom enfant 1']];
+						$tab_classe_parent[$classe_courante][$cpt]['resp_de']=$tab_classe_parent[$classe_courante][$cpt]['enfant']." (".$classe_courante.")";
+					}
+
+					$tab_classe_parent[$classe_courante][$cpt]['cpt_tempo4']=$cpt2;
+
+					$sql="INSERT INTO tempo4 SET col1='$cpt2', col2='".$tab[$tabindice['Login']]."', col3=MD5('".$tab[$tabindice['Mot de passe']]."');";
 					$insert=mysql_query($sql);
 
 					$cpt2++;
@@ -4331,6 +4405,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 			</span>
 		</th>
 		<th>Nom prénom</th>
+		<th title=\"Existence ou non d'un compte dans la base GEPI\">C.</th>
 		<th>Adresse</th>
 		<th>Enfants</th>
 	</tr>";
@@ -4367,7 +4442,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 					echo "
 		<td></td>
-		<td style='color:red' colspan='3'>Aucun nom prénom identique</td>
+		<td style='color:red' colspan='4'>Aucun nom prénom identique</td>
 	</tr>";
 					$cpt++;
 				}
@@ -4402,6 +4477,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 						echo "
 		<td><input type='checkbox' name='ligne[".$tab_parent[$loop]['cpt_tempo4']."]' id='ligne_$cpt' value='".$lig_resp->pers_id."' onchange=\"change_graisse($cpt)\" />$ancre_doublon_ou_pas</td>
 		<td><label for='ligne_$cpt'><span id='nom_prenom_$cpt'>$lig_resp->civilite $lig_resp->nom $lig_resp->prenom</span></label></td>
+		<td>".lien_image_compte_utilisateur($lig_resp->login, '', '_blank', 'y')."</td>
 		<td><label for='ligne_$cpt'>$chaine_adresse</label></td>
 		<td><label for='ligne_$cpt'>$chaine_ele</label></td>
 	</tr>";
@@ -4468,6 +4544,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 						//echo $cpt;
 						echo "</td>
 		<td><label for='ligne_$cpt'><span id='nom_prenom_$cpt'>$lig_resp->civilite $lig_resp->nom $lig_resp->prenom</span></label></td>
+		<td>".lien_image_compte_utilisateur($lig_resp->login, '', '_blank', 'y')."</td>
 		<td><label for='ligne_$cpt'>$chaine_adresse</label></td>
 		<td><label for='ligne_$cpt'>$chaine_ele</label></td>
 	</tr>";

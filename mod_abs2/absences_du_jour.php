@@ -181,147 +181,155 @@ include('menu_bilans.inc.php');
 
 echo "<div class='css-panes' id='containDiv'>\n";
 
-echo "<table cellspacing='15px' cellpadding='5px'><tr>";
+//==========================================
+// 20131107 : Contournement bug dojo
+$ne_pas_afficher_form_choix_grp_classe=isset($_POST['ne_pas_afficher_form_choix_grp_classe']) ? $_POST['ne_pas_afficher_form_choix_grp_classe'] : NULL;
+if((!isset($ne_pas_afficher_form_choix_grp_classe))||($ne_pas_afficher_form_choix_grp_classe!="y")) {
+	echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 
-//on affiche une boite de selection avec les groupes et les creneaux
-if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $groupe_col = GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()
-		->leftJoinWith('Groupe.JGroupesClasses')
-		->leftJoinWith('JGroupesClasses.Classe')
-		->find();
-} else {
-    $groupe_col = $utilisateur->getGroupes();
+	//on affiche une boite de selection avec les groupes et les creneaux
+	if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+		$groupe_col = GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()
+			->leftJoinWith('Groupe.JGroupesClasses')
+			->leftJoinWith('JGroupesClasses.Classe')
+			->find();
+	} else {
+		$groupe_col = $utilisateur->getGroupes();
+	}
+	if (!$groupe_col->isEmpty()) {
+		echo "<td style='border : 1px solid; padding : 10 px;'>";
+		echo "<form dojoType=\"dijit.form.Form\" action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+		echo "<p>\n";
+		echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
+		echo ("Groupe : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"id_groupe\" onchange='submit()' class=\"small\">");
+		echo "<option value='-1'>choisissez un groupe</option>\n";
+		foreach ($groupe_col as $group) {
+			echo "<option value='".$group->getId()."'";
+			if ($id_groupe == $group->getId()) echo " selected='SELECTED' ";
+			echo ">";
+			echo $group->getNameAvecClasses();
+			echo "</option>\n";
+		}
+		echo "</select>&nbsp;";
+		echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
+		echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Afficher les élèves</button>';
+		echo "</p>\n";
+		echo "</form>";
+		echo "</td>";
+	}
+
+	//on affiche une boite de selection avec les classe
+	if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+		$classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
+	} else {
+		$classe_col = $utilisateur->getClasses();
+	}
+	if (!$classe_col->isEmpty()) {
+		echo "<td style='border : 1px solid; padding : 10 px;'>";
+		echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+		echo "<p>\n";
+		echo '<input type="hidden" name="type_selection" value="id_classe"/>';
+		echo ("Classe : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"id_classe\" onchange='submit()' class=\"small\">");
+		echo "<option value='-1'>choisissez une classe</option>\n";
+		foreach ($classe_col as $classe) {
+			echo "<option value='".$classe->getId()."'";
+			if ($id_classe == $classe->getId()) echo " selected='SELECTED' ";
+			echo ">";
+			echo $classe->getNom();
+			echo "</option>\n";
+		}
+		echo "</select>&nbsp;";
+		echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
+		echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Afficher les élèves</button>';
+		echo "</p>\n";
+		echo "</form>";
+		echo "</td>";
+	} else {
+		echo '<td>Aucune classe avec élève affecté n\'a été trouvée</td>';
+	}
+
+
+	//on affiche une boite de selection avec les aid et les creneaux
+	if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+		$aid_col = AidDetailsQuery::create()->find();
+	} else {
+		$aid_col = $utilisateur->getAidDetailss();
+	}
+	if (!$aid_col->isEmpty()) {
+		echo "<td style='border : 1px solid;'>";
+		echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+		echo "<p>\n";
+		echo '<input type="hidden" name="type_selection" value="id_aid"/>';
+		echo ("Aid : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"id_aid\" onchange='submit()' class=\"small\">");
+		echo "<option value='-1'>choisissez une aid</option>\n";
+		foreach ($aid_col as $aid) {
+			echo "<option value='".$aid->getPrimaryKey()."'";
+			if ($id_aid == $aid->getPrimaryKey()) echo " selected='SELECTED' ";
+			echo ">";
+			echo $aid->getNom();
+			echo "</option>\n";
+		}
+		echo "</select>&nbsp;";
+		echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
+		echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Afficher les élèves</button>';
+		echo "</p>\n";
+		echo "</form>";
+		echo "</td>";
+	}
+
+	//on affiche une boite de selection pour l'eleve
+	echo "<td style='border : 1px solid; padding : 10 px;'>";
+	echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+		echo "<p>\n";
+	echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
+	echo '<input dojoType="dijit.form.TextBox" type="text" name="nom_eleve" style="width : 10em" value="'.$nom_eleve.'"/> ';
+	echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
+	echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Rechercher</button>';
+		echo "</p>\n";
+	echo '</form>';
+	echo '</td>';
+
+
+	//on affiche une boite de selection pour le regime
+	echo "<td style='border : 1px solid; padding : 10 px;'>";
+	echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+		echo "<p>\n";
+		echo ("Régime : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"filter_regime\" onchange='submit()' class=\"small\">");
+		echo "<option value='-1'>choisissez un régime</option>\n";
+			    echo "<option value='d/p'";
+			if (getFiltreRechercheParam('filter_regime') == 'd/p') echo " selected='SELECTED' ";
+			echo ">";
+			echo 'd/p';
+		        echo "<option value='ext.'";
+			if (getFiltreRechercheParam('filter_regime') == 'ext.') echo " selected='SELECTED' ";
+			echo ">";
+			echo 'ext.';
+		        echo "<option value='int.'";
+			if (getFiltreRechercheParam('filter_regime') == 'int.') echo " selected='SELECTED' ";
+			echo ">";
+			echo 'int.';
+			echo "</option>\n";
+		echo "</select>";
+		echo "</p>\n";
+		echo "<p>\n";
+		echo ("Afficher : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"font-size:12px;\" name=\"filter_manqement_obligation\" onchange='submit()' class=\"small\">");
+		echo "<option value='y'>Manquements à l'obligation de présence</option>";
+			    echo "<option value='n'";
+			if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') echo " selected='SELECTED' ";
+			echo ">";
+			echo 'toutes les saisies';
+			echo "</option>";
+		echo "</select>";
+		echo "</p>\n";
+
+		echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
+		echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Filtrer</button>';
+	echo '</form>';
+	echo '</td>';
+
+
+	echo "</tr></table>";
 }
-if (!$groupe_col->isEmpty()) {
-    echo "<td style='border : 1px solid; padding : 10 px;'>";
-    echo "<form dojoType=\"dijit.form.Form\" action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
-	echo "<p>\n";
-    echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
-    echo ("Groupe : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"id_groupe\" onchange='submit()' class=\"small\">");
-    echo "<option value='-1'>choisissez un groupe</option>\n";
-    foreach ($groupe_col as $group) {
-	    echo "<option value='".$group->getId()."'";
-	    if ($id_groupe == $group->getId()) echo " selected='SELECTED' ";
-	    echo ">";
-	    echo $group->getNameAvecClasses();
-	    echo "</option>\n";
-    }
-    echo "</select>&nbsp;";
-    echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Afficher les élèves</button>';
-	echo "</p>\n";
-    echo "</form>";
-    echo "</td>";
-}
-
-//on affiche une boite de selection avec les classe
-if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
-} else {
-    $classe_col = $utilisateur->getClasses();
-}
-if (!$classe_col->isEmpty()) {
-    echo "<td style='border : 1px solid; padding : 10 px;'>";
-    echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
-	echo "<p>\n";
-    echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-    echo ("Classe : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"id_classe\" onchange='submit()' class=\"small\">");
-    echo "<option value='-1'>choisissez une classe</option>\n";
-    foreach ($classe_col as $classe) {
-	    echo "<option value='".$classe->getId()."'";
-	    if ($id_classe == $classe->getId()) echo " selected='SELECTED' ";
-	    echo ">";
-	    echo $classe->getNom();
-	    echo "</option>\n";
-    }
-    echo "</select>&nbsp;";
-    echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Afficher les élèves</button>';
-	echo "</p>\n";
-    echo "</form>";
-    echo "</td>";
-} else {
-    echo '<td>Aucune classe avec élève affecté n\'a été trouvée</td>';
-}
-
-
-//on affiche une boite de selection avec les aid et les creneaux
-if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $aid_col = AidDetailsQuery::create()->find();
-} else {
-    $aid_col = $utilisateur->getAidDetailss();
-}
-if (!$aid_col->isEmpty()) {
-    echo "<td style='border : 1px solid;'>";
-    echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
-	echo "<p>\n";
-    echo '<input type="hidden" name="type_selection" value="id_aid"/>';
-    echo ("Aid : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"id_aid\" onchange='submit()' class=\"small\">");
-    echo "<option value='-1'>choisissez une aid</option>\n";
-    foreach ($aid_col as $aid) {
-	    echo "<option value='".$aid->getPrimaryKey()."'";
-	    if ($id_aid == $aid->getPrimaryKey()) echo " selected='SELECTED' ";
-	    echo ">";
-	    echo $aid->getNom();
-	    echo "</option>\n";
-    }
-    echo "</select>&nbsp;";
-    echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Afficher les élèves</button>';
-	echo "</p>\n";
-    echo "</form>";
-    echo "</td>";
-}
-
-//on affiche une boite de selection pour l'eleve
-echo "<td style='border : 1px solid; padding : 10 px;'>";
-echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
-	echo "<p>\n";
-echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
-echo '<input dojoType="dijit.form.TextBox" type="text" name="nom_eleve" style="width : 10em" value="'.$nom_eleve.'"/> ';
-echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Rechercher</button>';
-	echo "</p>\n";
-echo '</form>';
-echo '</td>';
-//on affiche une boite de selection pour le regime
-echo "<td style='border : 1px solid; padding : 10 px;'>";
-echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
-	echo "<p>\n";
-    echo ("Régime : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"filter_regime\" onchange='submit()' class=\"small\">");
-    echo "<option value='-1'>choisissez un régime</option>\n";
-    	    echo "<option value='d/p'";
-	    if (getFiltreRechercheParam('filter_regime') == 'd/p') echo " selected='SELECTED' ";
-	    echo ">";
-	    echo 'd/p';
-            echo "<option value='ext.'";
-	    if (getFiltreRechercheParam('filter_regime') == 'ext.') echo " selected='SELECTED' ";
-	    echo ">";
-	    echo 'ext.';
-            echo "<option value='int.'";
-	    if (getFiltreRechercheParam('filter_regime') == 'int.') echo " selected='SELECTED' ";
-	    echo ">";
-	    echo 'int.';
-	    echo "</option>\n";
-    echo "</select>";
-    echo "</p>\n";
-    echo "<p>\n";
-    echo ("Afficher : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"font-size:12px;\" name=\"filter_manqement_obligation\" onchange='submit()' class=\"small\">");
-    echo "<option value='y'>Manquements à l'obligation de présence</option>";
-    	    echo "<option value='n'";
-	    if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') echo " selected='SELECTED' ";
-	    echo ">";
-	    echo 'toutes les saisies';
-	    echo "</option>";
-    echo "</select>";
-    echo "</p>\n";
-
-    echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Filtrer</button>';
-echo '</form>';
-echo '</td>';
-
-echo "</tr></table>";
 ?>
 <div class="legende">
     <h3 class="legende">Légende  </h3>
@@ -478,6 +486,21 @@ $eleve_col = $query
 				$checked_ou_pas="";
 				if($ne_pas_afficher_lignes_avec_traitement_englobant=="y") {$checked_ou_pas=" checked";}
 				echo "<input type='checkbox' id='ne_pas_afficher_lignes_avec_traitement_englobant' name='ne_pas_afficher_lignes_avec_traitement_englobant' value='y'$checked_ou_pas /><label for='ne_pas_afficher_lignes_avec_traitement_englobant' title='Ne pas afficher les lignes pour lesquelles les saisies sont traitées ou englobées.'>Ne pas afficher les lignes traitées ou englobées</label>\n";
+
+				//==========================================
+				// 20131107 : Contournement bug dojo
+				echo " - ";
+				$checked_ou_pas="";
+				if($ne_pas_afficher_form_choix_grp_classe=="y") {$checked_ou_pas=" checked";}
+				echo "<input type='checkbox' id='ne_pas_afficher_form_choix_grp_classe' name='ne_pas_afficher_form_choix_grp_classe' value='y'$checked_ou_pas /><label for='ne_pas_afficher_form_choix_grp_classe' title=\"Dans le cas où vous subissez un bug d'affichage, avec par exemple
+la date qui ne s'affiche pas au format jj/mm/aaaa, mais aaaa-mm-jj
+et des boutons de sélection qui n'ont pas le format habituel,
+vous pouvez ne pas afficher les formulaires de choix de la classe, du groupe ou du régime en cochant cette case.
+Cela devrait permettre de contourner le problème.\">
+<img src='../images/icons/flag2.gif' width='17' height='18' alt='Bug dojo' id='img_bug_dojo' />
+<img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Bug dojo' style='display:none' id='img_bug_dojo2' />
+</label>\n";
+				//==========================================
 
 				// Pour quand même afficher le bouton validant les checkbox ci-dessus:
 				if (!method_exists($eleve_col, 'haveToPaginate')) {
@@ -920,7 +943,7 @@ $eleve_col = $query
 } else {
     echo 'Aucune absence';
 }
-echo "</p>";
+//echo "</p>";
 echo "</form>";
 echo "</div>\n";
 echo "</div>\n";
@@ -1029,6 +1052,13 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 	    node.appendChild(button.domNode);
 	});	
     });
+
+	if(document.getElementById("img_bug_dojo2")) {
+		document.getElementById("img_bug_dojo2").style.display="";
+		if(document.getElementById("img_bug_dojo")) {
+			document.getElementById("img_bug_dojo").style.display="none";
+		}
+	}
 </script>';
 
 require_once("../lib/footer.inc.php");

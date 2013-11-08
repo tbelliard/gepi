@@ -478,11 +478,11 @@
 			<div style="padding-left: 1px;">
 				<!--div style="text-align:center;"-->
 				<div align="center">
-					<table class='boireaus'>
+					<table class='boireaus sortable resizable'>
 						<tr>
-							<th>Personne</th>
-							<th>Statut</th>
-							<th>Fin session</th>
+							<th class='text'>Personne</th>
+							<th class='text'>Statut</th>
+							<th class='text'>Fin session</th>
 						</tr>
 <?php
 		/*
