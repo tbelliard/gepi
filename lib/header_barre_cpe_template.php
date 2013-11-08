@@ -68,8 +68,8 @@ if ($barre_plugin!="") {
 	if ($_SESSION['statut'] == "cpe") {
 
 		$tmp_liste_classes_cpe=array();
-		$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe;";       
-	if($mysqli !="") {
+		$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe;"; 
+        
 		$res_tmp_liste_classes_cpe = mysqli_query($mysqli, $sql);
 		if($res_tmp_liste_classes_cpe->num_rows > 0) {
 			$tmp_cpt_classes_cpe=0;
@@ -80,22 +80,8 @@ if ($barre_plugin!="") {
 				$tmp_liste_classes_cpe[$tmp_cpt_classes_cpe]['nom_complet']=$lig_tmp_liste_classes_cpe->nom_complet;
 				$tmp_cpt_classes_cpe++;
 			}
-		}
-	} else {
-		$res_tmp_liste_classes_cpe=mysql_query($sql);
-		if(mysql_num_rows($res_tmp_liste_classes_cpe)>0) {
-			$tmp_cpt_classes_cpe=0;
-			while($lig_tmp_liste_classes_cpe=mysql_fetch_object($res_tmp_liste_classes_cpe)) {
-				$tmp_liste_classes_cpe[$tmp_cpt_classes_cpe]=array();
-				$tmp_liste_classes_cpe[$tmp_cpt_classes_cpe]['id']=$lig_tmp_liste_classes_cpe->id;
-				$tmp_liste_classes_cpe[$tmp_cpt_classes_cpe]['classe']=$lig_tmp_liste_classes_cpe->classe;
-				$tmp_liste_classes_cpe[$tmp_cpt_classes_cpe]['nom_complet']=$lig_tmp_liste_classes_cpe->nom_complet;
-				$tmp_cpt_classes_cpe++;
-			}
-		}		
-	}           
+		}    
         
-
 		$menus = null;
 
 		if (getSettingValue("active_module_absence") == 'y') {

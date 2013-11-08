@@ -10,7 +10,6 @@ function getCouleurGlobal($couleur,$coul_origine) {
     global $mysqli;
    $sql = "select VALUE from setting where NAME='".$couleur."'";
            
-	if($mysqli !="") {
         $coul = mysqli_query($mysqli, $sql); 
         if (!$coul) return ($coul_origine); 
         if ($coul->num_rows == 0) {
@@ -22,22 +21,7 @@ function getCouleurGlobal($couleur,$coul_origine) {
              } else {
              return ("#".$row[0]);
              }             
-         }		
-	} else {      
-        $coul = sql_query($sql);
-         if (!$coul) return ($coul_origine);
-        if (count($coul) == 0) {
-             return ($coul_origine);
-         } else {
-             $row = sql_row($coul,0);
-             if ($row == "") {
-                 return ($coul_origine);
-             } else {
-             return ("#".$row[0]);
-             }
-         }
-		
-	}     
+         }  
 }
 
 

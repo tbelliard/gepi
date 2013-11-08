@@ -231,11 +231,9 @@ if (isset($_REQUEST["source"])) {
 /**
  * Connection à la base
  */
-if(isset($useMysqli) && (TRUE == $useMysqli)) {
-    require_once($chemin_relatif_gepi."/lib/mysqli.inc.php");
-} else {
-    require_once($chemin_relatif_gepi."/lib/mysql.inc");
-}
+require_once($chemin_relatif_gepi."/lib/mysqli.inc.php");
+
+require_once($chemin_relatif_gepi."/lib/mysql.inc");
    
 
 /**

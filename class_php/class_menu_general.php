@@ -72,24 +72,14 @@ class itemGeneral {
 			$tab_id = explode("#",$tab_id_0[0]);
             $sql_droits = "SELECT ".$statut." FROM droits WHERE id='$tab_id[0]'";
                   
-            if($mysqli !="") {
-                $query_droits = mysqli_query($mysqli, $sql_droits);
-                $obj_droits = $query_droits->fetch_row();
-                $query_droits->close();
-                if ($obj_droits[0] == "V") {
-                        return "1";
-                    } else {
-                        return "0";
-                    }
-            } else {		      
-                $query_droits = @mysql_query($sql_droits);
-                $droit = @mysql_result($query_droits, 0, $statut);
-                if ($droit == "V") {
-                    return "1";
-                } else {
-                    return "0";
-                }
-            }     
+            $query_droits = mysqli_query($mysqli, $sql_droits);
+            $obj_droits = $query_droits->fetch_row();
+            $query_droits->close();
+            if ($obj_droits[0] == "V") {
+                return "1";
+            } else {
+                return "0";
+            }    
 	  } else {
 	  
 			$sql="SELECT ds.autorisation FROM `droits_speciaux` ds,  `droits_utilisateurs` du
@@ -97,7 +87,6 @@ class itemGeneral {
 							AND ds.id_statut=du.id_statut
 							AND du.login_user='".$_SESSION['login']."');" ;
                     
-        if($mysqli !="") {
             $result = mysqli_query($mysqli, $sql);
             if (!$result) {
                 return FALSE;
@@ -108,20 +97,7 @@ class itemGeneral {
                 } else {
                     return FALSE;
                 }        
-            }
-        } else {		  
-            $result=mysql_query($sql);
-            if (!$result) {
-                return FALSE;
-            } else {
-                $row = mysql_fetch_row($result) ;
-                if ($row[0]=='V' || $row[0]=='v'){
-                return TRUE;
-                } else {
-                return FALSE;
-                }
-            }
-        }         
+            }       
 	
 	  }
 	}
@@ -144,15 +120,10 @@ class itemGeneral {
 		if($key_setting!='')
 		{
 			if($special=="mod_abs2") {
-				$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND value='2';";                       
-                if($mysqli !="") {
-                    $resultat = mysqli_query($mysqli, $sql);  
-                    $nb_lignes = $resultat->num_rows;
-                    $resultat->close();
-                } else {
-                    $test=mysql_query($sql);
-                    $nb_lignes = mysql_num_rows($test);
-                }
+				$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND value='2';";   
+                $resultat = mysqli_query($mysqli, $sql);  
+                $nb_lignes = $resultat->num_rows;
+                $resultat->close();
                 
 				if($nb_lignes > 0)
 				{
@@ -171,18 +142,10 @@ class itemGeneral {
 				$sql1="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND (value='y' OR value='yes');";
                 $sql2="SELECT 1=1 FROM setting WHERE name='active_module_absence' AND value='2';";
                 
-                if($mysqli !="") {
-                    $test1 = mysqli_query($mysqli, $sql1);
-                    $nb_test1 = $test1->num_rows;
-                    $test2 = mysqli_query($mysqli, $sql2);
-                    $nb_test2 = $test2->num_rows;
-                } else {
-                    $test=mysql_query($sql1);
-                    $nb_test1 = mysql_num_rows($test);
-                    $test2=mysql_query($sql2);
-                    $nb_test2 = mysql_num_rows($test2);
-
-                }           
+                $test1 = mysqli_query($mysqli, $sql1);
+                $nb_test1 = $test1->num_rows;
+                $test2 = mysqli_query($mysqli, $sql2);
+                $nb_test2 = $test2->num_rows;
 
 				if(($nb_test1>0)&&($nb_test2==0))
 				{
@@ -201,14 +164,8 @@ class itemGeneral {
 			else {
 				$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND (value='y' OR value='yes');";
 		         
-                if($mysqli !="") {
-                    $test = mysqli_query($mysqli, $sql);
-                    $nb_test = $test->num_rows;
-		
-	            } else {
-                    $test=mysql_query($sql);
-                    $nb_test = mysql_num_rows($test);
-	            }           
+                $test = mysqli_query($mysqli, $sql);
+                $nb_test = $test->num_rows;
   
 				if($nb_test > 0)
 				{

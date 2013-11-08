@@ -37,22 +37,14 @@ function anti_inject(&$_value, $_key) {
            $value2 = corriger_caracteres($value2);
            if (get_magic_quotes_gpc()) $_value[$key2] = stripslashes($value2);
            if (!is_numeric($_value[$key2])) {
-                if($mysqli != "") {
-                    $_value[$key2] = $mysqli->real_escape_string($_value[$key2]);
-                } else {
-                    $_value[$key2] = mysql_real_escape_string($_value[$key2]);
-                }    
+               $_value[$key2] = $mysqli->real_escape_string($_value[$key2]);
            }
        }
    } else {
        $_value = corriger_caracteres($_value);
        if (get_magic_quotes_gpc())    $_value = stripslashes($_value);
-       if (!is_numeric($_value)) {           
-            if($mysqli != "") {
-                $_value = $mysqli->real_escape_string($_value);
-            } else {
-                $_value = mysql_real_escape_string($_value);
-            }           
+       if (!is_numeric($_value)) {
+           $_value = $mysqli->real_escape_string($_value);
        }
    }
 }
@@ -331,14 +323,8 @@ if((isset($filtrage_extensions_fichiers_table_ct_types_documents))&&($filtrage_e
 }
 else {
 	$sql="SELECT 1=1 FROM setting WHERE name='filtrage_extensions_fichiers' AND value='n';";
-               
-    if($mysqli !="") {
         $test = mysqli_query($mysqli, $sql);
         $nb_lignes = $test->num_rows;
-    } else {
-        $test = mysql_query($sql);
-        $nb_lignes = mysql_num_rows($test);
-    }   
     
     
 	if($nb_lignes == 0) {

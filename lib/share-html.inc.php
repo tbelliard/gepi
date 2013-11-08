@@ -1498,7 +1498,6 @@ function affiche_infos_actions() {
 	((iad.nature='individu' AND iad.valeur='".$_SESSION['login']."') OR
 	(iad.nature='statut' AND iad.valeur='".$_SESSION['statut']."')) ORDER BY date;";
     
-	if($mysqli !="") {
         $res = mysqli_query($mysqli, $sql);
         $chaine_id="";
         if($res->num_rows > 0) {
@@ -1571,79 +1570,6 @@ function affiche_infos_actions() {
 <?php
         }
 		$res->close();
-	} else {
-        $res=mysql_query($sql);
-        $chaine_id="";
-        if(mysql_num_rows($res)>0) {
-            echo "<div id='div_infos_actions' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%;'>\n";
-            echo "<div id='info_action_titre' style='font-weight: bold; min-height:16px; padding-right:8px;' class='infobulle_entete'>\n";
-                echo "<div id='info_action_pliage' style='float:right; width: 1em;'>\n";
-
-                echo "<a href=\"javascript:div_alterne_affichage('conteneur')\" title=\"Plier/déplier le cadre des actions en attente\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' alt='Réduire' /></span></a>";
-                echo "</div>\n";
-
-                //if($_SESSION['statut']=='administrateur') {
-                if(acces("/gestion/gestion_infos_actions.php", $_SESSION['statut'])) {
-                    echo "<div style='float:right; width: 1em; margin-right:0.5em;'>\n";
-
-                    echo "<a href=\"gestion/gestion_infos_actions.php\" title=\"Consulter, supprimer par lots les actions en attente\"><span id='img_supprimer_conteneur'><img src='images/disabled.png' width='16' height='16' alt='Supprimer par lots' /></span></a>";
-                    echo "</div>\n";
-                }
-
-                echo "Actions en attente";
-            echo "</div>\n";
-
-            echo "<div id='info_action_corps_conteneur'>\n";
-
-            $cpt_id=0;
-            while($lig=mysql_fetch_object($res)) {
-                echo "<div id='info_action_$lig->id' style='border: 1px solid black; margin:2px; min-height:16px;'>\n";
-                    echo "<div id='info_action_titre_$lig->id' style='font-weight: bold; min-height:16px; padding-right:8px;' class='infobulle_entete'>\n";
-                        echo "<div id='info_action_pliage_$lig->id' style='float:right; width: 1em;'>\n";
-                        echo "<a href=\"javascript:div_alterne_affichage('$lig->id')\" title=\"Plier/déplier l'action en attente\"><span id='img_pliage_$lig->id'><img src='images/icons/remove.png' width='16' height='16' alt='Réduire' /></span></a>";
-                        echo "</div>\n";
-                        echo $lig->titre;
-                    echo "</div>\n";
-
-                    echo "<div id='info_action_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
-                        echo "<div style='float:right; width: 9em; text-align: right;'>\n";
-                        echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\" title=\"Supprimer cette notification d'action en attente\">Supprimer</a>";
-                        echo "</div>\n";
-
-                        echo preg_replace("/\\\\n/","<br />",nl2br($lig->description));
-                    echo "</div>\n";
-                echo "</div>\n";
-                if($cpt_id>0) {$chaine_id.=", ";}
-                $chaine_id.="'$lig->id'";
-                $cpt_id++;
-            }
-            echo "</div>\n";
-            echo "</div>\n";
-
-            echo "<script type='text/javascript'>
-        function div_alterne_affichage(id) {
-            if(document.getElementById('info_action_corps_'+id)) {
-                if(document.getElementById('info_action_corps_'+id).style.display=='none') {
-                    document.getElementById('info_action_corps_'+id).style.display='';
-                    document.getElementById('img_pliage_'+id).innerHTML='<img src=\'images/icons/remove.png\' width=\'16\' height=\'16\' alt=\'Réduire\' />'
-                }
-                else {
-                    document.getElementById('info_action_corps_'+id).style.display='none';
-                    document.getElementById('img_pliage_'+id).innerHTML='<img src=\'images/icons/add.png\' width=\'16\' height=\'16\' alt=\'Déplier\' />'
-                }
-            }
-        }
-
-        chaine_id_action=new Array($chaine_id);
-        for(i=0;i<chaine_id_action.length;i++) {
-            id_a=chaine_id_action[i];
-            if(document.getElementById('info_action_corps_'+id_a)) {
-                div_alterne_affichage(id_a);
-            }
-        }
-    </script>\n";
-        }
-	}   
 }
 
 
@@ -1657,8 +1583,7 @@ function affiche_acces_cdt() {
 	$tab_statuts=array('professeur', 'administrateur', 'scolarite');
 	if(in_array($_SESSION['statut'], $tab_statuts)) {
 		$sql="SELECT a.* FROM acces_cdt a ORDER BY date2;";
-        //echo "$sql<br />";        
-        if($mysqli !="") {
+        //echo "$sql<br />"; 
             $res = mysqli_query($mysqli, $sql);
             $chaine_id="";
             if($res->num_rows > 0) {
@@ -1773,124 +1698,6 @@ function affiche_acces_cdt() {
                 }
             }
             $res->close();
-        } else {
-            $res=mysql_query($sql);
-            $chaine_id="";
-            if(mysql_num_rows($res)>0) {
-                $visible="y";
-                if($_SESSION['statut']=='professeur') {
-                    $visible="n";
-                    $sql="SELECT ag.id_acces FROM acces_cdt_groupes ag, j_groupes_professeurs jgp WHERE jgp.id_groupe=ag.id_groupe AND jgp.login='".$_SESSION['login']."';";
-                    $res2=mysql_query($sql);
-                    if(mysql_num_rows($res2)>0) {
-                        $visible="y";
-                        $tab_id_acces=array();
-                        while($lig2=mysql_fetch_object($res2)) {
-                            $tab_id_acces[]=$lig2->id_acces;
-                        }
-                    }
-                }
-
-                if($visible=="y") {
-                    $retour.="<div id='div_infos_acces_cdt' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%; margin-top:3px;'>\n";
-                    $retour.="<div id='info_acces_cdt_titre' style='font-weight: bold;' class='infobulle_entete'>\n";
-                        $retour.="<div id='info_acces_cdt_pliage' style='float:right; width: 1em'>\n";
-                        $retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('conteneur')\"><span id='img_pliage_acces_cdt_conteneur'><img src='images/icons/remove.png' width='16' height='16' alt='enlever' /></span></a>";
-                        $retour.="</div>\n";
-                        $retour.="Accès ouvert à des CDT";
-                    $retour.="</div>\n";
-
-                    $retour.="<div id='info_acces_cdt_corps_conteneur'>\n";
-
-                    $cpt_id=0;
-                    while($lig=mysql_fetch_object($res)) {
-                        $visible="y";
-                        if(($_SESSION['statut']=='professeur')&&(!in_array($lig->id,$tab_id_acces))) {
-                            $visible="n";
-                        }
-
-                        if($visible=="y") {
-                            $retour.="<div id='info_acces_cdt_$lig->id' style='border: 1px solid black; margin:2px;'>\n";
-                                $retour.="<div id='info_acces_cdt_titre_$lig->id' style='font-weight: bold;' class='infobulle_entete'>\n";
-                                    $retour.="<div id='info_acces_cdt_pliage_$lig->id' style='float:right; width: 1em'>\n";
-                                    $retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('$lig->id')\"><span id='img_pliage_acces_cdt_$lig->id'><img src='images/icons/remove.png' width='16' height='16' alt='enlever' /></span></a>";
-                                    $retour.="</div>\n";
-                                    $retour.="Accès CDT jusqu'au ".formate_date($lig->date2);
-                                $retour.="</div>\n";
-
-                                $retour.="<div id='info_acces_cdt_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
-                                    if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
-                                        $retour.="<div style='float:right; width: 9em; text-align: right;'>\n";
-                                        $retour.="<a href=\"".$_SERVER['PHP_SELF']."?del_id_acces_cdt=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->description)."', 'Etes-vous sûr de vouloir supprimer cet accès')\">Supprimer l'accès</span></a>";
-                                        $retour.="</div>\n";
-                                    }
-
-                                    $retour.="<p><strong>L'accès a été ouvert pour le motif suivant&nbsp;:</strong><br />";
-                                    $retour.=preg_replace("/\\\\r\\\\n/","<br />",$lig->description);
-                                    $retour.="</p>\n";
-
-                                    $chaine_enseignements="<ul>";
-                                    $sql="SELECT id_groupe FROM acces_cdt_groupes WHERE id_acces='$lig->id';";
-                                    $res3=mysql_query($sql);
-                                    if(mysql_num_rows($res3)>0) {
-                                        $tab_champs=array('classes', 'professeurs');
-                                        while($lig3=mysql_fetch_object($res3)) {
-                                            $current_group=get_group($lig3->id_groupe);
-                                            if((is_array($current_group))&&(count($current_group)>0)) {
-                                                $chaine_profs="";
-                                                if(isset($current_group['profs']['users'])) {
-                                                    $cpt=0;
-                                                    foreach($current_group['profs']['users'] as $login_prof => $current_prof) {
-                                                        if($cpt>0) {$chaine_profs.=", ";}
-                                                        $chaine_profs.=$current_prof['civilite']." ".$current_prof['nom']." ".$current_prof['prenom'];
-                                                        $cpt++;
-                                                    }
-                                                }
-
-                                                $chaine_enseignements.="<li>";
-                                                $chaine_enseignements.=$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']." (<i>".$chaine_profs."</i>)";
-                                                $chaine_enseignements.="</li>\n";
-                                            }
-                                        }
-                                    }
-                                    $chaine_enseignements.="</ul>";
-
-                                    $retour.="<p>Les CDT accessibles à l'adresse <a href='$lig->chemin' target='_blank'>$lig->chemin</a> sont&nbsp;:<br />".$chaine_enseignements."</p>";
-                                $retour.="</div>\n";
-                            $retour.="</div>\n";
-                            if($cpt_id>0) {$chaine_id.=", ";}
-                            $chaine_id.="'$lig->id'";
-                            $cpt_id++;
-                        }
-                    }
-                    $retour.="</div>\n";
-                    $retour.="</div>\n";
-
-                    $retour.="<script type='text/javascript'>
-                function div_alterne_affichage_acces_cdt(id) {
-                    if(document.getElementById('info_acces_cdt_corps_'+id)) {
-                        if(document.getElementById('info_acces_cdt_corps_'+id).style.display=='none') {
-                            document.getElementById('info_acces_cdt_corps_'+id).style.display='';
-                            document.getElementById('img_pliage_acces_cdt_'+id).innerHTML='<img src=\'images/icons/remove.png\' width=\'16\' height=\'16\' alt=\'enlever\' />'
-                        }
-                        else {
-                            document.getElementById('info_acces_cdt_corps_'+id).style.display='none';
-                            document.getElementById('img_pliage_acces_cdt_'+id).innerHTML='<img src=\'images/icons/add.png\' width=\'16\' height=\'16\' alt=\'ajouter\' />'
-                        }
-                    }
-                }
-
-                chaine_id_acces_cdt=new Array($chaine_id);
-                for(i=0;i<chaine_id_acces_cdt.length;i++) {
-                    id_a=chaine_id_acces_cdt[i];
-                    if(document.getElementById('info_acces_cdt_corps_'+id_a)) {
-                        div_alterne_affichage_acces_cdt(id_a);
-                    }
-                }
-            </script>\n";
-                }
-            }        
-        }   
 	}
 	echo $retour;
 }

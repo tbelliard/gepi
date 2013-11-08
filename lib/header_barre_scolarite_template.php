@@ -65,7 +65,7 @@ if ($barre_plugin!="") {
 
 		$tmp_liste_classes_scol=array();
 		$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe;";
-	if($mysqli !="") {    
+        
 		$res_tmp_liste_classes_scol = mysqli_query($mysqli, $sql);
 		if($res_tmp_liste_classes_scol->num_rows > 0) {
 			$tmp_cpt_classes_scol=0;
@@ -76,21 +76,7 @@ if ($barre_plugin!="") {
 				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]['nom_complet']=$lig_tmp_liste_classes_scol->nom_complet;
 				$tmp_cpt_classes_scol++;
             }
-        }
-		
-	} else {        
-		$res_tmp_liste_classes_scol=mysql_query($sql);
-		if(mysql_num_rows($res_tmp_liste_classes_scol)>0) {
-			$tmp_cpt_classes_scol=0;
-			while($lig_tmp_liste_classes_scol=mysql_fetch_object($res_tmp_liste_classes_scol)) {
-				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]=array();
-				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]['id']=$lig_tmp_liste_classes_scol->id;
-				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]['classe']=$lig_tmp_liste_classes_scol->classe;
-				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]['nom_complet']=$lig_tmp_liste_classes_scol->nom_complet;
-				$tmp_cpt_classes_scol++;
-			}
-		}		
-	}   
+        } 
 
 		$menus = null;
 

@@ -73,7 +73,6 @@ function last_connection() {
     global $mysqli;
    $sql = "select START, AUTOCLOSE, REMOTE_ADDR from log where LOGIN = '".$_SESSION['login']."' and SESSION_ID != '".session_id()."' order by START desc";
            
-	if($mysqli !="") {
         $res = mysqli_query($mysqli, $sql);
         $r = '';
         if ($res) {
@@ -106,39 +105,7 @@ function last_connection() {
             }
         }
         $res->close();
-	} else {
-   $res = sql_query($sql);
-   $r = '';
-   if ($res) {
-      $row = sql_row($res, 0);
-      $annee_b = substr($row[0],0,4);
-      $mois_b =  substr($row[0],5,2);
-      $jour_b =  substr($row[0],8,2);
-      $heures_b = substr($row[0],11,2);
-      $minutes_b = substr($row[0],14,2);
-      $secondes_b = substr($row[0],17,2);
-      if ($row[0]  != '') {
-          if ($row[1]  == "4") {
-              $r = "<span style=\"color: red\"><strong>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " avec un mot de passe erroné</strong></span> (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
-              // On compte le nombre de tentatives infructueuses successives
-              $nb_tentative = 0;
-              $flag = 0;
-              for ($i = 0; (($row_b = sql_row($res, $i)) and ($flag < 1)); $i++)
-              {
-				if (($row_b[1]  == "2") and ($row_b[2]  == $row[2])) {
-					$nb_tentative++;
-				}
-				else {
-					$flag = 1;
-				}
-              }
-              if ($nb_tentative > 1) {$r .= "<br /><strong>Nombre de tentatives de connexion successives : ".$nb_tentative.".</strong></font>";}
-          } else {
-              $r = "  Dernière session ouverte le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
-			}
-      }
-    }
-    }
+        
     return $r;
     
 }
@@ -437,22 +404,13 @@ if (isset($titre_page)) {
 		if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
 			$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";
                     
-            if($mysqli !="") {
                 $res_np = mysqli_query($mysqli, $sql);
                 if($res_np->num_rows > 0) {
                     $lig_np=$res_np->fetch_object();
                     $_SESSION['prenom']=$lig_np->prenom;
                     $_SESSION['nom']=$lig_np->nom;
                 }
-                $res_n->close();
-            } else {
-                $res_np=mysql_query($sql);
-                if(mysql_num_rows($res_np)>0) {
-                    $lig_np=mysql_fetch_object($res_np);
-                    $_SESSION['prenom']=$lig_np->prenom;
-                    $_SESSION['nom']=$lig_np->nom;
-                }
-            }     
+                $res_n->close(); 
 		}
 	}
     

@@ -53,7 +53,7 @@ if (!$mysqli->set_charset("utf8")) {
  * @param type $sql
  * @return type 
  */
-function sql_query ($sql)
+function sqli_query ($sql)
 {
     global $mysqli;
     
@@ -72,7 +72,7 @@ function sql_query ($sql)
  * @param type $sql
  * @return type 
  */
-function sql_query1 ($sql)
+function sqli_query1 ($sql)
 {
     global $mysqli;
     
@@ -95,7 +95,7 @@ function sql_query1 ($sql)
 * the query and returns 0.
 * Typical usage: $i = 0; while ((a = sql_row($r, $i++))) { ... }
  */
-function sql_row ($r, $i)
+function sqli_row ($r, $i)
 {
     global $mysqli;
 
@@ -112,7 +112,7 @@ function sql_row ($r, $i)
  * @param type $r
  * @return type 
  */
-function sql_count ($r)
+function sqli_count ($r)
 {
     return ($r->num_rows);
 }

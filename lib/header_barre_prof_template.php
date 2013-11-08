@@ -63,28 +63,16 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 
 				$tmp_mes_classes_pp[$key_id_classe]="";
 				$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_eleves_classes jec, j_eleves_professeurs jep WHERE u.login=jep.professeur AND jep.login=jec.login AND jec.id_classe='$key_id_classe' ORDER BY u.nom,u.prenom;";
-                if($mysqli !="") {                    
-                    $res = mysqli_query($mysqli, $sql);
-                    if($res->num_rows > 0) {
-                        while($lig = $res->fetch_object()) {
-                            if($tmp_mes_classes_pp[$key_id_classe]!='') {
-                                $tmp_mes_classes_pp[$key_id_classe].=", ";
-                            }
-                            $tmp_mes_classes_pp[$key_id_classe].="<span title=\"$lig->civilite $lig->nom $lig->prenom\">".$lig->nom." ".mb_substr($lig->prenom,0,1)."</span>";
-                        }                        
-                    }                
-                    $res->close();
-                } else {
-                    $res=mysql_query($sql);
-                    if(mysql_num_rows($res)>0) {
-                        while($lig=mysql_fetch_object($res)) {
-                            if($tmp_mes_classes_pp[$key_id_classe]!='') {
-                                $tmp_mes_classes_pp[$key_id_classe].=", ";
-                            }
-                            $tmp_mes_classes_pp[$key_id_classe].="<span title=\"$lig->civilite $lig->nom $lig->prenom\">".$lig->nom." ".mb_substr($lig->prenom,0,1)."</span>";
+                $res = mysqli_query($mysqli, $sql);
+                if($res->num_rows > 0) {
+                    while($lig = $res->fetch_object()) {
+                        if($tmp_mes_classes_pp[$key_id_classe]!='') {
+                            $tmp_mes_classes_pp[$key_id_classe].=", ";
                         }
-                    }
-                }   
+                        $tmp_mes_classes_pp[$key_id_classe].="<span title=\"$lig->civilite $lig->nom $lig->prenom\">".$lig->nom." ".mb_substr($lig->prenom,0,1)."</span>";
+                    }                        
+                }                
+                $res->close();
 			}
 		}
 	}
@@ -96,8 +84,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 		$cours_actu = retourneCours($_SESSION["login"]);
             
 		// Qui correspond à cet id_groupe :
-		if ($cours_actu != "non") {			
-            if($mysqli !="") {
+		if ($cours_actu != "non") {	
                 $sqlG = "SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$cours_actu."'";
                 $queryG = mysqli_query($mysqli, $sqlG);
                 $groupe_actu = $queryG->fetch_object();
@@ -110,18 +97,6 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
                 }
                 $queryG->close();
 
-            } else {
-                $queryG = mysql_query("SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$cours_actu."'");
-                $groupe_actu = mysql_fetch_array($queryG);
-                // Il faudrait vérifier si ce n'est pas une AID
-                if ($groupe_actu["id_aid"] != NULL) {
-                    $groupe_abs = '?groupe=AID|'.$groupe_actu["id_aid"].'&amp;menuBar=ok';
-                    $groupe_text = '';
-                } else {
-                    $groupe_text = '?id_groupe='.$groupe_actu["id_groupe"].'&amp;year='.date("Y").'&amp;month='.date("n").'&amp;day='.date("d").'&amp;edit_devoir=';
-                    $groupe_abs = '?groupe='.$groupe_actu["id_groupe"].'&amp;menuBar=ok';
-                }
-            }
 		}
 	}
 
@@ -157,7 +132,6 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 			$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$tmp_group['id']."' AND domaine='cahier_texte' AND visible='n';";
 			//echo "$sql<br />\n";
                    
-            if($mysqli !="") {
                 $test_grp_visib = mysqli_query($mysqli, $sql);
                 if($test_grp_visib->num_rows == 0) {
                     $tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir=';
@@ -169,19 +143,6 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
                     $cpt_sous_menu++;
                 }
                 $test_grp_visib->close();
-            } else {
-                $test_grp_visib=mysql_query($sql);
-                if(mysql_num_rows($test_grp_visib)==0) {
-                    $tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir=';
-                    if($nom_ou_description_groupe_barre_h=='name') {
-                        $tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
-                    }
-                    else {
-                        $tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
-                    }
-                    $cpt_sous_menu++;
-                }
-            }
 		}
 		if(getSettingValue('GepiCahierTexteVersion')==2) {
 			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte_2/see_all.php';
@@ -375,7 +336,6 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 										  ORDER BY nom";
                 $tmp_cpt_aid=0;
                 $tmp_nb_aid_a_afficher=0;
-                if($mysqli !="") {
                     $tmp_call_data = mysqli_query($mysqli, $sql_call_data);
                     $tmp_nb_aid = $tmp_call_data->num_rows;
                     while ($obj_call_data = $tmp_call_data->fetch_object()) {
@@ -415,49 +375,6 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
                         $tmp_call_prof->close();
                         $tmp_cpt_aid++;
                     }
-    
-                } else {
-                    $tmp_call_data = mysql_query($sql_call_data);
-                    $tmp_nb_aid = mysql_num_rows($tmp_call_data);
-                    while ($tmp_cpt_aid < $tmp_nb_aid) {
-                        $tmp_indice_aid = @mysql_result($tmp_call_data, $tmp_cpt_aid, "indice_aid");
-                        $sql="SELECT * FROM j_aid_utilisateurs
-                        WHERE (id_utilisateur = '".$_SESSION['login']."'
-                        AND indice_aid = '".$tmp_indice_aid."')";
-                        //echo "$sql<br />";
-                        $tmp_call_prof = mysql_query($sql);
-                        $tmp_nb_result = mysql_num_rows($tmp_call_prof);
-                        if (($tmp_nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
-                            $tmp_nom_aid = @mysql_result($tmp_call_data, $tmp_cpt_aid, "nom");
-
-                            $sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom";
-                            //echo "$sql<br />";
-                            $tmp_call_prof_aid = mysql_query($sql);
-                            $tmp_nombre_aid = mysql_num_rows($tmp_call_prof_aid);
-                            if ($tmp_nombre_aid>0) {
-
-                                if($tmp_nb_aid_a_afficher==0) {
-                                    //$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/saisie_aid.php' , "texte"=>"AID");
-                                    $tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>"AID");
-                                    $tmp_sous_menu2=array();
-                                    $cpt_sous_menu2=0;
-                                }
-
-                                $tmp_sous_menu2[$cpt_sous_menu2]['lien']="/saisie/saisie_aid.php?indice_aid=".$tmp_indice_aid;
-                                $tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (saisie)";
-                                $cpt_sous_menu2++;
-
-                                $tmp_sous_menu2[$cpt_sous_menu2]['lien']="/prepa_conseil/visu_aid.php?indice_aid=".$tmp_indice_aid;
-                                $tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (visualisation)";
-                                $cpt_sous_menu2++;
-
-                                $tmp_nb_aid_a_afficher++;
-
-                            }
-                        }
-                        $tmp_cpt_aid++;
-                    }
-				}
                 
 				if($tmp_nb_aid_a_afficher>0) {
 					$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
@@ -524,13 +441,9 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 													jec.periode=jeg.periode AND
 													jep.professeur='".$_SESSION['login']."';";
                     //echo "$sql";
-                    if($mysqli !="") {
                         $resultat = mysqli_query($mysqli, $sql);  
                         $res_test_affiche_bull_simp = $resultat->num_rows;
                         $resultat->close();
-                    } else {
-                        $res_test_affiche_bull_simp=mysql_num_rows(mysql_query($sql));
-                    }           
                     if($res_test_affiche_bull_simp > 0) {$affiche_li_bull_simp="y";}
 				}
 
@@ -560,7 +473,6 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 
 							$sql="SELECT * FROM periodes WHERE id_classe='".$tab_pp['id_classe'][$loop]."' ORDER BY num_periode;";
                                     
-                            if($mysqli !="") {
                                 $res_per = mysqli_query($mysqli, $sql);
                                 if($res_per->num_rows > 0) {
                                     $tmp_sous_menu3=array();
@@ -574,20 +486,6 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
                                     $tmp_sous_menu2[$cpt_sous_menu2]['niveau_sous_menu']=4;                               
                                 }
                                 $res_per->close();
-                            } else {
-                                $res_per=mysql_query($sql);
-                                if(mysql_num_rows($res_per)>0) {
-                                    $tmp_sous_menu3=array();
-                                    $cpt_sous_menu3=0;
-                                    while($lig_per=mysql_fetch_object($res_per)) {
-                                        $tmp_sous_menu3[$cpt_sous_menu3]['lien']='/bulletin/bull_index.php?tab_id_classe[0]='.$tab_pp['id_classe'][$loop]."&amp;tab_periode_num[0]=".$lig_per->num_periode."&amp;choix_periode_num=fait";
-                                        $tmp_sous_menu3[$cpt_sous_menu3]['texte']=$lig_per->nom_periode;
-                                        $cpt_sous_menu3++;
-                                    }
-                                    $tmp_sous_menu2[$cpt_sous_menu2]['sous_menu']=$tmp_sous_menu3;
-                                    $tmp_sous_menu2[$cpt_sous_menu2]['niveau_sous_menu']=4;
-                                }
-                            }     
 							$cpt_sous_menu2++;
 						}
 						$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
@@ -673,25 +571,15 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 						LIMIT 1;";
 		//echo "$sql<br />";
                
-        if($mysqli !="") {
             $res_test_notanet = mysqli_query($mysqli, $sql);
             if($res_test_notanet->num_rows > 0) {
                 $tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_notanet/index.php' , "texte"=>"Brevet");
                 $compteur_menu++;
-            }
-            $res_test_notanet->close();
-        } else {
-            $res_test_notanet=mysql_query($sql);
-            if(mysql_num_rows($res_test_notanet)>0) {
-                $tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_notanet/index.php' , "texte"=>"Brevet");
-                $compteur_menu++;
-            }
-            else {
+            } else {
                 $barre_notanet = '';
             }
-
-        }       
-	}else{ $barre_notanet = '';}
+            $res_test_notanet->close();
+	} else {$barre_notanet = '';}
     
 	//=======================================================
 	// Module Epreuves blanches
@@ -699,7 +587,6 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 		$sql="SELECT 1=1 FROM eb_epreuves ee, eb_profs ep WHERE ep.login_prof='".$_SESSION['login']."' AND ee.id=ep.id_epreuve AND ee.etat!='clos' ORDER BY ee.date, ee.intitule;";
 		//echo "$sql<br />";
                 
-        if($mysqli !="") {
             $res_test_epb = mysqli_query($mysqli, $sql); 
             if($res_test_epb->num_rows>0) {
                 $tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_epreuve_blanche/index.php' , "texte"=>"Ep.blanches");
@@ -707,17 +594,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
             }
             else {
                 $barre_epb = '';
-            }
-        } else {
-            $res_test_epb=mysql_query($sql);
-            if(mysql_num_rows($res_test_epb)>0) {
-                $tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_epreuve_blanche/index.php' , "texte"=>"Ep.blanches");
-                $compteur_menu++;
-            }
-            else {
-                $barre_epb = '';
-            }
-        }      
+            }    
 	}else{ $barre_epb = '';}
 
 	//=======================================================
