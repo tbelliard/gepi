@@ -1429,7 +1429,7 @@ echo "		}
 					}
 
 					if((isset($tab_individu[$lig->declarant]['email']))&&(check_mail($tab_individu[$lig->declarant]['email']))) {
-						$texte="<a href=\"mailto:".$tab_individu[$lig->declarant]['email']."?subject=".ucfirst($mod_disc_terme_incident)." sans détails";
+						$texte="<a href=\"mailto:".$tab_individu[$lig->declarant]['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')." ".ucfirst($mod_disc_terme_incident)." sans détails";
 						if($email_visiteur!='') {
 							$texte.="&amp;bcc=".$email_visiteur;
 						}

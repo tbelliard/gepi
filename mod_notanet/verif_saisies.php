@@ -486,7 +486,7 @@ echo "</pre>";
 					if(check_mail($tab_prof_manques[$login_prof]['email'])) {
 						$tab_num_mail[]=$num;
 						$sujet_mail="[Gepi]: Appreciations des Fiches Brevet manquantes";
-						echo "<a href='mailto:".$tab_prof_manques[$login_prof]['email']."?subject=$sujet_mail&amp;body=".rawurlencode($message)."' title=\"Envoyer un message à $info_prof via votre logiciel de courrier externe (Thunderbird,...)\">".$info_prof."</a>";
+						echo "<a href='mailto:".$tab_prof_manques[$login_prof]['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."$sujet_mail&amp;body=".rawurlencode($message)."' title=\"Envoyer un message à $info_prof via votre logiciel de courrier externe (Thunderbird,...)\">".$info_prof."</a>";
 						echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"$sujet_mail\" />\n";
 						echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$tab_prof_manques[$login_prof]['email']."\" />\n";
 					}
