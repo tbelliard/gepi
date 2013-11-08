@@ -105,7 +105,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 
 				$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof']=my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2');
 				if($lig_cpe->email!=""){
-					$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof_mailto']="<a href='mailto:$lig_cpe->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."' title=\"Envoyer un mail\">".my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2')."</a>";
+					$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof_mailto']="<a href='mailto:$lig_cpe->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe=".$classe['classe'])."' title=\"Envoyer un mail\">".my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2')."</a>";
 					$tab_enseignements[$cpt]['prof'][$cpt2]['mail']=$lig_cpe->email;
 					$tabmail[]=$lig_cpe->email;
 				}
@@ -193,7 +193,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 
 				$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof']=my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2');
 				if($lig_prof->email!=""){
-					$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof_mailto']="<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."' title=\"Envoyer un mail\">".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</a>";
+					$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof_mailto']="<a href='mailto:$lig_prof->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe=".$classe['classe'])."' title=\"Envoyer un mail\">".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</a>";
 					$tab_enseignements[$cpt]['prof'][$cpt2]['mail']=$lig_prof->email;
 					$tabmail[]=$lig_prof->email;
 				}
@@ -517,7 +517,7 @@ if(isset($id_classe)){
 					$tabmail2[]=$tabmail[$i];
 				}
 			}
-			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI] classe ".$classe['classe'])."'>mail à tous les membres de l'équipe</a>.</p>\n";
+			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."'>mail à tous les membres de l'équipe</a>.</p>\n";
 		}
 
 		//echo "</div>";

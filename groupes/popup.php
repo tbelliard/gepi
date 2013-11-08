@@ -344,7 +344,7 @@ if($gepi_prof_suivi==""){
 				echo "<tr valign='top' class='lig$alt white_hover'>\n";
 				echo "<td>\n";
 				if($lig_eleve->email!=""){
-					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=[GEPI]")."'>";
+					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."'>";
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
 					echo "</a>";
 					$tabmail[]=$lig_eleve->email;
@@ -442,7 +442,7 @@ if($gepi_prof_suivi==""){
                 echo "<tr valign='top' class='lig$alt white_hover'>\n";
 				echo "<td>\n";
 				if($lig_eleve->email!=""){
-					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=[GEPI]")."'>";
+					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."'>";
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
 					echo "</a>";
 					$tabmail[]=$lig_eleve->email;
@@ -546,7 +546,7 @@ if($gepi_prof_suivi==""){
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt white_hover'><td>";
 				if($lig_eleve->email!=""){
-					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=[GEPI]")."'>";
+					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."'>";
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
 					echo "</a>";
 					$tabmail[]=$lig_eleve->email;
@@ -601,7 +601,7 @@ if($gepi_prof_suivi==""){
 				}
 			}
 			//echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves de l'enseignement</a>.</p>\n";
-			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves</a>.</p>\n";
+			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."'>mail à tous les élèves</a>.</p>\n";
 		}
 	}
 ?>

@@ -939,7 +939,7 @@ echo "<td valign='top'>\n";
 	}
 	if($mel!='') {
 		$tmp_date=getdate();
-		echo " <a href='mailto:".$mel."?subject=GEPI&amp;body=";
+		echo " <a href='mailto:".$mel."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 		echo ",%0d%0aCordialement.'>";
 		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";

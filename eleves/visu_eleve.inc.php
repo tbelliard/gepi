@@ -1304,7 +1304,7 @@ Patientez pendant l'extraction des données... merci.
 			echo "<tr class='lig$alt'><th style='text-align: left;'>Email&nbsp;:</th><td>";
 			$tmp_date=getdate();
 			//echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
-			echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
+			echo "<a href='mailto:".$tab_ele['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 			if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 			echo ",%0d%0aCordialement.'>";
 			echo $tab_ele['email'];
@@ -1400,7 +1400,7 @@ Patientez pendant l'extraction des données... merci.
 							$tmp_date=getdate();
 							$alt=$alt*(-1);
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>";
-							echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=GEPI&amp;body=";
+							echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 							echo ",%0d%0aCordialement.'>";
 							echo $tab_ele['resp'][$i]['mel'];
@@ -1563,7 +1563,7 @@ Patientez pendant l'extraction des données... merci.
 								$tmp_date=getdate();
 								$alt=$alt*(-1);
 								echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>";
-								echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=GEPI&amp;body=";
+								echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 								if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 								echo ",%0d%0aCordialement.'>";
 								echo $tab_ele['resp'][$i]['mel'];
@@ -1730,7 +1730,7 @@ Patientez pendant l'extraction des données... merci.
                                         $nbre_professeurs = isset($tab_ele['groupes'][$i]['prof']) ? count($tab_ele['groupes'][$i]['prof']) : 0;
 					for($j=0;$j<$nbre_professeurs;$j++) {
 						if($tab_ele['groupes'][$i]['prof'][$j]['email']!='') {
-							echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+							echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 							echo ",%0d%0aCordialement.' title=\"Envoyer un email à ce professeur\">";
 						}
@@ -1772,7 +1772,7 @@ Patientez pendant l'extraction des données... merci.
 						if($tab_ele['classe'][$loop]['pp']['email']!="") {
 							//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
 							//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
-							echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+							echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 							echo ",%0d%0aCordialement.' title=\"Envoyer un email au ".$gepi_prof_suivi."\">";
 						}
@@ -1789,7 +1789,7 @@ Patientez pendant l'extraction des données... merci.
 				if($tab_ele['cpe']['email']!="") {
 					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
 					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
-					echo "<a href='mailto:".$tab_ele['cpe']['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+					echo "<a href='mailto:".$tab_ele['cpe']['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 					echo ",%0d%0aCordialement.' title=\"Envoyer un email au CPE\">";
 				}
@@ -1802,7 +1802,7 @@ Patientez pendant l'extraction des données... merci.
 				if($tab_ele['equipe_liste_email']!="") {
 					$tmp_date=getdate();
 					//echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI&amp;body=";
-					echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+					echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 					if(preg_match("/,/",$tab_ele['equipe_liste_email'])) {echo " à tou(te)s";}
 					echo ",%0d%0aCordialement.'>tous les enseignants et au CPE de l'élève</a>.</p>\n";
