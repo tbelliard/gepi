@@ -182,9 +182,7 @@ function test_unique_login($s) {
 function test_unique_e_login($s, $indice) {
     global $mysqli;
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
-    //$test7 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
-    //if ($test7 != "0") {
-
+    
     $test7 = test_unique_login($s);
     if ($test7 == "no") {
         // Si le login figure déjà dans une des bases élève des années passées ou bien
@@ -697,9 +695,9 @@ function affiche_utilisateur($login,$id_classe) {
         $resultat->close();
     
     $sql_format = "select format_nom from classes where id = '".$id_classe."'";
-        $resultat = mysqli_query($mysqli, $sql); 
-        if($resultat->num_rows > 0) {
-            $obj_format = $resultat->fetch_object();
+        $resultat_format = mysqli_query($mysqli, $sql_format); 
+        if($resultat_format->num_rows > 0) {
+            $obj_format = $resultat_format->fetch_object();
             $format = $obj_format->format_nom;
             $result = "";
             $i='';
@@ -714,7 +712,7 @@ function affiche_utilisateur($login,$id_classe) {
         else {
             $format="";
         }
-        $resultat->close();
+        $resultat_format->close();
 
     switch( $format ) {
     case 'np':
@@ -1382,14 +1380,14 @@ function tentative_intrusion($_niveau, $_description, $_login_a_enregistrer="") 
     $fichier = mb_substr($url['path'], mb_strlen($gepiPath));
     $sql = "INSERT INTO tentatives_intrusion SET 
                 login = '".$user_login."', 
-                    adresse_ip = '".$adresse_ip."', 
-                        date = '".$date."', 
-                            niveau = '".(int)$_niveau."', 
-                                fichier = '".$fichier."', 
-                                    description = '".addslashes($_description)."', 
-                                        statut = 'new'";
+                adresse_ip = '".$adresse_ip."', 
+                date = '".$date."', 
+                niveau = '".(int)$_niveau."', 
+                fichier = '".$fichier."', 
+                description = '".addslashes($_description)."', 
+                statut = 'new'";
            
-    $res = mysql_query($mysqli, $sql);
+    $res = mysqli_query($mysqli, $sql);
 	
 
 	// On a enregistré.
@@ -3998,20 +3996,20 @@ function get_commune($code_commune_insee,$mode){
 		$tmp_tab=explode('@',$code_commune_insee);
 		$sql="SELECT * FROM pays WHERE code_pays='$tmp_tab[0]';";
 		//echo "$sql<br />";
-		$res_pays=mysql_query($sql);
-		if(mysql_num_rows($res_pays)==0) {
-			$retour=stripslashes($tmp_tab[1])." ($tmp_tab[0])";
-		}
-		else {
-			$lig_pays=mysql_fetch_object($res_pays);
+		
+		$res_pays = mysqli_query($mysqli, $sql);
+		if($res_pays->num_rows == 0) {
+			$retour = stripslashes($tmp_tab[1])." ($tmp_tab[0])";
+		}else {
+			$lig_pays = $res_pays->fetch_object();
 			$retour=stripslashes($tmp_tab[1])." (".$lig_pays->nom_pays.")";
 		}
 	}
 	else {
 		$sql="SELECT * FROM communes WHERE code_commune_insee='$code_commune_insee';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			$lig=$res->fetch_object();
 			if($mode==0) {
 				$retour=$lig->commune;
 			}
@@ -4036,6 +4034,7 @@ function get_commune($code_commune_insee,$mode){
  * @return string civilite nom prénom de l'utilisateur
  */
 function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
+    global $mysqli;
 	$retour="";
 	$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$login';";
 	$res_user=mysql_query($sql);
