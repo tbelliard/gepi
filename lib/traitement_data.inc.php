@@ -285,20 +285,12 @@ if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non
 $anti_inject_var_SERVER="y";
 $sql="SELECT 1=1 FROM setting WHERE name='anti_inject_var_SERVER' AND value='n';";
 
-if(isset($useMysqli) && (TRUE == $useMysqli)) {
-    $test_anti_inject_var_SERVER = mysqli_query($mysqli, $sql);
-    if ($test_anti_inject_var_SERVER->num_rows > 0) {
-        $anti_inject_var_SERVER="n";
-    }
-    if ($anti_inject_var_SERVER!="n") {
-        array_walk($_SERVER, 'anti_inject');
-    }
-} else {
-    $test_anti_inject_var_SERVER = mysql_query($sql);
-    if(mysql_num_rows($test_anti_inject_var_SERVER)>0) {$anti_inject_var_SERVER="n";}
-    if($anti_inject_var_SERVER!="n") {
-        array_walk($_SERVER, 'anti_inject');
-    }
+$test_anti_inject_var_SERVER = mysqli_query($mysqli, $sql);
+if ($test_anti_inject_var_SERVER->num_rows > 0) {
+	$anti_inject_var_SERVER="n";
+}
+if ($anti_inject_var_SERVER!="n") {
+	array_walk($_SERVER, 'anti_inject');
 }
 
 /*

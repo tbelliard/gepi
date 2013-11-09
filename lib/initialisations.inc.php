@@ -10,9 +10,7 @@
 
 ini_set('error_reporting',E_ALL ^ E_DEPRECATED);
 
-if(isset($useMysqli) && (TRUE == $useMysqli)) {
-    global $mysqli;
-}
+global $mysqli;
 
 /* Utilise l'encodage interne UTF-8 */
 header('Content-type: text/html; charset=UTF-8');
@@ -241,18 +239,10 @@ require_once($chemin_relatif_gepi."/lib/mysql.inc");
  */
     $sql="SELECT 1=1 FROM setting WHERE name='header_p3p' AND value='yes';";
     
-    if(isset($useMysqli) && (TRUE == $useMysqli)) {
-        $test = mysqli_query($mysqli, $sql);
-        if ($test->num_rows > 0) {
-           header('P3P:CP="NON DSP COR CURa OUR NOR UNI"');
-        }        
-    } else {
-        $test=mysql_query($sql);
-        if(mysql_num_rows($test)>0) {
-           //header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
-           header('P3P:CP="NON DSP COR CURa OUR NOR UNI"');
-        }        
-    }
+	$test = mysqli_query($mysqli, $sql);
+	if ($test->num_rows > 0) {
+	   header('P3P:CP="NON DSP COR CURa OUR NOR UNI"');
+	}
    
    
    
@@ -298,20 +288,11 @@ require_once($chemin_relatif_gepi."/lib/mysql.inc");
   * @see settings.inc
   * @see loadSettings()
   */
-    if(isset($useMysqli) && (TRUE == $useMysqli)) {
-        require_once($chemin_relatif_gepi."/lib/settings.inc.php");
-        // Load settings
-        if (!loadSettings()) {
-          die("Erreur chargement settings");
-        }
-    } else {
-        require_once($chemin_relatif_gepi."/lib/settings.inc");
-        // Load settings
-        if (!loadSettings()) {
-          die("Erreur chargement settings");
-        }
-        
-    }
+	require_once($chemin_relatif_gepi."/lib/settings.inc.php");
+	// Load settings
+	if (!loadSettings()) {
+	  die("Erreur chargement settings");
+	}
    
    
    /**

@@ -1559,7 +1559,7 @@ function affiche_infos_actions() {
         }
     }
 
-    chaine_id_action=new Array($chaine_id);
+    chaine_id_action=new Array(<?php echo $chaine_id; ?>);
     for(i=0;i<chaine_id_action.length;i++) {
         id_a=chaine_id_action[i];
         if(document.getElementById('info_action_corps_'+id_a)) {
