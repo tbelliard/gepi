@@ -28,6 +28,20 @@
  */
 
 /**
+ * Tableau des réglages
+ * 
+ * $gepiSettings['name'] = 'value'
+ * 
+ * name le nom du réglage dans setting.name
+ * 
+ * value la valeur du réglage dans setting.value 
+ *
+ * @global array $GLOBALS['gepiSettings']
+ * @name $gepiSettings
+ */
+$GLOBALS['gepiSettings'] = array();
+
+/**
  * Charge les réglages depuis la base de données
  *
  * Recherche tous les réglages
@@ -119,6 +133,34 @@ function getSettingAOui($_name)
 		return TRUE;
 	} else {
 		return FALSE;
+	}
+}
+
+
+/**
+ * Supprime une entrée dans la table setting
+ *
+ * Utilisez cette fonction ponctuellement, Si vous devez supprimer plusieurs réglages,
+ * vous devriez plutôt écrire votre propre code
+ * 
+ * @global array $gepiSettings
+ * @param text $_name Le nom du réglage
+ * @return bool TRUE si tout s'est bien passé, FALSE sinon
+ */
+function deleteSetting($_name)
+{
+    global $gepiSettings;
+    global $mysqli;
+	$sql = "SELECT * FROM setting WHERE NAME='".$_name."' LIMIT 1";
+	$R = mysqli_query($mysqli, $sql);
+	if ($R->num_rows > 0) {
+		$sql = "DELETE FROM setting where NAME = \"" . $_name . "\"";
+		$res = mysqli_query($mysqli, $sql);
+		if (!$res) return (FALSE);
+		unset($GLOBALS["gepiSettings"][$_name]);
+		return (TRUE);
+	} else {
+		return (FALSE);
 	}
 }
 

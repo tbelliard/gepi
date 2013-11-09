@@ -21,7 +21,7 @@ $config = array (
 	 * external url, no matter where you come from (direct access or via the
 	 * reverse proxy).
 	 */
-	'baseurlpath'           => 'gepi/lib/simplesaml/www/', //voir configuration automatique à la fin de ce fichier
+	'baseurlpath'           => 'gepi/lib/simplesaml/www/', //voir configuration automatique Ã  la fin de ce fichier
 	'certdir'               => 'cert/',
 	'loggingdir'            => 'log/',
 	'datadir'               => 'data/',
@@ -87,7 +87,7 @@ $config = array (
 	 * also as the technical contact in generated metadata.
 	 */
 	'technicalcontact_name'     => 'Administrateur',
-	'technicalcontact_email'    => 'noemail', //voir configuration automatique à la fin de ce fichier
+	'technicalcontact_email'    => 'noemail', //voir configuration automatique Ã  la fin de ce fichier
 
 	/*
 	 * The timezone of the server. This option should be set to the timezone you want
@@ -148,7 +148,7 @@ $config = array (
 	 * one of the functionalities below, but in some cases you could run multiple functionalities.
 	 * In example when you are setting up a federation bridge.
 	 */
-	'enable.saml20-idp'		=> false, //voir configuration automatique à la fin de ce fichier
+	'enable.saml20-idp'		=> false, //voir configuration automatique Ã  la fin de ce fichier
 	'enable.shib13-idp'		=> false,
 	'enable.adfs-idp'		=> false,
 	'enable.wsfed-sp'		=> false,
@@ -158,7 +158,7 @@ $config = array (
 	 * This value is the duration of the session in seconds. Make sure that the time duration of
 	 * cookies both at the SP and the IdP exceeds this duration.
 	 */
-	'session.duration'		=>  8 * (60*60), // 8 hours. //voir configuration automatique à la fin de ce fichier
+	'session.duration'		=>  8 * (60*60), // 8 hours. //voir configuration automatique Ã  la fin de ce fichier
 	'session.requestcache'	=>  4 * (60*60), // 4 hours
 
 	/*
@@ -481,8 +481,11 @@ $config = array (
 $path = dirname(dirname(dirname(dirname(__FILE__))));
 include("$path/secure/connect.inc.php");
 // Database connection
+ini_set('error_reporting',E_ALL ^ E_DEPRECATED);
 require_once("$path/lib/mysql.inc");
+require_once("$path/lib/mysqli.inc.php");
 require_once("$path/lib/settings.inc");
+require_once("$path/lib/settings.inc.php");
 // Load settings
 if (!loadSettings()) {
     die("Erreur chargement settings");
@@ -493,11 +496,11 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 }
 
 $str = $gepiPath;
-//si le premier caractère est un / on le prend pas en compte
+//si le premier caractÃ¨re est un / on le prend pas en compte
 if (substr($str,0,1) == '/') {
        $str = substr($str,1);
 }
-// Le dernier caractère doit être un / si on a un chemin non null
+// Le dernier caractÃ¨re doit Ãªtre un / si on a un chemin non null
 if (strlen($str) > 0 and substr($str, 0, -1) != '/') {
        $str .= '/';
 }
