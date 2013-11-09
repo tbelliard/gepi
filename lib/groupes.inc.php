@@ -447,10 +447,11 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                 $i = 0;
                 while ($obj_prof = $get_profs->fetch_object()) {
                     if($i>0) {$temp["profs"]["proflist_string"].=", "; }
-                    $p_login = $get_profs->login;
-                    $p_nom = casse_mot($get_profs->nom,'maj');
-                    $p_prenom = casse_mot($get_profs->prenom,'majf2');
-                    $civilite = $get_profs->civilite;$temp["profs"]["list"][] = $p_login;
+                    $p_login = $obj_prof->login;
+                    $p_nom = casse_mot($obj_prof->nom,'maj');
+                    $p_prenom = casse_mot($obj_prof->prenom,'majf2');
+                    $civilite = $obj_prof->civilite;
+					$temp["profs"]["list"][] = $p_login;
                     $temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
                     $temp["profs"]["proflist_string"].=$civilite." ".$p_nom." ".my_strtoupper(mb_substr($p_prenom,0,1));
                     $i++;

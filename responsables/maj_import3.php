@@ -11202,7 +11202,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			$menage=mysql_query($sql);
 
 			$tab_tables_temp=array("temp_gep_import2", "tempo2", "temp_ele_classe", "temp_resp_pers_import", "temp_responsables2_import", "temp_resp_adr_import");
-			for($loop⁼0;$loop<count($tab_tables_temp);$loop++) {
+			for($loop=0;$loop<count($tab_tables_temp);$loop++) {
 				$sql="SHOW TABLE ".$tab_tables_temp[$loop].";";
 				$test_table=mysql_query($sql);
 				if(mysql_num_rows($test_table)>0) {

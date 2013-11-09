@@ -67,34 +67,14 @@ $tab[2] = "cpe";
 $tab[3] = "scolarite";
 $tab[4] = "eleve";
 $tab[5] = "secours";
-/*
-function acces($id,$statut) {
-    $tab_id = explode("?",$id);
-    $query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
-    $droit = @mysql_result($query_droits, 0, $statut);
-    if ($droit == "V") {
-        return "1";
-    } else {
-        return "0";
-    }
-}
-*/
-// function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_) {
+
+
 function affiche_ligne($chemin_,$statut_) {
 
 	$tmp_tab=explode("#",$chemin_);
-	//if (acces($chemin_,$statut_)==1)  {
 	if (acces($tmp_tab[0],$statut_)==1)  {
 		$temp = mb_substr($chemin_,1);
-	/*
-		  echo "<tr>";
-		  //echo "<td width='30%'><a href=$temp>$titre_</a></span>";
-		  echo "<td width='30%'><a href=$temp>$titre_</a>";
-		  echo"</td>";
-		  echo "<td>$expli_</td>";
-		  echo "</tr>";
-	*/
-		return $temp;
+			return $temp;
 	}else{
 		return false;
 	}
