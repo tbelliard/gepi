@@ -917,10 +917,10 @@ Cela devrait permettre de contourner le problème.\">
     <div dojoType="dijit.form.DropDownButton" style="display: inline">
 	<span>Ajouter Les saisies cochées à un traitement</span>
 	<div dojoType="dijit.Menu" style="display: inline">
-	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; document.creer_traitement.submit();">
+	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.getElementById('creation_lot_traitements').value = 'no'; document.creer_traitement.submit();">
 		Créer un nouveau traitement
 	    </button>
-	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.getElementById(\'creation_lot_traitements\').value = \'no\'; pop_it(document.creer_traitement)">
+	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.getElementById('creation_lot_traitements').value = 'no'; pop_it(document.creer_traitement)">
 		Créer un nouveau traitement dans une popup
 	    </button>
     <?php
