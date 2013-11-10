@@ -1,14 +1,6 @@
-.dojoxGrid {
-	border:1px solid #DBDBDB;
-}
-.dojoxGridCellContent {
-	padding:3px;
-}
-.dojoxGridSortNode {
-	padding:3px;
-}
-.dojoxGridInProgress {
-	cursor:progress;
+
+.dojoxGridRowSelector {
+	cursor: pointer;
 }
 .dojoxGridRowSelectorStatusText{
 	visibility:hidden;

@@ -1,13 +1,16 @@
 
-.claro .dijitToggleButton .dijitRadio, .claro .dijitToggleButton .dijitRadioIcon {
-  background-image: url('images/checkboxRadioButtonStates.png');
+.claro .dijitToggleButton .dijitRadio,
+.claro .dijitToggleButton .dijitRadioIcon {
+  background-image: url("../form/images/checkboxRadioButtonStates.png");
 }
-.dj_ie6 .claro .dijitToggleButton .dijitRadio, .dj_ie6 .claro .dijitToggleButton .dijitRadioIcon {
-  background-image: url('images/checkboxAndRadioButtons_IE6.png');
+.dj_ie6 .claro .dijitToggleButton .dijitRadio,
+.dj_ie6 .claro .dijitToggleButton .dijitRadioIcon {
+  background-image: url("../form/images/checkboxAndRadioButtons_IE6.png");
 }
-.claro .dijitRadio, .claro .dijitRadioIcon {
+.claro .dijitRadio,
+.claro .dijitRadioIcon {
   
-  background-image: url('images/checkboxRadioButtonStates.png');
+  background-image: url("../form/images/checkboxRadioButtonStates.png");
   
   background-repeat: no-repeat;
   width: 15px;
@@ -15,9 +18,10 @@
   margin: 0 2px 0 0;
   padding: 0;
 }
-.dj_ie6 .claro .dijitRadio, .dj_ie6 .claro .dijitRadioIcon {
+.dj_ie6 .claro .dijitRadio,
+.dj_ie6 .claro .dijitRadioIcon {
   
-  background-image: url('images/checkboxAndRadioButtons_IE6.png');
+  background-image: url("../form/images/checkboxAndRadioButtons_IE6.png");
   
 }
 .claro .dijitRadio {

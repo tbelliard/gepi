@@ -70,6 +70,9 @@ Splitters and gutters:
 	border:0;
 	height:5px;
 }
+.dj_ios .claro .dijitSplitterH, .dj_android .claro .dijitSplitterH {
+  height: 11px;
+}
 
 .claro .dijitSplitterH .dijitSplitterThumb {
 	background:@border-color none;
@@ -77,13 +80,18 @@ Splitters and gutters:
 	top:2px;
 	width:19px;
 }
-
+.dj_ios .claro .dijitSplitterH .dijitSplitterThumb, .dj_android .claro .dijitSplitterH .dijitSplitterThumb{
+  top:5px;
+}
 .claro .dijitSplitterV,
 .claro .dijitGutterV {
 	background:none;
 	border:0;
 	width:5px;
 	margin: 0;
+}
+.dj_ios .claro .dijitSplitterV, .dj_android .claro .dijitSplitterV {
+  width: 11px;
 }
 
 .claro .dijitSplitterV .dijitSplitterThumb {
@@ -93,36 +101,35 @@ Splitters and gutters:
 	width:1px;
 	margin: 0;
 }
-
-/* hovered splitter */
-.claro .dijitSplitterHHover {
-	font-size: 1px;
-	background: url("images/splitterHorizontalHover.png") no-repeat center top;
+.dj_ios .claro .dijitSplitterV .dijitSplitterThumb, .dj_android .claro .dijitSplitterV .dijitSplitterThumb{
+  left:5px;
 }
 
+/* hovered splitter */
+.claro .dijitSplitterHHover,
+.claro .dijitSplitterVHover {
+	font-size: 1px;
+	background-color: @splitter-hovered-background-color;
+}
 
-.claro .dijitSplitterHHover .dijitSplitterThumb {
-	background:@hovered-border-color none;
+.claro .dijitSplitterHHover {
+	.alpha-white-gradient (left, 1,0px,  0,50%, 1,100%);
 }
 
 .claro .dijitSplitterVHover {
-	font-size: 1px;
-	background: url("images/splitterVerticalHover.png") no-repeat center left;
+	.alpha-white-gradient (top, 1,0px,  0,50%, 1,100%);
 }
 
+.claro .dijitSplitterHHover .dijitSplitterThumb,
 .claro .dijitSplitterVHover .dijitSplitterThumb {
 	background:@hovered-border-color none;
 }
 
-.dj_ie6 .dijitSplitterHHover,
-.dj_ie6 .claro .dijitSplitterVHover {
-	background-color: @splitter-hovered-background-color;
-	background-image:none;
-}
 
 /* active splitter */
 .claro .dijitSplitterHActive,
 .claro .dijitSplitterVActive {
 	font-size: 1px;
 	background-color:@splitter-dragged-background-color;
+	background-image: none;		// color all the way across, not gradient like in hover mode
 }
