@@ -217,6 +217,7 @@ if(mysql_num_rows($resultat_messages)!=0){
 	echo "<tr style='text-align:center;'>\n";
 	echo "<th>Message</th>\n";
 	echo "<th>Supprimer</th>\n";
+	echo "<th>Aperçu</th>\n";
 	echo "</tr>\n";
 
 	$alt=1;
@@ -226,10 +227,11 @@ if(mysql_num_rows($resultat_messages)!=0){
 
 		echo "<td>\n";
 		echo "<input type='hidden' name='id_message[$cpt]' value='$ligne_message->id' />\n";
-		echo "<textarea name='no_anti_inject_message_".$cpt."' cols='60' onchange='changement()'>".stripslashes($ligne_message->texte)."</textarea>";
+		echo "<textarea name='no_anti_inject_message_".$cpt."' id='textarea_$ligne_message->id' cols='60' onchange='changement();' onblur='maj_apercu_message($ligne_message->id)'>".stripslashes($ligne_message->texte)."</textarea>";
 		echo "</td>\n";
 
 		echo "<td><input type='checkbox' name='suppr[$cpt]' value='$ligne_message->id' /></td>\n";
+		echo "<td id='td_apercu_message_$ligne_message->id'>$ligne_message->texte</td>\n";
 		echo "</tr>\n";
 		$cpt++;
 	}
@@ -244,6 +246,12 @@ echo "<textarea name='no_anti_inject_new_message' id='no_anti_inject_new_message
 
 echo "<script type='text/javascript'>
 	document.getElementById('no_anti_inject_new_message').focus();
+
+	function maj_apercu_message(num) {
+		if(document.getElementById('td_apercu_message_'+num)) {
+			document.getElementById('td_apercu_message_'+num).innerHTML=document.getElementById('textarea_'+num).value;
+		}
+	}
 </script>\n";
 
 echo "<input type='hidden' name='compteur_nb_messages' value='$cpt' />\n";
