@@ -146,10 +146,124 @@ function extract_utilisateurs($tab_login) {
 	}
 }
 
+function extract_eleves($tab_login) {
+	global $cpt_eleve, $tab_result_recherche, $acces_visu_eleve, $acces_modify_eleve, $acces_class_const, $acces_photo, $gepiPath;
+
+	for($loop_tab_login=0;$loop_tab_login<count($tab_login);$loop_tab_login++) {
+		$sql="SELECT * FROM eleves WHERE login='".$tab_login[$loop_tab_login]."';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+			$restriction_acces="n";
+			if(($_SESSION['statut']=='professeur')&&
+			((!getSettingAOui('GepiAccesGestElevesProf'))||(!is_prof_ele($_SESSION['login'], $lig->login)))) {
+				if((getSettingAOui('GepiAccesGestElevesProfP'))&&(is_pp($_SESSION['login'], "", $lig->login))) {
+					$restriction_acces="n";
+				}
+				else {
+					$restriction_acces="y";
+				}
+			}
+
+			$tab_result_recherche['eleve'][$cpt_eleve]['login']=$lig->login;
+
+			if(($acces_modify_eleve)&&($restriction_acces=="n")) {
+				$tab_result_recherche['eleve'][$cpt_eleve]['td_login']="<a href='$gepiPath/eleves/modify_eleve.php?eleve_login=$lig->login' title=\"Modifier les informations élève\">$lig->login</a>";
+			}
+			else {
+				$tab_result_recherche['eleve'][$cpt_eleve]['td_login']=$lig->login;
+			}
+
+			$tab_result_recherche['eleve'][$cpt_eleve]['compte']="";
+			$tab_result_recherche['eleve'][$cpt_eleve]['td_compte']="";
+			if($lig->login!="") {
+				if($_SESSION['statut']=='administrateur') {
+					$tab_result_recherche['eleve'][$cpt_eleve]['td_compte']=lien_image_compte_utilisateur($lig->login, "", "", "y", 'y');
+				}
+				else {
+					$tab_result_recherche['eleve'][$cpt_eleve]['td_compte']=lien_image_compte_utilisateur($lig->login, "", "", "n", 'y');
+				}
+
+				if(preg_match("/inactif/", $tab_result_recherche['eleve'][$cpt_eleve]['td_compte'])) {
+					$tab_result_recherche['eleve'][$cpt_eleve]['compte']="inactif";
+				}
+				else {
+					$tab_result_recherche['eleve'][$cpt_eleve]['compte']="actif";
+				}
+			}
+
+			$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom']=casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
+			if($acces_visu_eleve) {
+				$tab_result_recherche['eleve'][$cpt_eleve]['td_nom_prenom']="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=$lig->login' title=\"Consulter la fiche élève\">".$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom']."</a>";
+			}
+			else {
+				$tab_result_recherche['eleve'][$cpt_eleve]['td_nom_prenom']=$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom'];
+			}
+
+			if($acces_photo=="y") {
+				$tab_result_recherche['eleve'][$cpt_eleve]['photo']=nom_photo($lig->elenoet);
+				// Pour le tri:
+				$tab_result_recherche['eleve'][$cpt_eleve]['td_photo']="<span style='display:none'>".$lig->sexe."_".$lig->nom."_".$lig->prenom."</span>";
+				// Lien pour la photo:
+				$tab_result_recherche['eleve'][$cpt_eleve]['td_photo'].="<a href='".$tab_result_recherche['eleve'][$cpt_eleve]['photo']."' target='_blank' onclick=\"affiche_photo('".$tab_result_recherche['eleve'][$cpt_eleve]['photo']."', '".addslashes($tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom'])."'); return false;\"><img src='";
+				if($tab_result_recherche['eleve'][$cpt_eleve]['photo']=="") {
+					if($lig->sexe=="F") {
+						$tab_result_recherche['eleve'][$cpt_eleve]['td_photo'].="../mod_trombinoscopes/images/photo_f_gris.png' title='Photo absente'";
+					}
+					else {
+						$tab_result_recherche['eleve'][$cpt_eleve]['td_photo'].="../mod_trombinoscopes/images/photo_g_gris.png' title='Photo absente'";
+					}
+				}
+				else {
+					if($lig->sexe=="F") {
+						$tab_result_recherche['eleve'][$cpt_eleve]['td_photo'].="../mod_trombinoscopes/images/photo_f.png' title='Cliquez pour afficher la photo'";
+					}
+					else {
+						$tab_result_recherche['eleve'][$cpt_eleve]['td_photo'].="../mod_trombinoscopes/images/photo_g.png' title='Cliquez pour afficher la photo'";
+					}
+				}
+				$tab_result_recherche['eleve'][$cpt_eleve]['td_photo'].=" width='20' height='20' /></a>";
+			}
+
+			$tab_result_recherche['eleve'][$cpt_eleve]['classe']="";
+			$tab_result_recherche['eleve'][$cpt_eleve]['td_classe']="";
+			$sql="SELECT DISTINCT id, classe FROM classes c, j_eleves_classes jec WHERE jec.login='$lig->login' AND jec.id_classe=c.id ORDER BY periode;";
+			$res_classe=mysql_query($sql);
+			if(mysql_num_rows($res_classe)>0) {
+				$cpt_classe=0;
+				while($lig_classe=mysql_fetch_object($res_classe)) {
+					if($cpt_classe>0) {
+						$tab_result_recherche['eleve'][$cpt_eleve]['classe'].=", ";
+						$tab_result_recherche['eleve'][$cpt_eleve]['td_classe'].=", ";
+					}
+					if($acces_class_const) {
+						$tab_result_recherche['eleve'][$cpt_eleve]['td_classe'].="<a href='$gepiPath/classes/classes_const.php?id_classe=$lig_classe->id' title=\"Accéder à la liste des élèves de la classe.\">$lig_classe->classe</a>";
+					}
+					else {
+						$tab_result_recherche['eleve'][$cpt_eleve]['td_classe'].=$lig_classe->classe;
+					}
+					$tab_result_recherche['eleve'][$cpt_eleve]['classe'].=$lig_classe->classe;
+					$cpt_classe++;
+				}
+			}
+			//$compteur_personnes_trouvees++;
+			$cpt_eleve++;
+		}
+	}
+}
+
+
 $rech_nom=isset($_POST['rech_nom']) ? $_POST['rech_nom'] : "";
 $rech_prenom=isset($_POST['rech_prenom']) ? $_POST['rech_prenom'] : "";
 
-if(isset($_POST['is_posted_recherche'])) {
+$acces_photo="n";
+if(getSettingAOui('active_module_trombinoscopes')) {
+	$acces_photo="y";
+}
+
+// Recherche sur nom/prénom parmi les élèves/responsables/personnels
+$is_posted_recherche=isset($_POST['is_posted_recherche']) ? isset($_POST['is_posted_recherche']) : NULL;
+if(isset($is_posted_recherche)) {
 	check_token();
 
 	if($rech_nom=="") {
@@ -195,77 +309,11 @@ if(isset($_POST['is_posted_recherche'])) {
 			}
 			else {
 				$cpt_eleve=0;
+				$tab_login=array();
 				while($lig=mysql_fetch_object($res)) {
-					$restriction_acces="n";
-					if(($_SESSION['statut']=='professeur')&&
-					((!getSettingAOui('GepiAccesGestElevesProf'))||(!is_prof_ele($_SESSION['login'], $lig->login)))) {
-						if((getSettingAOui('GepiAccesGestElevesProfP'))&&(is_pp($_SESSION['login'], "", $lig->login))) {
-							$restriction_acces="n";
-						}
-						else {
-							$restriction_acces="y";
-						}
-					}
-
-					$tab_result_recherche['eleve'][$cpt_eleve]['login']=$lig->login;
-
-					if(($acces_modify_eleve)&&($restriction_acces=="n")) {
-						$tab_result_recherche['eleve'][$cpt_eleve]['td_login']="<a href='$gepiPath/eleves/modify_eleve.php?eleve_login=$lig->login' title=\"Modifier les informations élève\">$lig->login</a>";
-					}
-					else {
-						$tab_result_recherche['eleve'][$cpt_eleve]['td_login']=$lig->login;
-					}
-
-					$tab_result_recherche['eleve'][$cpt_eleve]['compte']="";
-					$tab_result_recherche['eleve'][$cpt_eleve]['td_compte']="";
-					if($lig->login!="") {
-						if($_SESSION['statut']=='administrateur') {
-							$tab_result_recherche['eleve'][$cpt_eleve]['td_compte']=lien_image_compte_utilisateur($lig->login, "", "", "y", 'y');
-						}
-						else {
-							$tab_result_recherche['eleve'][$cpt_eleve]['td_compte']=lien_image_compte_utilisateur($lig->login, "", "", "n", 'y');
-						}
-
-						if(preg_match("/inactif/", $tab_result_recherche['eleve'][$cpt_eleve]['td_compte'])) {
-							$tab_result_recherche['eleve'][$cpt_eleve]['compte']="inactif";
-						}
-						else {
-							$tab_result_recherche['eleve'][$cpt_eleve]['compte']="actif";
-						}
-					}
-
-					$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom']=casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
-					if($acces_visu_eleve) {
-						$tab_result_recherche['eleve'][$cpt_eleve]['td_nom_prenom']="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=$lig->login' title=\"Consulter la fiche élève\">".$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom']."</a>";
-					}
-					else {
-						$tab_result_recherche['eleve'][$cpt_eleve]['td_nom_prenom']=$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom'];
-					}
-
-					$tab_result_recherche['eleve'][$cpt_eleve]['classe']="";
-					$tab_result_recherche['eleve'][$cpt_eleve]['td_classe']="";
-					$sql="SELECT DISTINCT id, classe FROM classes c, j_eleves_classes jec WHERE jec.login='$lig->login' AND jec.id_classe=c.id ORDER BY periode;";
-					$res_classe=mysql_query($sql);
-					if(mysql_num_rows($res_classe)>0) {
-						$cpt_classe=0;
-						while($lig_classe=mysql_fetch_object($res_classe)) {
-							if($cpt_classe>0) {
-								$tab_result_recherche['eleve'][$cpt_eleve]['classe'].=", ";
-								$tab_result_recherche['eleve'][$cpt_eleve]['td_classe'].=", ";
-							}
-							if($acces_class_const) {
-								$tab_result_recherche['eleve'][$cpt_eleve]['td_classe'].="<a href='$gepiPath/classes/classes_const.php?id_classe=$lig_classe->id' title=\"Accéder à la liste des élèves de la classe.\">$lig_classe->classe</a>";
-							}
-							else {
-								$tab_result_recherche['eleve'][$cpt_eleve]['td_classe'].=$lig_classe->classe;
-							}
-							$tab_result_recherche['eleve'][$cpt_eleve]['classe'].=$lig_classe->classe;
-							$cpt_classe++;
-						}
-					}
-					//$compteur_personnes_trouvees++;
-					$cpt_eleve++;
+					$tab_login[]=$lig->login;
 				}
+				extract_eleves($tab_login);
 			}
 		}
 		else {
@@ -385,11 +433,13 @@ if(isset($_POST['is_posted_recherche'])) {
 	}
 }
 
-if(isset($_POST['is_posted_recherche2'])) {
+// Recherche sur la matière enseignée parmi les personnels
+$is_posted_recherche2=isset($_POST['is_posted_recherche2']) ? isset($_POST['is_posted_recherche2']) : (isset($_GET['is_posted_recherche2']) ? isset($_GET['is_posted_recherche2']) : NULL);
+if(isset($is_posted_recherche2)) {
 	check_token();
 
-	$rech_matiere=isset($_POST['rech_matiere']) ? $_POST['rech_matiere'] : array();
-	$rech_domaine=isset($_POST['rech_domaine']) ? $_POST['rech_domaine'] : array();
+	$rech_matiere=isset($_POST['rech_matiere']) ? $_POST['rech_matiere'] : (isset($_GET['rech_matiere']) ? $_GET['rech_matiere'] : array());
+	$rech_domaine=isset($_POST['rech_domaine']) ? $_POST['rech_domaine'] : (isset($_GET['rech_domaine']) ? $_GET['rech_domaine'] : array());
 
 	$tab_login=array();
 	$tab_result_recherche['personnel']=array();
@@ -428,7 +478,35 @@ if(isset($_POST['is_posted_recherche2'])) {
 	extract_utilisateurs($tab_login);
 }
 
-if(isset($_POST['is_posted_recherche3'])) {
+// Recherche sur la matière de l'enseignant, même s'il ne l'enseigne pas cette année (ou pas encore associé cette année)
+$is_posted_recherche2b=isset($_POST['is_posted_recherche2b']) ? isset($_POST['is_posted_recherche2b']) : (isset($_GET['is_posted_recherche2b']) ? isset($_GET['is_posted_recherche2b']) : NULL);
+if(isset($is_posted_recherche2b)) {
+	check_token();
+
+	$rech_matiere=isset($_POST['rech_matiere']) ? $_POST['rech_matiere'] : (isset($_GET['rech_matiere']) ? $_GET['rech_matiere'] : array());
+
+	$tab_login=array();
+	$tab_result_recherche['personnel']=array();
+
+	for($loop=0;$loop<count($rech_matiere);$loop++) {
+		$sql="SELECT DISTINCT u.login FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_matiere='".$rech_matiere[$loop]."'
+			AND jpm.id_professeur=u.login;";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		while($lig=mysql_fetch_object($res)) {
+			if(!in_array($lig->login, $tab_login)) {
+				$tab_login[]=$lig->login;
+			}
+		}
+	}
+
+	$cpt_pers=0;
+	extract_utilisateurs($tab_login);
+}
+
+// Recherche sur la classe dans laquelle le professeur enseigne parmi les personnels
+$is_posted_recherche3=isset($_POST['is_posted_recherche3']) ? isset($_POST['is_posted_recherche3']) : NULL;
+if(isset($is_posted_recherche3)) {
 	check_token();
 
 	$rech_classe=isset($_POST['rech_classe']) ? $_POST['rech_classe'] : array();
@@ -469,6 +547,31 @@ if(isset($_POST['is_posted_recherche3'])) {
 
 	$cpt_pers=0;
 	extract_utilisateurs($tab_login);
+}
+
+// Recherche sur la classe de l'élève
+$is_posted_recherche4=isset($_POST['is_posted_recherche4']) ? isset($_POST['is_posted_recherche4']) : (isset($_GET['is_posted_recherche4']) ? isset($_GET['is_posted_recherche4']) : NULL);
+if(isset($is_posted_recherche4)) {
+	check_token();
+
+	$rech_classe=isset($_POST['rech_classe']) ? $_POST['rech_classe'] : array();
+
+	$tab_login=array();
+	$tab_result_recherche['eleve']=array();
+
+	for($loop=0;$loop<count($rech_classe);$loop++) {
+		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$rech_classe[$loop]."';";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		while($lig=mysql_fetch_object($res)) {
+			if(!in_array($lig->login, $tab_login)) {
+				$tab_login[]=$lig->login;
+			}
+		}
+	}
+
+	$cpt_eleve=0;
+	extract_eleves($tab_login);
 }
 
 if(isset($_POST['export_csv'])) {
@@ -552,7 +655,7 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']))||(isset($_POST['is_posted_recherche3']))) {
+if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_posted_recherche2b))||(isset($is_posted_recherche3))||(isset($is_posted_recherche4))) {
 	echo "<p><a href='".$_SERVER['PHP_SELF']."'>Effectuer une autre recherche</a></p>";
 
 	/*
@@ -561,10 +664,56 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 	echo "</pre>";
 	*/
 
-	if(count($tab_result_recherche)>0) {
+	echo "<p class='bold'>Résultat de la recherche&nbsp;:</p>";
+	if(count($tab_result_recherche)==0) {
+		echo "<p style='color:red'>Aucune personne ne correspond à la recherche proposée.</p>";
+	}
+	else {
+
+		$chaine_champs_form_recherche="";
+		if(isset($is_posted_recherche)) {
+			$chaine_champs_form_recherche.="
+		<input type='hidden' name='is_posted_recherche' value='y' />";
+		}
+		if(isset($is_posted_recherche2)) {
+			$chaine_champs_form_recherche.="
+		<input type='hidden' name='is_posted_recherche2' value='y' />";
+		}
+		if(isset($is_posted_recherche2b)) {
+			$chaine_champs_form_recherche.="
+		<input type='hidden' name='is_posted_recherche2b' value='y' />";
+		}
+		if(isset($is_posted_recherche3)) {
+			$chaine_champs_form_recherche.="
+		<input type='hidden' name='is_posted_recherche3' value='y' />";
+		}
+		if(isset($is_posted_recherche4)) {
+			$chaine_champs_form_recherche.="
+		<input type='hidden' name='is_posted_recherche4' value='y' />";
+		}
+		// Mettre aussi rech_classe, rech_domaine, rech_matiere
+		if(isset($rech_classe)) {
+			for($loop=0;$loop<count($rech_classe);$loop++) {
+				$chaine_champs_form_recherche.="
+		<input type='hidden' name='rech_classe[]' value='".$rech_classe[$loop]."' />";
+			}
+		}
+		if(isset($rech_matiere)) {
+			for($loop=0;$loop<count($rech_matiere);$loop++) {
+				$chaine_champs_form_recherche.="
+		<input type='hidden' name='rech_matiere[]' value='".$rech_matiere[$loop]."' />";
+			}
+		}
+		if(isset($rech_domaine)) {
+			for($loop=0;$loop<count($rech_domaine);$loop++) {
+				$chaine_champs_form_recherche.="
+		<input type='hidden' name='rech_domaine[]' value='".$rech_domaine[$loop]."' />";
+			}
+		}
 
 		$compteur_max_personnes_trouvees=0;
 
+		// Affichage des élèves trouvés
 		if(isset($tab_result_recherche['eleve'])) {
 			if(count($tab_result_recherche['eleve'])==0) {
 				echo "<p style='color:red'>Aucun élève trouvé.</p>\n";
@@ -575,21 +724,27 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 		".add_token_field()."
 		<input type='hidden' name='statut[]' value='eleve' />
 		<input type='hidden' name='rech_nom' value='$rech_nom' />
-		<input type='hidden' name='rech_prenom' value='$rech_prenom' />
-		<input type='hidden' name='is_posted_recherche' value='y' />
+		<input type='hidden' name='rech_prenom' value='$rech_prenom' />";
+					echo $chaine_champs_form_recherche;
+					echo "
 		<input type='hidden' name='export_csv' value='eleve' />
 
 		<p class='bold' style='margin-top:1em;'>Élèves trouvés&nbsp;: ".count($tab_result_recherche['eleve'])."</p>
 		<table class='sortable resizable boireaus boireaus_alt'>
 			<tr>
 				<th class='nosort'>
-					<input type='submit' value='CSV' title='Exporter en CSV' /><br />
+					<input type='submit' value='CSV' title='Exporter en CSV les lignes cochées ci-dessous' /><br />
 					<a href='javascript:modif_case(\"eleve\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/
 					<a href='javascript:modif_case(\"eleve\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>
 				</th>
 				<th class='text' title=\"Trier sur le login\">Login</th>
 				<th class='text' title=\"Trier sur l'état actif ou non du compte\">Compte</th>
-				<th class='text' title=\"Trier sur le nom prénom\">Nom prénom</th>
+				<th class='text' title=\"Trier sur le nom prénom\">Nom prénom</th>";
+				if($acces_photo=="y") {
+					echo "
+				<th class='text' title='Photo'>Ph</th>";
+				}
+				echo "
 				<th class='text' title=\"Trier sur la classe\">Classe</th>
 			</tr>";
 				for($loop=0;$loop<count($tab_result_recherche['eleve']);$loop++) {
@@ -598,11 +753,16 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 				<td><input type='checkbox' name='checkbox_eleve[]' id='checkbox_eleve_".$loop."' value='".$tab_result_recherche['eleve'][$loop]['login']."' /></td>
 				<td>".$tab_result_recherche['eleve'][$loop]['td_login']."</td>
 				<td>".$tab_result_recherche['eleve'][$loop]['td_compte']."</td>
-				<td>".$tab_result_recherche['eleve'][$loop]['td_nom_prenom']."</td>
+				<td>".$tab_result_recherche['eleve'][$loop]['td_nom_prenom']."</td>";
+				if($acces_photo=="y") {
+					echo "
+				<td>".$tab_result_recherche['eleve'][$loop]['td_photo']."</td>";
+				}
+				echo "
 				<td>".$tab_result_recherche['eleve'][$loop]['td_classe']."</td>
 			</tr>";
 				}
-				$compteur_max_personnes_trouvees=$loop;
+				$compteur_max_personnes_trouvees=$loop+1;
 				echo "
 		</table>
 	</fieldset>
@@ -610,6 +770,7 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 			}
 		}
 
+		// Affichage des responsables trouvés
 		if(isset($tab_result_recherche['responsable'])) {
 			if(count($tab_result_recherche['responsable'])==0) {
 				echo "<p style='color:red'>Aucun responsable trouvé.</p>\n";
@@ -620,15 +781,16 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 		".add_token_field()."
 		<input type='hidden' name='statut[]' value='responsable' />
 		<input type='hidden' name='rech_nom' value='$rech_nom' />
-		<input type='hidden' name='rech_prenom' value='$rech_prenom' />
-		<input type='hidden' name='is_posted_recherche' value='y' />
+		<input type='hidden' name='rech_prenom' value='$rech_prenom' />";
+				echo $chaine_champs_form_recherche;
+				echo "
 		<input type='hidden' name='export_csv' value='responsable' />
 
 		<p class='bold' style='margin-top:1em;'>Responsables trouvés&nbsp;:".count($tab_result_recherche['responsable'])."</p>
 		<table class='sortable resizable boireaus boireaus_alt'>
 			<tr>
 				<th class='nosort'>
-					<input type='submit' value='CSV' title='Exporter en CSV' /><br />
+					<input type='submit' value='CSV' title='Exporter en CSV les lignes cochées ci-dessous' /><br />
 					<a href='javascript:modif_case(\"responsable\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/
 					<a href='javascript:modif_case(\"responsable\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>
 				</th>
@@ -647,7 +809,7 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 				<td>".$tab_result_recherche['responsable'][$loop]['td_enfants']."</td>
 			</tr>";
 				}
-				if($compteur_max_personnes_trouvees<$loop) {$compteur_max_personnes_trouvees=$loop;}
+				if($compteur_max_personnes_trouvees<$loop+1) {$compteur_max_personnes_trouvees=$loop+1;}
 				echo "
 		</table>
 	</fieldset>
@@ -655,6 +817,7 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 			}
 		}
 
+		// Affichage des personnels trouvés
 		if(isset($tab_result_recherche['personnel'])) {
 			if(count($tab_result_recherche['personnel'])==0) {
 				echo "<p style='color:red'>Aucun personnel trouvé.</p>\n";
@@ -665,8 +828,9 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 		".add_token_field()."
 		<input type='hidden' name='statut[]' value='personnel' />
 		<input type='hidden' name='rech_nom' value='$rech_nom' />
-		<input type='hidden' name='rech_prenom' value='$rech_prenom' />
-		<input type='hidden' name='is_posted_recherche' value='y' />
+		<input type='hidden' name='rech_prenom' value='$rech_prenom' />";
+				echo $chaine_champs_form_recherche;
+				echo "
 		<input type='hidden' name='export_csv' value='personnel' />
 
 		<p class='bold' style='margin-top:1em;'>Personnels trouvés&nbsp;:".count($tab_result_recherche['personnel'])."</p>
@@ -675,8 +839,8 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 				if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 					echo "
 				<th class='nosort'>
-					<input type='submit' value='CSV' title='Exporter en CSV' />
-					<input type='button' id='button_mail_personnel' value='Mail' title='Envoyer un mail' style='display:none' onclick=\"recherche_envoi_mail('personnel')\" />
+					<input type='submit' value='CSV' title='Exporter en CSV les lignes cochées ci-dessous' />
+					<input type='button' id='button_mail_personnel' value='Mail' title='Envoyer un mail aux personnes cochées ci-dessous' style='display:none' onclick=\"recherche_envoi_mail('personnel')\" />
 					<br />
 					<a href='javascript:modif_case(\"personnel\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/
 					<a href='javascript:modif_case(\"personnel\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>
@@ -716,7 +880,7 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 				<td>".$tab_result_recherche['personnel'][$loop]['td_matieres']."</td>
 				<td>".$tab_result_recherche['personnel'][$loop]['td_classes']."</td>
 			</tr>";
-					if($compteur_max_personnes_trouvees<$loop) {$compteur_max_personnes_trouvees=$loop;}
+					if($compteur_max_personnes_trouvees<$loop+1) {$compteur_max_personnes_trouvees=$loop+1;}
 				}
 				echo "
 		</table>
@@ -736,6 +900,7 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 		echo "<p><br /></p>
 <script type='text/javascript'>
 	function modif_case(categorie, statut) {
+		//alert($compteur_max_personnes_trouvees);
 		for(k=0;k<$compteur_max_personnes_trouvees;k++){
 			if(document.getElementById('checkbox_'+categorie+'_'+k)){
 				document.getElementById('checkbox_'+categorie+'_'+k).checked=statut;
@@ -763,24 +928,49 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 		document.getElementById('span_mail_infobulle').innerHTML=\"<a href='mailto:\"+liste_mail+\"?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI'>\"+liste_mail+\"</a>\";
 		afficher_div('div_envoi_email','y',10,10);
 	}
+
+	function affiche_photo(photo,nom_prenom) {
+		//alert('plop');
+ 		document.getElementById('id_photo_nom_prenom').innerHTML=nom_prenom;
+ 		document.getElementById('div_photo_eleve').innerHTML='<img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom;
+		afficher_div('div_infobulle_photo', 'y', 10, 10);
+	}
+
 </script>";
+
+		$titre_infobulle="Photo <span id='id_photo_nom_prenom'></span>";
+
+		$texte_infobulle="<div align='center'>\n";
+		$texte_infobulle.="<div id='div_photo_eleve'></div>";
+		$texte_infobulle.="<br />\n";
+		$texte_infobulle.="</div>\n";
+
+		$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_photo',$titre_infobulle,"",$texte_infobulle,"",14,0,'y','y','n','n');
 
 		require("../lib/footer.inc.php");
 		die();
 	}
 }
 
+// Fin de l'affichage des personnes, responsables, élèves trouvés suite à la recherche
+
+// =========================================================================
+
+// Formulaires de recherche
 ?>
 
+<p class='bold'>Recherche de personnels, élèves et/ou responsables</p>
 <!-- Formulaire de recherche des élèves, responsables, personnels d'après leur nom/prénom -->
 
-<form action='<?php echo $_SERVER['PHP_SELF'];?>' method='post' name='form_rech' onsubmit="valider_form_recherche()" style='width:40em; float:left;'>
+<form action='<?php echo $_SERVER['PHP_SELF'];?>' method='post' name='form_rech' onsubmit="valider_form_recherche()" style='width:26em; float:left;'>
 	<fieldset style='margin-top:0.5em; border: 1px solid grey; background-image: url("<?php echo $gepiPath;?>/images/background/opacite50.png"); '>
 	<?php
 		echo "		".add_token_field();
+		/*
 		if(acces("/eleves/index.php", $_SESSION['statut'])) {
 			echo "<div style='float:right; width: 8em; text-align:center;' title=\"Rechercher la liste des élèves de telles classes\"><a href='$gepiPath/eleves/index.php#quelles_classes_certaines'>Élèves de telles classes</a></div>";
 		}
+		*/
 	?>
 		<p></p>
 
@@ -814,14 +1004,77 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 		</table>
 
 		<input type='hidden' name='is_posted_recherche' value='y' />
+		<div style='float:right; width:16' title="Astuce: Le caractère % est un 'joker'.
+             Il permet de remplacer n'importe quel caractère (un ou plusieurs).
+             Exemples: (1) Pour rechercher les Mickael, Mickaël et Michael,
+                                    il est possible de saisir Mic%ael.
+                               (2) La saisie de % comme seul critère permet aussi d'extraire 
+                                    toutes les personnes des catégories choisies."><img src='../images/icons/ico_question_petit.png' class='icon16' alt='Astuce' /></div>
 		<input type='submit' id='submit_chercher' value='Chercher' />
 		<input type='button' id='button_chercher' value='Chercher' style='display:none' onclick='valider_form_recherche()' />
 	</fieldset>
 </form>
 
+<!-- Formulaire de recherche des élèves d'une ou plusieurs classes -->
+
+<form action='<?php echo $_SERVER['PHP_SELF'];?>' method='post' name='form_rech4' style='width:16em; float:left;'>
+	<fieldset style='margin-top:0.5em; border: 1px solid grey; background-image: url("<?php echo $gepiPath;?>/images/background/opacite50.png"); '>
+	<?php
+		echo "		".add_token_field();
+	?>
+		<p></p>
+
+		<table border='0' summary='Critères de la recherche'>
+			<tr>
+				<td valign='top'>
+					Élèves des classes suivantes
+				</td>
+				<td>
+					<?php
+						$tab_classes=array();
+						$sql="SELECT DISTINCT c.* FROM classes c ORDER BY c.classe, c.nom_complet;";
+						$res=mysql_query($sql);
+						if(mysql_num_rows($res)>0) {
+							$cpt=0;
+							while($lig=mysql_fetch_object($res)) {
+								$tab_classes[$cpt]['id_classe']=$lig->id;
+								$tab_classes[$cpt]['classe']=$lig->classe;
+								$tab_classes[$cpt]['nom_complet']=$lig->nom_complet;
+								$cpt++;
+							}
+						}
+
+						if(count($tab_classes)==0) {
+							echo "<span style='color:red'>Aucune classe n'a été trouvée</span>";
+						}
+						else {
+							echo "
+					<select name='rech_classe[]' multiple='true' size='5' title=\"Pour sélectionner plusieurs classes, utilisez CTRL+clic\">
+						<!--option value=''>---</option-->";
+							for($loop=0;$loop<count($tab_classes);$loop++) {
+								echo "
+						<option value='".$tab_classes[$loop]['id_classe']."'>".$tab_classes[$loop]['classe'];
+								if($tab_classes[$loop]['classe']!=$tab_classes[$loop]['nom_complet']) {
+									echo " (".$tab_classes[$loop]['nom_complet'].")";
+								}
+								echo "</option>";
+							}
+							echo "
+					</select>";
+						}
+					?>
+				</td>
+			</tr>
+		</table>
+
+		<input type='hidden' name='is_posted_recherche4' value='y' />
+		<input type='submit' id='submit_chercher4' value='Chercher' />
+	</fieldset>
+</form>
+
 <!-- Formulaire de recherche des professeurs d'une ou plusieurs matières -->
 
-<form action='<?php echo $_SERVER['PHP_SELF'];?>' method='post' name='form_rech2' style='width:40em; float:left;'>
+<form action='<?php echo $_SERVER['PHP_SELF'];?>' method='post' name='form_rech2' style='width:32em; float:left;'>
 	<fieldset style='margin-top:0.5em; border: 1px solid grey; background-image: url("<?php echo $gepiPath;?>/images/background/opacite50.png"); '>
 	<?php
 		echo "		".add_token_field();
@@ -882,7 +1135,7 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 
 <!-- Formulaire de recherche des professeurs d'une ou plusieurs classes -->
 
-<form action='<?php echo $_SERVER['PHP_SELF'];?>' method='post' name='form_rech3' style='width:40em; float:left;'>
+<form action='<?php echo $_SERVER['PHP_SELF'];?>' method='post' name='form_rech3' style='width:30em; float:left;'>
 	<fieldset style='margin-top:0.5em; border: 1px solid grey; background-image: url("<?php echo $gepiPath;?>/images/background/opacite50.png"); '>
 	<?php
 		echo "		".add_token_field();
@@ -949,8 +1202,7 @@ if((isset($_POST['is_posted_recherche']))||(isset($_POST['is_posted_recherche2']
 <div style='clear:both'></div>
 <p style='color:red'>A FAIRE :<br />
 - Permettre le fonctionnement en ajax en plaçant une partie de la page en include...<br />
-Pb pour tri?<br />
-- Pouvoir rechercher parmi les personnels, tels statuts, des profs de telle matière (ou sélection de matières)</p>
+Pb pour tri?</p>
 
 <script type='text/javascript'>
 	document.getElementById('submit_chercher').style.display='none';
