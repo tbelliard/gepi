@@ -7226,12 +7226,12 @@ function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut=""
 	if($pour_bulletins=="y") {
 		$sql="SELECT * FROM periodes p, j_eleves_classes jec WHERE p.id_classe=jec.id_classe AND jec.login='$login_eleve' ORDER BY num_periode ASC;";
 		fwrite_debug($fich_debug, "a+", $sql."\n");
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			while($lig=mysql_fetch_object($res)) {
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			while($lig = $res->fetch_object()) {
 				$num_per_temp=$lig->num_periode;
-				if($lig->verouiller=='N') {
-					if($num_per_temp>1) {
+				if($lig->verouiller == 'N') {
+					if($num_per_temp > 1) {
 						$retour=$num_per_temp-1;
 					}
 					else {
@@ -7239,10 +7239,11 @@ function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut=""
 						// pas la peine d'espérer que les bulletins soient remplis
 						$retour=1;
 					}
-					$periode_trouvee="y";
+					$periode_trouvee = "y";
 					break;
 				}
 			}
+			$res->close();
 		}
 
 		fwrite_debug($fich_debug, "a+", "\$periode_trouvee=".$periode_trouvee."\n");
@@ -7251,9 +7252,11 @@ function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut=""
 			//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
 			$sql="SELECT * FROM periodes p, j_eleves_classes jec WHERE p.id_classe=jec.id_classe AND jec.login='$login_eleve' AND date_fin<FROM_UNIXTIME($ts) ORDER BY num_periode DESC LIMIT 1;";
 			fwrite_debug($fich_debug, "a+", $sql."\n");
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				$retour=mysql_result($res, 0, "num_periode");
+			$res = mysqli_query($mysqli, $sql);
+			if($res->num_rows > 0) {
+				$lig = $res->fetch_object();
+				$retour = $lig->num_periode;
+				$res->close();
 			}
 		}
 	}
@@ -7261,13 +7264,15 @@ function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut=""
 		//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
 		$sql="SELECT * from periodes p, j_eleves_classes jec WHERE p.id_classe=jec.id_classe AND jec.login='$login_eleve' AND date_fin>FROM_UNIXTIME($ts) ORDER BY num_periode ASC LIMIT 1;";
 		fwrite_debug($fich_debug, "a+", $sql."\n");
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$retour=mysql_result($res, 0, "num_periode");
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			$lig = $res->fetch_object();
+			$retour = $lig->num_periode;
+			$res->close();
 		}
 	}
 
-	if(!is_numeric($retour)) {$retour=$valeur_par_defaut;}
+	if(!is_numeric($retour)) {$retour = $valeur_par_defaut;}
 
 	return $retour;
 }
@@ -7289,6 +7294,7 @@ CREATE TABLE IF NOT EXISTS messagerie (
 */
 
 function enregistre_message($sujet, $message, $login_src, $login_dest, $date_visibilite="", $in_reply_to=-1) {
+	global $mysqli;
 	$retour="";
 
 	$date_courante=strftime("%Y-%m-%d %H:%M:%S");
@@ -7304,9 +7310,9 @@ function enregistre_message($sujet, $message, $login_src, $login_dest, $date_vis
 									date_msg='".$date_courante."',
 									date_visibilite='".$date_visibilite."';";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
+	$resi=mysql_query($mysqli, $sql);
 	if($res) {
-		$retour=mysql_insert_id();
+		$retour = $mysqli->insert_id;
 	}
 	return $retour;
 }
@@ -7321,6 +7327,7 @@ function form_saisie_message($in_reply_to=-1) {
 */
 
 function affiche_historique_messages($login_src, $mode="tous",$tri="date") {
+	global $mysqli;
 	global $gepiPath;
 
 	$retour="";
@@ -7344,8 +7351,8 @@ function affiche_historique_messages($login_src, $mode="tous",$tri="date") {
 	else {
 		$sql.=" ORDER BY date_msg DESC, login_dest ASC, sujet;";
 	}
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows==0) {
 		$retour="<p>Aucun message.</p>";
 	}
 	else {
@@ -7371,7 +7378,7 @@ Exemple: Si vous avez demandé à plusieurs destinataires à ce que tel élève 
          une fois l'élève vu, la lecture du message n'est plus nécessaire.\">Clore</th>
 	</tr>";
 		$cpt_ahm=0;
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=$res->fetch_object()) {
 			$precision_visibilite="";
 			if($lig->date_visibilite>$lig->date_msg) {
 				$precision_visibilite=" title='Message du ".formate_date($lig->date_msg,'y')." visible à compter de ".formate_date($lig->date_visibilite,'y')."'";
@@ -7410,6 +7417,7 @@ Concrètement, le témoin est juste remis à non lu.\" target='_blank'>
 	</tr>";
 			$cpt_ahm++;
 		}
+		$res->close();
 		$retour.="</table>
 <script type='text/javascript'>
 	function copie_ahm(num) {
@@ -7447,6 +7455,7 @@ Concrètement, le témoin est juste remis à non lu.\" target='_blank'>
 }
 
 function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date") {
+	global $mysqli;
 	global $gepiPath;
 
 	$retour="";
@@ -7469,8 +7478,8 @@ function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date
 		$sql.=" ORDER BY date_msg DESC, sujet;";
 	}
 
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows == 0) {
 		$retour="<p>Aucun message.</p>";
 	}
 	else {
@@ -7501,7 +7510,7 @@ function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date
 
 
 		$cpt_ahmr=0;
-		while($lig=mysql_fetch_object($res)) {
+		while($lig = $res->fetch_object()) {
 			$retour.="
 	<tr>
 		<td>".formate_date($lig->date_msg,'y')."</td>
@@ -7533,6 +7542,7 @@ function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date
 	</tr>";
 			$cpt_ahmr++;
 		}
+		$res->close();
 		$retour.="</table>
 
 <script type='text/javascript'>
