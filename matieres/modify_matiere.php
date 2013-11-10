@@ -241,7 +241,7 @@ if (isset($_GET['current_matiere'])) {
 }
 ?>
 
-<div style='float:right; width: 40 em; border: 1px solid black; margin-left: 1em;'>
+<div style='float:right; width: 20em; border: 1px solid black; margin-left: 1em;'>
 <?php
 	$tab_profs_associes=array();
 	if($current_matiere!="") {
@@ -254,12 +254,14 @@ if (isset($_GET['current_matiere'])) {
 		}
 
 		if(count($tab_profs_associes)>0) {
+			echo "<div style='float:right; width:16px;'><a href='../eleves/recherche.php?is_posted_recherche2b=y&amp;rech_matiere[]=".$current_matiere.add_token_in_url()."' title=\"Extraire la liste des professeurs (qu'ils soient associés à la matière dans des enseignements ou non).\" target='_blank'><img src='../images/group16.png' class='icon16' /></a></div>";
 			if(count($tab_profs_associes)>1) {
 				echo "<p class='bold'>Les professeurs associés sont&nbsp;<br />\n";
 			}
 			elseif(count($tab_profs_associes)==1) {
 				echo "<p class='bold'>Un professeur est associé&nbsp;<br />\n";
 			}
+			echo "<br />\n";
 			echo "<table class='boireaus' style='margin-left: 1em;'>\n";
 			$alt=1;
 			for($loop=0;$loop<count($tab_profs_associes);$loop++) {
@@ -384,7 +386,13 @@ if((isset($current_matiere))&&($current_matiere!="")) {
 		echo "<p>Aucun enseignement n'est associé à la matière $current_matiere.</p>\n";
 	}
 	else {
-		echo "<p>$nb_ens enseignement(s) associé(s) à la matière $current_matiere&nbsp;:<br />";
+		echo "<p>$nb_ens enseignement(s) associé(s) à la matière $current_matiere&nbsp;: ";
+		$chaine_domaines="";
+		for($loop=0;$loop<count($tab_domaines);$loop++) {
+			$chaine_domaines.="&amp;rech_domaine[]=".$tab_domaines[$loop];
+		}
+		echo "<a href='../eleves/recherche.php?is_posted_recherche2=y&amp;rech_matiere[]=".$current_matiere.$chaine_domaines.add_token_in_url()."' title=\"Extraire la liste des professeurs (associés aux enseignements ci-dessous).\" target='_blank'><img src='../images/group16.png' class='icon16' /></a>";
+		echo "<br />";
 		while($lig_ens=mysql_fetch_object($res_ens)) {
 
 			$sql="SELECT c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe=c.id AND jgc.id_groupe='$lig_ens->id' ORDER BY c.classe, c.nom_complet;";

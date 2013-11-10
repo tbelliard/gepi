@@ -422,7 +422,11 @@ if($res->num_rows == 0) {
 	</div>
 <?php 
 	while($lig=$res->fetch_object()) { ?>
-	<div style='border:1px dashed black; margin:1em;'>
+	<div style='border:1px dashed black; margin:1em;<?php
+		if($message_login==$lig->id) {
+			echo "background-image: url(\"../images/background/opacite50.png\");";
+		}
+	?>'>
 		<p>
 			<input type='radio' 
 				   name='message_login' 
