@@ -434,7 +434,7 @@ echo add_token_field();
 			 onchange='changement();'
 			   <?php if (getSettingValue("cdt_autoriser_modif_multiprof") == "yes") {echo " checked='checked'";}?> />
 		<label for='cdt_autoriser_modif_multiprof_y' style='cursor: pointer;'>
-		  Autoriser les collègues travaillant en binome sur une enseignement à modifier les notices/devoirs créés par leur collègue.
+		  Autoriser les collègues travaillant en binome sur un enseignement à modifier les notices/devoirs créés par leur collègue.
 		</label>
 	  <br />
 		  <input type='radio'

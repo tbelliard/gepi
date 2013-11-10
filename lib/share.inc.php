@@ -4896,7 +4896,7 @@ function del_info_action($id_info, $_login="", $_statut="") {
 		else {
 			$sql="DELETE FROM infos_actions WHERE id='$id_info';";
 			//echo "$sql<br />";
-			$del=mysql_query($sql);
+			$del=mysqli_query($mysqli, $sql);
 			if(!$del) {
 				return FALSE;
 			}
@@ -4954,12 +4954,13 @@ function traite_date_sortie_to_timestamp($date_sortie) {
  * @return boolean TRUE si tout c'est bien passé 
  */
 function del_acces_cdt($id_acces) {
+    global $mysqli;
 
 	$sql="SELECT * FROM acces_cdt WHERE id='$id_acces';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
-
+	$res=mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		$lig = $res->fetch_object();
+		$res->close();
 		$chemin=preg_replace("#/index.(html|php)#","",$lig->chemin);
 		if((!preg_match("#^documents/acces_cdt_#",$chemin))||(strstr($chemin,".."))) {
 			echo "<p><span style='color:red'>Chemin $chemin invalide</span></p>";
@@ -4983,14 +4984,14 @@ function del_acces_cdt($id_acces) {
 
 			if($nettoyer_acces=="y") {
 				$sql="DELETE FROM acces_cdt_groupes WHERE id_acces='$id_acces';";
-				$del=mysql_query($sql);
+				$del=mysqli_query($mysqli, $sql);
 				if(!$del) {
 					echo "<p><span style='color:red'>Erreur lors de la suppression des groupes associés à l'accès n°$id_acces</span></p>";
 					return FALSE;
 				}
 				else {
 					$sql="DELETE FROM acces_cdt WHERE id='$id_acces';";
-					$del=mysql_query($sql);
+					$del=mysqli_query($mysqli, $sql);
 					if(!$del) {
 						echo "<p><span style='color:red'>Erreur lors de la suppression de l'accès n°$id_acces</span></p>";
 						return FALSE;
@@ -5206,19 +5207,21 @@ function mysql_date_to_unix_timestamp($mysql_date) {
  * @return array Tableau des logins des profs principaux
  */
 function get_tab_prof_suivi($id_classe) {
-	$tab=array();
+	global $mysqli;
+	$tab = array();
 
-	$sql="SELECT DISTINCT jep.professeur 
+	$sql = "SELECT DISTINCT jep.professeur 
 		FROM j_eleves_professeurs jep, j_eleves_classes jec 
 		WHERE jec.id_classe='$id_classe' 
 		AND jec.login=jep.login
 		AND jec.id_classe=jep.id_classe
 		ORDER BY professeur;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
-			$tab[]=$lig->professeur;
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		while($lig = $res->fetch_object()) {
+			$tab[] = $lig->professeur;
 		}
+		$res->close();
 	}
 
 	return $tab;
@@ -5244,6 +5247,7 @@ function get_tab_prof_suivi($id_classe) {
  */
 function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0,$bouton_supprimer=false)
 {
+	global $mysqli;
 	// On arrondit le timestamp d'appel à l'heure (pas nécessaire mais pour l'esthétique)
 	$t_appel=time()-(time()%3600);
 	// suivant le nombre de paramètres passés :
@@ -5266,20 +5270,19 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 			$date_decompte=$date_fin;
 		}
 	$r_sql="INSERT INTO `messages` values('','".addslashes($texte)."','".$date_debut."','".$date_fin."','".$_SESSION['login']."','_','".$login_destinataire."','".$date_decompte."')";
-	$retour=mysql_query($r_sql)?true:false;
+	$retour=mysqli_query($mysqli, $r_sql) ? TRUE : FALSE;
 	if ($retour && $bouton_supprimer)
 		{
-		$id_message=mysql_insert_id();
+		$id_message = $mysqli->insert_id;
 		$contenu='
 		<form method="POST" action="#" name="f_suppression_message">
 		<input type="hidden" name="supprimer_message" value="'.$id_message.'">
 		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png" alt="" /></button>
 		</form>'.addslashes($texte);
 		$r_sql="UPDATE `messages` SET `texte`='".$contenu."' WHERE `id`='".$id_message."'";
-		$retour=mysql_query($r_sql)?true:false;
+		$retour=mysqli_query($mysqli, $r_sql) ? TRUE : FALSE;
 		}
 	return $retour;
-
 }
 
 /**
@@ -5335,6 +5338,7 @@ function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
 	}
         $test = mysqli_query($mysqli, $sql);
         $nb_saisies_bulletin = $test->num_rows;
+		$test->close();
         $tab_champs=array('eleves');
         $current_group=get_group($id_groupe, $tab_champs);
         $effectif_groupe=count($current_group["eleves"][$periode_num]["users"]);
@@ -5463,7 +5467,8 @@ function traduction_mention($code) {
  * @return array Le tableau des mentions
  */
 function get_mentions($id_classe=NULL) {
-	$tab=array();
+	global $mysqli;
+	$tab = array();
 	if(!isset($id_classe)) {
 		$sql="SELECT * FROM mentions ORDER BY id;";
 	}
@@ -5471,11 +5476,12 @@ function get_mentions($id_classe=NULL) {
 		$sql="SELECT m.* FROM mentions m, j_mentions_classes j WHERE j.id_mention=m.id AND j.id_classe='$id_classe' ORDER BY j.ordre, m.mention, m.id;";
 	}
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
-			$tab[$lig->id]=$lig->mention;
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		while($lig = $res->fetch_object()) {
+			$tab[$lig->id] = $lig->mention;
 		}
+		$res->close();
 	}
 	return $tab;
 }
@@ -5489,18 +5495,20 @@ function get_mentions($id_classe=NULL) {
  * @return array Le tableau des mentions
  */
 function get_tab_mentions_affectees($id_classe=NULL) {
-	$tab=array();
+	global $mysqli;
+	$tab = array();
 	if(!isset($id_classe)) {
 		$sql="SELECT DISTINCT j.id_mention FROM j_mentions_classes j, avis_conseil_classe a WHERE a.id_mention=j.id_mention;";
 	}
 	else {
 		$sql="SELECT DISTINCT j.id_mention FROM j_mentions_classes j, avis_conseil_classe a, j_eleves_classes jec WHERE a.id_mention=j.id_mention AND j.id_classe=jec.id_classe AND jec.periode=a.periode AND jec.login=a.login AND j.id_classe='$id_classe';";
 	}
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		while($lig=$res->fetch_object()) {
 			$tab[]=$lig->id_mention;
 		}
+		$res->close();
 	}
 	return $tab;
 }
@@ -5542,9 +5550,11 @@ function champ_select_mention($nom_champ_select,$id_classe,$id_mention_selected=
  * @return boolean TRUE si il y a des mentions 
  */
 function test_existence_mentions_classe($id_classe) {
+	global $mysqli;
 	$sql="SELECT 1=1 FROM j_mentions_classes WHERE id_classe='$id_classe';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0) {
+	$test = mysqli_query($mysqli, $sql);
+	if($test->num_rows > 0) {
+		$test->close();
 		return TRUE;
 	}
 	else {
@@ -5564,13 +5574,15 @@ function test_existence_mentions_classe($id_classe) {
  * @return int  
  */
 function check_compte_actif($login) {
+	global $mysqli;
 	$sql="SELECT etat FROM utilisateurs WHERE login='$login';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($mysqli, $sql);
+	if($res->num_rows == 0) {
 		return 0;
 	}
 	else {
-		$lig=mysql_fetch_object($res);
+		$lig = $res->fetch_object();
+		$res->close();
 		if($lig->etat=='actif') {
 			return 1;
 		}
@@ -5681,13 +5693,15 @@ function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lie
  * @return string Le statut
  */
 function get_statut_from_login($login) {
+	global $mysqli;
 	$sql="SELECT statut FROM utilisateurs WHERE login='$login';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows() == 0) {
 		return "";
 	}
 	else {
-		$lig=mysql_fetch_object($res);
+		$lig=$res->fetch_object();
+		$res->close();
 		return $lig->statut;
 	}
 }
@@ -5707,35 +5721,38 @@ function get_statut_from_login($login) {
  * @todo Déterminer les champs supplémentaires pour le statut autre
  */
 function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
+	global $mysqli;
 	$tab=array();
 
 	$tab_champs_utilisateur=array('nom', 'prenom', 'civilite', 'email','show_email','statut','etat','change_mdp','date_verrouillage','ticket_expiration','niveau_alerte','observation_securite','temp_dir','numind','auth_mode');
 	$sql="SELECT * FROM utilisateurs WHERE login='$login';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
+	$res=mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		$lig=$res->fetch_object();
 		foreach($tab_champs_utilisateur as $key => $value) {
 			$tab[$value]=$lig->$value;
 		}
         unset ($key, $value);
-
+		$res->close();
+		
 		if($tab['statut']=='responsable') {
-			$sql="SELECT pers_id FROM resp_pers WHERE login='$login';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				$lig=mysql_fetch_object($res);
+			$sql = "SELECT pers_id FROM resp_pers WHERE login='$login';";
+			$res = mysqli_query($mysqli, $sql);
+			if($res->num_rows > 0) {
+				$lig=$res->fetch_object();
 				$tab['pers_id']=$lig->pers_id;
 
 				if(in_array('enfants', $tab_champs)) {
 					// A compléter
 				}
+				$res->close();
 			}
 		}
 		elseif($tab['statut']=='eleve') {
 			$sql="SELECT * FROM eleves WHERE login='$login';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				$lig=mysql_fetch_object($res);
+			$res = mysqli_query($mysqli, $sql);
+			if($res->num_rows > 0) {
+				$lig=$res->fetch_object();
 
 				$tab_champs_eleve=array('no_gep','sexe','naissance','lieu_naissance','elenoet','ereno','ele_id','id_eleve','mef_code','date_sortie');
 				foreach($tab_champs_eleve as $key => $value) {
@@ -5746,6 +5763,7 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 				if(in_array('parents', $tab_champs)) {
 					// A compléter
 				}
+				$res->close();
 			}
 
 		}
@@ -5805,6 +5823,7 @@ function acces_ele_disc($login_ele) {
  * @return array Le tableau
  */
 function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n") {
+	global $mysqli;
 	$tab="";
 
 	$sql="(SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2'))";
@@ -5816,10 +5835,10 @@ function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n") {
 	}
 	$sql.=";";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
 		$cpt=0;
-		while($lig=mysql_fetch_object($res)) {
+		while($lig = $res->fetch_object()) {
 			$tab[$cpt]=array();
 
 			$tab[$cpt]['login']=$lig->login;
@@ -5833,6 +5852,7 @@ function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n") {
 
 			$cpt++;
 		}
+		$res->close();
 	}
 
 	//print_r($tab);
@@ -5947,17 +5967,19 @@ function get_timestamp_jour_precedent($timestamp_today) {
  * @return int $timestamp du jour suivant
  */
 function get_timestamp_jour_suivant($timestamp_today) {
+	global $mysqli;
 	$demain=false;
 
 	$tab_nom_jour=array('dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi');
-	$sql="select * from horaires_etablissement WHERE ouverture_horaire_etablissement!=fermeture_horaire_etablissement AND ouvert_horaire_etablissement!='0' ORDER BY id_horaire_etablissement;";
-	$res_jours_ouverts=mysql_query($sql);
-	if(mysql_num_rows($res_jours_ouverts)>0) {
+	$sql="SELECT * from horaires_etablissement WHERE ouverture_horaire_etablissement!=fermeture_horaire_etablissement AND ouvert_horaire_etablissement!='0' ORDER BY id_horaire_etablissement;";
+	$res_jours_ouverts=mysqli_query($mysqli, $sql);
+	if($res_jours_ouverts->num_rows > 0) {
 		$tab_jours_ouverture=array();
-		while($lig_j=mysql_fetch_object($res_jours_ouverts)) {
+		while($lig_j = $res_jours_ouverts->fetch_object()) {
 			$tab_jours_ouverture[]=$lig_j->jour_horaire_etablissement;
 			//echo "\$tab_jours_ouverture[]=".$lig_j->jour_horaire_etablissement."<br />";
 		}
+		$res_jours_ouverts->close();
 
 		$compteur=0;
 		$j_prec = $timestamp_today - 3600*24;
@@ -6094,6 +6116,7 @@ function jour_fr($jour_en, $mode="") {
  *
  */
 function creer_info_jours_js() {
+	global $mysqli;
 	global $prefix_base, $niveau_arbo;
 
 	//echo "\$niveau_arbo=$niveau_arbo<br />";
@@ -6116,11 +6139,12 @@ function creer_info_jours_js() {
 		$sql="SELECT 1=1 FROM ".$prefix_base."horaires_etablissement
 				WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND
 						date_horaire_etablissement = '0000-00-00' AND ouvert_horaire_etablissement='1'";
-		$res_j_o=mysql_query($sql);
-		if(mysql_num_rows($res_j_o)) {
+		$res_j_o=mysqli_query($mysqli, $sql);
+		if($res_j_o->num_rows) {
 			if($chaine_jours_ouverts!="") {$chaine_jours_ouverts.=",";}
 			$num_jour=$i+1;
 			$chaine_jours_ouverts.="'$num_jour'";
+			$res_j_o->close();
 		}
 	}
 
@@ -6336,12 +6360,13 @@ Provoquer l'enregistrement/validation des données vers le serveur risque de se 
  */
 
 function correction_notices_cdt_formules_maths($eff_parcours) {
+	global $mysqli;
 	$tab_grp=array();
 
 	$nb_corr=0;
 	$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%' LIMIT $eff_parcours;";
-	$res=mysql_query($sql);
-	while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=$res->fetch_object()) {
 		$id_ct=$lig->id_ct;
 		$id_groupe=$lig->id_groupe;
 		$contenu=$lig->contenu;
@@ -6353,7 +6378,7 @@ function correction_notices_cdt_formules_maths($eff_parcours) {
 
 		$contenu_corrige=get_img_formules_math($contenu, $id_groupe, $type_notice);
 		$sql="UPDATE ct_entry SET contenu='".mysql_real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
-		$res_ct=mysql_query($sql);
+		$res_ct=mysqli_query($mysqli, $sql);
 		if(!$res_ct) {
 			echo "<div style='border:1px solid red; margin:3px;'>";
 			echo "<p style='color:red;'>ERREUR sur<br />$sql";
@@ -6365,12 +6390,13 @@ function correction_notices_cdt_formules_maths($eff_parcours) {
 		}
 		flush();
 	}
+	$res->close();
 	echo "<p>$nb_corr corrections effectuées sur 'ct_entry'.</p>";
 
 	$nb_corr=0;
 	$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%' LIMIT $eff_parcours;";
-	$res=mysql_query($sql);
-	while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=$res->fetch_object()) {
 		$id_ct=$lig->id_ct;
 		$id_groupe=$lig->id_groupe;
 		$contenu=$lig->contenu;
@@ -6394,6 +6420,7 @@ function correction_notices_cdt_formules_maths($eff_parcours) {
 		}
 		flush();
 	}
+	$res->close();
 	echo "<p>$nb_corr corrections effectuées sur 'ct_devoirs_entry'.</p>";
 }
 

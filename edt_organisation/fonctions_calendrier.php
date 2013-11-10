@@ -55,9 +55,9 @@ function AffichePeriode($date_ts) {
         $req_periode = mysqli_query($mysqli, $sql);
         $endprocess = false;        
         while (($obj = $req_periode->fetch_object()) AND (!$endprocess)) {
-            if (($rep_periode->debut_calendrier_ts <= $date_ts) 
-                    AND ($rep_periode->fin_calendrier_ts >= $date_ts)) { 
-                echo $rep_periode->nom_calendrier;
+            if (($obj->debut_calendrier_ts <= $date_ts) 
+                    AND ($obj->fin_calendrier_ts >= $date_ts)) { 
+                echo $obj->nom_calendrier;
                 $endprocess = true;
             }
         }
@@ -331,24 +331,24 @@ function ReturnNextIdPeriod($current_id_period) {
  * @see ReturnIdPeriod()
  */
 function ReturnPreviousIdPeriod($current_id_period) {
-    global $mysqli;
-    $sql_periode = "SELECT * FROM edt_calendrier ORDER BY debut_calendrier_ts DESC";
-    $endprocess = FALSE;
-    $retour = ReturnIdPeriod(date("U")); 
-        $req_periode = mysqli_query($mysqli, $sql_periode);
-        while (($rep_periode = $req_periode->fetch_object()) AND (!$endprocess)) {
-            if ($rep_periode->id_calendrier == $current_id_period) { 
-                $endprocess = TRUE;
-                if ($rep_periode = $req_periode->fetch_object()) {
-                    $retour = $rep_periode->id_calendrier;
-                } else {
-                    $rep_periode->data_seek(0);
-                    $rep_periode = $req_periode->fetch_object();
-                    $retour = $rep_periode->id_calendrier;
-                }
-            }            
-        }
-		$req_periode->close();
+	global $mysqli;
+	$sql_periode = "SELECT * FROM edt_calendrier ORDER BY debut_calendrier_ts DESC";
+	$endprocess = FALSE;
+	$retour = ReturnIdPeriod(date("U")); 
+	$req_periode = mysqli_query($mysqli, $sql_periode);
+	while (($rep_periode = $req_periode->fetch_object()) AND (!$endprocess)) {
+		if ($rep_periode->id_calendrier == $current_id_period) { 
+			$endprocess = TRUE;
+			if ($rep_periode = $req_periode->fetch_object()) {
+				$retour = $rep_periode->id_calendrier;
+			} else {
+				$rep_periode->data_seek(0);
+				$rep_periode = $req_periode->fetch_object();
+				$retour = $rep_periode->id_calendrier;
+			}
+		}            
+	}
+	$req_periode->close();
     return $retour;    
 }
 
@@ -362,14 +362,15 @@ function typeSemaineActu() {
 	$numero_sem_actu = date("W");
     $sql = "SELECT type_edt_semaine FROM edt_semaines WHERE num_edt_semaine = '".$numero_sem_actu."'";
             
-		$query = mysqli_query($mysqli, $sql);
-        if ($query->num_rows != 1) {
-            $retour = '0';
-        } else {
-            $type = $query->fetch_row();
-            $retour = $type[0];
-        }
-        $query->close();
+	$query = mysqli_query($mysqli, $sql);
+	if ($query->num_rows != 1) {
+		$retour = '0';
+	} else {
+		$type = $query->fetch_row();
+		$retour = $type[0];
+		$query->close();
+	}
+	
 	return $retour;
 }
 
@@ -421,10 +422,11 @@ function retourneCreneau(){
             } else {
                 $retour = "non";
             }
+			$query->close();
         } else {
             $retour = "non";
         }
-        $query->close();
+        
 	return $retour;
 }
 
@@ -465,8 +467,9 @@ function heureDeb(){
             }else{
                 $retour = '0';
             }
+			$query->close();
         }
-        $query->close();
+        
 	return $retour;
 }
 
@@ -493,6 +496,7 @@ function retourneCours($prof){
         if ($nbreCours >= 1) {
             $reponse = $query->fetch_object();
             $retour = $reponse->id_cours;
+			$query->close();
         } else {
             // On teste les AID
             $sql_aid = "SELECT id_cours FROM edt_cours WHERE
@@ -510,10 +514,9 @@ function retourneCours($prof){
             if ($nbreCours >= 1) {
                 $reponse_aid = $query_aid->fetch_object();
                 $retour = $reponse_aid->id_cours;
+				$query_aid->close();
             }
-            $query_aid->close();
         }
-        $query->close();
         
 	return $retour;
 }

@@ -807,7 +807,7 @@ function make_classes_select_html($link, $current, $year, $month, $day, $domaine
 	  AND jecl.id_classe = jgc.id_classe)
 	  ORDER BY classe ;";
   } else {
-	if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('GepiAccesCDTToutesClasses'))) {
+	if(isset($_SESSION['statut']) && ($_SESSION['statut']=='professeur')&&(!getSettingAOui('GepiAccesCDTToutesClasses'))) {
 		$sql = "SELECT DISTINCT c.id, c.classe
 		  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_groupes_professeurs jgp
 		  WHERE (c.id = jgc.id_classe
