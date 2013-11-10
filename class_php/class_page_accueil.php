@@ -102,7 +102,7 @@ class class_page_accueil {
 			FROM j_eleves_professeurs
 			WHERE professeur = '".$this->loginUtilisateur."'";
         $resultat = mysqli_query($mysqli, $sql);  
-		$this->test_prof_matiere = $resultat->num_rows; 
+		$this->test_prof_suivi = $resultat->num_rows; 
 	
 
 	$this->test_https = 'y'; // pour ne pas avoir à refaire le test si on a besoin de l'URL complète (rss)
