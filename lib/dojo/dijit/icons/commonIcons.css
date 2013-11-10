@@ -112,7 +112,7 @@
 .dijitDisabled .dijitIconError {
 	background-image: url('images/commonIconsObjActDisabled.png'); 
 }
-.dijitIconSave { background-position: 0px; }
+.dijitIconSave { background-position: 0; }
 .dijitIconPrint { background-position: -16px; }
 .dijitIconCut { background-position: -32px; }
 .dijitIconCopy { background-position: -48px; }
@@ -122,7 +122,7 @@
 .dijitIconEdit { background-position: -112px; }
 .dijitIconNewTask { background-position: -128px; }
 .dijitIconEditTask { background-position: -144px; }
-.dijitIconEditProperty { background-position: -166px; }
+.dijitIconEditProperty { background-position: -160px; }
 .dijitIconTask { background-position: -176px; }
 .dijitIconFilter { background-position: -192px; }
 .dijitIconConfigure { background-position: -208px; }
@@ -144,3 +144,8 @@
 .dijitIconUsers { background-position: -448px; }
 .dijitIconFolderClosed, .dijitFolderClosed { background-position: -464px; }
 .dijitIconFolderOpen, .dijitFolderOpened { background-position: -480px; }
+.dijitIconLoading {
+	background:url('images/loadingAnimation_rtl.gif') no-repeat;
+	height: 20px;
+	width: 20px;
+}

@@ -44,7 +44,7 @@
 .dojoxGridHeader .dojoxGridCell { 
 	border: 1px solid;
 	border-color: #F6F4EB #ACA899 #ACA899 #F6F4EB;
-	background: url(../../../resources/images/grid_dx_gradient.gif) #E8E1CF top repeat-x;
+	background: url("../../../resources/images/grid_dx_gradient.gif") #E8E1CF top repeat-x;
 	padding-bottom: 2px;
 }
 .dojoxGridHeader .dojoxGridCellOver {
@@ -105,7 +105,7 @@
 	border: 1px solid;
 	border-color: #F6F4EB #ACA899 #ACA899 #F6F4EB;
 	border-top: none;
-	background: url(../../../resources/images/grid_dx_gradient.gif) #E8E1CF top repeat-x;
+	background: url("../../../resources/images/grid_dx_gradient.gif") #E8E1CF top repeat-x;
 }
 .dojoxGridRowbarInner {
 	border-top: 1px solid #F6F4EB;
@@ -169,13 +169,20 @@
 	height: 0;
 	overflow: hidden;
 }
-.dojoxGridCell {
+.dojoxGrid .dojoxGridCell {
 	border: 1px solid;
 	border-color: #EBEADB;
 	border-right-color: #D5CDB5;
 	padding: 3px 3px 3px 3px;
 	text-align: left;
 	overflow: hidden;
+	word-wrap: break-word;
+}
+.dojoxGrid .dojoxGridFixedRowHeight .dojoxGridCell {
+	white-space: nowrap;
+	word-break: keep-all;
+	word-wrap: normal;
+	text-overflow: ellipsis;
 }
 .dojoxGridCellFocus {
 	border: 1px dashed blue;
@@ -225,6 +232,11 @@
 .dijit_a11y .dojoxGridRowSelected {
 	border: 1px solid black !important;
 }
+.dojoxGridRowTable .dojoDndHorizontal th.dojoDndItem {
+	display: table-cell;
+	
+	margin: 0;
+}
 .dojoxGridDndAvatar {
 	font-size: 100%;
 }
@@ -243,7 +255,7 @@
 .dojoxGridDndAvatarItem	td {
 	border: 1px solid;
 	border-color: #F6F4EB #ACA899 #ACA899 #F6F4EB;
-	background: url(../../../resources/images/grid_dx_gradient.gif) #E8E1CF top repeat-x;
+	background: url("../../../resources/images/grid_dx_gradient.gif") #E8E1CF top repeat-x;
 	padding: 0pt;
 	margin: 0pt;
 }
@@ -256,30 +268,30 @@
 	margin: 0;
 }
 .dojoDndMove .dojoxGridDndAvatarItem .dojoxGridDndAvatarItemImage {
-	background-image: url(../../../../../dojo/resources/images/dndNoMove.png);
+	background-image: url("../../../../../dojo/resources/images/dndNoMove.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 .dojoDndCopy .dojoxGridDndAvatarItem .dojoxGridDndAvatarItemImage {
-	background-image: url(../../../../../dojo/resources/images/dndNoCopy.png);
+	background-image: url("../../../../../dojo/resources/images/dndNoCopy.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 .dojoDndMove .dojoDndAvatarCanDrop .dojoxGridDndAvatarItem .dojoxGridDndAvatarItemImage {
-	background-image: url(../../../../../dojo/resources/images/dndMove.png);
+	background-image: url("../../../../../dojo/resources/images/dndMove.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 .dojoDndCopy .dojoDndAvatarCanDrop .dojoxGridDndAvatarItem .dojoxGridDndAvatarItemImage {
-	background-image: url(../../../../../dojo/resources/images/dndCopy.png);
+	background-image: url("../../../../../dojo/resources/images/dndCopy.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 .dojoxGridColPlaceBottom {
-	background: transparent url(../../../resources/images/grid_sort_up.gif) no-repeat scroll left top;
+	background: transparent url("../../../resources/images/grid_sort_up.gif") no-repeat scroll left top;
 }
 .dojoxGridColPlaceTop {
-	background: transparent url(../../../resources/images/grid_sort_down.gif) no-repeat scroll left top;
+	background: transparent url("../../../resources/images/grid_sort_down.gif") no-repeat scroll left top;
 }
 .dojoxGridColPlaceTop, .dojoxGridColPlaceBottom {
 	font-size:1px;
@@ -310,10 +322,10 @@
 	cursor: col-resize !important;
 }
 .dojoxGridColPlaceBottom {
-	background: transparent url(../../../resources/images/grid_sort_up.gif) no-repeat scroll left top;
+	background: transparent url("../../../resources/images/grid_sort_up.gif") no-repeat scroll left top;
 }
 .dojoxGridColPlaceTop {
-	background: transparent url(../../../resources/images/grid_sort_down.gif) no-repeat scroll left top;
+	background: transparent url("../../../resources/images/grid_sort_down.gif") no-repeat scroll left top;
 }
 .dojoxGridColPlaceTop, .dojoxGridColPlaceBottom {
 	font-size:1px;
@@ -344,11 +356,27 @@
 	visibility: hidden !important;
 	width: 0px !important;
 }
+.dj_ie .dojoxGridRtl .dojoxGridHeader table {
+	float:none;
+}
+.dojoxGridRtl .dojoxGridCell {
+	text-align:right;
+}
+.dj_ie8 .dojoxGridRtl .dojoxGridCell {
+	border-left: none;
+}
+.dj_ie .dojoxGridRtl .dojoxGridMasterView .dojoxGridRowTable {
+	border-left: #e5dac8 1px solid
+}
+.dojoxGridRtl .dojoxGridArrowButtonNode {
+	float:left;
+}
 .claro .dojoxGrid {
 	margin:0px;
 	padding:0px;
 	border-collapse:collapse;	
-	background-color:#fff;	
+	background-color: #fff;
+	border: 1px solid #DBDBDB;
 }
 .claro .dojoxGridMasterMessages {
 	background-color: #fefefe;
@@ -360,35 +388,39 @@
 	padding-left:25px;
 }
 .claro .dojoxGridLoading {
-	background-image:url(../../../../../dijit/themes/claro/images/loadingAnimation.gif);
+	background-image:url("../../../../../dijit/themes/claro/images/loadingAnimation.gif");
 }
 .claro .dojoxGridError {
-	background-image: url(../../../../../dijit/icons/images/commonIconsObjActEnabled.png); 
+	background-image: url("../../../../../dijit/icons/images/commonIconsObjActEnabled.png"); 
 	background-position: -496px;
 	width: 16px;
 	height: 16px;
 }
 .claro .dojoxGridHeader {
-	background-color:#FFF;
+	background: transparent;
+	margin-left: -2px;
 }
-.claro .dojoxGridHeader .dojoxGridCell { 
-	background:url(../../../resources/images/header.png) #e5edf4 repeat-x top;
+.claro .dojoxGridHeader .dojoxGridCell {
+	padding: 2px 5px;
+	vertical-align: top;
+	background: transparent;
 	border-style:solid;
 	border-width:1px;
-	border-color:#BCBCBC #BCBCBC #BCBCBC transparent;
+	border-color: #FFFFFF #BCBCBC #BCBCBC #FFFFFF;
 }
 .dj_ie6 .claro .dojoxGridHeader .dojoxGridCell { 
 	border-color:#BCBCBC #BCBCBC #BCBCBC #e5edf4;
 }
+.claro .dojoxGridHeader .dojoxGridCellOver {
+	background: #9dcfff;
+}
 .claro .dojoxGridSortNode {
-	background:url(../../../resources/images/header_shadow.png) #e5edf4 repeat-x bottom;
 	text-decoration:none;
 	display:block;
-	padding:4px 6px 5px 6px;
-	border:1px solid #e0eefb;
-}
-.dj_ie6 .claro .dojoxGridSortNode {
-	background-image:none;
+	white-space: normal;
+	background: none;
+	border: none;
+	padding: 0;
 }
 .claro .dojoxGridCellOver .dojoxGridSortNode {
 	background-color:#9dcfff;
@@ -398,7 +430,7 @@
 	float:right;
 }
 .claro .dojoxGridArrowButtonNode {
-	background:transparent url(../../../../../dijit/themes/claro/images/spriteArrows.png) no-repeat scroll left center;
+	background:transparent url("../../../../../dijit/themes/claro/images/spriteArrows.png") no-repeat scroll left center;
 	display:block;
 	float:right;
 	height:1em;
@@ -409,19 +441,49 @@
 .claro .dojoxGridSortUp .dojoxGridArrowButtonNode {
 	background-position:-21px 50%;
 }
+.claro .dojoxGridMasterHeader {
+	background: url("../../../resources/images/header.png") #EDF2F7 repeat-x bottom;
+	background: -moz-linear-gradient(top, #EDF2F7, #D0DFEA);
+	background: -webkit-gradient(linear, left top, left bottom, from(#EDF2F7), to(#D0DFEA));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFEDF2F7, endColorstr=#FFD0DFEA);
+	border: 1px solid #FFFFFF;
+	border-right: none;
+}
+.claro .dojoxGridMasterHeader .dojoxGridRowTable {
+	border-left: 1px solid #BCBCBC;
+	border-right: 1px solid #FFFFFF;
+	background-color: transparent;
+}
 .dj_ie .claro .dojoxGridHeader .dojoxGridRowTable {
 	border-collapse:separate;
+}
+.dj_ie6 .claro .dojoxGridHeader .dojoxGridRowTable,
+.dj_ie7 .claro .dojoxGridHeader .dojoxGridRowTable {
+	border-collapse:collapse;
+	border-right: 0px;	
+}
+.claro .dojoxGridHeader .dojoxGridRowTable tr {
+	background: none;
+}
+.claro .dojoxGridHeader tr:first-child .dojoxGridCell {
+	border-top: 1px solid transparent;
+}
+.claro .dojoxGridHeader:first-child .dojoxGridRowTable {
+	border-left-width: 0;
+}
+.claro .dojoxGridHeader:first-child {
+	margin-left: -1px;
 }
 .claro .dojoxGridScrollbox {
 	background-color: #fefefe;
 }
 .claro .dojoxGridRowbar { 
-	background:url(../../../resources/images/header.png) #e5edf4 repeat-x top;
+	background:url("../../../resources/images/header.png") #e5edf4 repeat-x top;
 	border:none;
 	border-right:1px solid #BCBCBC;
 }
 .claro .dojoxGridRowbarTable { 
-	background:transparent url(../../../resources/images/header_shadow.png) repeat-x scroll center bottom;
+	background:transparent url("../../../resources/images/header_shadow.png") repeat-x scroll center bottom;
 }
 .dj_ie6 .claro .dojoxGridRowbar,
 .dj_ie6 .claro .dojoxGridRowbarTable { 
@@ -434,9 +496,6 @@
 .claro .dojoxGridRowbarOver .dojoxGridRowbarTable {
 	background-color:#abd5fd;
 }
-.claro .dojoxGridRowBarActive .dojoxGridRowbarTable {
-	background-color:#91c9fe;
-}
 .claro .dojoxGridRowbarSelected {
 	background-color:#abd5fd;
 	border-right:1px solid #ccc;
@@ -448,8 +507,12 @@
 .dj_ie .claro .dojoxGridMasterView .dojoxGridRowTable {
 	border-collapse:separate;
 }
+.dj_ie6 .claro .dojoxGridMasterView .dojoxGridRowTable,
+.dj_ie7 .claro .dojoxGridMasterView .dojoxGridRowTable {
+	border-collapse: collapse;
+}
 .claro .dojoxGridRowTable tr {
-	background:url(../../../resources/images/row_back.png) #fff repeat-x;
+	background:url("../../../resources/images/row_back.png") #fff repeat-x;
 }
 .claro .dojoxGridRowOdd .dojoxGridRowTable tr {
 	background-color:#f7fcff;
@@ -457,12 +520,18 @@
 .claro .dojoxGridRowSelected .dojoxGridRowTable tr {
 	background-color:#cee6fa;
 }
-.claro .dojoxGridCell {
-	padding:0px;
+.claro .dojoxGrid .dojoxGridCell {
+	outline: none;
+	padding: 3px 5px;
 	border:1px solid transparent;
+	border-color: transparent #E5DAC8 #E5DAC8 transparent;
+}
+.dj_ie7 .claro .dojoxGridCell,
+.dj_ie7 .claro .dojoxGridHeader .dojoxGridCell {
+	border-left: 0px;
 }
 .dj_ie6 .claro .dojoxGridCell {
-	border-color:#fff
+	border-color: #F5F5F5;
 }
 .dj_ie6 .claro .dojoxGridRowOdd .dojoxGridCell {
 	border-left-color:#f4f9fd;
@@ -477,23 +546,20 @@
 	border-bottom:1px solid #BFD6EB;
 }
 .claro .dojoxGridCellFocus {
+	outline: none;
 	border:1px dashed darkblue !important;
 }
-.claro .dojoxGridCellContent {
-	padding:4px 6px 4px 6px;
-}
 .claro .dojoxGridRowOver .dojoxGridCell {
-	background:url(../../../resources/images/row_back.png) #ABD6FF repeat-x;
+	background:url("../../../resources/images/row_back.png") #ABD6FF repeat-x;
 	border-top:1px solid #769DC0;
 	border-bottom:1px solid #769DC0;
 }
 .dj_ie6 .claro .dojoxGridRowOver .dojoxGridCell,
 .dj_ie7 .claro .dojoxGridRowOver .dojoxGridCell {
-	border-left:1px solid #ABD6FF;
 	border-right:1px solid #ABD6FF;
 }
 .claro .dojoxGridRowActive .dojoxGridCell {
-	background:url(../../../resources/images/td_button_down.png) #7DBEFA repeat-x;
+	background:url("../../../resources/images/td_button_down.png") #7DBEFA repeat-x;
 }
 .dj_ie6 .claro .dojoxGridRowActive .dojoxGridCell,
 .dj_ie7 .claro .dojoxGridRowActive .dojoxGridCell {
@@ -506,10 +572,10 @@
 	border-collapse:separate;
 }
 .claro .dojoxGridDoubleAffordance .dojoxGridRowActive .dojoxGridCell{	
-	background-image:url(../../../resources/images/row_back.png);
+	background-image:url("../../../resources/images/row_back.png");
 }
 .claro .dojoxGridDoubleAffordance .dojoxGridRowActive .dojoxGridCellActive {	
-	background:url(../../../resources/images/td_button_down.png) #93cafe repeat-x;
+	background:url("../../../resources/images/td_button_down.png") #93cafe repeat-x;
 }
 .dj_ie6 .claro .dojoxGridCell {
 	background-image:none !important;
@@ -549,13 +615,14 @@
 	background-position: left top !important;
 }
 .claro .dojoxGridExpandoNode {
-	background-image: url(../../../../../dijit/themes/claro/images/treeExpandImages.png);
-    width: 16px;
-    height: 16px;
+	background-image: url("../../../../../dijit/themes/claro/images/treeExpandImages.png");
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
 	background-position: 1px 0px; 
 }
 .dj_ie6 .claro .dojoxGridExpandoNode {
-	background-image: url(../../../../../dijit/themes/claro/images/treeExpandImages8bit.png);
+	background-image: url("../../../../../dijit/themes/claro/images/treeExpandImages8bit.png");
 }
 .claro .dojoxGridRowOver .dojoxGridExpandoNode {
 	background-position: -17px 0px;
@@ -567,7 +634,7 @@
 	background-position: -53px 0px;
 }
 .claro .dojoxGridExpandoLoading .dojoxGridExpandoNode {
-	background-image: url(../../../../../dijit/themes/claro/images/loadingAnimation.gif);
+	background-image: url("../../../../../dijit/themes/claro/images/loadingAnimation.gif");
 }
 .claro .dojoxGridTreeModel .dojoxGridNoChildren .dojoxGridExpando {
 	visibility: visible !important;
@@ -598,17 +665,8 @@
 .claro .dojoxGridRow .dojoxGridRowTable tr.dojoxGridRowSelected {
 	background-color:#cee6fa;
 }
-.dojoxGrid {
-	border:1px solid #DBDBDB;
-}
-.dojoxGridCellContent {
-	padding:3px;
-}
-.dojoxGridSortNode {
-	padding:3px;
-}
-.dojoxGridInProgress {
-	cursor:progress;
+.dojoxGridRowSelector {
+	cursor: pointer;
 }
 .dojoxGridRowSelectorStatusText{
 	visibility:hidden;
@@ -651,7 +709,7 @@
 	padding-right: 2px;
 }
 .dojoxGridFBarDefFilterBtnIcon {
-	background: url(../images/sprite_icons.png) no-repeat;
+	background: url("../images/sprite_icons.png") no-repeat;
 	background-position: -100px -18px;
 	width: 14px;
 	height: 14px;
@@ -696,7 +754,7 @@
 	right: 0;
 }
 .dojoxGridFBarCloseBtnIcon {
-	background: url(../images/sprite_icons.png) no-repeat;
+	background: url("../images/sprite_icons.png") no-repeat;
 	background-position: -119px -20px;
 	width: 14px;
 	height: 14px;
@@ -764,7 +822,7 @@
 	position: relative;
 }
 .dojoxGridFCBoxRemoveCBoxBtnIcon {
-	background-image: url(../images/sprite_icons.png);
+	background-image: url("../images/sprite_icons.png");
 	background-position: -198px -18px;
 	width: 16px;
 	height: 16px;
@@ -794,7 +852,7 @@
 	margin-top: 9px;
 }
 .dojoxGridFDPaneAddCBoxBtnIcon {
-	background-image: url(../images/sprite_icons.png);
+	background-image: url("../images/sprite_icons.png");
 	background-position: -218px 2px;
 	width: 16px;
 	height: 16px;
@@ -812,7 +870,7 @@
 .dojoxGridFCBox .dojoxGridFCBoxColSelect, 
 .dojoxGridFCBox .dojoxGridFCBoxCondSelect, 
 .dojoxGridFCBox .dojoxGridFCBoxValueBox {
-	margin: 5px 0 0 0;
+	margin: 0.1em 0 0 0;
 	width: 100%;
 	
 	display: inline-table;
@@ -874,7 +932,7 @@
 	right:0;
 }
 .dojoxGridFStatusTipDelRuleBtnIcon {
-	background-image: url(../images/sprite_icons.png);
+	background-image: url("../images/sprite_icons.png");
 	background-position: -198px -18px;
 	height: 16px;
 	width: 16px;
@@ -947,17 +1005,18 @@
 	width: 12px!important;
 	height: 16px!important;
 	margin: 0 6px 0 2px;
-	background: url(../images/sprite_icons.png) no-repeat -77px 4px;
+	background: url("../images/sprite_icons.png") no-repeat -77px 4px;
 }
 .dojoxGridPaginatorGotoDivDisabled {
-	background: url(../images/sprite_icons.png) no-repeat -77px -16px;
+	cursor: not-allowed;
+	background: url("../images/sprite_icons.png") no-repeat -77px -16px;
 }
 .dojoxGridWardButton {
 	margin-top: 2px;
 	width: 12px!important;
 	height: 12px!important;
 	float: left;
-	background: url(../images/sprite_icons.png) no-repeat;
+	background: url("../images/sprite_icons.png") no-repeat;
 }
 .dojoxGridWardButtonInner {
 	visibility: hidden;
@@ -973,6 +1032,7 @@
 }
 .dojoxGridfirstPageBtnDisable {
 	margin-left: 1px;
+	cursor: not-allowed;
 	background-position: -57px -17px;
 }
 .dojoxGridprevPageBtn {
@@ -981,6 +1041,7 @@
 	background-position: 3px 3px;
 }
 .dojoxGridprevPageBtnDisable {
+	cursor: not-allowed;
 	margin: 2px 2px 0 9px;
 	background-position: 3px -17px;
 }
@@ -990,6 +1051,7 @@
 	background-position: -37px 3px;
 }
 .dojoxGridlastPageBtnDisable {
+	cursor: not-allowed;
 	margin: 2px 9px 0 9px;
 	background-position: -37px -17px;
 }
@@ -1000,6 +1062,7 @@
 }
 .dojoxGridnextPageBtnDisable {
 	margin-left: 3px;
+	cursor: not-allowed;
 	background-position: -17px -17px;
 }
 .dojoxGridInactived {
@@ -1051,6 +1114,10 @@
 	width: 220px!important;
 	text-align: right;
 }
+.dojoxGridButtonFocus {
+	outline: none;
+	border: 0.5px dotted darkblue !important;
+}
 .dojoxGridBorderDIV {
 	width:2px;
 	background-color: gray;
@@ -1080,7 +1147,7 @@
 	border-color: transparent gray gray transparent;
 }
 .dojoxGridDnDItemIcon {
-	background-image: url(../images/sprite_icons.png);
+	background-image: url("../images/sprite_icons.png");
 }
 .dojoxGridDnDIconRowSingle {
 	background-position: -256px 5px;
@@ -1118,20 +1185,21 @@
 	height: 16px;
 }
 .dojoDndMove .dojoxGridDnDIcon {
-	background: url(../../../../../dojo/resources/images/dndNoMove.png) no-repeat center center;
+	background: url("../../../../../dojo/resources/images/dndNoMove.png") no-repeat center center;
 }
 .dojoDndCopy .dojoxGridDnDIcon {
-	background: url(../../../../../dojo/resources/images/dndNoCopy.png) no-repeat center center;
+	background: url("../../../../../dojo/resources/images/dndNoCopy.png") no-repeat center center;
 }
 .dojoDndMove .dojoDndAvatarCanDrop .dojoxGridDnDIcon {
-	background: url(../../../../../dojo/resources/images/dndMove.png) no-repeat center center;
+	background: url("../../../../../dojo/resources/images/dndMove.png") no-repeat center center;
 }
 .dojoDndCopy .dojoDndAvatarCanDrop .dojoxGridDnDIcon {
-	background: url(../../../../../dojo/resources/images/dndCopy.png) no-repeat center center;
+	background: url("../../../../../dojo/resources/images/dndCopy.png") no-repeat center center;
 }
 .dojoxGrid .dojoxGridSortNode {
 	position: relative;
 	border: 1px solid transparent;
+	cursor: pointer;
 }
 .dj_ie6 .dojoxGrid .dojoxGridSortNode,
 .dj_ie7 .dojoxGrid .dojoxGridSortNode {
@@ -1140,7 +1208,7 @@
 }
 .dojoxGrid .dojoxGridSortNoWrap {
 	white-space:nowrap;
-	cursor: pointer;
+	word-wrap: normal;
 }
 .dojoxGridSortBtn {
 	width: 10px;
@@ -1150,7 +1218,7 @@
 	display:block;
 	position: absolute;
 	color: #000;
-	background: #DFEAF1 url(../images/sprite_icons.png) no-repeat 100px 0;
+	background: #DFEAF1 url("../images/sprite_icons.png") no-repeat 100px 0;
 	text-decoration: none;
 	outline: none;
 	right: 0;
@@ -1278,44 +1346,6 @@ html > body .dojoxGridSorted .dojoxGridCellSortFocus .dojoxGridSortBtnNested {
 .dojoxGridCellSortFocus .dojoxGridSortBtnFocus {
 	border: 1px dashed #666;
 }
-.dijitToasterContent {
-	padding:1em;
-	padding-top:0.25em;
-	background:#73c74a;
-}
-.dijitToasterMessage{ 
-	color:#fff;
-}
-.dijitToasterWarning{ }
-.dijitToasterError,
-.dijitToasterFatal{
-	font-weight:bold;
-	color:#fff;
-}
-.dijitToasterWarning .dijitToasterContent{
-	padding:1em;
-	padding-top:0.25em;
-	background:#d4d943;
-} 
-.dijitToasterError .dijitToasterContent{
-	padding:1em;
-	padding-top:0.25em;
-	background:#c46600;
-}
- 
-.dijitToasterClip {
-	position: absolute;
-	z-index: 5000;
-	overflow: hidden;
-}
-.dijitToasterContainer {
-	display: block;
-	position: absolute;
-	width: 17.5em;
-	margin: 0px;
-	font:0.75em Tahoma, Helvetica, Verdana, Arial;
-}
- 
 .dojoxEllipsis,
 .dojoxEllipsisShown {
 	white-space: nowrap;
@@ -1349,83 +1379,19 @@ html > body .dojoxGridSorted .dojoxGridCellSortFocus .dojoxGridSortBtnNested {
 .dojoxEllipsisShown:after{
 	content: "\2026"
 }
-.claro .dojoxGridMasterHeader .dojoxGridRowTable {
-	border-left: 1px solid #BCBCBC;
-	border-right: 1px solid white;
-	background-color: transparent;
-}
-.claro .dojoxGridHeader tr:first-child .dojoxGridCell {
-	border-top: 1px solid transparent;
-}
-.claro .dojoxGridHeader:first-child .dojoxGridRowTable {
-	border-left-width: 0;
-}
-.claro .dojoxGridMasterHeader {
-	background: url(../../../resources/images/header.png) #EDF2F7 repeat-x bottom;
-	background: -moz-linear-gradient(top, #EDF2F7, #D0DFEA);
-	background: -webkit-gradient(linear, left top, left bottom, from(#EDF2F7), to(#D0DFEA));
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFEDF2F7, endColorstr=#FFD0DFEA);
-	border-bottom: 1px solid white;
-	border-left: 1px solid white;
-	border-top: 1px solid white;
-}
-.claro .dojoxGridCell {
-	padding: 3px 5px;
-	border-color: transparent #E5DAC8 #E5DAC8 transparent;
-}
-.dj_ie6 .claro .dojoxGridCell{
-	border-color:#F5F5F5;
-}
-.claro .dojoxGridHeader {
-	background: transparent;
-	margin-left: -2px;
-}
-.claro .dojoxGridHeader:first-child {
-	margin-left: -1px;
-}
-.claro .dojoxGridHeader .dojoxGridCell{
-	padding: 2px 5px;
-	background: transparent;
-	border-bottom: 1px solid #BCBCBC;
-	border-top: 1px solid white;
-	border-left: 1px solid white;
-	border-right: 1px solid #BCBCBC;
-	vertical-align: top;
-}
-.claro .dojoxGridHeader .dojoxGridCellOver {
-	background:#9dcfff;
-}
-.claro .dojoxGridSortNode{
-	white-space: normal;
-	background: none;
-	border: none;
-	padding: 0;
-}
-.claro .dojoxGridHeader .dojoxGridRowTable tr {
-	background:none;
-}
-.claro .dojoxGridCellContent {
-	padding:4px 6px 4px 6px;
-}
-.dj_webkit .claro th.dojoxGridCell > .dojoxGridCellContent {
-	padding: 4px 0;
-}
-.claro .dojoxGridRowbarInner {
-	width:20px;
-}
-.claro .dojoxGridHeaderSelected .dojoxGridHeaderActive {
+.claro .dojoxGridHeader .dojoxGridHeaderActive {
 	background-color:#91c9fe;
 }
 .claro td.dojoxGridRowSelected {
 	border-collapse:separate;
-	background:url(../../../resources/images/row_back.png) #CEE6FA repeat-x;
+	background:url("../../../resources/images/row_back.png") #CEE6FA repeat-x;
 }
 .claro .dojoxGridRowOver td.dojoxGridRowSelected {
 	border-top:1px solid #769DC0;
 	border-bottom:1px solid #769DC0;
 }
 .claro .dojoxGridRowActive td.dojoxGridRowSelected {
-	background-image:url(../../../resources/images/td_button_down.png);
+	background-image:url("../../../resources/images/td_button_down.png");
 }
 .dj_ie6 .claro .dojoxGridRowOver .dojoxGridCell {
 	border-color: #ABD6FF;
@@ -1433,22 +1399,18 @@ html > body .dojoxGridSorted .dojoxGridCellSortFocus .dojoxGridSortBtnNested {
 .dj_ie6 .claro .dojoxGridRowActive .dojoxGridCell {
 	border-color: #7DBEFA;
 }
-.claro .dojoxGridCell,
-.claro .dojoxGridCellFocus {
-	outline: none;
-}
 .claro .dojoxGridPaginator{
-	background: url(../../../resources/images/header_shadow.png) repeat-x scroll center bottom #E5EDF4;
+	background: url("../../../resources/images/header_shadow.png") repeat-x scroll center bottom #E5EDF4;
 	
 }
 .claro .dojoxGridFBarInfoTD {
-	background: url(../../../resources/images/header_shadow.png) #F2F9FF repeat-x bottom;
+	background: url("../../../resources/images/header_shadow.png") #F2F9FF repeat-x bottom;
 	background: -moz-linear-gradient(top, #F2F9FF, #EAF5FF);
 	background: -webkit-gradient(linear, left top, left bottom, from(#F2F9FF), to(#EAF5FF));
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFF2F9FF, endColorstr=#FFEAF5FF);
 }
 .claro .dojoxGridFBarHover .dojoxGridFBarInfoTD {
-	background: url(../../../resources/images/header_shadow.png) #F2F9FF repeat-x bottom;
+	background: url("../../../resources/images/header_shadow.png") #F2F9FF repeat-x bottom;
 	background: -moz-linear-gradient(top, #ECF6FF 2px, #F2F9FF, #EAF5FF 6px);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.1, #ECF6FF), color-stop(0.6, #F2F9FF), color-stop(0.8, #EAF5FF));
 }
@@ -1493,7 +1455,6 @@ html > body .dojoxGridSorted .dojoxGridCellSortFocus .dojoxGridSortBtnNested {
 	border-top: 1px solid white;
 	border-bottom: 1px solid white;
 }
-.claro .dojoxGridFStatusTipRel,
 .claro .dojoxGridFStatusTipCondition {
 	font-style: italic;
 }
