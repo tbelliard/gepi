@@ -5696,7 +5696,7 @@ function get_statut_from_login($login) {
 	global $mysqli;
 	$sql="SELECT statut FROM utilisateurs WHERE login='$login';";
 	$res = mysqli_query($mysqli, $sql);
-	if($res->num_rows() == 0) {
+	if($res->num_rows == 0) {
 		return "";
 	}
 	else {
@@ -6408,7 +6408,7 @@ function correction_notices_cdt_formules_maths($eff_parcours) {
 
 		$contenu_corrige=get_img_formules_math($contenu, $id_groupe, $type_notice);
 		$sql="UPDATE ct_devoirs_entry SET contenu='".mysql_real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
-		$res_ct=mysql_query($sql);
+		$res_ct=mysqli_query($mysqli, $sql);
 		if(!$res_ct) {
 			echo "<div style='border:1px solid red; margin:3px;'>";
 			echo "<p style='color:red;'>ERREUR sur<br />$sql";
@@ -6432,14 +6432,15 @@ function correction_notices_cdt_formules_maths($eff_parcours) {
  * @return array Tableau PHP des numéros de tel.
  */
 function get_tel_resp_ele($ele_login) {
+	global $mysqli;
 	$tab_tel=array();
 
 	$cpt_resp=0;
 
 	$sql="SELECT rp.*, r.resp_legal, e.tel_pers AS ele_tel_pers, e.tel_port AS ele_tel_port, e.tel_prof AS ele_tel_prof FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		while($lig = $res->fetch_object()) {
 			$tab_tel['responsable'][$cpt_resp]=array();
 			$tab_tel['responsable'][$cpt_resp]['resp_legal']=$lig->resp_legal;
 			$tab_tel['responsable'][$cpt_resp]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,'maj')." ".casse_mot($lig->prenom,'majf2');
@@ -6465,12 +6466,13 @@ function get_tel_resp_ele($ele_login) {
 			}
 			$cpt_resp++;
 		}
+		$res->close();
 	}
 
 	$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND resp_legal='0' ORDER BY rp.civilite, rp.nom, rp.prenom;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($mysqli, $sql);
+	if($res->num_rows() > 0) {
+		while($lig=$res->fetch_object()) {
 			$tab_tel['responsable'][$cpt_resp]=array();
 			$tab_tel['responsable'][$cpt_resp]['resp_legal']=$lig->resp_legal;
 			$tab_tel['responsable'][$cpt_resp]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,'maj')." ".casse_mot($lig->prenom,'majf2');
@@ -6485,6 +6487,7 @@ function get_tel_resp_ele($ele_login) {
 			}
 			$cpt_resp++;
 		}
+		$res->close();
 	}
 
 	return $tab_tel;
@@ -6639,25 +6642,31 @@ function virer_accents_html_setting($name) {
  */
 
 function enregistre_log_maj_sconet($texte, $fin="n") {
+	global $mysqli;
 	$ts_maj_sconet=getSettingValue('ts_maj_sconet');
 	if($ts_maj_sconet=='') {
 		return false;
 	}
 	else {
 		$sql="SELECT * FROM log_maj_sconet WHERE date_debut='$ts_maj_sconet';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			$lig = $res->fetch_object();
 
 			$sql="UPDATE log_maj_sconet SET texte='".mysql_real_escape_string($lig->texte.$texte)."'";
 			if($fin!="n") {$sql.=", date_fin='".strftime("%Y-%m-%d %H:%M:%S")."'";}
 			$sql.=" WHERE date_debut='$ts_maj_sconet';";
+			$res->close();
 		}
 		else {
 			$sql="INSERT INTO log_maj_sconet SET date_debut='$ts_maj_sconet', login='".$_SESSION['login']."', date_fin='0000-00-00 00:00:00', texte='".mysql_real_escape_string($texte)."';";
 		}
-		$res=mysql_query($sql);
-		if($res) {return true;} else {return false;}
+		$res = mysqli_query($mysqli, $sql);
+		if($res) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 
@@ -6696,6 +6705,7 @@ function in_array_i($chaine, $tableau) {
  */
 
 function is_responsable($login_eleve, $login_resp="", $pers_id="", $meme_en_resp_legal_0="n") {
+	global $mysqli;
 	$retour=false;
 	if($login_resp!="") {
 		$sql="(SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2'))";
@@ -6706,8 +6716,9 @@ function is_responsable($login_eleve, $login_resp="", $pers_id="", $meme_en_resp
 			$sql.=" UNION (SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND r.resp_legal='0' AND r.acces_sp='y')";
 		}
 		$sql.=";";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+		$test = mysqli_query($mysqli, $sql);
+		if($test->num_rows > 0) {
+			$test->close();
 			$retour=true;
 		}
 	}
@@ -6720,8 +6731,9 @@ function is_responsable($login_eleve, $login_resp="", $pers_id="", $meme_en_resp
 			$sql.=" UNION (SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND r.resp_legal='0' AND r.acces_sp='y')";
 		}
 		$sql.=";";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+		$test = mysqli_query($mysqli,$sql);
+		if($test->num_rows > 0) {
+			$test->close();
 			$retour=true;
 		}
 	}
@@ -6761,6 +6773,7 @@ function captcha()
  *               selon que les appréciations sont ou non accessibles
  */
 function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
+	global $mysqli;
 	global $delais_apres_cloture;
 	global $date_ouverture_acces_app_classe;
 
@@ -6780,8 +6793,9 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
 			for($i=$periode1;$i<=$periode2;$i++) {
 				$sql="SELECT 1=1 FROM periodes WHERE UNIX_TIMESTAMP(date_verrouillage)<='".$timestamp_limite."' AND id_classe='$id_classe' AND num_periode='$i';";
 				//echo "$sql<br />";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
+				$res=mysqli_query($mysqli, $sql);
+				if($res->num_rows > 0) {
+					$res->close();
 					$tab_acces_app[$i]="y";
 				}
 				else {
@@ -6795,10 +6809,10 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
 													statut='".$statut."' AND
 													periode='$i';";
 				//echo "$sql<br />";
-				$res=mysql_query($sql);
+				$res = mysqli_query($mysqli, $sql);
 				if($res) {
-					if(mysql_num_rows($res)>0) {
-						$lig=mysql_fetch_object($res);
+					if($res->num_rows > 0) {
+						$lig = $res->fetch_object();
 						//echo "\$lig->acces=$lig->acces<br />";
 						if($lig->acces=="date") {
 							//echo "<p>Période $i: Date limite: $lig->date<br />";
@@ -6820,6 +6834,7 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
 						else {
 							$tab_acces_app[$i]="n";
 						}
+						$res->close();
 					}
 					else {
 						$tab_acces_app[$i]="n";
@@ -6837,10 +6852,10 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
 													statut='".$statut."' AND
 													periode='$i';";
 				//echo "$sql<br />";
-				$res=mysql_query($sql);
+				$res = mysqli_query($mysqli, $sql);
 				if($res) {
-					if(mysql_num_rows($res)>0) {
-						$lig=mysql_fetch_object($res);
+					if($res->num_rows > 0) {
+						$lig = $res->fetch_object();
 						//echo "\$lig->acces=$lig->acces<br />";
 						if($lig->acces=="y") {
 							$tab_acces_app[$i]="y";
@@ -6876,12 +6891,13 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
  * @return boolean true/false
  */
 function responsables_adresses_separees($login_eleve) {
+	global $mysqli;
 	$retour=false;
 
 	$sql="SELECT DISTINCT adr1, adr2, adr3, adr4, cp, commune, pays FROM resp_adr ra, resp_pers rp, responsables2 r, eleves e WHERE ra.adr_id=rp.adr_id AND r.pers_id=rp.pers_id AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
 	//echo "$sql<br />";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>1) {
+	$test = mysql_query($mysqli, $sql);
+	if($test->num_rows > 1) {
 		$retour=true;
 	}
 
@@ -6899,6 +6915,7 @@ function responsables_adresses_separees($login_eleve) {
  * @return integer rang de l'élève
  */
 function get_rang_eleve($login_eleve, $id_classe, $periode_num, $forcer_recalcul="n", $recalcul_si_rang_nul="n") {
+	global $mysqli;
 	global $affiche_categories, $test_coef;
 	$retour=0;
 
@@ -6908,11 +6925,13 @@ function get_rang_eleve($login_eleve, $id_classe, $periode_num, $forcer_recalcul
 	}
 
 	if($forcer_recalcul=="y") {
-		$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+		$sql_coef = "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)";
+		$query_coef = mysqli_query($mysqli, $sql_coef);
+		$test_coef = $query_coef->num_rows();
 
 		$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
+		$res=mysqli_query($mysqli, $sql);
 		// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
 
 		include("../lib/calcul_rang.inc.php");
@@ -6920,42 +6939,54 @@ function get_rang_eleve($login_eleve, $id_classe, $periode_num, $forcer_recalcul
 
 	$sql="SELECT rang FROM j_eleves_classes WHERE periode='".$periode_num."' AND id_classe='".$id_classe."' AND login = '".$login_eleve."';";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$retour=mysql_result($res, 0, "rang");
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		$obj = $res->fetch_object();
+		$res->close();
+		//$retour=mysql_result($res, 0, "rang");
+		$retour = $obj->rang;
 		if(($retour==0)&&($recalcul_si_rang_nul=='y')) {
-			$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
-
+			$sql_coef = "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)";
+			$res_coef = mysqli_query($mysqli, $sql_coef);
+			$test_coef = $res_coef->num_rows;
+			$res_coef->close();
 			$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
 			//echo "$sql<br />";
-			$res=mysql_query($sql);
+			$res=mysqli_query($mysqli, $sql);
 			// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
 
 			include("../lib/calcul_rang.inc.php");
 
 			$sql="SELECT rang FROM j_eleves_classes WHERE periode='".$periode_num."' AND id_classe='".$id_classe."' AND login = '".$login_eleve."';";
 			//echo "$sql<br />";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				$retour=mysql_result($res, 0, "rang");
+			$res=mysqli_query($mysqli, $sql);
+			if($res->num_rows > 0) {
+				$obj = $res->fetch_object();
+				$retour = $obj->rang;
+				$res->close();
 			}
 		}
 	}
-	elseif($recalcul_si_rang_nul=='y') {
-		$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+	elseif($recalcul_si_rang_nul == 'y') {
+		$sql_coef = "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)";
+		$query_coef = mysqli_query($mysqli, $sql_coef);
+		$test_coef = $query_coef->num_rows;
+		$query_coef->close();
 
 		$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
+		$res=mysqli_query($mysqli, $sql);
 		// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
 
 		include("../lib/calcul_rang.inc.php");
 
 		$sql="SELECT rang FROM j_eleves_classes WHERE periode='".$periode_num."' AND id_classe='".$id_classe."' AND login = '".$login_eleve."';";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$retour=mysql_result($res, 0, "rang");
+		$res=mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			$obj = $res->fetch_object();
+			$retour = $obj->rang;
+			$res->close();
 		}
 	}
 
@@ -6970,18 +7001,20 @@ function get_rang_eleve($login_eleve, $id_classe, $periode_num, $forcer_recalcul
  */
 
 function get_class_dates_from_ele_login($login_eleve) {
+	global $mysqli;
 	$tab=array();
 
 	$sql="SELECT p.*, c.classe, c.nom_complet FROM periodes p, j_eleves_classes jec, classes c WHERE jec.id_classe=p.id_classe AND jec.periode=p.num_periode AND c.id=jec.id_classe AND jec.login='".$login_eleve."' ORDER BY p.num_periode;";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		while($lig = $res->fetch_object()) {
 			$tab[$lig->num_periode]['id_classe']=$lig->id_classe;
 			$tab[$lig->num_periode]['classe']=$lig->classe;
 			$tab[$lig->num_periode]['nom_complet']=$lig->nom_complet;
 			$tab[$lig->num_periode]['date_fin']=$lig->date_fin;
 		}
+		$res->close();
 	}
 
 	return $tab;
@@ -7017,14 +7050,15 @@ function maintien_de_la_session() {
 /** Fonction destinée à récupérer la liste des enseignants associés à une matière
  */
 function get_profs_for_matiere($matiere) {
+	global $mysqli;
 	$tab=array();
 
 	$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$matiere."' ORDER BY u.nom, u.prenom;";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
 		$cpt=0;
-		while($lig=mysql_fetch_object($res)) {
+		while($lig = $res->fetch_object()) {
 			$tab[$cpt]['login']=$lig->login;
 			$tab[$cpt]['nom']=$lig->nom;
 			$tab[$cpt]['prenom']=$lig->prenom;
@@ -7032,6 +7066,7 @@ function get_profs_for_matiere($matiere) {
 			$tab[$cpt]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
 			$cpt++;
 		}
+		$res->close();
 	}
 
 	return $tab;
@@ -7040,14 +7075,15 @@ function get_profs_for_matiere($matiere) {
 /** Fonction destinée à récupérer la liste des enseignants associés à une classe
  */
 function get_profs_for_classe($id_classe) {
+	global $mysqli;
 	$tab=array();
 
 	$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe."' ORDER BY u.nom, u.prenom;";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
 		$cpt=0;
-		while($lig=mysql_fetch_object($res)) {
+		while($lig = $res->fetch_object()) {
 			$tab[$cpt]['login']=$lig->login;
 			$tab[$cpt]['nom']=$lig->nom;
 			$tab[$cpt]['prenom']=$lig->prenom;
@@ -7055,6 +7091,7 @@ function get_profs_for_classe($id_classe) {
 			$tab[$cpt]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
 			$cpt++;
 		}
+		$res->close();
 	}
 
 	return $tab;
@@ -7087,6 +7124,7 @@ function fwrite_debug($fichier, $mode, $texte) {
  * @return integer Numéro de la période
  */
 function cherche_periode_courante($id_classe, $ts, $valeur_par_defaut="", $pour_bulletins="n") {
+	global $mysqli;
 	//echo "<pre>\$ts=$ts</pre>";
 	$retour=$valeur_par_defaut;
 
@@ -7099,11 +7137,11 @@ function cherche_periode_courante($id_classe, $ts, $valeur_par_defaut="", $pour_
 
 	$periode_trouvee="n";
 	if($pour_bulletins=="y") {
-		$sql="select * from periodes where id_classe='$id_classe' order by num_periode ASC;";
+		$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode ASC;";
 		fwrite_debug($fich_debug, "a+", $sql."\n");
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			while($lig=mysql_fetch_object($res)) {
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			while($lig = $res->fetch_object()) {
 				$num_per_temp=$lig->num_periode;
 				if($lig->verouiller=='N') {
 					if($num_per_temp>1) {
@@ -7118,35 +7156,42 @@ function cherche_periode_courante($id_classe, $ts, $valeur_par_defaut="", $pour_
 					break;
 				}
 			}
+			$res->close();
 		}
 
 		fwrite_debug($fich_debug, "a+", "\$periode_trouvee=".$periode_trouvee."\n");
 
 		if($periode_trouvee=="n") {
 			//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
-			$sql="select * from periodes where id_classe='$id_classe' and date_fin<FROM_UNIXTIME($ts) order by num_periode DESC LIMIT 1;";
+			$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND date_fin<FROM_UNIXTIME($ts) ORDER BY num_periode DESC LIMIT 1;";
 			fwrite_debug($fich_debug, "a+", $sql."\n");
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				$retour=mysql_result($res, 0, "num_periode");
+			$res = mysqli_query($mysqli, $sql);
+			if($res->num_rows > 0) {
+				$obj = $res->fetch_object();
+				$retour = $obj->num_periode;
+				$res->close();
 			}
 		}
 	}
 	else {
 		//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
-		$sql="select * from periodes where id_classe='$id_classe' and date_fin>FROM_UNIXTIME($ts) order by num_periode ASC LIMIT 1;";
+		$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND date_fin>FROM_UNIXTIME($ts) ORDER BY num_periode ASC LIMIT 1;";
 		fwrite_debug($fich_debug, "a+", $sql."\n");
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$retour=mysql_result($res, 0, "num_periode");
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			$obj = $res->fetch_object();
+			$retour = $obj->num_periode;
+			$res->close();
 		}
 		else {
-			$sql="select p.num_periode from periodes p, edt_calendrier e where (classe_concerne_calendrier like '%;$id_classe;%' or classe_concerne_calendrier like '$id_classe;%') and etabferme_calendrier='1' and $ts<fin_calendrier_ts and $ts>debut_calendrier_ts and p.nom_periode=e.nom_calendrier and p.id_classe='$id_classe';";
+			$sql="SELECT p.num_periode FROM periodes p, edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '$id_classe;%') AND etabferme_calendrier='1' AND $ts<fin_calendrier_ts AND $ts>debut_calendrier_ts AND p.nom_periode=e.nom_calendrier AND p.id_classe='$id_classe';";
 			//echo "$sql<br />";
 			fwrite_debug($fich_debug, "a+", $sql."\n");
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				$retour=mysql_result($res, 0, "num_periode");
+			$res = mysqli_query($mysqli, $sql);
+			if($res->num_rows > 0) {
+				$obj = $res->fetch_object();
+				$retour = $obj->num_periode;
+				$res->close();
 			}
 		}
 	}
@@ -7166,6 +7211,7 @@ function cherche_periode_courante($id_classe, $ts, $valeur_par_defaut="", $pour_
  * @return integer Numéro de la période
  */
 function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut="", $pour_bulletins="n") {
+	global $mysqli;
 	//echo "<pre>\$ts=$ts</pre>";
 	$retour=$valeur_par_defaut;
 
@@ -7178,7 +7224,7 @@ function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut=""
 
 	$periode_trouvee="n";
 	if($pour_bulletins=="y") {
-		$sql="select * from periodes p, j_eleves_classes jec where p.id_classe=jec.id_classe AND jec.login='$login_eleve' order by num_periode ASC;";
+		$sql="SELECT * FROM periodes p, j_eleves_classes jec WHERE p.id_classe=jec.id_classe AND jec.login='$login_eleve' ORDER BY num_periode ASC;";
 		fwrite_debug($fich_debug, "a+", $sql."\n");
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
@@ -7203,7 +7249,7 @@ function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut=""
 
 		if($periode_trouvee=="n") {
 			//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
-			$sql="select * from periodes p, j_eleves_classes jec where p.id_classe=jec.id_classe AND jec.login='$login_eleve' and date_fin<FROM_UNIXTIME($ts) order by num_periode DESC LIMIT 1;";
+			$sql="SELECT * FROM periodes p, j_eleves_classes jec WHERE p.id_classe=jec.id_classe AND jec.login='$login_eleve' AND date_fin<FROM_UNIXTIME($ts) ORDER BY num_periode DESC LIMIT 1;";
 			fwrite_debug($fich_debug, "a+", $sql."\n");
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
@@ -7213,7 +7259,7 @@ function cherche_periode_courante_eleve($login_eleve, $ts, $valeur_par_defaut=""
 	}
 	else {
 		//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
-		$sql="select * from periodes p, j_eleves_classes jec where p.id_classe=jec.id_classe AND jec.login='$login_eleve' and date_fin>FROM_UNIXTIME($ts) order by num_periode ASC LIMIT 1;";
+		$sql="SELECT * from periodes p, j_eleves_classes jec WHERE p.id_classe=jec.id_classe AND jec.login='$login_eleve' AND date_fin>FROM_UNIXTIME($ts) ORDER BY num_periode ASC LIMIT 1;";
 		fwrite_debug($fich_debug, "a+", $sql."\n");
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
