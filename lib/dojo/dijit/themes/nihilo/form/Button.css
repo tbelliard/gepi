@@ -7,12 +7,12 @@
 	padding: 0.1em 0.2em 0.2em 0.2em;
 	background: #fff url("../images/buttonEnabled.png") repeat-x top left;
 }
-.nihilo .dijitSelect .dijitButtonContents {
-	border-right: none;
-}
 .nihilo .dijitButtonText {
 	text-align: center;
 	padding: 0 0.3em;
+}
+.nihilo .dijitInputField {
+	padding: 0; 
 }
 .nihilo .dijitComboBox .dijitButtonNode {
 	border-width: 0 0 0 1px;
@@ -38,8 +38,8 @@
 	background:#fafafa url("../images/buttonDisabled.png") top repeat-x;
 	opacity: 0.60;
 }
-.dj_ie6 .nihilo .dijitReadOnly INPUT,
-.dj_ie7 .nihilo .dijitReadOnly INPUT,
+.dj_ie6 .nihilo .dijitReadOnly input,
+.dj_ie7 .nihilo .dijitReadOnly input,
 .dj_ie6 .nihilo .dijitComboButtonDisabled .dijitButtonText,
 .dj_ie7 .nihilo .dijitComboButtonDisabled .dijitButtonText {
 	

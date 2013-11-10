@@ -4,11 +4,11 @@
 	margin:0;
 	border:0;
 	padding:0;
-	line-height:normal;
 	font: inherit;
+	line-height:normal;
 	color: inherit;
 }
-.dijit_a11y .dijitReset {
+.dj_a11y .dijitReset {
 	-moz-appearance: none; 
 }
 .dijitInline {
@@ -21,6 +21,11 @@
 	vertical-align:middle;
 	#vertical-align: auto;	
 }
+table.dijitInline {
+	
+	display:inline-table;
+	box-sizing: content-box; -moz-box-sizing: content-box;
+}
 .dijitHidden {
 	
 	display: none !important;
@@ -30,51 +35,55 @@
 	display: block !important;	
 	position: relative;			
 }
+.dj_ie6 .dijitComboBox .dijitInputContainer,
 .dijitInputContainer {
 	
 	#zoom: 1;
 	overflow: hidden;
 	float: none !important; 
 	position: relative;
-	vertical-align: middle;
-	#display: inline;
 }
-.dj_ie INPUT.dijitTextBox,
-.dj_ie .dijitTextBox INPUT {
+.dj_ie7 .dijitInputContainer {
+	float: left !important; 
+	clear: left;
+	display: inline-block !important; 
+}
+.dj_ie .dijitSelect input,
+.dj_ie input.dijitTextBox,
+.dj_ie .dijitTextBox input {
 	font-size: 100%;
+}
+.dijitSelect .dijitButtonText {
+	float: left;
+	vertical-align: top;
+}
+TABLE.dijitSelect {
+	padding: 0 !important; 
+	border-collapse: separate; 
 }
 .dijitTextBox .dijitSpinnerButtonContainer,
 .dijitTextBox .dijitArrowButtonContainer,
-.dijitTextBox .dijitValidationContainer {
+.dijitValidationTextBox .dijitValidationContainer {
 	float: right;
 	text-align: center;
 }
-.dijitTextBox INPUT.dijitInputField {
+.dijitSelect input.dijitInputField,
+.dijitTextBox input.dijitInputField {
 	
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 }
-.dijitTextBox .dijitValidationContainer {
+.dijitValidationTextBox .dijitValidationContainer {
 	display: none;
-}
-.dijitInlineTable {
-	
-	display:inline-table;
-	display:inline-block;		
-	#zoom: 1; 
-	#display:inline; 
-	box-sizing: content-box; -moz-box-sizing: content-box;
-	border:0;
-	padding:0;
 }
 .dijitTeeny {
 	font-size:1px;
 	line-height:1px;
 }
-.dijitOffScreen {
-	position: absolute;
-	left: 50%;
-	top: -10000px;
+.dijitOffScreen { 
+	position: absolute !important;
+	left: -10000px !important;
+	top: -10000px !important;
 }
 .dijitPopup {
 	position: absolute;
@@ -82,6 +91,7 @@
 	margin: 0;
 	border: 0;
 	padding: 0;
+	-webkit-overflow-scrolling: touch;
 }
 .dijitPositionOnly {
 	
@@ -119,40 +129,48 @@
 	
 	overflow: hidden;	
 }
-.dijit_a11y .dijitIcon,
-.dijit_a11y DIV.dijitArrowButtonInner, 
-.dijit_a11y SPAN.dijitArrowButtonInner,
-.dijit_a11y IMG.dijitArrowButtonInner,
-.dijit_a11y .dijitCalendarIncrementControl,
-.dijit_a11y .dijitTreeExpando {
+.dj_a11y .dijitIcon,
+.dj_a11y div.dijitArrowButtonInner, 
+.dj_a11y span.dijitArrowButtonInner,
+.dj_a11y img.dijitArrowButtonInner,
+.dj_a11y .dijitCalendarIncrementControl,
+.dj_a11y .dijitTreeExpando {
 	
 	display: none;
 }
-.dijitSpinner DIV.dijitArrowButtonInner {
+.dijitSpinner div.dijitArrowButtonInner {
 	display: block; 
 }
-.dijit_a11y .dijitA11ySideArrow {
+.dj_a11y .dijitA11ySideArrow {
 	display: inline !important; 
 	cursor: pointer;
 }
-.dijit_a11y .dijitCalendarDateLabel {
+.dj_a11y .dijitCalendarDateLabel {
 	padding: 1px;
+	border: 0px !important;
 }
-.dijit_a11y .dijitCalendarSelectedDate .dijitCalendarDateLabel {
-	border-style: dotted !important;
-	border-width: 1px;
+.dj_a11y .dijitCalendarSelectedDate .dijitCalendarDateLabel {
+	border-style: solid !important;
+	border-width: 1px !important;
 	padding: 0;
 }
-.dijit_a11y .dijitCalendarDateTemplate {
+.dj_a11y .dijitCalendarDateTemplate {
 	padding-bottom: 0.1em !important;	
+	border: 0px !important;
 }
-.dijit_a11y .dijitButtonNode {
+.dj_a11y .dijitButtonNode {
 	border: black outset medium !important;
 	
 	padding: 0 !important;
 }
-.dijit_a11y .dijitTextBoxReadOnly .dijitInputField,
-.dijit_a11y .dijitTextBoxReadOnly .dijitButtonNode {
+.dj_a11y .dijitArrowButton {
+	padding: 0 !important;
+}
+.dj_a11y .dijitButtonContents {
+	margin: 0.15em; 
+}
+.dj_a11y .dijitTextBoxReadOnly .dijitInputField,
+.dj_a11y .dijitTextBoxReadOnly .dijitButtonNode {
 	border-style: outset!important;
 	border-width: medium!important;
 	border-color: #999 !important;
@@ -161,6 +179,7 @@
 .dijitButtonNode * {
 	vertical-align: middle;
 }
+.dijitSelect .dijitArrowButtonInner,
 .dijitButtonNode .dijitArrowButtonInner {
 	
 	background: no-repeat center;
@@ -184,6 +203,9 @@
 	background-position:right top;
 	background-repeat:no-repeat;
 }
+.dj_gecko .dj_a11y .dijitButtonDisabled .dijitButtonNode {
+	opacity: 0.5;
+}
 .dijitToggleButton,
 .dijitButton,
 .dijitDropDownButton,
@@ -198,7 +220,7 @@
 td.dijitButtonContents {
 	display: table-cell;	
 }
-.dijitButtonNode IMG {
+.dijitButtonNode img {
 	
 	vertical-align:middle;
 	
@@ -223,6 +245,9 @@ td.dijitButtonContents {
 .dj_gecko .dijitToolbar .dijitButtonNode::-moz-focus-inner {
 	padding:0;
 }
+.dijitSelect {
+	border:1px solid gray;
+}
 .dijitButtonNode {
 	
 	border:1px solid gray;
@@ -240,9 +265,12 @@ td.dijitButtonContents {
 .dijitTextBox .dijitButtonNode {
 	border-width: 0;
 }
+.dijitSelect,
+.dijitSelect *,
 .dijitButtonNode,
 .dijitButtonNode * {
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
 .dj_ie .dijitButtonNode {
 	
@@ -252,7 +280,7 @@ td.dijitButtonContents {
 	
 	overflow: visible;
 }
-DIV.dijitArrowButton {
+div.dijitArrowButton {
 	float: right;
 }
 .dijitTextBox {
@@ -265,14 +293,14 @@ DIV.dijitArrowButton {
 .dijitTextBoxDisabled {
 	color: gray;
 }
-.dj_webkit .dijitTextBoxDisabled INPUT {
-	color: #eee; 
+.dj_safari .dijitTextBoxDisabled input {
+	color: #B0B0B0; 
 }
-.dj_webkit TEXTAREA.dijitTextAreaDisabled {
+.dj_safari textarea.dijitTextAreaDisabled {
 	color: #333; 
 }
-.dj_gecko .dijitTextBoxReadOnly INPUT.dijitInputField, 
-.dj_gecko .dijitTextBoxDisabled INPUT {
+.dj_gecko .dijitTextBoxReadOnly input.dijitInputField, 
+.dj_gecko .dijitTextBoxDisabled input {
 	-moz-user-input: none; 
 }
 .dijitPlaceHolder {
@@ -287,19 +315,23 @@ DIV.dijitArrowButton {
 .dijitTimeTextBox {
 	width: 8em;
 }
-.dijitTextBox INPUT:focus {
+.dijitTextBox input:focus {
 	outline: none;	
 }
 .dijitTextBoxFocused {
-	outline: auto 5px -webkit-focus-ring-color;
+	outline: 5px -webkit-focus-ring-color;
 }
-.dijitTextBox INPUT {
+.dijitSelect input,
+.dijitTextBox input {
 	float: left; 
+}
+.dj_ie6 input.dijitTextBox,
+.dj_ie6 .dijitTextBox input {
+	float: none;
 }
 .dijitInputInner {
 	
 	border:0 !important;
-	vertical-align:middle !important;
 	background-color:transparent !important;
 	width:100% !important;
 	
@@ -308,13 +340,14 @@ DIV.dijitArrowButton {
 	margin-left: 0 !important;
 	margin-right: 0 !important;
 }
-.dijit_a11y .dijitTextBox INPUT {
+.dj_a11y .dijitTextBox input {
 	margin: 0 !important;
 }
-.dijitTextBoxError INPUT.dijitValidationInner,
-.dijitTextBox INPUT.dijitArrowButtonInner {
+.dijitValidationTextBoxError input.dijitValidationInner,
+.dijitSelect input,
+.dijitTextBox input.dijitArrowButtonInner {
 	
-	text-indent: -1em !important;
+	text-indent: -2em !important;
 	direction: ltr !important;
 	text-align: left !important;
 	height: auto !important;
@@ -322,32 +355,44 @@ DIV.dijitArrowButton {
 	#letter-spacing: -5em !important;
 	#text-align: right !important;
 }
-.dj_ie .dijitTextBox INPUT,
-.dj_ie INPUT.dijitTextBox {
+.dj_ie .dijitSelect input,
+.dj_ie .dijitTextBox input,
+.dj_ie input.dijitTextBox {
 	overflow-y: visible; 
 	line-height: normal; 
 }
-.dj_ie7 .dijitTextBox INPUT.dijitValidationInner,
-.dj_ie7 .dijitTextBox INPUT.dijitArrowButtonInner {
-	line-height: 86%; 
+.dijitSelect .dijitSelectLabel span {
+	line-height: 100%;
 }
-.dj_ie6 .dijitTextBox INPUT,
-.dj_ie6 INPUT.dijitTextBox,
-.dj_iequirks .dijitTextBox INPUT.dijitValidationInner,
-.dj_iequirks .dijitTextBox INPUT.dijitArrowButtonInner,
-.dj_iequirks .dijitTextBox INPUT.dijitSpinnerButtonInner,
-.dj_iequirks .dijitTextBox INPUT.dijitInputInner,
-.dj_iequirks INPUT.dijitTextBox {
+.dj_ie .dijitSelect .dijitSelectLabel {
+	line-height: normal;
+}
+.dj_ie6 .dijitSelect .dijitSelectLabel,
+.dj_ie7 .dijitSelect .dijitSelectLabel,
+.dj_ie8 .dijitSelect .dijitSelectLabel,
+.dj_iequirks .dijitSelect .dijitSelectLabel,
+.dijitSelect td,
+.dj_ie6 .dijitSelect input,
+.dj_iequirks .dijitSelect input,
+.dj_ie6 .dijitSelect .dijitValidationContainer,
+.dj_ie6 .dijitTextBox input,
+.dj_ie6 input.dijitTextBox,
+.dj_iequirks .dijitTextBox input.dijitValidationInner,
+.dj_iequirks .dijitTextBox input.dijitArrowButtonInner,
+.dj_iequirks .dijitTextBox input.dijitSpinnerButtonInner,
+.dj_iequirks .dijitTextBox input.dijitInputInner,
+.dj_iequirks input.dijitTextBox {
 	line-height: 100%; 
 }
-.dijit_a11y INPUT.dijitValidationInner,
-.dijit_a11y INPUT.dijitArrowButtonInner {
+.dj_a11y input.dijitValidationInner,
+.dj_a11y input.dijitArrowButtonInner {
 	
 	text-indent: 0 !important;
 	width: 1em !important;
 	#text-align: left !important;
+	color: black !important;
 }
-.dijitTextBoxError .dijitValidationContainer {
+.dijitValidationTextBoxError .dijitValidationContainer {
 	display: inline;
 	cursor: default;
 }
@@ -356,6 +401,7 @@ DIV.dijitArrowButton {
 	
 	border-width: 0 0 0 1px !important; 
 }
+.dj_a11y .dijitSelect .dijitArrowButtonContainer,
 .dijitToolbar .dijitComboBox .dijitArrowButtonContainer {
 	
 	border-width: 0 !important;
@@ -368,7 +414,7 @@ DIV.dijitArrowButton {
 	
 	border-width: 0;
 }
-.dj_ie .dijit_a11y .dijitSpinner .dijitSpinnerButtonContainer .dijitButtonNode {
+.dj_ie .dj_a11y .dijitSpinner .dijitSpinnerButtonContainer .dijitButtonNode {
 	clear: both; 
 }
 .dj_ie .dijitToolbar .dijitComboBox {
@@ -389,35 +435,36 @@ DIV.dijitArrowButton {
 .dijitSpinnerButtonContainer .dijitButtonNode {
 	border-width: 0;
 }
-.dijit_a11y .dijitSpinnerButtonContainer .dijitButtonNode {
-	border: 0 none !important;
+.dj_a11y .dijitSpinnerButtonContainer .dijitButtonNode {
+	border-width: 0px !important;
+	border-style: solid !important;
 }
-.dijit_a11y .dijitTextBox .dijitSpinnerButtonContainer,
-.dijit_a11y .dijitSpinner .dijitArrowButtonInner,
-.dijit_a11y .dijitSpinnerButtonContainer INPUT {
+.dj_a11y .dijitTextBox .dijitSpinnerButtonContainer,
+.dj_a11y .dijitSpinner .dijitArrowButtonInner,
+.dj_a11y .dijitSpinnerButtonContainer input {
 	width: 1em !important;
 }
-.dijit_a11y .dijitSpinner .dijitArrowButtonInner {
+.dj_a11y .dijitSpinner .dijitArrowButtonInner {
 	margin: 0 auto !important; 
 }
-.dj_ie .dijit_a11y .dijitSpinner .dijitArrowButtonInner .dijitInputField {
+.dj_ie .dj_a11y .dijitSpinner .dijitArrowButtonInner .dijitInputField {
 	padding-left: 0.3em !important;
 	padding-right: 0.3em !important;
 	margin-left: 0.3em !important;
 	margin-right: 0.3em !important;
 	width: 1.4em !important;
 }
-.dj_ie7 .dijit_a11y .dijitSpinner .dijitArrowButtonInner .dijitInputField {
+.dj_ie7 .dj_a11y .dijitSpinner .dijitArrowButtonInner .dijitInputField {
 	padding-left: 0 !important; 
 	padding-right: 0 !important;
 	width: 1em !important;
 }
-.dj_ie6 .dijit_a11y .dijitSpinner .dijitArrowButtonInner .dijitInputField {
+.dj_ie6 .dj_a11y .dijitSpinner .dijitArrowButtonInner .dijitInputField {
 	margin-left: 0.1em !important;
 	margin-right: 0.1em !important;
 	width: 1em !important;
 }
-.dj_iequirks .dijit_a11y .dijitSpinner .dijitArrowButtonInner .dijitInputField {
+.dj_iequirks .dj_a11y .dijitSpinner .dijitArrowButtonInner .dijitInputField {
 	margin-left: 0 !important;
 	margin-right: 0 !important;
 	width: 2em !important;
@@ -437,7 +484,7 @@ DIV.dijitArrowButton {
 .dj_iequirks .dijitSpinner .dijitSpinnerButtonContainer .dijitArrowButton {
 	width: auto;
 }
-.dijit_a11y .dijitSpinnerButtonContainer .dijitArrowButton {
+.dj_a11y .dijitSpinnerButtonContainer .dijitArrowButton {
 	overflow: visible !important;
 }
 .dijitSpinner .dijitSpinnerButtonContainer .dijitDownArrowButton {
@@ -470,6 +517,7 @@ DIV.dijitArrowButton {
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 	width: 100%;
+	visibility: hidden;
 }
 .dj_ie .dijitSpinner .dijitArrowButtonInner .dijitInputField {
 	zoom: 50%; 
@@ -477,25 +525,18 @@ DIV.dijitArrowButton {
 .dijitSpinner .dijitSpinnerButtonContainer .dijitArrowButtonInner {
 	overflow: hidden;
 }
-.dijit_a11y .dijitSpinner .dijitSpinnerButtonContainer .dijitArrowButton {
+.dj_a11y .dijitSpinner .dijitSpinnerButtonContainer .dijitArrowButton {
 	width: 100%;
 }
-.dj_iequirks .dijit_a11y .dijitSpinner .dijitSpinnerButtonContainer .dijitArrowButton {
+.dj_iequirks .dj_a11y .dijitSpinner .dijitSpinnerButtonContainer .dijitArrowButton {
 	width: 1em; 
 }
-.dijitSpinner .dijitArrowButtonInner .dijitInputField {
-	visibility: hidden;
-}
-.dijit_a11y .dijitSpinner .dijitArrowButtonInner .dijitInputField {
+.dj_a11y .dijitSpinner .dijitArrowButtonInner .dijitInputField {
 	vertical-align:top;
 	visibility: visible;
 }
-.dijit_a11y .dijitSpinnerButtonContainer {
+.dj_a11y .dijitSpinnerButtonContainer {
 	width: 1em;
-}
-.dijit_a11y .dijitSpinnerButtonContainer .dijitButtonNode {
-	border-width: 1px 0 0 0;
-	border-style: solid !important;
 }
 .dijitCheckBox,
 .dijitRadio,
@@ -508,8 +549,8 @@ DIV.dijitArrowButton {
 	background-repeat:no-repeat;
 	overflow: hidden;
 }
-.dijitCheckBox INPUT,
-.dijitRadio INPUT {
+.dijitCheckBox input,
+.dijitRadio input {
 	margin: 0;
 	padding: 0;
 	display: block;
@@ -521,17 +562,25 @@ DIV.dijitArrowButton {
 .dj_ie .dijitCheckBoxInput {
 	filter: alpha(opacity=0);
 }
-.dijit_a11y .dijitCheckBox,
-.dijit_a11y .dijitRadio {
+.dj_a11y .dijitCheckBox,
+.dj_a11y .dijitRadio {
 	
 	width: auto !important;
 	height: auto !important;
 }
-.dijit_a11y .dijitCheckBoxInput {
+.dj_a11y .dijitCheckBoxInput {
 	opacity: 1;
 	filter: none;
 	width: auto;
 	height: auto;
+}
+.dj_a11y .dijitFocusedLabel {
+	
+	border: 1px dotted;
+	outline: 0px !important;
+}
+.dijitProgressBar {
+    z-index: 0; 
 }
 .dijitProgressBarEmpty {
 	
@@ -560,12 +609,12 @@ DIV.dijitArrowButton {
 	right:0;
 	margin:0;
 	padding:0;
-	width:auto;
+	width: 100%;    
 	height:auto;
 	background-color:#aaa;
 	background-attachment: fixed;
 }
-.dijit_a11y .dijitProgressBarTile {
+.dj_a11y .dijitProgressBarTile {
 	
 	border-width:2px;
 	border-style:solid;
@@ -583,7 +632,7 @@ DIV.dijitArrowButton {
 .dijitProgressBarIndeterminateHighContrastImage {
 	display:none;
 }
-.dijit_a11y .dijitProgressBarIndeterminate .dijitProgressBarIndeterminateHighContrastImage {
+.dj_a11y .dijitProgressBarIndeterminate .dijitProgressBarIndeterminateHighContrastImage {
 	display:block;
 	position:absolute;
 	top:0;
@@ -621,7 +670,7 @@ DIV.dijitArrowButton {
 .dijitTooltipConnector {
 	position: absolute;
 }
-.dijit_a11y .dijitTooltipConnector {
+.dj_a11y .dijitTooltipConnector {
 	display: none;	
 }
 .dijitTooltipData {
@@ -632,10 +681,10 @@ DIV.dijitArrowButton {
 	display: block;
 	overflow: hidden;
 }
-body .dijitAlignTop,
-body .dijitAlignBottom,
-body .dijitAlignLeft,
-body .dijitAlignRight {
+.dijitAlignTop,
+.dijitAlignBottom,
+.dijitAlignLeft,
+.dijitAlignRight {
 	position: absolute;
 	overflow: hidden;
 }
@@ -643,6 +692,7 @@ body .dijitAlignClient { position: absolute; }
 .dijitBorderContainer, .dijitBorderContainerNoGutter {
 	position:relative;
 	overflow: hidden;
+    z-index: 0; 
 }
 .dijitBorderContainerPane,
 .dijitBorderContainerNoGutterPane {
@@ -686,28 +736,31 @@ body .dijitAlignClient { position: absolute; }
 }
 .dj_ie .dijitSplitterCover {
 	background: white;
+	opacity: 0;
+}
+.dj_ie6 .dijitSplitterCover,
+.dj_ie7 .dijitSplitterCover,
+.dj_ie8 .dijitSplitterCover {
 	filter: alpha(opacity=0);
 }
 .dijitSplitterH {
 	height: 7px;
 	border-top:1px;
 	border-bottom:1px;
-	cursor: ns-resize;
+	cursor: row-resize;
+	-webkit-tap-highlight-color: transparent;
 }
 .dijitSplitterV {
 	width: 7px;
 	border-left:1px;
 	border-right:1px;
-	cursor: ew-resize;
+	cursor: col-resize;
+	-webkit-tap-highlight-color: transparent;
 }
 .dijitSplitContainer {
 	position: relative;
 	overflow: hidden;
 	display: block;
-}
-.dj_ff3 .dijit_a11y div.dijitSplitter:focus {
-	outline-style:dotted;
-	outline-width: 2px;
 }
 .dijitSplitPane {
 	position: absolute;
@@ -716,8 +769,6 @@ body .dijitAlignClient { position: absolute; }
 .dijitSplitContainerSizerV {
 	position:absolute;
 	font-size: 1px;
-	cursor: move;
-	cursor: w-resize;
 	background-color: ThreeDFace;
 	border: 1px solid;
 	border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
@@ -742,52 +793,66 @@ body .dijitAlignClient { position: absolute; }
 	filter: Alpha(Opacity=50);
 	margin: 0;
 }
-.dj_ie .dijitSplitterV, .dijitSplitContainerVirtualSizerH {
-	cursor: w-resize;
+.dijitSplitContainerSizerH, .dijitSplitContainerVirtualSizerH {
+	cursor: col-resize;
 }
-.dj_ie .dijitSplitterH, .dijitSplitContainerSizerV, .dijitSplitContainerVirtualSizerV {
-	cursor: n-resize;
+.dijitSplitContainerSizerV, .dijitSplitContainerVirtualSizerV {
+	cursor: row-resize;
 }
-.dijit_a11y .dijitSplitterH {
+.dj_a11y .dijitSplitterH {
 	border-top:1px solid #d3d3d3 !important;
 	border-bottom:1px solid #d3d3d3 !important;
 }
-.dijit_a11y .dijitSplitterV {
+.dj_a11y .dijitSplitterV {
 	border-left:1px solid #d3d3d3 !important;
 	border-right:1px solid #d3d3d3 !important;
 }
 .dijitContentPane {
 	display: block;
 	overflow: auto;	
+	-webkit-overflow-scrolling: touch;
 }
 .dijitContentPaneSingleChild {
 	
 	overflow: hidden;
 }
+.dijitContentPaneLoading .dijitIconLoading,
+.dijitContentPaneError .dijitIconError {
+	margin-right: 9px;
+}
 .dijitTitlePane {
 	display: block;
 	overflow: hidden;
 }
-.dijitTitlePaneTitle {
+.dijitFieldset {
+	border: 1px solid gray;
+}
+.dijitTitlePaneTitle, .dijitFieldset legend {
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
 .dijitFixedOpen, .dijitFixedClosed {
 	
 	cursor: default;
 }
-.dijitTitlePaneTitle * {
-	vertical-align: middle;
-}
-.dijitTitlePane .dijitArrowNodeInner {
+.dijitFixedOpen .dijitArrowNode, .dijitFixedOpen .dijitArrowNodeInner,
+.dijitFixedClosed .dijitArrowNode, .dijitFixedClosed .dijitArrowNodeInner{
 	
 	display: none;
 }
-.dijit_a11y .dijitTitlePane .dijitArrowNodeInner {
+.dijitTitlePaneTitle * {
+	vertical-align: middle;
+}
+.dijitTitlePane .dijitArrowNodeInner, .dijitFieldset .dijitArrowNodeInner {
+	
+	display: none;
+}
+.dj_a11y .dijitTitlePane .dijitArrowNodeInner, .dj_a11y .dijitFieldset .dijitArrowNodeInner {
 	
 	display:inline !important;
 	font-family: monospace;		
 }
-.dijit_a11y .dijitTitlePane .dijitArrowNode {
+.dj_a11y .dijitTitlePane .dijitArrowNode, .dj_a11y .dijitFieldset .dijitArrowNode {
 	
 	display:none;
 }
@@ -842,17 +907,17 @@ body .dijitAlignClient { position: absolute; }
 .dijitPaletteTable td {
 		padding: 0;
 }
-.dijitColorPalette .dijitPaletteCellHover .dijitPaletteImg {
+.dijitColorPalette .dijitPaletteCell:hover .dijitPaletteImg {
 	
 	border: 1px solid #000;
 }
-.dijitColorPalette .dijitPaletteCellActive .dijitPaletteImg,
-.dijitColorPalette .dijitPaletteCellSelected .dijitPaletteImg {
+.dijitColorPalette .dijitPaletteCell:active .dijitPaletteImg,
+.dijitColorPalette .dijitPaletteTable .dijitPaletteCellSelected .dijitPaletteImg {
 	border: 2px solid #000;
 	margin: 1px 0;	
 }
-.dijit_a11y .dijitColorPalette .dijitPaletteTable,
-.dijit_a11y .dijitColorPalette .dijitPaletteTable * {
+.dj_a11y .dijitColorPalette .dijitPaletteTable,
+.dj_a11y .dijitColorPalette .dijitPaletteTable * {
 	
 	background-color: transparent !important;
 }
@@ -862,6 +927,7 @@ body .dijitAlignClient { position: absolute; }
 }
 .dijitAccordionTitle {
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
 .dijitAccordionTitleSelected {
 	cursor: default;
@@ -872,11 +938,11 @@ body .dijitAlignClient { position: absolute; }
 	font-size: 0.65em;
 	font-weight: normal !important;
 }
-.dijit_a11y .dijitAccordionTitle .arrowTextUp,
-.dijit_a11y .dijitAccordionTitleSelected .arrowTextDown {
+.dj_a11y .dijitAccordionTitle .arrowTextUp,
+.dj_a11y .dijitAccordionTitleSelected .arrowTextDown {
 	display: inline;
 }
-.dijit_a11y .dijitAccordionTitleSelected .arrowTextUp {
+.dj_a11y .dijitAccordionTitleSelected .arrowTextUp {
 	display: none;
 }
 .dijitAccordionChildWrapper {
@@ -889,6 +955,9 @@ body .dijitAlignClient { position: absolute; }
 .dijitCalendarContainer th, .dijitCalendarContainer td {
 	padding: 0;
 	vertical-align: middle;
+}
+.dijitCalendarYearLabel {
+    white-space: nowrap;    
 }
 .dijitCalendarNextYear {
 	margin:0 0 0 0.55em;
@@ -905,6 +974,7 @@ body .dijitAlignClient { position: absolute; }
 .dijitCalendarPreviousYear,
 .dijitCalendarNextYear {
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
 .dijitCalendarDisabledDate {
 	color: gray;
@@ -938,6 +1008,10 @@ body .dijitAlignClient { position: absolute; }
 	white-space: nowrap;
 	padding:.1em .2em;
 	cursor:pointer;
+	-webkit-tap-highlight-color: transparent;
+}
+.dijitMenuItem:focus {
+	outline: none
 }
 .dijitMenuPassive .dijitMenuItemHover,
 .dijitMenuItemSelected {
@@ -953,35 +1027,30 @@ body .dijitAlignClient { position: absolute; }
 	opacity:0.5;
 	cursor:default;
 }
-.dj_ie .dijit_a11y .dijitMenuItemDisabled,
-.dj_ie .dijit_a11y .dijitMenuItemDisabled td,
-.dj_ie .dijitMenuItemDisabled *,
-.dj_ie .dijitMenuItemDisabled td {
-	color:gray !important;
+.dj_ie .dj_a11y .dijitMenuItemDisabled,
+.dj_ie .dj_a11y .dijitMenuItemDisabled *,
+.dj_ie .dijitMenuItemDisabled * {
+	color: gray;
 	filter: alpha(opacity=35);
 }
 .dijitMenuItemLabel {
 	position: relative;
 	vertical-align: middle;
 }
-.dijit_a11y .dijitMenuItemSelected {
-	border: 1px dotted black !important;
+.dj_a11y .dijitMenuItemSelected {
+	border: 1px dotted black !important;	
 }
-.dj_ff3 .dijit_a11y .dijitMenuItem td {
-	padding: none !important;
-	background:none !important;
-}
-.dijit_a11y .dijitMenuItemSelected .dijitMenuItemLabel {
+.dj_a11y .dijitMenuItemSelected .dijitMenuItemLabel {
 	border-width: 1px;
 	border-style: solid;
 }
-.dj_ie8 .dijit_a11y .dijitMenuItemLabel {
+.dj_ie8 .dj_a11y .dijitMenuItemLabel {
 	position:static;
 }
 .dijitMenuExpandA11y {
 	display: none;
 }
-.dijit_a11y .dijitMenuExpandA11y {
+.dj_a11y .dijitMenuExpandA11y {
 	display: inline;
 }
 .dijitMenuSeparator td {
@@ -1000,25 +1069,31 @@ body .dijitAlignClient { position: absolute; }
 	margin-bottom:3px;
 	font-size: 1px;
 }
-.dijitCheckedMenuItemIconChar {
-	vertical-align: middle;
-	visibility:hidden;
+.dijitMenuItemIconChar {
+	display: none;		
+	visibility: hidden;	
 }
-.dijitCheckedMenuItemChecked .dijitCheckedMenuItemIconChar {
-	visibility: visible;
+.dj_a11y .dijitMenuItemIconChar {
+	display: inline;	
 }
-.dijit_a11y .dijitCheckedMenuItemIconChar {
-	display:inline !important;
+.dijitCheckedMenuItemChecked .dijitMenuItemIconChar,
+.dijitRadioMenuItemChecked .dijitMenuItemIconChar {
+	visibility: visible; 
 }
-.dijit_a11y .dijitCheckedMenuItemIcon {
-	display: none;
-}
-.dj_ie .dijit_a11y .dijitMenuBar .dijitMenuItem {
+.dj_ie .dj_a11y .dijitMenuBar .dijitMenuItem {
 	
 	margin: 0;
 }
 .dijitStackController .dijitToggleButtonChecked * {
 	cursor: default;	
+}
+.dijitTabContainer {
+    z-index: 0; 
+    overflow: visible; 
+}
+.dj_ie6 .dijitTabContainer {
+    
+   overflow: hidden;
 }
 .dijitTabContainerNoLayout {
 	width: 100%;	
@@ -1027,7 +1102,11 @@ body .dijitAlignClient { position: absolute; }
 .dijitTabContainerTop-tabs,
 .dijitTabContainerLeft-tabs,
 .dijitTabContainerRight-tabs {
+    z-index: 1;
 	overflow: visible !important;  
+}
+.dijitTabController {
+    z-index: 1;
 }
 .dijitTabContainerBottom-container,
 .dijitTabContainerTop-container,
@@ -1041,11 +1120,14 @@ body .dijitAlignClient { position: absolute; }
 	width: 50000px;
 	display: block;
 	position: relative;
+    text-align: left;  
+    z-index: 1;
 }
 .dijitTabListWrapper {
 	overflow: hidden;
+    z-index: 1;
 }
-.dijit_a11y .tabStripButton img {
+.dj_a11y .tabStripButton img {
 	
 	display: none;
 }
@@ -1057,7 +1139,7 @@ body .dijitAlignClient { position: absolute; }
 }
 .dijitTabContainerLeft-tabs {
 	border-right: 1px solid black;
-	float: left;
+	float: left;    
 }
 .dijitTabContainerLeft-container {
 	border-left: 0;
@@ -1070,17 +1152,18 @@ body .dijitAlignClient { position: absolute; }
 }
 .dijitTabContainerRight-tabs {
 	border-left: 1px solid black;
-	float: left;
+	float: left;    
 }
 .dijitTabContainerRight-container {
 	border-right: 0;
 }
-DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
+div.dijitTabDisabled, .dj_ie div.dijitTabDisabled {
 	cursor: auto;
 }
 .dijitTab {
 	position:relative;
 	cursor:pointer;
+	-webkit-tap-highlight-color: transparent;
 	white-space:nowrap;
 	z-index:3;
 }
@@ -1110,9 +1193,6 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	#zoom: 1; 
 	#display:inline; 
 }
-.dijitTabInnerDiv {
-	position:relative;
-}
 .tabStripButton {
 	z-index: 12;
 }
@@ -1140,12 +1220,12 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	height: 15px;
 	width: 1px;
 }
-.dijit_a11y .dijitTabCloseButton {
+.dj_a11y .dijitTabCloseButton {
 	background-image: none !important;
 	width: auto !important;
 	height: auto !important;
 }
-.dijit_a11y .dijitTabCloseText {
+.dj_a11y .dijitTabCloseText {
 	display: inline;
 }
 .dijitTabPane,
@@ -1158,13 +1238,13 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	border: 1px solid transparent;	
 	cursor: text;
 }
-.dijit_a11y .dijitInlineEditBoxDisplayMode,
+.dj_a11y .dijitInlineEditBoxDisplayMode,
 .dj_ie6 .dijitInlineEditBoxDisplayMode {
 	
 	border: none;
 }
 .dijitInlineEditBoxDisplayModeHover,
-.dijit_a11y .dijitInlineEditBoxDisplayModeHover,
+.dj_a11y .dijitInlineEditBoxDisplayModeHover,
 .dj_ie6 .dijitInlineEditBoxDisplayModeHover {
 	
 	background-color: #e2ebf2;
@@ -1175,6 +1255,10 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .dijitTree {
 	overflow: auto;	
+	-webkit-tap-highlight-color: transparent;
+}
+.dijitTreeContainer {
+	float: left;	
 }
 .dijitTreeIndent {
 	
@@ -1182,6 +1266,10 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .dijitTreeRow, .dijitTreeContent {
 	white-space: nowrap;
+}
+.dj_ie .dijitTreeLabel:focus {
+	
+	outline: 1px dotted black;
 }
 .dijitTreeRow img {
 	
@@ -1193,7 +1281,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitExpandoText {
 	display: none;
 }
-.dijit_a11y .dijitExpandoText {
+.dj_a11y .dijitExpandoText {
 	display: inline;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -1208,7 +1296,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitDialog {
 	position: absolute;
 	z-index: 999;
-	overflow: hidden;       
+	overflow: hidden;	
 }
 .dijitDialogTitleBar {
 	cursor: move;
@@ -1218,6 +1306,10 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .dijitDialogCloseIcon {
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+}
+.dijitDialogPaneContent {
+	-webkit-overflow-scrolling: touch;
 }
 .dijitDialogUnderlayWrapper {
 	position: absolute;
@@ -1234,8 +1326,8 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dj_ie .dijitDialogUnderlay {
 	filter: alpha(opacity=50);
 }
-.dijit_a11y .dijitSpinnerButtonContainer,
-.dijit_a11y .dijitDialog {
+.dj_a11y .dijitSpinnerButtonContainer,
+.dj_a11y .dijitDialog {
 	opacity: 1 !important;
 	background-color: white !important;
 }
@@ -1244,7 +1336,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	
 	position:absolute;
 }
-.dijit_a11y .dijitDialog .closeText {
+.dj_a11y .dijitDialog .closeText {
 	display:inline;
 }
 .dijitSliderMoveable {
@@ -1259,7 +1351,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitSliderMoveableV {
 	right:50%;
 }
-.dijit_a11y DIV.dijitSliderImageHandle,
+.dj_a11y div.dijitSliderImageHandle,
 .dijitSliderImageHandle {
 	margin:0;
 	padding:0;
@@ -1268,17 +1360,18 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	width:0;
 	height:0;
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
-.dj_iequirks .dijit_a11y .dijitSliderImageHandle {
+.dj_iequirks .dj_a11y .dijitSliderImageHandle {
 	font-size: 0;
 }
 .dj_ie7 .dijitSliderImageHandle {
 	overflow: hidden; 
 }
-.dj_ie7 .dijit_a11y .dijitSliderImageHandle {
+.dj_ie7 .dj_a11y .dijitSliderImageHandle {
 	overflow: visible; 
 }
-.dijit_a11y .dijitSliderFocused .dijitSliderImageHandle {
+.dj_a11y .dijitSliderFocused .dijitSliderImageHandle {
 	border:4px solid #000;
 	height:8px;
 	width:8px;
@@ -1296,6 +1389,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	border-style:solid;
 	border-color:black;
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
 .dijitSliderBarContainerV {
 	position:relative;
@@ -1376,6 +1470,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .dijitSliderDecorationV {
 	height: 100%;
+	white-space: nowrap;
 }
 .dijitSliderButton {
 	font-family:monospace;
@@ -1383,7 +1478,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	padding:0;
 	display:block;
 }
-.dijit_a11y .dijitSliderButtonInner {
+.dj_a11y .dijitSliderButtonInner {
 	visibility:visible !important;
 }
 .dijitSliderButtonContainer {
@@ -1392,6 +1487,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .dijitSliderButtonContainer * {
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
 .dijitSlider .dijitButtonNode {
 	padding:0;
@@ -1456,15 +1552,15 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dj_ie .dijitRuleLabelContainerV {
 	margin-top:-.55em;
 }
-.dijit_a11y .dijitSliderReadOnly,
-.dijit_a11y .dijitSliderDisabled {
+.dj_a11y .dijitSliderReadOnly,
+.dj_a11y .dijitSliderDisabled {
 	opacity:0.6;
 }
-.dj_ie .dijit_a11y .dijitSliderReadOnly .dijitSliderBar,
-.dj_ie .dijit_a11y .dijitSliderDisabled .dijitSliderBar {
+.dj_ie .dj_a11y .dijitSliderReadOnly .dijitSliderBar,
+.dj_ie .dj_a11y .dijitSliderDisabled .dijitSliderBar {
 	filter: alpha(opacity=40);
 }
-.dijit_a11y .dijitSlider .dijitSliderButtonContainer DIV {
+.dj_a11y .dijitSlider .dijitSliderButtonContainer div {
 	font-family: monospace; 
 	font-size: 1em;
 	line-height: 1em;
@@ -1472,9 +1568,12 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	width: auto;
 	margin: 0 4px;
 }
-.dijit_a11y .dijitButtonContents .dijitButtonText,
-.dijit_a11y .dijitTab .tabLabel {
+.dj_a11y .dijitButtonContents .dijitButtonText,
+.dj_a11y .dijitTab .tabLabel {
 	display: inline !important;
+}
+.dj_a11y .dijitSelect .dijitButtonText {
+	display: inline-block !important;
 }
 .dijitTextArea {
 	width:100%;
@@ -1508,6 +1607,26 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitEditorReadOnly {
 	color: gray;
 }
+.dijitTimePicker {
+	background-color: white;
+}
+.dijitTimePickerItem {
+	cursor:pointer;
+	-webkit-tap-highlight-color: transparent;
+}
+.dijitTimePickerItemHover {
+	background-color:gray;
+	color:white;
+}
+.dijitTimePickerItemSelected {
+	font-weight:bold;
+	color:#333;
+	background-color:#b7cdee;
+}
+.dijitTimePickerItemDisabled {
+	color:gray;
+	text-decoration:line-through;
+}
 .dijitTimePickerItemInner {
 	text-align:center;
 	border:0;
@@ -1527,58 +1646,62 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	color:black;
 	background-color:#CCC;
 }
-.dijitTimePickerItemSelected {
-	font-weight:bold;
-	color:#333;
-	background-color:#b7cdee;
-}
-.dijitTimePickerItemHover {
-	background-color:gray;
-	color:white;
-	cursor:pointer;
-}
-.dijit_a11y .dijitTimePickerItemSelected .dijitTimePickerItemInner {
+.dj_a11y .dijitTimePickerItemSelected .dijitTimePickerItemInner {
 	border: solid 4px black;
 }
-.dijit_a11y .dijitTimePickerItemHover .dijitTimePickerItemInner {
+.dj_a11y .dijitTimePickerItemHover .dijitTimePickerItemInner {
 	border: dashed 4px black;
 }
 .dijitToggleButtonIconChar {
 	
 	display:none !important;
 }
-.dijit_a11y .dijitToggleButton .dijitToggleButtonIconChar {
+.dj_a11y .dijitToggleButton .dijitToggleButtonIconChar {
 	display:inline !important;
 	visibility:hidden;
 }
 .dj_ie6 .dijitToggleButtonIconChar, .dj_ie6 .tabStripButton .dijitButtonText {
 	font-family: "Arial Unicode MS";	
 }
-.dijit_a11y .dijitToggleButtonChecked .dijitToggleButtonIconChar {
+.dj_a11y .dijitToggleButtonChecked .dijitToggleButtonIconChar {
 	display: inline !important; 
 	visibility:visible !important;
 }
 .dijitArrowButtonChar {
-        display:none !important;
-}
-.dijit_a11y .dijitArrowButtonChar {
-        display:inline !important;
-}
-.dijit_a11y .dijitDropDownButton .dijitArrowButtonInner,
-.dijit_a11y .dijitComboButton .dijitArrowButtonInner {
 	display:none !important;
 }
-.dijitSelect {
-	margin: 0.2em;
-	border-collapse: collapse;
+.dj_a11y .dijitArrowButtonChar {
+	display:inline !important;
 }
-.dj_ie .dijitSelect,
-.dj_ie7 .dijitSelect,
-.dj_iequirks .dijitSelect {
+.dj_a11y .dijitDropDownButton .dijitArrowButtonInner,
+.dj_a11y .dijitComboButton .dijitArrowButtonInner {
+	display:none !important;
+}
+.dj_a11y .dijitSelect {
+	border-collapse: separate !important;
+	border-width: 1px;
+	border-style: solid;
+}
+.dj_ie .dijitSelect {
 	vertical-align: middle; 
 }
+.dj_ie6 .dijitSelect .dijitValidationContainer,
 .dj_ie8 .dijitSelect .dijitButtonText {
 	vertical-align: top;
+}
+.dj_ie6 .dijitTextBox .dijitInputContainer,
+.dj_iequirks .dijitTextBox .dijitInputContainer,
+.dj_ie6 .dijitTextBox .dijitArrowButtonInner,
+.dj_ie6 .dijitSpinner .dijitSpinnerButtonInner,
+.dijitSelect .dijitSelectLabel {
+	vertical-align: baseline;
+}
+.dijitNumberTextBox {
+	text-align: left;
+	direction: ltr;
+}
+.dijitNumberTextBox .dijitInputInner {
+	text-align: inherit; 
 }
 .dijitToolbar .dijitSelect {
 	margin: 0;
@@ -1586,17 +1709,12 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dj_webkit .dijitToolbar .dijitSelect {
 	padding-left: 0.3em;
 }
-.dijit_a11y .dijitSelectDisabled .dijitButtonNode {
-	border-style: outset!important;
-	border-width: medium!important;
-	border-color: #999 !important;
-	color:#999 !important;
-}
 .dijitSelect .dijitButtonContents {
 	padding: 0;
-	background: transparent none;
 	white-space: nowrap;
 	text-align: left;
+	border-style: none solid none none;
+	border-width: 1px;
 }
 .dijitSelectFixedWidth .dijitButtonContents {
 	width: 100%;
@@ -1620,10 +1738,6 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitSelectMenu {
 	border-width: 1px;
 }
-.dijitSelectMenu .dijitMenuTable {
-	margin: 0;
-	background-color: transparent;
-}
 .dijitForceStatic {
 	position: static !important;
 }
@@ -1633,6 +1747,47 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitDisabled {
 	
 	cursor: default;
+}
+.dojoDndItem {
+    padding: 2px;  
+	
+	-webkit-touch-callout: none;
+	-webkit-user-select: none; 
+}
+.dojoDndHorizontal .dojoDndItem {
+    
+    #display: inline;
+    display: inline-block;
+}
+.dojoDndItemBefore,
+.dojoDndItemAfter {
+	border: 0px solid #369;
+}
+.dojoDndItemBefore {
+    border-width: 2px 0 0 0;
+    padding: 0 2px 2px 2px;
+}
+.dojoDndItemAfter {
+    border-width: 0 0 2px 0;
+    padding: 2px 2px 0 2px;
+}
+.dojoDndHorizontal .dojoDndItemBefore {
+    border-width: 0 0 0 2px;
+    padding: 2px 2px 2px 0;
+}
+.dojoDndHorizontal .dojoDndItemAfter {
+    border-width: 0 2px 0 0;
+    padding: 2px 0 2px 2px;
+}
+.dojoDndItemOver {
+	cursor:pointer;
+}
+.dj_gecko .dijitArrowButtonInner INPUT,
+.dj_gecko INPUT.dijitArrowButtonInner {
+	-moz-user-focus:ignore;
+}
+.dijitFocused .dijitMenuItemShortcutKey {
+	text-decoration: underline;
 }
 .dijitIconSave,
 .dijitIconPrint,
@@ -1669,7 +1824,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitFolderOpened,
 .dijitIconFolderOpen,
 .dijitIconError {
-	background-image: url(../../icons/images/commonIconsObjActEnabled.png); 
+	background-image: url("../../icons/images/commonIconsObjActEnabled.png"); 
 	width: 16px;
 	height: 16px;
 }
@@ -1708,7 +1863,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dj_ie6 .dijitFolderOpened,
 .dj_ie6 .dijitIconFolderOpen,
 .dj_ie6 .dijitIconError {
-	background-image: url(../../icons/images/commonIconsObjActEnabled8bit.png);
+	background-image: url("../../icons/images/commonIconsObjActEnabled8bit.png");
 }
 .dijitDisabled .dijitIconSave,
 .dijitDisabled .dijitIconPrint,
@@ -1745,9 +1900,9 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitDisabled .dijitFolderOpened,
 .dijitDisabled .dijitIconFolderOpen,
 .dijitDisabled .dijitIconError {
-	background-image: url(../../icons/images/commonIconsObjActDisabled.png); 
+	background-image: url("../../icons/images/commonIconsObjActDisabled.png"); 
 }
-.dijitIconSave { background-position: 0px; }
+.dijitIconSave { background-position: 0; }
 .dijitIconPrint { background-position: -16px; }
 .dijitIconCut { background-position: -32px; }
 .dijitIconCopy { background-position: -48px; }
@@ -1757,7 +1912,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitIconEdit { background-position: -112px; }
 .dijitIconNewTask { background-position: -128px; }
 .dijitIconEditTask { background-position: -144px; }
-.dijitIconEditProperty { background-position: -166px; }
+.dijitIconEditProperty { background-position: -160px; }
 .dijitIconTask { background-position: -176px; }
 .dijitIconFilter { background-position: -192px; }
 .dijitIconConfigure { background-position: -208px; }
@@ -1779,6 +1934,11 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitIconUsers { background-position: -448px; }
 .dijitIconFolderClosed, .dijitFolderClosed { background-position: -464px; }
 .dijitIconFolderOpen, .dijitFolderOpened { background-position: -480px; }
+.dijitIconLoading {
+	background:url("../../icons/images/loadingAnimation_rtl.gif") no-repeat;
+	height: 20px;
+	width: 20px;
+}
 .claro .dijitPopup {
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
@@ -1795,22 +1955,47 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .claro .dijitFocusedLabel {
   
-  outline: 1px dotted #4a4a4a;
+  outline: 1px dotted #494949;
 }
-.claro .dijitContentPaneLoading {
-  background: url(images/loadingAnimation.gif) no-repeat left center;
-  padding-left: 25px;
-}
-.claro .dijitContentPaneError {
-  background: url(../../icons/images/commonIconsObjActEnabled.png) no-repeat left center;
-  background-position: -496px;
-  padding-left: 25px;
-}
-.claro .dojoDndItemBefore, .claro .dojoDndItemAfter {
-  border-top: 1px solid #769dc0;
+.claro .dojoDndItem {
+  border-color: rgba(0, 0, 0, 0);
+  -webkit-transition-duration: 0.25s;
+  -moz-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+  -webkit-transition-property: background-color, border-color;
+  -moz-transition-property: background-color, border-color;
+  transition-property: background-color, border-color;
 }
 .claro .dojoDndItemOver {
-  cursor: pointer;
+  background-color: #abd6ff;
+  background-image: url("images/standardGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
+  padding: 1px;
+  border: solid 1px #759dc0;
+  color: #000000;
+}
+.claro .dojoDndItemAnchor,
+.claro .dojoDndItemSelected {
+  background-color: #cfe5fa;
+  background-image: url("images/standardGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
+  padding: 1px;
+  border: solid 1px #759dc0;
+  color: #000000;
+}
+.claro .dojoDndItemBefore,
+.claro .dojoDndItemAfter {
+  border-color: #759dc0;
 }
 .claro table.dojoDndAvatar {
   border: 1px solid #b5bcc7;
@@ -1824,8 +2009,9 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   height: 20px;
   padding-left: 21px;
 }
-.claro.dojoDndMove .dojoDndAvatarHeader, .claro.dojoDndCopy .dojoDndAvatarHeader {
-  background-image: url(images/dnd.png);
+.claro.dojoDndMove .dojoDndAvatarHeader,
+.claro.dojoDndCopy .dojoDndAvatarHeader {
+  background-image: url("images/dnd.png");
   background-repeat: no-repeat;
   background-position: 2px -122px;
 }
@@ -1848,29 +2034,41 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   background-color: #97e68d;
   background-position: 2px 2px;
 }
-.claro .dijitTextBoxError .dijitValidationContainer {
+.claro .dijitTextBox,
+.claro .dijitInputInner {
+  color: #000000;
+}
+.claro .dijitValidationTextBoxError .dijitValidationContainer {
   background-color: #d46464;
-  background-image: url(form/images/error.png);
+  background-image: url("form/images/error.png");
   background-position: top center;
   border: solid #d46464 0;
-  border-left-width: 1px;
   width: 9px;
 }
-.claro .dijitTextBoxError .dijitValidationIcon {
+.claro .dijitTextBoxError .dijitValidationContainer {
+  border-left-width: 1px;
+}
+.claro .dijitValidationTextBoxError .dijitValidationIcon {
   width: 0;
-  background-color: transparent !important;
+  background-color: transparent;
   
 }
-.claro .dijitTextArea, .claro .dijitInputField .dijitPlaceHolder {
+.claro .dijitTextArea,
+.claro .dijitInputField .dijitPlaceHolder {
   padding: 2px;
 }
+.claro .dijitSelect .dijitInputField,
 .claro .dijitTextBox .dijitInputField {
   padding: 1px 2px;
 }
-.dj_gecko .claro .dijitTextBox .dijitInputInner, .dj_webkit .claro .dijitTextBox .dijitInputInner {
+.dj_gecko .claro .dijitTextBox .dijitInputInner,
+.dj_webkit .claro .dijitTextBox .dijitInputInner {
   padding: 1px;
 }
-.claro .dijitTextBox, .claro .dijitTextBox .dijitButtonNode {
+.claro .dijitSelect,
+.claro .dijitSelect .dijitButtonContents,
+.claro .dijitTextBox,
+.claro .dijitTextBox .dijitButtonNode {
   
   border-color: #b5bcc7;
   -webkit-transition-property: background-color, border;
@@ -1880,57 +2078,91 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   -moz-transition-duration: 0.35s;
   transition-duration: 0.35s;
 }
+.claro .dijitSelect,
 .claro .dijitTextBox {
   background-color: #ffffff;
 }
-.claro .dijitTextBoxHover, .claro .dijitTextBoxHover .dijitButtonNode {
-  border-color: #769dc0;
+.claro .dijitSelectHover,
+.claro .dijitSelectHover .dijitButtonContents,
+.claro .dijitTextBoxHover,
+.claro .dijitTextBoxHover .dijitButtonNode {
+  border-color: #759dc0;
   -webkit-transition-duration: 0.25s;
   -moz-transition-duration: 0.25s;
   transition-duration: 0.25s;
 }
 .claro .dijitTextBoxHover {
-  background-color: #e9f4fe;
-  background-image: url(form/images/textBox_back.png);
-  background-repeat: repeat-x;
+  background-color: #e5f2fe;
+  background-image: -moz-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -webkit-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -o-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
 }
-.claro .dijitTextBoxError, .claro .dijitTextBoxError .dijitButtonNode {
+.claro .dijitSelectError,
+.claro .dijitSelectError .dijitButtonContents,
+.claro .dijitTextBoxError,
+.claro .dijitTextBoxError .dijitButtonNode {
   border-color: #d46464;
 }
-.claro .dijitTextBoxError, .claro .dijitTextBoxError .dijitInputContainer {
-  background-color: #ffffff;
-}
-.claro .dijitTextBoxFocused, .claro .dijitTextBoxFocused .dijitButtonNode {
-  border-color: #769dc0;
+.claro .dijitSelectFocused,
+.claro .dijitSelectFocused .dijitButtonContents,
+.claro .dijitTextBoxFocused,
+.claro .dijitTextBoxFocused .dijitButtonNode {
+  border-color: #759dc0;
   -webkit-transition-duration: 0.1s;
   -moz-transition-duration: 0.1s;
   transition-duration: 0.1s;
 }
 .claro .dijitTextBoxFocused {
   background-color: #ffffff;
-  background-image: url(form/images/textBox_back.png);
-  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -webkit-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -o-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
 }
 .claro .dijitTextBoxFocused .dijitInputContainer {
   background: #ffffff;
 }
-.claro .dijitTextBoxErrorFocused, .claro .dijitTextBoxErrorFocused .dijitButtonNode {
-  border-color: #ce4f4f;
+.claro .dijitSelectErrorFocused,
+.claro .dijitSelectErrorFocused .dijitButtonContents,
+.claro .dijitTextBoxErrorFocused,
+.claro .dijitTextBoxErrorFocused .dijitButtonNode {
+  border-color: #ce5050;
 }
-.claro .dijitTextBoxDisabled, .claro .dijitTextBoxDisabled .dijitButtonNode {
+.claro .dijitSelectDisabled,
+.claro .dijitSelectDisabled .dijitButtonContents,
+.claro .dijitTextBoxDisabled,
+.claro .dijitTextBoxDisabled .dijitButtonNode {
   border-color: #d3d3d3;
 }
-.claro .dijitTextBoxDisabled, .claro .dijitTextBoxDisabled .dijitInputContainer {
+.claro .dijitSelectDisabled,
+.claro .dijitTextBoxDisabled,
+.claro .dijitTextBoxDisabled .dijitInputContainer {
   background-color: #efefef;
   background-image: none;
+}
+.claro .dijitSelectDisabled,
+.claro .dijitTextBoxDisabled,
+.claro .dijitTextBoxDisabled .dijitInputInner {
   color: #818181;
 }
+.dj_webkit .claro .dijitDisabled input {
+  
+  color: #757575;
+}
+.dj_webkit .claro textarea.dijitTextAreaDisabled {
+  
+  color: #1b1b1b;
+}
+.claro .dijitSelect .dijitArrowButtonInner,
 .claro .dijitComboBox .dijitArrowButtonInner {
-  background-image: url(form/images/commonFormArrows.png);
+  background-image: url("form/images/commonFormArrows.png");
   background-position: -35px 53%;
   background-repeat: no-repeat;
   margin: 0;
   width: 16px;
+}
+.claro .dijitComboBox .dijitArrowButtonInner {
   border: 1px solid #ffffff;
 }
 .claro .dijitToolbar .dijitComboBox .dijitArrowButtonInner {
@@ -1939,24 +2171,43 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitToolbar .dijitComboBox .dijitArrowButtonInner {
   border: none;
 }
-.claro .dijitTextBox .dijitInputInner, .claro .dijitTextBox .dijitValidationContainer {
+.claro .dijitSelectLabel,
+.claro .dijitTextBox .dijitInputInner,
+.claro .dijitValidationTextBox .dijitValidationContainer {
   padding: 1px 0;
 }
 .claro .dijitComboBox .dijitButtonNode {
   background-color: #efefef;
-  background-image: url(form/images/formHighlight.png);
+  background-image: url("images/standardGradient.png");
   background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
 }
-.claro .dijitComboBoxOpenOnClickHover .dijitButtonNode, .claro .dijitComboBox .dijitDownArrowButtonHover {
+.claro .dijitComboBoxOpenOnClickHover .dijitButtonNode,
+.claro .dijitComboBox .dijitDownArrowButtonHover,
+.claro .dijitComboBoxFocused .dijitArrowButton {
   background-color: #abd6ff;
 }
-.claro .dijitComboBoxOpenOnClickHover .dijitArrowButtonInner, .claro .dijitComboBox .dijitDownArrowButtonHover .dijitArrowButtonInner {
+.claro .dijitComboBoxOpenOnClickHover .dijitArrowButtonInner,
+.claro .dijitComboBox .dijitDownArrowButtonHover .dijitArrowButtonInner {
   background-position: -70px 53%;
 }
 .claro .dijitComboBox .dijitHasDropDownOpen {
-  background-color: #7dbefa;
-  background-position: 0 -177px;
+  background-color: #7dbdfa;
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   padding: 1px;
+}
+.dj_iequirks .claro .dijitComboBox .dijitHasDropDownOpen {
+  padding: 1px 0;
 }
 .claro .dijitComboBox .dijitHasDropDownOpen .dijitArrowButtonInner {
   background-position: -70px 53%;
@@ -1971,9 +2222,6 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   display: none;
   height: 0;
   width: 0;
-}
-.dj_ie6 .claro .dijitTextBox, .dj_ie6 .claro .dijitComboBox .dijitButtonNode {
-  background-image: none;
 }
 .dj_borderbox .claro .dijitComboBox .dijitHasDropDownOpen .dijitArrowButtonInner {
   width: 18px;
@@ -1995,17 +2243,22 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitComboButton .dijitButtonNode,
 .claro .dijitToggleButton .dijitButtonNode {
   
-  border: 1px solid #769dc0;
+  border: 1px solid #759dc0;
   padding: 2px 4px 4px 4px;
-  background-image: url(form/images/button.png);
-  background-position: center top;
-  background-repeat: repeat-x;
-  background-color: #e9f4fe;
+  color: #000000;
   -moz-border-radius: 4px;
   border-radius: 4px;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
   -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+  background-color: #bcd8f4;
+  background-image: url("form/images/buttonEnabled.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+  background-image: -webkit-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+  background-image: -o-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+  background-image: linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+  _background-image: none;
 }
 .claro .dijitComboButton .dijitArrowButton {
   border-left-width: 0;
@@ -2016,7 +2269,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   width: 15px;
   height: 15px;
   margin: 0 auto;
-  background-image: url(form/images/buttonArrows.png);
+  background-image: url("form/images/buttonArrows.png");
   background-repeat: no-repeat;
   background-position: -51px 53%;
 }
@@ -2050,7 +2303,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitComboButton .dijitButtonNodeHover,
 .claro .dijitComboButton .dijitDownArrowButtonHover,
 .claro .dijitToggleButtonHover .dijitButtonNode {
-  background-color: #abd6ff;
+  background-color: #86bdf2;
   color: #000000;
   -webkit-transition-duration: 0.2s;
   -moz-transition-duration: 0.2s;
@@ -2059,11 +2312,12 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitButtonActive .dijitButtonNode,
 .claro .dijitDropDownButtonActive .dijitButtonNode,
 .claro .dijitComboButtonActive .dijitButtonNode,
-.claro .dijitToggleButtonActive .dijitButtonNode {
-  background-color: #abd6ff;
-  -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+.claro .dijitToggleButtonActive .dijitButtonNode,
+.claro .dijitToggleButtonChecked .dijitButtonNode {
+  background-color: #86bdf2;
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
   -webkit-transition-duration: 0.1s;
   -moz-transition-duration: 0.1s;
   transition-duration: 0.1s;
@@ -2079,13 +2333,18 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitDropDownButtonDisabled .dijitButtonNode,
 .claro .dijitComboButtonDisabled .dijitButtonNode,
 .claro .dijitToggleButtonDisabled .dijitButtonNode {
-  background-position: 0 -149px;
   background-color: #efefef;
   border: solid 1px #d3d3d3;
   color: #818181;
   -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  background-image: url("form/images/buttonDisabled.png");
+  background-image: -moz-linear-gradient(#ffffff 0%, rgba(255, 255, 255, 0) 40%);
+  background-image: -webkit-linear-gradient(#ffffff 0%, rgba(255, 255, 255, 0) 40%);
+  background-image: -o-linear-gradient(#ffffff 0%, rgba(255, 255, 255, 0) 40%);
+  background-image: linear-gradient(#ffffff 0%, rgba(255, 255, 255, 0) 40%);
+  _background-image: none;
 }
 .claro .dijitComboButtonDisabled .dijitArrowButton {
   border-left-width: 0;
@@ -2093,9 +2352,6 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro table.dijitComboButton {
   border-collapse: separate;
   
-}
-.dj_ie6 .claro .dijitButtonNode {
-  background-image: none;
 }
 .claro .dijitComboButton .dijitStretch {
   -moz-border-radius: 4px 0 0 4px;
@@ -2106,13 +2362,14 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border-radius: 0 4px 4px 0;
 }
 .claro .dijitToggleButton .dijitCheckBoxIcon {
-  background-image: url(images/checkmarkNoBorder.png);
+  background-image: url("images/checkmarkNoBorder.png");
 }
 .dj_ie6 .claro .dijitToggleButton .dijitCheckBoxIcon {
-  background-image: url(images/checkmarkNoBorder.gif);
+  background-image: url("images/checkmarkNoBorder.gif");
 }
-.claro .dijitCheckBox, .claro .dijitCheckBoxIcon {
-  background-image: url(form/images/checkboxRadioButtonStates.png);
+.claro .dijitCheckBox,
+.claro .dijitCheckBoxIcon {
+  background-image: url("form/images/checkboxRadioButtonStates.png");
   
   background-repeat: no-repeat;
   width: 15px;
@@ -2120,15 +2377,18 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   margin: 0 2px 0 0;
   padding: 0;
 }
-.dj_ie6 .claro .dijitCheckBox, .dj_ie6 .claro .dijitCheckBoxIcon {
-  background-image: url(form/images/checkboxAndRadioButtons_IE6.png);
+.dj_ie6 .claro .dijitCheckBox,
+.dj_ie6 .claro .dijitCheckBoxIcon {
+  background-image: url("form/images/checkboxAndRadioButtons_IE6.png");
   
 }
-.claro .dijitCheckBox, .claro .dijitToggleButton .dijitCheckBoxIcon {
+.claro .dijitCheckBox,
+.claro .dijitToggleButton .dijitCheckBoxIcon {
   
   background-position: -15px;
 }
-.claro .dijitCheckBoxChecked, .claro .dijitToggleButtonChecked .dijitCheckBoxIcon {
+.claro .dijitCheckBoxChecked,
+.claro .dijitToggleButtonChecked .dijitCheckBoxIcon {
   
   background-position: 0;
 }
@@ -2148,15 +2408,18 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   
   background-position: -30px;
 }
-.claro .dijitToggleButton .dijitRadio, .claro .dijitToggleButton .dijitRadioIcon {
-  background-image: url(form/images/checkboxRadioButtonStates.png);
+.claro .dijitToggleButton .dijitRadio,
+.claro .dijitToggleButton .dijitRadioIcon {
+  background-image: url("form/images/checkboxRadioButtonStates.png");
 }
-.dj_ie6 .claro .dijitToggleButton .dijitRadio, .dj_ie6 .claro .dijitToggleButton .dijitRadioIcon {
-  background-image: url(form/images/checkboxAndRadioButtons_IE6.png);
+.dj_ie6 .claro .dijitToggleButton .dijitRadio,
+.dj_ie6 .claro .dijitToggleButton .dijitRadioIcon {
+  background-image: url("form/images/checkboxAndRadioButtons_IE6.png");
 }
-.claro .dijitRadio, .claro .dijitRadioIcon {
+.claro .dijitRadio,
+.claro .dijitRadioIcon {
   
-  background-image: url(form/images/checkboxRadioButtonStates.png);
+  background-image: url("form/images/checkboxRadioButtonStates.png");
   
   background-repeat: no-repeat;
   width: 15px;
@@ -2164,9 +2427,10 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   margin: 0 2px 0 0;
   padding: 0;
 }
-.dj_ie6 .claro .dijitRadio, .dj_ie6 .claro .dijitRadioIcon {
+.dj_ie6 .claro .dijitRadio,
+.dj_ie6 .claro .dijitRadioIcon {
   
-  background-image: url(form/images/checkboxAndRadioButtons_IE6.png);
+  background-image: url("form/images/checkboxAndRadioButtons_IE6.png");
   
 }
 .claro .dijitRadio {
@@ -2198,80 +2462,65 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   
   background-position: -150px;
 }
-.claro .dijitSelect .dijitButtonText {
-  padding: 2px;
-}
-.claro .dijitSelect {
-  border: 1px solid #b5bcc7;
-  background-color: #ffffff;
-  border-collapse: separate;
-}
-.dj_ie6 .claro .dijitSelect, .dj_ie6 .claro .dijitSelect .dijitButtonNode {
-  background-image: none;
-}
-.claro .dijitSelect .dijitButtonContents {
-  border: 0 solid #b5bcc7;
-  border-right-width: 1px;
+.claro .dijitSelect .dijitArrowButtonContainer {
+  border: 1px solid #ffffff;
 }
 .claro .dijitSelect .dijitArrowButton {
   padding: 0;
-  border: 1px solid #ffffff;
-  border-top: none;
   background-color: #efefef;
-  background-image: url(form/images/formHighlight.png);
+  background-image: url("images/standardGradient.png");
   background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
 }
 .claro .dijitSelect .dijitArrowButton .dijitArrowButtonInner {
-  background-image: url(form/images/commonFormArrows.png);
-  background-position: -35px 70%;
-  background-repeat: no-repeat;
-  width: 16px;
   height: 16px;
 }
 .claro .dijitSelectHover {
-  border: 1px solid #769dc0;
-  background-color: #e9f4fe;
-  background-image: url(form/images/textBox_back.png);
+  background-color: #e5f2fe;
+  background-image: -moz-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -webkit-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -o-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
   background-repeat: repeat-x;
-}
-.claro .dijitSelectHover .dijitButtonContents {
-  border-color: #769dc0;
 }
 .claro .dijitSelectHover .dijitArrowButton {
   background-color: #abd6ff;
 }
 .claro .dijitSelectHover .dijitArrowButton .dijitArrowButtonInner {
-  background-position: -70px 70%;
-}
-.claro .dijitSelectFocused {
-  border: 1px solid #769dc0;
-}
-.claro .dijitSelectFocused .dijitButtonContents {
-  border-color: #769dc0;
+  background-position: -70px 53%;
 }
 .claro .dijitSelectFocused .dijitArrowButton {
   background-color: #7dbefa;
-  background-position: 0 -177px;
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
+}
+.claro .dijitSelectFocused .dijitArrowButton {
   border: none;
-  padding: 0 1px;
+  padding: 1px;
 }
 .claro .dijitSelectFocused .dijitArrowButton .dijitArrowButtonInner {
-  background-position: -70px 70%;
-  margin-bottom: 1px;
+  background-position: -70px 53%;
 }
 .claro .dijitSelectDisabled {
-  border: 1px solid #d3d3d3;
+  border-color: #d3d3d3;
   background-color: #efefef;
   background-image: none;
   color: #818181;
 }
-.claro .dijitSelectDisabled .dijitArrowButton {
-  background-color: #efefef;
-}
 .claro .dijitSelectDisabled .dijitArrowButton .dijitArrowButtonInner {
-  background-position: 0 70%;
+  background-position: 0 53%;
 }
-.claro .dijitSelectMenu td.dijitMenuItemIconCell, .claro .dijitSelectMenu td.dijitMenuArrowCell {
+.claro .dijitSelectMenu td.dijitMenuItemIconCell,
+.claro .dijitSelectMenu td.dijitMenuArrowCell {
   
   display: none;
 }
@@ -2280,7 +2529,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   padding: 2px;
 }
 .claro .dijitSelectMenu .dijitMenuSeparatorTop {
-  border-bottom: 1px solid #769dc0;
+  border-bottom: 1px solid #759dc0;
 }
 .claro .dijitTabPaneWrapper {
   background: #ffffff;
@@ -2294,7 +2543,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border-color: #b5bcc7;
 }
 .claro .dijitTabCloseButton {
-  background: url(layout/images/tabClose.png) no-repeat;
+  background: url("layout/images/tabClose.png") no-repeat;
   width: 14px;
   height: 14px;
   margin-left: 5px;
@@ -2310,7 +2559,8 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   
   display: none;
 }
-.claro .dijitTabInnerDiv {
+.claro .dijitTab {
+  border: 1px solid #b5bcc7;
   background-color: #efefef;
   -webkit-transition-property: background-color, border;
   -moz-transition-property: background-color, border;
@@ -2318,227 +2568,199 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   -webkit-transition-duration: 0.35s;
   -moz-transition-duration: 0.35s;
   transition-duration: 0.35s;
-  color: #4a4a4a;
+  color: #494949;
 }
-.claro .dijitTabHover .dijitTabInnerDiv {
+.claro .dijitTabHover {
+  border-color: #759dc0;
   background-color: #abd6ff;
   -webkit-transition-duration: 0.25s;
   -moz-transition-duration: 0.25s;
   transition-duration: 0.25s;
   color: #000000;
 }
-.claro .dijitTabActive .dijitTabInnerDiv {
-  background-color: #7dbefa;
+.claro .dijitTabActive {
+  border-color: #759dc0;
+  background-color: #7dbdfa;
   color: #000000;
   -webkit-transition-duration: 0.1s;
   -moz-transition-duration: 0.1s;
   transition-duration: 0.1s;
 }
-.claro .dijitTabChecked .dijitTabInnerDiv {
+.claro .dijitTabChecked {
+  border-color: #b5bcc7;
   background-color: #cfe5fa;
   color: #000000;
 }
-.claro .dijitTabContent {
-  border: 1px solid #b5bcc7;
+.claro .dijitTabDisabled {
+  background-color: #d3d3d3;
 }
-.claro .dijitTabHover .dijitTabContent {
-  border-color: #769dc0;
-}
-.claro .dijitTabActive .dijitTabContent {
-  border-color: #769dc0;
-}
-.claro .dijitTabChecked .dijitTabContent {
-  color: #000000;
-  border-color: #b5bcc7;
-}
-.claro .tabStripButton .dijitTabInnerDiv {
+.claro .tabStripButton {
   background-color: transparent;
-}
-.claro .tabStripButton .dijitTabContent {
   border: none;
 }
 .claro .dijitTabContainerTop-tabs .dijitTab {
+  
   top: 1px;
   
   margin-right: 1px;
-  padding-top: 3px;
-}
-.dj_ie7 .claro .dijitTabContainerTop-tabs .dijitTab {
-  top: 3px;
-}
-.claro .dijitTabContainerTop-tabs .dijitTabContent {
   padding: 3px 6px;
   border-bottom-width: 0;
-  background-image: url(layout/images/tabTop.png);
-  background-position: 0 0;
-  background-repeat: repeat-x;
   min-width: 60px;
   text-align: center;
-}
-.claro .dijitTabContainerTop-tabs .dijitTabChecked .dijitTabContent {
-  padding-bottom: 4px;
-  padding-top: 6px;
-}
-.claro .dijitTabContainerTop-tabs .dijitTabInnerDiv {
-  background-image: url(layout/images/tabTop.png);
-  background-position: 0 -248px;
-  background-position: bottom;
+  background-image: url("layout/images/tabTopUnselected.png");
   background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
   -webkit-box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.04);
   -moz-box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.04);
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.04);
 }
-.claro .dijitTabContainerTop-tabs .dijitTabChecked .dijitTabInnerDiv {
-  background-image: none;
+.claro .dijitTabContainerTop-tabs .dijitTabChecked {
+  
+  padding-bottom: 4px;
+  padding-top: 9px;
+  background-image: url("layout/images/tabTopSelected.png");
+  background-image: -moz-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px, #ffffff 7px);
+  background-image: -webkit-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px, #ffffff 7px);
+  background-image: -o-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px, #ffffff 7px);
+  background-image: linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px, #ffffff 7px);
   -webkit-box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.05);
 }
-.claro .dijitTabContainerTop-tabs .dijitTabChecked .dijitTabContent {
-  background-position: 0 -102px;
-  background-repeat: repeat-x;
-}
 .claro .dijitTabContainerBottom-tabs .dijitTab {
+  
   top: -1px;
   
   margin-right: 1px;
-}
-.claro .dijitTabContainerBottom-tabs .dijitTabContent {
   padding: 3px 6px;
   border-top-width: 0;
-  background-image: url(layout/images/tabBottom.png);
-  background-position: 0 -249px;
-  background-repeat: repeat-x;
-  background-position: bottom;
   min-width: 60px;
   text-align: center;
-}
-.claro .dijitTabContainerBottom-tabs .dijitTab {
-  padding-bottom: 3px;
-}
-.claro .dijitTabContainerBottom-tabs .dijitTabInnerDiv {
-  background-image: url(layout/images/tabBottom.png);
-  background-position: top;
+  background-image: url("layout/images/tabBottomUnselected.png");
   background-repeat: repeat-x;
+  background-position: bottom;
+  background-image: -moz-linear-gradient(bottom, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(bottom, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(bottom, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(bottom, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
   -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
 }
-.claro .dijitTabContainerBottom-tabs .dijitTabChecked .dijitTabContent {
-  padding-bottom: 7px;
-  padding-top: 4px;
-  background-position: 0 -119px;
-}
 .claro .dijitTabContainerBottom-tabs .dijitTabChecked {
-  padding-bottom: 0;
-}
-.claro .dijitTabContainerBottom-tabs .dijitTabChecked .dijitTabInnerDiv {
-  background-image: none;
+  padding-bottom: 9px;
+  padding-top: 4px;
+  background-image: url("layout/images/tabBottomSelected.png");
+  background-image: -moz-linear-gradient(bottom, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px, #ffffff 7px);
+  background-image: -webkit-linear-gradient(bottom, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px, #ffffff 7px);
+  background-image: -o-linear-gradient(bottom, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px, #ffffff 7px);
+  background-image: linear-gradient(bottom, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px, #ffffff 7px);
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .claro .dijitTabContainerLeft-tabs .dijitTab {
-  border-right-width: 0;
+  
   left: 1px;
   
   margin-bottom: 1px;
-}
-.claro .dijitTabContainerLeft-tabs .dijitTabInnerDiv {
-  background-image: url(layout/images/tabLeft.png);
-  background-position: -347px -340px;
-  background-repeat: repeat-y;
-}
-.claro .dijitTabContainerLeft-tabs .dijitTabContent {
   padding: 3px 8px 4px 4px;
-  background-image: url(layout/images/tabLeft.png);
+  background-image: url("layout/images/tabLeftUnselected.png");
   background-repeat: repeat-y;
-  background-position: 0 0;
+  background-image: -moz-linear-gradient(left, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(left, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(left, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(left, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
 }
-.claro .dijitTabContainerLeft-tabs .dijitTabChecked .dijitTabContent {
+.claro .dijitTabContainerLeft-tabs .dijitTabChecked {
+  border-right-width: 0;
   padding-right: 9px;
-  border-right: none;
-  background-image: none;
-}
-.claro .dijitTabContainerLeft-tabs .dijitTabChecked .dijitTabInnerDiv {
-  background-position: 0 -179px;
-  background-repeat: repeat-y;
+  background-image: url("layout/images/tabLeftSelected.png");
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0.5) 0px, #ffffff 30px);
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.5) 0px, #ffffff 30px);
+  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0.5) 0px, #ffffff 30px);
+  background-image: linear-gradient(left, rgba(255, 255, 255, 0.5) 0px, #ffffff 30px);
   -webkit-box-shadow: -1px 0 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: -1px 0 2px rgba(0, 0, 0, 0.05);
   box-shadow: -1px 0 2px rgba(0, 0, 0, 0.05);
 }
 .claro .dijitTabContainerRight-tabs .dijitTab {
-  border-left-width: 0;
+  
   left: -1px;
   
   margin-bottom: 1px;
-}
-.claro .dijitTabContainerRight-tabs .dijitTabInnerDiv {
-  background-image: url(layout/images/tabRight.png);
-  background-repeat: repeat-y;
-  background-position: -1px -347px;
-}
-.claro .dijitTabContainerRight-tabs .dijitTabContent {
   padding: 3px 8px 4px 4px;
-  background-image: url(layout/images/tabRight.png);
-  background-position: right top;
+  background-image: url("layout/images/tabRightUnselected.png");
   background-repeat: repeat-y;
+  background-position: right;
+  background-image: -moz-linear-gradient(right, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(right, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(right, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(right, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
 }
-.claro .dijitTabContainerRight-tabs .dijitTabChecked .dijitTabContent {
+.claro .dijitTabContainerRight-tabs .dijitTabChecked {
+  
   padding-left: 5px;
-  border-left: none;
-  background-image: none;
-}
-.claro .dijitTabContainerRight-tabs .dijitTabChecked .dijitTabInnerDiv {
-  background-position: -348px -179px;
+  border-left-width: 0;
+  background-image: url("layout/images/tabRightSelected.png");
+  background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 0.5) 0px, #ffffff 30px);
+  background-image: -webkit-linear-gradient(right, rgba(255, 255, 255, 0.5) 0px, #ffffff 30px);
+  background-image: -o-linear-gradient(right, rgba(255, 255, 255, 0.5) 0px, #ffffff 30px);
+  background-image: linear-gradient(right, rgba(255, 255, 255, 0.5) 0px, #ffffff 30px);
   -webkit-box-shadow: 1px 0 2px rgba(0, 0, 0, 0.07);
   -moz-box-shadow: 1px 0 2px rgba(0, 0, 0, 0.07);
   box-shadow: 1px 0 2px rgba(0, 0, 0, 0.07);
 }
-.claro .dijitTabContainerTop-tabs .dijitTabInnerDiv, .claro .dijitTabContainerTop-tabs .dijitTabContent {
+.claro .dijitTabContainerTop-tabs .dijitTab {
   -moz-border-radius: 2px 2px 0 0;
   border-radius: 2px 2px 0 0;
 }
-.claro .dijitTabContainerBottom-tabs .dijitTabInnerDiv, .claro .dijitTabContainerBottom-tabs .dijitTabContent {
+.claro .dijitTabContainerBottom-tabs .dijitTab {
   -moz-border-radius: 0 0 2px 2px;
   border-radius: 0 0 2px 2px;
 }
-.claro .dijitTabContainerLeft-tabs .dijitTabInnerDiv, .claro .dijitTabContainerLeft-tabs .dijitTabContent {
+.claro .dijitTabContainerLeft-tabs .dijitTab {
   -moz-border-radius: 2px 0 0 2px;
   border-radius: 2px 0 0 2px;
 }
-.claro .dijitTabContainerRight-tabs .dijitTabInnerDiv, .claro .dijitTabContainerRight-tabs .dijitTabContent {
+.claro .dijitTabContainerRight-tabs .dijitTab {
   -moz-border-radius: 0 2px 2px 0;
   border-radius: 0 2px 2px 0;
 }
 .claro .tabStripButton {
-  background-color: #e9f4fe;
+  background-color: #e5f2fe;
   border: 1px solid #b5bcc7;
 }
 .claro .dijitTabListContainer-top .tabStripButton {
   padding: 4px 3px;
   margin-top: 7px;
-  background-image: url(layout/images/tabTop.png);
-  background-position: 0 0;
+  background-image: -moz-linear-gradient(top, #ffffff 0px, rgba(255, 255, 255, 0.1) 1px, rgba(255, 255, 255, 0.6) 6px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(top, #ffffff 0px, rgba(255, 255, 255, 0.1) 1px, rgba(255, 255, 255, 0.6) 6px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(top, #ffffff 0px, rgba(255, 255, 255, 0.1) 1px, rgba(255, 255, 255, 0.6) 6px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(top, #ffffff 0px, rgba(255, 255, 255, 0.1) 1px, rgba(255, 255, 255, 0.6) 6px, rgba(255, 255, 255, 0) 100%);
 }
 .claro .dijitTabListContainer-bottom .tabStripButton {
-  padding: 5px 3px;
-  margin-bottom: 4px;
-  background-image: url(layout/images/tabTop.png);
-  background-position: 0 -248px;
-  background-position: bottom;
+  padding: 4px 3px;
+  margin-bottom: 7px;
+  background-image: -moz-linear-gradient(bottom, #ffffff 0px, rgba(255, 255, 255, 0.1) 1px, rgba(255, 255, 255, 0.6) 6px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(bottom, #ffffff 0px, rgba(255, 255, 255, 0.1) 1px, rgba(255, 255, 255, 0.6) 6px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(bottom, #ffffff 0px, rgba(255, 255, 255, 0.1) 1px, rgba(255, 255, 255, 0.6) 6px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(bottom, #ffffff 0px, rgba(255, 255, 255, 0.1) 1px, rgba(255, 255, 255, 0.6) 6px, rgba(255, 255, 255, 0) 100%);
 }
 .claro .tabStripButtonHover {
   background-color: #abd6ff;
 }
 .claro .tabStripButtonActive {
-  background-color: #7dbefa;
+  background-color: #7dbdfa;
 }
 .claro .dijitTabStripIcon {
   height: 15px;
   width: 15px;
   margin: 0 auto;
-  background: url(form/images/buttonArrows.png) no-repeat -75px 50%;
+  background: url("form/images/buttonArrows.png") no-repeat -75px 50%;
   background-color: transparent;
 }
 .claro .dijitTabStripSlideRightIcon {
@@ -2547,7 +2769,8 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitTabStripMenuIcon {
   background-position: -51px 50%;
 }
-.claro .dijitTabListContainer-top .tabStripButtonDisabled, .claro .dijitTabListContainer-bottom .tabStripButtonDisabled {
+.claro .dijitTabListContainer-top .tabStripButtonDisabled,
+.claro .dijitTabListContainer-bottom .tabStripButtonDisabled {
   background-color: #d3d3d3;
   border: 1px solid #b5bcc7;
   
@@ -2566,11 +2789,10 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .claro .dijitTabContainerNested .dijitTabContainerTop-tabs {
   border-bottom: solid 1px #b5bcc7;
-  padding: 1px 2px 4px;
-  margin-top: -2px;
+  padding: 2px 2px 4px;
 }
-.claro .dijitTabContainerTabListNested .dijitTabContent {
-  background: rgba(255, 255, 255, 0) none repeat scroll 0 0;
+.claro .dijitTabContainerTabListNested .dijitTab {
+  background-color: rgba(255, 255, 255, 0);
   border: none;
   padding: 4px;
   border-color: rgba(118, 157, 192, 0);
@@ -2582,19 +2804,19 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   transition-duration: 0.3s;
   -moz-border-radius: 2px;
   border-radius: 2px;
-}
-.claro .dijitTabContainerTabListNested .dijitTab .dijitTabInnerDiv {
-  
-  background: none;
-  border: none;
   top: 0;
   
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
+  background-image: url("layout/images/tabNested.png") repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.61) 0%, rgba(255, 255, 255, 0) 17%, rgba(255, 255, 255, 0) 83%, rgba(255, 255, 255, 0.61) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.61) 0%, rgba(255, 255, 255, 0) 17%, rgba(255, 255, 255, 0) 83%, rgba(255, 255, 255, 0.61) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.61) 0%, rgba(255, 255, 255, 0) 17%, rgba(255, 255, 255, 0) 83%, rgba(255, 255, 255, 0.61) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.61) 0%, rgba(255, 255, 255, 0) 17%, rgba(255, 255, 255, 0) 83%, rgba(255, 255, 255, 0.61) 100%);
 }
-.claro .dijitTabContainerTabListNested .dijitTabHover .dijitTabContent {
-  background-color: #e9f4fe;
+.claro .dijitTabContainerTabListNested .dijitTabHover {
+  background-color: #e5f2fe;
   border: solid 1px #cfe5fa;
   padding: 3px;
   -webkit-transition-duration: 0.2s;
@@ -2604,18 +2826,16 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitTabContainerTabListNested .dijitTabHover .tabLabel {
   text-decoration: none;
 }
-.claro .dijitTabContainerTabListNested .dijitTabActive .dijitTabContent {
-  border: solid 1px #769dc0;
+.claro .dijitTabContainerTabListNested .dijitTabActive {
+  border: solid 1px #759dc0;
   padding: 3px;
-  background: #abd6ff url(layout/images/tabNested.png) repeat-x;
   -webkit-transition-duration: 0.1s;
   -moz-transition-duration: 0.1s;
   transition-duration: 0.1s;
 }
-.claro .dijitTabContainerTabListNested .dijitTabChecked .dijitTabContent {
+.claro .dijitTabContainerTabListNested .dijitTabChecked {
   padding: 3px;
-  border: solid 1px #769dc0;
-  background-position: 0 105px;
+  border: solid 1px #759dc0;
   background-color: #cfe5fa;
 }
 .claro .dijitTabContainerTabListNested .dijitTabChecked .tabLabel {
@@ -2626,21 +2846,19 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border: none;
   
 }
-.dj_ie6 .claro .dijitTabContent,
-.dj_ie6 .claro .dijitTabInnerDiv,
-.dj_ie6 .dijitTabListContainer-top .tabStripButton,
-.dj_ie6 .dijitTabListContainer-bottom .tabStripButton {
-  background-image: none;
+.claro .dijitTabContainer .dijitTab,
+.claro .dijitTabContainer .tabStripButton {
+  _background-image: none;
 }
 .claro .dijitDialog {
-  border: 1px solid #769dc0;
+  border: 1px solid #759dc0;
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
 }
 .claro .dijitDialogPaneContent {
   background: #ffffff repeat-x top left;
-  border-top: 1px solid #769dc0;
+  border-top: 1px solid #759dc0;
   padding: 10px 8px;
   position: relative;
 }
@@ -2657,6 +2875,15 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border-top: 1px solid #d3d3d3;
   margin: 10px -8px -10px;
 }
+.claro .dijitTooltipDialog .dijitDialogPaneActionBar {
+  -webkit-border-bottom-right-radius: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  -moz-border-radius-bottomright: 4px;
+  -moz-border-radius-bottomleft: 4px;
+  margin: 10px -10px -8px;
+}
 .claro .dijitDialogPaneActionBar .dijitButton {
   float: none;
 }
@@ -2665,18 +2892,24 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border: 1px solid #ffffff;
   border-top: none;
   background-color: #abd6ff;
-  background-image: url(images/titlebar.png);
+  background-image: url("images/standardGradient.png");
   background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   padding: 5px 7px 4px 7px;
 }
 .claro .dijitDialogTitle {
   
   padding: 0 1px;
   font-size: 1.091em;
+  color: #000000;
 }
 .claro .dijitDialogCloseIcon {
   
-  background: url(images/dialogCloseIcon.png);
+  background: url("images/dialogCloseIcon.png");
   background-repeat: no-repeat;
   position: absolute;
   right: 5px;
@@ -2684,7 +2917,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   width: 21px;
 }
 .dj_ie6 .claro .dijitDialogCloseIcon {
-  background-image: url(images/dialogCloseIcon8bit.png);
+  background-image: url("images/dialogCloseIcon8bit.png");
 }
 .claro .dijitDialogCloseIconHover {
   background-position: -21px;
@@ -2692,7 +2925,8 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitDialogCloseIconActive {
   background-position: -42px;
 }
-.claro .dijitTooltip, .claro .dijitTooltipDialog {
+.claro .dijitTooltip,
+.claro .dijitTooltipDialog {
   
   background: transparent;
   
@@ -2712,10 +2946,12 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitTooltipContainer {
   
   background-color: #ffffff;
-  background-image: url(images/tooltipGradient.png);
-  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
+  background-image: -webkit-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
+  background-image: -o-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
+  background-image: linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
   background-position: bottom;
-  border: 1px solid #769dc0;
+  border: 1px solid #759dc0;
   padding: 6px 8px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -2723,26 +2959,19 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   font-size: 1em;
-}
-.dj_ie6 .claro .dijitTooltipContainer {
-  background-image: none;
+  color: #000000;
 }
 .claro .dijitTooltipConnector {
   
   border: 0;
   z-index: 2;
-  background-image: url(images/tooltip.png);
+  background-image: url("images/tooltip.png");
   background-repeat: no-repeat;
   width: 16px;
   height: 14px;
 }
 .dj_ie6 .claro .dijitTooltipConnector {
-  background-image: url(images/tooltip8bit.png);
-}
-.claro .dijitTooltipABRight .dijitTooltipConnector {
-  
-  left: auto !important;
-  right: 3px;
+  background-image: url("images/tooltip8bit.png");
 }
 .claro .dijitTooltipBelow .dijitTooltipConnector {
   
@@ -2760,8 +2989,14 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   width: 16px;
   height: 14px;
 }
-.dj_ie7 .claro .dijitTooltipAbove .dijitTooltipConnector, .dj_ie6 .claro .dijitTooltipAbove .dijitTooltipConnector {
+.dj_ie7 .claro .dijitTooltipAbove .dijitTooltipConnector,
+.dj_ie6 .claro .dijitTooltipAbove .dijitTooltipConnector {
   bottom: -1px;
+}
+.claro .dijitTooltipABRight .dijitTooltipConnector {
+  
+  left: auto;
+  right: 3px;
 }
 .claro .dijitTooltipLeft {
   padding-right: 14px;
@@ -2807,67 +3042,68 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitAccordionTitle {
   background-color: transparent;
   
-  background-image: url(layout/images/accordion.png);
-  background-position: 0 0;
+  background-image: url("images/standardGradient.png");
   background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   padding: 5px 7px 2px 7px;
   min-height: 17px;
-  color: #4a4a4a;
-}
-.claro .dijitAccordionTitleHover {
-  color: #000000;
-}
-.dj_ie6 .claro .dijitAccordionTitle {
-  background-image: none;
+  color: #494949;
 }
 .claro .dijitAccordionContainer .dijitAccordionChildWrapper {
   
   background-color: #ffffff;
-  border: 1px solid #769dc0;
+  border: 1px solid #759dc0;
   margin: 0 2px 2px;
 }
 .claro .dijitAccordionContainer .dijitAccordionContainer-child {
   
   padding: 9px;
 }
-.claro .dijitAccordionInnerContainerActive {
-  border: 1px solid #769dc0;
-  background-color: #7dbefa;
-  -webkit-transition-duration: 0.1s;
-  -moz-transition-duration: 0.1s;
-  transition-duration: 0.1s;
-}
-.claro .dijitAccordionInnerContainerActive .dijitAccordionTitle {
-  background-position: 0 -136px;
-  color: #000000;
-}
-.claro .dijitAccordionInnerContainerSelected {
-  border-color: #769dc0;
-  background-color: #cfe5fa;
-}
-.claro .dijitAccordionInnerContainerSelected .dijitAccordionTitle {
-  color: #000000;
-  background-position: 0 0;
-  
-}
-.claro .dijitAccordionInnerContainerHover dijitAccordionTitle {
-  
-  color: #000000;
-}
-.claro .dijitAccordionInnerContainerHover, .claro .dijitAccordionInnerContainerSelectedActive {
-  
-  border: 1px solid #769dc0;
+.claro .dijitAccordionInnerContainerHover {
+  border: 1px solid #759dc0;
   background-color: #abd6ff;
   -webkit-transition-duration: 0.2s;
   -moz-transition-duration: 0.2s;
   transition-duration: 0.2s;
 }
-.claro .dijitAccordionInnerContainerSelectedHover .dijitAccordionChildWrapper, .claro .dijitAccordionInnerContainerSelectedActive .dijitAccordionChildWrapper {
-  background-color: #ffffff;
-  border: 1px solid #769dc0 !important;
-  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.25);
-  -moz-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.25);
-  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.25);
+.claro .dijitAccordionInnerContainerHover .dijitAccordionTitle {
+  color: #000000;
+}
+.claro .dijitAccordionInnerContainerActive {
+  border: 1px solid #759dc0;
+  background-color: #7dbdfa;
+  -webkit-transition-duration: 0.1s;
+  -moz-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+}
+.claro .dijitAccordionInnerContainerActive .dijitAccordionTitle {
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
+  color: #000000;
+}
+.claro .dijitAccordionInnerContainerSelected {
+  border-color: #759dc0;
+  background-color: #cfe5fa;
+}
+.claro .dijitAccordionInnerContainerSelected .dijitAccordionTitle {
+  color: #000000;
+  background-image: url("images/standardGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
+  
 }
 .claro .dijitContentPane {
   padding: 8px;
@@ -2880,20 +3116,25 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   background-color: #ffffff;
   padding: 8px;
 }
-.claro .dijitSplitContainer-dijitContentPane, .claro .dijitBorderContainer-dijitContentPane {
+.claro .dijitSplitContainer-dijitContentPane,
+.claro .dijitBorderContainer-dijitContentPane {
   background-color: #ffffff;
   padding: 8px;
 }
 .claro .dijitCalendar {
   border: solid 1px #b5bcc7;
-  background-color: #cfe5fa;
-  background-image: url(images/calendarContainerImages.png);
-  background-position: 0 -448px;
-  background-repeat: repeat-x;
-  text-align: center;
-  padding: 6px 5px 3px 5px;
+  border-collapse: separate;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  background-color: #cfe5fa;
+  background-image: url("images/calendar.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0.4) 2px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0.4) 2px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0.4) 2px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0.4) 2px, rgba(255, 255, 255, 0) 100%);
+  text-align: center;
+  padding: 6px 5px 3px 5px;
 }
 .dj_ie6 .claro .dijitCalendar {
   background-image: none;
@@ -2901,10 +3142,12 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitCalendar img {
   border: none;
 }
-.claro .dijitCalendarHover, .claro .dijitCalendarActive {
+.claro .dijitCalendarHover,
+.claro .dijitCalendar:hover,
+.claro .dijitCalendarActive {
   
   background-color: #abd6ff;
-  border: solid 1px #769dc0;
+  border: solid 1px #759dc0;
 }
 .claro .dijitCalendarMonthContainer th {
   text-align: center;
@@ -2919,49 +3162,50 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitCalendarIncrementControl {
   width: 18px;
   height: 16px;
-  background-image: url(images/calendarArrows.png);
+  background-image: url("images/calendarArrows.png");
   background-repeat: no-repeat;
 }
 .dj_ie6 .claro .dijitCalendarIncrementControl {
-  background-image: url(images/calendarArrows8bit.png);
+  background-image: url("images/calendarArrows8bit.png");
 }
 .claro .dijitCalendarIncrease {
   background-position: -18px 0;
 }
-.claro .dijitCalendarArrowHover .dijitCalendarDecrease {
+.claro .dijitCalendarArrowHover .dijitCalendarDecrease,
+.claro .dijitCalendarArrow:hover .dijitCalendarDecrease {
   background-position: -36px 0;
 }
-.claro .dijitCalendarArrowHover .dijitCalendarIncrease {
+.claro .dijitCalendarArrowHover .dijitCalendarIncrease,
+.claro .dijitCalendarArrow:hover .dijitCalendarIncrease {
   background-position: -55px 0;
 }
-.claro .dijitCalendarArrowActive .dijitCalendarDecrease {
+.claro .dijitCalendarArrowActive .dijitCalendarDecrease,
+.claro .dijitCalendarArrow:active .dijitCalendarDecrease {
   background-position: -72px 0;
 }
-.claro .dijitCalendarArrowActive .dijitCalendarIncrease {
+.claro .dijitCalendarArrowActive .dijitCalendarIncrease,
+.claro .dijitCalendarArrow:active .dijitCalendarIncrease {
   background-position: -91px 0;
 }
 .claro .dijitA11ySideArrow {
   
   display: none;
 }
-.claro .dijitDayLabels th {
-  padding: 0 4px 0 4px;
-  font-weight: bold;
-  text-align: center;
-}
 .claro .dijitCalendarDayLabelTemplate {
   padding-bottom: 0;
   text-align: center;
   border-bottom: 1px solid #b5bcc7;
-  font-size: 0.909em;
   padding: 0 3px 2px;
 }
-.claro .dijitCalendarDateTemplate {
+.claro .dijitCalendarDayLabel {
+  padding: 0 4px 0 4px;
+  font-weight: bold;
+  font-size: 0.909em;
   text-align: center;
+  color: #000000;
+}
+.claro .dijitCalendarDateTemplate {
   background-color: #ffffff;
-  background-image: url(images/calendarContainerImages.png);
-  background-position: 0 0;
-  background-repeat: repeat-x;
   border-bottom: 1px solid #d3d3d3;
   padding-top: 0;
   font-size: 0.909em;
@@ -2969,12 +3213,14 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   font-weight: bold;
   letter-spacing: .05em;
   text-align: center;
+  color: #000000;
 }
 .dj_ie6 .claro .dijitCalendarDateTemplate {
   background-image: none;
 }
-.claro .dijitCalendarPreviousMonth, .claro .dijitCalendarNextMonth {
-  background-color: #e9f4fe;
+.claro .dijitCalendarPreviousMonth,
+.claro .dijitCalendarNextMonth {
+  background-color: #e5f2fe;
   background-image: none;
   border-bottom: solid 1px #d3d3d3;
   
@@ -2994,9 +3240,10 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   -moz-transition-duration: 0.35s;
   transition-duration: 0.35s;
 }
-.claro .dijitCalendarPreviousMonth .dijitCalendarDateLabel, .claro .dijitCalendarNextMonth .dijitCalendarDateLabel {
-  color: #769dc0;
-  border-color: #e9f4fe;
+.claro .dijitCalendarPreviousMonth .dijitCalendarDateLabel,
+.claro .dijitCalendarNextMonth .dijitCalendarDateLabel {
+  color: #759dc0;
+  border-color: #e5f2fe;
   
 }
 .claro .dijitCalendarYearContainer {
@@ -3008,6 +3255,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitCalendarYearLabel {
   padding: 2px 0 0 0;
   margin: 0;
+  font-size: 1.17em;
 }
 .claro .dijitCalendarYearLabel span {
   
@@ -3016,7 +3264,8 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitCalendarSelectedYear {
   padding: 0 3px;
 }
-.claro .dijitCalendarNextYear, .claro .dijitCalendarPreviousYear {
+.claro .dijitCalendarNextYear,
+.claro .dijitCalendarPreviousYear {
   padding: 1px 6px 1px 6px;
   font-size: 0.909em;
 }
@@ -3024,31 +3273,36 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   font-size: 1.091em;
   color: #000000;
 }
-.claro .dijitCalendarHoveredDate .dijitCalendarDateLabel {
+.claro .dijitCalendarHoveredDate .dijitCalendarDateLabel,
+.claro .dijitCalendarEnabledDate:hover .dijitCalendarDateLabel {
   background-color: #abd6ff;
-  border: solid 1px #769dc0;
+  border: solid 1px #759dc0;
   color: #000000;
   -webkit-transition-duration: 0.2s;
   -moz-transition-duration: 0.2s;
   transition-duration: 0.2s;
 }
-.claro .dijitCalendarNextYearHover, .claro .dijitCalendarPreviousYearHover {
+.claro .dijitCalendarNextYearHover,
+.claro .dijitCalendarNextYear:hover,
+.claro .dijitCalendarPreviousYearHover,
+.claro .dijitCalendarPreviousYear:hover {
   color: #000000;
   border: solid 1px #ffffff;
   padding: 0 5px 0 5px;
   
-  background-color: #e9f4fe;
+  background-color: #e5f2fe;
 }
-.claro .dijitCalendarNextYearActive, .claro .dijitCalendarPreviousYearActive {
-  border: solid 1px #769dc0;
+.claro .dijitCalendarNextYearActive,
+.claro .dijitCalendarNextYear:active .claro .dijitCalendarPreviousYearActive,
+.claro .dijitCalendarPreviousYear:active {
+  border: solid 1px #759dc0;
   padding: 0 5px 0 5px;
   
-  background-color: #cfe5fa;
+  background-color: #7dbdfa;
 }
-.claro .dijitCalendarActiveDate .dijitCalendarDateLabel {
-  background-image: url(images/calendarContainerImages.png);
-  background-position: 0 -300px;
-  background-color: #7dbefa;
+.claro .dijitCalendarActiveDate .dijitCalendarDateLabel,
+.claro .dijitCalendarEnabledDate:active .dijitCalendarDateLabel {
+  background-color: #7dbdfa;
   border: solid 1px #ffffff;
   -webkit-transition-duration: 0.1s;
   -moz-transition-duration: 0.1s;
@@ -3060,15 +3314,11 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitCalendarSelectedDate .dijitCalendarDateLabel {
   color: #000000;
   background-color: #abd6ff;
-  border-color: #769dc0;
+  border-color: #759dc0;
 }
 .claro .dijitCalendarDisabledDate .dijitCalendarDateLabel {
-  text-decoration: line-through;
-  
-  background-color: transparent;
-  border-width: 0;
-  padding: 4px 6px 4px 5px;
   color: #818181;
+  text-decoration: line-through;
 }
 .claro .dijitCalendar .dijitDropDownButton {
   margin: 0;
@@ -3078,20 +3328,21 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   margin-right: -4px;
 }
 .claro .dijitCalendar .dijitDropDownButton .dijitButtonNode {
-  background-color: transparent;
-  background-image: none;
   padding: 0 3px 0 2px;
   border: solid 1px #b5bcc7;
   -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  background-color: transparent;
+  background-image: none;
 }
-.claro .dijitCalendar .dijitDropDownButtonHover .dijitButtonNode {
-  background-color: #e9f4fe;
+.claro .dijitCalendar .dijitDropDownButtonHover .dijitButtonNode,
+.claro .dijitCalendar .dijitDropDownButton:hover .dijitButtonNode {
+  background-color: #e5f2fe;
   border: solid 1px #ffffff;
 }
 .claro .dijitCalendarMonthMenu {
-  border-color: #769dc0;
+  border-color: #759dc0;
   background-color: #ffffff;
   text-align: center;
   background-image: none;
@@ -3102,74 +3353,81 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border-bottom: solid 1px #ffffff;
   padding: 2px 0;
 }
-.claro .dijitCalendarMonthMenu .dijitCalendarMonthLabelHover {
-  background-color: #abd6ff;
-  border-color: #769dc0;
+.claro .dijitCalendarMonthMenu .dijitCalendarMonthLabelHover,
+.claro .dijitCalendarMonthMenu .dijitCalendarMonthLabel:hover {
+  border-color: #759dc0;
   border-width: 1px 0;
-  background-image: url(images/commonHighlight.png);
-  background-repeat: repeat-x;
+  background-color: #abd6ff;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr= #ffffff , endColorstr= #abd6ff );
 }
 .claro .dijitMenuBar {
   border: 1px solid #b5bcc7;
   margin: 0;
   padding: 0;
   background-color: #efefef;
-  background-image: url(images/commonHighlight.png);
-  background-position: 0 0;
+  background-image: url("images/standardGradient.png");
   background-repeat: repeat-x;
-}
-.dj_ie6 .claro .dijitMenuBar {
-  background-image: none;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
 }
 .claro .dijitMenu {
-  background-repeat: repeat-y;
   background-color: #ffffff;
-  border: 1px solid #769dc0;
-  
-  margin: -1px 0;
+  border: 1px solid #759dc0;
 }
-.dj_ie6 .claro .dijitMenu {
-  margin: 0;
-  
+.claro .dijitMenuItem {
+  color: #000000;
 }
 .claro .dijitMenuBar .dijitMenuItem {
   padding: 6px 10px 7px;
-  background-position: 0 100px;
-  color: #4a4a4a;
   margin: -1px;
 }
-.claro .dijitMenuItem {
-  background-image: url(images/menuHighlight.png);
-  background-position: 0 -40px;
-  background-repeat: repeat-x;
+.claro .dijitMenuBar .dijitMenuItemHover,
+.claro .dijitMenuBar .dijitMenuItemSelected {
+  border: solid 1px #759dc0;
+  padding: 5px 9px 6px;
 }
 .claro .dijitMenuTable {
   border-collapse: separate;
   border-spacing: 0 0;
   padding: 0;
 }
-.claro .dijitMenuItem td {
-  padding: 1px;
+.claro .dijitMenu .dijitMenuItem td,
+.claro .dijitComboBoxMenu .dijitMenuItem {
+  padding: 2px;
+  border-width: 1px 0 1px 0;
+  border-style: solid;
+  border-color: #ffffff;
 }
-.claro .dijitMenuPassive .dijitMenuItemHover, .claro .dijitMenuPassive .dijitMenuItemSelected {
+.claro .dijitMenu .dijitMenuItemHover td,
+.claro .dijitMenu .dijitMenuItemSelected td,
+.claro .dijitMenuItemHover,
+.claro .dijitComboBoxMenu .dijitMenuItemHover,
+.claro .dijitMenuItemSelected {
+  border-color: #759dc0;
   background-color: #abd6ff;
-  border: solid 1px #769dc0;
-  background-position: 0 0;
-  color: #000000;
-  padding: 5px 9px 6px;
+  background-image: url("images/standardGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
 }
-.claro .dijitMenuPassive .dijitMenuItemActive {
-  background-position: 0 -177px;
-}
-.dj_ie6 .claro .dijitMenuItem, .dj_ie6 .claro .dijitMenuPassive .dijitMenuItem {
-  background-image: none;
-}
-.claro .dijitMenuActive .dijitMenuItemHover, .claro .dijitMenuActive .dijitMenuItemSelected {
-  border: solid 1px #769dc0;
-  padding: 5px 9px 6px;
-  background-color: #abd6ff;
-  background-position: 0 0;
-  color: #000000;
+.claro .dijitMenuItemActive {
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
 }
 .dj_ie .claro .dijitMenuActive .dijitMenuItemHover,
 .dj_ie .claro .dijitMenuActive .dijitMenuItemSelected,
@@ -3178,13 +3436,6 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   padding-top: 6px;
   padding-bottom: 5px;
   margin-top: -3px;
-}
-.claro .dijitMenuActive .dijitMenuItemActive {
-  background-color: #7dbefa;
-  background-position: 0 -177px;
-}
-.claro .dijitMenuItemActive {
-  background-position: 0 -177px;
 }
 .claro td.dijitMenuItemIconCell {
   padding: 2px;
@@ -3197,9 +3448,10 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitMenuExpand {
   width: 7px;
   height: 7px;
-  background-image: url(images/spriteArrows.png);
+  background-image: url("images/spriteArrows.png");
   background-position: -14px 0;
   margin-right: 3px;
+  margin-bottom: 4px;
 }
 .claro .dijitMenuItemDisabled .dijitMenuItemIconCell {
   opacity: 1;
@@ -3214,43 +3466,47 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   height: auto;
   margin-bottom: 1px;
 }
-.claro .dijitCheckedMenuItemIconChar {
-  display: none;
-}
-.claro .dijitCheckedMenuItemIcon {
-  background-image: url(form/images/checkboxRadioButtonStates.png);
+.claro .dijitCheckedMenuItem .dijitMenuItemIcon,
+.claro .dijitRadioMenuItem .dijitMenuItemIcon {
+  background-image: url("form/images/checkboxRadioButtonStates.png");
   background-repeat: no-repeat;
   background-position: -15px 50%;
+  
   width: 15px;
   height: 16px;
 }
-.dj_ie6 .claro .dijitCheckedMenuItemIcon {
-  background-image: url(form/images/checkboxAndRadioButtons_IE6.png);
+.dj_ie6 .claro .dijitCheckedMenuItem .dijitMenuItemIcon,
+.dj_ie6 .claro .dijitRadioMenuItem .dijitMenuItemIcon {
+  background-image: url("form/images/checkboxAndRadioButtons_IE6.png");
 }
 .claro .dijitCheckedMenuItemChecked .dijitCheckedMenuItemIcon {
   background-position: 0 50%;
+  
+}
+.claro .dijitRadioMenuItem .dijitMenuItemIcon {
+  background-position: -105px 50%;
+  
+}
+.claro .dijitRadioMenuItemChecked .dijitMenuItemIcon {
+  background-position: -90px 50%;
+  
 }
 .claro .dijitComboBoxMenu {
   margin-left: 0;
   background-image: none;
 }
-.claro .dijitComboBoxMenu .dijitMenuItem {
-  padding: 2px;
-  border-width: 1px 0 1px 0;
-  border-style: solid;
-  border-color: #ffffff;
-}
+.claro .dijitMenu .dijitMenuItemSelected td,
 .claro .dijitComboBoxMenu .dijitMenuItemSelected {
   color: #000000;
-  border-color: #769dc0;
+  border-color: #759dc0;
   background-color: #abd6ff;
 }
 .claro .dijitComboBoxMenuActive .dijitMenuItemSelected {
-  background-position: 0 -177px;
-  background-color: #7dbefa;
+  background-color: #7dbdfa;
   
 }
-.claro .dijitMenuPreviousButton, .claro .dijitMenuNextButton {
+.claro .dijitMenuPreviousButton,
+.claro .dijitMenuNextButton {
   font-style: italic;
 }
 .claro .dijitSliderBar {
@@ -3258,29 +3514,32 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   outline: 1px;
 }
 .claro .dijitSliderFocused .dijitSliderBar {
-  border-color: #769dc0;
+  border-color: #759dc0;
 }
 .claro .dijitSliderHover .dijitSliderBar {
-  border-color: #769dc0;
+  border-color: #759dc0;
 }
 .claro .dijitSliderDisabled .dijitSliderBar {
   background-image: none;
   border-color: #d3d3d3;
 }
+.claro .dijitRuleLabelsContainer {
+  color: #000000;
+}
 .claro .dijitRuleLabelsContainerH {
   padding: 2px 0;
 }
-.claro .dijitSlider .dijitSliderProgressBarH, .claro .dijitSlider .dijitSliderLeftBumper {
-  background-image: url(form/images/sliderHorizontal.png);
-  background-repeat: repeat-x;
-  background-position: 0 -20px;
+.claro .dijitSlider .dijitSliderProgressBarH,
+.claro .dijitSlider .dijitSliderLeftBumper {
   border-color: #b5bcc7;
   background-color: #cfe5fa;
+  background-image: -moz-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px);
+  background-image: -webkit-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px);
+  background-image: -o-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px);
+  background-image: linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0) 2px);
 }
-.claro .dijitSlider .dijitSliderRemainingBarH, .claro .dijitSlider .dijitSliderRightBumper {
-  background-image: url(form/images/sliderHorizontal.png);
-  background-repeat: repeat-x;
-  background-position: 0 -11px;
+.claro .dijitSlider .dijitSliderRemainingBarH,
+.claro .dijitSlider .dijitSliderRightBumper {
   border-color: #b5bcc7;
   background-color: #ffffff;
 }
@@ -3290,48 +3549,56 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderLeftBumper {
   border-left: solid 1px #b5bcc7;
 }
-.claro .dijitSliderHover .dijitSliderProgressBarH, .claro .dijitSliderHover .dijitSliderLeftBumper {
-  background-position: 0 -20px;
+.claro .dijitSliderHover .dijitSliderProgressBarH,
+.claro .dijitSliderHover .dijitSliderLeftBumper {
   background-color: #abd6ff;
-  border-color: #769dc0;
+  border-color: #759dc0;
 }
-.claro .dijitSliderHover .dijitSliderRemainingBarH, .claro .dijitSliderHover .dijitSliderRightBumper {
-  background-position: 0 0;
+.claro .dijitSliderHover .dijitSliderRemainingBarH,
+.claro .dijitSliderHover .dijitSliderRightBumper {
   background-color: #ffffff;
-  border-color: #769dc0;
+  border-color: #759dc0;
 }
-.claro .dijitSliderFocused .dijitSliderProgressBarH, .claro .dijitSliderFocused .dijitSliderLeftBumper {
-  background-position: 0 -30px;
+.claro .dijitSliderFocused .dijitSliderProgressBarH,
+.claro .dijitSliderFocused .dijitSliderLeftBumper {
   background-color: #abd6ff;
-  border-color: #769dc0;
+  border-color: #759dc0;
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
 }
-.claro .dijitSliderFocused .dijitSliderRemainingBarH, .claro .dijitSliderFocused .dijitSliderRightBumper {
-  background-position: 0 -9px;
+.claro .dijitSliderFocused .dijitSliderRemainingBarH,
+.claro .dijitSliderFocused .dijitSliderRightBumper {
   background-color: #ffffff;
-  border-color: #769dc0;
+  border-color: #759dc0;
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
 }
-.claro .dijitSliderDisabled .dijitSliderProgressBarH, .claro .dijitSliderDisabled .dijitSliderLeftBumper {
+.claro .dijitSliderDisabled .dijitSliderProgressBarH,
+.claro .dijitSliderDisabled .dijitSliderLeftBumper {
   background-color: #d3d3d3;
   
   background-image: none;
 }
-.claro .dijitSliderDisabled .dijitSliderRemainingBarH, .claro .dijitSliderDisabled .dijitSliderRightBumper {
+.claro .dijitSliderDisabled .dijitSliderRemainingBarH,
+.claro .dijitSliderDisabled .dijitSliderRightBumper {
   background-color: #efefef;
 }
 .claro .dijitRuleLabelsContainerV {
   padding: 0 2px;
 }
-.claro .dijitSlider .dijitSliderProgressBarV, .claro .dijitSlider .dijitSliderBottomBumper {
-  background-image: url(form/images/sliderVertical.png);
-  background-repeat: repeat-y;
-  background-position: -36px 0;
+.claro .dijitSlider .dijitSliderProgressBarV,
+.claro .dijitSlider .dijitSliderBottomBumper {
   border-color: #b5bcc7;
   background-color: #cfe5fa;
+  background-image: -moz-linear-gradient(left, #ffffff 0px, rgba(255, 255, 255, 0) 1px);
+  background-image: -webkit-linear-gradient(left, #ffffff 0px, rgba(255, 255, 255, 0) 1px);
+  background-image: -o-linear-gradient(left, #ffffff 0px, rgba(255, 255, 255, 0) 1px);
+  background-image: linear-gradient(left, #ffffff 0px, rgba(255, 255, 255, 0) 1px);
 }
-.claro .dijitSlider .dijitSliderRemainingBarV, .claro .dijitSlider .dijitSliderTopBumper {
-  background-image: url(form/images/sliderVertical.png);
-  background-repeat: repeat-y;
-  background-position: -3px 0;
+.claro .dijitSlider .dijitSliderRemainingBarV,
+.claro .dijitSlider .dijitSliderTopBumper {
   border-color: #b5bcc7;
   background-color: #ffffff;
 }
@@ -3341,34 +3608,46 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderTopBumper {
   border-top: solid 1px #b5bcc7;
 }
-.claro .dijitSliderHover .dijitSliderProgressBarV, .claro .dijitSliderHover .dijitSliderBottomBumper {
-  background-position: -36px 0;
+.claro .dijitSliderHover .dijitSliderProgressBarV,
+.claro .dijitSliderHover .dijitSliderBottomBumper {
   background-color: #abd6ff;
+  border-color: #759dc0;
 }
-.claro .dijitSliderHover .dijitSliderRemainingBarV, .claro .dijitSliderHover .dijitSliderTopBumper {
-  background-position: 0 0;
+.claro .dijitSliderHover .dijitSliderRemainingBarV,
+.claro .dijitSliderHover .dijitSliderTopBumper {
   background-color: #ffffff;
+  border-color: #759dc0;
 }
-.claro .dijitSliderFocused .dijitSliderProgressBarV, .claro .dijitSliderFocused .dijitSliderBottomBumper {
-  background-position: -56px 0;
+.claro .dijitSliderFocused .dijitSliderProgressBarV,
+.claro .dijitSliderFocused .dijitSliderBottomBumper {
   background-color: #abd6ff;
+  border-color: #759dc0;
+  -webkit-box-shadow: inset 1px 0px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 1px 0px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 1px 0px 1px rgba(0, 0, 0, 0.2);
 }
-.claro .dijitSliderFocused .dijitSliderRemainingBarV, .claro .dijitSliderFocused .dijitSliderTopBumper {
-  background-position: -18px 0;
+.claro .dijitSliderFocused .dijitSliderRemainingBarV,
+.claro .dijitSliderFocused .dijitSliderTopBumper {
   background-color: #ffffff;
+  border-color: #759dc0;
+  -webkit-box-shadow: inset 1px 0px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 1px 0px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 1px 0px 1px rgba(0, 0, 0, 0.2);
 }
-.claro .dijitSliderDisabled .dijitSliderProgressBarV, .claro .dijitSliderDisabled .dijitSliderBottomBumper {
+.claro .dijitSliderDisabled .dijitSliderProgressBarV,
+.claro .dijitSliderDisabled .dijitSliderBottomBumper {
   background-color: #d3d3d3;
   
 }
-.claro .dijitSliderDisabled .dijitSliderRemainingBarV, .claro .dijitSliderDisabled .dijitSliderTopBumper {
+.claro .dijitSliderDisabled .dijitSliderRemainingBarV,
+.claro .dijitSliderDisabled .dijitSliderTopBumper {
   background-color: #efefef;
 }
 .claro .dijitSliderImageHandleH {
   border: 0;
   width: 18px;
   height: 16px;
-  background-image: url(form/images/sliderThumbs.png);
+  background-image: url("form/images/sliderThumbs.png");
   background-repeat: no-repeat;
   background-position: 0 0;
 }
@@ -3384,14 +3663,15 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderProgressBarH .dijitSliderThumbActive {
   background-position: -36px 0;
 }
-.claro .dijitSliderReadOnly .dijitSliderImageHandleH, .claro .dijitSliderDisabled .dijitSliderImageHandleH {
+.claro .dijitSliderReadOnly .dijitSliderImageHandleH,
+.claro .dijitSliderDisabled .dijitSliderImageHandleH {
   background-position: -54px 0;
 }
 .claro .dijitSliderImageHandleV {
   border: 0;
   width: 18px;
   height: 16px;
-  background-image: url(form/images/sliderThumbs.png);
+  background-image: url("form/images/sliderThumbs.png");
   background-repeat: no-repeat;
   background-position: -289px 0;
 }
@@ -3407,7 +3687,8 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderProgressBarV .dijitSliderThumbActive {
   background-position: -325px 0;
 }
-.claro .dijitSliderReadOnly .dijitSliderImageHandleV, .claro .dijitSliderDisabled .dijitSliderImageHandleV {
+.claro .dijitSliderReadOnly .dijitSliderImageHandleV,
+.claro .dijitSliderDisabled .dijitSliderImageHandleV {
   background-position: -343px 0;
 }
 .claro .dijitSliderButtonContainerH {
@@ -3420,7 +3701,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderIncrementIconH,
 .claro .dijitSliderDecrementIconV,
 .claro .dijitSliderIncrementIconV {
-  background-image: url(form/images/commonFormArrows.png);
+  background-image: url("form/images/commonFormArrows.png");
   background-repeat: no-repeat;
   background-color: #efefef;
   -moz-border-radius: 2px;
@@ -3428,11 +3709,13 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border: solid 1px #b5bcc7;
   font-size: 1px;
 }
-.claro .dijitSliderDecrementIconH, .claro .dijitSliderIncrementIconH {
+.claro .dijitSliderDecrementIconH,
+.claro .dijitSliderIncrementIconH {
   height: 12px;
   width: 9px;
 }
-.claro .dijitSliderDecrementIconV, .claro .dijitSliderIncrementIconV {
+.claro .dijitSliderDecrementIconV,
+.claro .dijitSliderIncrementIconV {
   height: 9px;
   width: 12px;
 }
@@ -3445,31 +3728,31 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderHover .dijitSliderDecrementIconV,
 .claro .dijitSliderHover .dijitSliderIncrementIconV {
   
-  border: solid 1px #769dc0;
+  border: solid 1px #759dc0;
   background-color: #ffffff;
 }
 .claro .dijitSliderDecrementIconH {
   background-position: -357px 50%;
 }
-.claro .dijitSliderActive .dijitSliderDecrementIconH.claro .dijitSliderHover .dijitSliderDecrementIconH {
+.claro .dijitSliderActive .dijitSliderDecrementIconH .claro .dijitSliderHover .dijitSliderDecrementIconH {
   background-position: -393px 50%;
 }
 .claro .dijitSliderIncrementIconH {
   background-position: -251px 50%;
 }
-.claro .dijitSliderActive .dijitSliderIncrementIconH.claro .dijitSliderHover .dijitSliderIncrementIconH {
+.claro .dijitSliderActive .dijitSliderIncrementIconH .claro .dijitSliderHover .dijitSliderIncrementIconH {
   background-position: -283px 50%;
 }
 .claro .dijitSliderDecrementIconV {
   background-position: -38px 50%;
 }
-.claro .dijitSliderActive .dijitSliderDecrementIconV.claro .dijitSliderHover .dijitSliderDecrementIconV {
+.claro .dijitSliderActive .dijitSliderDecrementIconV .claro .dijitSliderHover .dijitSliderDecrementIconV {
   background-position: -73px 50%;
 }
 .claro .dijitSliderIncrementIconV {
   background-position: -143px 49%;
 }
-.claro .dijitSliderActive .dijitSliderIncrementIconV.claro .dijitSliderHover .dijitSliderIncrementIconV {
+.claro .dijitSliderActive .dijitSliderIncrementIconV .claro .dijitSliderHover .dijitSliderIncrementIconV {
   background-position: -178px 49%;
 }
 .claro .dijitSliderButtonContainerV .dijitSliderDecrementButtonHover,
@@ -3483,7 +3766,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderButtonContainerV .dijitSliderIncrementButtonActive,
 .claro .dijitSliderButtonContainerH .dijitSliderIncrementButtonActive {
   background-color: #abd6ff;
-  border-color: #769dc0;
+  border-color: #759dc0;
 }
 .claro .dijitSliderButtonInner {
   visibility: hidden;
@@ -3491,37 +3774,32 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderDisabled .dijitSliderBar {
   border-color: #d3d3d3;
 }
-.claro .dijitSliderReadOnly *, .claro .dijitSliderDisabled * {
+.claro .dijitSliderReadOnly *,
+.claro .dijitSliderDisabled * {
   border-color: #d3d3d3;
   color: #818181;
 }
-.claro .dijitSliderReadOnly .dijitSliderDecrementIconH, .claro .dijitSliderDisabled .dijitSliderDecrementIconH {
+.claro .dijitSliderReadOnly .dijitSliderDecrementIconH,
+.claro .dijitSliderDisabled .dijitSliderDecrementIconH {
   background-position: -321px 50%;
   background-color: #efefef;
 }
-.claro .dijitSliderReadOnly .dijitSliderIncrementIconH, .claro .dijitSliderDisabled .dijitSliderIncrementIconH {
+.claro .dijitSliderReadOnly .dijitSliderIncrementIconH,
+.claro .dijitSliderDisabled .dijitSliderIncrementIconH {
   background-position: -215px 50%;
   background-color: #efefef;
 }
-.claro .dijitSliderReadOnly .dijitSliderDecrementIconV, .claro .dijitSliderDisabled .dijitSliderDecrementIconV {
+.claro .dijitSliderReadOnly .dijitSliderDecrementIconV,
+.claro .dijitSliderDisabled .dijitSliderDecrementIconV {
   background-position: -3px 49%;
   background-color: #efefef;
 }
-.claro .dijitSliderReadOnly .dijitSliderIncrementIconV, .claro .dijitSliderDisabled .dijitSliderIncrementIconV {
+.claro .dijitSliderReadOnly .dijitSliderIncrementIconV,
+.claro .dijitSliderDisabled .dijitSliderIncrementIconV {
   background-position: -107px 49%;
   background-color: #efefef;
 }
-.dj_ie6 .claro .dijitSlider .dijitSliderProgressBarH,
-.dj_ie6 .claro .dijitSlider .dijitSliderLeftBumper,
-.dj_ie6 .claro .dijitSlider .dijitSliderRemainingBarH,
-.dj_ie6 .claro .dijitSlider .dijitSliderRightBumper,
-.dj_ie6 .claro .dijitSlider .dijitSliderProgressBarV,
-.dj_ie6 .claro .dijitSlider .dijitSliderTopBumper,
-.dj_ie6 .claro .dijitSlider .dijitSliderRemainingBarV,
-.dj_ie6 .claro .dijitSlider .dijitSliderBottomBumper {
-  background-image: none;
-}
-.claro  .dijitColorPalette {
+.claro .dijitColorPalette {
   border: 1px solid #b5bcc7;
   background: #ffffff;
   -moz-border-radius: 0;
@@ -3531,18 +3809,19 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   
   border: 1px solid #d3d3d3;
 }
-.claro .dijitColorPalette .dijitPaletteCellHover .dijitPaletteImg {
+.claro .dijitColorPalette .dijitPaletteCell:hover .dijitPaletteImg {
   border: 1px solid #000000;
 }
-.claro .dijitColorPalette .dijitPaletteCellActive .dijitPaletteImg, .claro .dijitColorPalette .dijitPaletteCellSelected .dijitPaletteImg {
+.claro .dijitColorPalette .dijitPaletteCell:active .dijitPaletteImg,
+.claro .dijitColorPalette .dijitPaletteTable .dijitPaletteCellSelected .dijitPaletteImg {
   border: 2px solid #000000;
 }
 .claro .dijitInlineEditBoxDisplayMode {
   border: 1px solid transparent;
 }
 .claro .dijitInlineEditBoxDisplayModeHover {
-  background-color: #e9f4fe;
-  border: solid 1px #769dc0;
+  background-color: #e5f2fe;
+  border: solid 1px #759dc0;
 }
 .dj_ie6 .claro .dijitInlineEditBoxDisplayMode {
   border: none;
@@ -3552,18 +3831,32 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .claro .dijitProgressBarEmpty {
   
-  background: #ffffff url(images/progressBarEmpty.png) repeat-none left;
-  border-color: #769dc0;
+  background-color: #ffffff;
+  border-color: #759dc0;
 }
 .claro .dijitProgressBarTile {
   
-  background: #abd6ff url(images/progressBarFull.png) repeat-x top;
+  background-color: #abd6ff;
+  background-image: url("images/progressBarFull.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.93) 0px, rgba(255, 255, 255, 0.41) 1px, rgba(255, 255, 255, 0.7) 2px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.93) 0px, rgba(255, 255, 255, 0.41) 1px, rgba(255, 255, 255, 0.7) 2px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.93) 0px, rgba(255, 255, 255, 0.41) 1px, rgba(255, 255, 255, 0.7) 2px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.93) 0px, rgba(255, 255, 255, 0.41) 1px, rgba(255, 255, 255, 0.7) 2px, rgba(255, 255, 255, 0) 100%);
+  background-attachment: scroll;
 }
 .dj_ie6 .claro .dijitProgressBarTile {
   background-image: none;
 }
 .claro .dijitProgressBarFull {
-  border-right: 1px solid #769dc0;
+  border: 0px solid #759dc0;
+  border-right-width: 1px;
+  -webkit-transition-property: width;
+  -moz-transition-property: width;
+  transition-property: width;
+  -webkit-transition-duration: 0.25s;
+  -moz-transition-duration: 0.25s;
+  transition-duration: 0.25s;
 }
 .claro .dijitProgressBarLabel {
   
@@ -3571,7 +3864,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .claro .dijitProgressBarIndeterminate .dijitProgressBarTile {
   
-  background: #efefef url(images/progressBarAnim.gif) repeat-x top;
+  background: #efefef url("images/progressBarAnim.gif") repeat-x top;
 }
 .claro .dijitTimePicker .dijitButtonNode {
   padding: 0 0;
@@ -3587,17 +3880,16 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .claro .dijitTimePickerItem {
   
-  background-image: url(images/commonHighlight.png);
-  background-position: 0 -1px;
+  background-image: url("images/standardGradient.png");
   background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   border-top: solid 1px #b5bcc7;
   border-bottom: solid 1px #b5bcc7;
-  margin-right: -1px;
-  margin-left: -1px;
   margin-top: -1px;
-}
-.dj_ie6 .claro .dijitTimePickerItem {
-  background-image: none;
 }
 .claro .dijitTimePickerTick {
   
@@ -3607,7 +3899,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .claro .dijitTimePickerMarker {
   
-  background-color: #e9f4fe;
+  background-color: #e5f2fe;
   font-size: 1em;
   white-space: nowrap;
 }
@@ -3615,29 +3907,12 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitTimePickerMarkerHover,
 .claro .dijitTimePickerMarkerSelected,
 .claro .dijitTimePickerTickSelected {
-  background-color: #7dbefa;
-  border: solid 1px #b5bcc7;
-  margin-left: -7px;
-  margin-right: -7px;
+  background-color: #7dbdfa;
   color: #000000;
 }
-.claro .dijitTimePickerMarkerSelected, .claro .dijitTimePickerTickSelected {
+.claro .dijitTimePickerMarkerSelected,
+.claro .dijitTimePickerTickSelected {
   font-size: 1em;
-}
-.dj_ie .claro .dijitTimePickerTickHover,
-.dj_ie .claro .dijitTimePickerMarkerHover,
-.dj_ie .claro .dijitTimePickerMarkerSelected,
-.dj_ie .claro .dijitTimePickerTickSelected {
-  width: 114%;
-}
-.dj_ie6 .claro .dijitTimePickerTickHover,
-.dj_ie6 .claro .dijitTimePickerMarkerHover,
-.dj_ie6 .claro .dijitTimePickerMarkerSelected,
-.dj_ie6 .claro .dijitTimePickerTickSelected {
-  position: relative;
-  
-  zoom: 1;
-  
 }
 .claro .dijitTimePickerTick .dijitTimePickerItemInner {
   padding: 1px;
@@ -3648,24 +3923,26 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border-right: none;
   border-color: #b5bcc7;
   background-color: #efefef;
-  background-image: url(images/commonHighlight.png);
-  background-position: 0 -1px;
+  background-image: url("images/standardGradient.png");
   background-repeat: repeat-x;
-}
-.dj_ie6 .claro .dijitTimePicker .dijitButtonNode {
-  background-image: none;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
 }
 .claro .dijitTimePicker .dijitArrowButtonInner {
   height: 100%;
   
-  background-image: url(form/images/commonFormArrows.png);
+  background-image: url("form/images/commonFormArrows.png");
   background-repeat: no-repeat;
   background-position: -140px 45%;
 }
 .claro .dijitTimePicker .dijitDownArrowButton .dijitArrowButtonInner {
   background-position: -35px 45%;
 }
-.claro .dijitTimePicker .dijitUpArrowHover, .claro .dijitTimePicker .dijitDownArrowHover {
+.claro .dijitTimePicker .dijitUpArrowHover,
+.claro .dijitTimePicker .dijitDownArrowHover {
   background-color: #abd6ff;
 }
 .claro .dijitTimePicker .dijitUpArrowHover .dijitArrowButtonInner {
@@ -3678,7 +3955,8 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   
   padding: 5px;
 }
-.claro .dijitSplitContainer-child, .claro .dijitBorderContainer-child {
+.claro .dijitSplitContainer-child,
+.claro .dijitBorderContainer-child {
   
   border: 1px #b5bcc7 solid;
 }
@@ -3695,10 +3973,15 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border: 0;
   padding: 0;
 }
-.claro .dijitSplitterH, .claro .dijitGutterH {
+.claro .dijitSplitterH,
+.claro .dijitGutterH {
   background: none;
   border: 0;
   height: 5px;
+}
+.dj_ios .claro .dijitSplitterH,
+.dj_android .claro .dijitSplitterH {
+  height: 11px;
 }
 .claro .dijitSplitterH .dijitSplitterThumb {
   background: #b5bcc7 none;
@@ -3706,11 +3989,20 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   top: 2px;
   width: 19px;
 }
-.claro .dijitSplitterV, .claro .dijitGutterV {
+.dj_ios .claro .dijitSplitterH .dijitSplitterThumb,
+.dj_android .claro .dijitSplitterH .dijitSplitterThumb {
+  top: 5px;
+}
+.claro .dijitSplitterV,
+.claro .dijitGutterV {
   background: none;
   border: 0;
   width: 5px;
   margin: 0;
+}
+.dj_ios .claro .dijitSplitterV,
+.dj_android .claro .dijitSplitterV {
+  width: 11px;
 }
 .claro .dijitSplitterV .dijitSplitterThumb {
   background: #b5bcc7 none;
@@ -3719,27 +4011,36 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   width: 1px;
   margin: 0;
 }
-.claro .dijitSplitterHHover {
-  font-size: 1px;
-  background: url(layout/images/splitterHorizontalHover.png) no-repeat center top;
+.dj_ios .claro .dijitSplitterV .dijitSplitterThumb,
+.dj_android .claro .dijitSplitterV .dijitSplitterThumb {
+  left: 5px;
 }
-.claro .dijitSplitterHHover .dijitSplitterThumb {
-  background: #769dc0 none;
-}
+.claro .dijitSplitterHHover,
 .claro .dijitSplitterVHover {
   font-size: 1px;
-  background: url(layout/images/splitterVerticalHover.png) no-repeat center left;
-}
-.claro .dijitSplitterVHover .dijitSplitterThumb {
-  background: #769dc0 none;
-}
-.dj_ie6 .dijitSplitterHHover, .dj_ie6 .claro .dijitSplitterVHover {
   background-color: #cfe5fa;
-  background-image: none;
 }
-.claro .dijitSplitterHActive, .claro .dijitSplitterVActive {
+.claro .dijitSplitterHHover {
+  background-image: -moz-linear-gradient(left, #ffffff 0px, rgba(255, 255, 255, 0) 50%, #ffffff 100%);
+  background-image: -webkit-linear-gradient(left, #ffffff 0px, rgba(255, 255, 255, 0) 50%, #ffffff 100%);
+  background-image: -o-linear-gradient(left, #ffffff 0px, rgba(255, 255, 255, 0) 50%, #ffffff 100%);
+  background-image: linear-gradient(left, #ffffff 0px, rgba(255, 255, 255, 0) 50%, #ffffff 100%);
+}
+.claro .dijitSplitterVHover {
+  background-image: -moz-linear-gradient(top, #ffffff 0px, rgba(255, 255, 255, 0) 50%, #ffffff 100%);
+  background-image: -webkit-linear-gradient(top, #ffffff 0px, rgba(255, 255, 255, 0) 50%, #ffffff 100%);
+  background-image: -o-linear-gradient(top, #ffffff 0px, rgba(255, 255, 255, 0) 50%, #ffffff 100%);
+  background-image: linear-gradient(top, #ffffff 0px, rgba(255, 255, 255, 0) 50%, #ffffff 100%);
+}
+.claro .dijitSplitterHHover .dijitSplitterThumb,
+.claro .dijitSplitterVHover .dijitSplitterThumb {
+  background: #759dc0 none;
+}
+.claro .dijitSplitterHActive,
+.claro .dijitSplitterVActive {
   font-size: 1px;
   background-color: #abd6ff;
+  background-image: none;
 }
 .claro .dijitTreeNode {
   zoom: 1;
@@ -3748,19 +4049,18 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitTreeIsRoot {
   background-image: none;
 }
-.claro .dijitTreeRow, .claro .dijitTreeNode .dojoDndItemBefore, .claro .dijitTreeNode .dojoDndItemAfter {
+.claro .dijitTreeRow,
+.claro .dijitTreeNode .dojoDndItemBefore,
+.claro .dijitTreeNode .dojoDndItemAfter {
   
-  padding: 4px 1px 2px 0;
-  margin: 0 1px;
-  
+  padding: 4px 0 2px 0;
   background-color: none;
   background-color: transparent;
   background-color: rgba(171, 214, 255, 0);
-  background-image: url(images/commonHighlight.png);
   background-position: 0 0;
   background-repeat: repeat-x;
-  border-color: rgba(118, 157, 192, 0);
-  border-width: 0;
+  border: solid 0 transparent;
+  color: #000000;
   -webkit-transition-property: background-color, border-color;
   -moz-transition-property: background-color, border-color;
   transition-property: background-color, border-color;
@@ -3771,50 +4071,63 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   -moz-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
 }
-.dj_ie6 .claro .dijitTreeRow {
-  background-image: none;
-}
 .claro .dijitTreeRowSelected {
-  background-repeat: repeat-x;
   background-color: #cfe5fa;
+  background-image: url("images/standardGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   padding: 3px 0 1px;
-  margin: 0;
-  border: solid 1px #769dc0;
+  border-color: #759dc0;
+  border-width: 1px 0;
   color: #000000;
 }
 .claro .dijitTreeRowHover {
   background-color: #abd6ff;
+  background-image: url("images/standardGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   padding: 3px 0 1px;
-  margin: 0;
-  border: solid 1px #769dc0;
+  border-color: #759dc0;
+  border-width: 1px 0;
   color: #000000;
   -webkit-transition-duration: 0.25s;
   -moz-transition-duration: 0.25s;
   transition-duration: 0.25s;
 }
 .claro .dijitTreeRowActive {
-  background-color: #7dbefa;
-  background-position: 0 -177px;
+  background-color: #7dbdfa;
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   padding: 3px 0 1px;
-  margin-left: 0;
-  border: solid 1px #769dc0;
+  border-color: #759dc0;
+  border-width: 1px 0;
   color: #000000;
-}
-.dj_ie6 .claro .dijitTreeRowActive {
-  background-image: none;
 }
 .claro .dijitTreeRowFocused {
   background-repeat: repeat;
 }
 .claro .dijitTreeExpando {
-  background-image: url(images/treeExpandImages.png);
+  background-image: url("images/treeExpandImages.png");
   width: 16px;
   height: 16px;
   background-position: -35px 0;
   
 }
 .dj_ie6 .claro .dijitTreeExpando {
-  background-image: url(images/treeExpandImages8bit.png);
+  background-image: url("images/treeExpandImages8bit.png");
 }
 .claro .dijitTreeRowHover .dijitTreeExpandoOpened {
   background-position: -53px 0;
@@ -3825,32 +4138,41 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitTreeRowHover .dijitTreeExpandoClosed {
   background-position: -17px 0;
 }
-.claro .dijitTreeExpandoLeaf, .dj_ie6 .claro .dijitTreeExpandoLeaf {
+.claro .dijitTreeExpandoLeaf,
+.dj_ie6 .claro .dijitTreeExpandoLeaf {
   background-image: none;
 }
 .claro .dijitTreeExpandoLoading {
-  background-image: url(images/loadingAnimation.gif);
+  background-image: url("images/loadingAnimation.gif");
 }
 .claro .dijitTreeNode .dojoDndItemBefore .dijitTreeContent {
-  border-top: 2px solid #769dc0;
+  border-top: 2px solid #759dc0;
 }
 .claro .dijitTreeNode .dojoDndItemAfter .dijitTreeContent {
-  border-bottom: 2px solid #769dc0;
+  border-bottom: 2px solid #759dc0;
 }
  
 .claro .dijitToolbar {
   border-bottom: 1px solid #b5bcc7;
   background-color: #efefef;
-  background-image: url(images/commonHighlight.png);
-  background-position: 0 0;
+  background-image: url("images/standardGradient.png");
   background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   padding: 2px 0 2px 4px;
   zoom: 1;
 }
 .claro .dijitToolbar label {
   padding: 0 3px 0 6px;
 }
-.claro .dijitToolbar .dijitButtonNode {
+.claro .dijitToolbar .dijitButton .dijitButtonNode,
+.claro .dijitToolbar .dijitDropDownButton .dijitButtonNode,
+.claro .dijitToolbar .dijitComboButton .dijitButtonNode,
+.claro .dijitToolbar .dijitToggleButton .dijitButtonNode,
+.claro .dijitToolbar .dijitComboBox .dijitButtonNode {
   border-width: 0;
   
   padding: 2px;
@@ -3862,21 +4184,35 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   -webkit-transition-property: background-color;
   -moz-transition-property: background-color;
   transition-property: background-color;
-  -webkit-transition-duration: 0.3s, 0.35s;
-  -moz-transition-duration: 0.3s, 0.35s;
-  transition-duration: 0.3s, 0.35s;
-  background-image: url(images/commonHighlight.png);
-  background-position: 0 -30px;
-  background-repeat: repeat-x;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  transition-duration: 0.3s;
   background-color: rgba(171, 214, 255, 0);
+  background-image: none;
+  
 }
-.dj_ie .claro .dijitToolbar .dijitButtonNode {
+.dj_ie .claro .dijitToolbar .dijitButton .dijitButtonNode,
+.dj_ie .claro .dijitToolbar .dijitDropDownButton .dijitButtonNode,
+.dj_ie .claro .dijitToolbar .dijitComboButton .dijitButtonNode,
+.dj_ie .claro .dijitToolbar .dijitToggleButton .dijitButtonNode,
+.dj_ie .claro .dijitToolbar .dijitComboBox .dijitButtonNode {
   background-color: transparent;
   
 }
-.dj_ie6 .claro .dijitToolbar .dijitButtonNode {
-  background: none;
+.dj_ie .claro .dijitToolbar .dijitButtonHover .dijitButtonNode,
+.dj_ie .claro .dijitToolbar .dijitDropDownButtonHover .dijitButtonNode,
+.dj_ie .claro .dijitToolbar .dijitComboButton .dijitButtonNodeHover,
+.dj_ie .claro .dijitToolbar .dijitComboButton .dijitDownArrowButtonHover,
+.dj_ie .claro .dijitToolbar .dijitToggleButtonHover .dijitButtonNode {
   
+  background-color: #abd6ff;
+}
+.dj_ie .claro .dijitToolbar .dijitButtonActive .dijitButtonNode,
+.dj_ie .claro .dijitToolbar .dijitDropDownButtonActive .dijitButtonNode,
+.dj_ie .claro .dijitToolbar .dijitComboButtonActive .dijitButtonNode,
+.dj_ie .claro .dijitToolbar .dijitToggleButtonActive .dijitButtonNode {
+  
+  background-color: #abd6ff;
 }
 .claro .dijitToolbar .dijitComboButton .dijitStretch {
   
@@ -3895,22 +4231,37 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitToolbar .dijitDropDownButtonHover .dijitButtonNode,
 .claro .dijitToolbar .dijitToggleButtonHover .dijitButtonNode,
 .claro .dijitToolbar .dijitComboButtonHover .dijitButtonNode {
-  background-position: 0 0;
   border-width: 1px;
   background-color: #abd6ff;
+  background-image: url("images/standardGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   padding: 1px;
 }
-.claro .dijitToolbar .dijitComboButtonHover .dijitButtonNode, .claro .dijitToolbar .dijitComboButtonHover .dijitDownArrowButton {
-  background-position: 0 0;
-  background-color: #f4ffff;
+.claro .dijitToolbar .dijitComboButtonHover .dijitButtonNode,
+.claro .dijitToolbar .dijitComboButtonHover .dijitDownArrowButton {
+  background-color: #f3ffff;
 }
-.claro .dijitToolbar .dijitComboButtonHover .dijitButtonNodeHover, .claro .dijitToolbar .dijitComboButtonHover .dijitDownArrowButtonHover {
+.claro .dijitToolbar .dijitComboButtonHover .dijitButtonNodeHover,
+.claro .dijitToolbar .dijitComboButtonHover .dijitDownArrowButtonHover {
   background-color: #abd6ff;
 }
-.claro .dijitToolbar .dijitButtonActive .dijitButtonNode, .claro .dijitToolbar .dijitDropDownButtonActive .dijitButtonNode, .claro .dijitToolbar .dijitToggleButtonActive .dijitButtonNode {
+.claro .dijitToolbar .dijitButtonActive .dijitButtonNode,
+.claro .dijitToolbar .dijitDropDownButtonActive .dijitButtonNode,
+.claro .dijitToolbar .dijitToggleButtonActive .dijitButtonNode {
   border-width: 1px;
-  background-color: #7dbefa;
-  background-position: 0 -177px;
+  background-color: #7dbdfa;
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   padding: 1px;
 }
 .claro .dijitToolbar .dijitComboButtonActive {
@@ -3920,18 +4271,33 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border-width: 1px;
   padding: 0;
 }
-.claro .dijitToolbar .dijitComboButtonActive .dijitButtonNode, .claro .dijitToolbar .dijitComboButtonActive .dijitDownArrowButton {
-  background-color: #f4ffff;
-  background-position: 0 -177px;
+.claro .dijitToolbar .dijitComboButtonActive .dijitButtonNode,
+.claro .dijitToolbar .dijitComboButtonActive .dijitDownArrowButton {
+  background-color: #f3ffff;
   padding: 2px;
 }
 .claro .dijitToolbar .dijitComboButtonActive .dijitButtonNodeActive {
-  background-color: #7dbefa;
+  background-color: #7dbdfa;
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
 }
 .claro .dijitToolbar .dijitComboButtonActive .dijitDownArrowButtonActive {
-  background-color: #7dbefa;
+  background-color: #7dbdfa;
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
 }
-.claro .dijitToolbar .dijitComboButtonHover .dijitDownArrowButton, .claro .dijitToolbar .dijitComboButtonActive .dijitDownArrowButton {
+.claro .dijitToolbar .dijitComboButtonHover .dijitDownArrowButton,
+.claro .dijitToolbar .dijitComboButtonActive .dijitDownArrowButton {
   border-left-width: 0;
 }
 .claro .dijitToolbar .dijitComboButtonHover .dijitDownArrowButton {
@@ -3944,16 +4310,13 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border-width: 1px;
   border-style: solid;
   background-image: none;
-  border-color: #769dc0;
+  border-color: #759dc0;
   background-color: #ffffff;
   padding: 1px;
 }
-.dj_ie6 .claro .dijitToolbar {
-  background-image: none;
-}
 .claro .dijitToolbarSeparator {
   
-  background: url(../../icons/images/editorIconsEnabled.png);
+  background: url("../../icons/images/editorIconsEnabled.png");
 }
 .claro .dijitDisabled .dijitToolbar {
   background: none;
@@ -3974,38 +4337,44 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .claro .dijitEditor .dijitEditorIFrameContainer {
   background-color: #ffffff;
-  background-image: url(form/images/textBox_back.png);
   background-repeat: repeat-x;
 }
-.dj_ie6 .claro .dijitEditor .dijitEditorIFrameContainer {
-  background-image: none;
+.claro .dijitEditorHover .dijitEditorIFrameContainer,
+.claro .dijitEditorHover .dijitEditorIFrameContainer .dijitEditorIFrame {
+  background-color: #e5f2fe;
 }
-.claro .dijitEditorHover .dijitEditorIFrameContainer, .claro .dijitEditorHover .dijitEditorIFrameContainer .dijitEditorIFrame {
-  background-color: #e9f4fe;
-}
-.claro .dijitEditorFocused .dijitEditorIFrameContainer, .claro .dijitEditorFocused .dijitEditorIFrameContainer .dijitEditorIFrame {
-  
+.claro .dijitEditorFocused .dijitEditorIFrameContainer,
+.claro .dijitEditorFocused .dijitEditorIFrameContainer .dijitEditorIFrame {
   background-color: #ffffff;
+}
+.claro .dijitEditorHover .dijitEditorIFrameContainer,
+.claro .dijitEditorFocused .dijitEditorIFrameContainer {
+  background-image: -moz-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -webkit-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -o-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
 }
 .claro .dijitEditorDisabled {
   border: 1px solid #d3d3d3;
   color: #818181;
 }
-.claro .dijitDisabled .dijitEditorIFrame, .claro .dijitDisabled .dijitEditorIFrameContainer, .claro .dijitDisabled .dijitEditorIFrameContainer .dijitEditorIFrame {
+.claro .dijitDisabled .dijitEditorIFrame,
+.claro .dijitDisabled .dijitEditorIFrameContainer,
+.claro .dijitDisabled .dijitEditorIFrameContainer .dijitEditorIFrame {
   background-color: #efefef;
   background-image: none;
 }
 .dijitEditorIcon {
-	background-image: url(../../icons/images/editorIconsEnabled.png); 
+	background-image: url("../../icons/images/editorIconsEnabled.png"); 
 	background-repeat: no-repeat;
 	width: 18px;
 	height: 18px;
 	text-align: center;
 }
 .dijitDisabled .dijitEditorIcon {
-	background-image: url(../../icons/images/editorIconsDisabled.png); 
+	background-image: url("../../icons/images/editorIconsDisabled.png"); 
 }
-.dijitEditorIconSep { background-position: 0px; }
+.dijitEditorIconSep { background-position: 0; }
 .dijitEditorIconSave { background-position: -18px; }
 .dijitEditorIconPrint { background-position: -36px; }
 .dijitEditorIconCut { background-position: -54px; }
@@ -4054,43 +4423,60 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
  
 .claro .dijitTitlePaneTitle {
   background-color: #efefef;
-  background-image: url(images/titlebar.png);
+  background-image: url("images/standardGradient.png");
   background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   border: 1px solid #b5bcc7;
   padding: 0 7px 3px 7px;
   min-height: 17px;
+  color: #494949;
 }
-.dj_ie6 .claro .dijitTitlePaneTitle {
-  background-image: none;
+.claro .dijitFieldset {
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+.claro .dijitTitlePaneTitleOpen,
+.claro .dijitTitlePaneTitleFixedOpen {
+  background-color: #cfe5fa;
+  color: #000000;
 }
 .claro .dijitTitlePaneTitleHover {
   background-color: #abd6ff;
-  border-color: #769dc0;
+  border-color: #759dc0;
 }
 .claro .dijitTitlePaneTitleActive {
-  background-color: #7dbefa;
-  border-color: #769dc0;
-  background-position: 0 -136px;
+  background-color: #7dbdfa;
+  border-color: #759dc0;
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
 }
 .claro .dijitTitlePaneTitleFocus {
   margin-top: 3px;
   padding-bottom: 2px;
 }
-.claro .dijitTitlePane .dijitArrowNode {
-  background-image: url(images/spriteArrows.png);
+.claro .dijitTitlePane .dijitArrowNode,
+.claro .dijitFieldset .dijitArrowNode {
+  background-image: url("images/spriteArrows.png");
   background-repeat: no-repeat;
   height: 8px;
   width: 7px;
 }
-.claro .dijitTitlePane .dijitOpen .dijitArrowNode {
+.claro .dijitTitlePaneTitleOpen .dijitArrowNode,
+.claro .dijitFieldsetTitleOpen .dijitArrowNode {
   background-position: 0 0;
 }
-.claro .dijitTitlePane .dijitClosed .dijitArrowNode {
+.claro .dijitTitlePaneTitleClosed .dijitArrowNode,
+.claro .dijitFieldsetTitleClosed .dijitArrowNode {
   background-position: -14px 0;
-}
-.claro .dijitTitlePaneFocused .dijitTitlePaneTextNode {
-  color: #000000;
-  
 }
 .claro .dijitTitlePaneContentOuter {
   background: #ffffff;
@@ -4100,7 +4486,11 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitTitlePaneContentInner {
   padding: 10px;
 }
-.claro .dijitTitlePaneTextNode {
+.claro .dijitFieldsetContentInner {
+  padding: 4px;
+}
+.claro .dijitTitlePaneTextNode,
+.claro .dijitFieldsetLegendNode {
   margin-left: 4px;
   margin-right: 4px;
   vertical-align: text-top;
@@ -4119,9 +4509,13 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSpinner .dijitArrowButton {
   width: auto;
   background-color: #efefef;
-  background-image: url(form/images/formHighlight.png);
-  background-position: 0 0;
+  background-image: url("images/standardGradient.png");
   background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
   overflow: hidden;
 }
 .dj_iequirks .claro .dijitSpinner .dijitArrowButton {
@@ -4135,7 +4529,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border: solid 1px #ffffff;
   border-bottom-width: 0;
   
-  background-image: url(form/images/commonFormArrows.png);
+  background-image: url("form/images/commonFormArrows.png");
   background-repeat: no-repeat;
   height: 100%;
   width: 15px;
@@ -4148,7 +4542,10 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   margin: -1px 0 -1px 0;
   
 }
-.dj_ie6 .claro .dijitSpinner .dijitArrowButtonInner, .dj_ie7 .claro .dijitSpinner .dijitArrowButtonInner {
+.dj_iequirks .claro .dijitSpinner .dijitArrowButtonInner,
+.dj_ie6 .claro .dijitSpinner .dijitArrowButtonInner,
+.dj_ie7 .claro .dijitSpinner .dijitArrowButtonInner,
+.dj_ie8 .claro .dijitSpinner .dijitArrowButtonInner {
   margin-top: 0;
   
 }
@@ -4161,10 +4558,13 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSpinner .dijitArrowButtonInner .dijitInputField {
   padding: 0;
 }
-.claro .dijitUpArrowButtonActive, .claro .dijitDownArrowButtonActive {
+.claro .dijitUpArrowButtonActive,
+.claro .dijitDownArrowButtonActive {
   background-color: #abd6ff;
 }
-.claro .dijitSpinner .dijitUpArrowButtonHover, .claro .dijitSpinner .dijitDownArrowButtonHover, .claro .dijitSpinnerFocused .dijitArrowButton {
+.claro .dijitSpinner .dijitUpArrowButtonHover,
+.claro .dijitSpinner .dijitDownArrowButtonHover,
+.claro .dijitSpinnerFocused .dijitArrowButton {
   background-color: #abd6ff;
 }
 .claro .dijitSpinner .dijitUpArrowButtonHover .dijitArrowButtonInner {
@@ -4177,11 +4577,19 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   background-color: #ffffff;
   background-image: none;
 }
-.claro .dijitSpinner .dijitDownArrowButtonActive, .claro .dijitSpinner .dijitUpArrowButtonActive {
+.claro .dijitSpinner .dijitDownArrowButtonActive,
+.claro .dijitSpinner .dijitUpArrowButtonActive {
   background-color: #7dbefa;
-  background-position: 0 -177px;
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
 }
-.claro .dijitSpinner .dijitUpArrowButtonActive .dijitArrowButtonInner, .claro .dijitSpinner .dijitDownArrowButtonActive .dijitArrowButtonInner {
+.claro .dijitSpinner .dijitUpArrowButtonActive .dijitArrowButtonInner,
+.claro .dijitSpinner .dijitDownArrowButtonActive .dijitArrowButtonInner {
   
   border: 0;
   padding: 1px;
@@ -4206,6 +4614,11 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dj_ie7 .claro .dijitSpinner {
   overflow: visible;
 }
+.dijitRtl .dijitOffScreen {
+	
+	left: auto !important;
+	right: -10000px !important;
+}
 .dijitRtl .dijitPlaceHolder {
 	left: auto;
 	right: 0;
@@ -4213,9 +4626,12 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitMenuItemRtl {
 	text-align: right;
 }
-.dj_iequirks .dijitComboButtonRtl BUTTON {
+.dj_iequirks .dijitComboButtonRtl button {
 	
 	float:left;
+}
+.dj_ie .dijitTextBoxRtl .dijitInputContainer {
+	clear: right;
 }
 .dijitTextBoxRtl .dijitValidationContainer,
 .dijitTextBoxRtl .dijitSpinnerButtonContainer,
@@ -4228,10 +4644,16 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	right: 0;
 	left: auto;
 }
+.dijitSelectRtl .dijitButtonText {
+	float: right;
+}
 .dijitTextBoxRtl .dijitSpinnerButtonContainer,
-.dijitTextBoxRtl .dijitValidationContainer,
+.dijitValidationTextBoxRtl .dijitValidationContainer,
 .dijitTextBoxRtl .dijitArrowButtonContainer {
 	float: left;
+}
+div.dijitNumberTextBoxRtl {
+	text-align: right;
 }
 .dijitCalendarRtl .dijitCalendarNextYear {
 	margin:0 0.55em 0 0;
@@ -4267,13 +4689,33 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	right:0;
 	left:auto;
 }
-.dijitRtl .dijitContentPaneLoading, .dijitRtl .dijitContentPaneError {
-	background-position:right;
-	padding-right:25px;
+.dijitRtl .dijitContentPaneLoading .dijitIconLoading,
+.dijitRtl .dijitContentPaneError .dijitIconError {
+	margin-right: 0;
+	margin-left: 9px;
+}
+.dijitTabControllerRtl .nowrapTabStrip {
+    text-align: right;  
 }
 .dijitTabRtl .dijitTabCloseButton {
 	margin-left: 0;
 	margin-right: 1em;
+}
+.dj_ie6 .dijitTabRtl .tabLabel,
+.dj_ie6 .dijitTabContainerRight-tabs .dijitTabRtl,
+.dj_ie6 .dijitTabContainerLeft-tabs .dijitTabRtl,
+.dj_ie7 .dijitTabContainerRight-tabs .dijitTabRtl,
+.dj_ie7 .dijitTabContainerLeft-tabs .dijitTabRtl {
+	zoom: 1;
+}
+.dj_ie6 .dijitTabContainerRight-tabs .dijitTabRtl,
+.dj_ie7 .dijitTabContainerRight-tabs .dijitTabRtl {
+    left: 0;
+}
+.dj_ie6 .dijitTabContainerRightRtl .dijitTabContainerRight-tabs,
+.dj_ie6 .dijitTabContainerLeftRtl .dijitTabContainerLeft-tabs {
+    
+	width: 1%;
 }
 .dj_ie .dijitTimePickerRtl .dijitTimePickerItem {
 	width:100%;
@@ -4284,7 +4726,19 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 	right: 0;
 }
 .dijitSelectRtl .dijitButtonContents {
+	border-style: none none none solid;
 	text-align: right;
+}
+.dijitTreeRtl .dijitTreeContainer {
+	float: right;	
+}
+.dijitRtl .dojoDndHorizontal .dojoDndItemBefore {
+    border-width: 0 2px 0 0;
+    padding: 2px 0 2px 2px;
+}
+.dijitRtl .dojoDndHorizontal .dojoDndItemAfter {
+    border-width: 0 0 0 2px;
+    padding: 2px 2px 2px 0;
 }
 .claro .dijitTextBoxRtlError .dijitValidationContainer {
   border-left-width: 0;
@@ -4301,65 +4755,10 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border-left-width: 1px;
   border-right-width: 0;
 }
-.claro .dijitTabContainerTop-tabs .dijitTabRtl, .claro .dijitTabContainerBottom-tabs .dijitTabRtl {
+.claro .dijitTabContainerTop-tabs .dijitTabRtl,
+.claro .dijitTabContainerBottom-tabs .dijitTabRtl {
   margin-right: 0;
   margin-left: 1px;
-}
-.claro .dijitTabRtl {
-  -moz-box-orient: horizontal;
-  text-align: right;
-}
-.dj_ie7 .claro .dijitTabRtl .dijitTabContent {
-  display: block;
-  left: 0;
-}
-.dj_ie7 .claro .dijitTabContainerTop-tabs .dijitTabRtl, .dj_ie7 .claro .dijitTabContainerTop-tabs .dijitTabCheckedRtl {
-  top: 1px;
-}
-.dj_ie7 .claro .tabStripButtonRtl .dijitButtonContents,
-.dj_ie8 .claro .tabStripButtonRtl .dijitButtonContents,
-.dj_ie6 .claro .dijitTabContainerTop-tabs .dijitTabRtl .dijitTabInnerDiv,
-.dj_ie6 .claro .dijitTabContainerBottom-tabs .dijitTabRtl .dijitTabInnerDiv,
-.dj_ie7 .claro .dijitTabContainerTop-tabs .dijitTabRtl .dijitTabInnerDiv,
-.dj_ie7 .claro .dijitTabContainerBottom-tabs .dijitTabRtl .dijitTabInnerDiv,
-.dj_iequirks .claro .dijitTabContainerTop-tabs .dijitTabRtl .dijitTabInnerDiv,
-.dj_iequirks .claro .dijitTabContainerBottom-tabs .dijitTabRtl .dijitTabInnerDiv {
-  float: left;
-}
-.dj_ie6 .claro .dijitTabRtl .tabLabel,
-.dj_ie6 .claro .dijitTabContainerRight-tabs .dijitTabRtl,
-.dj_ie6 .claro .dijitTabContainerLeft-tabs .dijitTabRtl,
-.dj_ie7 .claro .dijitTabContainerRight-tabs .dijitTabRtl .dijitTabInnerDiv,
-.dj_ie7 .claro .dijitTabContainerLeft-tabs .dijitTabRtl .dijitTabInnerDiv {
-  
-  zoom: 1;
-}
-.dj_ie6 .claro .dijitTabRtl .dijitTabCloseButton, .dj_ie7 .claro .dijitTabRtl .dijitTabCloseButton, .dj_iequirks .claro .dijitTabRtl .dijitTabCloseButton {
-  margin-right: 5px;
-}
-.dj_ie6 .claro .dijitTabContainerRightRtl .dijitTabContainerRight-tabs, .dj_ie6 .claro .dijitTabContainerLeftRtl .dijitTabContainerLeft-tabs {
-  width: 1%;
-}
-.dj_ie6 .dijitTabContainerTopStrip, .dj_ie6 .dijitTabContainerBottomStrip {
-  position: absolute;
-}
-.dj_iequirks .claro .dijitTabContainerTopRtl .dijitTabContainerTopStrip {
-  padding-top: 10px;
-}
-.dj_ie7 .claro .dijitTabContainerRight-tabs .dijitTabRtlChecked .dijitTabInnerDiv {
-  background-position: -341px -179px;
-}
-.dj_ie6 .dijitTabContainerTopRtl .dijitTabStripIcon, .dj_ie6 .dijitTabContainerBottomRtl .dijitTabStripIcon {
-  position: relative;
-}
-.dj_ie6-rtl .claro .dijitTabContainerTop-tabs {
-  
-  padding-left: 3px;
-}
-.dj_iequirks-rtl .claro .dijitTabListWrapper {
-  
-  border-left: 1px solid #ffffff;
-  border-right: 1px solid #ffffff;
 }
 .claro .dijitSliderRtl .dijitSliderProgressBarH,
 .claro .dijitSliderRtl .dijitSliderRemainingBarH,
@@ -4368,7 +4767,9 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderRtl .dijitSliderTopBumper {
   background-position: top right;
 }
-.claro .dijitSliderRtl .dijitSliderProgressBarV, .claro .dijitSliderRtl .dijitSliderRemainingBarV, .claro .dijitSliderRtl .dijitSliderBottomBumper {
+.claro .dijitSliderRtl .dijitSliderProgressBarV,
+.claro .dijitSliderRtl .dijitSliderRemainingBarV,
+.claro .dijitSliderRtl .dijitSliderBottomBumper {
   background-position: bottom right;
 }
 .claro .dijitSliderRtl .dijitSliderLeftBumper {
@@ -4385,10 +4786,6 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderRtl .dijitSliderDecrementIconH {
   background-position: -251px 50%;
 }
-.claro .dijitSelectRtl .dijitButtonContents {
-  border-right-width: 0;
-  border-left-width: 1px;
-}
 .claro .dijitDialogRtl .dijitDialogCloseIcon {
   right: auto;
   left: 5px;
@@ -4400,14 +4797,21 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitEditorRtl .dijitEditorIFrameContainer {
   padding: 3px 10px 1px 3px;
 }
+.dj_ie6 .claro .dijitEditorRtl .dijitEditorIFrameContainer,
+.dj_ie7 .claro .dijitEditorRtl .dijitEditorIFrameContainer,
+.dj_ie8 .claro .dijitEditorRtl .dijitEditorIFrameContainer {
+  padding: 3px 0px 1px 10px;
+  margin-right: 0px;
+  border: 0px solid #d3d3d3;
+}
 .dijitEditorRtl .dijitEditorIcon {
-	background-image: url(../../icons/images/editorIconsEnabled_rtl.png); 
+	background-image: url("../../icons/images/editorIconsEnabled_rtl.png"); 
 }
 .dijitEditorRtlDisabled .dijitEditorIcon {
-	background-image: url(../../icons/images/editorIconsDisabled_rtl.png); 
+	background-image: url("../../icons/images/editorIconsDisabled_rtl.png"); 
 }
 .dijitToolbarRtl .dijitToolbarSeparator {
-	background-image: url(../../icons/images/editorIconsEnabled_rtl.png);
+	background-image: url("../../icons/images/editorIconsEnabled_rtl.png");
 }
 .dijitRtl .dijitIconSave,
 .dijitRtl .dijitIconPrint,
@@ -4443,8 +4847,8 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitRtl .dijitIconFolderClosed,
 .dijitRtl .dijitFolderOpened,
 .dijitRtl .dijitIconFolderOpen,
-.dijitRtl .dijitIconError, .dijitRtl .dijitContentPaneError { 
-	background-image: url(../../icons/images/commonIconsObjActEnabled_rtl.png); 
+.dijitRtl .dijitIconError { 
+	background-image: url("../../icons/images/commonIconsObjActEnabled_rtl.png"); 
 	width: 16px;
 	height: 16px;
 }
@@ -4482,8 +4886,8 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dj_ie6 .dijitRtl .dijitIconFolderClosed,
 .dj_ie6 .dijitRtl .dijitFolderOpened,
 .dj_ie6 .dijitRtl .dijitIconFolderOpen,
-.dj_ie6 .dijitRtl .dijitIconError, .dj_ie6 .dijitRtl .dijitContentPaneError {
-	background-image: url(../../icons/images/commonIconsObjActEnabled8bit_rtl.png);
+.dj_ie6 .dijitRtl .dijitIconError {
+	background-image: url("../../icons/images/commonIconsObjActEnabled8bit_rtl.png");
 }
 .dijitRtl .dijitDisabled .dijitIconSave,
 .dijitRtl .dijitDisabled .dijitIconPrint,
@@ -4519,13 +4923,11 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .dijitRtl .dijitDisabled .dijitIconFolderClosed,
 .dijitRtl .dijitDisabled .dijitFolderOpened,
 .dijitRtl .dijitDisabled .dijitIconFolderOpen,
-.dijitRtl .dijitDisabled .dijitIconError, .dijitRtl .dijitDisabled .dijitContentPaneError {
-	background-image: url(../../icons/images/commonIconsObjActDisabled_rtl.png); 
+.dijitRtl .dijitDisabled .dijitIconError {
+	background-image: url("../../icons/images/commonIconsObjActDisabled_rtl.png"); 
 }
-.dijitRtl .dijitContentPaneLoading {
-	background:url(../../icons/images/loadingAnimation_rtl.gif) no-repeat;
-}
-.claro .dijitTitlePaneRtl .dijitClosed .dijitArrowNode {
+.claro .dijitTitlePaneRtl .dijitClosed .dijitArrowNode,
+.claro .dijitFieldsetRtl .dijitFieldsetTitleClosed .dijitArrowNode {
   background-position: -7px 0;
 }
 .claro .dijitMenuItemRtl .dijitMenuExpand {
@@ -4566,7 +4968,8 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border-width: 0;
   padding: 2px;
 }
-.claro .dijitToolbar .dijitComboButtonRtlHover .dijitButtonNode, .claro .dijitToolbar .dijitComboButtonRtlActive .dijitButtonNode {
+.claro .dijitToolbar .dijitComboButtonRtlHover .dijitButtonNode,
+.claro .dijitToolbar .dijitComboButtonRtlActive .dijitButtonNode {
   border-width: 1px;
   padding: 1px;
 }
@@ -4580,10 +4983,15 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   -moz-border-radius: 2px 0 0 2px;
   border-radius: 2px 0 0 2px;
 }
-.claro .dijitToolbar .dijitComboButtonRtlHover .dijitArrowButton, .claro .dijitToolbar .dijitComboButtonRtlActive .dijitArrowButton {
+.claro .dijitToolbar .dijitComboButtonRtlHover .dijitArrowButton,
+.claro .dijitToolbar .dijitComboButtonRtlActive .dijitArrowButton {
   
   border-left-width: 1px;
   border-right-width: 0;
   padding-left: 1px;
   padding-right: 2px;
+}
+.claro .dijitProgressBarRtl .dijitProgressBarFull {
+  border-left-width: 1px;
+  border-right-width: 0px;
 }
