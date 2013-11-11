@@ -60,7 +60,7 @@ function tbs_menu_plugins()
                             if ($autorise) {
                                 $nb_items++;
                                 $tmp_sous_menu_plugins[]=array('lien'=>"/mod_plugins/".$plugin->nom."/".$menu_script,'title'=>$menu_script->attributes()->description,'texte'=>$menu_script->attributes()->titre);
-                                $tmp_sous_menu_plugins_solo=array('lien'=>"/mod_plugins/".$plugin->nom."/".$menu_script,'title'=>$menu_script->attributes()->description,'texte'=>$plugin['description']);
+                                $tmp_sous_menu_plugins_solo=array('lien'=>"/mod_plugins/".$plugin->nom."/".$menu_script,'title'=>$menu_script->attributes()->description,'texte'=>$plugin->description);
                             }
                         }
                     }

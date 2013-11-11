@@ -262,7 +262,7 @@ if ($affichage == 'html') {
     $nb_nonjustifiees = 0;
     $nb_retards = 0;
     $alt=1;
-    $acces_visu_eleve=acces("/eleves/visu_eleve.php/", $_SESSION['statut']);
+    $acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
     foreach ($eleve_col as $eleve) {
 	    $alt=$alt*(-1);
 	    echo '<tr class="lig'.$alt.' white_hover">';
