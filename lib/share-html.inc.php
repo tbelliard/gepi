@@ -72,31 +72,42 @@ $GLOBALS['selected_eleve'] = '';
  * @return string echo résultat
  */
 function make_area_list_html($link, $current_classe, $current_matiere, $year, $month, $day) {
+	global $mysqli;
   echo "<strong><em>Cahier&nbsp;de&nbsp;texte&nbsp;de&nbsp;:</em></strong><br />";
-  $appel_donnees = mysql_query("SELECT * FROM classes ORDER BY classe");
-  $lignes = mysql_num_rows($appel_donnees);
+  $sql_donnees = "SELECT * FROM classes ORDER BY classe";
+  $appel_donnees = mysqli_query($mysqli, $sql_donnees);
+  $lignes = $appel_donnees->num_rows;
   $i = 0;
-  while($i < $lignes){
-    $id_classe = mysql_result($appel_donnees, $i, "id");
-    $appel_mat = mysql_query("SELECT DISTINCT m.* FROM matieres m, j_classes_matieres_professeurs j WHERE (j.id_classe='$id_classe' AND j.id_matiere=m.matiere) ORDER BY m.nom_complet");
-    $nb_mat = mysql_num_rows($appel_mat);
+ // while($i < $lignes){
+  while($classe = $appel_donnees->fetch_object()){
+    $id_classe = $classe->id;
+	$sql_mat = "SELECT DISTINCT m.* FROM matieres m, j_classes_matieres_professeurs j 
+		WHERE (j.id_classe='$id_classe' AND j.id_matiere=m.matiere) 
+			ORDER BY m.nom_complet";
+    $appel_mat = mysqli_query($mysqli, $sql_mat);
+    $nb_mat = $appel_mat->num_rows;
     $j = 0;
-    while($j < $nb_mat){
+    // while($j < $nb_mat){
+    while($matiere = $appel_mat->fetch_object()){
       $flag2 = "no";
-      $matiere_nom = mysql_result($appel_mat, $j, "nom_complet");
-      $matiere_nom_court = mysql_result($appel_mat, $j, "matiere");
-      $id_matiere = mysql_result($appel_mat, $j, "matiere");
-      $call_profs = mysql_query("SELECT * FROM j_classes_matieres_professeurs WHERE ( id_classe='$id_classe' and id_matiere = '$id_matiere') ORDER BY ordre_prof");
-      $nombre_profs = mysql_num_rows($call_profs);
+      $matiere_nom = $matiere->nom_complet;
+      $matiere_nom_court = $matiere->matiere;
+      $id_matiere = $matiere->matiere;
+	  $sql_profs = "SELECT * FROM j_classes_matieres_professeurs 
+		  WHERE ( id_classe='$id_classe' and id_matiere = '$id_matiere') 
+			  ORDER BY ordre_prof";
+      $call_profs = mysqli_query($mysqli, $sql_profs);
+      $nombre_profs = $call_profs->num_rows;
       $k = 0;
-      while ($k < $nombre_profs) {
-        $temp = my_strtoupper(@mysql_result($call_profs, $k, "id_professeur"));
+      // while ($k < $nombre_profs) {
+      while ($prof = $call_profs->fetch_object()){
+        $temp = my_strtoupper($prof->id_professeur);
         if ($temp == $_SESSION['login']) {$flag2 = "yes";}
         $k++;
       }
       if ($flag2 == "yes") {
         echo "<strong>";
-        $display_class = mysql_result($appel_donnees, $i, "classe");
+        $display_class = $classe->classe;
         if (($id_classe == $current_classe) and ($id_matiere == $current_matiere)) {
            echo ">$display_class&nbsp;-&nbsp;$matiere_nom&nbsp;($matiere_nom_court)&nbsp;";
         } else {
