@@ -36,7 +36,6 @@
  */
  
 // ====== SECURITE =======
-global $mysqli;
 
 if (!$_SESSION["login"]) {
     header("Location: ../logout.php?auto=2");

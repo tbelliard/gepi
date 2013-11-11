@@ -60,6 +60,7 @@
 
 // Based off of code from:header.inc
  
+
 $donnees_enfant=array();
 
 /**
@@ -410,7 +411,7 @@ if (isset($titre_page)) {
                     $_SESSION['prenom']=$lig_np->prenom;
                     $_SESSION['nom']=$lig_np->nom;
                 }
-                $res_n->close(); 
+                $res_np->close(); 
 		}
 	}
     

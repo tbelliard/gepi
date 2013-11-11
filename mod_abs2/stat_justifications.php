@@ -199,6 +199,7 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
  * @param int $nbEleves Le nombre total d'élèves à traiter
  */
 function afficheChargement($indice,$nbEleves) {
+	global $mysqli;
   global $session_gepi; 
   require("../lib/global.inc.php");
   $gepiPath = "../";
