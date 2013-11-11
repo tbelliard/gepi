@@ -708,11 +708,11 @@ function affiche_utilisateur($login,$id_classe) {
 			if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
 			$i .= ". ";
 		}
+		$resultat_format->close();
 	}
 	else {
 		$format="";
 	}
-	$resultat_format->close();
 
     switch( $format ) {
     case 'np':
@@ -3889,11 +3889,12 @@ function get_nom_prenom_eleve($login_ele,$mode='simple') {
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
             
 	$res=mysqli_query($mysqli, $sql);
-	if($res->num_rows == 0) {
+	if($res->num_rows == 0) {		
 		// Si ce n'est pas un élève, c'est peut-être un utilisateur prof, cpe, responsable,...
 		$sql_ = "SELECT 1=1 FROM utilisateurs WHERE login='$login_ele';";
 		$res = mysqli_query($mysqli, $sql);
 		if($res->num_rows > 0) {
+			$res->close();
 			return civ_nom_prenom($login_ele)." (non-élève)";
 		} else {
 			return "Elève inconnu ($login_ele)";
@@ -4640,9 +4641,8 @@ function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="", $logi
 		if($id_classe!="") {$sql.="id_classe='$id_classe' AND ";}
 		$sql.="professeur='$login_prof' AND login='$login_eleve';";
 	}       
-	$resultat = mysqli_query($mysqli, $sql);  
-	$nb_lignes = $resultat->num_rows;
-	if($nb_lignes>0) {
+	$resultat = mysqli_query($mysqli, $sql); 
+	if($resultat->num_rows > 0) {
 		$resultat->close();
 		$retour = TRUE;
 	}
@@ -6867,6 +6867,7 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
 					else {
 						$tab_acces_app[$i]="n";
 					}
+					$res->close();
 				}
 				else {
 					$tab_acces_app[$i]="n";
@@ -6898,6 +6899,7 @@ function responsables_adresses_separees($login_eleve) {
 	//echo "$sql<br />";
 	$test = mysql_query($mysqli, $sql);
 	if($test->num_rows > 1) {
+		$test->close();
 		$retour=true;
 	}
 
@@ -6935,6 +6937,7 @@ function get_rang_eleve($login_eleve, $id_classe, $periode_num, $forcer_recalcul
 		// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
 
 		include("../lib/calcul_rang.inc.php");
+		$test_coef->close();
 	}
 
 	$sql="SELECT rang FROM j_eleves_classes WHERE periode='".$periode_num."' AND id_classe='".$id_classe."' AND login = '".$login_eleve."';";
@@ -7607,7 +7610,6 @@ function marquer_message_lu($id_msg, $etat=true) {
 	}
 	$update = mysqli_query($mysqli, $sql);
 	if($update) {
-		$update->close();
 		$retour="Succès";
 	}
 	else {
@@ -8666,6 +8668,7 @@ function chercher_homonyme($nom, $prenom, $statut="eleve") {
 					while($lig2=mysql_fetch_object($res2)) {
 						$tab[$cpt]['classe'][]=$lig2->classe;
 					}
+					$res2->close();
 				}
 				$cpt++;
 			}
@@ -8708,7 +8711,7 @@ function get_classes_from_prof($login) {
 			$tab[$lig->id]=$lig->classe;
 		}
 	}
-
+	$res->close();
 	return $tab;
 }
 
@@ -8865,7 +8868,7 @@ function get_mail_user($login_user) {
 		$obj = $res->fetch_object();
 		$retour = $obj->email;
 	}
-
+	$res->close();
 	return $retour;
 }
 ?>
