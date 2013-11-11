@@ -7310,7 +7310,7 @@ function enregistre_message($sujet, $message, $login_src, $login_dest, $date_vis
 									date_msg='".$date_courante."',
 									date_visibilite='".$date_visibilite."';";
 	//echo "$sql<br />";
-	$resi=mysql_query($mysqli, $sql);
+	$res=mysqli_query($mysqli, $sql);
 	if($res) {
 		$retour = $mysqli->insert_id;
 	}
