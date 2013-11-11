@@ -7607,7 +7607,7 @@ function marquer_message_lu($id_msg, $etat=true) {
 	}
 	$update = mysqli_query($mysqli, $sql);
 	if($update) {
-		$update->close();
+		//$update->close();
 		$retour="Succès";
 	}
 	else {
