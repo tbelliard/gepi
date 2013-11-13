@@ -4057,7 +4057,7 @@ function civ_nom_prenom_from_pers_id($pers_id,$mode='prenom') {
 	$sql="SELECT nom,prenom,civilite FROM resp_pers WHERE pers_id='$pers_id';";
 	$res_user=mysqli_query($mysqli, $sql);
 	if ($res_user->num_rows > 0) {
-		$lig_user=mysql_fetch_object($res_user);
+		$lig_user=$res_user->fetch_object();
 		if($lig_user->civilite!="") {
 			$retour.=$lig_user->civilite." ";
 		}
@@ -4577,7 +4577,7 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
 				$num_eleve=$cpt_eleve;
 	
 				$temoin_tmp=1;
-				if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
+				if($lig_ele_tmp=$res_ele_tmp->fetch_object()){
 					$login_eleve_suiv=$lig_ele_tmp->login;
 					$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 				}
@@ -4839,13 +4839,13 @@ function enregistre_infos_actions($titre,$texte,$destinataire,$mode) {
 		$tab_dest=array($destinataire);
 	}
 
-	$sql="INSERT INTO infos_actions SET titre='".mysql_real_escape_string($titre)."', description='".mysql_real_escape_string($texte)."', date=NOW();";
+	$sql="INSERT INTO infos_actions SET titre='".$mysqli->real_escape_string($titre)."', description='".$mysqli->real_escape_string($texte)."', date=NOW();";
 	$insert=mysqli_query($mysqli, $sql);
 	if(!$insert) {
 		return FALSE;
 	}
 	else {
-		$id_info=mysql_insert_id();
+		$id_info=$mysqli->insert_id;
 		$return=$id_info;
 		for($loop=0;$loop<count($tab_dest);$loop++) {
 			$sql="INSERT INTO infos_actions_destinataires SET id_info='$id_info', nature='$mode', valeur='$tab_dest[$loop]';";
@@ -5934,14 +5934,15 @@ function joueAlarme($niveau_arbo = "0") {
  * @return int $timestamp du jour precedent
  */
 function get_timestamp_jour_precedent($timestamp_today) {
+	global $mysqli;
 	$hier=false;
 
 	$tab_nom_jour=array('dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi');
 	$sql="select * from horaires_etablissement WHERE ouverture_horaire_etablissement!=fermeture_horaire_etablissement AND ouvert_horaire_etablissement!='0' ORDER BY id_horaire_etablissement;";
-	$res_jours_ouverts=mysql_query($sql);
-	if(mysql_num_rows($res_jours_ouverts)>0) {
+	$res_jours_ouverts=mysqli_query($mysqli, $sql);
+	if($res_jours_ouverts->num_rows>0) {
 		$tab_jours_ouverture=array();
-		while($lig_j=mysql_fetch_object($res_jours_ouverts)) {
+		while($lig_j=$res_jours_ouverts->fetch_object()) {
 			$tab_jours_ouverture[]=$lig_j->jour_horaire_etablissement;
 			//echo "\$tab_jours_ouverture[]=".$lig_j->jour_horaire_etablissement."<br />";
 		}
@@ -5955,6 +5956,7 @@ function get_timestamp_jour_precedent($timestamp_today) {
 		if($compteur<7) {
 			$hier=$j_prec;
 		}
+		$res_jours_ouverts->close();
 	}
 
 	return $hier;
@@ -6377,7 +6379,7 @@ function correction_notices_cdt_formules_maths($eff_parcours) {
 		}
 
 		$contenu_corrige=get_img_formules_math($contenu, $id_groupe, $type_notice);
-		$sql="UPDATE ct_entry SET contenu='".mysql_real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
+		$sql="UPDATE ct_entry SET contenu='".$mysqli->real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
 		$res_ct=mysqli_query($mysqli, $sql);
 		if(!$res_ct) {
 			echo "<div style='border:1px solid red; margin:3px;'>";
@@ -6407,7 +6409,7 @@ function correction_notices_cdt_formules_maths($eff_parcours) {
 		}
 
 		$contenu_corrige=get_img_formules_math($contenu, $id_groupe, $type_notice);
-		$sql="UPDATE ct_devoirs_entry SET contenu='".mysql_real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
+		$sql="UPDATE ct_devoirs_entry SET contenu='".$mysqli->real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
 		$res_ct=mysqli_query($mysqli, $sql);
 		if(!$res_ct) {
 			echo "<div style='border:1px solid red; margin:3px;'>";
@@ -6616,6 +6618,7 @@ function redim_img($image, $dim_max_largeur, $dim_max_hauteur, $mode="") {
  */
 
 function virer_accents_html_setting($name) {
+	global $mysqli;
 	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
 	$valeur=getSettingValue($name);
 	$correction=ensure_utf8(strtr($valeur, $tab));
@@ -6628,7 +6631,7 @@ function virer_accents_html_setting($name) {
 	fclose($f);
 	*/
 	if($valeur!=$correction) {
-		if(saveSetting($name, mysql_real_escape_string($correction))) {return 1;} else {return 2;}
+		if(saveSetting($name, $mysql->real_escape_string($correction))) {return 1;} else {return 2;}
 	}
 	else {return 0;}
 }
@@ -6653,13 +6656,13 @@ function enregistre_log_maj_sconet($texte, $fin="n") {
 		if($res->num_rows > 0) {
 			$lig = $res->fetch_object();
 
-			$sql="UPDATE log_maj_sconet SET texte='".mysql_real_escape_string($lig->texte.$texte)."'";
+			$sql="UPDATE log_maj_sconet SET texte='".$mysql->real_escape_string($lig->texte.$texte)."'";
 			if($fin!="n") {$sql.=", date_fin='".strftime("%Y-%m-%d %H:%M:%S")."'";}
 			$sql.=" WHERE date_debut='$ts_maj_sconet';";
 			$res->close();
 		}
 		else {
-			$sql="INSERT INTO log_maj_sconet SET date_debut='$ts_maj_sconet', login='".$_SESSION['login']."', date_fin='0000-00-00 00:00:00', texte='".mysql_real_escape_string($texte)."';";
+			$sql="INSERT INTO log_maj_sconet SET date_debut='$ts_maj_sconet', login='".$_SESSION['login']."', date_fin='0000-00-00 00:00:00', texte='".$mysql->real_escape_string($texte)."';";
 		}
 		$res = mysqli_query($mysqli, $sql);
 		if($res) {
@@ -6897,7 +6900,7 @@ function responsables_adresses_separees($login_eleve) {
 
 	$sql="SELECT DISTINCT adr1, adr2, adr3, adr4, cp, commune, pays FROM resp_adr ra, resp_pers rp, responsables2 r, eleves e WHERE ra.adr_id=rp.adr_id AND r.pers_id=rp.pers_id AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
 	//echo "$sql<br />";
-	$test = mysql_query($mysqli, $sql);
+	$test = mysqli_query($mysqli, $sql);
 	if($test->num_rows > 1) {
 		$test->close();
 		$retour=true;
@@ -6946,7 +6949,6 @@ function get_rang_eleve($login_eleve, $id_classe, $periode_num, $forcer_recalcul
 	if($res->num_rows > 0) {
 		$obj = $res->fetch_object();
 		$res->close();
-		//$retour=mysql_result($res, 0, "rang");
 		$retour = $obj->rang;
 		if(($retour==0)&&($recalcul_si_rang_nul=='y')) {
 			$sql_coef = "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)";
@@ -7305,8 +7307,8 @@ function enregistre_message($sujet, $message, $login_src, $login_dest, $date_vis
 		$date_visibilite=$date_courante;
 	}
 
-	$sql="INSERT INTO messagerie SET sujet='".mysql_real_escape_string($sujet)."',
-									message='".mysql_real_escape_string($message)."',
+	$sql="INSERT INTO messagerie SET sujet='".$mysql->real_escape_string($sujet)."',
+									message='".$mysql->real_escape_string($message)."',
 									login_src='".$login_src."',
 									login_dest='".$login_dest."',
 									in_reply_to='".$in_reply_to."',
@@ -7807,7 +7809,7 @@ function log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_group
 		$lig = $res->fetch_object();
 		$texte=$lig->commentaires."\n".$texte_ajoute;
 		$res->close();
-		$sql="UPDATE acces_exceptionnel_matieres_notes SET commentaires='".mysql_real_escape_string($texte)."' WHERE id='$lig->id';";
+		$sql="UPDATE acces_exceptionnel_matieres_notes SET commentaires='".$mysql->real_escape_string($texte)."' WHERE id='$lig->id';";
 		$update=mysqli_query($mysqli, $sql);
 		if($update) {
 			return true;
@@ -7846,7 +7848,7 @@ function retourneUri($eleve, $https, $type){
 		$query = mysqli_query($mysqli, $sql);
 		$nbre = $query->num_rows;
 		if ($nbre == 1) {
-			$uri = mysql_fetch_array($query);
+			$uri = $mysqli->fetch_array($mysqli, $query);
 			if ($https == 'y') {
 				$web = 'https://';
 			}else{
@@ -8191,7 +8193,7 @@ function get_tab_etat_travail_fait($eleve_login) {
 	$tab_etat_travail_fait=array();
 	$sql="SELECT * FROM ct_devoirs_faits WHERE login='$eleve_login';";
 	$res_cdf=mysqli_query($mysqli, $sql);
-	if($res_cdf->mysql_num_rows > 0) {
+	if($res_cdf->num_rows > 0) {
 		while($lig_cdf=$res_cdf->fetch_object()) {
 			$tab_etat_travail_fait[$lig_cdf->id_ct]['etat']=$lig_cdf->etat;
 			$tab_etat_travail_fait[$lig_cdf->id_ct]['date_initiale']=$lig_cdf->date_initiale;
@@ -8495,11 +8497,12 @@ function get_adresse_responsable($pers_id) {
 
 function enregistrer_udt_corresp($champ, $nom_udt, $nom_gepi) {
 	global $mysqli;
-	$sql="SELECT * FROM udt_corresp WHERE champ='$champ' AND nom_udt='".mysql_real_escape_string($nom_udt)."' AND nom_gepi='$nom_gepi';";
-	$test = mysql_query($mysqli, $sql);
+	$sql="SELECT * FROM udt_corresp WHERE champ='$champ' AND nom_udt='".$mysql->real_escape_string($nom_udt)."' AND nom_gepi='$nom_gepi';";
+	$test = mysqli_query($mysqli, $sql);
 	if($test->num_rows == 0) {
-		$sql="INSERT INTO udt_corresp SET champ='$champ', nom_udt='".mysql_real_escape_string($nom_udt)."', nom_gepi='$nom_gepi';";
-		$insert=mysql_query($sql);
+		$test->close();
+		$sql="INSERT INTO udt_corresp SET champ='$champ', nom_udt='".$mysql->real_escape_string($nom_udt)."', nom_gepi='$nom_gepi';";
+		$insert=mysqli_query($mysqli, $sql);
 		return $insert;
 	}
 	else {
@@ -8527,8 +8530,8 @@ function temoin_compte_sso($login_user) {
 		$test=mysqli_query($mysqli, $sql);
 		if($test->num_rows > 0) {
 			$sql2="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='$login_user';";
-			$test2=mysql_query($sql2);
-			if(mysql_num_rows($test2)==0) {
+			$test2=mysqli_query($mysqli, $sql2);
+			if($test2->num_rows == 0) {
 				$retour.="<img src='".$gepiPath."/images/icons/sens_interdit.png' width='16' height='16' alt=\"Correspondance SSO absente\" title=\"La correspondance SSO n'est pas enregistrée dans la table 'sso_table_correspondance' pour ce compte.\" />";
 				$test2->close();
 			}
@@ -8663,9 +8666,9 @@ function chercher_homonyme($nom, $prenom, $statut="eleve") {
 				$tab[$cpt]['prenom']=$lig->prenom;
 
 				$sql="SELECT DISTINCT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig->login' ORDER BY periode;";
-				$res2=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while($lig2=mysql_fetch_object($res2)) {
+				$res2=mysqli_query($mysqli, $sql);
+				if($res2->num_rows>0) {
+					while($lig2=$res2->fetch_object()) {
 						$tab[$cpt]['classe'][]=$lig2->classe;
 					}
 					$res2->close();
