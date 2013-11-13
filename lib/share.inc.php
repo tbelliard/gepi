@@ -6631,7 +6631,7 @@ function virer_accents_html_setting($name) {
 	fclose($f);
 	*/
 	if($valeur!=$correction) {
-		if(saveSetting($name, $mysql->real_escape_string($correction))) {return 1;} else {return 2;}
+		if(saveSetting($name, $mysqli->real_escape_string($correction))) {return 1;} else {return 2;}
 	}
 	else {return 0;}
 }
@@ -6656,13 +6656,13 @@ function enregistre_log_maj_sconet($texte, $fin="n") {
 		if($res->num_rows > 0) {
 			$lig = $res->fetch_object();
 
-			$sql="UPDATE log_maj_sconet SET texte='".$mysql->real_escape_string($lig->texte.$texte)."'";
+			$sql="UPDATE log_maj_sconet SET texte='".$mysqli->real_escape_string($lig->texte.$texte)."'";
 			if($fin!="n") {$sql.=", date_fin='".strftime("%Y-%m-%d %H:%M:%S")."'";}
 			$sql.=" WHERE date_debut='$ts_maj_sconet';";
 			$res->close();
 		}
 		else {
-			$sql="INSERT INTO log_maj_sconet SET date_debut='$ts_maj_sconet', login='".$_SESSION['login']."', date_fin='0000-00-00 00:00:00', texte='".$mysql->real_escape_string($texte)."';";
+			$sql="INSERT INTO log_maj_sconet SET date_debut='$ts_maj_sconet', login='".$_SESSION['login']."', date_fin='0000-00-00 00:00:00', texte='".$mysqli->real_escape_string($texte)."';";
 		}
 		$res = mysqli_query($mysqli, $sql);
 		if($res) {
@@ -7307,8 +7307,8 @@ function enregistre_message($sujet, $message, $login_src, $login_dest, $date_vis
 		$date_visibilite=$date_courante;
 	}
 
-	$sql="INSERT INTO messagerie SET sujet='".$mysql->real_escape_string($sujet)."',
-									message='".$mysql->real_escape_string($message)."',
+	$sql="INSERT INTO messagerie SET sujet='".$mysqli->real_escape_string($sujet)."',
+									message='".$mysqli->real_escape_string($message)."',
 									login_src='".$login_src."',
 									login_dest='".$login_dest."',
 									in_reply_to='".$in_reply_to."',
@@ -7809,7 +7809,7 @@ function log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_group
 		$lig = $res->fetch_object();
 		$texte=$lig->commentaires."\n".$texte_ajoute;
 		$res->close();
-		$sql="UPDATE acces_exceptionnel_matieres_notes SET commentaires='".$mysql->real_escape_string($texte)."' WHERE id='$lig->id';";
+		$sql="UPDATE acces_exceptionnel_matieres_notes SET commentaires='".$mysqli->real_escape_string($texte)."' WHERE id='$lig->id';";
 		$update=mysqli_query($mysqli, $sql);
 		if($update) {
 			return true;
@@ -8497,11 +8497,11 @@ function get_adresse_responsable($pers_id) {
 
 function enregistrer_udt_corresp($champ, $nom_udt, $nom_gepi) {
 	global $mysqli;
-	$sql="SELECT * FROM udt_corresp WHERE champ='$champ' AND nom_udt='".$mysql->real_escape_string($nom_udt)."' AND nom_gepi='$nom_gepi';";
+	$sql="SELECT * FROM udt_corresp WHERE champ='$champ' AND nom_udt='".$mysqli->real_escape_string($nom_udt)."' AND nom_gepi='$nom_gepi';";
 	$test = mysqli_query($mysqli, $sql);
 	if($test->num_rows == 0) {
 		$test->close();
-		$sql="INSERT INTO udt_corresp SET champ='$champ', nom_udt='".$mysql->real_escape_string($nom_udt)."', nom_gepi='$nom_gepi';";
+		$sql="INSERT INTO udt_corresp SET champ='$champ', nom_udt='".$mysqli->real_escape_string($nom_udt)."', nom_gepi='$nom_gepi';";
 		$insert=mysqli_query($mysqli, $sql);
 		return $insert;
 	}
