@@ -389,7 +389,7 @@ Patientez pendant l'extraction des données... merci.
 	$tab_couleur['anna']="blanchedalmond";
 	$tab_couleur['absences']="azure";
 	$tab_couleur['discipline']="salmon";
-    $tab_couleur['fp']="linen";
+	$tab_couleur['fp']="linen";
 
 	// On vérifie que l'élève existe
 	$sql="SELECT 1=1 FROM eleves WHERE login='$ele_login';";
@@ -446,7 +446,7 @@ Patientez pendant l'extraction des données... merci.
 		$acces_anna="n";
 		$acces_absences="n";
 		$acces_discipline="n";
-        $acces_fp="n";
+		$acces_fp="n";
 
 		$active_annees_anterieures=getSettingValue('active_annees_anterieures');
 
@@ -482,7 +482,7 @@ Patientez pendant l'extraction des données... merci.
 			$acces_absences="y";
 
 			$acces_discipline="y";
-            $acces_fp="y";
+			$acces_fp="y";
 
 			$GepiAccesReleveScol=getSettingValue('GepiAccesReleveScol');
 			if($GepiAccesReleveScol=="yes") {
@@ -563,7 +563,7 @@ Patientez pendant l'extraction des données... merci.
 			$acces_absences="n";
 
 			$acces_discipline="n";
-            $acces_fp="y";
+			$acces_fp="y";
 
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='".$ele_login."' AND professeur='".$_SESSION['login']."';";
 			$test=mysql_query($sql);
@@ -732,6 +732,9 @@ Patientez pendant l'extraction des données... merci.
 							}
 						}
 					}
+				}
+				if(($acces_anna!="y")&&(getSettingAOui('AAProfPrinc'))&&(is_pp($_SESSION['login'], '', $ele_login))) {
+					$acces_anna="y";
 				}
 			}
 		}
