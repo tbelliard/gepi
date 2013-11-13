@@ -479,6 +479,5 @@ $requete->close();
 
 
 
-$mysqli->close();
 
 ?>
