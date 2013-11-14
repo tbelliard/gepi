@@ -223,7 +223,8 @@ if((($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))
 
 if ($_SESSION['statut'] == "administrateur") {
 	$utilisation_tablekit="ok";
-	$tbs_librairies[]="lib/tablekit";
+	//$tbs_librairies[]="lib/tablekit";
+	$tbs_librairies[]="lib/tablekit.js";
 }
 
 $post_reussi=FALSE;
