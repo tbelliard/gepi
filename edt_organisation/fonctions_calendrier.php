@@ -304,7 +304,8 @@ function ReturnIdPeriod($date_ts) {
  */
 function ReturnNextIdPeriod($current_id_period) {
     global $mysqli;
-    $sql_periode = "SELECT * FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";            
+    $sql_periode = "SELECT * FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";
+    //echo "$sql_periode<br />";
     $endprocess = false;
     $retour = ReturnIdPeriod(date("U"));
         $req_periode = mysqli_query($mysqli, $sql_periode);
@@ -314,7 +315,8 @@ function ReturnNextIdPeriod($current_id_period) {
                 if ($rep_periode = $req_periode->fetch_object()) {
                     $retour = $rep_periode->id_calendrier;
                 } else {
-                    $rep_periode->data_seek(0);
+                    //$rep_periode->data_seek(0);
+                    $req_periode->data_seek(0);
                     $rep_periode = $req_periode->fetch_object();
                     $retour = $rep_periode->id_calendrier;
                 }
@@ -342,7 +344,8 @@ function ReturnPreviousIdPeriod($current_id_period) {
 			if ($rep_periode = $req_periode->fetch_object()) {
 				$retour = $rep_periode->id_calendrier;
 			} else {
-				$rep_periode->data_seek(0);
+				//$rep_periode->data_seek(0);
+				$req_periode->data_seek(0);
 				$rep_periode = $req_periode->fetch_object();
 				$retour = $rep_periode->id_calendrier;
 			}
