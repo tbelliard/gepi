@@ -2207,6 +2207,7 @@ function get_class_from_ele_login($ele_login){
  * @return array 
  */
 function get_noms_classes_from_ele_login($ele_login){
+	global $mysqli;
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
       
 	$res_class=mysqli_query($mysqli, $sql);
@@ -4773,9 +4774,12 @@ function acces($id,$statut) {
 			return "0";
 		}
 	} else {
+		// On teste avec WHERE ds.autorisation='V' parce que pour une même page on peut avoir plusieurs enregistrements dans les droits spéciaux:
+		// Cas des cases EDT
 		$sql="SELECT ds.autorisation FROM `droits_speciaux` ds,  `droits_utilisateurs` du
 					WHERE (ds.nom_fichier='".$id."'
 						AND ds.id_statut=du.id_statut
+						AND ds.autorisation='V'
 						AND du.login_user='".$_SESSION['login']."');" ;
 		$result=mysqli_query($mysqli, $sql);
 		if (!$result) {
@@ -7848,7 +7852,8 @@ function retourneUri($eleve, $https, $type){
 		$query = mysqli_query($mysqli, $sql);
 		$nbre = $query->num_rows;
 		if ($nbre == 1) {
-			$uri = $mysqli->fetch_array($mysqli, $query);
+			//$uri = $mysqli->fetch_array($mysqli, $query);
+			$uri = $query->fetch_array();
 			if ($https == 'y') {
 				$web = 'https://';
 			}else{
