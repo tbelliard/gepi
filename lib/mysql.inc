@@ -28,7 +28,7 @@ if (!isset($db_nopersist) || $db_nopersist)
 else
     $db_c = ($GLOBALS["mysqli"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
 
-if (!$db_c || !((bool)mysqli_query($GLOBALS["mysqli"], "USE $dbDb")))
+if (!$db_c || !((bool)mysqli_query($GLOBALS["mysqli"], "USE `$dbDb`")))
 {
     echo "\n<p>Erreur grave: Echec de la connexion à la base de données";
     exit;

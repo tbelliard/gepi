@@ -30,7 +30,7 @@ if (file_exists("./secure/connect.inc.php")) {
     $correct_install = 'yes';
     $maj = 'no';
     if (@($GLOBALS["mysqli"] = mysqli_connect("$dbHost",  "$dbUser",  "$dbPass"))) {
-        if (@((bool)mysqli_query($GLOBALS["mysqli"], "USE $dbDb"))) {
+        if (@((bool)mysqli_query($GLOBALS["mysqli"], "USE `$dbDb`"))) {
             require_once("./lib/global.inc.php");
             // Premier test
             $liste2 = array();
