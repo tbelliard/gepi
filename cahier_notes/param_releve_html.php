@@ -41,10 +41,10 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/param_releve_html.php';";
-$res_test=mysql_query($sql);
-if (mysql_num_rows($res_test)==0) {
+$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/cahier_notes/param_releve_html.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F','F', 'Relevé de notes', '1');";
-	$res_insert=mysql_query($sql);
+	$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 // Check access

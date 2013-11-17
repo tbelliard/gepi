@@ -38,8 +38,8 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_texte_2/correction_notices_cdt_formules_maths.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/cahier_texte_2/correction_notices_cdt_formules_maths.php',
 administrateur='V',
 professeur='F',
@@ -51,7 +51,7 @@ secours='F',
 autre='F',
 description='Correction des notices CDT',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 if (!checkAccess()) {
@@ -86,12 +86,12 @@ echo "<p>Pendant un temps, la génération d'images de formule mathématiques da
 echo "<br />\n";
 
 $sql="SELECT * FROM ct_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
-$res=mysql_query($sql);
-$nb_ct_entry=mysql_num_rows($res);
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$nb_ct_entry=mysqli_num_rows($res);
 
 $sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
-$res=mysql_query($sql);
-$nb_ct_devoirs_entry=mysql_num_rows($res);
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$nb_ct_devoirs_entry=mysqli_num_rows($res);
 
 if(!isset($telecharger_et_corriger)) {
 	if(($nb_ct_entry>0)||($nb_ct_devoirs_entry>0)) {
@@ -109,12 +109,12 @@ else {
 	correction_notices_cdt_formules_maths($eff_parcours);
 
 	$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
-	$res=mysql_query($sql);
-	$nb_ct_entry=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_ct_entry=mysqli_num_rows($res);
 
 	$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
-	$res=mysql_query($sql);
-	$nb_ct_devoirs_entry=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_ct_devoirs_entry=mysqli_num_rows($res);
 
 	if(($nb_ct_entry>0)||($nb_ct_devoirs_entry>0)) {
 		echo "<form action='".$_SERVER['PHP_SELF']."' id='form1' method='post'>\n";

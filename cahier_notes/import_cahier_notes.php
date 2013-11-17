@@ -82,7 +82,7 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
     die();
 }
 
-$appel_cahier_notes = mysql_query("SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
+$appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
 $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 $id_classe = $current_group["classes"]["list"][0];
@@ -113,7 +113,7 @@ $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
 
-$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 $nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 
@@ -322,8 +322,8 @@ else {
 									if(mb_strlen(preg_replace("/[A-Za-z0-9._-]/","",$tabligne[$tabindice[1]]))==0){
 										// L'élève fait-il partie du groupe?
 										$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (login='".$tab_dev[$cpt_ele]['login']."' AND id_groupe='$id_groupe' AND periode='$periode_num')";
-										$test=mysql_query($sql);
-										if(mysql_num_rows($test)>0){
+										$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										if(mysqli_num_rows($test)>0){
 											$tab_dev[$cpt_ele]['note']=array();
 											$tab_dev[$cpt_ele]['statut']=array();
 											for($i=$tabindice[2];$i<sizeof($tabligne);$i++){
@@ -583,9 +583,9 @@ else {
 													id_conteneur='$id_conteneur',
 													nom_court='Nouveau';";
 					//echo "$sql<br />\n";
-					$res_insert=mysql_query($sql);
+					$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if($res_insert){
-						$id_dev[$i]=mysql_insert_id();
+						$id_dev[$i]=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 					}
 					else{
 						echo "<p><b>Erreur</b> lors de la création du devoir n°$i (<i>$nomc_dev[$i]</i>).</p>\n";
@@ -608,7 +608,7 @@ else {
 											WHERE id='$id_dev[$i]';";
 					echo "Création du devoir n°$i: $nomc_dev[$i]<br />\n";
 					//echo "$sql<br />\n";
-					$res_update=mysql_query($sql);
+					$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$res_update){
 						echo "<p><b>Erreur</b> lors de la création du devoir n°$i (<i>$nomc_dev[$i]</i>).</p>\n";
 						echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
@@ -665,7 +665,7 @@ else {
 																		id_devoir='".$id_dev[$j]."',
 																		note='".$note."',
 																		statut='".$elev_statut."';";
-								$res_insert=mysql_query($sql);
+								$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								// METTRE LES ERREURS DANS UN $msg?
 							}
 

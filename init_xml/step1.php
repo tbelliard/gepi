@@ -70,12 +70,12 @@ if (!isset($is_posted)) {
 
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
 	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0) {
+	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($test)>0) {
 		$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='eleve';";
 		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			echo "<p style='color:red'>Il existe un ou des comptes élèves de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes parents et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
 		}
 	}
@@ -119,9 +119,9 @@ if (!isset($is_posted)) {
 			`ELEOPT11` varchar(40) NOT NULL default '',
 			`ELEOPT12` varchar(40) NOT NULL default ''
 			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-			$create_table = mysql_query($sql);
+			$create_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-			$del = @mysql_query("DELETE FROM temp_gep_import2");
+			$del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM temp_gep_import2");
 			// on constitue le tableau des champs à extraire
 			$tabchamps = array("ELENOM","ELEPRE","ELESEXE","ELEDATNAIS","ELENOET","ELE_ID","ELEDOUBL","ELENONAT","ELEREG","DIVCOD","ETOCOD_EP", "ELEOPT1", "ELEOPT2", "ELEOPT3", "ELEOPT4", "ELEOPT5", "ELEOPT6", "ELEOPT7", "ELEOPT8", "ELEOPT9", "ELEOPT10", "ELEOPT11", "ELEOPT12");
 
@@ -186,12 +186,12 @@ if (!isset($is_posted)) {
 							$affiche = trim(preg_replace("/'/"," ",nettoyer_caracteres_nom($tabligne[$ind], "an", " '_-", "")));
 							if($tabchamps[$ind]!=''){
 								$query = $query.",";
-								$query = $query."$tabchamps[$ind]='".mysql_real_escape_string($affiche)."'";
+								$query = $query."$tabchamps[$ind]='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 							}
 							if (($en_tete[$ind] == 'DIVCOD') and ($affiche == '')) {$enregistre = "no";}
 						}
 						if ($enregistre == "yes") {
-							$register = mysql_query($query);
+							$register = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 							if (!$register) {
 								echo "<p class=\"small\"><font color='red'>Analyse de la ligne $k : erreur lors de l'enregistrement !</font></p>";
 								$nb_reg_no++;

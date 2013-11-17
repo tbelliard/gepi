@@ -227,16 +227,16 @@ if ( $etiquette_action === 'originaux' ) {
 
 	//tableau des données élève
 	if (isset($id_classe[0])) {
-		$call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC');
+		$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC');
 	}
 	if (isset($id_eleve[0])) {
-		$call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC');
+		$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC');
 	}
 
 	//on compte les élèves sélectionné
-	$nb_eleves = mysql_num_rows($call_eleve);
+	$nb_eleves = mysqli_num_rows($call_eleve);
 	$i = '0';
-	while ( $donne_persone = mysql_fetch_array( $call_eleve ))
+	while ( $donne_persone = mysqli_fetch_array( $call_eleve ))
 	{
 		// information sur l'élève
 		$id_eleve[$i] = $donne_persone['login']; // id de l'élève
@@ -279,8 +279,8 @@ if ( $etiquette_action === 'originaux' ) {
 // REQUETE SQL SUR LES PERIODES (HORAIRE)
 	$i = '0';
 	$requete_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux WHERE suivi_definie_periode = "1" ORDER BY heuredebut_definie_periode ASC';
-        $execution_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
-	while ( $donnee_periode = mysql_fetch_array( $execution_periode ) ) {
+        $execution_periode = mysqli_query($GLOBALS["___mysqli_ston"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	while ( $donnee_periode = mysqli_fetch_array( $execution_periode ) ) {
 		$Horaire[$i] = heure_texte_court($donnee_periode['heuredebut_definie_periode']).' - '.heure_texte_court($donnee_periode['heurefin_definie_periode']);
 		$HorDeb[$i] = $donnee_periode['heuredebut_definie_periode'];
 		$HorFin[$i] = $donnee_periode['heurefin_definie_periode'];
@@ -683,19 +683,19 @@ $pdf->SetFillColor(255,255,255);
 	// placement du bloc
  	$pdf->SetXY($x_divers,$y_divers);
 	// nombre de lettre expédié à la famille
-        $cpt_lettre_envoye = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."'"),0);
+        $cpt_lettre_envoye = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."'"),0);
 	$pdf->Cell($l_divers, $h_divers, ('Nombre de lettres expédiées : ').$cpt_lettre_envoye, 0, 2, 'L', 0);
 	// nombre de lettre resté sans réponse
-        $cpt_lettre_envoye_sans_reponse = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND quireception_lettre_suivi = ''"),0);
+        $cpt_lettre_envoye_sans_reponse = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND quireception_lettre_suivi = ''"),0);
 	$pdf->Cell($l_divers, $h_divers, ('Lettres restées sans réponse : ').$cpt_lettre_envoye_sans_reponse, 0, 2, 'L', 0);
 	// nombre d'avertissement
-        $cpt_lettre_avertissement = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%avertissement%'"),0);
+        $cpt_lettre_avertissement = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%avertissement%'"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Nombre d\'avertissements : '.$cpt_lettre_avertissement, 0, 2, 'L', 0);
 	// nombre d'exclusion
-        $cpt_lettre_exclusion = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%exclusion%'"),0);
+        $cpt_lettre_exclusion = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%exclusion%'"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Nombre d\'exclusions : '.$cpt_lettre_exclusion, 0, 2, 'L', 0);
 	// nombre de retenue
-        $cpt_lettre_retenue = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%retenu%'"),0);
+        $cpt_lettre_retenue = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%retenu%'"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Nombre de retenues : '.$cpt_lettre_retenue, 0, 2, 'L', 0);
 
 
@@ -1074,7 +1074,7 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 		$tab_jour['dimanche'] = '0';
 
 		// calcul du nombre de période à affiché dans la semaine
-		$maxHor = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_creneaux
+		$maxHor = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."edt_creneaux
 							WHERE suivi_definie_periode = '1'"),0);
 
 		// si il est égale à 0 alors on l'initialise à 11

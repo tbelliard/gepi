@@ -40,8 +40,8 @@ if ($resultat_session == "c") {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/statistiques/stat_connexions.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/statistiques/stat_connexions.php',
 administrateur='V',
 professeur='V',
@@ -53,7 +53,7 @@ secours='F',
 autre='F',
 description='Statistiques de connexion',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 if (!checkAccess()) {
@@ -212,8 +212,8 @@ $display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin']
 
 $sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";
 //echo "$sql<br />\n";
-$res_classes=mysql_query($sql);
-$nb_classes_0=mysql_num_rows($res_classes);
+$res_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$nb_classes_0=mysqli_num_rows($res_classes);
 
 if($_SESSION['statut']=='administrateur') {
 	$sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";
@@ -298,8 +298,8 @@ else {
 	die();
 }
 //echo "$sql<br />\n";
-$res_classes=mysql_query($sql);
-$nb_classes=mysql_num_rows($res_classes);
+$res_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$nb_classes=mysqli_num_rows($res_classes);
 
 $acces_toutes_classes="n";
 if($nb_classes==$nb_classes_0) {
@@ -310,14 +310,14 @@ if($nb_classes==$nb_classes_0) {
 if($nb_classes>0) {
 	$tab_classe=array();
 	$cpt=0;
-	while($lig_classe=mysql_fetch_object($res_classes)) {
+	while($lig_classe=mysqli_fetch_object($res_classes)) {
 		$tab_classe[$cpt]=array();
 		$tab_classe[$cpt]['id']=$lig_classe->id;
 		$tab_classe[$cpt]['classe']=$lig_classe->classe;
 
 		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$lig_classe->id';";
-		$res_eff=mysql_query($sql);
-		$tab_classe[$cpt]['effectif']=mysql_num_rows($res_eff);
+		$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$tab_classe[$cpt]['effectif']=mysqli_num_rows($res_eff);
 
 		$cpt++;
 	}
@@ -436,8 +436,8 @@ elseif($mode==1) {
 	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	
 	$sql="select START from log order by START ASC limit 1;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		// Toujours vrai si on est connecté pour consulter cette page
 		$date_premier_log=mysql_result($res, 0);
 		echo "<p>Les journaux de connexion remontent au ".formate_date($date_premier_log)."</p>";
@@ -448,15 +448,15 @@ elseif($mode==1) {
 	echo "<p>Les journaux antérieurs à ".formate_date($mysql_begin_bookings)." ne seront pas pris en compte.</p>\n";
 
 	$sql="SELECT DISTINCT l.login from log l, resp_pers rp where rp.login=l.login and autoclose>='0' AND autoclose<='3' AND START>='$mysql_begin_bookings';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucun compte parent n'a encore essayé de (<em>ou réussi à</em>) se connecter.</p>\n";
 	}
 	else {
-		echo "<p>".mysql_num_rows($res)." parent(s) a(ont) réussi à se connecter à ce jour (<em>pour toutes les classes de l'établissement</em>).</p>\n";
+		echo "<p>".mysqli_num_rows($res)." parent(s) a(ont) réussi à se connecter à ce jour (<em>pour toutes les classes de l'établissement</em>).</p>\n";
 	
 		$tab_parents_connectes_avec_succes=array();
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$tab_parents_connectes_avec_succes[]=$lig->login;
 		}
 
@@ -476,11 +476,11 @@ elseif($mode==1) {
 		$tab_parents_enfants_differents_connectes_avec_succes=array();
 		$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY r.ele_id, l.login;";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$lig->pers_id';";
-			$res2=mysql_query($sql);
-			while($lig2=mysql_fetch_object($res2)) {
+			$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			while($lig2=mysqli_fetch_object($res2)) {
 				if((!in_array($lig2->ele_id, $tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter))&&(!in_array($lig->login, $tab_parents_enfants_differents_connectes_avec_succes))) {
 					$tab_parents_enfants_differents_connectes_avec_succes[]=$lig->login;
 				}
@@ -530,22 +530,22 @@ elseif($mode==1) {
 
 			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY e.nom, e.prenom, l.login;";
 			//echo "$sql<br />";
-			$res=mysql_query($sql);
-			$nb_ele=mysql_num_rows($res);
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nb_ele=mysqli_num_rows($res);
 			$tab_ele=array();
 			if($nb_ele>0) {
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_ele[]=$lig->login;
 				}
 			}
 
 			$sql="SELECT DISTINCT l.login FROM log l, j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.login=l.login AND jec.id_classe='".$tab_classe[$i]['id']."' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY e.nom, e.prenom, l.login;";
 			//echo "$sql<br />";
-			$res=mysql_query($sql);
-			$nb_ele=mysql_num_rows($res);
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nb_ele=mysqli_num_rows($res);
 			$tab_ele_en_echec=array();
 			if($nb_ele>0) {
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					if(!in_array($lig->login, $tab_ele)) {
 						$tab_ele_en_echec[]=$lig->login;
 					}
@@ -567,11 +567,11 @@ elseif($mode==1) {
 
 			$sql="SELECT DISTINCT l.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY rp.nom, rp.prenom, l.login;";
 			stat_echo_debug("$sql<br />");
-			$res=mysql_query($sql);
-			$nb_parents=mysql_num_rows($res);
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nb_parents=mysqli_num_rows($res);
 			$tab_resp=array();
 			if($nb_parents>0) {
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_resp[]=mb_strtoupper($lig->login);
 					
 				}
@@ -595,12 +595,12 @@ elseif($mode==1) {
 			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose='4' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY rp.nom, rp.prenom, l.login;";
 			//echo "$sql<br />";
 			stat_echo_debug("$sql<br />");
-			$res=mysql_query($sql);
-			$nb_parents_erreur_mdp=mysql_num_rows($res);
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nb_parents_erreur_mdp=mysqli_num_rows($res);
 			$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes=0;
 			$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes=array();
 			if($nb_parents_erreur_mdp>0) {
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					stat_echo_debug("Test $lig->login -&gt; ".mb_strtoupper($lig->login)." : ");
 					if(!in_array(trim(mb_strtoupper($lig->login)), $tab_resp)) {
 						stat_echo_debug("<span style='color:red'>$lig->login</span><br />");
@@ -613,8 +613,8 @@ elseif($mode==1) {
 							}
 
 							$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$lig->pers_id';";
-							$res2=mysql_query($sql);
-							while($lig2=mysql_fetch_object($res2)) {
+							$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							while($lig2=mysqli_fetch_object($res2)) {
 								if(!isset($tab_login_resp_ele_id[$lig->login])) {$tab_login_resp_ele_id[$lig->login]=array();}
 								if(!in_array($lig2->ele_id, $tab_login_resp_ele_id[$lig->login])) {
 									$tab_login_resp_ele_id[$lig->login][]=$lig2->ele_id;
@@ -652,11 +652,11 @@ elseif($mode==1) {
 			$tab_parents_enfants_differents_connectes_avec_succes_cette_classe=array();
 			$sql="SELECT DISTINCT l.login, r.pers_id FROM log l, resp_pers rp, eleves e, responsables2 r, j_eleves_classes jec WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY rp.nom, rp.prenom, l.login;";
 			//echo "$sql<br />";
-			$res=mysql_query($sql);
-			while($lig=mysql_fetch_object($res)) {
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			while($lig=mysqli_fetch_object($res)) {
 				$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$lig->pers_id';";
-				$res2=mysql_query($sql);
-				while($lig2=mysql_fetch_object($res2)) {
+				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				while($lig2=mysqli_fetch_object($res2)) {
 					if((!in_array($lig2->ele_id, $tab_ele_id_enfants_dont_un_parent_au_moins_a_reussi_a_se_connecter_cette_classe))&&(!in_array($lig->login, $tab_parents_enfants_differents_connectes_avec_succes_cette_classe))) {
 						$tab_parents_enfants_differents_connectes_avec_succes_cette_classe[]=$lig->login;
 					}
@@ -997,14 +997,14 @@ elseif(($mode==2)||($mode==3)) {
 
 		$sql=$sql_partie[$mode];
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			echo "<p>Aucun compte ".$categorie_utilisateur[$mode]." n'a encore essayé de (<em>ou réussi à</em>) se connecter.</p>\n";
 		}
 		else {
 
 			$tab_connexions=array();
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				$tab=explode(" ", $lig->START);
 				$date=$tab[0];
 				/*

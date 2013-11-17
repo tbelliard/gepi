@@ -160,9 +160,9 @@ if ( $mode === 'apercus' )
                                 AND id_lettre_cadre = cadre_lettre_tc
                            ORDER BY y_lettre_tc ASC, x_lettre_tc ASC";
         //echo "\$requete_structure=$requete_structure<br />";
-        $execution_structure = mysql_query($requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.mysql_error());
+        $execution_structure = mysqli_query($GLOBALS["___mysqli_ston"], $requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-        while ( $donne_structure = mysql_fetch_array($execution_structure))
+        while ( $donne_structure = mysqli_fetch_array($execution_structure))
 	    {
 
 			$x_cadre[$lettre_type][$i_cadre] = $donne_structure['x_lettre_tc'];
@@ -203,8 +203,8 @@ if ( $lettre_action === 'originaux' ) {
 										ORDER BY j_eleves_classes.id_classe ASC, nom ASC, prenom ASC";
 	//echo "\$requete_persone=$requete_persone<br />";
 
-	$execution_persone = mysql_query($requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.mysql_error());
-	while ( $donne_persone = mysql_fetch_array($execution_persone))
+	$execution_persone = mysqli_query($GLOBALS["___mysqli_ston"], $requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	while ( $donne_persone = mysqli_fetch_array($execution_persone))
 	{
 		$id_lettre_suivi = $donne_persone['id_lettre_suivi'];
 		// information sur l'élève
@@ -219,15 +219,15 @@ if ( $lettre_action === 'originaux' ) {
 		$nombre_de_responsable = 0;
 		$sql="SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal!='0' )";
 		//echo "\$sql=$sql<br />";
-		$nombre_de_responsable =  mysql_result(mysql_query($sql),0);
+		$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], $sql),0);
 
 		if($nombre_de_responsable != 0)
 		{
 			$cpt_parents = 0;
 			$sql="SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal!='0' ) ORDER BY resp_legal ASC";
 			//echo "\$sql=$sql<br />";
-			$requete_parents = mysql_query($sql);
-			while ($donner_parents = mysql_fetch_array($requete_parents))
+			$requete_parents = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			while ($donner_parents = mysqli_fetch_array($requete_parents))
 			{
 				$civilite_responsable[$cpt_parents][$i] = $donner_parents['civilite']; // civilité du responsable
 			        $nom_responsable[$cpt_parents][$i] = $donner_parents['nom']; // nom du responsable
@@ -272,8 +272,8 @@ if ( $lettre_action === 'originaux' ) {
 			if ( $ouestce === 'suivi_eleve_cpe') {
 			        $requete_plusdinfo ="SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE id_suivi_eleve_cpe = '".$idouestce."'";
 					//echo "\$requete_plusdinfo=$requete_plusdinfo<br />";
-			        $execution_plusdinfo = mysql_query($requete_plusdinfo) or die('Erreur SQL !'.$requete_plusdinfo.'<br />'.mysql_error());
-			        while ( $donne_plusdinfo = mysql_fetch_array($execution_plusdinfo))
+			        $execution_plusdinfo = mysqli_query($GLOBALS["___mysqli_ston"], $requete_plusdinfo) or die('Erreur SQL !'.$requete_plusdinfo.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			        while ( $donne_plusdinfo = mysqli_fetch_array($execution_plusdinfo))
 				 {
 					$remarque[$i] = $donne_plusdinfo['komenti_suivi_eleve_cpe'];
 				 }
@@ -300,9 +300,9 @@ if ( $lettre_action === 'originaux' ) {
 				 }
 			        $requete_plusdinfo ="SELECT * FROM ".$prefix_base."absences_eleves WHERE ".$requete_command.")";
 					//echo "\$requete_plusdinfo=$requete_plusdinfo<br />";
-			        $execution_plusdinfo = mysql_query($requete_plusdinfo) or die('Erreur SQL !'.$requete_plusdinfo.'<br />'.mysql_error());
+			        $execution_plusdinfo = mysqli_query($GLOBALS["___mysqli_ston"], $requete_plusdinfo) or die('Erreur SQL !'.$requete_plusdinfo.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				$o = 0;
-			        while ( $donne_plusdinfo = mysql_fetch_array($execution_plusdinfo))
+			        while ( $donne_plusdinfo = mysqli_fetch_array($execution_plusdinfo))
 				 {
 					$remarque[$i] = $donne_plusdinfo['info_justify_absence_eleve'];
 					$date_debut[$i] = date_frl($donne_plusdinfo['d_date_absence_eleve']);
@@ -323,9 +323,9 @@ if ( $lettre_action === 'originaux' ) {
 				$icom = '1'; $requete_command = '';
 			        $requete_plusdinfo ="SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE id_suivi_eleve_cpe = '".$donne_persone['partdenum_lettre_suivi']."'";
 					//echo "\$requete_plusdinfo=$requete_plusdinfo<br />";
-			        $execution_plusdinfo = mysql_query($requete_plusdinfo) or die('Erreur SQL !'.$requete_plusdinfo.'<br />'.mysql_error());
+			        $execution_plusdinfo = mysqli_query($GLOBALS["___mysqli_ston"], $requete_plusdinfo) or die('Erreur SQL !'.$requete_plusdinfo.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				$o = 0;
-			        while ( $donne_plusdinfo = mysql_fetch_array($execution_plusdinfo))
+			        while ( $donne_plusdinfo = mysqli_fetch_array($execution_plusdinfo))
 				 {
 					$remarque[$i] = '   '.$donne_plusdinfo['komenti_suivi_eleve_cpe'];
 					$date_debut[$i] = date_frl($donne_plusdinfo['date_suivi_eleve_cpe']);
@@ -341,8 +341,8 @@ if ( $lettre_action === 'originaux' ) {
 	   $i_cadre = '0';
            $requete_structure ="SELECT * FROM ".$prefix_base."lettres_types, ".$prefix_base."lettres_cadres, ".$prefix_base."lettres_tcs WHERE id_lettre_type = '".$type_lettre."' AND id_lettre_type = type_lettre_tc AND id_lettre_cadre = cadre_lettre_tc ORDER BY y_lettre_tc ASC, x_lettre_tc ASC";
 			//echo "\$requete_structure=$requete_structure<br />";
-           $execution_structure = mysql_query($requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.mysql_error());
-           while ( $donne_structure = mysql_fetch_array($execution_structure))
+           $execution_structure = mysqli_query($GLOBALS["___mysqli_ston"], $requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+           while ( $donne_structure = mysqli_fetch_array($execution_structure))
 	    {
 		$x_cadre[$type_lettre][$i_cadre] = $donne_structure['x_lettre_tc'];
 		$y_cadre[$type_lettre][$i_cadre] = $donne_structure['y_lettre_tc'];
@@ -358,7 +358,7 @@ if ( $lettre_action === 'originaux' ) {
 	        $heure_envoi = date('H:i:s');
                 $requete = "UPDATE ".$prefix_base."lettres_suivis SET quienvoi_lettre_suivi = '".$_SESSION['login']."', envoye_date_lettre_suivi = '".$date_envoi."', envoye_heure_lettre_suivi = '".$heure_envoi."' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
 				//echo "\$requete=$requete<br />";
-	        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	        mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 		$i = $i + 1;
 	 }

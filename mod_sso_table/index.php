@@ -43,7 +43,7 @@ $sql="CREATE TABLE IF NOT EXISTS `sso_table_correspondance` ( `login_gepi` varch
                 default '', `login_sso` varchar(100) NOT NULL
                 default '', PRIMARY KEY (`login_gepi`) )
                  ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$test=mysql_query($sql);
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 // **************** EN-TETE *****************
 $titre_page = "Gestion de la table de correspondance SSO";

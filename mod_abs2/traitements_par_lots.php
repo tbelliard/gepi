@@ -41,8 +41,8 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_abs2/traitements_par_lots.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_abs2/traitements_par_lots.php',
 administrateur='V',
 professeur='F',
@@ -54,7 +54,7 @@ secours='F',
 autre='F',
 description='Abs2: Creation lot de traitements',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");

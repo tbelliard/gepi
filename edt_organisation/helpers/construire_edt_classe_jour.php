@@ -68,9 +68,9 @@ $jour = date("N")-1;
 function NomClasse($idClasse) {
     $result = "";
     $sql = "SELECT classe FROM classes WHERE id = '".$idClasse."' ";
-    $req = mysql_query($sql);
+    $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     if ($req) {
-        if ($rep = mysql_fetch_array($req)) {
+        if ($rep = mysqli_fetch_array($req)) {
             $result = $rep['classe'];
         }
     }

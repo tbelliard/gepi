@@ -102,8 +102,8 @@ if (!isset($_POST["action"])) {
 
 
 			// Première étape : on s'assure que l'élève existe... S'il n'existe pas, on laisse tomber.
-			$test = mysql_query("SELECT login FROM eleves WHERE login = '" . $reg_login . "'");
-			if (mysql_num_rows($test) == 1) {
+			$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM eleves WHERE login = '" . $reg_login . "'");
+			if (mysqli_num_rows($test) == 1) {
 				$login_eleve = $reg_login;
 				
 				// Maintenant on récupère les différentes matières, et on vérifie qu'elles existent
@@ -111,7 +111,7 @@ if (!isset($_POST["action"])) {
 				$valid_options = array();
 				foreach ($reg_options as $option) {
 					$option = strtoupper($option);
-					$test = mysql_result(mysql_query("SELECT count(matiere) FROM matieres WHERE matiere = '" . $option ."'"), 0);
+					$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(matiere) FROM matieres WHERE matiere = '" . $option ."'"), 0);
 					if ($test == 1) {
 						$valid_options[] = $option;
 					}
@@ -121,9 +121,9 @@ if (!isset($_POST["action"])) {
 				
 				// On récupère la classe de l'élève.
 				
-				$test = mysql_query("SELECT DISTINCT(id_classe) FROM j_eleves_classes WHERE login = '" . $login_eleve . "'");
+				$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT(id_classe) FROM j_eleves_classes WHERE login = '" . $login_eleve . "'");
 				
-				if (mysql_num_rows($test) != 0) {
+				if (mysqli_num_rows($test) != 0) {
 					// L'élève fait bien parti d'une classe
 	
 					$id_classe = mysql_result($test, 0, "id_classe");
@@ -131,7 +131,7 @@ if (!isset($_POST["action"])) {
 					// Maintenant on a tout : les options, la classe de l'élève, et son login
 					// Enfin il reste quand même un truc à récupérer : le nombre de périodes :
 					
-					$num_periods = mysql_result(mysql_query("SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
+					$num_periods = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
 					
 					// Bon cette fois c'est bon, on a tout. On va donc procéder de la manière suivante :
 					// - on regarde s'il existe un groupe pour la classe dans la matière considérée
@@ -142,27 +142,27 @@ if (!isset($_POST["action"])) {
 					// On procède matière par matière :
 					
 					foreach ($valid_options as $matiere) {
-						$test = mysql_query("SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE (" .
+						$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE (" .
 								"jgc.id_classe = '" . $id_classe . "' AND " .
 								"jgc.id_groupe = jgm.id_groupe AND " .
 								"jgm.id_matiere = '" . $matiere . "')");
-						if (mysql_num_rows($test) > 0) {
+						if (mysqli_num_rows($test) > 0) {
 							// Au moins un groupe existe, c'est bon signe
 							// On passe groupe par groupe pour vérifier si l'élève est déjà inscrit ou pas
 							// Si plusieurs groupes existent, l'élève sera inscrit à tous les groupes...
-							for ($j=0;$j<mysql_num_rows($test);$j++) {
+							for ($j=0;$j<mysqli_num_rows($test);$j++) {
 								// On extrait l'ID du groupe
 								$group_id = mysql_result($test, $j, "id_groupe");
 								// On regarde si l'élève est inscrit
-								$res = mysql_result(mysql_query("SELECT count(login) FROM j_eleves_groupes WHERE (id_groupe = '" . $group_id . "' AND login = '" . $login_eleve . "')"), 0);
+								$res = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(login) FROM j_eleves_groupes WHERE (id_groupe = '" . $group_id . "' AND login = '" . $login_eleve . "')"), 0);
 								if ($res == 0) {
 									// L'élève ne fait pas encore parti du groupe. On l'inscrit pour les périodes de la classe
 									for ($p=1;$p<=$num_periods;$p++) {
 										// On enregistre
-										$reg = mysql_query("INSERT INTO j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $login_eleve . "', periode = '" . $p . "'");
+										$reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $login_eleve . "', periode = '" . $p . "'");
 										if (!$reg) {
 											$error++;
-											echo mysql_error();
+											echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 										} else {
 											if ($p == 1) $total++;
 										}

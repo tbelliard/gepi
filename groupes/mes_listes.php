@@ -85,9 +85,9 @@ if($_SESSION['statut']=='professeur') {
 		jgp.login = '".$_SESSION['login']."' AND
 		g.id=jgp.id_groupe
 		ORDER BY g.description";
-	$res_grp=mysql_query($sql);
+	$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-	if(mysql_num_rows($res_grp)==0){
+	if(mysqli_num_rows($res_grp)==0){
 		echo "<p>Vous n'avez apparemment aucun enseignement.</p>\n";
 		echo "</body></html>\n";
 		die();
@@ -95,7 +95,7 @@ if($_SESSION['statut']=='professeur') {
 	else {
 		$message_erreur="";
 		echo "<table>\n";
-		while($lig_grp=mysql_fetch_object($res_grp)){
+		while($lig_grp=mysqli_fetch_object($res_grp)){
 			echo "<tr>\n";
 			unset($tabnumper);
 			unset($tabnomper);
@@ -104,19 +104,19 @@ if($_SESSION['statut']=='professeur') {
 				jgc.id_classe=c.id
 				ORDER BY c.classe";
 			//echo "$sql<br />\n";
-			$res_class=mysql_query($sql);
-			if(mysql_num_rows($res_class)>0){
+			$res_class=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_class)>0){
 				$chaine_class="";
 				$cpt=0;
-				while($lig_class=mysql_fetch_object($res_class)){
+				while($lig_class=mysqli_fetch_object($res_class)){
 					$chaine_class.=",$lig_class->classe";
 
 					if($cpt==0){
 						$tabnumper=array();
 						$tabnomper=array();
 						$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-						$res_per=mysql_query($sql);
-						if(mysql_num_rows($res_per)==0){
+						$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res_per)==0){
 							$message_erreur.="<p><span style='color:red'>ERREUR&nbsp;:</span> Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 							/*
 							echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
@@ -125,7 +125,7 @@ if($_SESSION['statut']=='professeur') {
 							*/
 						}
 						else{
-							while($lig_per=mysql_fetch_object($res_per)){
+							while($lig_per=mysqli_fetch_object($res_per)){
 								$tabnumper[]=$lig_per->num_periode;
 								$tabnomper[]=$lig_per->nom_periode;
 							}
@@ -313,17 +313,17 @@ else {
 		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY classe";
 	}
-	$result_classes=mysql_query($sql);
-	$nb_classes = mysql_num_rows($result_classes);
+	$result_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_classes = mysqli_num_rows($result_classes);
 
-	if(mysql_num_rows($result_classes)==0){
+	if(mysqli_num_rows($result_classes)==0){
 		echo "<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	$nb_classes=mysql_num_rows($result_classes);
+	$nb_classes=mysqli_num_rows($result_classes);
 	$nb_class_par_colonne=round($nb_classes/3);
 
 	$tab_id_classe=array();
@@ -336,7 +336,7 @@ else {
 	//echo "<td style='padding: 0 10px 0 10px'>\n";
 	echo "<td>\n";
 	echo "<table border='0'>\n";
-	while($lig_class=mysql_fetch_object($result_classes)){
+	while($lig_class=mysqli_fetch_object($result_classes)){
 		if(($cpt>0)&&(round($cpt/$nb_class_par_colonne)==$cpt/$nb_class_par_colonne)){
 			echo "</table>\n";
 			echo "</td>\n";
@@ -346,9 +346,9 @@ else {
 		}
 
 		$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-		$res_per=mysql_query($sql);
+		$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-		if(mysql_num_rows($res_per)==0){
+		if(mysqli_num_rows($res_per)==0){
 			$message_erreur.="<p><span style='color:red'>ERREUR&nbsp;:</span> Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 			/*
 			echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
@@ -362,7 +362,7 @@ else {
 
 			echo "<tr>\n";
 			echo "<td>$lig_class->classe</td>\n";
-			while($lig_per=mysql_fetch_object($res_per)){
+			while($lig_per=mysqli_fetch_object($res_per)){
 				echo "<td> - <a href='get_csv.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode'>".$lig_per->nom_periode."</a></td>\n";
 			}
 			echo "</tr>\n";
@@ -445,7 +445,7 @@ else {
 	echo "</select>\n";
 
 	$sql="SELECT MAX(num_periode) AS maxper FROM periodes WHERE id_classe='".$tab_id_classe[0]."';";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	$nb_per=mysql_result($res, 0);
 
 	echo "<div id='div_champs_periodes'>\n";

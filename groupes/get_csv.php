@@ -90,7 +90,7 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 if ($current_group) {
 	$nom_fic = $current_group["name"] . "-" . remplace_accents(preg_replace('/, /','~',$current_group["classlist_string"]),'all') . ".csv";
 } else {
-	$classe = mysql_result(mysql_query("SELECT classe FROM classes WHERE id = '" . $id_classe . "'"), 0);
+	$classe = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '" . $id_classe . "'"), 0);
 	$nom_fic = remplace_accents($classe,"all") . ".csv";
 }
 
@@ -144,9 +144,9 @@ if($current_group) {
 		if((isset($avec_prof))&&($avec_prof=='y')) {
 			$sql="SELECT u.login, u.nom, u.prenom, u.email, u.civilite, u.numind FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe='$id_groupe';";
 			//echo "$sql<br />\n";
-			$res_prof=mysql_query($sql);
-			if(mysql_num_rows($res_prof)>0) {
-				while($lig=mysql_fetch_object($res_prof)) {
+			$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_prof)>0) {
+				while($lig=mysqli_fetch_object($res_prof)) {
 					$ligne="";
 					if((isset($avec_classe))&&($avec_classe=='y')) {$ligne.=";";}
 					if((isset($avec_login))&&($avec_login=='y')) {$ligne.="$lig->login;";}
@@ -191,25 +191,25 @@ if($current_group) {
 
 		//$eleve_classe = $current_eleve["classe"];
 		$sql="SELECT classe FROM classes WHERE id='".$current_eleve["classe"]."'";
-		$res_tmp=mysql_query($sql);
-		if(mysql_num_rows($res_tmp)==0){
+		$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_tmp)==0){
 			die("$eleve_login ne serait dans aucune classe???</body></html>");
 		}
 		else{
-			$lig_tmp=mysql_fetch_object($res_tmp);
+			$lig_tmp=mysqli_fetch_object($res_tmp);
 			$eleve_classe=$lig_tmp->classe;
 		}
 
 		// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance...
 		// ... pourrait-on l'ajouter?
 		$sql="SELECT sexe,naissance,lieu_naissance,email,no_gep,elenoet,ele_id FROM eleves WHERE login='$eleve_login'";
-		$res_tmp=mysql_query($sql);
+		$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-		if(mysql_num_rows($res_tmp)==0){
+		if(mysqli_num_rows($res_tmp)==0){
 			die("Problème avec les infos (date de naissance, sexe,...) de $eleve_login</body></html>");
 		}
 		else{
-			$lig_tmp=mysql_fetch_object($res_tmp);
+			$lig_tmp=mysqli_fetch_object($res_tmp);
 			$eleve_sexe=$lig_tmp->sexe;
 			if((isset($format_naiss))&&($format_naiss=='jjmmaaaa')) {
 				$eleve_naissance=formate_date($lig_tmp->naissance);
@@ -230,14 +230,14 @@ if($current_group) {
 		if(((isset($avec_doublant))&&($avec_doublant=='y'))||
 		((isset($avec_regime))&&($avec_regime=='y'))) {
 			$sql="SELECT * FROM j_eleves_regime WHERE login='".$current_eleve["login"]."';";
-			$res_tmp=mysql_query($sql);
-			if(mysql_num_rows($res_tmp)==0) {
+			$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_tmp)==0) {
 				//die("Problème avec les infos (régime, doublant) de $eleve_login</body></html>");
 				$eleve_regime="X";
 				$eleve_doublant="X";
 			}
 			else {
-				while($lig_tmp=mysql_fetch_object($res_tmp)) {
+				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
 					$eleve_regime=$lig_tmp->regime;
 					$eleve_doublant=$lig_tmp->doublant;
 				}
@@ -250,9 +250,9 @@ if($current_group) {
 			$eleve_infos_resp_0="";
 			
 			$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.ele_id='$eleve_ele_id' AND r.pers_id=rp.pers_id AND (r.resp_legal='1' OR r.resp_legal='2' OR (r.pers_contact='1' AND (rp.tel_pers!='' OR rp.tel_prof!='' OR rp.tel_port!='')));";
-			$res_tmp=mysql_query($sql);
-			if(mysql_num_rows($res_tmp)>0) {
-				while($lig_tmp=mysql_fetch_object($res_tmp)) {
+			$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_tmp)>0) {
+				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
 					if($lig_tmp->resp_legal=='1') {
 						$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
 					}
@@ -317,8 +317,8 @@ if($current_group) {
 			periode='".$periode_num."'
 			) ORDER BY nom, prenom";
 	}
-	$appel_donnees_eleves = mysql_query($sql);
-	$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
+	$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 	$i = 0;
 	while($i < $nombre_lignes) {
 		$eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
@@ -371,9 +371,9 @@ if($current_group) {
 			$eleve_infos_resp_0="";
 			
 			$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.ele_id='$eleve_ele_id' AND r.pers_id=rp.pers_id AND (r.resp_legal='1' OR r.resp_legal='2' OR (r.pers_contact='1' AND (rp.tel_pers!='' OR rp.tel_prof!='' OR rp.tel_port!='')));";
-			$res_tmp=mysql_query($sql);
-			if(mysql_num_rows($res_tmp)>0) {
-				while($lig_tmp=mysql_fetch_object($res_tmp)) {
+			$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_tmp)>0) {
+				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
 					if($lig_tmp->resp_legal=='1') {
 						$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
 					}

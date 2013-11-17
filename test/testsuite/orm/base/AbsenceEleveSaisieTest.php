@@ -545,7 +545,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
         $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst();
         $saisie_id = $saisie->getId();
-        mysql_query("UPDATE a_saisies SET fin_abs = '".VENDREDI_s40j5." 08:10:00' WHERE id = ".$saisie_id);//ça devient un retard
+        mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE a_saisies SET fin_abs = '".VENDREDI_s40j5." 08:10:00' WHERE id = ".$saisie_id);//ça devient un retard
         $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee(VENDREDI_s40j5)->findOne();
         $this->assertTrue($decompte->getManquementObligationPresence());
         $this->assertEquals(0,$decompte->getRetards());
@@ -570,7 +570,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
         $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst();
         $saisie_id = $saisie->getId();
-        mysql_query("UPDATE a_saisies SET fin_abs = '".VENDREDI_s40j5." 08:10:00' WHERE id = ".$saisie_id);//ça devient un retard
+        mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE a_saisies SET fin_abs = '".VENDREDI_s40j5." 08:10:00' WHERE id = ".$saisie_id);//ça devient un retard
         $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee(VENDREDI_s40j5)->findOne();
         $this->assertTrue($decompte->getManquementObligationPresence());
         $this->assertEquals(0,$decompte->getRetards());
@@ -581,7 +581,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee(VENDREDI_s40j5)->findOne();
         $this->assertTrue($decompte->getManquementObligationPresence());
         $this->assertEquals(0,$decompte->getRetards());
-        mysql_query("UPDATE a_saisies SET updated_at = now() WHERE id = ".$saisie_id);
+        mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE a_saisies SET updated_at = now() WHERE id = ".$saisie_id);
         $saisie->reload();
         $saisie->clearAllReferences();
         $saisie->getEleve()->clearAllReferences();

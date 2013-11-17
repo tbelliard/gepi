@@ -34,11 +34,11 @@ else {
 
 if($initialiser_mb=="y") {
 	$sql="INSERT INTO setting SET name='utiliser_mb', value='$val_tmp';";
-	$insert=mysql_query($sql);
+	$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 elseif(($modifier_mb=="y")||($utiliser_mb!=$val_tmp)) {
 	$sql="UPDATE setting SET value='$val_tmp' WHERE name='utiliser_mb';";
-	$update=mysql_query($sql);
+	$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 $utiliser_mb=$val_tmp;
 

@@ -85,11 +85,11 @@ if(isset($chaine_rech)) {
 		$sql="SELECT DISTINCT nature FROM s_natures WHERE $chaine_mysql ORDER BY nature;";
 	}
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		echo "<ul>";
 		$alt=1;
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$alt=$alt*(-1);
 
 			//echo "<div class='lig$alt white_hover'><a href='#' onclick=\"document.getElementById('nature').value='".addslashes(ucfirst($lig->nature))."';cacher_div('div_choix_nature2');document.getElementById('nature').focus();return false;\">".ucfirst($lig->nature)."</a></div>";

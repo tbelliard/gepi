@@ -62,9 +62,9 @@ echo '<!--[if lt IE 7]>
 
 				$tmp_mes_classes_pp[$key_id_classe]="";
 				$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_eleves_classes jec, j_eleves_professeurs jep WHERE u.login=jep.professeur AND jep.login=jec.login AND jec.id_classe='$key_id_classe' ORDER BY u.nom,u.prenom;";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while($lig=mysql_fetch_object($res)) {
+				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
 						if($tmp_mes_classes_pp[$key_id_classe]!='') {
 							$tmp_mes_classes_pp[$key_id_classe].=", ";
 						}
@@ -82,8 +82,8 @@ echo '<!--[if lt IE 7]>
 		$cours_actu = retourneCours($_SESSION["login"]);
 		// Qui correspond à cet id_groupe :
 		if ($cours_actu != "non") {
-			$queryG = mysql_query("SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$cours_actu."'");
-			$groupe_actu = mysql_fetch_array($queryG);
+			$queryG = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$cours_actu."'");
+			$groupe_actu = mysqli_fetch_array($queryG);
 			// Il faudrait vérifier si ce n'est pas une AID
 			if ($groupe_actu["id_aid"] != NULL) {
 				$groupe_abs = '?groupe=AID|'.$groupe_actu["id_aid"].'&amp;menuBar=ok';
@@ -309,7 +309,7 @@ echo '<!--[if lt IE 7]>
 					*/
 					$sql="SELECT 1=1 FROM j_eleves_professeurs jep
 											WHERE jep.professeur='".$_SESSION['login']."';";
-					$res_test_affiche_bull_simp=mysql_num_rows(mysql_query($sql));
+					$res_test_affiche_bull_simp=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
 					//echo "$sql";
 					if($res_test_affiche_bull_simp>0) {
 
@@ -321,7 +321,7 @@ echo '<!--[if lt IE 7]>
 											WHERE jep.login=jec.login AND
 													jec.id_classe='$key' AND
 													jep.professeur='".$_SESSION['login']."';";
-								$res_test_affiche_bull_simp=mysql_num_rows(mysql_query($sql));
+								$res_test_affiche_bull_simp=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
 								//echo "$sql";
 								if($res_test_affiche_bull_simp>0) {
 									$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index3.php?id_classe='.$key.'"'.insert_confirm_abandon().'>'.$value.'</a></li>'."\n";

@@ -21,10 +21,10 @@
  */
 function deja_unique($table, $index) {
   $sql = "SHOW COLUMNS FROM $table LIKE '$index'";
-  $res = mysql_query($sql);
-  $test = mysql_num_rows($res);
+  $res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+  $test = mysqli_num_rows($res);
   if ($test){
-    $donnees =mysql_fetch_object($res);
+    $donnees =mysqli_fetch_object($res);
     if ($donnees->Key == 'UNI'){
       return TRUE;
     }
@@ -41,8 +41,8 @@ function deja_unique($table, $index) {
 function traite_requete($requete = "") {
 	global $pb_maj;
 	$retour = "";
-	$res = mysql_query($requete);
-	$erreur_no = mysql_errno();
+	$res = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+	$erreur_no = ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 	if (!$erreur_no) {
 		$retour = "";
 	} else {
@@ -57,7 +57,7 @@ function traite_requete($requete = "") {
 				break;
 			case "1062" :
 				// Présence d'un doublon : création de la cléf impossible
-				$retour = msj_erreur("Erreur (<strong>non critique</strong>) sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")");
+				$retour = msj_erreur("Erreur (<strong>non critique</strong>) sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ")");
 				$pb_maj = 'yes';
 				break;
 			case "1068" :
@@ -66,7 +66,7 @@ function traite_requete($requete = "") {
 				break;
 			case "1069" :
 				// trop d'index existent déjà pour cette table
-				$retour = msj_erreur("Erreur (<strong>critique</strong>) sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")");
+				$retour = msj_erreur("Erreur (<strong>critique</strong>) sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ")");
 				$pb_maj = 'yes';
 				break;
 			case "1091" :
@@ -74,7 +74,7 @@ function traite_requete($requete = "") {
 				$retour = "";
 				break;
 			default :
-				$retour = msj_erreur("Erreur sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")");
+				$retour = msj_erreur("Erreur sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ")");
 				$pb_maj = 'yes';
 				break;
 		}
@@ -85,9 +85,9 @@ function traite_requete($requete = "") {
 // statuts dynamiques
 $result .= "<p>";
 $result .= "&nbsp;-> Ajout d'un champ 'autre' à la table 'droits'";
-$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'autre'"));
+$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM droits LIKE 'autre'"));
 if ($test1 == 0) {
-        $query = mysql_query("ALTER TABLE `droits` ADD `autre` VARCHAR( 1 ) NOT NULL DEFAULT 'F' AFTER `secours` ;");
+        $query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `droits` ADD `autre` VARCHAR( 1 ) NOT NULL DEFAULT 'F' AFTER `secours` ;");
         if ($query) {
                 $result .= msj_ok();
         } else {
@@ -1065,7 +1065,7 @@ statut='';";
 
 //$tab_req[] = "";
 
-$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
+$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {
                 $result .= traite_requete($value);

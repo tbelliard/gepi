@@ -190,9 +190,9 @@ for($i=0;$i<count($id_groupe);$i++) {
 		AND date_ct <= '".$timestamp_fin_export."'
 		AND id_groupe='".$id_groupe[$i]."'
 		) ORDER BY date_ct DESC, heure_entry DESC;";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 
 		$date_notice=strftime("%a %d %b %y", $lig->date_ct);
 		if(!in_array($date_notice,$tab_dates)) {
@@ -212,9 +212,9 @@ for($i=0;$i<count($id_groupe);$i++) {
 		AND date_ct <= '".$timestamp_fin_export."'
 		AND id_groupe='".$id_groupe[$i]."'
 		) ORDER BY date_ct DESC;";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$date_dev=strftime("%a %d %b %y", $lig->date_ct);
 		if(!in_array($date_dev,$tab_dates)) {
 			$tab_dates[]=$date_dev;

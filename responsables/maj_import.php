@@ -65,8 +65,8 @@ if(acces("/responsables/consult_maj_sconet.php", $_SESSION['statut'])) {
 
 	if($acces=='y') {
 		$sql="SELECT 1=1 FROM log_maj_sconet LIMIT 1;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
 			echo " | <a href=\"consult_maj_sconet.php\">Consulter le compte-rendu des dernières mises à jour</a>";
 		}
 	}
@@ -97,15 +97,15 @@ if($gepiSchoolRne=="") {
 }
 
 $sql="SELECT 1=1 FROM eleves;";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0){
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0){
 	echo "<p>Aucun élève ne semble encore présent dans la base.</p>\n";
 }
 else{
 	$sql="SELECT * FROM eleves WHERE ele_id LIKE 'e%' OR ele_id LIKE '';";
-	$res_ele=mysql_query($sql);
+	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-	if(mysql_num_rows($res_ele)==0){
+	if(mysqli_num_rows($res_ele)==0){
 		echo "<p>Tous vos élèves ont un identifiant 'ele_id' formaté comme ceux provenant de Sconet.<br />C'est ce qu'il faut pour la mise à jour d'après Sconet.</p>\n";
 	}
 	else{
@@ -124,7 +124,7 @@ else{
 		echo "<th>Classe</th>\n";
 		echo "</tr>\n";
 		$alt=1;
-		while($lig=mysql_fetch_object($res_ele)){
+		while($lig=mysqli_fetch_object($res_ele)){
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>".$lig->ele_id."</td>\n";
@@ -135,14 +135,14 @@ else{
 			echo "<td>\n";
 
 			$sql="SELECT DISTINCT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig->login';";
-			$res_clas=mysql_query($sql);
-			if(mysql_num_rows($res_clas)==0){
+			$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_clas)==0){
 				echo "(<i><span style='color:red;'>aucune classe</span></i>)\n";
 			}
 			else{
 				$cpt_clas=0;
 				echo "(<i>";
-				while($lig3=mysql_fetch_object($res_clas)){
+				while($lig3=mysqli_fetch_object($res_clas)){
 					if($cpt_clas>0){echo ", \n";}
 					echo $lig3->classe;
 					$cpt_clas++;
@@ -164,14 +164,14 @@ else{
 
 
 $sql="SELECT 1=1 FROM resp_pers;";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0){
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0){
 	echo "<p>Aucun responsables ne semble encore défini.</p>\n";
 }
 else{
 	$sql="SELECT * FROM resp_pers WHERE pers_id LIKE 'p%';";
-	$res_pers=mysql_query($sql);
-	if(mysql_num_rows($res_pers)==0){
+	$res_pers=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_pers)==0){
 		echo "<p>Tous vos responsables ont un identifiant 'pers_id' formaté comme ceux provenant de Sconet.<br />C'est ce qu'il faut pour la mise à jour d'après Sconet.</p>\n";
 	}
 	else{
@@ -186,7 +186,7 @@ else{
 		echo "<th>Responsable de</th>\n";
 		echo "</tr>\n";
 		$alt=1;
-		while($lig=mysql_fetch_object($res_pers)){
+		while($lig=mysqli_fetch_object($res_pers)){
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>".$lig->pers_id."</td>\n";
@@ -195,24 +195,24 @@ else{
 			echo "<td>\n";
 
 			$sql="SELECT e.login,e.nom,e.prenom FROM eleves e, responsables2 r WHERE e.ele_id=r.ele_id AND r.pers_id='$lig->pers_id';";
-			$res_resp=mysql_query($sql);
-			if(mysql_num_rows($res_resp)==0){
+			$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_resp)==0){
 				echo "<span style='color:red;'>Aucun élève associé</span>\n";
 			}
 			else{
 				$cpt_ele=0;
-				while($lig2=mysql_fetch_object($res_resp)){
+				while($lig2=mysqli_fetch_object($res_resp)){
 					if($cpt_ele>0){echo "<br />\n";}
 					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 					$sql="SELECT DISTINCT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig2->login';";
-					$res_clas=mysql_query($sql);
-					if(mysql_num_rows($res_clas)==0){
+					$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($res_clas)==0){
 						echo "(<i><span style='color:red;'>aucune classe</span></i>)\n";
 					}
 					else{
 						$cpt_clas=0;
 						echo "(<i>";
-						while($lig3=mysql_fetch_object($res_clas)){
+						while($lig3=mysqli_fetch_object($res_clas)){
 							if($cpt_clas>0){echo ", \n";}
 							echo $lig3->classe;
 							$cpt_clas++;

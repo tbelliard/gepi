@@ -71,13 +71,13 @@ if (isset($suppr_delegation)) {
         if (isset($suppr_delegation[$i])) {
             $sql = "DELETE FROM s_delegation WHERE id_delegation='$suppr_delegation[$i]';";
 			//echo $sql;
-            $suppr = mysql_query($sql);
+            $suppr = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
             if (!$suppr) {
                 $msg.="ERREUR lors de la suppression de la délégation n°" . $suppr_delegation[$i] . ".<br />\n";
             } else {
                   $msg.="Suppression de la delegation n°" . $suppr_delegation[$i] . ".<br />\n";
                  $sql = "UPDATE s_exclusions SET id_signataire=0 WHERE id_signataire=" . $suppr_delegation[$i] . ";";
-                 $res = mysql_query($sql);
+                 $res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
                 if (!$res) {
                     $msg.="ERREUR lors de la mise à jour la delegation aux exclusions prononcées ! <br />\n";
                 } else {
@@ -95,10 +95,10 @@ if ((isset($fct_autorite)) && ($fct_autorite != '')) {
 
     $sql = "SELECT fct_autorite FROM s_delegation ORDER BY fct_autorite;";
 	//echo $sql;
-    $res = mysql_query($sql);
-    if (mysql_num_rows($res) > 0) {
+    $res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    if (mysqli_num_rows($res) > 0) {
         $tab_delegation = array();
-        while ($lig = mysql_fetch_object($res)) {
+        while ($lig = mysqli_fetch_object($res)) {
             $tab_delegation[] = $lig->fct_autorite;
         }
 
@@ -110,7 +110,7 @@ if ((isset($fct_autorite)) && ($fct_autorite != '')) {
     if ($a_enregistrer == 'y') {
         $sql = "INSERT INTO s_delegation SET fct_delegation='" . $fct_delegation . "', fct_autorite='" . $fct_autorite . "', nom_autorite='" . $nom_autorite. "';";
 		
-        $res = mysql_query($sql);
+        $res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
         if (!$res) {
             $msg.="ERREUR lors de l'enregistrement de " . $fct_autorite . "<br />\n";
         } else {
@@ -139,8 +139,8 @@ echo "<blockquote>\n";
 
 $cpt = 0;
 $sql = "SELECT * FROM s_delegation ORDER BY id_delegation;";
-$res = mysql_query($sql);
-if (mysql_num_rows($res) == 0) {
+$res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if (mysqli_num_rows($res) == 0) {
     //echo "<p>Aucune qualité n'est encore définie.</p>\n";
     echo "<p>Aucune délégation n'est encore définie.</p>\n";
 } else {
@@ -155,7 +155,7 @@ if (mysql_num_rows($res) == 0) {
     echo "</tr>\n";
     $alt = 1;
 	
-    while ($lig = mysql_fetch_object($res)) {
+    while ($lig = mysqli_fetch_object($res)) {
         $alt = $alt * (-1);
         echo "<tr class='lig$alt'>\n";
 

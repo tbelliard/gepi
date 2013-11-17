@@ -146,13 +146,13 @@ $verif_champs = 0;
 	// Ultime vérification avant de rentrer de nouvelles salles dans la base
 if (isset($add_new_numero) AND isset($add_new_salle)) {
 	if ($verif_champs = 1) {
-		$reche_salle = mysql_query("SELECT numero_salle FROM salle_cours WHERE numero_salle = '".$add_new_numero."'");
-		$nbre_salle = mysql_num_rows($reche_salle);
+		$reche_salle = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT numero_salle FROM salle_cours WHERE numero_salle = '".$add_new_numero."'");
+		$nbre_salle = mysqli_num_rows($reche_salle);
 		if ($nbre_salle === 0) {
-			$req_ajout = mysql_query("INSERT INTO salle_cours
+			$req_ajout = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO salle_cours
 									(id_salle, numero_salle, nom_salle) VALUES
 									('', '$add_new_numero', '$add_new_salle')")
-								OR trigger_error('Echec lors de l\'enregistrement : '.mysql_error(), E_USER_ERROR);
+								OR trigger_error('Echec lors de l\'enregistrement : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
 
 			echo "<span class=\"accept\">La salle numéro ".unslashes($add_new_numero)." appelée \"".unslashes($add_new_salle)."\" a bien été enregistrée !</span>";
 		}
@@ -222,8 +222,8 @@ if(isset($modif_salle)) {
 <?php
 	// On affiche alors un texte qui donne le nom actuel de la salle
 if (isset($modif_salle)) {
-	$req_modif_nom = mysql_query("SELECT numero_salle, nom_salle FROM salle_cours WHERE id_salle = $modif_salle");
-	$rep_modif_nom = mysql_fetch_array($req_modif_nom);
+	$req_modif_nom = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT numero_salle, nom_salle FROM salle_cours WHERE id_salle = $modif_salle");
+	$rep_modif_nom = mysqli_fetch_array($req_modif_nom);
 		$numero_salle = $rep_modif_nom["numero_salle"];
 		$ancien_nom = $rep_modif_nom["nom_salle"];
 	if (isset($new_name)) {
@@ -243,12 +243,12 @@ if (isset($new_name) AND $new_name != "" ) {
 	$nettoyage1 = mb_substr($new_name, 0, 30);
 	$new_name_propre = traitement_magic_quotes($nettoyage1); // cette fonction est dans le traitement_data.inc.php
 
-	$req_modif_nom = mysql_query("UPDATE salle_cours SET nom_salle = '$new_name_propre' WHERE id_salle = '$modif_salle'")
+	$req_modif_nom = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE salle_cours SET nom_salle = '$new_name_propre' WHERE id_salle = '$modif_salle'")
 						OR trigger_error('Echec dans le changement de nom', E_USER_WARNING);
-	$req_numero = mysql_query("SELECT numero_salle FROM salle_cours WHERE id_salle = '$modif_salle'")
+	$req_numero = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT numero_salle FROM salle_cours WHERE id_salle = '$modif_salle'")
 						OR trigger_error('Echec dans le changement du nom', E_USER_WARNING);
 
-	$rep_numero = mysql_fetch_array($req_numero);
+	$rep_numero = mysqli_fetch_array($req_numero);
 		$num_salle = $rep_numero["numero_salle"];
 	echo '		</td>
 			</tr>
@@ -275,14 +275,14 @@ if (isset($new_name) AND $new_name != "" ) {
 			<tr><td>
 <?php
 if ($_SESSION["statut"] == "administrateur" AND isset($del_salle) AND $del_salle != NULL AND $del_salle != "rien") {
-	$req_verif = mysql_query("SELECT numero_salle, nom_salle FROM salle_cours WHERE id_salle = '".$del_salle."'");
-	$rep_nom = mysql_fetch_array($req_verif);
-	$rep_verif = mysql_num_rows($req_verif);
+	$req_verif = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT numero_salle, nom_salle FROM salle_cours WHERE id_salle = '".$del_salle."'");
+	$rep_nom = mysqli_fetch_array($req_verif);
+	$rep_verif = mysqli_num_rows($req_verif);
 		if ($rep_verif != 1) {
 			echo "Impossible d'effacer cette salle car elle n'existe pas !";
 			trigger_error("Vous essayez d'effacer une salle qui n'existe pas !", E_USER_ERROR);
 		}
-	$req_effacer = mysql_query("DELETE FROM salle_cours WHERE id_salle = '".$del_salle."'")
+	$req_effacer = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM salle_cours WHERE id_salle = '".$del_salle."'")
 						OR trigger_error('Cette salle n\'a pas pu être effacée', E_USER_WARNING);
 
 	if ($rep_nom["nom_salle"] != '') {

@@ -108,11 +108,11 @@ $tri = isset($_GET['tri']) ? $_GET['tri'] : 'nom, prenom';
 
 // On ajoute un paramètre sur les élèves de ce CPE en particulier
 $sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
-$query_eleves_cpe = mysql_query($sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysql_error());
+$query_eleves_cpe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $test_cpe = array();
 
-$test_nbre_eleves_cpe = mysql_num_rows($query_eleves_cpe);
-while($test_eleves_cpe = mysql_fetch_array($query_eleves_cpe)){
+$test_nbre_eleves_cpe = mysqli_num_rows($query_eleves_cpe);
+while($test_eleves_cpe = mysqli_fetch_array($query_eleves_cpe)){
 	$test_cpe[] = $test_eleves_cpe['e_login'];
 }
 
@@ -207,12 +207,12 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 					AND ".$requete_recherche.$complement_requete_du.$complement_requete_au.$complement_requete_dateincluse.//modif didier
 					" GROUP BY id_absence_eleve ORDER BY ".$tri." ASC";
 
-	$executer = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br>'.mysql_error());
-	$nb_d_entree_total = mysql_num_rows( $executer );
+	$executer = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br>'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$nb_d_entree_total = mysqli_num_rows( $executer );
 	$i = 0;
 
 	//mise des données dans un tableau
-	while ($donner = mysql_fetch_array( $executer ))
+	while ($donner = mysqli_fetch_array( $executer ))
 	{
 		// On vérifie que le cpe a les droits sur ces élèves
 		if (in_array($donner["eleve_absence_eleve"], $test_cpe) OR $test_nbre_eleves_cpe === 0) {

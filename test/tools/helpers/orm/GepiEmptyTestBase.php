@@ -23,19 +23,19 @@ abstract class GepiEmptyTestBase extends GepiTestBase
     protected function setUp()
     {
         GepiDataPopulator::depopulate($this->con);
-        mysql_query('delete from setting');
-        mysql_query('delete from droits');
-        mysql_query('delete from droits_aid');
-        mysql_query('delete from aid_productions');
-        mysql_query('delete from edt_setting');
-        mysql_query('delete from lettres_tcs');
-        mysql_query('delete from etiquettes_formats');
-        mysql_query('delete from lettres_types');
-        mysql_query('delete from lettres_cadres');
-        mysql_query('delete from ct_types_documents');
-        mysql_query('delete from absences_motifs');
-        mysql_query('delete from model_bulletin');
-        mysql_query('delete from absences_actions');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from setting');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from droits');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from droits_aid');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from aid_productions');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from edt_setting');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from lettres_tcs');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from etiquettes_formats');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from lettres_types');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from lettres_cadres');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from ct_types_documents');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from absences_motifs');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from model_bulletin');
+        mysqli_query($GLOBALS["___mysqli_ston"], 'delete from absences_actions');
         $fd = fopen(dirname(__FILE__) ."/../../../../sql/data_gepi.sql", "r");
         if (!$fd) {
             echo "Erreur : fichier sql/data_gepi.sql non trouve\n";
@@ -45,10 +45,10 @@ abstract class GepiEmptyTestBase extends GepiTestBase
             $query = fgets($fd, 5000);
             $query = trim($query);
             if((substr($query,-1)==";")&&(substr($query,0,3)!="-- ")) {
-                $reg = mysql_query($query);
+                $reg = mysqli_query($GLOBALS["___mysqli_ston"], $query);
                 if (!$reg) {
                     echo "ERROR : '$query' \n";
-                    echo "Erreur retournée : ".mysql_error()."\n";
+                    echo "Erreur retournée : ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."\n";
                     $result_ok = 'no';
                 }
             }

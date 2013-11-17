@@ -129,20 +129,20 @@ if(isset($step)){
 					$test2=0;
 					$test3=0;
 					$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$tmpid'";
-					$res_tmp=mysql_query($sql);
-					while($lig_tmp=mysql_fetch_object($res_tmp)){
+					$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					while($lig_tmp=mysqli_fetch_object($res_tmp)){
 						$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND login='$lig_tmp->login'";
 						//echo "$sql<br />\n";
-						$res_test=mysql_query($sql);
-						if(mysql_num_rows($res_test)>0){
+						$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res_test)>0){
 							//echo "$lig_tmp->login<br />\n";
 							if(!in_array($lig_tmp->login,$tabtmp)){$tabtmp[]=$lig_tmp->login;}
 							$test++;
 						}
 						$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='$id_groupe' AND login='$lig_tmp->login'";
 						//echo "$sql<br />\n";
-						$res_test=mysql_query($sql);
-						if(mysql_num_rows($res_test)>0){
+						$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res_test)>0){
 							//echo "$lig_tmp->login<br />\n";
 							if(!in_array($lig_tmp->login,$tabtmp)){$tabtmp[]=$lig_tmp->login;}
 							$test2++;
@@ -162,8 +162,8 @@ if(isset($step)){
 															jec.id_classe=c.id AND
 															c.id='$tab_classe[$i]';";
 						//echo "$sql<br />\n";
-						$res_test=mysql_query($sql);
-						if(mysql_num_rows($res_test)>0){
+						$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res_test)>0){
 							//echo "$lig_tmp->login<br />\n";
 							if(!in_array($lig_tmp->login,$tabtmp)){$tabtmp[]=$lig_tmp->login;}
 							$test3++;
@@ -171,8 +171,8 @@ if(isset($step)){
 					}
 
 					$sql="SELECT classe FROM classes WHERE id='$tmpid'";
-					$res_tmp=mysql_query($sql);
-					$lig_tmp=mysql_fetch_object($res_tmp);
+					$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$lig_tmp=mysqli_fetch_object($res_tmp);
 					$clas_tmp=$lig_tmp->classe;
 
 					//if(!$verify){
@@ -209,8 +209,8 @@ if(isset($step)){
 									jeg.id_groupe='$id_groupe' AND
 									jec.id_classe='$tmpid'";
 						//echo "$sql<br />\n";
-						$res_ele_clas_grp=mysql_query($sql);
-						if(mysql_num_rows($res_ele_clas_grp)>0){
+						$res_ele_clas_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res_ele_clas_grp)>0){
 							$error = true;
 							$msg .= "Des données existantes bloquent la suppression de la classe $clas_tmp du groupe.<br />\nAucun élève de la classe ne doit être inscrit dans le groupe.<br />\n<a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=$tmpid'>Enlevez les élèves du groupe</a> avant.<br />\n";
 							// Et on remet la classe dans la liste des classes:
@@ -280,8 +280,8 @@ if(isset($step)){
 			if($tmp_grp['id']!=$id_groupe){
 				$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='".$tmp_grp['id']."';";
 				//echo "$sql<br />\n";
-				$res_test=mysql_query($sql);
-				if(mysql_num_rows($res_test)>0){
+				$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_test)>0){
 					$test++;
 					//============
 					// DEBUG
@@ -291,8 +291,8 @@ if(isset($step)){
 				}
 				$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='".$tmp_grp['id']."';";
 				//echo "$sql<br />\n";
-				$res_test=mysql_query($sql);
-				if(mysql_num_rows($res_test)>0){
+				$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_test)>0){
 					$test2++;
 					//============
 					// DEBUG
@@ -308,8 +308,8 @@ if(isset($step)){
 								cd.id_racine=ccn.id_cahier_notes AND
 								ccn.id_groupe='".$tmp_grp['id']."';";
 				//echo "$sql<br />\n";
-				$res_test=mysql_query($sql);
-				if(mysql_num_rows($res_test)>0){
+				$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_test)>0){
 					$test3++;
 					//============
 					// DEBUG
@@ -462,12 +462,12 @@ if(!isset($tab_classe)) {
 					jgm.id_matiere='$reg_matiere'
 			ORDER BY c.classe";
 	//echo "$sql<br />";
-	$call_data = mysql_query($sql);
+	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	// REVOIR LA REQUETE POUR NE PROPOSER QUE LES CLASSES QUI ONT UN GROUPE DANS LA MEME MATIERE
 	//echo "<p style='color:red;'>REVOIR LA REQUETE POUR NE PROPOSER QUE LES CLASSES QUI ONT UN GROUPE DANS LA MEME MATIERE</p>";
 
-	$nombre_lignes = mysql_num_rows($call_data);
+	$nombre_lignes = mysqli_num_rows($call_data);
 	if ($nombre_lignes != 0) {
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -572,8 +572,8 @@ else {
 
 	// On va proposer les groupes à associer (même matière)
 	$sql="SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe='$id_groupe';";
-	$res_mat=mysql_query($sql);
-	$lig_tmp=mysql_fetch_object($res_mat);
+	$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$lig_tmp=mysqli_fetch_object($res_mat);
 	$id_matiere=$lig_tmp->id_matiere;
 
 	echo "<p>Cocher les groupes à fusionner avec $reg_nom_complet (<i>$reg_nom_groupe</i>)</p>\n";
@@ -596,8 +596,8 @@ else {
 				echo "<tr class='lig$alt'>\n";
 				echo "<td>\n";
 				$sql="SELECT classe FROM classes WHERE id='$tab_classe[$i]';";
-				$res_clas=mysql_query($sql);
-				$lig_tmp=mysql_fetch_object($res_clas);
+				$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$lig_tmp=mysqli_fetch_object($res_clas);
 				echo $lig_tmp->classe;
 				echo "</td>\n";
 
@@ -610,9 +610,9 @@ else {
 										jgm.id_matiere='$id_matiere' AND
 										jgc.id_groupe=g.id;";
 				//echo "$sql<br />";
-				$res_grp=mysql_query($sql);
+				$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				$cpt=0;
-				while($lig_tmp=mysql_fetch_object($res_grp)){
+				while($lig_tmp=mysqli_fetch_object($res_grp)){
 					if($cpt>0){
 						echo "<br />\n";
 					}
@@ -622,8 +622,8 @@ else {
 								WHERE j.id_groupe='".$lig_tmp->id."'
                 and j.login=u.login
                 ";
-  				$res_profs=mysql_query($sql_profs);
-  				while($lig_profs=mysql_fetch_object($res_profs)){
+  				$res_profs=mysqli_query($GLOBALS["___mysqli_ston"], $sql_profs);
+  				while($lig_profs=mysqli_fetch_object($res_profs)){
   					if($cpt2>0){
   						$liste_profs .= ", \n";
   					}

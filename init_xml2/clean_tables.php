@@ -87,7 +87,7 @@ if (!isset($is_posted)) {
 	$j=0;
 	$flag=0;
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
-		if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)==0) {
+		if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)==0) {
 			$flag=1;
 		}
 		$j++;
@@ -106,16 +106,16 @@ if (!isset($is_posted)) {
 
 	//Suppression des données inutiles dans la tables utilisateurs
 	echo "<h3 class='gepi'>Vérification des données concernant les professeurs</h3>\n";
-	$req = mysql_query("select login from utilisateurs where (statut = 'professeur' and etat='actif')");
+	$req = mysqli_query($GLOBALS["___mysqli_ston"], "select login from utilisateurs where (statut = 'professeur' and etat='actif')");
 	$sup = 'no';
-	$nb_prof = mysql_num_rows($req);
+	$nb_prof = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_prof) {
 		$login_prof = mysql_result($req, $i, 'login');
-		$test = mysql_query("select id_professeur from j_professeurs_matieres where id_professeur = '$login_prof'");
-		if (mysql_num_rows($test)==0) {
+		$test = mysqli_query($GLOBALS["___mysqli_ston"], "select id_professeur from j_professeurs_matieres where id_professeur = '$login_prof'");
+		if (mysqli_num_rows($test)==0) {
 			if($simulation=="n") {
-				$del = @mysql_query("delete from utilisateurs where login = '$login_prof'");
+				$del = @mysqli_query($GLOBALS["___mysqli_ston"], "delete from utilisateurs where login = '$login_prof'");
 				echo "Le professeur $login_prof a été supprimé de la base.<br />\n";
 			}
 			else {
@@ -123,10 +123,10 @@ if (!isset($is_posted)) {
 			}
 			$sup = 'yes';
 		} else {
-			$test = mysql_query("select login from j_groupes_professeurs where login = '$login_prof'");
-			if (mysql_num_rows($test)==0) {
+			$test = mysqli_query($GLOBALS["___mysqli_ston"], "select login from j_groupes_professeurs where login = '$login_prof'");
+			if (mysqli_num_rows($test)==0) {
 				if($simulation=="n") {
-					$del = @mysql_query("delete from utilisateurs where login = '$login_prof'");
+					$del = @mysqli_query($GLOBALS["___mysqli_ston"], "delete from utilisateurs where login = '$login_prof'");
 					echo "Le professeur $login_prof a été supprimé de la base.<br />\n";
 				}
 				else {
@@ -148,18 +148,18 @@ if (!isset($is_posted)) {
 
 	//Suppression des données inutiles dans la tables des matières
 	echo "<h3 class='gepi'>Vérification des données concernant les matières</h3>\n";
-	$req = mysql_query("select matiere from matieres");
+	$req = mysqli_query($GLOBALS["___mysqli_ston"], "select matiere from matieres");
 	$sup = 'no';
-	$nb_mat = mysql_num_rows($req);
+	$nb_mat = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_mat) {
 		$mat = mysql_result($req, $i, 'matiere');
-		$test1 = mysql_query("select id_matiere from j_professeurs_matieres where id_matiere = '$mat'");
-		if (mysql_num_rows($test1)==0) {
-			$test2 = mysql_query("select id_matiere from j_groupes_matieres where id_matiere = '$mat'");
-			if (mysql_num_rows($test2)==0) {
+		$test1 = mysqli_query($GLOBALS["___mysqli_ston"], "select id_matiere from j_professeurs_matieres where id_matiere = '$mat'");
+		if (mysqli_num_rows($test1)==0) {
+			$test2 = mysqli_query($GLOBALS["___mysqli_ston"], "select id_matiere from j_groupes_matieres where id_matiere = '$mat'");
+			if (mysqli_num_rows($test2)==0) {
 				if($simulation=="n") {
-					$del = @mysql_query("delete from matieres where matiere = '$mat'");
+					$del = @mysqli_query($GLOBALS["___mysqli_ston"], "delete from matieres where matiere = '$mat'");
 					echo "La matière $mat a été supprimée de la base.<br />\n";
 				}
 				else {
@@ -207,9 +207,9 @@ if (!isset($is_posted)) {
 		$i++;
 	}
 */
-	$req = mysql_query("select pers_id,nom,prenom,adr_id from resp_pers order by nom,prenom");
+	$req = mysqli_query($GLOBALS["___mysqli_ston"], "select pers_id,nom,prenom,adr_id from resp_pers order by nom,prenom");
 	$sup = 'no';
-	$nb_resp = mysql_num_rows($req);
+	$nb_resp = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_resp) {
 		$pers_id=mysql_result($req, $i, 'pers_id');
@@ -217,12 +217,12 @@ if (!isset($is_posted)) {
 		$prenom_resp=mysql_result($req, $i, 'prenom');
 		$adr_id=mysql_result($req, $i, 'adr_id');
 
-		$test1 = mysql_query("select r.ele_id from responsables2 r, eleves e where r.pers_id='$pers_id' AND e.ele_id=r.ele_id");
+		$test1 = mysqli_query($GLOBALS["___mysqli_ston"], "select r.ele_id from responsables2 r, eleves e where r.pers_id='$pers_id' AND e.ele_id=r.ele_id");
 		//$test1 = mysql_query("select ele_id from eleves where ele_id='$ele_id'");
-		if (mysql_num_rows($test1)==0) {
+		if (mysqli_num_rows($test1)==0) {
 			if($simulation=="n") {
-				$del=@mysql_query("delete from responsables2 where pers_id='$pers_id'");
-				$del=@mysql_query("delete from resp_pers where pers_id='$pers_id'");
+				$del=@mysqli_query($GLOBALS["___mysqli_ston"], "delete from responsables2 where pers_id='$pers_id'");
+				$del=@mysqli_query($GLOBALS["___mysqli_ston"], "delete from resp_pers where pers_id='$pers_id'");
 				echo "Le responsable ".$prenom_resp." ".$nom_resp." a été supprimé de la base.<br />\n";
 	
 				// L'adresse héberge-t-elle encore un représentant d'élève de l'établissement?
@@ -231,10 +231,10 @@ if (!isset($is_posted)) {
 						r.pers_id=rp.pers_id AND
 						r.ele_id=e.ele_id AND
 						adr_id='$adr_id'";
-				$test2=mysql_query($sql);
-				if (mysql_num_rows($test1)==0) {
+				$test2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if (mysqli_num_rows($test1)==0) {
 					$sql="delete from resp_adr where adr_id='$adr_id'";
-					$del=mysql_query($sql);
+					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				}
 			}
 			else {
@@ -261,8 +261,8 @@ if (!isset($is_posted)) {
 	$sql="SELECT jec.* FROM j_eleves_etablissements jec
 			LEFT JOIN eleves e ON jec.id_eleve=e.elenoet
 			WHERE e.elenoet IS NULL;";
-	$res_jee=mysql_query($sql);
-	if(mysql_num_rows($res_jee)==0) {
+	$res_jee=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_jee)==0) {
 		if($simulation=="n") {
 			echo "<p>Aucune association élève/établissement n'a été supprimée.</p>\n";
 		}
@@ -272,10 +272,10 @@ if (!isset($is_posted)) {
 	}
 	else {
 		$cpt_suppr_jee=0;
-		while($lig_jee=mysql_fetch_object($res_jee)) {
+		while($lig_jee=mysqli_fetch_object($res_jee)) {
 			if($simulation=="n") {
 				$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='".$lig_jee->id_eleve."' AND id_etablissement='".$lig_jee->id_etablissement."';";
-				$suppr=mysql_query($sql);
+				$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				if($suppr) {
 					$cpt_suppr_jee++;
 				}

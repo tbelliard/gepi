@@ -62,7 +62,7 @@ if ($action == "modifier") {
 
 		// On met à jour la base
 		$sql_u = "UPDATE tempo2 SET col2 = '".$login_a_modifier."' WHERE col1 = '".$id_col1."'";
-		$query_u = mysql_query($sql_u) OR DIE('Erreur dans '.$sql_u.'<br />'.mysql_error());
+		$query_u = mysqli_query($GLOBALS["___mysqli_ston"], $sql_u) OR DIE('Erreur dans '.$sql_u.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 		$aff_logins_m .= '<p>'.$login_a_modifier.' -> '.$id_col1.'</p>';
 
@@ -73,13 +73,13 @@ if ($action == "modifier") {
 	$sql = "SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP
 									FROM temp_gep_import2
 									ORDER BY DIVCOD,ELENOM,ELEPRE";
-	$call_data = mysql_query($sql) OR DIE('Erreur dans la requête '.$sql.' '.mysql_error());
+	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR DIE('Erreur dans la requête '.$sql.' '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-    $nb = mysql_num_rows($call_data);
+    $nb = mysqli_num_rows($call_data);
     $i = "0";
 	$j = 0;
     while ($i < $nb) {
-        $req = mysql_query("select col1, col2 from tempo2 where col1 = '$i'");
+        $req = mysqli_query($GLOBALS["___mysqli_ston"], "select col1, col2 from tempo2 where col1 = '$i'");
         $reg_login = @mysql_result($req, 0, 'col2');
 		$inc = @mysql_result($req, 0, 'col1');
 
@@ -100,18 +100,18 @@ if ($action == "modifier") {
         }else{
         	// On vérifie quand même si il n'y a pas un nom qui correspond à celui-ci dans ldap_bx
         	$sql_r = "SELECT login_u, nom_u, prenom_u FROM ldap_bx WHERE nom_u = '".$reg_nom."' AND prenom_u = '".$reg_prenom."' AND statut_u = 'student'";
-        	$query_r = mysql_query($sql_r);
-        	$nbre_v = mysql_num_rows($query_r);
-        	$result_r = mysql_fetch_array($query_r);
+        	$query_r = mysqli_query($GLOBALS["___mysqli_ston"], $sql_r);
+        	$nbre_v = mysqli_num_rows($query_r);
+        	$result_r = mysqli_fetch_array($query_r);
         	if (isset($result_r["login_u"]) AND $nbre_v <= 1) {
         		$aff_rep_r = $result_r["login_u"];
         		$aff_rep_nomprenom_r = '--> ?? (' . $result_r["nom_u"] . '&nbsp;' . $result_r["prenom_u"] . ')';
         	}else{
         		// On teste avec seulement le nom
         		$sql_r2 = "SELECT login_u, nom_u, prenom_u FROM ldap_bx WHERE nom_u = '".trim($reg_nom)."' AND statut_u = 'student'";
-        		$query_r2 = mysql_query($sql_r2);
-        		$nbre_v2 = mysql_num_rows($query_r2);
-        		$result_r2 = mysql_fetch_array($query_r2);
+        		$query_r2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql_r2);
+        		$nbre_v2 = mysqli_num_rows($query_r2);
+        		$result_r2 = mysqli_fetch_array($query_r2);
         		if (isset($result_r2["login_u"]) AND $nbre_v2 <= 1) {
         			$aff_rep_r = 'A VERIFIER';
         			$aff_rep_nomprenom_r = '<span style="color: red;">--> ' . $result_r2["login_u"] . ' (' . $result_r2["nom_u"] . '&nbsp;' . $result_r2["prenom_u"] . ')</span>';

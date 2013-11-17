@@ -88,13 +88,13 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 	{
 		if( isset($num_semaine[$i]) and !empty($num_semaine[$i]) )
 		{
-        	        $test_num_semaine = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_semaines WHERE num_edt_semaine = '".$num_semaine[$i]."'"),0);
+        	        $test_num_semaine = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."edt_semaines WHERE num_edt_semaine = '".$num_semaine[$i]."'"),0);
 			$num_edt_semaine = $num_semaine[$i];
 			$type_edt_semaine = $type_semaine[$i];
 
 			if ( $test_num_semaine === '0' ) { $requete = "INSERT INTO ".$prefix_base."edt_semaines (num_edt_semaine, type_edt_semaine) VALUES ('".$num_edt_semaine."', '".$type_edt_semaine."')"; }
 			if ( $test_num_semaine != '0' ) { $requete = "UPDATE ".$prefix_base."edt_semaines SET type_edt_semaine = '".$type_edt_semaine."', num_semaines_etab = '".$num_interne[$i]."' WHERE num_edt_semaine = '".$num_edt_semaine."'"; }
-	                mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	                mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		}
 
 	$i = $i + 1;
@@ -108,8 +108,8 @@ if ( $action === 'visualiser' )
 {
         $i = '0';
         $requete = "SELECT * FROM ".$prefix_base."edt_semaines";
-        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-        while ( $donnee = mysql_fetch_array ($resultat))
+        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        while ( $donnee = mysqli_fetch_array($resultat))
 	{
 		$num_semaine[$i] = $donnee['num_edt_semaine'];
 		$num_interne[$i] = $donnee['num_semaines_etab'];
@@ -256,7 +256,7 @@ function trouverDates($numero_semaine){
 /* fin de gestion des horaire d'ouverture */
 /* fin du div de centrage du tableau pour ie5 */
 
-mysql_close();
+((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 
 } // if ($action === "visualiser")
 

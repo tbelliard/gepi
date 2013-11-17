@@ -80,13 +80,13 @@ if(isset($suppr_nature)) {
 			//$sql="SELECT 1=1 FROM s_autres_sanctions WHERE id_nature='$suppr_nature[$i]';";
 			$sql="SELECT 1=1 FROM s_sanctions WHERE id_nature_sanction='$suppr_nature[$i]';";
 			//echo "$sql<br />";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0) {
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)>0) {
 				$msg.="Il n'est pas possible de supprimer le type de ".$mod_disc_terme_sanction." n°".$suppr_nature[$i]." parce qu'il est associé à une ou des ".$mod_disc_terme_sanction."s déjà saisies pour un ou des élèves.<br />\n";
 			}
 			else {
 				$sql="DELETE FROM s_types_sanctions2 WHERE id_nature='$suppr_nature[$i]';";
-				$suppr=mysql_query($sql);
+				$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				if(!$suppr) {
 					$msg.="ERREUR lors de la suppression de la nature n°".$suppr_nature[$i].".<br />\n";
 				}
@@ -107,11 +107,11 @@ if(isset($nature)) {
 	$saisie_prof=isset($_POST['saisie_prof']) ? $_POST['saisie_prof'] : array();
 
 	$sql="SELECT * FROM s_types_sanctions2 ORDER BY nature;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		$tab_nature=array();
 		$tab_saisie_prof_avant=array();
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$tab_nature[]=$lig->nature;
 			if($lig->saisie_prof=="y") {
 				$tab_saisie_prof_avant[]=$lig->id_nature;
@@ -119,7 +119,7 @@ if(isset($nature)) {
 
 			if((!in_array($lig->id_nature, $saisie_prof))&&(in_array($lig->id_nature, $tab_saisie_prof_avant))) {
 				$sql="UPDATE s_types_sanctions2 SET saisie_prof='n' WHERE id_nature='$lig->id_nature';";
-				$update=mysql_query($sql);
+				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				if(!$update) {
 					$msg.="Erreur lors de la suppression de la possibilité de saisie professeur de $lig->nature.<br />";
 				}
@@ -138,7 +138,7 @@ if(isset($nature)) {
 	for($loop=0;$loop<count($saisie_prof);$loop++) {
 		if(!in_array($saisie_prof[$loop], $tab_saisie_prof_avant)) {
 			$sql="UPDATE s_types_sanctions2 SET saisie_prof='y' WHERE id_nature='".$saisie_prof[$loop]."';";
-			$update=mysql_query($sql);
+			$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			if(!$update) {
 				$msg.="Erreur lors de la saisie de la possibilité de saisie professeur des $mod_disc_terme_sanction n°".$saisie_prof[$loop].".<br />";
 			}
@@ -158,7 +158,7 @@ if(isset($nature)) {
 
 				$sql="INSERT INTO s_types_sanctions2 SET nature='".$nature."', type='".$type."';";
 				//echo "$sql<br />\n";
-				$res=mysql_query($sql);
+				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				if(!$res) {
 					$msg.="ERREUR lors de l'enregistrement de ".$nature."<br />\n";
 				}
@@ -193,8 +193,8 @@ echo "<blockquote>\n";
 
 $cpt=0;
 $sql="SELECT * FROM s_types_sanctions2 ORDER BY type, nature;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucune ".$mod_disc_terme_sanction." supplémentaire n'est encore définie.</p>\n";
 }
 else {
@@ -207,7 +207,7 @@ else {
 	echo "<th>Supprimer</th>\n";
 	echo "</tr>\n";
 	$alt=1;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 
@@ -230,12 +230,12 @@ else {
 		echo "<td>";
 		$sql="SELECT 1=1 FROM s_sanctions WHERE id_nature_sanction='$lig->id_nature';";
 		//echo "$sql<br />";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			echo "<input type='checkbox' name='suppr_nature[]' id='suppr_nature_$cpt' value=\"$lig->id_nature\" onchange='changement();' />";
 		}
 		else {
-			echo "<span title='Cette nature de ".$mod_disc_terme_sanction." est associée à ".mysql_num_rows($test)." ".$mod_disc_terme_sanction."(s) donnée(s).'>Nature associée</span>";
+			echo "<span title='Cette nature de ".$mod_disc_terme_sanction." est associée à ".mysqli_num_rows($test)." ".$mod_disc_terme_sanction."(s) donnée(s).'>Nature associée</span>";
 		}
 		echo "</td>\n";
 		echo "</tr>\n";

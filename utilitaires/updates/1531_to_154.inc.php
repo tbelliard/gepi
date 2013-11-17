@@ -54,8 +54,8 @@ $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.4" . $rc . $be
 // Ajout de paramètres pour l'import d'attributs depuis CAS
 // Paramètre d'activation de la synchro à la volée Scribe NG
 
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'cas_attribut_prenom'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'cas_attribut_prenom'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('cas_attribut_prenom', '');");
   if ($result_inter == '') {
@@ -67,8 +67,8 @@ if ($res_test==0){
   $result .= msj_present("Le paramètre cas_attribut_prenom existe déjà dans la table setting.");
 }
 
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'cas_attribut_nom'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'cas_attribut_nom'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('cas_attribut_nom', '');");
   if ($result_inter == '') {
@@ -80,8 +80,8 @@ if ($res_test==0){
   $result .= msj_present("Le paramètre cas_attribut_nom existe déjà dans la table setting.");
 }
 
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'cas_attribut_email'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'cas_attribut_email'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('cas_attribut_email', '');");
   if ($result_inter == '') {
@@ -155,12 +155,12 @@ if ($test == -1) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ id_lieu à la table 'a_types'<br />";
-$test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'id_lieu';"));
+$test_date_decompte=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM a_types LIKE 'id_lieu';"));
 if ($test_date_decompte>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE a_types ADD id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve' AFTER commentaire,
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE a_types ADD id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve' AFTER commentaire,
        ADD INDEX a_types_FI_1 (id_lieu),
        ADD CONSTRAINT a_types_FK_1
 		FOREIGN KEY (id_lieu)
@@ -174,12 +174,12 @@ else {
 }
 
 $result .= "&nbsp;->Ajout d'un champ id_lieu à la table 'a_saisies'<br />";
-$test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'id_lieu';"));
+$test_date_decompte=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM a_saisies LIKE 'id_lieu';"));
 if ($test_date_decompte>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE a_saisies ADD id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve' AFTER modifie_par_utilisateur_id,
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE a_saisies ADD id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve' AFTER modifie_par_utilisateur_id,
        ADD INDEX a_saisies_FI_9 (id_lieu),
         ADD CONSTRAINT a_saisies_FK_9
 		FOREIGN KEY (id_lieu)
@@ -258,7 +258,7 @@ PRIMARY KEY  (login,id_eval)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gene
 }
 
 $result .= "&nbsp;->Extension du champ statut de la table 'cc_notes_eval' à 4 caractères : ";
-$query = mysql_query("ALTER TABLE cc_notes_eval CHANGE statut statut VARCHAR( 4 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE cc_notes_eval CHANGE statut statut VARCHAR( 4 ) NOT NULL;");
 if ($query) {
         $result .= msj_ok();
 } else {
@@ -267,12 +267,12 @@ if ($query) {
 //===================================
 
 $result .= "<br />&nbsp;->Ajout d'un champ 'note_sur' à la table 'eb_epreuves' : ";
-$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eb_epreuves LIKE 'note_sur';"));
+$test_note_sur=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM eb_epreuves LIKE 'note_sur';"));
 if ($test_note_sur>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("alter table eb_epreuves add note_sur int(11) unsigned not null default '20';");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "alter table eb_epreuves add note_sur int(11) unsigned not null default '20';");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -283,12 +283,12 @@ else {
 // A1jout Eric Module discipline génération des exclusion Ooo
 $result .= "<br /><strong>Ajout de champs pour la tables s_exclusions du module discipline :</strong><br />";
 $result .= "<br />&nbsp;->Ajout d'un champ 'nombre_jours' à la table 's_exclusions' : ";
-$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'nombre_jours';"));
+$test_note_sur=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_exclusions LIKE 'nombre_jours';"));
 if ($test_note_sur>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `nombre_jours` VARCHAR( 50 ) NOT NULL ;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `s_exclusions` ADD `nombre_jours` VARCHAR( 50 ) NOT NULL ;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -297,12 +297,12 @@ else {
 }
 
 $result .= "<br />&nbsp;->Ajout d'un champ 'qualification_faits' à la table 's_exclusions' : ";
-$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'qualification_faits';"));
+$test_note_sur=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_exclusions LIKE 'qualification_faits';"));
 if ($test_note_sur>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `qualification_faits` text NOT NULL ;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `s_exclusions` ADD `qualification_faits` text NOT NULL ;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -311,12 +311,12 @@ else {
 }
 
 $result .= "<br />&nbsp;->Ajout d'un champ 'num_courrier' à la table 's_exclusions' : ";
-$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'num_courrier';"));
+$test_note_sur=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_exclusions LIKE 'num_courrier';"));
 if ($test_note_sur>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `num_courrier` VARCHAR( 50 ) NOT NULL ;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `s_exclusions` ADD `num_courrier` VARCHAR( 50 ) NOT NULL ;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -325,12 +325,12 @@ else {
 }
 
 $result .= "<br />&nbsp;->Ajout d'un champ 'type_exclusion' à la table 's_exclusions' : ";
-$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'type_exclusion';"));
+$test_note_sur=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_exclusions LIKE 'type_exclusion';"));
 if ($test_note_sur>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `type_exclusion` VARCHAR( 50 ) NOT NULL ;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `s_exclusions` ADD `type_exclusion` VARCHAR( 50 ) NOT NULL ;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -339,12 +339,12 @@ else {
 }
 
 $result .= "<br />&nbsp;->Supression du champ 'fct_delegation' à la table 's_exclusions' : ";
-$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'fct_delegation';"));
+$test_note_sur=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_exclusions LIKE 'fct_delegation';"));
 if ($test_note_sur<0) {
 	$result .= msj_present(" Le champ n'existe plus.");
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_exclusions` DROP `fct_delegation` ;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `s_exclusions` DROP `fct_delegation` ;");
 	if ($query) {
 			$result .= msj_present(" Le champ n'existe plus.");
 	} else {
@@ -354,12 +354,12 @@ else {
 
 
 $result .= "<br />&nbsp;->Supression du champ 'fct_autorite' à la table 's_exclusions' : ";
-$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'fct_autorite';"));
+$test_note_sur=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_exclusions LIKE 'fct_autorite';"));
 if ($test_note_sur<0) {
 	$result .= msj_present("> Le champ n'existe plus.");
 }
 else {
-    $query = mysql_query("ALTER TABLE `s_exclusions` DROP `fct_autorite` ;");
+    $query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `s_exclusions` DROP `fct_autorite` ;");
 	if ($query) {
 			$result .= msj_present(" Le champ n'existe plus.");
 	} else {
@@ -369,12 +369,12 @@ else {
 
 
 $result .= "<br />&nbsp;->Supression du champ 'nom_autorite' à la table 's_exclusions' : ";
-$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'nom_autorite';"));
+$test_note_sur=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_exclusions LIKE 'nom_autorite';"));
 if ($test_note_sur<0) {
 	$result .= msj_present("> Le champ n'existe plus.");
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_exclusions` DROP `nom_autorite` ;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `s_exclusions` DROP `nom_autorite` ;");
 	if ($query) {
 			$result .= msj_present(" Le champ n'existe plus.");
 	} else {
@@ -383,12 +383,12 @@ else {
 }
 
 $result .= "<br />&nbsp;->Ajout d'un champ 'id_signataire' à la table 's_exclusions' : ";
-$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'id_signataire';"));
+$test_note_sur=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_exclusions LIKE 'id_signataire';"));
 if ($test_note_sur>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `id_signataire` INT NOT NULL ;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `s_exclusions` ADD `id_signataire` INT NOT NULL ;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -437,7 +437,7 @@ CREATE TABLE mef
 }
 
 $sql = "SELECT id_mef FROM eleves LIMIT 1";
-$req_rank = mysql_query($sql);
+$req_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if (!$req_rank){
     $sql_request = "ALTER TABLE `eleves` ADD `id_mef` INTEGER   COMMENT 'cle externe pour le jointure avec mef'";
     $req_add_rank = traite_requete($sql_request);
@@ -532,7 +532,7 @@ if ($test == -1) {
 
 
 $sql = "SELECT date_sortie FROM eleves LIMIT 1";
-$req_rank = mysql_query($sql);
+$req_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if (!$req_rank){
     $sql_request = "ALTER TABLE `eleves` ADD `date_sortie` DATETIME COMMENT 'Timestamp de sortie de l\'eleve de l\'etablissement (fin d\'inscription)'";
     $req_add_rank = traite_requete($sql_request);
@@ -548,11 +548,11 @@ else {
 }
 
 $sql="SELECT 1=1 FROM setting WHERE name='csrf_mode';";
-$res_csrf=mysql_query($sql);
-if(mysql_num_rows($res_csrf)==0) {
+$res_csrf=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_csrf)==0) {
 	$sql="SELECT 1=1 FROM infos_actions WHERE titre='Paramétrage csrf_mode requis';";
-	$res_test=mysql_query($sql);
-	if(mysql_num_rows($res_test)==0) {
+	$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_test)==0) {
 		$result .= "<br /><p style=\"color:blue;\">Paramétrage csrf_mode requis.<br /></p>";
 	
 		$info_action_titre="Paramétrage csrf_mode requis";
@@ -647,11 +647,11 @@ if ($test == -1) {
 }
 
 $sql="SELECT 1=1 FROM setting WHERE name='verif_cdt_documents_index';";
-$res_cdt=mysql_query($sql);
-if(mysql_num_rows($res_cdt)==0) {
+$res_cdt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_cdt)==0) {
 	$sql="SELECT 1=1 FROM infos_actions WHERE titre='Contrôle des index dans les documents des CDT requis';";
-	$res_test=mysql_query($sql);
-	if(mysql_num_rows($res_test)==0) {
+	$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_test)==0) {
 		$result .= "<br /><p style=\"color:blue;\">Contrôle des index dans les documents des CDT requis.<br /></p>";
 	
 		$info_action_titre="Contrôle des index dans les documents des CDT requis";
@@ -664,7 +664,7 @@ if(mysql_num_rows($res_cdt)==0) {
 }
 
 $sql = "SELECT ordre_matiere FROM archivage_disciplines LIMIT 1";
-$req_rank = mysql_query($sql);
+$req_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if (!$req_rank){
     $sql_request = "ALTER TABLE archivage_disciplines ADD ordre_matiere SMALLINT( 6 ) NOT NULL;";
     $req_add_rank = traite_requete($sql_request);
@@ -683,12 +683,12 @@ $test = sql_query1("SHOW TABLES LIKE 'tempo3';");
 if ($test != -1) {
 	// La table existe... est-elle correctement fichue (collision de deux tables tempo3 pendant un temps)
 	$sql="show columns from tempo3 like 'col1';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)==0) {
+	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($test)==0) {
 		$result .= "<br /><font color=\"red\">ERREUR ! La table 'tempo3' n'a pas la bonne structure.</font><br />";
 		$result .= "Suppression de la table mal 'fichue' : ";
 		$sql="DROP table tempo3;";
-		$menage=mysql_query($sql);
+		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if(!$menage) {
 			$result .= msj_erreur("ECHEC !" );
 		}

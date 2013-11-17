@@ -97,9 +97,9 @@ function get_bull($ele_login) {
 
 	$sql="SELECT * FROM eleves WHERE login='$ele_login';";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
 			$lignes.="INFOS_ELEVE;$ele_login;".str_replace($search, $replace, traitement_magic_quotes($lig->nom)).";".str_replace($search, $replace, traitement_magic_quotes($lig->prenom)).";".$lig->naissance.";".$lig->no_gep."\n";
 		}
 	}
@@ -127,9 +127,9 @@ function get_bull($ele_login) {
 			ORDER BY mn.periode, m.matiere
 				;";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
 			//$lignes.="$lig->matiere;$lig->nom_complet;$lig->periode;$lig->note;$lig->statut;$lig->appreciation\n";
 			//$lignes.="$lig->matiere;$lig->nom_complet;$lig->periode;$lig->note;$lig->statut;".str_replace($search, $replace, traitement_magic_quotes($lig->appreciation))."\n";
 			$app="";
@@ -137,9 +137,9 @@ function get_bull($ele_login) {
 				WHERE login='$ele_login' AND
 				id_groupe='$lig->id_groupe' AND
 				periode='$lig->periode';";
-			$res2=mysql_query($sql);
-			if(mysql_num_rows($res2)>0) {
-				$lig2=mysql_fetch_object($res2);
+			$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res2)>0) {
+				$lig2=mysqli_fetch_object($res2);
 				$app=$lig2->appreciation;
 			}
 			//$lignes.="$lig->matiere;$lig->nom_complet;$lig->periode;$lig->id_groupe;$lig->note;$lig->statut;".str_replace($search, $replace, traitement_magic_quotes($app))."\n";
@@ -149,9 +149,9 @@ function get_bull($ele_login) {
 
 	$sql="SELECT * FROM avis_conseil_classe WHERE login='$ele_login' ORDER BY periode;";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
 			//$lignes.="AVIS_CONSEIL_CLASSE;$lig->periode;".str_replace($search, $replace, traitement_magic_quotes($lig->avis))."\n";
 			$lignes.="AVIS_CONSEIL_CLASSE;$lig->periode;".str_replace($search, $replace, traitement_magic_quotes(my_ereg_replace(";","_POINT_VIRGULE_",$lig->avis)))."\n";
 		}
@@ -161,9 +161,9 @@ function get_bull($ele_login) {
 	// Récupérer aussi les absences?
 	$sql="SELECT * FROM absences WHERE login='$ele_login' ORDER BY periode;";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
 			//$lignes.="ABSENCES;$lig->periode;$lig->nb_absences;$lig->non_justifie;$lig->nb_retards;".str_replace($search, $replace, traitement_magic_quotes($lig->appreciation))."\n";
 			$lignes.="ABSENCES;$lig->periode;$lig->nb_absences;$lig->non_justifie;$lig->nb_retards;".str_replace($search, $replace, traitement_magic_quotes(my_ereg_replace(";","_POINT_VIRGULE_",$lig->appreciation)))."\n";
 		}
@@ -178,12 +178,12 @@ function get_nom_prenom_from_login($ele_login,$mode) {
 	$retour="";
 
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$ele_login';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		$retour="LOGIN INCONNU";
 	}
 	else {
-		$lig=mysql_fetch_object($res);
+		$lig=mysqli_fetch_object($res);
 
 		if($mode=="np") {
 			$retour=my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');

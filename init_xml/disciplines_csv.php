@@ -61,7 +61,7 @@ if (!isset($step1)) {
 	$j=0;
 	$flag=0;
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
-		if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+		if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 			$flag=1;
 		}
 		$j++;
@@ -87,8 +87,8 @@ if (!isset($is_posted)) {
 	if(isset($step1)) {
 		$j=0;
 		while ($j < count($liste_tables_del)) {
-			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+				$del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM $liste_tables_del[$j]");
 			}
 			$j++;
 		}
@@ -171,12 +171,12 @@ if (!isset($is_posted)) {
 
 						$alt=$alt*(-1);
 
-						$verif = mysql_query("select matiere, nom_complet from matieres where matiere='$affiche[0]'");
-						$resverif = mysql_num_rows($verif);
+						$verif = mysqli_query($GLOBALS["___mysqli_ston"], "select matiere, nom_complet from matieres where matiere='$affiche[0]'");
+						$resverif = mysqli_num_rows($verif);
 						if($resverif == 0) {
-							$req = mysql_query("insert into matieres set matiere='".mysql_real_escape_string(nettoyer_caracteres_nom(remplace_accents($affiche[0],''),"an","_-",""))."', nom_complet='".mysql_real_escape_string($affiche[1])."', priority='0',matiere_aid='n',matiere_atelier='n'");
+							$req = mysqli_query($GLOBALS["___mysqli_ston"], "insert into matieres set matiere='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], nettoyer_caracteres_nom(remplace_accents($affiche[0],''),"an","_-","")) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', nom_complet='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', priority='0',matiere_aid='n',matiere_atelier='n'");
 							if(!$req) {
-								$nb_reg_no++; echo mysql_error();
+								$nb_reg_no++; echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 							} else {
 								echo "<tr class='lig$alt white_hover'><td><p><font color='red'>$affiche[0]</font></p></td><td><p>".htmlentities($affiche[1])."</p></td></tr>";
 							}

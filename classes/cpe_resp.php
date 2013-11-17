@@ -42,28 +42,28 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_cperesp")) {
 	check_token();
     $msg = '';
     $notok = false;
-    $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
-    $nombre_lignes = mysql_num_rows($call_data);
+    $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes ORDER BY classe");
+    $nombre_lignes = mysqli_num_rows($call_data);
 
     for($i=0;$i<$nombre_lignes;$i++){
 
         $id_classe = mysql_result($call_data, $i, "id");
         if (isset($_POST[$id_classe]) and ($_POST[$id_classe] == "yes")) {
             // On récupère tous les élèves de la classe
-            $call_eleves = mysql_query("SELECT login FROM j_eleves_classes WHERE (id_classe='$id_classe' AND periode='1')");
-            $nb_eleves = mysql_num_rows($call_eleves);
+            $call_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM j_eleves_classes WHERE (id_classe='$id_classe' AND periode='1')");
+            $nb_eleves = mysqli_num_rows($call_eleves);
             for ($j=0;$j<$nb_eleves;$j++) {
                 // Pour chaque élève, on regarde si un enregistrement existe déjà
                 $eleve_login = mysql_result($call_eleves, $j, "login");
-                $test = mysql_query("SELECT * FROM j_eleves_cpe WHERE e_login='$eleve_login'");
-                $nbtest = mysql_num_rows($test);
+                $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_cpe WHERE e_login='$eleve_login'");
+                $nbtest = mysqli_num_rows($test);
                 if ($nbtest == "0") { // Si aucun enregistrement, on en créé un nouveau
-                    $reg_data = mysql_query("INSERT INTO j_eleves_cpe SET e_login='$eleve_login', cpe_login='" . $_POST['reg_cpelogin'] . "'");
+                    $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_eleves_cpe SET e_login='$eleve_login', cpe_login='" . $_POST['reg_cpelogin'] . "'");
                     if (!$reg_data) { $msg .= "Erreur lors lors de l'insertion d'un nouvel enregistrement."; $notok = true;}
                 } else { // Si un enregistrement existe, on le met à jour si nécessaire
                     $test_cpelogin = mysql_result($test, "0", "cpe_login");
                     if ($test_cpelogin != $_POST['reg_cpelogin']) {
-                        $reg_data = mysql_query("UPDATE j_eleves_cpe SET cpe_login='". $_POST['reg_cpelogin'] . "' WHERE e_login='$eleve_login'");
+                        $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE j_eleves_cpe SET cpe_login='". $_POST['reg_cpelogin'] . "' WHERE e_login='$eleve_login'");
                         if (!$reg_data) { $msg .= "Erreur lors de la mise à jour d'un enregistrement."; $notok = true;}
                     }
                 }
@@ -129,8 +129,8 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 	echo "<p><select size = 1 name='reg_cpelogin'>";
 	$cperesp = "vide";
-	$call_cpe = mysql_query("SELECT login,nom,prenom FROM utilisateurs WHERE (statut='cpe' AND etat='actif')");
-	$nb = mysql_num_rows($call_cpe);
+	$call_cpe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login,nom,prenom FROM utilisateurs WHERE (statut='cpe' AND etat='actif')");
+	$nb = mysqli_num_rows($call_cpe);
 	for ($i="0";$i<$nb;$i++) {
 		$cperesp = mysql_result($call_cpe, $i, "login");
 		$cperesp_nom = mysql_result($call_cpe, $i, "nom");
@@ -141,8 +141,8 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 	echo "</select>";
 	// On va chercher les classes déjà existantes, et on les affiche.
 
-	$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
-	$nombre_lignes = mysql_num_rows($call_data);
+	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes ORDER BY classe");
+	$nombre_lignes = mysqli_num_rows($call_data);
 
 	if ($nombre_lignes != 0) {
 		$flag = 1;
@@ -151,9 +151,9 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 		while ($i < $nombre_lignes){
 			$id_classe = mysql_result($call_data, $i, "id");
 			$classe = mysql_result($call_data, $i, "classe");
-			$nb_per = mysql_num_rows(mysql_query("select id_classe from periodes where id_classe = '$id_classe'"));
+			$nb_per = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "select id_classe from periodes where id_classe = '$id_classe'"));
 
-			$test_existing = mysql_result(mysql_query("select count(*) total" .
+			$test_existing = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "select count(*) total" .
 										" from j_eleves_cpe e, j_eleves_classes c" .
 										" where (" .
 										"e.e_login = c.login" .

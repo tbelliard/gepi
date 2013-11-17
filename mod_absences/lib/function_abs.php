@@ -32,8 +32,8 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 	global $prefix_base;
 
 	$requete_a_qui_appartient_id = 'SELECT * FROM '.$prefix_base.'absences_eleves WHERE id_absence_eleve = "' . $id_absence_eleve . '"';
-    $execution_a_qui_appartient_id = mysql_query($requete_a_qui_appartient_id) or die('Erreur SQL !'.$requete_a_qui_appartient_id.'<br />'.mysql_error());
-	while ( $donnee_a_qui_appartient_id = mysql_fetch_array( $execution_a_qui_appartient_id ) ) {
+    $execution_a_qui_appartient_id = mysqli_query($GLOBALS["___mysqli_ston"], $requete_a_qui_appartient_id) or die('Erreur SQL !'.$requete_a_qui_appartient_id.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	while ( $donnee_a_qui_appartient_id = mysqli_fetch_array( $execution_a_qui_appartient_id ) ) {
 
 		$eleve_absence_eleve = $donnee_a_qui_appartient_id['eleve_absence_eleve'];
 
@@ -41,7 +41,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 
 		// on vérify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
 		// première option il existe une lettre qui fait seulement référence à cette id donc suppression
-		$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
+		$cpt_lettre_suivi = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
 		if( $cpt_lettre_suivi == 1 )
 		{
 
@@ -50,25 +50,25 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 	              			   WHERE partde_lettre_suivi = 'absences_eleves'
 	              			  	 AND type_lettre_suivi = '6'
 	              			  	 AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'";
-	              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	              mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 		}
 		else
 		{
 
 			// deuxième option il existe une lettre qui fait référence à cette id mais à d'autre aussi donc modification
-			$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
+			$cpt_lettre_suivi = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
 			if( $cpt_lettre_suivi == 1 )
 			{
 
-		    	$requete = mysql_query("SELECT *
+		    	$requete = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT *
 		    						      FROM ".$prefix_base."lettres_suivis
 		    						     WHERE partde_lettre_suivi = 'absences_eleves'
 		    						       AND type_lettre_suivi = '6'
 		    						       AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"
 		    						  );
 
-		    	$donnee = mysql_fetch_array($requete);
+		    	$donnee = mysqli_fetch_array($requete);
 		    	$remplace_sa = ','.$id_absence_eleve.',';
 		    	$modifier_par = my_ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
 		    	$requete = "UPDATE ".$prefix_base."lettres_suivis
@@ -79,7 +79,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 		    				WHERE partde_lettre_suivi = 'absences_eleves'
 		    				  AND type_lettre_suivi = '6'
 		    				  AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'";
-	            mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	            mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 			}
 
@@ -133,7 +133,7 @@ function supprime_id($tableau_des_ids, $prefix_base, $table, $selection)
           	$requete = "DELETE
            			    FROM ".$prefix_base.$table."
            			    WHERE id_absence_eleve ='".$id_selectionne."'";
-            mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+            mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
         }
 
@@ -183,7 +183,7 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
 	{
 
 		// on vérifie qu'une absence ne se trouve pas entre le début et la fin de celle saisie
-		$cpt_ligne = mysql_result(mysql_query("SELECT count(*)
+		$cpt_ligne = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*)
 										   		 FROM " . $prefix_base . "absences_rb
 										   		WHERE eleve_id = '" . $eleve_id . "'
 										   		  AND retard_absence = '" . $retard_absence . "'
@@ -199,7 +199,7 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
 						   		(eleve_id, retard_absence, groupe_id, edt_id, jour_semaine, creneau_id, debut_ts, fin_ts, date_saisie, login_saisie)
 						   VALUES
 						   		('" . $eleve_id . "', '" . $retard_absence . "', '" . $groupe_id . "', '0', '" . $jour_semaine . "', '" . $creneau_id . "', '" . $debut_ts . "', '" . $fin_ts . "', '" . $date_saisie . "', '" . $_SESSION["login"] . "')";
-			$insere_abs = mysql_query($saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.mysql_error());//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
+			$insere_abs = mysqli_query($GLOBALS["___mysqli_ston"], $saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
 
 		}
 		else
@@ -214,8 +214,8 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
 					   		AND fin_ts <= '" . $fin_ts . "'"
 				   	   );
 
-			$execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-        	while ($donnee = mysql_fetch_array($execution))
+			$execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        	while ($donnee = mysqli_fetch_array($execution))
         	{
 
 				// si le debut est la fin sont compris entre les deux valeur mais égale à aucun début
@@ -251,7 +251,7 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
 					   		  AND fin_ts <= '" . $fin_ts . "'
 					  	  ";
 
-        	$req_sql = mysql_query($req_delete);
+        	$req_sql = mysqli_query($GLOBALS["___mysqli_ston"], $req_delete);
 
 		}
 
@@ -278,7 +278,7 @@ function suppr_absences_rb($id)
     {
 
 		// on vérifie qu'une absence ne se trouve pas entre le début et la fin de celle saisie
-		$cpt_ligne = mysql_result(mysql_query("SELECT count(*)
+		$cpt_ligne = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*)
 											   FROM " . $prefix_base . "absences_eleves
 											   WHERE id_absence_eleve = '" . $id . "'"
 											 ),0);
@@ -292,8 +292,8 @@ function suppr_absences_rb($id)
 						FROM " . $prefix_base . "absences_eleves
 						WHERE id_absence_eleve = '" . $id . "' ";
 
-	        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-    	    while ( $donnee = mysql_fetch_array($resultat) )
+	        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    	    while ( $donnee = mysqli_fetch_array($resultat) )
         	{
 
 	        	$type_absence = $donnee['type_absence_eleve'];
@@ -330,7 +330,7 @@ function suppr_absences_rb($id)
 			   		 			 AND eleve_id = '" . $eleve_absent . "'
 			  			  	  ";
 
-       			$req_sql = mysql_query($req_delete);
+       			$req_sql = mysqli_query($GLOBALS["___mysqli_ston"], $req_delete);
 
 			}
 
@@ -359,7 +359,7 @@ function modifier_absences_rb($id,$debut_ts_modif,$fin_ts_modif)
     {
 
 		// on vérifie qu'une absence ne se trouve pas entre le début et la fin de celle saisie
-		$cpt_ligne = mysql_result(mysql_query("SELECT count(*)
+		$cpt_ligne = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*)
 											   FROM " . $prefix_base . "absences_eleves
 											   WHERE id_absence_eleve = '" . $id . "'"
 											 ),0);
@@ -373,8 +373,8 @@ function modifier_absences_rb($id,$debut_ts_modif,$fin_ts_modif)
 						FROM " . $prefix_base . "absences_eleves
 						WHERE id_absence_eleve = '" . $id . "' ";
 
-	        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-    	    while ( $donnee = mysql_fetch_array($resultat) )
+	        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    	    while ( $donnee = mysqli_fetch_array($resultat) )
         	{
 
 	        	$type_absence = $donnee['type_absence_eleve'];
@@ -412,8 +412,8 @@ function modifier_absences_rb($id,$debut_ts_modif,$fin_ts_modif)
 			   		 		  AND eleve_id = '" . $eleve_absent . "'
 			   		 	   ";
 
-	        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-    	    while ( $donnee = mysql_fetch_array($resultat) )
+	        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    	    while ( $donnee = mysqli_fetch_array($resultat) )
         	{
 
         		$id_absences_rb = $donnee['id'];
@@ -424,7 +424,7 @@ function modifier_absences_rb($id,$debut_ts_modif,$fin_ts_modif)
 						   	   	 WHERE id = '" . $id_absences_rb . "'
 			  			  	  ";
 
-       			$req_sql = mysql_query($req_modifier);
+       			$req_sql = mysqli_query($GLOBALS["___mysqli_ston"], $req_modifier);
 
 			}
 

@@ -57,8 +57,8 @@ if (isset($_POST['isposted'])) {
         }
         //if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{1,19}$", $matiere_name)) {
         if (preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_-]{1,19}$/", $matiere_name)) {
-            $verify_query = mysql_query("SELECT * from matieres WHERE matiere='$matiere_name'");
-            $verify = mysql_num_rows($verify_query);
+            $verify_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * from matieres WHERE matiere='$matiere_name'");
+            $verify = mysqli_num_rows($verify_query);
             if ($verify == 0) {
                 //========================
                 // MODIF: boireaus
@@ -71,7 +71,7 @@ if (isset($_POST['isposted'])) {
                 $matiere_priorite = $_POST['matiere_priorite'];
                 $sql="INSERT INTO matieres SET matiere='".$matiere_name."', nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n';";
 				//echo "$sql<br />\n";
-                $register_matiere = mysql_query($sql);
+                $register_matiere = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
                 if (!$register_matiere) {
                     $msg = "Une erreur s'est produite lors de l'enregistrement de la nouvelle matière. <br />";
                     $ok = 'no';
@@ -101,7 +101,7 @@ if (isset($_POST['isposted'])) {
 
         $sql="UPDATE matieres SET nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "' WHERE matiere='".$matiere_name."';";
 		//echo "$sql<br />\n";
-        $register_matiere = mysql_query($sql);
+        $register_matiere = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
         if (!$register_matiere) {
             $msg = "Une erreur s'est produite lors de la modification de la matière <br />";
@@ -116,7 +116,7 @@ if (isset($_POST['isposted'])) {
         WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')";
         //echo "$sql<br />";
         //$msg = rawurlencode($sql);
-        $req = mysql_query($sql);
+        $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     }
 
     if ((isset($_POST['force_defaut_categorie'])) and ($ok == 'yes') and ($ok_categorie == 'yes')) {
@@ -124,7 +124,7 @@ if (isset($_POST['isposted'])) {
         WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')";
         //echo "$sql<br />";
         //$msg = rawurlencode($sql);
-        $req = mysql_query($sql);
+        $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     }
 
 	if($ok=='yes') {
@@ -134,9 +134,9 @@ if (isset($_POST['isposted'])) {
 			$tab_profs_associes=array();
 			$sql="SELECT u.login FROM j_professeurs_matieres jpm, utilisateurs u WHERE jpm.id_professeur=u.login and id_matiere='$matiere_name' ORDER BY u.nom, u.prenom;";
 			//echo "$sql<br />\n";
-			$res_profs=mysql_query($sql);
-			if(mysql_num_rows($res_profs)>0) {
-				while($lig=mysql_fetch_object($res_profs)) {
+			$res_profs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_profs)>0) {
+				while($lig=mysqli_fetch_object($res_profs)) {
 					$tab_profs_associes[]=$lig->login;
 				}
 			}
@@ -147,8 +147,8 @@ if (isset($_POST['isposted'])) {
 					// Recherche de l'ordre matière le plus élevé pour ce prof
 					$sql="SELECT MAX(ordre_matieres) max_ordre FROM j_professeurs_matieres WHERE id_professeur='".$login_prof[$loop]."';";
 					//echo "$sql<br />\n";
-					$res=mysql_query($sql);
-					if(mysql_num_rows($res)==0) {
+					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($res)==0) {
 						$ordre_matieres=1;
 					}
 					else {
@@ -158,7 +158,7 @@ if (isset($_POST['isposted'])) {
 					// On ajoute le prof
 					$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$login_prof[$loop]', id_matiere='$matiere_name', ordre_matieres='$ordre_matieres';";
 					//echo "$sql<br />\n";
-					$insert=mysql_query($sql);
+					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$insert) {
 						$msg.="Erreur lors de l'association de ".$login_prof[$loop]." avec la matière $matiere_name<br />";
 					}
@@ -178,8 +178,8 @@ if (isset($_POST['isposted'])) {
 				if(!in_array($tab_profs_associes[$loop], $login_prof)) {
 					$sql="SELECT 1=1 FROM j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE (jgp.login='".$tab_profs_associes[$loop]."' AND jgm.id_matiere='$matiere_name' AND jgm.id_groupe=jgp.id_groupe)";
 					//echo "$sql<br />";
-					$res=mysql_query($sql);
-					if(mysql_num_rows($res)==0) {
+					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($res)==0) {
 						/*
 						$sql="SELECT ordre_matieres FROM j_professeurs_matieres WHERE id_professeur='$login_prof' AND id_matiere='$matiere_name';";
 						$res=mysql_query($sql);
@@ -187,7 +187,7 @@ if (isset($_POST['isposted'])) {
 	
 						$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='".$tab_profs_associes[$loop]."' AND id_matiere='$matiere_name';";
 						//echo "$sql<br />\n";
-						$suppr=mysql_query($sql);
+						$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$suppr) {
 							$msg.="Erreur lors de la suppression de l'association de ".$tab_profs_associes[$loop]." avec la matière $matiere_name<br />";
 						}
@@ -228,7 +228,7 @@ require_once("../lib/header.inc.php");
 echo add_token_field();
 // On va chercher les infos de la matière que l'on souhaite modifier
 if (isset($_GET['current_matiere'])) {
-    $call_data = mysql_query("SELECT nom_complet, priority, categorie_id from matieres WHERE matiere='".$_GET['current_matiere']."'");
+    $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_complet, priority, categorie_id from matieres WHERE matiere='".$_GET['current_matiere']."'");
     $matiere_nom_complet = mysql_result($call_data, 0, "nom_complet");
     $matiere_priorite = mysql_result($call_data, 0, "priority");
     $matiere_cat_id = mysql_result($call_data, 0, "categorie_id");
@@ -246,9 +246,9 @@ if (isset($_GET['current_matiere'])) {
 	$tab_profs_associes=array();
 	if($current_matiere!="") {
 		$sql="SELECT u.login FROM j_professeurs_matieres jpm, utilisateurs u WHERE jpm.id_professeur=u.login and id_matiere='$current_matiere' ORDER BY u.nom, u.prenom;";
-		$res_profs=mysql_query($sql);
-		if(mysql_num_rows($res_profs)>0) {
-			while($lig=mysql_fetch_object($res_profs)) {
+		$res_profs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_profs)>0) {
+			while($lig=mysqli_fetch_object($res_profs)) {
 				$tab_profs_associes[]=$lig->login;
 			}
 		}
@@ -279,11 +279,11 @@ if (isset($_GET['current_matiere'])) {
 
 	$cpt=0;
 	$sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.civilite FROM utilisateurs u WHERE u.statut='professeur' AND u.etat='actif' ORDER BY u.nom, u.prenom;";
-	$res_profs=mysql_query($sql);
-	if(mysql_num_rows($res_profs)>0) {
+	$res_profs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_profs)>0) {
 		echo "<p class='bold'>Associer des professeurs&nbsp;:</p>\n";
 		//$cpt=0;
-		while($lig=mysql_fetch_object($res_profs)) {
+		while($lig=mysqli_fetch_object($res_profs)) {
 			echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
 			echo "onchange=\"checkbox_change($cpt)\" ";
 			if(in_array($lig->login,$tab_profs_associes)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
@@ -346,13 +346,13 @@ echo "</select></td>";
 <td>
 <?php
 echo "<select size='1' name='matiere_categorie' onchange='changement()' >\n";
-$get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
-$test = mysql_num_rows($get_cat);
+$get_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, nom_court FROM matieres_categories");
+$test = mysqli_num_rows($get_cat);
 
 if ($test == 0) {
     echo "<option disabled>Aucune catégorie définie</option>";
 } else {
-    while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+    while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
         echo "<option value='".$row["id"]."'";
         if ($matiere_cat_id == $row["id"]) echo " SELECTED";
         echo ">".html_entity_decode($row["nom_court"])."</option>";
@@ -380,8 +380,8 @@ echo "</select>";
 if((isset($current_matiere))&&($current_matiere!="")) {
 	$sql="SELECT DISTINCT g.id, g.name, g.description FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_matiere='".$current_matiere."' AND jgm.id_groupe=g.id AND jgc.id_groupe=g.id AND jgc.id_classe=c.id ORDER BY c.classe, c.nom_complet";
 	//echo "$sql<br />";
-	$res_ens=mysql_query($sql);
-	$nb_ens=mysql_num_rows($res_ens);
+	$res_ens=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_ens=mysqli_num_rows($res_ens);
 	if($nb_ens==0) {
 		echo "<p>Aucun enseignement n'est associé à la matière $current_matiere.</p>\n";
 	}
@@ -393,14 +393,14 @@ if((isset($current_matiere))&&($current_matiere!="")) {
 		}
 		echo "<a href='../eleves/recherche.php?is_posted_recherche2=y&amp;rech_matiere[]=".$current_matiere.$chaine_domaines.add_token_in_url()."' title=\"Extraire la liste des professeurs (associés aux enseignements ci-dessous).\" target='_blank'><img src='../images/group16.png' class='icon16' /></a>";
 		echo "<br />";
-		while($lig_ens=mysql_fetch_object($res_ens)) {
+		while($lig_ens=mysqli_fetch_object($res_ens)) {
 
 			$sql="SELECT c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe=c.id AND jgc.id_groupe='$lig_ens->id' ORDER BY c.classe, c.nom_complet;";
-			$res_clas=mysql_query($sql);
+			$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			$chaine_clas="";
-			if(mysql_num_rows($res_clas)>0) {
+			if(mysqli_num_rows($res_clas)>0) {
 				$cpt_clas=0;
-				while($lig_clas=mysql_fetch_object($res_clas)) {
+				while($lig_clas=mysqli_fetch_object($res_clas)) {
 					if($cpt_clas>0) {$chaine_clas.=", ";}
 					$chaine_clas.="<a href='../groupes/edit_class.php?id_classe=$lig_clas->id' title=\"Accéder à la liste des enseignements de $lig_clas->classe\">$lig_clas->classe</a>";
 					$cpt_clas++;
@@ -408,11 +408,11 @@ if((isset($current_matiere))&&($current_matiere!="")) {
 			}
 
 			$sql="SELECT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe='$lig_ens->id' ORDER BY u.nom, u.prenom;";
-			$res_prof=mysql_query($sql);
+			$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			$chaine_prof="";
-			if(mysql_num_rows($res_prof)>0) {
+			if(mysqli_num_rows($res_prof)>0) {
 				$cpt_prof=0;
-				while($lig_prof=mysql_fetch_object($res_prof)) {
+				while($lig_prof=mysqli_fetch_object($res_prof)) {
 					if($cpt_prof>0) {$chaine_prof.=", ";}
 					$chaine_prof.="<a href='../utilisateurs/modify_user.php?user_login=$lig_prof->login' title=\"Modifier l'utilisateur $lig_prof->login\">$lig_prof->civilite $lig_prof->nom ".mb_substr($lig_prof->prenom,0,1)."</a>";
 					$cpt_prof++;

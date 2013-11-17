@@ -16,12 +16,12 @@ function get_nom_prenom_eleve($login_ele) {
 */
 function get_denomination_prof($login) {
 	$sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$login';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		return "Utilisateur inconnu";
 	}
 	else {
-		$lig=mysql_fetch_object($res);
+		$lig=mysqli_fetch_object($res);
 		return $lig->civilite." ".casse_mot($lig->nom)." ".strtoupper(mb_substr($lig->prenom,0,1));
 	}
 }

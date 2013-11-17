@@ -76,9 +76,9 @@ for($i = 0; $i < $nbre; ){
 	$n = $i + 1; // pour le nom et le prénom de l'élève
 
 	// On récupère toutes les absences qui correspondent à ce login
-	$query = mysql_query("SELECT * FROM absences_eleves WHERE eleve_absence_eleve = '".$tab_tmp_ele[$i]."' ORDER BY a_date_absence_eleve")
-					OR DIE('Erreur dans la récupération des absences de votre enfant : '.mysql_error());
-	$nbre_absence = mysql_num_rows($query);
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM absences_eleves WHERE eleve_absence_eleve = '".$tab_tmp_ele[$i]."' ORDER BY a_date_absence_eleve")
+					OR DIE('Erreur dans la récupération des absences de votre enfant : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$nbre_absence = mysqli_num_rows($query);
 
 	// et on les mets en forme
 	for($a = 0; $a < $nbre_absence; $a++){
@@ -123,8 +123,8 @@ for($i = 0; $i < $nbre; ){
 
 	}
 	// On vérifie si les bulletins ont été renseignés pour les différentes périodes
-	$query_b = mysql_query("SELECT * FROM absences WHERE login = '".$tab_tmp_ele[$i]."' ORDER BY periode");
-	$verif = mysql_num_rows($query_b);
+	$query_b = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM absences WHERE login = '".$tab_tmp_ele[$i]."' ORDER BY periode");
+	$verif = mysqli_num_rows($query_b);
 		$aff_absences_bulletin = '';
 	if ($verif >= 1) {
 		$aff_absences_bulletin .= '<br /><br />

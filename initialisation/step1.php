@@ -79,7 +79,7 @@ if (!isset($is_posted)) {
             echo "<p>Impossible d'ouvrir le fichier dbf !</p>";
             echo "<p><a href='step1.php'>Cliquer ici </a> pour recommencer !</center></p>";
         } else {
-            $del = @mysql_query("DELETE FROM temp_gep_import");
+            $del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM temp_gep_import");
             // on constitue le tableau des champs à extraire
             $tabchamps = array("ELENOM","ELEPRE","ELESEXE","ELEDATNAIS","ELENOET","ERENO","ELEDOUBL","ELENONAT","ELEREG","DIVCOD","ETOCOD_EP", "ELEOPT1", "ELEOPT2", "ELEOPT3", "ELEOPT4", "ELEOPT5", "ELEOPT6", "ELEOPT7", "ELEOPT8", "ELEOPT9", "ELEOPT10", "ELEOPT11", "ELEOPT12");
 
@@ -126,7 +126,7 @@ if (!isset($is_posted)) {
                 }
                 $query = $query.")";
                 if ($enregistre == "yes") {
-                    $register = mysql_query($query);
+                    $register = mysqli_query($GLOBALS["___mysqli_ston"], $query);
                     if (!$register) {
                         echo "<p class=\"small\"><font color='red'>Analyse de la ligne $k : erreur lors de l'enregistrement !</font></p>";
                         $nb_reg_no++;

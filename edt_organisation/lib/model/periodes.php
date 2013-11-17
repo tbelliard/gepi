@@ -49,7 +49,7 @@ class PeriodeNote {
 				verouiller = '".$this->verrouillage."',
 				id_classe = '".$this->id_classe."',
 				date_verrouillage = '".$this->date_verrouillage."'";
-		$req = mysql_query($sql);
+		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if ($req) {
 			return true;
 		}
@@ -67,9 +67,9 @@ class PeriodeNote {
 		$result = array();
 		$sql="SELECT nom FROM periodes WHERE 
 				id_classe = '".$this->id_classe."' ";
-		$req = mysql_query($sql);
+		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if ($req) {
-			while ($rep=mysql_fetch_array($req)) {
+			while ($rep=mysqli_fetch_array($req)) {
 				$result[] = $rep['nom'];
 			}
 		}

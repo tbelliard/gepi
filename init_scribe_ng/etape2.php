@@ -95,9 +95,9 @@ if ($_POST['step'] == "2") {
             // Pour chaque periode, jusqu'au nombre souhaite (REVOIR pour choix non faits...)
             for ($i=1; $i<=$_POST[$indice]; $i++) {
                 $req_insertion_periode = "INSERT INTO periodes VALUES ('P$i','$i','T', '$key',NULL,NULL)";
-                mysql_query($req_insertion_periode);
+                mysqli_query($GLOBALS["___mysqli_ston"], $req_insertion_periode);
                 // Si tout s'est bien deroule
-                if (mysql_errno() != 0) {
+                if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
                     die("Une erreur s'est produite lors de la creation des p&eacute;riodes");
                 }
             }
@@ -108,7 +108,7 @@ if ($_POST['step'] == "2") {
         }
 
 		$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if($res) {
 			echo "Réinitialisation des dates de verrouillage de périodes effectuée.<br />";
 		}
@@ -139,14 +139,14 @@ if ($_POST['step'] == "2") {
             // Recuperation des periodes correspondantes a la classe de l'eleve
             echo "recuperation des periodes pour la classe ".$relation_ec->getIdClasse()." <br>";
             $req_periodes_classe = "SELECT * FROM periodes WHERE id_classe = ".$relation_ec->getIdClasse();
-            $periodes_de_la_classe = mysql_query($req_periodes_classe);
+            $periodes_de_la_classe = mysqli_query($GLOBALS["___mysqli_ston"], $req_periodes_classe);
             // Si on trouve des periodes,
-            echo mysql_num_rows($periodes_de_la_classe)." periodes trouvees<br>";
-            if (mysql_num_rows($periodes_de_la_classe) > 0) {
+            echo mysqli_num_rows($periodes_de_la_classe)." periodes trouvees<br>";
+            if (mysqli_num_rows($periodes_de_la_classe) > 0) {
                 // On met d'abord a jour la relation temporaire eleve_classe deja presente
                 // (en lui affectant le numero de premiere periode (normalement 1...))
                 // Pour cela on recupere separement la premiere periode
-                $periodes_de_la_classe_row = mysql_fetch_object($periodes_de_la_classe);
+                $periodes_de_la_classe_row = mysqli_fetch_object($periodes_de_la_classe);
                 $relation_ec_a_modifier = JEleveClassePeer::retrieveByPK($relation_ec->getLogin(), $periodes_de_la_classe_row->id_classe, 0);
                 //echo "relation a modifier : ".$relation_ec_a_modifier->getLogin()
                 //." (Periode numero ".$relation_ec_a_modifier->getPeriode()
@@ -170,7 +170,7 @@ if ($_POST['step'] == "2") {
                 //        ."  Classe : ".$periodes_de_la_classe_row->id_classe.")<br>";
 
                 // Ensuite, pour chaque periode restante, on ajoute une relation eleve / periode de la classe
-                while ($periodes_de_la_classe_row = mysql_fetch_object($periodes_de_la_classe)) {
+                while ($periodes_de_la_classe_row = mysqli_fetch_object($periodes_de_la_classe)) {
                     $nouvelle_relation_ep = new JEleveClasse();
                     $eleve_concerne = ElevePeer::retrieveByLOGIN($relation_ec->getLogin());
                     $nouvelle_relation_ep->setEleve($eleve_concerne); // On passe l'objet eleve
@@ -205,22 +205,22 @@ else {
     echo "<p>Une fois celles-ci cr&eacute;&eacute;es, les &eacute;l&egrave;ves seront affect&eacute;s &agrave; toutes les p&eacute;riodes de leur(s) classe(s)</p>";
 
     $req_classes_sans_periodes = "select id, classe from classes WHERE id NOT IN(Select id_classe from periodes) ORDER BY classe ASC";
-    $res = mysql_query($req_classes_sans_periodes);
-    if (mysql_errno() != 0) {
+    $res = mysqli_query($GLOBALS["___mysqli_ston"], $req_classes_sans_periodes);
+    if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
         echo "<br>Impossible de r&eacute;cup&eacute;rer les classes dans la base GEPI.<br>";
         require("../lib/footer.inc.php");
         die();
     }
     else {
         // Si des classes virtuelles sont trouvees (= classes sans periodes)
-        if (mysql_num_rows($res) != 0) {
+        if (mysqli_num_rows($res) != 0) {
             echo "<p>Voici la liste des classes présentes dans GEPI pour lesquelles aucune p&eacute;riode n'a &eacute;t&eacute; d&eacute;finie,<br>";
             echo "<br><p><b>Choisissez pour chaque classe le nombre de p&eacute;riodes : </b></p>";
             echo "<form enctype='multipart/form-data' action='etape2.php' method=post>";
 			echo add_token_field();
             echo "<input type=hidden name='step' value='2'><br>";
             $classes_concernees = array();
-            while($row = mysql_fetch_object($res)) {
+            while($row = mysqli_fetch_object($res)) {
                 // On stocke l'identifiant technique (auto_inc mysql) en indice, et le nom de la classe en valeur
                 $classes_concernees[$row->id] = $row->classe;
                 echo "<p>Classe ". $row->classe." : ";

@@ -279,9 +279,9 @@ echo add_token_field();
 		$tab_user_preselectionnes=array();
 
 		$sql="SELECT value FROM mod_alerte_divers WHERE name='login_exclus';";
-		$res_mae=mysql_query($sql);
-		if(mysql_num_rows($res_mae)>0) {
-			while($lig_mae=mysql_fetch_object($res_mae)) {
+		$res_mae=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_mae)>0) {
+			while($lig_mae=mysqli_fetch_object($res_mae)) {
 				$tab_user_preselectionnes[]=$lig_mae->value;
 			}
 		}

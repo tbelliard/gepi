@@ -60,8 +60,8 @@ $id4 = isset($id_gr) ? mb_substr($id_gr, 6) : NULL;
 if ($action == 'modifier') {
 	// On renvoie un select avec la liste des classes
 	// on recherche la liste des classes
-	$query = mysql_query("SELECT id, classe FROM classes ORDER BY id");
-	$nbre = mysql_num_rows($query);
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, classe FROM classes ORDER BY id");
+	$nbre = mysqli_num_rows($query);
 
 	echo '
 	<select name="choix_classe">
@@ -86,10 +86,10 @@ if ($action == 'modifier') {
 }elseif($action == 'enregistrer'){
 	// On récupère le nom de la classe et on l'affiche après l'avoir enregistré
 	$sql_maj = "UPDATE edt_gr_nom SET subdivision = '".$classe."' WHERE id = '".$id."'";
-	$query_maj = mysql_query($sql_maj)
+	$query_maj = mysqli_query($GLOBALS["___mysqli_ston"], $sql_maj)
 										OR trigger_error('Impossible de modifier la classe', E_USER_ERROR);
 
-	$nom_cl = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$classe."'"));
+	$nom_cl = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '".$classe."'"));
 
 	echo '<p onclick="classeEdtAjax(\'id_'.$id.'\', \''.$classe.'\', \'modifier\');">'.$nom_cl["classe"].'&nbsp;<span style="color: green; font-size:0.5em;">(ok !)</span></p>';
 
@@ -109,7 +109,7 @@ if ($action == 'modifier') {
 	// On enregistre les modifications
 
 	$sql_type = "UPDATE edt_gr_nom SET subdivision_type = '".$type."' WHERE id = '".$id2."'";
-	$query_type = mysql_query($sql_type);
+	$query_type = mysqli_query($GLOBALS["___mysqli_ston"], $sql_type);
 
 	if ($query_type) {
 		// et on renvoie ce qu'il faut pour l'affichage
@@ -155,7 +155,7 @@ if ($action == 'modifier') {
 		$nom =  ($classe) ? urldecode($classe) : NULL;; // car on garde la variable du début
 		// On enregistre la modification
 		$sql_nom = "UPDATE edt_gr_nom SET nom = '".$nom."' WHERE id = '".$id3."'";
-		$query_nom = mysql_query($sql_nom);
+		$query_nom = mysqli_query($GLOBALS["___mysqli_ston"], $sql_nom);
 
 		if ($query_nom) {
 			echo '
@@ -177,7 +177,7 @@ if ($action == 'modifier') {
 		$nom_lg =  ($classe) ? urldecode($classe) : NULL;; // car on garde la variable du début
 		// On enregistre la modification
 		$sql_nom_lg = "UPDATE edt_gr_nom SET nom_long = '".$nom_lg."' WHERE id = '".$id4."'";
-		$query_nom_lg = mysql_query($sql_nom_lg);
+		$query_nom_lg = mysqli_query($GLOBALS["___mysqli_ston"], $sql_nom_lg);
 
 		if ($query_nom_lg) {
 			echo '

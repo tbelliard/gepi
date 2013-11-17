@@ -62,7 +62,7 @@ $active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes");
 if(($active_carnets_notes!='y')&&($active_cahiers_texte!='y')&&($active_module_trombinoscopes!='y')) {
 	//die("Le module n'est pas activé.");
 	$sql="UPDATE preferences SET value='n' WHERE name='accueil_simpl' AND login='".$_SESSION['login']."';";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	header("Location: ./accueil.php");
 	die();
@@ -124,11 +124,11 @@ $sql="SELECT nv.*, jgc.id_groupe FROM notanet_verrou nv,
 						jgc.id_groupe=jgp.id_groupe AND 
 						jgp.login='".$_SESSION['login']."';";
 //echo "$sql<br />";
-$res_notanet=mysql_query($sql);
-if(mysql_num_rows($res_notanet)>0) {
+$res_notanet=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_notanet)>0) {
 	//$afficher_col_notanet="y";
 	$tab_groupes_notanet=array();
-	while($lig_notanet=mysql_fetch_object($res_notanet)) {
+	while($lig_notanet=mysqli_fetch_object($res_notanet)) {
 		// On peut avoir plusieurs lignes retournées, s'il y a plusieurs types_brevet dans une classe/groupe
 		if(isset($tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage'])) {
 			if($lig_notanet->verrouillage=="N") {
@@ -201,9 +201,9 @@ $invisibilite_groupe['bulletins']=array();
 $invisibilite_groupe['cahier_notes']=array();
 $invisibilite_groupe['cahier_texte']=array();
 $sql="SELECT jgv.* FROM j_groupes_visibilite jgv, j_groupes_professeurs jgp WHERE jgv.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND jgv.visible='n';";
-$res_jgv=mysql_query($sql);
-if(mysql_num_rows($res_jgv)>0) {
-	while($lig_jgv=mysql_fetch_object($res_jgv)) {
+$res_jgv=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_jgv)>0) {
+	while($lig_jgv=mysqli_fetch_object($res_jgv)) {
 		$invisibilite_groupe[$lig_jgv->domaine][]=$lig_jgv->id_groupe;
 	}
 }
@@ -442,7 +442,7 @@ if($colspan>0){
 											jeg.periode='$i' AND
 											jgp.login='".$_SESSION['login']."' AND
 											jeg.id_groupe='".$groups[$k]['id']."' LIMIT 1;";
-					$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
+					$res_test_acces_bull_simp=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
 					if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
 				}
 
@@ -454,7 +454,7 @@ if($colspan>0){
 													jep.professeur='".$_SESSION['login']."' AND
 													jeg.id_groupe='".$groups[$k]['id']."' LIMIT 1;";
 					//echo "$sql<br />";
-					$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
+					$res_test_acces_bull_simp=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
 					if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
 				}
 			}
@@ -831,13 +831,13 @@ for($i=0;$i<count($groups);$i++){
 						// Calcul du nombre de notes et du nombre d'appréciations présentes sur le bulletin
 						$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='".$groups[$i]['id']."' AND periode='".$groups[$i]['periodes'][$j]['num_periode']."';";
 						// AND statut='' ?
-						$test=mysql_query($sql);
-						$nb_notes_bulletin=mysql_num_rows($test);
+						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$nb_notes_bulletin=mysqli_num_rows($test);
 	
 						$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='".$groups[$i]['id']."' AND periode='".$groups[$i]['periodes'][$j]['num_periode']."';";
 						// AND statut='' ?
-						$test=mysql_query($sql);
-						$nb_app_bulletin=mysql_num_rows($test);
+						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$nb_app_bulletin=mysqli_num_rows($test);
 	
 						$effectif_groupe=count($groups[$i]["eleves"][$groups[$i]['periodes'][$j]['num_periode']]["users"]);
 	
@@ -988,7 +988,7 @@ for($i=0;$i<count($groups);$i++){
 																	jeg.periode='$j' AND
 																	jec.id_classe='".$classe['id']."' AND
 																	jep.professeur='".$_SESSION['login']."';";
-									$res_test_affiche_bull_simp_cette_classe=mysql_num_rows(mysql_query($sql));
+									$res_test_affiche_bull_simp_cette_classe=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
 									//echo "$sql";
 									if($res_test_affiche_bull_simp_cette_classe>0) {$affiche_bull_simp_cette_classe="y";}
 								}
@@ -1090,7 +1090,7 @@ $sql="SELECT * FROM aid_config
 		WHERE display_bulletin = 'y'
 			OR bull_simplifie = 'y'
 			ORDER BY nom;";
-$res_aid=mysql_query($sql);
+$res_aid=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 $i=0;
 $tmp_nb_aid_a_afficher=0;
 $nb_aid=0;
@@ -1106,17 +1106,17 @@ while ($i < $tmp_nb_aid) {
 		WHERE (id_utilisateur = '".$_SESSION['login']."'
 		AND indice_aid = '".$tmp_indice_aid."')";
 	//echo "$sql<br />";
-	$tmp_call_prof = mysql_query($sql);
-	$tmp_nb_result = mysql_num_rows($tmp_call_prof);
+	$tmp_call_prof = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$tmp_nb_result = mysqli_num_rows($tmp_call_prof);
 	if (($tmp_nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
 		$tmp_nom_aid = @mysql_result($tmp_call_data, $i, "nom");
 
 		$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom";
 		//echo "$sql<br />";
-		$tmp_call_prof_aid = mysql_query($sql);
-		$tmp_nombre_aid = mysql_num_rows($tmp_call_prof_aid);
+		$tmp_call_prof_aid = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$tmp_nombre_aid = mysqli_num_rows($tmp_call_prof_aid);
 		//if ($tmp_nombre_aid>0) {
-		while($lig_aid=mysql_fetch_object($tmp_call_prof_aid)) {
+		while($lig_aid=mysqli_fetch_object($tmp_call_prof_aid)) {
 
 
 /*
@@ -1146,17 +1146,17 @@ while ($i < $tmp_nb_aid) {
 							jae.indice_aid='$tmp_indice_aid'
 					ORDER BY c.classe, c.nom_complet;";
 			//echo "$sql<br />";
-			$res_clas_aid=mysql_query($sql);
+			$res_clas_aid=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			$tmp_aid_max_per=0;
-			while($lig_clas_aid=mysql_fetch_object($res_clas_aid)) {
+			while($lig_clas_aid=mysqli_fetch_object($res_clas_aid)) {
 				$tab_clas_aid[$cpt_clas_aid]['id']=$lig_clas_aid->id;
 				$tab_clas_aid[$cpt_clas_aid]['classe']=$lig_clas_aid->classe;
 				$tab_clas_aid[$cpt_clas_aid]['nom_complet']=$lig_clas_aid->nom_complet;
 
 				$sql="SELECT num_periode FROM periodes WHERE id_classe='$lig_clas_aid->id' ORDER BY num_periode DESC LIMIT 1;";
-				$tmp_res_per_clas=mysql_query($sql);
-				if(mysql_num_rows($tmp_res_per_clas)>0) {
-					$lig_tmp_per_clas=mysql_fetch_object($tmp_res_per_clas);
+				$tmp_res_per_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($tmp_res_per_clas)>0) {
+					$lig_tmp_per_clas=mysqli_fetch_object($tmp_res_per_clas);
 					if($lig_tmp_per_clas->num_periode>$tmp_aid_max_per) {$tmp_aid_max_per=$lig_tmp_per_clas->num_periode;}
 				}
 				$cpt_clas_aid++;
@@ -1237,9 +1237,9 @@ while ($i < $tmp_nb_aid) {
 							for($loop=0;$loop<count($tab_clas_aid);$loop++) {
 								$sql="SELECT * FROM periodes WHERE num_periode='$j' AND id_classe='".$tab_clas_aid[$loop]['id']."';";
 								//echo "$sql<br />";
-								$res_ver=mysql_query($sql);
-								if(mysql_num_rows($res_ver)>0) {
-									$lig_ver=mysql_fetch_object($res_ver);
+								$res_ver=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								if(mysqli_num_rows($res_ver)>0) {
+									$lig_ver=mysqli_fetch_object($res_ver);
 									if($lig_ver->verouiller=='P') {$nb_verrpart++;}
 									if($lig_ver->verouiller=='O') {$nb_verrtot++;}
 									if($lig_ver->verouiller=='N') {$nb_non_close++;}
@@ -1268,18 +1268,18 @@ while ($i < $tmp_nb_aid) {
 								// Calcul du nombre de notes et du nombre d'appréciations présentes sur le bulletin
 								$sql="SELECT 1=1 FROM aid_appreciations WHERE id_aid='$lig_aid->id' AND indice_aid='$tmp_indice_aid' AND statut!='other' AND periode='$j';";
 								// AND statut='' ?
-								$test=mysql_query($sql);
-								$nb_notes_bulletin=mysql_num_rows($test);
+								$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$nb_notes_bulletin=mysqli_num_rows($test);
 	
 								$sql="SELECT 1=1 FROM aid_appreciations WHERE id_aid='$lig_aid->id' AND indice_aid='$tmp_indice_aid' AND appreciation!='' AND periode='$j';";
 								// AND statut='' ?
-								$test=mysql_query($sql);
-								$nb_app_bulletin=mysql_num_rows($test);
+								$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$nb_app_bulletin=mysqli_num_rows($test);
 	
 								$sql="SELECT 1=1 FROM j_aid_eleves WHERE id_aid='$lig_aid->id' AND indice_aid='$tmp_indice_aid';";
 								// AND statut='' ?
-								$test=mysql_query($sql);
-								$effectif_aid=mysql_num_rows($test);
+								$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$effectif_aid=mysqli_num_rows($test);
 
 								// Note sur le bulletin:
 								echo "<!-- Colonne Note Bulletin -->\n";
@@ -1411,7 +1411,7 @@ while ($i < $tmp_nb_aid) {
 																				jeg.periode='$j' AND
 																				jec.id_classe='".$tab_clas_aid[$loop]['id']."' AND
 																				jep.professeur='".$_SESSION['login']."';";
-												$res_test_affiche_bull_simp_cette_classe=mysql_num_rows(mysql_query($sql));
+												$res_test_affiche_bull_simp_cette_classe=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
 												//echo "$sql";
 												if($res_test_affiche_bull_simp_cette_classe>0) {$affiche_bull_simp_cette_classe="y";}
 											}

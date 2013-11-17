@@ -63,7 +63,7 @@ id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 login VARCHAR( 255 ) NOT NULL ,
 app TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$resultat_creation_table=mysql_query($sql);
+$resultat_creation_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 ?>
 
@@ -143,11 +143,11 @@ elseif(isset($valide_import_cmnt)) {
 
 						$sql="SELECT 1=1 FROM commentaires_types_profs WHERE login='".$_SESSION['login']."' AND app='".addslashes($ligne)."';";
 						//echo "$sql<br />";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)==0) {
+						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($test)==0) {
 							$sql="INSERT INTO commentaires_types_profs SET login='".$_SESSION['login']."', app='".addslashes($ligne)."';";
 							//echo "$sql<br />";
-							$insert=mysql_query($sql);
+							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($insert) {
 								$nb_reg++;
 							}
@@ -182,7 +182,7 @@ if(isset($compteur_nb_commentaires)) {
 	// Nettoyage des commentaires déjà saisis pour cette classe et ces périodes:
 	$sql="DELETE FROM commentaires_types_profs WHERE login='".$_SESSION['login']."';";
 	//echo "sql=$sql<br />";
-	$resultat_nettoyage=mysql_query($sql);
+	$resultat_nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	// Validation des saisies/modifs...
 	for($i=1;$i<=$compteur_nb_commentaires;$i++){
@@ -194,7 +194,7 @@ if(isset($compteur_nb_commentaires)) {
 				if($commentaire_courant!=""){
 					$sql="INSERT INTO commentaires_types_profs SET login='".$_SESSION['login']."', app='$commentaire_courant';";
 					//echo "sql=$sql<br />";
-					$resultat_insertion_commentaire=mysql_query($sql);
+					$resultat_insertion_commentaire=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				}
 			}
 		}
@@ -205,9 +205,9 @@ if(isset($compteur_nb_commentaires)) {
 // Recherche des commentaires déjà saisis:
 $sql="SELECT DISTINCT app,id FROM commentaires_types_profs WHERE login='".$_SESSION['login']."' ORDER BY app;";
 //echo "$sql";
-$resultat_commentaires=mysql_query($sql);
+$resultat_commentaires=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 $cpt=1;
-if(mysql_num_rows($resultat_commentaires)!=0){
+if(mysqli_num_rows($resultat_commentaires)!=0){
 	echo "<p>Voici la liste de vos commentaires-types:</p>\n";
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Appréciations-types saisies'>\n";
@@ -220,7 +220,7 @@ if(mysql_num_rows($resultat_commentaires)!=0){
 
 	//$cpt=1;
 	$alt=1;
-	while($ligne_commentaire=mysql_fetch_object($resultat_commentaires)){
+	while($ligne_commentaire=mysqli_fetch_object($resultat_commentaires)){
 		if("$ligne_commentaire->app"!="$precedent_commentaire"){
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt' style='text-align:center;'>\n";

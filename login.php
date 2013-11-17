@@ -313,14 +313,14 @@ if (isset($style_screen_ajout))  {
 //==================================
 
 $msg_page_login="";
-$test = mysql_query("SHOW TABLES LIKE 'message_login'");
-if(mysql_num_rows($test)>0) {
+$test = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'message_login'");
+if(mysqli_num_rows($test)>0) {
 	$sql="SELECT ml.texte FROM message_login ml, setting s WHERE s.value=ml.id AND s.name='message_login';";
 	//echo "$sql <br />";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-	if(mysql_num_rows($res)>0) {
-		$lig_page_login=mysql_fetch_object($res);
+	if(mysqli_num_rows($res)>0) {
+		$lig_page_login=mysqli_fetch_object($res);
 		$msg_page_login=$lig_page_login->texte;
 	}
 }
@@ -337,14 +337,14 @@ if(mysql_num_rows($test)>0) {
 	$tbs_dossier_gabarit=array();
 
 
-$test = mysql_query("SHOW TABLES LIKE 'gabarits'");
+$test = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'gabarits'");
 
 		$sql="SELECT texte, repertoire, pardefaut FROM gabarits ;";
-		$res_gab=mysql_query($sql);
+		$res_gab=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	if($res_gab){
 	
-		if(mysql_num_rows($res_gab)>0) {
-			while($lig_gab=mysql_fetch_object($res_gab)) {
+		if(mysqli_num_rows($res_gab)>0) {
+			while($lig_gab=mysqli_fetch_object($res_gab)) {
 				$texte_gab=$lig_gab->texte;
 				$repertoire_gab=$lig_gab->repertoire;
 				$defaut_gab=$lig_gab->pardefaut;

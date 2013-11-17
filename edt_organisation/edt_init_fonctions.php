@@ -29,10 +29,10 @@
 // le login du prof
 function renvoiLoginProf($numero){
 	// on cherche dans la base
-	$query = mysql_query("SELECT nom_gepi FROM edt_init WHERE nom_export = '".$numero."' AND ident_export = '1'");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_gepi FROM edt_init WHERE nom_export = '".$numero."' AND ident_export = '1'");
 	if ($query) {
 
-		$test = mysql_num_rows($query);
+		$test = mysqli_num_rows($query);
 		if ($test >= 1) {
 			$retour = mysql_result($query, 0,"nom_gepi");
 		}else{
@@ -52,10 +52,10 @@ function renvoiIdSalle($chiffre){
 		$retour = 'erreur_salle';
 	// On ne prend que les 10 premières lettres du numéro ($chiffre)
 	$cherche = mb_substr($chiffre, 0, 10);
-	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$cherche."'");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_salle FROM salle_cours WHERE numero_salle = '".$cherche."'");
 	if ($query) {
 		//$reponse = mysql_result($query, 0,"id_salle");
-		$reponse = mysql_fetch_array($query);
+		$reponse = mysqli_fetch_array($query);
 		if ($reponse["id_salle"] == '') {
 			$retour = "inc";
 		}else{
@@ -127,12 +127,12 @@ function renvoiIdCreneau($heure_brute, $jour){
 	$heures = mb_substr($heure_brute, 0, -2);
 	$heuredebut = $heures.':'.$minutes.':00';
 	$table = nomTableCreneau($jour);
-	$query = mysql_query("SELECT id_definie_periode FROM ".$table." WHERE
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_definie_periode FROM ".$table." WHERE
 					heuredebut_definie_periode <= '".$heuredebut."' AND
 					heurefin_definie_periode > '".$heuredebut."'")
-						OR DIE('Erreur renvoiIdCreneau : '.mysql_error());
+						OR DIE('Erreur renvoiIdCreneau : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	if ($query) {
-		$nbre = mysql_num_rows($query);
+		$nbre = mysqli_num_rows($query);
 		if ($nbre >= 1) {
 			$retour = mysql_result($query, 0,"id_definie_periode");
 		}else{
@@ -149,7 +149,7 @@ function renvoiIdCreneau($heure_brute, $jour){
 // durée d'un créneau dans Gepi
 function dureeCreneau(){
 	// On récupère les infos sur un créneau
-	$creneau = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux LIMIT 1"));
+	$creneau = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux LIMIT 1"));
 	$deb = $creneau["heuredebut_definie_periode"];
 	$fin = $creneau["heurefin_definie_periode"];
 	$nombre_mn_deb = (mb_substr($deb, 0, -5) * 60) + (mb_substr($deb, 3, -3));
@@ -195,7 +195,7 @@ function renvoiDebut($id_creneau, $heure_deb, $jour){
 	// Nombre de mn de l'horaire de Gepi
 	$table = nomTableCreneau($jour);
 	if ($id_creneau != '') {
-			$heure = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM ".$table." WHERE id_definie_periode = '".$id_creneau."'"));
+			$heure = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heuredebut_definie_periode FROM ".$table." WHERE id_definie_periode = '".$id_creneau."'"));
 		$decompose = explode(":", $heure["heuredebut_definie_periode"]);
 		$nbre_mn_gepi = ($decompose[0] * 60) + $decompose[1];
 		// On fait la différence entre les deux horaires qui ont été convertis en nombre de minutes
@@ -225,15 +225,15 @@ function renvoiConcordances($chiffre, $etape){
 		$sql = "SELECT nom_gepi FROM edt_init WHERE
 								(nom_export = '".$chiffre."' OR nom_export = '".remplace_accents($chiffre, 'all_nospace')."')
 								AND ident_export = '".$etape."'";
-		$query = mysql_query($sql);
+		$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	}else{
 		$query = NULL;
 	}
 
 	if ($query) {
-		$test = mysql_num_rows($query);
+		$test = mysqli_num_rows($query);
 		if ($test >= 1) {
-			$reponse = mysql_fetch_array($query)
+			$reponse = mysqli_fetch_array($query)
 				OR trigger_error('Erreur dans le $reponse pour le '.$chiffre.'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> sur la requête '.$sql, E_USER_WARNING);
 		}else{
 			$reponse["nom_gepi"] = '';
@@ -296,17 +296,17 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 	}else{
 		// On récupère la classe, la matière et le professeur
 		// et on cherche un enseignement qui pourrait correspondre avec
-		$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE
+		$req_groupe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE
 						jgp.login = '".$prof."' AND
 						jgc.id_classe = '".$classe."' AND
 						jgm.id_matiere = '".$matiere."' AND
 						jgp.id_groupe = jgc.id_groupe AND
 						jgp.id_groupe = jgm.id_groupe");
 
-		$rep_groupe = mysql_fetch_array($req_groupe);
+		$rep_groupe = mysqli_fetch_array($req_groupe);
 		//print_r($rep_groupe);
 		//echo '<br />';
-		$nbre_rep = mysql_num_rows($req_groupe);
+		$nbre_rep = mysqli_num_rows($req_groupe);
 
 
 		// On vérifie ce qu'il y a dans la réponse
@@ -326,7 +326,7 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 			if($partie_txt == '' OR $partie_txt == $matiere_txt){
 
 				//on fait la requette avec le nom de la matière
-				$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm, groupes grp WHERE
+				$req_groupe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm, groupes grp WHERE
 				jgp.login = '".$prof."' AND
 				jgc.id_classe = '".$classe."' AND
 				jgm.id_matiere = '".$matiere."' AND
@@ -338,7 +338,7 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 			}
 
 			// on regarde si on a bien obtenu un seul groupe
-			$nbre_rep = mysql_num_rows($req_groupe);
+			$nbre_rep = mysqli_num_rows($req_groupe);
 
 			if( $nbre_rep != 1 ){
 
@@ -349,8 +349,8 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 				$groupe_nom = str_replace ( ' ', '_', $partie_txt);
 
 				//on récupére le nom de la classe
-				$req_classe_list = mysql_query("SELECT classe FROM classes WHERE id = '".$classe."' ");
-				$classe_list = mysql_fetch_array($req_classe_list);
+				$req_classe_list = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '".$classe."' ");
+				$classe_list = mysqli_fetch_array($req_classe_list);
 				$classe_nom = $classe_list["classe"];
 				$classe_nom = str_replace ( ' ', '_', $classe_nom);
 
@@ -360,7 +360,7 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 				// REGEXP '^MATIERE.?(CLASSE)?.?GROUPE$'
 				//----------------------------------------
 
-				$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm, groupes grp WHERE
+				$req_groupe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm, groupes grp WHERE
 					jgp.login = '".$prof."' AND
 					jgc.id_classe = '".$classe."' AND
 					jgm.id_matiere = '".$matiere."' AND
@@ -372,10 +372,10 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 			}
 
 			// on regarde si on a bien obtenu un seul groupe
-			$nbre_rep = mysql_num_rows($req_groupe);
+			$nbre_rep = mysqli_num_rows($req_groupe);
 
 			if( $nbre_rep == 1){
-				$rep_groupe = mysql_fetch_array($req_groupe);
+				$rep_groupe = mysqli_fetch_array($req_groupe);
 				$retour = $rep_groupe["id_groupe"];
 			}else{
 				$retour = "plusieurs";
@@ -396,15 +396,15 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 */
 function testerSalleCsv2($numero){
 	// On teste la table
-	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'")
-				OR trigger_error('Erreur dans la requête '.$query.' : '.mysql_error());
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'")
+				OR trigger_error('Erreur dans la requête '.$query.' : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$rep = @mysql_result($query, 0,"id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
 		// On renvoie "ok"
 		return "ok";
 	}else{
 		// On enregistre la nouvelle salle
-		$query2 = mysql_query("INSERT INTO salle_cours SET numero_salle = '".$numero."', nom_salle = ''");
+		$query2 = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO salle_cours SET numero_salle = '".$numero."', nom_salle = ''");
 		if ($query2) {
 			return "enregistree";
 		}
@@ -418,8 +418,8 @@ function testerSalleCsv2($numero){
 function salleifexists($numero){
 	// On teste la table
 	$sql = "SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'";
-	$query = mysql_query($sql)
-				OR trigger_error('Impossible de vérifier l\'existence de cette salle : la requête '.$sql.' a échoué : '.mysql_error(), E_USER_WARNING);
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql)
+				OR trigger_error('Impossible de vérifier l\'existence de cette salle : la requête '.$sql.' a échoué : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
 	// On force tout de même le résultat
 	$rep = @mysql_result($query, 0,"id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
@@ -455,12 +455,12 @@ function rechercheCreneauCsv2($creneau){
 			$heure = $test2[0];
 		}
 		$heure_reconstruite = $heure.':'.$test2[1].':'.'00';
-		$query = mysql_query("SELECT DISTINCT id_definie_periode FROM edt_creneaux
+		$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT id_definie_periode FROM edt_creneaux
 						WHERE heuredebut_definie_periode <= '".$heure_reconstruite."'
 						ORDER BY heuredebut_definie_periode ASC LIMIT 1");
 		if ($query) {
 			// On a trouvé
-			$reponse_id = mysql_fetch_array($query);
+			$reponse_id = mysqli_fetch_array($query);
 			if ($reponse_id["id_definie_periode"] != '') {
 				$retour["id_creneau"] = $id_creneau = $reponse_id["id_definie_periode"];
 			}else{
@@ -474,7 +474,7 @@ function rechercheCreneauCsv2($creneau){
 	if (isset($test1[1])) {
 		// ça veut dire que le créneau étudié est de la forme 8h00 - 9h35 : $test1[0] = 8h00 et $test1(1] = 9h00
 		// on recherche si le début est bon ou pas pour savoir si le cours commence au début du créneau ou pas
-		$heure_debut = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$id_creneau."'"));
+		$heure_debut = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$id_creneau."'"));
 		$test3 = explode(":", $heure_debut["heuredebut_definie_periode"]);
 		if (mb_substr($test3[0], 0, -1) == "0") {
 			$heu = mb_substr($test3[0], -1);
@@ -630,13 +630,13 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 							login_prof = '".$prof_e."';";
 		}
 		//echo "Test ifexists : $sql<br />";
-		$ifexists = mysql_query($sql)
-							OR DIE('erreur dans la requête '.$ifexists.' : '.mysql_error());
+		$ifexists = mysqli_query($GLOBALS["___mysqli_ston"], $sql)
+							OR DIE('erreur dans la requête '.$ifexists.' : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-		$erreur_report = mysql_fetch_array($ifexists);
+		$erreur_report = mysqli_fetch_array($ifexists);
 		$retour["msg_erreur"] .= 'Ce cours existe déjà ('.$erreur_report["id_cours"].').';
 
-		if (mysql_num_rows($ifexists) < 1) {
+		if (mysqli_num_rows($ifexists) < 1) {
 			// On enregistre la ligne
 			//echo "\$groupe_e=$groupe_e<br />";
 			if(preg_match("/^AID/", $groupe_e)) {
@@ -693,7 +693,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 
 			$retour["msg_erreur"] .= '<br />&nbsp;&nbsp;&nbsp;&nbsp;'.$sql;
 
-			$envoi = mysql_query($sql) OR DIE('Erreur dans la requête '.$sql);
+			$envoi = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR DIE('Erreur dans la requête '.$sql);
 			if ($envoi) {
 				// et on renvoie 'ok'
 				$retour["reponse"] = 'ok';
@@ -741,35 +741,35 @@ if ($tab[4] != '') {
 
 	// On vérifie si ce edt_gr n'existe pas déjà... s'il existe, on précise que le type de subdivision passe à 'autre'
 	// et on passe subdivision à 'plusieurs'
-	$query_verif = mysql_query("SELECT id FROM edt_gr_nom
+	$query_verif = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM edt_gr_nom
 										WHERE nom = '".$nom."'
 										AND nom_long = '".$nom_long."'
 										AND (subdivision_type = '".$type_sub."' OR subdivision_type = 'autre')");
-	$nbre = mysql_num_rows($query_verif);
+	$nbre = mysqli_num_rows($query_verif);
 
 	if ($nbre >= 1) {
 
 		// alors il existe déjà, on le met à jour et on s'en va
 		//$rep_id = mysql_result($query_verif, 0,"id");
-		$rep_id = mysql_fetch_array($query_verif);
-		$maj = mysql_query("UPDATE edt_gr_nom SET subdivision_type = 'autre', subdivision = 'plusieurs' WHERE id = '".$rep_id["id"]."'");
+		$rep_id = mysqli_fetch_array($query_verif);
+		$maj = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_gr_nom SET subdivision_type = 'autre', subdivision = 'plusieurs' WHERE id = '".$rep_id["id"]."'");
 
 		$retour = $rep_id["id"];
 
 	}else{
 
 		// on crée cet edt_gr
-		$query_create = mysql_query("INSERT INTO edt_gr_nom (id, nom, nom_long, subdivision_type, subdivision)
+		$query_create = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO edt_gr_nom (id, nom, nom_long, subdivision_type, subdivision)
 												VALUES ('', '".$nom."', '".$nom_long."', '".$type_sub."', '".$subdivision."')");
 		// On récupère son id
-		$query_id = mysql_query("SELECT id FROM edt_gr_nom
+		$query_id = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM edt_gr_nom
 												WHERE nom = '".$nom."'
 												AND nom_long = '".$nom_long."'
 												AND subdivision_type = '".$type_sub."'
 												AND subdivision = '".$subdivision."");
 		//$recup_id = mysql_result($query_id, 0,"id");
-		$recup_id = mysql_fetch_array($query_id);
-		$create_prof = mysql_query("INSERT INTO edt_gr_prof (id, id_gr_nom, id_utilisateurs)
+		$recup_id = mysqli_fetch_array($query_id);
+		$create_prof = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO edt_gr_prof (id, id_gr_nom, id_utilisateurs)
 																				VALUES('', '".$recup_id["id"]."', '".renvoiConcordances($tab[4], 4)."')");
 		$retour = $recup_id["id"];
 

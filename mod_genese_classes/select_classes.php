@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/select_classes.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/select_classes.php',
 administrateur='V',
 professeur='F',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Choix des classes',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 //======================================================================================
@@ -78,14 +78,14 @@ if((isset($choix_classes))&&((isset($id_classe))||(isset($classes_futures)))) {
 
 	$sql="DELETE FROM gc_divisions WHERE projet='$projet';";
 	//echo "$sql<br />";
-	$suppr=mysql_query($sql);
+	$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	if(isset($id_classe)) {
 		for($i=0;$i<count($id_classe);$i++) {
 			// Il faudrait contrôler que les classes sont valides et éviter certains caractères pour 'classe'.
 			$sql="INSERT INTO gc_divisions SET projet='$projet', id_classe='".$id_classe[$i]."', classe='".$classe[$id_classe[$i]]."', statut='actuelle';";
 			//echo "$sql<br />";
-			if($insert=mysql_query($sql)) {$nb_reg1++;} else {$nb_err++;}
+			if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {$nb_reg1++;} else {$nb_err++;}
 		}
 	}
 	
@@ -95,7 +95,7 @@ if((isset($choix_classes))&&((isset($id_classe))||(isset($classes_futures)))) {
 			// Il faudrait contrôler que les classes sont valides et éviter certains caractères pour 'classe'.
 			$sql="INSERT INTO gc_divisions SET projet='$projet', id_classe='0', classe='".$tab_tmp[$i]."', statut='future';";
 			//echo "$sql<br />";
-			if($insert=mysql_query($sql)) {$nb_reg2++;} else {$nb_err++;}
+			if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {$nb_reg2++;} else {$nb_err++;}
 		}
 	}
 
@@ -134,9 +134,9 @@ $tab_id_div=array();
 $tab_classe_fut=array();
 $classes_futures="";
 $sql="SELECT * FROM gc_divisions WHERE projet='$projet';";
-$res_div=mysql_query($sql);
-if(mysql_num_rows($res_div)>0) {
-	while($lig_div=mysql_fetch_object($res_div)) {
+$res_div=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_div)>0) {
+	while($lig_div=mysqli_fetch_object($res_div)) {
 		if($lig_div->statut=='actuelle') {
 			$tab_id_div[]=$lig_div->id_classe;
 		}
@@ -151,8 +151,8 @@ if(mysql_num_rows($res_div)>0) {
 echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
 $sql="SELECT id,classe FROM classes ORDER BY classe;";
-$res_classes=mysql_query($sql);
-$nb_classes=mysql_num_rows($res_classes);
+$res_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$nb_classes=mysqli_num_rows($res_classes);
 // Ajouter des classes
 echo "<p>Liste des classes actuelles&nbsp;:\n";
 echo "</p>\n";
@@ -168,7 +168,7 @@ $cpt_i = 0;
 echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 echo "<td align='left'>\n";
 
-while($lig_clas=mysql_fetch_object($res_classes)) {
+while($lig_clas=mysqli_fetch_object($res_classes)) {
 
 	//affichage 2 colonnes
 	if(($cpt_i>0)&&(round($cpt_i/$nb_classes_par_colonne)==$cpt_i/$nb_classes_par_colonne)){

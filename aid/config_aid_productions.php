@@ -58,14 +58,14 @@ if (isset($is_posted) and ($is_posted == "1")) {
                     $msg .= "Le type ".$value." ne peut être supprimée il est déjà utilisé dans au moins une fiche projet.<br />";
                     $pb = "yes";
                 } else {
-                    $req = mysql_query("delete from aid_productions where id='".$key."'");
+                    $req = mysqli_query($GLOBALS["___mysqli_ston"], "delete from aid_productions where id='".$key."'");
                     if (!$req) {
                         $msg .= "Problème lors de la suppression du type $value <br />";
                         $pb = "yes";
                     }
                 }
             } else {
-                $req = mysql_query("update aid_productions set nom = '".$value."' where id='".$key."'");
+                $req = mysqli_query($GLOBALS["___mysqli_ston"], "update aid_productions set nom = '".$value."' where id='".$key."'");
                 if (!$req) {
                     $msg .= "Problème lors de la mise à jour du type $value <br />";
                     $pb = "yes";
@@ -73,7 +73,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
             }
         } else {
             if (($key!="is_posted") and ($value!='')) {
-                $req = mysql_query("insert into aid_productions set nom = '".$value."'");
+                $req = mysqli_query($GLOBALS["___mysqli_ston"], "insert into aid_productions set nom = '".$value."'");
                 if (!$req) {
                     $msg .= "Problème lors de l'insertion du type $value <br />";
                     $pb = "yes";
@@ -107,8 +107,8 @@ echo "<table border='1' cellpadding='5' class='boireaus'>";
 echo "<tr><th><b>Identifiant</b></th>
 <th><span class='small'>Intitulé du type de production</span></th>
 </tr>";
-$res = mysql_query($requete);
-$nb_lignes = mysql_num_rows($res);
+$res = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+$nb_lignes = mysqli_num_rows($res);
 $i = 0;
 $alt=1;
 while ($i < $nb_lignes) {

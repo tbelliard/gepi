@@ -12,8 +12,8 @@
 
 	$sql="SELECT * FROM commentaires_types_profs WHERE login='".$_SESSION['login']."' ORDER BY app;";
 	//echo "$sql<br />";
-	$res_cmt=mysql_query($sql);
-	if(mysql_num_rows($res_cmt)>0) {
+	$res_cmt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_cmt)>0) {
 
 		$titre_bulle="Commentaires-types";
 
@@ -23,7 +23,7 @@
 		$cpt=0;
 		$texte_bulle.="<div class='boireaus'>\n";
 		$alt=1;
-		while($lig_cmt=mysql_fetch_object($res_cmt)) {
+		while($lig_cmt=mysqli_fetch_object($res_cmt)) {
 			$alt=$alt*(-1);
 			$texte_bulle.="<div class='lig$alt' style='border:1px solid black; margin: 1px; ' onClick=\"insere_cmt($cpt)\">\n";
 			$texte_bulle.=htmlspecialchars($lig_cmt->app)."\n";

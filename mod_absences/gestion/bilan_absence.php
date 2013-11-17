@@ -284,8 +284,8 @@ class bilan_PDF extends FPDF
 		$cpt = 0;
 
 		$requete = "SELECT " . $select_requete . " FROM " . $from_requete . " WHERE " . $where_requete . " GROUP BY " . $groupby_requete . " ORDER BY " . $orderby_requete;
-		$execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-		while($donnee = mysql_fetch_array($execution))
+		$execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		while($donnee = mysqli_fetch_array($execution))
 		{
 
 			$tableau[$cpt]['nom'] = $donnee['nom'];

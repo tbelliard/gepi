@@ -16,7 +16,7 @@ function corriger_caracteres($texte) {
 function traitement_magic_quotes($_value) {
    if (get_magic_quotes_gpc())    $_value = stripslashes($_value);
    if (!is_numeric($_value)) {
-        $_value = mysql_real_escape_string($_value);
+        $_value = ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $_value) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
    }
    return $_value;
 }

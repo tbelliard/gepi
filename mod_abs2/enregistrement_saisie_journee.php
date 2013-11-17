@@ -35,7 +35,7 @@ require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
 // On donne les droits sur la page en attendant qu'ils soient dans la base
-$query = mysql_query("INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisie_journee.php', 'F', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Saisie des absences', '') 
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisie_journee.php', 'F', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Saisie des absences', '') 
 	ON DUPLICATE KEY UPDATE id = '/mod_abs2/enregistrement_saisie_journee.php'");
 
 if (!$query) {

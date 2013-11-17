@@ -82,9 +82,9 @@ if (!isset($step1)) {
 					$tab_matiere_prof_reordonne=array();
 					$sql="SELECT * FROM j_professeurs_matieres WHERE id_professeur='$login_prof' ORDER BY ordre_matieres;";
 					//echo "$sql<br />\n";
-					$res=mysql_query($sql);
-					if(mysql_num_rows($res)>0) {
-						while($lig_mp=mysql_fetch_object($res)) {
+					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						while($lig_mp=mysqli_fetch_object($res)) {
 							$tab_matiere_prof[]=$lig_mp->id_matiere;
 						}
 					}
@@ -111,7 +111,7 @@ if (!isset($step1)) {
 	
 							$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='$login_prof';";
 							//echo "$sql<br />\n";
-							$del=mysql_query($sql);
+							$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if(!$del) {
 								echo " (<span style='color:red'>ERREUR</span>)";
 								$temoin_erreur++;
@@ -121,7 +121,7 @@ if (!isset($step1)) {
 									$k=$loop+1;
 									$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$login_prof', id_matiere='".$tab_matiere_prof_reordonne[$loop]."', ordre_matieres='$k';";
 									//echo "$sql<br />\n";
-									$insert=mysql_query($sql);
+									$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 									if($insert) {
 										echo " (<span style='color:green";
 										if($loop==0) {echo "; font-weight: bold";}
@@ -160,7 +160,7 @@ if (!isset($step1)) {
 	$j=0;
 	$flag=0;
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
-		if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+		if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 			$flag=1;
 		}
 		$j++;
@@ -198,9 +198,9 @@ if (!isset($is_posted)) {
 		check_token(false);
 		$j=0;
 		while ($j < count($liste_tables_del)) {
-			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+			if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 				//echo "DELETE FROM $liste_tables_del[$j]<br />";
-				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+				$del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM $liste_tables_del[$j]");
 			}
 			$j++;
 		}
@@ -295,22 +295,22 @@ if (!isset($is_posted)) {
 
 					if($temoin_erreur!="oui"){
 						$sql="SELECT id FROM classes WHERE classe='$affiche[0]'";
-						$res_classe=mysql_query($sql);
-						if(mysql_num_rows($res_classe)==1){
-							$lig_classe=mysql_fetch_object($res_classe);
+						$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res_classe)==1){
+							$lig_classe=mysqli_fetch_object($res_classe);
 							$id_classe=$lig_classe->id;
 
 							$sql="SELECT col1 FROM tempo2 WHERE col2='$affiche[1]'";
 							//echo "<tr><td>$sql</td></tr>\n";
-							$res_prof=mysql_query($sql);
-							$lig_prof=mysql_fetch_object($res_prof);
+							$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$lig_prof=mysqli_fetch_object($res_prof);
 
 							$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login";
-							$res_eleve=mysql_query($sql);
+							$res_eleve=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							$temoin_erreur_classe=0;
-							while($lig_eleve=mysql_fetch_object($res_eleve)){
+							while($lig_eleve=mysqli_fetch_object($res_eleve)){
 								$sql="INSERT INTO j_eleves_professeurs VALUES('$lig_eleve->login','$lig_prof->col1','$id_classe')";
-								$res_prof_eleve=mysql_query($sql);
+								$res_prof_eleve=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$res_prof_eleve){
 									$temoin_erreur_classe++;
 									//echo "<tr><td>$sql</td></tr>\n";

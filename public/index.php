@@ -75,7 +75,7 @@ if ($rne != 'aucun') {
 }
 
 // Nom complet de la classe
-$appel_classe = mysql_query("SELECT classe FROM classes WHERE id='$id_classe'");
+$appel_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id='$id_classe'");
 $classe_nom = @mysql_result($appel_classe, 0, "classe");
 // Nom complet de la matière
 $matiere_nom = $current_group["matiere"]["nom_complet"];
@@ -130,7 +130,7 @@ echo "//-->";
 echo "</SCRIPT></p>\n";
 echo make_classes_select_html('index.php', $id_classe, $year, $month, $day);
 if ($id_classe!=-1) echo make_matiere_select_html('index.php', $id_classe, $id_groupe, $year, $month, $day);
-$test_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE ((statut = 'responsable' OR statut = 'eleve') AND etat = 'actif')"), 0);
+$test_login = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(login) FROM utilisateurs WHERE ((statut = 'responsable' OR statut = 'eleve') AND etat = 'actif')"), 0);
 if ($test_login > 0) {
 	echo "<p>Si vous disposez d'un identifiant et d'un mot de passe, <a href='../login.php'>connectez-vous !</a></p>";
 }
@@ -163,8 +163,8 @@ echo "<input type=\"submit\" value=\"OK\"/></form>\n";
 minicals($year, $month, $day, $id_groupe, 'index.php?');
 echo "</td>";
 echo "</tr></table>\n<hr />\n";
-$test_cahier_texte = mysql_query("SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
-$nb_test = mysql_num_rows($test_cahier_texte);
+$test_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
+$nb_test = mysqli_num_rows($test_cahier_texte);
 $delai = getSettingValue("delai_devoirs");
 //Affichage des devoirs globaux s'il n'y a pas de notices dans ct_entry à afficher
 if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
@@ -173,14 +173,14 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
     for ($i = 0; $i <= $delai; $i++) {
         $aujourhui = $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
         $jour = mktime(0, 0, 0, date('m',$aujourhui), (date('d',$aujourhui) + $i), date('Y',$aujourhui) );
-        $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+        $appel_devoirs_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
             "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jc WHERE (" .
             "ct.id_groupe = jc.id_groupe and " .
             "g.id = jc.id_groupe and " .
             "jc.id_classe = '" . $id_classe . "' and " .
             "ct.contenu != '' and " .
             "ct.date_ct = '$jour')");
-        $nb_devoirs_cahier_texte = mysql_num_rows($appel_devoirs_cahier_texte);
+        $nb_devoirs_cahier_texte = mysqli_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
         if ($nb_devoirs_cahier_texte != 0) {
             $nb_dev++;
@@ -248,14 +248,14 @@ if ($delai != 0) {
     for ($i = 0; $i <= $delai; $i++) {
         $jour = mktime(0, 0, 0, date('m',$today), (date('d',$today) + $i), date('Y',$today) );
         // On regarde pour chaque jour, s'il y a des devoirs dans à faire
-        $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+        $appel_devoirs_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jgc WHERE (" .
                 "ct.id_groupe = jgc.id_groupe and " .
                 "g.id = jgc.id_groupe and " .
                 "jgc.id_classe = '" . $id_classe . "' and " .
                 "ct.contenu != '' and " .
                 "ct.date_ct = '$jour')");
-        $nb_devoirs_cahier_texte = mysql_num_rows($appel_devoirs_cahier_texte);
+        $nb_devoirs_cahier_texte = mysqli_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
         if ($nb_devoirs_cahier_texte != 0) {
             $nb_dev++;
@@ -300,9 +300,9 @@ if ($delai != 0) {
     if ($nb_dev != 0) echo "</td></tr></table>\n";
 }
 // Affichage des informations générales
-$appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
+$appel_info_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 
-$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
+$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 // documents joints
@@ -351,8 +351,8 @@ $req_notices =
     and date_ct >= '".getSettingValue("begin_bookings")."')
     ORDER BY date_ct DESC, heure_entry DESC limit 10";
 
-$res_notices = mysql_query($req_notices);
-$notice = mysql_fetch_object($res_notices);
+$res_notices = mysqli_query($GLOBALS["___mysqli_ston"], $req_notices);
+$notice = mysqli_fetch_object($res_notices);
 
 $req_devoirs =
     "select 't' type, contenu, date_ct, id_ct
@@ -364,8 +364,8 @@ $req_devoirs =
     and date_ct >= '".getSettingValue("begin_bookings")."'
     and date_ct <= '".getSettingValue("end_bookings")."'
     ) order by date_ct DESC limit 10";
-$res_devoirs = mysql_query($req_devoirs);
-$devoir = mysql_fetch_object($res_devoirs);
+$res_devoirs = mysqli_query($GLOBALS["___mysqli_ston"], $req_devoirs);
+$devoir = mysqli_fetch_object($res_devoirs);
 
 // Boucle d'affichage des notices dans la colonne de gauche
 $date_ct_old = -1;
@@ -374,11 +374,11 @@ while (true) {
     if ($notice && (!$devoir || $notice->date_ct >= $devoir->date_ct)) {
         // Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
         $not_dev = $notice;
-        $notice = mysql_fetch_object($res_notices);
+        $notice = mysqli_fetch_object($res_notices);
     } elseif($devoir) {
         // Plus de notices et toujours un devoir, ou devoir plus récent
         $not_dev = $devoir;
-        $devoir = mysql_fetch_object($res_devoirs);
+        $devoir = mysqli_fetch_object($res_devoirs);
     } else {
         // Plus rien à afficher, on sort de la boucle
         break;

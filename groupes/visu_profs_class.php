@@ -88,20 +88,20 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 
 		// Liste des CPE:
 		$sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY u.nom, u.prenom, jec.cpe_login";
-		$result_cpe=mysql_query($sql);
-		if(mysql_num_rows($result_cpe)>0){
+		$result_cpe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($result_cpe)>0){
 			$tab_enseignements[$cpt]['id_groupe']="VIE_SCOLAIRE";
 			$tab_enseignements[$cpt]['grp_name']="VIE SCOLAIRE";
 			$tab_enseignements[$cpt]['grp_description']="VIE SCOLAIRE";
 
 			for($loop=0;$loop<count($nom_periode);$loop++) {
 				$sql="SELECT DISTINCT nom,prenom FROM eleves e,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jec.e_login=e.login AND jecl.id_classe='$id_classe' AND jecl.periode='".($loop+1)."';";
-				$result_eleve=mysql_query($sql);
-				$tab_enseignements[$cpt]['nb_eleves'][$loop+1]=mysql_num_rows($result_eleve);
+				$result_eleve=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$tab_enseignements[$cpt]['nb_eleves'][$loop+1]=mysqli_num_rows($result_eleve);
 			}
 
 			$cpt2=0;
-			while($lig_cpe=mysql_fetch_object($result_cpe)) {
+			while($lig_cpe=mysqli_fetch_object($result_cpe)) {
 
 				$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof']=my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2');
 				if($lig_cpe->email!=""){
@@ -112,8 +112,8 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 
 				for($loop=0;$loop<count($nom_periode);$loop++) {
 					$sql="SELECT DISTINCT nom,prenom FROM eleves e,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jec.e_login=e.login AND jecl.id_classe='$id_classe' AND jec.cpe_login='$lig_cpe->cpe_login' AND jecl.periode='".($loop+1)."';";
-					$result_eleve=mysql_query($sql);
-					$tab_enseignements[$cpt]['prof'][$cpt2]['nb_eleves'][$loop+1]=mysql_num_rows($result_eleve);
+					$result_eleve=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$tab_enseignements[$cpt]['prof'][$cpt2]['nb_eleves'][$loop+1]=mysqli_num_rows($result_eleve);
 				}
 
 				$cpt2++;
@@ -124,8 +124,8 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 		// Liste des enseignements et professeurs:
 		$sql="SELECT m.nom_complet,jgm.id_groupe, g.name, g.description FROM j_groupes_classes jgc, j_groupes_matieres jgm, matieres m, groupes g WHERE jgc.id_groupe=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY jgc.priorite, m.matiere";
 		//echo "$sql<br />";
-		$result_grp=mysql_query($sql);
-		while($lig_grp=mysql_fetch_object($result_grp)){
+		$result_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig_grp=mysqli_fetch_object($result_grp)){
 			$tab_enseignements[$cpt]['id_groupe']=$lig_grp->id_groupe;
 			$tab_enseignements[$cpt]['grp_name']=$lig_grp->name;
 			$tab_enseignements[$cpt]['matiere_nom_complet']=$lig_grp->nom_complet;
@@ -133,8 +133,8 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 
 			// Le groupe est-il composé uniquement d'élèves de la classe?
 			$sql="SELECT * FROM j_groupes_classes jgc WHERE jgc.id_groupe='$lig_grp->id_groupe'";
-			$res_nb_class_grp=mysql_query($sql);
-			$nb_class_grp=mysql_num_rows($res_nb_class_grp);
+			$res_nb_class_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nb_class_grp=mysqli_num_rows($res_nb_class_grp);
 			$tab_enseignements[$cpt]['nb_class_grp']=$nb_class_grp;
 
 			for($loop=0;$loop<count($nom_periode);$loop++) {
@@ -155,8 +155,8 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 																	jeg.periode=jec.periode AND 
 																	jec.periode='".($loop+1)."' 
 																ORDER BY e.nom,e.prenom";
-				$res_eleves=mysql_query($sql);
-				$nb_eleves=mysql_num_rows($res_eleves);
+				$res_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$nb_eleves=mysqli_num_rows($res_eleves);
 				$tab_enseignements[$cpt]['nb_eleves'][$loop+1]=$nb_eleves;
 
 				if($nb_class_grp>1){
@@ -176,8 +176,8 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 																		jec.periode='".($loop+1)."' AND 
 																		jec.login=e.login 
 																	ORDER BY e.nom,e.prenom";
-					$res_tous_eleves_grp=mysql_query($sql);
-					$nb_tous_eleves_grp=mysql_num_rows($res_tous_eleves_grp);
+					$res_tous_eleves_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$nb_tous_eleves_grp=mysqli_num_rows($res_tous_eleves_grp);
 
 					$tab_enseignements[$cpt]['nb_tous_eleves_grp'][$loop+1]=$nb_tous_eleves_grp;
 				}
@@ -187,9 +187,9 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 			// Professeurs
 			$sql="SELECT jgp.login,u.nom,u.prenom,u.email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$lig_grp->id_groupe' AND u.login=jgp.login";
 			//echo "$sql<br />";
-			$result_prof=mysql_query($sql);
+			$result_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			$cpt2=0;
-			while($lig_prof=mysql_fetch_object($result_prof)){
+			while($lig_prof=mysqli_fetch_object($result_prof)){
 
 				$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof']=my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2');
 				if($lig_prof->email!=""){
@@ -202,8 +202,8 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 				$tab_enseignements[$cpt]['prof'][$cpt2]['is_pp']="n";
 				$sql="SELECT * FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$lig_prof->login'";
 				//echo " (<i>$sql</i>)\n";
-				$res_pp=mysql_query($sql);
-				if(mysql_num_rows($res_pp)>0){
+				$res_pp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_pp)>0){
 					$tab_enseignements[$cpt]['prof'][$cpt2]['is_pp']="y";
 				}
 				$cpt2++;
@@ -312,16 +312,16 @@ if(isset($id_classe)){
 
 		$chaine_options_classes="";
 
-		$res_class_tmp=mysql_query($sql);
-		if(mysql_num_rows($res_class_tmp)>0){
+		$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_class_tmp)>0){
 			$id_class_prec=0;
 			$id_class_suiv=0;
 			$temoin_tmp=0;
-			while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 				if($lig_class_tmp->id==$id_classe){
 					$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 					$temoin_tmp=1;
-					if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 						$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 						$id_class_suiv=$lig_class_tmp->id;
 					}
@@ -398,8 +398,8 @@ if(isset($id_classe)){
 </script>\n";
 
 		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe'";
-		$res_eleves_classe=mysql_query($sql);
-		$nb_eleves_classe=mysql_num_rows($res_eleves_classe);
+		$res_eleves_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nb_eleves_classe=mysqli_num_rows($res_eleves_classe);
 
 		if(count($tab_enseignements)==0) {
 			echo "<p style='color:red'>Aucun enseignement.</p>\n";
@@ -698,8 +698,8 @@ else {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
 
-	$result_classes=mysql_query($sql);
-	$nb_classes = mysql_num_rows($result_classes);
+	$result_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_classes = mysqli_num_rows($result_classes);
 	//echo "<select name='id_classe' size='1'>\n";
 	//echo "<option value='null'>-- Sélectionner la classe --</option>\n";
 	/*
@@ -709,18 +709,18 @@ else {
 		echo "<option value='$id_classe'>" . htmlspecialchars($classe) . "</option>\n";
 	}
 	*/
-	if(mysql_num_rows($result_classes)==0){
+	if(mysqli_num_rows($result_classes)==0){
 		echo "<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
 	else{
-		$nb_classes=mysql_num_rows($result_classes);
+		$nb_classes=mysqli_num_rows($result_classes);
 		$nb_class_par_colonne=round($nb_classes/3);
 		echo "<table width='100%' summary='Choix de la classe'>\n";
 		echo "<tr valign='top' align='center'>\n";
 		$cpt=0;
 		//echo "<td style='padding: 0 10px 0 10px'>\n";
 		echo "<td>\n";
-		while($lig_class=mysql_fetch_object($result_classes)){
+		while($lig_class=mysqli_fetch_object($result_classes)){
 			if(($cpt>0)&&(round($cpt/$nb_class_par_colonne)==$cpt/$nb_class_par_colonne)){
 				echo "</td>\n";
 				//echo "<td style='padding: 0 10px 0 10px'>\n";

@@ -80,7 +80,7 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
     die();
 }
 
-$appel_cahier_notes=mysql_query("SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
+$appel_cahier_notes=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
 $id_groupe=mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group=get_group($id_groupe);
 $periode_num=mysql_result($appel_cahier_notes, 0, 'periode');
@@ -98,7 +98,7 @@ if(!isset($id_dev)) {
 }
 
 $sql="SELECT * FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
-$query=mysql_query($sql);
+$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if($query) {
 	$id_cn_dev=mysql_result($query, 0, 'id_cn_dev');
 	$nom_court_dev=stripslashes(mysql_result($query, 0, 'nom_court'));
@@ -114,13 +114,13 @@ $id_eval=isset($_POST["id_eval"]) ? $_POST["id_eval"] : (isset($_GET["id_eval"])
 if(isset($id_eval))  {
 	$sql="SELECT * FROM cc_eval WHERE id='$id_eval';";
 	//echo "$sql<br />";
-	$query=mysql_query($sql);
+	$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	if($query) {
 		// Vérifier que l'évaluation est bien associée au CC.
 		$sql="SELECT * FROM cc_eval WHERE id='$id_eval' AND id_dev='$id_dev';";
 		//echo "$sql<br />";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$mess="L'évaluation n°$id_eval n'est pas associée au $nom_cc n°$id_dev.<br />";
 			header("Location: index_cc.php?id_racine=$id_racine&msg=$mess");
 			die();
@@ -177,14 +177,14 @@ if (isset($_POST['ok'])) {
 	else {
 		if(!isset($id_eval)) {
 			$sql="INSERT INTO cc_eval SET id_dev='$id_dev';";
-			$insert=mysql_query($sql);
+			$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			if(!$insert) {
 				$msg="Erreur lors de la création de l'évaluation associée au $nom_cc n°$id_dev.";
 				header("Location: index_cc.php?id_racine=$id_racine&msg=$msg");
 				die();
 			}
 			else {
-				$id_eval=mysql_insert_id();
+				$id_eval=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 			}
 		}
 
@@ -224,7 +224,7 @@ if (isset($_POST['ok'])) {
 		$vision_famille  = $annee."-".$mois."-".$jour." 00:00:00";
 
 		$sql="UPDATE cc_eval SET nom_court='$nom_court', nom_complet='$nom_complet', description='$description', note_sur='$note_sur', date='".$date."', vision_famille ='".$vision_famille ."' WHERE id='$id_eval';";
-		$update=mysql_query($sql);
+		$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if(!$update) {
 			$msg="Erreur lors de la création ou mise à jour de l'évaluation associée au ".stripslashes($nom_cc)." n°$id_dev. ".stripslashes($sql);
 		}

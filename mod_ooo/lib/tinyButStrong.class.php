@@ -266,11 +266,11 @@ function DataOpen(&$Query) {
 		break;
 	case 6: // MySQL
 		switch ($this->SubType) {
-		case 0: $this->RecSet = @mysql_query($Query,$this->SrcId); break;
+		case 0: $this->RecSet = @mysqli_query($this->SrcId, $Query); break;
 		case 1: $this->RecSet = $this->SrcId; break;
-		case 2: $this->RecSet = @mysql_query($Query); break;
+		case 2: $this->RecSet = @mysqli_query($GLOBALS["___mysqli_ston"], $Query); break;
 		}
-		if ($this->RecSet===false) $this->DataAlert('MySql error message when opening the query: '.mysql_error());
+		if ($this->RecSet===false) $this->DataAlert('MySql error message when opening the query: '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		break;
 	case 1: // Num
 		$this->RecSet = true;
@@ -385,7 +385,7 @@ function DataFetch() {
 
 	switch ($this->Type) {
 	case 6: // MySQL
-		$this->CurrRec = mysql_fetch_assoc($this->RecSet);
+		$this->CurrRec = mysqli_fetch_assoc($this->RecSet);
 		break;
 	case 1: // Num
 		if (($this->NumVal>=$this->NumMin) and ($this->NumVal<=$this->NumMax)) {
@@ -444,7 +444,7 @@ function DataClose() {
 	$this->OnDataPi = false;
 	if ($this->RecSaved) return;
 	switch ($this->Type) {
-	case 6: mysql_free_result($this->RecSet); break;
+	case 6: ((mysqli_free_result($this->RecSet) || (is_object($this->RecSet) && (get_class($this->RecSet) == "mysqli_result"))) ? true : false); break;
 	case 3: $FctClose=$this->FctClose; $FctClose($this->RecSet); break;
 	case 4: call_user_func_array($this->FctClose,array(&$this->RecSet)); break;
 	case 5: $this->SrcId->tbsdb_close($this->RecSet); break;

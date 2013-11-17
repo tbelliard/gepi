@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/select_eleves_options.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/select_eleves_options.php',
 administrateur='V',
 professeur='F',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Choix des options des élèves',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 //======================================================================================
@@ -86,8 +86,8 @@ if(isset($_POST['is_posted'])) {
 		$profil=isset($_POST['profil']) ? $_POST['profil'] : array();
 
 		$sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='autre' ORDER BY opt;";
-		$res=mysql_query($sql);
-		$nb_autre_opt=mysql_num_rows($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nb_autre_opt=mysqli_num_rows($res);
 
 		$nb_reg=0;
 		$nb_err=0;
@@ -117,7 +117,7 @@ if(isset($_POST['is_posted'])) {
 
 			$sql="DELETE FROM gc_eleves_options WHERE login='$eleve[$i]' AND projet='$projet';";
 			//echo "<p>$sql<br />\n";
-			if($del=mysql_query($sql)) {
+			if($del=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
 				/*
 				echo "login='$eleve[$i]'<br />";
 				echo "id_classe_actuelle='$id_classe_actuelle_eleve[$i]'<br />";
@@ -132,7 +132,7 @@ if(isset($_POST['is_posted'])) {
 				*/
 				$sql="INSERT INTO gc_eleves_options SET login='$eleve[$i]', id_classe_actuelle='$id_classe_actuelle_eleve[$i]', classe_future='$classe_fut[$i]', liste_opt='$liste_option_ele_courant', moy='$moy[$i]', nb_absences='$nb_absences[$i]', non_justifie='$non_justifie[$i]', nb_retards='$nb_retards[$i]', projet='$projet', profil='$profil[$i]';";
 				//echo "$sql<br />\n";
-				if($insert=mysql_query($sql)) {$nb_reg++;} else {$nb_err++;}
+				if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {$nb_reg++;} else {$nb_err++;}
 			}
 			else {$nb_err++;}
 		}
@@ -234,8 +234,8 @@ echo ">Rafraichir sans enregistrer</a></p>\n";
 // Récupération de la liste des classes actuelles et futures et de la liste des options
 $classe_fut=array();
 $sql="SELECT DISTINCT classe FROM gc_divisions WHERE projet='$projet' AND statut='future' ORDER BY classe;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucune classe future n'est encore définie pour ce projet.</p>\n";
 	// Est-ce que cela doit vraiment bloquer la saisie des options?
 	require("../lib/footer.inc.php");
@@ -244,15 +244,15 @@ if(mysql_num_rows($res)==0) {
 else {
 	$tab_opt_exclue=array();
 
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$classe_fut[]=$lig->classe;
 
 		$tab_opt_exclue["$lig->classe"]=array();
 		//=========================
 		// Options exlues pour la classe
 		$sql="SELECT opt_exclue FROM gc_options_classes WHERE projet='$projet' AND classe_future='$lig->classe';";
-		$res_opt_exclues=mysql_query($sql);
-		while($lig_opt_exclue=mysql_fetch_object($res_opt_exclues)) {
+		$res_opt_exclues=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig_opt_exclue=mysqli_fetch_object($res_opt_exclues)) {
 			$tab_opt_exclue["$lig->classe"][]=mb_strtoupper($lig_opt_exclue->opt_exclue);
 		}
 		//=========================
@@ -265,14 +265,14 @@ else {
 $id_classe_actuelle=array();
 $classe_actuelle=array();
 $sql="SELECT DISTINCT id_classe,classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle' ORDER BY classe;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucune classe actuelle n'est encore sélectionnée pour ce projet.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
 else {
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$id_classe_actuelle[]=$lig->id_classe;
 		$classe_actuelle[]=$lig->classe;
 	}
@@ -287,9 +287,9 @@ else {
 
 $lv1=array();
 $sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='lv1' ORDER BY opt;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
-	while($lig=mysql_fetch_object($res)) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)>0) {
+	while($lig=mysqli_fetch_object($res)) {
 		$lv1[]=$lig->opt;
 	}
 }
@@ -297,27 +297,27 @@ if(mysql_num_rows($res)>0) {
 
 $lv2=array();
 $sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='lv2' ORDER BY opt;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
-	while($lig=mysql_fetch_object($res)) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)>0) {
+	while($lig=mysqli_fetch_object($res)) {
 		$lv2[]=$lig->opt;
 	}
 }
 
 $lv3=array();
 $sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='lv3' ORDER BY opt;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
-	while($lig=mysql_fetch_object($res)) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)>0) {
+	while($lig=mysqli_fetch_object($res)) {
 		$lv3[]=$lig->opt;
 	}
 }
 
 $autre_opt=array();
 $sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='autre' ORDER BY opt;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
-	while($lig=mysql_fetch_object($res)) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)>0) {
+	while($lig=mysqli_fetch_object($res)) {
 		$autre_opt[]=$lig->opt;
 	}
 }
@@ -378,9 +378,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 	$nb_per_classe=0;
 	$sql="SELECT MAX(num_periode) AS maxper FROM periodes WHERE id_classe='$id_classe_actuelle[$j]';";
-	$res_per=mysql_query($sql);
-	if(mysql_num_rows($res_per)>0) {
-		$lig_per=mysql_fetch_object($res_per);
+	$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_per)>0) {
+		$lig_per=mysqli_fetch_object($res_per);
 		$nb_per_classe=$lig_per->maxper;
 	}
 	//echo "\$nb_per_classe=$nb_per_classe<br />\n";
@@ -441,9 +441,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' ORDER BY e.nom,e.prenom;";
 		//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%') ORDER BY e.nom,e.prenom;";
 		$sql_per="SELECT num_periode FROM periodes WHERE id_classe='$id_classe_actuelle[$j]' ORDER BY num_periode DESC LIMIT 1;";
-		$res_per=mysql_query($sql_per);
-		if(mysql_num_rows($res_per)>0) {
-			$lig_per=mysql_fetch_object($res_per);
+		$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql_per);
+		if(mysqli_num_rows($res_per)>0) {
+			$lig_per=mysqli_fetch_object($res_per);
 			$num_per2=$lig_per->num_periode;
 		}
 	}
@@ -455,8 +455,8 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 	echo "<td colspan='19'>$sql</td>\n";
 	echo "</tr>\n";
 	*/
-	$res=mysql_query($sql);
-	$eff_tot_classe=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$eff_tot_classe=mysqli_num_rows($res);
 	$eff_tot+=$eff_tot_classe;
 	//==========================================
 	echo "<tr>\n";
@@ -594,8 +594,8 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 	// initialisation:
 	$num_eleve2_id_classe_actuelle[$j]=-1;
 
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
 			$num_eleve2_id_classe_actuelle[$j]=$cpt;
 			if(mb_strtoupper($lig->sexe)=='F') {$eff_tot_classe_F++;$eff_tot_F++;} else {$eff_tot_classe_M++;$eff_tot_M++;}
 
@@ -645,13 +645,13 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			//echo "<td>Profil</td>\n";
 			echo "<td>\n";
 			$sql="SELECT profil FROM gc_eleves_options WHERE projet='$projet' AND login='$lig->login';";
-			$res_profil=mysql_query($sql);
-			if(mysql_num_rows($res_profil)==0) {
+			$res_profil=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_profil)==0) {
 				$profil='RAS';
 				$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="y";
 			}
 			else {
-				$lig_profil=mysql_fetch_object($res_profil);
+				$lig_profil=mysqli_fetch_object($res_profil);
 				$profil=$lig_profil->profil;
 				$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="n";
 			}
@@ -681,9 +681,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			//===================================
 			echo "<td>\n";
 			$sql="SELECT ROUND(AVG(note),1) AS moy FROM matieres_notes WHERE login='$lig->login' AND statut='';";
-			$res_note=mysql_query($sql);
-			if(mysql_num_rows($res_note)>0) {
-				$lig_note=mysql_fetch_object($res_note);
+			$res_note=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_note)>0) {
+				$lig_note=mysqli_fetch_object($res_note);
 
 				if($num_per2>0) {
 					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
@@ -729,8 +729,8 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			else {$nb_per_classe_abs=$nb_per_classe;}
 			for($loop=1;$loop<=$nb_per_classe_abs;$loop++) {
 				$sql="SELECT * FROM absences WHERE (login='".$lig->login."' AND periode='$loop');";
-				$current_eleve_absences_query=mysql_query($sql);
-				if(mysql_num_rows($current_eleve_absences_query)>0) {
+				$current_eleve_absences_query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($current_eleve_absences_query)>0) {
 					$current_eleve_absences+=@mysql_result($current_eleve_absences_query, 0, "nb_absences");
 					$current_eleve_nj+=@mysql_result($current_eleve_absences_query, 0, "non_justifie");
 					$current_eleve_retards+=@mysql_result($current_eleve_absences_query, 0, "nb_retards");
@@ -756,9 +756,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			$fut_classe="";
 			$tab_ele_opt=array();
 			$sql="SELECT * FROM gc_eleves_options WHERE projet='$projet' AND login='$lig->login';";
-			$res_opt=mysql_query($sql);
-			if(mysql_num_rows($res_opt)>0) {
-				$lig_opt=mysql_fetch_object($res_opt);
+			$res_opt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_opt)>0) {
+				$lig_opt=mysqli_fetch_object($res_opt);
 
 				$fut_classe=$lig_opt->classe_future;
 
@@ -772,9 +772,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			else {
 				// On récupère les options de l'année écoulée
 				$sql="SELECT * FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='$lig->login';";
-				$res_opt=mysql_query($sql);
-				if(mysql_num_rows($res_opt)>0) {
-					while($lig_opt=mysql_fetch_object($res_opt)) {
+				$res_opt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_opt)>0) {
+					while($lig_opt=mysqli_fetch_object($res_opt)) {
 						$tab_ele_opt[]=mb_strtoupper($lig_opt->id_matiere);
 					}
 				}

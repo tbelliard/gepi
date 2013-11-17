@@ -79,7 +79,7 @@ if ($etape == 2) {
 	// On crée la table si nécessaire
 
 	$result = "&nbsp;->Ajout de la table ldap_bx. <br />";
-	$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'ldap_bx'"));
+	$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'ldap_bx'"));
 	if ($test1 == 0) {
 			$sql = "CREATE TABLE `ldap_bx` (
 					`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
@@ -90,7 +90,7 @@ if ($etape == 2) {
 					`identite_u` VARCHAR( 50 ) NOT NULL ,
 					PRIMARY KEY ( `id` )
 					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		$query = mysql_query($sql);
+		$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if ($query) {
 			$msg = "<font style=\"color: green;\">Ok !</font><br />";
 		} else {
@@ -101,7 +101,7 @@ if ($etape == 2) {
 	}
 
 	// On truncate la table
-	$tr = mysql_query("TRUNCATE TABLE ldap_bx");
+	$tr = mysqli_query($GLOBALS["___mysqli_ston"], "TRUNCATE TABLE ldap_bx");
 
 	// On ouvre une connexion avec le ldap
 	$ldap = new LDAPServer;
@@ -128,11 +128,11 @@ if ($etape == 2) {
 		$sql = "INSERT INTO ldap_bx (id, login_u, nom_u, prenom_u, statut_u, identite_u)
 					VALUES ('',
 							'".$info[$a][$ldap_login][0]."',
-							'".mysql_real_escape_string($info[$a][$ldap_nom][0])."',
-							'".mysql_real_escape_string($info[$a][$ldap_prenom][0])."',
+							'".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $info[$a][$ldap_nom][0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+							'".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $info[$a][$ldap_prenom][0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
 							'".$info[$a][$ldap_statut][0]."',
 							'".$ident."')";
-		$query = mysql_query($sql);
+		$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 		if ($query) {
 			$msg2 .= '<br />L\'utilisateur '.$info[$a][$ldap_login][0].' a été enregistré.';

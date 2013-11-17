@@ -108,8 +108,8 @@ if (isset($_POST['ok'])) {
 		if (($_POST['deverouillage_auto_periode_suivante'])=='y') {
 			//recherche du nombre de période pour la classe
 			$sql_periode = "SELECT * FROM periodes WHERE id_classe='$classe';";
-			$result_periode = mysql_query($sql_periode);
-			$nb_periodes_classe = mysql_num_rows($result_periode);
+			$result_periode = mysqli_query($GLOBALS["___mysqli_ston"], $sql_periode);
+			$nb_periodes_classe = mysqli_num_rows($result_periode);
 			//echo $nb_periodes_classe;
 			$periode_en_cours = $periode;
 			$periode_suivante = $periode+1;
@@ -126,7 +126,7 @@ if (isset($_POST['ok'])) {
 				//$sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N', date_verrouillage='".time()."' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
 				$sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N', date_verrouillage=NOW() WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
 				//echo "<br/>".$sql_maj_periode_suivante;
-				$result_maj_periode_suivante = mysql_query($sql_maj_periode_suivante);
+				$result_maj_periode_suivante = mysqli_query($GLOBALS["___mysqli_ston"], $sql_maj_periode_suivante);
 				if (!$result_maj_periode_suivante) {$pb_reg_ver = 'yes';}
 				}
 			}
@@ -211,7 +211,7 @@ if (!(($classe != 0) AND ($periode !=0))) {
 	// On va chercher les classes déjà existantes, et on les affiche.
 	$max_per = sql_query1("SELECT num_periode FROM periodes ORDER BY num_periode DESC LIMIT 1");
 	//$calldata = sql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-	$calldata = mysql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+	$calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.id, c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 	$nombreligne = sql_count($calldata);
 	echo "Total : $nombreligne classes\n";
 }
@@ -249,7 +249,7 @@ if (($classe != 0) AND ($periode !=0)) {
 	// Affichage de la classe (nom court)
 	$sql_classe = "SELECT classe FROM classes WHERE id = '$classe'";
 	$requete_classe = sql_query($sql_classe);
-	$donner_modele = mysql_fetch_array($requete_classe);
+	$donner_modele = mysqli_fetch_array($requete_classe);
 	$nom_court_classe = $donner_modele['classe'];
 	echo "<td><b>$nom_court_classe</b> ";
 	echo "</td>\n";

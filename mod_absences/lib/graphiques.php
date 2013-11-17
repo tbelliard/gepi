@@ -227,8 +227,8 @@ if ($recherche == "afficher")
               <select name="classe_choix" id="classe_choix">
                  <option value="tous" <?php if (empty($classe_choix)) {?>selected<?php } ?>>tous</option>
                     <?php
-                    $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
-                    While ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
+                    $resultat_liste_classe = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    While ( $data_liste_classe = mysqli_fetch_array($resultat_liste_classe)) {
                            if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
                           <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>><?php echo $data_liste_classe['nom_complet']; ?></option>
                     <?php } ?>
@@ -238,8 +238,8 @@ if ($recherche == "afficher")
             <select name="eleve_choix" id="eleve_choix">
                 <option value="tous" <?php if (empty($eleve_choix)) {?>selected<?php } ?>>tous</option>
                     <?php
-                    $resultat_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
-                    While ( $data_liste_eleve = mysql_fetch_array ($resultat_liste_eleve)) {
+                    $resultat_liste_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    While ( $data_liste_eleve = mysqli_fetch_array($resultat_liste_eleve)) {
                           if ($eleve_choix==$data_liste_eleve['login']) {$selected = "selected"; } else {$selected = ""; }?>
                           <option value="<?php echo $data_liste_eleve['login']; ?>" <?php echo $selected; ?>><?php echo strtoupper($data_liste_eleve['nom'])." ".ucfirst($data_liste_eleve['prenom']); ?></option>
                     <?php } ?>

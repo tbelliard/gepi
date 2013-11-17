@@ -91,9 +91,9 @@ function afficherCoursClasse($d, $c){
 function IdClasse($nom_classe) {
     $result = 0;
     $sql = "SELECT id FROM classes WHERE classe = '".$nom_classe."' ";
-    $req = mysql_query($sql);
+    $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     if ($req) {
-        if ($rep = mysql_fetch_array($req)) {
+        if ($rep = mysqli_fetch_array($req)) {
             $result = $rep['id'];
         }
     }
@@ -113,12 +113,12 @@ require_once("../../lib/header.inc.php");
 
 	if ($_SESSION["statut"] == "cpe") {
 		if (isset($vers_absence)) {
-			$cgt_RA = mysql_query("UPDATE absences_rb SET retard_absence = 'A' WHERE id = '".$vers_absence."'");
+			$cgt_RA = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE absences_rb SET retard_absence = 'A' WHERE id = '".$vers_absence."'");
 		}
 		else if (isset($vers_retard)) {
-			$cgt_RA = mysql_query("UPDATE absences_rb SET retard_absence = 'R' WHERE id = '".$vers_retard."'");
-			$query_recup = mysql_query("SELECT * FROM absences_rb WHERE id = '".$vers_retard."'");
-			$donnees = mysql_fetch_array($query_recup);
+			$cgt_RA = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE absences_rb SET retard_absence = 'R' WHERE id = '".$vers_retard."'");
+			$query_recup = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM absences_rb WHERE id = '".$vers_retard."'");
+			$donnees = mysqli_fetch_array($query_recup);
 			$date_recherchee = explode(" ", date("Y-m-d H:i:s", $donnees["debut_ts"]));
 			// On bascule aussi celle de la table absences_eleves
 			$sql_abs_eleve = "UPDATE absences_eleves SET type_absence_eleve = 'R'
@@ -127,7 +127,7 @@ require_once("../../lib/header.inc.php");
 														AND d_date_absence_eleve = '" . $date_recherchee[0] . "'
 														AND d_heure_absence_eleve = '" . $date_recherchee[1] . "'";
 			// On force alors la mise à jour et on évite l'apparition d'un message d'erreur si le update ne donne rien
-			$query_abs_eleve = @mysql_query($sql_abs_eleve);
+			$query_abs_eleve = @mysqli_query($GLOBALS["___mysqli_ston"], $sql_abs_eleve);
 			// Il faut alors regarder s'il existe un courrier déjà lancé pour cette absence
 			// le cas échéant, il faut le détruire
 			$sql_lettre = "SELECT ls.id_lettre_suivi, ls.partdenum_lettre_suivi FROM lettres_suivis ls
@@ -135,13 +135,13 @@ require_once("../../lib/header.inc.php");
 												AND ls.quirecois_lettre_suivi = '" . $donnees["eleve_id"] . "'
 												AND ls.statu_lettre_suivi = 'en attente'
 												AND ls.envoye_date_lettre_suivi = '0000-00-00'"; // ce dernier point permet d'éviter de détruire des lettres déjà envoyées
-			$query_lettre = mysql_query($sql_lettre) OR DIE('Impossible de détruire la lettre déjà émise <br /> -->' . $sql_lettre . '<br /><p style="color: red;">' . mysql_error() . '</p>');
-			$test = mysql_num_rows($query_lettre);
+			$query_lettre = mysqli_query($GLOBALS["___mysqli_ston"], $sql_lettre) OR DIE('Impossible de détruire la lettre déjà émise <br /> -->' . $sql_lettre . '<br /><p style="color: red;">' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '</p>');
+			$test = mysqli_num_rows($query_lettre);
 
 			if ($test === 1) {
 				// GEPI n'a trouvé qu'une seule réponse, on peut donc l'effacer
 				$lettre_a_effacer = mysql_result($query_lettre, 0,"id_lettre_suivi");
-				$delete = mysql_query("DELETE FROM lettres_suivis WHERE id_lettre_suivi = '" . $lettre_a_effacer . "'");
+				$delete = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM lettres_suivis WHERE id_lettre_suivi = '" . $lettre_a_effacer . "'");
 			}elseif($test > 1){
 				$message_erreur_lettre_a_effacer = 'Il y a des lettres qui correspondent à ce retard mais aucune n\'a été détruite.';
 			}
@@ -163,7 +163,7 @@ $nbre_rep = "";
 if (isset($choix_creneau)) {
 	if (is_numeric($choix_creneau)) {
 		// On vient d'envoyer l'id du créneau qu'il faut donc récupérer
-		$creneaux = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM ".$table_ab." WHERE id_definie_periode = '".$choix_creneau."'"));
+		$creneaux = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heuredebut_definie_periode, heurefin_definie_periode FROM ".$table_ab." WHERE id_definie_periode = '".$choix_creneau."'"));
 		$explode1 = explode(":", $creneaux["heuredebut_definie_periode"]);
 		$explode2 = explode(":", $creneaux["heurefin_definie_periode"]);
 		$ex_horaire[0] = $explode1[0];
@@ -200,9 +200,9 @@ if (isset($choix_creneau)) {
          	  		)
 			  		ORDER BY eleve_id";
 
-	$req = mysql_query($sql) OR trigger_error('Impossible de lister les absents.', E_USER_ERROR);
+	$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR trigger_error('Impossible de lister les absents.', E_USER_ERROR);
 	//$rep_absences = mysql_fetch_array($req);
-	$nbre_rep = mysql_num_rows($req);
+	$nbre_rep = mysqli_num_rows($req);
 
 
 	for($a=0; $a < $nbre_rep; $a++){
@@ -216,8 +216,8 @@ if (isset($choix_creneau)) {
 
 /*==============AFFICHAGE PAGE=============*/
 // On récupère la liste des classes de l'établissement
-$query = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
-$nbre_classe = mysql_num_rows($query);
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, classe FROM classes ORDER BY classe");
+$nbre_classe = mysqli_num_rows($query);
 $td_classe = array();
 $aff_classe = array();
 	// On passe le tout à la moulinette :
@@ -232,8 +232,8 @@ $aff_classe = array();
 $nbre_abs_cren = 0; // On initialise le nombre d'absents du créneau
 // On détermine la période active :
 $sql = "SELECT DISTINCT num_periode FROM periodes WHERE verouiller = 'N' ORDER BY num_periode";
-$periode_active = mysql_query($sql) OR DIE('Impossible de récupérer le numéro de la période active' . $sql . '<br />--> ' . mysql_error());
-$periode = mysql_fetch_array($periode_active);
+$periode_active = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR DIE('Impossible de récupérer le numéro de la période active' . $sql . '<br />--> ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$periode = mysqli_fetch_array($periode_active);
 
 $nbre_per = count($periode);
 $_periode = isset($periode[0]) ? $periode[0] : '1';
@@ -241,11 +241,11 @@ $_periode = isset($periode[0]) ? $periode[0] : '1';
 // On mouline alors sur la liste des enregistrements des absences
 for($i = 0; $i < $nbre_rep; $i++) {
 	//$req_prof = mysql_fetch_array(mysql_query("SELECT login_saisie FROM absences_rb WHERE id = '".$rep_absences[$i]["id_abs"]."'")) or die ('erreur 1a : '.mysql_error());
-	$rep_prof = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$rep_absences[$i]["login_saisie"]."'")) or die ('erreur 1b : '.mysql_error());
+	$rep_prof = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, prenom FROM utilisateurs WHERE login = '".$rep_absences[$i]["login_saisie"]."'")) or die ('erreur 1b : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 	if ($rep_absences[$i]["eleve_id"] != "appel") {
 		$nbre_abs_cren++; // on incrémente le nombre d'absents du créneau
-		$rep_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom, regime FROM eleves e, j_eleves_regime jer
+		$rep_nom = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, prenom, regime FROM eleves e, j_eleves_regime jer
 								WHERE e.login = jer.login
 								AND e.login = '".$rep_absences[$i]["eleve_id"]."'"));
 			// traitement du régime pour dissocier les 3 états
@@ -257,30 +257,30 @@ for($i = 0; $i < $nbre_rep; $i++) {
 				$int++;
 			}
 
-		$req_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$i]["eleve_id"]."' AND periode = '".$_periode."'"));
-		$rep_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$req_classe[0]."'"));
+		$req_classe = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$i]["eleve_id"]."' AND periode = '".$_periode."'"));
+		$rep_classe = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '".$req_classe[0]."'"));
         if ($rep_classe === false) {
             $rep_classe = array();
         }
                 // On compte aussi le nombre de classes concernées par cet enseignement
-                $query_classe1 = (mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_absences[$i]["groupe_id"]."'"));
+                $query_classe1 = (mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_absences[$i]["groupe_id"]."'"));
                 $req_classe1 = array();
-                while ($row = mysql_fetch_array($query_classe1, MYSQL_NUM)) {
+                while ($row = mysqli_fetch_array($query_classe1,  MYSQLI_NUM)) {
                   $req_classe1[] = $row[0];
                 }
                 
                 // On explose pour vérifier qu'il ne s'agit pas d'une aid
 		$verif_aid = explode("|", $rep_absences[$i]["groupe_id"]);
                 if ($verif_aid[0] == "AID"){
-                  $rep_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.mysql_error());
+                  $rep_aid = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                   // On construit alors l'affichage de cette info qui doit permettre à la vie scolaire de savoir
                   // quand un prof a fait l'appel alors qu'il est avec un aid
                   $aff_aid_absences .= "".$rep_prof["nom"]." ".$rep_prof["prenom"]." a fait l'appel avec le groupe ".$rep_aid["nom"]."<br />";
                 }elseif(count($req_classe1) >= 2){
                   // Dans le cas où cet enseignement regroupe plusieurs classes, on marque sur les autres classes qu'elles sont en groupe
-                  $queryb_classe1 = (mysql_query("SELECT classe FROM classes WHERE id IN ('".implode("','", $req_classe1)."')"));
+                  $queryb_classe1 = (mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id IN ('".implode("','", $req_classe1)."')"));
                   $rep_classe1 = array();
-                  while ($row1 = mysql_fetch_array($queryb_classe1, MYSQL_NUM)) {
+                  while ($row1 = mysqli_fetch_array($queryb_classe1,  MYSQLI_NUM)) {
                     $rep_classe1[] = $row1[0];
                   }
                 }
@@ -292,20 +292,20 @@ for($i = 0; $i < $nbre_rep; $i++) {
 		// On explose poour vérifier qu'il ne s'agit pas d'une aid
 		$verif_aid = explode("|", $rep_absences[$i]["groupe_id"]);
 		if ($verif_aid[0] == "AID") {
-			$rep_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.mysql_error());
+			$rep_aid = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			// On construit alors l'affichage de cette info qui doit permettre à la vie scolaire de savoir
 			// quand un prof a fait l'appel alors qu'il est avec un aid
 			$aff_aid_absences .= "".$rep_prof["nom"]." ".$rep_prof["prenom"]." a fait l'appel avec le groupe ".$rep_aid["nom"]."<br />";
 			$rep_classe = array();$rep_classe[0] = "";
 		} else {
-			$query_classe = (mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_absences[$i]["groupe_id"]."'"));
+			$query_classe = (mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_absences[$i]["groupe_id"]."'"));
                         $req_classe = array();
-                        while ($row = mysql_fetch_array($query_classe, MYSQL_NUM)) {
+                        while ($row = mysqli_fetch_array($query_classe,  MYSQLI_NUM)) {
                           $req_classe[] = $row[0];
                         }
-			$queryb_classe = (mysql_query("SELECT classe FROM classes WHERE id IN ('".implode("','", $req_classe)."')"));
+			$queryb_classe = (mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id IN ('".implode("','", $req_classe)."')"));
                         $rep_classe = array();
-                        while ($row1 = mysql_fetch_array($queryb_classe, MYSQL_NUM)) {
+                        while ($row1 = mysqli_fetch_array($queryb_classe,  MYSQLI_NUM)) {
                           $rep_classe[] = $row1[0];
                         }
 
@@ -316,7 +316,7 @@ for($i = 0; $i < $nbre_rep; $i++) {
 	if ($rep_absences[$i]["eleve_id"] == "appel") {
 		// On récupère le nom de la matière
 		$nom_prof = remplace_accents($rep_prof["nom"], 'all');
-		$rep_matiere = mysql_fetch_array(mysql_query("SELECT description FROM groupes WHERE id = '".$rep_absences[$i]["groupe_id"]."'"));
+		$rep_matiere = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT description FROM groupes WHERE id = '".$rep_absences[$i]["groupe_id"]."'"));
 		$etat = "<span style=\"color: brown; font-style: bold;\" onmouseover=\"changementDisplay('".$nom_prof.$i."', '');\" onmouseout=\"changementDisplay('".$nom_prof.$i."', '');\">
 					L'appel a bien été effectué en ".$rep_matiere["description"].".</span>
 					<div id=\"".$nom_prof.$i."\" class=\"abs_appear\" style=\"display: none;\">Par ".$rep_prof["nom"]." ".$rep_prof["prenom"]."</div>";
@@ -370,12 +370,12 @@ for($i = 0; $i < $nbre_rep; $i++) {
 <?php
 		// test sur le jour pour voir les créneaux
 	if (date("w") == getSettingValue("creneau_different")) {
-		$req_creneaux = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+		$req_creneaux = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	}
 	else {
-		$req_creneaux = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+		$req_creneaux = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	}
-	$nbre_creneaux = mysql_num_rows($req_creneaux);
+	$nbre_creneaux = mysqli_num_rows($req_creneaux);
 	$aff_creneaux_sans_select = NULL;
 	for($a=0; $a<$nbre_creneaux; $a++) {
 		$aff_creneaux[$a]["nom"] = mysql_result($req_creneaux, $a, "nom_definie_periode");

@@ -39,10 +39,10 @@ if ($test == -1) {
 // ============= Insertion d'un champ pour le module discipline
 
 $sql = "SELECT commentaire FROM s_incidents LIMIT 1";
-$req_rank = mysql_query($sql);
+$req_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if (!$req_rank){
     $sql_request = "ALTER TABLE `s_incidents` ADD `commentaire` TEXT NOT NULL ";
-    $req_add_rank = mysql_query($sql_request);
+    $req_add_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql_request);
     if ($req_add_rank) {
         $result .= "<p style=\"color:green;\">Ajout du champ commentaire dans la table <strong>s_incidents</strong> : ok.</p>";
     }
@@ -72,7 +72,7 @@ if ($test == -1) {
 $champ_courant=array('nom1', 'prenom1', 'nom2', 'prenom2');
 for($loop=0;$loop<count($champ_courant);$loop++) {
 	$result .= "&nbsp;->Extension à 50 caractères du champ '$champ_courant[$loop]' de la table 'responsables'<br />";
-	$query = mysql_query("ALTER TABLE responsables CHANGE $champ_courant[$loop] $champ_courant[$loop] VARCHAR( 50 ) NOT NULL;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE responsables CHANGE $champ_courant[$loop] $champ_courant[$loop] VARCHAR( 50 ) NOT NULL;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -83,7 +83,7 @@ for($loop=0;$loop<count($champ_courant);$loop++) {
 $champ_courant=array('nom', 'prenom');
 for($loop=0;$loop<count($champ_courant);$loop++) {
 	$result .= "&nbsp;->Extension à 50 caractères du champ '$champ_courant[$loop]' de la table 'resp_pers'<br />";
-	$query = mysql_query("ALTER TABLE resp_pers CHANGE $champ_courant[$loop] $champ_courant[$loop] VARCHAR( 50 ) NOT NULL;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE resp_pers CHANGE $champ_courant[$loop] $champ_courant[$loop] VARCHAR( 50 ) NOT NULL;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {

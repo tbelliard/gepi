@@ -70,20 +70,20 @@ require_once("../lib/header.inc.php");
 
         // On ne sélectionne que les classes qui ont au moins un enseignement ouvrant à crédits ECTS
         if($_SESSION['statut']=='scolarite'){
-            $call_classe = mysql_query("SELECT DISTINCT c.*
+            $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.*
                                         FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
                                         WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id=jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
         } else {
-            $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
+            $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
         }
 
-        $nombre_classe = mysql_num_rows($call_classe);
+        $nombre_classe = mysqli_num_rows($call_classe);
         if($nombre_classe==0){
             echo "<p>Aucune classe avec paramétrage ECTS ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
         }
     } else {
-        $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jgc.id_groupe = jgp.id_groupe AND jgp.login = '".$_SESSION['login']."')");
-        $nombre_classe = mysql_num_rows($call_classe);
+        $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jgc.id_groupe = jgp.id_groupe AND jgp.login = '".$_SESSION['login']."')");
+        $nombre_classe = mysqli_num_rows($call_classe);
         if ($nombre_classe == "0") {
             echo "Vous n'êtes pas enseignant dans une classe ayant des enseignements ouvrant droits à des ECTS.";
         }
@@ -95,7 +95,7 @@ require_once("../lib/header.inc.php");
     $i = 0;
     unset($tab_lien);
     unset($tab_txt);
-    $nombreligne = mysql_num_rows($call_classe);
+    $nombreligne = mysqli_num_rows($call_classe);
     while ($i < $nombreligne){
         $tab_lien[$i] = "recapitulatif.php?id_classe=".mysql_result($call_classe, $i, "id");
         $tab_txt[$i] = mysql_result($call_classe, $i, "classe");
@@ -132,21 +132,21 @@ require_once("../lib/header.inc.php");
   
     if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
         if($_SESSION['statut']=='scolarite'){
-            $call_classe = mysql_query("SELECT DISTINCT c.*
+            $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.*
                                         FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
                                         WHERE c.id = '".$id_classe."' AND p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id=jgc.id_classe AND jgc.saisie_ects = TRUE");
         } else {
-            $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE c.id = '".$id_classe."' AND p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE");
+            $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE c.id = '".$id_classe."' AND p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE");
         }
 
-        $nombre_classe = mysql_num_rows($call_classe);
+        $nombre_classe = mysqli_num_rows($call_classe);
         if($nombre_classe==0){
             echo "<p>Aucune classe avec paramétrage ECTS ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
             die();
         }
     } else {
-        $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (c.id = '".$id_classe."' AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jgc.id_groupe = jgp.id_groupe AND jgp.login = '".$_SESSION['login']."')");
-        $nombre_classe = mysql_num_rows($call_classe);
+        $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (c.id = '".$id_classe."' AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jgc.id_groupe = jgp.id_groupe AND jgp.login = '".$_SESSION['login']."')");
+        $nombre_classe = mysqli_num_rows($call_classe);
         if ($nombre_classe == "0") {
             echo "Soit vous n'êtes pas enseignant dans cette classe, soit cette classe n'ouvre pas droits à des ECTS.";
             die();
@@ -230,7 +230,7 @@ require_once("../lib/header.inc.php");
     }
     
     // On regarde quelle est la période maxi pour laquelle l'élève a des notes
-    $periode_num = mysql_result(mysql_query("SELECT MAX(num_periode) FROM ects_credits WHERE id_eleve = '".$Eleve->getId()."'"),0);
+    $periode_num = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT MAX(num_periode) FROM ects_credits WHERE id_eleve = '".$Eleve->getId()."'"),0);
     
     for($i=1;$i<=$periode_num;$i++) {
       if (!array_key_exists($i, $annees[$gepiYear])) {
@@ -244,7 +244,7 @@ require_once("../lib/header.inc.php");
       foreach ($categories as $categorie) {
         foreach($categorie[1] as $group) {
           $CreditEcts = $Eleve->getEctsCredit($i,$group->getId());
-          $matiere = mysql_result(mysql_query("SELECT m.nom_complet FROM matieres m, j_groupes_matieres jgm, groupes g
+          $matiere = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT m.nom_complet FROM matieres m, j_groupes_matieres jgm, groupes g
             WHERE
               m.matiere = jgm.id_matiere AND
               jgm.id_groupe = '".$group->getId()."'"), 0);

@@ -41,8 +41,8 @@ $annee_scolaire = isset($_POST["annee_scolaire"]) ? $_POST["annee_scolaire"] : (
 // Y-a-t-il le choix entre plusieurs années ?
 if (!isset($annee_scolaire))  {
     $sql = "select distinct annee from archivage_aids where fiche_publique ='y'";
-    $res = mysql_query($sql);
-    $nb_annee = mysql_num_rows($res);
+    $res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $nb_annee = mysqli_num_rows($res);
     if ($nb_annee >= 1) {
         echo "<form name=\"form1\" action=\"index_fiches.php\" method=\"post\">\n";
         echo "<center><h1 class='gepi'>".getSettingValue("gepiSchoolName"). "<br />";
@@ -76,11 +76,11 @@ else
 if (($indice_aid =='') and ($annee_scolaire!=''))  {
   echo "<center><h1 class='gepi'>".getSettingValue("gepiSchoolName"). " - année scolaire " . $annee_scolaire."<br />";
   if ($annee_courante)
-    $call_aid = mysql_query("select * from aid_config where outils_complementaires='y' order by nom");
+    $call_aid = mysqli_query($GLOBALS["___mysqli_ston"], "select * from aid_config where outils_complementaires='y' order by nom");
   else
-    $call_aid = mysql_query("select * from archivage_types_aid where outils_complementaires='y' and annee='".$annee_scolaire."' order by nom");
+    $call_aid = mysqli_query($GLOBALS["___mysqli_ston"], "select * from archivage_types_aid where outils_complementaires='y' and annee='".$annee_scolaire."' order by nom");
 
-  $nb_projet = mysql_num_rows($call_aid);
+  $nb_projet = mysqli_num_rows($call_aid);
   if ($nb_projet!=0) {
         $i = 0;
         $k=0;

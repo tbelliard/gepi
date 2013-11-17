@@ -100,7 +100,7 @@ if (isset($_POST['step'])) {
         #UtilisateurProfessionnelQuery::create()
         #  ->filterByStatut('eleve')
         #  ->delete();
-        $del = mysql_query("DELETE FROM utilisateurs WHERE statut = 'eleve'");
+        $del = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM utilisateurs WHERE statut = 'eleve'");
 
         /*
          * Recherche de tous les profs de l'établissement

@@ -91,19 +91,19 @@ $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_
 if ($id_devoir)  {
 	$sql="SELECT * FROM cn_devoirs WHERE id ='$id_devoir';";
 	//echo "$sql<br />";
-	$appel_devoir = mysql_query($sql);
+	$appel_devoir = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	$nom_devoir = mysql_result($appel_devoir, 0, 'nom_court');
 	$ramener_sur_referentiel_dev_choisi=mysql_result($appel_devoir, 0, 'ramener_sur_referentiel');
 	$note_sur_dev_choisi=mysql_result($appel_devoir, 0, 'note_sur');
 
 	$sql="SELECT id_conteneur, id_racine FROM cn_devoirs WHERE id = '$id_devoir';";
-	$query = mysql_query($sql);
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	$id_racine = mysql_result($query, 0, 'id_racine');
 	$id_conteneur = mysql_result($query, 0, 'id_conteneur');
 } else if ((isset($_POST['id_conteneur'])) or (isset($_GET['id_conteneur']))) {
 	$id_conteneur = isset($_POST['id_conteneur']) ? $_POST['id_conteneur'] : (isset($_GET['id_conteneur']) ? $_GET['id_conteneur'] : NULL);
-	$query = mysql_query("SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
-	if(mysql_num_rows($query)==0) {
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
+	if(mysqli_num_rows($query)==0) {
 		$msg="Le conteneur numero $id_conteneur n'existe pas. C'est une anomalie.";
 		header("Location: index.php?msg=$msg");
 		die();
@@ -132,16 +132,16 @@ if ($id_devoir)  {
 			}
 
 			$login_prof = $_SESSION['login'];
-			$appel_cahier_notes = mysql_query("SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe' and periode='$periode_num')");
-			$nb_cahier_note = mysql_num_rows($appel_cahier_notes);
+			$appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe' and periode='$periode_num')");
+			$nb_cahier_note = mysqli_num_rows($appel_cahier_notes);
 			if ($nb_cahier_note == 0) {
 				$nom_complet_matiere = $current_group["matiere"]["nom_complet"];
 				$nom_court_matiere = $current_group["matiere"]["matiere"];
-				$reg = mysql_query("INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($current_group["description"])."', nom_complet='". traitement_magic_quotes($nom_complet_matiere)."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
+				$reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($current_group["description"])."', nom_complet='". traitement_magic_quotes($nom_complet_matiere)."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
 				if ($reg) {
-					$id_racine = mysql_insert_id();
-					$reg = mysql_query("UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine'");
-					$reg = mysql_query("INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine'");
+					$id_racine = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+					$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine'");
+					$reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine'");
 				}
 			} else {
 				$id_racine = mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
@@ -169,7 +169,7 @@ $w3 = "c"; // largeur des colonnes "commentaires"
 $header_pdf=array();
 $data_pdf=array();
 
-$appel_conteneur = mysql_query("SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
+$appel_conteneur = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
 $nom_conteneur = mysql_result($appel_conteneur, 0, 'nom_court');
 $mode = mysql_result($appel_conteneur, 0, 'mode');
 $arrondir = mysql_result($appel_conteneur, 0, 'arrondir');
@@ -189,7 +189,7 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
 // id_conteneur
 // id_devoir
 
-$appel_cahier_notes = mysql_query("SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
+$appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
 $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 $id_classe = $current_group["classes"]["list"][0];
@@ -236,7 +236,7 @@ $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
 
-$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 $nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 //
@@ -358,7 +358,7 @@ if (isset($_POST['is_posted'])) {
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
-	$appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
+	$appel_note_sur = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
 	$note_sur_verif = mysql_result($appel_note_sur,0 ,'note_sur');
 
 	for($i=0;$i<$indice_max_log_eleve;$i++){
@@ -402,12 +402,12 @@ if (isset($_POST['is_posted'])) {
 						$elev_statut = 'v';
 					}
 
-					$test_eleve_note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$reg_eleve_login' AND id_devoir = '$id_devoir')");
-					$test = mysql_num_rows($test_eleve_note_query);
+					$test_eleve_note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_devoirs WHERE (login='$reg_eleve_login' AND id_devoir = '$id_devoir')");
+					$test = mysqli_num_rows($test_eleve_note_query);
 					if ($test != "0") {
 						if($current_group["classe"]["ver_periode"][$id_classe][$periode_num] != "N") {
 							// On récupère la note précédente de l'élève
-							$lig_old_note_ele=mysql_fetch_object($test_eleve_note_query);
+							$lig_old_note_ele=mysqli_fetch_object($test_eleve_note_query);
 
 							if(($lig_old_note_ele->note!=$note)||($lig_old_note_ele->statut!=$elev_statut)) {
 								$texte="Modification de note au devoir n°$id_devoir pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
@@ -435,11 +435,11 @@ if (isset($_POST['is_posted'])) {
 
 						$sql="UPDATE cn_notes_devoirs SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_devoir='".$id_devoir."');";
 						//echo "$sql<br />";
-						$register = mysql_query($sql);
+						$register = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 					} else {
 						$sql="INSERT INTO cn_notes_devoirs SET login='".$reg_eleve_login."', id_devoir='".$id_devoir."',note='".$note."',statut='".$elev_statut."',comment='".$comment."';";
-						$register = mysql_query($sql);
+						$register = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 						if($current_group["classe"]["ver_periode"][$id_classe][$periode_num] != "N") {
 							$texte="Saisie de note au devoir n°$id_devoir pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
@@ -473,8 +473,8 @@ if (isset($_POST['is_posted'])) {
     // Ajout d'un test:
     // Si on modifie un devoir alors que des notes ont été reportées sur le bulletin, il faut penser à mettre à jour la recopie vers le bulletin.
     $sql="SELECT 1=1 FROM matieres_notes WHERE periode='".$periode_num."' AND id_groupe='".$id_groupe."';";
-    $test_bulletin=mysql_query($sql);
-    if(mysql_num_rows($test_bulletin)>0) {
+    $test_bulletin=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    if(mysqli_num_rows($test_bulletin)>0) {
         $msg=" ATTENTION: Des notes sont présentes sur le bulletin.<br />Si vous avez modifié ou ajouté des notes, pensez à mettre à jour la recopie vers le bulletin.";
     }
     //==========================================================
@@ -564,8 +564,8 @@ echo "</script>";
 
 
 // Détermination du nombre de devoirs à afficher
-$appel_dev = mysql_query("select * from cn_devoirs where (id_conteneur='$id_conteneur' and id_racine='$id_racine') order by date");
-$nb_dev  = mysql_num_rows($appel_dev);
+$appel_dev = mysqli_query($GLOBALS["___mysqli_ston"], "select * from cn_devoirs where (id_conteneur='$id_conteneur' and id_racine='$id_racine') order by date");
+$nb_dev  = mysqli_num_rows($appel_dev);
 
 // Détermination des noms et identificateurs des devoirs
 $j = 0;
@@ -693,12 +693,12 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 // Recuperer la liste des cahiers de notes
 $sql="SELECT * FROM cn_cahier_notes ccn where id_groupe='$id_groupe' ORDER BY periode;";
-$res_cn=mysql_query($sql);
-if(mysql_num_rows($res_cn)>1) {
+$res_cn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_cn)>1) {
 	// On ne propose pas de champ SELECT pour un seul canier de notes
 	$max_per=0;
 	$chaine_options_periodes="";
-	while($lig_cn=mysql_fetch_object($res_cn)) {
+	while($lig_cn=mysqli_fetch_object($res_cn)) {
 		$chaine_options_periodes.="<option value='$lig_cn->id_cahier_notes'";
 		if($lig_cn->periode==$periode_num) {$chaine_options_periodes.=" selected='true'";}
 		$chaine_options_periodes.=">$lig_cn->periode</option>\n";
@@ -753,13 +753,13 @@ echo "<a href=\"index.php?id_racine=$id_racine\" onclick=\"return confirm_abando
 // On dé-cache le champ si javascript est actif
 echo "<span id='span_chgt_dev' style='display: none;'>\n";
 $sql="select * from cn_devoirs where id_conteneur='$id_conteneur' order by date;";
-$res_devoirs=mysql_query($sql);
-if(mysql_num_rows($res_devoirs)>1) {
+$res_devoirs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_devoirs)>1) {
 
 	$chaine_options_devoirs="<option value=''>Choix éval.</option>";
 	$num_devoir=0;
 	$cpt_dev=0;
-	while($lig_dev=mysql_fetch_object($res_devoirs)) {
+	while($lig_dev=mysqli_fetch_object($res_devoirs)) {
 		$chaine_options_devoirs.="<option value='$lig_dev->id'";
 		if($lig_dev->id==$id_devoir) {$chaine_options_devoirs.=" selected='true'"; $num_devoir=$cpt_dev;}
 		$chaine_options_devoirs.=">$lig_dev->nom_court (".formate_date($lig_dev->date).")</option>\n";
@@ -851,7 +851,7 @@ if ($id_devoir == 0) {
 	</td><td><input type=\"checkbox\" name=\"affiche_comment\"  ";
 	if ($_SESSION['affiche_comment'] != 'yes') echo "checked";
 	echo " /></td><td><input type=\"submit\" name=\"ok\" value=\"OK\" /></td></tr>\n";
-	$nb_dev_sous_cont = mysql_num_rows(mysql_query("select d.id from cn_devoirs d, cn_conteneurs c where (d.id_conteneur = c.id and c.parent='$id_conteneur')"));
+	$nb_dev_sous_cont = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "select d.id from cn_devoirs d, cn_conteneurs c where (d.id_conteneur = c.id and c.parent='$id_conteneur')"));
 	if ($nb_dev_sous_cont != 0) {
 		echo "<tr><td>Afficher les évaluations des \"sous-".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))."s\" : </td><td><input type=\"checkbox\" name=\"affiche_tous\"  ";
 		if ($_SESSION['affiche_tous'] == 'yes') {echo "checked";}
@@ -913,7 +913,7 @@ $couleur_moy_sous_cont = '#FAFABE';
 $couleur_calcul_moy = '#AAAAE6';
 $note_sur_verif = 20;
 if ($id_devoir != 0) {
-        $appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
+        $appel_note_sur = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
         $note_sur_verif = mysql_result($appel_note_sur,'0' ,'note_sur');
 	echo "<p class='cn'>Taper une note de 0 à ".$note_sur_verif." pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code '-' ou 'n' pour absence de note.</p>\n";
 	echo "<p class='cn'>Vous pouvez également <b>importer directement vos notes par \"copier/coller\"</b> à partir d'un tableur ou d'une autre application : voir <a href='#import_notes_tableur'>tout en bas de cette page</a>.</p>\n";
@@ -1014,10 +1014,10 @@ foreach ($liste_eleves as $eleve) {
 
 	$k=0;
 	while ($k < $nb_dev) {
-		$note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
+		$note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
 		
 		if($note_query){
-			if(mysql_num_rows($note_query)>0){
+			if(mysqli_num_rows($note_query)>0){
 				$eleve_statut = @mysql_result($note_query, 0, "statut");
 				$eleve_note = @mysql_result($note_query, 0, "note");
 				$eleve_comment = @mysql_result($note_query, 0, "comment");
@@ -1118,9 +1118,9 @@ foreach ($liste_eleves as $eleve) {
 
 				if(getSettingValue("gepi_pmv")!="n"){
 					$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login[$i]';";
-					$res_ele=mysql_query($sql);
-					if(mysql_num_rows($res_ele)>0) {
-						$lig_ele=mysql_fetch_object($res_ele);
+					$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($res_ele)>0) {
+						$lig_ele=mysqli_fetch_object($res_ele);
 						if (nom_photo($lig_ele->elenoet)){
 							$mess_note[$i][$k].=";affiche_photo('".nom_photo($lig_ele->elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";
 						}
@@ -1148,9 +1148,9 @@ foreach ($liste_eleves as $eleve) {
 				if(getSettingValue("gepi_pmv")!="n"){
 					$mess_comment[$i][$k] .= " onfocus=\"";
 					$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login[$i]';";
-					$res_ele=mysql_query($sql);
-					if(mysql_num_rows($res_ele)>0) {
-						$lig_ele=mysql_fetch_object($res_ele);
+					$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($res_ele)>0) {
+						$lig_ele=mysqli_fetch_object($res_ele);
 						if (nom_photo($lig_ele->elenoet)){
 							$mess_comment[$i][$k].=";affiche_photo('".nom_photo($lig_ele->elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";
 						}
@@ -1229,8 +1229,8 @@ if ($id_devoir==0) {
 	while ($i < $nb_sous_cont) {
 		// on affiche les devoirs des sous-conteneurs si l'utilisateur a fait le choix de tout afficher
 		if (($_SESSION['affiche_tous'] == 'yes') and ($id_devoir==0)) {
-			$query_nb_dev = mysql_query("SELECT * FROM cn_devoirs where (id_conteneur='$id_sous_cont[$i]' and id_racine='$id_racine') order by date");
-			$nb_dev_s_cont[$i]  = mysql_num_rows($query_nb_dev);
+			$query_nb_dev = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_devoirs where (id_conteneur='$id_sous_cont[$i]' and id_racine='$id_racine') order by date");
+			$nb_dev_s_cont[$i]  = mysqli_num_rows($query_nb_dev);
 			$m = 0;
 			while ($m < $nb_dev_s_cont[$i]) {
 				$id_s_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'id');
@@ -1405,9 +1405,9 @@ while ($i < $nb_dev) {
 			echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=0\" onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"Visualiser le conteneur $nom_conteneur\">Visualiser</a>";
 
 			$sql="SELECT * FROM cc_dev WHERE id_cn_dev='$id_dev[$i]';";
-			$res_cc_dev=mysql_query($sql);
-			if(mysql_num_rows($res_cc_dev)>0) {
-				$lig_cc_dev=mysql_fetch_object($res_cc_dev);
+			$res_cc_dev=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_cc_dev)>0) {
+				$lig_cc_dev=mysqli_fetch_object($res_cc_dev);
 				echo "<br /><a href='index_cc.php?id_racine=".$id_racine."' title=\"Voir l'évaluation cumul associée $lig_cc_dev->nom_court ($lig_cc_dev->nom_complet)\">EvCum</a>";
 			}
 
@@ -1418,9 +1418,9 @@ while ($i < $nb_dev) {
 				echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev[$i]\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a>";
 
 				$sql="SELECT * FROM cc_dev WHERE id_cn_dev='$id_dev[$i]';";
-				$res_cc_dev=mysql_query($sql);
-				if(mysql_num_rows($res_cc_dev)>0) {
-					$lig_cc_dev=mysql_fetch_object($res_cc_dev);
+				$res_cc_dev=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_cc_dev)>0) {
+					$lig_cc_dev=mysqli_fetch_object($res_cc_dev);
 					echo "<br /><a href='index_cc.php?id_racine=".$id_racine."' title=\"Voir l'évaluation cumul associée $lig_cc_dev->nom_court ($lig_cc_dev->nom_complet)\">EvCum</a>";
 				}
 				echo "</center></td>\n";
@@ -1731,7 +1731,7 @@ while($i < $nombre_lignes) {
 				$m = 0;
 				while ($m < $nb_dev_s_cont[$k]) {
 					$temp = $id_s_dev[$k][$m];
-					$note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
+					$note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
 					if($note_query){
 						$eleve_statut = @mysql_result($note_query, 0, "statut");
 						$eleve_note = @mysql_result($note_query, 0, "note");
@@ -1775,7 +1775,7 @@ while($i < $nombre_lignes) {
 				}
 			}
 
-			$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
+			$moyenne_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
 			
             if($moyenne_query){
 				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
@@ -1805,7 +1805,7 @@ while($i < $nombre_lignes) {
 
 	// En mode saisie, on n'affiche que le devoir à saisir
 	if ($id_devoir==0)  {
-		$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_conteneur')");
+		$moyenne_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_conteneur')");
 		
         if($moyenne_query){
 			$statut_moy = @mysql_result($moyenne_query, 0, "statut");
@@ -1901,7 +1901,7 @@ $k='0';
 while ($k < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
 	if (($id_devoir==0) or ($id_dev[$k] == $id_devoir)) {
-		$call_moyenne[$k] = mysql_query("SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
+		$call_moyenne[$k] = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
 		j.id_groupe='$id_groupe' AND
 		j.periode = '$periode_num' AND
 		j.login = n.login AND
@@ -1935,7 +1935,7 @@ if ($id_devoir==0) {
 			$m = 0;
 			while ($m < $nb_dev_s_cont[$k]) {
 				$temp = $id_s_dev[$k][$m];
-				$call_moy = mysql_query("SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
+				$call_moy = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
 				j.id_groupe='$id_groupe' AND
 				j.periode = '$periode_num' AND
 				j.login = n.login AND
@@ -1953,7 +1953,7 @@ if ($id_devoir==0) {
 				$m++;
 			}
 		}
-		$call_moy_moy = mysql_query("SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE (
+		$call_moy_moy = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE (
 		j.id_groupe='$id_groupe' AND
 		j.login = n.login AND
 		j.periode = '$periode_num' AND
@@ -1977,7 +1977,7 @@ if ($id_devoir==0) {
 // on affiche les sous-conteneurs et les devoirs des sous-conteneurs si on n'est pas en mode saisie ($id_devoir == 0)
 if ($id_devoir==0) {
 
-	$call_moy_moy = mysql_query("SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE (
+	$call_moy_moy = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE (
 	j.id_groupe='$id_groupe' AND
 	j.login = n.login AND
 	j.periode = '$periode_num' AND

@@ -54,10 +54,10 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 	for($j=0;$j<count($tab_id_clas);$j++){
 		for($i=0;$i<count($scol_login);$i++){
 			if(isset($_POST['case_'.$i.'_'.$j])){
-				$test=mysql_query("SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'");
-				if(mysql_num_rows($test)==0){
+				$test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'");
+				if(mysqli_num_rows($test)==0){
 					$sql="INSERT INTO j_scol_classes SET id_classe='".$tab_id_clas[$j]."', login='".$scol_login[$i]."'";
-					$reg_data=mysql_query($sql);
+					$reg_data=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$reg_data){
 						$msg.= "Erreur lors de l'insertion d'un nouvel enregistrement $tab_id_clas[$j] pour $scol_login[$i].";
 						$notok = true;
@@ -66,10 +66,10 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 				// Sinon: l'enregistrement est déjà présent.
 			}
 			else{
-				$test=mysql_query("SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'");
-				if(mysql_num_rows($test)>0){
+				$test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'");
+				if(mysqli_num_rows($test)>0){
 					$sql="DELETE FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'";
-					$reg_data=mysql_query($sql);
+					$reg_data=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$reg_data){
 						$msg.= "Erreur lors de la suppression de l'enregistrement $tab_id_clas[$j] pour $scol_login[$i].";
 						$notok = true;
@@ -163,11 +163,11 @@ else{
 	$ligne_comptes_scol="<tr style='background-color:#FAFABE;'>\n";
 	//$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>Comptes</td>\n";
 	$ligne_comptes_scol.="<th style='text-align:center; font-weight:bold;'>Comptes</th>\n";
-	$call_scol = mysql_query("SELECT login,nom,prenom FROM utilisateurs WHERE (statut='scolarite' AND etat='actif') ORDER BY nom,prenom");
-	$nb = mysql_num_rows($call_scol);
+	$call_scol = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login,nom,prenom FROM utilisateurs WHERE (statut='scolarite' AND etat='actif') ORDER BY nom,prenom");
+	$nb = mysqli_num_rows($call_scol);
 	$i=0;
 	$scol_login=array();
-	while($lig_scol=mysql_fetch_object($call_scol)){
+	while($lig_scol=mysqli_fetch_object($call_scol)){
 		//$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>$lig_scol->prenom $lig_scol->nom</td>\n";
 		$ligne_comptes_scol.="<th style='text-align:center; font-weight:bold;'>$lig_scol->prenom $lig_scol->nom</th>\n";
 		$scol_login[$i]=$lig_scol->login;
@@ -205,14 +205,14 @@ else{
 	echo "</th>\n";
 	echo "</tr>\n";
 
-	$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
-	$nombre_lignes = mysql_num_rows($call_data);
+	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes ORDER BY classe");
+	$nombre_lignes = mysqli_num_rows($call_data);
 
 	if ($nombre_lignes != 0) {
 		// Lignes classes...
 		$j=0;
 		$alt=1;
-		while($lig_clas=mysql_fetch_object($call_data)){
+		while($lig_clas=mysqli_fetch_object($call_data)){
 			if(($j%10==0)&&$j>0){echo $ligne_comptes_scol;}
 
 			$alt=$alt*(-1);
@@ -225,9 +225,9 @@ else{
 			echo "$lig_clas->classe";
 			echo "</td>\n";
 			for($i=0;$i<$nb;$i++){
-				$test=mysql_query("SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$lig_clas->id."' AND login='".$scol_login[$i]."'");
+				$test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$lig_clas->id."' AND login='".$scol_login[$i]."'");
 				//if(mysql_num_rows($test)==0){$checked="";$bgcolor="";}else{$checked="checked ";$bgcolor="background-color: #AAE6AA;";}
-				if(mysql_num_rows($test)==0){$checked="";$bgcolor="";}else{$checked="checked ";$bgcolor="background-color: plum;";}
+				if(mysqli_num_rows($test)==0){$checked="";$bgcolor="";}else{$checked="checked ";$bgcolor="background-color: plum;";}
 
 				echo "<td style='text-align:center;$bgcolor'>\n";
 				echo "<input type='checkbox' name='case_".$i."_".$j."' id='case_".$i."_".$j."' value='y' onchange='changement();' $checked/>\n";

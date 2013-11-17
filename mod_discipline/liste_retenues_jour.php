@@ -76,8 +76,8 @@ else {
 	}
 	else {
 		$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_sanction=sr.id_sanction AND date='".$annee."-".$mois."-".$jour."' ORDER BY heure_debut, lieu;";
-		$res_sanction=mysql_query($sql);
-		if(mysql_num_rows($res_sanction)>0) {
+		$res_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_sanction)>0) {
 	
 			echo "<table class='boireaus' summary='Retenues du jour'>\n";
 			echo "<tr>\n";
@@ -89,7 +89,7 @@ else {
 			echo "</tr>\n";
 	
 			$alt=1;
-			while($lig_sanction=mysql_fetch_object($res_sanction)) {
+			while($lig_sanction=mysqli_fetch_object($res_sanction)) {
 	
 				$date=formate_date($lig_sanction->date);
 				$heure_debut=$lig_sanction->heure_debut;

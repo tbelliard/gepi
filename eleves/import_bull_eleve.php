@@ -60,12 +60,12 @@ function get_nom_prenom_from_login($ele_login,$mode) {
 	$retour="";
 
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$ele_login';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		$retour="LOGIN INCONNU";
 	}
 	else {
-		$lig=mysql_fetch_object($res);
+		$lig=mysqli_fetch_object($res);
 
 		if($mode=="np") {
 			$retour=my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
@@ -83,12 +83,12 @@ function get_infos_from_ele_login($ele_login,$mode) {
 
 	//$sql="SELECT nom,prenom FROM eleves WHERE login='$ele_login';";
 	$sql="SELECT * FROM eleves WHERE login='$ele_login';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		$retour['denomination']="LOGIN INCONNU";
 	}
 	else {
-		$lig=mysql_fetch_object($res);
+		$lig=mysqli_fetch_object($res);
 
 		if($mode=="np") {
 			$retour['denomination']=my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
@@ -253,15 +253,15 @@ else {
 		$tab_per=array();
 
 		$sql="SELECT c.classe,jec.periode,p.nom_periode FROM j_eleves_classes jec, classes c, periodes p WHERE jec.login='$ele_login' AND jec.id_classe=c.id AND p.num_periode=jec.periode ORDER BY jec.periode;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			echo "L'élève n'est inscrit";
 			if($info_eleve['sexe']=='F') {echo "e";}
 			echo " dans aucune classe pour aucune période.<br />\n";
 			echo "</p>\n";
 		}
 		else {
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				if(!in_array($lig->periode,$tab_per)) {
 					$tab_per[]=$lig->periode;
 					echo "L'élève est inscrit";
@@ -309,11 +309,11 @@ else {
 		//die();
 
 		//flush();
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		//$nb_per=3;
 		$nb_per=0;
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
 			$nb_per=$lig->nb_per;
 		}
 
@@ -321,9 +321,9 @@ else {
 		$sql="SELECT jec.periode FROM j_eleves_classes jec WHERE jec.login='$ele_login' ORDER BY jec.periode;";
 		//echo "$sql<br />";
 		//flush();
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
 				$tab_per[]=$lig->periode;
 			}
 		}
@@ -362,11 +362,11 @@ else {
 
 		// Inscription dans j_eleves_etablissement
 		$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='".$info_eleve['elenoet']."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			echo "<p>Insertion de l'association élève/établissement d'origine: ";
 			$sql="INSERT INTO j_eleves_etablissements SET id_eleve='".$info_eleve['elenoet']."', id_etablissement='$rne_etab_ori';";
-			$res=mysql_query($sql);
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			if($res) {
 				echo "<span style='color:green;'>OK</span>";
 				echo "</p>\n";
@@ -381,7 +381,7 @@ else {
 		else {
 			echo "<p>Mise à jour de l'association élève/établissement d'origine: ";
 			$sql="UPDATE j_eleves_etablissements SET id_etablissement='$rne_etab_ori' WHERE id_eleve='".$info_eleve['elenoet']."';";
-			$res=mysql_query($sql);
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			if($res) {
 				echo "<span style='color:green;'>OK</span>";
 				echo "</p>\n";
@@ -400,8 +400,8 @@ else {
 		$sql="SELECT classe FROM classes WHERE classe='$nom_etab_ori';";
 		//echo "$sql<br />";
 		//flush();
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			echo "<p>Création d'une classe '$nom_etab_ori': ";
 
 			//$sql="INSERT INTO classes SET classe='$nom_etab_ori', nom_complet='$nom_etab_ori';";
@@ -413,9 +413,9 @@ else {
 										format_nom='np',
 										modele_bulletin_pdf='1'
 										;";
-			$res=mysql_query($sql);
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			if($res) {
-				$id_classe_etab=mysql_insert_id();
+				$id_classe_etab=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 				$classe_etab=$nom_etab_ori;
 				echo "<span style='color:green;'>OK</span>";
 				echo "</p>\n";
@@ -432,8 +432,8 @@ else {
 			while(true) {
 				//$sql="SELECT classe FROM classes WHERE classe LIKE '".$nom_etab_ori.$cpt."';";
 				$sql="SELECT classe FROM classes WHERE classe='".$nom_etab_ori.$cpt."';";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0) {
+				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($test)==0) {
 					echo "<p>Création d'une classe '".$nom_etab_ori.$cpt."': ";
 
 					$sql="INSERT INTO classes SET classe='".$nom_etab_ori.$cpt."',
@@ -444,9 +444,9 @@ else {
 												format_nom='np',
 												modele_bulletin_pdf='1'
 												;";
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if($res) {
-						$id_classe_etab=mysql_insert_id();
+						$id_classe_etab=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 						$classe_etab=$nom_etab_ori.$cpt;
 						echo "<span style='color:green;'>OK</span>";
 						echo "</p>\n";
@@ -476,7 +476,7 @@ else {
 			if($i>1) {echo ", ";}
 			echo $i;
 			$sql="INSERT INTO periodes SET num_periode='$i', nom_periode='Période $i', verouiller='O', id_classe='$id_classe_etab';";
-			$res=mysql_query($sql);
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			if($res) {
 				echo "<span style='color:green;'>OK</span>";
 				//echo "</p>\n";
@@ -492,8 +492,8 @@ else {
 
 		// Créer l'utilisateur prof...
 		$sql="SELECT login FROM utilisateurs WHERE nom='$nom_etab_ori' AND prenom='$ville_etab_ori';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			echo "<p>Création d'un utilisateur professeur '$nom_etab_ori': ";
 
 			// CREER UN LOGIN
@@ -512,7 +512,7 @@ else {
 													password='',
 													statut='professeur',
 													etat='inactif';";
-				$res=mysql_query($sql);
+				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				if($res) {
 					echo "<span style='color:green;'>OK</span>";
 					echo "</p>\n";
@@ -526,22 +526,22 @@ else {
 			}
 		}
 		else {
-			$lig=mysql_fetch_object($test);
+			$lig=mysqli_fetch_object($test);
 			$login_etab=$lig->login;
 		}
 
 		// Penser à inscrire dans j_scol_classe les comptes scolarité qui ont la classe actuelle de l'élève
 		// et si l'élève n'est dans aucune classe, proposer le lien.
 		$sql="SELECT DISTINCT jsc.login FROM j_eleves_classes jec,j_scol_classes jsc WHERE jec.login='$ele_login' AND jec.id_classe=jsc.id_classe;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			while($lig=mysql_query($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_query($GLOBALS["___mysqli_ston"], $res)) {
 				$sql="SELECT 1=1 FROM j_scol_classes WHERE id_classe='$id_classe_etab' AND login='$lig->login';";
-				$res1=mysql_query($sql);
-				if(mysql_num_rows($res1)==0) {
+				$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res1)==0) {
 					echo "Insertion de l'autorisation de consultation pour ".affiche_utilisateur($lig->login,'np').": ";
 					$sql="INSERT INTO j_scol_classes SET id_classe='$id_classe_etab', login='$lig->login';";
-					$res2=mysql_query($sql);
+					$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if($res2) {
 						echo "<span style='color:green;'>OK</span>";
 						echo "</p>\n";
@@ -620,11 +620,11 @@ else {
 
 						// Créer l'association dans 'periodes' si elle n'est pas déjà présente
 						$sql="SELECT 1=1 FROM periodes WHERE num_periode='$periode' AND id_classe='$id_classe_etab';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>Inscription de l'association période/classe pour la période '$periode': ";
 							$sql="INSERT INTO periodes SET num_periode='$periode', nom_periode='Période $periode', verouiller='O', id_classe='$id_classe_etab';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
 								echo "</p>\n";
@@ -639,11 +639,11 @@ else {
 
 						// Inscription de l'élève dans la classe
 						$sql="SELECT 1=1 FROM j_eleves_classes WHERE periode='$periode' AND id_classe='$id_classe_etab' AND login='$ele_login';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>Inscription de l'élève dans la classe '$classe_etab' pour la période '$periode': ";
 							$sql="INSERT INTO j_eleves_classes SET periode='$periode', id_classe='$id_classe_etab', login='$ele_login';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
 								echo "</p>\n";
@@ -658,12 +658,12 @@ else {
 
 						// Insertion de l'avis
 						$sql="SELECT 1=1 FROM avis_conseil_classe WHERE login='$ele_login' AND periode='$periode';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>Inscription de l'avis du conseil de classe pour la période '$periode': ";
 							//$sql="INSERT INTO avis_conseil_classe SET login='$ele_login', periode='$periode', avis='$avis';";
 							$sql="INSERT INTO avis_conseil_classe SET login='$ele_login', periode='$periode', avis='".my_ereg_replace("_POINT_VIRGULE_",";",$avis)."';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
 								echo "</p>\n";
@@ -697,8 +697,8 @@ else {
 						$app=$tab_tmp[5];
 
 						$sql="SELECT 1=1 FROM absences WHERE login='$ele_login' AND periode='$periode';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>Inscription des absences/retards pour la période '$periode': ";
 							$sql="INSERT INTO absences SET login='$ele_login',
 															periode='$periode',
@@ -707,7 +707,7 @@ else {
 															nb_retards='$nb_retards',
 															appreciation='".my_ereg_replace("_POINT_VIRGULE_",";",$app)."';";
 							//								appreciation='".$app."';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
 								echo "</p>\n";
@@ -747,11 +747,11 @@ else {
 
 						// Créer l'association dans 'periodes' si elle n'est pas déjà présente
 						$sql="SELECT 1=1 FROM periodes WHERE num_periode='$periode' AND id_classe='$id_classe_etab';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>Inscription de l'association période/classe pour la période '$periode': ";
 							$sql="INSERT INTO periodes SET num_periode='$periode', nom_periode='Période $periode', verouiller='O', id_classe='$id_classe_etab';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
 								echo "</p>\n";
@@ -766,11 +766,11 @@ else {
 
 						// Inscription de l'élève dans la classe
 						$sql="SELECT 1=1 FROM j_eleves_classes WHERE periode='$periode' AND id_classe='$id_classe_etab' AND login='$ele_login';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>Inscription de l'élève dans la classe '$classe_etab' pour la période '$periode': ";
 							$sql="INSERT INTO j_eleves_classes SET periode='$periode', id_classe='$id_classe_etab', login='$ele_login';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
 								echo "</p>\n";
@@ -787,11 +787,11 @@ else {
 						// Insertion de la matière
 						//$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere' AND nom_complet='$matiere_nom_complet';";
 						$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>Inscription de la matière '".htmlspecialchars($matiere)."' dans la table 'matieres': ";
 							$sql="INSERT INTO matieres SET matiere='$matiere', nom_complet='$matiere_nom_complet';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
 								echo "</p>\n";
@@ -806,11 +806,11 @@ else {
 
 						// Insertion de l'association prof/matière
 						$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$matiere' AND id_professeur='$login_etab';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>Inscription de l'association professeur '$login_etab' / matière '".htmlspecialchars($matiere)."' dans la table 'j_professeurs_matieres': ";
 							$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$matiere', id_professeur='$login_etab';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
 								echo "</p>\n";
@@ -857,7 +857,7 @@ else {
 						// Insertion de l'association groupe/élève
 						echo "<p>Inscription de l'association groupe/élève dans la table 'j_eleves_groupes': ";
 						$sql="INSERT INTO j_eleves_groupes SET id_groupe='$current_id_groupe', login='$ele_login', periode='$periode';";
-						$res=mysql_query($sql);
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if($res) {
 							echo "<span style='color:green;'>OK</span>";
 							echo "</p>\n";
@@ -871,11 +871,11 @@ else {
 
 						// Insertion de l'association groupe/prof
 						$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$current_id_groupe' AND login='$login_etab';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>Inscription de l'association professeur '$login_etab' / groupe '".htmlspecialchars($current_id_groupe)."' dans la table 'j_groupes_professeurs': ";
 							$sql="INSERT INTO j_groupes_professeurs SET id_groupe='$current_id_groupe', login='$login_etab';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
 								echo "</p>\n";
@@ -911,7 +911,7 @@ else {
 						// Insertion de la moyenne
 						echo "<p>Inscription de la moyenne sur le bulletin dans la table 'matieres_notes': ";
 						$sql="INSERT INTO matieres_notes SET login='$ele_login', id_groupe='$current_id_groupe', periode='$periode', note='$note', statut='$statut';";
-						$res=mysql_query($sql);
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if($res) {
 							echo "<span style='color:green;'>OK</span>";
 							echo "</p>\n";
@@ -934,7 +934,7 @@ else {
 							echo "<p>Inscription de l'appréciation pour la matière '".htmlspecialchars($matiere)."' sur la période '$periode': ";
 							//$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='$app';";
 							$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='".my_ereg_replace("_POINT_VIRGULE_",";",$app)."';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
 								echo "</p>\n";

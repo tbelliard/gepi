@@ -38,10 +38,10 @@ if (isset($_POST['login'])) {
 	$email = (isset($_POST['email'])) ? $_POST['email'] : "noemail";
 	$user_login = (!empty($_POST['login'])) ? $_POST['login'] : "nologin";
 	// Le formulaire de demande a été posté, on vérifie et on envoit un mail
-	$test = mysql_query("SELECT statut FROM utilisateurs WHERE (" .
+	$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT statut FROM utilisateurs WHERE (" .
 			"login = '" . $user_login . "' and " .
 			"email = '" . $email . "')");
-	if (mysql_num_rows($test) == 1) {
+	if (mysqli_num_rows($test) == 1) {
 		// On a un utilisateur qui a bien ces coordonnées.
 
 		// On va maintenant vérifier son statut, et s'assurer que le statut en question
@@ -84,7 +84,7 @@ if (isset($_POST['login'])) {
 	        // On enregistre le ticket dans la base
 	        $expiration_timestamp = time()+15*60;
 	        $expiration_date = date("Y-m-d G:i:s", $expiration_timestamp);
-	        $res = mysql_query("UPDATE utilisateurs SET " .
+	        $res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET " .
 	        		"password_ticket = '" . $ticket . "', " .
 	        		"ticket_expiration = '" . $expiration_date . "' WHERE (" .
 	        		"login = '" . $user_login . "')");
@@ -114,7 +114,7 @@ if (isset($_POST['login'])) {
 	        		$message = "Erreur lors de l'envoi du courriel.";
 	        	}
 	        } else {
-	        	echo mysql_error();
+	        	echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	        }
 		} // Fin: statut autorisé
 	} else {
@@ -128,8 +128,8 @@ if (isset($_POST['no_anti_inject_password'])) {
 	// que le mot de passe répond aux critères de sécurité requis
 	$message = false;
 	// On récupère le statut de l'utilisateur associé au ticket, et l'heure d'expiration :
-	$req = mysql_query("SELECT statut, UNIX_TIMESTAMP(ticket_expiration) expiration, login FROM utilisateurs WHERE password_ticket = '" . $_GET['ticket'] . "'");
-	if (mysql_num_rows($req) != 1) {
+	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT statut, UNIX_TIMESTAMP(ticket_expiration) expiration, login FROM utilisateurs WHERE password_ticket = '" . $_GET['ticket'] . "'");
+	if (mysqli_num_rows($req) != 1) {
 		$message = "Erreur : le lien n'est pas valide ! <a href='recover_password.php'>Cliquez ici</a> pour formuler une nouvelle demande de changement de mot de passe.";
 	} else {
 		$user_status = mysql_result($req, 0, "statut");
@@ -155,7 +155,7 @@ if (isset($_POST['no_anti_inject_password'])) {
                                 $user_login = mysql_result($req, 0, "login");
                                 $res = Session::change_password_gepi($user_login,$NON_PROTECT["password"]);
 				if ($res) {
-                                        $res = mysql_query("UPDATE utilisateurs SET password_ticket = '' WHERE password_ticket = '" . $_GET['ticket'] . "'");
+                                        $res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET password_ticket = '' WHERE password_ticket = '" . $_GET['ticket'] . "'");
 					$update_successful = true;
 				} else {
 					$message = "Erreur lors de la mise à jour de votre mot de passe.";
@@ -213,8 +213,8 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
 	if (mb_strlen($ticket) < 85) {
 		$error = true;
 	} else {
-		$test = mysql_query("SELECT statut FROM utilisateurs WHERE password_ticket = '" . $ticket . "'");
-		if (mysql_num_rows($test) != "1") {
+		$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT statut FROM utilisateurs WHERE password_ticket = '" . $ticket . "'");
+		if (mysqli_num_rows($test) != "1") {
 			$error = true;
 		} else {
 			// Si on arrive là, c'est que le ticket est valide !

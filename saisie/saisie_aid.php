@@ -50,7 +50,7 @@ $aid_id = isset($_POST["aid_id"]) ? $_POST["aid_id"] : (isset($_GET["aid_id"]) ?
 
 
 // On appelle les informations de l'aid pour les afficher :
-$call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 $nom_aid = @mysql_result($call_data, 0, "nom");
 $note_max = @mysql_result($call_data, 0, "note_max");
 $type_note = @mysql_result($call_data, 0, "type_note");
@@ -78,8 +78,8 @@ if (isset($_POST['is_posted'])) {
 
 	$sql="SELECT e.* FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login = j.login and j.indice_aid='$indice_aid')";
 	//echo "$sql<br />";
-	$quels_eleves=mysql_query($sql);
-	$lignes = mysql_num_rows($quels_eleves);
+	$quels_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$lignes = mysqli_num_rows($quels_eleves);
 	//echo "\$lignes=$lignes (nombre d'élèves inscrits dans l'AID)<br />";
 	$j = '0';
 	while($j < $lignes) {
@@ -91,16 +91,16 @@ if (isset($_POST['is_posted'])) {
 		//$call_classe = mysql_query("SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '$reg_eleve_login' ORDER BY periode DESC");
 		$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '$reg_eleve_login' ORDER BY periode DESC";
 		//echo "$sql<br />";
-		$call_classe = mysql_query($sql);
+		$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		//echo "$sql<br />";
 		// On passe en revue tous les élèves inscrits à l'AID, même si ils ne sont pas dans une classe...
 		// ... par contre, dans la partie saisie, seuls les élèves effectivement dans une classe sont proposés.
-		if(mysql_num_rows($call_classe)>0){
+		if(mysqli_num_rows($call_classe)>0){
 			$id_classe = mysql_result($call_classe, '0', "id_classe");
 			$sql="SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode";
 			//echo "$sql<br />";
-			$periode_query = mysql_query($sql);
-			$nb_periode = mysql_num_rows($periode_query) ;
+			$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nb_periode = mysqli_num_rows($periode_query) ;
 			if ($type_note == 'last') {$last_periode_aid = min($nb_periode,$display_end);}
 			$k='1';
 			while ($k < $nb_periode + 1) {
@@ -193,29 +193,29 @@ if (isset($_POST['is_posted'])) {
 
 							$sql="SELECT * FROM aid_appreciations WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
 							//echo "$sql<br />";
-							$test_eleve_app_query = mysql_query($sql);
-							$test = mysql_num_rows($test_eleve_app_query);
+							$test_eleve_app_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$test = mysqli_num_rows($test_eleve_app_query);
 							if ($test != "0") {
 								//echo "Il y avait déjà un enregistrement.<br />";
 								if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
 									$sql="UPDATE aid_appreciations SET appreciation='$app', note='$note',statut='$elev_statut' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
 									//echo "$sql<br />";
-									$register=mysql_query($sql);
+									$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								} else {
 									$sql="UPDATE aid_appreciations SET appreciation='$app' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
 									//echo "$sql<br />";
-									$register=mysql_query($sql);
+									$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								}
 							} else {
 								//echo "Il n'y avait pas encore d'enregistrement.<br />";
 								if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
 									$sql="INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app', note = '$note', statut='$elev_statut', indice_aid='$indice_aid';";
 									//echo "$sql<br />";
-									$register=mysql_query($sql);
+									$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								} else {
 									$sql="INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app',statut='$elev_statut', indice_aid='$indice_aid';";
 									//echo "$sql<br />";
-									$register=mysql_query($sql);
+									$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								}
 							}
 							if (!$register) {$msg = "Erreur lors de l'enregistrement des données de la période $k ";} else {$msg = "Les modifications ont été enregistrées !";$affiche_message = 'yes';}
@@ -232,23 +232,23 @@ if (isset($_POST['is_posted'])) {
 // on calcule le nombre maximum de périodes dans une classe
 //
 
-$call_data = mysql_query("DROP TABLE IF EXISTS $nom_table");
-$call_data = mysql_query("CREATE TEMPORARY TABLE $nom_table (id_classe integer, num integer NOT NULL)");
+$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "DROP TABLE IF EXISTS $nom_table");
+$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "CREATE TEMPORARY TABLE $nom_table (id_classe integer, num integer NOT NULL)");
 $msg_pb="";
 if(!$call_data) {
 	$msg_pb="ERREUR&nbsp;: La création d'une table temporaire a échoué.<br />Le droit de créer des tables temporaires n'est peut-être pas attribué à l'utilisateur MySQL.<br />La présente page risque de ne pas fonctionner.";
 }
-$call_data = mysql_query("SELECT * FROM classes");
-$nombre_lignes = mysql_num_rows($call_data);
+$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes");
+$nombre_lignes = mysqli_num_rows($call_data);
 $i = 0;
 while ($i < $nombre_lignes){
 	$id_classe = mysql_result($call_data, $i, "id");
-	$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
-	$k = mysql_num_rows($periode_query);
-	$call_reg = mysql_query("insert into $nom_table Values('$id_classe', '$k')");
+	$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+	$k = mysqli_num_rows($periode_query);
+	$call_reg = mysqli_query($GLOBALS["___mysqli_ston"], "insert into $nom_table Values('$id_classe', '$k')");
 	$i++;
 }
-$call_data = mysql_query("SELECT max(num) as max FROM $nom_table");
+$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT max(num) as max FROM $nom_table");
 $nb_periode_max = mysql_result($call_data, 0, "max");
 
 $message_enregistrement = "Les modifications ont été enregistrées !";
@@ -270,8 +270,8 @@ if (!isset($aid_id)) {
 	if ($_SESSION['statut'] != "secours") {
 		$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$indice_aid') ORDER BY a.numero, a.nom";
 		//echo "$sql<br />";
-		$call_prof_aid = mysql_query($sql);
-		$nombre_aid = mysql_num_rows($call_prof_aid);
+		$call_prof_aid = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nombre_aid = mysqli_num_rows($call_prof_aid);
 		if ($nombre_aid == "0") {
 			echo "<p>$nom_aid : Vous n'êtes pas professeur responsable. Vous n'avez donc pas à entrer d'appréciations.</p></html></body>\n";
 			die();
@@ -290,8 +290,8 @@ if (!isset($aid_id)) {
 			echo "</p>\n";
 		}
 	} else {
-		$call_prof_aid = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero, nom");
-		$nombre_aid = mysql_num_rows($call_prof_aid);
+		$call_prof_aid = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero, nom");
+		$nombre_aid = mysqli_num_rows($call_prof_aid);
 		if ($nombre_aid == "0") {
 			echo "<p>$nom_aid : Il n'y a pas d'entrées !</p>\n";
 		} else {
@@ -319,7 +319,7 @@ if (!isset($aid_id)) {
 	echo "<form enctype='multipart/form-data' action='saisie_aid.php' method='post'>\n";
 	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 
-	$calldata = mysql_query("SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
+	$calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
 	$aid_nom = mysql_result($calldata, 0, "nom");
 
 
@@ -335,7 +335,7 @@ if (!isset($aid_id)) {
 		if ($type_note == 'last') {
 			$last_periode_aid = min($num,$display_end);
 		}
-		$appel_login_eleves = mysql_query("SELECT DISTINCT a.login
+		$appel_login_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT a.login
 									FROM j_eleves_classes cc, j_aid_eleves a, $nom_table c, eleves e
 									WHERE (a.id_aid='$aid_id' AND
 									cc.login = a.login AND
@@ -343,14 +343,14 @@ if (!isset($aid_id)) {
 									cc.id_classe = c.id_classe AND
 									c.num = $num AND
 									a.indice_aid='$indice_aid') ORDER BY e.nom, e.prenom");
-		$nombre_lignes = mysql_num_rows($appel_login_eleves);
+		$nombre_lignes = mysqli_num_rows($appel_login_eleves);
 		if ($nombre_lignes != '0') {
 			echo "<tr>\n";
 			echo "<th><b>Nom Prénom</b></th>\n";
 
-			$call_data = mysql_query("SELECT * FROM $nom_table WHERE num = '$num' ");
+			$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM $nom_table WHERE num = '$num' ");
 			$id_classe = mysql_result($call_data, '0', 'id_classe');
-			$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
+			$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
 
 			$i = "1";
 			while ($i < $num + 1) {
@@ -368,10 +368,10 @@ if (!isset($aid_id)) {
 			$alt=1;
 			while($i < $nombre_lignes) {
 				$current_eleve_login = mysql_result($appel_login_eleves, $i, 'login');
-				$appel_donnees_eleves = mysql_query("SELECT * FROM eleves WHERE (login = '$current_eleve_login')");
+				$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM eleves WHERE (login = '$current_eleve_login')");
 				$current_eleve_nom = mysql_result($appel_donnees_eleves, '0', "nom");
 				$current_eleve_prenom = mysql_result($appel_donnees_eleves, '0', "prenom");
-				$appel_classe_eleve = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_classes cc WHERE (cc.login = '$current_eleve_login' AND cc.id_classe = c.id) ORDER BY cc.periode DESC");
+				$appel_classe_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, j_eleves_classes cc WHERE (cc.login = '$current_eleve_login' AND cc.id_classe = c.id) ORDER BY cc.periode DESC");
 				$current_eleve_classe = mysql_result($appel_classe_eleve, '0', "classe");
 				$current_eleve_id_classe = mysql_result($appel_classe_eleve, '0', "id");
 
@@ -380,12 +380,12 @@ if (!isset($aid_id)) {
 				echo "<td>$current_eleve_nom $current_eleve_prenom $current_eleve_classe</td>\n";
 				$k = '1';
 
-				$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$current_eleve_id_classe'  ORDER BY num_periode");
+				$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$current_eleve_id_classe'  ORDER BY num_periode");
 
 				while ($k < $num + 1) {
 					if (($k >= $display_begin) and ($k <= $display_end)) {
 
-						$current_eleve_app_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
+						$current_eleve_app_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
 						$current_eleve_statut_t[$k] = @mysql_result($current_eleve_app_query, 0, "statut");
 						$current_eleve_app_t[$k] = @mysql_result($current_eleve_app_query, 0, "appreciation");
 						$current_eleve_note_t[$k] = @mysql_result($current_eleve_app_query, 0, "note");

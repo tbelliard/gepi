@@ -84,24 +84,24 @@ login VARCHAR( 50 ) NOT NULL ,
 type_brevet TINYINT NOT NULL ,
 PRIMARY KEY ( login )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	if(!$res) {
 		$msg.="ERREUR lors de la création de la table 'notanet_ele_type'.<br />";
 	}
 	else {
 		$sql="DELETE FROM notanet_ele_type WHERE type_brevet='$type_brevet';";
-		$nettoyage=mysql_query($sql);
+		$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 		$nb_err=0;
 		$cpt_enr=0;
 		for($i=0;$i<count($ele_login);$i++) {
 			$sql="SELECT type_brevet FROM notanet_ele_type WHERE login='$ele_login[$i]';";
-			$res1=mysql_query($sql);
+			$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-			if(mysql_num_rows($res1)==0) {
+			if(mysqli_num_rows($res1)==0) {
 				if(isset($coche_ele_login[$i])) {
 					$sql="INSERT INTO notanet_ele_type SET login='$ele_login[$i]', type_brevet='$type_brevet';";
-					$res2=mysql_query($sql);
+					$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$res2) {
 						$msg.="ERREUR lors de l'insertion de l'association pour $ele_login[$i].<br />";
 						$nb_err++;
@@ -112,11 +112,11 @@ PRIMARY KEY ( login )
 				}
 			}
 			else {
-				$lig1=mysql_fetch_object($res1);
+				$lig1=mysqli_fetch_object($res1);
 				if($lig1->type_brevet==$type_brevet) {
 					if(isset($coche_ele_login[$i])) {
 						$sql="UPDATE notanet_ele_type SET type_brevet='$type_brevet' WHERE login='$ele_login[$i]';";
-						$res2=mysql_query($sql);
+						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$res2) {
 							$msg.="ERREUR lors de la mise à jour de l'association pour $ele_login[$i].<br />";
 							$nb_err++;
@@ -127,7 +127,7 @@ PRIMARY KEY ( login )
 					}
 					else {
 						$sql="DELETE FROM notanet_ele_type WHERE login='$ele_login[$i]';";
-						$res2=mysql_query($sql);
+						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$res2) {
 							$msg.="ERREUR lors de la mise à jour de l'association pour $ele_login[$i].<br />";
 							$nb_err++;
@@ -140,7 +140,7 @@ PRIMARY KEY ( login )
 				else {
 					if(isset($coche_ele_login[$i])) {
 						$sql="UPDATE notanet_ele_type SET type_brevet='$type_brevet' WHERE login='$ele_login[$i]';";
-						$res2=mysql_query($sql);
+						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$res2) {
 							$msg.="ERREUR lors de la mise à jour de l'association pour $ele_login[$i].<br />";
 							$nb_err++;
@@ -245,8 +245,8 @@ else {
 		echo "<input type='hidden' name='type_brevet' value='$type_brevet' />\n";
 		echo "<p>Sélectionnez les classes : </p>\n";
 		echo "<blockquote>\n";
-		$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-		$nombre_lignes = mysql_num_rows($call_data);
+		$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+		$nombre_lignes = mysqli_num_rows($call_data);
 		//echo "<select name='id_classe[]' multiple='true' size='10'>\n";
 
 		$nb_class_par_colonne=round($nombre_lignes/3);
@@ -280,8 +280,8 @@ else {
 							jec.id_classe='$ide_classe' AND
 							n.type_brevet='$type_brevet'
 					ORDER BY e.nom,e.prenom";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)!=0) {
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res)!=0) {
 				echo "checked ";
 			}
 
@@ -332,8 +332,8 @@ else {
 					WHERE jec.login=e.login AND
 							jec.id_classe='$id_classe[$i]'
 					ORDER BY e.nom,e.prenom";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p>Aucun élève n'est affecté dans cette classe.</p>\n";
 			}
 			else {
@@ -345,7 +345,7 @@ else {
 				echo "<th>Brevet $tab_type_brevet[$type_brevet]";
 				echo "<br />\n";
 
-				$cpt2=$cpt+mysql_num_rows($res);
+				$cpt2=$cpt+mysqli_num_rows($res);
 
 				echo "<a href=\"javascript:coche($cpt,$cpt2)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:decoche($cpt,$cpt2)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 
@@ -353,7 +353,7 @@ else {
 				echo "</tr>\n";
 
 				$alt=1;
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					echo "<td><label for='ele_$cpt' style='cursor: pointer;'>".mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom))."</label></td>\n";
@@ -372,9 +372,9 @@ else {
 					*/
 
 					$sql="SELECT * FROM notanet_ele_type WHERE login='$lig->login';";
-					$res1=mysql_query($sql);
-					if(mysql_num_rows($res1)!=0) {
-						$lig_tmp=mysql_fetch_object($res1);
+					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($res1)!=0) {
+						$lig_tmp=mysqli_fetch_object($res1);
 						if($lig_tmp->type_brevet==$type_brevet) {
 							echo "checked ";
 						}
@@ -382,7 +382,7 @@ else {
 
 					echo "/>\n";
 
-					if(mysql_num_rows($res1)!=0) {
+					if(mysqli_num_rows($res1)!=0) {
 						if($lig_tmp->type_brevet!=$type_brevet) {
 							echo " <span style='font-size: xx-small;'>".$tab_type_brevet[$lig_tmp->type_brevet]."</span>";
 						}

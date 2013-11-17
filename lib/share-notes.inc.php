@@ -19,14 +19,14 @@
 function test_conteneurs_vides($id_conteneur,$id_racine) {
         // On teste si le conteneur est vide
         if ($id_conteneur !=0) {
-            $sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_conteneur'");
-            $nb_dev = mysql_num_rows($sql);
-            $sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_conteneur'");
-            $nb_cont = mysql_num_rows($sql);
+            $sql= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM cn_devoirs WHERE id_conteneur='$id_conteneur'");
+            $nb_dev = mysqli_num_rows($sql);
+            $sql= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM cn_conteneurs WHERE parent='$id_conteneur'");
+            $nb_cont = mysqli_num_rows($sql);
             if (($nb_dev == 0) or ($nb_cont == 0)) {
-                $query_parent = mysql_query("SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
+                $query_parent = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
                 $id_par = mysql_result($query_parent, 0, 'parent');
-                $sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_conteneur'");
+                $sql = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_conteneur'");
                 test_conteneurs_vides($id_par,$id_racine);
             }
         }
@@ -57,7 +57,7 @@ function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racin
 		if ($arret != 'yes') {
 			//
 			// Détermination du conteneur parent
-			$query_id_parent = mysql_query("SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
+			$query_id_parent = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
 			$id_parent = mysql_result($query_id_parent, 0, 'parent');
 			if ($id_parent != 0) {
 				$arret = 'no';
@@ -113,8 +113,8 @@ function sous_conteneurs($id_conteneur,&$nb_sous_cont,&$nom_sous_cont,&$coef_sou
 	fdebug("LANCEMENT DE sous_conteneurs() SUR\n");
 	fdebug("id_conteneur=$id_conteneur avec type=$type\n");
 
-    $query_sous_cont = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent ='$id_conteneur' and id!='$id_conteneur') order by nom_court");
-    $nb = mysql_num_rows($query_sous_cont);
+    $query_sous_cont = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_conteneurs WHERE (parent ='$id_conteneur' and id!='$id_conteneur') order by nom_court");
+    $nb = mysqli_num_rows($query_sous_cont);
     $i=0;
     while ($i < $nb) {
         $nom_sous_cont[$nb_sous_cont] = mysql_result($query_sous_cont, $i, 'nom_court');
@@ -153,10 +153,10 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     // On efface les moyennes de la table
     $sql="DELETE FROM cn_notes_conteneurs WHERE (login='$login' and id_conteneur='$id_conteneur');";
 	fdebug("$sql\n");
-    $delete = mysql_query($sql);
+    $delete = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
     // Appel des paramètres du conteneur
-    $appel_conteneur = mysql_query("SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
+    $appel_conteneur = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
     $arrondir =  mysql_result($appel_conteneur, 0, 'arrondir');
     $mode =  mysql_result($appel_conteneur, 0, 'mode');
     $ponderation = mysql_result($appel_conteneur, 0, 'ponderation');
@@ -210,8 +210,8 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     if ($ponderation != 0) {
         $sql="SELECT * FROM cn_devoirs WHERE id_conteneur='$id_conteneur' ORDER BY date,id";
 		fdebug("$sql\n");
-        $appel_dev = mysql_query($sql);
-        $nb_dev  = mysql_num_rows($appel_dev);
+        $appel_dev = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+        $nb_dev  = mysqli_num_rows($appel_dev);
 		fdebug("\$nb_dev=$nb_dev\n");
         $max = 0;
         $indice_pond = 0;
@@ -222,7 +222,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 			fdebug("\$id_dev=$id_dev : \$coef[$k]=$coef[$k]\n");
             $sql="SELECT * FROM cn_notes_devoirs WHERE (login='$login' AND id_devoir='$id_dev')";
 			fdebug("$sql\n");
-            $note_query = mysql_query($sql);
+            $note_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
             $statut = @mysql_result($note_query, 0, "statut");
             $note = @mysql_result($note_query, 0, "note");
 			fdebug("\$nb_dev=$nb_dev\n");
@@ -257,9 +257,9 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 		// MODIF: boireaus 20080202
         $sql="SELECT * FROM cn_devoirs WHERE id_conteneur='$id_cont[$j]' ORDER BY date,id";
 		fdebug("$sql\n");
-        $appel_dev = mysql_query($sql);
+        $appel_dev = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		//=========================
-        $nb_dev  = mysql_num_rows($appel_dev);
+        $nb_dev  = mysqli_num_rows($appel_dev);
         $k = 0;
         while ($k < $nb_dev) {
             $id_dev = mysql_result($appel_dev, $k, 'id');
@@ -281,7 +281,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
             $facultatif[$k] = mysql_result($appel_dev, $k, 'facultatif');
 			fdebug("\$facultatif[$k]=$facultatif[$k]\n");
 
-            $note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$login' AND id_devoir='$id_dev')");
+            $note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_devoirs WHERE (login='$login' AND id_devoir='$id_dev')");
             $statut = @mysql_result($note_query, 0, "statut");
 			fdebug("\$statut=$statut\n");
 
@@ -352,13 +352,13 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
         while ($j < $nb_sous_cont) {
             $sql="SELECT coef FROM cn_conteneurs WHERE id='$id_sous_cont[$j]'";
 			fdebug("$sql\n");
-            $appel_cont = mysql_query($sql);
+            $appel_cont = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
             $coefficient = mysql_result($appel_cont, 0, 'coef');
 			fdebug("\$coefficient=$coefficient\n");
 
             $sql="SELECT * FROM cn_notes_conteneurs WHERE (login='$login' AND id_conteneur='$id_sous_cont[$j]')";
 			fdebug("$sql\n");
-            $moyenne_query = mysql_query($sql);
+            $moyenne_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
             $statut_moy = @mysql_result($moyenne_query, 0, "statut");
 			fdebug("\$statut_moy=$statut_moy\n");
 
@@ -456,12 +456,12 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 
         $sql="INSERT INTO cn_notes_conteneurs SET login='$login', id_conteneur='$id_conteneur',note='$moyenne',statut='y',comment='';";
 		fdebug("$sql\n");
-        $register = mysql_query($sql);
+        $register = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
     } else {
         $sql="INSERT INTO cn_notes_conteneurs SET login='$login', id_conteneur='$id_conteneur',note='0',statut='',comment='';";
 		fdebug("$sql\n");
-        $register = mysql_query($sql);
+        $register = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
     }
 
@@ -476,11 +476,11 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
  */
 function Verif_prof_cahier_notes ($_login,$_id_racine) {
     if(empty($_login) || empty($_id_racine)) {return FALSE;die();}
-    $test_prof = mysql_query("SELECT id_groupe FROM cn_cahier_notes WHERE id_cahier_notes ='" . $_id_racine . "'");
+    $test_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_groupe FROM cn_cahier_notes WHERE id_cahier_notes ='" . $_id_racine . "'");
     $_id_groupe = mysql_result($test_prof, 0, 'id_groupe');
 
-    $call_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE (id_groupe='".$_id_groupe."' and login='" . $_login . "')");
-    $nb = mysql_num_rows($call_prof);
+    $call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM j_groupes_professeurs WHERE (id_groupe='".$_id_groupe."' and login='" . $_login . "')");
+    $nb = mysqli_num_rows($call_prof);
 
     if ($nb != 0) {
         return TRUE;
@@ -713,9 +713,9 @@ function get_cn_from_id_groupe_periode_num($id_groupe, $periode_num) {
 	$id_cahier_notes="";
 
 	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
 		$id_cahier_notes=$lig->id_cahier_notes;
 	}
 	return $id_cahier_notes;
@@ -735,9 +735,9 @@ function recherche_enfant($id_parent_tmp){
 	global $current_group, $periode_num, $id_racine;
 	$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
 	//echo "<!-- $sql -->\n";
-	$res_enfant=mysql_query($sql);
-	if(mysql_num_rows($res_enfant)>0){
-		while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
+	$res_enfant=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_enfant)>0){
+		while($lig_conteneur_enfant=mysqli_fetch_object($res_enfant)){
 			recherche_enfant($lig_conteneur_enfant->id);
 		}
 	}
@@ -779,8 +779,8 @@ function calc_moy_debug($texte){
  */
 function acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $num_periode) {
 	$sql="SELECT 1=1 FROM acces_cn WHERE id_groupe='$id_groupe' AND periode='$num_periode' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0) {
+	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($test)>0) {
 		return true;
 	}
 	else {
@@ -799,13 +799,13 @@ function acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $num_periode) {
  */
 function log_modifs_acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $num_periode, $texte_ajoute) {
 	$sql="SELECT * FROM acces_cn WHERE id_groupe='$id_groupe' AND periode='$num_periode';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		// Il n'y a au plus qu'un enregistrement par (id_groupe;periode) dans acces_cn
-		$lig=mysql_fetch_object($res);
+		$lig=mysqli_fetch_object($res);
 		$texte=$lig->commentaires."\n".$texte_ajoute;
-		$sql="UPDATE acces_cn SET commentaires='".mysql_real_escape_string($texte)."' WHERE id='$lig->id';";
-		$update=mysql_query($sql);
+		$sql="UPDATE acces_cn SET commentaires='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $texte) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE id='$lig->id';";
+		$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if($update) {
 			return true;
 		}
@@ -830,8 +830,8 @@ function log_modifs_acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $num
  */
 function creer_carnet_notes($id_groupe, $periode_num) {
 	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe' and periode='$periode_num')";
-	$appel_cahier_notes = mysql_query($sql);
-	$nb_cahier_note = mysql_num_rows($appel_cahier_notes);
+	$appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_cahier_note = mysqli_num_rows($appel_cahier_notes);
 	if ($nb_cahier_note == 0) {
 		$current_group=get_group($id_groupe, array('matieres'));
 		$nom_complet_matiere = $current_group["matiere"]["nom_complet"];
@@ -849,17 +849,17 @@ function creer_carnet_notes($id_groupe, $periode_num) {
 				display_parents = '0',
 				display_bulletin = '1',
 				parent = '0'";
-		$reg = mysql_query($sql);
+		$reg = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if ($reg) {
-			$id_racine = mysql_insert_id();
+			$id_racine = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 
 			// Mise à jour du conteneur
 			$sql="UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine';";
-			$reg = mysql_query($sql);
+			$reg = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 			// Création du carnet de notes
 			$sql="INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine';";
-			$reg = mysql_query($sql);
+			$reg = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		}
 	} else {
 		$id_racine = mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');

@@ -106,7 +106,7 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
             else {
             	// A partir de là, on vide la table edt_cours
             if ($truncate_cours == "oui") {
-            	$vider_table = mysql_query("TRUNCATE TABLE edt_cours");
+            	$vider_table = mysqli_query($GLOBALS["___mysqli_ston"], "TRUNCATE TABLE edt_cours");
             }
 
             	// On ouvre alors toutes les lignes de tous les champs
@@ -132,8 +132,8 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
     	// On récupère le login du prof
     	//$prof_login = my_strtoupper(strtr($tab[0], "éèêë", "eeee"));
     	$prof_login = my_strtoupper(remplace_accents($tab[0]));
-    $req_prof = mysql_query("SELECT nom FROM utilisateurs WHERE login = '".$prof_login."'");
-    $rep_prof = mysql_fetch_array($req_prof);
+    $req_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom FROM utilisateurs WHERE login = '".$prof_login."'");
+    $rep_prof = mysqli_fetch_array($req_prof);
     	if ($rep_prof["nom"] == "") {
     		$probleme .="<p>Le professeur n'est pas reconnu.</p>\n";
     	}
@@ -141,22 +141,22 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
 		// On récupère l'id de la matière et l'id de la classe
 		//$matiere = strtoupper(strtr($tab[1], "éèêë", "eeee"));
 		$matiere = my_strtoupper(remplace_accents($tab[1]));
-		$sql_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere."'");
-		$rep_matiere = mysql_fetch_array($sql_matiere);
+		$sql_matiere = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_complet FROM matieres WHERE matiere = '".$matiere."'");
+		$rep_matiere = mysqli_fetch_array($sql_matiere);
 			if ($rep_matiere["nom_complet"] == "") {
 				$probleme .= "<p>Gepi ne retrouve pas la bonne mati&egrave;re.</p>\n";
 			}
 		//$classe = strtoupper(strtr($tab[2], "éèêë", "eeee"));
 		$classe = my_strtoupper(remplace_accents($tab[2]));
-	$sql_classe = mysql_query("SELECT id FROM classes WHERE classe = '".$classe."'");
-	$rep_classe = mysql_fetch_array($sql_classe);
+	$sql_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM classes WHERE classe = '".$classe."'");
+	$rep_classe = mysqli_fetch_array($sql_classe);
 		if ($rep_classe == "") {
 			$probleme .= "<p>La classe n'a pas &eacute;t&eacute; trouv&eacute;e.</p>\n";
 		}
 
 		// On récupère l'id de la salle
-	$sql_salle = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$tab[3]."'");
-	$req_salle = mysql_fetch_array($sql_salle);
+	$sql_salle = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_salle FROM salle_cours WHERE numero_salle = '".$tab[3]."'");
+	$req_salle = mysqli_fetch_array($sql_salle);
 	$rep_salle = $req_salle["id_salle"];
 		if ($rep_salle == "") {
 			$probleme .= "<p>La salle n'a pas &eacute;t&eacute; trouv&eacute;e.</p>\n";
@@ -176,8 +176,8 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
 			$verif_creneau = $verif_dec[0];
 		}
 	// On cherche l'id du créneau en question
-	$req_creneau = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE nom_definie_periode = '".$verif_creneau."'");
-	$rep_creneau = mysql_fetch_array($req_creneau);
+	$req_creneau = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_definie_periode FROM edt_creneaux WHERE nom_definie_periode = '".$verif_creneau."'");
+	$rep_creneau = mysqli_fetch_array($req_creneau);
 			if ($rep_creneau == "") {
 				$probleme .= "<p>Le cr&eacute;neau n'a pas &eacute;t&eacute; trouv&eacute;.</p>\n";
 			} else {
@@ -197,8 +197,8 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
 			$rep_calendar = '0';
 		}
 		else {
-			$req_calendar = mysql_query("SELECT id_calendrier FROM edt_calendrier WHERE nom_calendrier = '".$tab[8]."'");
-			$req_tab_calendar = mysql_fetch_array($req_calendar);
+			$req_calendar = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_calendrier FROM edt_calendrier WHERE nom_calendrier = '".$tab[8]."'");
+			$req_tab_calendar = mysqli_fetch_array($req_calendar);
 				if ($req_tab_calendar == "") {
 					$probleme .= "<p>La p&eacute;riode du calendrier n'a pas &eacute;t&eacute; trouv&eacute;e.</p>\n";
 				} else {
@@ -207,8 +207,8 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
 		}
 
 		// On retrouve l'id_groupe et on vérifie qu'il est unique
-	$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgp.login = '".$prof_login."' AND jgc.id_classe = '".$rep_classe["id"]."' AND jgm.id_matiere = '".$matiere."' AND jgp.id_groupe = jgc.id_groupe AND jgp.id_groupe = jgm.id_groupe");
-    		$rep_groupe = mysql_fetch_array($req_groupe);
+	$req_groupe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgp.login = '".$prof_login."' AND jgc.id_classe = '".$rep_classe["id"]."' AND jgm.id_matiere = '".$matiere."' AND jgp.id_groupe = jgc.id_groupe AND jgp.id_groupe = jgm.id_groupe");
+    		$rep_groupe = mysqli_fetch_array($req_groupe);
     		if ($rep_groupe == "") {
 				$probleme .= "<p>Gepi ne retrouve pas le bon enseignement.</p>\n";
 			} else {
@@ -229,7 +229,7 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
 						VALUES ('$rep_groupe[0]', '$rep_salle', '$rep_jour', '$rep_heuredebut', '$rep_duree', '$rep_heuredeb_dec', '$rep_typesemaine', '$rep_calendar', '0', '$prof_login')";
 			// On vérifie que les items existent
 		if ($rep_groupe[0] != "" AND $rep_jour != "" AND $rep_heuredebut != "" AND $probleme == "") {
-			$req_insert_csv = mysql_query($insert_csv);
+			$req_insert_csv = mysqli_query($GLOBALS["___mysqli_ston"], $insert_csv);
 			// Si l'utilisateur décide de ne pas voir le suivi de ses entrées, on n'affiche rien
 			if ($aff_infos == "oui") {
 				echo "<br /><span class=\"accept\">".$message2."Cours enregistr&eacute;</span>\n";
@@ -274,7 +274,7 @@ if ($aff_infos != "oui") {
 
             // A partir de là, on vide la table salle_cours
             if ($truncate_salles == "oui") {
-            	$vider_table = mysql_query("TRUNCATE TABLE salle_cours");
+            	$vider_table = mysqli_query($GLOBALS["___mysqli_ston"], "TRUNCATE TABLE salle_cours");
             }
 
             if(!$fp) {
@@ -296,7 +296,7 @@ if ($aff_infos != "oui") {
 						$affnom_salle = $nom_salle;
 					}
 				// On lance la requête pour insérer les nouvelles salles
-				$req_insert_salle = mysql_query("INSERT INTO salle_cours (`numero_salle`, `nom_salle`) VALUES ('$numero', '$nom_salle')");
+				$req_insert_salle = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO salle_cours (`numero_salle`, `nom_salle`) VALUES ('$numero', '$nom_salle')");
 					if (!$req_insert_salle) {
 						echo "La salle : ".$nom_salle." portant le num&eacute;ro : ".$numero." n'a pas &eacute;t&eacute; enregistr&eacute;e.<br />";
 					} else {
@@ -328,24 +328,24 @@ if ($aff_infos != "oui") {
 	}
 
 	// Pour la liste de <p> de l'aide id="aide_initcsv", on précise les contenus
-		$forme_matiere = mysql_fetch_array(mysql_query("SELECT matiere, nom_complet FROM matieres"));
+		$forme_matiere = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT matiere, nom_complet FROM matieres"));
 			$aff1_forme_matiere = $forme_matiere["matiere"];
 			$aff2_forme_matiere = $forme_matiere["nom_complet"];
 	$contenu_matiere = "Attention de bien respecter le nom court utilis&eacute; dans Gepi. Il est de la forme $aff1_forme_matiere pour $aff2_forme_matiere.";
-		$forme_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '1'"));
+		$forme_classe = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '1'"));
 		$aff_forme_classe = $forme_classe["classe"];
 		// La liste des créneaux
 				$aff_liste_creneaux = "";
-		$sql_creneaux = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause'");
-		$nbre_creneaux = mysql_num_rows($sql_creneaux);
+		$sql_creneaux = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause'");
+		$nbre_creneaux = mysqli_num_rows($sql_creneaux);
 			for ($a=0; $a < $nbre_creneaux; $a++) {
 				$liste_creneaux[$a] = mysql_result($sql_creneaux, $a, "nom_definie_periode");
 				$aff_liste_creneaux .= $liste_creneaux[$a]." - ";
 			}
 		// Afficher les différents types de semaine : $aff_type_semaines
 		$aff_type_semaines = "";
-		$sql_semaines = mysql_query("SELECT DISTINCT type_edt_semaine FROM edt_semaines") or die ('Erreur dans la requête [Select distinct] : '.mysql_error());
-		$nbre_types = mysql_num_rows($sql_semaines);
+		$sql_semaines = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT type_edt_semaine FROM edt_semaines") or die ('Erreur dans la requête [Select distinct] : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$nbre_types = mysqli_num_rows($sql_semaines);
 			for($b=0; $b < $nbre_types; $b++) {
 				$liste_types[$b] = mysql_result($sql_semaines, $b, "type_edt_semaine");
 				if ($nbre_types === 1) {
@@ -355,8 +355,8 @@ if ($aff_infos != "oui") {
 			}
 		// Afficher le nom des différentes périodes du calendrier
 		$aff_calendrier = "";
-		$sql_calendar = mysql_query("SELECT nom_calendrier FROM edt_calendrier") or die ('Erreur dans la requête nom_calendrier :'.mysql_error());
-		$nbre_calendar = mysql_num_rows($sql_calendar);
+		$sql_calendar = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_calendrier FROM edt_calendrier") or die ('Erreur dans la requête nom_calendrier :'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$nbre_calendar = mysqli_num_rows($sql_calendar);
 			if ($nbre_calendar === 0) {
 				$aff_calendrier = "<span class=\"red\">Vous n'avez pas d&eacute;fini de périodes de cours.</span>";
 			} else {

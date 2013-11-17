@@ -38,14 +38,14 @@ if(!isset($user_login)) {
 }
 else {
 	$sql="SELECT * FROM utilisateurs WHERE login='".$user_login."';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p style='color:red'>Le login proposé (<em>".$user_login."</em>) n'existe pas</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	$lig=mysql_fetch_object($res);
+	$lig=mysqli_fetch_object($res);
 	$nom = casse_mot($lig->nom, "maj");
 	$prenom = casse_mot($lig->prenom, "majf2");
 	$identifiant = $user_login;

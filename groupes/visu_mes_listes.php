@@ -73,16 +73,16 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 			jgp.login = '".$_SESSION['login']."' AND
 			g.id=jgp.id_groupe
 			ORDER BY g.description";
-		$res_grp=mysql_query($sql);
+		$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-		if(mysql_num_rows($res_grp)==0) {
+		if(mysqli_num_rows($res_grp)==0) {
 			echo "<p>Vous n'avez apparemment aucun enseignement.</p>\n";
 			echo "</body></html>\n";
 			die();
 		}
 		else {
 			echo "<table>\n";
-			while($lig_grp=mysql_fetch_object($res_grp)) {
+			while($lig_grp=mysqli_fetch_object($res_grp)) {
 				echo "<tr>\n";
 				unset($tabnumper);
 				unset($tabnomper);
@@ -91,25 +91,25 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 					jgc.id_classe=c.id
 					ORDER BY c.classe";
 				//echo "$sql<br />\n";
-				$res_class=mysql_query($sql);
-				if(mysql_num_rows($res_class)>0) {
+				$res_class=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_class)>0) {
 					$chaine_class="";
 					$cpt=0;
-					while($lig_class=mysql_fetch_object($res_class)) {
+					while($lig_class=mysqli_fetch_object($res_class)) {
 						$chaine_class.=",$lig_class->classe";
 
 						if($cpt==0) {
 							$tabnumper=array();
 							$tabnomper=array();
 							$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-							$res_per=mysql_query($sql);
-							if(mysql_num_rows($res_per)==0) {
+							$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($res_per)==0) {
 								echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 								echo "</body></html>\n";
 								die();
 							}
 							else{
-								while($lig_per=mysql_fetch_object($res_per)) {
+								while($lig_per=mysqli_fetch_object($res_per)) {
 									$tabnumper[]=$lig_per->num_periode;
 									$tabnomper[]=$lig_per->nom_periode;
 								}
@@ -147,14 +147,14 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 		//$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
-	$result_classes=mysql_query($sql);
-	$nb_classes = mysql_num_rows($result_classes);
+	$result_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_classes = mysqli_num_rows($result_classes);
 
-	if(mysql_num_rows($result_classes)==0) {
+	if(mysqli_num_rows($result_classes)==0) {
 		echo "<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
 	else {
-		$nb_classes=mysql_num_rows($result_classes);
+		$nb_classes=mysqli_num_rows($result_classes);
 		$nb_class_par_colonne=round($nb_classes/3);
 		echo "<table width='100%'>\n";
 		echo "<tr valign='top' align='left'>\n";
@@ -162,7 +162,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 		//echo "<td style='padding: 0 10px 0 10px'>\n";
 		echo "<td>\n";
 		echo "<table border='0'>\n";
-		while($lig_class=mysql_fetch_object($result_classes)) {
+		while($lig_class=mysqli_fetch_object($result_classes)) {
 			if(($cpt>0)&&(round($cpt/$nb_class_par_colonne)==$cpt/$nb_class_par_colonne)) {
 				echo "</table>\n";
 				echo "</td>\n";
@@ -172,9 +172,9 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 			}
 
 			$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-			$res_per=mysql_query($sql);
+			$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-			if(mysql_num_rows($res_per)==0) {
+			if(mysqli_num_rows($res_per)==0) {
 				echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 				echo "</body></html>\n";
 				die();
@@ -182,7 +182,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 			else{
 				echo "<tr>\n";
 				echo "<td>$lig_class->classe</td>\n";
-				while($lig_per=mysql_fetch_object($res_per)) {
+				while($lig_per=mysqli_fetch_object($res_per)) {
 					echo "<td> - <a href='popup.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode' onclick=\"ouvre_popup_visu_groupe('VIE_SCOLAIRE','$lig_class->id','$lig_per->num_periode');return false;\" target='_blank'>".$lig_per->nom_periode."</a></td>\n";
 				}
 				echo "</tr>\n";

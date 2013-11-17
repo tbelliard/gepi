@@ -1037,8 +1037,8 @@ if (!$classe_col->isEmpty()) {
 
 $tab_types=array();
 $sql="select * from a_types;";
-$res_types=mysql_query($sql);
-while($lig_type=mysql_fetch_object($res_types)) {
+$res_types=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+while($lig_type=mysqli_fetch_object($res_types)) {
 	$tab_types[$lig_type->id]['manquement_obligation_presence']=$lig_type->manquement_obligation_presence;
 }
 
@@ -1190,21 +1190,21 @@ if ($eleve_col->isEmpty()) {
 					if($_SESSION['statut']=='professeur' && isset($id_cours) && is_numeric($id_cours)) {
 						// Récupérer l'id_groupe pour tester s'il y a un plan de classe
 						$sql="SELECT id_groupe FROM edt_cours WHERE id_cours='".$id_cours."';";
-						$res_edt=mysql_query($sql);
-						if(mysql_num_rows($res_edt)>0) {
+						$res_edt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res_edt)>0) {
 							$id_groupe=mysql_result($res_edt, 0, "id_groupe");
 
 							$sql="SELECT 1=1 FROM t_plan_de_classe WHERE id_groupe='".$id_groupe."' AND login_prof='".$_SESSION['login']."';";
-							$test_pdc=mysql_query($sql);
-							if(mysql_num_rows($test_pdc)>0) {
+							$test_pdc=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($test_pdc)>0) {
 								echo " <a href='saisir_groupe_plan.php?type_selection=id_cours&amp;id_cours=$id_cours'><img src='../images/icons/trombino.png' width='20' height='20' title='Saisie sur plan de classe' /></a>";
 							}
 						}
 					}
 					elseif($_SESSION['statut']=='professeur' && isset($current_groupe) && $current_groupe != null && $current_creneau != null) {
 						$sql="SELECT 1=1 FROM t_plan_de_classe WHERE id_groupe='".$id_groupe."' AND login_prof='".$_SESSION['login']."';";
-						$test_pdc=mysql_query($sql);
-						if(mysql_num_rows($test_pdc)>0) {
+						$test_pdc=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($test_pdc)>0) {
 							echo " <a href='saisir_groupe_plan.php?type_selection=id_groupe&amp;id_groupe=$id_groupe&amp;id_creneau=".$current_creneau->getIdDefiniePeriode()."'><img src='../images/icons/trombino.png' width='20' height='20' title='Saisie sur plan de classe' /></a>";
 						}
 					}
@@ -1225,8 +1225,8 @@ if ($eleve_col->isEmpty()) {
 				if(isset($id_groupe)) {
 					$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='cahier_texte' AND visible='n';";
 					//echo "$sql<br />";
-					$test_cdt=mysql_query($sql);
-					if(mysql_num_rows($test_cdt)>0) {
+					$test_cdt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test_cdt)>0) {
 						$afficher_passer_au_cdt="n";
 					}
 				}
@@ -1282,8 +1282,8 @@ if ($eleve_col->isEmpty()) {
 						<?php
 							if(isset($id_groupe)) {
 								$sql="SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='$id_groupe';";
-								$test_plusieurs_classes=mysql_query($sql);
-								if(mysql_num_rows($test_plusieurs_classes)>1) {
+								$test_plusieurs_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								if(mysqli_num_rows($test_plusieurs_classes)>1) {
 									// Il faut récupérer la liste des paramètres à passer selon ce qui a été choisi groupe, classe ou cours
 
 									if(isset($type_selection)) {

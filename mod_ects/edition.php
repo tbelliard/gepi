@@ -66,20 +66,20 @@ if (!$id_classe) {
 
         // On ne sélectionne que les classes qui ont au moins un enseignement ouvrant à crédits ECTS
         if($_SESSION['statut']=='scolarite'){
-            $call_classe = mysql_query("SELECT DISTINCT c.*
+            $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.*
                                         FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
                                         WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id=jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
         } else {
-            $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
+            $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
         }
 
-        $nombre_classe = mysql_num_rows($call_classe);
+        $nombre_classe = mysqli_num_rows($call_classe);
         if($nombre_classe==0){
             echo "<p>Aucune classe avec paramétrage ECTS ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
         }
     } else {
-        $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
-        $nombre_classe = mysql_num_rows($call_classe);
+        $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
+        $nombre_classe = mysqli_num_rows($call_classe);
         if ($nombre_classe == "0") {
             echo "Vous n'êtes pas ".$gepiSettings['gepi_prof_suivi']." dans des classes ayant des enseignements ouvrant droits à des ECTS.";
         }
@@ -91,7 +91,7 @@ if (!$id_classe) {
     $i = 0;
     unset($tab_lien);
     unset($tab_txt);
-    $nombreligne = mysql_num_rows($call_classe);
+    $nombreligne = mysqli_num_rows($call_classe);
     while ($i < $nombreligne){
         $tab_lien[$i] = "edition.php?id_classe=".mysql_result($call_classe, $i, "id");
         $tab_txt[$i] = mysql_result($call_classe, $i, "classe");
@@ -114,17 +114,17 @@ if (!$id_classe) {
         if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
             // On ne sélectionne que les classes qui ont au moins un enseignement ouvrant à crédits ECTS
             if($_SESSION['statut']=='scolarite'){
-                $call_classes = mysql_query("SELECT DISTINCT c.*
+                $call_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.*
                                             FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
                                             WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id=jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
             } else {
-                $call_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
+                $call_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
             }
         } else {
-            $call_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
+            $call_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
         }
         $noms_classes = '';
-        $nb_classes = mysql_num_rows($call_classes);
+        $nb_classes = mysqli_num_rows($call_classes);
         for($i=0;$i<$nb_classes;$i++) {
             $noms_classes .= mysql_result($call_classes, $i, 'classe');
             if ($i != $nb_classes-1) {
@@ -135,8 +135,8 @@ if (!$id_classe) {
         echo '<h3>Classes de '.$noms_classes.'</h3>';
 
         // On récupère les années archivées, pour sélectionner celle qui correspond à l'année dernière :
-        $annees = mysql_query('SELECT DISTINCT annee FROM archivage_ects');
-        $nb_annees = mysql_num_rows($annees);
+        $annees = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT DISTINCT annee FROM archivage_ects');
+        $nb_annees = mysqli_num_rows($annees);
         if ($nb_annees == 0) {
             echo "<p>Attention ! Aucun crédit ECTS n'est actuellement présent dans les tables d'archivage. Les informations
                     des semestres 1 et 2 seront donc absentes.</p>";
@@ -154,14 +154,14 @@ if (!$id_classe) {
         if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
             // On ne sélectionne que les classes qui ont au moins un enseignement ouvrant à crédits ECTS
             if($_SESSION['statut']=='scolarite'){
-                $call_classe = mysql_query("SELECT c.*
+                $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT c.*
                                             FROM classes c, j_scol_classes jsc
                                             WHERE c.id = jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jsc.id_classe = '".$id_classe."'");
             } else {
-                $call_classe = mysql_query("SELECT c.* FROM classes c WHERE c.id = '".$id_classe."'");
+                $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT c.* FROM classes c WHERE c.id = '".$id_classe."'");
             }
         } else {
-            $call_classe = mysql_query("SELECT c.* FROM classes c, j_eleves_professeurs jep, j_groupes_classes jgc
+            $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT c.* FROM classes c, j_eleves_professeurs jep, j_groupes_classes jgc
                                         WHERE
                                             c.id = jep.id_classe AND
                                             c.id = jgc.id_classe AND
@@ -169,7 +169,7 @@ if (!$id_classe) {
                                             jgc.saisie_ects = TRUE AND
                                             jep.professeur='" . $_SESSION['login'] . "'");
         }
-        if (mysql_num_rows($call_classe) == 0) {
+        if (mysqli_num_rows($call_classe) == 0) {
             echo 'Erreur avec la sélection de la classe. Avez-vous bien les droits sur cette classe ?';
             die();
         } else {

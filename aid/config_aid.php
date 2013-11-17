@@ -71,9 +71,9 @@ if (isset($is_posted) and ($is_posted == "1")) {
     }
   }
 	if ($display_end < $display_begin) {$display_end = $display_begin;}
-	$del = mysql_query("DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."'");
+	$del = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."'");
 	echo "<!-- DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."' -->";
-	$reg_data = mysql_query("INSERT INTO aid_config SET
+	$reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO aid_config SET
 			nom='".$reg_nom."',
 			nom_complet='".$reg_nom_complet."',
 			note_max='".$note_max."',
@@ -94,13 +94,13 @@ if (isset($is_posted) and ($is_posted == "1")) {
 		  $msg_inter .= "Erreur lors de l'enregistrement des données !<br />";
 
 		// Suppression de professeurs dans le cas des outils complémentaire
-		$call_profs = mysql_query("SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE (indice_aid='$indice_aid')");
-		$nb_profs = mysql_num_rows($call_profs);
+		$call_profs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE (indice_aid='$indice_aid')");
+		$nb_profs = mysqli_num_rows($call_profs);
 		$i = 0;
 		while($i < $nb_profs) {
 		    $login_prof = mysql_result($call_profs,$i);
 		    if (isset($_POST["delete_".$login_prof])) {
-		        $reg_data = mysql_query("delete from j_aidcateg_utilisateurs WHERE (id_utilisateur = '$login_prof' and indice_aid='$indice_aid')");
+		        $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "delete from j_aidcateg_utilisateurs WHERE (id_utilisateur = '$login_prof' and indice_aid='$indice_aid')");
             if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur $login_prof!<br />";
 		    }
 		    $i++;
@@ -111,18 +111,18 @@ if (isset($is_posted) and ($is_posted == "1")) {
         if ($test != "0") {
             $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
         } else {
-            $reg_data = mysql_query("INSERT INTO j_aidcateg_utilisateurs SET id_utilisateur= '".$_POST["reg_prof_login"]."', indice_aid='".$indice_aid."'");
+            $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_aidcateg_utilisateurs SET id_utilisateur= '".$_POST["reg_prof_login"]."', indice_aid='".$indice_aid."'");
             if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
         }
     }
 		// Suppression de "super-gestionaires"
-		$call_profs = mysql_query("SELECT id_utilisateur FROM j_aidcateg_super_gestionnaires WHERE (indice_aid='$indice_aid')");
-		$nb_profs = mysql_num_rows($call_profs);
+		$call_profs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_utilisateur FROM j_aidcateg_super_gestionnaires WHERE (indice_aid='$indice_aid')");
+		$nb_profs = mysqli_num_rows($call_profs);
 		$i = 0;
 		while($i < $nb_profs) {
 		    $login_gestionnaire = mysql_result($call_profs,$i);
 		    if (isset($_POST["delete_gestionnaire_".$login_gestionnaire])) {
-		        $reg_data = mysql_query("delete from j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$login_gestionnaire' and indice_aid='$indice_aid')");
+		        $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "delete from j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$login_gestionnaire' and indice_aid='$indice_aid')");
             if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur $login_gestionnaire!<br />";
 		    }
 		    $i++;
@@ -135,7 +135,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
         if ($test != "0") {
             $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
         } else {
-            $reg_data = mysql_query("INSERT INTO j_aidcateg_super_gestionnaires SET id_utilisateur= '".$_POST["reg_gestionnaire_login"]."', indice_aid='".$indice_aid."'");
+            $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_aidcateg_super_gestionnaires SET id_utilisateur= '".$_POST["reg_gestionnaire_login"]."', indice_aid='".$indice_aid."'");
             if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
         }
     }
@@ -200,7 +200,7 @@ function checkFormElementInRange(formulaire,champ,vmin,vmax){
 
 <?php
 if (isset($indice_aid)) {
-    $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+    $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
     $reg_nom = @mysql_result($call_data, 0, "nom");
     $reg_nom_complet = @mysql_result($call_data, 0, "nom_complet");
     $note_max = @mysql_result($call_data, 0, "note_max");
@@ -220,7 +220,7 @@ if (isset($indice_aid)) {
     if ($display_bulletin=='')  $display_bulletin = "y";
     if ($autoriser_inscript_multiples=='')  $autoriser_inscript_multiples = "n";
 } else {
-    $call_data = mysql_query("SELECT max(indice_aid) max FROM aid_config");
+    $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT max(indice_aid) max FROM aid_config");
     $indice_aid = @mysql_result($call_data, 0, "max");
     $indice_aid++;
     $note_max = 20;
@@ -279,7 +279,7 @@ Type de notation :  <br />
 
 <?php
 
-$query_max_periode = mysql_query("SELECT max(num_periode) max FROM periodes");
+$query_max_periode = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT max(num_periode) max FROM periodes");
 
 $max_periode = mysql_result($query_max_periode, 0, "max")+1;
 
@@ -406,8 +406,8 @@ if ((getSettingValue("active_mod_gest_aid")=="y") and ($test_plugin=='y') and (g
 <p><b>Ajout/suppression de "super-gestionnaires"</b></p>
 <p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs (professeurs ou CPE) ayant le droit de g&eacute;rer les AIDs de cette cat&eacute;gorie (ajout, suppression, modification d'AID, de professeurs ou d'&eacute;l&egrave;ves)</p>
 <?php
-$call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_super_gestionnaires j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
-$nombre = mysql_num_rows($call_liste_data);
+$call_liste_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_super_gestionnaires j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
+$nombre = mysqli_num_rows($call_liste_data);
 if ($nombre !=0)
     echo "<table border=0>";
 $i = "0";
@@ -424,8 +424,8 @@ if ($nombre !=0)
     echo "</table>";
 echo "<select size=1 name=reg_gestionnaire_login>\n";
 echo "<option value=''>(aucun)</option>\n";
-$call_prof = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
-$nombreligne = mysql_num_rows($call_prof);
+$call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
+$nombreligne = mysqli_num_rows($call_prof);
 $i = "0" ;
 while ($i < $nombreligne) {
     $login_prof = mysql_result($call_prof, $i, 'login');
@@ -457,8 +457,8 @@ while ($i < $nombreligne) {
 <p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs (professeurs ou CPE) ayant le droit de modifier les fiches projet (documentaliste, ...)
 même lorsque l'administrateur a désactivé cette possibilité pour les professeurs responsables.</p>
 <?php
-$call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_utilisateurs j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
-$nombre = mysql_num_rows($call_liste_data);
+$call_liste_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_utilisateurs j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
+$nombre = mysqli_num_rows($call_liste_data);
 if ($nombre !=0)
     echo "<table border=0>";
 $i = "0";
@@ -475,8 +475,8 @@ if ($nombre !=0)
     echo "</table>";
 echo "<select size=1 name=reg_prof_login>\n";
 echo "<option value=''>(aucun)</option>\n";
-$call_prof = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
-$nombreligne = mysql_num_rows($call_prof);
+$call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
+$nombreligne = mysqli_num_rows($call_prof);
 $i = "0" ;
 while ($i < $nombreligne) {
     $login_gestionnaire = mysql_result($call_prof, $i, 'login');

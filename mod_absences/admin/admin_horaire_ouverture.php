@@ -89,7 +89,7 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 	{
 		if( isset($ouvert[$i]) and !empty($ouvert[$i]) )
 		{
-        	$test_jour = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."horaires_etablissement
+        	$test_jour = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."horaires_etablissement
 												WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND
 												date_horaire_etablissement = '0000-00-00'"),0);
 			$date_horaire_etablissement = '';
@@ -107,15 +107,15 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 			if ( $test_jour != '0' ) {
 				$requete = "UPDATE ".$prefix_base."horaires_etablissement SET date_horaire_etablissement = '".$date_horaire_etablissement."', jour_horaire_etablissement = '".$jour_horaire_etablissement."', ouverture_horaire_etablissement = '".$ouverture_horaire_etablissement."', fermeture_horaire_etablissement = '".$fermeture_horaire_etablissement."', pause_horaire_etablissement = '".$pause_horaire_etablissement."', ouvert_horaire_etablissement = '".$ouvert_horaire_etablissement."' WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND date_horaire_etablissement = '0000-00-00'";
 			}
-	        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	        mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		}else{
 			// On teste si le jour en question existe et on passe à 0 le dernier champ
-			$test = mysql_query("SELECT * FROM horaires_etablissement
+			$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM horaires_etablissement
 										WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' LIMIT 1");
-			$test_c = mysql_num_rows($test);
+			$test_c = mysqli_num_rows($test);
 
 			if ($test_c == 1) {
-				$rep = mysql_fetch_array($test);
+				$rep = mysqli_fetch_array($test);
 				$requete = "UPDATE ".$prefix_base."horaires_etablissement
 									SET date_horaire_etablissement = '".$rep["date_horaire_etablissement"]."',
 									ouverture_horaire_etablissement = '".$ouverture[$i]."',
@@ -124,7 +124,7 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 									ouvert_horaire_etablissement = '0'
 								WHERE jour_horaire_etablissement = '".$tab_sem[$i]."'
 								AND date_horaire_etablissement = '0000-00-00'";
-				mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+				mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			}
 		}
 
@@ -139,8 +139,8 @@ if ( $action === 'visualiser' )
 {
         $i = '';
         $requete = "SELECT * FROM ".$prefix_base."horaires_etablissement WHERE date_horaire_etablissement = '0000-00-00'";
-        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-        while ( $donnee = mysql_fetch_array ($resultat))
+        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        while ( $donnee = mysqli_fetch_array($resultat))
 		{
 		$jour = $donnee['jour_horaire_etablissement'];
 		$i = $tab_sem_inv[$jour];
@@ -231,7 +231,7 @@ echo "<p class=\"bold\">".$retour."<img src='../../images/icons/back.png' alt='R
 
 <?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php mysql_close(); }
+<?php ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res); }
 
 require("../../lib/footer.inc.php");
 

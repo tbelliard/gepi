@@ -52,8 +52,8 @@ if (!checkAccess()) {
 //==============================================
 /* Ajout des droits pour fiches_brevet.php dans la table droits */
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/OOo/fiches_brevet.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',
 administrateur='V',
 professeur='F',
@@ -65,13 +65,13 @@ secours='F',
 autre='F',
 description='Fiches brevet OpenOffice',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 /* Ajout des droits pour imprime_ooo.php dans la table droits */
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/OOo/imprime_ooo.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',
 administrateur='V',
 professeur='F',
@@ -83,14 +83,14 @@ secours='F',
 autre='F',
 description='Imprime fiches brevet OpenOffice',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 //==============================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/fb_rouen_pdf.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_notanet/fb_rouen_pdf.php',
 administrateur='V',
 professeur='F',
@@ -102,12 +102,12 @@ secours='F',
 autre='F',
 description='Fiches brevet PDF pour Rouen',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/fb_montpellier_pdf.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_notanet/fb_montpellier_pdf.php',
 administrateur='V',
 professeur='F',
@@ -119,12 +119,12 @@ secours='F',
 autre='F',
 description='Fiches brevet PDF pour Montpellier',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/fb_creteil_pdf.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_notanet/fb_creteil_pdf.php',
 administrateur='V',
 professeur='F',
@@ -136,12 +136,12 @@ secours='F',
 autre='F',
 description='Fiches brevet PDF pour Creteil',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/fb_lille_pdf.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_notanet/fb_lille_pdf.php',
 administrateur='V',
 professeur='F',
@@ -153,13 +153,13 @@ secours='F',
 autre='F',
 description='Fiches brevet PDF pour Lille',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/saisie_param.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_notanet/saisie_param.php',
 administrateur='V',
 professeur='F',
@@ -171,13 +171,13 @@ secours='F',
 autre='F',
 description='Fiches brevet: Saisie des paramètres',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 /* Ajout des droits pour saisie_socle_commun.php dans la table droits */
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/saisie_socle_commun.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_notanet/saisie_socle_commun.php',
 administrateur='V',
 professeur='F',
@@ -189,7 +189,7 @@ secours='F',
 autre='F',
 description='Notanet: Saisie socle commun',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 
@@ -197,17 +197,17 @@ $insert=mysql_query($sql);
 if(!isset($msg)) {$msg="";}
 //===========================================================
 // Modification du type des champs id_mat pour pouvoir dépasser 127
-$query=mysql_query("ALTER TABLE notanet CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+$query=mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE notanet CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
 if(!$query) {
 	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet'.<br />Cela risque de poser problème si vous devez saisir des notes de Langue Vivante Régionale.<br />";
 }
 
-$query = mysql_query("ALTER TABLE notanet_corresp CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE notanet_corresp CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
 if(!$query) {
 	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet_corresp'.<br />Cela risque de poser problème si vous devez saisir des notes de Langue Vivante Régionale.<br />";
 }
 
-$query = mysql_query("ALTER TABLE notanet_app CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE notanet_app CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
 if(!$query) {
 	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet_app'.<br />Cela risque de poser problème si vous devez saisir des notes de Langue Vivante Régionale.<br />";
 }
@@ -241,7 +241,7 @@ $sql="CREATE TABLE IF NOT EXISTS notanet (
   note_notanet varchar(4) NOT NULL,
   id_classe smallint(6) NOT NULL default '0'
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_app (
   login varchar(50) NOT NULL,
@@ -251,7 +251,7 @@ $sql="CREATE TABLE IF NOT EXISTS notanet_app (
   id int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_corresp (
   id int(11) NOT NULL auto_increment,
@@ -262,21 +262,21 @@ $sql="CREATE TABLE IF NOT EXISTS notanet_corresp (
   statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL default 'imposee',
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_ele_type (
   login varchar(50) NOT NULL,
   type_brevet tinyint(4) NOT NULL,
   PRIMARY KEY  (login)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_verrou (
 id_classe TINYINT NOT NULL ,
 type_brevet TINYINT NOT NULL ,
 verrouillage CHAR( 1 ) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_socles (
 login VARCHAR( 50 ) NOT NULL ,
@@ -285,7 +285,7 @@ a2 ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 lv VARCHAR( 50 ) NOT NULL ,
 PRIMARY KEY ( login )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_avis (
 login VARCHAR( 50 ) NOT NULL ,
@@ -293,14 +293,14 @@ favorable ENUM( 'O', 'N', '' ) NOT NULL ,
 avis TEXT NOT NULL ,
 PRIMARY KEY ( login )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_lvr (
 id int(11) NOT NULL auto_increment,
 intitule VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_lvr_ele (
 id int(11) NOT NULL auto_increment,
@@ -309,7 +309,7 @@ id_lvr INT( 11 ) NOT NULL ,
 note ENUM ('', 'VA','NV') NOT NULL DEFAULT '',
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_socle_commun (
 id INT(11) NOT NULL auto_increment,
@@ -318,7 +318,7 @@ champ VARCHAR( 10 ) NOT NULL ,
 valeur ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 
 if($_SESSION['statut']=="administrateur") {
@@ -345,7 +345,7 @@ if($_SESSION['statut']=="administrateur") {
 			$msg="";
 			for($i=0;$i<count($table_a_vider);$i++) {
 				$sql="TRUNCATE TABLE $table_a_vider[$i];";
-				$del=mysql_query($sql);
+				$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				if(!$del) {
 					$msg.="<span style='color:red'>Erreur lors du nettoyage de la table '$table_a_vider[$i]'</span><br />\n";
 				}

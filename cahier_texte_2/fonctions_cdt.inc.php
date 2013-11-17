@@ -22,12 +22,12 @@ function retourneDevoirs($ele_login){
 								AND ctde.date_ct >= '".$date_ct1."'
 							ORDER BY ctde.date_ct, ctde.id_groupe;";
 	//echo "$sql<br />";
-	$res_ct = mysql_query($sql);
+	$res_ct = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	$cpt2 = 0; // on initialise un compteur pour le while
 
-	if(mysql_num_rows($res_ct)>0) {
+	if(mysqli_num_rows($res_ct)>0) {
 
-		while($lig_ct = mysql_fetch_object($res_ct)) {
+		while($lig_ct = mysqli_fetch_object($res_ct)) {
 
 			$tab_ele['cdt_dev'][$cpt2] = array();
 			$tab_ele['cdt_dev'][$cpt2]['id_ct'] = $lig_ct->id_ct;

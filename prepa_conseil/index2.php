@@ -54,7 +54,7 @@ if (isset($id_classe)) {
 	}
 	// On teste si le professeur a le droit d'accéder à cette classe
 	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
-		$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+		$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 		if ($test == "0") {
 			tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
 			echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
@@ -103,16 +103,16 @@ if (isset($id_classe)) {
 	}
 	$chaine_options_classes="";
 
-	$res_class_tmp=mysql_query($sql);
-	if(mysql_num_rows($res_class_tmp)>0){
+	$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
 		$id_class_suiv=0;
 		$temoin_tmp=0;
-		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 			if($lig_class_tmp->id==$id_classe){
 				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 				$temoin_tmp=1;
-				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 				}
@@ -148,9 +148,9 @@ if (isset($id_classe)) {
 
 	if(!isset($_SESSION['vtn_pref_num_periode'])) {
 		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_pref_%';";
-		$get_pref=mysql_query($sql);
-		if(mysql_num_rows($get_pref)>0) {
-			while($lig_pref=mysql_fetch_object($get_pref)) {
+		$get_pref=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($get_pref)>0) {
+			while($lig_pref=mysqli_fetch_object($get_pref)) {
 				$_SESSION[$lig_pref->name]=$lig_pref->value;
 			}
 		}
@@ -332,7 +332,7 @@ if (isset($id_classe)) {
 
 		$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."';");
 		// On teste la présence d'au moins un coeff pour afficher la colonne des coef
-		$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+		$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 
 		if (($affiche_rang == 'y') and ($test_coef != 0)) {
 			echo "<tr>\n";
@@ -406,7 +406,7 @@ if (isset($id_classe)) {
 	//$sql="SELECT DISTINCT jgc.id_groupe, g.name, g.description, jgc.coef FROM groupes g, j_groupes_classes jgc WHERE id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY g.name;";
 	$sql="SELECT DISTINCT jgc.id_groupe, g.name, g.description, jgc.coef, jgc.mode_moy FROM groupes g, j_groupes_classes jgc WHERE id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY g.name;";
 	//echo "$sql<br />";
-	$res_coef_grp=mysql_query($sql);
+	$res_coef_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	echo "<input type='checkbox' id='utiliser_coef_perso' name='utiliser_coef_perso' value='y' onchange=\"display_div_coef_perso()\" /><label for='utiliser_coef_perso'> Utiliser des coefficients personnalisés.</label><br />\n";
 
@@ -424,7 +424,7 @@ if (isset($id_classe)) {
 
 	$alt=1;
 	$num_id=1;
-	while ($lig_cg=mysql_fetch_object($res_coef_grp)) {
+	while ($lig_cg=mysqli_fetch_object($res_coef_grp)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td>$lig_cg->id_groupe</td>\n";
@@ -435,9 +435,9 @@ if (isset($id_classe)) {
 		$nom_matiere='';
 
 		$sql="SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe='$lig_cg->id_groupe';";
-		$res_nom_matiere=mysql_query($sql);
-		if(mysql_num_rows($res_nom_matiere)>0) {
-			$lig_nom_matiere=mysql_fetch_object($res_nom_matiere);
+		$res_nom_matiere=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_nom_matiere)>0) {
+			$lig_nom_matiere=mysqli_fetch_object($res_nom_matiere);
 			$nom_matiere=$lig_nom_matiere->id_matiere;
 			//if(isset($_SESSION['coef_perso_'.$nom_matiere])) {
 			if(isset($_SESSION['coef_perso_'.$lig_cg->id_groupe])) {
@@ -524,9 +524,9 @@ if (isset($id_classe)) {
 
 	$vtn_borne_couleur=array();
 	$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_%' ORDER BY name;";
-	$res_pref=mysql_query($sql);
-	if(mysql_num_rows($res_pref)>0) {
-		while($lig_pref=mysql_fetch_object($res_pref)) {
+	$res_pref=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_pref)>0) {
+		while($lig_pref=mysqli_fetch_object($res_pref)) {
 			if(mb_substr($lig_pref->name,0,17)=='vtn_couleur_texte') {
 				$vtn_couleur_texte[]=$lig_pref->value;
 			}
@@ -765,16 +765,16 @@ display_div_coloriser();
 	//$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 	//$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 	if($_SESSION['statut']=='scolarite'){
-		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+		$appel_donnees = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 	}
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes"){
-		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
+		$appel_donnees = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
 	}
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes") {
-		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe");
+		$appel_donnees = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe");
 	}
 	elseif($_SESSION['statut']=='cpe'){
-		$appel_donnees=mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+		$appel_donnees=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
 			p.id_classe = c.id AND
 			jec.id_classe=c.id AND
 			jec.periode=p.num_periode AND
@@ -782,7 +782,7 @@ display_div_coloriser();
 			jecpe.cpe_login='".$_SESSION['login']."'
 			ORDER BY classe");
 	}
-	$lignes = mysql_num_rows($appel_donnees);
+	$lignes = mysqli_num_rows($appel_donnees);
 
 	if($lignes==0){
 		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";

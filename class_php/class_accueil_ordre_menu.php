@@ -279,8 +279,8 @@ class class_accueil_ordre_menu extends class_page_accueil {
 
 	$afficher_correction_validation="n";
 	$sql="SELECT 1=1 FROM matieres_app_corrections;";
-	$test_mac=mysql_query($sql);
-	if(mysql_num_rows($test_mac)>0) {$afficher_correction_validation="y";}
+	$test_mac=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($test_mac)>0) {$afficher_correction_validation="y";}
 
         if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
   $this->creeNouveauItem("/absences/index.php",
@@ -350,17 +350,17 @@ class class_accueil_ordre_menu extends class_page_accueil {
 	  $this->creeNouveauItem("/mod_ects/index_saisie.php","Crédits ECTS","Saisie des crédits ECTS");
 
 	// Pour un professeur, on n'appelle que les aid qui sont sur un bulletin
-	$call_data = mysql_query("SELECT * FROM aid_config
+	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_config
 							  WHERE display_bulletin = 'y'
 							  OR bull_simplifie = 'y'
 							  ORDER BY nom");
-	$nb_aid = mysql_num_rows($call_data);
+	$nb_aid = mysqli_num_rows($call_data);
 	$i=0;
 	while ($i < $nb_aid) {
 	  $indice_aid = @mysql_result($call_data, $i, "indice_aid");
-	  $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs
+	  $call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_aid_utilisateurs
 								WHERE indice_aid = '".$indice_aid."'");
-	  $nb_result = mysql_num_rows($call_prof);
+	  $nb_result = mysqli_num_rows($call_prof);
 	  if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
 		$nom_aid = @mysql_result($call_data, $i, "nom");
 		$this->creeNouveauItem("/saisie/saisie_aid.php?indice_aid=".$indice_aid,
@@ -461,16 +461,16 @@ class class_accueil_ordre_menu extends class_page_accueil {
 			  "Cet outil vous permet de visualiser les trombinoscopes des classes.");
 
 	  // On appelle les aid "trombinoscope"
-	  $call_data = mysql_query("SELECT * FROM aid_config
+	  $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_config
 								WHERE indice_aid= '".getSettingValue("num_aid_trombinoscopes")."'
 								ORDER BY nom");
-	  $nb_aid = mysql_num_rows($call_data);
+	  $nb_aid = mysqli_num_rows($call_data);
 	  $i=0;
 	  while ($i < $nb_aid) {
 		$indice_aid = @mysql_result($call_data, $i, "indice_aid");
-		$call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs_gest
+		$call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_aid_utilisateurs_gest
 								  WHERE indice_aid = '$indice_aid'");
-		$nb_result = mysql_num_rows($call_prof);
+		$nb_result = mysqli_num_rows($call_prof);
 		if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
 		  $nom_aid = @mysql_result($call_data, $i, "nom");
 		  $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
@@ -728,7 +728,7 @@ class class_accueil_ordre_menu extends class_page_accueil {
 	}
 	elseif(($this->statutUtilisateur=='professeur')&&(getSettingValue("GepiAccesBulletinSimplePP")=="yes")) {
 	  $sql="SELECT 1=1 FROM j_eleves_professeurs ;";
-	  $test_pp=mysql_num_rows(mysql_query($sql));
+	  $test_pp=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
 	  if($test_pp>0) {
 		$this->creeNouveauItem("/prepa_conseil/index3.php",
 				"Visualiser les bulletins simplifiés",
@@ -736,18 +736,18 @@ class class_accueil_ordre_menu extends class_page_accueil {
 	  }
 	}
 
-	$call_data = mysql_query("SELECT * FROM aid_config
+	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_config
 					WHERE display_bulletin = 'y'
 					OR bull_simplifie = 'y'
 					ORDER BY nom");
-	$nb_aid = mysql_num_rows($call_data);
+	$nb_aid = mysqli_num_rows($call_data);
 
 	$i=0;
 	while ($i < $nb_aid) {
 	  $indice_aid = @mysql_result($call_data, $i, "indice_aid");
-	  $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs
+	  $call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_aid_utilisateurs
 								WHERE indice_aid = '".$indice_aid."'");
-	  $nb_result = mysql_num_rows($call_prof);
+	  $nb_result = mysqli_num_rows($call_prof);
 	  if ($nb_result != 0) {
 		$nom_aid = @mysql_result($call_data, $i, "nom");
 		$this->creeNouveauItem("/prepa_conseil/visu_aid.php?indice_aid=".$indice_aid,
@@ -760,8 +760,8 @@ class class_accueil_ordre_menu extends class_page_accueil {
 	if(($this->statutUtilisateur=='professeur')&&(getSettingValue('GepiAccesGestElevesProfP')=='yes')) {
 	  // Le professeur est-il professeur principal dans une classe au moins.
 	  $sql="SELECT 1=1 FROM j_eleves_professeurs ;";
-	  $test=mysql_query($sql);
-	  if (mysql_num_rows($test)>0) {
+	  $test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	  if (mysqli_num_rows($test)>0) {
 		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 		$this->creeNouveauItem("/eleves/index.php",
 				"Gestion des ".$this->gepiSettings['denomination_eleves'],
@@ -794,8 +794,8 @@ class class_accueil_ordre_menu extends class_page_accueil {
 						  jgm.id_matiere=n.matiere
 					  ORDER BY jgc.id_classe;";
 	  //echo "$sql<br />";
-	  $res_grp=mysql_query($sql);
-	  if(mysql_num_rows($res_grp)==0) {
+	  $res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	  if(mysqli_num_rows($res_grp)==0) {
 		  $affiche='no';
 	  }
 	}
@@ -849,8 +849,8 @@ class class_accueil_ordre_menu extends class_page_accueil {
 									j_eleves_professeurs jep
 							WHERE jep.id_classe=c.id
 							ORDER BY c.classe";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0){
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)>0){
 			  $this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
 					  "Années antérieures",
 					  "Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
@@ -869,8 +869,8 @@ class class_accueil_ordre_menu extends class_page_accueil {
 		  }
 		  elseif($AAScolResp=="yes"){
 			$sql="SELECT 1=1 FROM j_scol_classes ;";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0){
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)>0){
 			  $this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
 					  "Années antérieures",
 					  "Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
@@ -889,9 +889,9 @@ class class_accueil_ordre_menu extends class_page_accueil {
 		  }
 		  elseif($AACpeResp=="yes"){
 			$sql="SELECT 1=1 FROM j_eleves_cpe ";
-			$test=mysql_query($sql);
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-			if(mysql_num_rows($test)>0){
+			if(mysqli_num_rows($test)>0){
 			  $this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
 					  "Années antérieures",
 					  "Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
@@ -908,8 +908,8 @@ class class_accueil_ordre_menu extends class_page_accueil {
 			$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e
 				WHERE rp.pers_id=r.pers_id AND
 					  r.ele_id=e.ele_id ";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0){
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)>0){
 			  $this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
 					  "Années antérieures",
 					  "Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
@@ -949,9 +949,9 @@ class class_accueil_ordre_menu extends class_page_accueil {
   private function plugins(){
 	$this->b=0;
 
-	$query = mysql_query('SELECT * FROM plugins WHERE ouvert = "y" order by description');
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM plugins WHERE ouvert = "y" order by description');
 
-	while ($plugin = mysql_fetch_object($query)){
+	while ($plugin = mysqli_fetch_object($query)){
 	$this->b=0;
 	  $nomPlugin=$plugin->nom;
 	  $this->verif_exist_ordre_menu('bloc_plugin_'.$nomPlugin);
@@ -960,11 +960,11 @@ class class_accueil_ordre_menu extends class_page_accueil {
 	  if (file_exists($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php"))
 		include_once($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php");
 
-	  $querymenu = mysql_query('SELECT * FROM plugins_menus
+	  $querymenu = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM plugins_menus
 								WHERE plugin_id = "'.$plugin->id.'"
 								ORDER by titre_item');
 
-	  while ($menuItem = mysql_fetch_object($querymenu)){
+	  while ($menuItem = mysqli_fetch_object($querymenu)){
 		// On regarde si le plugin a prévu une surcharge dans le calcul de l'affichage de l'item dans le menu
 		// On commence par regarder si une fonction du type calcul_autorisation_nom_du_plugin existe
 		$nom_fonction_autorisation = "calcul_autorisation_".$nomPlugin;
@@ -1046,20 +1046,20 @@ class class_accueil_ordre_menu extends class_page_accueil {
 		  $sql .= "and indice_aid!= '".getSettingValue("indice_aid_autorisations_publi")."'";
 
 	  $sql .= " ORDER BY nom";
-	  $call_data = mysql_query($sql);
-	  $nb_aid = mysql_num_rows($call_data);
+	  $call_data = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	  $nb_aid = mysqli_num_rows($call_data);
 	  $i=0;
 
 	  while ($i < $nb_aid) {
 		$indice_aid = @mysql_result($call_data, $i, "indice_aid");
-		$call_prof1 = mysql_query("SELECT *
+		$call_prof1 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT *
 					FROM j_aid_utilisateurs_gest
 					WHERE indice_aid = '".$indice_aid."'");
-		$nb_result1 = mysql_num_rows($call_prof1);
-		$call_prof2 = mysql_query("SELECT *
+		$nb_result1 = mysqli_num_rows($call_prof1);
+		$call_prof2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT *
 					FROM j_aidcateg_super_gestionnaires
 					WHERE indice_aid = '".$indice_aid."'");
-		$nb_result2 = mysql_num_rows($call_prof2);
+		$nb_result2 = mysqli_num_rows($call_prof2);
 
 		if (($nb_result1 != 0) or ($nb_result2 != 0)) {
 		  $nom_aid = @mysql_result($call_data, $i, "nom");
@@ -1097,17 +1097,17 @@ class class_accueil_ordre_menu extends class_page_accueil {
 
 	$this->titre_Menu[$this->a]->bloc=$bloc;
 	$sql1="SHOW TABLES LIKE 'mn_ordre_accueil'";
-	$resp1 = mysql_query($sql1);
+	$resp1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql1);
 
-	if(mysql_num_rows($resp1)>0) {
+	if(mysqli_num_rows($resp1)>0) {
 	  $sql="SELECT nouveau_nom FROM mn_ordre_accueil
 			WHERE bloc LIKE '$bloc'
 			AND statut LIKE '$this->statutUtilisateur'
 			;";
-	  $resp=mysql_query($sql);
+	  $resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-	  if (mysql_num_rows($resp)>0){
-		$this->titre_Menu[$this->a]->nouveauNom=mysql_fetch_object($resp)->nouveau_nom;
+	  if (mysqli_num_rows($resp)>0){
+		$this->titre_Menu[$this->a]->nouveauNom=mysqli_fetch_object($resp)->nouveau_nom;
 	  }else{
 		$this->titre_Menu[$this->a]->nouveauNom="";
 	  }

@@ -127,8 +127,8 @@ echo "<option value='-1'>choisissez un groupe</option>\n";
 $groups = $utilisateur->getGroupes();
 foreach ($groups as $group_iter) {
 	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group_iter->getId()."' AND domaine='cahier_texte' AND visible='n';";
-	$test_grp_visib=mysql_query($sql);
-	if(mysql_num_rows($test_grp_visib)==0) {
+	$test_grp_visib=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($test_grp_visib)==0) {
 		echo "<option id='colonne_droite_select_group_option_".$group_iter->getId()."' value='".$group_iter->getId()."'";
 		if ($groupe->getId() == $group_iter->getId()) echo " SELECTED ";
 

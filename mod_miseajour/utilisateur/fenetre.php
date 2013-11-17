@@ -252,12 +252,12 @@ if($maj_fichier==='oui' and $valide_form==='yes' and $maj_type==='fichier')
 
 	     //mise à jour ok on l'insère dans la base ou on le met à jour
 	     // on regarde s'il existe déjas un enregistrement identitique
-             $compte_msj = mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'miseajour WHERE fichier_miseajour="'.$tableau_select['nom_fichier']['1'].'" AND emplacement_miseajour="'.$tableau_select['emplacement_fichier']['1'].'"'),0);
+             $compte_msj = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT count(*) FROM '.$prefix_base.'miseajour WHERE fichier_miseajour="'.$tableau_select['nom_fichier']['1'].'" AND emplacement_miseajour="'.$tableau_select['emplacement_fichier']['1'].'"'),0);
 	     // si oui
 	     if( $compte_msj === "0" ) { $requete='INSERT INTO '.$prefix_base.'miseajour (fichier_miseajour, emplacement_miseajour, date_miseajour, heure_miseajour) values ("'.$tableau_select['nom_fichier']['1'].'","'.$tableau_select['emplacement_fichier']['1'].'","'.date_sql($tableau_select['date_fichier']['1']).'","'.$tableau_select['heure_fichier']['1'].'")'; }
 	     // si non
              if( $compte_msj != "0" ) { $requete='UPDATE '.$prefix_base.'miseajour SET date_miseajour = "'.date_sql($tableau_select['date_fichier']['1']).'", heure_miseajour  = "'.$tableau_select['heure_fichier']['1'].'" WHERE fichier_miseajour="'.$tableau_select['nom_fichier']['1'].'" AND emplacement_miseajour="'.$tableau_select['emplacement_fichier']['1'].'"'; }
-             $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+             $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 	// on supprime le fichier du dossier temporaire
         unlink($rep_temp.$tableau_select['nom_fichier']['1']);
@@ -352,10 +352,10 @@ if($maj_logiciel==='oui' and $valide_form==='yes')
 							//mise à jour ok on l'insère dans la base
 						     // puisque que c'est une nouvelle version on efface les données de la base mise à jour
 						     $requete='TRUNCATE TABLE '.$prefix_base.'miseajour';
-						     $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+						     $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 						     // puis on informe la base de la version actuelle de la mise à jour
 						     $requete='INSERT INTO '.$prefix_base.'miseajour (fichier_miseajour, emplacement_miseajour, date_miseajour, heure_miseajour) values ("'.$beta_version[0].'","","'.date('Y-m-d').'","'.date('H:i:s').'")';
-					             $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+					             $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 						   }
 				           	   if ($ext === ".tar.gz") {
 						      $old = umask(0000);
@@ -379,10 +379,10 @@ if($maj_logiciel==='oui' and $valide_form==='yes')
 							//mise à jour ok on l'insère dans la base
 						     // puisque que c'est une nouvelle version on efface les données de la base mise à jour
 						     $requete='TRUNCATE TABLE '.$prefix_base.'miseajour';
-						     $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+						     $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 						     // puis on informe la base de la version actuelle de la mise à jour
 						     $requete='INSERT INTO '.$prefix_base.'miseajour (fichier_miseajour, emplacement_miseajour, date_miseajour, heure_miseajour) values ("'.$beta_version[0].'","","'.date('Y-m-d').'","'.date('H:i:s').'")';
-					             $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+					             $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 //debug
 //echo '<pre>';
 //print_r($copie_fichier);
@@ -536,7 +536,7 @@ else {
 			<p class="center">le serveur de mise à jour n\'est pas disponible</p>
 		';
 }
-mysql_close();
+((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 
 // Inclusion du footer
 require_once("../../lib/footer.inc.php");

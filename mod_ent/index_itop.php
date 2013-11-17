@@ -35,8 +35,8 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_ent/index_itop.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_ent/index_itop.php',
 administrateur='V',
 professeur='F',
@@ -48,7 +48,7 @@ secours='F',
 autre='F',
 description='Rapprochement des comptes ENT/GEPI : ENT ITOP',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -85,7 +85,7 @@ function echo_debug_itop($chaine) {
 
 // Menage:
 $sql="DELETE FROM sso_table_correspondance WHERE login_gepi='' OR login_sso='';";
-$menage=mysql_query($sql);
+$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 if((isset($_POST['temoin_suhosin_1']))&&(!isset($_POST['temoin_suhosin_2']))) {
 	$msg.="Il semble que certaines variables n'ont pas été transmises.<br />Cela peut arriver lorsqu'on tente de transmettre (<em>cocher trop de cases</em>) trop de variables.<br />Vous devriez tenter de cocher moins de cases et vous y prendre en plusieurs fois.<br />";
@@ -95,10 +95,10 @@ if(isset($_GET['supprimer_comptes_parents'])) {
 	check_token();
 
 	$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
-	$suppr=mysql_query($sql);
+	$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	$sql="UPDATE resp_pers SET login='';";
-	$vider_login=mysql_query($sql);
+	$vider_login=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	$msg.="Les comptes d'utilisateurs responsables ont été supprimés et leur login vidé dans la table 'resp_pers'.<br />";
 }
@@ -118,9 +118,9 @@ if(isset($_POST['recherche'])) {
 
 			$sql="SELECT login,nom,prenom,naissance FROM eleves WHERE nom LIKE '%".$nom_rech."%' AND prenom LIKE '%".$prenom_rech."%';";
 
-			$res=@mysql_query($sql);
+			$res=@mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-			if(mysql_num_rows($res)==0){
+			if(mysqli_num_rows($res)==0){
 				$chaine="Aucun résultat retourné.";
 			}
 			else {
@@ -150,7 +150,7 @@ if(isset($_POST['recherche'])) {
 				$chaine.="</tr>";
 
 				$alt=-1;
-				while($lig=mysql_fetch_object($res)){
+				while($lig=mysqli_fetch_object($res)){
 					//$chaine.="<tr>";
 
 					$alt=$alt*(-1);
@@ -204,9 +204,9 @@ if(isset($_POST['recherche'])) {
 
 			$sql="SELECT login,nom,prenom,pers_id FROM resp_pers WHERE nom LIKE '%".$nom_rech."%' AND prenom LIKE '%".$prenom_rech."%';";
 
-			$res=@mysql_query($sql);
+			$res=@mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-			if(mysql_num_rows($res)==0){
+			if(mysqli_num_rows($res)==0){
 				$chaine="Aucun résultat retourné.";
 			}
 			else {
@@ -232,7 +232,7 @@ if(isset($_POST['recherche'])) {
 				$chaine.="</tr>";
 
 				$alt=-1;
-				while($lig=mysql_fetch_object($res)){
+				while($lig=mysqli_fetch_object($res)){
 					//$chaine.="<tr>";
 
 					$alt=$alt*(-1);
@@ -284,9 +284,9 @@ if(isset($_POST['recherche'])) {
 
 			$sql="SELECT login,nom,prenom,statut FROM utilisateurs WHERE nom LIKE '%".$nom_rech."%' AND prenom LIKE '%".$prenom_rech."%';";
 
-			$res=@mysql_query($sql);
+			$res=@mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-			if(mysql_num_rows($res)==0){
+			if(mysqli_num_rows($res)==0){
 				$chaine="Aucun résultat retourné.";
 			}
 			else {
@@ -312,7 +312,7 @@ if(isset($_POST['recherche'])) {
 				$chaine.="</tr>";
 
 				$alt=-1;
-				while($lig=mysql_fetch_object($res)){
+				while($lig=mysqli_fetch_object($res)){
 					//$chaine.="<tr>";
 
 					$alt=$alt*(-1);
@@ -371,8 +371,8 @@ if(isset($_POST['enregistrement_eleves'])) {
 	else {
 		$ligne_tempo2=array();
 		$sql="SELECT * FROM tempo2_sso;";
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			$ligne_tempo2[$lig->col1]=$lig->col2;
 		}
 
@@ -382,20 +382,20 @@ if(isset($_POST['enregistrement_eleves'])) {
 				if(isset($ligne_tempo2[$ligne[$loop]])) {
 					$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
-					$sql="SELECT login FROM eleves WHERE login='".mysql_real_escape_string($_POST['login_'.$ligne[$loop]])."';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0) {
+					$sql="SELECT login FROM eleves WHERE login='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $_POST['login_'.$ligne[$loop]]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test)==0) {
 						$msg.="Le login élève Gepi ".$_POST['login_'.$ligne[$loop]]." proposé n'existe pas.<br />\n";
 					}
 					else {
-						$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[0])."';";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)==0) {
+						$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($test)==0) {
 							$sql="SELECT * FROM sso_table_correspondance WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
-							$test=mysql_query($sql);
-							if(mysql_num_rows($test)==0) {
-								$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysql_real_escape_string($tab[0])."';";
-								$insert=mysql_query($sql);
+							$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+								$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$insert) {
 									$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 								}
@@ -404,8 +404,8 @@ if(isset($_POST['enregistrement_eleves'])) {
 								}
 							}
 							else {
-								$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($tab[0])."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
-								$update=mysql_query($sql);
+								$sql="UPDATE sso_table_correspondance SET login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+								$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$update) {
 									$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 								}
@@ -415,7 +415,7 @@ if(isset($_POST['enregistrement_eleves'])) {
 							}
 						}
 						else {
-							$lig=mysql_fetch_object($test);
+							$lig=mysqli_fetch_object($test);
 							$msg.="Le GUID $tab[0] est déjà associé à $lig->login_gepi<br />\n";
 						}
 					}
@@ -428,10 +428,10 @@ if(isset($_POST['enregistrement_eleves'])) {
 				if(isset($ligne_tempo2[$ligne[$loop]])) {
 					$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
-					$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[0])."';";
+					$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
 					echo_debug_itop("$sql<br />");
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0) {
+					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test)==0) {
 						$naissance=(isset($tab[5])) ? $tab[5] : "";
 						if(!preg_match("#[0-9]{2}/[0-9]{2}/[0-9]{4}#", $naissance)) {$naissance="";}
 
@@ -453,22 +453,22 @@ if(isset($_POST['enregistrement_eleves'])) {
 							$sql="SELECT * FROM eleves WHERE nom LIKE '".$nom_remplacement."' AND prenom LIKE '".$prenom_remplacement."' ORDER BY naissance;";
 						}
 						echo_debug_itop("$sql<br />");
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							$msg.="Aucun enregistrement dans la table 'eleves' pour ".$tab[1]." ".$tab[2]." !<br />\n";
 							$nb_pas_dans_eleves++;
 						}
-						elseif(mysql_num_rows($res)==1) {
+						elseif(mysqli_num_rows($res)==1) {
 							// Un seul élève correspond
-							$lig=mysql_fetch_object($res);
+							$lig=mysqli_fetch_object($res);
 
 							$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='$lig->login';";
 							echo_debug_itop("$sql<br />");
-							$test=mysql_query($sql);
-							if(mysql_num_rows($test)==0) {
-								$sql="INSERT INTO sso_table_correspondance SET login_gepi='$lig->login', login_sso='".mysql_real_escape_string($tab[0])."';";
+							$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								$sql="INSERT INTO sso_table_correspondance SET login_gepi='$lig->login', login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
 								echo_debug_itop("$sql<br />");
-								$insert=mysql_query($sql);
+								$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$insert) {
 									$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$lig->login."<br />\n";
 								}
@@ -477,9 +477,9 @@ if(isset($_POST['enregistrement_eleves'])) {
 								}
 							}
 							else {
-								$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($tab[0])."' WHERE login_gepi='$lig->login';";
+								$sql="UPDATE sso_table_correspondance SET login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE login_gepi='$lig->login';";
 								echo_debug_itop("$sql<br />");
-								$update=mysql_query($sql);
+								$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$update) {
 									$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$lig->login."<br />\n";
 								}
@@ -494,7 +494,7 @@ if(isset($_POST['enregistrement_eleves'])) {
 						}
 					}
 					else {
-						$lig=mysql_fetch_object($test);
+						$lig=mysqli_fetch_object($test);
 						$msg.="Le GUID $tab[0] est déjà associé à $lig->login_gepi<br />\n";
 					}
 				}
@@ -529,8 +529,8 @@ if(isset($_POST['enregistrement_responsables'])) {
 	}
 	else {
 		$sql="SELECT col2 FROM tempo2_sso WHERE col1='Ligne_entete';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			$msg="La ligne d'entête du CSV n'a pas été trouvée.<br />";
 		}
 		else {
@@ -538,7 +538,7 @@ if(isset($_POST['enregistrement_responsables'])) {
 			// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
 			$tabchamps = array("Guid", "Nom", "Prénom", "Prenom", "Profil", "Groupe", "Guid_Enfant1", "Guid_Enfant2", "Guid_Enfant3");
 
-			$ligne_entete=mysql_fetch_object($res);
+			$ligne_entete=mysqli_fetch_object($res);
 			$en_tete=explode(";", trim($ligne_entete->col2));
 
 			$tabindice=array();
@@ -558,8 +558,8 @@ if(isset($_POST['enregistrement_responsables'])) {
 			else {
 				$ligne_tempo2=array();
 				$sql="SELECT * FROM tempo2_sso;";
-				$res=mysql_query($sql);
-				while($lig=mysql_fetch_object($res)) {
+				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				while($lig=mysqli_fetch_object($res)) {
 					$ligne_tempo2[$lig->col1]=$lig->col2;
 				}
 
@@ -573,20 +573,20 @@ if(isset($_POST['enregistrement_responsables'])) {
 							$nom_courant=$tab[$tabindice['Nom']];
 							$prenom_courant=$tab[$tabindice['Prénom']];
 
-							$sql="SELECT login FROM resp_pers WHERE login='".mysql_real_escape_string($_POST['login_'.$ligne[$loop]])."';";
-							$test=mysql_query($sql);
-							if(mysql_num_rows($test)==0) {
+							$sql="SELECT login FROM resp_pers WHERE login='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $_POST['login_'.$ligne[$loop]]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+							$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($test)==0) {
 								$msg.="Le login responsable Gepi ".$_POST['login_'.$ligne[$loop]]." proposé n'existe pas.<br />\n";
 							}
 							else {
-								$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($guid_courant)."';";
-								$test=mysql_query($sql);
-								if(mysql_num_rows($test)==0) {
+								$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_courant) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+								$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								if(mysqli_num_rows($test)==0) {
 									$sql="SELECT * FROM sso_table_correspondance WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
-									$test=mysql_query($sql);
-									if(mysql_num_rows($test)==0) {
-										$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysql_real_escape_string($guid_courant)."';";
-										$insert=mysql_query($sql);
+									$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									if(mysqli_num_rows($test)==0) {
+										$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_courant) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+										$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 										if(!$insert) {
 											$msg.="Erreur lors de l'insertion de l'association ".$guid_courant." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 										}
@@ -595,8 +595,8 @@ if(isset($_POST['enregistrement_responsables'])) {
 										}
 									}
 									else {
-										$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($guid_courant)."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
-										$update=mysql_query($sql);
+										$sql="UPDATE sso_table_correspondance SET login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_courant) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+										$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 										if(!$update) {
 											$msg.="Erreur lors de la mise à jour de l'association ".$guid_courant." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 										}
@@ -606,7 +606,7 @@ if(isset($_POST['enregistrement_responsables'])) {
 									}
 								}
 								else {
-									$lig=mysql_fetch_object($test);
+									$lig=mysqli_fetch_object($test);
 									$msg.="Le GUID $guid_courant est déjà associé à $lig->login_gepi<br />\n";
 								}
 							}
@@ -636,21 +636,21 @@ if(isset($_POST['enregistrement_responsables'])) {
 								$guid_enfant3=$tab[$tabindice['Guid_Enfant3']];
 							}
 
-							$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($guid_courant)."';";
-							$test=mysql_query($sql);
-							if(mysql_num_rows($test)==0) {
+							$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_courant) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+							$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($test)==0) {
 
 								$chaine="";
 								if($guid_enfant1!="") {
-									$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant1)."'";
+									$chaine.="s.login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_enfant1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 								}
 								if($guid_enfant2!="") {
 									if($chaine!="") {$chaine.=" OR ";}
-									$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant2)."'";
+									$chaine.="s.login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_enfant2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 								}
 								if($guid_enfant3!="") {
 									if($chaine!="") {$chaine.=" OR ";}
-									$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant3)."'";
+									$chaine.="s.login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_enfant3) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 								}
 
 								$cpt_resp=0;
@@ -659,15 +659,15 @@ if(isset($_POST['enregistrement_responsables'])) {
 								if($chaine!="") {
 									$sql="SELECT e.* FROM eleves e, sso_table_correspondance s WHERE ($chaine) AND e.login=s.login_gepi ORDER BY e.nom, e.prenom;";
 									echo_debug_itop("$sql<br />");
-									$res_ele=mysql_query($sql);
-									if(mysql_num_rows($res_ele)>0) {
+									$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									if(mysqli_num_rows($res_ele)>0) {
 										$cpt_ele=0;
-										while($lig_ele=mysql_fetch_object($res_ele)) {
-											$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".mysql_real_escape_string($nom_courant)."' AND rp.prenom='".mysql_real_escape_string($prenom_courant)."' AND rp.login!='';";
+										while($lig_ele=mysqli_fetch_object($res_ele)) {
+											$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $nom_courant) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND rp.prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $prenom_courant) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND rp.login!='';";
 											echo_debug_itop("$sql<br />");
-											$res_resp=mysql_query($sql);
-											if(mysql_num_rows($res_resp)>0) {
-												while($lig_resp=mysql_fetch_object($res_resp)) {
+											$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+											if(mysqli_num_rows($res_resp)>0) {
+												while($lig_resp=mysqli_fetch_object($res_resp)) {
 													if(!in_array($lig_resp->login, $tab_resp_login)) {
 														$tab_resp_login[]=$lig_resp->login;
 														$tab_resp[$cpt_resp]['login']=$lig_resp->login;
@@ -686,9 +686,9 @@ if(isset($_POST['enregistrement_responsables'])) {
 											else {
 												$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.login!='';";
 												echo_debug_itop("$sql<br />");
-												$res_resp=mysql_query($sql);
-												if(mysql_num_rows($res_resp)>0) {
-													while($lig_resp=mysql_fetch_object($res_resp)) {
+												$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+												if(mysqli_num_rows($res_resp)>0) {
+													while($lig_resp=mysqli_fetch_object($res_resp)) {
 														if(!in_array($lig_resp->login, $tab_resp_login)) {
 															$tab_resp_login[]=$lig_resp->login;
 															$tab_resp[$cpt_resp]['login']=$lig_resp->login;
@@ -713,13 +713,13 @@ if(isset($_POST['enregistrement_responsables'])) {
 									*/
 									if(count($tab_resp)==1) {
 										// Un seul responsable correspond
-										$lig=mysql_fetch_object($res);
+										$lig=mysqli_fetch_object($res);
 
 										$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='".$tab_resp_login[0]."';";
-										$test=mysql_query($sql);
-										if(mysql_num_rows($test)==0) {
-											$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$tab_resp_login[0]."', login_sso='".mysql_real_escape_string($guid_courant)."';";
-											$insert=mysql_query($sql);
+										$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										if(mysqli_num_rows($test)==0) {
+											$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$tab_resp_login[0]."', login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_courant) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+											$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 											if(!$insert) {
 												$msg.="Erreur lors de l'insertion de l'association ".$guid_courant." &gt; ".$tab_resp_login[0]."<br />\n";
 											}
@@ -728,8 +728,8 @@ if(isset($_POST['enregistrement_responsables'])) {
 											}
 										}
 										else {
-											$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($guid_courant)."' WHERE login_gepi='".$tab_resp_login[0]."';";
-											$update=mysql_query($sql);
+											$sql="UPDATE sso_table_correspondance SET login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_courant) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE login_gepi='".$tab_resp_login[0]."';";
+											$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 											if(!$update) {
 												$msg.="Erreur lors de la mise à jour de l'association ".$guid_courant." &gt; ".$tab_resp_login[0]."<br />\n";
 											}
@@ -747,7 +747,7 @@ if(isset($_POST['enregistrement_responsables'])) {
 								}
 							}
 							else {
-								$lig=mysql_fetch_object($test);
+								$lig=mysqli_fetch_object($test);
 								$msg.="Le GUID $guid_courant est déjà associé à $lig->login_gepi<br />\n";
 							}
 						}
@@ -781,8 +781,8 @@ if(isset($_POST['enregistrement_personnels'])) {
 	else {
 		$ligne_tempo2=array();
 		$sql="SELECT * FROM tempo2_sso;";
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			$ligne_tempo2[$lig->col1]=$lig->col2;
 		}
 
@@ -792,20 +792,20 @@ if(isset($_POST['enregistrement_personnels'])) {
 				if(isset($ligne_tempo2[$ligne[$loop]])) {
 					$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
-					$sql="SELECT login FROM utilisateurs WHERE login='".mysql_real_escape_string($_POST['login_'.$ligne[$loop]])."' AND statut!='eleve' AND statut!='responsable';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0) {
+					$sql="SELECT login FROM utilisateurs WHERE login='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $_POST['login_'.$ligne[$loop]]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND statut!='eleve' AND statut!='responsable';";
+					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test)==0) {
 						$msg.="Le login de personnel Gepi ".$_POST['login_'.$ligne[$loop]]." proposé n'existe pas.<br />\n";
 					}
 					else {
-						$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[0])."';";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)==0) {
+						$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($test)==0) {
 							$sql="SELECT * FROM sso_table_correspondance WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
-							$test=mysql_query($sql);
-							if(mysql_num_rows($test)==0) {
-								$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysql_real_escape_string($tab[0])."';";
-								$insert=mysql_query($sql);
+							$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+								$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$insert) {
 									$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 								}
@@ -814,8 +814,8 @@ if(isset($_POST['enregistrement_personnels'])) {
 								}
 							}
 							else {
-								$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($tab[0])."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
-								$update=mysql_query($sql);
+								$sql="UPDATE sso_table_correspondance SET login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+								$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$update) {
 									$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 								}
@@ -825,7 +825,7 @@ if(isset($_POST['enregistrement_personnels'])) {
 							}
 						}
 						else {
-							$lig=mysql_fetch_object($test);
+							$lig=mysqli_fetch_object($test);
 							$msg.="Le GUID $tab[0] est déjà associé à $lig->login_gepi<br />\n";
 						}
 					}
@@ -838,21 +838,21 @@ if(isset($_POST['enregistrement_personnels'])) {
 				if(isset($ligne_tempo2[$ligne[$loop]])) {
 					$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
-					$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[0])."';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0) {
+					$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test)==0) {
 
-						$sql="SELECT * FROM utilisateurs WHERE nom='".mysql_real_escape_string($tab[1])."' AND prenom='".mysql_real_escape_string($tab[2])."' AND statut!='eleve' AND statut!='responsable';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==1) {
+						$sql="SELECT * FROM utilisateurs WHERE nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND statut!='eleve' AND statut!='responsable';";
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==1) {
 							// Un seul élève correspond
-							$lig=mysql_fetch_object($res);
+							$lig=mysqli_fetch_object($res);
 
 							$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='$lig->login';";
-							$test=mysql_query($sql);
-							if(mysql_num_rows($test)==0) {
-								$sql="INSERT INTO sso_table_correspondance SET login_gepi='$lig->login', login_sso='".mysql_real_escape_string($tab[0])."';";
-								$insert=mysql_query($sql);
+							$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								$sql="INSERT INTO sso_table_correspondance SET login_gepi='$lig->login', login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+								$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$insert) {
 									$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$lig->login."<br />\n";
 								}
@@ -861,8 +861,8 @@ if(isset($_POST['enregistrement_personnels'])) {
 								}
 							}
 							else {
-								$sql="UPDATE sso_table_correspondance SET login_sso='".mysql_real_escape_string($tab[0])."' WHERE login_gepi='$lig->login';";
-								$update=mysql_query($sql);
+								$sql="UPDATE sso_table_correspondance SET login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE login_gepi='$lig->login';";
+								$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$update) {
 									$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$lig->login."<br />\n";
 								}
@@ -871,7 +871,7 @@ if(isset($_POST['enregistrement_personnels'])) {
 								}
 							}
 						}
-						elseif(mysql_num_rows($res)==0) {
+						elseif(mysqli_num_rows($res)==0) {
 							$msg.="Aucun enregistrement dans la table 'utilisateurs' pour ".$tab[1]." ".$tab[2]." !<br />\n";
 						}
 						else {
@@ -880,7 +880,7 @@ if(isset($_POST['enregistrement_personnels'])) {
 						}
 					}
 					else {
-						$lig=mysql_fetch_object($test);
+						$lig=mysqli_fetch_object($test);
 						$msg.="Le GUID $tab[0] est déjà associé à $lig->login_gepi<br />\n";
 					}
 				}
@@ -910,18 +910,18 @@ if(isset($_POST['enregistrement_saisie_manuelle'])) {
 	}
 	else {
 		$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".$login_sso."';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$sql="SELECT statut FROM utilisateurs WHERE login='$login_gepi';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==1) {
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res)==1) {
 				$statut_compte=mysql_result($res, 0, "statut");
 
 				$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='$login_gepi';";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0) {
+				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($test)==0) {
 					$sql="INSERT INTO sso_table_correspondance SET login_gepi='$login_gepi', login_sso='$login_sso';";
-					$insert=mysql_query($sql);
+					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$insert) {
 						$msg.="Erreur lors de l'insertion de l'association ".$login_sso." &gt; ".$login_gepi."<br />\n";
 					}
@@ -931,7 +931,7 @@ if(isset($_POST['enregistrement_saisie_manuelle'])) {
 				}
 				else {
 					$sql="UPDATE sso_table_correspondance SET login_sso='".$login_sso."' WHERE login_gepi='$login_gepi';";
-					$update=mysql_query($sql);
+					$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$update) {
 						$msg.="Erreur lors de la mise à jour de l'association ".$login_sso." &gt; ".$login_gepi."<br />\n";
 					}
@@ -940,7 +940,7 @@ if(isset($_POST['enregistrement_saisie_manuelle'])) {
 					}
 				}
 			}
-			elseif(mysql_num_rows($res)==0) {
+			elseif(mysqli_num_rows($res)==0) {
 				$msg.="Aucun enregistrement dans la table 'eleves' pour $login_gepi<br />\n";
 			}
 			else {
@@ -948,7 +948,7 @@ if(isset($_POST['enregistrement_saisie_manuelle'])) {
 			}
 		}
 		else {
-			$lig=mysql_fetch_object($test);
+			$lig=mysqli_fetch_object($test);
 			$msg.="Le GUID $login_sso est déjà associé à $lig->login_gepi<br />\n";
 		}
 	}
@@ -975,7 +975,7 @@ if(isset($_POST['suppr'])) {
 	$suppr=$_POST['suppr'];
 	for($loop=0;$loop<count($suppr);$loop++) {
 		$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$suppr[$loop]."';";
-		$menage=mysql_query($sql);
+		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if(!$menage) {
 			$msg.="Erreur lors de la suppression de ".$suppr[$loop]."<br />";
 		}
@@ -993,7 +993,7 @@ if($mode=='vider') {
 	check_token();
 
 	$sql="TRUNCATE sso_table_correspondance;";
-	$menage=mysql_query($sql);
+	$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	if($menage) {
 		$msg.="Table sso_table_correspondance vidée.<br />";
 	}
@@ -1008,11 +1008,11 @@ if($mode=='suppr_scories') {
 	check_token();
 
 	$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_gepi NOT IN (SELECT login FROM utilisateurs);";
-	$res=mysql_query($sql);
-	$nb_scories=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_scories=mysqli_num_rows($res);
 	if($nb_scories>0) {
 		$sql="DELETE FROM sso_table_correspondance WHERE login_gepi NOT IN (SELECT login FROM utilisateurs);";
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if($res) {
 			$msg.="$nb_scories association(s) obsolète(s) supprimée(s).<br />";
 		}
@@ -1068,9 +1068,9 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 
 	$tab_tempo4=array();
 	$sql="SELECT * FROM tempo4;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
 			$tab_tempo4[$lig->col1]['login']=$lig->col2;
 			$tab_tempo4[$lig->col1]['md5_password']=$lig->col3;
 		}
@@ -1080,13 +1080,13 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 		if($pers_id!="") {
 			$sql="SELECT * FROM resp_pers WHERE pers_id='$pers_id';";
 			echo_debug_itop("$sql<br />");
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				$msg.="ERREUR : Le responsable n°$pers_id n'existe pas dans la table 'resp_pers'.<br />";
 				$nb_erreur++;
 			}
 			else {
-				$lig=mysql_fetch_object($res);
+				$lig=mysqli_fetch_object($res);
 
 				if(!isset($tab_tempo4[$id_col1])) {
 					$msg.="ERREUR : Le numéro $id_col1 de l'enregistrement 'tempo4' que vous souhaitez associer au responsable n°$pers_id (<em>$lig->nom $lig->prenom</em>) n'existe pas dans la table 'tempo4'.<br />";
@@ -1095,9 +1095,9 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 				else {
 					$sql="SELECT * FROM utilisateurs WHERE login='".$tab_tempo4[$id_col1]['login']."';";
 					echo_debug_itop("$sql<br />");
-					$test_u=mysql_query($sql);
-					if(mysql_num_rows($test_u)>0) {
-						$lig_u=mysql_fetch_object($test_u);
+					$test_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test_u)>0) {
+						$lig_u=mysqli_fetch_object($test_u);
 
 						$msg.="ERREUR : Le login ".$tab_tempo4[$id_col1]['login']." que vous souhaitez associer au responsable n°$pers_id (<em>$lig->nom $lig->prenom</em>) est déjà associé à un utilisateur de statut '$lig_u->statut' nommé $lig_u->nom $lig_u->prenom.<br />";
 						$nb_erreur++;
@@ -1106,11 +1106,11 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 						if($lig->login!="") {
 							$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login."' AND statut='responsable';";
 							echo_debug_itop("$sql<br />");
-							$test_u=mysql_query($sql);
-							if(mysql_num_rows($test_u)>0) {
+							$test_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($test_u)>0) {
 								$sql="DELETE FROM utilisateurs WHERE login='".$lig->login."' AND statut='responsable';";
 								echo_debug_itop("$sql<br />");
-								$menage=mysql_query($sql);
+								$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$menage) {
 									$msg.="ERREUR : La suppression de l'ancien compte d'utilisateur $lig->login associé au responsable n°$pers_id (<em>$lig->nom $lig->prenom</em>) a échoué.<br />";
 									$nb_erreur++;
@@ -1119,20 +1119,20 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 									$sql="INSERT INTO utilisateurs SET login='".$tab_tempo4[$id_col1]['login']."', 
 												password='".$tab_tempo4[$id_col1]['md5_password']."', 
 												salt='', 
-												nom='".mysql_real_escape_string($lig->nom)."', 
-												prenom='".mysql_real_escape_string($lig->prenom)."', 
+												nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig->nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
+												prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig->prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
 												civilite='$lig->civilite', 
 												change_mdp='n', 
-												email='".mysql_real_escape_string($lig->mel)."', 
+												email='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig->mel) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
 												auth_mode='gepi', 
 												statut='responsable', 
 												etat='inactif';";
 									echo_debug_itop("$sql<br />");
-									$insert=mysql_query($sql);
+									$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 									if($insert) {
 										$sql="UPDATE resp_pers SET login='".$tab_tempo4[$id_col1]['login']."' WHERE pers_id='$pers_id';";
 										echo_debug_itop("$sql<br />");
-										$update=mysql_query($sql);
+										$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 										if($update) {
 											$nb_comptes_remplaces++;
 										}
@@ -1151,20 +1151,20 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 								$sql="INSERT INTO utilisateurs SET login='".$tab_tempo4[$id_col1]['login']."', 
 											password='".$tab_tempo4[$id_col1]['md5_password']."', 
 											salt='', 
-											nom='".mysql_real_escape_string($lig->nom)."', 
-											prenom='".mysql_real_escape_string($lig->prenom)."', 
+											nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig->nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
+											prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig->prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
 											civilite='$lig->civilite', 
 											change_mdp='n', 
-											email='".mysql_real_escape_string($lig->mel)."', 
+											email='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig->mel) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
 											auth_mode='gepi', 
 											statut='responsable', 
 											etat='inactif';";
 								echo_debug_itop("$sql<br />");
-								$insert=mysql_query($sql);
+								$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if($insert) {
 									$sql="UPDATE resp_pers SET login='".$tab_tempo4[$id_col1]['login']."' WHERE pers_id='$pers_id';";
 									echo_debug_itop("$sql<br />");
-									$update=mysql_query($sql);
+									$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 									if($update) {
 										$nb_nouveaux_comptes++;
 									}
@@ -1182,20 +1182,20 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 							$sql="INSERT INTO utilisateurs SET login='".$tab_tempo4[$id_col1]['login']."', 
 										password='".$tab_tempo4[$id_col1]['md5_password']."', 
 										salt='', 
-										nom='".mysql_real_escape_string($lig->nom)."', 
-										prenom='".mysql_real_escape_string($lig->prenom)."', 
+										nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig->nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
+										prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig->prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
 										civilite='$lig->civilite', 
 										change_mdp='n', 
-										email='".mysql_real_escape_string($lig->mel)."', 
+										email='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig->mel) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
 										auth_mode='gepi', 
 										statut='responsable', 
 										etat='inactif';";
 							echo_debug_itop("$sql<br />");
-							$insert=mysql_query($sql);
+							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if($insert) {
 								$sql="UPDATE resp_pers SET login='".$tab_tempo4[$id_col1]['login']."' WHERE pers_id='$pers_id';";
 								echo_debug_itop("$sql<br />");
-								$update=mysql_query($sql);
+								$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if($update) {
 									$nb_nouveaux_comptes++;
 								}
@@ -1237,7 +1237,7 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 
 	// Ménage:
 	//$sql="TRUNCATE tempo4;";
-	$menage=mysql_query($sql);
+	$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	//unset($mode);
 	$mode="";
@@ -1260,7 +1260,7 @@ if($suhosin_post_max_totalname_length!='') {
 
 //debug_var();
 $sql="CREATE TABLE IF NOT EXISTS tempo2_sso ( col1 varchar(100) NOT NULL default '', col2 TEXT NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 ?>
 
@@ -1309,38 +1309,38 @@ if((!isset($mode))||($mode=="")) {
 
 	//$sql="SELECT e.*, s.* FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login ORDER BY e.nom, e.prenom LIMIT 1;";
 	$sql="SELECT 1=1 FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "
 	<li>Aucune association élève n'est encore enregistrée.</li>";
 	}
 	else {
 		echo "
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_eleves'>Consulter les associations élèves</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_eleves'>Consulter les associations élèves</a> (<em>".mysqli_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
 	//$sql="SELECT rp.*, s.* FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login ORDER BY rp.nom, rp.prenom LIMIT 1;";
 	$sql="SELECT 1=1 FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "
 	<li>Aucune association responsable n'est encore enregistrée.</li>";
 	}
 	else {
 		echo "
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_responsables'>Consulter les associations responsables</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_responsables'>Consulter les associations responsables</a> (<em>".mysqli_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
 	//$sql="SELECT u.*, s.* FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable' LIMIT 1;";
 	$sql="SELECT 1=1 FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "
 	<li>Aucune association n'est encore enregistrée pour les personnels de l'établissement.</li>";
 	}
 	else {
 		echo "
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_personnels'>Consulter les associations personnels</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=consult_personnels'>Consulter les associations personnels</a> (<em>".mysqli_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
 	echo "
@@ -1354,45 +1354,45 @@ if((!isset($mode))||($mode=="")) {
 <ul>";
 
 	$sql="SELECT 1=1 FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login;";
-	$res=mysql_query($sql);
-	$nb_corresp_ele=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_corresp_ele=mysqli_num_rows($res);
 	if($nb_corresp_ele==0) {
 		echo "
 	<li>Aucune association élève n'est encore enregistrée.</li>";
 	}
 	else {
 		echo "
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_eleves'>Générer les Fiches Bienvenue élèves</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_eleves'>Générer les Fiches Bienvenue élèves</a> (<em>".mysqli_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
 	//===================================================
 	// Fiches bienvenue Responsables
 	//$sql="SELECT rp.*, s.* FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login ORDER BY rp.nom, rp.prenom LIMIT 1;";
 	$sql="SELECT 1=1 FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login;";
-	$res=mysql_query($sql);
-	$nb_corresp_resp=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_corresp_resp=mysqli_num_rows($res);
 	if($nb_corresp_resp==0) {
 		echo "
 	<li>Aucune association responsable n'est encore enregistrée.</li>";
 	}
 	else {
 		echo "
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_responsables'>Générer les Fiches Bienvenue responsables</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_responsables'>Générer les Fiches Bienvenue responsables</a> (<em>".mysqli_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
 	//===================================================
 	// Fiches bienvenue Personnels
 	//$sql="SELECT u.*, s.* FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable' LIMIT 1;";
 	$sql="SELECT 1=1 FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable';";
-	$res=mysql_query($sql);
-	$nb_corresp_pers=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_corresp_pers=mysqli_num_rows($res);
 	if($nb_corresp_pers==0) {
 		echo "
 	<li>Aucune association n'est encore enregistrée pour les personnels de l'établissement.</li>";
 	}
 	else {
 		echo "
-	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_personnels'>Générer les Fiches Bienvenue personnels</a> (<em>".mysql_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_personnels'>Générer les Fiches Bienvenue personnels</a> (<em>".mysqli_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
 	echo "
@@ -1402,8 +1402,8 @@ if((!isset($mode))||($mode=="")) {
 	//===================================================
 	// Scories:
 	$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_gepi NOT IN (SELECT login FROM utilisateurs);";
-	$res=mysql_query($sql);
-	$nb_scories=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_scories=mysqli_num_rows($res);
 	if($nb_scories>0) {
 		echo "
 <br />
@@ -1415,12 +1415,12 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 	//===================================================
 	// Vider:
 	$sql="SELECT 1=1 FROM sso_table_correspondance;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		echo "
 <br />
 <p>ou <a href='".$_SERVER['PHP_SELF']."?mode=vider".add_token_in_url()."' onclick=\"return confirmlink(this, 'ATTENTION !!! Êtes-vous vraiment sûr de vouloir vider la table sso_table_correspondance ?', 'Confirmation du vidage')\">vider la table des correspondances</a></p>";
-		echo "<p>La table de correspondances contient actuellement ".mysql_num_rows($res)." enregistrements.</p>\n";
+		echo "<p>La table de correspondances contient actuellement ".mysqli_num_rows($res)." enregistrements.</p>\n";
 	}
 
 	//===================================================
@@ -1430,14 +1430,14 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 <p><strong>Associations manquantes&nbsp;:</strong></p>";
 
 		$sql="select distinct e.login, e.nom, e.prenom from eleves e, utilisateurs u where e.login=u.login AND u.auth_mode='sso' and e.login not in (select login_gepi from sso_table_correspondance);";
-		$res=mysql_query($sql);
-		$nb_assoc_manquantes_ele=mysql_num_rows($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nb_assoc_manquantes_ele=mysqli_num_rows($res);
 		if($nb_assoc_manquantes_ele>0) {
 			echo "
 <br />
 <p>Il manque $nb_assoc_manquantes_ele association(s) élève(s)&nbsp;: ";
 			$cpt=0;
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				if($cpt>0) {echo ", ";}
 				echo "<a href='../eleves/modify_eleve.php?eleve_login=$lig->login' target='_blank'>".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</a>";
 				$cpt++;
@@ -1446,14 +1446,14 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 		}
 
 		$sql="select distinct rp.login, rp.nom, rp.prenom, rp.civilite, rp.pers_id FROM resp_pers rp, utilisateurs u where u.auth_mode='sso' AND u.login=rp.login AND rp.login!='' and rp.login not in (select login_gepi from sso_table_correspondance);";
-		$res=mysql_query($sql);
-		$nb_assoc_manquantes_resp=mysql_num_rows($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nb_assoc_manquantes_resp=mysqli_num_rows($res);
 		if($nb_assoc_manquantes_resp>0) {
 			echo "
 <br />
 <p>Il manque $nb_assoc_manquantes_resp association(s) responsable(s)&nbsp;: ";
 			$cpt=0;
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				if($cpt>0) {echo ", ";}
 				echo "<a href='../responsables/modify_resp.php?pers_id=$lig->pers_id' target='_blank'>".$lig->civilite." ".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</a>";
 				$cpt++;
@@ -1462,14 +1462,14 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 		}
 
 		$sql="select distinct u.login, u.nom, u.prenom, u.civilite from utilisateurs u where u.auth_mode='sso' AND u.statut!='eleve' and u.statut!='responsable' and u.login not in (select login_gepi from sso_table_correspondance);";
-		$res=mysql_query($sql);
-		$nb_assoc_manquantes_resp=mysql_num_rows($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nb_assoc_manquantes_resp=mysqli_num_rows($res);
 		if($nb_assoc_manquantes_resp>0) {
 			echo "
 <br />
 <p>Il manque $nb_assoc_manquantes_resp association(s) personnel(s)&nbsp;: ";
 			$cpt=0;
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				if($cpt>0) {echo ", ";}
 				echo "<a href='../utilisateurs/modify_user.php?user_login=$lig->login' target='_blank'>".$lig->civilite." ".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</a>";
 				$cpt++;
@@ -1495,34 +1495,34 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 	}
 
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut!='eleve' AND statut!='responsable' AND auth_mode='sso';";
-	$res=mysql_query($sql);
-	$nb_pers_sso=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_pers_sso=mysqli_num_rows($res);
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut!='eleve' AND statut!='responsable' AND auth_mode='ldap';";
-	$res=mysql_query($sql);
-	$nb_pers_ldap=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_pers_ldap=mysqli_num_rows($res);
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut!='eleve' AND statut!='responsable' AND auth_mode='gepi';";
-	$res=mysql_query($sql);
-	$nb_pers_gepi=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_pers_gepi=mysqli_num_rows($res);
 
 	$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.statut='eleve' AND e.login=u.login AND auth_mode='sso';";
-	$res=mysql_query($sql);
-	$nb_ele_sso=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_ele_sso=mysqli_num_rows($res);
 	$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.statut='eleve' AND e.login=u.login AND auth_mode='ldap';";
-	$res=mysql_query($sql);
-	$nb_ele_ldap=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_ele_ldap=mysqli_num_rows($res);
 	$sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.statut='eleve' AND e.login=u.login AND auth_mode='gepi';";
-	$res=mysql_query($sql);
-	$nb_ele_gepi=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_ele_gepi=mysqli_num_rows($res);
 
 	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.statut='responsable' AND rp.login=u.login AND auth_mode='sso';";
-	$res=mysql_query($sql);
-	$nb_resp_sso=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_resp_sso=mysqli_num_rows($res);
 	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.statut='responsable' AND rp.login=u.login AND auth_mode='ldap';";
-	$res=mysql_query($sql);
-	$nb_resp_ldap=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_resp_ldap=mysqli_num_rows($res);
 	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.statut='responsable' AND rp.login=u.login AND auth_mode='gepi';";
-	$res=mysql_query($sql);
-	$nb_resp_gepi=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_resp_gepi=mysqli_num_rows($res);
 
 	echo "<p><em>NOTES&nbsp;:</em></p>
 <ul>
@@ -1708,7 +1708,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		echo "</p>\n";
 
 		$sql="TRUNCATE tempo2_sso;";
-		$menage=mysql_query($sql);
+		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom à rechercher...</p>
 <form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -1767,8 +1767,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		//$tab_login_associe_a_un_guid=array();
 		$tab_guid_associe_a_un_login=array();
 		$sql="SELECT u.statut, u.nom, u.prenom, stc.* FROM sso_table_correspondance stc, utilisateurs u WHERE stc.login_gepi=u.login;";
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			//$tab_login_associe_a_un_guid[$lig->login_sso]['login_gepi']=$lig->login_gepi;
 			//$tab_login_associe_a_un_guid[$lig->login_sso]['info']=$lig->nom." ".$lig->prenom." (".$lig->statut.")";
 
@@ -1795,9 +1795,9 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					// Juste stocker ce qui est déjà associé et l'afficher dans un 2è tableau.
 					// Pouvoir supprimer une association du 2è tableau (ou voir dans mode=consult_eleves)
 
-					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[0])."';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)>0) {
+					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
 					}
 					elseif((!isset($_POST['exclure_classes_anormales']))||(!preg_match("/BASE20/", $tab[4]))) {
@@ -1832,15 +1832,15 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 
 						// Recherche dans la table eleves de personnes pouvant correspondre à la ligne courante du CSV.
 						if($naissance!="") {
-							$sql="SELECT * FROM eleves WHERE nom='".mysql_real_escape_string($tab[1])."' AND prenom='".mysql_real_escape_string($tab[2])."' AND naissance='".formate_date2($naissance, "jj/mm/aaaa", "aaaammjj")."'";
+							$sql="SELECT * FROM eleves WHERE nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND naissance='".formate_date2($naissance, "jj/mm/aaaa", "aaaammjj")."'";
 						}
 						else {
-							$sql="SELECT * FROM eleves WHERE nom='".mysql_real_escape_string($tab[1])."' AND prenom='".mysql_real_escape_string($tab[2])."' ORDER BY naissance;";
+							$sql="SELECT * FROM eleves WHERE nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' ORDER BY naissance;";
 						}
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==1) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==1) {
 							// Un seul élève correspond
-							$lig=mysql_fetch_object($res);
+							$lig=mysqli_fetch_object($res);
 
 							echo "
 		<td title=\"$lig->nom $lig->prenom ".formate_date($lig->naissance)."\">
@@ -1883,7 +1883,7 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							// Plusieurs élèves correspondent
 							// Il va falloir choisir
 							$chaine_options="";
-							while($lig=mysql_fetch_object($res)) {
+							while($lig=mysqli_fetch_object($res)) {
 								$chaine_options.="				<option value=\"$lig->login\"";
 								// 20130912
 								if(array_key_exists($lig->login, $tab_guid_associe_a_un_login)) {
@@ -1955,8 +1955,8 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							}
 						}
 
-						$sql="INSERT INTO tempo2_sso SET col1='$cpt', col2='".mysql_real_escape_string($ligne)."';";
-						$insert=mysql_query($sql);
+						$sql="INSERT INTO tempo2_sso SET col1='$cpt', col2='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $ligne) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$insert) {
 							echo "<span style='color:red'>ERREUR</span>";
 						}
@@ -2075,8 +2075,8 @@ if($mode=="consult_eleves") {
 ";
 
 	$sql="SELECT e.*, s.* FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login ORDER BY e.nom, e.prenom";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucun rapprochement élève n'est enregistré.</p>\n";
 
 		require("../lib/footer.inc.php");
@@ -2085,7 +2085,7 @@ if($mode=="consult_eleves") {
 
 	echo "
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
-	<p>Les rapprochements enregistrés (".mysql_num_rows($res).") sont les suivants&nbsp;:</p>
+	<p>Les rapprochements enregistrés (".mysqli_num_rows($res).") sont les suivants&nbsp;:</p>
 	".add_token_field()."
 	<input type='hidden' name='mode' value='consult_eleves' />
 	<input type='hidden' name='temoin_suhosin_1' value='eleve' />
@@ -2118,7 +2118,7 @@ if($mode=="consult_eleves") {
 
 	$cpt=0;
 	$alt=1;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$tab_classe=get_class_from_ele_login($lig->login);
 		$classe=isset($tab_classe['liste_nbsp']) ? $tab_classe['liste_nbsp'] : "";
 
@@ -2130,14 +2130,14 @@ if($mode=="consult_eleves") {
 			<td><label for='suppr_$cpt'>$lig->login</label></td>
 			<td>";
 		$sql="SELECT auth_mode, etat FROM utilisateurs WHERE login='".$lig->login."' AND statut='eleve';";
-		$test_u=mysql_query($sql);
-		if(mysql_num_rows($test_u)==0) {
+		$test_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test_u)==0) {
 			echo "<a href='../utilisateurs/create_eleve.php?filtrage=Afficher&amp;critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."&amp;afficher_tous_les_eleves=n' title='Pas de compte utilisateur dans Gepi pour cet élève.
 Créer le compte?' target='_blank'>-</a>";
 		}
 		else {
 			echo "<label for='suppr_$cpt'>";
-			$lig_u=mysql_fetch_object($test_u);
+			$lig_u=mysqli_fetch_object($test_u);
 			if($lig_u->etat=='actif') {
 				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' /></div>\n";
 			}
@@ -2295,10 +2295,10 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		}
 
 		$sql="TRUNCATE tempo2_sso;";
-		$menage=mysql_query($sql);
+		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-		$sql="INSERT INTO tempo2_sso SET col1='Ligne_entete', col2='".mysql_real_escape_string($ligne_entete)."';";
-		$insert=mysql_query($sql);
+		$sql="INSERT INTO tempo2_sso SET col1='Ligne_entete', col2='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $ligne_entete) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'resp_pers'","","<p>Saisir une portion du nom à rechercher...</p>
 <form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -2359,8 +2359,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		//$tab_login_associe_a_un_guid=array();
 		$tab_guid_associe_a_un_login=array();
 		$sql="SELECT u.statut, u.nom, u.prenom, stc.* FROM sso_table_correspondance stc, utilisateurs u WHERE stc.login_gepi=u.login;";
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			//$tab_login_associe_a_un_guid[$lig->login_sso]['login_gepi']=$lig->login_gepi;
 			//$tab_login_associe_a_un_guid[$lig->login_sso]['info']=$lig->nom." ".$lig->prenom." (".$lig->statut.")";
 
@@ -2388,9 +2388,9 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					// Juste stocker ce qui est déjà associé et l'afficher dans un 2è tableau.
 					// Pouvoir supprimer une association du 2è tableau (ou voir dans mode=consult_eleves)
 
-					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[$tabindice['Guid']])."';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)>0) {
+					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[$tabindice['Guid']]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
 					}
 					else {
@@ -2453,15 +2453,15 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 
 						$chaine="";
 						if($guid_enfant1!="") {
-							$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant1)."'";
+							$chaine.="s.login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_enfant1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 						}
 						if($guid_enfant2!="") {
 							if($chaine!="") {$chaine.=" OR ";}
-							$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant2)."'";
+							$chaine.="s.login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_enfant2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 						}
 						if($guid_enfant3!="") {
 							if($chaine!="") {$chaine.=" OR ";}
-							$chaine.="s.login_sso='".mysql_real_escape_string($guid_enfant3)."'";
+							$chaine.="s.login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $guid_enfant3) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 						}
 
 						$temoin_eleve_associe="n";
@@ -2472,21 +2472,21 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 						if($chaine!="") {
 							$sql="SELECT e.* FROM eleves e, sso_table_correspondance s WHERE ($chaine) AND e.login=s.login_gepi ORDER BY e.nom, e.prenom;";
 							echo_debug_itop("$sql<br />");
-							$res_ele=mysql_query($sql);
-							if(mysql_num_rows($res_ele)>0) {
+							$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($res_ele)>0) {
 								$temoin_eleve_associe="y";
 								$cpt_ele=0;
-								while($lig_ele=mysql_fetch_object($res_ele)) {
+								while($lig_ele=mysqli_fetch_object($res_ele)) {
 									if($cpt_ele>0) {echo "<br />";}
 									echo $lig_ele->nom." ".$lig_ele->prenom;
 									$tab_classe=get_class_from_ele_login($lig_ele->login);
 									if(isset($tab_classe['liste_nbsp'])) {echo " (<em>".$tab_classe['liste_nbsp']."</em>)";}
 
-									$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".mysql_real_escape_string($nom_courant)."' AND rp.prenom='".mysql_real_escape_string($prenom_courant)."' AND rp.login!='';";
+									$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $nom_courant) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND rp.prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $prenom_courant) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND rp.login!='';";
 									echo_debug_itop("$sql<br />");
-									$res_resp=mysql_query($sql);
-									if(mysql_num_rows($res_resp)>0) {
-										while($lig_resp=mysql_fetch_object($res_resp)) {
+									$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									if(mysqli_num_rows($res_resp)>0) {
+										while($lig_resp=mysqli_fetch_object($res_resp)) {
 											if(!in_array($lig_resp->login, $tab_resp_login)) {
 												$tab_resp_login[]=$lig_resp->login;
 												$tab_resp[$cpt_resp]['login']=$lig_resp->login;
@@ -2504,9 +2504,9 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 									}
 									else {
 										$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.login!='';";
-										$res_resp=mysql_query($sql);
-										if(mysql_num_rows($res_resp)>0) {
-											while($lig_resp=mysql_fetch_object($res_resp)) {
+										$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										if(mysqli_num_rows($res_resp)>0) {
+											while($lig_resp=mysqli_fetch_object($res_resp)) {
 												if(!in_array($lig_resp->login, $tab_resp_login)) {
 													$tab_resp_login[]=$lig_resp->login;
 													$tab_resp[$cpt_resp]['login']=$lig_resp->login;
@@ -2627,8 +2627,8 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 ";
 						}
 
-						$sql="INSERT INTO tempo2_sso SET col1='$cpt', col2='".mysql_real_escape_string($ligne)."';";
-						$insert=mysql_query($sql);
+						$sql="INSERT INTO tempo2_sso SET col1='$cpt', col2='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $ligne) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$insert) {
 							echo "<span style='color:red'>ERREUR</span>";
 						}
@@ -2761,8 +2761,8 @@ if($mode=="consult_responsables") {
 ";
 
 	$sql="SELECT rp.*, s.* FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login ORDER BY rp.nom, rp.prenom";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucun rapprochement élève n'est enregistré.</p>\n";
 
 		require("../lib/footer.inc.php");
@@ -2771,7 +2771,7 @@ if($mode=="consult_responsables") {
 
 	echo "
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
-	<p>Les rapprochements enregistrés (".mysql_num_rows($res).") sont les suivants&nbsp;:</p>
+	<p>Les rapprochements enregistrés (".mysqli_num_rows($res).") sont les suivants&nbsp;:</p>
 	".add_token_field()."
 	<input type='hidden' name='mode' value='consult_responsables' />
 	<input type='hidden' name='temoin_suhosin_1' value='responsable' />
@@ -2804,7 +2804,7 @@ if($mode=="consult_responsables") {
 
 	$cpt=0;
 	$alt=1;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$tab_ele=get_enfants_from_resp_login($lig->login, 'avec_classe');
 		$chaine_ele="";
 		for($loop=1;$loop<count($tab_ele);$loop+=2) {
@@ -2822,12 +2822,12 @@ if($mode=="consult_responsables") {
 			<td><label for='suppr_$cpt'>$lig->login</label></td>
 			<td><label for='suppr_$cpt'>";
 		$sql="SELECT auth_mode, etat FROM utilisateurs WHERE login='".$lig->login."' AND statut='responsable';";
-		$test_u=mysql_query($sql);
-		if(mysql_num_rows($test_u)==0) {
+		$test_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test_u)==0) {
 			echo "<span title='Pas de compte utilisateur pour ce responsable.'>-</span>";
 		}
 		else {
-			$lig_u=mysql_fetch_object($test_u);
+			$lig_u=mysqli_fetch_object($test_u);
 			if($lig_u->etat=='actif') {
 				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' /></div>\n";
 			}
@@ -2951,7 +2951,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		echo "</p>\n";
 
 		$sql="TRUNCATE tempo2_sso;";
-		$menage=mysql_query($sql);
+		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'utilisateurs'","","<p>Saisir une portion du nom à rechercher...</p>
 <form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -3019,9 +3019,9 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 				$tab=explode(";", ensure_utf8($ligne));
 				if(!preg_match("/^Guid;/i", trim($ligne))) {
 
-					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysql_real_escape_string($tab[0])."';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)>0) {
+					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
 					}
 					else {
@@ -3050,11 +3050,11 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[2]."</span></label></td>
 		<td><label for='ligne_$cpt'>".$tab[3]."</label></td>";
 
-						$sql="SELECT * FROM utilisateurs WHERE nom='".mysql_real_escape_string($tab[1])."' AND prenom='".mysql_real_escape_string($tab[2])."' AND statut!='eleve' AND statut!='responsable' ORDER BY statut;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==1) {
+						$sql="SELECT * FROM utilisateurs WHERE nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND statut!='eleve' AND statut!='responsable' ORDER BY statut;";
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)==1) {
 							// Un seul personnel correspond
-							$lig=mysql_fetch_object($res);
+							$lig=mysqli_fetch_object($res);
 
 							echo "
 		<td title=\"$lig->nom $lig->prenom ($lig->statut)\">
@@ -3079,7 +3079,7 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							// Plusieurs personnels correspondent
 							// Il va falloir choisir
 							$chaine_options="";
-							while($lig=mysql_fetch_object($res)) {
+							while($lig=mysqli_fetch_object($res)) {
 								$chaine_options.="				<option value=\"$lig->login\">$lig->nom $lig->prenom (".$lig->statut.")";
 								$chaine_options.="</option>\n";
 							}
@@ -3143,8 +3143,8 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							}
 						}
 
-						$sql="INSERT INTO tempo2_sso SET col1='$cpt', col2='".mysql_real_escape_string($ligne)."';";
-						$insert=mysql_query($sql);
+						$sql="INSERT INTO tempo2_sso SET col1='$cpt', col2='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $ligne) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$insert) {
 							echo "<span style='color:red'>ERREUR</span>";
 						}
@@ -3264,8 +3264,8 @@ if($mode=="consult_personnels") {
 ";
 
 	$sql="SELECT u.*, s.* FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable' ORDER BY u.nom, u.prenom";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucun rapprochement de personnel n'est enregistré.</p>\n";
 
 		require("../lib/footer.inc.php");
@@ -3274,7 +3274,7 @@ if($mode=="consult_personnels") {
 
 	echo "
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
-	<p>Les rapprochements enregistrés (".mysql_num_rows($res).") sont les suivants&nbsp;:</p>
+	<p>Les rapprochements enregistrés (".mysqli_num_rows($res).") sont les suivants&nbsp;:</p>
 	".add_token_field()."
 	<input type='hidden' name='mode' value='consult_personnels' />
 	<input type='hidden' name='temoin_suhosin_1' value='personnel' />
@@ -3302,7 +3302,7 @@ if($mode=="consult_personnels") {
 
 	$cpt=0;
 	$alt=1;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$alt=$alt*(-1);
 		echo "
 		<tr class='lig$alt white_hover'>
@@ -3311,12 +3311,12 @@ if($mode=="consult_personnels") {
 			<td><label for='suppr_$cpt'>$lig->login</label></td>
 			<td><label for='suppr_$cpt'>";
 		$sql="SELECT auth_mode, etat FROM utilisateurs WHERE login='".$lig->login."';";
-		$test_u=mysql_query($sql);
-		if(mysql_num_rows($test_u)==0) {
+		$test_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test_u)==0) {
 			echo "<span title='Pas de compte utilisateur pour ce personnel.' style='color:red'>???</span>";
 		}
 		else {
-			$lig_u=mysql_fetch_object($test_u);
+			$lig_u=mysqli_fetch_object($test_u);
 			if($lig_u->etat=='actif') {
 				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' /></div>\n";
 			}
@@ -3395,9 +3395,9 @@ if($mode=="publipostage_eleves") {
 
 		// Liste des classes avec élève:
 		$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
-		$call_classes=mysql_query($sql);
+		$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-		$nb_classes=mysql_num_rows($call_classes);
+		$nb_classes=mysqli_num_rows($call_classes);
 		if($nb_classes==0){
 			echo "<p>Aucune classe avec élève affecté n'a été trouvée.</p>\n";
 			require("../lib/footer.inc.php");
@@ -3424,7 +3424,7 @@ if($mode=="publipostage_eleves") {
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td align='left'>\n";
 
-		while($lig_clas=mysql_fetch_object($call_classes)) {
+		while($lig_clas=mysqli_fetch_object($call_classes)) {
 
 			//affichage 2 colonnes
 			if(($cpt>0)&&(round($cpt/$nb_classes_par_colonne)==$cpt/$nb_classes_par_colonne)){
@@ -3721,9 +3721,9 @@ if($mode=="publipostage_responsables") {
 
 		// Liste des classes avec élève:
 		$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
-		$call_classes=mysql_query($sql);
+		$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-		$nb_classes=mysql_num_rows($call_classes);
+		$nb_classes=mysqli_num_rows($call_classes);
 		if($nb_classes==0){
 			echo "<p>Aucune classe avec élève affecté n'a été trouvée.</p>\n";
 			require("../lib/footer.inc.php");
@@ -3750,7 +3750,7 @@ if($mode=="publipostage_responsables") {
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td align='left'>\n";
 
-		while($lig_clas=mysql_fetch_object($call_classes)) {
+		while($lig_clas=mysqli_fetch_object($call_classes)) {
 
 			//affichage 2 colonnes
 			if(($cpt>0)&&(round($cpt/$nb_classes_par_colonne)==$cpt/$nb_classes_par_colonne)){
@@ -4281,7 +4281,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 
 		$sql="TRUNCATE tempo4;";
-		$menage=mysql_query($sql);
+		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 		$cpt=0;
 		$cpt2=0;
@@ -4368,7 +4368,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					$tab_classe_parent[$classe_courante][$cpt]['cpt_tempo4']=$cpt2;
 
 					$sql="INSERT INTO tempo4 SET col1='$cpt2', col2='".$tab[$tabindice['Login']]."', col3=MD5('".$tab[$tabindice['Mot de passe']]."');";
-					$insert=mysql_query($sql);
+					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 					$cpt2++;
 				}
@@ -4421,9 +4421,9 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 			*/
 			for($loop=0;$loop<count($tab_parent);$loop++) {
 				$rowspan="";
-				$sql="SELECT * FROM resp_pers WHERE nom='".mysql_real_escape_string($tab_parent[$loop]['nom'])."' AND prenom='".mysql_real_escape_string($tab_parent[$loop]['prenom'])."';";
-				$res_resp=mysql_query($sql);
-				$nb_resp=mysql_num_rows($res_resp);
+				$sql="SELECT * FROM resp_pers WHERE nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab_parent[$loop]['nom']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab_parent[$loop]['prenom']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+				$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$nb_resp=mysqli_num_rows($res_resp);
 				if($nb_resp>1) {
 					$rowspan=" rowspan='".($nb_resp+1)."'";
 				}
@@ -4449,7 +4449,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 				//==============================================================
 				elseif($nb_resp==1) {
 					// Un seul nom prénom identique trouvé
-					$lig_resp=mysql_fetch_object($res_resp);
+					$lig_resp=mysqli_fetch_object($res_resp);
 
 					if($lig_resp->login==$tab_parent[$loop]['login_ent']) {
 						$nb_comptes_login_deja_ok++;
@@ -4517,7 +4517,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 	</tr>";
 					$cpt++;
 					$cpt_resp=0;
-					while($lig_resp=mysql_fetch_object($res_resp)) {
+					while($lig_resp=mysqli_fetch_object($res_resp)) {
 						/*
 						if($cpt_resp>0) {
 							echo "
@@ -4642,9 +4642,9 @@ if($mode=="envoi_mail_logins_mdp") {
 
 		// Liste des classes avec élève:
 		$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
-		$call_classes=mysql_query($sql);
+		$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-		$nb_classes=mysql_num_rows($call_classes);
+		$nb_classes=mysqli_num_rows($call_classes);
 		if($nb_classes==0){
 			echo "<p>Aucune classe avec élève affecté n'a été trouvée.</p>\n";
 			require("../lib/footer.inc.php");
@@ -4671,7 +4671,7 @@ if($mode=="envoi_mail_logins_mdp") {
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td align='left'>\n";
 
-		while($lig_clas=mysql_fetch_object($call_classes)) {
+		while($lig_clas=mysqli_fetch_object($call_classes)) {
 
 			//affichage 2 colonnes
 			if(($cpt>0)&&(round($cpt/$nb_classes_par_colonne)==$cpt/$nb_classes_par_colonne)){
@@ -4811,8 +4811,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 						$tab_classe_parent[$tab[11]][$cpt]['resp_de']=$tab[9]." ".$tab[10]." (".$tab[11].")";
 
 						$sql="SELECT mel FROM resp_pers WHERE login='".$tab[2]."' AND mel LIKE '%@%';";
-						$res_mel=mysql_query($sql);
-						if(mysql_num_rows($res_mel)>0) {
+						$res_mel=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res_mel)>0) {
 							$mel=mysql_result($res_mel, 0, 'mel');
 							if(check_mail($mel, "", "y")) {
 								$tab_classe_parent[$tab[11]][$cpt]['email_gepi']=$mel;

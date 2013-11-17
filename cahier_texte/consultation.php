@@ -76,7 +76,7 @@ unset($selected_eleve);
 // modification Régis : traité "eleve" au cas où le javascript est désactivé
 $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] :(isset($_GET["login_eleve"]) ? $_GET["login_eleve"] :(isset($_POST['eleve']) ? mb_substr(strstr($_POST['eleve'],"login_eleve="),12) : (isset($_GET["eleve"]) ? mb_substr(strstr($_GET["eleve"],"login_eleve="),12) :false)));
 if ($login_eleve) {
-	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE (login = '" . $login_eleve . "')"));
+	$selected_eleve = mysqli_fetch_object(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom FROM eleves e WHERE (login = '" . $login_eleve . "')"));
 } else {
 	$selected_eleve = false;
 }
@@ -86,7 +86,7 @@ if ($_SESSION['statut'] == 'eleve') {
 	if ($selected_eleve) {
 		if (my_strtolower($selected_eleve->login) != my_strtolower($_SESSION['login'])) {tentative_intrusion(2, "Tentative d'un élève d'accéder au cahier de textes d'un autre élève.");}
 	}
-	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
+	$selected_eleve = mysqli_fetch_object(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
 } elseif ($_SESSION['statut'] == "responsable") {
 	$sql="(SELECT e.login, e.nom, e.prenom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
@@ -107,22 +107,22 @@ if ($_SESSION['statut'] == 'eleve') {
 	}
 	$sql.=";";
 	//echo "$sql<br />";
-	$get_eleves = mysql_query($sql);
+	$get_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-	if (mysql_num_rows($get_eleves) == 1) {
+	if (mysqli_num_rows($get_eleves) == 1) {
 			// Un seul élève associé : on initialise tout de suite la variable $selected_eleve
 			// Cela signifie entre autre que l'on ne prend pas en compte $login_eleve, fermant ainsi une
 			// potentielle faille de sécurité.
-		$selected_eleve = mysql_fetch_object($get_eleves);
-	} elseif (mysql_num_rows($get_eleves) == 0) {
+		$selected_eleve = mysqli_fetch_object($get_eleves);
+	} elseif (mysqli_num_rows($get_eleves) == 0) {
 		$selected_eleve = false;
-	} elseif (mysql_num_rows($get_eleves) > 1 and $selected_eleve) {
+	} elseif (mysqli_num_rows($get_eleves) > 1 and $selected_eleve) {
 		// Si on est là, c'est que la variable $login_eleve a été utilisée pour
 		// générer $selected_eleve
 		// On va vérifier que l'élève ainsi sélectionné fait bien partie des élèves
 		// associés à l'utilisateur au statut 'responsable'
 		$ok = false;
-		while($test = mysql_fetch_object($get_eleves)) {
+		while($test = mysqli_fetch_object($get_eleves)) {
 			if (my_strtolower($test->login) == my_strtolower($selected_eleve->login)) {$ok = true;}
 		}
 		if (!$ok) {
@@ -147,8 +147,8 @@ if ($_SESSION['statut'] == 'eleve') {
 		}
 		$sql.=";";
 		//echo "$sql<br />";
-		$verif_ele=mysql_query($sql);
-		if(mysql_num_rows($verif_ele)==0) {
+		$verif_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($verif_ele)==0) {
 			tentative_intrusion(2, "Tentative d'accès par un parent au cahier de textes d'un autre élève que le ou les sien(s).");
 			header("Location: ../logout.php?auto=1");
 			die();
@@ -159,7 +159,7 @@ if ($_SESSION['statut'] == 'eleve') {
 $selected_eleve_login = $selected_eleve ? $selected_eleve->login : "";
 
 // Nom complet de la classe
-$appel_classe = mysql_query("SELECT classe FROM classes WHERE id='$id_classe'");
+$appel_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id='$id_classe'");
 $classe_nom = @mysql_result($appel_classe, 0, "classe");
 // Nom complet de la matière
 $matiere_nom = $current_group["matiere"]["nom_complet"];
@@ -203,9 +203,9 @@ if(($selected_eleve_login!='')&&($CDTPeutPointerTravailFait)) {
 if($selected_eleve_login!=""){
 	$sql="SELECT * FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC";
 	//echo "$sql<br />\n";
-	$res_ele_classe=mysql_query($sql);
-	if(mysql_num_rows($res_ele_classe)>0){
-		$ligtmp=mysql_fetch_object($res_ele_classe);
+	$res_ele_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_ele_classe)>0){
+		$ligtmp=mysqli_fetch_object($res_ele_classe);
 		//echo "<p>id_classe=$ligtmp->id_classe et periode=$ligtmp->periode</p>";
 		$selected_eleve_classe=$ligtmp->id_classe;
 	}
@@ -301,8 +301,8 @@ echo "<hr />\n";
 
 // Modification Regis : mise en page par CSS des devoirs à faire si la matière n'est pas sélectionnée
 
-$test_cahier_texte = mysql_query("SELECT contenu FROM ct_entry WHERE (id_groupe='$id_groupe')");
-$nb_test = mysql_num_rows($test_cahier_texte);
+$test_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu FROM ct_entry WHERE (id_groupe='$id_groupe')");
+$nb_test = mysqli_num_rows($test_cahier_texte);
 $delai = getSettingValue("delai_devoirs");
 //Affichage des devoirs globaux s'il n'y a pas de notices dans ct_entry à afficher
 
@@ -331,7 +331,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
         $jour = mktime(0, 0, 0, date('m',$aujourdhui), (date('d',$aujourdhui) + $i), date('Y',$aujourdhui) );
         $jour_suivant=$jour+24*3600;
         if (is_numeric($id_classe) AND $id_classe > 0) {
-	        $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	        $appel_devoirs_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
 	            "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jc WHERE (" .
 	            "ct.id_groupe = jc.id_groupe and " .
 	            "g.id = jc.id_groupe and " .
@@ -381,9 +381,9 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 	            )";
 
 			//echo "$sql<br />";
-			$appel_devoirs_cahier_texte = mysql_query($sql);
+			$appel_devoirs_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
         }
-        $nb_devoirs_cahier_texte = mysql_num_rows($appel_devoirs_cahier_texte);
+        $nb_devoirs_cahier_texte = mysqli_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
         if ($nb_devoirs_cahier_texte != 0) {
             $nb_dev++;
@@ -509,7 +509,7 @@ echo "<div class=\"centre_cont_texte\">\n";
         // On regarde pour chaque jour, s'il y a des devoirs dans à faire
           if ($selected_eleve) {
 // On détermine la période active, pour ne pas avoir de duplication des entrées
-	         $appel_devoirs_cahier_texte = mysql_query("SELECT DISTINCT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	         $appel_devoirs_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
@@ -524,7 +524,7 @@ echo "<div class=\"centre_cont_texte\">\n";
 	             ct.date_ct < '$jour_suivant'
 	            )");
           } else {
-	         $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	         $appel_devoirs_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
 	             "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jgc WHERE (" .
 	             "ct.id_groupe = jgc.id_groupe and " .
 	             "g.id = jgc.id_groupe and " .
@@ -534,7 +534,7 @@ echo "<div class=\"centre_cont_texte\">\n";
 	             ct.date_ct < '$jour_suivant'
 	            )");
           }
-          $nb_devoirs_cahier_texte = mysql_num_rows($appel_devoirs_cahier_texte);
+          $nb_devoirs_cahier_texte = mysqli_num_rows($appel_devoirs_cahier_texte);
           $ind = 0;
           if ($nb_devoirs_cahier_texte != 0) {
             $nb_dev++;
@@ -603,9 +603,9 @@ echo "<div class=\"centre_cont_texte\">\n";
 // ---------------------------- Fin Affichage des travaux à faire (div div /div) ---
 
 // ---------------------------- Affichage des informations générales (div div div) ---
-    $appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
+    $appel_info_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 
-    $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
+    $nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
     $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
     $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 // documents joints
@@ -720,8 +720,8 @@ $td = date("d",$i);
               and date_ct != ''
               and date_ct >= '".getSettingValue("begin_bookings")."')
               ORDER BY date_ct DESC, heure_entry DESC limit 10";
-          $res_notices = mysql_query($req_notices);
-          $notice = mysql_fetch_object($res_notices);
+          $res_notices = mysqli_query($GLOBALS["___mysqli_ston"], $req_notices);
+          $notice = mysqli_fetch_object($res_notices);
 
           $req_devoirs =
               "select 't' type, contenu, date_ct, id_ct
@@ -733,8 +733,8 @@ $td = date("d",$i);
               and date_ct >= '".getSettingValue("begin_bookings")."'
               and date_ct <= '".getSettingValue("end_bookings")."'
               ) order by date_ct DESC limit 10";
-          $res_devoirs = mysql_query($req_devoirs);
-          $devoir = mysql_fetch_object($res_devoirs);
+          $res_devoirs = mysqli_query($GLOBALS["___mysqli_ston"], $req_devoirs);
+          $devoir = mysqli_fetch_object($res_devoirs);
 
           // Boucle d'affichage des notices dans la colonne de gauche
           $date_ct_old = -1;
@@ -743,11 +743,11 @@ $td = date("d",$i);
             if ($notice && (!$devoir || $notice->date_ct >= $devoir->date_ct)) {
                 // Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
                 $not_dev = $notice;
-                $notice = mysql_fetch_object($res_notices);
+                $notice = mysqli_fetch_object($res_notices);
               } elseif($devoir) {
                 // Plus de notices et toujours un devoir, ou devoir plus récent
                 $not_dev = $devoir;
-                $devoir = mysql_fetch_object($res_devoirs);
+                $devoir = mysqli_fetch_object($res_devoirs);
               } else {
                 // Plus rien à afficher, on sort de la boucle
                 break;

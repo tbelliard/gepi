@@ -162,7 +162,7 @@ Il pourra modifier ce paramétrage dans<br />
 	else
 	    $query = "INSERT INTO ct_documents SET taille='$taille', emplacement='$dest_path', id_ct='$id_ct', titre='".corriger_caracteres($doc_name[$cpt_doc])."'";
         sql_query($query);
-        $id_document = mysql_insert_id();
+        $id_document = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
         $nouveau = true;
     } else {
 	if (isset($edit_devoir))

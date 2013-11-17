@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 
 // ajout des droits pour scolarité en 1.6.3
 $sql = "UPDATE `gepi`.`droits` SET `scolarite` = 'V' WHERE `droits`.`id` = '/mod_abs2/export_stat.php';";
-$resp=mysql_query($sql);
+$resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 //INSERT INTO droits SET id='/mod_abs2/export_stat.php',administrateur='V',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Exports statistiques',statut='';
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -112,15 +112,15 @@ if($extraire=="y") {
 	// Il faudrait un champ eleves.date_entree pour repérer les élèves arrivés en cours d'année.
 	//$tab_stat['effectif_total']=-1;
 	$sql="SELECT DISTINCT e.nom,e.login,e.date_sortie FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND (date_sortie IS NULL OR date_sortie>'".$annee_extract."-".$mois."-01 00:00:00');";
-	$res=mysql_query($sql);
-	$tab_stat['effectif_total']=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$tab_stat['effectif_total']=mysqli_num_rows($res);
 
 	// Recherche des mef associés à des élèves:
 	$cpt_mef=0;
 	$sql="SELECT * FROM mef WHERE mef_code IN (SELECT DISTINCT mef_code FROM eleves) ORDER BY libelle_court, libelle_long;";
-	$res_mef=mysql_query($sql);
+	$res_mef=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	$cpt_mef=0;
-	while($lig_mef=mysql_fetch_object($res_mef)) {
+	while($lig_mef=mysqli_fetch_object($res_mef)) {
 		$tab_stat['mef'][$cpt_mef]['mef_code']=$lig_mef->mef_code;
 		$tab_stat['mef'][$cpt_mef]['libelle_court']=$lig_mef->libelle_court;
 		$tab_stat['mef'][$cpt_mef]['libelle_long']=$lig_mef->libelle_long;
@@ -136,8 +136,8 @@ if($extraire=="y") {
 		 a.eleve_id=e.id_eleve AND 
 		 e.mef_code IN (SELECT DISTINCT mef_code FROM mef WHERE mef_rattachement='".$lig_mef->mef_code."') 
 		 GROUP BY a.eleve_id HAVING COUNT(a.non_justifiee)>=4;";
-		$res=mysql_query($sql);
-		$tab_stat['mef'][$cpt_mef]['nj_sup_egal_4']=mysql_num_rows($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$tab_stat['mef'][$cpt_mef]['nj_sup_egal_4']=mysqli_num_rows($res);
 
 		// Aucun motif (i.e. non valable)
 		// Comment récupérer ça?
@@ -152,8 +152,8 @@ if($extraire=="y") {
 		 a.eleve_id=e.id_eleve AND 
 		 e.mef_code IN (SELECT DISTINCT mef_code FROM mef WHERE mef_rattachement='".$lig_mef->mef_code."') 
 		 GROUP BY a.eleve_id HAVING COUNT(a.non_justifiee)>=4 and COUNT(a.non_justifiee)<=10;";
-		$res=mysql_query($sql);
-		$tab_stat['mef'][$cpt_mef]['nj_4_a_10']=mysql_num_rows($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$tab_stat['mef'][$cpt_mef]['nj_4_a_10']=mysqli_num_rows($res);
 
 		// Aucun motif (i.e. non valable)
 		// Comment récupérer ça?
@@ -168,8 +168,8 @@ if($extraire=="y") {
 		 a.eleve_id=e.id_eleve AND 
 		 e.mef_code IN (SELECT DISTINCT mef_code FROM mef WHERE mef_rattachement='".$lig_mef->mef_code."') 
 		 GROUP BY a.eleve_id HAVING COUNT(a.non_justifiee)>=11;";
-		$res=mysql_query($sql);
-		$tab_stat['mef'][$cpt_mef]['nj_sup_egal_11']=mysql_num_rows($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$tab_stat['mef'][$cpt_mef]['nj_sup_egal_11']=mysqli_num_rows($res);
 
 		// Aucun motif (i.e. non valable)
 		// Comment récupérer ça?

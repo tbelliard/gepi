@@ -94,39 +94,39 @@ nature VARCHAR( 255 ) NOT NULL ,
 description TEXT NOT NULL,
 etat VARCHAR( 20 ) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$creation=mysql_query($sql);
+$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 // Avec cette table on ne gère pas un historique des modifications de déclaration...
 
-$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'id_lieu'"));
+$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_incidents LIKE 'id_lieu'"));
 if ($test1 == 0) {
-	$query = mysql_query("ALTER TABLE s_incidents ADD id_lieu INT( 11 ) NOT NULL AFTER heure;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE s_incidents ADD id_lieu INT( 11 ) NOT NULL AFTER heure;");
 }
 
 $sql="SHOW TABLES LIKE 's_qualites';";
-$test_table=mysql_query($sql);
-if(mysql_num_rows($test_table)==0) {
+$test_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test_table)==0) {
 	$sql="CREATE TABLE IF NOT EXISTS s_qualites (
 	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	qualite VARCHAR( 50 ) NOT NULL
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$creation=mysql_query($sql);
+	$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	if($creation) {
 		$tab_qualite=array("Responsable","Victime","Témoin","Autre");
 		for($loop=0;$loop<count($tab_qualite);$loop++) {
 			$sql="SELECT 1=1 FROM s_qualites WHERE qualite='".$tab_qualite[$loop]."';";
 			//echo "$sql<br />";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO s_qualites SET qualite='".$tab_qualite[$loop]."';";
-				$insert=mysql_query($sql);
+				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			}
 		}
 	}
 }
 
 $sql="SHOW TABLES LIKE 's_types_sanctions2';";
-$test_table=mysql_query($sql);
-if(mysql_num_rows($test_table)==0) {
+$test_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test_table)==0) {
 	echo "<p style='color:red'>Une mise à jour de la base est requise !</p>\n";
 	/*
 	$sql="CREATE TABLE IF NOT EXISTS s_types_sanctions2 (
@@ -157,28 +157,28 @@ id_sanction INT( 11 ) NOT NULL ,
 id_nature INT( 11 ) NOT NULL ,
 description TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$creation=mysql_query($sql);
+$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="SHOW TABLES LIKE 's_mesures';";
-$test_table=mysql_query($sql);
-if(mysql_num_rows($test_table)==0) {
+$test_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test_table)==0) {
 	$sql="CREATE TABLE IF NOT EXISTS s_mesures (
 	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	type ENUM('prise','demandee') ,
 	mesure VARCHAR( 50 ) NOT NULL ,
 	commentaire TEXT NOT NULL
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$creation=mysql_query($sql);
+	$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	if($creation) {
 		// Mesures prises
 		$tab_mesure=array("Travail supplémentaire","Mot dans le carnet de liaison");
 		for($loop=0;$loop<count($tab_mesure);$loop++) {
 			$sql="SELECT 1=1 FROM s_mesures WHERE mesure='".$tab_mesure[$loop]."';";
 			//echo "$sql<br />";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO s_mesures SET mesure='".$tab_mesure[$loop]."', type='prise';";
-				$insert=mysql_query($sql);
+				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			}
 		}
 	
@@ -187,18 +187,18 @@ if(mysql_num_rows($test_table)==0) {
 		for($loop=0;$loop<count($tab_mesure);$loop++) {
 			$sql="SELECT 1=1 FROM s_mesures WHERE mesure='".$tab_mesure[$loop]."';";
 			//echo "$sql<br />";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO s_mesures SET mesure='".$tab_mesure[$loop]."', type='demandee';";
-				$insert=mysql_query($sql);
+				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			}
 		}
 	}
 }
 
-$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_mesures LIKE 'commentaire'"));
+$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_mesures LIKE 'commentaire'"));
 if ($test1 == 0) {
-	$query = mysql_query("ALTER TABLE s_mesures ADD commentaire TEXT NOT NULL AFTER mesure;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE s_mesures ADD commentaire TEXT NOT NULL AFTER mesure;");
 }
 
 $sql="CREATE TABLE IF NOT EXISTS s_traitement_incident (
@@ -208,25 +208,25 @@ login_ele VARCHAR( 50 ) NOT NULL ,
 login_u VARCHAR( 50 ) NOT NULL ,
 id_mesure INT( 11 ) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$creation=mysql_query($sql);
+$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="SHOW TABLES LIKE 's_lieux_incidents';";
-$test_table=mysql_query($sql);
-if(mysql_num_rows($test_table)==0) {
+$test_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test_table)==0) {
 	$sql="CREATE TABLE IF NOT EXISTS s_lieux_incidents (
 	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	lieu VARCHAR( 255 ) NOT NULL
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$creation=mysql_query($sql);
+	$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	if($creation) {
 		$tab_lieu=array("Classe","Couloir","Cour","Réfectoire","Autre");
 		for($loop=0;$loop<count($tab_lieu);$loop++) {
 			$sql="SELECT 1=1 FROM s_lieux_incidents WHERE lieu='".$tab_lieu[$loop]."';";
 			//echo "$sql<br />";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO s_lieux_incidents SET lieu='".$tab_lieu[$loop]."';";
-				$insert=mysql_query($sql);
+				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			}
 		}
 	}
@@ -240,11 +240,11 @@ statut VARCHAR( 50 ) NOT NULL ,
 qualite VARCHAR( 50 ) NOT NULL,
 avertie ENUM('N','O') NOT NULL DEFAULT 'N'
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$creation=mysql_query($sql);
+$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_protagonistes LIKE 'avertie'"));
+$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_protagonistes LIKE 'avertie'"));
 if ($test1 == 0) {
-	$query = mysql_query("ALTER TABLE s_protagonistes ADD avertie ENUM('N','O') NOT NULL DEFAULT 'N' AFTER qualite;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE s_protagonistes ADD avertie ENUM('N','O') NOT NULL DEFAULT 'N' AFTER qualite;");
 }
 
 $sql="CREATE TABLE IF NOT EXISTS s_sanctions (
@@ -256,7 +256,7 @@ id_nature_sanction INT(11),
 effectuee ENUM( 'N', 'O' ) NOT NULL ,
 id_incident INT( 11 ) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$creation=mysql_query($sql);
+$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS s_communication (
 id_communication INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -265,7 +265,7 @@ login VARCHAR( 50 ) NOT NULL ,
 nature VARCHAR( 255 ) NOT NULL ,
 description TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$creation=mysql_query($sql);
+$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS s_travail (
 id_travail INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -274,7 +274,7 @@ date_retour DATE NOT NULL ,
 heure_retour VARCHAR( 20 ) NOT NULL ,
 travail TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$creation=mysql_query($sql);
+$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS s_retenues (
 id_retenue INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -285,7 +285,7 @@ duree FLOAT NOT NULL ,
 travail TEXT NOT NULL ,
 lieu VARCHAR( 255 ) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$creation=mysql_query($sql);
+$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS s_exclusions (
 id_exclusion INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -297,14 +297,14 @@ heure_fin VARCHAR( 20 ) NOT NULL,
 travail TEXT NOT NULL ,
 lieu VARCHAR( 255 ) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$creation=mysql_query($sql);
+$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$creation=mysql_query($sql);
+$creation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'message_id';"));
+$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_incidents LIKE 'message_id';"));
 if ($test1 == 0) {
-	$query = mysql_query("ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL;");
 }
 
 // L'état effectué ou non d'une sanction est dans la table s_sanctions plutôt s_retenues ou s_travail parce qu'il est plus simple de taper sur s_sanctions plutôt que sur les deux tables s_retenues ou s_travail
@@ -612,9 +612,9 @@ if(($_SESSION['statut']=='administrateur')||
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
 	WHERE sp.id_incident IS NULL;";
 	//echo "$sql<br />";
-	$test=mysql_query($sql);
+	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
-	if(mysql_num_rows($test)>0) {
+	if(mysqli_num_rows($test)>0) {
 		$temoin = true;
 		/*
 		echo "<tr>\n";
@@ -639,9 +639,9 @@ if(($_SESSION['statut']=='administrateur')||
 // 20130610: Vérifier cette requête: Mettre LIMIT 1
 $sql="SELECT 1=1 FROM s_incidents si WHERE si.declarant='".$_SESSION['login']."' AND si.nature='' AND etat!='clos';";
 //echo "$sql<br />";
-$test=mysql_query($sql);
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 //echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
-$nb_incidents_incomplets=mysql_num_rows($test);
+$nb_incidents_incomplets=mysqli_num_rows($test);
 if($nb_incidents_incomplets>0) {
 
   $nouveauItem = new itemGeneral();
@@ -833,9 +833,9 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 	//$sql="SELECT 1=1 FROM s_protagonistes, s_incidents WHERE ((login='".$_SESSION['login']."')||(declarant='".$_SESSION['login']."'));";
 	$sql="(SELECT 1=1 FROM s_protagonistes WHERE login='".$_SESSION['login']."' LIMIT 1) UNION (SELECT 1=1 FROM s_incidents WHERE declarant='".$_SESSION['login']."' LIMIT 1);";
 	//echo "$sql<br />";
-	$test=mysql_query($sql);
+	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
-	if((mysql_num_rows($test)>0)) { //on a bien un prof ou statut autre comme déclarant ou un protagoniste
+	if((mysqli_num_rows($test)>0)) { //on a bien un prof ou statut autre comme déclarant ou un protagoniste
 	  /*
 		echo "<tr>\n";
 		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
@@ -862,7 +862,7 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 						  AND jep.professeur='".$_SESSION['login']."'
 						  LIMIT 1;";
 		//echo "$sql<br />";
-		$test=mysql_query($sql); // prof principal
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql); // prof principal
 		//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 		if (getSettingValue("visuDiscProfClasses")=='yes') {
 		  $sql1="SELECT 1=1	FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_eleves_classes jec, s_protagonistes sp
@@ -872,7 +872,7 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 		AND jgp.login = '".$_SESSION['login']."'
 		LIMIT 1;";
 		//echo "$sql<br />";
-		  $test1=mysql_query($sql1); // prof de la classe autorisé à voir
+		  $test1=mysqli_query($GLOBALS["___mysqli_ston"], $sql1); // prof de la classe autorisé à voir
 		//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 		}
 		if (getSettingValue("visuDiscProfGroupes")=='yes') {
@@ -882,13 +882,13 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 							AND jgp.login='".$_SESSION['login']."'
 							LIMIT 1;";
 			//echo "$sql<br />";
-		  $test2=mysql_query($sql2); // prof du groupe autorisé à voir
+		  $test2=mysqli_query($GLOBALS["___mysqli_ston"], $sql2); // prof du groupe autorisé à voir
 		//echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 		}
 		  $nouveauItem = new itemGeneral();
-		if ((mysql_num_rows($test)>0) ||
-				(getSettingValue("visuDiscProfClasses")=='yes' && mysql_num_rows($test1)>0) ||
-				(getSettingValue("visuDiscProfGroupes")=='yes' && mysql_num_rows($test2)>0)) { //Oui
+		if ((mysqli_num_rows($test)>0) ||
+				(getSettingValue("visuDiscProfClasses")=='yes' && mysqli_num_rows($test1)>0) ||
+				(getSettingValue("visuDiscProfGroupes")=='yes' && mysqli_num_rows($test2)>0)) { //Oui
 		  /*
 			echo "<tr>\n";
 			echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";

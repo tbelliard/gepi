@@ -51,14 +51,14 @@ $affiche_categories=isset($_GET['affiche_categories']) ? $_GET['affiche_categori
 
 if(isset($_GET['forcer_recalcul_rang'])) {
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC LIMIT 1;";
-	$res_per=mysql_query($sql);
-	if(mysql_num_rows($res_per)>0) {
-		$lig_per=mysql_fetch_object($res_per);
+	$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_per)>0) {
+		$lig_per=mysqli_fetch_object($res_per);
 		$recalcul_rang="";
 		for($i=0;$i<$lig_per->num_periode;$i++) {$recalcul_rang.="y";}
 		$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if(!$res) {
 			$msg="Erreur lors de la programmation du recalcul des rangs pour cette classe.";
 		}
@@ -75,21 +75,21 @@ if(isset($_GET['forcer_recalcul_rang'])) {
 // AJOUT: boireaus
 $chaine_options_classes="";
 $sql="SELECT id, classe FROM classes ORDER BY classe";
-$res_class_tmp=mysql_query($sql);
-if(mysql_num_rows($res_class_tmp)>0){
+$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_class_tmp)>0){
     $id_class_prec=0;
     $id_class_suiv=0;
     $temoin_tmp=0;
     $cpt_classe=0;
 	$num_classe=-1;
-    while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+    while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
         if($lig_class_tmp->id==$id_classe){
 			// Index de la classe dans les <option>
 			$num_classe=$cpt_classe;
 
 			$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
             $temoin_tmp=1;
-            if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+            if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
                 $id_class_suiv=$lig_class_tmp->id;
             }
@@ -118,9 +118,9 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 	$invisibilite_groupe[$tab_domaines[$loop]]=array();
 }
 $sql="SELECT jgv.* FROM j_groupes_classes jgc, j_groupes_visibilite jgv WHERE jgv.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe' AND jgv.visible='n';";
-$res_jgv=mysql_query($sql);
-if(mysql_num_rows($res_jgv)>0) {
-	while($lig_jgv=mysql_fetch_object($res_jgv)) {
+$res_jgv=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_jgv)>0) {
+	while($lig_jgv=mysqli_fetch_object($res_jgv)) {
 		$invisibilite_groupe[$lig_jgv->domaine][]=$lig_jgv->id_groupe;
 	}
 }
@@ -145,8 +145,8 @@ if (isset($_GET['ajouter_suffixes_noms_groupes'])) {
 
 		// Récup de la liste des élèves de la classe toutes périodes confondues
 		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe';";
-		$res_eff_classe=mysql_query($sql);
-		$eff_classe=mysql_num_rows($res_eff_classe);
+		$res_eff_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$eff_classe=mysqli_num_rows($res_eff_classe);
 
 		foreach ($groups as $group) {
 			if(isset($tab_grp_id_rech_homonyme[$group["description"]])) {
@@ -178,9 +178,9 @@ if (isset($_GET['ajouter_suffixes_noms_groupes'])) {
 			for($j=0;$j<count($tab_grp_id_rech_homonyme[$tab_grp_descr_homonyme[$i]]);$j++) {
 				$id_groupe_courant=$tab_grp_id_rech_homonyme[$tab_grp_descr_homonyme[$i]][$j];
 				$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='".$id_groupe_courant."';";
-				$res_eff=mysql_query($sql);
+				$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-				$eff=mysql_num_rows($res_eff);
+				$eff=mysqli_num_rows($res_eff);
 				if(!in_array($eff, $tab_eff)) {$tab_eff[]=$eff;}
 				if($eff>$max_eff) {
 					$max_eff=$eff;
@@ -214,13 +214,13 @@ if (isset($_GET['ajouter_suffixes_noms_groupes'])) {
 					$suffixe="_".$suffixe;
 				}
 
-				$sql="UPDATE groupes SET description='".mysql_real_escape_string($tab_grp_descr_homonyme[$i].$suffixe)."'";
+				$sql="UPDATE groupes SET description='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab_grp_descr_homonyme[$i].$suffixe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 				if($corriger_noms=="y") {
 					$nom_groupe_courant=$tab_grp_name[$id_groupe_courant];
-					$sql.=", name= '".mysql_real_escape_string($nom_groupe_courant.$suffixe)."'";
+					$sql.=", name= '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $nom_groupe_courant.$suffixe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 				}
 				$sql.=" WHERE id='".$id_groupe_courant."';";
-				$update=mysql_query($sql);
+				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				if(!$update) {
 					$msg.="Erreur lors du renommage du groupe n°".$id_groupe_courant."<br />\n";
 				}
@@ -333,7 +333,7 @@ if (isset($_POST['is_posted'])) {
 				if(in_array($tab_id_groupe[$loop], $visibilite_groupe_domaine_courant)) {
 					$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='".$tab_id_groupe[$loop]."' AND domaine='".$tab_domaines[$loo]."';";
 					//echo "$sql<br />";
-					$suppr=mysql_query($sql);
+					$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$suppr) {$msg.="Erreur lors de la suppression de l'invisibilité du groupe n°".$tab_id_groupe[$loop]." sur les ".$tab_domaines_texte[$loo].".<br />";}
 				}
 			}
@@ -341,7 +341,7 @@ if (isset($_POST['is_posted'])) {
 				if(!in_array($tab_id_groupe[$loop], $visibilite_groupe_domaine_courant)) {
 					$sql="INSERT j_groupes_visibilite SET id_groupe='".$tab_id_groupe[$loop]."', domaine='".$tab_domaines[$loo]."', visible='n';";
 					//echo "$sql<br />";
-					$insert=mysql_query($sql);
+					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilité du groupe n°".$tab_id_groupe[$loop]." sur les ".$tab_domaines_texte[$loo].".<br />";}
 				}
 			}
@@ -355,9 +355,9 @@ if (isset($_POST['is_posted'])) {
 		$invisibilite_groupe[$tab_domaines[$loop]]=array();
 	}
 	$sql="SELECT jgv.* FROM j_groupes_classes jgc, j_groupes_visibilite jgv WHERE jgv.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe' AND jgv.visible='n';";
-	$res_jgv=mysql_query($sql);
-	if(mysql_num_rows($res_jgv)>0) {
-		while($lig_jgv=mysql_fetch_object($res_jgv)) {
+	$res_jgv=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_jgv)>0) {
+		while($lig_jgv=mysqli_fetch_object($res_jgv)) {
 			$invisibilite_groupe[$lig_jgv->domaine][]=$lig_jgv->id_groupe;
 		}
 	}
@@ -370,7 +370,7 @@ if (isset($_POST['is_posted'])) {
 		foreach($name_grp as $id_current_grp => $current_name) {
 			$sql="UPDATE groupes SET name='".html_entity_decode($current_name,ENT_QUOTES,"UTF-8")."' WHERE id='".$id_current_grp."';";
 			//echo "$sql<br />";
-			$update=mysql_query($sql);
+			$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			if(!$update) {
 				$msg.="Erreur lors de la modification du nom court du groupe n°$id_current_grp<br />";
 			}
@@ -379,7 +379,7 @@ if (isset($_POST['is_posted'])) {
 		foreach($description_grp as $id_current_grp => $current_description) {
 			$sql="UPDATE groupes SET description='".html_entity_decode($current_description,ENT_QUOTES,"UTF-8")."' WHERE id='".$id_current_grp."';";
 			//echo "$sql<br />";
-			$update=mysql_query($sql);
+			$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 			if(!$update) {
 				$msg.="Erreur lors de la modification de la description du groupe n°$id_current_grp<br />";
 			}
@@ -402,8 +402,8 @@ if (isset($_GET['action'])) {
             //================================
             // MODIF: boireaus
             $sql="SELECT * FROM groupes WHERE id='".$_GET['id_groupe']."'";
-            $req_grp=mysql_query($sql);
-            $ligne_grp=mysql_fetch_object($req_grp);
+            $req_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+            $ligne_grp=mysqli_fetch_object($req_grp);
             //================================
             $delete = delete_group($_GET['id_groupe']);
             if ($delete == true) {
@@ -448,17 +448,17 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	$lien_bull_simp="";
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC LIMIT 1;";
 	//echo "$sql<br />";
-	$res_per=mysql_query($sql);
-	if(mysql_num_rows($res_per)>0) {
-		$lig_per=mysql_fetch_object($res_per);
+	$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_per)>0) {
+		$lig_per=mysqli_fetch_object($res_per);
 
 		$lien_bull_simp="<a href='../prepa_conseil/edit_limite.php?choix_edit=1&amp;id_classe=$id_classe&amp;periode1=1&amp;periode2=$lig_per->num_periode' target='_blank'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple dans une nouvelle page' title='Bulletin simple dans une nouvelle page' /></a>";
 	}
 
 	echo "<p style='margin-left:5em;'>";
 	$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='".$_GET['id_groupe']."';";
-	$test_mn=mysql_query($sql);
-	$nb_mn=mysql_num_rows($test_mn);
+	$test_mn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_mn=mysqli_num_rows($test_mn);
 	if($nb_mn==0) {
 		echo "Aucune note sur les bulletins.<br />\n";
 	}
@@ -468,8 +468,8 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	}
 
 	$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='".$_GET['id_groupe']."';";
-	$test_ma=mysql_query($sql);
-	$nb_ma=mysql_num_rows($test_ma);
+	$test_ma=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_ma=mysqli_num_rows($test_ma);
 	if($nb_ma==0) {
 		echo "Aucune appréciation sur les bulletins.<br />\n";
 	}
@@ -481,8 +481,8 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	$temoin_non_vide='n';
 	// CDT
 	$sql="SELECT 1=1 FROM ct_entry WHERE id_groupe='".$_GET['id_groupe']."';";
-	$test_notice_cdt=mysql_query($sql);
-	$nb_notice_cdt=mysql_num_rows($test_notice_cdt);
+	$test_notice_cdt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_notice_cdt=mysqli_num_rows($test_notice_cdt);
 	if($nb_notice_cdt==0) {
 		echo "Aucune notice dans le cahier de textes.<br />\n";
 	}
@@ -492,8 +492,8 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	}
 
 	$sql="SELECT 1=1 FROM ct_devoirs_entry WHERE id_groupe='".$_GET['id_groupe']."';";
-	$test_devoir_cdt=mysql_query($sql);
-	$nb_devoir_cdt=mysql_num_rows($test_devoir_cdt);
+	$test_devoir_cdt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_devoir_cdt=mysqli_num_rows($test_devoir_cdt);
 	if($nb_devoir_cdt==0) {
 		echo "Aucun devoir dans le cahier de textes.<br />\n";
 	}
@@ -505,15 +505,15 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	// NOTES
 	// Récupérer les cahier de notes
 	$sql="SELECT DISTINCT id_cahier_notes, periode FROM cn_cahier_notes WHERE id_groupe='".$_GET['id_groupe']."' ORDER BY periode;";
-	$res_ccn=mysql_query($sql);
-	if(mysql_num_rows($res_ccn)==0) {
+	$res_ccn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_ccn)==0) {
 		echo "Aucun cahier de notes n'est initialisé pour cet enseignement.<br />\n";
 	}
 	else {
-		while($lig_id_cn=mysql_fetch_object($res_ccn)) {
+		while($lig_id_cn=mysqli_fetch_object($res_ccn)) {
 			$sql="SELECT 1=1 FROM cn_devoirs WHERE id_racine='$lig_id_cn->id_cahier_notes';";
-			$res_dev=mysql_query($sql);
-			$nb_dev=mysql_num_rows($res_dev);
+			$res_dev=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nb_dev=mysqli_num_rows($res_dev);
 			if($nb_dev==0) {
 				echo "Période $lig_id_cn->periode&nbsp;: Aucun devoir.<br />\n";
 			}
@@ -548,16 +548,16 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 
 $display_mat_cat="n";
 $sql="SELECT display_mat_cat FROM classes WHERE id='$id_classe';";
-$res_display_mat_cat=mysql_query($sql);
-if(mysql_num_rows($res_display_mat_cat)>0) {
-	$lig_display_mat_cat=mysql_fetch_object($res_display_mat_cat);
+$res_display_mat_cat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_display_mat_cat)>0) {
+	$lig_display_mat_cat=mysqli_fetch_object($res_display_mat_cat);
 	$display_mat_cat=$lig_display_mat_cat->display_mat_cat;
 
 	$url_wiki="#";
 	$sql="SELECT * FROM ref_wiki WHERE ref='enseignement_invisible';";
-	$res_ref_wiki=mysql_query($sql);
-	if(mysql_num_rows($res_ref_wiki)>0) {
-		$lig_wiki=mysql_fetch_object($res_ref_wiki);
+	$res_ref_wiki=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_ref_wiki)>0) {
+		$lig_wiki=mysqli_fetch_object($res_ref_wiki);
 		$url_wiki=$lig_wiki->url;
 	}
 	$titre="Enseignement invisible";
@@ -680,9 +680,9 @@ echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: aut
 echo "<table border='0' summary='Ajout d enseignement'>\n<tr valign='top'>\n<td>\n";
 echo "Ajouter un enseignement&nbsp;: ";
 echo "</td>\n";
-$query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 //==============================
-$nb_mat = mysql_num_rows($query);
+$nb_mat = mysqli_num_rows($query);
 
 echo "<td>\n";
 echo "<select name='matiere' size='1'>\n";
@@ -692,8 +692,8 @@ for ($i=0;$i<$nb_mat;$i++) {
     $nom_matiere = mysql_result($query, $i, "nom_complet");
 
     $sql="SELECT u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$matiere."' ORDER BY u.nom, u.prenom;";
-    $res_profs_matiere=mysql_query($sql);
-    if(mysql_num_rows($res_profs_matiere)==0) {
+    $res_profs_matiere=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    if(mysqli_num_rows($res_profs_matiere)==0) {
         $style_opt=" style='color:grey;'";
         $texte_opt=" - Aucun professeur n'est associé à cette matière.";
     }
@@ -701,7 +701,7 @@ for ($i=0;$i<$nb_mat;$i++) {
         $style_opt="";
         $texte_opt=" - Professeurs associés: ";
         $cpt_prof_opt=0;
-        while($lig_prof_opt=mysql_fetch_object($res_profs_matiere)) {
+        while($lig_prof_opt=mysqli_fetch_object($res_profs_matiere)) {
             if($cpt_prof_opt>0) {$texte_opt.=", ";}
             $texte_opt.=casse_mot($lig_prof_opt->prenom, 'majf2')." ".casse_mot($lig_prof_opt->nom, 'maj');
             $cpt_prof_opt++;
@@ -748,8 +748,8 @@ echo "</td>\n</tr>\n</table>\n";
 //$groups = get_groups_for_class($id_classe);
 
 $sql="SELECT 1=1 FROM j_groupes_classes jgc WHERE jgc.id_classe='$id_classe' AND categorie_id NOT IN (SELECT id FROM matieres_categories);";
-$test_cat_auc=mysql_query($sql);
-if(mysql_num_rows($test_cat_auc)==0) {
+$test_cat_auc=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test_cat_auc)==0) {
 	$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 	if($affiche_categories=='y') {
 		$groups = get_groups_for_class($id_classe,"","y");
@@ -822,7 +822,7 @@ echo add_token_field();
 <?php
 
 
-$call_nom_class = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
+$call_nom_class = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes WHERE id = '$id_classe'");
 $display_rang = mysql_result($call_nom_class, 0, 'display_rang');
 if($display_rang=='y') {
 	$titre="Recalcul des rangs";
@@ -878,7 +878,7 @@ for($i=0;$i<10;$i++){
 <?php
     // si le module ECTS est activé, on calcul la valeur total d'ECTS attribués aux groupes
     if ($gepiSettings['active_mod_ects'] == "y") {
-        $total_ects = mysql_result(mysql_query("SELECT sum(valeur_ects) FROM j_groupes_classes WHERE (id_classe = '".$id_classe."' and saisie_ects = TRUE)"), 0);
+        $total_ects = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT sum(valeur_ects) FROM j_groupes_classes WHERE (id_classe = '".$id_classe."' and saisie_ects = TRUE)"), 0);
         echo "<p style='margin-top: 10px;'>Nombre total d'ECTS actuellement attribués pour cette classe : ".intval($total_ects)."</p>\n";
         if ($total_ects < 30) {
             echo "<p style='color: red;'>Attention, le total d'ECTS pour un semestre devrait être au moins égal à 30.</p>\n";
@@ -897,10 +897,10 @@ for($i=0;$i<10;$i++){
 	}
 
 	$cpt_grp=0;
-	$res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories");
+	$res = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, nom_court, nom_complet, priority FROM matieres_categories");
 	$mat_categories = array();
 	$nom_categories = array();
-	while ($row = mysql_fetch_object($res)) {
+	while ($row = mysqli_fetch_object($res)) {
 		$mat_categories[] = $row;
 		$nom_categories[$row->id]=$row->nom_complet;
 	}
@@ -981,8 +981,8 @@ for($i=0;$i<10;$i++){
 		// Sinon, pour l'affichage, c'est la priorité dans j_groupes_classes qui est utilisée à l'affichage dans les champs select.
 		$sql="SELECT m.priority, m.categorie_id FROM matieres m, j_groupes_matieres jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgc.id_matiere";
 		//echo "$sql<br />\n";
-		$result_matiere=mysql_query($sql);
-		$ligmat=mysql_fetch_object($result_matiere);
+		$result_matiere=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$ligmat=mysqli_fetch_object($result_matiere);
 		$mat_priorite[$cpt_grp]=$ligmat->priority;
 		$mat_cat_id[$cpt_grp]=$ligmat->categorie_id;
 		//===============================

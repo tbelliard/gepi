@@ -134,9 +134,9 @@ class CvsentCtrl extends Controleur {
                     $recherche = FALSE;
                 }
                 $this->res = $data->cherche_login($this->ligne, $statut, $recherche);
-                if (mysql_num_rows($this->res) == 1) {
+                if (mysqli_num_rows($this->res) == 1) {
                     // on a un seul utilisateur dans Gépi
-                    $row = mysql_fetch_row($this->res);
+                    $row = mysqli_fetch_row($this->res);
                     $login_gepi = $row[0];
                 } else {
                     // Pour les autres cas, il faut attendre que la table soit remplie
@@ -153,22 +153,22 @@ class CvsentCtrl extends Controleur {
             // Ne fonctionne pas, certains profs ont un statut 'personnel' dans l'ENT (remplaçant pas encore remonté, prof des école UPI...)
             // supprimer les élèves sans classe
             $this->res = $data->trouve_statut_eleves();
-            if (mysql_num_rows($this->res) == 1) {
-                $row = mysql_fetch_row($this->res);
+            if (mysqli_num_rows($this->res) == 1) {
+                $row = mysqli_fetch_row($this->res);
                 $this->libel_eleve = $row[0];
             } else {
-                echo "il y a " . mysql_num_rows($this->res) . " dénominations pour le statut élève ";
+                echo "il y a " . mysqli_num_rows($this->res) . " dénominations pour le statut élève ";
                 die ();
             }
             $data->supprime_sans_classe($this->libel_eleve);
 
             // supprimer les responsables sans classe
             $this->res = $data->trouve_statut_responsables();
-            if (mysql_num_rows($this->res) == 1) {
-                $row = mysql_fetch_row($this->res);
+            if (mysqli_num_rows($this->res) == 1) {
+                $row = mysqli_fetch_row($this->res);
                 $this->libel_responsable = $row[0];
             } else {
-                echo "il y a " . mysql_num_rows($this->res) . " dénominations pour le statut responsable ";
+                echo "il y a " . mysqli_num_rows($this->res) . " dénominations pour le statut responsable ";
                 die ();
             }
             $data->supprime_sans_classe($this->libel_responsable);
@@ -189,23 +189,23 @@ class CvsentCtrl extends Controleur {
             /* On traite les doublons */
             // On recherche les enregistrements sans login
             $this->res = $data->login_vide();
-            while ($this->row = mysql_fetch_array($this->res)) {
+            while ($this->row = mysqli_fetch_array($this->res)) {
                 $login = '';
                 // si on a un responsable, on le retrouve dans père ou mère ou tuteur 1 ou tuteur 2
                 $this->resp = $data->est_responsable($this->row);
-                if (mysql_num_rows($this->resp) != 0) {
+                if (mysqli_num_rows($this->resp) != 0) {
                     // on a bien un responsable
                     // on regarde déjà si la recherche sur responsable ne régle pas le problème
                     $this->resp1 = $data->cherche_login($this->row, 'responsable');
-                    if (mysql_num_rows($this->resp1) == 1) {
-                        $row1 = mysql_fetch_assoc($this->resp1);
+                    if (mysqli_num_rows($this->resp1) == 1) {
+                        $row1 = mysqli_fetch_assoc($this->resp1);
                         $login = $row1['login'];
-                    } else if (mysql_num_rows($this->resp) != 0) {
+                    } else if (mysqli_num_rows($this->resp) != 0) {
                         // on recherche le responsable avec ce nom et prénom ayant cet élève
-                        $this->eleve = mysql_fetch_assoc($this->resp);
+                        $this->eleve = mysqli_fetch_assoc($this->resp);
                         $this->resp2 = $data->cherche_responsable($this->eleve, $this->row);
-                        if (mysql_num_rows($this->resp2) != 0) {
-                            $row2 = mysql_fetch_row($this->resp2);
+                        if (mysqli_num_rows($this->resp2) != 0) {
+                            $row2 = mysqli_fetch_row($this->resp2);
                             $login = $row2[0];
                         }
                     } else {
@@ -215,19 +215,19 @@ class CvsentCtrl extends Controleur {
                 } else {
                     // si on a un élève, il a un père ou une mère ou un tuteur 1 ou un tuteur 2
                     $this->reselv = $data->est_eleve($this->row);
-                    if (mysql_num_rows($this->reselv) != 0) {
+                    if (mysqli_num_rows($this->reselv) != 0) {
                         // on a bien un élève, on recherche l'élève ayant un de ces responsables
-                        $this->responsable = mysql_fetch_assoc($this->reselv);
+                        $this->responsable = mysqli_fetch_assoc($this->reselv);
                         $this->reselv2 = $data->cherche_eleve($this->responsable, $this->row);
-                        if (mysql_num_rows($this->reselv2) == 1) {
-                            $rowelv2 = mysql_fetch_row($this->reselv2);
+                        if (mysqli_num_rows($this->reselv2) == 1) {
+                            $rowelv2 = mysqli_fetch_row($this->reselv2);
                             $login = $rowelv2[0];
                         }
                     }
                     // les autres sont ni élève ni responsable
                     $this->resautre = $data->doublon_pro($this->row, $this->libel_eleve, $this->libel_responsable);
-                    if (mysql_num_rows($this->resautre) == 1) {
-                        $rowautre = mysql_fetch_row($this->resautre);
+                    if (mysqli_num_rows($this->resautre) == 1) {
+                        $rowautre = mysqli_fetch_row($this->resautre);
                         $login = $rowautre[0];
                     }
                 }
@@ -239,16 +239,16 @@ class CvsentCtrl extends Controleur {
 
             // il reste encore les erreurs : 2 comptes ENT -> 1 compte Gépi, on peut nettoyer quand les 2 comptes ne sont pas des comptes parents
             $this->res = $data->doublon_2ent_1gepi();
-            if (mysql_num_rows($this->res) > 0) {
-                while ($this->row2 = mysql_fetch_array($this->res)) {
+            if (mysqli_num_rows($this->res) > 0) {
+                while ($this->row2 = mysqli_fetch_array($this->res)) {
                     $data->efface_2ent_1gepi($this->row2, $this->libel_responsable);
                 }
             }
             $this->res = $data->doublon_2ent_1gepi();
-            if (mysql_num_rows($this->res) > 0) {
+            if (mysqli_num_rows($this->res) > 0) {
                 $class = "message_red";
                 $message = "Ce compte pose problème";
-                while ($this->row2 = mysql_fetch_array($this->res)) {
+                while ($this->row2 = mysqli_fetch_array($this->res)) {
                     $this->nom = $this->row2['nom'] . " " . $this->row2['prenom'];
                     $this->table[] = array('login_gepi' => $this->nom, 'login_sso' => $this->ligne['uid'], 'couleur' => $class, 'message' => $message);
                 }
@@ -261,8 +261,8 @@ class CvsentCtrl extends Controleur {
             }
             // On récupère tous les membres de l'ENT ayant un login Gépi
             $this->res = $data->get_gepi_ent();
-            if (mysql_num_rows($this->res) != 0) {
-                while ($this->ligne = mysql_fetch_array($this->res)) {
+            if (mysqli_num_rows($this->res) != 0) {
+                while ($this->ligne = mysqli_fetch_array($this->res)) {
                     $this->messages = $this->get_message($data->get_error($this->ligne['login'], $this->ligne['uid'], $this->ecriture));
                     if ($_POST["choix"] == "erreur" && $this->messages[0] == "message_red") {
                         $this->table[] = array('login_gepi' => $this->ligne['login'], 'login_sso' => $this->ligne['uid'], 'couleur' => $this->messages[0], 'message' => $this->messages[1]);
@@ -274,10 +274,10 @@ class CvsentCtrl extends Controleur {
             // On récupère les membres de l'ENT sans login présents dans Gépi
             $this->class = "message_red";
             $this->res = $data->get_sans_login();
-            if (mysql_num_rows($this->res) != 0) {
-                while ($this->ligne = mysql_fetch_array($this->res)) {
+            if (mysqli_num_rows($this->res) != 0) {
+                while ($this->ligne = mysqli_fetch_array($this->res)) {
                     $this->res2 = $data->cherche_login($this->ligne);
-                    if (mysql_num_rows($this->res2) > 0) {
+                    if (mysqli_num_rows($this->res2) > 0) {
                         $this->message = 'Il y a plusieurs personnes dans Gépi ayant les mêmes noms et prénoms';
                         $nomPrenom = $this->ligne['nom'] . " " . $this->ligne['prenom'];
                         $this->table[] = array('login_gepi' => $nomPrenom, 'login_sso' => $this->ligne['uid'], 'couleur' => $this->class, 'message' => $this->message);
@@ -286,14 +286,14 @@ class CvsentCtrl extends Controleur {
             }
             // On récupère les membres de l'ENT sans login absents de Gépi
             $this->res = $data->get_sans_login();
-            if (mysql_num_rows($this->res) != 0) {
-                while ($this->ligne = mysql_fetch_array($this->res)) {
+            if (mysqli_num_rows($this->res) != 0) {
+                while ($this->ligne = mysqli_fetch_array($this->res)) {
                     $this->res2 = $data->cherche_login($this->ligne);
-                    if (mysql_num_rows($this->res2) == 0) {
+                    if (mysqli_num_rows($this->res2) == 0) {
                         $possibles = Null;
                         $probable = Null;
                         $this->res3 = $data->get_homonymes_sans_correspondance($this->ligne['nom']);
-                        while ($this->ligne2 = mysql_fetch_array($this->res3)) {
+                        while ($this->ligne2 = mysqli_fetch_array($this->res3)) {
                             $possibles[] = $this->ligne2;
                         }
                         if (isset($possibles))
@@ -345,14 +345,14 @@ class CvsentCtrl extends Controleur {
         switch ($code) {
             case 0:
                 $query = "SELECT `login_sso` FROM `sso_table_correspondance` WHERE `login_gepi`='" . $this->ligne['login'] . "'";
-                $result = mysql_query($query);
+                $result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
                 // Vérification du résultat
                 if (!$result) {
-                    $message = 'Requête invalide : ' . mysql_error() . "\n";
+                    $message = 'Requête invalide : ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "\n";
                     $message .= 'Requête complète : ' . $query;
                     die($message);
                 }
-                $row = mysql_fetch_row($result);
+                $row = mysqli_fetch_row($result);
                 if ($row[0] == $this->ligne['uid']) {
                     $this->class = "message_blue";
                     $this->message = 'Une entrée identique existe déjà dans la table pour ce login gépi';

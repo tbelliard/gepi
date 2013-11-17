@@ -491,13 +491,13 @@ if (!$current_group) {
     //$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     //$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 	if($_SESSION['statut']=='scolarite'){
-		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+		$appel_donnees = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 	}
 	elseif($_SESSION['statut']=='professeur'){
-		$appel_donnees=mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
+		$appel_donnees=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
 	}
 	elseif($_SESSION['statut']=='cpe'){
-		$appel_donnees=mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+		$appel_donnees=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
 			p.id_classe = c.id AND
 			jec.id_classe=c.id AND
 			jec.periode=p.num_periode AND
@@ -506,10 +506,10 @@ if (!$current_group) {
 			ORDER BY classe");
 	}
 	elseif($_SESSION['statut']=='secours'){
-		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c ORDER BY classe");
+		$appel_donnees = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c ORDER BY classe");
 	}
 
-	$lignes = mysql_num_rows($appel_donnees);
+	$lignes = mysqli_num_rows($appel_donnees);
 	//echo "\$lignes=$lignes<br />";
 
 	if($lignes==0) {
@@ -545,14 +545,14 @@ if (!$current_group) {
 				//if ($_SESSION['statut']!='scolarite') {
 				// Seuls les comptes scolarite, professeur et secours ont accès à cette page.
 				if ($_SESSION['statut']=='professeur') {
-					$test = mysql_query("SELECT count(*) FROM j_groupes_professeurs
+					$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM j_groupes_professeurs
 					WHERE (id_groupe='" . $group["id"]."' and login = '" . $_SESSION["login"] . "')");
 					if (mysql_result($test, 0) == 1) {$flag2 = 'yes';}
 
 					if($acces_pp=="y") {
 						$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.login=jep.login AND jec.id_classe=jep.id_classe AND jep.professeur='".$_SESSION['login']."' AND jec.id_classe='$id_classe';";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)>0) {
+						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($test)>0) {
 							$flag2 = 'yes';
 							$temoin_pp="yes";
 						}
@@ -584,11 +584,11 @@ if (!$current_group) {
 						$id_groupe_en_cours = $group["id"];
 						//recherche profs du groupe
 						$sql_prof_groupe = "SELECT jgp.login,u.nom,u.prenom FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$id_groupe_en_cours' AND u.login=jgp.login";
-						$result_prof_groupe=mysql_query($sql_prof_groupe);
+						$result_prof_groupe=mysqli_query($GLOBALS["___mysqli_ston"], $sql_prof_groupe);
 						echo "(";
 						$cpt=0;
-						$nb_profs = mysql_num_rows($result_prof_groupe);
-						while($lig_prof=mysql_fetch_object($result_prof_groupe)){
+						$nb_profs = mysqli_num_rows($result_prof_groupe);
+						while($lig_prof=mysqli_fetch_object($result_prof_groupe)){
 							if (($nb_profs !=1) AND ($cpt<$nb_profs-1)){
 							echo "$lig_prof->nom ".ucfirst(mb_strtolower($lig_prof->prenom))." - ";
 							} else {
@@ -681,8 +681,8 @@ if (!$current_group) {
 	$test_acces_pp="n";
 	if(($_SESSION['statut']=='professeur')&&($acces_pp=="y")) {
 		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_groupes jeg WHERE jeg.login=jep.login AND jep.professeur='".$_SESSION['login']."' AND jeg.id_groupe='$id_groupe';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test)>0) {
 			$test_acces_pp="y";
 		}
 	}
@@ -820,8 +820,8 @@ function UncheckAll_checkbox(){
 	$test_acces_pp="n";
 	if(($_SESSION['statut']=='professeur')&&($acces_pp=="y")) {
 		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_groupes jeg WHERE jeg.login=jep.login AND jep.professeur='".$_SESSION['login']."' AND jeg.id_groupe='$id_groupe';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test)>0) {
 			$test_acces_pp="y";
 		}
 	}
@@ -881,11 +881,11 @@ function UncheckAll_checkbox(){
 			*/
 				$id_classe=$current_group["classes"]["list"][$i];
 
-				$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+				$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 
 				$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe';";
-				$res_per=mysql_query($sql);
-				while($lig_per=mysql_fetch_object($res_per)) {
+				$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				while($lig_per=mysqli_fetch_object($res_per)) {
 					$periode_num=$lig_per->num_periode;
 					include("../lib/calcul_rang.inc.php");
 				}
@@ -1057,7 +1057,7 @@ function UncheckAll_checkbox(){
 
 					if($temoin_periode>0) {
 						$j++;
-						$note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$login_eleve[$i]' AND id_groupe = '".$current_group["id"] . "' AND periode='$k')");
+						$note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_notes WHERE (login='$login_eleve[$i]' AND id_groupe = '".$current_group["id"] . "' AND periode='$k')");
 						if($note_query) {
 							$_statut = @mysql_result($note_query, 0, "statut");
 							//$note = @mysql_result($note_query, 0, "note");
@@ -1091,7 +1091,7 @@ function UncheckAll_checkbox(){
                 $temp = "visu_note_".$k;
                 if (isset($_POST[$temp]) or isset($_GET[$temp])) {
                     $j++;
-                    $note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$login_eleve[$i]' AND id_groupe = '".$current_group["id"] . "' AND periode='$k')");
+                    $note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_notes WHERE (login='$login_eleve[$i]' AND id_groupe = '".$current_group["id"] . "' AND periode='$k')");
                     $_statut = @mysql_result($note_query, 0, "statut");
                     $note = @mysql_result($note_query, 0, "note");
                     if ($option[$i][$k] == "non") {
@@ -1126,17 +1126,17 @@ function UncheckAll_checkbox(){
                 if (isset($_POST[$temp]) or isset($_GET[$temp])) {
 
                     $j++;
-                    $app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$login_eleve[$i]' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+                    $app_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_appreciations WHERE (login='$login_eleve[$i]' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
                     $app = @mysql_result($app_query, 0, "appreciation");
 
 					//++++++++++++++++++++++++
 					// Modif d'après F.Boisson
 					// notes dans appreciation
 					$sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$login_eleve[$i]."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
-					$result_nbct=mysql_query($sql);
+					$result_nbct=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					$string_notes='';
 					if ($result_nbct ) {
-						while ($snnote =  mysql_fetch_assoc($result_nbct)) {
+						while ($snnote =  mysqli_fetch_assoc($result_nbct)) {
 							if ($string_notes != '') $string_notes .= ", ";
 							$string_notes .= $snnote['note'];
 							if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
@@ -1449,9 +1449,9 @@ function UncheckAll_checkbox(){
             if (isset($_POST[$temp]) or isset($_GET[$temp])) {
 				$j++;
 
-                $call_moyenne = mysql_query("SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
-                $call_max = mysql_query("SELECT max(note) note_max FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
-                $call_min = mysql_query("SELECT min(note) note_min FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
+                $call_moyenne = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
+                $call_max = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT max(note) note_max FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
+                $call_min = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT min(note) note_min FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
                 $temp = @mysql_result($call_moyenne, 0, "moyenne");
                 if ($temp != '') {
                     //$col[$j][$nb_lignes] = number_format($temp,1,',','');
@@ -1525,9 +1525,9 @@ function UncheckAll_checkbox(){
                 $nb_lignes_moyenne_and_co[$j]=3;
                 $col[$j][$nb_lignes] = '-';
                 $sql="SELECT * FROM matieres_appreciations_grp WHERE id_groupe='$id_groupe' AND periode='$k';";
-                $res_app_grp=mysql_query($sql);
-                if(mysql_num_rows($res_app_grp)>0) {
-                    $lig_app_grp=mysql_fetch_object($res_app_grp);
+                $res_app_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                if(mysqli_num_rows($res_app_grp)>0) {
+                    $lig_app_grp=mysqli_fetch_object($res_app_grp);
                     $col[$j][$nb_lignes] = $lig_app_grp->appreciation;
                 }
                 $col[$j][$nb_lignes+1] = '-';

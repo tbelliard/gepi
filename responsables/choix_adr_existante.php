@@ -67,10 +67,10 @@ if(isset($is_posted)) {
 		}
 		else{
 			$sql="SELECT 1=1 FROM resp_adr WHERE adr_id='$adr_id_existant'";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0){
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)>0){
 				$sql="UPDATE resp_pers SET adr_id='$adr_id_existant' WHERE pers_id='$pers_id'";
-				$res_update=mysql_query($sql);
+				$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				if(!$res_update){
 					$msg.="Erreur lors de l'insertion de l'association personne/adresse. ";
 				}
@@ -96,8 +96,8 @@ require_once("../lib/header.inc.php");
 
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0){
+	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($test)>0){
 		echo "<p>Une conversion des données responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
@@ -105,8 +105,8 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)==0){
+	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($test)==0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
@@ -114,8 +114,8 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 	else{
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0){
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test)>0){
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 			require("../lib/footer.inc.php");
@@ -162,8 +162,8 @@ else {
 //$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
 //$res_adr=mysql_query($sql);
 $sql="SELECT COUNT(adr_id) nb_adr FROM resp_adr";
-$res_nb=mysql_query($sql);
-$tmp_nb=mysql_fetch_object($res_nb);
+$res_nb=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$tmp_nb=mysqli_fetch_object($res_nb);
 $nb_adr=$tmp_nb->nb_adr;
 //if(mysql_num_rows($res_adr)==0){
 if($nb_adr==0){
@@ -171,8 +171,8 @@ if($nb_adr==0){
 }
 else{
 	$sql="SELECT nom,prenom FROM resp_pers WHERE pers_id='$pers_id'";
-	$res_info_pers=mysql_query($sql);
-	$lig_pers=mysql_fetch_object($res_info_pers);
+	$res_info_pers=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$lig_pers=mysqli_fetch_object($res_info_pers);
 
 
 	echo "<p>Choix d'une adresse pour $lig_pers->nom $lig_pers->prenom (<i>$pers_id</i>)</p>\n";
@@ -415,14 +415,14 @@ else{
 		$sql.=" LIMIT $debut,$limit";
 	}
 	//echo "<tr><td colspan='7'>$sql</td></tr>";
-	$res_adr=mysql_query($sql);
+	$res_adr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 
 	$cpt=0;
 	unset($tab_adr);
 	$tab_adr=array();
 	$temoin_adr_actuelle_dans_la_page="non";
-	while($lig_adr=mysql_fetch_object($res_adr)){
+	while($lig_adr=mysqli_fetch_object($res_adr)){
 		$tab_adr[$cpt]=array();
 		$tab_adr[$cpt]["adr_id"]=$lig_adr->adr_id;
 		$tab_adr[$cpt]["adr1"]=$lig_adr->adr1;
@@ -457,10 +457,10 @@ else{
 
 	if((isset($adr_id_actuel))&&($temoin_adr_actuelle_dans_la_page=="non")) {
 		$sql="SELECT * FROM resp_adr WHERE adr_id='$adr_id_actuel'";
-		$res_adr_actuelle=mysql_query($sql);
+		$res_adr_actuelle=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-		if(mysql_num_rows($res_adr_actuelle)!=0){
-			$lig_adr_actuelle=mysql_fetch_object($res_adr_actuelle);
+		if(mysqli_num_rows($res_adr_actuelle)!=0){
+			$lig_adr_actuelle=mysqli_fetch_object($res_adr_actuelle);
 			echo "<tr style='background-color:orange;'>\n";
 			echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' id='adr_id_existant_$lig_adr_actuelle->adr_id' value=\"$lig_adr_actuelle->adr_id\" checked ";
 			echo "onchange='changement();' ";
@@ -489,11 +489,11 @@ else{
 
 			echo "<td style='text-align:center;'>";
 			$sql="SELECT nom,prenom,pers_id FROM resp_pers WHERE adr_id='$lig_adr_actuelle->adr_id'";
-			$res_pers=mysql_query($sql);
-			if(mysql_num_rows($res_pers)>0){
-				$ligtmp=mysql_fetch_object($res_pers);
+			$res_pers=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_pers)>0){
+				$ligtmp=mysqli_fetch_object($res_pers);
 				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(mb_strtolower($ligtmp->prenom))."</a>";
-				while($ligtmp=mysql_fetch_object($res_pers)){
+				while($ligtmp=mysqli_fetch_object($res_pers)){
 					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(mb_strtolower($ligtmp->prenom))."</a>";
 				}
 				echo "$chaine";
@@ -560,11 +560,11 @@ else{
 
 			echo "<td style='text-align:center;'>";
 			$sql="SELECT nom,prenom,pers_id FROM resp_pers WHERE adr_id='".$tab_adr[$i]["adr_id"]."'";
-			$res_pers=mysql_query($sql);
-			if(mysql_num_rows($res_pers)>0){
-				$ligtmp=mysql_fetch_object($res_pers);
+			$res_pers=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_pers)>0){
+				$ligtmp=mysqli_fetch_object($res_pers);
 				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(mb_strtolower($ligtmp->prenom))."</a>";
-				while($ligtmp=mysql_fetch_object($res_pers)){
+				while($ligtmp=mysqli_fetch_object($res_pers)){
 					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(mb_strtolower($ligtmp->prenom))."</a>";
 				}
 				echo "$chaine";

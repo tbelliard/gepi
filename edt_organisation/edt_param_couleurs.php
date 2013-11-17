@@ -130,8 +130,8 @@ require_once("./menu.inc.php");
 
 <?php
 // On affiche la liste des matières
-$req_sql = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet");
-$nbre_matieres = mysql_num_rows($req_sql);
+$req_sql = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet");
+$nbre_matieres = mysqli_num_rows($req_sql);
 
 	for($i=0; $i < $nbre_matieres; $i++){
 	$aff_matiere[$i]["court"] = mysql_result($req_sql, $i, "matiere");

@@ -168,8 +168,8 @@ if (!isset($is_posted)) {
 					switch ($c) {
 					case 0:
 						//RNE
-						$call_rne = mysql_query("SELECT * FROM etablissements WHERE id='$data[$c]'");
-						$test = @mysql_num_rows($call_rne);
+						$call_rne = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM etablissements WHERE id='$data[$c]'");
+						$test = @mysqli_num_rows($call_rne);
 						$couleur = 'black';
 						if ($test != 0) {
 							$couleur = 'red';
@@ -312,7 +312,7 @@ if (!isset($is_posted)) {
 	$pb = 'no';
 	for ($c=0; $c<count ($table_etab); $c++) {
 		$couleur[$c] = '';
-		$sql = mysql_query("INSERT INTO etablissements SET
+		$sql = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO etablissements SET
 		id='".$table_etab[$c][0]."',
 		nom='".$table_etab[$c][1]."',
 		niveau='".$table_etab[$c][2]."',

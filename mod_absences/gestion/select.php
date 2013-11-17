@@ -63,11 +63,11 @@ if ($type == "") {exit(); }
 
 // On ajoute un paramètre sur les élèves de ce CPE en particulier
 $sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
-$query_eleves_cpe = mysql_query($sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysql_error());
+$query_eleves_cpe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $test_cpe = array();
 
-$test_nbre_eleves_cpe = mysql_num_rows($query_eleves_cpe);
-while($test_eleves_cpe = mysql_fetch_array($query_eleves_cpe)){
+$test_nbre_eleves_cpe = mysqli_num_rows($query_eleves_cpe);
+while($test_eleves_cpe = mysqli_fetch_array($query_eleves_cpe)){
 	$test_cpe[] = $test_eleves_cpe['e_login'];
 }
 // requete liste classe en fonction du cpe responsable didier
@@ -127,8 +127,8 @@ if ($_SESSION["statut"] == 'autre') {
             <select name="classe_choix" onchange="javascript:document.form1.submit();"> <?php /* correction pour ie didier  */ ?>
             	<option value="tous" selected="selected" onclick="javascript:document.form1.submit()">Toutes les classes</option>
 			<?php
-			$resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
-			while($data_liste_classe = mysql_fetch_array ($resultat_liste_classe))
+			$resultat_liste_classe = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			while($data_liste_classe = mysqli_fetch_array($resultat_liste_classe))
 			{
             	if ($classe_choix==$data_liste_classe['id']) {
 					$selected = 'selected="selected"';
@@ -159,8 +159,8 @@ if ($_SESSION["statut"] == 'autre') {
 			?>
             <select name="eleve_absent[]" size="10" <?php if ($type == "D" or $type == "I") {} else {?>multiple="multiple"<?php } ?> style="width: 350px;">
             <?php
-			$resultat_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
-            while($data_liste_eleve = mysql_fetch_array ($resultat_liste_eleve))
+			$resultat_liste_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+            while($data_liste_eleve = mysqli_fetch_array($resultat_liste_eleve))
 			{
 				//if (in_array($data_liste_eleve['login'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
 				if (in_array_i($data_liste_eleve['login'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {

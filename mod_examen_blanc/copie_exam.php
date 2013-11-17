@@ -34,8 +34,8 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_examen_blanc/copie_exam.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_examen_blanc/copie_exam.php',
 administrateur='V',
 professeur='V',
@@ -47,7 +47,7 @@ secours='F',
 autre='F',
 description='Examen blanc: Copie',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 
@@ -121,8 +121,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 		$sql="SELECT * FROM ex_examens WHERE id='$id_exam_modele';";
 		//echo "$sql<br />\n";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			$msg="L'examen modèle choisi (<i>$id_exam_modele</i>) n'existe pas.\n";
 		}
 		else {
@@ -132,7 +132,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				if($vider_param_anterieurs=="y") {
 					$sql="DELETE FROM ex_classes WHERE id_exam='$id_exam';";
 					//echo "$sql<br />\n";
-					$del=mysql_query($sql);
+					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$del) {
 						$msg.="Erreur lors du nettoyage des classes.<br />\n";
 						$nb_err++;
@@ -141,16 +141,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 				$sql="SELECT * FROM ex_classes WHERE id_exam='$id_exam_modele';";
 				//echo "$sql<br />\n";
-				$res_modele=mysql_query($sql);
-				if(mysql_num_rows($res_modele)>0) {
-					while($lig_modele=mysql_fetch_object($res_modele)) {
+				$res_modele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_modele)>0) {
+					while($lig_modele=mysqli_fetch_object($res_modele)) {
 						$sql="SELECT 1=1 FROM ex_classes WHERE id_exam='$id_exam' AND id_classe='$lig_modele->id_classe';";
 						//echo "$sql<br />\n";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)==0) {
+						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($test)==0) {
 							$sql="INSERT INTO ex_classes SET id_exam='$id_exam', id_classe='$lig_modele->id_classe';";
 							//echo "$sql<br />\n";
-							$insert=mysql_query($sql);
+							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if(!$insert) {
 								$msg.="Erreur lors de l'association avec la classe ".get_nom_classe($lig_modele->id_classe).".<br />\n";
 								$nb_err++;
@@ -167,7 +167,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				if($vider_param_anterieurs=="y") {
 					$sql="DELETE FROM ex_matieres WHERE id_exam='$id_exam';";
 					//echo "$sql<br />\n";
-					$del=mysql_query($sql);
+					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$del) {
 						$msg.="Erreur lors du nettoyage des matières.<br />\n";
 						$nb_err++;
@@ -176,19 +176,19 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 				$sql="SELECT * FROM ex_matieres WHERE id_exam='$id_exam_modele';";
 				//echo "$sql<br />\n";
-				$res_modele=mysql_query($sql);
-				if(mysql_num_rows($res_modele)>0) {
-					while($lig_modele=mysql_fetch_object($res_modele)) {
+				$res_modele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_modele)>0) {
+					while($lig_modele=mysqli_fetch_object($res_modele)) {
 						$sql="SELECT 1=1 FROM ex_matieres WHERE id_exam='$id_exam' AND matiere='$lig_modele->matiere';";
 						//echo "$sql<br />\n";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)==0) {
+						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($test)==0) {
 							$sql="INSERT INTO ex_matieres SET id_exam='$id_exam', matiere='$lig_modele->matiere'";
 							if($copier_coef=='y') {$sql.=", coef='$lig_modele->coef', bonus='$lig_modele->bonus'";}
 							else {$sql.=", coef='1.0', bonus='n'";}
 							$sql.=";";
 							//echo "$sql<br />\n";
-							$insert=mysql_query($sql);
+							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if(!$insert) {
 								$msg.="Erreur lors de l'association avec la matière ".$lig_modele->matiere."<br />\n";
 								$nb_err++;
@@ -204,16 +204,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			if($copier_coef=="y") {
 				$sql="SELECT * FROM ex_matieres WHERE id_exam='$id_exam_modele';";
 				//echo "$sql<br />\n";
-				$res_modele=mysql_query($sql);
-				if(mysql_num_rows($res_modele)>0) {
-					while($lig_modele=mysql_fetch_object($res_modele)) {
+				$res_modele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_modele)>0) {
+					while($lig_modele=mysqli_fetch_object($res_modele)) {
 						$sql="SELECT 1=1 FROM ex_matieres WHERE id_exam='$id_exam' AND matiere='$lig_modele->matiere';";
 						//echo "$sql<br />\n";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)>0) {
+						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($test)>0) {
 							$sql="UPDATE ex_matieres SET coef='$lig_modele->coef', bonus='$lig_modele->bonus' WHERE id_exam='$id_exam' AND matiere='$lig_modele->matiere';";
 							//echo "$sql<br />\n";
-							$update=mysql_query($sql);
+							$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if(!$update) {
 								$msg.="Erreur lors de la mise à jour des coefficients et bonus de la matière ".$lig_modele->matiere."<br />\n";
 								$nb_err++;
@@ -230,7 +230,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				if($vider_param_anterieurs=="y") {
 					$sql="DELETE FROM ex_groupes WHERE id_exam='$id_exam';";
 					//echo "$sql<br />\n";
-					$del=mysql_query($sql);
+					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if(!$del) {
 						$msg.="Erreur lors du nettoyage des groupes.<br />\n";
 						$nb_err++;
@@ -239,16 +239,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 				$sql="SELECT * FROM ex_groupes WHERE id_exam='$id_exam_modele';";
 				//echo "$sql<br />\n";
-				$res_modele=mysql_query($sql);
-				if(mysql_num_rows($res_modele)>0) {
-					while($lig_modele=mysql_fetch_object($res_modele)) {
+				$res_modele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_modele)>0) {
+					while($lig_modele=mysqli_fetch_object($res_modele)) {
 						$sql="SELECT 1=1 FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='$lig_modele->id_groupe';";
 						//echo "$sql<br />\n";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)==0) {
+						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($test)==0) {
 							$sql="INSERT INTO ex_groupes SET id_exam='$id_exam', id_groupe='$lig_modele->id_groupe', matiere='$lig_modele->matiere', type='$lig_modele->type', id_dev='$lig_modele->id_dev', valeur='$lig_modele->valeur';";
 							//echo "$sql<br />\n";
-							$insert=mysql_query($sql);
+							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if(!$insert) {
 								$msg.="Erreur lors de l'association avec le groupe n°".$lig_modele->id_groupe."<br />\n";
 								$nb_err++;
@@ -295,8 +295,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	echo "</p>\n";
 
 	$sql="SELECT * FROM ex_examens WHERE id!='$id_exam' ORDER BY date, intitule;";
-	$res_autres_exam=mysql_query($sql);
-	if(mysql_num_rows($res_autres_exam)==0) {
+	$res_autres_exam=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_autres_exam)==0) {
 		echo "<p style='color:red'>Aucun autre examen blanc n'est enregistré.</p>\n";
 
 		echo "<p><br /></p>\n";
@@ -306,7 +306,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 	$cpt=0;
 	$tab_exam=array();
-	while($lig_autres_exam=mysql_fetch_object($res_autres_exam)) {
+	while($lig_autres_exam=mysqli_fetch_object($res_autres_exam)) {
 		if(($_SESSION['statut']!='professeur')||
 			(($_SESSION['statut']=='professeur')&&(is_pp_proprio_exb($lig_autres_exam->id)))) {
 			$tab_exam[$cpt]=array();

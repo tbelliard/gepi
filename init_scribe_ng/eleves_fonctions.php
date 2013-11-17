@@ -30,17 +30,17 @@ function vider_tables_avant_import() {
     include("config_init_annuaire.inc.php");
     foreach($liste_tables_del as $table) {
         $sql="SHOW TABLES LIKE '$table';";
-        $test=mysql_query($sql);
-        if(mysql_num_rows($test)>0) {
+        $test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+        if(mysqli_num_rows($test)>0) {
             $query_empty_table = "truncate table $table;";
-            mysql_query($query_empty_table) or die("Impossible de vider les tables.");
+            mysqli_query($GLOBALS["___mysqli_ston"], $query_empty_table) or die("Impossible de vider les tables.");
         }
     }
 }
 
 function vider_table_seule($table_name) {
     $query_empty_table = "truncate table $table_name";
-    mysql_query($query_empty_table) or die("Impossible de vider la table $table_name.");
+    mysqli_query($GLOBALS["___mysqli_ston"], $query_empty_table) or die("Impossible de vider la table $table_name.");
 }
 
 function formater_date_pour_mysql($date) {
@@ -55,7 +55,7 @@ function formater_date_pour_mysql($date) {
 
 function is_table_vide($table_name) {
     $query_count = "select count(*) from $table_name";
-    $count = mysql_result(mysql_query($query_count), 0);
+    $count = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], $query_count), 0);
     return ($count == 0 ? true : false);
 }
 

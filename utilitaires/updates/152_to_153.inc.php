@@ -25,7 +25,7 @@ $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.3" . $rc . $be
 
 
 $result .= "&nbsp;->Extension à 255 caractères du champ 'SESSION_ID' de la table 'log'<br />";
-$query = mysql_query("ALTER TABLE `log` CHANGE `SESSION_ID` `SESSION_ID` VARCHAR( 255 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `log` CHANGE `SESSION_ID` `SESSION_ID` VARCHAR( 255 ) NOT NULL;");
 if ($query) {
         $result .= msj_ok();
 } else {
@@ -240,8 +240,8 @@ if ($test == -1) {
 }
 
 
-$test = mysql_query("SELECT 1=1 FROM message_login;");
-if (mysql_num_rows($test)==0) {
+$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM message_login;");
+if (mysqli_num_rows($test)==0) {
 	$result .= "<br />Insertion d'un message de login: ";
 	$sql="INSERT INTO message_login SET texte='Espace pour un message en page de login paramétrable en Gestion des connexions.';";
 	//echo "$sql<br />";
@@ -252,10 +252,10 @@ if (mysql_num_rows($test)==0) {
 	else {
 		$result.=msj_ok();
 
-		$id_tmp=mysql_insert_id();
+		$id_tmp=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 		$sql="SELECT 1=1 FROM setting WHERE name='message_login';";
-		$test=mysql_query($sql);
-		if (mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if (mysqli_num_rows($test)==0) {
 			$result .= "Insertion de l'indice du message de login: ";
 
 			$sql="INSERT INTO setting SET name='message_login', value='$id_tmp';";
@@ -284,12 +284,12 @@ if (mysql_num_rows($test)==0) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ date_decompte à la table 'messages'<br />";
-$test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM messages LIKE 'date_decompte';"));
+$test_date_decompte=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM messages LIKE 'date_decompte';"));
 if ($test_date_decompte>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE messages ADD date_decompte INT NOT NULL DEFAULT '0';");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE messages ADD date_decompte INT NOT NULL DEFAULT '0';");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -312,7 +312,7 @@ if ($test == -1) {
 	}
 }
 
-$test=mysql_num_rows(mysql_query("SHOW COLUMNS FROM pays LIKE 'nom_court';"));
+$test=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM pays LIKE 'nom_court';"));
 if($test>0) {
 	$result .= "<br />Destruction de la table 'pays' mal formatée.";
 	$sql="DROP TABLE pays;";
@@ -337,12 +337,12 @@ if($test>0) {
 
 //$result="";
 $result.="&nbsp;->Ajout d'un champ 'valeur' à la table 'ex_groupes'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ex_groupes LIKE 'valeur';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM ex_groupes LIKE 'valeur';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE ex_groupes ADD valeur VARCHAR(255) NOT NULL;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE ex_groupes ADD valeur VARCHAR(255) NOT NULL;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -386,8 +386,8 @@ $result .= add_index('periodes','id_classe','`id_classe`');
 //--------------------
 // Admissions Post-Bac
 
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'active_mod_apb'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'active_mod_apb'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('active_mod_apb', 'n');");
   if ($result_inter == '') {
@@ -400,12 +400,12 @@ if ($res_test==0){
 }
 
 $result .= "&nbsp;->Ajout d'un champ apb_niveau à la table 'classes'<br />";
-$test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'apb_niveau';"));
+$test_date_decompte=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM classes LIKE 'apb_niveau';"));
 if ($test_date_decompte>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE classes ADD apb_niveau VARCHAR(15) NOT NULL DEFAULT '';");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE classes ADD apb_niveau VARCHAR(15) NOT NULL DEFAULT '';");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -414,12 +414,12 @@ else {
 }
 
 $result .= "&nbsp;->Ajout d'un champ apb_langue_vivante à la table 'j_groupes_classes'<br />";
-$test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM j_groupes_classes LIKE 'apb_langue_vivante';"));
+$test_date_decompte=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM j_groupes_classes LIKE 'apb_langue_vivante';"));
 if ($test_date_decompte>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE j_groupes_classes ADD apb_langue_vivante VARCHAR(3) NOT NULL DEFAULT '';");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE j_groupes_classes ADD apb_langue_vivante VARCHAR(3) NOT NULL DEFAULT '';");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -467,12 +467,12 @@ if ($test == -1) {
 
 
 $result .= "&nbsp;->Ajout d'un champ message_id à la table 's_incidents'<br />";
-$test=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'message_id';"));
+$test=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_incidents LIKE 'message_id';"));
 if ($test>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL DEFAULT '';");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL DEFAULT '';");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -484,10 +484,10 @@ else {
 // ============= Suppression de tables inutiles pour EDT2
 
 $sql = "SHOW TABLES LIKE 'edt_gr_nom'";
-$req_existence = mysql_query($sql);
-if (mysql_num_rows($req_existence) != 0) {
+$req_existence = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if (mysqli_num_rows($req_existence) != 0) {
     $sql = "DROP TABLE edt_gr_nom";
-    $req_deletion = mysql_query($sql);
+    $req_deletion = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     if ($req_deletion) {
         $result .= "<p style=\"color:green;\">Suppression de la table <strong>edt_gr_nom</strong> : ok</p>";
     }
@@ -500,10 +500,10 @@ else {
 }
 
 $sql = "SHOW TABLES LIKE 'edt_gr_profs'";
-$req_existence = mysql_query($sql);
-if (mysql_num_rows($req_existence) != 0) {
+$req_existence = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if (mysqli_num_rows($req_existence) != 0) {
     $sql = "DROP TABLE edt_gr_profs";
-    $req_deletion = mysql_query($sql);
+    $req_deletion = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     if ($req_deletion) {
         $result .= "<p style=\"color:green;\">Suppression de la table <strong>edt_gr_profs</strong> : ok</p>";
     }
@@ -516,10 +516,10 @@ else {
 }
 
 $sql = "SHOW TABLES LIKE 'edt_gr_classes'";
-$req_existence = mysql_query($sql);
-if (mysql_num_rows($req_existence) != 0) {
+$req_existence = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if (mysqli_num_rows($req_existence) != 0) {
     $sql = "DROP TABLE edt_gr_classes";
-    $req_deletion = mysql_query($sql);
+    $req_deletion = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     if ($req_deletion) {
         $result .= "<p style=\"color:green;\">Suppression de la table <strong>edt_gr_classes</strong> : ok</p>";
     }
@@ -532,10 +532,10 @@ else {
 }
 
 $sql = "SHOW TABLES LIKE 'edt_gr_eleves'";
-$req_existence = mysql_query($sql);
-if (mysql_num_rows($req_existence) != 0) {
+$req_existence = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if (mysqli_num_rows($req_existence) != 0) {
     $sql = "DROP TABLE edt_gr_eleves";
-    $req_deletion = mysql_query($sql);
+    $req_deletion = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     if ($req_deletion) {
         $result .= "<p style=\"color:green;\">Suppression de la table <strong>edt_gr_eleves</strong> : ok</p>";
     }
@@ -550,7 +550,7 @@ else {
 // ============= Renommage d'une table pour EDT2
 
 $sql = "RENAME TABLE absences_creneaux TO edt_creneaux";
-$req_rename = mysql_query($sql);
+$req_rename = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if ($req_rename){
     $result .= "<p style=\"color:green;\">Renommage de la table <strong>absences_creneaux</strong> en <strong>edt_creneaux</strong> : ok.</p>";
 }
@@ -561,7 +561,7 @@ else {
 // ============= Renommage d'une table pour EDT2
 
 $sql = "RENAME TABLE absences_creneaux_bis TO edt_creneaux_bis";
-$req_rename = mysql_query($sql);
+$req_rename = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if ($req_rename){
     $result .= "<p style=\"color:green;\">Renommage de la table <strong>absences_creneaux_bis</strong> en <strong>edt_creneaux_bis</strong> : ok.</p>";
 }
@@ -573,10 +573,10 @@ $result .= add_index('edt_creneaux','heures_debut_fin','heuredebut_definie_perio
 // ============= Insertion d'un champ pour EDT2
 
 $sql = "SELECT jour_creneau FROM edt_creneaux LIMIT 1";
-$req_rank = mysql_query($sql);
+$req_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if (!$req_rank){
     $sql_request = "ALTER TABLE edt_creneaux ADD jour_creneau VARCHAR(20)";
-    $req_add_rank = mysql_query($sql_request);
+    $req_add_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql_request);
     if ($req_add_rank) {
         $result .= "<p style=\"color:green;\">Ajout du champ jour_creneau dans la table <strong>edt_creneaux</strong> : ok.</p>";
     }
@@ -591,12 +591,12 @@ else {
 
 // Sur certaines bases il est arrivé pour une raison inconnue que le champ type_creneaux soit manquant
 $result .= "&nbsp;->Ajout si nécessaire d'un champ 'type_creneaux' à la table 'edt_creneaux'<br />";
-$test_type_creneaux=mysql_num_rows(mysql_query("SHOW COLUMNS FROM edt_creneaux LIKE 'type_creneaux';"));
+$test_type_creneaux=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM edt_creneaux LIKE 'type_creneaux';"));
 if ($test_type_creneaux>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE edt_creneaux ADD type_creneaux VARCHAR( 15 ) NOT NULL AFTER suivi_definie_periode;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE edt_creneaux ADD type_creneaux VARCHAR( 15 ) NOT NULL AFTER suivi_definie_periode;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -607,10 +607,10 @@ else {
 // ============= Insertion d'un champ pour EDT2
 
 $sql = "SELECT id_aid FROM edt_cours LIMIT 1";
-$req_rank = mysql_query($sql);
+$req_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if (!$req_rank){
     $sql_request = "ALTER TABLE edt_cours ADD id_aid CHAR(10) DEFAULT '' ";
-    $req_add_rank = mysql_query($sql_request);
+    $req_add_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql_request);
     if ($req_add_rank) {
         $result .= "<p style=\"color:green;\">Ajout du champ id_aid dans la table <strong>edt_cours</strong> : ok.</p>";
     }
@@ -628,12 +628,12 @@ else {
 // alors que le champ id_aid (dans sa première version) était défini à tort comme un INT
 
 $sql = "SELECT * FROM edt_cours LIMIT 1";
-$req = mysql_query($sql);
+$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 $modif = false;
 if ($req) {
     $i = 0;
-    while ($i < mysql_num_fields($req)) {
-        $meta = mysql_fetch_field($req,$i);
+    while ($i < (($___mysqli_tmp = mysqli_num_fields($req)) ? $___mysqli_tmp : false)) {
+        $meta = (((($___mysqli_tmp = mysqli_fetch_field_direct($req, 0)) && is_object($___mysqli_tmp)) ? ( (!is_null($___mysqli_tmp->primary_key = ($___mysqli_tmp->flags & MYSQLI_PRI_KEY_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->multiple_key = ($___mysqli_tmp->flags & MYSQLI_MULTIPLE_KEY_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->unique_key = ($___mysqli_tmp->flags & MYSQLI_UNIQUE_KEY_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->numeric = (int)(($___mysqli_tmp->type <= MYSQLI_TYPE_INT24) || ($___mysqli_tmp->type == MYSQLI_TYPE_YEAR) || ((defined("MYSQLI_TYPE_NEWDECIMAL")) ? ($___mysqli_tmp->type == MYSQLI_TYPE_NEWDECIMAL) : 0)))) && (!is_null($___mysqli_tmp->blob = (int)in_array($___mysqli_tmp->type, array(MYSQLI_TYPE_TINY_BLOB, MYSQLI_TYPE_BLOB, MYSQLI_TYPE_MEDIUM_BLOB, MYSQLI_TYPE_LONG_BLOB)))) && (!is_null($___mysqli_tmp->unsigned = ($___mysqli_tmp->flags & MYSQLI_UNSIGNED_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->zerofill = ($___mysqli_tmp->flags & MYSQLI_ZEROFILL_FLAG) ? 1 : 0)) && (!is_null($___mysqli_type = $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = (($___mysqli_type == MYSQLI_TYPE_STRING) || ($___mysqli_type == MYSQLI_TYPE_VAR_STRING)) ? "type" : "")) &&(!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && in_array($___mysqli_type, array(MYSQLI_TYPE_TINY, MYSQLI_TYPE_SHORT, MYSQLI_TYPE_LONG, MYSQLI_TYPE_LONGLONG, MYSQLI_TYPE_INT24))) ? "int" : $___mysqli_tmp->type)) &&(!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && in_array($___mysqli_type, array(MYSQLI_TYPE_FLOAT, MYSQLI_TYPE_DOUBLE, MYSQLI_TYPE_DECIMAL, ((defined("MYSQLI_TYPE_NEWDECIMAL")) ? constant("MYSQLI_TYPE_NEWDECIMAL") : -1)))) ? "real" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_TIMESTAMP) ? "timestamp" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_YEAR) ? "year" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && (($___mysqli_type == MYSQLI_TYPE_DATE) || ($___mysqli_type == MYSQLI_TYPE_NEWDATE))) ? "date " : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_TIME) ? "time" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_SET) ? "set" : $___mysqli_tmp->type)) &&(!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_ENUM) ? "enum" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_GEOMETRY) ? "geometry" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_DATETIME) ? "datetime" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && (in_array($___mysqli_type, array(MYSQLI_TYPE_TINY_BLOB, MYSQLI_TYPE_BLOB, MYSQLI_TYPE_MEDIUM_BLOB, MYSQLI_TYPE_LONG_BLOB)))) ? "blob" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_NULL) ? "null" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type) ? "unknown" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->not_null = ($___mysqli_tmp->flags & MYSQLI_NOT_NULL_FLAG) ? 1 : 0)) ) : false ) ? $___mysqli_tmp : false);
         //echo "<p>".$meta->type."</p>";
         if ($meta->name == "id_aid") {
             if ($meta->type == "int") {
@@ -645,19 +645,19 @@ if ($req) {
 }
 if ($modif == true) {
     $sql = "ALTER TABLE edt_cours MODIFY id_aid CHAR(10)";
-    $req = mysql_query($sql);
+    $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     if ($req) {
         $result .= "<p style=\"color:green;\">Changement du type du champ id_aid dans la table <strong>edt_cours</strong> : ok.</p>";
     }
 
     // ============== Faire la mise à niveau du champ id_aid s'il a changé de type
     $sql = "SELECT id_cours, id_groupe, id_aid FROM edt_cours";
-    $req = mysql_query($sql);
+    $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     if ($req) {
-        while ($rep = mysql_fetch_array($req)) {
+        while ($rep = mysqli_fetch_array($req)) {
             if (($rep['id_groupe'] != "") AND ($rep['id_aid'] == "0")) {
                 $sql = "UPDATE edt_cours SET id_aid = '' WHERE id_cours = '".$rep['id_cours']."' ";
-                mysql_query($sql);
+                mysqli_query($GLOBALS["___mysqli_ston"], $sql);
             }
         }
     }
@@ -668,13 +668,13 @@ if ($modif == true) {
 // ============= Mise à niveau de la table edt_cours
 $nb_changes = 0;
 $sql = "SELECT id_groupe, id_cours FROM edt_cours";
-$req_group = mysql_query($sql);
+$req_group = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if ($req_group) {
-    while ($rep_group = mysql_fetch_array($req_group)) {
+    while ($rep_group = mysqli_fetch_array($req_group)) {
         $analyse = explode("|", $rep_group['id_groupe']);
         if ($analyse[0] == "AID") {
             $sql = "UPDATE edt_cours SET id_aid = '".$analyse[1]."', id_groupe = '' WHERE id_cours = '".$rep_group['id_cours']."' ";
-            $req = mysql_query($sql);
+            $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
             $nb_changes++;
         }
     }
@@ -690,16 +690,16 @@ else {
 // ============= Mise à jour de la table edt_semaines
 $changes = false;
 $sql = "SELECT id_edt_semaine FROM edt_semaines";
-$req = mysql_query($sql);
+$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if ($req) {
-    if (mysql_num_rows($req) == 52) {
+    if (mysqli_num_rows($req) == 52) {
         $sql = "INSERT INTO edt_semaines SET id_edt_semaine = '53', num_edt_semaine = '53', type_edt_semaine = '', num_semaines_etab = '0' ";
-        $req_insert = mysql_query($sql);
+        $req_insert = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
         if ($req_insert) {
             $changes = true;
         }
     }
-	elseif(mysql_num_rows($req) == 53) {
+	elseif(mysqli_num_rows($req) == 53) {
 		$result .= "<p style=\"color:blue;\">La table edt_semaines contient bien 53 enregistrements.</p>";
 	}
 }
@@ -711,7 +711,7 @@ if ($changes) {
 // ==== Harmonisation de la taille de clés étrangères
 
 $result .= "&nbsp;->Extension à 255 caractères du champ 'id_matiere' de la table 'j_groupes_matieres'<br />";
-$query = mysql_query("ALTER TABLE `j_groupes_matieres` CHANGE `id_matiere` `id_matiere` VARCHAR( 255 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `j_groupes_matieres` CHANGE `id_matiere` `id_matiere` VARCHAR( 255 ) NOT NULL;");
 if ($query) {
         $result .= msj_ok();
 } else {
@@ -720,7 +720,7 @@ if ($query) {
 
 
 $result .= "&nbsp;->Passage du champ 'id' de la table 'classes' en type Integer(11)<br />";
-$query = mysql_query("ALTER TABLE `classes` CHANGE `id` `id` INT( 11 ) UNSIGNED NOT NULL AUTO_INCREMENT;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `classes` CHANGE `id` `id` INT( 11 ) UNSIGNED NOT NULL AUTO_INCREMENT;");
 if ($query) {
         $result .= msj_ok();
 } else {
@@ -730,8 +730,8 @@ if ($query) {
 
 // Paramètre d'activation de la synchro à la volée Scribe NG
 
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_scribe'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'sso_scribe'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('sso_scribe', 'no');");
   if ($result_inter == '') {
@@ -747,7 +747,7 @@ if ($res_test==0){
 // Modification du type des champs id_mat pour pouvoir dépasser 127
 
 $result .= "&nbsp;->Modification de 'id_mat' de TINYINT en INT dans la table 'notanet'<br />";
-$query = mysql_query("ALTER TABLE notanet CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE notanet CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
 if ($query) {
         $result .= msj_ok();
 } else {
@@ -755,7 +755,7 @@ if ($query) {
 }
 
 $result .= "&nbsp;->Modification de 'id_mat' de TINYINT en INT dans la table 'notanet_corresp'<br />";
-$query = mysql_query("ALTER TABLE notanet_corresp CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE notanet_corresp CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
 if ($query) {
         $result .= msj_ok();
 } else {
@@ -763,7 +763,7 @@ if ($query) {
 }
 
 $result .= "&nbsp;->Modification de 'id_mat' de TINYINT en INT dans la table 'notanet_app'<br />";
-$query = mysql_query("ALTER TABLE notanet_app CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE notanet_app CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
 if ($query) {
         $result .= msj_ok();
 } else {
@@ -772,7 +772,7 @@ if ($query) {
 
 // Modification du type des champs id_classe pour pouvoir dépasser 127
 $result .= "&nbsp;->Modification de 'id_classe' de TINYINT en SMALLINT dans la table 'notanet_verrou'<br />";
-$query = mysql_query("ALTER TABLE notanet_verrou CHANGE id_classe id_classe SMALLINT( 6 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE notanet_verrou CHANGE id_classe id_classe SMALLINT( 6 ) NOT NULL;");
 if ($query) {
         $result .= msj_ok();
 } else {
@@ -782,9 +782,9 @@ if ($query) {
 
 // Ajout d'une colonne sur les ECTS, pour permettre une présaisie par le prof
 $result .= "<br />Modification de la table 'ects_credits' (ajout de la colonne 'mention_prof').<br />";
-$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ects_credits LIKE 'mention_prof'"));
+$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM ects_credits LIKE 'mention_prof'"));
 if ($test == 0) {
-  $query = mysql_query("ALTER TABLE `ects_credits` ADD `mention_prof` VARCHAR(255) AFTER `mention` ;");
+  $query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `ects_credits` ADD `mention_prof` VARCHAR(255) AFTER `mention` ;");
   if ($query) {
     $result .= msj_ok();
   } else {
@@ -795,9 +795,9 @@ if ($test == 0) {
 }
 
 $result .= "<br />Modification de la table 'ects_credits' (changements sur la colonne 'valeur').<br />";
-$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ects_credits LIKE 'valeur'"));
+$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM ects_credits LIKE 'valeur'"));
 if ($test == 1) {
-  $query = mysql_query("ALTER TABLE `ects_credits` CHANGE `valeur` `valeur` VARCHAR(255);");
+  $query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `ects_credits` CHANGE `valeur` `valeur` VARCHAR(255);");
   if ($query) {
     $result .= msj_ok();
   } else {
@@ -808,9 +808,9 @@ if ($test == 1) {
 }
 
 $result .= "<br />Modification de la table 'ects_credits' (changements sur la colonne 'mention').<br />";
-$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ects_credits LIKE 'mention'"));
+$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM ects_credits LIKE 'mention'"));
 if ($test == 1) {
-  $query = mysql_query("ALTER TABLE `ects_credits` CHANGE `mention` `mention` VARCHAR(255);");
+  $query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `ects_credits` CHANGE `mention` `mention` VARCHAR(255);");
   if ($query) {
     $result .= msj_ok();
   } else {
@@ -821,9 +821,9 @@ if ($test == 1) {
 }
 
 $result .= "<br />Modification de la table 'j_groupes_classes' (changements sur la colonne 'valeur_ects').<br />";
-$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM j_groupes_classes LIKE 'valeur_ects'"));
+$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM j_groupes_classes LIKE 'valeur_ects'"));
 if ($test == 1) {
-  $query = mysql_query("ALTER TABLE `j_groupes_classes` CHANGE `valeur_ects` `valeur_ects` INT(11) NULL;");
+  $query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `j_groupes_classes` CHANGE `valeur_ects` `valeur_ects` INT(11) NULL;");
   if ($query) {
     $result .= msj_ok();
   } else {
@@ -835,8 +835,8 @@ if ($test == 1) {
 
 
 // Ajout d'un paramètre de droits d'accès à la pré-saisie des ECTS pour les profs
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'GepiAccesSaisieEctsProf'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'GepiAccesSaisieEctsProf'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('GepiAccesSaisieEctsProf', 'no');");
   if ($result_inter == '') {
@@ -850,8 +850,8 @@ if ($res_test==0){
 
 
 // Ajout d'un paramètre de droits d'accès au tableau récapitulatif des ECTS pour les profs
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'GepiAccesRecapitulatifEctsProf'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'GepiAccesRecapitulatifEctsProf'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('GepiAccesRecapitulatifEctsProf', 'yes');");
   if ($result_inter == '') {
@@ -864,8 +864,8 @@ if ($res_test==0){
 }
 
 // Ajout d'un paramètre de droits d'accès au tableau récapitulatif des ECTS pour la scolarité
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'GepiAccesRecapitulatifEctsScolarite'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'GepiAccesRecapitulatifEctsScolarite'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('GepiAccesRecapitulatifEctsScolarite', 'yes');");
   if ($result_inter == '') {
@@ -880,12 +880,12 @@ if ($res_test==0){
 
 // Ajout d'un champ autoriser_inscript_multiples à la table aid_config
 $result .= "&nbsp;->Ajout d'un champ autoriser_inscript_multiples à la table 'aid_config'<br />";
-$test_autoriser_inscript_multiples=mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid_config LIKE 'autoriser_inscript_multiples';"));
+$test_autoriser_inscript_multiples=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM aid_config LIKE 'autoriser_inscript_multiples';"));
 if ($test_autoriser_inscript_multiples>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE aid_config ADD autoriser_inscript_multiples CHAR(1) DEFAULT 'n';");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE aid_config ADD autoriser_inscript_multiples CHAR(1) DEFAULT 'n';");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -894,7 +894,7 @@ else {
 }
 
 $result .= "<br />&nbsp;->Ajout de la table table matieres_app_corrections<br />";
-$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_app_corrections'"));
+$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'matieres_app_corrections'"));
 if ($test == 0) {
 	$result_inter = traite_requete("CREATE TABLE matieres_app_corrections (login varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY (login,id_groupe,periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
@@ -907,8 +907,8 @@ if ($test == 0) {
 	$result .= msj_present("La table matieres_app_corrections existe déjà.");
 }
 
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'autoriser_correction_bulletin'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'autoriser_correction_bulletin'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('autoriser_correction_bulletin', 'y');");
   if ($result_inter == '') {
@@ -1047,13 +1047,13 @@ if ($test == -1) {
 }
 
 $result .= "<br />&nbsp;->Contrôle de la clé primaire de 'gc_ele_arriv_red'<br />";
-$req_test=mysql_query("SHOW INDEXES FROM gc_ele_arriv_red WHERE Key_name='PRIMARY';");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW INDEXES FROM gc_ele_arriv_red WHERE Key_name='PRIMARY';");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test<2){
-  $query=mysql_query("ALTER TABLE gc_ele_arriv_red DROP PRIMARY KEY;");
+  $query=mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE gc_ele_arriv_red DROP PRIMARY KEY;");
   if ($query) {
     $result.=msj_ok("Suppression de la clé primaire sur 'login' dans 'gc_ele_arriv_red' : Ok");
-    $query=mysql_query("ALTER TABLE gc_ele_arriv_red ADD PRIMARY KEY ( login , projet );");
+    $query=mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE gc_ele_arriv_red ADD PRIMARY KEY ( login , projet );");
     if ($query) {
       $result.=msj_ok("Définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Ok !");
     } else {
@@ -1067,7 +1067,7 @@ if ($res_test<2){
 }
 
 $result .= "<br />&nbsp;->Extension à 255 caractères du champ 'USER_AGENT' de la table 'log'<br />";
-$query = mysql_query("ALTER TABLE log CHANGE USER_AGENT USER_AGENT VARCHAR( 255 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE log CHANGE USER_AGENT USER_AGENT VARCHAR( 255 ) NOT NULL;");
 if ($query) {
         $result .= msj_ok();
 } else {
@@ -1090,12 +1090,12 @@ if ($test == -1) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'id_categorie' à la table 's_incidents'<br />";
-$test=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'id_categorie';"));
+$test=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_incidents LIKE 'id_categorie';"));
 if ($test>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE s_incidents ADD id_categorie INT(11) AFTER nature;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE s_incidents ADD id_categorie INT(11) AFTER nature;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -1105,12 +1105,12 @@ else {
 
 // Ajout Eric modif notification par mail dans le module discipline
 $result .= "&nbsp;->Ajout d'un champ 'adresse' à la table 's_alerte_mail'<br />";
-$test=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_alerte_mail LIKE 'adresse';"));
+$test=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_alerte_mail LIKE 'adresse';"));
 if ($test>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_alerte_mail` ADD `adresse` VARCHAR( 250 ) NULL;");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `s_alerte_mail` ADD `adresse` VARCHAR( 250 ) NULL;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -1121,10 +1121,10 @@ else {
 
 // ============= Insertion d'un champ pour abs2
 $sql = "SELECT date_fin FROM periodes LIMIT 1";
-$req_rank = mysql_query($sql);
+$req_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if (!$req_rank){
     $sql_request = "ALTER TABLE periodes ADD date_fin TIMESTAMP";
-    $req_add_rank = mysql_query($sql_request);
+    $req_add_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql_request);
     if ($req_add_rank) {
         $result .= "<p style=\"color:green;\">Ajout du champ date_fin dans la table <strong>periodes</strong> : ok.</p>";
     }
@@ -1502,9 +1502,9 @@ if ($test == -1) {
 }
 else {
 	$result .= "&nbsp;-> Ajout d'un champ 'num_semaines_etab' à la table 'edt_semaines'<br />";
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM edt_semaines LIKE 'num_semaines_etab';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM edt_semaines LIKE 'num_semaines_etab';"));
 	if ($test_champ==0) {
-		$query = mysql_query("ALTER TABLE edt_semaines ADD num_semaines_etab int(11) NOT NULL default '0';");
+		$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE edt_semaines ADD num_semaines_etab int(11) NOT NULL default '0';");
 		if ($query) {
 				$result .= msj_ok("Ok !");
 		} else {
@@ -1515,10 +1515,10 @@ else {
 	}
 }
 
-$test_champ=mysql_num_rows(mysql_query("SELECT 1=1 FROM edt_semaines;"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM edt_semaines;"));
 if ($test_champ==0) {
 	$result.="<br />Remplissage de la table 'edt_semaines' : ";
-	$query = mysql_query("INSERT INTO `edt_semaines` VALUES (1, 1, 'A', '0'),(2, 2, 'A', '0'),(3, 3, 'A', '0'),(4, 4, 'A', '0'),(5, 5, 'A', '0'),(6, 6, 'A', '0'),(7, 7, 'A', '0'),(8, 8, 'A', '0'),(9, 9, 'A', '0'),(10, 10, 'A', '0'),(11, 11, 'A', '0'),(12, 12, 'A', '0'),(13, 13, 'A', '0'),(14, 14, 'A', '0'),(15, 15, 'A', '0'),(16, 16, 'A', '0'),(17, 17, 'A', '0'),(18, 18, 'A', '0'),(19, 19, 'A', '0'),(20, 20, 'A', '0'),(21, 21, 'A', '0'),(22, 22, 'A', '0'),(23, 23, 'A', '0'),(24, 24, 'A', '0'),(25, 25, 'A', '0'),(26, 26, 'A', '0'),(27, 27, 'A', '0'),(28, 28, 'A', '0'),(29, 29, 'A', '0'),(30, 30, 'A', '0'),(31, 31, 'A', '0'),(32, 32, 'A', '0'),(33, 33, 'A', '0'),(34, 34, 'A', '0'),(35, 35, 'A', '0'),(36, 36, 'A', '0'),(37, 37, 'A', '0'),(38, 38, 'A', '0'),(39, 39, 'A', '0'),(40, 40, 'A', '0'),(41, 41, 'A', '0'),(42, 42, 'A', '0'),(43, 43, 'A', '0'),(44, 44, 'A', '0'),(45, 45, 'A', '0'),(46, 46, 'A', '0'),(47, 47, 'A', '0'),(48, 48, 'A', '0'),(49, 49, 'A', '0'),(50, 50, 'A', '0'),(51, 51, 'A', '0'),(52, 52, 'A', '0'),(53, 53, 'A', '0');
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `edt_semaines` VALUES (1, 1, 'A', '0'),(2, 2, 'A', '0'),(3, 3, 'A', '0'),(4, 4, 'A', '0'),(5, 5, 'A', '0'),(6, 6, 'A', '0'),(7, 7, 'A', '0'),(8, 8, 'A', '0'),(9, 9, 'A', '0'),(10, 10, 'A', '0'),(11, 11, 'A', '0'),(12, 12, 'A', '0'),(13, 13, 'A', '0'),(14, 14, 'A', '0'),(15, 15, 'A', '0'),(16, 16, 'A', '0'),(17, 17, 'A', '0'),(18, 18, 'A', '0'),(19, 19, 'A', '0'),(20, 20, 'A', '0'),(21, 21, 'A', '0'),(22, 22, 'A', '0'),(23, 23, 'A', '0'),(24, 24, 'A', '0'),(25, 25, 'A', '0'),(26, 26, 'A', '0'),(27, 27, 'A', '0'),(28, 28, 'A', '0'),(29, 29, 'A', '0'),(30, 30, 'A', '0'),(31, 31, 'A', '0'),(32, 32, 'A', '0'),(33, 33, 'A', '0'),(34, 34, 'A', '0'),(35, 35, 'A', '0'),(36, 36, 'A', '0'),(37, 37, 'A', '0'),(38, 38, 'A', '0'),(39, 39, 'A', '0'),(40, 40, 'A', '0'),(41, 41, 'A', '0'),(42, 42, 'A', '0'),(43, 43, 'A', '0'),(44, 44, 'A', '0'),(45, 45, 'A', '0'),(46, 46, 'A', '0'),(47, 47, 'A', '0'),(48, 48, 'A', '0'),(49, 49, 'A', '0'),(50, 50, 'A', '0'),(51, 51, 'A', '0'),(52, 52, 'A', '0'),(53, 53, 'A', '0');
 ");
 	if ($query) {
 			$result .= msj_ok("Ok !");
@@ -1547,10 +1547,10 @@ if ($test == -1) {
 // ============= Insertion d'un champ pour le module discipline
 
 $sql = "SELECT commentaire FROM s_incidents LIMIT 1";
-$req_rank = mysql_query($sql);
+$req_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 if (!$req_rank){
     $sql_request = "ALTER TABLE `s_incidents` ADD `commentaire` TEXT NOT NULL ";
-    $req_add_rank = mysql_query($sql_request);
+    $req_add_rank = mysqli_query($GLOBALS["___mysqli_ston"], $sql_request);
     if ($req_add_rank) {
         $result .= "<p style=\"color:green;\">Ajout du champ commentaire dans la table <strong>s_incidents</strong> : ok.</p>";
     }

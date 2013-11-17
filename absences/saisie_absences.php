@@ -76,7 +76,7 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 	} else {
 		$sql="SELECT e.login FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num')";
 	}
-	$quels_eleves = mysql_query($sql);
+	$quels_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	//=========================
 	// AJOUT: boireaus 20071010
@@ -87,8 +87,8 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 	//$app_ele=$_POST['app_ele'];
 	//=========================
 
-	$quels_eleves = mysql_query("SELECT e.login FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND e.login = c.login AND c.periode='$periode_num')");
-	$lignes = mysql_num_rows($quels_eleves);
+	$quels_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND e.login = c.login AND c.periode='$periode_num')");
+	$lignes = mysqli_num_rows($quels_eleves);
 	$j = '0';
 	while($j < $lignes) {
 		$reg_eleve_login = mysql_result($quels_eleves, $j, "login");
@@ -139,12 +139,12 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 					$nb_retard = '';
 				}
 
-				$test_eleve_nb_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
-				$test_nb = mysql_num_rows($test_eleve_nb_absences_query);
+				$test_eleve_nb_absences_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM absences WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
+				$test_nb = mysqli_num_rows($test_eleve_nb_absences_query);
 				if ($test_nb != "0") {
-					$register = mysql_query("UPDATE absences SET nb_absences='$nb_absences', non_justifie='$nb_nj', nb_retards='$nb_retard', appreciation='$ap' WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
+					$register = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE absences SET nb_absences='$nb_absences', non_justifie='$nb_nj', nb_retards='$nb_retard', appreciation='$ap' WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
 				} else {
-					$register = mysql_query("INSERT INTO absences SET login='$reg_eleve_login', periode='$periode_num',nb_absences='$nb_absences',non_justifie='$nb_nj', nb_retards='$nb_retard',appreciation='$ap'");
+					$register = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO absences SET login='$reg_eleve_login', periode='$periode_num',nb_absences='$nb_absences',non_justifie='$nb_nj', nb_retards='$nb_retard',appreciation='$ap'");
 				}
 			if (!$register) {
 					$msg = "Erreur lors de l'enregistrement des données";
@@ -178,7 +178,7 @@ echo add_token_field(true);
 
 
 <?php
-$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
+$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
 ?>
 <p><b>Classe de <?php echo "$classe"; ?> - Saisie des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
@@ -198,16 +198,16 @@ if ((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe'
 } else {
 	$sql="SELECT e.* FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num') order by e.nom, e.prenom";
 }
-$appel_donnees_eleves = mysql_query($sql);
+$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
+$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 $i = '0';
 $num_id=10;
 $alt=1;
 $chaine_test_vocabulaire="";
 while($i < $nombre_lignes) {
 	$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
-	$current_eleve_absences_query = mysql_query("SELECT * FROM  absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
+	$current_eleve_absences_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM  absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 	$current_eleve_nb_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
 	$current_eleve_nb_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
 	$current_eleve_nb_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");

@@ -10,7 +10,7 @@
 
 	if (!is_numeric($_id_classe)) $_id_classe = "0";
 
-	$query = mysql_query("select id, classe, nom_complet ".
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "select id, classe, nom_complet ".
 							"from classes ".
 							"where (" .
 							"id = '" . $_id_classe . "'".
@@ -27,12 +27,12 @@ function get_eleves_classe($_id_classe){
 
 	if (!is_numeric($_id_classe)) $_id_classe = "0";
 
-	$query = mysql_query("SELECT DISTINCT nom, prenom, e.login, id_eleve
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT nom, prenom, e.login, id_eleve
 							FROM j_eleves_classes jec, eleves e
 							WHERE e.login = jec.login
 							AND jec.id_classe = '".$_id_classe."'
 							ORDER BY nom, prenom");
-	$nbre = mysql_num_rows($query);
+	$nbre = mysqli_num_rows($query);
 
 	$retour = array();
 	$retour["nbre"] = $nbre;

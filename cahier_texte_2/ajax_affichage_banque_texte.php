@@ -44,8 +44,8 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_texte_2/ajax_affichage_banque_texte.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/cahier_texte_2/ajax_affichage_banque_texte.php',
 administrateur='F',
 professeur='V',
@@ -57,7 +57,7 @@ secours='F',
 autre='F',
 description='CDT2: Banque de textes à insérer',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 
@@ -83,7 +83,7 @@ id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 login VARCHAR( 255 ) NOT NULL ,
 app TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$resultat_creation_table=mysql_query($sql);
+$resultat_creation_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $editer_banque=isset($_POST['editer_banque']) ? $_POST['editer_banque'] : (isset($_GET['editer_banque']) ? $_GET['editer_banque'] : "n");
 if($editer_banque=='y') {
@@ -156,11 +156,11 @@ if($editer_banque=='y') {
 
 							$sql="SELECT 1=1 FROM banque_cdt WHERE login='".$_SESSION['login']."' AND app='".addslashes($ligne)."';";
 							//echo "$sql<br />";
-							$test=mysql_query($sql);
-							if(mysql_num_rows($test)==0) {
+							$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($test)==0) {
 								$sql="INSERT INTO banque_cdt SET login='".$_SESSION['login']."', app='".addslashes($ligne)."';";
 								//echo "$sql<br />";
-								$insert=mysql_query($sql);
+								$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if($insert) {
 									$nb_reg++;
 								}
@@ -195,7 +195,7 @@ if($editer_banque=='y') {
 		// Nettoyage des txt déjà saisis pour cette classe et ces périodes:
 		$sql="DELETE FROM banque_cdt WHERE login='".$_SESSION['login']."';";
 		//echo "sql=$sql<br />";
-		$resultat_nettoyage=mysql_query($sql);
+		$resultat_nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 		// Validation des saisies/modifs...
 		for($i=1;$i<=$compteur_nb_txt;$i++){
@@ -207,7 +207,7 @@ if($editer_banque=='y') {
 					if($txt_courant!=""){
 						$sql="INSERT INTO banque_cdt SET login='".$_SESSION['login']."', app='$txt_courant';";
 						//echo "sql=$sql<br />";
-						$resultat_insertion_txt=mysql_query($sql);
+						$resultat_insertion_txt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					}
 				}
 			}
@@ -218,9 +218,9 @@ if($editer_banque=='y') {
 	// Recherche des txt déjà saisis:
 	$sql="SELECT DISTINCT app,id FROM banque_cdt WHERE login='".$_SESSION['login']."' ORDER BY app;";
 	//echo "$sql";
-	$resultat_txt=mysql_query($sql);
+	$resultat_txt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	$cpt=1;
-	if(mysql_num_rows($resultat_txt)!=0){
+	if(mysqli_num_rows($resultat_txt)!=0){
 		echo "<p>Voici la liste de vos textes-types&nbsp;:</p>\n";
 		echo "<blockquote>\n";
 		echo "<table class='boireaus' border='1' summary='Textes-types saisis'>\n";
@@ -233,7 +233,7 @@ if($editer_banque=='y') {
 
 		//$cpt=1;
 		$alt=1;
-		while($ligne_txt=mysql_fetch_object($resultat_txt)){
+		while($ligne_txt=mysqli_fetch_object($resultat_txt)){
 			if("$ligne_txt->app"!="$precedent_txt"){
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt' style='text-align:center;'>\n";
@@ -297,8 +297,8 @@ $tab_txt[]='\\\newline';
 $tab_txt[]='\\\phantom{}';
 */
 $sql="SELECT DISTINCT app,id FROM banque_cdt WHERE login='".$_SESSION['login']."' ORDER BY app;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucun texte-type n'est encore saisi.</p>\n";
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?editer_banque=y' title='Editer les textes-types' target='_blank'>Editer les textes-types</a></p>\n";
 }
@@ -306,7 +306,7 @@ else {
 	echo "<p>Cliquez sur le texte à insérer&nbsp;:</p>\n";
 	echo "<table class='boireaus'>\n";
 	$alt=1;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 	//for($loop=0;$loop<count($tab_txt);$loop++) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";

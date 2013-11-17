@@ -72,9 +72,9 @@ function add_user($_login, $_nom, $_prenom, $_sexe, $_statut, $_email) {
 
 
     // Si l'utilisateur existe déjà, on met simplement à jour ses informations...
-    $test = mysql_query("SELECT login FROM utilisateurs WHERE login = '" . $_login . "'");
-    if (mysql_num_rows($test) > 0) {
-        $record = mysql_query("UPDATE utilisateurs SET
+    $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM utilisateurs WHERE login = '" . $_login . "'");
+    if (mysqli_num_rows($test) > 0) {
+        $record = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET
         nom = '" . $_nom . "',
         prenom = '" . $_prenom . "',
         civilite = '" . $_civilite . "',
@@ -95,7 +95,7 @@ function add_user($_login, $_nom, $_prenom, $_sexe, $_statut, $_email) {
         etat ='actif',
         auth_mode='sso',
         change_mdp = 'n'";
-        $record = mysql_query($query);
+        $record = mysqli_query($GLOBALS["___mysqli_ston"], $query);
     }
 
     if ($record) {
@@ -143,7 +143,7 @@ if (isset($_POST['is_posted'])) {
     $result = ldap_read ( $ds, "cn=Profs,".$lcs_ldap_groups_dn, "(objectclass=*)",$attr);
 
     // On met tous les professeurs en état inactif
-    $update = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE statut='professeur'");
+    $update = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET etat='inactif' WHERE statut='professeur'");
     $info = ldap_get_entries ( $ds, $result );
     if ( $info["count"]) {
          for($i=0;$i<$info[0]["memberuid"]["count"];$i++) {

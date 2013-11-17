@@ -42,12 +42,12 @@ if (!checkAccess()) {
 
 
 function test_before_eleve_grp_removal($_login, $_id_groupe, $_periode) {
-    $test = mysql_result(mysql_query("select count(*) FROM matieres_notes WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND periode = '" . $_periode . "')"), 0);
+    $test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "select count(*) FROM matieres_notes WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND periode = '" . $_periode . "')"), 0);
 
-    $test2 = mysql_result(mysql_query("select count(*) FROM matieres_appreciations WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND periode = '" . $_periode . "')"), 0);
+    $test2 = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "select count(*) FROM matieres_appreciations WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND periode = '" . $_periode . "')"), 0);
 
 	// cnd.statut='': on ne compte que les vraies notes: pas abs, disp, - ou v
-    $test3 = mysql_result(mysql_query("select count(*) FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '" . $_login . "' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '" . $_id_groupe . "' AND ccn.periode = '" . $_periode . "')"), 0);
+    $test3 = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "select count(*) FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '" . $_login . "' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '" . $_id_groupe . "' AND ccn.periode = '" . $_periode . "')"), 0);
 
     if ($test == 0 and $test2 == 0 and $test3 == 0) {
         return true;
@@ -82,9 +82,9 @@ if(isset($_POST['enregistrer_repartition'])) {
 	for($i=0;$i<count($id_groupe);$i++) {
 		$tab_eleve[$id_groupe[$i]]=array();
 		$sql="SELECT name FROM groupes WHERE id='".$id_groupe[$i]."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
 			$nom_groupe[$i]=$lig->name;
 		}
 		else {
@@ -94,9 +94,9 @@ if(isset($_POST['enregistrer_repartition'])) {
 
 	for($i=0;$i<count($id_groupe);$i++) {
 		$sql="SELECT login FROM j_eleves_groupes WHERE periode='$num_periode' AND id_groupe='".$id_groupe[$i]."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
 				$tab_eleve[$id_groupe[$i]][]=$lig->login;
 			}
 		}
@@ -109,8 +109,8 @@ if(isset($_POST['enregistrer_repartition'])) {
 		$requete_insertion_assoc_grp_clas="";
 
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='".$login_ele[$j]."' AND periode='$num_periode';";
-		$res_clas=mysql_query($sql);
-		$lig_clas=mysql_fetch_object($res_clas);
+		$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$lig_clas=mysqli_fetch_object($res_clas);
 		$current_id_classe_ele=$lig_clas->id_classe;
 
 		for($i=0;$i<count($id_groupe);$i++) {
@@ -123,12 +123,12 @@ if(isset($_POST['enregistrer_repartition'])) {
 
 					// Vérification s'il y a bien déjà une association du groupe avec la classe:
 					$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_classe='$current_id_classe_ele' AND id_groupe='".$id_groupe[$i]."';";
-					$test_clas_grp=mysql_query($sql);
-					if(mysql_num_rows($test_clas_grp)==0) {
+					$test_clas_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test_clas_grp)==0) {
 						// Récupérer les paramètres de j_groupes_classes pour le groupe actuel pour imposer le même dans l'association avec la classe de l'élève courant
 						$sql="SELECT * FROM j_groupes_classes WHERE id_groupe='".$id_groupe[$i]."' LIMIT 1;";
-						$res_grp=mysql_query($sql);
-						$lig_grp=mysql_fetch_object($res_grp);
+						$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$lig_grp=mysqli_fetch_object($res_grp);
 
 						$requete_insertion_assoc_grp_clas="INSERT INTO j_groupes_classes SET id_classe='$current_id_classe_ele', id_groupe='".$id_groupe[$i]."', priorite='$lig_grp->priorite', coef='$lig_grp->coef', categorie_id='$lig_grp->categorie_id', saisie_ects='$lig_grp->saisie_ects', valeur_ects='$lig_grp->valeur_ects', mode_moy='$lig_grp->mode_moy';";
 					}
@@ -140,7 +140,7 @@ if(isset($_POST['enregistrer_repartition'])) {
 					if(test_before_eleve_grp_removal($login_ele[$j], $id_groupe[$i], $num_periode)) {
 						// On désinscrit effectivement
 						$sql="DELETE FROM j_eleves_groupes WHERE login='".$login_ele[$j]."' AND id_groupe='".$id_groupe[$i]."' AND periode='$num_periode';";
-						$suppr=mysql_query($sql);
+						$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$suppr) {$msg.="Echec de la désinscription de $login_ele[$j] du groupe $nom_groupe[$i] ($id_groupe[$i]) pour la période $num_periode.<br />";} else {$nb_modif++;}
 					}
 					else {
@@ -153,10 +153,10 @@ if(isset($_POST['enregistrer_repartition'])) {
 
 		if(($temoin_insertion_possible=="y")&&($requete_insertion!='')) {
 			// On affecte l'élève dans son nouveau groupe
-			$insert=mysql_query($requete_insertion);
+			$insert=mysqli_query($GLOBALS["___mysqli_ston"], $requete_insertion);
 			if(!$insert) {$msg.="Echec de l'inscription de $login_ele[$j] dans le groupe $nom_groupe[$i] ($id_groupe[$i]) pour la période $num_periode.<br />";} else {$nb_modif++;}
 			if($requete_insertion_assoc_grp_clas!='') {
-				$insert=mysql_query($requete_insertion_assoc_grp_clas);
+				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $requete_insertion_assoc_grp_clas);
 				if(!$insert) {$msg.="Echec de l'insertion de l'association du groupe $nom_groupe[$i] ($id_groupe[$i]) avec la classe de l'élève sur la période $num_periode.<br />";}
 			}
 		}
@@ -194,9 +194,9 @@ if(isset($_POST['enregistrer_recopie'])) {
 	for($i=0;$i<count($id_groupe);$i++) {
 		$tab_eleve[$id_groupe[$i]]=array();
 		$sql="SELECT name FROM groupes WHERE id='".$id_groupe[$i]."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
 			$nom_groupe[$i]=$lig->name;
 		}
 		else {
@@ -213,9 +213,9 @@ if(isset($_POST['enregistrer_recopie'])) {
 			$tab_eleve[$id_groupe[$i]][$m]=array();
 			$sql="SELECT login FROM j_eleves_groupes WHERE periode='$m' AND id_groupe='".$id_groupe[$i]."';";
 			//echo "$sql<br />";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				while($lig=mysql_fetch_object($res)) {
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_eleve[$id_groupe[$i]][$m][]=$lig->login;
 				}
 			}
@@ -233,8 +233,8 @@ if(isset($_POST['enregistrer_recopie'])) {
 		unset($current_id_classe_ele);
 		for($m=1;$m<=$maxper;$m++) {
 			$sql="SELECT id_classe FROM j_eleves_classes WHERE login='".$login_ele[$j]."' AND periode='$m';";
-			$res_clas=mysql_query($sql);
-			$lig_clas=mysql_fetch_object($res_clas);
+			$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$lig_clas=mysqli_fetch_object($res_clas);
 			$current_id_classe_ele[$m]=$lig_clas->id_classe;
 			//echo "\$current_id_classe_ele[$m]=$current_id_classe_ele[$m]<br />\n";
 		}
@@ -261,12 +261,12 @@ if(isset($_POST['enregistrer_recopie'])) {
 	
 						// Vérification s'il y a bien déjà une association du groupe avec la classe:
 						$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_classe='$current_id_classe_ele[$m]' AND id_groupe='".$id_groupe[$i]."';";
-						$test_clas_grp=mysql_query($sql);
-						if(mysql_num_rows($test_clas_grp)==0) {
+						$test_clas_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($test_clas_grp)==0) {
 							// Récupérer les paramètres de j_groupes_classes pour le groupe actuel pour imposer le même dans l'association avec la classe de l'élève courant
 							$sql="SELECT * FROM j_groupes_classes WHERE id_groupe='".$id_groupe[$i]."' LIMIT 1;";
-							$res_grp=mysql_query($sql);
-							$lig_grp=mysql_fetch_object($res_grp);
+							$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$lig_grp=mysqli_fetch_object($res_grp);
 	
 							$requete_insertion_assoc_grp_clas="INSERT INTO j_groupes_classes SET id_classe='$current_id_classe_ele[$m]', id_groupe='".$id_groupe[$i]."', priorite='$lig_grp->priorite', coef='$lig_grp->coef', categorie_id='$lig_grp->categorie_id', saisie_ects='$lig_grp->saisie_ects', valeur_ects='$lig_grp->valeur_ects', mode_moy='$lig_grp->mode_moy';";
 						}
@@ -282,7 +282,7 @@ if(isset($_POST['enregistrer_recopie'])) {
 							// On désinscrit effectivement
 							$sql="DELETE FROM j_eleves_groupes WHERE login='".$login_ele[$j]."' AND id_groupe='".$id_groupe[$i]."' AND periode='$m';";
 							//echo "$sql<br />";
-							$suppr=mysql_query($sql);
+							$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if(!$suppr) {$msg.="Echec de la désinscription de $login_ele[$j] du groupe $nom_groupe[$i] ($id_groupe[$i]) pour la période $m.<br />";}
 							else {$nb_modif++;}
 						}
@@ -295,10 +295,10 @@ if(isset($_POST['enregistrer_recopie'])) {
 
 				if(($temoin_insertion_possible=="y")&&($requete_insertion!='')) {
 					// On affecte l'élève dans son nouveau groupe
-					$insert=mysql_query($requete_insertion);
+					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $requete_insertion);
 					if(!$insert) {$msg.="Echec de l'inscription de $login_ele[$j] dans le groupe $nom_groupe[$i] ($id_groupe[$i]) pour la période $m.<br />";} else {$nb_modif++;}
 					if($requete_insertion_assoc_grp_clas!='') {
-						$insert=mysql_query($requete_insertion_assoc_grp_clas);
+						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $requete_insertion_assoc_grp_clas);
 						if(!$insert) {$msg.="Echec de l'insertion de l'association du groupe $nom_groupe[$i] ($id_groupe[$i]) avec la classe $current_id_classe_ele[$m].<br />";}
 					}
 				}
@@ -332,8 +332,8 @@ if(!isset($id_classe)) {
 	echo "<p><b>Choix des classes&nbsp;:</b><br />\n";
 
 	$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe;";
-	$call_classes=mysql_query($sql);
-	$nb_classes=mysql_num_rows($call_classes);
+	$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_classes=mysqli_num_rows($call_classes);
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 
@@ -348,7 +348,7 @@ if(!isset($id_classe)) {
 	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 	echo "<td align='left'>\n";
 
-	while($lig_clas=mysql_fetch_object($call_classes)) {
+	while($lig_clas=mysqli_fetch_object($call_classes)) {
 
 		//affichage 2 colonnes
 		if(($cpt>0)&&(round($cpt/$nb_classes_par_colonne)==$cpt/$nb_classes_par_colonne)){
@@ -530,10 +530,10 @@ if(!isset($num_periode)) {
 	for($i=0;$i<count($id_classe);$i++) {
 
 		$sql="SELECT MAX(num_periode) AS maxper FROM periodes WHERE id_classe='".$id_classe[$i]."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
 			echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
-			$lig_per=mysql_fetch_object($res);
+			$lig_per=mysqli_fetch_object($res);
 			if($lig_per->maxper>$maxper) {$maxper=$lig_per->maxper;}
 		}
 		else {
@@ -580,9 +580,9 @@ if(!isset($_POST['recopie_select'])) {
 	for($i=0;$i<count($id_groupe);$i++) {
 		echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";
 		$sql="SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='".$id_groupe[$i]."';";
-		$res_clas_grp=mysql_query($sql);
-		if(mysql_num_rows($res_clas_grp)>0) {
-			while($lig_clas_grp=mysql_fetch_object($res_clas_grp)) {
+		$res_clas_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_clas_grp)>0) {
+			while($lig_clas_grp=mysqli_fetch_object($res_clas_grp)) {
 				if(!in_array($lig_clas_grp->id_classe, $id_classe)) {$id_classe[]=$lig_clas_grp->id_classe;}
 			}
 		}
@@ -766,9 +766,9 @@ if(!isset($_POST['recopie_select'])) {
 
 		for($loop=0;$loop<count($id_classe);$loop++) {
 			$sql="SELECT DISTINCT jeg.login FROM j_eleves_classes jec, j_eleves_groupes jeg, eleves e WHERE (jec.id_classe='".$id_classe[$loop]."' AND jec.periode='$num_periode' AND jec.login=jeg.login AND jeg.login=e.login AND ($chaine_groupes) AND jeg.periode='$num_periode') ORDER BY e.nom, e.prenom;";
-			$res_clas_grp=mysql_query($sql);
-			if(mysql_num_rows($res_clas_grp)>0) {
-				while($lig_clas_grp=mysql_fetch_object($res_clas_grp)) {
+			$res_clas_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_clas_grp)>0) {
+				while($lig_clas_grp=mysqli_fetch_object($res_clas_grp)) {
 					$tab_eleve[]=$lig_clas_grp->login;
 				}
 			}
@@ -777,9 +777,9 @@ if(!isset($_POST['recopie_select'])) {
 	else {
 		$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, eleves e WHERE jeg.login=e.login AND ($chaine_groupes) AND jeg.periode='$num_periode' ORDER BY e.nom, e.prenom;";
 		//echo "$sql<br />";
-		$res_ele_grp=mysql_query($sql);
-		if(mysql_num_rows($res_ele_grp)>0) {
-			while($lig_ele_grp=mysql_fetch_object($res_ele_grp)) {
+		$res_ele_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_ele_grp)>0) {
+			while($lig_ele_grp=mysqli_fetch_object($res_ele_grp)) {
 				$tab_eleve[]=$lig_ele_grp->login;
 			}
 		}
@@ -1065,9 +1065,9 @@ else {
 	for($i=0;$i<count($id_classe);$i++) {
 
 		$sql="SELECT MAX(num_periode) AS maxper FROM periodes WHERE id_classe='".$id_classe[$i]."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig_per=mysql_fetch_object($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig_per=mysqli_fetch_object($res);
 			if($lig_per->maxper>$maxper) {$maxper=$lig_per->maxper;}
 		}
 		else {
@@ -1149,8 +1149,8 @@ else {
 			for($j=0;$j<count($tmp_tab_eleve);$j++) {
 				$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe[$i]' AND login='$tmp_tab_eleve[$j]' AND periode='$num_periode';";
 				//echo "$sql<br />";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0) {
+				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($test)>0) {
 					$tab_eleve[]=$tmp_tab_eleve[$j];
 					//echo "$tmp_tab_eleve[$j]<br />";
 				}

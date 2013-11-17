@@ -117,14 +117,14 @@ else {
 					if(($affiche[0]!="")&&($affiche[1]!="")&&($temoin_erreur!="oui")){
 						$alt=$alt*(-1);
 
-						$verif = mysql_query("select matiere, nom_complet from matieres where matiere='$affiche[0]'");
-						$resverif = mysql_num_rows($verif);
+						$verif = mysqli_query($GLOBALS["___mysqli_ston"], "select matiere, nom_complet from matieres where matiere='$affiche[0]'");
+						$resverif = mysqli_num_rows($verif);
 						if($resverif == 0) {
-							$req = mysql_query("insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0',matiere_aid='n',matiere_atelier='n'");
+							$req = mysqli_query($GLOBALS["___mysqli_ston"], "insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0',matiere_aid='n',matiere_atelier='n'");
 							if(!$req) {
 								$nb_reg_no++;
 								//echo mysql_error();
-								echo "<tr class='lig$alt white_hover'><td colspan='2'><font color='red'>".mysql_error()."</font></td></tr>\n";
+								echo "<tr class='lig$alt white_hover'><td colspan='2'><font color='red'>".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</font></td></tr>\n";
 							} else {
 								echo "<tr class='lig$alt white_hover'><td><p><font color='red'>".htmlspecialchars($affiche[0])."</font></p></td><td><p>".htmlspecialchars($affiche[1])."</p></td></tr>\n";
 							}

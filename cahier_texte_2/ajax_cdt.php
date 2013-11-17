@@ -80,16 +80,16 @@ Notez que ces tentatives pourraient provoquer une désactivation de votre compte
 	// Vérifier que l'id_ct_devoir correspond à un cours de l'élève.
 	$sql="SELECT 1=1 FROM ct_devoirs_entry cde, j_eleves_groupes jeg WHERE cde.id_ct='".$id_ct_devoir."' AND cde.id_groupe=jeg.id_groupe AND jeg.login='$login_eleve';";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<img src='../images/icons/sens_interdit.png' class='icone16' title=\"Vous ne suivez pas l'enseignement associé à ce devoir.\" />";
 		die();
 	}
 
 	$date_courante=strftime("%Y-%m-%d %H:%M:%S");
 	$sql="SELECT * FROM ct_devoirs_faits WHERE id_ct='".$id_ct_devoir."' AND login='$login_eleve';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		$nouvel_etat="fait";
 		$sql="INSERT INTO ct_devoirs_faits SET id_ct='".$id_ct_devoir."', login='$login_eleve', date_initiale='$date_courante', date_modif='$date_courante', etat='$nouvel_etat', commentaire='';";
 	}
@@ -103,7 +103,7 @@ Notez que ces tentatives pourraient provoquer une désactivation de votre compte
 		}
 		$sql="UPDATE ct_devoirs_faits SET date_modif='$date_courante', etat='$nouvel_etat', commentaire='' WHERE id_ct='".$id_ct_devoir."' AND login='$login_eleve';";
 	}
-	$reg=mysql_query($sql);
+	$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	if(!$reg) {
 		//echo "<img src='../images/icons/ico_attention.png' class='icone16' title=\"Il s'est produit une erreur.\" />";
 		echo "<img src='../images/icons/ico_attention.png' class='icone16' title=\"Il s'est produit une erreur.

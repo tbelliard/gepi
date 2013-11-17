@@ -278,14 +278,14 @@ echo add_token_field();
 	LEFT JOIN rss_users ru ON jec.login=ru.user_login
 	WHERE ru.user_login IS NULL;";
 	//echo "$sql<br />";
-	$res_ele_sans_flux=mysql_query($sql);
-	if(mysql_num_rows($res_ele_sans_flux)==0) {
+	$res_ele_sans_flux=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_ele_sans_flux)==0) {
 		echo "
 		<p>Tous les élèves ont un flux RSS initialisé.</p>\n";
 	}
 	else {
 		echo "
-		<p>".mysql_num_rows($res_ele_sans_flux)." élève(s) n'a(ont) pas leur flux RSS initialisé.</p>
+		<p>".mysqli_num_rows($res_ele_sans_flux)." élève(s) n'a(ont) pas leur flux RSS initialisé.</p>
 		<table class='boireaus'>
 			<tr>
 				<th><a href=\"javascript:ToutCocher();changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:ToutDecocher();changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></th>
@@ -293,7 +293,7 @@ echo add_token_field();
 			</tr>";
 		$cpt=0;
 		$alt=1;
-		while($lig_ele_sans_flux=mysql_fetch_object($res_ele_sans_flux)) {
+		while($lig_ele_sans_flux=mysqli_fetch_object($res_ele_sans_flux)) {
 			$alt=$alt*(-1);
 			echo "
 			<tr class='lig$alt white_hover'>

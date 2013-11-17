@@ -69,9 +69,9 @@ function get_infos_devoir($id_devoir) {
 	$retour="";
 	$sql="SELECT * FROM cn_devoirs cd WHERE cd.id='$id_devoir';";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
 
 		$retour=$lig->nom_court." (".formate_date($lig->date).")";
 	}

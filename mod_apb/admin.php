@@ -50,11 +50,11 @@ if (isset($_POST['activer'])) {
 if (isset($_POST['posted_selection'])) {
 	check_token();
 	$errors = false;
-	$req_classes = mysql_query('SELECT id,classe,nom_complet,apb_niveau FROM classes ORDER BY classe');
-	while ($classe = mysql_fetch_object($req_classes)) {
+	$req_classes = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT id,classe,nom_complet,apb_niveau FROM classes ORDER BY classe');
+	while ($classe = mysqli_fetch_object($req_classes)) {
 		$new_value = (isset($_POST['classe_'.$classe->id]) && $_POST['classe_'.$classe->id] == '1') ? 'terminale' : '';
 		if ($classe->apb_niveau != $new_value) {
-			$rec_classe = mysql_query("UPDATE classes SET apb_niveau = '".$new_value."' WHERE id = '".$classe->id."'");
+			$rec_classe = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE classes SET apb_niveau = '".$new_value."' WHERE id = '".$classe->id."'");
 			if (!$rec_classe) {
 				$errors = true;
 				$msg .= "Erreur lors de l'enregistrement de la nouvelle valeur pour la classe ".$classe->classe.".";
@@ -67,7 +67,7 @@ if (isset($_POST['posted_selection'])) {
 	}
 }
 
-$req_classes = mysql_query('SELECT id,classe,nom_complet,apb_niveau
+$req_classes = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT id,classe,nom_complet,apb_niveau
 								  FROM classes
 								  ORDER BY classe');
 

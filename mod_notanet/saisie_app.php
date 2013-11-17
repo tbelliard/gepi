@@ -74,9 +74,9 @@ if (isset($_POST['is_posted'])) {
 		if(isset($log_eleve[$i])) {
 			$sql="SELECT 1=1 FROM notanet n, j_eleves_groupes jeg WHERE n.login=jeg.login AND jeg.login='$log_eleve[$i]' AND jeg.id_groupe='$id_groupe';";
 			//echo "$sql<br />";
-			$verif=mysql_query($sql);
+			$verif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-			if(mysql_num_rows($verif)>0) {
+			if(mysqli_num_rows($verif)>0) {
 
 				$nom_log = "app_eleve_".$i;
 
@@ -93,17 +93,17 @@ if (isset($_POST['is_posted'])) {
 
 				$sql="SELECT * FROM notanet_app WHERE (login='$log_eleve[$i]' AND matiere='$matiere');";
 				//echo "$sql<br />";
-				$test_eleve_avis_query=mysql_query($sql);
+				$test_eleve_avis_query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-				$test = mysql_num_rows($test_eleve_avis_query);
+				$test = mysqli_num_rows($test_eleve_avis_query);
 				if ($test != "0") {
 					$sql="UPDATE notanet_app SET appreciation='$app' WHERE (login='$log_eleve[$i]' AND matiere='$matiere');";
 					//echo "$sql<br />";
-					$register=mysql_query($sql);
+					$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				} else {
 					$sql="INSERT INTO notanet_app SET appreciation='$app', login='$log_eleve[$i]', matiere='$matiere';";
 					//echo "$sql<br />";
-					$register=mysql_query($sql);
+					$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				}
 				if (!$register) {
 					$msg = "Erreur lors de l'enregistrement des données pour $log_eleve[$i]<br />";
@@ -171,8 +171,8 @@ if(!isset($id_groupe)) {
 						jgm.id_matiere=n.matiere
 					ORDER BY jgc.id_classe;";
 	//echo "$sql<br />";
-	$res_grp=mysql_query($sql);
-	if(mysql_num_rows($res_grp)==0) {
+	$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_grp)==0) {
 		//echo "<p>Aucune de vos classes n'est concernée par le Brevet des collèges.<br />Ou alors votre administrateur n'a pas encore défini les classes/élèves concernés par le brevet.</p>\n";
 		echo "<p>Aucune de vos classes n'est concernée par le Brevet des collèges.<br />Ou alors votre administrateur n'a pas encore effectué l'extraction des moyennes pour le brevet.</p>\n";
 		require("../lib/footer.inc.php");
@@ -181,7 +181,7 @@ if(!isset($id_groupe)) {
 
 	echo "<p>Choisissez le groupe pour lequel vous souhaitez saisir les appréciations pour les fiches brevet: </p>\n";
 	echo "<ul>\n";
-	while($lig_grp=mysql_fetch_object($res_grp)) {
+	while($lig_grp=mysqli_fetch_object($res_grp)) {
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_groupe=$lig_grp->id'>$lig_grp->description (<i>$lig_grp->classe</i>)</a></li>\n";
 	}
 	echo "</ul>\n";
@@ -254,8 +254,8 @@ else {
 
 			//========================
 			$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login';";
-			$res_ele=mysql_query($sql);
-			$lig_ele=mysql_fetch_object($res_ele);
+			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$lig_ele=mysqli_fetch_object($res_ele);
 			$eleve_elenoet=$lig_ele->elenoet;
 
 			// Photo...
@@ -275,8 +275,8 @@ else {
 									na.matiere=n.matiere
 								);";
 			//echo "<tr><td colspan='3'>$sql</td></tr>";
-			$app_query = mysql_query($sql);
-			if(mysql_num_rows($app_query)>0) {
+			$app_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($app_query)>0) {
 				$eleve_app = @mysql_result($app_query, 0, "appreciation");
 			}
 			else {
@@ -287,9 +287,9 @@ else {
 			//$sql="SELECT * FROM notanet n WHERE (n.login='$eleve_login' AND n.mat='$matiere');";
 			$sql="SELECT n.note FROM notanet n WHERE (n.login='$eleve_login' AND n.matiere='$matiere');";
 			//echo "<tr><td colspan='3'>$sql</td></tr>";
-			$note_query = mysql_query($sql);
+			$note_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-			if(mysql_num_rows($note_query)>0) {
+			if(mysqli_num_rows($note_query)>0) {
 				$eleve_note = @mysql_result($note_query, 0, "note");
 			}
 			else {
@@ -298,11 +298,11 @@ else {
 
 			// Notes des périodes
 			$sql="SELECT * FROM matieres_notes WHERE (login='$eleve_login' AND id_groupe='$id_groupe') ORDER BY periode;";
-			$res_note_trim=mysql_query($sql);
+			$res_note_trim=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 			$eleve_notes_trim="";
-			if(mysql_num_rows($res_note_trim)>0) {
-				while($lig_note_trim=mysql_fetch_object($res_note_trim)) {
+			if(mysqli_num_rows($res_note_trim)>0) {
+				while($lig_note_trim=mysqli_fetch_object($res_note_trim)) {
 					if($lig_note_trim->statut!='') {
 						$eleve_notes_trim.="P.$lig_note_trim->periode&nbsp;: <b>".$lig_note_trim->statut."</b><br />\n";
 					}
@@ -344,8 +344,8 @@ else {
 			echo "<td>\n";
 
 			$sql="SELECT 1=1 FROM notanet WHERE login='$eleve_login';";
-			$test_notanet=mysql_query($sql);
-			if(mysql_num_rows($test_notanet)>0) {
+			$test_notanet=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test_notanet)>0) {
 				echo "<input type='hidden' name='log_eleve[$i]' value=\"".$eleve_login."\" />\n";
 
 
@@ -361,12 +361,12 @@ else {
 										nv.type_brevet=net.type_brevet
 										;";
 				//echo "$sql<br />";
-				$test_verrouillage=mysql_query($sql);
-				if(mysql_num_rows($test_verrouillage)==0) {
+				$test_verrouillage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($test_verrouillage)==0) {
 					$verrou="O";
 				}
 				else {
-					$lig_verrou=mysql_fetch_object($test_verrouillage);
+					$lig_verrou=mysqli_fetch_object($test_verrouillage);
 					$verrou=$lig_verrou->verrouillage;
 				}
 

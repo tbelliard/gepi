@@ -71,36 +71,36 @@ if (is_numeric($id_groupe)) {
 unset($selected_eleve);
 $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] :(isset($_GET["login_eleve"]) ? $_GET["login_eleve"] :false);
 if ($login_eleve) {
-	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '" . $login_eleve . "'"));
+	$selected_eleve = mysqli_fetch_object(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '" . $login_eleve . "'"));
 } else {
 	$selected_eleve = false;
 }
 
 if ($_SESSION['statut'] == 'eleve') {
-	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
+	$selected_eleve = mysqli_fetch_object(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
 }
 elseif ($_SESSION['statut'] == "responsable") {
-	$get_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
+	$get_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '".$_SESSION['login']."')");
 
-	if (mysql_num_rows($get_eleves) == 1) {
+	if (mysqli_num_rows($get_eleves) == 1) {
 			// Un seul élève associé : on initialise tout de suite la variable $selected_eleve
 			// Cela signifie entre autre que l'on ne prend pas en compte $login_eleve, fermant ainsi une
 			// potentielle faille de sécurité.
-		$selected_eleve = mysql_fetch_object($get_eleves);
-	} elseif (mysql_num_rows($get_eleves) == 0) {
+		$selected_eleve = mysqli_fetch_object($get_eleves);
+	} elseif (mysqli_num_rows($get_eleves) == 0) {
 		$selected_eleve = false;
-	} elseif (mysql_num_rows($get_eleves) > 1 and $selected_eleve) {
+	} elseif (mysqli_num_rows($get_eleves) > 1 and $selected_eleve) {
 		// Si on est là, c'est que la variable $login_eleve a été utilisée pour
 		// générer $selected_eleve
 		// On va vérifier que l'élève ainsi sélectionné fait bien partie des élèves
 		// associés à l'utilisateur au statut 'responsable'
 		$ok = false;
-		while($test = mysql_fetch_object($get_eleves)) {
+		while($test = mysqli_fetch_object($get_eleves)) {
 			if ($test->login == $selected_eleve->login) {$ok = true;}
 		}
 		if (!$ok) {$selected_eleve = false;}
@@ -112,8 +112,8 @@ $selected_eleve_login = $selected_eleve ? $selected_eleve->login : "";
 //if($id_classe!='-1') {
 if (($id_classe!=-1)&&($id_classe!='')) {
 	$sql="SELECT classe FROM classes WHERE id='$id_classe';";
-	$appel_classe=mysql_query($sql);
-	if(mysql_num_rows($appel_classe)>0) {
+	$appel_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($appel_classe)>0) {
 		$classe_nom = mysql_result($appel_classe, 0, "classe");
 	}
 }
@@ -187,8 +187,8 @@ echo "<div class='centre_table'>\n";
 			//if((!isset($id_classe))||($id_classe<1)) {
 				$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC LIMIT 1;";
 				//echo "$sql<br />";
-				$res_classe=mysql_query($sql);
-				if(mysql_num_rows($res_classe)>0) {
+				$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_classe)>0) {
 					//$id_classe = mysql_result($res_classe, 0, 'id_classe');
 					$tmp_id_classe = mysql_result($res_classe, 0, 'id_classe');
 				}
@@ -207,8 +207,8 @@ echo "<div class='centre_table'>\n";
 					//$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and (date_ct='' OR date_ct='0'));";
 					$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$tmp_id_groupe' and date_ct='');";
 					//echo "$sql<br />";
-					$appel_info_cahier_texte = mysql_query($sql);
-					$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
+					$appel_info_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
 					$content .= @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 					$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 
@@ -356,12 +356,12 @@ if(($id_groupe=='Toutes_matieres')&&
 	if($id_classe==-1) {
 		// Cas élève
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC LIMIT 1;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			require("../lib/footer.inc.php");
 			die();
 		}
-		$lig=mysql_fetch_object($res);
+		$lig=mysqli_fetch_object($res);
 		$id_classe=$lig->id_classe;
 	}
 
@@ -459,8 +459,8 @@ if(($id_groupe=='Toutes_matieres')&&
 	//$tab_notices_exclues_mail=array();
 
 	$sql="SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe' ORDER BY priorite;";
-	$res=mysql_query($sql);
-	while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	while($lig=mysqli_fetch_object($res)) {
 		$tab_id_grp[]=$lig->id_groupe;
 	}
 
@@ -474,9 +474,9 @@ if(($id_groupe=='Toutes_matieres')&&
 			) ORDER BY date_ct DESC, heure_entry DESC, jgc.priorite DESC;";
 			//) ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre.", jgc.priorite;";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		$cpt=0;
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$date_notice=strftime("%a %d %b %y", $lig->date_ct);
 			$tab_timestamp_dates[$date_notice]=$lig->date_ct;
 
@@ -517,10 +517,10 @@ if(($id_groupe=='Toutes_matieres')&&
 			) ORDER BY date_ct DESC, jgc.priorite DESC;";
 			//) ORDER BY date_ct ".$current_ordre.", jgc.priorite;";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		$cpt=0;
 		$timestamp_courant=time();
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$date_dev=strftime("%a %d %b %y", $lig->date_ct);
 			$tab_timestamp_dates[$date_dev]=$lig->date_ct;
 
@@ -774,8 +774,8 @@ if(($id_groupe=='Toutes_matieres')&&
 
 echo "<hr />\n";
 
-$test_cahier_texte = mysql_query("SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
-$nb_test = mysql_num_rows($test_cahier_texte);
+$test_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
+$nb_test = mysqli_num_rows($test_cahier_texte);
 if ($nb_test == 0) {
 	echo "\n<h2 class='gepi centre_texte'>\n";
 	if ($_SESSION['statut'] == "responsable") {
@@ -798,8 +798,8 @@ if ($nb_test == 0) {
 	die();
 }
 // Affichage des informations générales
-$appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
-$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
+$appel_info_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
+$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 $content .= affiche_docs_joints($id_ct,"c");
@@ -835,8 +835,8 @@ else {
 		ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
 }
 //echo "$req_notices<br />";
-$res_notices = mysql_query($req_notices);
-$notice = mysql_fetch_object($res_notices);
+$res_notices = mysqli_query($GLOBALS["___mysqli_ston"], $req_notices);
+$notice = mysqli_fetch_object($res_notices);
 
 $ts_limite_visibilite_devoirs_pour_eleves=time()+getSettingValue('delai_devoirs')*24*3600;
 
@@ -855,8 +855,8 @@ $req_devoirs =
 	and date_ct >= '".getSettingValue("begin_bookings")."'
 	and date_ct <= '".$ts_limite_dev."'
 	) order by date_ct ".$current_ordre;
-$res_devoirs = mysql_query($req_devoirs);
-$devoir = mysql_fetch_object($res_devoirs);
+$res_devoirs = mysqli_query($GLOBALS["___mysqli_ston"], $req_devoirs);
+$devoir = mysqli_fetch_object($res_devoirs);
 
 $timestamp_courant=time();
 // Boucle d'affichage des notices dans la colonne de gauche
@@ -867,13 +867,13 @@ while (true) {
 		if ($notice && (!$devoir || $notice->date_ct >= $devoir->date_ct)) {
 			// Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
 			$not_dev = $notice;
-			$notice = mysql_fetch_object($res_notices);
+			$notice = mysqli_fetch_object($res_notices);
 
 			$type_notice="notice";
 		} elseif($devoir) {
 			// Plus de notices et toujours un devoir, ou devoir plus récent
 			$not_dev = $devoir;
-			$devoir = mysql_fetch_object($res_devoirs);
+			$devoir = mysqli_fetch_object($res_devoirs);
 
 			$type_notice="devoir";
 		} else {
@@ -885,13 +885,13 @@ while (true) {
 		if ($notice && (!$devoir || $notice->date_ct <= $devoir->date_ct)) {
 			// Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
 			$not_dev = $notice;
-			$notice = mysql_fetch_object($res_notices);
+			$notice = mysqli_fetch_object($res_notices);
 
 			$type_notice="notice";
 		} elseif($devoir) {
 			// Plus de notices et toujours un devoir, ou devoir plus récent
 			$not_dev = $devoir;
-			$devoir = mysql_fetch_object($res_devoirs);
+			$devoir = mysqli_fetch_object($res_devoirs);
 
 			$type_notice="devoir";
 		} else {

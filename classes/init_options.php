@@ -46,12 +46,12 @@ include "../lib/periodes.inc.php";
 if (isset($is_posted) and ($is_posted == 'yes')) {
 	check_token();
 
-    $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' and c.login = e.login)");
-    $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
+    $appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' and c.login = e.login)");
+    $nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
     $i = "0";
     while($i < $nombre_lignes) {
         $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
-        $call_data = mysql_query("SELECT ELEOPT1,ELEOPT2,ELEOPT3,ELEOPT4,ELEOPT5,ELEOPT6,ELEOPT7,ELEOPT8,ELEOPT9,ELEOPT10,ELEOPT11,ELEOPT12 FROM temp_gep_import WHERE LOGIN = '$current_eleve_login'");
+        $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT ELEOPT1,ELEOPT2,ELEOPT3,ELEOPT4,ELEOPT5,ELEOPT6,ELEOPT7,ELEOPT8,ELEOPT9,ELEOPT10,ELEOPT11,ELEOPT12 FROM temp_gep_import WHERE LOGIN = '$current_eleve_login'");
         $j="0";
         while ($j < $nb_options) {
             $temp = "matiere".$j;
@@ -82,10 +82,10 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
                     if ($inser == 'yes') {
                         $k = 1;
                         while ($k < $nb_periode) {
-                            $test = mysql_query("SELECT * FROM j_eleves_matieres WHERE (matiere='$matiere' and login='$current_eleve_login' and periode='$k')");
-                            $nb_test = mysql_num_rows($test);
+                            $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_matieres WHERE (matiere='$matiere' and login='$current_eleve_login' and periode='$k')");
+                            $nb_test = mysqli_num_rows($test);
                             if ($nb_test == 0) {
-                                $reg = mysql_query("INSERT INTO j_eleves_matieres SET matiere='$matiere' , login='$current_eleve_login', periode='$k'");
+                                $reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_eleves_matieres SET matiere='$matiere' , login='$current_eleve_login', periode='$k'");
                             }
                             $k++;
                         }
@@ -93,10 +93,10 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
                 } else {
                     $k = 1;
                     while ($k < $nb_periode) {
-                        $test = mysql_query("SELECT * FROM j_eleves_matieres WHERE (matiere='$matiere' and login='$current_eleve_login' and periode='$k')");
-                        $nb_test = mysql_num_rows($test);
+                        $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_matieres WHERE (matiere='$matiere' and login='$current_eleve_login' and periode='$k')");
+                        $nb_test = mysqli_num_rows($test);
                         if ($nb_test != 0) {
-                            $reg = mysql_query("DELETE FROM j_eleves_matieres WHERE (matiere='$matiere' and login='$current_eleve_login' and periode='$k')");
+                            $reg = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_eleves_matieres WHERE (matiere='$matiere' and login='$current_eleve_login' and periode='$k')");
                         }
                         $k++;
                     }
@@ -127,13 +127,13 @@ require_once("../lib/header.inc.php");
 echo add_token_field();
 
 // Test d'existence de données concernant les options et affichage le cas échéant d'un message d'avertissement
-$test = mysql_query("SELECT * FROM j_eleves_matieres m, j_eleves_classes j, classes c WHERE (m.login=j.login and j.id_classe = c.id and c.id = '$id_classe')");
-$nb = mysql_num_rows($test);
+$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_matieres m, j_eleves_classes j, classes c WHERE (m.login=j.login and j.id_classe = c.id and c.id = '$id_classe')");
+$nb = mysqli_num_rows($test);
 if ($nb != 0) {
     echo "<p><b><font color='red'>ATTENTION : des données concernant les options suivies dans cette classe ont déjà été enregistrées. Si vous validez cette page, les données déjà enregistrées seront effacées et mises à jour.</font></b></p>";
 }
 
-$call_nom_class = mysql_query("SELECT classe, nom_complet FROM classes WHERE id = '$id_classe'");
+$call_nom_class = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe, nom_complet FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_nom_class, 0, 'classe');
 $nom_complet_classe = mysql_result($call_nom_class, 0, 'nom_complet');
 
@@ -149,8 +149,8 @@ $i = 1;
 $info = 'no';
 while ($i < 13) {
     $tempo = "ELEOPT".$i;
-    $call_data = mysql_query("SELECT distinct $tempo FROM temp_gep_import WHERE DIVCOD = '$classe'");
-    $nb_lignes = mysql_num_rows($call_data);
+    $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT distinct $tempo FROM temp_gep_import WHERE DIVCOD = '$classe'");
+    $nb_lignes = mysqli_num_rows($call_data);
     if ($nb_lignes != 0) {
         $info = 'yes';
     }
@@ -197,9 +197,9 @@ while ($i < $nb_options) {
     $temp = "matiere".$i;
     echo "<td><span class=\"small\">";
     echo "<select size=1 name='$temp'>";
-    $callmat = mysql_query("SELECT DISTINCT m.* FROM matieres m, j_classes_matieres_professeurs j WHERE (j.id_classe='$id_classe' and j.id_matiere=m.matiere) ORDER BY m.nom_complet");
+    $callmat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT m.* FROM matieres m, j_classes_matieres_professeurs j WHERE (j.id_classe='$id_classe' and j.id_matiere=m.matiere) ORDER BY m.nom_complet");
 
-    $nb_matieres = mysql_num_rows($callmat);
+    $nb_matieres = mysqli_num_rows($callmat);
     echo "<option value=''>(vide)</option>";
     $j = 0;
     while ($j < $nb_matieres){
@@ -223,15 +223,15 @@ while ($i < $nb_options) {
     ?>
 </tr>
 <?php
-$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login) ORDER BY nom, prenom");
-$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
+$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login) ORDER BY nom, prenom");
+$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 $i = "0";
 while($i < $nombre_lignes) {
     $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
     $current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
     $current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
     echo "<tr><td><p class=\"small\">$current_eleve_nom $current_eleve_prenom</p></td>";
-    $call_data = mysql_query("SELECT ELEOPT1,ELEOPT2,ELEOPT3,ELEOPT4,ELEOPT5,ELEOPT6,ELEOPT7,ELEOPT8,ELEOPT9,ELEOPT10,ELEOPT11,ELEOPT12 FROM temp_gep_import WHERE LOGIN = '$current_eleve_login'");
+    $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT ELEOPT1,ELEOPT2,ELEOPT3,ELEOPT4,ELEOPT5,ELEOPT6,ELEOPT7,ELEOPT8,ELEOPT9,ELEOPT10,ELEOPT11,ELEOPT12 FROM temp_gep_import WHERE LOGIN = '$current_eleve_login'");
     $j="0";
     while ($j < $nb_options) {
         $ind = 1;

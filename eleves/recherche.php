@@ -43,9 +43,9 @@ function extract_utilisateurs($tab_login) {
 
 	for($loop_tab_login=0;$loop_tab_login<count($tab_login);$loop_tab_login++) {
 		$sql="SELECT * FROM utilisateurs WHERE login='".$tab_login[$loop_tab_login]."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
 			$style_ligne="";
 			if($lig->etat=='inactif') {
 				$style_ligne=" style='background-color:grey;'";
@@ -151,9 +151,9 @@ function extract_eleves($tab_login) {
 
 	for($loop_tab_login=0;$loop_tab_login<count($tab_login);$loop_tab_login++) {
 		$sql="SELECT * FROM eleves WHERE login='".$tab_login[$loop_tab_login]."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
 			$restriction_acces="n";
 			if(($_SESSION['statut']=='professeur')&&
 			((!getSettingAOui('GepiAccesGestElevesProf'))||(!is_prof_ele($_SESSION['login'], $lig->login)))) {
@@ -228,10 +228,10 @@ function extract_eleves($tab_login) {
 			$tab_result_recherche['eleve'][$cpt_eleve]['classe']="";
 			$tab_result_recherche['eleve'][$cpt_eleve]['td_classe']="";
 			$sql="SELECT DISTINCT id, classe FROM classes c, j_eleves_classes jec WHERE jec.login='$lig->login' AND jec.id_classe=c.id ORDER BY periode;";
-			$res_classe=mysql_query($sql);
-			if(mysql_num_rows($res_classe)>0) {
+			$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_classe)>0) {
 				$cpt_classe=0;
-				while($lig_classe=mysql_fetch_object($res_classe)) {
+				while($lig_classe=mysqli_fetch_object($res_classe)) {
 					if($cpt_classe>0) {
 						$tab_result_recherche['eleve'][$cpt_eleve]['classe'].=", ";
 						$tab_result_recherche['eleve'][$cpt_eleve]['td_classe'].=", ";
@@ -303,14 +303,14 @@ if(isset($is_posted_recherche)) {
 			$acces_class_const=acces("/classes/classes_const.php", $_SESSION['statut']);
 
 			$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%' AND prenom LIKE '%$rech_prenom%' ORDER BY nom, prenom;";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				// Le tableau $tab_result_recherche['eleve'] est vide 
 			}
 			else {
 				$cpt_eleve=0;
 				$tab_login=array();
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_login[]=$lig->login;
 				}
 				extract_eleves($tab_login);
@@ -329,13 +329,13 @@ if(isset($is_posted_recherche)) {
 			$acces_modify_resp=acces("/responsables/modify_resp.php", $_SESSION['statut']);
 
 			$sql="SELECT * FROM resp_pers WHERE nom LIKE '%$rech_nom%' AND prenom LIKE '%$rech_prenom%' ORDER BY nom, prenom;";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				// Le tableau $tab_result_recherche['responsable'] est vide 
 			}
 			else {
 				$cpt_resp=0;
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_result_recherche['responsable'][$cpt_resp]['pers_id']=$lig->pers_id;
 
 
@@ -404,13 +404,13 @@ if(isset($is_posted_recherche)) {
 			$acces_edit_class=acces("/groupes/edit_class.php", $_SESSION['statut']);
 
 			$sql="SELECT * FROM utilisateurs WHERE nom LIKE '%$rech_nom%' AND prenom LIKE '%$rech_prenom%' AND statut!='eleve' AND statut!='responsable' ORDER BY nom, prenom;";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				// Le tableau $tab_result_recherche['personnel'] est vide 
 			}
 			else {
 				$tab_login=array();
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_login[]=$lig->login;
 				}
 				/*
@@ -453,8 +453,8 @@ if(isset($is_posted_recherche2)) {
 		}
 	}
 	if($sql!="") {
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			$tab_groupes_non_visibles[]=$lig->id_groupe;
 		}
 	}
@@ -464,8 +464,8 @@ if(isset($is_posted_recherche2)) {
 			AND jgm.id_groupe=jgp.id_groupe
 			AND jgp.login=u.login;";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			if(!in_array($lig->login, $tab_login)) {
 				if(!in_array($lig->id_groupe, $tab_groupes_non_visibles)) {
 					$tab_login[]=$lig->login;
@@ -492,8 +492,8 @@ if(isset($is_posted_recherche2b)) {
 		$sql="SELECT DISTINCT u.login FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_matiere='".$rech_matiere[$loop]."'
 			AND jpm.id_professeur=u.login;";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			if(!in_array($lig->login, $tab_login)) {
 				$tab_login[]=$lig->login;
 			}
@@ -524,8 +524,8 @@ if(isset($is_posted_recherche3)) {
 		}
 	}
 	if($sql!="") {
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			$tab_groupes_non_visibles[]=$lig->id_groupe;
 		}
 	}
@@ -535,8 +535,8 @@ if(isset($is_posted_recherche3)) {
 			AND jgc.id_groupe=jgp.id_groupe
 			AND jgp.login=u.login;";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			if(!in_array($lig->login, $tab_login)) {
 				if(!in_array($lig->id_groupe, $tab_groupes_non_visibles)) {
 					$tab_login[]=$lig->login;
@@ -562,8 +562,8 @@ if(isset($is_posted_recherche4)) {
 	for($loop=0;$loop<count($rech_classe);$loop++) {
 		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$rech_classe[$loop]."';";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
 			if(!in_array($lig->login, $tab_login)) {
 				$tab_login[]=$lig->login;
 			}
@@ -1033,10 +1033,10 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 					<?php
 						$tab_classes=array();
 						$sql="SELECT DISTINCT c.* FROM classes c ORDER BY c.classe, c.nom_complet;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)>0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)>0) {
 							$cpt=0;
-							while($lig=mysql_fetch_object($res)) {
+							while($lig=mysqli_fetch_object($res)) {
 								$tab_classes[$cpt]['id_classe']=$lig->id;
 								$tab_classes[$cpt]['classe']=$lig->classe;
 								$tab_classes[$cpt]['nom_complet']=$lig->nom_complet;
@@ -1090,10 +1090,10 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 					<?php
 						$tab_matieres=array();
 						$sql="SELECT DISTINCT m.* FROM matieres m, j_professeurs_matieres jpm ORDER BY m.matiere, m.nom_complet;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)>0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)>0) {
 							$cpt=0;
-							while($lig=mysql_fetch_object($res)) {
+							while($lig=mysqli_fetch_object($res)) {
 								$tab_matieres[$cpt]['matiere']=$lig->matiere;
 								$tab_matieres[$cpt]['nom_complet']=$lig->nom_complet;
 								$cpt++;
@@ -1151,10 +1151,10 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 					<?php
 						$tab_classes=array();
 						$sql="SELECT DISTINCT c.* FROM classes c ORDER BY c.classe, c.nom_complet;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)>0) {
+						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res)>0) {
 							$cpt=0;
-							while($lig=mysql_fetch_object($res)) {
+							while($lig=mysqli_fetch_object($res)) {
 								$tab_classes[$cpt]['id_classe']=$lig->id;
 								$tab_classes[$cpt]['classe']=$lig->classe;
 								$tab_classes[$cpt]['nom_complet']=$lig->nom_complet;

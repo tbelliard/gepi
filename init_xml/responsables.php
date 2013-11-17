@@ -63,7 +63,7 @@ if(!isset($step1)) {
 	$j=0;
 	$flag=0;
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
-		if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+		if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 			$flag=1;
 		}
 		$j++;
@@ -81,12 +81,12 @@ if(!isset($step1)) {
 
 		$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
 		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test)>0) {
 			$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
 			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				echo "<p style='color:red'>Il existe un ou des comptes responsables de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes élèves (s'ils n'ont pas déjà été supprimés) et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
 			}
 		}
@@ -105,7 +105,7 @@ if (!isset($is_posted)) {
 	`resp_legal` VARCHAR( 1 ) NOT NULL ,
 	`pers_contact` VARCHAR( 1 ) NOT NULL
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$res_create_table1=mysql_query($sql);
+	$res_create_table1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	$sql="CREATE TABLE IF NOT EXISTS `resp_adr` (
 	`adr_id` VARCHAR( 10 ) NOT NULL ,
@@ -118,7 +118,7 @@ if (!isset($is_posted)) {
 	`commune` VARCHAR( 50 ) NOT NULL ,
 	PRIMARY KEY ( `adr_id` )
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$res_create_table2=mysql_query($sql);
+	$res_create_table2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	$sql="CREATE TABLE IF NOT EXISTS `resp_pers` (
 	`pers_id` int(11) NOT NULL,
@@ -133,22 +133,22 @@ if (!isset($is_posted)) {
 	`adr_id` varchar(10) NOT NULL,
 	PRIMARY KEY  (`pers_id`)
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$res_create_table3=mysql_query($sql);
+	$res_create_table3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 
 	if(isset($verif_tables_non_vides)) {
 		check_token(false);
 		$j=0;
 		while ($j < count($liste_tables_del)) {
-			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-			$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+			$del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM $liste_tables_del[$j]");
 			}
 			$j++;
 		}
 
 		// Suppression des comptes de responsables:
 		$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
-		$del=mysql_query($sql);
+		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	}
 
 	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
@@ -231,56 +231,56 @@ if (!isset($is_posted)) {
 						}
 						$sql="insert into resp_pers set
 									pers_id = '".preg_replace("/[^0-9]/","",$affiche[0])."',
-									nom = '".mysql_real_escape_string($affiche[1])."',
-									prenom = '".mysql_real_escape_string($affiche[2])."',
-									civilite = '".mysql_real_escape_string(casse_mot($affiche[3],'majf2'))."',
-									tel_pers = '".mysql_real_escape_string($affiche[4])."',
-									tel_port = '".mysql_real_escape_string($affiche[5])."',
-									tel_prof = '".mysql_real_escape_string($affiche[6])."',
-									mel = '".mysql_real_escape_string($affiche[7])."',
+									nom = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									prenom = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									civilite = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], casse_mot($affiche[3],'majf2')) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									tel_pers = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[4]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									tel_port = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[5]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									tel_prof = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[6]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									mel = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[7]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
 									adr_id = '".preg_replace("/[^0-9]/","",$affiche[8])."'
 									";
-						$req = mysql_query($sql);
+						$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$req) {
-							echo "<span style='color:red'>".mysql_error()."</span> sur <span style='color:red'>".$sql."</span><br />\n";
+							echo "<span style='color:red'>".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span> sur <span style='color:red'>".$sql."</span><br />\n";
 							$nb_reg_no3++;
 						} else {
 							$nb_record3++;
 
 							$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$affiche[0]."';";
 							if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-							$res_tmp_u=mysql_query($sql);
-							if(mysql_num_rows($res_tmp_u)>0) {
-								$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+							$res_tmp_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($res_tmp_u)>0) {
+								$lig_tmp_u=mysqli_fetch_object($res_tmp_u);
 
 								$sql="SELECT statut FROM utilisateurs WHERE login='".$lig_tmp_u->login."';";
-								$test_u=mysql_query($sql);
-								if(mysql_num_rows($test_u)>0) {
-									$lig_test_u=mysql_fetch_object($test_u);
+								$test_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								if(mysqli_num_rows($test_u)>0) {
+									$lig_test_u=mysqli_fetch_object($test_u);
 									if($lig_test_u->statut!='responsable') {
 										echo "<span style='color:red;'>ANOMALIE&nbsp;:</span> Un compte d'uilisateur <b>$lig_test_u->statut</b> existait pour le login <b>$lig_tmp_u->login</b> mis en réserve pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"]."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
 									}
 								}
 								else {
 
-									$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($affiche[1])."', prenom='".mysql_real_escape_string($affiche[2])."', ";
+									$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
 									if(isset($affiche[3])){
-										$sql.="civilite='".mysql_real_escape_string(casse_mot($affiche[3],'majf2'))."', ";
+										$sql.="civilite='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], casse_mot($affiche[3],'majf2')) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
 									}
-									$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+									$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig_tmp_u->email) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-									$insert_u=mysql_query($sql);
+									$insert_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 									if(!$insert_u) {
 										echo "Erreur lors de la création du compte utilisateur pour ".$affiche[1]." ".$affiche[2].".<br />";
 									}
 									else {
 										$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$affiche[0]."';";
 										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-										$update_rp=mysql_query($sql);
+										$update_rp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	
 										$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$affiche[0]."';";
 										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-										$update_tmp_u=mysql_query($sql);
+										$update_tmp_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 									}
 								}
 							}
@@ -377,10 +377,10 @@ if (!isset($is_posted)) {
 									resp_legal = '$affiche[2]',
 									pers_contact = '$affiche[3]'
 									";
-						$req = mysql_query($sql);
+						$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$req) {
 							$nb_reg_no1++;
-							echo "<span style='color:red'>".mysql_error()."</span> sur <span style='color:red'>".$sql."</span><br />\n";
+							echo "<span style='color:red'>".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span> sur <span style='color:red'>".$sql."</span><br />\n";
 						} else {
 							$nb_record1++;
 						}
@@ -392,16 +392,16 @@ if (!isset($is_posted)) {
 
 
 			$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0){
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)>0){
 				echo "<p>Suppression de responsabilités sans élève.\n";
 				flush();
 				$cpt_nett=0;
-				while($lig_nett=mysql_fetch_object($test)){
+				while($lig_nett=mysqli_fetch_object($test)){
 					//if($cpt_nett>0){echo ", ";}
 					//echo "<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>".$lig_nett->pers_id."</a>";
 					$sql="DELETE FROM responsables2 WHERE pers_id='$lig_nett->pers_id' AND ele_id='$lig_nett->ele_id';";
-					$nettoyage=mysql_query($sql);
+					$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					//flush();
 					$cpt_nett++;
 				}
@@ -491,18 +491,18 @@ if (!isset($is_posted)) {
 						}
 						$sql="insert into resp_adr set
 									adr_id = '".preg_replace("/[^0-9]/","",$affiche[0])."',
-									adr1 = '".mysql_real_escape_string($affiche[1])."',
-									adr2 = '".mysql_real_escape_string($affiche[2])."',
-									adr3 = '".mysql_real_escape_string($affiche[3])."',
-									adr4 = '".mysql_real_escape_string($affiche[4])."',
-									cp = '".mysql_real_escape_string($affiche[5])."',
-									pays = '".mysql_real_escape_string($affiche[6])."',
-									commune = '".mysql_real_escape_string($affiche[7])."'
+									adr1 = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									adr2 = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									adr3 = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[3]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									adr4 = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[4]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									cp = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[5]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									pays = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[6]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									commune = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[7]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'
 									";
-						$req = mysql_query($sql);
+						$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$req) {
 							$nb_reg_no2++;
-							echo "<span style='color:red'>".mysql_error()."</span> sur <span style='color:red'>".$sql."</span><br />\n";
+							echo "<span style='color:red'>".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span> sur <span style='color:red'>".$sql."</span><br />\n";
 						} else {
 							$nb_record2++;
 						}

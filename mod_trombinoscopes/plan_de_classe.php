@@ -49,8 +49,8 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_trombinoscopes/plan_de_classe.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO droits SET id='/mod_trombinoscopes/plan_de_classe.php',
 	administrateur='F',
 	professeur='V',
@@ -62,7 +62,7 @@ if(mysql_num_rows($test)==0) {
 	autre='F',
 	description='Plan de classe',
 	statut='';";
-	$insert=mysql_query($sql);
+	$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 if (!checkAccess()) {
@@ -82,7 +82,7 @@ id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 id_groupe INT(11) NOT NULL ,
 login_prof VARCHAR(50) NOT NULL ,
 dim_photo INT(11) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS t_plan_de_classe_ele (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -90,7 +90,7 @@ id_plan INT( 11 ) NOT NULL,
 login_ele VARCHAR(50) NOT NULL ,
 x INT(11) NOT NULL ,
 y INT(11) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 // On ne va afficher l'entête que pour le choix du groupe, pas sur la partie réalisation du plan de classe
 if((!isset($id_groupe))||($id_groupe=="")) {
@@ -135,8 +135,8 @@ if((!isset($id_groupe))||($id_groupe=="")) {
 		echo "<td>\n";
 		$dim_photo=100;
 		$sql="SELECT dim_photo FROM t_plan_de_classe WHERE id_groupe='".$tab_groups[$loop]['id']."' AND login_prof='".$_SESSION['login']."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)>0) {
 			$dim_photo=mysql_result($res,0);
 		}
 		echo "<input type='text' name='dim_photo_".$tab_groups[$loop]['id']."' value='$dim_photo' size='3' />";
@@ -194,9 +194,9 @@ if((isset($_POST['trombi_plan_titre']))&&(in_array($_POST['trombi_plan_titre'],a
 $trombi_plan_titre=getPref($_SESSION['login'], 'trombi_plan_titre', 'login');
 
 $sql="SELECT * FROM t_plan_de_classe WHERE id_groupe='$id_groupe' AND login_prof='".$_SESSION['login']."';";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
-	$lig=mysql_fetch_object($res);
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)>0) {
+	$lig=mysqli_fetch_object($res);
 
 	$id_plan=$lig->id;
 
@@ -205,15 +205,15 @@ if(mysql_num_rows($res)>0) {
 		//$sql="UPDATE t_plan_de_classe SET dim_photo='$dim_photo' WHERE id_groupe='$id_groupe' AND login_prof='".$_SESSION['login']."';";
 		$sql="UPDATE t_plan_de_classe SET dim_photo='$dim_photo' WHERE id='$id_plan' AND id_groupe='$id_groupe' AND login_prof='".$_SESSION['login']."';";
 		//echo "$sql<br />";
-		$update=mysql_query($sql);
+		$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	}
 }
 else {
 	$sql="INSERT INTO t_plan_de_classe SET dim_photo='$dim_photo', id_groupe='$id_groupe', login_prof='".$_SESSION['login']."';";
 	//echo "$sql<br />";
-	$insert=mysql_query($sql);
+	$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-	$id_plan=mysql_insert_id();
+	$id_plan=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 }
 
 if(isset($_POST['enregistrer_position'])) {
@@ -225,7 +225,7 @@ if(isset($_POST['enregistrer_position'])) {
 
 		$sql="DELETE FROM t_plan_de_classe_ele WHERE id_plan='$id_plan';";
 		//echo "$sql<br />";
-		$menage=mysql_query($sql);
+		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 		foreach($pos_div_x as $login_ele => $x) {
 			if($x!="") {
@@ -243,7 +243,7 @@ if(isset($_POST['enregistrer_position'])) {
 
 								//$sql="INSERT INTO t_plan_de_classe SET id_groupe='$id_groupe', login='".$_SESSION['login']."', nom='div_".$login_ele."_x', valeur='$x';";
 								$sql="INSERT INTO t_plan_de_classe_ele SET id_plan='$id_plan', login_ele='".$login_ele."', x='$x', y='$y';";
-								$insert=mysql_query($sql);
+								$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							}
 						}
 					}
@@ -271,8 +271,8 @@ AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 GROUP BY nom, prenom
 ORDER BY $grp_order_by;";
 //echo "$sql<br />";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
 
 	echo "<div style='position:absolute; top:0.5em; left:0.5em; width:5em; text-align:center;'>\n";
@@ -358,7 +358,7 @@ $unite_div_infobulle="px";
 $chaine_login_ele="";
 
 $repertoire="eleves";
-while($lig=mysql_fetch_object($res)) {
+while($lig=mysqli_fetch_object($res)) {
 
 	$nom_photo = nom_photo($lig->elenoet,$repertoire);
 	$photo = $nom_photo;
@@ -493,12 +493,12 @@ function positionner_les_photos() {
 \n";
 
 $sql="SELECT * FROM t_plan_de_classe_ele WHERE id_plan='$id_plan';";
-$res_pos=mysql_query($sql);
-if(mysql_num_rows($res_pos)>0) {
+$res_pos=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_pos)>0) {
 	echo "
 	// Positionnement d apres ce qui est enregistre
 ";
-	while($lig_pos=mysql_fetch_object($res_pos)) {
+	while($lig_pos=mysqli_fetch_object($res_pos)) {
 		echo "if(document.getElementById('div_".$lig_pos->login_ele."')) {
 	document.getElementById('div_".$lig_pos->login_ele."').style.top='".$lig_pos->y."px';
 	document.getElementById('div_".$lig_pos->login_ele."').style.left='".$lig_pos->x."px';

@@ -30,12 +30,12 @@ function retourneDevoirs($ele_login){
 	fwrite($fich, strftime("%Y%m%d %H%M%S")." : ".preg_replace("/\t/","",$sql)."\n");
 	fclose($fich);
 	*/
-	$res_ct = mysql_query($sql);
+	$res_ct = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	$cpt2 = 0; // on initialise un compteur pour le while
 
-	if(mysql_num_rows($res_ct)>0) {
+	if(mysqli_num_rows($res_ct)>0) {
 
-		while($lig_ct = mysql_fetch_object($res_ct)) {
+		while($lig_ct = mysqli_fetch_object($res_ct)) {
 
 			$tab_ele['cdt_dev'][$cpt2] = array();
 			$tab_ele['cdt_dev'][$cpt2]['id_ct'] = $lig_ct->id_ct;
@@ -45,11 +45,11 @@ function retourneDevoirs($ele_login){
 			$tab_ele['cdt_dev'][$cpt2]['contenu'] = $lig_ct->contenu;
 
 			$sql="SELECT * FROM ct_devoirs_documents WHERE id_ct_devoir='".$lig_ct->id_ct."' AND visible_eleve_parent='1';";
-			$res_doc_joint=mysql_query($sql);
-			if(mysql_num_rows($res_doc_joint)>0) {
+			$res_doc_joint=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_doc_joint)>0) {
 				$tab_ele['cdt_dev'][$cpt2]['doc_joint'] = array();
 				$cpt_doc=0;
-				while($lig_doc_joint=mysql_fetch_object($res_doc_joint)) {
+				while($lig_doc_joint=mysqli_fetch_object($res_doc_joint)) {
 					$tab_ele['cdt_dev'][$cpt2]['doc_joint'][$cpt_doc]['titre'] = $lig_doc_joint->titre;
 					$tab_ele['cdt_dev'][$cpt2]['doc_joint'][$cpt_doc]['emplacement'] = $lig_doc_joint->emplacement;
 					$cpt_doc++;

@@ -45,8 +45,8 @@ include "../lib/periodes.inc.php";
 if (isset($is_posted) and ($is_posted == 'yes')) {
 	check_token();
     $msg = "";
-    $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' and c.login = e.login)");
-    $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
+    $appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' and c.login = e.login)");
+    $nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
     $i = "0";
     while($i < $nombre_lignes) {
         $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
@@ -55,26 +55,26 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
             //
             // on teste si l'élève appartient à la classe pour la période en cours
             //
-            $call_trim = mysql_query("SELECT periode FROM j_eleves_classes WHERE (id_classe = '$id_classe' and periode = '$j' and login = '$current_eleve_login')");
-            $nb_ligne = mysql_num_rows($call_trim);
+            $call_trim = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT periode FROM j_eleves_classes WHERE (id_classe = '$id_classe' and periode = '$j' and login = '$current_eleve_login')");
+            $nb_ligne = mysqli_num_rows($call_trim);
             if ($nb_ligne != 0) {
                 // si l'élève appartient à la classe pour la période en cours, on continue
                 $temp = $current_eleve_login."_".$j;
                 $option_eleve[$j] = isset($_POST[$temp])?$_POST[$temp]:NULL;
                 if ($option_eleve[$j] == 'yes') {
-                    $delete = mysql_query("DELETE FROM j_eleves_matieres WHERE (matiere='$current_matiere' and login='$current_eleve_login' and periode = '$j') ");
+                    $delete = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_eleves_matieres WHERE (matiere='$current_matiere' and login='$current_eleve_login' and periode = '$j') ");
                 } else {
-                    $test = mysql_query("SELECT * FROM j_eleves_matieres WHERE (matiere='$current_matiere' and login='$current_eleve_login'  and periode = '$j')");
-                    $nb_test = mysql_num_rows($test);
+                    $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_matieres WHERE (matiere='$current_matiere' and login='$current_eleve_login'  and periode = '$j')");
+                    $nb_test = mysqli_num_rows($test);
                     if ($nb_test == 0) {
-                        $test1 = mysql_query("SELECT * FROM matieres_notes WHERE (matiere='$current_matiere' and login='$current_eleve_login' and periode = '$j')");
-                        $nb_test1 = mysql_num_rows($test1);
-                        $test2 = mysql_query("SELECT * FROM matieres_appreciations WHERE (matiere='$current_matiere' and login='$current_eleve_login' and periode = '$j')");
-                        $nb_test2 = mysql_num_rows($test2);
+                        $test1 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_notes WHERE (matiere='$current_matiere' and login='$current_eleve_login' and periode = '$j')");
+                        $nb_test1 = mysqli_num_rows($test1);
+                        $test2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_appreciations WHERE (matiere='$current_matiere' and login='$current_eleve_login' and periode = '$j')");
+                        $nb_test2 = mysqli_num_rows($test2);
                         if (($nb_test1 != 0) or ($nb_test2 != 0)) {
                             $msg = $msg."--> Impossible de supprimer cette option pour l'élève $current_eleve_login car des moyennes ou appréciations ont déjà été rentrées en $current_matiere pour la période $j ! Commencez par supprimer ces données !<br />";
                         } else {
-                            $reg = mysql_query("INSERT INTO j_eleves_matieres SET matiere='$current_matiere' , login='$current_eleve_login', periode='$j'");
+                            $reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_eleves_matieres SET matiere='$current_matiere' , login='$current_eleve_login', periode='$j'");
                         }
                     }
                 }
@@ -151,7 +151,7 @@ function DecochePeriode() {
 
 <?php
 
-$call_nom_class = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
+$call_nom_class = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 
 $classe = mysql_result($call_nom_class, 0, 'classe');
 
@@ -185,9 +185,9 @@ echo "<p class='grand'>Classe : $classe | Matière : $current_matiere</p>";
 
 
 <?php
-$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login) ORDER BY nom, prenom");
+$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login) ORDER BY nom, prenom");
 
-$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
+$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 
 
 
@@ -255,7 +255,7 @@ $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 
     while ($i < $nb_periode) {
 
-        $testquery = mysql_query("SELECT j.login FROM j_eleves_matieres j, j_eleves_classes c WHERE (".
+        $testquery = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT j.login FROM j_eleves_matieres j, j_eleves_classes c WHERE (".
 
                     "j.login = c.login AND " .
 
@@ -271,11 +271,11 @@ $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 
 
 
-        $test = mysql_num_rows($testquery);
+        $test = mysqli_num_rows($testquery);
 
 
 
-        $total_eleves_periode = mysql_num_rows(mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login AND c.periode = '" . $i . "')"));
+        $total_eleves_periode = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login AND c.periode = '" . $i . "')"));
 
 
 
@@ -317,17 +317,17 @@ while($i < $nombre_lignes) {
 
     while ($j < $nb_periode) {
 
-        $call_trim = mysql_query("SELECT periode FROM j_eleves_classes WHERE (id_classe = '$id_classe' and periode = '$j' and login = '$current_eleve_login')");
+        $call_trim = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT periode FROM j_eleves_classes WHERE (id_classe = '$id_classe' and periode = '$j' and login = '$current_eleve_login')");
 
-        $nb_ligne = mysql_num_rows($call_trim);
+        $nb_ligne = mysqli_num_rows($call_trim);
 
         if ($nb_ligne != 0) {
 
             $option_eleve_login[$j] = $current_eleve_login."_".$j;
 
-            $current_eleve_option_query = mysql_query("SELECT * FROM j_eleves_matieres j, j_eleves_classes c WHERE (j.login='$current_eleve_login' AND j.matiere='$current_matiere' AND j.periode = '$j')");
+            $current_eleve_option_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_matieres j, j_eleves_classes c WHERE (j.login='$current_eleve_login' AND j.matiere='$current_matiere' AND j.periode = '$j')");
 
-            $test = mysql_num_rows($current_eleve_option_query);
+            $test = mysqli_num_rows($current_eleve_option_query);
 
             if ($test != "0") {
 

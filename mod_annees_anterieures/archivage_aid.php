@@ -66,25 +66,25 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
   	// Suppression des liens élèves/aid
     $sql="SELECT id FROM archivage_aids WHERE annee='".$_GET['annee_supp']."'";
     $res=sql_query($sql);
-    $nb_lignes = mysql_num_rows($res);
+    $nb_lignes = mysqli_num_rows($res);
     $k=0;
     while($k < $nb_lignes) {
       $id = mysql_result($res,$k,"id");
-      $res_supp=mysql_query("DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
+      $res_supp=mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
       $k++;
     }
     $sql="DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr2=mysql_query($sql);
+		$res_suppr2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
     $sql="DELETE FROM archivage_aids WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr1=mysql_query($sql);
+		$res_suppr1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
     $sql="DELETE FROM archivage_types_aid WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr3=mysql_query($sql);
+		$res_suppr3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
     if (isset($flag_port_folio)) {
       $sql="DELETE FROM port_folio_validations_archives  WHERE annee='".$_GET["annee_supp"]."';";
-  		mysql_query($sql);
+  		mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     }
 
 	// Maintenant, on regarde si l'année est encore utilisée dans archivage_disciplines
@@ -92,7 +92,7 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 	$test = sql_query1("select count(annee) from archivage_disciplines where annee='".$_GET['annee_supp']."'");
 	if ($test == 0) {
 		$sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr4=mysql_query($sql);
+		$res_suppr4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	} else $res_suppr4 = 1;
 
 	// Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
@@ -112,21 +112,21 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_AID")) {
   	// Suppression des liens élèves/aid
     $sql="SELECT id FROM archivage_aids WHERE annee='".$_GET['annee_supp']."' and id_type_aid='".$_GET['type_aid_supp']."'";
     $res=sql_query($sql);
-    $nb_lignes = mysql_num_rows($res);
+    $nb_lignes = mysqli_num_rows($res);
     $k=0;
     while($k < $nb_lignes) {
       $id = mysql_result($res,$k,"id");
-      $res_supp1=mysql_query("DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
-   		$res_supp2=mysql_query("DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."' and id_aid='".$id."'");
+      $res_supp1=mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
+   		$res_supp2=mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."' and id_aid='".$id."'");
       $k++;
     }
 
 
     $sql="DELETE FROM archivage_aids WHERE annee='".$_GET["annee_supp"]."' and id_type_aid='".$_GET['type_aid_supp']."'";
-		$res_suppr1=mysql_query($sql);
+		$res_suppr1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
     $sql="DELETE FROM archivage_types_aid WHERE annee='".$_GET["annee_supp"]."' and id='".$_GET['type_aid_supp']."'";
-		$res_suppr2=mysql_query($sql);
+		$res_suppr2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
     // Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
     suppression_donnees_eleves_inutiles();
@@ -156,13 +156,13 @@ if(!isset($annee_scolaire)){
 
 	$sql="SELECT DISTINCT annee FROM archivage_types_aid ORDER BY annee";
 	$res_annee=sql_query($sql);
-	if(mysql_num_rows($res_annee)==0){
+	if(mysqli_num_rows($res_annee)==0){
 		echo "<p>Aucune année n'est encore sauvegardée.</p>\n";
 	}
 	else{
 		echo "<p>Voici la liste des années sauvegardées :</p>\n";
 		echo "<ul>\n";
-		while($lig_annee=mysql_fetch_object($res_annee)){
+		while($lig_annee=mysqli_fetch_object($res_annee)){
 			$annee_scolaire=$lig_annee->annee;
 			echo "<li><b>Année $annee_scolaire</b> - <a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire.add_token_in_url()."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les données AIDs archivées pour cette année</a></li>\n";
 		}
@@ -191,11 +191,11 @@ if(!isset($annee_scolaire)){
 	$sql="SELECT nom,nom_complet, id FROM archivage_types_aid WHERE annee='$annee_scolaire'";
 	$res_test=sql_query($sql);
 
-	if(mysql_num_rows($res_test)>0){
+	if(mysqli_num_rows($res_test)>0){
     if(!isset($confirmer)){
 			echo "</p></div>\n";
 			$chaine_types_aid='<ul>';
-			while($lig_types_aid=mysql_fetch_object($res_test)){
+			while($lig_types_aid=mysqli_fetch_object($res_test)){
 					$chaine_types_aid.="<li> ".$lig_types_aid->nom." (".$lig_types_aid->nom_complet.")
           - <a href='".$_SERVER['PHP_SELF']."?action=supp_AID&amp;annee_scolaire=".$annee_scolaire."&amp;annee_supp=".$annee_scolaire."&amp;type_aid_supp=".$lig_types_aid->id."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage2')\">Supprimer toutes les données archivées de cette AID</a></li>";
 			}
@@ -227,7 +227,7 @@ if(!isset($annee_scolaire)){
 
 		$sql="SELECT indice_aid,nom,outils_complementaires,nom_complet FROM aid_config ORDER BY nom";
 		$res1=sql_query($sql);
-		$nb_types=mysql_num_rows($res1);
+		$nb_types=mysqli_num_rows($res1);
 		if($nb_types==0){
 			echo "<p>ERREUR: Il semble qu'aucun type d'AID ne soit encore défini.</p>\n";
 			require("../lib/footer.inc.php");
@@ -252,7 +252,7 @@ if(!isset($annee_scolaire)){
 				echo "<td align='left'>\n";
 			}
 
-			$lig_type=mysql_fetch_object($res1);
+			$lig_type=mysqli_fetch_object($res1);
 
 			echo "<input type='checkbox' id='type".$i."' name='id_type[]' value='$lig_type->indice_aid' /> $lig_type->nom ($lig_type->nom_complet)";
       if ($lig_type->outils_complementaires=='y') echo " *";
@@ -300,7 +300,7 @@ if(!isset($annee_scolaire)){
     // Déput du traitement !!!!!
     $sql_aid = "select * from aid_config where indice_aid = '".$id_type[0]."'";
     $res_aid = sql_query($sql_aid);
-    $nb_type = mysql_num_rows($res_aid);
+    $nb_type = mysqli_num_rows($res_aid);
     $i = 0;
     // Boucle sur les types d'AID
     $tab1 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id</b></td><td><b>Année</b></td><td><b>Nom</b></td><td><b>Nom complet</b></td><td><b>Note sur</b></td><td><b>Type de note</b></td></tr>\n";
@@ -333,7 +333,7 @@ if(!isset($annee_scolaire)){
           $tab1 .= "<tr><td colspan=\"6\"><font color=\"red\">Erreur d'enregistrement pour la requête : ".$sql_archiv."</font></td></tr>";
           $flag_tab1 = 1;
 			} else {
-  	      $nouveau_id_type = mysql_insert_id();
+  	      $nouveau_id_type = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
           if ($log_error != 'y') {
             $tab1 .= "<tr><td class='small'>".$nouveau_id_type."</td><td class='small'>".$annee_scolaire."</td><td class='small'>".$nom_type."</td><td class='small'>".$nom_complet_type."</td><td class='small'>".$note_max_type."</td><td class='small'>".$type_note_type."</td></tr>";
             $flag_tab1 = 1;
@@ -344,7 +344,7 @@ if(!isset($annee_scolaire)){
       // Boucle sur les fiches projets
       $sql_aid2 = "select * from aid where indice_aid = '".$id_type[0]."'";
       $res_aid2 = sql_query($sql_aid2);
-      $nb_aid = mysql_num_rows($res_aid2);
+      $nb_aid = mysqli_num_rows($res_aid2);
       $j = 0;
       if ($outils_complementaires == 'y') {
           $tab2 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id AID</b></td><td><b>Année</b></td><td><b>Nom</b></td><td><b>Identifiant type AID</b></td><td><b>Productions</b></td><td><b>Résumé</b></td><td><b>Famille</b></td><td><b>Mots clés</b></td><td><b>Adresse 1</b></td><td><b>Adresse 1</b></td><td><b>Public destinataire</b></td><td><b>Contacts</b></td><td><b>Matière 1</b></td><td><b>Matière 2</b></td><td><b>Fiche publique</b></td><td><b>Affiche adresse 1</b></td><td><b>Moyenne des notes</b></td><td><b>Max des notes</b></td><td><b>Min des notes</b></td><td><b>En construction</b></td><td><b>Liste des professeurs responsables</b></td><td><b>Liste des élèves</b></td><td><b>Liste des élèves responsables</b></td></tr>\n";
@@ -382,7 +382,7 @@ if(!isset($annee_scolaire)){
           FROM utilisateurs u, j_aid_utilisateurs j
           WHERE (j.id_aid='".$id."' and u.login=j.id_utilisateur and j.indice_aid='".$id_type[0]."')
           order by u.nom, u.prenom");
-          $nombre_prof = mysql_num_rows($call_liste_data);
+          $nombre_prof = mysqli_num_rows($call_liste_data);
           $k = "0";
           while ($k < $nombre_prof) {
             if ($liste_profs != "") $liste_profs .= ", ";
@@ -397,7 +397,7 @@ if(!isset($annee_scolaire)){
           $call_liste_data = sql_query("SELECT e.login, e.no_gep, e.nom, e.prenom
           FROM eleves e, j_aid_eleves j
           WHERE (j.id_aid='".$id."' and e.login=j.login and j.indice_aid='".$id_type[0]."')");
-          $nombre = mysql_num_rows($call_liste_data);
+          $nombre = mysqli_num_rows($call_liste_data);
           $k = "0";
           $liste_eleves = "";
           while ($k < $nombre) {
@@ -416,7 +416,7 @@ if(!isset($annee_scolaire)){
           $call_liste_data = sql_query("SELECT e.login, e.no_gep, e.nom, e.prenom
           FROM eleves e, j_aid_eleves_resp j
           WHERE (j.id_aid='".$id."' and e.login=j.login and j.indice_aid='".$id_type[0]."')");
-          $nombre = mysql_num_rows($call_liste_data);
+          $nombre = mysqli_num_rows($call_liste_data);
           $k = "0";
           $liste_eleves_resp = "";
           while ($k < $nombre) {
@@ -433,7 +433,7 @@ if(!isset($annee_scolaire)){
 
         // moyennes, max, min (il s'agit de stats sur l'aid, donc indépendant des classes)
         $sql_moyenne = sql_query("SELECT round(avg(note),1) moyenne, MIN(note) min, Max(note) max, periode FROM aid_appreciations where id_aid='".$id."' and statut='' group by periode order by periode");
-        $nombre = mysql_num_rows($sql_moyenne);
+        $nombre = mysqli_num_rows($sql_moyenne);
         $liste_moyenne = "";
         $liste_min = "";
         $liste_max = "";
@@ -496,7 +496,7 @@ if(!isset($annee_scolaire)){
             $flag_tab2 = 1;
 
 			    } else {
-              $nouveau_id_aid = mysql_insert_id();
+              $nouveau_id_aid = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
               if ($log_error != 'y') {
                 if ($outils_complementaires == 'y')
                   $tab2 .= "<tr><td class='small'>".$nouveau_id_aid."</td><td class='small'>".$annee_scolaire."</td><td class='small'>".$nom."</td><td class='small'>".$nouveau_id_type."</td><td class='small'>".$productions."</td><td class='small'>".$resume."</td><td class='small'>".$famille."</td><td class='small'>".$mots_cles."</td><td class='small'>".$adresse1."</td><td class='small'>".$adresse1."</td><td class='small'>".$public_destinataire."</td><td class='small'>".$contacts."</td><td class='small'>".$matiere1."</td><td class='small'>".$matiere2."</td><td class='small'>".$fiche_publique."</td><td class='small'>".$affiche_adresse1."</td><td class='small'>".$liste_moyenne."</td><td class='small'>".$liste_max."</td><td class='small'>".$liste_min."</td><td class='small'>".$en_construction."</td><td class='small'>".$liste_profs."</td><td class='small'>".$liste_eleves."</td><td class='small'>".$liste_eleves_resp."</td></tr>";
@@ -509,7 +509,7 @@ if(!isset($annee_scolaire)){
           // Enregistrement de archivage_aid_eleve
           $call_liste_data = sql_query("SELECT e.login, e.no_gep FROM eleves e, j_aid_eleves j
           WHERE (j.id_aid='".$id."' and e.login=j.login and j.indice_aid='".$id_type[0]."')");
-          $nombre = mysql_num_rows($call_liste_data);
+          $nombre = mysqli_num_rows($call_liste_data);
           $k = "0";
           while ($k < $nombre) {
             $login_eleve = mysql_result($call_liste_data, $k, "login");
@@ -544,7 +544,7 @@ if(!isset($annee_scolaire)){
 
     				// Appréciation AID, min, max moyennes
             $call_liste_data_app = sql_query("SELECT * FROM aid_appreciations WHERE (id_aid='".$id."' and login='".$login_eleve."')");
-            $nombre_app = mysql_num_rows($call_liste_data_app);
+            $nombre_app = mysqli_num_rows($call_liste_data_app);
             $t = "0";
             while ($t < $nombre_app) {
               $login_eleve = mysql_result($call_liste_data_app, $t, "login");

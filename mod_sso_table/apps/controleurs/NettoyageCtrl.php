@@ -219,7 +219,7 @@ class NettoyageCtrl extends Controleur {
 
   private function get_classes() {
     $res = $this->data->get_infos_classes();
-    while ($this->row = mysql_fetch_array($res)) {
+    while ($this->row = mysqli_fetch_array($res)) {
       $this->table[] = Array('id' => $this->row['id'], 'classe' => $this->row['classe'], 'nom_complet' => $this->row['nom_complet']);
     }
   }

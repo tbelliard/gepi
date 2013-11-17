@@ -76,14 +76,14 @@ if(empty($eleve_absent[0])==true and $mode != 'eleve')
   if($mode === 'classe')
    {
           //je compte les élève si = 0 alors on redirige
-           $cpt_eleves = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."'"),0);
+           $cpt_eleves = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."'"),0);
            	 // christian modif du 15/01/2007 if($cpt_eleves === '0') { header("Location:select.php?type=$type"); }
          //je recherche tous les élèves de la classe sélectionné
            //$requete_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."' GROUP BY nom, prenom";
            $requete_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."' GROUP BY eleves.login, nom, prenom"; // 20100430
-           $execution_eleve = mysql_query($requete_eleve) or die('Erreur SQL !'.$requete_eleve.'<br />'.mysql_error());
+           $execution_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete_eleve) or die('Erreur SQL !'.$requete_eleve.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
            $cpt_eleve = 0;
-           while ($data_eleve = mysql_fetch_array($execution_eleve))
+           while ($data_eleve = mysqli_fetch_array($execution_eleve))
              {
                 //insertion de l'élève dans la varibale $eleve_absent
                  $eleve_absent[$cpt_eleve] = $data_eleve['login'];
@@ -182,7 +182,7 @@ if($action_sql === 'ajouter' or $action_sql === 'modifier')
 
                       if ( $action_sql === "ajouter" ) { $requete="INSERT INTO absences_eleves (type_absence_eleve,eleve_absence_eleve,justify_absence_eleve,info_justify_absence_eleve,motif_absence_eleve,d_date_absence_eleve,a_date_absence_eleve,d_heure_absence_eleve,saisie_absence_eleve) values ('R','$id_absence_eleve_form','$justify_absence_eleve_form','$info_justify_absence_eleve_form','$motif_absence_eleve_form','$d_date_absence_eleve_form','$a_date_absence_eleve_form','$d_heure_absence_eleve_form','".$_SESSION['login']."')"; }
                       if ( $action_sql === "modifier" ) { $requete="UPDATE absences_eleves SET justify_absence_eleve = '$justify_absence_eleve_form', info_justify_absence_eleve = '$info_justify_absence_eleve_form', motif_absence_eleve = '$motif_absence_eleve_form', d_date_absence_eleve = '$d_date_absence_eleve_form', a_date_absence_eleve = '$a_date_absence_eleve_form', d_heure_absence_eleve = '$d_heure_absence_eleve_form', saisie_absence_eleve = '".$_SESSION['login']."' WHERE eleve_absence_eleve = '".$id_absence_eleve_form."' and id_absence_eleve = '".$id."'"; }
-                      $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+                      $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
                    }
             $total = $total + 1;
@@ -212,8 +212,8 @@ if ($action === "supprimer")
     $id_absence_eleve = $_GET['id'];
     $requete_sup = "SELECT eleve_absence_eleve FROM ".$prefix_base."absences_eleves
 								WHERE id_absence_eleve ='$id_absence_eleve'";
-	$resultat_sup = mysql_query($requete_sup) or die('Erreur SQL !'.$requete_sup.'<br />'.mysql_error());
-	$login_eleve = mysql_fetch_array($resultat_sup); 
+	$resultat_sup = mysqli_query($GLOBALS["___mysqli_ston"], $requete_sup) or die('Erreur SQL !'.$requete_sup.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$login_eleve = mysqli_fetch_array($resultat_sup); 
     // Vérification des champs
     if ( $id_absence_eleve != '' )
     {
@@ -224,7 +224,7 @@ if ($action === "supprimer")
         //Requete d'insertion MYSQL
         $requete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_absence_eleve."'";
         // Execution de cette requete
-        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+        mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         if($fiche === 'oui') {
 		 	header("Location:gestion_absences.php?type=R&select_fiche_eleve=$login_eleve[0]&aff_fiche=abseleve#abseleve");
 			} else {
@@ -238,8 +238,8 @@ $i = '0';
 if ($action === "modifier")
 {
         $requete_modif = "SELECT * FROM absences_eleves WHERE id_absence_eleve ='$id'";
-        $resultat_modif = mysql_query($requete_modif) or die('Erreur SQL !'.$requete_modif.'<br />'.mysql_error());
-        while ($data_modif = mysql_fetch_array($resultat_modif))
+        $resultat_modif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_modif) or die('Erreur SQL !'.$requete_modif.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        while ($data_modif = mysqli_fetch_array($resultat_modif))
         {
             $type_absence_eleve[$i] = $data_modif['type_absence_eleve'];
             $eleve_absent[$i] = $data_modif['eleve_absence_eleve'];
@@ -332,8 +332,8 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
          <?php
             if ($erreur === '0') { $requete_id="SELECT * FROM eleves WHERE login='".$eleve_absent[$i]."'"; }
             if ($erreur === '1') { $requete_id="SELECT * FROM ".$prefix_base."eleves WHERE login='".$id_absence_eleve_erreur[$i]."'"; }
-            $resultat_id = mysql_query($requete_id) or die('Erreur SQL !'.$requete_id.'<br />'.mysql_error());
-            while($data_id = mysql_fetch_array ($resultat_id)) {
+            $resultat_id = mysqli_query($GLOBALS["___mysqli_ston"], $requete_id) or die('Erreur SQL !'.$requete_id.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+            while($data_id = mysqli_fetch_array($resultat_id)) {
                 ?><b><?php echo strtoupper($data_id['nom']); ?></b><br /><?php echo ucfirst($data_id['prenom']); ?><br /><?php echo classe_de($data_id['login']); $id_eleve = $data_id['login']; $id_eleve_photo = $data_id['elenoet']; echo '<br />';
             }
           ?>
@@ -342,7 +342,7 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
       </td>
       <td style="text-align: center;">
 	 <?php
-             $compte = mysql_result(mysql_query("SELECT COUNT(*) FROM ".$prefix_base."absences_eleves
+             $compte = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT COUNT(*) FROM ".$prefix_base."absences_eleves
                                                       WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='R'"),0);
                   if (getSettingValue("active_module_trombinoscopes")=='y') {
                   	  $nom_photo = '';
@@ -363,8 +363,8 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
       <td><?php echo "Motif :"; ?><br />
           <select name="motif_absence_eleve[<?php echo $i; ?>]" >
           <?php
-          $resultat_liste_motif = mysql_query($requete_liste_motif) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
-          while ( $data_liste_motif = mysql_fetch_array ($resultat_liste_motif)) { ?>
+          $resultat_liste_motif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_motif) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+          while ( $data_liste_motif = mysqli_fetch_array($resultat_liste_motif)) { ?>
               <option value="<?php echo $data_liste_motif['init_motif_absence']; ?>" <?php if(isset($motif_absence_eleve[$i]) and $motif_absence_eleve[$i] === $data_liste_motif['init_motif_absence']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_motif['init_motif_absence']." - ".$data_liste_motif['def_motif_absence']; ?></option>
           <?php } ?>
           </select><br />
@@ -390,4 +390,4 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
 <?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
-<?php mysql_close(); ?>
+<?php ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res); ?>

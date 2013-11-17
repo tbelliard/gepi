@@ -82,12 +82,12 @@ $etape = isset($_POST["etape"]) ? $_POST["etape"] : (isset($_GET["etape"]) ? $_G
 
 if (file_exists($nom_fic)) {
 	require_once("../secure/connect.inc.php");
-	if (@mysql_connect("$dbHost", "$dbUser", "$dbPass")) {
-		if (@mysql_select_db("$dbDb")) {
-			$call_test = @mysql_query("SELECT * FROM setting WHERE name='sessionMaxLength'");
-			$test2 = @mysql_num_rows($call_test);
-			$call_test = @mysql_query("SELECT * FROM utilisateurs");
-			$test3 = @mysql_num_rows($call_test);
+	if (@($GLOBALS["___mysqli_ston"] = mysqli_connect("$dbHost",  "$dbUser",  "$dbPass"))) {
+		if (@((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE $dbDb"))) {
+			$call_test = @mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM setting WHERE name='sessionMaxLength'");
+			$test2 = @mysqli_num_rows($call_test);
+			$call_test = @mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM utilisateurs");
+			$test3 = @mysqli_num_rows($call_test);
 			if (($test2 !=0) and ($test3 !=0)) {
 				begin_html();
 				if ($etape == 5) {
@@ -113,18 +113,18 @@ if ($etape == 4) {
 	echo "<br /><h2 class='gepi'>Quatrième étape : Création des tables de la base</h2>\n";
 	echo "<p>";
 
-	$link = mysql_connect($_POST['adresse_db'], $_POST['login_db'], $_POST['pass_db']);
+	$link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($_POST['adresse_db'],  $_POST['login_db'],  $_POST['pass_db']));
 
 	if ($_POST['choix_db'] == "new_gepi") {
 		$sel_db = $_POST['table_new'];
-		$result=mysql_query("CREATE DATABASE `$sel_db`;");
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], "CREATE DATABASE `$sel_db`;");
 	}
 	else {
 		$sel_db = $_POST['choix_db'];
 	}
-	mysql_select_db("$sel_db");
-	mysql_query("SET NAMES UTF8");
-	$queryBase = mysql_query("ALTER DATABASE  CHARACTER SET utf8 COLLATE utf8_general_ci");
+	((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE $sel_db"));
+	mysqli_query($GLOBALS["___mysqli_ston"], "SET NAMES UTF8");
+	$queryBase = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER DATABASE  CHARACTER SET utf8 COLLATE utf8_general_ci");
 	
 
 	$fd = fopen("../sql/structure_gepi.sql", "r");
@@ -148,10 +148,10 @@ if ($etape == 4) {
 		//if((mb_substr($query,-1)==";")&&(mb_substr($query,0,3)!="-- ")) {
 		//=============================================
 		if ($query!="") {
-			$reg = mysql_query($query);
+			$reg = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			if (!$reg) {
 				echo "<p><font color=red>ERROR</font> : '$query' : ";
-				echo "<p>Erreur retournée : ".mysql_error()."</p>\n";
+				echo "<p>Erreur retournée : ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</p>\n";
 				$result_ok = 'no';
 			}
 		}
@@ -168,10 +168,10 @@ if ($etape == 4) {
 			//if (mb_substr($query,-1)==";") {
 			if((mb_substr($query,-1)==";")&&(mb_substr($query,0,3)!="-- ")) {
 			//=============================================
-				$reg = mysql_query($query);
+				$reg = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				if (!$reg) {
 					echo "<p><font color=red>ERROR</font> : '$query'</p>\n";
-					echo "<p>Erreur retournée : ".mysql_error()."</p>\n";
+					echo "<p>Erreur retournée : ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</p>\n";
 					$result_ok = 'no';
 				}
 			}
@@ -227,13 +227,13 @@ if ($etape == 4) {
 	// pour l'encodage des noms de fichier des photos élèves
 	if ($result_ok == 'yes') {
 	// on récupère la valeur de 'encodage_nom_photo' dans la table 'setting'
-		$R_encodage=@mysql_query("SELECT `VALUE` FROM `setting` WHERE `NAME`='encodage_nom_photo' LIMIT 1");
+		$R_encodage=@mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='encodage_nom_photo' LIMIT 1");
 		if (!$R_encodage) {$ok='no';
 		} else {
 				$encodage=@mysql_result($R_encodage,0);
 				if ($encodage=="yes") {
 					// on récupère la valeur de 'alea_nom_photo' dans la table 'setting'
-					$R_alea=@mysql_query("SELECT `VALUE` FROM `setting` WHERE `NAME`='alea_nom_photo' LIMIT 1");
+					$R_alea=@mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='alea_nom_photo' LIMIT 1");
 					if (!$R_alea) {$ok='no';
 					} else { 
 						$alea=@mysql_result($R_alea,0);
@@ -281,17 +281,17 @@ else if ($etape == 3) {
 	echo "<input type='hidden' name='login_db' value=\"".$_POST['login_db']."\" />\n";
 	echo "<input type='hidden' name='pass_db' value=\"".$_POST['pass_db']."\" /></p>\n";
 
-	$link = @mysql_connect($_POST['adresse_db'],$_POST['login_db'],$_POST['pass_db']);
-	$result = @mysql_list_dbs();
+	$link = @($GLOBALS["___mysqli_ston"] = mysqli_connect($_POST['adresse_db'], $_POST['login_db'], $_POST['pass_db']));
+	$result = @(($___mysqli_tmp = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW DATABASES")) ? $___mysqli_tmp : false);
 
 	echo "<fieldset><label><strong>Choisissez votre base :</strong><br /></label>\n";
 	$checked = false;
-	if ($result AND (($n = @mysql_num_rows($result)) > 0)) {
+	if ($result AND (($n = @mysqli_num_rows($result)) > 0)) {
 		echo "<p><strong>Le serveur MySQL contient plusieurs bases de données.<br />Sélectionnez celle dans laquelle vous voulez implanter GEPI</strong></p>\n";
 		echo "<ul>\n";
 		$bases = "";
 		for ($i = 0; $i < $n; $i++) {
-			$table_nom = mysql_dbname($result, $i);
+			$table_nom = ((mysqli_data_seek($result,  $i) && (($___mysqli_tmp = mysqli_fetch_row($result)) !== NULL)) ? array_shift($___mysqli_tmp) : false);
 			//$base = "<input name=\"choix_db\" value=\"".$table_nom."\" type='radio' id='tab$i'";
 			//$base_fin = " /><label for='tab$i'>".$table_nom."</label><br />\n";
 			$base = "<li style='list-style-type:none;'><input name=\"choix_db\" value=\"".$table_nom."\" type='radio' id='tab$i'";
@@ -343,8 +343,8 @@ else if ($etape == 2) {
 	echo "<br /><h2 class='gepi'>Deuxième étape : Essai de connexion au serveur Mysql</h2>\n";
 
 	echo "<!--";
-	$link = mysql_connect($_POST['adresse_db'],$_POST['login_db'],$_POST['pass_db'],true);
-	$db_connect = mysql_errno();
+	$link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($_POST['adresse_db'], $_POST['login_db'], $_POST['pass_db']));
+	$db_connect = ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 	echo "-->\n";
 
 	//echo "<p>\n";
@@ -365,7 +365,7 @@ else if ($etape == 2) {
 	else {
 		echo "<B>La connexion au serveur MySQL a échoué.</B>\n";
 		echo "<p>Revenez à la page précédente, et vérifiez les informations que vous avez fournies.</p>\n";
-		echo mysql_error();
+		echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	}
 
 	end_html();

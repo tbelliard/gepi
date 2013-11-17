@@ -74,35 +74,35 @@ if (is_numeric($id_groupe)) {
 unset($selected_eleve);
 $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] :(isset($_GET["login_eleve"]) ? $_GET["login_eleve"] :false);
 if ($login_eleve) {
-	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '" . $login_eleve . "'"));
+	$selected_eleve = mysqli_fetch_object(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '" . $login_eleve . "'"));
 } else {
 	$selected_eleve = false;
 }
 
 if ($_SESSION['statut'] == 'eleve') {
-	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
+	$selected_eleve = mysqli_fetch_object(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
 } elseif ($_SESSION['statut'] == "responsable") {
-	$get_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
+	$get_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '".$_SESSION['login']."')");
 
-	if (mysql_num_rows($get_eleves) == 1) {
+	if (mysqli_num_rows($get_eleves) == 1) {
 			// Un seul élève associé : on initialise tout de suite la variable $selected_eleve
 			// Cela signifie entre autre que l'on ne prend pas en compte $login_eleve, fermant ainsi une
 			// potentielle faille de sécurité.
-		$selected_eleve = mysql_fetch_object($get_eleves);
-	} elseif (mysql_num_rows($get_eleves) == 0) {
+		$selected_eleve = mysqli_fetch_object($get_eleves);
+	} elseif (mysqli_num_rows($get_eleves) == 0) {
 		$selected_eleve = false;
-	} elseif (mysql_num_rows($get_eleves) > 1 and $selected_eleve) {
+	} elseif (mysqli_num_rows($get_eleves) > 1 and $selected_eleve) {
 		// Si on est là, c'est que la variable $login_eleve a été utilisée pour
 		// générer $selected_eleve
 		// On va vérifier que l'élève ainsi sélectionné fait bien partie des élèves
 		// associés à l'utilisateur au statut 'responsable'
 		$ok = false;
-		while($test = mysql_fetch_object($get_eleves)) {
+		while($test = mysqli_fetch_object($get_eleves)) {
 			if ($test->login == $selected_eleve->login) $ok = true;
 		}
 		if (!$ok) $selected_eleve = false;
@@ -111,7 +111,7 @@ if ($_SESSION['statut'] == 'eleve') {
 $selected_eleve_login = $selected_eleve ? $selected_eleve->login : "";
 
 // Nom complet de la classe
-$appel_classe = mysql_query("SELECT classe FROM classes WHERE id='$id_classe'");
+$appel_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id='$id_classe'");
 $classe_nom = @mysql_result($appel_classe, 0, "classe");
 
 // Nom complet de la matière
@@ -226,8 +226,8 @@ if ($current_group) {
 }
 
 echo "<hr />";
-$test_cahier_texte = mysql_query("SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
-$nb_test = mysql_num_rows($test_cahier_texte);
+$test_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
+$nb_test = mysqli_num_rows($test_cahier_texte);
 if ($nb_test == 0) {
 	echo "\n<h2 class='gepi centre_texte'>\n";
 	if ($_SESSION['statut'] == "responsable") {
@@ -249,8 +249,8 @@ if ($nb_test == 0) {
 	die();
 }
 // Affichage des informations générales
-$appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
-$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
+$appel_info_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
+$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 $content .= affiche_docs_joints($id_ct,"c");
@@ -285,8 +285,8 @@ else {
 		and date_ct <= '".getSettingValue("end_bookings")."')
 		ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
 }
-$res_notices = mysql_query($req_notices);
-$notice = mysql_fetch_object($res_notices);
+$res_notices = mysqli_query($GLOBALS["___mysqli_ston"], $req_notices);
+$notice = mysqli_fetch_object($res_notices);
 
 // 20130727
 $CDTPeutPointerTravailFait=getSettingAOui('CDTPeutPointerTravailFait'.ucfirst($_SESSION['statut']));
@@ -315,8 +315,8 @@ $req_devoirs =
 	and date_ct >= '".getSettingValue("begin_bookings")."'
 	and date_ct <= '".$ts_limite_dev."'
 	) order by date_ct ".$current_ordre;
-$res_devoirs = mysql_query($req_devoirs);
-$devoir = mysql_fetch_object($res_devoirs);
+$res_devoirs = mysqli_query($GLOBALS["___mysqli_ston"], $req_devoirs);
+$devoir = mysqli_fetch_object($res_devoirs);
 
 $timestamp_courant=time();
 // Boucle d'affichage des notices dans la colonne de gauche
@@ -327,13 +327,13 @@ while (true) {
 		if ($notice && (!$devoir || $notice->date_ct >= $devoir->date_ct)) {
 			// Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
 			$not_dev = $notice;
-			$notice = mysql_fetch_object($res_notices);
+			$notice = mysqli_fetch_object($res_notices);
 
 			$type_notice="notice";
 		} elseif($devoir) {
 			// Plus de notices et toujours un devoir, ou devoir plus récent
 			$not_dev = $devoir;
-			$devoir = mysql_fetch_object($res_devoirs);
+			$devoir = mysqli_fetch_object($res_devoirs);
 
 			$type_notice="devoir";
 		} else {
@@ -345,13 +345,13 @@ while (true) {
 		if ($notice && (!$devoir || $notice->date_ct <= $devoir->date_ct)) {
 			// Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
 			$not_dev = $notice;
-			$notice = mysql_fetch_object($res_notices);
+			$notice = mysqli_fetch_object($res_notices);
 
 			$type_notice="notice";
 		} elseif($devoir) {
 			// Plus de notices et toujours un devoir, ou devoir plus récent
 			$not_dev = $devoir;
-			$devoir = mysql_fetch_object($res_devoirs);
+			$devoir = mysqli_fetch_object($res_devoirs);
 
 			$type_notice="devoir";
 		} else {

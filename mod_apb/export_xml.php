@@ -118,14 +118,14 @@ if (isset($_POST['num_export'])) {
   die();
 }
 
-$req_classes = mysql_query("SELECT id, classe, nom_complet, MAX(p.num_periode) periodes, apb_niveau FROM classes c, periodes p WHERE c.apb_niveau = 'terminale' AND p.id_classe = c.id GROUP BY c.id");
+$req_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, classe, nom_complet, MAX(p.num_periode) periodes, apb_niveau FROM classes c, periodes p WHERE c.apb_niveau = 'terminale' AND p.id_classe = c.id GROUP BY c.id");
 $data_classes = array();
 $data_groupes = array();
 
 // Limites de périodes
 $limites_periodes = array();
 
-while ($classe = mysql_fetch_object($req_classes)) {
+while ($classe = mysqli_fetch_object($req_classes)) {
   // On initialise ce tableau pour plus tard, lorsque l'on traitera des groupes.
   $data_groupes[$classe->classe] = array();
   // On stocke les données relatives aux classes de terminale, qui sont la base de cet export
@@ -170,13 +170,13 @@ $data_etablissement['cp'] = $gepiSettings['gepiSchoolZipCode'];
 $data_eleves = array();
 
 foreach($data_classes as $classe) {
-  $req_eleves = mysql_query("SELECT e.login, e.no_gep, e.nom, e.prenom, e.naissance
+  $req_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.no_gep, e.nom, e.prenom, e.naissance
                                 FROM eleves e, j_eleves_classes jec
                                 WHERE
                                   e.login = jec.login AND
                                   jec.id_classe = '".$classe['id']."' AND
                                   jec.periode = '".$limites_periodes[$classe['decoupage']]."'");
-  while($eleve = mysql_fetch_object($req_eleves)) {
+  while($eleve = mysqli_fetch_object($req_eleves)) {
     $login_eleve = $eleve->login;
     $data_eleves[$login_eleve] = array();
     $data_eleves[$login_eleve]['code'] = $login_eleve;
@@ -214,36 +214,36 @@ foreach($data_eleves as &$eleve) {
       
       // Maintenant on boucle sur les différentes notes pour la période considérée
       // On se base sur les mécanismes existants dans le bulletin
-      $req_notes = mysql_query("SELECT n.id_groupe, n.note, n.statut, n.rang, a.appreciation
+      $req_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT n.id_groupe, n.note, n.statut, n.rang, a.appreciation
                                   FROM matieres_notes n LEFT JOIN matieres_appreciations a USING (login, id_groupe, periode)
                                   WHERE n.periode = '".$i."' AND n.login = '".$eleve['login']."'");
       
       // On passe les notes une par une
-      while ($note = mysql_fetch_object($req_notes)) {
+      while ($note = mysqli_fetch_object($req_notes)) {
         
         // On enregistre ce groupe dans la liste des services_notations s'il n'y est pas déjà
         if (!array_key_exists($note->id_groupe.'_'.$i, $data_services_notations)) {
-          $req_groupe = mysql_query("SELECT DISTINCT(g.id), g.name, g.description, m.nom_complet, m.matiere, jgp.login
+          $req_groupe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT(g.id), g.name, g.description, m.nom_complet, m.matiere, jgp.login
                                         FROM groupes g
                                         LEFT JOIN j_groupes_matieres jgm ON g.id = jgm.id_groupe
                                         LEFT JOIN matieres m ON jgm.id_matiere = m.matiere
                                         LEFT JOIN j_groupes_professeurs jgp ON g.id = jgp.id_groupe AND ordre_prof = 0
                                         WHERE g.id = '".$note->id_groupe."'");
-          $groupe = mysql_fetch_object($req_groupe);
+          $groupe = mysqli_fetch_object($req_groupe);
           
-          $req_stats1 = mysql_query("SELECT COUNT(DISTINCT(jeg.login)) effectif FROM j_eleves_groupes jeg
+          $req_stats1 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT COUNT(DISTINCT(jeg.login)) effectif FROM j_eleves_groupes jeg
                                       WHERE jeg.id_groupe = '".$groupe->id."' AND
                                         jeg.periode = '".$i."'");
 
-          $stats1 = mysql_fetch_object($req_stats1);
+          $stats1 = mysqli_fetch_object($req_stats1);
 
-          $req_stats2 = mysql_query("SELECT MIN(n.note) note_min, MAX(n.note) note_max FROM matieres_notes n
+          $req_stats2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT MIN(n.note) note_min, MAX(n.note) note_max FROM matieres_notes n
                                       WHERE
                                         n.id_groupe = '".$groupe->id."' AND
                                         n.statut = '' AND
                                         n.periode = '".$i."'");
 
-          $stats2 = mysql_fetch_object($req_stats2);
+          $stats2 = mysqli_fetch_object($req_stats2);
           
           $data_services_notations[$groupe->id.'_'.$i] = array('code' => $groupe->id,
                                                             'annee' => $annee,
@@ -257,8 +257,8 @@ foreach($data_eleves as &$eleve) {
           // On regarde si l'enseignant est déjà répertorié
           if (!array_key_exists($groupe->login, $data_enseignants)) {
             // Non, alors on va le chercher...
-            $req_enseignant = mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$groupe->login."'");
-            $enseignant = mysql_fetch_object($req_enseignant);
+            $req_enseignant = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, prenom FROM utilisateurs WHERE login = '".$groupe->login."'");
+            $enseignant = mysqli_fetch_object($req_enseignant);
             $data_enseignants[$groupe->login] = array('code' => $groupe->login, 'nom' => $enseignant->nom, 'prenom' => $enseignant->prenom);            
           }
           
@@ -272,7 +272,7 @@ foreach($data_eleves as &$eleve) {
         // On regarde si on a déjà enregistré les infos spécifiques à cette classe pour ce groupe dans le tableau (il s'agit du coef)
         if (!array_key_exists($note->id_groupe, $data_groupes[$eleve['code-classe']])) {
           // On récupère les informations nécessaires
-          $coef = mysql_result(mysql_query("SELECT jgc.coef FROM j_groupes_classes jgc, classes c WHERE
+          $coef = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgc.coef FROM j_groupes_classes jgc, classes c WHERE
                                                   jgc.id_groupe = '".$note->id_groupe."' AND
                                                   jgc.id_classe = c.id AND
                                                   c.classe = '".$eleve['code-classe']."'"), 0);

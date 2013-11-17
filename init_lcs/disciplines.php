@@ -101,12 +101,12 @@ if (isset($_POST['is_posted'])) {
 			if ($test != -1) {
 				if($k>0) {echo ", ";}
 				$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
-				$res_test_tab=mysql_query($sql);
-				if(mysql_num_rows($res_test_tab)>0) {
+				$res_test_tab=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($res_test_tab)>0) {
 					$sql="DELETE FROM $liste_tables_del[$j];";
-					$del = @mysql_query($sql);
+					$del = @mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					echo "<b>".$liste_tables_del[$j]."</b>";
-					echo " (".mysql_num_rows($res_test_tab).")";
+					echo " (".mysqli_num_rows($res_test_tab).")";
 				}
 				else {
 					echo $liste_tables_del[$j];
@@ -121,17 +121,17 @@ if (isset($_POST['is_posted'])) {
         echo "<tr><td>Identifiant matière</td><td>Nom complet matière</td><td>identifiants prof.</td></tr>\n";
         for ($i=0;$i<$info["count"];$i++) {
             $matiere=preg_replace("/Matiere_/","",$info[$i]["cn"][0]);
-            $get_matieres = mysql_query("SELECT matiere FROM matieres");
-            $nbmat = mysql_num_rows($get_matieres);
+            $get_matieres = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT matiere FROM matieres");
+            $nbmat = mysqli_num_rows($get_matieres);
             $matieres = array();
             for($j=0;$j<$nbmat;$j++) {
                 $matieres[] = mysql_result($get_matieres, $j, "matiere");
             }
 
             if (!in_array($matiere, $matieres)) {
-                $reg_matiere = mysql_query("INSERT INTO matieres SET matiere='".$matiere."',nom_complet='".html_entity_decode(stripslashes($_POST['reg_nom_complet'][$matiere]))."', priority='0',matiere_aid='n',matiere_atelier='n'");
+                $reg_matiere = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO matieres SET matiere='".$matiere."',nom_complet='".html_entity_decode(stripslashes($_POST['reg_nom_complet'][$matiere]))."', priority='0',matiere_aid='n',matiere_atelier='n'");
             } else {
-                $reg_matiere = mysql_query("UPDATE matieres SET nom_complet='".html_entity_decode(stripslashes($_POST['reg_nom_complet'][$matiere]))."' WHERE matiere = '" . $matiere . "'");
+                $reg_matiere = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE matieres SET nom_complet='".html_entity_decode(stripslashes($_POST['reg_nom_complet'][$matiere]))."' WHERE matiere = '" . $matiere . "'");
             }
             if (!$reg_matiere) echo "<p>Erreur lors de l'enregistrement de la matière $matiere.";
             $new_matieres[] = $matiere;
@@ -144,9 +144,9 @@ if (isset($_POST['is_posted'])) {
                 if (trim($member) !="") {
                     if ($list_member != "") $list_member .=", ";
                     $list_member .=$member;
-                    $test = mysql_result(mysql_query("SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
+                    $test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
                     if ($test == 0) {
-                        $res = mysql_query("INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
+                        $res = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
                     }
                 }
               }
@@ -156,9 +156,9 @@ if (isset($_POST['is_posted'])) {
                 if (trim($member) !="") {
                     if ($list_member != "") $list_member .=", ";
                     $list_member .=$member;
-                    $test = mysql_result(mysql_query("SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
+                    $test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
                     if ($test == 0) {
-                        $res = mysql_query("INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
+                        $res = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
                     }
                 }
               }
@@ -170,8 +170,8 @@ if (isset($_POST['is_posted'])) {
         $to_remove = array_diff($matieres, $new_matieres);
 
         foreach($to_remove as $delete) {
-            $res = mysql_query("DELETE from matieres WHERE matiere = '" . $delete . "'");
-            $res2 = mysql_query("DELETE from j_professeurs_matieres WHERE id_matiere = '" . $delete . "'");
+            $res = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE from matieres WHERE matiere = '" . $delete . "'");
+            $res2 = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE from j_professeurs_matieres WHERE id_matiere = '" . $delete . "'");
         }
 
         echo "<p>Opération effectuée.</p>";
@@ -195,8 +195,8 @@ if (isset($_POST['is_posted'])) {
             for ($i=0;$i<$info["count"];$i++) {
                 $matiere=preg_replace("/Matiere_/","",$info[$i]["cn"][0]);
                 $description = $info[$i]["description"][0];
-                $test_exist = mysql_query("SELECT * FROM matieres WHERE matiere='$matiere'");
-                $nb_test_matiere_exist = mysql_num_rows($test_exist);
+                $test_exist = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres WHERE matiere='$matiere'");
+                $nb_test_matiere_exist = mysqli_num_rows($test_exist);
 
                 if ($nb_test_matiere_exist==0) {
                     $nom_complet = $description;

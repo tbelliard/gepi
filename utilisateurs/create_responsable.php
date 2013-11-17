@@ -60,7 +60,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		// $_POST['pers_id'] est filtré automatiquement contre les injections SQL, on l'utilise directement
 		$sql="SELECT count(e.login) FROM eleves e, responsables2 re WHERE (e.ele_id = re.ele_id AND re.pers_id = '" . $_POST['pers_id'] ."')";
 		if($debug_create_resp=="y") {echo "$sql<br />\n";}
-		$test = mysql_query($sql);
+		$test = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if (mysql_result($test, 0) == "0") {
 			$error = true;
 			$msg .= "Erreur lors de la création de l'utilisateur : aucune association avec un élève n'a été trouvée !<br/>";
@@ -72,7 +72,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				"r.pers_id = re.pers_id AND " .
 				"re.pers_id = '" . $_POST['pers_id'] ."')";
 			if($debug_create_resp=="y") {echo "$sql<br />\n";}
-			$quels_parents = mysql_query($sql);
+			$quels_parents = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		}
 	} else {
 		// On est en mode 'classe'
@@ -95,8 +95,8 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"jec.id_classe = c.id AND " .
 					"(re.resp_legal='1' OR re.resp_legal='2'))";
 			if($debug_create_resp=="y") {echo "$sql<br />\n";}
-			$quels_parents = mysql_query($sql);
-			if (!$quels_parents) $msg .= mysql_error();
+			$quels_parents = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if (!$quels_parents) $msg .= ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 		} elseif (is_numeric($_POST['classe'])) {
 			/*
 			$quels_parents = mysql_query("SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel " .
@@ -116,8 +116,8 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"jec.id_classe = '" . $_POST['classe']."' AND " .
 					"(re.resp_legal='1' OR re.resp_legal='2'))";
 			if($debug_create_resp=="y") {echo "$sql<br />\n";}
-			$quels_parents = mysql_query($sql);
-			if (!$quels_parents) $msg .= mysql_error();
+			$quels_parents = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if (!$quels_parents) $msg .= ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 		} else {
 			$error = true;
 			$msg .= "Vous devez sélectionner au moins une classe !<br />";
@@ -126,7 +126,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 	if (!$error) {
 		$nb_comptes = 0;
-		while ($current_parent = mysql_fetch_object($quels_parents)) {
+		while ($current_parent = mysqli_fetch_object($quels_parents)) {
 
 			// Dans le cas où Gepi est intégré dans un ENT, on va chercher les logins
 			if (getSettingValue("use_ent") == "y") {
@@ -142,8 +142,8 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 											AND prenom_u = '".strtoupper($current_parent->prenom)."'
 											AND statut_u = 'teacher'";
 					if($debug_create_resp=="y") {echo "$sql_p<br />\n";}
-					$query_p = mysql_query($sql_p);
-					$nbre = mysql_num_rows($query_p);
+					$query_p = mysqli_query($GLOBALS["___mysqli_ston"], $sql_p);
+					$nbre = mysqli_num_rows($query_p);
 
 					if ($nbre >= 1 AND $nbre < 2) {
 						$reg_login = mysql_result($query_p, 0,"login_u");
@@ -204,13 +204,13 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 							"auth_mode = '".$reg_auth."', " .
 							"change_mdp = 'n'";
 					if($debug_create_resp=="y") {echo "$sql<br />\n";}
-					$reg = mysql_query($sql);
+					$reg = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	
 					if (!$reg) {
 						$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
 					} else {
 						$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')";
-						$reg2 = mysql_query($sql);
+						$reg2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if($debug_create_resp=="y") {echo "$sql<br />\n";}
 						//$msg.="$sql<br />";
 						$nb_comptes++;
@@ -218,9 +218,9 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						// Ménage:
 						$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($current_parent->pers_id)';";
 						if($debug_create_resp=="y") {echo "$sql<br />\n";}
-						$res_actions=mysql_query($sql);
-						if(mysql_num_rows($res_actions)>0) {
-							while($lig_action=mysql_fetch_object($res_actions)) {
+						$res_actions=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						if(mysqli_num_rows($res_actions)>0) {
+							while($lig_action=mysqli_fetch_object($res_actions)) {
 								$menage=del_info_action($lig_action->id);
 								if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $reg_login<br />";}
 							}
@@ -339,7 +339,7 @@ if((isset($mode_recherche))&&($mode_recherche=='rl0')) {
 else {
 	$sql="SELECT DISTINCT rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.login='' AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2');";
 }
-$nb = mysql_num_rows(mysql_query($sql));
+$nb = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
 
 $sql="SELECT * FROM resp_pers rp WHERE rp.login=''";
 
@@ -352,7 +352,7 @@ $sql.=" ORDER BY rp.nom, rp.prenom";
 if($debug_create_resp=="y") {echo "$sql<br />\n";}
 
 // Effectif sans login avec filtrage sur le nom:
-$nb1 = mysql_num_rows(mysql_query($sql));
+$nb1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
 
 if($afficher_tous_les_resp!='y'){
 	if($critere_recherche==""){
@@ -360,7 +360,7 @@ if($afficher_tous_les_resp!='y'){
 	}
 }
 //echo "$sql<br />\n";
-$quels_parents = mysql_query($sql);
+$quels_parents = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 
 /*
@@ -379,20 +379,20 @@ $quels_parents = mysql_query($sql);
 //$nb = mysql_num_rows($quels_parents);
 
 // Effectif sans login avec filtrage sur le nom et limitation à un max de 20:
-$nb2 = mysql_num_rows($quels_parents);
+$nb2 = mysqli_num_rows($quels_parents);
 
 
 $nb_resp_legal_0_sans_compte=0;
 if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
 	$sql="SELECT DISTINCT rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.login='' AND rp.pers_id=r.pers_id AND r.resp_legal='0';";
-	$res_resp_legal_0=mysql_query($sql);
-	$nb_resp_legal_0_sans_compte=mysql_num_rows($res_resp_legal_0);
+	$res_resp_legal_0=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_resp_legal_0_sans_compte=mysqli_num_rows($res_resp_legal_0);
 }
 
 $nb_resp_legal_1_ou_2_sans_compte=0;
 $sql="SELECT DISTINCT rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.login='' AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2');";
-$res_resp_legal_1_ou_2=mysql_query($sql);
-$nb_resp_legal_1_ou_2_sans_compte=mysql_num_rows($res_resp_legal_1_ou_2);
+$res_resp_legal_1_ou_2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$nb_resp_legal_1_ou_2_sans_compte=mysqli_num_rows($res_resp_legal_1_ou_2);
 
 
 if(($nb_resp_legal_1_ou_2_sans_compte==0)&&($nb_resp_legal_0_sans_compte==0)) {
@@ -474,8 +474,8 @@ else{
 	echo "<option value='none'>Sélectionnez une classe</option>\n";
 	echo "<option value='all'>Toutes les classes</option>\n";
 
-	$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
-	while ($current_classe = mysql_fetch_object($quelles_classes)) {
+	$quelles_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id,classe FROM classes ORDER BY classe");
+	while ($current_classe = mysqli_fetch_object($quelles_classes)) {
 		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
 	echo "</select>\n";
@@ -629,7 +629,7 @@ else{
 
 	echo "<table class='boireaus' border='1' summary=\"Créer\">\n";
 	$alt=1;
-	while ($current_parent = mysql_fetch_object($quels_parents)) {
+	while ($current_parent = mysqli_fetch_object($quels_parents)) {
 		if((isset($mode_recherche))&&($mode_recherche=='rl0')) {
 			$sql="SELECT DISTINCT e.ele_id, e.nom, e.prenom, c.classe, r.resp_legal
 					FROM responsables2 r, eleves e, j_eleves_classes jec, classes c
@@ -649,15 +649,15 @@ else{
 						jec.id_classe=c.id";
 		}
 		if($debug_create_resp=="y") {echo "$sql<br />\n";}
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0){
+		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test)>0){
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 				echo "<td>\n";
 				echo "<input type='submit' value='Créer' onclick=\"$('create_pers_id').value='".$current_parent->pers_id."'; $('form_create_one_resp').submit();\" />\n";
 				echo "<td>".casse_mot($current_parent->nom,'maj')." ".casse_mot($current_parent->prenom,'majf2')."</td>\n";
 				echo "<td>\n";
-				while($lig_ele=mysql_fetch_object($test)){
+				while($lig_ele=mysqli_fetch_object($test)){
 					echo "Responsable légal $lig_ele->resp_legal de ".casse_mot($lig_ele->prenom,'majf2')." ".casse_mot($lig_ele->nom,'maj')." (<i>$lig_ele->classe</i>)<br />\n";
 				}
 				echo "</td>\n";

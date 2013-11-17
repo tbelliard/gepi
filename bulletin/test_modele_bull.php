@@ -14,10 +14,10 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/bulletin/test_modele_bull.php';";
-$res_test=mysql_query($sql);
-if (mysql_num_rows($res_test)==0) {
+$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/bulletin/test_modele_bull.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Test de modèle pour les bulletins PDF', '1');";
-	$res_insert=mysql_query($sql);
+	$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -32,8 +32,8 @@ require_once("../lib/header.inc.php");
 echo "<p>Page de test pour convertir la table 'model_bulletin' en une table à trois champs.<br />Pour les tests, la table 'model_bulletin' n'est pas supprimée.<br />Une table 'model<b>e</b>_bulletin' est créée à la place.</p>\n";
 
 $sql="SELECT * FROM model_bulletin;";
-$res_model=mysql_query($sql);
-if(mysql_num_rows($res_model)>0) {
+$res_model=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_model)>0) {
 	$cpt=0;
 	/*
 	while($lig_model=mysql_fetch_object($res_model)) {
@@ -41,7 +41,7 @@ if(mysql_num_rows($res_model)>0) {
 		$cpt++;
 	}
 	*/
-	while($tab_model[$cpt]=mysql_fetch_assoc($res_model)) {
+	while($tab_model[$cpt]=mysqli_fetch_assoc($res_model)) {
 		$id_model[$cpt]=$tab_model[$cpt]['id_model_bulletin'];
 		//echo "\$id_model[$cpt]=\$tab_model[$cpt]['id_model_bulletin']=".$tab_model[$cpt]['id_model_bulletin']."<br />";
 		$cpt++;
@@ -66,14 +66,14 @@ if(mysql_num_rows($res_model)>0) {
 	//$nettoyage=mysql_query($sql);
 
 	$sql="DROP TABLE modele_bulletin;";
-	$nettoyage=mysql_query($sql);
+	$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	$sql="CREATE TABLE IF NOT EXISTS modele_bulletin (
 		id_model_bulletin INT( 11 ) NOT NULL ,
 		nom VARCHAR( 255 ) NOT NULL ,
 		valeur VARCHAR( 255 ) NOT NULL
 		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$res_model=mysql_query($sql);
+	$res_model=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	if(!$res_model) {
 		echo "<p>ERREUR sur $sql</p>\n";
 	}
@@ -88,7 +88,7 @@ if(mysql_num_rows($res_model)>0) {
 					if($cpt>0) {echo ", ";}
 
 					$sql="INSERT INTO modele_bulletin SET id_model_bulletin='".$id_model[$i]."', nom='".$key."', valeur='".$value."';";
-					$insert=mysql_query($sql);
+					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 					if($insert) {
 						echo "<span style='color:green;'>$key:$value</span> ";
 					}
@@ -108,9 +108,9 @@ echo "<p><br /></p>\n";
 echo "<p><b>Test:</b><br />\n";
 $num=1;
 $sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='$num';";
-$res=mysql_query($sql);
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-while($lig=mysql_fetch_object($res)) {
+while($lig=mysqli_fetch_object($res)) {
    $nom=$lig->nom;
    $$nom=$lig->valeur;
    echo "$nom=".$$nom."<br />\n";

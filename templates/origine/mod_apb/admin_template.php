@@ -148,7 +148,7 @@ echo add_token_field();
 	  </tr>
 
 <?php
-  while($classe = mysql_fetch_object($req_classes)) {
+  while($classe = mysqli_fetch_object($req_classes)) {
 ?>
 	  <tr>
 		<td>

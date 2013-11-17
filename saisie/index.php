@@ -419,8 +419,8 @@ if ($current_group) {
 		$groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
         foreach ($groups as $group) {
 			$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group["id"]."' AND domaine='bulletins' AND visible='n';";
-			$test_jgv=mysql_query($sql);
-			if(mysql_num_rows($test_jgv)==0) {
+			$test_jgv=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test_jgv)==0) {
 				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> (" . $group["classlist_string"] . ")</p>\n";
 				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
 				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
@@ -431,8 +431,8 @@ if ($current_group) {
         }
     } elseif ($_SESSION["statut"] == "secours") {
         echo "<p>Saisir les moyennes ou appréciations par classe :</p>\n";
-        $appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-        $lignes = mysql_num_rows($appel_donnees);
+        $appel_donnees = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+        $lignes = mysqli_num_rows($appel_donnees);
         $i = 0;
         while($i < $lignes){
             $id_classe = mysql_result($appel_donnees, $i, "id");
@@ -446,11 +446,11 @@ if ($current_group) {
 				jgp.login=u.login AND
 				jgp.id_groupe='".$group["id"]."'
 				ORDER BY u.nom,u.prenom";
-		$res_prof=mysql_query($sql);
+		$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		$texte_alternatif="Pas de prof???";
-		if(mysql_num_rows($res_prof)>0){
+		if(mysqli_num_rows($res_prof)>0){
 			$texte_alternatif="";
-			while($ligne=mysql_fetch_object($res_prof)){
+			while($ligne=mysqli_fetch_object($res_prof)){
 				$texte_alternatif.=", ".casse_mot($ligne->prenom,'majf2')." ".my_strtoupper($ligne->nom);
 			}
 			$texte_alternatif=mb_substr($texte_alternatif,2);

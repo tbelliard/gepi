@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_texte_2/export_cdt.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/cahier_texte_2/export_cdt.php',
 administrateur='V',
 professeur='V',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Export de CDT',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 if (!checkAccess()) {
@@ -195,9 +195,9 @@ if(!isset($id_groupe)) {
 		
 			// Liste des classes avec élève:
 			$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
-			$call_classes=mysql_query($sql);
+			$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		
-			$nb_classes=mysql_num_rows($call_classes);
+			$nb_classes=mysqli_num_rows($call_classes);
 			if($nb_classes==0){
 				echo "<p>Aucune classe avec élève affecté n'a été trouvée.</p>\n";
 				require("../lib/footer.inc.php");
@@ -216,7 +216,7 @@ if(!isset($id_groupe)) {
 			echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 			echo "<td align='left'>\n";
 		
-			while($lig_clas=mysql_fetch_object($call_classes)) {
+			while($lig_clas=mysqli_fetch_object($call_classes)) {
 	
 				//affichage 3 colonnes
 				if(($cpt>0)&&(round($cpt/$nb_classes_par_colonne)==$cpt/$nb_classes_par_colonne)){
@@ -241,8 +241,8 @@ if(!isset($id_groupe)) {
 			//+++++++++++++++++++++++++++
 
 			$sql="SELECT DISTINCT u.login, u.nom, u.prenom FROM j_groupes_professeurs jgp, utilisateurs u WHERE u.login=jgp.login ORDER BY u.nom, u.prenom;";
-			$res_prof=mysql_query($sql);
-			$nb_profs=mysql_num_rows($res_prof);
+			$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nb_profs=mysqli_num_rows($res_prof);
 			if($nb_profs==0){
 				echo "<p>Aucun professeur assurant un enseignement n'a été trouvé.</p>\n";
 				require("../lib/footer.inc.php");
@@ -260,7 +260,7 @@ if(!isset($id_groupe)) {
 		
 			echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 			echo "<td align='left'>\n";
-			while($lig_prof=mysql_fetch_object($res_prof)) {
+			while($lig_prof=mysqli_fetch_object($res_prof)) {
 				//affichage 3 colonnes
 				if(($cpt>0)&&(round($cpt/$nb_prof_par_colonne)==$cpt/$nb_prof_par_colonne)){
 					echo "</td>\n";
@@ -957,8 +957,8 @@ if($action=='afficher_tous_docs_joints') {
 		$sql.="(SELECT cdd.id_ct_devoir AS id_ct,cdd.titre,cdd.emplacement,cde.date_ct FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$current_group['id']."')";
 		$sql.=" ORDER BY date_ct;";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			echo "<p>Aucun document n'est joint à ce cahier de textes.</p>\n";
 		}
 		else {
@@ -968,7 +968,7 @@ if($action=='afficher_tous_docs_joints') {
 		<th title='Identifiant de la notice à laquelle ce document est associé.'>Id</th>
 		<th>Document</th>
 	</tr>";
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				if(preg_match("#/cl_dev.*/#", $lig->emplacement)) {
 					$class_ligne="color_fond_notices_t";
 					$ancre="travail_".$lig->id_ct;

@@ -53,10 +53,10 @@ $nb_periodes = $periode2 - $periode1 + 1;
 
 //============================
 // Liste des profs principaux:
-$data_profsuivi = mysql_query("SELECT DISTINCT u.login FROM utilisateurs u, j_eleves_professeurs j WHERE (j.professeur = u.login AND j.id_classe='$id_classe') ");
+$data_profsuivi = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT u.login FROM utilisateurs u, j_eleves_professeurs j WHERE (j.professeur = u.login AND j.id_classe='$id_classe') ");
 $current_profsuivi_login=array();
-if(mysql_num_rows($data_profsuivi)>0){
-	while($lig_profsuivi=mysql_fetch_object($data_profsuivi)) {
+if(mysqli_num_rows($data_profsuivi)>0){
+	while($lig_profsuivi=mysqli_fetch_object($data_profsuivi)) {
 		$current_profsuivi_login[] = $lig_profsuivi->login;
 	}
 }
@@ -66,7 +66,7 @@ unset($tab_acces_app);
 $tab_acces_app=array();
 $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 
-$call_classe = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
+$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes WHERE id='$id_classe'");
 $classe = mysql_result($call_classe, 0, "classe");
 
 //-------------------------------
@@ -124,15 +124,15 @@ if($affiche_colonne_moy_classe!='n') {
 echo "<td width=\"$larg_col5\" class='bull_simpl'>$bull_intitule_app</td></tr>\n";
 
 // Récupération des noms de categories
-$get_cat = mysql_query("SELECT id FROM matieres_categories");
+$get_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM matieres_categories");
 $categories = array();
-while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
 	$categories[] = $row["id"];
 }
 
 $cat_names = array();
 foreach ($categories as $cat_id) {
-	$cat_names[$cat_id] = mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
+	$cat_names[$cat_id] = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
 }
 
 // Nombre de groupes sur la classe
@@ -151,16 +151,16 @@ for($j=0;$j<$nombre_groupes;$j++) {
 	$ligne_groupe_visible="y";
 	if($_SESSION['statut']=='eleve') {
 		$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='".$current_group['id']."' AND login='".$_SESSION['login']."';";
-		$test_grp=mysql_query($sql);
-		if(mysql_num_rows($test_grp)==0) {
+		$test_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test_grp)==0) {
 			$ligne_groupe_visible="n";
 		}
 	}
 	elseif($_SESSION['statut']=='responsable') {
 		$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='".$current_group['id']."' AND login IN (SELECT e.login FROM eleves e, resp_pers rp, responsables2 r WHERE e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2') AND rp.login='".$_SESSION['login']."');";
 		//echo "$sql<br />";
-		$test_grp=mysql_query($sql);
-		if(mysql_num_rows($test_grp)==0) {
+		$test_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test_grp)==0) {
 			$ligne_groupe_visible="n";
 		}
 	}
@@ -193,9 +193,9 @@ for($j=0;$j<$nombre_groupes;$j++) {
 			$moy_max_classe_grp[$nb]=$tab_moy['periodes'][$nb]['moy_max_classe_grp'][$j];
 
 			// On teste si des notes de une ou plusieurs boites du carnet de notes doivent être affichées
-			$test_cn = mysql_query("select c.nom_court, c.id from cn_cahier_notes cn, cn_conteneurs c
+			$test_cn = mysqli_query($GLOBALS["___mysqli_ston"], "select c.nom_court, c.id from cn_cahier_notes cn, cn_conteneurs c
 			where (cn.periode = '$nb' and cn.id_groupe='".$current_group["id"]."' and cn.id_cahier_notes = c.id_racine and c.id_racine!=c.id and c.display_bulletin = 1) ");
-			$nb_ligne_cn[$nb] = mysql_num_rows($test_cn);
+			$nb_ligne_cn[$nb] = mysqli_num_rows($test_cn);
 			$n = 0;
 			while ($n < $nb_ligne_cn[$nb]) {
 				$cn_id[$nb][$n] = mysql_result($test_cn, $n, 'c.id');
@@ -211,7 +211,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 
 		$nb=$periode1;
 		while ($nb < $periode2+1) {
-			$current_grp_appreciation_query = mysql_query("SELECT * FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
+			$current_grp_appreciation_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
 			$current_grp_appreciation[$nb] = @mysql_result($current_grp_appreciation_query, 0, "appreciation");
 			//echo "\$current_grp_appreciation[$nb]=$current_grp_appreciation[$nb]<br />\n";
 			$nb++;
@@ -245,8 +245,8 @@ for($j=0;$j<$nombre_groupes;$j++) {
 
 				// On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
 
-				$affiche_cat_moyenne_query = mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')");
-				if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
+				$affiche_cat_moyenne_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')");
+				if (mysqli_num_rows($affiche_cat_moyenne_query) == "0") {
 					$affiche_cat_moyenne = false;
 				} else {
 					$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
@@ -334,14 +334,14 @@ for($j=0;$j<$nombre_groupes;$j++) {
 										jeg.id_groupe=jgc.id_groupe AND
 										jeg.id_groupe='".$current_group["id"]."';";
 				//$sql0=$sql;
-				$res_effectif=mysql_query($sql);
-				$effectif_grp_classe=mysql_num_rows($res_effectif);
+				$res_effectif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$effectif_grp_classe=mysqli_num_rows($res_effectif);
 
 				$sql="SELECT 1=1 FROM j_eleves_groupes jeg
 								WHERE jeg.periode='$nb' AND
 										jeg.id_groupe='".$current_group["id"]."';";
-				$res_effectif_tot=mysql_query($sql);
-				$effectif_grp_total=mysql_num_rows($res_effectif_tot);
+				$res_effectif_tot=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$effectif_grp_total=mysqli_num_rows($res_effectif_tot);
 
 				echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>";
 				//echo "$sql0<br /><br />";
@@ -443,11 +443,11 @@ if($display_moy_gen=="y") {
 
 			if($avec_rapport_effectif=="y") {
 				$sql="SELECT 1=1 FROM j_eleves_classes WHERE periode='$nb' AND id_classe='$id_classe';";
-				$res_eff_classe=mysql_query($sql);
+				$res_eff_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 				echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
 				//echo "$sql<br />";
-				echo mysql_num_rows($res_eff_classe).' él.';
+				echo mysqli_num_rows($res_eff_classe).' él.';
 				echo "</td>\n";
 			}
 
@@ -519,8 +519,8 @@ if($display_moy_gen=="y") {
 
 					// MODIF: boireaus 20070627 ajout du test et utilisation de $total_cat_coef_eleve, $total_cat_coef_classe
 					// Tester si cette catégorie doit avoir sa moyenne affichée
-					$affiche_cat_moyenne_query = mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '".$id_classe."' and categorie_id = '".$cat_id."')");
-					if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
+					$affiche_cat_moyenne_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '".$id_classe."' and categorie_id = '".$cat_id."')");
+					if (mysqli_num_rows($affiche_cat_moyenne_query) == "0") {
 						$affiche_cat_moyenne = false;
 					} else {
 						$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
@@ -653,7 +653,7 @@ $nb=$periode1;
 while ($nb < $periode2+1) {
 	$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$nb');";
 	//echo "$sql<br />";
-	$res_current_synthese=mysql_query($sql);
+	$res_current_synthese=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 	$current_synthese[$nb] = @mysql_result($res_current_synthese, 0, "synthese");
 	if ($current_synthese[$nb] == '') {$current_synthese[$nb] = ' -';}
 

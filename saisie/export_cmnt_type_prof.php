@@ -68,9 +68,9 @@ else {
 $fd='';
 
 $sql="SELECT * FROM commentaires_types_profs WHERE login='".$_SESSION['login']."';";
-$txt=mysql_query($sql);
+$txt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
-while($lig=mysql_fetch_object($txt)){
+while($lig=mysqli_fetch_object($txt)){
 	$fd.=$lig->app;
 	$fd.="\r\n";
 }

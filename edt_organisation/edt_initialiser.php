@@ -120,10 +120,10 @@ if ($aff_reglages == "oui") {
 echo '<div id="edt_init_import" style="display: none;">';
 
 if (isset($init) AND $init == "ok") {
-	$req_reprendre_init = mysql_query("UPDATE edt_setting SET valeur = 'oui' WHERE reglage = 'edt_aff_init_infos2'");
+	$req_reprendre_init = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_setting SET valeur = 'oui' WHERE reglage = 'edt_aff_init_infos2'");
 }
 else if (isset($init) AND $init == "ko") {
-	$req_reprendre_init = mysql_query("UPDATE edt_setting SET valeur = 'non' WHERE reglage = 'edt_aff_init_infos2'");
+	$req_reprendre_init = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_setting SET valeur = 'non' WHERE reglage = 'edt_aff_init_infos2'");
 }
 
 $aff_reglages2 = GetSettingEdt("edt_aff_init_infos2");

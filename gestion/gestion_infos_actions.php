@@ -42,10 +42,10 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/gestion/gestion_infos_actions.php';";
-$res_test=mysql_query($sql);
-if (mysql_num_rows($res_test)==0) {
+$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');";
-	$res_insert=mysql_query($sql);
+	$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -99,8 +99,8 @@ require_once("../lib/header.inc.php");
 echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 $sql="SELECT * FROM infos_actions ORDER BY date;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "</p>\n";
 
 	echo "<p>Aucune action en attente n'est enregistrée.</p>\n";
@@ -115,12 +115,12 @@ if($_SESSION['statut']!='administrateur') {
 
 if(!isset($nature)) {
 	$sql="SELECT DISTINCT valeur FROM infos_actions_destinataires WHERE nature='statut' ORDER BY valeur;";
-	$res2=mysql_query($sql);
-	$nb_statuts_dest=mysql_num_rows($res2);
+	$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_statuts_dest=mysqli_num_rows($res2);
 
 	$sql="SELECT DISTINCT valeur FROM infos_actions_destinataires WHERE nature='individu' ORDER BY valeur;";
-	$res3=mysql_query($sql);
-	$nb_individus_dest=mysql_num_rows($res3);
+	$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nb_individus_dest=mysqli_num_rows($res3);
 
 	if($nb_statuts_dest+$nb_individus_dest!=1) {
 		echo "<p>Afficher les actions en attente pour&nbsp;:<br /><a href='".$_SERVER['PHP_SELF']."?nature=tout'>Tous les utilisateurs et tous les statuts</a> ou<br />\n";
@@ -128,7 +128,7 @@ if(!isset($nature)) {
 		if($nb_statuts_dest>0) {
 			echo "<p>pour un statut particulier&nbsp;:";
 			$cpt_statut=0;
-			while($lig2=mysql_fetch_object($res2)) {
+			while($lig2=mysqli_fetch_object($res2)) {
 				if($cpt_statut>0) {echo ", ";}
 				echo " <a href='".$_SERVER['PHP_SELF']."?nature=statut&amp;dest=$lig2->valeur'>$lig2->valeur</a>";
 				$cpt_statut++;
@@ -139,7 +139,7 @@ if(!isset($nature)) {
 		if($nb_individus_dest>0) {
 			echo "<p>pour un utilisateur en particulier&nbsp;:";
 			$cpt_utilisateur=0;
-			while($lig3=mysql_fetch_object($res3)) {
+			while($lig3=mysqli_fetch_object($res3)) {
 				if($cpt_utilisateur>0) {echo ", ";}
 				echo "<a href='".$_SERVER['PHP_SELF']."?nature=individu&amp;dest=$lig3->valeur'>$lig3->valeur</a>";
 				$cpt_utilisateur++;
@@ -183,8 +183,8 @@ else {
 	die();
 }
 
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "</p>\n";
 
 	if($nature=='tout') {
@@ -253,7 +253,7 @@ echo "</tr>\n";
 
 $cpt=0;
 $alt=1;
-while($lig=mysql_fetch_object($res)) {
+while($lig=mysqli_fetch_object($res)) {
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<td><label for='suppr_$cpt'>".formate_date($lig->date, "y")."</label></td>\n";
@@ -263,10 +263,10 @@ while($lig=mysql_fetch_object($res)) {
 	if($_SESSION['statut']=='administrateur') {
 		echo "<td>";
 		$sql="SELECT * FROM infos_actions_destinataires WHERE id_info='$lig->id' ORDER BY valeur;";
-		$res_iad=mysql_query($sql);
-		if(mysql_num_rows($res_iad)) {
+		$res_iad=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_iad)) {
 			$cpt_iad=0;
-			while($lig_iad=mysql_fetch_object($res_iad)) {
+			while($lig_iad=mysqli_fetch_object($res_iad)) {
 				if($cpt_iad>0) {echo ", ";}
 				if($lig_iad->nature=='statut') {
 					echo "<span title='Statut $lig_iad->valeur'>".$lig_iad->valeur."</span>";

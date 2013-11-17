@@ -30,19 +30,19 @@ class Modele {
     private $liste=Null;
     protected  function set_array($type,$res) {        
         unset($this->variable);
-        if(mysql_num_rows($res)==0) {
+        if(mysqli_num_rows($res)==0) {
             $this->variable['error']='pas de résultats';
         }else {
             switch ($type) {
-                case 'array': while($this->row=mysql_fetch_array($res)) {
+                case 'array': while($this->row=mysqli_fetch_array($res)) {
                         $this->variable[]=$this->row;
                     }
                     break;
-                case 'assoc': while($this->row=mysql_fetch_assoc($res)) {
+                case 'assoc': while($this->row=mysqli_fetch_assoc($res)) {
                         $this->variable[]=$this->row;
                     }
                     break;
-                case 'object': while($this->row=mysql_fetch_object($res)) {
+                case 'object': while($this->row=mysqli_fetch_object($res)) {
                         $this->variable[]=$this->row;
                     }
                     break;

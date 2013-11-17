@@ -9,8 +9,8 @@
 function traite_requete($requete = "") {
 	global $pb_maj;
 	$retour = "";
-	$res = mysql_query($requete);
-	$erreur_no = mysql_errno();
+	$res = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+	$erreur_no = ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 	if (!$erreur_no) {
 		$retour = "";
 	} else {
@@ -25,7 +25,7 @@ function traite_requete($requete = "") {
 				break;
 			case "1062" :
 				// Présence d'un doublon : création de la cléf impossible
-				$retour = msj_erreur("Erreur (<strong>non critique</strong>) sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")");
+				$retour = msj_erreur("Erreur (<strong>non critique</strong>) sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ")");
 				$pb_maj = 'yes';
 				break;
 			case "1068" :
@@ -34,7 +34,7 @@ function traite_requete($requete = "") {
 				break;
 			case "1069" :
 				// trop d'index existent déjà pour cette table
-				$retour = msj_erreur("Erreur (<strong>critique</strong>) sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")");
+				$retour = msj_erreur("Erreur (<strong>critique</strong>) sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ")");
 				$pb_maj = 'yes';
 				break;
 			case "1091" :
@@ -42,7 +42,7 @@ function traite_requete($requete = "") {
 				$retour = "";
 				break;
 			default :
-				$retour = msj_erreur("Erreur sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")");
+				$retour = msj_erreur("Erreur sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ")");
 				$pb_maj = 'yes';
 				break;
 		}
@@ -51,8 +51,8 @@ function traite_requete($requete = "") {
 }
 
 require_once dirname(__FILE__) . '/../fixtures/config/connect.test.inc.php';
-$link = mysql_connect($GLOBALS['dbHost'], $GLOBALS['dbUser'], $GLOBALS['dbPass']);
-mysql_select_db($GLOBALS['dbDb']);
+$link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($GLOBALS['dbHost'],  $GLOBALS['dbUser'],  $GLOBALS['dbPass']));
+((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE $GLOBALS['dbDb']"));
 $result = '';
 require_once dirname(__FILE__) . '/../../utilitaires/update_functions.php';
 require_once dirname(__FILE__) . '/../../lib/mysql.inc';

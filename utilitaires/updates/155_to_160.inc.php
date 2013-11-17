@@ -33,11 +33,11 @@ $result.="<br />";
 
 $result .= "&nbsp;-> Ajout d'un champ rn_abs_2 à la table 'classes'<br />";
 // Ajout d'une colonne rn_abs_2 dans classes pour stocker l'affichage ou non des absences sur les relevés de notes
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_abs_2';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM classes LIKE 'rn_abs_2';"));
 
 	// $result .= "&nbsp;-> Place du champ rn_abs_2 dans la table 'classes' : ".$test_champ."<br />";
 if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE classes ADD rn_abs_2 char(1) NOT NULL default 'n';");
+	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE classes ADD rn_abs_2 char(1) NOT NULL default 'n';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -50,14 +50,14 @@ if ($test_champ==0) {
 $result .= "<br /><strong>Table abs2 agrégation</strong><br />";
 //correction d'une erreur de mise à jour précédente
 $result .= "&nbsp;->Recréation de la structure de la table d'agrégation<br />";
-$query = mysql_query("DROP TABLE IF EXISTS a_agregation_decompte;");
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "DROP TABLE IF EXISTS a_agregation_decompte;");
 if ($query) {
 		$result .= msj_ok();
 } else {
-		$result .= msj_erreur(mysql_error());
+		$result .= msj_erreur(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 
-$query = mysql_query("CREATE TABLE a_agregation_decompte
+$query = mysqli_query($GLOBALS["___mysqli_ston"], "CREATE TABLE a_agregation_decompte
 (
 	eleve_id INTEGER(11) NOT NULL COMMENT 'id de l\'eleve',
 	date_demi_jounee DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL COMMENT 'Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi',
@@ -79,7 +79,7 @@ $query = mysql_query("CREATE TABLE a_agregation_decompte
 if ($query) {
 		$result .= msj_ok();
 } else {
-		$result .= msj_erreur(mysql_error());
+		$result .= msj_erreur(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 
 
@@ -119,17 +119,17 @@ if ($test == -1) {
 			primary key (id));
 	*/
 
-	$res = mysql_query('select * from temp_abs_import LIMIT 1;');
-	$numOfCols = mysql_num_fields($res);
+	$res = mysqli_query($GLOBALS["___mysqli_ston"], 'select * from temp_abs_import LIMIT 1;');
+	$numOfCols = (($___mysqli_tmp = mysqli_num_fields($res)) ? $___mysqli_tmp : false);
 	// Même si la table est vide, on récupère bien la liste des champs
 	//$result .= "Nombre de colonnes dans la table 'temp_abs_import' : $numOfCols<br />";
 	//$result .= "Nombre d'enregistrements dans la table 'temp_abs_import' : ".mysql_num_rows($res)."<br />";
 	for($i=0;$i<$numOfCols;$i++) {
 		//$result .= mysql_field_name($res, $i) . "<br />\n";
-		$nom_du_champ=mysql_field_name($res, $i);
+		$nom_du_champ=((($___mysqli_tmp = mysqli_fetch_field_direct($res, 0)->name) && (!is_null($___mysqli_tmp))) ? $___mysqli_tmp : false);
 		if($nom_du_champ=='nbret') {
 			$result .= "&nbsp;-> Renommage du champ '$nom_du_champ' en 'nbRet' dans la table 'temp_abs_import'<br />";
-			$query = mysql_query("ALTER TABLE temp_abs_import CHANGE nbret nbRet INT(11) NOT NULL default '0';");
+			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE temp_abs_import CHANGE nbret nbRet INT(11) NOT NULL default '0';");
 			if ($query) {
 					$result .= msj_ok("Ok !");
 			} else {
@@ -138,7 +138,7 @@ if ($test == -1) {
 		}
 		elseif($nom_du_champ=='nbabs') {
 			$result .= "&nbsp;-> Renommage du champ '$nom_du_champ' en 'nbAbs' dans la table 'temp_abs_import'<br />";
-			$query = mysql_query("ALTER TABLE temp_abs_import CHANGE nbabs nbAbs INT(11) NOT NULL default '0';");
+			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE temp_abs_import CHANGE nbabs nbAbs INT(11) NOT NULL default '0';");
 			if ($query) {
 					$result .= msj_ok("Ok !");
 			} else {
@@ -149,9 +149,9 @@ if ($test == -1) {
 
 	// Normalement, l'ajout ci-dessous correspond à une très vieille version de la table:
 	$result .= "&nbsp;-> Ajout d'un champ 'cpe_login' à la table 'temp_abs_import'<br />";
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'cpe_login';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM temp_abs_import LIKE 'cpe_login';"));
 	if ($test_champ==0) {
-		$query = mysql_query("ALTER TABLE temp_abs_import ADD cpe_login varchar(50) NOT NULL default '';");
+		$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE temp_abs_import ADD cpe_login varchar(50) NOT NULL default '';");
 		if ($query) {
 				$result .= msj_ok("Ok !");
 		} else {
@@ -162,9 +162,9 @@ if ($test == -1) {
 	}
 
 	$result .= "&nbsp;-> Ajout d'un champ 'libelle' à la table 'temp_abs_import'<br />";
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'libelle';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM temp_abs_import LIKE 'libelle';"));
 	if ($test_champ==0) {
-		$query = mysql_query("ALTER TABLE temp_abs_import ADD libelle varchar(50) NOT NULL default '';");
+		$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE temp_abs_import ADD libelle varchar(50) NOT NULL default '';");
 		if ($query) {
 				$result .= msj_ok("Ok !");
 		} else {
@@ -175,9 +175,9 @@ if ($test == -1) {
 	}
 
 	$result .= "&nbsp;-> Ajout d'un champ 'elenoet' à la table 'temp_abs_import'<br />";
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'elenoet';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM temp_abs_import LIKE 'elenoet';"));
 	if ($test_champ==0) {
-		$query = mysql_query("ALTER TABLE temp_abs_import ADD elenoet varchar(50) NOT NULL default '';");
+		$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE temp_abs_import ADD elenoet varchar(50) NOT NULL default '';");
 		if ($query) {
 				$result .= msj_ok("Ok !");
 		} else {
@@ -188,11 +188,11 @@ if ($test == -1) {
 	}
 
 	$result .= "&nbsp;-> Test du champ 'nbNonJustif' dans la table 'temp_abs_import'<br />";
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'nbnj';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM temp_abs_import LIKE 'nbnj';"));
 	if ($test_champ==0) {
-		$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'nbNonJustif';"));
+		$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM temp_abs_import LIKE 'nbNonJustif';"));
 		if ($test_champ==0) {
-			$query = mysql_query("ALTER TABLE temp_abs_import ADD nbNonJustif INT(11) NOT NULL default '0';");
+			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE temp_abs_import ADD nbNonJustif INT(11) NOT NULL default '0';");
 			if ($query) {
 					$result .= msj_ok("Ok !");
 			} else {
@@ -203,10 +203,10 @@ if ($test == -1) {
 		}
 	}
 	else {
-		$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'nbNonJustif';"));
+		$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM temp_abs_import LIKE 'nbNonJustif';"));
 		if ($test_champ==0) {
 			$result .= "Renommage du champ 'nbnj' en 'nbNonJustif'&nbsp;: ";
-			$query = mysql_query("ALTER TABLE temp_abs_import CHANGE nbnj nbNonJustif INT(11) NOT NULL default '0';");
+			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE temp_abs_import CHANGE nbnj nbNonJustif INT(11) NOT NULL default '0';");
 			if ($query) {
 					$result .= msj_ok("Ok !");
 			} else {
@@ -215,7 +215,7 @@ if ($test == -1) {
 		}
 		else {
 			$result .= "Suppression de l'ancien champ 'nbnj' &nbsp;: ";
-			$query = mysql_query("ALTER TABLE temp_abs_import DROP nbnj;");
+			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE temp_abs_import DROP nbnj;");
 			if ($query) {
 					$result .= msj_ok("Ok !");
 			} else {
@@ -227,8 +227,8 @@ if ($test == -1) {
 
 
 $result .= "<br />";
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'utiliserMenuBarre'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'utiliserMenuBarre'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('utiliserMenuBarre', 'yes');");
   if ($result_inter == '') {
@@ -247,8 +247,8 @@ for($loop=0;$loop<count($tab_formats_login_a_tester);$loop++) {
 	$valeur_current_mode_generation_login=getSettingValue($tab_formats_login_a_tester[$loop]);
 	if(!check_format_login($valeur_current_mode_generation_login)) {
 		$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
-		$test_ia=mysql_query($sql);
-		if(mysql_num_rows($test_ia)==0) {
+		$test_ia=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($test_ia)==0) {
 			enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='./gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
 		}
 
@@ -348,8 +348,8 @@ for($loop=0;$loop<count($tab_formats_login_a_tester);$loop++) {
 }
 
 $result .= "<br />";
-$req_test=mysql_query("SELECT 1=1 FROM ct_types_documents WHERE extension='ggb';");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM ct_types_documents WHERE extension='ggb';");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result.="Ajout de GGB (GeoGebra) à la liste des extensions autorisées pour les fichiers joints aux cahiers de textes : ";
   $result_inter = traite_requete("INSERT INTO ct_types_documents SET titre='GeoGebra', extension='ggb', upload='oui';");
@@ -361,21 +361,21 @@ if ($res_test==0){
 }
 
 $sql="SELECT 1=1 FROM ref_wiki WHERE ref='enseignement_invisible';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/projects/gepi/wiki/Enseignement_invisible');";
-	$update=mysql_query($sql);
+	$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 else {
 	$sql="UPDATE ref_wiki SET url='http://www.sylogix.org/projects/gepi/wiki/Enseignement_invisible' WHERE ref='enseignement_invisible'";
-	$update=mysql_query($sql);
+	$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 $result.="<br />";
 $result.="Contrôle des index de la table absences&nbsp;: ";
 $sql="show index from absences where sub_part!='NULL';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)!=0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)!=0) {
   $result.="Correction des index de la table absences&nbsp;: ";
   $result_inter = traite_requete("ALTER TABLE absences DROP PRIMARY KEY , ADD PRIMARY KEY ( login , periode );");
   if ($result_inter == '') {

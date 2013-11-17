@@ -89,9 +89,9 @@ $s_annee=(string)$annee_xml["ANNEE"];
 //construction du tableau des jours de la semaine ' à partir de la table gepi
 
 $query_horaires="select id_horaire_etablissement,jour_horaire_etablissement from horaires_etablissement";
-$result_horaires=mysql_query($query_horaires) or die(mysql_error());
+$result_horaires=mysqli_query($GLOBALS["___mysqli_ston"], $query_horaires) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 if ($result_horaires) {
-while ($row_horaires=mysql_fetch_row($result_horaires))
+while ($row_horaires=mysqli_fetch_row($result_horaires))
 {
 	$jour++;
 	$ar_horaires["id_horaire_etab"][$jour]=$row_horaires[0];
@@ -101,10 +101,10 @@ while ($row_horaires=mysql_fetch_row($result_horaires))
 
 //construction du tableau des periodes
 $query_periodes="select * from edt_creneaux";
-$result_periodes=mysql_query($query_periodes) or die(mysql_error());
+$result_periodes=mysqli_query($GLOBALS["___mysqli_ston"], $query_periodes) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 unset($i);
 if ($result_periodes) {
-while ($row_periodes=mysql_fetch_row($result_periodes))
+while ($row_periodes=mysqli_fetch_row($result_periodes))
 {
 	$i++;
 	$ar_periodes[$i]["id_definie_periode"]=$row_periodes[0];
@@ -120,10 +120,10 @@ unset($i);
 
 //export des matieres
 $query_matiere="SELECT `matiere` FROM `matieres`;";
-$result_matiere = mysql_query($query_matiere) or die(mysql_error());
+$result_matiere = mysqli_query($GLOBALS["___mysqli_ston"], $query_matiere) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 //construction des tableaux des matieres deja présente dans l'emploi du temps
-while ($ar_matiere_temp = mysql_fetch_array($result_matiere, MYSQL_NUM)) {
+while ($ar_matiere_temp = mysqli_fetch_array($result_matiere,  MYSQLI_NUM)) {
    array_push($ar_matiere_cdt,$ar_matiere_temp[0]);
 }
 
@@ -142,7 +142,7 @@ if (in_array("$s_codegestion_matiere",$ar_matiere_cdt)) { //echo "La matiere exi
 else
 {
 $insert="INSERT INTO `matieres` (`matiere`,`nom_complet`,`priority`,`categorie_id`) VALUES ('$s_codegestion_matiere','$s_NOM_matiere_long','0','1');";
-$result_insert=mysql_query($insert) or die($insert.mysql_error());
+$result_insert=mysqli_query($GLOBALS["___mysqli_ston"], $insert) or die($insert.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 }
 
@@ -212,13 +212,13 @@ foreach ($xml_emp_sts->xpath('//SALLE_COURS') as $ar_salle_cours)
 	{
 		$salle=$ar_salle_cours["CODE"];
 	$query_salle="select * from salle_cours where numero_salle='$salle'";
-	$result_salle=mysql_query($query_salle) or die(mysql_error());
+	$result_salle=mysqli_query($GLOBALS["___mysqli_ston"], $query_salle) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-	if (mysql_num_rows($result_salle)<1)
+	if (mysqli_num_rows($result_salle)<1)
 	{
 //insertion de la salle si la salle n'a pas été trouvée
 $query_ajout_salle="insert into salle_cours(`numero_salle`,`nom_salle`) values ('$salle','salle $salle');";
-$result_insert_salle=mysql_query($query_ajout_salle) or die(mysql_error());
+$result_insert_salle=mysqli_query($GLOBALS["___mysqli_ston"], $query_ajout_salle) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 echo "Insertion de la salle $salle dans la base <br>";
 	}
 	}
@@ -248,15 +248,15 @@ $s_prenom_prof=$ar_prof["$ID_prof"]["PRENOM"];
 
 
 $query="select login from utilisateurs where nom='$s_nom_prof' and prenom='$s_prenom_prof';";
-$result_recherche_prof=mysql_query($query);
-if (mysql_num_rows($result_recherche_prof)==0)
+$result_recherche_prof=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+if (mysqli_num_rows($result_recherche_prof)==0)
 { echo "<font color=red> Un professeur n'a pas été trouvé dans la base, vérifiez sa présence et relancez le script<br>Nom:$s_nom_prof et Prénom:$s_prenom_prof</font>"; next;}
 
-$row_prof=mysql_fetch_row($result_recherche_prof);
+$row_prof=mysqli_fetch_row($result_recherche_prof);
 $query_classe="select j_groupes_classes.id_groupe from classes,j_groupes_classes,j_groupes_professeurs,j_groupes_matieres where classes.classe='$s_nom_classe' and classes.id=j_groupes_classes.id_classe and j_groupes_classes.id_groupe=j_groupes_professeurs.id_groupe and j_groupes_classes.id_groupe=j_groupes_matieres.id_groupe and j_groupes_professeurs.login='".$row_prof[0]."' and j_groupes_matieres.id_matiere='".$ar_matiere["$s_code_matiere"]."';";
-$result_classe=mysql_query($query_classe) or die(mysql_error());
-if (mysql_num_rows($result_classe)>0) {
-		$row_cours=mysql_fetch_row($result_classe);
+$result_classe=mysqli_query($GLOBALS["___mysqli_ston"], $query_classe) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+if (mysqli_num_rows($result_classe)>0) {
+		$row_cours=mysqli_fetch_row($result_classe);
 //		echo "<br>id_groupe :".$row_cours[0]."<br>";
 		$id_groupe=$row_cours[0];
 		}
@@ -269,8 +269,8 @@ foreach ($o_service->ENSEIGNANTS->ENSEIGNANT->COURS_RATTACHES->COURS as $o_cours
 //recherche de l'id de la salle
 	$s_salle=(string)$o_cours->CODE_SALLE;
 	$query_salle="select id_salle from salle_cours where numero_salle='$s_salle'";
-	$result_salle=mysql_query($query_salle) or die(mysql_error());
-	$row_salle=mysql_fetch_row($result_salle);
+	$result_salle=mysqli_query($GLOBALS["___mysqli_ston"], $query_salle) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$row_salle=mysqli_fetch_row($result_salle);
 	$id_salle=$row_salle[0];
 
 
@@ -308,9 +308,9 @@ if ($mktime_cours>$periodes["mktime_debut"]+1500) { $heuredeb_cours=0.5; }
 }
 
 $query_verif_edt="select * from edt_cours where id_groupe='$id_groupe' and id_salle='$id_salle' and jour_semaine='".$ar_horaires["jour_horaire_etab"][$s_day_cours]."' and id_definie_periode='$id_definie_periode';";
-$result_search_edt=mysql_query($query_verif_edt) or die(mysql_error());
+$result_search_edt=mysqli_query($GLOBALS["___mysqli_ston"], $query_verif_edt) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 if (!$result_search_edt) { continue;}
-if (mysql_num_rows($result_search_edt)>0)
+if (mysqli_num_rows($result_search_edt)>0)
 {
 echo "<br>Le groupe de la classe $s_nom_classe, matiere ".$ar_matiere["$s_code_matiere"].", prof $s_nom_prof,jour ".$ar_horaires["jour_horaire_etab"][$s_day_cours].", heure ".$ar_periodes[$id_definie_periode]["nom_definie_periode"]." , salle $s_salle existe déja <br>";
 }
@@ -323,13 +323,13 @@ else
 if ($heuredeb_cours==0)
 {
 $query_insert_edt="insert into edt_cours(id_groupe,id_salle,jour_semaine,id_definie_periode,duree,heuredeb_dec,id_semaine) values ('$id_groupe','$id_salle','".$ar_horaires["jour_horaire_etab"][$s_day_cours]."','$id_definie_periode','$i_duree','$heuredeb_cours','***')";
-$result_insert_edt=mysql_query($query_insert_edt) or die(mysql_error());
+$result_insert_edt=mysqli_query($GLOBALS["___mysqli_ston"], $query_insert_edt) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 else
 //creation d'autre cours si heuredeb=0.5
 {
 $query_insert_edt="insert into edt_cours(id_groupe,id_salle,jour_semaine,id_definie_periode,duree,heuredeb_dec,id_semaine) values ('$id_groupe','$id_salle','".$ar_horaires["jour_horaire_etab"][$s_day_cours]."','$id_definie_periode','1','$heuredeb_cours','***')";
-$result_insert_edt=mysql_query($query_insert_edt) or die(mysql_error());
+$result_insert_edt=mysqli_query($GLOBALS["___mysqli_ston"], $query_insert_edt) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $i_duree=$i_duree-1;
 $increment_creneaux=0;
 while ($i_duree>0)
@@ -339,12 +339,12 @@ $new_id_periode=$id_definie_periode+$increment_creneaux;
 if ($i_duree==0.5)
 {
 $query_insert_edt="insert into edt_cours(id_groupe,id_salle,jour_semaine,id_definie_periode,duree,heuredeb_dec,id_semaine) values ('$id_groupe','$id_salle','".$ar_horaires["jour_horaire_etab"][$s_day_cours]."','$new_id_periode','$i_duree','0.5','***')";
-$result_insert_edt=mysql_query($query_insert_edt) or die(mysql_error());
+$result_insert_edt=mysqli_query($GLOBALS["___mysqli_ston"], $query_insert_edt) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 else
 {
 $query_insert_edt="insert into edt_cours(id_groupe,id_salle,jour_semaine,id_definie_periode,duree,heuredeb_dec,id_semaine) values ('$id_groupe','$id_salle','".$ar_horaires["jour_horaire_etab"][$s_day_cours]."','$new_id_periode','$i_duree','0','***')";
-$result_insert_edt=mysql_query($query_insert_edt) or die(mysql_error());
+$result_insert_edt=mysqli_query($GLOBALS["___mysqli_ston"], $query_insert_edt) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 $i_duree=$i_duree-2;
 }
@@ -387,15 +387,15 @@ $s_nom_prof=$ar_prof["$ID_prof"]["NOM"];
 $s_prenom_prof=$ar_prof["$ID_prof"]["PRENOM"];
 
 $query="select login from utilisateurs where nom='$s_nom_prof' and prenom = '$s_prenom_prof';";
-$result_recherche_prof=mysql_query($query);
-if (mysql_num_rows($result_recherche_prof)==0)
+$result_recherche_prof=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+if (mysqli_num_rows($result_recherche_prof)==0)
 { echo " <font color=red>Un professeur n'a pas été trouvé dans la base, vérifiez sa présence et relancez le script<br>Nom:$s_nom_prof et Prénom:$s_prenom_prof</font>"; next;}
-$row_prof=mysql_fetch_row($result_recherche_prof);
+$row_prof=mysqli_fetch_row($result_recherche_prof);
 $query_classe="select j_groupes_classes.id_groupe from classes,j_groupes_classes,j_groupes_professeurs,j_groupes_matieres where classes.classe='$s_nom_classe' and classes.id=j_groupes_classes.id_classe and j_groupes_classes.id_groupe=j_groupes_professeurs.id_groupe and j_groupes_classes.id_groupe=j_groupes_matieres.id_groupe and  j_groupes_professeurs.login='".$row_prof[0]."' and j_groupes_matieres.id_matiere='".$ar_matiere["$s_code_matiere_groupe"]."';";
-$result_classe=mysql_query($query_classe) or die(mysql_error());
+$result_classe=mysqli_query($GLOBALS["___mysqli_ston"], $query_classe) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-if (mysql_num_rows($result_classe)>0) {
-		$row_cours=mysql_fetch_row($result_classe);
+if (mysqli_num_rows($result_classe)>0) {
+		$row_cours=mysqli_fetch_row($result_classe);
 //		echo "<br>id_groupe : ".$row_cours[0]."<br>";
 		$id_groupe=$row_cours[0];
 		}
@@ -408,8 +408,8 @@ foreach ($o_service_groupe->ENSEIGNANTS->ENSEIGNANT->COURS_RATTACHES->COURS as $
 //recherche de l'id de la salle
 	$s_salle=(string)$o_cours_groupe->CODE_SALLE;
 	$query_salle="select id_salle from salle_cours where numero_salle='$s_salle'";
-	$result_salle=mysql_query($query_salle) or die(mysql_error());
-	$row_salle=mysql_fetch_row($result_salle);
+	$result_salle=mysqli_query($GLOBALS["___mysqli_ston"], $query_salle) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$row_salle=mysqli_fetch_row($result_salle);
 	$id_salle=$row_salle[0];
 
 	//recherche du champ jour_semaine
@@ -448,9 +448,9 @@ if ($mktime_cours>$periodes["mktime_debut"]+1500) { $heuredeb_cours=0.5; }
 }
 
 $query_verif_edt="select * from edt_cours where id_groupe='$id_groupe' and id_salle='$id_salle' and jour_semaine='".$ar_horaires["jour_horaire_etab"][$s_day_cours]."' and id_definie_periode='$id_definie_periode';";
-$result_search_edt=mysql_query($query_verif_edt) or die(mysql_error());
+$result_search_edt=mysqli_query($GLOBALS["___mysqli_ston"], $query_verif_edt) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 if (!$result_search_edt) { continue;}
-if (mysql_num_rows($result_search_edt)>0)
+if (mysqli_num_rows($result_search_edt)>0)
 {
 echo "<br>Le groupe de la classe $s_nom_classe, matiere ".$ar_matiere["$s_code_matiere_groupe"].", prof $s_nom_prof,jour ".$ar_horaires["jour_horaire_etab"][$s_day_cours].", heure ".$ar_periodes[$id_definie_periode]["nom_definie_periode"]." , salle $s_salle existe déja <br>";
 }
@@ -463,13 +463,13 @@ else
 if ($heuredeb_cours==0)
 {
 $query_insert_edt="insert into edt_cours(id_groupe,id_salle,jour_semaine,id_definie_periode,duree,heuredeb_dec,id_semaine) values ('$id_groupe','$id_salle','".$ar_horaires["jour_horaire_etab"][$s_day_cours]."','$id_definie_periode','$i_duree','$heuredeb_cours','***')";
-$result_insert_edt=mysql_query($query_insert_edt) or die(mysql_error());
+$result_insert_edt=mysqli_query($GLOBALS["___mysqli_ston"], $query_insert_edt) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 else
 //creation d'autre cours si heuredeb=0.5
 {
 $query_insert_edt="insert into edt_cours(id_groupe,id_salle,jour_semaine,id_definie_periode,duree,heuredeb_dec,id_semaine) values ('$id_groupe','$id_salle','".$ar_horaires["jour_horaire_etab"][$s_day_cours]."','$id_definie_periode','1','$heuredeb_cours','***')";
-$result_insert_edt=mysql_query($query_insert_edt) or die(mysql_error());
+$result_insert_edt=mysqli_query($GLOBALS["___mysqli_ston"], $query_insert_edt) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $i_duree=$i_duree-1;
 $increment_creneaux=0;
 while ($i_duree>0)
@@ -479,12 +479,12 @@ $new_id_periode=$id_definie_periode+$increment_creneaux;
 if ($i_duree==0.5)
 {
 $query_insert_edt="insert into edt_cours(id_groupe,id_salle,jour_semaine,id_definie_periode,duree,heuredeb_dec,id_semaine) values ('$id_groupe','$id_salle','".$ar_horaires["jour_horaire_etab"][$s_day_cours]."','$new_id_periode','$i_duree','0.5','***')";
-$result_insert_edt=mysql_query($query_insert_edt) or die(mysql_error());
+$result_insert_edt=mysqli_query($GLOBALS["___mysqli_ston"], $query_insert_edt) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 else
 {
 $query_insert_edt="insert into edt_cours(id_groupe,id_salle,jour_semaine,id_definie_periode,duree,heuredeb_dec,id_semaine) values ('$id_groupe','$id_salle','".$ar_horaires["jour_horaire_etab"][$s_day_cours]."','$new_id_periode','$i_duree','0','***')";
-$result_insert_edt=mysql_query($query_insert_edt) or die(mysql_error());
+$result_insert_edt=mysqli_query($GLOBALS["___mysqli_ston"], $query_insert_edt) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 $i_duree=$i_duree-2;
 }

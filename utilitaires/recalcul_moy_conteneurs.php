@@ -82,8 +82,8 @@ if(!isset($_POST['recalculer'])){
 		echo "<p class='bold'>Cette page est destinée à effectuer le recalcul des moyennes de conteneurs.<br />Un bug pouvait provoquer une erreur lors de déplacement de devoirs/conteneurs(boites) d'un conteneur(boite) à un autre.</p>\n";
 
 		$sql="SELECT DISTINCT num_periode FROM periodes ORDER BY num_periode";
-		$res_per=mysql_query($sql);
-		if(mysql_num_rows($res_per)==0){
+		$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_per)==0){
 			echo "<p>Il semble qu'aucune période ne soit encore définie.</p>\n";
 		}
 		else{
@@ -91,7 +91,7 @@ if(!isset($_POST['recalculer'])){
 
 			echo "<p>Choisissez la ou les périodes pour lesquelles provoquer le recalcul.</p>\n";
 
-			while ($lig_per=mysql_fetch_object($res_per)) {
+			while ($lig_per=mysqli_fetch_object($res_per)) {
 				echo "<label for='per_".$lig_per->num_periode."' style='cursor: pointer;'>";
 				echo "<input type='checkbox' name='num_periode[]' id='per_".$lig_per->num_periode."' value='".$lig_per->num_periode."' />";
 				echo " Période $lig_per->num_periode</label><br />\n";
@@ -106,8 +106,8 @@ if(!isset($_POST['recalculer'])){
 		echo "</p></div>\n";
 
 		$sql="SELECT id,classe FROM classes ORDER BY classe;";
-		$res_clas=mysql_query($sql);
-		$nb=mysql_num_rows($res_clas);
+		$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nb=mysqli_num_rows($res_clas);
 		if($nb==0) {
 			echo "<p>Aucune classe n'a été trouvée.</p>\n";
 		}
@@ -131,7 +131,7 @@ if(!isset($_POST['recalculer'])){
 			echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 			echo "<td align='left'>\n";
 
-			while ($lig_clas=mysql_fetch_object($res_clas)) {
+			while ($lig_clas=mysqli_fetch_object($res_clas)) {
 				$id_classe = $lig_clas->id;
 				$temp = "case_".$id_classe;
 				$classe = $lig_clas->classe;
@@ -210,8 +210,8 @@ else{
 					c.id='".$id_classe[$lloop]."'
 					ORDER BY c.classe,g.description";
 				//echo "$sql";
-				$resultat=mysql_query($sql);
-				if(mysql_num_rows($resultat)==0){
+				$resultat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				if(mysqli_num_rows($resultat)==0){
 					//echo "<p>Il semble qu'aucun carnet de notes ne soit encore défini pour la période $periode_num.</p>\n";
 					echo "<p>Il semble qu'aucun carnet de notes ne soit encore défini pour la période $periode_num et pour la classe $classe.</p>\n";
 				}
@@ -233,7 +233,7 @@ else{
 					//echo "<td>Moyenne recalculée</td>\n";
 					echo "<th width='34%'>Différences</th>\n";
 					echo "</tr>\n";
-					while($ligne=mysql_fetch_object($resultat)){
+					while($ligne=mysqli_fetch_object($resultat)){
 						$id_groupe=$ligne->id_groupe;
 						$id_cahier_notes=$ligne->id_cahier_notes;
 						$id_racine=$id_cahier_notes;
@@ -261,8 +261,8 @@ else{
 								cc.id=cnc.id_conteneur AND
 								ccn.id_groupe='$id_groupe' AND
 								ccn.periode='$periode_num'";
-						$res_moy=mysql_query($sql);
-						while($lig_moy=mysql_fetch_object($res_moy)){
+						$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						while($lig_moy=mysqli_fetch_object($res_moy)){
 							if($lig_moy->statut=="y"){
 								//$tabmoy1["$lig_moy->login"]=$lig_moy->note;
 								$tabmoy1["$lig_moy->login"]["$lig_moy->id_conteneur"]=array();
@@ -283,9 +283,9 @@ else{
 								cc.id=cnc.id_conteneur AND
 								ccn.id_groupe='$id_groupe' AND
 								ccn.periode='$periode_num'";
-						$res_moy=mysql_query($sql);
+						$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						$chaine="";
-						while($lig_moy=mysql_fetch_object($res_moy)){
+						while($lig_moy=mysqli_fetch_object($res_moy)){
 							//$tabmoy2["$lig_moy->login"]=$lig_moy->note;
 							$tabmoy2["$lig_moy->login"]["$lig_moy->id_conteneur"]=array();
 							$tabmoy2["$lig_moy->login"]["$lig_moy->id_conteneur"]=$lig_moy->note;

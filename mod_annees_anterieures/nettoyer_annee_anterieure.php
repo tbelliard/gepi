@@ -65,21 +65,21 @@ if(isset($confirmer)) {
 	$nb_err=0;
 	for($i=0;$i<count($suppr);$i++){
     $sql="DELETE FROM archivage_eleves WHERE ine='$suppr[$i]';";
-		$res_suppr1=mysql_query($sql);
+		$res_suppr1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 		$sql="DELETE FROM archivage_eleves2 WHERE ine='$suppr[$i]';";
-		$res_suppr2=mysql_query($sql);
+		$res_suppr2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		$sql="DELETE FROM archivage_aid_eleve WHERE id_eleve='$suppr[$i]';";
-		$res_suppr3=mysql_query($sql);
+		$res_suppr3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		$sql="DELETE FROM archivage_appreciations_aid WHERE id_eleve='$suppr[$i]';";
-		$res_suppr4=mysql_query($sql);
+		$res_suppr4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		$sql="DELETE FROM archivage_disciplines WHERE INE='$suppr[$i]';";
-		$res_suppr5=mysql_query($sql);
+		$res_suppr5=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		$sql="DELETE FROM archivage_ects WHERE INE='$suppr[$i]';";
-		$res_suppr6=mysql_query($sql);
+		$res_suppr6=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     if (isset($flag_port_folio)) {
       $sql="DELETE FROM port_folio_validations_archives  WHERE login='$suppr[$i]';";
-  		mysql_query($sql);
+  		mysqli_query($GLOBALS["___mysqli_ston"], $sql);
     }
 
 		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)  and ($res_suppr5) and ($res_suppr6)) {
@@ -121,8 +121,8 @@ $sql="SELECT DISTINCT a.nom,a.prenom,a.ine,a.naissance
 			LEFT JOIN eleves e
 			ON a.ine=e.no_gep
 			WHERE e.no_gep IS NULL;";
-$res1=mysql_query($sql);
-$nb_ele=mysql_num_rows($res1);
+$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$nb_ele=mysqli_num_rows($res1);
 if($nb_ele==0){
 	echo "<p>Tous les élèves présents dans la table 'annees_anterieures' sont dans la table 'eleves'.</p>\n";
 }
@@ -149,7 +149,7 @@ else{
 	echo "</tr>\n";
 	$cpt=0;
 	$alt=1;
-	while($lig_ele=mysql_fetch_object($res1)){
+	while($lig_ele=mysqli_fetch_object($res1)){
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover' style='text-align:center;' id='tr_$cpt'>\n";
 		echo "<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='$lig_ele->ine' onchange=\"modif_une_coche('$cpt');\" /></td>\n";

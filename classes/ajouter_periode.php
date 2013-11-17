@@ -35,8 +35,8 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/classes/ajouter_periode.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/classes/ajouter_periode.php',
 administrateur='V',
 professeur='F',
@@ -48,7 +48,7 @@ secours='F',
 autre='F',
 description='Classes: Ajouter des périodes',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 if (!checkAccess()) {
@@ -75,18 +75,18 @@ if((isset($nb_periodes_initial))&&(!preg_match('/^[1-9]$/',$nb_periodes_initial)
 	$msg="Nombre initial de périodes invalide.";
 }
 
-$call_data = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
+$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_data, 0, "classe");
-$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'");
-$test_periode = mysql_num_rows($periode_query) ;
+$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+$test_periode = mysqli_num_rows($periode_query) ;
 include "../lib/periodes.inc.php";
 
 // =================================
 // AJOUT: boireaus
 $chaine_options_classes="";
 $sql="SELECT id, classe FROM classes ORDER BY classe";
-$res_class_tmp=mysql_query($sql);
-if(mysql_num_rows($res_class_tmp)>0){
+$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if(mysqli_num_rows($res_class_tmp)>0){
 	$id_class_prec=0;
 	$id_class_suiv=0;
 	$temoin_tmp=0;
@@ -94,14 +94,14 @@ if(mysql_num_rows($res_class_tmp)>0){
     $cpt_classe=0;
 	$num_classe=-1;
 
-	while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+	while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 		if($lig_class_tmp->id==$id_classe){
 			// Index de la classe dans les <option>
 			$num_classe=$cpt_classe;
 
 			$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 			$temoin_tmp=1;
-			if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 				$id_class_suiv=$lig_class_tmp->id;
 			}
@@ -209,14 +209,14 @@ function search_liaisons_classes_via_groupes($id_classe) {
 
 	$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc WHERE jgc.id_classe='$id_classe';";
 	//echo "$sql<br />\n";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
 			$sql="SELECT c.classe, jgc.id_classe, g.* FROM j_groupes_classes jgc, groupes g, classes c WHERE jgc.id_classe!='$id_classe' AND g.id=jgc.id_groupe AND c.id=jgc.id_classe AND jgc.id_groupe='$lig->id_groupe' ORDER BY c.classe;";
 			//echo "$sql<br />\n";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0) {
-				while($lig2=mysql_fetch_object($test)) {
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)>0) {
+				while($lig2=mysqli_fetch_object($test)) {
 					if(!in_array($lig2->id_classe,$tab_liaisons_classes)) {
 						$tab_liaisons_classes[]=$lig2->id_classe;
 						search_liaisons_classes_via_groupes($lig2->id_classe);
@@ -230,14 +230,14 @@ function search_liaisons_classes_via_groupes($id_classe) {
 if(!isset($nb_ajout_periodes)) {
 
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe."' ORDER BY num_periode DESC LIMIT 1;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe." n'a actuellement aucune période.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
 	else {
-		$lig=mysql_fetch_object($res);
+		$lig=mysqli_fetch_object($res);
 		$max_per=$lig->num_periode;
 	}
 
@@ -250,18 +250,18 @@ if(!isset($nb_ajout_periodes)) {
 	
 	$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc WHERE jgc.id_classe='$id_classe';";
 	//echo "$sql<br />\n";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "Aucune liaison n'a été trouvée.<br />L'ajout de période ne présente donc pas de difficulté.</p>\n";
 	}
 	else {
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$sql="SELECT c.classe, jgc.id_classe, g.* FROM j_groupes_classes jgc, groupes g, classes c WHERE jgc.id_classe!='$id_classe' AND g.id=jgc.id_groupe AND c.id=jgc.id_classe AND jgc.id_groupe='$lig->id_groupe' ORDER BY c.classe;";
 			//echo "$sql<br />\n";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0) {
+			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($test)>0) {
 				$cpt=0;
-				while($lig2=mysql_fetch_object($test)) {
+				while($lig2=mysqli_fetch_object($test)) {
 					if($cpt==0) {
 						echo "<b>$lig2->name (<i>$lig2->description</i>)&nbsp;:</b> ";
 					}
@@ -350,8 +350,8 @@ else {
 		echo "<blockquote>\n";
 
 		$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe_courant."' ORDER BY num_periode DESC LIMIT 1;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe_courante." n'a actuellement aucune période.</p>\n";
 		}
 		else {
@@ -363,26 +363,26 @@ else {
 			// Récupération de la liste des élèves de la classe pour la dernière période
 			$tab_ele=array();
 			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$id_classe_courant."' AND periode='$num_periode';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p>Aucun élève n'est inscrit dans la classe ".$classe_courante." sur la période $num_periode.</p>\n";
 			}
 			else {
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_ele[]=$lig->login;
 				}
 			}
 
 			$tab_group=array();
 			$sql="SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe_courant'";
-			$res_liste_grp_classe=mysql_query($sql);
-			if(mysql_num_rows($res_liste_grp_classe)>0){
-				while($lig_tmp=mysql_fetch_object($res_liste_grp_classe)){
+			$res_liste_grp_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			if(mysqli_num_rows($res_liste_grp_classe)>0){
+				while($lig_tmp=mysqli_fetch_object($res_liste_grp_classe)){
 					$tab_group[$lig_tmp->id_groupe]=array();
 					$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$lig_tmp->id_groupe' AND periode='$num_periode'";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)>0){
-						while($lig_tmp2=mysql_fetch_object($test)) {
+					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test)>0){
+						while($lig_tmp2=mysqli_fetch_object($test)) {
 							$tab_group[$lig_tmp->id_groupe][]=$lig_tmp2->login;
 						}
 					}
@@ -396,7 +396,7 @@ else {
 				echo "Création de la période $num_periode&nbsp;: ";
 				$sql="INSERT INTO periodes SET nom_periode='Période $num_periode', num_periode='$num_periode', verouiller='O', id_classe='".$id_classe_courant."', date_verrouillage='0000-00-00 00:00:00';";
 				//echo "$sql<br />\n";
-				$res=mysql_query($sql);
+				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 				if(!$res) {
 					echo "<span style='color:red'>ECHEC</span>";
@@ -413,7 +413,7 @@ else {
 							if($j>0) {echo ", ";}
 							$sql="INSERT INTO j_eleves_classes SET login='$tab_ele[$j]', id_classe='$id_classe_courant', periode='$num_periode';";
 							//echo "$sql<br />\n";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 							if(!$res) {
 								echo "<span style='color:red'>$tab_ele[$j]</span> ";
 							}
@@ -433,14 +433,14 @@ else {
 						for($k=0;$k<count($tab_ele_groupe);$k++) {
 							$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='$tab_ele_groupe[$k]' AND id_groupe='$id_groupe' AND periode='$num_periode';";
 							//echo "$sql<br />\n";
-							$res=mysql_query($sql);
-							if(mysql_num_rows($res)>0) {
+							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							if(mysqli_num_rows($res)>0) {
 								echo "<span style='color:blue'>$tab_ele_groupe[$k]</span> ";
 							}
 							else {
 								if($kk>0) {echo ", ";}
 								$sql="INSERT INTO j_eleves_groupes SET login='$tab_ele_groupe[$k]', id_groupe='$id_groupe', periode='$num_periode';";
-								$res=mysql_query($sql);
+								$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 								if(!$res) {
 									echo "<span style='color:red'>$tab_ele_groupe[$k]</span> ";
 								}

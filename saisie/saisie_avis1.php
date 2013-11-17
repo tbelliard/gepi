@@ -102,7 +102,7 @@ if((isset($id_classe))&&(isset($_GET['periode_num']))&&(isset($_GET['mode']))&&(
 			$msg="L'accès parent/élève est maintenant ouvert pour la période n°$periode_num.<br />";
 			$msg_no_js="<img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." sont visibles des parents/élèves.' />";
 		}
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		if(!$res) {
 			$msg="Erreur lors de la modification de la visibilité parent/élève.<br />";
 			$msg_no_js="<img src='../images/icons/ico_attention.png' width='22' height='19' title='Erreur lors de la modification de la visibilité parent/élève.' alt='Erreur'>";
@@ -172,8 +172,8 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 	//echo "$sql<br />";
-	$quels_eleves = mysql_query($sql);
-	$lignes = mysql_num_rows($quels_eleves);
+	$quels_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$lignes = mysqli_num_rows($quels_eleves);
 
 	if($lignes>0) {
 		// Synthèse
@@ -188,16 +188,16 @@ if (isset($_POST['is_posted'])) {
 					$synthese=suppression_sauts_de_lignes_surnumeraires($synthese);
 
 					$sql="SELECT 1=1 FROM synthese_app_classe WHERE id_classe='$id_classe' AND periode='$i';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0) {
+					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					if(mysqli_num_rows($test)==0) {
 						$sql="INSERT INTO synthese_app_classe SET id_classe='$id_classe', periode='$i', synthese='$synthese';";
-						$insert=mysql_query($sql);
+						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$insert) {$msg.="Erreur lors de l'enregistrement de la synthèse.";}
 						//else {$msg.="La synthèse a été enregistrée.";}
 					}
 					else {
 						$sql="UPDATE synthese_app_classe SET synthese='$synthese' WHERE id_classe='$id_classe' AND periode='$i';";
-						$update=mysql_query($sql);
+						$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 						if(!$update) {$msg.="Erreur lors de la mise à jour de la synthèse.";}
 						//else {$msg.="La synthèse a été mise à jour.";}
 					}
@@ -214,8 +214,8 @@ if (isset($_POST['is_posted'])) {
 		$i = '1';
 		while ($i < $nb_periode) {
 			if ($ver_periode[$i] != "O"){
-				$call_eleve = mysql_query("SELECT login FROM j_eleves_classes WHERE (login = '$reg_eleve_login' and id_classe='$id_classe' and periode='$i')");
-				$result_test = mysql_num_rows($call_eleve);
+				$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM j_eleves_classes WHERE (login = '$reg_eleve_login' and id_classe='$id_classe' and periode='$i')");
+				$result_test = mysqli_num_rows($call_eleve);
 				if ($result_test != 0) {
 
 					//=========================
@@ -262,13 +262,13 @@ if (isset($_POST['is_posted'])) {
 						}
 						*/
 						$sql="DELETE FROM avis_conseil_classe WHERE (login='$reg_eleve_login' AND periode='$i');";
-						$menage=mysql_query($sql);
+						$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 						if(($avis!='')||((isset($id_mention)&&($id_mention!=0)))) {
 							$sql="INSERT INTO avis_conseil_classe SET login='$reg_eleve_login',periode='$i',avis='$avis',";
 							if(isset($id_mention)) {$sql.="id_mention='$id_mention',";}
 							$sql.="statut=''";
-							$register = mysql_query($sql);
+							$register = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 							if (!$register) {
 								$msg.="Erreur lors de l'enregistrement des données de la période $i pour $reg_eleve_login<br />\n";
@@ -344,20 +344,20 @@ $chaine_options_classes="";
 $cpt_classe=0;
 $num_classe=-1;
 
-$res_class_tmp=mysql_query($sql);
-$nb_classes_suivies=mysql_num_rows($res_class_tmp);
+$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$nb_classes_suivies=mysqli_num_rows($res_class_tmp);
 if($nb_classes_suivies>0){
 	$id_class_prec=0;
 	$id_class_suiv=0;
 	$temoin_tmp=0;
-	while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+	while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 		if($lig_class_tmp->id==$id_classe){
 			// Index de la classe dans les <option>
 			$num_classe=$cpt_classe;
 
 			$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 			$temoin_tmp=1;
-			if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 				$id_class_suiv=$lig_class_tmp->id;
 			}
@@ -477,8 +477,8 @@ if ($id_classe) {
 			) ORDER BY nom, prenom";
 		}
 	}
-	$appel_donnees_eleves=mysql_query($sql);
-	$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
+	$appel_donnees_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 
 
 
@@ -554,14 +554,14 @@ if ($insert_mass_appreciation_type=="y") {
 	// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
 
 	$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '');";
-	$create_table=mysql_query($sql);
+	$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 
 	// Pour tester:
 	// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
 
 	$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
-	$res_droit=mysql_query($sql);
-	if(mysql_num_rows($res_droit)>0) {
+	$res_droit=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	if(mysqli_num_rows($res_droit)>0) {
 		$droit_insert_mass_appreciation_type="y";
 	}
 	else {
@@ -620,8 +620,8 @@ if ($insert_mass_appreciation_type=="y") {
 	while ($k < $nb_periode) {
 		// Existe-t-il des commentaires-types pour cette classe et cette période?
 		$sql="select 1=1 from commentaires_types WHERE num_periode='$k' AND id_classe='$id_classe'";
-		$res_test=mysql_query($sql);
-		if(mysql_num_rows($res_test)!=0){
+		$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_test)!=0){
 			$commentaires_type_classe_periode[$k]="y";
 		}
 		else{
@@ -668,7 +668,7 @@ if ($insert_mass_appreciation_type=="y") {
 	while ($k < $nb_periode) {
 		$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$k');";
 		//echo "$sql<br />";
-		$res_current_synthese=mysql_query($sql);
+		$res_current_synthese=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 		$current_synthese[$k] = @mysql_result($res_current_synthese, 0, "synthese");
 		if ($current_synthese[$k] == '') {$current_synthese[$k] = ' -';}
 
@@ -742,8 +742,8 @@ if ($insert_mass_appreciation_type=="y") {
 		//========================
 		// AJOUT boireaus 20071115
 		$sql="SELECT elenoet FROM eleves WHERE login='$current_eleve_login';";
-		$res_ele=mysql_query($sql);
-		$lig_ele=mysql_fetch_object($res_ele);
+		$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$lig_ele=mysqli_fetch_object($res_ele);
 		$current_eleve_elenoet=$lig_ele->elenoet;
 
 		// Photo...
@@ -802,7 +802,7 @@ if ($insert_mass_appreciation_type=="y") {
 
 		$k='1';
 		while ($k < $nb_periode) {
-			$current_eleve_avis_query[$k]= mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$k')");
+			$current_eleve_avis_query[$k]= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$k')");
 			$current_eleve_avis_t[$k] = @mysql_result($current_eleve_avis_query[$k], 0, "avis");
 			// ***** AJOUT POUR LES MENTIONS *****
 			$current_eleve_mention_t[$k] = @mysql_result($current_eleve_avis_query[$k], 0, "id_mention");
@@ -818,8 +818,8 @@ if ($insert_mass_appreciation_type=="y") {
 
 			$result_test=0;
 			if ($ver_periode[$k] != "O") {
-				$call_eleve = mysql_query("SELECT login FROM j_eleves_classes WHERE (login = '$current_eleve_login' and id_classe='$id_classe' and periode='$k')");
-				$result_test = mysql_num_rows($call_eleve);
+				$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM j_eleves_classes WHERE (login = '$current_eleve_login' and id_classe='$id_classe' and periode='$k')");
+				$result_test = mysqli_num_rows($call_eleve);
 			}
 
 			if ($ver_periode[$k] != "N") {

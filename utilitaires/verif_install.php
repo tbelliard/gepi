@@ -22,21 +22,21 @@
  */
  
 // Si l'api mysql est désactivée ou absente
-if (!function_exists("mysql_connect")) require("./lib/mysql2mysqli.php");
+if (!function_exists("mysqli_connect")) require("./lib/mysql2mysqli.php");
 
 header('Content-Type: text/html; charset=UTF-8');
 if (file_exists("./secure/connect.inc.php")) {
     require_once("./secure/connect.inc.php");
     $correct_install = 'yes';
     $maj = 'no';
-    if (@mysql_connect("$dbHost", "$dbUser", "$dbPass")) {
-        if (@mysql_select_db("$dbDb")) {
+    if (@($GLOBALS["___mysqli_ston"] = mysqli_connect("$dbHost",  "$dbUser",  "$dbPass"))) {
+        if (@((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE $dbDb"))) {
             require_once("./lib/global.inc.php");
             // Premier test
             $liste2 = array();
             
-            $tableNames = mysql_query("SHOW TABLES FROM `$dbDb`");
-            while ($row = mysql_fetch_row($tableNames)) {
+            $tableNames = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES FROM `$dbDb`");
+            while ($row = mysqli_fetch_row($tableNames)) {
                 $liste2[] = $row[0];
             }
             
@@ -59,8 +59,8 @@ if (file_exists("./secure/connect.inc.php")) {
             } else {
                 //test sur le contenu des tables
                 $sql="SELECT * FROM utilisateurs;";
-                $req = mysql_query($sql);
-                $test = mysql_num_rows($req);
+                $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                $test = mysqli_num_rows($req);
                 if ($test == '0') {
                     //$msg = "<p>Il n'y a aucun utilisateur créé !</p>";
                     $msg = "<p>Aucun utilisateur n'existe !</p>";

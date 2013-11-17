@@ -63,10 +63,10 @@ if ($action == "modifier") {
 
 		// On met à jour les deux tables tempo2 et utilisateurs
 		$sql1 = "UPDATE tempo2 SET col1 = '".$login_a_modifier."' WHERE col2 = '".$id_col2."'";
-		$query1 = mysql_query($sql1) OR DIE('Erreur sur la requête '.$sql1.'<br />'.mysql_error().'<br />Veuillez contacter les services concernés.');
+		$query1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql1) OR DIE('Erreur sur la requête '.$sql1.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />Veuillez contacter les services concernés.');
 
 		$sql2 = "UPDATE utilisateurs SET login = '".$login_a_modifier."' WHERE numind = '".$id_col2."'";
-		$query1 = mysql_query($sql2) OR DIE('Erreur sur la requête '.$sql2.'<br />'.mysql_error().'<br />Veuillez contacter les services concernés.');
+		$query1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql2) OR DIE('Erreur sur la requête '.$sql2.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />Veuillez contacter les services concernés.');
 
 	}
 
@@ -74,12 +74,12 @@ if ($action == "modifier") {
 
 	// On récupère la liste de tous les professeurs de la table ldap_bx
 	$sql_bx = "SELECT * FROM ldap_bx WHERE statut_u = 'teacher' ORDER BY nom_u, prenom_u";
-	$query_bx = mysql_query($sql_bx) OR DIE('Erreur dans la requête '.$sql_bx.'<br />'.mysql_error());
+	$query_bx = mysqli_query($GLOBALS["___mysqli_ston"], $sql_bx) OR DIE('Erreur dans la requête '.$sql_bx.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 	$aff_ldap_bx = '<p>Liste des professeurs disponibles dans l\'ENT</p>
 					<p>Pour ajouter des utilisateurs, contactez votre administrateur ENT</p>';
 
-	while($rep = mysql_fetch_array($query_bx)){
+	while($rep = mysqli_fetch_array($query_bx)){
 
 		$aff_ldap_bx .= "\n".'<br />'.$rep["nom_u"].' '.$rep["prenom_u"].' ('.$rep["login_u"].')';
 
@@ -91,12 +91,12 @@ if ($action == "modifier") {
 														AND u.login = t.col1
 														AND u.login LIKE 'erreur_%'
 														ORDER BY u.nom, u.prenom";
-	$query_p = mysql_query($sql_p)
-				OR DIE('Erreur dans la requête '.$sql_p.'<br />'.mysql_error().'<br /> Veuillez en informer le gestionnaire du système');
+	$query_p = mysqli_query($GLOBALS["___mysqli_ston"], $sql_p)
+				OR DIE('Erreur dans la requête '.$sql_p.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br /> Veuillez en informer le gestionnaire du système');
 
 	$j = 0;
 
-	while($rep_p = mysql_fetch_array($query_p)){
+	while($rep_p = mysqli_fetch_array($query_p)){
 
 		$aff_erreurs .= '<p> ERREUR ? : login retenu par Gepi -> <input type="text" name="modifier_'.$j.'" value="'.$rep_p["login"].'" />
 							<input type="hidden" name="id_'.$j.'" value="'.$rep_p["col2"].'" /> : '.$rep_p["nom"].' '.$rep_p["prenom"].'</p>';

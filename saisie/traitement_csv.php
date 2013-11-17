@@ -161,8 +161,8 @@ for ($row=1; $row<$nb_row; $row++) {
 
 	$temoin_periode_close="n";
 
-    $call_login = mysql_query("SELECT * FROM eleves WHERE login='$reg_login';");
-    $test = mysql_num_rows($call_login);
+    $call_login = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM eleves WHERE login='$reg_login';");
+    $test = mysqli_num_rows($call_login);
     if ($test != 0) {
         //
         // Si l'élève ne suit pas l'enseignement, échec
@@ -199,13 +199,13 @@ for ($row=1; $row<$nb_row; $row++) {
 				}
 
 				if ($enregistrement_note != "no") {
-					$test_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
-					$test = mysql_num_rows($test_eleve_note_query);
+					$test_eleve_note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_notes WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
+					$test = mysqli_num_rows($test_eleve_note_query);
 					if ($test != "0") {
-						$reg_data1 = mysql_query("UPDATE matieres_notes SET note='$reg_note',statut='$elev_statut', rang='0' WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
+						$reg_data1 = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE matieres_notes SET note='$reg_note',statut='$elev_statut', rang='0' WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
 						$modif = 'yes';
 					} else {
-						$reg_data1 = mysql_query("INSERT INTO matieres_notes SET login='$reg_login', id_groupe='" . $id_groupe . "',periode='$periode_num',note='$reg_note',statut='$elev_statut', rang='0'");
+						$reg_data1 = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO matieres_notes SET login='$reg_login', id_groupe='" . $id_groupe . "',periode='$periode_num',note='$reg_note',statut='$elev_statut', rang='0'");
 						$modif = 'yes';
 					}
 				} else {
@@ -213,13 +213,13 @@ for ($row=1; $row<$nb_row; $row++) {
 				}
 
 				if ($reg_app != "") {
-					$test_eleve_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
-					$test = mysql_num_rows($test_eleve_app_query);
+					$test_eleve_app_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_appreciations WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
+					$test = mysqli_num_rows($test_eleve_app_query);
 					if ($test != 0) {
-						$reg_data2 = mysql_query("UPDATE matieres_appreciations SET appreciation='" . $reg_app . "' WHERE (login='$reg_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$periode_num')");
+						$reg_data2 = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE matieres_appreciations SET appreciation='" . $reg_app . "' WHERE (login='$reg_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$periode_num')");
 					} else {
-						$reg_data2 = mysql_query("INSERT INTO matieres_appreciations set login = '" . $reg_login . "', id_groupe = '" . $id_groupe . "', periode = '" . $periode_num . "', appreciation = '" . $reg_app . "'");
-						echo mysql_error();
+						$reg_data2 = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO matieres_appreciations set login = '" . $reg_login . "', id_groupe = '" . $id_groupe . "', periode = '" . $periode_num . "', appreciation = '" . $reg_app . "'");
+						echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 					}
 				} else {
 					$reg_data2 = 'ok';
@@ -254,7 +254,7 @@ if ($modif == 'yes') {
            $recalcul_rang = $recalcul_rang.'y';
        }
     }
-    $req = mysql_query("update groupes set recalcul_rang = '".$recalcul_rang."'
+    $req = mysqli_query($GLOBALS["___mysqli_ston"], "update groupes set recalcul_rang = '".$recalcul_rang."'
     where id='".$id_groupe."'");
 }
 

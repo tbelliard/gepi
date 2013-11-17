@@ -47,10 +47,10 @@ if ($resultat_session == 'c') {
 // ajout de la ligne suivante dans 'sql/data_gepi.sql' et 'utilitaires/updates/access_rights.inc.php'
 // INSERT INTO droits VALUES ('/edt_organisation/aide_initialisation.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','aide à l\'initialisation', '');
 $sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/aide_initialisation.php';";
-$res_test=mysql_query($sql);
-if (mysql_num_rows($res_test)==0) {
+$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/edt_organisation/aide_initialisation.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','aide à l\'initialisation', '');";
-	$res_insert=mysql_query($sql);
+	$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 }
 
 if (!checkAccess()) {

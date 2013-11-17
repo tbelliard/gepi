@@ -169,14 +169,14 @@ function ajout_index_sous_dossiers($dossier) {
 		echo ajout_index_sous_dossiers("../documents");
 
 		$sql="SELECT * FROM infos_actions WHERE titre='Contrôle des index dans les documents des CDT requis';";
-		$res_test=mysql_query($sql);
-		if(mysql_num_rows($res_test)>0) {
-			while($lig_ia=mysql_fetch_object($res_test)) {
+		$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		if(mysqli_num_rows($res_test)>0) {
+			while($lig_ia=mysqli_fetch_object($res_test)) {
 				$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$lig_ia->id';";
-				$del=mysql_query($sql);
+				$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				if($del) {
 					$sql="DELETE FROM infos_actions WHERE id='$lig_ia->id';";
-					$del=mysql_query($sql);
+					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
 				}
 			}
 		}
