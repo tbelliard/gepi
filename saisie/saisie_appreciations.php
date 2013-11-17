@@ -343,7 +343,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 								$sql="SELECT id_classe FROM j_eleves_classes WHERE (login='$correction_login_eleve' AND periode='$correction_periode');";
 								$req=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($req)>0) {
-									$correction_id_classe=mysql_result($req,0,"id_classe");
+									$correction_id_classe=old_mysql_result($req,0,"id_classe");
 									$sql="(SELECT DISTINCT email FROM utilisateurs WHERE statut='secours' AND email!='')
 									UNION (SELECT DISTINCT email FROM utilisateurs u, j_scol_classes jsc WHERE u.login=jsc.login AND id_classe='$correction_id_classe');";
 								}
@@ -998,7 +998,7 @@ $num_id = 10;
 while ($k < $nb_periode) {
 
 	$app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations_grp WHERE (id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
-	$app_grp[$k] = @mysql_result($app_query, 0, "appreciation");
+	$app_grp[$k] = @old_mysql_result($app_query, 0, "appreciation");
 
 	$call_moyenne_t[$k] = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(n.note),1) moyenne FROM matieres_notes n, j_eleves_groupes j " .
 								"WHERE (" .
@@ -1008,7 +1008,7 @@ while ($k < $nb_periode) {
 								"j.id_groupe = n.id_groupe AND " .
 								"n.periode='$k' AND j.periode='$k'" .
 								")");
-	$moyenne_t[$k] = mysql_result($call_moyenne_t[$k], 0, "moyenne");
+	$moyenne_t[$k] = old_mysql_result($call_moyenne_t[$k], 0, "moyenne");
 
 	if ($moyenne_t[$k]=='') {
 		$moyenne_t[$k]="&nbsp;";
@@ -1295,7 +1295,7 @@ foreach ($liste_eleves as $eleve_login) {
 					(login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
 				$verif_t = mysqli_num_rows($app_t_query);
 				if ($verif_t != 0) {
-					$eleve_app_t = "\n".'<p>Appréciation non enregistrée : <span style="color: red;">'.@mysql_result($app_t_query, 0, "appreciation").'</span></p>';
+					$eleve_app_t = "\n".'<p>Appréciation non enregistrée : <span style="color: red;">'.@old_mysql_result($app_t_query, 0, "appreciation").'</span></p>';
 				} else {
 					$eleve_app_t = '';
 				}
@@ -1315,11 +1315,11 @@ foreach ($liste_eleves as $eleve_login) {
 			} else {
 				$app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
 			}
-			$eleve_app = @mysql_result($app_query, 0, "appreciation");
+			$eleve_app = @old_mysql_result($app_query, 0, "appreciation");
 			// Appel des notes
 			$note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
-			$eleve_statut = @mysql_result($note_query, 0, "statut");
-			$eleve_note = @mysql_result($note_query, 0, "note");
+			$eleve_statut = @old_mysql_result($note_query, 0, "statut");
+			$eleve_note = @old_mysql_result($note_query, 0, "note");
 			// Formatage de la note
 			$note ="<center>";
 			if ($eleve_statut != '') {

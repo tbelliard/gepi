@@ -123,7 +123,7 @@ if (!isset($_POST["action"])) {
 
 			// Maintenant que tout est propre, on fait un test sur la table pour voir si la matière existe déjà ou pas
 
-			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(matiere) FROM matieres WHERE matiere = '" . $reg_nom_court . "'"), 0);
+			$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(matiere) FROM matieres WHERE matiere = '" . $reg_nom_court . "'"), 0);
 
 			if ($test == 0) {
 				// Test négatif : aucune matière avec ce nom court... on enregistre !

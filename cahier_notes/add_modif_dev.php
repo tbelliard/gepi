@@ -79,12 +79,12 @@ $mode_navig = isset($_POST["mode_navig"]) ? $_POST["mode_navig"] : (isset($_GET[
 
 if ($id_devoir)  {
     $query = mysqli_query($GLOBALS["mysqli"], "SELECT id_conteneur, id_racine FROM cn_devoirs WHERE id = '$id_devoir'");
-    $id_racine = mysql_result($query, 0, 'id_racine');
-    $id_conteneur = mysql_result($query, 0, 'id_conteneur');
+    $id_racine = old_mysql_result($query, 0, 'id_racine');
+    $id_conteneur = old_mysql_result($query, 0, 'id_conteneur');
 } else if ((isset($_POST['id_conteneur'])) or (isset($_GET['id_conteneur']))) {
     $id_conteneur = isset($_POST['id_conteneur']) ? $_POST['id_conteneur'] : (isset($_GET['id_conteneur']) ? $_GET['id_conteneur'] : NULL);
     $query = mysqli_query($GLOBALS["mysqli"], "SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
-    $id_racine = mysql_result($query, 0, 'id_racine');
+    $id_racine = old_mysql_result($query, 0, 'id_racine');
 } else {
     header("Location: ../logout.php?auto=1");
     die();
@@ -111,9 +111,9 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
 }
 
 $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
-$id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
-$periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
 /**
  * Gestion des périodes
  */
@@ -577,24 +577,24 @@ if (isset($_POST['ok'])) {
 if ($id_devoir)  {
     $new_devoir = 'no';
     $appel_devoir = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_devoirs WHERE (id ='$id_devoir' and id_racine='$id_racine')");
-    $nom_court = mysql_result($appel_devoir, 0, 'nom_court');
-    $nom_complet = mysql_result($appel_devoir, 0, 'nom_complet');
-    $description = mysql_result($appel_devoir, 0, 'description');
-    $coef = mysql_result($appel_devoir, 0, 'coef');
-    $note_sur = mysql_result($appel_devoir, 0, 'note_sur');
-    $ramener_sur_referentiel = mysql_result($appel_devoir, 0, 'ramener_sur_referentiel');
-    $facultatif = mysql_result($appel_devoir, 0, 'facultatif');
-    $display_parents = mysql_result($appel_devoir, 0, 'display_parents');
-    $display_parents_app = mysql_result($appel_devoir, 0, 'display_parents_app');
-    $date = mysql_result($appel_devoir, 0, 'date');
-    $id_conteneur = mysql_result($appel_devoir, 0, 'id_conteneur');
+    $nom_court = old_mysql_result($appel_devoir, 0, 'nom_court');
+    $nom_complet = old_mysql_result($appel_devoir, 0, 'nom_complet');
+    $description = old_mysql_result($appel_devoir, 0, 'description');
+    $coef = old_mysql_result($appel_devoir, 0, 'coef');
+    $note_sur = old_mysql_result($appel_devoir, 0, 'note_sur');
+    $ramener_sur_referentiel = old_mysql_result($appel_devoir, 0, 'ramener_sur_referentiel');
+    $facultatif = old_mysql_result($appel_devoir, 0, 'facultatif');
+    $display_parents = old_mysql_result($appel_devoir, 0, 'display_parents');
+    $display_parents_app = old_mysql_result($appel_devoir, 0, 'display_parents_app');
+    $date = old_mysql_result($appel_devoir, 0, 'date');
+    $id_conteneur = old_mysql_result($appel_devoir, 0, 'id_conteneur');
 
     $annee = mb_substr($date,0,4);
     $mois =  mb_substr($date,5,2);
     $jour =  mb_substr($date,8,2);
     $display_date = $jour."/".$mois."/".$annee;
 
-    $date = mysql_result($appel_devoir, 0, 'date_ele_resp');
+    $date = old_mysql_result($appel_devoir, 0, 'date_ele_resp');
     $annee = mb_substr($date,0,4);
     $mois =  mb_substr($date,5,2);
     $jour =  mb_substr($date,8,2);
@@ -926,8 +926,8 @@ if($interface_simplifiee=="y"){
 		$nb_cont = mysqli_num_rows($appel_conteneurs);
 		$i = 0;
 		while ($i < $nb_cont) {
-			$id_cont = mysql_result($appel_conteneurs, $i, 'id');
-			$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
+			$id_cont = old_mysql_result($appel_conteneurs, $i, 'id');
+			$nom_conteneur = old_mysql_result($appel_conteneurs, $i, 'nom_court');
 			echo "<option value='$id_cont' ";
 			if ($id_cont == $id_conteneur) echo "selected";
 			if($nom_conteneur==""){echo " >---</option>\n";}else{echo " >$nom_conteneur</option>\n";}
@@ -976,8 +976,8 @@ else{
 	$nb_cont = mysqli_num_rows($appel_conteneurs);
 	$i = 0;
 	while ($i < $nb_cont) {
-	$id_cont = mysql_result($appel_conteneurs, $i, 'id');
-	$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
+	$id_cont = old_mysql_result($appel_conteneurs, $i, 'id');
+	$nom_conteneur = old_mysql_result($appel_conteneurs, $i, 'nom_court');
 	echo "<option value='$id_cont' ";
 	if ($id_cont == $id_conteneur) {echo "selected='selected'";}
 	if($nom_conteneur==""){echo " >---</option>\n";}else{echo " >$nom_conteneur</option>\n";}

@@ -106,7 +106,7 @@ if (!isset($step1)) {
     $j=0;
     $flag=0;
     while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
             $flag=1;
         }
         $j++;
@@ -128,7 +128,7 @@ if (!isset($step1)) {
 if (!isset($is_posted)) {
     $j=0;
     while ($j < count($liste_tables_del)) {
-        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
             $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
         }
         $j++;
@@ -232,7 +232,7 @@ if (!isset($is_posted)) {
                                 echo "<tr><td><p><font color='red'>$affiche[0]</font></p></td><td><p>".htmlspecialchars($affiche[1])."</p></td></tr>";
                             }
                         } else {
-                            $nom_complet = mysql_result($verif,0,'nom_complet');
+                            $nom_complet = old_mysql_result($verif,0,'nom_complet');
                             echo "<tr><td><p><font color='green'>$affiche[0]</font></p></td><td><p>".htmlspecialchars($nom_complet)."</p></td></tr>";
                         }
                     }

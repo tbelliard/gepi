@@ -83,10 +83,10 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
 }
 
 $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
-$id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 $id_classe = $current_group["classes"]["list"][0];
-$periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
 
 if (count($current_group["classes"]["list"]) > 1) {
     $multiclasses = true;
@@ -114,7 +114,7 @@ $nom_classe = $current_group["classlist_string"];
 
 
 $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
-$nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
+$nom_periode = old_mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 
 $instant=getdate();

@@ -534,7 +534,7 @@ if (!$current_group) {
 		}
 		*/
 
-			$id_classe = mysql_result($appel_donnees, $i, "id");
+			$id_classe = old_mysql_result($appel_donnees, $i, "id");
 			$aff_class = 'no';
 			$groups = get_groups_for_class($id_classe,"","n");
 			//echo "\$id_classe=$id_classe et count(\$groups)=".count($groups)."<br />";
@@ -547,7 +547,7 @@ if (!$current_group) {
 				if ($_SESSION['statut']=='professeur') {
 					$test = mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_groupes_professeurs
 					WHERE (id_groupe='" . $group["id"]."' and login = '" . $_SESSION["login"] . "')");
-					if (mysql_result($test, 0) == 1) {$flag2 = 'yes';}
+					if (old_mysql_result($test, 0) == 1) {$flag2 = 'yes';}
 
 					if($acces_pp=="y") {
 						$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.login=jep.login AND jec.id_classe=jep.id_classe AND jep.professeur='".$_SESSION['login']."' AND jec.id_classe='$id_classe';";
@@ -562,7 +562,7 @@ if (!$current_group) {
 				}
 
 				if ($flag2 == "yes") {
-					$display_class = mysql_result($appel_donnees, $i, "classe");
+					$display_class = old_mysql_result($appel_donnees, $i, "classe");
 					if ($aff_class == 'no') {
 						echo "<tr>\n";
 						echo "<td valign='top'>\n";
@@ -1059,9 +1059,9 @@ function UncheckAll_checkbox(){
 						$j++;
 						$note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$login_eleve[$i]' AND id_groupe = '".$current_group["id"] . "' AND periode='$k')");
 						if($note_query) {
-							$_statut = @mysql_result($note_query, 0, "statut");
-							//$note = @mysql_result($note_query, 0, "note");
-							$rang = @mysql_result($note_query, 0, "rang");
+							$_statut = @old_mysql_result($note_query, 0, "statut");
+							//$note = @old_mysql_result($note_query, 0, "note");
+							$rang = @old_mysql_result($note_query, 0, "rang");
 							if ($option[$i][$k] == "non") {
 								//$col[$j][$nb_lignes] = "-";
 								//$col[$j][$nb_lignes] = "<span style='text-align:center;'>-</span>";
@@ -1092,8 +1092,8 @@ function UncheckAll_checkbox(){
                 if (isset($_POST[$temp]) or isset($_GET[$temp])) {
                     $j++;
                     $note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$login_eleve[$i]' AND id_groupe = '".$current_group["id"] . "' AND periode='$k')");
-                    $_statut = @mysql_result($note_query, 0, "statut");
-                    $note = @mysql_result($note_query, 0, "note");
+                    $_statut = @old_mysql_result($note_query, 0, "statut");
+                    $note = @old_mysql_result($note_query, 0, "note");
                     if ($option[$i][$k] == "non") {
                         $col[$j][$nb_lignes] = "<center>-</center>";
 						$col_csv[$j][$nb_lignes] = "-";
@@ -1127,7 +1127,7 @@ function UncheckAll_checkbox(){
 
                     $j++;
                     $app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login='$login_eleve[$i]' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
-                    $app = @mysql_result($app_query, 0, "appreciation");
+                    $app = @old_mysql_result($app_query, 0, "appreciation");
 
 					//++++++++++++++++++++++++
 					// Modif d'après F.Boisson
@@ -1452,7 +1452,7 @@ function UncheckAll_checkbox(){
                 $call_moyenne = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
                 $call_max = mysqli_query($GLOBALS["mysqli"], "SELECT max(note) note_max FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
                 $call_min = mysqli_query($GLOBALS["mysqli"], "SELECT min(note) note_min FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
-                $temp = @mysql_result($call_moyenne, 0, "moyenne");
+                $temp = @old_mysql_result($call_moyenne, 0, "moyenne");
                 if ($temp != '') {
                     //$col[$j][$nb_lignes] = number_format($temp,1,',','');
 					$col[$j][$nb_lignes] = "<center>".number_format($temp,1,',','')."</center>";
@@ -1462,7 +1462,7 @@ function UncheckAll_checkbox(){
 					$col[$j][$nb_lignes] = "<center>-</center>";
                     $col_csv[$j][$nb_lignes] = '-' ;
                 }
-                $temp = @mysql_result($call_min, 0, "note_min");
+                $temp = @old_mysql_result($call_min, 0, "note_min");
                 if ($temp != '') {
                     //$col[$j][$nb_lignes+1] = number_format($temp,1,',','');
 					$col[$j][$nb_lignes+1] = "<center>".number_format($temp,1,',','')."</center>";
@@ -1472,7 +1472,7 @@ function UncheckAll_checkbox(){
 					$col[$j][$nb_lignes+1] = "<center>-</center>";
                     $col_csv[$j][$nb_lignes+1] = '-' ;
                 }
-                $temp = @mysql_result($call_max, 0, "note_max");
+                $temp = @old_mysql_result($call_max, 0, "note_max");
                 if ($temp != '') {
                     //$col[$j][$nb_lignes+2] = number_format($temp,1,',','');
 					$col[$j][$nb_lignes+2] = "<center>".number_format($temp,1,',','')."</center>";

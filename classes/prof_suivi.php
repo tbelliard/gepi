@@ -116,7 +116,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	//=========================
 	$k = 0;
 	while ($k < $nombreligne) {
-		$login_eleve = mysql_result($call_eleves, $k, 'login');
+		$login_eleve = old_mysql_result($call_eleves, $k, 'login');
 
 		//=========================
 		// AJOUT: boireaus 20071010
@@ -139,7 +139,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			//=========================
 
 			$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT professeur FROM j_eleves_professeurs WHERE (login = '$login_eleve' AND id_classe='$id_classe')");
-			$eleve_profsuivi = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
+			$eleve_profsuivi = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
 			if (($reg_prof == '') and ($eleve_profsuivi != '')) {
 				$reg = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')");
 			}
@@ -169,7 +169,7 @@ require_once("../lib/header.inc.php");
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 if(isset($id_classe)) {
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-	$classe = mysql_result($call_classe, "0", "classe");
+	$classe = old_mysql_result($call_classe, "0", "classe");
 
 	echo "<p class='bold'><a href='classes_const.php?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
 }
@@ -425,7 +425,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 	$i = 0;
 
 	while ($i < $nb_prof_exist) {
-		$prof_classe[$i] = mysql_result($call_profsuivi,$i,'professeur');
+		$prof_classe[$i] = old_mysql_result($call_profsuivi,$i,'professeur');
 		$i++;
 	}
 
@@ -444,9 +444,9 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 		$j='0';
 		$flag_selected = 1;
 		while ($j < $nb) {
-			$profsuivi = mysql_result($call_prof, $j, "login");
-			$prof_nom = mysql_result($call_prof, $j, "nom");
-			$prof_prenom = mysql_result($call_prof, $j, "prenom");
+			$profsuivi = old_mysql_result($call_prof, $j, "login");
+			$prof_nom = old_mysql_result($call_prof, $j, "nom");
+			$prof_prenom = old_mysql_result($call_prof, $j, "prenom");
 			echo "<option value='$profsuivi'";
 			$k = 0;
 			while ($k < $nb_prof_exist) {
@@ -505,8 +505,8 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 			echo "<tr><th>Nom Prénom</th>\n";
 			for ($i=1; $i < $nb_prof_suivi+1; $i++) {
 				$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login = '$tab_prof[$i]'");
-				$prof_nom = mysql_result($call_prof, 0, "nom");
-				$prof_prenom = mysql_result($call_prof, 0, "prenom");
+				$prof_nom = old_mysql_result($call_prof, 0, "nom");
+				$prof_prenom = old_mysql_result($call_prof, 0, "prenom");
 				echo "<th><p class='small'>".ucfirst(getSettingValue("gepi_prof_suivi"))." :<br />$prof_nom $prof_prenom<br />\n";
 				echo "<a href=\"javascript:CocheColonne(".$i.")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 				//echo " / <a href=\"javascript:DecocheColonne(".$i.")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
@@ -519,13 +519,13 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
 			$alt=1;
 			While ($k < $nombreligne) {
-				$login_eleve = mysql_result($call_eleves, $k, 'login');
+				$login_eleve = old_mysql_result($call_eleves, $k, 'login');
 				$prof_login = "prof_".$login_eleve;
 				$call_data_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE (login = '$login_eleve')");
-				$nom_eleve = @mysql_result($call_data_eleves, '0', 'nom');
-				$prenom_eleve = @mysql_result($call_data_eleves, '0', 'prenom');
+				$nom_eleve = @old_mysql_result($call_data_eleves, '0', 'nom');
+				$prenom_eleve = @old_mysql_result($call_data_eleves, '0', 'prenom');
 				$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_professeurs WHERE (login = '$login_eleve' and id_classe='$id_classe')");
-				$eleve_profsuivi = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
+				$eleve_profsuivi = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
 				$prof_login = "prof_".$login_eleve;
 
 				$alt=$alt*(-1);

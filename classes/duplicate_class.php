@@ -60,8 +60,8 @@ if (isset($eleves_selected)) {
 
     // On fait l'enregistrement de la nouvelle classe
     $get_settings = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id='$id_classe'");
-    $suivi_par = traitement_magic_quotes(corriger_caracteres(@mysql_result($get_settings, "0", "suivi_par")));
-    $formule = traitement_magic_quotes(corriger_caracteres(@mysql_result($get_settings, "0", "formule")));
+    $suivi_par = traitement_magic_quotes(corriger_caracteres(@old_mysql_result($get_settings, "0", "suivi_par")));
+    $formule = traitement_magic_quotes(corriger_caracteres(@old_mysql_result($get_settings, "0", "formule")));
     $nom_court = traitement_magic_quotes(corriger_caracteres(urldecode($nom_court)));
     $nom_complet = traitement_magic_quotes(corriger_caracteres(urldecode($nom_complet)));
 
@@ -75,16 +75,16 @@ if (isset($eleves_selected)) {
     format_nom='np'");
     if (!$register_newclass) $msg .= "Erreur lors de l'enregistrement de la nouvelle classe.<br />";
 
-    $newclass_id = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT max(id) FROM classes"), 0);
+    $newclass_id = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT max(id) FROM classes"), 0);
 
     // Maintenant on duplique les entrées de la table j_classes_matieres_professeurs
     $get_data1 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_classes_matieres_professeurs WHERE id_classe='$id_classe'");
     $nb1 = mysqli_num_rows($get_data1);
     for ($i1=0;$i1<$nb1;$i1++) {
-        $id_matiere = mysql_result($get_data1, $i1, "id_matiere");
-        $id_professeur = mysql_result($get_data1, $i1, "id_professeur");
-        $priorite = mysql_result($get_data1, $i1, "priorite");
-        $ordre_prof = mysql_result($get_data1, $i1, "ordre_prof");
+        $id_matiere = old_mysql_result($get_data1, $i1, "id_matiere");
+        $id_professeur = old_mysql_result($get_data1, $i1, "id_professeur");
+        $priorite = old_mysql_result($get_data1, $i1, "priorite");
+        $ordre_prof = old_mysql_result($get_data1, $i1, "ordre_prof");
 
         $register1 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_classes_matieres_professeurs SET id_classe='$newclass_id',id_matiere='$id_matiere',id_professeur='$id_professeur',priorite='$priorite',ordre_prof='$ordre_prof',coef='0', recalcul_rang='y'");
         if (!$register1) $msg .= "Erreur lors de l'enregistrement dans j_classes_matieres_professeurs pour la matière $id_matiere.<br />";
@@ -94,9 +94,9 @@ if (isset($eleves_selected)) {
     $get_data2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe='$id_classe'");
     $nb2 = mysqli_num_rows($get_data2);
     for ($i2=0;$i2<$nb2;$i2++) {
-        $nom_periode = traitement_magic_quotes(corriger_caracteres(mysql_result($get_data2, $i2, "nom_periode")));
-        $num_periode = mysql_result($get_data2, $i2, "num_periode");
-        $verouiller = mysql_result($get_data2, $i2, "verouiller");
+        $nom_periode = traitement_magic_quotes(corriger_caracteres(old_mysql_result($get_data2, $i2, "nom_periode")));
+        $num_periode = old_mysql_result($get_data2, $i2, "num_periode");
+        $verouiller = old_mysql_result($get_data2, $i2, "verouiller");
         $register2 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO periodes SET nom_periode='$nom_periode',num_periode='$num_periode',verouiller='$verouiller',id_classe='$newclass_id'");
         if (!$register2) $msg .= "Erreur lors de l'enregistrement de la période $nom_periode.<br />";
     }
@@ -107,7 +107,7 @@ if (isset($eleves_selected)) {
     $number = mysqli_num_rows($query);
 
     for ($l=0;$l<$number;$l++) {
-        $eleve_login = mysql_result($query, $l, "login");
+        $eleve_login = old_mysql_result($query, $l, "login");
 
         if (isset($$eleve_login)) {
 
@@ -144,8 +144,8 @@ if (!isset($new_name_defined)) {
     echo "<select name='id_classe' size=1>\n";
     $i = "0" ;
     while ($i < $nombreligne) {
-        $id_classe = mysql_result($call_classes, $i, "id");
-        $l_classe = mysql_result($call_classes, $i, "classe");
+        $id_classe = old_mysql_result($call_classes, $i, "id");
+        $l_classe = old_mysql_result($call_classes, $i, "classe");
         //echo "<option value='$id_classe' size=1>$l_classe</option>";
         echo "<option value='$id_classe'>$l_classe</option>\n";
     $i++;
@@ -178,9 +178,9 @@ if (isset($new_name_defined) && !isset($eleves_selected)) {
 
     for ($k=0;$k<$nb;$k++) {
 
-        $eleve_login = mysql_result($call_eleves, $k, "login");
-        $eleve_nom = mysql_result($call_eleves, $k, "nom");
-        $eleve_prenom = mysql_result($call_eleves, $k, "prenom");
+        $eleve_login = old_mysql_result($call_eleves, $k, "login");
+        $eleve_nom = old_mysql_result($call_eleves, $k, "nom");
+        $eleve_prenom = old_mysql_result($call_eleves, $k, "prenom");
 
         echo "<tr><td>";
         echo "<input type=checkbox name='$eleve_login' value='new' />";

@@ -64,7 +64,7 @@ if(mysqli_num_rows($call_classe)==0) {
 	echo "La classe n°$id_classe (id_classe) n'existe pas.<br />\n";
 	die();
 }
-$classe = mysql_result($call_classe, "0", "classe");
+$classe = old_mysql_result($call_classe, "0", "classe");
 
 include "../lib/periodes.inc.php";
 
@@ -92,8 +92,8 @@ if (isset($is_posted) and ($is_posted == 1)) {
 	$k = '0';
 	while ($k < $nombreligne) {
 		$pb = 'no';
-		$login_eleve = mysql_result($call_eleves, $k, 'login');
-		$id_eleve = mysql_result($call_eleves, $k, 'id_eleve');
+		$login_eleve = old_mysql_result($call_eleves, $k, 'login');
+		$id_eleve = old_mysql_result($call_eleves, $k, 'id_eleve');
 
 
 		if(isset($_POST['ajout_eleve_'.$id_eleve])) {
@@ -417,14 +417,14 @@ if ($nombreligne == '0') {
 	$chaine_id_eleve=array();
 	$alt=1;
 	while($k < $nombreligne) {
-		$id_eleve = mysql_result($call_eleves, $k, 'id_eleve');
-		$login_eleve = mysql_result($call_eleves, $k, 'login');
-		$nom_eleve = mysql_result($call_eleves, $k, 'nom');
-		$prenom_eleve = mysql_result($call_eleves, $k, 'prenom');
+		$id_eleve = old_mysql_result($call_eleves, $k, 'id_eleve');
+		$login_eleve = old_mysql_result($call_eleves, $k, 'login');
+		$nom_eleve = old_mysql_result($call_eleves, $k, 'nom');
+		$prenom_eleve = old_mysql_result($call_eleves, $k, 'prenom');
 		$call_regime = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_regime WHERE login='$login_eleve'");
-		$doublant = @mysql_result($call_regime, 0, 'doublant');
+		$doublant = @old_mysql_result($call_regime, 0, 'doublant');
 		if ($doublant == '') {$doublant = '-';}
-		$regime = @mysql_result($call_regime, 0, 'regime');
+		$regime = @old_mysql_result($call_regime, 0, 'regime');
 		if ($regime == '') {$regime = 'd/p';}
 		$i="1";
 		while ($i < $nb_periode) {
@@ -444,7 +444,7 @@ if ($nombreligne == '0') {
 				$i++;
 			}
 		} else {
-			$id_classe_eleve = mysql_result($call_data, 0, "id_classe");
+			$id_classe_eleve = old_mysql_result($call_data, 0, "id_classe");
 			$query_periode_max = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe_eleve'");
 			$periode_max = mysqli_num_rows($query_periode_max) + 1 ;
 			// si l'élève est déjà dans une classe dont le nombre de périodes est différent du nombre de périodes de la classe selctionnée, on ne fait rien. Dans la cas contraire :
@@ -459,9 +459,9 @@ if ($nombreligne == '0') {
 						$eleves_non_affectes = 'yes';
 						$nom_classe[$i] = 'vide';
 					} else {
-						$idd_classe = mysql_result($call_data2, 0, "id_classe");
+						$idd_classe = old_mysql_result($call_data2, 0, "id_classe");
 						$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE (id = '$idd_classe')");
-						$nom_classe[$i] = mysql_result($call_classe, 0, "classe");
+						$nom_classe[$i] = old_mysql_result($call_classe, 0, "classe");
 					}
 					$i++;
 				}

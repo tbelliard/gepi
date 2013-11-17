@@ -87,7 +87,7 @@ if (!isset($is_posted)) {
 	$j=0;
 	$flag=0;
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
-		if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)==0) {
+		if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)==0) {
 			$flag=1;
 		}
 		$j++;
@@ -111,7 +111,7 @@ if (!isset($is_posted)) {
 	$nb_prof = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_prof) {
-		$login_prof = mysql_result($req, $i, 'login');
+		$login_prof = old_mysql_result($req, $i, 'login');
 		$test = mysqli_query($GLOBALS["mysqli"], "select id_professeur from j_professeurs_matieres where id_professeur = '$login_prof'");
 		if (mysqli_num_rows($test)==0) {
 			if($simulation=="n") {
@@ -153,7 +153,7 @@ if (!isset($is_posted)) {
 	$nb_mat = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_mat) {
-		$mat = mysql_result($req, $i, 'matiere');
+		$mat = old_mysql_result($req, $i, 'matiere');
 		$test1 = mysqli_query($GLOBALS["mysqli"], "select id_matiere from j_professeurs_matieres where id_matiere = '$mat'");
 		if (mysqli_num_rows($test1)==0) {
 			$test2 = mysqli_query($GLOBALS["mysqli"], "select id_matiere from j_groupes_matieres where id_matiere = '$mat'");
@@ -189,11 +189,11 @@ if (!isset($is_posted)) {
 	$nb_resp = mysql_num_rows($req);
 	$i = 0;
 	while ($i < $nb_resp) {
-		//$resp = mysql_result($req, $i, 'ereno');
-		$ele_id=mysql_result($req, $i, 'ele_id');
+		//$resp = old_mysql_result($req, $i, 'ereno');
+		$ele_id=old_mysql_result($req, $i, 'ele_id');
 		$test1 = mysql_query("select ele_id from eleves where ele_id='$ele_id'");
 		if (mysql_num_rows($test1)==0) {
-			$pers_id=mysql_result($req, $i, 'pers_id');
+			$pers_id=old_mysql_result($req, $i, 'pers_id');
 			$sql="SELECT nom, prenom FROM resp_pers WHERE ele_id='$ele_id'";
 			$res_resp=mysql_query($sql);
 			while($lig_resp=mysql_fetch_object($res_resp)){
@@ -212,10 +212,10 @@ if (!isset($is_posted)) {
 	$nb_resp = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_resp) {
-		$pers_id=mysql_result($req, $i, 'pers_id');
-		$nom_resp=mysql_result($req, $i, 'nom');
-		$prenom_resp=mysql_result($req, $i, 'prenom');
-		$adr_id=mysql_result($req, $i, 'adr_id');
+		$pers_id=old_mysql_result($req, $i, 'pers_id');
+		$nom_resp=old_mysql_result($req, $i, 'nom');
+		$prenom_resp=old_mysql_result($req, $i, 'prenom');
+		$adr_id=old_mysql_result($req, $i, 'adr_id');
 
 		$test1 = mysqli_query($GLOBALS["mysqli"], "select r.ele_id from responsables2 r, eleves e where r.pers_id='$pers_id' AND e.ele_id=r.ele_id");
 		//$test1 = mysql_query("select ele_id from eleves where ele_id='$ele_id'");

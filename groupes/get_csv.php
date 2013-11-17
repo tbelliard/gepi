@@ -90,7 +90,7 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 if ($current_group) {
 	$nom_fic = $current_group["name"] . "-" . remplace_accents(preg_replace('/, /','~',$current_group["classlist_string"]),'all') . ".csv";
 } else {
-	$classe = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '" . $id_classe . "'"), 0);
+	$classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '" . $id_classe . "'"), 0);
 	$nom_fic = remplace_accents($classe,"all") . ".csv";
 }
 
@@ -321,29 +321,29 @@ if($current_group) {
 	$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 	$i = 0;
 	while($i < $nombre_lignes) {
-		$eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
-		$eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
-		$eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
-		$eleve_sexe = mysql_result($appel_donnees_eleves, $i, "sexe");
-		$eleve_naissance = mysql_result($appel_donnees_eleves, $i, "naissance");
+		$eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
+		$eleve_nom = old_mysql_result($appel_donnees_eleves, $i, "nom");
+		$eleve_prenom = old_mysql_result($appel_donnees_eleves, $i, "prenom");
+		$eleve_sexe = old_mysql_result($appel_donnees_eleves, $i, "sexe");
+		$eleve_naissance = old_mysql_result($appel_donnees_eleves, $i, "naissance");
 		if((isset($format_naiss))&&($format_naiss=='jjmmaaaa')) {
 			$eleve_naissance=formate_date($eleve_naissance);
 		}
 		if($avec_lieu_naiss=='y') {
-			$eleve_lieu_naissance=get_commune(mysql_result($appel_donnees_eleves, $i, "lieu_naissance"),'2');
+			$eleve_lieu_naissance=get_commune(old_mysql_result($appel_donnees_eleves, $i, "lieu_naissance"),'2');
 		}
 
 		//$fd.="$classe;$eleve_login;$eleve_nom;$eleve_prenom;$eleve_sexe;$eleve_naissance\n";
 
-		$eleve_email=mysql_result($appel_donnees_eleves, $i, "email");
-		$eleve_no_gep=mysql_result($appel_donnees_eleves, $i, "no_gep");
-		$eleve_elenoet=mysql_result($appel_donnees_eleves, $i, "elenoet");
-		$eleve_ele_id=mysql_result($appel_donnees_eleves, $i, "ele_id");
+		$eleve_email=old_mysql_result($appel_donnees_eleves, $i, "email");
+		$eleve_no_gep=old_mysql_result($appel_donnees_eleves, $i, "no_gep");
+		$eleve_elenoet=old_mysql_result($appel_donnees_eleves, $i, "elenoet");
+		$eleve_ele_id=old_mysql_result($appel_donnees_eleves, $i, "ele_id");
 
 		if(((isset($avec_doublant))&&($avec_doublant=='y'))||
 		((isset($avec_regime))&&($avec_regime=='y'))) {
-			$eleve_doublant=mysql_result($appel_donnees_eleves, $i, "doublant");
-			$eleve_regime=mysql_result($appel_donnees_eleves, $i, "regime");
+			$eleve_doublant=old_mysql_result($appel_donnees_eleves, $i, "doublant");
+			$eleve_regime=old_mysql_result($appel_donnees_eleves, $i, "regime");
 		}
 
 		/*

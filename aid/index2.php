@@ -53,8 +53,8 @@ if ($indice_aid =='') {
     die();
 }
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-$nom_aid = @mysql_result($call_data, 0, "nom");
-$activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
+$nom_aid = @old_mysql_result($call_data, 0, "nom");
+$activer_outils_comp = @old_mysql_result($call_data, 0, "outils_complementaires");
 
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["is_posted"]))) {
 	check_token();
@@ -66,7 +66,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
     $i = 0;
     $msg_inter = "";
     while ($i < $nombreligne){
-        $aid_id = @mysql_result($calldata, $i, "id");
+        $aid_id = @old_mysql_result($calldata, $i, "id");
         // Enregistrement de fiche publique
         if (isset($_POST["fiche_publique_".$aid_id])) {
             $register = mysqli_query($GLOBALS["mysqli"], "update aid set fiche_publique='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
@@ -202,16 +202,16 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 $i = 0;
 $alt=1;
 while ($i < $nombreligne){
-    $aid_nom = @mysql_result($calldata, $i, "nom");
-    $aid_num = @mysql_result($calldata, $i, "numero");
-    $eleve_peut_modifier = @mysql_result($calldata, $i, "eleve_peut_modifier");
-    $prof_peut_modifier = @mysql_result($calldata, $i, "prof_peut_modifier");
-    $cpe_peut_modifier = @mysql_result($calldata, $i, "cpe_peut_modifier");
-    $fiche_publique = @mysql_result($calldata, $i, "fiche_publique");
-    $affiche_adresse1 = @mysql_result($calldata, $i, "affiche_adresse1");
-    $en_construction = @mysql_result($calldata, $i, "en_construction");
+    $aid_nom = @old_mysql_result($calldata, $i, "nom");
+    $aid_num = @old_mysql_result($calldata, $i, "numero");
+    $eleve_peut_modifier = @old_mysql_result($calldata, $i, "eleve_peut_modifier");
+    $prof_peut_modifier = @old_mysql_result($calldata, $i, "prof_peut_modifier");
+    $cpe_peut_modifier = @old_mysql_result($calldata, $i, "cpe_peut_modifier");
+    $fiche_publique = @old_mysql_result($calldata, $i, "fiche_publique");
+    $affiche_adresse1 = @old_mysql_result($calldata, $i, "affiche_adresse1");
+    $en_construction = @old_mysql_result($calldata, $i, "en_construction");
     if ($aid_num =='') {$aid_num='&nbsp;';}
-    $aid_id = @mysql_result($calldata, $i, "id");
+    $aid_id = @old_mysql_result($calldata, $i, "id");
     $alt=$alt*(-1);
     // Première colonne du numéro de l'AID
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)

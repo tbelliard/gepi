@@ -77,9 +77,9 @@ $query_p = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM util
 
 	for($i = 0 ; $i < $nbre_p ; $i++){
 
-		$login_p[$i] = mysql_result($query_p, $i, "login");
-		$nom_p[$i] = mysql_result($query_p, $i, "nom");
-		$prenom_p[$i] = mysql_result($query_p, $i, "prenom");
+		$login_p[$i] = old_mysql_result($query_p, $i, "login");
+		$nom_p[$i] = old_mysql_result($query_p, $i, "nom");
+		$prenom_p[$i] = old_mysql_result($query_p, $i, "prenom");
 
 		$aff_select_profs .= '
 		<option value="'.$login_p[$i].'">'.$nom_p[$i].' '.$prenom_p[$i].'</option>';
@@ -92,13 +92,13 @@ $query_p = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM util
 
 		// On vérifie si ce prof existe et si il n'est pas déjà membre de ce edt_gr
 		$verif_exist = mysqli_query($GLOBALS["mysqli"], "SELECT etat FROM utilisateurs WHERE login = '".$choix_prof."'");
-		$test1 = mysql_result($verif_exist,0, "etat");
+		$test1 = old_mysql_result($verif_exist,0, "etat");
 
 		if ($test1) {
 
 			// On vérifie alors s'il n'est pas déjà membre de cet edt_gr
 			$query_v = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'");
-			$test2 = mysql_result($query_v, 0,"id");
+			$test2 = old_mysql_result($query_v, 0,"id");
 
 			if ($test2 AND is_numeric($test2) AND $test2 >= 1) {
 

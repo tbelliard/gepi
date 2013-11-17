@@ -39,7 +39,7 @@ if (!checkAccess()) {
 }
 
 $periode_query = mysqli_query($GLOBALS["mysqli"], "select max(num_periode) max from periodes");
-$max_periode = mysql_result($periode_query, 0, 'max');
+$max_periode = old_mysql_result($periode_query, 0, 'max');
 
 if (isset($_POST['is_posted'])) {
 	check_token();
@@ -59,7 +59,7 @@ if (isset($_POST['is_posted'])) {
 		$nbc = 0;
 		while ($nbc < $nb_classe) {
 			$modif_classe = 'no';
-			$id_classe = mysql_result($classes_list,$nbc,'id');
+			$id_classe = old_mysql_result($classes_list,$nbc,'id');
 			$query_per = mysqli_query($GLOBALS["mysqli"], "SELECT p.num_periode FROM classes c, periodes p WHERE (p.id_classe = c.id  and c.id = '".$id_classe."')");
 			$nb_periode = mysqli_num_rows($query_per);
 			if ($nb_periode == $per) {
@@ -266,7 +266,7 @@ if (isset($_POST['is_posted'])) {
 							}
 							$tab_priorites_categories[]=$reg_priority;
 
-							$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
+							$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
 							if ($test == 0) {
 								// Pas d'entrée... on créé
 								$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
@@ -368,7 +368,7 @@ if (isset($_POST['is_posted'])) {
 											$tmp_ordre_matieres=1;
 										}
 										else {
-											$tmp_ordre_matieres=mysql_result($res_ordre_matieres,0,"ordre_matieres")+1;
+											$tmp_ordre_matieres=old_mysql_result($res_ordre_matieres,0,"ordre_matieres")+1;
 										}
 
 										$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$professeur_nouvel_enseignement', id_matiere='$matiere_nouvel_enseignement', ordre_matieres='$tmp_ordre_matieres';";
@@ -435,7 +435,7 @@ if (isset($_POST['is_posted'])) {
 															$tmp_ordre_matieres=1;
 														}
 														else {
-															$tmp_ordre_matieres=mysql_result($res_ordre_matieres,0,"ordre_matieres")+1;
+															$tmp_ordre_matieres=old_mysql_result($res_ordre_matieres,0,"ordre_matieres")+1;
 														}
 
 														$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$lig_pp->professeur', id_matiere='$matiere_nouvel_enseignement', ordre_matieres='$tmp_ordre_matieres';";
@@ -730,12 +730,12 @@ while ($per < $max_periode) {
 	$nb=0;
 	$nbc = 0;
 	while ($nbc < $nb_classe) {
-		$id_classe = mysql_result($classes_list,$nbc,'id');
+		$id_classe = old_mysql_result($classes_list,$nbc,'id');
 		$query_per = mysqli_query($GLOBALS["mysqli"], "SELECT p.num_periode FROM classes c, periodes p WHERE (p.id_classe = c.id  and c.id = '".$id_classe."')");
 		$nb_periode = mysqli_num_rows($query_per);
 		if ($nb_periode == $per) {
 			$tab_id_classe[$nb] = $id_classe;
-			$tab_nom_classe[$nb] = mysql_result($classes_list,$nbc,'classe');
+			$tab_nom_classe[$nb] = old_mysql_result($classes_list,$nbc,'classe');
 			$nb++;
 		}
 		$nbc++;
@@ -1324,7 +1324,7 @@ td {
 		$max_priority_cat=0;
 		$get_max_cat = mysqli_query($GLOBALS["mysqli"], "SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
 		if(mysqli_num_rows($get_max_cat)>0) {
-			$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
+			$max_priority_cat=old_mysql_result($get_max_cat, 0, "priority");
 		}
 		$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, priority FROM matieres_categories");
 		while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {

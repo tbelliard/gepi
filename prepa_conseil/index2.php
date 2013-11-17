@@ -795,8 +795,8 @@ display_div_coloriser();
 			echo "<tr valign='top' align='center'>\n";
 			echo "<td align='left'>\n";
 		while($i < $lignes){
-		$id_classe = mysql_result($appel_donnees, $i, "id");
-		$display_class = mysql_result($appel_donnees, $i, "classe");
+		$id_classe = old_mysql_result($appel_donnees, $i, "id");
+		$display_class = old_mysql_result($appel_donnees, $i, "classe");
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 			echo "</td>\n";
 			//echo "<td style='padding: 0 10px 0 10px'>\n";

@@ -64,7 +64,7 @@ if (isset($_POST['is_posted'])) {
         /* NON! On ne fait qu'une mise à jour de la liste, le cas échéant...
         $j=0;
         while ($j < count($liste_tables_del)) {
-            if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+            if (old_mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
                 $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
             }
             $j++;
@@ -81,7 +81,7 @@ if (isset($_POST['is_posted'])) {
             $nbmat = mysqli_num_rows($get_matieres);
             $matieres = array();
             for($j=0;$j<$nbmat;$j++) {
-                $matieres[] = mysql_result($get_matieres, $j, "matiere");
+                $matieres[] = old_mysql_result($get_matieres, $j, "matiere");
             }
 
             if (!in_array($matiere, $matieres)) {
@@ -95,7 +95,7 @@ if (isset($_POST['is_posted'])) {
             // On regarde maintenant les affectations professeur/matière
             for($k=0;$k<$info[$i]["memberuid"]["count"];$k++) {
                 $member = $info[$i]["memberuid"][$k];
-                $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
+                $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
                 if ($test == 0) {
                     $res = mysqli_query($GLOBALS["mysqli"], "INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
                 }

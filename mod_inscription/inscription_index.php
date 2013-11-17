@@ -58,7 +58,7 @@ if (isset($_POST['is_posted'])) {
     $del = mysqli_query($GLOBALS["mysqli"], "delete from inscription_j_login_items where login='".$_SESSION['login']."'");
     $i = 0;
     while ($i < $nombre_lignes){
-        $id = mysql_result($call_data, $i, "id");
+        $id = old_mysql_result($call_data, $i, "id");
         if (isset($_POST[$id])) {
             $req = mysqli_query($GLOBALS["mysqli"], "insert into inscription_j_login_items
             set login='".$_SESSION['login']."',
@@ -121,8 +121,8 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 $i = 0;
 $aujourdhui=date('Y/m/d');
 while ($i < $nombre_lignes){
-    $id = mysql_result($call_data, $i, "id");
-    $date = mysql_result($call_data, $i, "date");
+    $id = old_mysql_result($call_data, $i, "id");
+    $date = old_mysql_result($call_data, $i, "date");
 	if (($_SESSION['items_a_afficher']=="tous") || ($_SESSION['items_a_afficher']=="ouverts" && $date>$aujourdhui) || ($_SESSION['items_a_afficher']=="clos" && $date<=$aujourdhui)) {
 		$day = mb_substr($date, 8, 2);
 		$month = mb_substr($date, 5, 2);
@@ -130,8 +130,8 @@ while ($i < $nombre_lignes){
 
 		$f_date = strftime("%A %d %B %Y", mktime(0,0,0,$month,$day,$year));
 
-		$heure = mysql_result($call_data, $i, "heure");
-		$description = mysql_result($call_data, $i, "description");
+		$heure = old_mysql_result($call_data, $i, "heure");
+		$description = old_mysql_result($call_data, $i, "description");
 
 		$inscrit = sql_query1("select id from inscription_j_login_items
 		where login='".$_SESSION['login']."' and id='".$id."' ");
@@ -144,7 +144,7 @@ while ($i < $nombre_lignes){
 		$k = 0;
 		$nom_prenom = "";
 		while ($k < $nb_inscrits) {
-			$login_inscrit = mysql_result($inscrits, $k, "login");
+			$login_inscrit = old_mysql_result($inscrits, $k, "login");
 			$nom_inscrit = sql_query1("select nom from utilisateurs where login='".$login_inscrit."'");
 			$prenom_inscrit = sql_query1("select prenom from utilisateurs where login='".$login_inscrit."'");
 			if ($nom_inscrit == -1) $nom_inscrit = "<font color='red'>(Nom absent => login : ".$login_inscrit.")</font>";

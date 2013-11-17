@@ -49,7 +49,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
     $nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
     $i = "0";
     while($i < $nombre_lignes) {
-        $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
+        $current_eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
         $j="1";
         while ($j < $nb_periode) {
             //
@@ -153,7 +153,7 @@ function DecochePeriode() {
 
 $call_nom_class = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 
-$classe = mysql_result($call_nom_class, 0, 'classe');
+$classe = old_mysql_result($call_nom_class, 0, 'classe');
 
 ?>
 
@@ -205,7 +205,7 @@ $nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 
     while($i < $nombre_lignes) {
 
-        $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
+        $current_eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
 
         $k = 1;
 
@@ -299,11 +299,11 @@ $i = "0";
 
 while($i < $nombre_lignes) {
 
-    $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
+    $current_eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
 
-    $current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
+    $current_eleve_nom = old_mysql_result($appel_donnees_eleves, $i, "nom");
 
-    $current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
+    $current_eleve_prenom = old_mysql_result($appel_donnees_eleves, $i, "prenom");
 
     echo "<tr><td><p>$current_eleve_nom $current_eleve_prenom</p></td>";
 

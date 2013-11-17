@@ -88,8 +88,8 @@ if ($acces_scol) {
 		$j = "0";
 		$alt=1;
 		while ($j < $nombre_classe) {
-			$id_classe = mysql_result($call_classe, $j, "id");
-			$classe_suivi = mysql_result($call_classe, $j, "classe");
+			$id_classe = old_mysql_result($call_classe, $j, "id");
+			$classe_suivi = old_mysql_result($call_classe, $j, "classe");
 			echo "<br /><b>$classe_suivi</b> --- <a href='saisie_ects.php?id_classe=$id_classe'>Saisir les crédits, élève par élève, avec visualisation des résultats de l'élève.</a><br />";
 			$j++;
 		}
@@ -109,8 +109,8 @@ if ($acces_prof_suivi) {
         $j = "0";
         echo "<p>Vous êtes ".$gepiSettings['gepi_prof_suivi']." dans la classe de :</p>";
         while ($j < $nombre_classe) {
-            $id_classe = mysql_result($call_prof_classe, $j, "id");
-            $classe_suivi = mysql_result($call_prof_classe, $j, "classe");
+            $id_classe = old_mysql_result($call_prof_classe, $j, "id");
+            $classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
             echo "<br /><b>$classe_suivi</b> --- <a href='saisie_ects.php?id_classe=$id_classe'>Saisir les crédits, élève par élève, avec visualisation des résultats de l'élève.</a><br />";
             $j++;
         }
@@ -128,8 +128,8 @@ if ($acces_prof) {
     } else {
         $j = "0";
         while ($j < $nombre_classe) {
-            $id_classe = mysql_result($call_prof_classe, $j, "id");
-            $classe_suivi = mysql_result($call_prof_classe, $j, "classe");
+            $id_classe = old_mysql_result($call_prof_classe, $j, "id");
+            $classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
             echo "<br /><b>$classe_suivi</b> --- <a href='saisie_ects.php?mode=presaisie&id_classe=$id_classe'>Saisir les crédits, élève par élève, avec visualisation des résultats de l'élève.</a><br />";
             $j++;
         }

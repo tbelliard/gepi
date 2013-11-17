@@ -120,13 +120,13 @@ if (!isset($_POST["action"])) {
 			// Première étape : on s'assure que l'élève existe et on récupère son login... S'il n'existe pas, on laisse tomber.
 			$test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves WHERE elenoet = '" . $reg_id_int . "'");
 			if (mysqli_num_rows($test) == 1) {
-				$login_eleve = mysql_result($test, 0, "login");
+				$login_eleve = old_mysql_result($test, 0, "login");
 
 				// Maintenant on récupère les différentes matières, et on vérifie qu'elles existent
 				$reg_options = explode("!", $reg_options);
 				$valid_options = array();
 				foreach ($reg_options as $option) {
-					$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(matiere) FROM matieres WHERE matiere = '" . $option ."'"), 0);
+					$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(matiere) FROM matieres WHERE matiere = '" . $option ."'"), 0);
 					if ($test == 1) {
 						$valid_options[] = $option;
 					}
@@ -141,12 +141,12 @@ if (!isset($_POST["action"])) {
 				if (mysqli_num_rows($test) != 0) {
 					// L'élève fait bien parti d'une classe
 
-					$id_classe = mysql_result($test, 0, "id_classe");
+					$id_classe = old_mysql_result($test, 0, "id_classe");
 
 					// Maintenant on a tout : les options, la classe de l'élève, et son login
 					// Enfin il reste quand même un truc à récupérer : le nombre de périodes :
 
-					$num_periods = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
+					$num_periods = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
 
 					// Bon cette fois c'est bon, on a tout. On va donc procéder de la manière suivante :
 					// - on regarde s'il existe un groupe pour la classe dans la matière considérée
@@ -166,9 +166,9 @@ if (!isset($_POST["action"])) {
 							// On passe groupe par groupe pour vérifier si l'élève est déjà inscrit ou pas
 							for ($j=0;$j<mysqli_num_rows($test);$j++) {
 								// On extrait l'ID du groupe
-								$group_id = mysql_result($test, $j, "id_groupe");
+								$group_id = old_mysql_result($test, $j, "id_groupe");
 								// On regarde si l'élève est inscrit
-								$res = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM j_eleves_groupes WHERE (id_groupe = '" . $group_id . "' AND login = '" . $login_eleve . "')"), 0);
+								$res = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM j_eleves_groupes WHERE (id_groupe = '" . $group_id . "' AND login = '" . $login_eleve . "')"), 0);
 								if ($res == 0) {
 									// L'élève ne fait pas encore parti du groupe. On l'inscrit pour les périodes de la classe
 									for ($p=1;$p<=$num_periods;$p++) {

@@ -97,14 +97,14 @@ if (mysqli_num_rows($appel_devoir)==0) {
 	die();
 }
 
-$nom_devoir = mysql_result($appel_devoir, 0, 'nom_court');
-//$ramener_sur_referentiel_dev_choisi=mysql_result($appel_devoir, 0, 'ramener_sur_referentiel');
-//$note_sur_dev_choisi=mysql_result($appel_devoir, 0, 'note_sur');
+$nom_devoir = old_mysql_result($appel_devoir, 0, 'nom_court');
+//$ramener_sur_referentiel_dev_choisi=old_mysql_result($appel_devoir, 0, 'ramener_sur_referentiel');
+//$note_sur_dev_choisi=old_mysql_result($appel_devoir, 0, 'note_sur');
 
 $sql="SELECT id_conteneur, id_racine FROM cn_devoirs WHERE id = '$id_devoir';";
 $query = mysqli_query($GLOBALS["mysqli"], $sql);
-$id_racine = mysql_result($query, 0, 'id_racine');
-$id_conteneur = mysql_result($query, 0, 'id_conteneur');
+$id_racine = old_mysql_result($query, 0, 'id_racine');
+$id_conteneur = old_mysql_result($query, 0, 'id_conteneur');
 
 if(!Verif_prof_cahier_notes ($_SESSION['login'],$id_racine)) {
 	$mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");

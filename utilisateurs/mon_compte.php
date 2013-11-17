@@ -67,8 +67,8 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 	// On commence par récupérer quelques infos.
 	$req = mysqli_query($GLOBALS["mysqli"], "SELECT password, auth_mode FROM utilisateurs WHERE (login = '".$session_gepi->login."')");
-	$old_password = mysql_result($req, 0, "password");
-	$user_auth_mode = mysql_result($req, 0, "auth_mode");
+	$old_password = old_mysql_result($req, 0, "password");
+	$user_auth_mode = old_mysql_result($req, 0, "auth_mode");
 	if ($no_anti_inject_password_a != '') {
 		// Modification du mot de passe
 
@@ -143,8 +143,8 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 	}
 
 	$call_email = mysqli_query($GLOBALS["mysqli"], "SELECT email,show_email FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
-	$user_email = mysql_result($call_email, 0, "email");
-	$user_show_email = mysql_result($call_email, 0, "show_email");
+	$user_email = old_mysql_result($call_email, 0, "email");
+	$user_show_email = old_mysql_result($call_email, 0, "show_email");
 
 	if(($_SESSION['statut']!='responsable')&&($_SESSION['statut']!='eleve')) {
 		if ($user_email != $reg_email) {
@@ -284,8 +284,8 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		$i_photo = 0;
 		$user_login=$_SESSION['login'];
 		$calldata_photo = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE (login = '".$user_login."')");
-		$ancien_nom = mysql_result($calldata_photo, $i_photo, "nom");
-		$ancien_prenom = mysql_result($calldata_photo, $i_photo, "prenom");
+		$ancien_nom = old_mysql_result($calldata_photo, $i_photo, "nom");
+		$ancien_prenom = old_mysql_result($calldata_photo, $i_photo, "prenom");
 
 		// En multisite, on ajoute le répertoire RNE
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
@@ -615,7 +615,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 			$sql="SELECT civilite FROM utilisateurs WHERE login='".$_SESSION['login']."';";
 			$res_civ=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_civ)>0) {
-				$tmp_civ=mysql_result($res_civ, 0, "civilite");
+				$tmp_civ=old_mysql_result($res_civ, 0, "civilite");
 				if($tmp_civ!=$_POST['reg_civilite']) {
 					$sql="UPDATE utilisateurs SET civilite='".$_POST['reg_civilite']."' WHERE login='".$_SESSION['login']."';";
 					$update=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1306,12 +1306,12 @@ if (isset($_POST['ajout_fichier_signature'])) {
 
 // On appelle les informations de l'utilisateur pour les afficher :
 $call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT nom,prenom,statut,email,show_email,civilite FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
-$user_civilite = mysql_result($call_user_info, "0", "civilite");
-$user_nom = mysql_result($call_user_info, "0", "nom");
-$user_prenom = mysql_result($call_user_info, "0", "prenom");
-$user_statut = mysql_result($call_user_info, "0", "statut");
-$user_email = mysql_result($call_user_info, "0", "email");
-$user_show_email = mysql_result($call_user_info, "0", "show_email");
+$user_civilite = old_mysql_result($call_user_info, "0", "civilite");
+$user_nom = old_mysql_result($call_user_info, "0", "nom");
+$user_prenom = old_mysql_result($call_user_info, "0", "prenom");
+$user_statut = old_mysql_result($call_user_info, "0", "statut");
+$user_email = old_mysql_result($call_user_info, "0", "email");
+$user_show_email = old_mysql_result($call_user_info, "0", "show_email");
 
 //**************** EN-TETE *****************
 $titre_page = "Gérer son compte";
@@ -1406,7 +1406,7 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
 		$sql="SELECT naissance, lieu_naissance FROM eleves WHERE login='".$_SESSION['login']."';";
 		$res_nais=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_nais)>0) {
-			$user_naissance=mysql_result($res_nais, 0, "naissance");
+			$user_naissance=old_mysql_result($res_nais, 0, "naissance");
 			echo "
                     <tr>
                         <td>Date de naissance : </td>
@@ -1414,11 +1414,11 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
                     </tr>";
 
 			if(getSettingAOui('ele_lieu_naissance')) {
-				$code_lieu_naissance=mysql_result($res_nais, 0, "lieu_naissance");
+				$code_lieu_naissance=old_mysql_result($res_nais, 0, "lieu_naissance");
 				$sql="SELECT * FROM communes WHERE code_commune_insee='$code_lieu_naissance';";
 				$res_nais=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_nais)>0) {
-					$lieu_naissance=mysql_result($res_nais, 0, "commune")." (".mysql_result($res_nais, 0, "departement").")";
+					$lieu_naissance=old_mysql_result($res_nais, 0, "commune")." (".old_mysql_result($res_nais, 0, "departement").")";
 					echo "
                     <tr>
                         <td>Lieu de naissance : </td>
@@ -1722,8 +1722,8 @@ if ($nombre_classe != "0") {
 	echo "<p>Vous êtes ".getSettingValue("gepi_prof_suivi")." dans la classe de :</p>\n";
 	echo "<ul>\n";
 	while ($j < $nombre_classe) {
-		$id_classe = mysql_result($call_prof_classe, $j, "id");
-		$classe_suivi = mysql_result($call_prof_classe, $j, "classe");
+		$id_classe = old_mysql_result($call_prof_classe, $j, "id");
+		$classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
 		echo "<li><b>$classe_suivi</b></li>\n";
 		$j++;
 	}

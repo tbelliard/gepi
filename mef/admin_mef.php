@@ -389,10 +389,10 @@ $tab_mef=get_tab_mef();
 			//echo "$sql<br />";
 			$res_mef_courant=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_mef_courant)>0) {
-				$code_mefstat=mysql_result($res_mef_courant, 0, "code_mefstat");
-				$mef_rattachement=mysql_result($res_mef_courant, 0, "mef_rattachement");
+				$code_mefstat=old_mysql_result($res_mef_courant, 0, "code_mefstat");
+				$mef_rattachement=old_mysql_result($res_mef_courant, 0, "mef_rattachement");
 				// Faute de le récupérer correctement avec getMefCode()
-				$mef_code=mysql_result($res_mef_courant, 0, "mef_code");
+				$mef_code=old_mysql_result($res_mef_courant, 0, "mef_code");
 			}
 			//echo "\$mef_rattachement=$mef_rattachement";
 	   ?>
@@ -485,7 +485,7 @@ $tab_mef=get_tab_mef();
               $sql="SELECT * FROM mef WHERE id='".$mef->getId()."';";
               $res_mef_courant=mysqli_query($GLOBALS["mysqli"], $sql);
               if(mysqli_num_rows($res_mef_courant)>0) {
-                  echo mysql_result($res_mef_courant,0,"mef_code");
+                  echo old_mysql_result($res_mef_courant,0,"mef_code");
               }
               else {
                   echo "???";
@@ -497,7 +497,7 @@ $tab_mef=get_tab_mef();
           <td>
           <?php
               if(mysqli_num_rows($res_mef_courant)>0) {
-                  $mef_rattachement_courant=mysql_result($res_mef_courant,0,"mef_rattachement");
+                  $mef_rattachement_courant=old_mysql_result($res_mef_courant,0,"mef_rattachement");
                   if(isset($tab_mef[$mef_rattachement_courant])) {
                       echo $tab_mef[$mef_rattachement_courant]['libelle_edition'];
                   }

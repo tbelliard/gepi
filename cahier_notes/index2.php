@@ -78,7 +78,7 @@ if ($_SESSION['statut'] == "professeur") {
 				$sql="SELECT DISTINCT id_classe FROM j_eleves_professeurs jep, classes c WHERE jep.id_classe=c.id AND jep.professeur='".$_SESSION['login']."';";
 				$res_clas_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_clas_pp)==1) {
-					$id_classe=mysql_result($res_clas_pp, 0, "id_classe");
+					$id_classe=old_mysql_result($res_clas_pp, 0, "id_classe");
 				}
 			}
 		}
@@ -577,8 +577,8 @@ display_div_coloriser();
 		unset($tab_lien);
 		unset($tab_txt);
 		while ($i < $lignes){
-			$tab_lien[$i] = $_SERVER['PHP_SELF']."?id_classe=".mysql_result($appel_donnees, $i, "id");
-			$tab_txt[$i] = mysql_result($appel_donnees, $i, "classe");
+			$tab_lien[$i] = $_SERVER['PHP_SELF']."?id_classe=".old_mysql_result($appel_donnees, $i, "id");
+			$tab_txt[$i] = old_mysql_result($appel_donnees, $i, "classe");
 			$i++;
 
 		}

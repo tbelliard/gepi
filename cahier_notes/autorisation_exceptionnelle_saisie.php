@@ -363,10 +363,10 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 		$nb = mysqli_num_rows($get_profs);
 		for ($i=0;$i<$nb;$i++){
 			if($i>0) {echo ",<br />\n";}
-			$p_login = mysql_result($get_profs, $i, "login");
-			$p_nom = mysql_result($get_profs, $i, "nom");
-			$p_prenom = mysql_result($get_profs, $i, "prenom");
-			$civilite = mysql_result($get_profs, $i, "civilite");
+			$p_login = old_mysql_result($get_profs, $i, "login");
+			$p_nom = old_mysql_result($get_profs, $i, "nom");
+			$p_prenom = old_mysql_result($get_profs, $i, "prenom");
+			$civilite = old_mysql_result($get_profs, $i, "civilite");
 			echo "$civilite $p_nom $p_prenom";
 		}
 		echo "</td>\n";

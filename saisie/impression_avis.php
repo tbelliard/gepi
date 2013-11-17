@@ -228,8 +228,8 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
         $j = "0";
         echo "<p>Vous êtes ".getSettingValue("gepi_prof_suivi")." dans la classe de :</p>";
         while ($j < $nombre_classe) {
-            $id_classe = mysql_result($call_prof_classe, $j, "id");
-            $classe_suivi = mysql_result($call_prof_classe, $j, "classe");
+            $id_classe = old_mysql_result($call_prof_classe, $j, "id");
+            $classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
 
             include "../lib/periodes.inc.php";
             $k="1";

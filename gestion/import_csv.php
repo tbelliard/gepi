@@ -236,7 +236,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                             if ($test == 0) {
                                 $valeur_classe='????';
                             } else {
-                                $id_classe=@mysql_result($call_classe,0,id);
+                                $id_classe=@old_mysql_result($call_classe,0,id);
                                 if ($login_exist == "non") {
                                     $valeur_classe = $data[$c];
                                 } else {

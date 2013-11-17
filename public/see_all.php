@@ -47,7 +47,7 @@ if (is_numeric($id_groupe)) {
 
 // Nom complet de la classe
 $appel_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$id_classe'");
-$classe_nom = @mysql_result($appel_classe, 0, "classe");
+$classe_nom = @old_mysql_result($appel_classe, 0, "classe");
 // Nom complet de la matière
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
@@ -123,8 +123,8 @@ if ($nb_test == 0) {
 // Affichage des informations générales
 $appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 $nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
-$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
-$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
+$content = @old_mysql_result($appel_info_cahier_texte, 0, 'contenu');
+$id_ct = @old_mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 $content .= affiche_docs_joints($id_ct,"c");
 if ($content != '') {
     echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>INFORMATIONS GENERALES</b></div>";

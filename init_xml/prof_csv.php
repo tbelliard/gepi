@@ -62,14 +62,14 @@ if (!isset($step1)) {
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
 		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE '$liste_tables_del[$j]'"));
 		if($test==1){
-			if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+			if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 				$flag=1;
 			}
 		}
 		$j++;
 	}
 
-	$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM utilisateurs WHERE statut='professeur'"),0);
+	$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM utilisateurs WHERE statut='professeur'"),0);
 	if ($test != 0) {$flag=1;}
 
 	if ($flag != 0){
@@ -96,7 +96,7 @@ if (!isset($is_posted)) {
 	while ($j < count($liste_tables_del)) {
 		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE '$liste_tables_del[$j]'"));
 		if($test==1){
-			if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+			if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
 			}
 		}
@@ -292,19 +292,19 @@ if (!isset($is_posted)) {
 											$exist = 'no';
 										} else {
 											$exist = 'yes';
-											$login_prof_gepi = mysql_result($test_exist2,0,'login');
+											$login_prof_gepi = old_mysql_result($test_exist2,0,'login');
 										}
 									} else {
 										$exist = 'no';
 									}
 								} else {
 									$exist = 'yes';
-									$login_prof_gepi = mysql_result($test_exist,0,'login');
+									$login_prof_gepi = old_mysql_result($test_exist,0,'login');
 								}
 							}
 							else {
 								$exist = 'yes';
-								$login_prof_gepi = mysql_result($test_exist,0,'login');
+								$login_prof_gepi = old_mysql_result($test_exist,0,'login');
 							}
 						}
 
@@ -336,7 +336,7 @@ if (!isset($is_posted)) {
 											$query_p = mysqli_query($GLOBALS["mysqli"], $sql_p);
 											$nbre = mysqli_num_rows($query_p);
 											if ($nbre >= 1 AND $nbre < 2) {
-												$temp1 = mysql_result($query_p, 0,"login_u");
+												$temp1 = old_mysql_result($query_p, 0,"login_u");
 											}else{
 												// Il faudrait alors proposer une alternative à ce cas
 												$temp1 = "erreur_".$k;

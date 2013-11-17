@@ -331,8 +331,8 @@ echo '
 	$tab_select_jour = array();
 
 	for($a=0; $a < $nbre; $a++) {
-		$tab_select_jour[$a]["id"] = mysql_result($req_jour, $a, "id_horaire_etablissement");
-		$tab_select_jour[$a]["jour_sem"] = mysql_result($req_jour, $a, "jour_horaire_etablissement");
+		$tab_select_jour[$a]["id"] = old_mysql_result($req_jour, $a, "id_horaire_etablissement");
+		$tab_select_jour[$a]["jour_sem"] = old_mysql_result($req_jour, $a, "jour_horaire_etablissement");
 
 		if(isset($rep_cours["jour_semaine"]) OR isset($jour_creer)){
 			if(($rep_cours["jour_semaine"] == $tab_select_jour[$a]["jour_sem"]) OR ($jour_creer == $tab_select_jour[$a]["jour_sem"])){
@@ -363,10 +363,10 @@ echo '
 
 	for($b = 0; $b < $rep_heure; $b++) {
 
-		$tab_select_heure[$b]["id_heure"] = mysql_result($req_heure, $b, "id_definie_periode");
-		$tab_select_heure[$b]["creneaux"] = mysql_result($req_heure, $b, "nom_definie_periode");
-		$tab_select_heure[$b]["heure_debut"] = mysql_result($req_heure, $b, "heuredebut_definie_periode");
-		$tab_select_heure[$b]["heure_fin"] = mysql_result($req_heure, $b, "heurefin_definie_periode");
+		$tab_select_heure[$b]["id_heure"] = old_mysql_result($req_heure, $b, "id_definie_periode");
+		$tab_select_heure[$b]["creneaux"] = old_mysql_result($req_heure, $b, "nom_definie_periode");
+		$tab_select_heure[$b]["heure_debut"] = old_mysql_result($req_heure, $b, "heuredebut_definie_periode");
+		$tab_select_heure[$b]["heure_fin"] = old_mysql_result($req_heure, $b, "heurefin_definie_periode");
 
 		if(isset($rep_cours["id_definie_periode"]) OR isset($id_creneau_creer)){
 			if(($rep_cours["id_definie_periode"] == $tab_select_heure[$b]["id_heure"]) OR ($id_creneau_creer == $tab_select_heure[$b]["id_heure"])){
@@ -479,7 +479,7 @@ echo '
 	$nbre_semaines = mysqli_num_rows($req_semaines);
 
 	for ($s=0; $s<$nbre_semaines; $s++) {
-			$rep_semaines[$s]["type_edt_semaine"] = mysql_result($req_semaines, $s, "type_edt_semaine");
+			$rep_semaines[$s]["type_edt_semaine"] = old_mysql_result($req_semaines, $s, "type_edt_semaine");
 			if (isset($rep_cours["id_semaine"])) {
 				if ($rep_cours["id_semaine"] == $rep_semaines[$s]["type_edt_semaine"]) {
 					$selected = " selected='selected'";
@@ -564,9 +564,9 @@ echo '
         }
     
 	    for ($a=0; $a<$nbre_calendrier; $a++) {
-		    $rep_calendrier[$a]["id_calendrier"] = mysql_result($req_calendrier, $a, "id_calendrier");
-		    $rep_calendrier[$a]["nom_calendrier"] = mysql_result($req_calendrier, $a, "nom_calendrier");
-		    $rep_calendrier[$a]["classe_concerne_calendrier"] = mysql_result($req_calendrier, $a, "classe_concerne_calendrier");
+		    $rep_calendrier[$a]["id_calendrier"] = old_mysql_result($req_calendrier, $a, "id_calendrier");
+		    $rep_calendrier[$a]["nom_calendrier"] = old_mysql_result($req_calendrier, $a, "nom_calendrier");
+		    $rep_calendrier[$a]["classe_concerne_calendrier"] = old_mysql_result($req_calendrier, $a, "classe_concerne_calendrier");
             $classes_concernes = explode(";", $rep_calendrier[$a]['classe_concerne_calendrier']);
             if ((in_array($id_classe, $classes_concernes) AND ($id_classe != 0)) OR ($id_classe == 0)) {
     

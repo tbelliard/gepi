@@ -312,7 +312,7 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
                       ?><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><br /><?php
               }
 
-                   $test_dispense = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='D'"),0);
+                   $test_dispense = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='D'"),0);
                    if ($test_dispense != 0)
                     {  ?>
                         <table class="tableau_info_compt" border="0" cellspacing="0" cellpadding="2">

@@ -243,10 +243,10 @@ check_token();
 			}
 
 			// Si on change le mode d'authentification, il faut quelques opérations particulières
-			$old_auth_mode = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+			$old_auth_mode = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
 			if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
 				// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
-				$oldmd5password = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT password FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+				$oldmd5password = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT password FROM utilisateurs WHERE login = '".$user_login."'"), 0);
 				mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$user_login."'");
 				$msg = "Passage à un mode d'authentification externe : ";
 				// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
@@ -295,7 +295,7 @@ check_token();
 						// Pour chaque matière associée au prof, on réinitialise le témoin:
 						$flag="no";
 						// ===============
-						$id_matiere = mysql_result($test, $k, 'id_matiere');
+						$id_matiere = old_mysql_result($test, $k, 'id_matiere');
 						//echo "\$k=$k<br />";
 						//echo "\$id_matiere=$id_matiere<br />";
 						$m = 0;
@@ -490,10 +490,10 @@ elseif(isset($_POST['suppression_assoc_user_groupes'])) {
 		$k = 0;
 		$user_classe=array();
 		while ($k < $nb_classes) {
-			$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
-			$user_classe['matiere_nom_court'] = mysql_result($call_classes, $k, "name");
-			$user_classe['classe_id'] = mysql_result($call_classes, $k, "classe_id");
-			$user_classe['group_id'] = mysql_result($call_classes, $k, "group_id");
+			$user_classe['classe_nom_court'] = old_mysql_result($call_classes, $k, "classe");
+			$user_classe['matiere_nom_court'] = old_mysql_result($call_classes, $k, "name");
+			$user_classe['classe_id'] = old_mysql_result($call_classes, $k, "classe_id");
+			$user_classe['group_id'] = old_mysql_result($call_classes, $k, "group_id");
 
 			if(!in_array($user_classe['group_id'],$user_group)) {
 				$sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='".$user_classe['group_id']."' AND login='$user_login';";
@@ -516,20 +516,20 @@ elseif(isset($_POST['suppression_assoc_user_groupes'])) {
 if (isset($user_login) and ($user_login!='')) {
 
 	$call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login='".$user_login."'");
-	$user_auth_mode = mysql_result($call_user_info, "0", "auth_mode");
-	$user_nom = mysql_result($call_user_info, "0", "nom");
-	$user_prenom = mysql_result($call_user_info, "0", "prenom");
-	$user_civilite = mysql_result($call_user_info, "0", "civilite");
-	$user_statut = mysql_result($call_user_info, "0", "statut");
-	$user_email = mysql_result($call_user_info, "0", "email");
-	$user_etat = mysql_result($call_user_info, "0", "etat");
-	$date_verrouillage = mysql_result($call_user_info, "0", "date_verrouillage");
+	$user_auth_mode = old_mysql_result($call_user_info, "0", "auth_mode");
+	$user_nom = old_mysql_result($call_user_info, "0", "nom");
+	$user_prenom = old_mysql_result($call_user_info, "0", "prenom");
+	$user_civilite = old_mysql_result($call_user_info, "0", "civilite");
+	$user_statut = old_mysql_result($call_user_info, "0", "statut");
+	$user_email = old_mysql_result($call_user_info, "0", "email");
+	$user_etat = old_mysql_result($call_user_info, "0", "etat");
+	$date_verrouillage = old_mysql_result($call_user_info, "0", "date_verrouillage");
 
 	$call_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '".$user_login."' ORDER BY ordre_matieres");
 	$nb_mat = mysqli_num_rows($call_matieres);
 	$k = 0;
 	while ($k < $nb_mat) {
-		$user_matiere[$k] = mysql_result($call_matieres, $k, "id_matiere");
+		$user_matiere[$k] = old_mysql_result($call_matieres, $k, "id_matiere");
 		$k++;
 	}
 
@@ -871,8 +871,8 @@ while ($k < $nb_mat+1) {
 	echo "<option value='' "; if (!(isset($user_matiere[$k]))) {echo " selected";} echo ">(vide)</option>\n";
 	$i = 0;
 	while ($i < $nombreligne){
-		$matiere_list = mysql_result($calldata, $i, "matiere");
-		$matiere_complet_list = mysql_result($calldata, $i, "nom_complet");
+		$matiere_list = old_mysql_result($calldata, $i, "matiere");
+		$matiere_complet_list = old_mysql_result($calldata, $i, "nom_complet");
 		//echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " selected";} echo ">$matiere_list | $matiere_complet_list</option>\n";
 		echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " selected";} echo ">$matiere_list | ".htmlspecialchars($matiere_complet_list)."</option>\n";
 		$i++;

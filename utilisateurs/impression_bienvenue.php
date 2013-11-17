@@ -354,18 +354,18 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL, $mode_retour="echo") {
 
 	$call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login='$user_login'");
 	
-	//$user_login = mysql_result($call_user_info, "0", "login");
-	$user_nom = mysql_result($call_user_info, "0", "nom");
-	$user_prenom = mysql_result($call_user_info, "0", "prenom");
-	$user_statut = mysql_result($call_user_info, "0", "statut");
-	$user_email = mysql_result($call_user_info, "0", "email");
+	//$user_login = old_mysql_result($call_user_info, "0", "login");
+	$user_nom = old_mysql_result($call_user_info, "0", "nom");
+	$user_prenom = old_mysql_result($call_user_info, "0", "prenom");
+	$user_statut = old_mysql_result($call_user_info, "0", "statut");
+	$user_email = old_mysql_result($call_user_info, "0", "email");
 
 	if($user_statut=='professeur') {
 		$call_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
 		$nb_mat = mysqli_num_rows($call_matieres);
 		$k = 0;
 		while ($k < $nb_mat) {
-			$user_matiere[$k] = mysql_result($call_matieres, $k, "id_matiere");
+			$user_matiere[$k] = old_mysql_result($call_matieres, $k, "id_matiere");
 			$k++;
 		}
 	}
@@ -375,7 +375,7 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL, $mode_retour="echo") {
 	$nombre_classes = mysql_num_rows($call_data);
 	$i = 0;
 	while ($i < $nombre_classes){
-		$classe[$i] = mysql_result($call_data, $i, "classe");
+		$classe[$i] = old_mysql_result($call_data, $i, "classe");
 		$i++;
 	}
 	*/

@@ -116,7 +116,7 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 	{
 		if( isset($ouvert[$i]) and !empty($ouvert[$i]) )
 		{
-        	$test_jour = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."horaires_etablissement
+        	$test_jour = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."horaires_etablissement
 												WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND
 												date_horaire_etablissement = '0000-00-00'"),0);
 			$date_horaire_etablissement = '';

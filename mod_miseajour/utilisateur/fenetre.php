@@ -252,7 +252,7 @@ if($maj_fichier==='oui' and $valide_form==='yes' and $maj_type==='fichier')
 
 	     //mise à jour ok on l'insère dans la base ou on le met à jour
 	     // on regarde s'il existe déjas un enregistrement identitique
-             $compte_msj = mysql_result(mysqli_query($GLOBALS["mysqli"], 'SELECT count(*) FROM '.$prefix_base.'miseajour WHERE fichier_miseajour="'.$tableau_select['nom_fichier']['1'].'" AND emplacement_miseajour="'.$tableau_select['emplacement_fichier']['1'].'"'),0);
+             $compte_msj = old_mysql_result(mysqli_query($GLOBALS["mysqli"], 'SELECT count(*) FROM '.$prefix_base.'miseajour WHERE fichier_miseajour="'.$tableau_select['nom_fichier']['1'].'" AND emplacement_miseajour="'.$tableau_select['emplacement_fichier']['1'].'"'),0);
 	     // si oui
 	     if( $compte_msj === "0" ) { $requete='INSERT INTO '.$prefix_base.'miseajour (fichier_miseajour, emplacement_miseajour, date_miseajour, heure_miseajour) values ("'.$tableau_select['nom_fichier']['1'].'","'.$tableau_select['emplacement_fichier']['1'].'","'.date_sql($tableau_select['date_fichier']['1']).'","'.$tableau_select['heure_fichier']['1'].'")'; }
 	     // si non

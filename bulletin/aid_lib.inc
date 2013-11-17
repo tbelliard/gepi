@@ -9,37 +9,37 @@ function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
     //============================
 
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = $indice_aid");
-    $AID_NOM_COMPLET = @mysql_result($call_data, 0, "nom_complet");
-    $note_max = @mysql_result($call_data, 0, "note_max");
-    $type_note = @mysql_result($call_data, 0, "type_note");
-    $message = @mysql_result($call_data, 0, "message");
-    $display_nom = @mysql_result($call_data, 0, "display_nom");
-    $display_end = @mysql_result($call_data, 0, "display_end");
+    $AID_NOM_COMPLET = @old_mysql_result($call_data, 0, "nom_complet");
+    $note_max = @old_mysql_result($call_data, 0, "note_max");
+    $type_note = @old_mysql_result($call_data, 0, "type_note");
+    $message = @old_mysql_result($call_data, 0, "message");
+    $display_nom = @old_mysql_result($call_data, 0, "display_nom");
+    $display_end = @old_mysql_result($call_data, 0, "display_end");
 
 
     $aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
-    $aid_nom = @mysql_result($aid_nom_query, 0, "nom");
+    $aid_nom = @old_mysql_result($aid_nom_query, 0, "nom");
     //------
     // On regarde maintenant quelle sont les profs responsables de cette AID
     $aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
     $nb_lig = mysqli_num_rows($aid_prof_resp_query);
     $n = '0';
     while ($n < $nb_lig) {
-        $aid_prof_resp_login[$n] = mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+        $aid_prof_resp_login[$n] = old_mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
         $n++;
     }
     //------
     // On appelle l'appréciation de l'élève, et sa note
     //------
     $current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
-    $current_eleve_aid_appreciation = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
+    $current_eleve_aid_appreciation = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
     $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
     $periode_max = mysqli_num_rows($periode_query);
     if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
     if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
         $place_eleve = "";
-        $current_eleve_aid_note = @mysql_result($current_eleve_aid_appreciation_query, 0, "note");
-        $current_eleve_aid_statut = @mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
+        $current_eleve_aid_note = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "note");
+        $current_eleve_aid_statut = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
         if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
             $current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
         }
@@ -58,14 +58,14 @@ function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         }
         $aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
 
-        $aid_note_min = @mysql_result($aid_note_min_query, 0, "note_min");
+        $aid_note_min = @old_mysql_result($aid_note_min_query, 0, "note_min");
         if ($aid_note_min == '') {
             $aid_note_min = '-';
         } else {
             $aid_note_min=number_format($aid_note_min,1, ',', ' ');
         }
         $aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-        $aid_note_max = @mysql_result($aid_note_max_query, 0, "note_max");
+        $aid_note_max = @old_mysql_result($aid_note_max_query, 0, "note_max");
 
         if ($aid_note_max == '') {
             $aid_note_max = '-';
@@ -74,7 +74,7 @@ function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         }
 
         $aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-        $aid_note_moyenne = @mysql_result($aid_note_moyenne_query, 0, "moyenne");
+        $aid_note_moyenne = @old_mysql_result($aid_note_moyenne_query, 0, "moyenne");
         if ($aid_note_moyenne == '') {
             $aid_note_moyenne = '-';
         } else {
@@ -178,37 +178,37 @@ function affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
     //============================
 
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = $indice_aid");
-    $AID_NOM_COMPLET = @mysql_result($call_data, 0, "nom_complet");
-    $note_max = @mysql_result($call_data, 0, "note_max");
-    $type_note = @mysql_result($call_data, 0, "type_note");
-    $message = @mysql_result($call_data, 0, "message");
-    $display_nom = @mysql_result($call_data, 0, "display_nom");
-    $display_end = @mysql_result($call_data, 0, "display_end");
+    $AID_NOM_COMPLET = @old_mysql_result($call_data, 0, "nom_complet");
+    $note_max = @old_mysql_result($call_data, 0, "note_max");
+    $type_note = @old_mysql_result($call_data, 0, "type_note");
+    $message = @old_mysql_result($call_data, 0, "message");
+    $display_nom = @old_mysql_result($call_data, 0, "display_nom");
+    $display_end = @old_mysql_result($call_data, 0, "display_end");
 
 
     $aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
-    $aid_nom = @mysql_result($aid_nom_query, 0, "nom");
+    $aid_nom = @old_mysql_result($aid_nom_query, 0, "nom");
     //------
     // On regarde maintenant quelle sont les profs responsables de cette AID
     $aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
     $nb_lig = mysqli_num_rows($aid_prof_resp_query);
     $n = '0';
     while ($n < $nb_lig) {
-        $aid_prof_resp_login[$n] = mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+        $aid_prof_resp_login[$n] = old_mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
         $n++;
     }
     //------
     // On appelle l'appréciation de l'élève, et sa note
     //------
     $current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
-    $current_eleve_aid_appreciation = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
+    $current_eleve_aid_appreciation = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
     $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
     $periode_max = mysqli_num_rows($periode_query);
     if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
     if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
         $place_eleve = "";
-        $current_eleve_aid_note = @mysql_result($current_eleve_aid_appreciation_query, 0, "note");
-        $current_eleve_aid_statut = @mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
+        $current_eleve_aid_note = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "note");
+        $current_eleve_aid_statut = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
         if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
             $current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
         }
@@ -227,14 +227,14 @@ function affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         }
         $aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
 
-        $aid_note_min = @mysql_result($aid_note_min_query, 0, "note_min");
+        $aid_note_min = @old_mysql_result($aid_note_min_query, 0, "note_min");
         if ($aid_note_min == '') {
             $aid_note_min = '-';
         } else {
             $aid_note_min=number_format($aid_note_min,1, ',', ' ');
         }
         $aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-        $aid_note_max = @mysql_result($aid_note_max_query, 0, "note_max");
+        $aid_note_max = @old_mysql_result($aid_note_max_query, 0, "note_max");
 
         if ($aid_note_max == '') {
             $aid_note_max = '-';
@@ -243,7 +243,7 @@ function affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         }
 
         $aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-        $aid_note_moyenne = @mysql_result($aid_note_moyenne_query, 0, "moyenne");
+        $aid_note_moyenne = @old_mysql_result($aid_note_moyenne_query, 0, "moyenne");
         if ($aid_note_moyenne == '') {
             $aid_note_moyenne = '-';
         } else {
@@ -349,37 +349,37 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
     //============================
 
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = $indice_aid");
-    $AID_NOM_COMPLET = @mysql_result($call_data, 0, "nom_complet");
-    $note_max = @mysql_result($call_data, 0, "note_max");
-    $type_note = @mysql_result($call_data, 0, "type_note");
-    $message = @mysql_result($call_data, 0, "message");
-    $display_nom = @mysql_result($call_data, 0, "display_nom");
-    $display_end = @mysql_result($call_data, 0, "display_end");
+    $AID_NOM_COMPLET = @old_mysql_result($call_data, 0, "nom_complet");
+    $note_max = @old_mysql_result($call_data, 0, "note_max");
+    $type_note = @old_mysql_result($call_data, 0, "type_note");
+    $message = @old_mysql_result($call_data, 0, "message");
+    $display_nom = @old_mysql_result($call_data, 0, "display_nom");
+    $display_end = @old_mysql_result($call_data, 0, "display_end");
 
 
     $aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
-    $aid_nom = @mysql_result($aid_nom_query, 0, "nom");
+    $aid_nom = @old_mysql_result($aid_nom_query, 0, "nom");
     //------
     // On regarde maintenant quelle sont les profs responsables de cette AID
     $aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
     $nb_lig = mysqli_num_rows($aid_prof_resp_query);
     $n = '0';
     while ($n < $nb_lig) {
-        $aid_prof_resp_login[$n] = mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+        $aid_prof_resp_login[$n] = old_mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
         $n++;
     }
     //------
     // On appelle l'appréciation de l'élève, et sa note
     //------
     $current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
-    $current_eleve_aid_appreciation = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
+    $current_eleve_aid_appreciation = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
     $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
     $periode_max = mysqli_num_rows($periode_query);
     if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
     if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
         $place_eleve = "";
-        $current_eleve_aid_note = @mysql_result($current_eleve_aid_appreciation_query, 0, "note");
-        $current_eleve_aid_statut = @mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
+        $current_eleve_aid_note = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "note");
+        $current_eleve_aid_statut = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
         if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
             $current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
         }
@@ -398,14 +398,14 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         }
         $aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
 
-        $aid_note_min = @mysql_result($aid_note_min_query, 0, "note_min");
+        $aid_note_min = @old_mysql_result($aid_note_min_query, 0, "note_min");
         if ($aid_note_min == '') {
             $aid_note_min = '-';
         } else {
             $aid_note_min=number_format($aid_note_min,1, ',', ' ');
         }
         $aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-        $aid_note_max = @mysql_result($aid_note_max_query, 0, "note_max");
+        $aid_note_max = @old_mysql_result($aid_note_max_query, 0, "note_max");
 
         if ($aid_note_max == '') {
             $aid_note_max = '-';
@@ -414,7 +414,7 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         }
 
         $aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-        $aid_note_moyenne = @mysql_result($aid_note_moyenne_query, 0, "moyenne");
+        $aid_note_moyenne = @old_mysql_result($aid_note_moyenne_query, 0, "moyenne");
         if ($aid_note_moyenne == '') {
             $aid_note_moyenne = '-';
         } else {

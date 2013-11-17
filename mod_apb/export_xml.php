@@ -272,7 +272,7 @@ foreach($data_eleves as &$eleve) {
         // On regarde si on a déjà enregistré les infos spécifiques à cette classe pour ce groupe dans le tableau (il s'agit du coef)
         if (!array_key_exists($note->id_groupe, $data_groupes[$eleve['code-classe']])) {
           // On récupère les informations nécessaires
-          $coef = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT jgc.coef FROM j_groupes_classes jgc, classes c WHERE
+          $coef = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT jgc.coef FROM j_groupes_classes jgc, classes c WHERE
                                                   jgc.id_groupe = '".$note->id_groupe."' AND
                                                   jgc.id_classe = c.id AND
                                                   c.classe = '".$eleve['code-classe']."'"), 0);

@@ -88,7 +88,7 @@ require_once("../lib/header.inc.php");
 			$req_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE id_classe = '".$aff_liste_m."' ORDER BY login");
 			$nbre_login = mysqli_num_rows($req_login);
 			for($i=0; $i<$nbre_login; $i++){
-				$rep_log_eleve[$i]["login"] = mysql_result($req_login, $i, "login");
+				$rep_log_eleve[$i]["login"] = old_mysql_result($req_login, $i, "login");
 				// On teste si cet élève n'est pas déjà membre de l'AID
         if ($autoriser_inscript_multiples == 'y')
   				$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'.');
@@ -143,8 +143,8 @@ require_once("../lib/header.inc.php");
 	$nbre_classe = mysqli_num_rows($req_liste_classe);
 
 	for($a=0; $a<$nbre_classe; $a++) {
-		$liste_classe[$a]["id"] = mysql_result($req_liste_classe, $a, "id");
-		$liste_classe[$a]["classe"] = mysql_result($req_liste_classe, $a, "classe");
+		$liste_classe[$a]["id"] = old_mysql_result($req_liste_classe, $a, "id");
+		$liste_classe[$a]["classe"] = old_mysql_result($req_liste_classe, $a, "classe");
 
 		$aff_classes_g .= "<tr><td style=\"width: 196px;\"><a href=\"./modify_aid_new.php?id_aid=".$id_aid."&amp;classe=".$liste_classe[$a]["id"]."&amp;indice_aid=".$indice_aid.add_token_in_url()."\">Elèves de la ".$liste_classe[$a]["classe"]."</a></td></tr>\n";
 	}
@@ -186,12 +186,12 @@ if (isset($aff_liste_m)) {
 						";
 
 	for($b=0; $b<$nbre_ele_m; $b++) {
-		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$aff_ele_m[$b]["login"] = old_mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-			$aff_ele_m[$b]["id_eleve"] = mysql_result($req_ele, $b, "id_eleve");
-			$aff_ele_m[$b]["nom"] = mysql_result($req_ele, $b, "nom");
-			$aff_ele_m[$b]["prenom"] = mysql_result($req_ele, $b, "prenom");
-			$aff_ele_m[$b]["sexe"] = mysql_result($req_ele, $b, "sexe");
+			$aff_ele_m[$b]["id_eleve"] = old_mysql_result($req_ele, $b, "id_eleve");
+			$aff_ele_m[$b]["nom"] = old_mysql_result($req_ele, $b, "nom");
+			$aff_ele_m[$b]["prenom"] = old_mysql_result($req_ele, $b, "prenom");
+			$aff_ele_m[$b]["sexe"] = old_mysql_result($req_ele, $b, "sexe");
 
 			// On vérifie que cet élève n'est pas déjà membre de l'AID
 			if ($autoriser_inscript_multiples == 'y')
@@ -225,7 +225,7 @@ if (isset($aff_liste_m)) {
 		$req_prof = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$id_aid."' ORDER BY id_utilisateur");
 		$nbre_prof = mysqli_num_rows($req_prof);
 		for($p=0; $p<$nbre_prof; $p++) {
-			$prof[$p]["id_utilisateur"] = mysql_result($req_prof, $p, "id_utilisateur");
+			$prof[$p]["id_utilisateur"] = old_mysql_result($req_prof, $p, "id_utilisateur");
 			// On récupère le nom et la civilité de tous les profs
 			$rep_nom = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, civilite FROM utilisateurs WHERE login = '".$prof[$p]["id_utilisateur"]."'"));
 			$aff_aid_d .= "".$rep_nom["civilite"].$rep_nom["nom"]." ";
@@ -251,11 +251,11 @@ if (isset($aff_liste_m)) {
 
 	for($d=0; $d<$nbre; $d++){
 		// On récupère ses noms et prénoms, puis la classe
-		$rep_ele_aid[$d]["login"] = mysql_result($req_ele_aid, $d, "login");
-		$rep_ele_aid[$d]["nom"] = mysql_result($req_ele_aid, $d, "nom");
-		$rep_ele_aid[$d]["prenom"] = mysql_result($req_ele_aid, $d, "prenom");
-		$rep_ele_aid[$d]["classe"] = mysql_result($req_ele_aid, $d, "classe");
-		$rep_ele_aid[$d]["id_classe"] = mysql_result($req_ele_aid, $d, "id");
+		$rep_ele_aid[$d]["login"] = old_mysql_result($req_ele_aid, $d, "login");
+		$rep_ele_aid[$d]["nom"] = old_mysql_result($req_ele_aid, $d, "nom");
+		$rep_ele_aid[$d]["prenom"] = old_mysql_result($req_ele_aid, $d, "prenom");
+		$rep_ele_aid[$d]["classe"] = old_mysql_result($req_ele_aid, $d, "classe");
+		$rep_ele_aid[$d]["id_classe"] = old_mysql_result($req_ele_aid, $d, "id");
 
 		$aff_aid_d .= "<br />
 			<a href='./modify_aid_new.php?classe=".$rep_ele_aid[$d]["id_classe"]."&amp;eleve=".$rep_ele_aid[$d]["login"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."&amp;action=del_eleve_aid".add_token_in_url()."'>

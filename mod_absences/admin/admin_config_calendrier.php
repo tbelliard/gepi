@@ -154,7 +154,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
             if( $nom_calendrier_ins != "" && $jourdebut_calendrier_ins != "" )
             {
 			$test = '1';
-                            if($action_sql == "modifier") { $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."edt_calendrier WHERE id_calendrier = '$id_calendrier_ins'"),0); }
+                            if($action_sql == "modifier") { $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."edt_calendrier WHERE id_calendrier = '$id_calendrier_ins'"),0); }
                               if ($test === '1')
                               {
 					// conversion des date et heure au format timestamps

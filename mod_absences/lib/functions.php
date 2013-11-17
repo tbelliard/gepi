@@ -1288,7 +1288,7 @@ function lettre_absence_envoye($id_absence_eleve)
 
 	// requête pour compte le nombre de lettre envoyé pour une absence donnée.
 	$cpt_lettre_recus = 0;
-	$cpt_lettre_recus = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*)
+	$cpt_lettre_recus = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*)
 													FROM " . $prefix_base . "lettres_suivis
 												   WHERE partde_lettre_suivi = 'absences_eleves'
 												     AND type_lettre_suivi = '6'
@@ -2014,7 +2014,7 @@ function tel_responsable($ele_id)
 
 	$tel_responsable=array();
 
-	$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal = '1' )"),0);
+	$nombre_de_responsable =  old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal = '1' )"),0);
 	if($nombre_de_responsable != 0)
 	{
 			$cpt_parents = 0;
@@ -2190,7 +2190,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 						          OR fermeture_horaire_etablissement BETWEEN '".$de_heure."' AND '".$a_heure."'
 					      		)";
 	//echo "0 : $sql<br />";
-	$requete_nb = mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
+	$requete_nb = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
 
 	// ensuit on vérifie qu'une table edt_calendrier existe
 	$table_edt_calendrier = 'non';
@@ -2219,7 +2219,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 						       	  OR fin_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
 							)";
 		//echo "1 : $sql<br />";
-		$requete_nb_calendrier_1 = mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
+		$requete_nb_calendrier_1 = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
 	}
 	// on fait de même si c'est pour une classe est précisé
 	if ( $table_edt_calendrier === 'oui' and $classe_select != '' )
@@ -2239,7 +2239,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 						       	  OR fin_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
 							)";
 		//echo "2 : $sql<br />";
-		$requete_nb_calendrier_2 = mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
+		$requete_nb_calendrier_2 = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
 	}
 
 	/*

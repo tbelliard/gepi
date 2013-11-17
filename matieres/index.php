@@ -184,10 +184,10 @@ $alt=1;
 while ($i < $nombre_lignes){
     $alt=$alt*(-1);
 
-	$current_matiere = mysql_result($call_data, $i, "matiere");
-	$current_matiere_nom = mysql_result($call_data, $i, "nom_complet");
-    $current_matiere_priorite = mysql_result($call_data, $i, "priority");
-    $current_matiere_categorie_id = mysql_result($call_data, $i, "categorie_id");
+	$current_matiere = old_mysql_result($call_data, $i, "matiere");
+	$current_matiere_nom = old_mysql_result($call_data, $i, "nom_complet");
+    $current_matiere_priorite = old_mysql_result($call_data, $i, "priority");
+    $current_matiere_categorie_id = old_mysql_result($call_data, $i, "categorie_id");
 
     if ($current_matiere_priorite > 1) {$current_matiere_priorite -= 10;}
 

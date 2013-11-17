@@ -181,7 +181,7 @@
 		else {
 			$call_matiere = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
 			if(mysqli_num_rows($call_matiere)>0) {
-				$matiere_nom_long[$i] = mysql_result($call_matiere, "0", "nom_complet");
+				$matiere_nom_long[$i] = old_mysql_result($call_matiere, "0", "nom_complet");
 			}
 			else {
 				$matiere_nom_long[$i]=$matiere[$i];

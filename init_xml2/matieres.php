@@ -118,7 +118,7 @@
 					//echo "$sql<br />";
 					$test_del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_del)>0) {
-						if (mysql_result($test_del,0)!=0) {
+						if (old_mysql_result($test_del,0)!=0) {
 							$flag=1;
 						}
 					}
@@ -155,7 +155,7 @@
 
 				$j=0;
 				while ($j < count($liste_tables_del)) {
-					if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+					if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 						$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
 					}
 					$j++;
@@ -400,7 +400,7 @@
 									echo "<td><p><font color='red'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlspecialchars($matiere[$i]['libelle_court'])."</p></td></tr>\n";
 								}
 							} else {
-								$nom_complet = mysql_result($verif,0,'nom_complet');
+								$nom_complet = old_mysql_result($verif,0,'nom_complet');
 								$alt=$alt*(-1);
 								echo "<tr class='lig$alt'>\n";
 								echo "<td><p><font color='green'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlspecialchars($nom_complet)."</p></td></tr>\n";

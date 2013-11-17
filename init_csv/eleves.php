@@ -229,7 +229,7 @@ if (!isset($_POST["action"])) {
 
 			$sql="SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_int . "';";
 			if($debug_ele=='y') {echo "<br /><p><span style='color:coral;'>$sql -&gt; $test enregistrement.</span><br />";}
-			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], $sql), 0);
+			$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql), 0);
 
 			//==========================
 			// DEBUG

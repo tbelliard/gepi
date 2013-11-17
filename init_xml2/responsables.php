@@ -116,7 +116,7 @@
 				$flag=0;
 				$chaine_tables="";
 				while (($j < count($liste_tables_del)) and ($flag==0)) {
-					if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+					if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 						$flag=1;
 					}
 					$j++;
@@ -161,7 +161,7 @@
 				check_token(false);
 				$j=0;
 				while ($j < count($liste_tables_del)) {
-					if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+					if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 						$sql="DELETE FROM $liste_tables_del[$j];";
 						if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 						$del=@mysqli_query($GLOBALS["mysqli"], $sql);

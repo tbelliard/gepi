@@ -290,7 +290,7 @@ function titre_lettre_type($id)
 if(!empty($lettre_type_nouv) and $action_choix_lettre === 'editer' and $valide_form === 'yes')
  {
 	// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
-        $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."'"),0);
+        $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."'"),0);
         if ($test_existance === '0')
 	{
  	      if(empty($reponse_lettre_type)) { $reponse_lettre_type = 'non'; }
@@ -356,7 +356,7 @@ if($action_cadre === 'supprimer_cadre' and $valide_form === 'yes')
 	if(!empty($id))
 	{
 		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
-                $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_tcs WHERE cadre_lettre_tc = '".$id."'"),0);
+                $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_tcs WHERE cadre_lettre_tc = '".$id."'"),0);
                 if ($test_existance === '0')
 		{
 	     		$req_delete = "DELETE FROM ".$prefix_base."lettres_cadres WHERE id_lettre_cadre = '".$id."'";
@@ -384,7 +384,7 @@ if($action_choix_lettre === 'supprimer' and $valide_form === 'yes')
 	if(!empty($lettre_type))
 	{
 		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
-                $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE type_lettre_suivi = '".$lettre_type."'"),0);
+                $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE type_lettre_suivi = '".$lettre_type."'"),0);
                 if ($test_existance === '0')
 		{
 	       		$req_delete = "DELETE FROM ".$prefix_base."lettres_tcs WHERE type_lettre_tc = '".$lettre_type."'";
@@ -401,7 +401,7 @@ if($action_choix_lettre === 'renommer' and $lettre_type_nouv != '' and $valide_f
 	if(!empty($lettre_type_nouv))
 	{
 		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
-                $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."' AND id_lettre_type != '".$lettre_type."'"),0);
+                $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."' AND id_lettre_type != '".$lettre_type."'"),0);
                 if ($test_existance === '0')
 		{
 			if(empty($reponse_lettre_type)) { $reponse_lettre_type = 'non'; }
@@ -438,7 +438,7 @@ if($action_laf === 'reinit_envoi' and $valide_form === 'yes')
 	if(!empty($id))
 	{
 		// on vérifie s'il n'y a pas eu de réponse pour cette envoi si oui on ne peut pas réinitialiser
-                $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id."' AND (reponse_date_lettre_suivi = '' OR reponse_date_lettre_suivi != '0000-00-00') AND statu_lettre_suivi = 'recus'"),0);
+                $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id."' AND (reponse_date_lettre_suivi = '' OR reponse_date_lettre_suivi != '0000-00-00') AND statu_lettre_suivi = 'recus'"),0);
                 if ($test_existance === '0')
 		{
 			$requete="UPDATE ".$prefix_base."lettres_suivis SET envoye_date_lettre_suivi = '', envoye_heure_lettre_suivi = '', quienvoi_lettre_suivi = '' WHERE id_lettre_suivi = '".$id."'";

@@ -69,8 +69,8 @@ if ($action == 'modifier') {
 			';
 
 		for($i = 0; $i < $nbre; $i++){
-			$classes[$i] = mysql_result($query, $i, "id");
-			$nom[$i] = mysql_result($query, $i, "classe");
+			$classes[$i] = old_mysql_result($query, $i, "id");
+			$nom[$i] = old_mysql_result($query, $i, "classe");
 			// On détermine le selected si c'est possible
 			if ($classes[$i] == $classe) {
 				$selected = ' selected="selected"';

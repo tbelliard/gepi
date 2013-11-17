@@ -61,7 +61,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		$sql="SELECT count(e.login) FROM eleves e, responsables2 re WHERE (e.ele_id = re.ele_id AND re.pers_id = '" . $_POST['pers_id'] ."')";
 		if($debug_create_resp=="y") {echo "$sql<br />\n";}
 		$test = mysqli_query($GLOBALS["mysqli"], $sql);
-		if (mysql_result($test, 0) == "0") {
+		if (old_mysql_result($test, 0) == "0") {
 			$error = true;
 			$msg .= "Erreur lors de la création de l'utilisateur : aucune association avec un élève n'a été trouvée !<br/>";
 		} else {
@@ -146,7 +146,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					$nbre = mysqli_num_rows($query_p);
 
 					if ($nbre >= 1 AND $nbre < 2) {
-						$reg_login = mysql_result($query_p, 0,"login_u");
+						$reg_login = old_mysql_result($query_p, 0,"login_u");
 					}
 					else {
 						// Il faudrait alors proposer une alternative à ce cas et permettre de chercher à la main le bon responsable dans la source

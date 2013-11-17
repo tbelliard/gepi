@@ -91,7 +91,7 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 	$lignes = mysqli_num_rows($quels_eleves);
 	$j = '0';
 	while($j < $lignes) {
-		$reg_eleve_login = mysql_result($quels_eleves, $j, "login");
+		$reg_eleve_login = old_mysql_result($quels_eleves, $j, "login");
 
 		//=========================
 		// AJOUT: boireaus 20071007
@@ -179,7 +179,7 @@ echo add_token_field(true);
 
 <?php
 $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-$classe = mysql_result($call_classe, "0", "classe");
+$classe = old_mysql_result($call_classe, "0", "classe");
 ?>
 <p><b>Classe de <?php echo "$classe"; ?> - Saisie des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
 <br />
@@ -206,14 +206,14 @@ $num_id=10;
 $alt=1;
 $chaine_test_vocabulaire="";
 while($i < $nombre_lignes) {
-	$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
+	$current_eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
 	$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM  absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
-	$current_eleve_nb_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
-	$current_eleve_nb_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
-	$current_eleve_nb_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
-	$current_eleve_ap_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-	$current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
-	$current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
+	$current_eleve_nb_absences = @old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
+	$current_eleve_nb_nj = @old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
+	$current_eleve_nb_retards = @old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
+	$current_eleve_ap_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+	$current_eleve_nom = old_mysql_result($appel_donnees_eleves, $i, "nom");
+	$current_eleve_prenom = old_mysql_result($appel_donnees_eleves, $i, "prenom");
 	$current_eleve_login_nb = $current_eleve_login."_nb_abs";
 	$current_eleve_login_nj = $current_eleve_login."_nb_nj";
 	$current_eleve_login_retard = $current_eleve_login."_nb_retard";

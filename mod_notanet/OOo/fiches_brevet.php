@@ -480,8 +480,8 @@ if (!isset($id_classe)) {
 	echo "<p><select name='id_classe[]' multiple='multiple' size='$size'>\n";
 	$i = 0;
 	while ($i < $nombre_lignes){
-		$classe = mysql_result($call_data, $i, "classe");
-		$ide_classe = mysql_result($call_data, $i, "id");
+		$classe = old_mysql_result($call_data, $i, "classe");
+		$ide_classe = old_mysql_result($call_data, $i, "id");
 		echo "<option value='$ide_classe'";
 		if($nombre_lignes==1) {echo " selected='selected'";}
 		echo ">$classe</option>\n";

@@ -96,8 +96,8 @@ if (!(isset($id_classe))) {
 		$i = 0;
 		//while ($i < $nombreligne) {
 		while ($i < $lignes) {
-			$lien_classe[]="verif_bulletins.php?id_classe=".mysql_result($appel_donnees, $i, "id");
-			$txt_classe[]=ucfirst(mysql_result($appel_donnees, $i, "classe"));
+			$lien_classe[]="verif_bulletins.php?id_classe=".old_mysql_result($appel_donnees, $i, "id");
+			$txt_classe[]=ucfirst(old_mysql_result($appel_donnees, $i, "classe"));
 			$i++;
 		}
 
@@ -118,8 +118,8 @@ if (!(isset($id_classe))) {
 			echo "<td align='left'>\n";
 		}
 
-		$id_classe = mysql_result($appel_donnees, $i, "id");
-		$display_class = mysql_result($appel_donnees, $i, "classe");
+		$id_classe = old_mysql_result($appel_donnees, $i, "id");
+		$display_class = old_mysql_result($appel_donnees, $i, "classe");
 		echo "<a href='verif_bulletins.php?id_classe=$id_classe'>".ucfirst($display_class)."</a><br />\n";
 		$i++;
 	}
@@ -223,8 +223,8 @@ if (!(isset($id_classe))) {
 	$j = 0;
 	$flag = true;
 	while ($j < $nb_eleves) {
-		$login_e = mysql_result($test1, $j, "login");
-		$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_eleves_cpe WHERE e_login='" . $login_e . "'"), 0);
+		$login_e = old_mysql_result($test1, $j, "login");
+		$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_eleves_cpe WHERE e_login='" . $login_e . "'"), 0);
 		if ($test == "0") {
 			$flag = false;
 			break;
@@ -238,7 +238,7 @@ if (!(isset($id_classe))) {
 
 	$sql_classe="SELECT * FROM `classes`WHERE id=$id_classe";
 	$call_classe=mysqli_query($GLOBALS["mysqli"], $sql_classe);
-	$nom_classe=mysql_result($call_classe,0,"classe");
+	$nom_classe=old_mysql_result($call_classe,0,"classe");
 
 	//echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la période&nbsp;: </b></p><br />\n";
 	echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la période et les points à vérifier: </b></p><br />\n";
@@ -525,23 +525,23 @@ if (!(isset($id_classe))) {
 
 	$bulletin_rempli = 'yes';
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
-	$classe = mysql_result($call_classe, "0", "classe");
+	$classe = old_mysql_result($call_classe, "0", "classe");
 	echo "<p>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</p>";
 
 	//
 	// Vérification de paramètres généraux
 	//
-	$current_classe_nom_complet = mysql_result($call_classe, 0, "nom_complet");
+	$current_classe_nom_complet = old_mysql_result($call_classe, 0, "nom_complet");
 	if ($current_classe_nom_complet == '') {
 		$bulletin_rempli = 'no';
 		echo "<p>Le nom long de la classe n'est pas défini !</p>\n";
 	}
-	$current_classe_suivi_par = mysql_result($call_classe, 0, "suivi_par");
+	$current_classe_suivi_par = old_mysql_result($call_classe, 0, "suivi_par");
 	if ($current_classe_suivi_par == '') {
 		$bulletin_rempli = 'no';
 		echo "<p>La personne de l'administration chargée de la classe n'est pas définie !</p>\n";
 	}
-	$current_classe_formule = mysql_result($call_classe, 0, "formule");
+	$current_classe_formule = old_mysql_result($call_classe, 0, "formule");
 	if ($current_classe_formule == '') {
 		$bulletin_rempli = 'no';
 		echo "<p>La formule à la fin de chaque bulletin n'est pas définie !</p>\n";
@@ -604,9 +604,9 @@ if (!(isset($id_classe))) {
 		}
 
 
-		$id_eleve[$j] = mysql_result($appel_donnees_eleves, $j, "login");
-		$eleve_nom[$j] = mysql_result($appel_donnees_eleves, $j, "nom");
-		$eleve_prenom[$j] = mysql_result($appel_donnees_eleves, $j, "prenom");
+		$id_eleve[$j] = old_mysql_result($appel_donnees_eleves, $j, "login");
+		$eleve_nom[$j] = old_mysql_result($appel_donnees_eleves, $j, "nom");
+		$eleve_prenom[$j] = old_mysql_result($appel_donnees_eleves, $j, "prenom");
 
 
 		$affiche_nom = 1;
@@ -627,7 +627,7 @@ if (!(isset($id_classe))) {
 			$affiche_mess_app = 1;
 			$affiche_mess_note = 1;
 			while($i < $lignes_groupes) {
-				$group_id = mysql_result($groupeinfo, $i, "id_groupe");
+				$group_id = old_mysql_result($groupeinfo, $i, "id_groupe");
 				$current_group = get_group($group_id);
 
 				//if (in_array($id_eleve[$j], $current_group["eleves"][$per]["list"])) { // Si l'élève suit cet enseignement pour la période considérée
@@ -636,9 +636,9 @@ if (!(isset($id_classe))) {
 					//Vérification des appréciations :
 					//
 					$test_app = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per')");
-					//$app = @mysql_result($test_app, 0, 'appreciation');
+					//$app = @old_mysql_result($test_app, 0, 'appreciation');
 					$app="";
-					if(mysqli_num_rows($test_app)>0) {$app=mysql_result($test_app, 0, 'appreciation');}
+					if(mysqli_num_rows($test_app)>0) {$app=old_mysql_result($test_app, 0, 'appreciation');}
 					if ($app == '') {
 						$bulletin_rempli = 'no';
 						if ($affiche_nom != 0) {
@@ -714,7 +714,7 @@ if (!(isset($id_classe))) {
 			//Début de la boucle matière
 			//
 			while($i < $lignes_groupes) {
-				$group_id = mysql_result($groupeinfo, $i, "id_groupe");
+				$group_id = old_mysql_result($groupeinfo, $i, "id_groupe");
 				$current_group = get_group($group_id);
 
 				//if (in_array($id_eleve[$j], $current_group["eleves"][$per]["list"])) { // Si l'élève suit cet enseignement pour la période considérée
@@ -723,9 +723,9 @@ if (!(isset($id_classe))) {
 					//Vérification des moyennes :
 					//
 					$test_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per')");
-					//$note = @mysql_result($test_notes, 0, 'note');
+					//$note = @old_mysql_result($test_notes, 0, 'note');
 					$note="";
-					if(mysqli_num_rows($test_notes)>0) {$note=mysql_result($test_notes, 0, 'note');}
+					if(mysqli_num_rows($test_notes)>0) {$note=old_mysql_result($test_notes, 0, 'note');}
 					if ($note == '') {
 						$bulletin_rempli = 'no';
 						if ($affiche_nom != 0) {
@@ -796,9 +796,9 @@ if (!(isset($id_classe))) {
 			//Vérification des avis des conseils de classe
 			//
 			$query_conseil = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe WHERE (login = '$id_eleve[$j]' and periode = '$per')");
-			//$avis = @mysql_result($query_conseil, 0, 'avis');
+			//$avis = @old_mysql_result($query_conseil, 0, 'avis');
 			$avis="";
-			if(mysqli_num_rows($query_conseil)>0) {$avis=mysql_result($query_conseil, 0, 'avis');}
+			if(mysqli_num_rows($query_conseil)>0) {$avis=old_mysql_result($query_conseil, 0, 'avis');}
 			if ($avis == '') {
 				$bulletin_rempli = 'no';
 				if ($affiche_nom != 0) {
@@ -813,10 +813,10 @@ if (!(isset($id_classe))) {
 				$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_eleves_professeurs j WHERE (j.login = '$id_eleve[$j]' and j.id_classe='$id_classe' and u.login=j.professeur)");
 				$nb_result = mysqli_num_rows($call_prof);
 				if ($nb_result != 0) {
-					$login_prof = mysql_result($call_prof, 0, 'login');
+					$login_prof = old_mysql_result($call_prof, 0, 'login');
 					$email = retourne_email($login_prof);
-					$nom_prof = mysql_result($call_prof, 0, 'nom');
-					$prenom_prof = mysql_result($call_prof, 0, 'prenom');
+					$nom_prof = old_mysql_result($call_prof, 0, 'nom');
+					$prenom_prof = old_mysql_result($call_prof, 0, 'prenom');
 					//echo " (<a href='mailto:$email'>$prenom_prof $nom_prof</a>)";
 					//if($email!="") {
 					if(($email!="")&&(check_mail($email))) {
@@ -848,15 +848,15 @@ if (!(isset($id_classe))) {
 			$nb_aid = mysqli_num_rows($call_data);
 			$z=0;
 			while ($z < $nb_aid) {
-				$display_begin = @mysql_result($call_data, $z, "display_begin");
-				$display_end = @mysql_result($call_data, $z, "display_end");
+				$display_begin = @old_mysql_result($call_data, $z, "display_begin");
+				$display_end = @old_mysql_result($call_data, $z, "display_end");
 				if (($per >= $display_begin) and ($per <= $display_end)) {
-					$indice_aid = @mysql_result($call_data, $z, "indice_aid");
-					$type_note = @mysql_result($call_data, $z, "type_note");
+					$indice_aid = @old_mysql_result($call_data, $z, "indice_aid");
+					$type_note = @old_mysql_result($call_data, $z, "type_note");
 					$call_data2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-					$nom_aid = @mysql_result($call_data2, 0, "nom");
+					$nom_aid = @old_mysql_result($call_data2, 0, "nom");
 					$aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='$id_eleve[$j]' and indice_aid='$indice_aid')");
-					$aid_id = @mysql_result($aid_query, 0, "id_aid");
+					$aid_id = @old_mysql_result($aid_query, 0, "id_aid");
 					if ($aid_id != '') {
 						$aid_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='$id_eleve[$j]' AND periode='$per' and id_aid='$aid_id' and indice_aid='$indice_aid')");
 						$query_resp = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid = '$aid_id' and u.login = j.id_utilisateur and j.indice_aid='$indice_aid')");
@@ -864,7 +864,7 @@ if (!(isset($id_classe))) {
 						//
 						// Vérification des appréciations
 						//
-						$aid_app = @mysql_result($aid_app_query, 0, "appreciation");
+						$aid_app = @old_mysql_result($aid_app_query, 0, "appreciation");
 						if ($aid_app == '') {
 							$bulletin_rempli = 'no';
 							if ($affiche_nom != 0) {
@@ -879,10 +879,10 @@ if (!(isset($id_classe))) {
 							$m=0;
 							$virgule = 1;
 							while ($m < $nb_prof) {
-								$login_prof = @mysql_result($query_resp, $m, 'login');
+								$login_prof = @old_mysql_result($query_resp, $m, 'login');
 								$email = retourne_email($login_prof);
-								$nom_prof = @mysql_result($query_resp, $m, 'nom');
-								$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
+								$nom_prof = @old_mysql_result($query_resp, $m, 'nom');
+								$prenom_prof = @old_mysql_result($query_resp, $m, 'prenom');
 								//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
 								//if($email!="") {
 								if(($email!="")&&(check_mail($email))) {
@@ -909,8 +909,8 @@ if (!(isset($id_classe))) {
 						$periode_max = mysqli_num_rows($periode_query);
 						if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
 						if (($type_note=='every') or (($type_note=='last') and ($per == $last_periode_aid))) {
-							$aid_note = @mysql_result($aid_app_query, 0, "note");
-							$aid_statut = @mysql_result($aid_app_query, 0, "statut");
+							$aid_note = @old_mysql_result($aid_app_query, 0, "note");
+							$aid_statut = @old_mysql_result($aid_app_query, 0, "statut");
 
 
 							if (($aid_note == '') or ($aid_statut == 'other')) {
@@ -927,10 +927,10 @@ if (!(isset($id_classe))) {
 								$m=0;
 								$virgule = 1;
 								while ($m < $nb_prof) {
-									$login_prof = @mysql_result($query_resp, $m, 'login');
+									$login_prof = @old_mysql_result($query_resp, $m, 'login');
 									$email = retourne_email($login_prof);
-									$nom_prof = @mysql_result($query_resp, $m, 'nom');
-									$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
+									$nom_prof = @old_mysql_result($query_resp, $m, 'nom');
+									$prenom_prof = @old_mysql_result($query_resp, $m, 'prenom');
 									//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
 									//if($email!="") {
 									if(($email!="")&&(check_mail($email))) {
@@ -962,9 +962,9 @@ if (!(isset($id_classe))) {
 			//Vérification des absences
 			//
 			$abs_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$id_eleve[$j]' AND periode='$per')");
-			$abs1 = @mysql_result($abs_query, 0, "nb_absences");
-			$abs2 = @mysql_result($abs_query, 0, "non_justifie");
-			$abs3 = @mysql_result($abs_query, 0, "nb_retards");
+			$abs1 = @old_mysql_result($abs_query, 0, "nb_absences");
+			$abs2 = @old_mysql_result($abs_query, 0, "non_justifie");
+			$abs3 = @old_mysql_result($abs_query, 0, "nb_retards");
 			if (($abs1 == '') or ($abs2 == '') or ($abs3 == '')) {
 				$bulletin_rempli = 'no';
 				if ($affiche_nom != 0) {
@@ -981,10 +981,10 @@ if (!(isset($id_classe))) {
 				$m=0;
 				$virgule = 1;
 				while ($m < $nb_prof) {
-					$login_prof = @mysql_result($query_resp, $m, 'login');
+					$login_prof = @old_mysql_result($query_resp, $m, 'login');
 					$email = retourne_email($login_prof);
-					$nom_prof = @mysql_result($query_resp, $m, 'nom');
-					$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
+					$nom_prof = @old_mysql_result($query_resp, $m, 'nom');
+					$prenom_prof = @old_mysql_result($query_resp, $m, 'prenom');
 					//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
 					//if($email!="") {
 					if(($email!="")&&(check_mail($email))) {
@@ -1031,10 +1031,10 @@ if (!(isset($id_classe))) {
                         $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_eleves_professeurs j WHERE (j.login = '$id_eleve[$j]' and j.id_classe='$id_classe' and u.login=j.professeur)");
                         $nb_result = mysqli_num_rows($call_prof);
                         if ($nb_result != 0) {
-                            $login_prof = mysql_result($call_prof, 0, 'login');
+                            $login_prof = old_mysql_result($call_prof, 0, 'login');
                             $email = retourne_email($login_prof);
-                            $nom_prof = mysql_result($call_prof, 0, 'nom');
-                            $prenom_prof = mysql_result($call_prof, 0, 'prenom');
+                            $nom_prof = old_mysql_result($call_prof, 0, 'nom');
+                            $prenom_prof = old_mysql_result($call_prof, 0, 'prenom');
                             //echo " (<a href='mailto:$email'>$prenom_prof $nom_prof</a>)";
                             //if($email!="") {
                             if(($email!="")&&(check_mail($email))) {

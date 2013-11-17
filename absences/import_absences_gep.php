@@ -112,7 +112,7 @@ require_once("../lib/header.inc.php");
 
 <?php
 $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-$classe = mysql_result($call_classe, "0", "classe");
+$classe = old_mysql_result($call_classe, "0", "classe");
 ?>
 <p><b>Classe de <?php echo "$classe"; ?> - Importation des absences : <?php echo $nom_periode[$periode_num]; ?></b></p>
 
@@ -135,9 +135,9 @@ if ($step == 0) {
 	$alt=1;
 	while ($i < $nb_test) {
 		$alt=$alt*(-1);
-		$login_eleve = mysql_result($test,$i,'e.login');
-		$nom_eleve = mysql_result($test,$i,'e.nom');
-		$prenom_eleve = mysql_result($test,$i,'e.prenom');
+		$login_eleve = old_mysql_result($test,$i,'e.login');
+		$nom_eleve = old_mysql_result($test,$i,'e.nom');
+		$prenom_eleve = old_mysql_result($test,$i,'e.prenom');
 		//echo "<tr><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>\n";
 		echo "<tr class='lig$alt'><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>\n";
 		$i++;
@@ -410,8 +410,8 @@ if ($step == 0) {
 	$sql = mysqli_query($GLOBALS["mysqli"], "select id_seq, type  from absences_gep order by id_seq");
 	$i = 0;
 	while ($i < mysqli_num_rows($sql)) {
-		$id_seq = mysql_result($sql,$i,'id_seq');
-		$tab_seq[$id_seq] = mysql_result($sql,$i,'type');
+		$id_seq = old_mysql_result($sql,$i,'id_seq');
+		$tab_seq[$id_seq] = old_mysql_result($sql,$i,'type');
 		$i++;
 	}
 	// Constitution du tableau login<->numéro gep
@@ -426,8 +426,8 @@ if ($step == 0) {
 	order by e.nom, e.prenom");
 	$i = 0;
 	while ($i < mysqli_num_rows($req_eleves)) {
-		$login_eleve = mysql_result($req_eleves,$i,'e.login');
-		$elenoet = mysql_result($req_eleves,$i,'e.elenoet');
+		$login_eleve = old_mysql_result($req_eleves,$i,'e.login');
+		$elenoet = old_mysql_result($req_eleves,$i,'e.elenoet');
 		if ($elenoet != '') $tab[$login_eleve] = $elenoet;
 		$i++;
 	}

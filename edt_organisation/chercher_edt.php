@@ -78,10 +78,10 @@ echo '
 	$tab_select_heure = array();
 
 	for($b=0;$b<count($rep_heure);$b++) {
-		$tab_select_heure[$b]["id_heure"] = mysql_result($req_heure, $b, "id_definie_periode");
-		$tab_select_heure[$b]["creneaux"] = mysql_result($req_heure, $b, "nom_definie_periode");
-		$tab_select_heure[$b]["heure_debut"] = mysql_result($req_heure, $b, "heuredebut_definie_periode");
-		$tab_select_heure[$b]["heure_fin"] = mysql_result($req_heure, $b, "heurefin_definie_periode");
+		$tab_select_heure[$b]["id_heure"] = old_mysql_result($req_heure, $b, "id_definie_periode");
+		$tab_select_heure[$b]["creneaux"] = old_mysql_result($req_heure, $b, "nom_definie_periode");
+		$tab_select_heure[$b]["heure_debut"] = old_mysql_result($req_heure, $b, "heuredebut_definie_periode");
+		$tab_select_heure[$b]["heure_fin"] = old_mysql_result($req_heure, $b, "heurefin_definie_periode");
 
 		echo '
 		<option value=\''.$tab_select_heure[$b]["id_heure"].'\'>'.$tab_select_heure[$b]["creneaux"].' : '.$tab_select_heure[$b]["heure_debut"].' - '.$tab_select_heure[$b]["heure_fin"].'</option>
@@ -105,8 +105,8 @@ echo '
 	$tab_select_jour = array();
 
 	for($a=0; $a<count($rep_jour); $a++) {
-		$tab_select_jour[$a]["id"] = mysql_result($req_jour, $a, "id_horaire_etablissement");
-		$tab_select_jour[$a]["jour_sem"] = mysql_result($req_jour, $a, "jour_horaire_etablissement");
+		$tab_select_jour[$a]["id"] = old_mysql_result($req_jour, $a, "id_horaire_etablissement");
+		$tab_select_jour[$a]["jour_sem"] = old_mysql_result($req_jour, $a, "jour_horaire_etablissement");
 
 		echo '
 		<option value=\''.$tab_select_jour[$a]["jour_sem"].'\'>'.$tab_select_jour[$a]["jour_sem"].'</option>
@@ -128,9 +128,9 @@ echo ('<OPTION value=\'rien\'>Semaine</OPTION>');
 	$tab_select_semaine = array();
 
 	for($d=0;$d<52;$d++) {
-		$tab_select_semaine[$d]["id_semaine"] = mysql_result($req_semaine, $d, "id_edt_semaine");
-		$tab_select_semaine[$d]["num_semaine"] = mysql_result($req_semaine, $d, "num_edt_semaine");
-		$tab_select_semaine[$d]["type_semaine"] = mysql_result($req_semaine, $d, "type_edt_semaine");
+		$tab_select_semaine[$d]["id_semaine"] = old_mysql_result($req_semaine, $d, "id_edt_semaine");
+		$tab_select_semaine[$d]["num_semaine"] = old_mysql_result($req_semaine, $d, "num_edt_semaine");
+		$tab_select_semaine[$d]["type_semaine"] = old_mysql_result($req_semaine, $d, "type_edt_semaine");
 
 		echo ('<OPTION value=\''.$tab_select_semaine[$d]["id_semaine"].'\'>Semaine n° '.$tab_select_semaine[$d]["num_semaine"].' ('.$tab_select_semaine[$d]["type_semaine"].') </OPTION>');
 

@@ -462,7 +462,7 @@ if($mode=='classe') {
 			$sql="SELECT id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp, classes c WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND jgc.id_classe=c.id ORDER BY c.classe LIMIT 1;";
 			$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_classe)>0) {
-				$id_classe = mysql_result($res_classe, 0, 'id_classe');
+				$id_classe = old_mysql_result($res_classe, 0, 'id_classe');
 			}
 		}
 
@@ -470,7 +470,7 @@ if($mode=='classe') {
 			$sql="SELECT id AS id_classe FROM classes ORDER BY classe LIMIT 1;";
 			$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_classe)>0) {
-				$id_classe = mysql_result($res_classe, 0, 'id_classe');
+				$id_classe = old_mysql_result($res_classe, 0, 'id_classe');
 			}
 		}
 	}
@@ -535,7 +535,7 @@ elseif($mode=='eleve') {
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$login_eleve' ORDER BY periode DESC LIMIT 1;";
 		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_classe)>0) {
-			$id_classe = mysql_result($res_classe, 0, 'id_classe');
+			$id_classe = old_mysql_result($res_classe, 0, 'id_classe');
 		}
 	}
 
@@ -593,7 +593,7 @@ elseif($mode=='professeur') {
 			$sql="SELECT u.civilite, u.nom, u.prenom, u.login FROM utilisateurs u WHERE statut='professeur' AND etat='actif' ORDER BY u.nom, u.prenom LIMIT 1;";
 			$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_prof)>0) {
-				$login_prof = mysql_result($res_prefs, 0, 'login');
+				$login_prof = old_mysql_result($res_prefs, 0, 'login');
 			}
 		}
 
@@ -1227,8 +1227,8 @@ if(count($tab_grp)>0) {
 		//echo "$sql<br />";
 		$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
-		$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
-		$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
+		$content = @old_mysql_result($appel_info_cahier_texte, 0, 'contenu');
+		$id_ct = @old_mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 		$content.=affiche_docs_joints($id_ct,"c");
 
 		if($content!="") {

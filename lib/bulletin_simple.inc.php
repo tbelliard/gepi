@@ -115,27 +115,27 @@ if ($on_continue == 'yes') {
 	$data_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$current_eleve_login'");
 
 	// Récupération du champ auto_increment
-	$current_id_eleve = mysql_result($data_eleve, 0, "id_eleve");
+	$current_id_eleve = old_mysql_result($data_eleve, 0, "id_eleve");
 
-	$current_eleve_nom = mysql_result($data_eleve, 0, "nom");
-	$current_eleve_prenom = mysql_result($data_eleve, 0, "prenom");
-	$current_eleve_sexe = mysql_result($data_eleve, 0, "sexe");
-	$current_eleve_naissance = mysql_result($data_eleve, 0, "naissance");
+	$current_eleve_nom = old_mysql_result($data_eleve, 0, "nom");
+	$current_eleve_prenom = old_mysql_result($data_eleve, 0, "prenom");
+	$current_eleve_sexe = old_mysql_result($data_eleve, 0, "sexe");
+	$current_eleve_naissance = old_mysql_result($data_eleve, 0, "naissance");
 	$current_eleve_naissance = affiche_date_naissance($current_eleve_naissance);
-	$current_eleve_elenoet = mysql_result($data_eleve, 0, "elenoet");
+	$current_eleve_elenoet = old_mysql_result($data_eleve, 0, "elenoet");
 	$data_profsuivi = mysqli_query($GLOBALS["mysqli"], "SELECT u.login FROM utilisateurs u, j_eleves_professeurs j WHERE (j.login='$current_eleve_login' AND j.professeur = u.login AND j.id_classe='$id_classe') ");
-	$current_eleve_profsuivi_login = @mysql_result($data_profsuivi, 0, "login");
+	$current_eleve_profsuivi_login = @old_mysql_result($data_profsuivi, 0, "login");
 
 	echo "<input type='hidden' name='nom_prenom_eleve[$current_id_eleve]' id='nom_prenom_eleve_$current_id_eleve' value=\"$current_eleve_nom $current_eleve_prenom\" />\n";
 
 	//$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='$current_eleve_login' AND e.id = j.id_etablissement) ");
 	$data_etab = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='$current_eleve_elenoet' AND e.id = j.id_etablissement) ");
-	$current_eleve_etab_id = @mysql_result($data_etab, 0, "id");
-	$current_eleve_etab_nom = @mysql_result($data_etab, 0, "nom");
-	$current_eleve_etab_niveau = @mysql_result($data_etab, 0, "niveau");
-	$current_eleve_etab_type = @mysql_result($data_etab, 0, "type");
-	$current_eleve_etab_cp = @mysql_result($data_etab, 0, "cp");
-	$current_eleve_etab_ville = @mysql_result($data_etab, 0, "ville");
+	$current_eleve_etab_id = @old_mysql_result($data_etab, 0, "id");
+	$current_eleve_etab_nom = @old_mysql_result($data_etab, 0, "nom");
+	$current_eleve_etab_niveau = @old_mysql_result($data_etab, 0, "niveau");
+	$current_eleve_etab_type = @old_mysql_result($data_etab, 0, "type");
+	$current_eleve_etab_cp = @old_mysql_result($data_etab, 0, "cp");
+	$current_eleve_etab_ville = @old_mysql_result($data_etab, 0, "ville");
 	
 	if ($current_eleve_etab_niveau!='') {
 		foreach ($type_etablissement as $type_etab => $nom_etablissement) {
@@ -149,12 +149,12 @@ if ($on_continue == 'yes') {
 			$current_eleve_etab_type = $type_etablissement2[$current_eleve_etab_type][$current_eleve_etab_niveau];
 	}
 	$classe_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id='$id_classe'");
-	$current_eleve_classe = mysql_result($classe_eleve, 0, "classe");
-	$id_classe = mysql_result($classe_eleve, 0, "id");
+	$current_eleve_classe = old_mysql_result($classe_eleve, 0, "classe");
+	$id_classe = old_mysql_result($classe_eleve, 0, "id");
 	
 	$regime_doublant_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login'");
-	$current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
-	$current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
+	$current_eleve_regime = old_mysql_result($regime_doublant_eleve, 0, "regime");
+	$current_eleve_doublant = old_mysql_result($regime_doublant_eleve, 0, "doublant");
 	
 	//-------------------------------
 	// On affiche l'en-tête : Les données de l'élève
@@ -244,12 +244,12 @@ if ($on_continue == 'yes') {
 	$nb_aid = mysqli_num_rows($call_data);
 	$z=0;
 	while ($z < $nb_aid) {
-		$display_begin = mysql_result($call_data, $z, "display_begin");
-		$display_end = mysql_result($call_data, $z, "display_end");
+		$display_begin = old_mysql_result($call_data, $z, "display_begin");
+		$display_end = old_mysql_result($call_data, $z, "display_end");
 		if (($periode1 >= $display_begin) and ($periode2 <= $display_end)) {
-			$indice_aid = @mysql_result($call_data, $z, "indice_aid");
+			$indice_aid = @old_mysql_result($call_data, $z, "indice_aid");
 			$aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='$current_eleve_login' and indice_aid='$indice_aid')");
-			$aid_id = @mysql_result($aid_query, 0, "id_aid");
+			$aid_id = @old_mysql_result($aid_query, 0, "id_aid");
 			if ($aid_id != '') {
 				affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl', $affiche_coef);
 			}
@@ -298,7 +298,7 @@ if ($on_continue == 'yes') {
 	
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		$cat_names[$cat_id] = html_entity_decode(old_mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
 	}
 	
 	$total_cat_eleve = array();
@@ -357,8 +357,8 @@ if ($on_continue == 'yes') {
 	
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		//$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
-		$cat_names[$cat_id] = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
+		//$cat_names[$cat_id] = html_entity_decode(old_mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		$cat_names[$cat_id] = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
 	}
 
 	// Nombre de groupes sur la classe
@@ -395,7 +395,7 @@ if ($on_continue == 'yes') {
 	
 		$inser_ligne='no';
 
-		//$group_id = mysql_result($appel_liste_groupes, $j, "id_groupe");
+		//$group_id = old_mysql_result($appel_liste_groupes, $j, "id_groupe");
 		//$current_group = get_group($group_id);
 
 		// On récupère le groupe depuis $tab_moy
@@ -426,7 +426,7 @@ if ($on_continue == 'yes') {
 		while ($nb < $periode2+1) {
 			/*
 			$current_classe_matiere_moyenne_query = mysql_query("SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
-			$current_classe_matiere_moyenne[$nb] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
+			$current_classe_matiere_moyenne[$nb] = old_mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
 			*/
 			$current_classe_matiere_moyenne[$nb]=$tab_moy['periodes'][$nb]['current_classe_matiere_moyenne'][$j];
 
@@ -436,8 +436,8 @@ if ($on_continue == 'yes') {
 			$nb_ligne_cn[$nb] = mysqli_num_rows($test_cn);
 			$n = 0;
 			while ($n < $nb_ligne_cn[$nb]) {
-				$cn_id[$nb][$n] = mysql_result($test_cn, $n, 'c.id');
-				$cn_nom[$nb][$n] = mysql_result($test_cn, $n, 'c.nom_court');
+				$cn_id[$nb][$n] = old_mysql_result($test_cn, $n, 'c.id');
+				$cn_nom[$nb][$n] = old_mysql_result($test_cn, $n, 'c.nom_court');
 				$n++;
 			}
 			$nb++;
@@ -465,7 +465,7 @@ if ($on_continue == 'yes') {
 				$current_eleve_statut[$nb]=$tab_moy['periodes'][$nb]['current_eleve_statut'][$j][$tab_login_indice[$nb]];
 
 				$current_eleve_appreciation_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations ma, j_eleves_classes jec WHERE (ma.login='$current_eleve_login' AND ma.id_groupe='" . $current_group["id"] . "' AND ma.periode='$nb' and jec.periode='$nb' and jec.login='$current_eleve_login' and jec.id_classe='$id_classe')");
-				$current_eleve_appreciation[$nb] = @mysql_result($current_eleve_appreciation_query, 0, "appreciation");
+				$current_eleve_appreciation[$nb] = @old_mysql_result($current_eleve_appreciation_query, 0, "appreciation");
 
 				/*
 				// Coefficient personnalisé pour l'élève?
@@ -475,7 +475,7 @@ if ($on_continue == 'yes') {
 						"name = 'coef')";
 				$test_coef_personnalise = mysql_query($sql);
 				if (mysql_num_rows($test_coef_personnalise) > 0) {
-					$coef_eleve = mysql_result($test_coef_personnalise, 0);
+					$coef_eleve = old_mysql_result($test_coef_personnalise, 0);
 				} else {
 					// Coefficient du groupe:
 					$coef_eleve = $current_coef;
@@ -549,7 +549,7 @@ if ($on_continue == 'yes') {
 					if (mysqli_num_rows($affiche_cat_moyenne_query) == "0") {
 						$affiche_cat_moyenne = false;
 					} else {
-						$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
+						$affiche_cat_moyenne = old_mysql_result($affiche_cat_moyenne_query, 0);
 					}
 	
 					// On a toutes les infos. On affiche !
@@ -718,9 +718,9 @@ if ($on_continue == 'yes') {
 					$tiret = 'no';
 					for ($cn=0; $cn<$nb_ligne_cn[$nb]; $cn++) {
 						$appel_cn = mysqli_query($GLOBALS["mysqli"], "select note, statut from cn_notes_conteneurs where (login='$current_eleve_login' and id_conteneur='".$cn_id[$nb][$cn]."')");
-						$cn_statut = @mysql_result($appel_cn,0,'statut');
+						$cn_statut = @old_mysql_result($appel_cn,0,'statut');
 						if ($cn_statut == 'y') {
-							$cn_note = @mysql_result($appel_cn,0,'note');
+							$cn_note = @old_mysql_result($appel_cn,0,'note');
 							if ($tiret == 'yes')   echo " - ";
 							echo $cn_nom[$nb][$cn]."&nbsp;:&nbsp;".$cn_note;
 							$tiret = 'yes';
@@ -871,12 +871,12 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 	$nb_aid = mysqli_num_rows($call_data);
 	$z=0;
 	while ($z < $nb_aid) {
-		$display_begin = mysql_result($call_data, $z, "display_begin");
-		$display_end = mysql_result($call_data, $z, "display_end");
+		$display_begin = old_mysql_result($call_data, $z, "display_begin");
+		$display_end = old_mysql_result($call_data, $z, "display_end");
 		if (($periode1 >= $display_begin) and ($periode2 <= $display_end)) {
-			$indice_aid = @mysql_result($call_data, $z, "indice_aid");
+			$indice_aid = @old_mysql_result($call_data, $z, "indice_aid");
 			$aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='$current_eleve_login' and indice_aid='$indice_aid')");
-			$aid_id = @mysql_result($aid_query, 0, "id_aid");
+			$aid_id = @old_mysql_result($aid_query, 0, "id_aid");
 			if ($aid_id != '') {
 				affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl', $affiche_coef);
 			}
@@ -1008,7 +1008,7 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 						if (mysqli_num_rows($affiche_cat_moyenne_query) == "0") {
 							$affiche_cat_moyenne = false;
 						} else {
-							$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
+							$affiche_cat_moyenne = old_mysql_result($affiche_cat_moyenne_query, 0);
 						}
 	
 						if($affiche_cat_moyenne){
@@ -1060,11 +1060,11 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 		//On vérifie si le module est activé
 		if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
 		    $current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
-		    $eleve_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
-		    $eleve_abs_nj[$nb] = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
-		    $eleve_retards[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
-		    $current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-		    $eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+		    $eleve_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
+		    $eleve_abs_nj[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
+		    $eleve_retards[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
+		    $current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+		    $eleve_app_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
 		} else {
 		    // Initialisations files
 		    require_once("../lib/initialisationsPropel.inc.php");
@@ -1074,8 +1074,8 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 			$eleve_abs[$nb] = $eleve->getDemiJourneesAbsenceParPeriode($nb)->count();
 			$eleve_abs_nj[$nb] = $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($nb)->count();
 			$eleve_retards[$nb] = $eleve->getRetardsParPeriode($nb)->count();
-			$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-			$eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+			$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+			$eleve_app_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
 		    }
 		}
 		if (($eleve_abs[$nb] !== '') and ($eleve_abs_nj[$nb] !== '')) {
@@ -1238,10 +1238,10 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 		//=========================
 	
 		$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$nb')");
-		$current_eleve_avis[$nb] = @mysql_result($current_eleve_avis_query, 0, "avis");
+		$current_eleve_avis[$nb] = @old_mysql_result($current_eleve_avis_query, 0, "avis");
 
 		// **** AJOUT POUR LA MENTION ****
-		$current_eleve_mention[$nb] = @mysql_result($current_eleve_avis_query, 0, "id_mention");
+		$current_eleve_mention[$nb] = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
 		// **** FIN D'AJOUT POUR LA MENTION ****
 
 		// Test pour savoir si l'élève appartient à la classe pour la période considérée
@@ -1294,26 +1294,26 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 
 	$nb_periodes = $periode2 - $periode1 + 1;
 	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-	$AID_NOM = @mysql_result($call_data, 0, "nom");
-	$note_max = @mysql_result($call_data, 0, "note_max");
-	$type_note = @mysql_result($call_data, 0, "type_note");
-	$display_begin = @mysql_result($call_data, 0, "display_begin");
-	$display_end = @mysql_result($call_data, 0, "display_end");
-	$bull_simplifie = @mysql_result($call_data, 0, "bull_simplifie");
+	$AID_NOM = @old_mysql_result($call_data, 0, "nom");
+	$note_max = @old_mysql_result($call_data, 0, "note_max");
+	$type_note = @old_mysql_result($call_data, 0, "type_note");
+	$display_begin = @old_mysql_result($call_data, 0, "display_begin");
+	$display_end = @old_mysql_result($call_data, 0, "display_end");
+	$bull_simplifie = @old_mysql_result($call_data, 0, "bull_simplifie");
 	// On vérifie que cette AID soit autorisée à l'affichage dans le bulletin simplifié
 	if ($bull_simplifie == "n") {
 		return "";
 	}
 
 	$aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
-	$aid_nom = @mysql_result($aid_nom_query, 0, "nom");
+	$aid_nom = @old_mysql_result($aid_nom_query, 0, "nom");
 	//------
 	// On regarde maintenant quels sont les profs responsables de cette AID
 	$aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id' and indice_aid='$indice_aid')");
 	$nb_lig = mysqli_num_rows($aid_prof_resp_query);
 	$n = '0';
 	while ($n < $nb_lig) {
-		$aid_prof_resp_login[$n] = mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+		$aid_prof_resp_login[$n] = old_mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
 		$n++;
 	}
 	//------
@@ -1340,30 +1340,30 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 		//=========================
 
 		$current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$nb' and id_aid='$aid_id' and indice_aid='$indice_aid')");
-		$eleve_aid_app[$nb] = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
+		$eleve_aid_app[$nb] = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
 		if ($eleve_aid_app[$nb] == '') {$eleve_aid_app[$nb] = ' -';}
 		$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 		$periode_max = mysqli_num_rows($periode_query);
 		$last_periode_aid = min($periode_max,$display_end);
 		if (($type_note == 'every') or (($type_note == 'last') and ($nb == $last_periode_aid))) {
-			$current_eleve_aid_note[$nb] = @mysql_result($current_eleve_aid_appreciation_query, 0, "note");
-			$current_eleve_aid_statut[$nb] = @mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
+			$current_eleve_aid_note[$nb] = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "note");
+			$current_eleve_aid_statut[$nb] = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
 			if ($note_max != 20) {
 				$eleve_aid_app[$nb] = "(note sur ".$note_max.") ".$eleve_aid_app[$nb];
 			}
 			if ($current_eleve_aid_note[$nb] != '') $current_eleve_aid_note[$nb]=number_format($current_eleve_aid_note[$nb],1, ',', ' ');
 			$aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$nb' and j.periode='$nb' and a.indice_aid='$indice_aid')");
 
-			$aid_note_min[$nb] = @mysql_result($aid_note_min_query, 0, "note_min");
+			$aid_note_min[$nb] = @old_mysql_result($aid_note_min_query, 0, "note_min");
 			if ($aid_note_min[$nb] == '') {$aid_note_min[$nb] = '-';}
 			$aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$nb' and j.periode='$nb' and a.indice_aid='$indice_aid')");
 
-			$aid_note_max[$nb] = @mysql_result($aid_note_max_query, 0, "note_max");
+			$aid_note_max[$nb] = @old_mysql_result($aid_note_max_query, 0, "note_max");
 			if ($aid_note_max[$nb] == '') {$aid_note_max[$nb] = '-';}
 
 			$aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$nb' and j.periode='$nb' and a.indice_aid='$indice_aid')");
 
-			$aid_note_moyenne[$nb] = @mysql_result($aid_note_moyenne_query, 0, "moyenne");
+			$aid_note_moyenne[$nb] = @old_mysql_result($aid_note_moyenne_query, 0, "moyenne");
 			if ($aid_note_moyenne[$nb] == '') {
 				$aid_note_moyenne[$nb] = '-';
 			} else {

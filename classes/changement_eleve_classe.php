@@ -135,7 +135,7 @@ echo "</p>\n";
 
 $sql="SELECT classe FROM classes WHERE id = '$id_classe';";
 $call_classe = mysqli_query($GLOBALS["mysqli"], $sql);
-$classe = mysql_result($call_classe, "0", "classe");
+$classe = old_mysql_result($call_classe, "0", "classe");
 
 ?>
 
@@ -195,10 +195,10 @@ if(!isset($id_future_classe)) {
 		echo "<td align='left'>\n";
 
 		while ($i < $nb) {
-			$t_id_classe = mysql_result($classes_list, $i, 'id');
+			$t_id_classe = old_mysql_result($classes_list, $i, 'id');
 			if($t_id_classe!=$id_classe) {
 				$temp = "case_".$t_id_classe;
-				$t_classe = mysql_result($classes_list, $i, 'classe');
+				$t_classe = old_mysql_result($classes_list, $i, 'classe');
 
 				if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 					echo "</td>\n";
@@ -226,7 +226,7 @@ if(!isset($id_future_classe)) {
 else {
 	$sql="SELECT classe FROM classes WHERE id='$id_future_classe';";
 	$call_classe_future = mysqli_query($GLOBALS["mysqli"], $sql);
-	$classe_future = mysql_result($call_classe_future, "0", "classe");
+	$classe_future = old_mysql_result($call_classe_future, "0", "classe");
 
 	echo "<p>Vous souhaitez déplacer l'élève de <b>$classe</b> vers <b>$classe_future</b> sur la période <b>".$nom_periode[$periode_num]."</b>";
 	if($chgt_periode_sup=='y') {echo " et suivantes";}

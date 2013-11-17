@@ -2588,18 +2588,18 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
         echo "<table width=\"80%\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">";
         $z=0;
         while ($z < $nb_aid) {
-          $indice_aid = @mysql_result($call_data, $z, "indice_aid");
-          $aid_id =  @mysql_result($call_data, $z, "id_aid");
+          $indice_aid = @old_mysql_result($call_data, $z, "indice_aid");
+          $aid_id =  @old_mysql_result($call_data, $z, "id_aid");
           $nom_type_aid =  sql_query1("SELECT nom FROM aid_config  WHERE (indice_aid='$indice_aid')");
           $nom_aid = sql_query1("SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
           $aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id' and indice_aid='$indice_aid')");
           $nb_lig = mysqli_num_rows($aid_prof_resp_query);
           $n = '0';
           while ($n < $nb_lig) {
-            $aid_prof_resp_login = @mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+            $aid_prof_resp_login = @old_mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
             $aid_prof_query = @mysqli_query($GLOBALS["mysqli"], "SELECT nom,prenom FROM utilisateurs WHERE login='$aid_prof_resp_login'");
-            $aid_prof_resp_nom[$n] = @mysql_result($aid_prof_query, 0, "nom");
-            $aid_prof_resp_prenom[$n] = @mysql_result($aid_prof_query, 0, "prenom");
+            $aid_prof_resp_nom[$n] = @old_mysql_result($aid_prof_query, 0, "nom");
+            $aid_prof_resp_prenom[$n] = @old_mysql_result($aid_prof_query, 0, "prenom");
             $n++;
           }
           echo "<tr><td><span class='small'><strong>$nom_type_aid</strong>";
@@ -2633,12 +2633,12 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
         echo "<table width=\"$larg_tab\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">";
         $z=0;
         while ($z < $nb_aid) {
-          $annee = @mysql_result($call_data, $z, "ta.annee");
-          $indice_aid = @mysql_result($call_data, $z, "ta.id");
-          $aid_id =  @mysql_result($call_data, $z, "a.id");
-          $nom_type_aid = @mysql_result($call_data, $z, "ta.nom");
-          $nom_aid =  @mysql_result($call_data, $z, "a.nom");
-          $aid_prof_resp =  @mysql_result($call_data, $z, "a.responsables");
+          $annee = @old_mysql_result($call_data, $z, "ta.annee");
+          $indice_aid = @old_mysql_result($call_data, $z, "ta.id");
+          $aid_id =  @old_mysql_result($call_data, $z, "a.id");
+          $nom_type_aid = @old_mysql_result($call_data, $z, "ta.nom");
+          $nom_aid =  @old_mysql_result($call_data, $z, "a.nom");
+          $aid_prof_resp =  @old_mysql_result($call_data, $z, "a.responsables");
           echo "<tr>\n";
           echo "<td><span class='small'>".$annee."</td>\n";
           echo "<td><span class='small'><strong>$nom_type_aid</strong>";
@@ -2807,7 +2807,7 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 				    //           sans permettre la modif des retards/abs/nj)
 					$sql="SELECT * FROM absences WHERE (login='".$ele_login."' AND periode='".$periode_note->getNumPeriode()."');";
 					$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], $sql);
-					$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+					$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
 					echo $current_eleve_appreciation_absences;
 				    echo "</td>\n";
 				    echo "</tr>\n";

@@ -331,7 +331,7 @@ if ($affiche_categories) {
 
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		$cat_names[$cat_id] = html_entity_decode(mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		$cat_names[$cat_id] = html_entity_decode(old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
 	}
 }
 // Calcul du nombre de matières à afficher
@@ -365,14 +365,14 @@ $displayed_categories = array();
 $j = 0;
 while($j < $nb_lignes_tableau) {
 	// colonne nom+prénom
-	$current_eleve_login[$j] = mysql_result($appel_donnees_eleves, $j, "login");
-	$col[1][$j+$ligne_supl] = @mysql_result($appel_donnees_eleves, $j, "nom")." ".@mysql_result($appel_donnees_eleves, $j, "prenom");
+	$current_eleve_login[$j] = old_mysql_result($appel_donnees_eleves, $j, "login");
+	$col[1][$j+$ligne_supl] = @old_mysql_result($appel_donnees_eleves, $j, "nom")." ".@old_mysql_result($appel_donnees_eleves, $j, "prenom");
 	$ind = 2;
 
 	//=======================================
 	// colonne date de naissance
     if ($aff_date_naiss){
-		$tmpdate=mysql_result($appel_donnees_eleves, $j, "naissance");
+		$tmpdate=old_mysql_result($appel_donnees_eleves, $j, "naissance");
 		$tmptab=explode("-",$tmpdate);
 		if(mb_strlen($tmptab[0])==4){$tmptab[0]=mb_substr($tmptab[0],2,2);}
         $col[$ind][$j+$ligne_supl]=$tmptab[2]."/".$tmptab[1]."/".$tmptab[0];
@@ -384,12 +384,12 @@ while($j < $nb_lignes_tableau) {
 	if (($aff_reg) or ($aff_doub))
 		$regime_doublant_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login[$j]'");
 	if ($aff_reg) {
-		$col[$ind][$j+$ligne_supl] = @mysql_result($regime_doublant_eleve, 0, "regime");
+		$col[$ind][$j+$ligne_supl] = @old_mysql_result($regime_doublant_eleve, 0, "regime");
 		$ind++;
 	}
 	// colonne doublant
 	if ($aff_doub) {
-		$col[$ind][$j+$ligne_supl] = @mysql_result($regime_doublant_eleve, 0, "doublant");
+		$col[$ind][$j+$ligne_supl] = @old_mysql_result($regime_doublant_eleve, 0, "doublant");
 		$ind++;
 	}
 	// Colonne absence
@@ -631,10 +631,10 @@ while($i < $lignes_groupes) {
 
 	foreach ($moyenne_annee_matiere as $tableau => $value) { unset($moyenne_annee_matiere[$tableau]);}
 
-	$var_group_id = mysql_result($groupeinfo, $i, "id_groupe");
+	$var_group_id = old_mysql_result($groupeinfo, $i, "id_groupe");
 	$current_group = get_group($var_group_id);
 	// Coeff pour la classe
-	$current_coef = mysql_result($groupeinfo, $i, "coef");
+	$current_coef = old_mysql_result($groupeinfo, $i, "coef");
 
 	//echo $current_group['name']."<br />";
 
@@ -664,7 +664,7 @@ while($i < $lignes_groupes) {
 			$call_moyenne = mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	
-		$moy_classe_tmp = @mysql_result($call_moyenne, 0, "moyenne");
+		$moy_classe_tmp = @old_mysql_result($call_moyenne, 0, "moyenne");
 		//==============================
 	
 	
@@ -685,7 +685,7 @@ while($i < $lignes_groupes) {
 					"name = 'coef')";
 			$test_coef_personnalise = mysqli_query($GLOBALS["mysqli"], $sql);
 			if (mysqli_num_rows($test_coef_personnalise) > 0) {
-				$coef_eleve = mysql_result($test_coef_personnalise, 0);
+				$coef_eleve = old_mysql_result($test_coef_personnalise, 0);
 			} else {
 				// Coefficient du groupe:
 				$coef_eleve = $current_coef;
@@ -783,11 +783,11 @@ while($i < $lignes_groupes) {
 					}
 	
 			/*
-				//$current_eleve_statut = @mysql_result($current_eleve_note_query, 0, "statut");
+				//$current_eleve_statut = @old_mysql_result($current_eleve_note_query, 0, "statut");
 				if ($current_eleve_statut != "") {
 					$col[$k][$j+$ligne_supl] = $current_eleve_statut;
 				} else {
-					$temp = @mysql_result($current_eleve_note_query, 0, "note");
+					$temp = @old_mysql_result($current_eleve_note_query, 0, "note");
 					if  ($temp != '')  {
 					$col[$k][$j+$ligne_supl] = number_format($temp,1, ',', ' ');
 					if ($current_coef > 0) {
@@ -840,9 +840,9 @@ while($i < $lignes_groupes) {
 						}
 	
 				/*
-						$current_eleve_statut = @mysql_result($current_eleve_note_query, 0, "statut");
+						$current_eleve_statut = @old_mysql_result($current_eleve_note_query, 0, "statut");
 						if ($current_eleve_statut == "") {
-						$temp = @mysql_result($current_eleve_note_query, 0, "note");
+						$temp = @old_mysql_result($current_eleve_note_query, 0, "note");
 						if  ($temp != '')  {
 							$moy += $temp;
 							$coef_moy++;
@@ -984,7 +984,7 @@ while($i < $lignes_groupes) {
 		}
 		//================================
 	
-		$temp = @mysql_result($call_moyenne, 0, "moyenne");
+		$temp = @old_mysql_result($call_moyenne, 0, "moyenne");
 	
 		//================================
 		$col_csv=array();
@@ -1055,7 +1055,7 @@ echo "\$chaine_moy_eleve1[$loop+$ligne_supl]=".$chaine_moy_eleve1[$loop+$ligne_s
 			$col[$k][$nb_lignes_tableau+$ligne_supl] = '-';
 		}
 		if ($referent == "une_periode") {
-			$temp = @mysql_result($call_min, 0, "note_min");
+			$temp = @old_mysql_result($call_min, 0, "note_min");
 			if($temp != ''){
 				//$col[$k][$nb_lignes_tableau+1+$ligne_supl] = $temp;
 				$col[$k][$nb_lignes_tableau+1+$ligne_supl] = number_format($temp,1, ',', ' ');
@@ -1063,7 +1063,7 @@ echo "\$chaine_moy_eleve1[$loop+$ligne_supl]=".$chaine_moy_eleve1[$loop+$ligne_s
 			else{
 				$col[$k][$nb_lignes_tableau+1+$ligne_supl] = '-';
 			}
-			$temp=@mysql_result($call_max, 0, "note_max");
+			$temp=@old_mysql_result($call_max, 0, "note_max");
 			if ($temp != '') {
 				//$col[$k][$nb_lignes_tableau+2+$ligne_supl] = $temp;
 				$col[$k][$nb_lignes_tableau+2+$ligne_supl] = number_format($temp,1, ',', ' ');

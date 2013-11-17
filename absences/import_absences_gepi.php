@@ -194,7 +194,7 @@ if ( $etape === '0' ) {
 	// si une période est bien sélectionner alors on demande la date de début et de fin de cette période
 
 		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-		$classe = mysql_result($call_classe, "0", "classe");
+		$classe = old_mysql_result($call_classe, "0", "classe");
 ?>
 
 <div style="text-align: center;">
@@ -242,7 +242,7 @@ if ( $etape === '1' ) {
 		echo add_token_field();
 
 		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '".$id_classe."'");
-		$classe = mysql_result($call_classe, "0", "classe");
+		$classe = old_mysql_result($call_classe, "0", "classe");
 	?>
 
 <?php /* div de centrage du tableau pour ie5 */ ?>
@@ -277,7 +277,7 @@ if ( $etape === '1' ) {
 	$i = '0';
 	$num_id=10;
 	while($i < $nombre_lignes) {
-	    $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
+	    $current_eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
         if(getSettingValue("active_module_absence")==='2'){
             $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
         }
@@ -301,9 +301,9 @@ if ( $etape === '1' ) {
         }
 	    if ( $current_eleve_nb_retards == '0' ) { $current_eleve_nb_retards = ''; }
 
-	    $current_eleve_ap_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-	    $current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
-	    $current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
+	    $current_eleve_ap_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+	    $current_eleve_nom = old_mysql_result($appel_donnees_eleves, $i, "nom");
+	    $current_eleve_prenom = old_mysql_result($appel_donnees_eleves, $i, "prenom");
 
 	    $current_eleve_login_nb = $current_eleve_login."_nb_abs";
 	    $current_eleve_login_nj = $current_eleve_login."_nb_nj";

@@ -25,7 +25,7 @@ function test_conteneurs_vides($id_conteneur,$id_racine) {
             $nb_cont = mysqli_num_rows($sql);
             if (($nb_dev == 0) or ($nb_cont == 0)) {
                 $query_parent = mysqli_query($GLOBALS["mysqli"], "SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
-                $id_par = mysql_result($query_parent, 0, 'parent');
+                $id_par = old_mysql_result($query_parent, 0, 'parent');
                 $sql = mysqli_query($GLOBALS["mysqli"], "DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_conteneur'");
                 test_conteneurs_vides($id_par,$id_racine);
             }
@@ -58,7 +58,7 @@ function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racin
 			//
 			// Détermination du conteneur parent
 			$query_id_parent = mysqli_query($GLOBALS["mysqli"], "SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
-			$id_parent = mysql_result($query_id_parent, 0, 'parent');
+			$id_parent = old_mysql_result($query_id_parent, 0, 'parent');
 			if ($id_parent != 0) {
 				$arret = 'no';
 				mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racine,$id_parent,$arret);
@@ -117,10 +117,10 @@ function sous_conteneurs($id_conteneur,&$nb_sous_cont,&$nom_sous_cont,&$coef_sou
     $nb = mysqli_num_rows($query_sous_cont);
     $i=0;
     while ($i < $nb) {
-        $nom_sous_cont[$nb_sous_cont] = mysql_result($query_sous_cont, $i, 'nom_court');
-        $coef_sous_cont[$nb_sous_cont] = mysql_result($query_sous_cont, $i, 'coef');
-        $id_sous_cont[$nb_sous_cont] = mysql_result($query_sous_cont, $i, 'id');
-        $display_bulletin_sous_cont[$nb_sous_cont] = mysql_result($query_sous_cont, $i, 'display_bulletin');
+        $nom_sous_cont[$nb_sous_cont] = old_mysql_result($query_sous_cont, $i, 'nom_court');
+        $coef_sous_cont[$nb_sous_cont] = old_mysql_result($query_sous_cont, $i, 'coef');
+        $id_sous_cont[$nb_sous_cont] = old_mysql_result($query_sous_cont, $i, 'id');
+        $display_bulletin_sous_cont[$nb_sous_cont] = old_mysql_result($query_sous_cont, $i, 'display_bulletin');
         $temp = $id_sous_cont[$nb_sous_cont];
         $nb_sous_cont++;
         if ($type=='all') {
@@ -157,9 +157,9 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 
     // Appel des paramètres du conteneur
     $appel_conteneur = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
-    $arrondir =  mysql_result($appel_conteneur, 0, 'arrondir');
-    $mode =  mysql_result($appel_conteneur, 0, 'mode');
-    $ponderation = mysql_result($appel_conteneur, 0, 'ponderation');
+    $arrondir =  old_mysql_result($appel_conteneur, 0, 'arrondir');
+    $mode =  old_mysql_result($appel_conteneur, 0, 'mode');
+    $ponderation = old_mysql_result($appel_conteneur, 0, 'ponderation');
 
 	fdebug("Conteneur n°$id_conteneur\n");
 	fdebug("\$arrondir=$arrondir\n");
@@ -217,14 +217,14 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
         $indice_pond = 0;
         $k = 0;
         while ($k < $nb_dev) {
-            $id_dev = mysql_result($appel_dev, $k, 'id');
-            $coef[$k] = mysql_result($appel_dev, $k, 'coef');
+            $id_dev = old_mysql_result($appel_dev, $k, 'id');
+            $coef[$k] = old_mysql_result($appel_dev, $k, 'coef');
 			fdebug("\$id_dev=$id_dev : \$coef[$k]=$coef[$k]\n");
             $sql="SELECT * FROM cn_notes_devoirs WHERE (login='$login' AND id_devoir='$id_dev')";
 			fdebug("$sql\n");
             $note_query = mysqli_query($GLOBALS["mysqli"], $sql);
-            $statut = @mysql_result($note_query, 0, "statut");
-            $note = @mysql_result($note_query, 0, "note");
+            $statut = @old_mysql_result($note_query, 0, "statut");
+            $note = @old_mysql_result($note_query, 0, "note");
 			fdebug("\$nb_dev=$nb_dev\n");
             if (($statut == '') and ($note!='')) {
                 if (($note > $max) or (($note == $max) and ($coef[$k] > $coef[$indice_pond]))) {
@@ -262,30 +262,30 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
         $nb_dev  = mysqli_num_rows($appel_dev);
         $k = 0;
         while ($k < $nb_dev) {
-            $id_dev = mysql_result($appel_dev, $k, 'id');
+            $id_dev = old_mysql_result($appel_dev, $k, 'id');
 			fdebug("\n\$id_dev=$id_dev\n");
 
-            $coef[$k] = mysql_result($appel_dev, $k, 'coef');
+            $coef[$k] = old_mysql_result($appel_dev, $k, 'coef');
 			fdebug("\$coef[$k]=$coef[$k]\n");
 
-            $note_sur[$k] = mysql_result($appel_dev, $k, 'note_sur');
+            $note_sur[$k] = old_mysql_result($appel_dev, $k, 'note_sur');
 			fdebug("\$note_sur[$k]=$note_sur[$k]\n");
 
-            $ramener_sur_referentiel[$k] = mysql_result($appel_dev, $k, 'ramener_sur_referentiel');
+            $ramener_sur_referentiel[$k] = old_mysql_result($appel_dev, $k, 'ramener_sur_referentiel');
 			fdebug("\$ramener_sur_referentiel[$k]=$ramener_sur_referentiel[$k]\n");
 
             // Prise en compte de la pondération
             if (($ponderation != 0) and ($j==0) and ($k==$indice_pond)) $coef[$k] = $coef[$k] + $ponderation;
 			fdebug("\$ponderation=$ponderation\n");
 
-            $facultatif[$k] = mysql_result($appel_dev, $k, 'facultatif');
+            $facultatif[$k] = old_mysql_result($appel_dev, $k, 'facultatif');
 			fdebug("\$facultatif[$k]=$facultatif[$k]\n");
 
             $note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_devoirs WHERE (login='$login' AND id_devoir='$id_dev')");
-            $statut = @mysql_result($note_query, 0, "statut");
+            $statut = @old_mysql_result($note_query, 0, "statut");
 			fdebug("\$statut=$statut\n");
 
-            $note = @mysql_result($note_query, 0, "note");
+            $note = @old_mysql_result($note_query, 0, "note");
 			fdebug("\$note=$note\n");
 
             if (($statut == '') and ($note!='')) {
@@ -353,17 +353,17 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
             $sql="SELECT coef FROM cn_conteneurs WHERE id='$id_sous_cont[$j]'";
 			fdebug("$sql\n");
             $appel_cont = mysqli_query($GLOBALS["mysqli"], $sql);
-            $coefficient = mysql_result($appel_cont, 0, 'coef');
+            $coefficient = old_mysql_result($appel_cont, 0, 'coef');
 			fdebug("\$coefficient=$coefficient\n");
 
             $sql="SELECT * FROM cn_notes_conteneurs WHERE (login='$login' AND id_conteneur='$id_sous_cont[$j]')";
 			fdebug("$sql\n");
             $moyenne_query = mysqli_query($GLOBALS["mysqli"], $sql);
-            $statut_moy = @mysql_result($moyenne_query, 0, "statut");
+            $statut_moy = @old_mysql_result($moyenne_query, 0, "statut");
 			fdebug("\$statut_moy=$statut_moy\n");
 
             if ($statut_moy == 'y') {
-                $moy = @mysql_result($moyenne_query, 0, "note");
+                $moy = @old_mysql_result($moyenne_query, 0, "note");
 				fdebug("\$moy=$moy\n");
 
 				fdebug("\$somme_coef = $somme_coef + $coefficient = ");
@@ -477,7 +477,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 function Verif_prof_cahier_notes ($_login,$_id_racine) {
     if(empty($_login) || empty($_id_racine)) {return FALSE;die();}
     $test_prof = mysqli_query($GLOBALS["mysqli"], "SELECT id_groupe FROM cn_cahier_notes WHERE id_cahier_notes ='" . $_id_racine . "'");
-    $_id_groupe = mysql_result($test_prof, 0, 'id_groupe');
+    $_id_groupe = old_mysql_result($test_prof, 0, 'id_groupe');
 
     $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_groupes_professeurs WHERE (id_groupe='".$_id_groupe."' and login='" . $_login . "')");
     $nb = mysqli_num_rows($call_prof);
@@ -862,7 +862,7 @@ function creer_carnet_notes($id_groupe, $periode_num) {
 			$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	} else {
-		$id_racine = mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+		$id_racine = old_mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
 	}
 
 	if(isset($id_racine)) {

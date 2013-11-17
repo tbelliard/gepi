@@ -56,7 +56,7 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 if ($current_group) {
 	$nom_fic = $current_group["name"] . "-" . $current_group["classlist_string"] . ".csv";
 } else {
-	$classe = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '" . $id_classe . "'"), 0);
+	$classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '" . $id_classe . "'"), 0);
 	$nom_fic = $classe . ".csv";
 }
 
@@ -178,9 +178,9 @@ if ($current_group) {
 	$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 	$i = 0;
 	while($i < $nombre_lignes) {
-		$eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
-		$eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
-		$eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
+		$eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
+		$eleve_nom = old_mysql_result($appel_donnees_eleves, $i, "nom");
+		$eleve_prenom = old_mysql_result($appel_donnees_eleves, $i, "prenom");
 		$k=1;
 		$enr_eleve = 'no';
 		if ($_SESSION['statut'] != 'scolarite') {

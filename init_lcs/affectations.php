@@ -169,7 +169,7 @@ if (isset($_POST['is_posted'])) {
                              $ordre++;
                              // Si un enregistrement existe déjà, ça veut dire que le groupe a déjà été traité
                              // il ne reste alors qu'à ajouter le professeur mentionné dans cette association
-                             $group_id = mysql_result($test, 0, "id");
+                             $group_id = old_mysql_result($test, 0, "id");
                              $insert_prof = mysqli_query($GLOBALS["mysqli"], "INSERT into j_groupes_professeurs SET id_groupe = '" . $group_id ."', login = '" . $uid . "', ordre_prof = '" . $ordre ."'");
                         } else {
                             // La première étape consiste à créer le nouveau groupe, pour obtenir son ID
@@ -181,7 +181,7 @@ if (isset($_POST['is_posted'])) {
                             $call_periodes = mysqli_query($GLOBALS["mysqli"], "select num_periode FROM periodes WHERE id_classe = '" . $id_classe . "'");
                             $nb_per = mysqli_num_rows($call_periodes);
                             for ($m=0;$m<$nb_per;$m++) {
-                                $num_periode = mysql_result($call_periodes, $m, "num_periode");
+                                $num_periode = old_mysql_result($call_periodes, $m, "num_periode");
                                 $call_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE (periode = '" . $num_periode . "' AND id_classe = '" . $id_classe ."')");
                                 $eleves = array();
                                 while ($row1 = mysqli_fetch_row($call_eleves)) {

@@ -86,7 +86,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
 
     echo "<h2>Liste des ".$nom_projet."</h2>";
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-    $nom_aid = @mysql_result($call_data, 0, "nom");
+    $nom_aid = @old_mysql_result($call_data, 0, "nom");
     $order_by = isset($_POST["order_by"]) ? $_POST["order_by"] : (isset($_GET["order_by"]) ? $_GET["order_by"] : 'nom');
     $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
     $nombreligne = mysqli_num_rows($calldata);
@@ -109,12 +109,12 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
     echo "</tr>\n";
     $i = 0;
     while ($i < $nombreligne){
-        $aid_id = @mysql_result($calldata,$i,"id");
-        $aid_nom = @mysql_result($calldata,$i,"nom");
-        $aid_num = @mysql_result($calldata,$i,"numero");
-        $perso1 = @mysql_result($calldata,$i,"perso1");
-        $perso2 = @mysql_result($calldata,$i,"perso2");
-        $perso3 = @mysql_result($calldata,$i,"perso3");
+        $aid_id = @old_mysql_result($calldata,$i,"id");
+        $aid_nom = @old_mysql_result($calldata,$i,"nom");
+        $aid_num = @old_mysql_result($calldata,$i,"numero");
+        $perso1 = @old_mysql_result($calldata,$i,"perso1");
+        $perso2 = @old_mysql_result($calldata,$i,"perso2");
+        $perso3 = @old_mysql_result($calldata,$i,"perso3");
 
         if ($aid_num =='') {$aid_num='&nbsp;';}
         if ($perso1 == "") $perso1 = "-";
@@ -131,10 +131,10 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
         $j = "0";
         while ($j < $nombre_prof) {
             if ($liste_profs != "") $liste_profs .= "<br />";
-            $nom_prof = @mysql_result($call_liste_data, $j, "nom");
-            $prenom_prof = @mysql_result($call_liste_data, $j, "prenom");
-            $email_prof = @mysql_result($call_liste_data, $j, "email");
-            $show_email_prof = @mysql_result($call_liste_data, $j, "show_email");
+            $nom_prof = @old_mysql_result($call_liste_data, $j, "nom");
+            $prenom_prof = @old_mysql_result($call_liste_data, $j, "prenom");
+            $email_prof = @old_mysql_result($call_liste_data, $j, "email");
+            $show_email_prof = @old_mysql_result($call_liste_data, $j, "show_email");
           if(($email_prof!="") AND ($show_email_prof == "yes") AND
 		    	(($_SESSION['statut'] == "responsable" AND
 		    		(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes"
@@ -167,12 +167,12 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
         $nombre = mysqli_num_rows($call_liste_data);
         $j = "0";
         while ($j < $nombre) {
-            $login_eleve = mysql_result($call_liste_data, $j, "login");
-            $nom_eleve = mysql_result($call_liste_data, $j, "nom");
-            $prenom_eleve = @mysql_result($call_liste_data, $j, "prenom");
+            $login_eleve = old_mysql_result($call_liste_data, $j, "login");
+            $nom_eleve = old_mysql_result($call_liste_data, $j, "nom");
+            $prenom_eleve = @old_mysql_result($call_liste_data, $j, "prenom");
             $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe, c.id FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-            $classe_eleve = @mysql_result($call_classe, '0', "classe");
-            $id_classe_eleve = @mysql_result($call_classe, '0', "id");
+            $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
+            $id_classe_eleve = @old_mysql_result($call_classe, '0', "id");
             if ($liste_eleves != "") $liste_eleves .= "<br />";
             if (($_SESSION["statut"] != "eleve") and ($_SESSION["statut"] != "responsable"))
                 $liste_eleves .="<b>".$nom_eleve." ".$prenom_eleve."</b>, <a href='../groupes/visu_profs_class.php?id_classe=".$id_classe_eleve."' >".$classe_eleve."</a>";
@@ -218,11 +218,11 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
     $nombreligne = mysqli_num_rows($calldata);
     $i = 0;
     while ($i < $nombreligne){
-        $aid_id = @mysql_result($calldata, $i, "id");
-        $aid_nom = @mysql_result($calldata, $i, 'nom');
-        $perso1 = @mysql_result($calldata, $i, 'perso1');
-        $perso2 = @mysql_result($calldata, $i, 'perso2');
-        $perso3 = @mysql_result($calldata, $i, 'perso3');
+        $aid_id = @old_mysql_result($calldata, $i, "id");
+        $aid_nom = @old_mysql_result($calldata, $i, 'nom');
+        $perso1 = @old_mysql_result($calldata, $i, 'perso1');
+        $perso2 = @old_mysql_result($calldata, $i, 'perso2');
+        $perso3 = @old_mysql_result($calldata, $i, 'perso3');
         if ($perso1 == "") $perso1 = "-";
         if ($perso2 == "") $perso2 = "-";
         if ($perso3 == "") $perso3 = "-";
@@ -240,8 +240,8 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
             $liste_profs = "Professeurs responsables : Aucun";
         $j = "0";
         while ($j < $nombre_prof) {
-            $nom_prof = @mysql_result($call_liste_data, $j, "nom");
-            $civilite = @mysql_result($call_liste_data, $j, "civilite");
+            $nom_prof = @old_mysql_result($call_liste_data, $j, "nom");
+            $civilite = @old_mysql_result($call_liste_data, $j, "civilite");
             $liste_profs .= "<b>".$civilite." ".$nom_prof."</b>";
             if ($j < $nombre_prof-1) $liste_profs .= ", ";
             $j++;
@@ -261,11 +261,11 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
             $liste_eleves = "Eleves responsables : Aucun";
         $j = "0";
         while ($j < $nombre_eleves) {
-            $login_eleve = mysql_result($call_liste_data, $j, "login");
-            $nom_eleve = mysql_result($call_liste_data, $j, "nom");
-            $prenom_eleve = @mysql_result($call_liste_data, $j, "prenom");
+            $login_eleve = old_mysql_result($call_liste_data, $j, "login");
+            $nom_eleve = old_mysql_result($call_liste_data, $j, "nom");
+            $prenom_eleve = @old_mysql_result($call_liste_data, $j, "prenom");
             $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-            $classe_eleve = @mysql_result($call_classe, '0', "classe");
+            $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
             $liste_eleves .="<b>".$nom_eleve." ".$prenom_eleve."</b> (".$classe_eleve.")";
             if ($j < $nombre_eleves-1) $liste_eleves .= ", ";
             $j++;
@@ -291,11 +291,11 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
         $j = "0";
         while ($j < $nombre) {
             $vide = 0;
-            $login_eleve = mysql_result($call_liste_data, $j, "login");
-            $nom_eleve = mysql_result($call_liste_data, $j, "nom");
-            $prenom_eleve = @mysql_result($call_liste_data, $j, "prenom");
+            $login_eleve = old_mysql_result($call_liste_data, $j, "login");
+            $nom_eleve = old_mysql_result($call_liste_data, $j, "nom");
+            $prenom_eleve = @old_mysql_result($call_liste_data, $j, "prenom");
             $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-            $classe_eleve = @mysql_result($call_classe, '0', "classe");
+            $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
             echo "<tr><td>".$nom_eleve." ".$prenom_eleve." (".$classe_eleve.")</td><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
             $j++;
         }
@@ -350,13 +350,13 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
     $vide = 1;
     while ($i < $nombre) {
         $vide = 0;
-        $login_eleve =  mysql_result($call_liste_data, $i, "e.login");
-        $nom_eleve = mysql_result($call_liste_data, $i, "e.nom");
-        $prenom_eleve = @mysql_result($call_liste_data, $i, "e.prenom");
-        $classe_eleve = @mysql_result($call_liste_data, $i, "c.classe");
-        $id_classe_eleve = @mysql_result($call_liste_data, $i, "c.id");
-        $aid_eleve = @mysql_result($call_liste_data, $i, "a.nom");
-        $id_aid = @mysql_result($call_liste_data, $i, "j.id_aid");
+        $login_eleve =  old_mysql_result($call_liste_data, $i, "e.login");
+        $nom_eleve = old_mysql_result($call_liste_data, $i, "e.nom");
+        $prenom_eleve = @old_mysql_result($call_liste_data, $i, "e.prenom");
+        $classe_eleve = @old_mysql_result($call_liste_data, $i, "c.classe");
+        $id_classe_eleve = @old_mysql_result($call_liste_data, $i, "c.id");
+        $aid_eleve = @old_mysql_result($call_liste_data, $i, "a.nom");
+        $id_aid = @old_mysql_result($call_liste_data, $i, "j.id_aid");
         $salle = sql_query1("select salle from aid where (id_aid = '$id_aid' and indice_aid='$indice_aid')");
         if ($salle == -1) $salle = "";
 
@@ -459,15 +459,15 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) 
     $i = "0";
     $vide = 1;
     while ($i < $nombre) {
-        $login_eleve =  mysql_result($call_liste_data, $i, "e.login");
+        $login_eleve =  old_mysql_result($call_liste_data, $i, "e.login");
         $test = sql_query1("SELECT login FROM j_aid_eleves j
         WHERE j.login = '".$login_eleve."' and j.indice_aid='".$indice_aid."'");
         if ($test == "-1") {
             $vide = 0;
-            $nom_eleve = mysql_result($call_liste_data, $i, "e.nom");
-            $prenom_eleve = @mysql_result($call_liste_data, $i, "e.prenom");
-            $classe_eleve = @mysql_result($call_liste_data, $i, "c.classe");
-            $id_classe_eleve = @mysql_result($call_liste_data, $i, "c.id");
+            $nom_eleve = old_mysql_result($call_liste_data, $i, "e.nom");
+            $prenom_eleve = @old_mysql_result($call_liste_data, $i, "e.prenom");
+            $classe_eleve = @old_mysql_result($call_liste_data, $i, "c.classe");
+            $id_classe_eleve = @old_mysql_result($call_liste_data, $i, "c.id");
             echo "<tr><td>".$nom_eleve." ".$prenom_eleve."</td>\n";
             echo "<td>".$login_eleve."</td>\n";
             echo "<td><a href='../groupes/visu_profs_class.php?id_classe=".$id_classe_eleve."' >".$classe_eleve."</a>&nbsp;</td>\n";

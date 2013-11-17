@@ -56,7 +56,7 @@ while ($i < count($temp[1])) {
 /*
     // On ne transmet plus l'id_matiere dans 'etiquette', mais le nom_complet.
     $call_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$temp3[$i]."'");
-    $etiquettex[$i] = mysql_result($call_matiere, "0", "nom_complet");
+    $etiquettex[$i] = old_mysql_result($call_matiere, "0", "nom_complet");
 */
     $etiquettex[$i] = $temp3[$i];
     $i++;

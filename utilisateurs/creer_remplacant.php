@@ -107,8 +107,8 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 			$id_matiere_prof_remplace=array();
 			for ($i=0;$i<$nombre_matieres;$i++) {
-				$id_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'id_matiere');
-				$ordre_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'ordre_matieres');
+				$id_matiere_prof_remplace[$i] = old_mysql_result($result_matieres,$i,'id_matiere');
+				$ordre_matiere_prof_remplace[$i] = old_mysql_result($result_matieres,$i,'ordre_matieres');
 				//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
 			}
 
@@ -218,14 +218,14 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 									$exist = 'no';
 								} else {
 									$exist = 'yes';
-									$login_prof_gepi = mysql_result($test_exist2,0,'login');
+									$login_prof_gepi = old_mysql_result($test_exist2,0,'login');
 								}
 							} else {
 								$exist = 'no';
 							}
 						} else {
 							$exist = 'yes';
-							$login_prof_gepi = mysql_result($test_exist,0,'login');
+							$login_prof_gepi = old_mysql_result($test_exist,0,'login');
 						}
 
 						if ($exist == 'no') {
@@ -314,8 +314,8 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 								$nombre_matieres = mysqli_num_rows($result_matieres);
 	
 								for ($i=0;$i<$nombre_matieres;$i++) {
-									$id_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'id_matiere');
-									$ordre_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'ordre_matieres');
+									$id_matiere_prof_remplace[$i] = old_mysql_result($result_matieres,$i,'id_matiere');
+									$ordre_matiere_prof_remplace[$i] = old_mysql_result($result_matieres,$i,'ordre_matieres');
 									//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
 								}
 	
@@ -403,9 +403,9 @@ if ($valid!='yes') {
 	// On appelle les informations de l'utilisateur pour les afficher :
 	if (isset($login_prof_remplace) and ($login_prof_remplace!='')) {
 		$call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login='".$login_prof_remplace."'");
-		$user_nom = mysql_result($call_user_info, "0", "nom");
-		$user_prenom = mysql_result($call_user_info, "0", "prenom");
-		$user_civilite = mysql_result($call_user_info, "0", "civilite");
+		$user_nom = old_mysql_result($call_user_info, "0", "nom");
+		$user_prenom = old_mysql_result($call_user_info, "0", "prenom");
+		$user_civilite = old_mysql_result($call_user_info, "0", "civilite");
 	}
 
 	echo "<br /><p>Création d'un remplaçant pour l'identifiant : <b>".$login_prof_remplace."</b> (".$user_civilite." ".$user_prenom." ".$user_nom.")</p>";
@@ -506,11 +506,11 @@ if ($valid!='yes') {
 	$i = 0;
 	echo "<option value=''>---</option>\n";
 	while ($i < $nombreligne){
-		$prof_nom = mysql_result($calldata, $i, "nom");
-		$prof_prenom = mysql_result($calldata, $i, "prenom");
-		$prof_civilite = mysql_result($calldata, $i, "civilite");
-		$prof_login = mysql_result($calldata, $i, "login");
-		$prof_etat[$i] = mysql_result($calldata, $i, "etat");
+		$prof_nom = old_mysql_result($calldata, $i, "nom");
+		$prof_prenom = old_mysql_result($calldata, $i, "prenom");
+		$prof_civilite = old_mysql_result($calldata, $i, "civilite");
+		$prof_login = old_mysql_result($calldata, $i, "login");
+		$prof_etat[$i] = old_mysql_result($calldata, $i, "etat");
 		echo "<option value='$prof_login'>$prof_civilite ".strtoupper($prof_nom)." ".casse_prenom($prof_prenom)."</option>\n";
 		$i++;
 	}

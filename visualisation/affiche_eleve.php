@@ -510,7 +510,7 @@ if ($_SESSION['statut'] == "responsable") {
 
 	if (mysqli_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
-		$login_eleve = mysql_result($get_eleves, 0);
+		$login_eleve = old_mysql_result($get_eleves, 0);
 	} elseif (mysqli_num_rows($get_eleves) == 0) {
 		echo "<p>Il semble que vous ne soyez associé à aucun élève. Contactez l'administrateur pour résoudre cette erreur.</p>";
 		require "../lib/footer.inc.php";
@@ -557,10 +557,10 @@ if ($login_eleve and $login_eleve != null) {
 	// On récupère la classe de l'élève, pour déterminer automatiquement le nombre de périodes
 	// On part du postulat que même si l'élève change de classe en cours d'année, c'est pour aller
 	// dans une classe qui a le même nombre de périodes...
-	$id_classe = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
+	$id_classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
 	$req = mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login='".$login_eleve."'");
-	$nom_eleve = mysql_result($req, 0, "nom");
-	$prenom_eleve = mysql_result($req, 0, "prenom");
+	$nom_eleve = old_mysql_result($req, 0, "nom");
+	$prenom_eleve = old_mysql_result($req, 0, "prenom");
 }
 
 
@@ -634,9 +634,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		unset($txt_classe);
 		$i = 0;
 		while ($i < $nombre_lignes) {
-			$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe;
-			//$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe.$chaine_mode_graphe;
-			$txt_classe[]=ucfirst(mysql_result($call_data, $i, "classe"));
+			$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".old_mysql_result($call_data, $i, "id").$chaine_type_graphe;
+			//$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".old_mysql_result($call_data, $i, "id").$chaine_type_graphe.$chaine_mode_graphe;
+			$txt_classe[]=ucfirst(old_mysql_result($call_data, $i, "classe"));
 			$i++;
 		}
 
@@ -1000,7 +1000,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$sql="SELECT nom_periode FROM periodes WHERE num_periode='$num_periode_courante' AND id_classe='$id_classe';";
 			$res_nom_per=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_nom_per)>0) {
-				$periode=mysql_result($res_nom_per, 0, "nom_periode");
+				$periode=old_mysql_result($res_nom_per, 0, "nom_periode");
 			}
 		}
 		elseif(isset($login_eleve)) {
@@ -1009,7 +1009,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$sql="SELECT nom_periode FROM periodes p, j_eleves_classes jec WHERE num_periode='$num_periode_courante' AND p.id_classe=jec.id_classe AND jec.login='$login_eleve';";
 			$res_nom_per=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_nom_per)>0) {
-				$periode=mysql_result($res_nom_per, 0, "nom_periode");
+				$periode=old_mysql_result($res_nom_per, 0, "nom_periode");
 			}
 		}
 	}
@@ -1864,7 +1864,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	// Nom de la classe:
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe';");
-	$classe = mysql_result($call_classe, "0", "classe");
+	$classe = old_mysql_result($call_classe, "0", "classe");
 
 
 

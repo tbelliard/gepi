@@ -5033,8 +5033,8 @@ else{
 					$nombre_ligne = mysqli_num_rows($call_group);
 					$i=0;
 					while ($i < $nombre_ligne) {
-						$id_groupe = mysql_result($call_group, $i, "id");
-						$nom_groupe = mysql_result($call_group, $i, "name");
+						$id_groupe = old_mysql_result($call_group, $i, "id");
+						$nom_groupe = old_mysql_result($call_group, $i, "name");
 						$id_group[$j] = $id_groupe."_".$j;
 						$test_query = mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_eleves_groupes WHERE (" .
 								"id_groupe = '" . $id_groupe . "' and " .
@@ -5237,8 +5237,8 @@ else{
 					$i=0;
 					$alt=-1;
 					while ($i < $nombre_ligne) {
-						$id_groupe = mysql_result($call_group, $i, "id");
-						$nom_groupe = mysql_result($call_group, $i, "name");
+						$id_groupe = old_mysql_result($call_group, $i, "id");
+						$nom_groupe = old_mysql_result($call_group, $i, "name");
 
 						$tmp_group=get_group($id_groupe,$tab_champs_grp);
 						$chaine_profs="";
@@ -6367,7 +6367,7 @@ else{
 									enregistre_log_maj_sconet($texte);
 								}
 								else {
-									$statut_test=mysql_result($test, 0, "statut");
+									$statut_test=old_mysql_result($test, 0, "statut");
 									if($statut_test!='responsable') {
 										$texte.="<span style='color:red'>Le login proposé ".$conserver[$lig_rp->pers_id]." n'est pas un compte 'responsable', mais '$statut_test'.</span><br />";
 
@@ -6646,7 +6646,7 @@ else{
 								//echo "$sql<br />";
 								$res_log=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_log)>0) {
-									$date_connexion=mysql_result($res_log, 0, "START");
+									$date_connexion=old_mysql_result($res_log, 0, "START");
 									$derniere_connexion=formate_date($date_connexion);
 
 									$id_checkbox_login_connexion_reussie="conserver_".$cpt_rp."_".$cpt_nom_prenom_courant;
@@ -6657,7 +6657,7 @@ else{
 									$sql="SELECT * FROM log WHERE login='$lig_rp->login' ORDER BY START DESC LIMIT 1;";
 									$res_log=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_log)>0) {
-										$date_connexion=mysql_result($res_log, 0, "START");
+										$date_connexion=old_mysql_result($res_log, 0, "START");
 										$derniere_connexion="<span style='color:red'>Erreur sur le mot de passe le ".formate_date($date_connexion)."</span>";
 									}
 								}

@@ -97,8 +97,8 @@ require_once("../lib/header.inc.php");
     unset($tab_txt);
     $nombreligne = mysqli_num_rows($call_classe);
     while ($i < $nombreligne){
-        $tab_lien[$i] = "recapitulatif.php?id_classe=".mysql_result($call_classe, $i, "id");
-        $tab_txt[$i] = mysql_result($call_classe, $i, "classe");
+        $tab_lien[$i] = "recapitulatif.php?id_classe=".old_mysql_result($call_classe, $i, "id");
+        $tab_txt[$i] = old_mysql_result($call_classe, $i, "classe");
         $i++;
 
     }
@@ -230,7 +230,7 @@ require_once("../lib/header.inc.php");
     }
     
     // On regarde quelle est la période maxi pour laquelle l'élève a des notes
-    $periode_num = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT MAX(num_periode) FROM ects_credits WHERE id_eleve = '".$Eleve->getId()."'"),0);
+    $periode_num = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT MAX(num_periode) FROM ects_credits WHERE id_eleve = '".$Eleve->getId()."'"),0);
     
     for($i=1;$i<=$periode_num;$i++) {
       if (!array_key_exists($i, $annees[$gepiYear])) {
@@ -244,7 +244,7 @@ require_once("../lib/header.inc.php");
       foreach ($categories as $categorie) {
         foreach($categorie[1] as $group) {
           $CreditEcts = $Eleve->getEctsCredit($i,$group->getId());
-          $matiere = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT m.nom_complet FROM matieres m, j_groupes_matieres jgm, groupes g
+          $matiere = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT m.nom_complet FROM matieres m, j_groupes_matieres jgm, groupes g
             WHERE
               m.matiere = jgm.id_matiere AND
               jgm.id_groupe = '".$group->getId()."'"), 0);

@@ -41,7 +41,7 @@ if (!checkAccess()) {
 }
 
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-$nom_generique_aid = @mysql_result($call_data, 0, "nom");
+$nom_generique_aid = @old_mysql_result($call_data, 0, "nom");
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des ".$nom_generique_aid." | Outil d'importation";
@@ -364,7 +364,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
                     while ($i < $nb_aid) {
 
-                        $nom_aid = mysql_result($call_data, $i, "col2");
+                        $nom_aid = old_mysql_result($call_data, $i, "col2");
 
                         $temp = traitement_magic_quotes(corriger_caracteres($nom_aid));
 
@@ -433,7 +433,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
     $call_max = mysqli_query($GLOBALS["mysqli"], "SELECT max(id) max FROM aid WHERE indice_aid='$indice_aid'");
 
-    $max_id = mysql_result($call_max,0,max);
+    $max_id = old_mysql_result($call_max,0,max);
 
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT distinct col2 FROM tempo2 WHERE col2!='' ORDER BY col2");
 
@@ -447,7 +447,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
     while ($i < $nb_aid) {
 
-        $nom_aid = mysql_result($call_data, $i, "col2");
+        $nom_aid = old_mysql_result($call_data, $i, "col2");
 
         $temp = traitement_magic_quotes(corriger_caracteres($nom_aid));
 
@@ -531,7 +531,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
         while ($i < $nb_lignes) {
 
-            $champ1 = mysql_result($call_data, $i, "col1");
+            $champ1 = old_mysql_result($call_data, $i, "col1");
 
             if ($type_import == 1) {
 
@@ -551,13 +551,13 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
                 // On peut continuer !
 
-                $nom_aid = mysql_result($call_data, $i, "col2");
+                $nom_aid = old_mysql_result($call_data, $i, "col2");
 
                 $temp = traitement_magic_quotes(corriger_caracteres($nom_aid));
 
                 $call_id = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM aid WHERE (nom = '$temp' and indice_aid='$indice_aid')");
 
-                $id_aid = mysql_result($call_id, 0, "id");
+                $id_aid = old_mysql_result($call_id, 0, "id");
 
                 if ($type_import == 1) {
 
@@ -1024,9 +1024,9 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         while ($i < $nb_aid) {
 
-                            $login_individu = mysql_result($call_data, $i, "col1");
+                            $login_individu = old_mysql_result($call_data, $i, "col1");
 
-                            $id_aid = mysql_result($call_data, $i, "col2");
+                            $id_aid = old_mysql_result($call_data, $i, "col2");
 
                             if ($type_import == 1) {
 
@@ -1038,13 +1038,13 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                             }
 
-                            $nom_individu = mysql_result($call_individus, 0, 'nom');
+                            $nom_individu = old_mysql_result($call_individus, 0, 'nom');
 
-                            $prenom_individu = mysql_result($call_individus, 0, 'prenom');
+                            $prenom_individu = old_mysql_result($call_individus, 0, 'prenom');
 
                             $call_aid = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$id_aid' and indice_aid='$indice_aid')");
 
-                            $nom_aid = mysql_result($call_aid, 0, 'nom');
+                            $nom_aid = old_mysql_result($call_aid, 0, 'nom');
 
 
 
@@ -1074,9 +1074,9 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         while ($i < $nb_aid) {
 
-                            $nom_aid = mysql_result($call_data, $i, "col1");
+                            $nom_aid = old_mysql_result($call_data, $i, "col1");
 
-                            $id_aid = mysql_result($call_data, $i, "col2");
+                            $id_aid = old_mysql_result($call_data, $i, "col2");
 
                             echo "<tr><td><p><b>$id_aid</b></p></td>";
 
@@ -1141,11 +1141,11 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
         while ($i < $nb_aid) {
 
-            $nom_aid = mysql_result($call_data, $i, "col1");
+            $nom_aid = old_mysql_result($call_data, $i, "col1");
 
             $temp = traitement_magic_quotes(corriger_caracteres($nom_aid));
 
-            $id_aid = mysql_result($call_data, $i, "col2");
+            $id_aid = old_mysql_result($call_data, $i, "col2");
 
             $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (id='$id_aid' and indice_aid='$indice_aid')");
 
@@ -1207,7 +1207,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
         while ($i < $nb_lignes) {
 
-            $champ1 = mysql_result($call_data, $i, "col1");
+            $champ1 = old_mysql_result($call_data, $i, "col1");
 
             if ($type_import == 1) {
 
@@ -1227,7 +1227,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
                 // On peut continuer !
 
-                $id_aid = mysql_result($call_data, $i, "col2");
+                $id_aid = old_mysql_result($call_data, $i, "col2");
 
                 $call_aid = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (id = '$id_aid' and indice_aid='$indice_aid')");
 

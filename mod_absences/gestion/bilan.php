@@ -121,7 +121,7 @@ $p = 1;
 			while($eleve_data = mysqli_fetch_array($eleve_sql))
 			{
 
-				$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve_data['login']."'"),0);
+				$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve_data['login']."'"),0);
 				if ($test != "0")
  				{
 					$id[$nb] = $eleve_data['login'];
@@ -139,7 +139,7 @@ $p = 1;
 
 					//les responsables
 					$nombre_de_responsable = 0;
-					$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$nb]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal != 0)"),0);
+					$nombre_de_responsable =  old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$nb]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal != 0)"),0);
 					if($nombre_de_responsable != 0)
 					{
 						$cpt_parents = 0;

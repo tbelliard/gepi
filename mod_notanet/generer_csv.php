@@ -185,14 +185,14 @@ else {
 								$sql="SELECT * FROM eleves WHERE login='$lig1->login';";
 								$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_ele)>0) {
-									$nom_ele=mysql_result($res_ele,0,"nom");
-									$prenom_ele=mysql_result($res_ele,0,"prenom");
+									$nom_ele=old_mysql_result($res_ele,0,"nom");
+									$prenom_ele=old_mysql_result($res_ele,0,"prenom");
 								}
 
 								$sql="SELECT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig1->login' ORDER BY periode DESC LIMIT 1;";
 								$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_clas)>0) {
-									$classe_ele=mysql_result($res_clas,0,"classe");
+									$classe_ele=old_mysql_result($res_clas,0,"classe");
 								}
 
 								$lig_notanet[]="$ine|$nom_ele|$prenom_ele|$classe_ele|TOT|".formate_note_notanet($TOT)."|";
@@ -273,14 +273,14 @@ else {
 						$sql="SELECT * FROM eleves WHERE login='$lig1->login';";
 						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele)>0) {
-							$nom_ele=mysql_result($res_ele,0,"nom");
-							$prenom_ele=mysql_result($res_ele,0,"prenom");
+							$nom_ele=old_mysql_result($res_ele,0,"nom");
+							$prenom_ele=old_mysql_result($res_ele,0,"prenom");
 						}
 
 						$sql="SELECT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig1->login' ORDER BY periode DESC LIMIT 1;";
 						$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_clas)>0) {
-							$classe_ele=mysql_result($res_clas,0,"classe");
+							$classe_ele=old_mysql_result($res_clas,0,"classe");
 						}
 
 						$lig_notanet[]="$ine|$nom_ele|$prenom_ele|$classe_ele|TOT|".formate_note_notanet($TOT)."|";

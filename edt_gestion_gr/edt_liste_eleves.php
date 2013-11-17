@@ -34,7 +34,7 @@ function get_login_eleve($id_eleve){
 	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
 	$query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Impossible de récupérer le login de cet élève.', E_USER_ERROR);
 	if ($query) {
-		$retour = mysql_result($query, 0,"login");
+		$retour = old_mysql_result($query, 0,"login");
 	}else{
 		$retour = 'erreur';
 	}
@@ -157,8 +157,8 @@ elseif($action == "del_eleve_gr"){
 	$nbre_classe = mysqli_num_rows($req_liste_classe);
 
 	for($a=0; $a<$nbre_classe; $a++) {
-		$liste_classe[$a]["id"] = mysql_result($req_liste_classe, $a, "id");
-		$liste_classe[$a]["classe"] = mysql_result($req_liste_classe, $a, "classe");
+		$liste_classe[$a]["id"] = old_mysql_result($req_liste_classe, $a, "id");
+		$liste_classe[$a]["classe"] = old_mysql_result($req_liste_classe, $a, "classe");
 
 		$aff_classes_g .= "
 			<tr>
@@ -207,12 +207,12 @@ if ($classe_e AND is_numeric($classe_e) AND $rep_gr["subdivision_type"] != "clas
 						";
 
 	for($b=0; $b<$nbre_ele_m; $b++) {
-		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$aff_ele_m[$b]["login"] = old_mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-			$aff_ele_m[$b]["id_eleve"] = mysql_result($req_ele, $b, "id_eleve");
-			$aff_ele_m[$b]["nom"] = mysql_result($req_ele, $b, "nom");
-			$aff_ele_m[$b]["prenom"] = mysql_result($req_ele, $b, "prenom");
-			$aff_ele_m[$b]["sexe"] = mysql_result($req_ele, $b, "sexe");
+			$aff_ele_m[$b]["id_eleve"] = old_mysql_result($req_ele, $b, "id_eleve");
+			$aff_ele_m[$b]["nom"] = old_mysql_result($req_ele, $b, "nom");
+			$aff_ele_m[$b]["prenom"] = old_mysql_result($req_ele, $b, "prenom");
+			$aff_ele_m[$b]["sexe"] = old_mysql_result($req_ele, $b, "sexe");
 
 			// On vérifie que cet élève n'est pas déjà membre de l'AID
 			$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT id_eleve FROM edt_gr_eleves WHERE id_eleve = '".$aff_ele_m[$b]["id_eleve"]."' AND id_gr_nom = '".$id_gr."'");

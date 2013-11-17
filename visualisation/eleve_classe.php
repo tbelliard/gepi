@@ -121,8 +121,8 @@ if (!isset($id_classe)) {
         echo "<tr valign='top' align='center'>\n";
         echo "<td align='left'>\n";
     while ($i < $nombre_lignes){
-		$classe = mysql_result($call_data, $i, "classe");
-		$ide_classe = mysql_result($call_data, $i, "id");
+		$classe = old_mysql_result($call_data, $i, "classe");
+		$ide_classe = old_mysql_result($call_data, $i, "id");
 
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 			echo "</td>\n";
@@ -218,7 +218,7 @@ if (!isset($id_classe)) {
 
     if (!$periode) {
         $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-        $classe = mysql_result($call_classe, "0", "classe");
+        $classe = old_mysql_result($call_classe, "0", "classe");
 
         ?>
         <p><span class='grand'>Classe : <?php echo $classe; ?></span><br />
@@ -242,23 +242,23 @@ if (!isset($id_classe)) {
         <?php
     } else {
         $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-        $classe = mysql_result($call_classe, "0", "classe");
+        $classe = old_mysql_result($call_classe, "0", "classe");
         $call_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) order by nom");
         $nombreligne = mysqli_num_rows($call_eleve);
 
-        if (!isset($v_eleve)) {$v_eleve = @mysql_result($call_eleve, 0, 'login');}
+        if (!isset($v_eleve)) {$v_eleve = @old_mysql_result($call_eleve, 0, 'login');}
 
         if ($suiv == 'yes') {
             $i = "0" ;
             while ($i < $nombreligne) {
-                if ($v_eleve == mysql_result($call_eleve, $i, 'login') and ($i < $nombreligne-1)) {$v_eleve = mysql_result($call_eleve, $i+1, 'login');$i = $nombreligne;}
+                if ($v_eleve == old_mysql_result($call_eleve, $i, 'login') and ($i < $nombreligne-1)) {$v_eleve = old_mysql_result($call_eleve, $i+1, 'login');$i = $nombreligne;}
             $i++;
             }
         }
         if ($prec == 'yes') {
             $i = "0" ;
             while ($i < $nombreligne) {
-                if ($v_eleve == mysql_result($call_eleve, $i, 'login') and ($i > '0')) {$v_eleve = mysql_result($call_eleve, $i-1, 'login');$i = $nombreligne;}
+                if ($v_eleve == old_mysql_result($call_eleve, $i, 'login') and ($i > '0')) {$v_eleve = old_mysql_result($call_eleve, $i-1, 'login');$i = $nombreligne;}
             $i++;
             }
         }
@@ -273,9 +273,9 @@ if (!isset($id_classe)) {
         <?php
         $i = "0" ;
         while ($i < $nombreligne) {
-            $eleve = mysql_result($call_eleve, $i, 'login');
-            $nom_el = mysql_result($call_eleve, $i, 'nom');
-            $prenom_el = mysql_result($call_eleve, $i, 'prenom');
+            $eleve = old_mysql_result($call_eleve, $i, 'login');
+            $nom_el = old_mysql_result($call_eleve, $i, 'nom');
+            $prenom_el = old_mysql_result($call_eleve, $i, 'prenom');
             echo "<option value=$eleve";
             if ($v_eleve == $eleve) {echo " selected ";}
             echo ">$nom_el  $prenom_el </option>";
@@ -289,8 +289,8 @@ if (!isset($id_classe)) {
         <?php
         // On appelle les informations de l'utilisateur pour les afficher :
         $call_eleve_info = mysqli_query($GLOBALS["mysqli"], "SELECT login,nom,prenom FROM eleves WHERE login='$v_eleve'");
-        $eleve_nom = mysql_result($call_eleve_info, "0", "nom");
-        $eleve_prenom = mysql_result($call_eleve_info, "0", "prenom");
+        $eleve_nom = old_mysql_result($call_eleve_info, "0", "nom");
+        $eleve_prenom = old_mysql_result($call_eleve_info, "0", "prenom");
 
         if ($periode != 'annee') {
                 $temp = my_strtolower($nom_periode[$periode]);
@@ -349,19 +349,19 @@ if (!isset($id_classe)) {
 		$alt=1;
         while ($i < $nombre_lignes) {
             $inserligne="no";
-            $group_id = mysql_result($call_groupes, $i, "id_groupe");
+            $group_id = old_mysql_result($call_groupes, $i, "id_groupe");
             $current_group = get_group($group_id);
 
             if ($periode != 'annee') {
                 if (in_array($v_eleve, $current_group["eleves"][$periode]["list"])) {
                     $inserligne="yes";
                     $note_eleve_query=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$v_eleve' AND periode='$periode' AND id_groupe='" . $current_group["id"] . "')");
-                    $eleve_matiere_statut = @mysql_result($note_eleve_query, 0, "statut");
-                    $note_eleve = @mysql_result($note_eleve_query, 0, "note");
+                    $eleve_matiere_statut = @old_mysql_result($note_eleve_query, 0, "statut");
+                    $note_eleve = @old_mysql_result($note_eleve_query, 0, "note");
                     if ($eleve_matiere_statut != "") { $note_eleve = $eleve_matiere_statut;}
                     if ($note_eleve == '') {$note_eleve = '-';}
                     $moyenne_classe_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$periode' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
-                    $moyenne_classe = mysql_result($moyenne_classe_query, 0, "moyenne");
+                    $moyenne_classe = old_mysql_result($moyenne_classe_query, 0, "moyenne");
                 }
             } else {
                 $z = 1;
@@ -374,12 +374,12 @@ if (!isset($id_classe)) {
                     // L'élève suit la matière au moins sur une des périodes de l'année, donc on affiche la matière dans le tableau.
                     $inserligne="yes";
                     $note_eleve_annee_query=mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (login='$v_eleve' AND id_groupe='" . $current_group["id"] ."' AND statut='')");
-                    $note_eleve = @mysql_result($note_eleve_annee_query, 0, "moyenne");
+                    $note_eleve = @old_mysql_result($note_eleve_annee_query, 0, "moyenne");
                     if ($note_eleve == '') {$note_eleve = '-';}
                     $z = 1;
                     while ($z < $nb_periode) {
                         $moyenne_classe_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$z' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
-                        $temp = @mysql_result($moyenne_classe_query, 0, "moyenne");
+                        $temp = @old_mysql_result($moyenne_classe_query, 0, "moyenne");
                         $moyenne_classe = $moyenne_classe + $temp;
                         $z++;
                     }
@@ -394,8 +394,8 @@ if (!isset($id_classe)) {
                         $prev_cat_id = $current_group["classes"]["classes"][$id_classe]["categorie_id"];
                         // On est dans une nouvelle catégorie
                         // On récupère les infos nécessaires, et on affiche une ligne
-                        //$cat_name = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
-                        $cat_name = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
+                        //$cat_name = html_entity_decode(old_mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
+                        $cat_name = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
                         // On détermine le nombre de colonnes pour le colspan
                         $nb_total_cols = 4;
 
@@ -407,7 +407,7 @@ if (!isset($id_classe)) {
                     }
                 }
 
-                $moyenne_classe = mysql_result($moyenne_classe_query, 0, "moyenne");
+                $moyenne_classe = old_mysql_result($moyenne_classe_query, 0, "moyenne");
                 if ($moyenne_classe == '') {$moyenne_classe = '-';}
                 if (($note_eleve == "-") or ($moyenne_classe == "-")) {$difference = '-';} else {$difference = $note_eleve-$moyenne_classe;}
                 //echo "<tr><td><p>" . $current_group["description"] . "</p></td><td><p>$note_eleve";
@@ -435,18 +435,18 @@ if (!isset($id_classe)) {
         <?php
         $i = "0" ;
         while ($i < $nombreligne) {
-            $eleve = mysql_result($call_eleve, $i, 'login');
-            $nom_el = mysql_result($call_eleve, $i, 'nom');
-            $prenom_el = mysql_result($call_eleve, $i, 'prenom');
+            $eleve = old_mysql_result($call_eleve, $i, 'login');
+            $nom_el = old_mysql_result($call_eleve, $i, 'nom');
+            $prenom_el = old_mysql_result($call_eleve, $i, 'prenom');
             echo "<option value=$eleve";
             if ($v_eleve == $eleve) {
 				echo " selected ";
 				// On récupère des infos sur l'élève courant:
-				$v_elenoet=mysql_result($call_eleve, $i, 'elenoet');
-				$v_naissance=mysql_result($call_eleve, $i, 'naissance');
+				$v_elenoet=old_mysql_result($call_eleve, $i, 'elenoet');
+				$v_naissance=old_mysql_result($call_eleve, $i, 'naissance');
 				$tmp_tab_naissance=explode("-",$v_naissance);
 				$v_naissance=$tmp_tab_naissance[2]."/".$tmp_tab_naissance[1]."/".$tmp_tab_naissance[0];
-				$v_sexe=mysql_result($call_eleve, $i, 'sexe');
+				$v_sexe=old_mysql_result($call_eleve, $i, 'sexe');
 				$v_eleve_nom_prenom="$nom_el  $prenom_el";
 			}
             echo ">$nom_el  $prenom_el </option>\n";

@@ -145,9 +145,9 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
 
     if (isset($id_inter)) {
         $req = mysqli_query($GLOBALS["mysqli"], "select * from inscription_items where id='".$id_inter."'");
-        $date = htmlspecialchars(@mysql_result($req, 0, "date"));
-        $heure = htmlspecialchars(@mysql_result($req, 0, "heure"));
-        $description = htmlspecialchars(@mysql_result($req, 0, "description"));
+        $date = htmlspecialchars(@old_mysql_result($req, 0, "date"));
+        $heure = htmlspecialchars(@old_mysql_result($req, 0, "heure"));
+        $description = htmlspecialchars(@old_mysql_result($req, 0, "description"));
         echo "<input type=\"hidden\" name=\"is_posted\" value=\"modif\" />\n";
         echo "<input type=\"hidden\" name=\"id_inter\" value=\"".$id_inter."\" />\n";
     } else {
@@ -227,11 +227,11 @@ Afficher les items :
   $i = 0;
   $aujourdhui=date('Y/m/d');
   while ($i < $nombre_lignes){
-    $id = mysql_result($call_data, $i, "id");
-    $date = mysql_result($call_data, $i, "date");
+    $id = old_mysql_result($call_data, $i, "id");
+    $date = old_mysql_result($call_data, $i, "date");
 	if (($_SESSION['items_a_afficher']=="tous") || ($_SESSION['items_a_afficher']=="ouverts" && $date>$aujourdhui) || ($_SESSION['items_a_afficher']=="clos" && $date<=$aujourdhui)) {
-		$heure = mysql_result($call_data, $i, "heure");
-		$description = mysql_result($call_data, $i, "description");
+		$heure = old_mysql_result($call_data, $i, "heure");
+		$description = old_mysql_result($call_data, $i, "description");
 
 		$day = mb_substr($date, 8, 2);
 		$month = mb_substr($date, 5, 2);
@@ -249,7 +249,7 @@ Afficher les items :
 		if ($nb_inscrits == 0) $noms_inscrits = "<center>-</center>"; else $noms_inscrits = "";
 		$k = 0;
 		while ($k < $nb_inscrits) {
-			$login_inscrit = mysql_result($inscrits, $k, "login");
+			$login_inscrit = old_mysql_result($inscrits, $k, "login");
 			$nom_inscrit = sql_query1("select nom from utilisateurs where login='".$login_inscrit."'");
 			if ($nom_inscrit == -1) $nom_inscrit = "<font color='red'>(Nom absent => login : ".$login_inscrit.")</font>";
 			$prenom_inscrit = sql_query1("select prenom from utilisateurs where login='".$login_inscrit."'");

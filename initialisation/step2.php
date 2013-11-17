@@ -159,7 +159,7 @@ if (!isset($step2)) {
     $j=0;
     $flag=0;
     while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
             $flag=1;
         }
         $j++;
@@ -180,7 +180,7 @@ if (!isset($step2)) {
 if (isset($is_posted)) {
     $j=0;
     while ($j < count($liste_tables_del)) {
-        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
             $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
         }
         $j++;
@@ -192,10 +192,10 @@ if (isset($is_posted)) {
     $i = "0";
 
     while ($i < $nb) {
-        $classe = mysql_result($call_data, $i, "classe");
+        $classe = old_mysql_result($call_data, $i, "classe");
         // On enregistre la classe
         // On teste d'abord :
-        $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
+        $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
         if ($test == "0") {
             //$reg_classe = mysql_query("INSERT INTO classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".traitement_magic_quotes(corriger_caracteres($reg_formule[$classe]))."', format_nom='np'");
             $reg_classe = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".html_entity_decode(traitement_magic_quotes(corriger_caracteres($reg_formule[$classe])))."', format_nom='np'");
@@ -207,8 +207,8 @@ if (isset($is_posted)) {
 
         // On enregistre les périodes pour cette classe
         // On teste d'abord :
-        $id_classe = mysql_result(mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$classe'"),0,'id');
-        $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE (id_classe='$id_classe')"),0);
+        $id_classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$classe'"),0,'id');
+        $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE (id_classe='$id_classe')"),0);
         if ($test == "0") {
             $j = '0';
             while ($j < $reg_periodes_num[$classe]) {
@@ -265,7 +265,7 @@ if (isset($is_posted)) {
     $sql = mysqli_query($GLOBALS["mysqli"], "select distinct id_classe from periodes where verouiller='T'");
     $k = 0;
     while ($k < mysqli_num_rows($sql)) {
-       $id_classe = mysql_result($sql, $k);
+       $id_classe = old_mysql_result($sql, $k);
        $res1 = mysqli_query($GLOBALS["mysqli"], "delete from classes where id='".$id_classe."'");
        $res2 = mysqli_query($GLOBALS["mysqli"], "delete from j_groupes_classes where id_classe='".$id_classe."'");
        $k++;
@@ -362,7 +362,7 @@ onclick="javascript:MetVal('pour')" /></td>
     echo "<table border=1 cellpadding=2 cellspacing=2>";
     echo "<tr><td><p class=\"small\"><center>Aide<br />Remplissage</center></p></td><td><p class=\"small\">Identifiant de la classe</p></td><td><p class=\"small\">Nom complet</p></td><td><p class=\"small\">Nom apparaissant au bas du bulletin</p></td><td><p class=\"small\">formule au bas du bulletin</p></td><td><p class=\"small\">Nombres de périodes</p></td></tr>";
     while ($i < $nb) {
-        $classe_id = mysql_result($call_data, $i, "classe");
+        $classe_id = old_mysql_result($call_data, $i, "classe");
         $test_classe_exist = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE classe='$classe_id'");
         $nb_test_classe_exist = mysqli_num_rows($test_classe_exist);
 
@@ -373,12 +373,12 @@ onclick="javascript:MetVal('pour')" /></td>
             $formule = "";
             $nb_per = '3';
         } else {
-            $id_classe = mysql_result($test_classe_exist, 0, 'id');
+            $id_classe = old_mysql_result($test_classe_exist, 0, 'id');
             $nb_per = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "select num_periode from periodes where id_classe='$id_classe'"));
             $nom_court = "<font color=green>".$classe_id."</font>";
-            $nom_complet = mysql_result($test_classe_exist, 0, 'nom_complet');
-            $suivi_par = mysql_result($test_classe_exist, 0, 'suivi_par');
-            $formule = mysql_result($test_classe_exist, 0, 'formule');
+            $nom_complet = old_mysql_result($test_classe_exist, 0, 'nom_complet');
+            $suivi_par = old_mysql_result($test_classe_exist, 0, 'suivi_par');
+            $formule = old_mysql_result($test_classe_exist, 0, 'formule');
         }
         echo "<tr>";
         echo "<td><center><input type=\"checkbox\" /></center></td>";

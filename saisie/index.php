@@ -435,8 +435,8 @@ if ($current_group) {
         $lignes = mysqli_num_rows($appel_donnees);
         $i = 0;
         while($i < $lignes){
-            $id_classe = mysql_result($appel_donnees, $i, "id");
-            $nom_classe = mysql_result($appel_donnees, $i, "classe");
+            $id_classe = old_mysql_result($appel_donnees, $i, "id");
+            $nom_classe = old_mysql_result($appel_donnees, $i, "classe");
             echo "<p><span class='norme'><b>$nom_classe</b> : ";
 			echo "<a href='recopie_moyennes.php?id_classe=$id_classe&amp;retour=saisie_index'><b>Recopie des moyennes</b></a> - ";
             $groups = get_groups_for_class($id_classe,"","n");

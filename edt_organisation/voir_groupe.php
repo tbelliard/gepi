@@ -86,7 +86,7 @@ $req_nbr_group = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM groupes");
 $aff_nbr_group = mysqli_num_rows($req_nbr_group);
 
 	for($i=0; $i<$aff_nbr_group; $i++) {
-		$gr[$i]["id"] = mysql_result($req_nbr_group, $i, "id");
+		$gr[$i]["id"] = old_mysql_result($req_nbr_group, $i, "id");
 		$groupe_complet = get_group($gr[$i]["id"]);
     		$get_classes = mysqli_query($GLOBALS["mysqli"], "SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.categorie_id FROM classes c, j_groupes_classes j WHERE (" .
                                     "c.id = j.id_classe and j.id_groupe = '" . $gr[$i]["id"] . "')");

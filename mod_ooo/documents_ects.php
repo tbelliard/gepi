@@ -97,7 +97,7 @@ if ($id_classe == 'all') {
     $nb_classes = mysqli_num_rows($call_classes);
     $Eleves = array();
     for($i=0;$i<$nb_classes;$i++) {
-        $Classe = ClassePeer::retrieveByPK(mysql_result($call_classes, $i, 'id'));
+        $Classe = ClassePeer::retrieveByPK(old_mysql_result($call_classes, $i, 'id'));
         if ($_SESSION['statut'] == 'scolarite' OR $_SESSION['statut'] == 'secours') {
             $Eleves = array_merge($Eleves,$Classe->getEleves('1'));
         } else {
@@ -303,7 +303,7 @@ foreach($Eleves as $Eleve) {
     $nb_annees = mysqli_num_rows($annees);
     $t_index = 0;
     for ($a=0;$a<$nb_annees;$a++) {
-        $valeur_annee = mysql_result($annees, $a);
+        $valeur_annee = old_mysql_result($annees, $a);
         $redoublant = sql_count(sql_query("SELECT * FROM archivage_eleves2 WHERE ine = '".$Eleve->getNoGep()."' and annee = '".$valeur_annee."' AND doublant = 'R'")) != "0" ? true : false;
         // Si l'année est une année de redoublement, on va écraser l'année précédente.
         if ($test_redoublant == 'R' and $t_index > 0) $t_index--;

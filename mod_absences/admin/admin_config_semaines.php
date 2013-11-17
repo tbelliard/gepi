@@ -88,7 +88,7 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 	{
 		if( isset($num_semaine[$i]) and !empty($num_semaine[$i]) )
 		{
-        	        $test_num_semaine = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."edt_semaines WHERE num_edt_semaine = '".$num_semaine[$i]."'"),0);
+        	        $test_num_semaine = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."edt_semaines WHERE num_edt_semaine = '".$num_semaine[$i]."'"),0);
 			$num_edt_semaine = $num_semaine[$i];
 			$type_edt_semaine = $type_semaine[$i];
 

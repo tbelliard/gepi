@@ -339,7 +339,7 @@ if ($aff_infos != "oui") {
 		$sql_creneaux = mysqli_query($GLOBALS["mysqli"], "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause'");
 		$nbre_creneaux = mysqli_num_rows($sql_creneaux);
 			for ($a=0; $a < $nbre_creneaux; $a++) {
-				$liste_creneaux[$a] = mysql_result($sql_creneaux, $a, "nom_definie_periode");
+				$liste_creneaux[$a] = old_mysql_result($sql_creneaux, $a, "nom_definie_periode");
 				$aff_liste_creneaux .= $liste_creneaux[$a]." - ";
 			}
 		// Afficher les différents types de semaine : $aff_type_semaines
@@ -347,7 +347,7 @@ if ($aff_infos != "oui") {
 		$sql_semaines = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT type_edt_semaine FROM edt_semaines") or die ('Erreur dans la requête [Select distinct] : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$nbre_types = mysqli_num_rows($sql_semaines);
 			for($b=0; $b < $nbre_types; $b++) {
-				$liste_types[$b] = mysql_result($sql_semaines, $b, "type_edt_semaine");
+				$liste_types[$b] = old_mysql_result($sql_semaines, $b, "type_edt_semaine");
 				if ($nbre_types === 1) {
 					$aff_type_semaines = "Seul le type ".$liste_types[$b]." est d&eacute;fini";
 				}
@@ -361,7 +361,7 @@ if ($aff_infos != "oui") {
 				$aff_calendrier = "<span class=\"red\">Vous n'avez pas d&eacute;fini de périodes de cours.</span>";
 			} else {
 				for ($c=0; $c < $nbre_calendar; $c++) {
-					$liste_calendar[$c] = mysql_result($sql_calendar, $c, "nom_calendrier");
+					$liste_calendar[$c] = old_mysql_result($sql_calendar, $c, "nom_calendrier");
 					$aff_calendrier .= $liste_calendar[$c]." - ";
 				}
 			}

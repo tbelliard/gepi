@@ -203,8 +203,8 @@ if(!isset($id_classe)){
 		unset($tab_lien);
 		unset($tab_txt);
 		while ($i < $nombreligne){
-			$tab_lien[$i] = $_SERVER['PHP_SELF']."?id_classe=".mysql_result($res_classe, $i, "id");
-			$tab_txt[$i] = mysql_result($res_classe, $i, "classe");
+			$tab_lien[$i] = $_SERVER['PHP_SELF']."?id_classe=".old_mysql_result($res_classe, $i, "id");
+			$tab_txt[$i] = old_mysql_result($res_classe, $i, "classe");
 			$i++;
 		}
 		tab_liste($tab_txt,$tab_lien,3);

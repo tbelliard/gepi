@@ -500,8 +500,8 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 			if(mysqli_num_rows($regime_doublant_eleve)>0)
 			{
 
-				$current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
-				$current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
+				$current_eleve_regime = old_mysql_result($regime_doublant_eleve, 0, "regime");
+				$current_eleve_doublant = old_mysql_result($regime_doublant_eleve, 0, "doublant");
 
 			}
 			else
@@ -568,8 +568,8 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 			//les responsables
 			$nombre_de_responsable = 0;
-			//$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
-			$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2'))"),0);
+			//$nombre_de_responsable =  old_mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
+			$nombre_de_responsable =  old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2'))"),0);
 			//echo "\$nombre_de_responsable=$nombre_de_responsable<br />";
 			if($nombre_de_responsable != 0)
 			{
@@ -844,7 +844,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 						while ($k < $nombre_profs)
 						{
 
-							$current_matiere_professeur_login[$k] = mysql_result($call_profs, $k, "login");
+							$current_matiere_professeur_login[$k] = old_mysql_result($call_profs, $k, "login");
 							$prof_groupe[$id_groupe_selectionne][$k]=affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe);
 							$k++;
 

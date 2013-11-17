@@ -660,17 +660,17 @@ $nombreligne = mysqli_num_rows($calldata);
 $i = 0;
 $alt=1;
 while ($i < $nombreligne){
-    $user_nom = mysql_result($calldata, $i, "nom");
-    $user_prenom = mysql_result($calldata, $i, "prenom");
+    $user_nom = old_mysql_result($calldata, $i, "nom");
+    $user_prenom = old_mysql_result($calldata, $i, "prenom");
     // rajout trombinoscope
-    $user_civilite = mysql_result($calldata, $i, "civilite");
+    $user_civilite = old_mysql_result($calldata, $i, "civilite");
     // fin de rajout trombinoscope
-    $user_auth_mode = mysql_result($calldata, $i, "auth_mode");
-    $user_statut = mysql_result($calldata, $i, "statut");
-    $user_login = mysql_result($calldata, $i, "login");
-    $user_pwd = mysql_result($calldata, $i, "password");
-    $user_etat[$i] = mysql_result($calldata, $i, "etat");
-//    $date_verrouillage[$i] = mysql_result($calldata, $i, "date_verrouillage");
+    $user_auth_mode = old_mysql_result($calldata, $i, "auth_mode");
+    $user_statut = old_mysql_result($calldata, $i, "statut");
+    $user_login = old_mysql_result($calldata, $i, "login");
+    $user_pwd = old_mysql_result($calldata, $i, "password");
+    $user_etat[$i] = old_mysql_result($calldata, $i, "etat");
+//    $date_verrouillage[$i] = old_mysql_result($calldata, $i, "date_verrouillage");
     if (($user_etat[$i] == 'actif') and (($display == 'tous') or ($display == 'actifs'))) {
         $affiche = 'yes';
     } else if (($user_etat[$i] != 'actif') and (($display == 'tous') or ($display == 'inactifs'))) {
@@ -694,13 +694,13 @@ while ($i < $nombreligne){
     $k = 0;
 	$kk=0;
     while ($k < $nb_mat) {
-        $user_matiere_id = mysql_result($call_matieres, $k, "id_matiere");
+        $user_matiere_id = old_mysql_result($call_matieres, $k, "id_matiere");
 		//echo "SELECT matiere FROM matieres WHERE matiere='$user_matiere_id'<br />\n";
-        //$user_matiere[$k] = mysql_result(mysql_query("SELECT matiere FROM matieres WHERE matiere='$user_matiere_id'"),0);
+        //$user_matiere[$k] = old_mysql_result(mysql_query("SELECT matiere FROM matieres WHERE matiere='$user_matiere_id'"),0);
 		$sql="SELECT matiere FROM matieres WHERE matiere='$user_matiere_id';";
 		$res_test_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_test_matiere)>0) {
-			$user_matiere[$kk] = mysql_result($res_test_matiere,0);
+			$user_matiere[$kk] = old_mysql_result($res_test_matiere,0);
 			$kk++;
 		}
 		else {
@@ -752,10 +752,10 @@ while ($i < $nombreligne){
 		$nb_classes = mysqli_num_rows($call_classes);
 		$k = 0;
 		while ($k < $nb_classes) {
-			$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
-			$user_classe['matiere_nom_court'] = mysql_result($call_classes, $k, "name");
-			$user_classe['classe_id'] = mysql_result($call_classes, $k, "classe_id");
-			$user_classe['group_id'] = mysql_result($call_classes, $k, "group_id");
+			$user_classe['classe_nom_court'] = old_mysql_result($call_classes, $k, "classe");
+			$user_classe['matiere_nom_court'] = old_mysql_result($call_classes, $k, "name");
+			$user_classe['classe_id'] = old_mysql_result($call_classes, $k, "classe_id");
+			$user_classe['group_id'] = old_mysql_result($call_classes, $k, "group_id");
 	
 			$col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
 	
@@ -781,8 +781,8 @@ while ($i < $nombreligne){
 		$k = 0;
 		$col[$i][5] = '';
 		while ($k < $nb_classes) {
-			$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
-			$user_classe['classe_id'] = mysql_result($call_classes, $k, "id");
+			$user_classe['classe_nom_court'] = old_mysql_result($call_classes, $k, "classe");
+			$user_classe['classe_id'] = old_mysql_result($call_classes, $k, "id");
 	
 			//$col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
 			$col[$i][5] .= $user_classe['classe_nom_court'];
@@ -805,8 +805,8 @@ while ($i < $nombreligne){
 		$k = 0;
 		$col[$i][5] = '';
 		while ($k < $nb_classes) {
-			$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
-			$user_classe['classe_id'] = mysql_result($call_classes, $k, "id");
+			$user_classe['classe_nom_court'] = old_mysql_result($call_classes, $k, "classe");
+			$user_classe['classe_id'] = old_mysql_result($call_classes, $k, "id");
 	
 			//$col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
 			$col[$i][5] .= $user_classe['classe_nom_court'];
@@ -825,8 +825,8 @@ while ($i < $nombreligne){
     $k = 0;
     $col[$i][6] = '';
     while ($k < $nb_classes_suivies) {
-        $user_classe_suivie_id = mysql_result($call_suivi, $k, "id_classe");
-        $user_classe_suivie = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$user_classe_suivie_id'"),0);
+        $user_classe_suivie_id = old_mysql_result($call_suivi, $k, "id_classe");
+        $user_classe_suivie = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$user_classe_suivie_id'"),0);
         $col[$i][6]=$col[$i][6]."$user_classe_suivie<br />\n";
         $k++;
     }

@@ -76,7 +76,7 @@ if(empty($eleve_absent[0])==true and $mode != 'eleve')
   if($mode === 'classe')
    {
           //je compte les élève si = 0 alors on redirige
-           $cpt_eleves = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."'"),0);
+           $cpt_eleves = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."'"),0);
            	 // christian modif du 15/01/2007 if($cpt_eleves === '0') { header("Location:select.php?type=$type"); }
          //je recherche tous les élèves de la classe sélectionné
            //$requete_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."' GROUP BY nom, prenom";
@@ -342,7 +342,7 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
       </td>
       <td style="text-align: center;">
 	 <?php
-             $compte = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT COUNT(*) FROM ".$prefix_base."absences_eleves
+             $compte = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT COUNT(*) FROM ".$prefix_base."absences_eleves
                                                       WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='R'"),0);
                   if (getSettingValue("active_module_trombinoscopes")=='y') {
                   	  $nom_photo = '';

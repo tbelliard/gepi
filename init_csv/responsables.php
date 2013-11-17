@@ -200,7 +200,7 @@ if (!isset($_POST["action"])) {
 
 
 			// On vérifie que l'élève existe
-			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_eleve . "'"), 0);
+			$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_eleve . "'"), 0);
 
 			if($reg_id_eleve==""){
 				echo "<p style='color:red'>Erreur : L'identifiant élève est vide pour $reg_prenom $reg_nom</p>\n";
@@ -236,7 +236,7 @@ if (!isset($_POST["action"])) {
 						} else {
 							// Une entrée existe
 							// On regarde si le responsable 1 a déjà été saisi
-							if (mysql_result($test, 0, "nom1") == "") {
+							if (old_mysql_result($test, 0, "nom1") == "") {
 								$sql="UPDATE responsables SET " .
 									"nom1 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
 									"prenom1 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
@@ -248,7 +248,7 @@ if (!isset($_POST["action"])) {
 									"ereno = '" . $reg_id_eleve . "'";
 								$insert = mysqli_query($GLOBALS["mysqli"], $sql);
 
-							} else if (mysql_result($test, 0, "nom2") == "") {
+							} else if (old_mysql_result($test, 0, "nom2") == "") {
 								$sql="UPDATE responsables SET " .
 									"nom2 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
 									"prenom2 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .

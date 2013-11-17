@@ -104,12 +104,12 @@ class edt{
 		$sem = date("W") + ($this->sem);
 
 		$query_s = mysqli_query($GLOBALS["mysqli"], "SELECT type_edt_semaine FROM edt_semaines WHERE id_edt_semaine = '".$sem."' LIMIT 1");
-		$rep["type"] = mysql_result($query_s, 0,"type_edt_semaine");
+		$rep["type"] = old_mysql_result($query_s, 0,"type_edt_semaine");
 
 		$query_se = mysqli_query($GLOBALS["mysqli"], "SELECT type_edt_semaine FROM edt_semaines WHERE num_semaines_etab = '".$sem."' LIMIT 1");
 		$compter = mysqli_num_rows($query_se);
 		if ($compter >= 1) {
-			$rep["etab"] = mysql_result($query_se, 0, "type_edt_semaine");
+			$rep["etab"] = old_mysql_result($query_se, 0, "type_edt_semaine");
 		}
 		$rep["etab"] = '';
 
@@ -130,7 +130,7 @@ class edt{
 		$verif = mysqli_num_rows($query_c);
 
 		if ($verif >= 1) {
-			$rep = mysql_result($query_c, 0,"heuredebut_definie_periode");
+			$rep = old_mysql_result($query_c, 0,"heuredebut_definie_periode");
 		}
 
 		return $rep;
@@ -260,7 +260,7 @@ class edt{
 			$verif = mysqli_num_rows($query2);
 
 			if ($verif == 1) {
-				$couleur = mysql_result($query2, 0,"valeur");
+				$couleur = old_mysql_result($query2, 0,"valeur");
 			}else{
 				$couleur = 'silver';
 			}
@@ -307,9 +307,9 @@ class edtAfficher{
 		if ($query AND $rep["nbre"] > 0) {
 
 			for($a = 0 ; $a < $rep["nbre"] ; $a++){
-				$rep[$a]["id"] = mysql_result($query, $a, "id_definie_periode");
-				$rep[$a]["nom"] = mysql_result($query, $a, "nom_definie_periode");
-				$rep[$a]["horaire"] = mb_substr(mysql_result($query, $a, "heuredebut_definie_periode"), 0, 5);
+				$rep[$a]["id"] = old_mysql_result($query, $a, "id_definie_periode");
+				$rep[$a]["nom"] = old_mysql_result($query, $a, "nom_definie_periode");
+				$rep[$a]["horaire"] = mb_substr(old_mysql_result($query, $a, "heuredebut_definie_periode"), 0, 5);
 			}
 
 		}

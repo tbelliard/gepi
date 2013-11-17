@@ -704,10 +704,10 @@ function cree_substitut_INE_unique($login){
 	if ($test!=0) {
 		// un même identifiant existe déjà !
 		// s'agit-il de la même personne. On considère que oui si les noms, prénom, date de naissance et sexe correspondent
-		$nom = mysql_result($req_test,0,"nom");
-		$prenom = mysql_result($req_test,0,"prenom");
-		$sexe = mysql_result($req_test,0,"sexe");
-		$naissance = mysql_result($req_test,0,"naissance");
+		$nom = old_mysql_result($req_test,0,"nom");
+		$prenom = old_mysql_result($req_test,0,"prenom");
+		$sexe = old_mysql_result($req_test,0,"sexe");
+		$naissance = old_mysql_result($req_test,0,"naissance");
 		$test_unicite = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves WHERE (nom='".$nom."' and prenom='".$prenom."' and sexe='".$sexe."' and naissance='".$naissance."')"));
 	} else
 		$test_unicite = 1;
@@ -731,7 +731,7 @@ function suppression_donnees_eleves_inutiles(){
 	$nb_eleves = mysqli_num_rows($res_eleve);
 	$k = 0;
 	while($k < $nb_eleves){
-	$ine = mysql_result($res_eleve,$k,"ine");
+	$ine = old_mysql_result($res_eleve,$k,"ine");
 	$test1 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves ae, archivage_aid_eleve aae
 	where ((aae.id_eleve = ae.ine) and (ae.ine='".$ine."'))");
 	$test2 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves ae, archivage_appreciations_aid aa
@@ -749,7 +749,7 @@ function suppression_donnees_eleves_inutiles(){
 	$nb_eleves = mysqli_num_rows($res_eleve);
 	$k = 0;
 	while($k < $nb_eleves){
-	$ine = mysql_result($res_eleve,$k,"ine");
+	$ine = old_mysql_result($res_eleve,$k,"ine");
 	$test1 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves2 ae, archivage_aid_eleve aae
 	where ((aae.id_eleve = ae.ine) and (ae.ine='".$ine."'))");
 	$test2 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves2 ae, archivage_appreciations_aid aa

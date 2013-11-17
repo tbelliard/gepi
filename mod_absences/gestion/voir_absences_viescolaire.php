@@ -140,7 +140,7 @@ require_once("../../lib/header.inc.php");
 
 			if ($test === 1) {
 				// GEPI n'a trouvé qu'une seule réponse, on peut donc l'effacer
-				$lettre_a_effacer = mysql_result($query_lettre, 0,"id_lettre_suivi");
+				$lettre_a_effacer = old_mysql_result($query_lettre, 0,"id_lettre_suivi");
 				$delete = mysqli_query($GLOBALS["mysqli"], "DELETE FROM lettres_suivis WHERE id_lettre_suivi = '" . $lettre_a_effacer . "'");
 			}elseif($test > 1){
 				$message_erreur_lettre_a_effacer = 'Il y a des lettres qui correspondent à ce retard mais aucune n\'a été détruite.';
@@ -206,11 +206,11 @@ if (isset($choix_creneau)) {
 
 
 	for($a=0; $a < $nbre_rep; $a++){
-		$rep_absences[$a]["id_abs"] = mysql_result($req, $a, "id");
-		$rep_absences[$a]["eleve_id"] = mysql_result($req, $a, "eleve_id");
-		$rep_absences[$a]["retard_absence"] = mysql_result($req, $a, "retard_absence");
-		$rep_absences[$a]["groupe_id"] = mysql_result($req, $a, "groupe_id");
-		$rep_absences[$a]["login_saisie"] = mysql_result($req, $a, "login_saisie");
+		$rep_absences[$a]["id_abs"] = old_mysql_result($req, $a, "id");
+		$rep_absences[$a]["eleve_id"] = old_mysql_result($req, $a, "eleve_id");
+		$rep_absences[$a]["retard_absence"] = old_mysql_result($req, $a, "retard_absence");
+		$rep_absences[$a]["groupe_id"] = old_mysql_result($req, $a, "groupe_id");
+		$rep_absences[$a]["login_saisie"] = old_mysql_result($req, $a, "login_saisie");
 	}
 } // if (isset($choix_creneau))
 
@@ -222,7 +222,7 @@ $td_classe = array();
 $aff_classe = array();
 	// On passe le tout à la moulinette :
 	for($i = 0; $i < $nbre_classe; $i++){
-		$reponse[$i]["classe"] = mysql_result($query, $i, "classe");
+		$reponse[$i]["classe"] = old_mysql_result($query, $i, "classe");
 
 		$td_classe[$i] = '';
                 $td_classe1[$i] = '';
@@ -378,10 +378,10 @@ for($i = 0; $i < $nbre_rep; $i++) {
 	$nbre_creneaux = mysqli_num_rows($req_creneaux);
 	$aff_creneaux_sans_select = NULL;
 	for($a=0; $a<$nbre_creneaux; $a++) {
-		$aff_creneaux[$a]["nom"] = mysql_result($req_creneaux, $a, "nom_definie_periode");
-		$aff_creneaux[$a]["id"] = mysql_result($req_creneaux, $a, "id_definie_periode");
-		$aff_creneaux[$a]["heure_debut"] = mysql_result($req_creneaux, $a, "heuredebut_definie_periode");
-		$aff_creneaux[$a]["heure_fin"] = mysql_result($req_creneaux, $a, "heurefin_definie_periode");
+		$aff_creneaux[$a]["nom"] = old_mysql_result($req_creneaux, $a, "nom_definie_periode");
+		$aff_creneaux[$a]["id"] = old_mysql_result($req_creneaux, $a, "id_definie_periode");
+		$aff_creneaux[$a]["heure_debut"] = old_mysql_result($req_creneaux, $a, "heuredebut_definie_periode");
+		$aff_creneaux[$a]["heure_fin"] = old_mysql_result($req_creneaux, $a, "heurefin_definie_periode");
 
 		//echo '
 		//<option value="'.$aff_creneaux[$a]["heure_debut"].':'.$aff_creneaux[$a]["heure_fin"].'">'.$aff_creneaux[$a]["nom"].'</option>

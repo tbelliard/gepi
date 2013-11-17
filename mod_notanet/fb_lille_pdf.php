@@ -193,8 +193,8 @@
 		echo "<select name='id_classe[]' multiple='true' size='$size'>\n";
 		$i = 0;
 		while ($i < $nombre_lignes){
-			$classe = mysql_result($call_data, $i, "classe");
-			$ide_classe = mysql_result($call_data, $i, "id");
+			$classe = old_mysql_result($call_data, $i, "classe");
+			$ide_classe = old_mysql_result($call_data, $i, "id");
 			echo "<option value='$ide_classe'>$classe</option>\n";
 			$i++;
 		}

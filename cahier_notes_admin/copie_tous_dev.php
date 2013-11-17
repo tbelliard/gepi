@@ -106,8 +106,8 @@ if(!isset($id_classe_source)) {
 		echo "<td align='left'>\n";
 
 		while ($i < $nb) {
-			$t_id_classe = mysql_result($classes_list, $i, 'id');
-			$t_classe = mysql_result($classes_list, $i, 'classe');
+			$t_id_classe = old_mysql_result($classes_list, $i, 'id');
+			$t_classe = old_mysql_result($classes_list, $i, 'classe');
 
 			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 				echo "</td>\n";
@@ -144,9 +144,9 @@ elseif(!isset($id_classe_dest)) {
 		echo "<td align='left'>\n";
 
 		while ($i < $nb) {
-			$t_id_classe = mysql_result($classes_list, $i, 'id');
+			$t_id_classe = old_mysql_result($classes_list, $i, 'id');
 			if($t_id_classe!=$id_classe_source) {
-				$t_classe = mysql_result($classes_list, $i, 'classe');
+				$t_classe = old_mysql_result($classes_list, $i, 'classe');
 
 				if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 					echo "</td>\n";

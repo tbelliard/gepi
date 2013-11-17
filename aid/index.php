@@ -93,10 +93,10 @@ if ($nb_aid == 0) {
     $i=0;
 	$alt=1;
     while ($i < $nb_aid) {
-        $nom_aid = @mysql_result($call_data, $i, "nom");
-        $nom_complet_aid = @mysql_result($call_data, $i, "nom_complet");
-        $indice_aid = @mysql_result($call_data, $i, "indice_aid");
-        $outils_complementaires  = @mysql_result($call_data, $i, "outils_complementaires");
+        $nom_aid = @old_mysql_result($call_data, $i, "nom");
+        $nom_complet_aid = @old_mysql_result($call_data, $i, "nom_complet");
+        $indice_aid = @old_mysql_result($call_data, $i, "indice_aid");
+        $outils_complementaires  = @old_mysql_result($call_data, $i, "outils_complementaires");
         if ($outils_complementaires=='y')
             $display_outils = "<br /><span class='small'>(Outils complémentaires activés)</span>";
         else

@@ -372,20 +372,20 @@ if ($nb_messages>0) {
 	echo "</span><br /><br />\n";
 	$ind = 0;
 	while ($ind < $nb_messages) {
-	  $content = mysql_result($appel_messages, $ind, 'texte');
+	  $content = old_mysql_result($appel_messages, $ind, 'texte');
 	  // Mise en forme du texte
-	  $date_debut1 = mysql_result($appel_messages, $ind, 'date_debut');
-	  $date_fin1 = mysql_result($appel_messages, $ind, 'date_fin');
-	  $date_decompte1 = mysql_result($appel_messages, $ind, 'date_decompte');
-	  $auteur1 = mysql_result($appel_messages, $ind, 'auteur');
-	  $statuts_destinataires1 = mysql_result($appel_messages, $ind, 'statuts_destinataires');
-	  $login_destinataire1=mysql_result($appel_messages, $ind, 'login_destinataire');
-	  //$matiere_destinataire1=mysql_result($appel_messages, $ind, 'matiere_destinataire');
+	  $date_debut1 = old_mysql_result($appel_messages, $ind, 'date_debut');
+	  $date_fin1 = old_mysql_result($appel_messages, $ind, 'date_fin');
+	  $date_decompte1 = old_mysql_result($appel_messages, $ind, 'date_decompte');
+	  $auteur1 = old_mysql_result($appel_messages, $ind, 'auteur');
+	  $statuts_destinataires1 = old_mysql_result($appel_messages, $ind, 'statuts_destinataires');
+	  $login_destinataire1=old_mysql_result($appel_messages, $ind, 'login_destinataire');
+	  //$matiere_destinataire1=old_mysql_result($appel_messages, $ind, 'matiere_destinataire');
 	//  $nom_auteur = sql_query1("SELECT nom from utilisateurs where login = '".$auteur1."'");
 	//  $prenom_auteur = sql_query1("SELECT prenom from utilisateurs where login = '".$auteur1."'");
 
 
-	  $id_message =  mysql_result($appel_messages, $ind, 'id');
+	  $id_message =  old_mysql_result($appel_messages, $ind, 'id');
 
 
 	//  echo "<b><i>Message de </i></b>: ".$prenom_auteur." ".$nom_auteur.";
@@ -449,13 +449,13 @@ if (isset($id_mess)) {
 	$titre_mess = "Modification d'un message";
 	$appel_message = mysqli_query($GLOBALS["mysqli"], "SELECT  id, texte, date_debut, date_fin, date_decompte, auteur, statuts_destinataires, login_destinataire  FROM messages
 	WHERE (id = '".$id_mess."')");
-	$contenu = mysql_result($appel_message, 0, 'texte');
-	$date_debut = mysql_result($appel_message, 0, 'date_debut');
-	$date_fin = mysql_result($appel_message, 0, 'date_fin');
-	$date_decompte = mysql_result($appel_message, 0, 'date_decompte');
-	$statuts_destinataires = mysql_result($appel_message, 0, 'statuts_destinataires');
-	$login_destinataire=mysql_result($appel_message, 0, 'login_destinataire');
-	//$matiere_destinataire=mysql_result($appel_message, 0, 'matiere_destinataire');
+	$contenu = old_mysql_result($appel_message, 0, 'texte');
+	$date_debut = old_mysql_result($appel_message, 0, 'date_debut');
+	$date_fin = old_mysql_result($appel_message, 0, 'date_fin');
+	$date_decompte = old_mysql_result($appel_message, 0, 'date_decompte');
+	$statuts_destinataires = old_mysql_result($appel_message, 0, 'statuts_destinataires');
+	$login_destinataire=old_mysql_result($appel_message, 0, 'login_destinataire');
+	//$matiere_destinataire=old_mysql_result($appel_message, 0, 'matiere_destinataire');
 	$display_date_debut = strftime("%d", $date_debut)."/".strftime("%m", $date_debut)."/".strftime("%Y", $date_debut);
 	$display_date_fin = strftime("%d", $date_fin)."/".strftime("%m", $date_fin)."/".strftime("%Y", $date_fin);
 	$display_date_decompte = strftime("%d", $date_decompte)."/".strftime("%m", $date_decompte)."/".strftime("%Y", $date_decompte);

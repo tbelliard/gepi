@@ -80,19 +80,19 @@ if ($action == "modifier") {
 	$j = 0;
     while ($i < $nb) {
         $req = mysqli_query($GLOBALS["mysqli"], "select col1, col2 from tempo2 where col1 = '$i'");
-        $reg_login = @mysql_result($req, 0, 'col2');
-		$inc = @mysql_result($req, 0, 'col1');
+        $reg_login = @old_mysql_result($req, 0, 'col2');
+		$inc = @old_mysql_result($req, 0, 'col1');
 
-        $id_tempo = @mysql_result($call_data, $i, "ID_TEMPO");
-        $no_gep = @mysql_result($call_data, $i, "ELENONAT");
-        $reg_nom = traitement_magic_quotes(corriger_caracteres(@mysql_result($call_data, $i, "ELENOM")));
-        $reg_prenom = @mysql_result($call_data, $i, "ELEPRE");
-        $reg_elenoet = @mysql_result($call_data, $i, "ELENOET");
-        //$reg_ereno = @mysql_result($call_data, $i, "ERENO");
-        $reg_ele_id = @mysql_result($call_data, $i, "ELE_ID");
-        $reg_sexe = @mysql_result($call_data, $i, "ELESEXE");
-        $reg_naissance = @mysql_result($call_data, $i, "ELEDATNAIS");
-        $reg_doublant = @mysql_result($call_data, $i, "ELEDOUBL");
+        $id_tempo = @old_mysql_result($call_data, $i, "ID_TEMPO");
+        $no_gep = @old_mysql_result($call_data, $i, "ELENONAT");
+        $reg_nom = traitement_magic_quotes(corriger_caracteres(@old_mysql_result($call_data, $i, "ELENOM")));
+        $reg_prenom = @old_mysql_result($call_data, $i, "ELEPRE");
+        $reg_elenoet = @old_mysql_result($call_data, $i, "ELENOET");
+        //$reg_ereno = @old_mysql_result($call_data, $i, "ERENO");
+        $reg_ele_id = @old_mysql_result($call_data, $i, "ELE_ID");
+        $reg_sexe = @old_mysql_result($call_data, $i, "ELESEXE");
+        $reg_naissance = @old_mysql_result($call_data, $i, "ELEDATNAIS");
+        $reg_doublant = @old_mysql_result($call_data, $i, "ELEDOUBL");
 
         // si le login comporte le motif 'erreur', alors on affiche
         if (strpos($reg_login, "erreur") === false) {

@@ -151,7 +151,7 @@ class Session {
                     $result->close();
                 } else {
                     $tmp_res_fin_session=mysqli_query($GLOBALS["mysqli"], $sql);
-                    $tmp_fin_session=mysql_result($tmp_res_fin_session,0,'END');
+                    $tmp_fin_session=old_mysql_result($tmp_res_fin_session,0,'END');
                 }  
                 
 			}

@@ -443,8 +443,8 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
 		unset($txt_classe);
 		$i = 0;
 		while ($i < $nombreligne){
-			$lien_classe[]="index.php?id_classe=".mysql_result($calldata, $i, "id");
-			$txt_classe[]=mysql_result($calldata, $i, "classe");
+			$lien_classe[]="index.php?id_classe=".old_mysql_result($calldata, $i, "id");
+			$txt_classe[]=old_mysql_result($calldata, $i, "classe");
 			$i++;
 		}
 

@@ -342,14 +342,14 @@ function info_eleve($ele_login) {
 						$count_notes = mysqli_num_rows($query_notes);
 						$m = 0;
 						while ($m < $count_notes) {
-							$eleve_display_app = @mysql_result($query_notes,$m,'d.display_parents_app');
-							$eleve_app = @mysql_result($query_notes,$m,'nd.comment');
-							$eleve_note = @mysql_result($query_notes,$m,'nd.note');
-							$eleve_statut = @mysql_result($query_notes,$m,'nd.statut');
-							$eleve_nom_court = @mysql_result($query_notes,$m,'d.nom_court');
-							$date_note = @mysql_result($query_notes,$m,'d.date');
-							$coef_devoir = @mysql_result($query_notes,$m,'d.coef');
-							$note_sur_devoir = @mysql_result($query_notes,$m,'d.note_sur');
+							$eleve_display_app = @old_mysql_result($query_notes,$m,'d.display_parents_app');
+							$eleve_app = @old_mysql_result($query_notes,$m,'nd.comment');
+							$eleve_note = @old_mysql_result($query_notes,$m,'nd.note');
+							$eleve_statut = @old_mysql_result($query_notes,$m,'nd.statut');
+							$eleve_nom_court = @old_mysql_result($query_notes,$m,'d.nom_court');
+							$date_note = @old_mysql_result($query_notes,$m,'d.date');
+							$coef_devoir = @old_mysql_result($query_notes,$m,'d.coef');
+							$note_sur_devoir = @old_mysql_result($query_notes,$m,'d.note_sur');
 
 							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['display_app']=$eleve_display_app;
 							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['app']=$eleve_app;
@@ -451,7 +451,7 @@ function info_eleve($ele_login) {
 		$sql="SELECT nom_complet FROM matieres_categories WHERE id='".$cat_id."';";
 		$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($res_cat) {
-			$cat_names[$cat_id]=mysql_result($res_cat, 0);
+			$cat_names[$cat_id]=old_mysql_result($res_cat, 0);
 		}
 	}
 
@@ -474,12 +474,12 @@ function info_eleve($ele_login) {
 	$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$tab_ele['elenoet']."' AND e.id = j.id_etablissement);";
 	$data_etab = mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($data_etab)>0) {
-		$tab_ele['etab_id'] = @mysql_result($data_etab, 0, "id");
-		$tab_ele['etab_nom'] = @mysql_result($data_etab, 0, "nom");
-		$tab_ele['etab_niveau'] = @mysql_result($data_etab, 0, "niveau");
-		$tab_ele['etab_type'] = @mysql_result($data_etab, 0, "type");
-		$tab_ele['etab_cp'] = @mysql_result($data_etab, 0, "cp");
-		$tab_ele['etab_ville'] = @mysql_result($data_etab, 0, "ville");
+		$tab_ele['etab_id'] = @old_mysql_result($data_etab, 0, "id");
+		$tab_ele['etab_nom'] = @old_mysql_result($data_etab, 0, "nom");
+		$tab_ele['etab_niveau'] = @old_mysql_result($data_etab, 0, "niveau");
+		$tab_ele['etab_type'] = @old_mysql_result($data_etab, 0, "type");
+		$tab_ele['etab_cp'] = @old_mysql_result($data_etab, 0, "cp");
+		$tab_ele['etab_ville'] = @old_mysql_result($data_etab, 0, "ville");
 
 		if ($tab_ele['etab_niveau']!='') {
 			foreach ($type_etablissement as $type_etab => $nom_etablissement) {

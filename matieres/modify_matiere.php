@@ -152,7 +152,7 @@ if (isset($_POST['isposted'])) {
 						$ordre_matieres=1;
 					}
 					else {
-						$ordre_matieres=mysql_result($res, 0, "max_ordre")+1;
+						$ordre_matieres=old_mysql_result($res, 0, "max_ordre")+1;
 					}
 	
 					// On ajoute le prof
@@ -229,9 +229,9 @@ echo add_token_field();
 // On va chercher les infos de la matière que l'on souhaite modifier
 if (isset($_GET['current_matiere'])) {
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet, priority, categorie_id from matieres WHERE matiere='".$_GET['current_matiere']."'");
-    $matiere_nom_complet = mysql_result($call_data, 0, "nom_complet");
-    $matiere_priorite = mysql_result($call_data, 0, "priority");
-    $matiere_cat_id = mysql_result($call_data, 0, "categorie_id");
+    $matiere_nom_complet = old_mysql_result($call_data, 0, "nom_complet");
+    $matiere_priorite = old_mysql_result($call_data, 0, "priority");
+    $matiere_cat_id = old_mysql_result($call_data, 0, "categorie_id");
     $current_matiere = $_GET['current_matiere'];
 } else {
     $matiere_nom_complet = "";

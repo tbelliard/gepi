@@ -51,7 +51,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
     $nb_lignes = mysqli_num_rows($res);
     $i = 0;
     while ($i < $nb_lignes) {
-        $id = mysql_result($res,$i,"id");
+        $id = old_mysql_result($res,$i,"id");
         if ($_POST["description_".$id]=="") $_POST["description_".$id] = "A préciser";
         if (!(isset($_POST["public_".$id]))) $_POST["public_".$id] = '-';
         if (!(isset($_POST["professeur_".$id]))) $_POST["professeur_".$id] = '-';
@@ -110,14 +110,14 @@ $nb_lignes = mysqli_num_rows($res);
 $i = 0;
 $alt=1;
 while ($i < $nb_lignes) {
-    $id = mysql_result($res,$i,"id");
-    $public = mysql_result($res,$i,"public");
-    $professeur = mysql_result($res,$i,"professeur");
-    $cpe = mysql_result($res,$i,"cpe");
-    $eleve = mysql_result($res,$i,"eleve");
-    $responsable = mysql_result($res,$i,"responsable");
-    $description = mysql_result($res,$i,"description");
-    $_statut = mysql_result($res,$i,"statut");
+    $id = old_mysql_result($res,$i,"id");
+    $public = old_mysql_result($res,$i,"public");
+    $professeur = old_mysql_result($res,$i,"professeur");
+    $cpe = old_mysql_result($res,$i,"cpe");
+    $eleve = old_mysql_result($res,$i,"eleve");
+    $responsable = old_mysql_result($res,$i,"responsable");
+    $description = old_mysql_result($res,$i,"description");
+    $_statut = old_mysql_result($res,$i,"statut");
     $alt=$alt*(-1);
     echo "<tr class='lig$alt'>";
     if (($id!="perso1") and ($id!="perso2") and ($id!="perso3"))

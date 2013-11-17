@@ -234,7 +234,7 @@ if ( $action_page != 'gestion_ag' ) {
 
 
 // si on trouve on regarde dans la base des alerts_eleves s'il n'existe pas une alerte déjà enregistré pour cette élève
-	      		$test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE eleve_alert_eleve = '".$donnee[0]."' AND groupe_alert_eleve = '".$id_alert_groupe."'"),0);
+	      		$test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE eleve_alert_eleve = '".$donnee[0]."' AND groupe_alert_eleve = '".$id_alert_groupe."'"),0);
 			if ( $test_existance === '0' )
 			{
 				// si on rencontre un erreur on incrément le nombre d'erreur
@@ -331,20 +331,20 @@ if ( ( $action_sql === 'nouveau_alert_groupe' or $action_sql === 'modifier_alert
 if ( $action_sql === 'supprimer_alert_groupe' and $valide_form === 'yes' ) {
 
 	// on vérifie s'il existe une alerte
-	      $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'"),0);
+	      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'"),0);
 		if ( $test_existance != '0' )
 		{
 	              $requete = "DELETE FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'";
 	              mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		      // on vérifie s'il existe des type définie pour ce groupe si oui on les supprimes
-		      $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE groupe_alert_type = '".$id_alert_groupe."'"),0);
+		      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE groupe_alert_type = '".$id_alert_groupe."'"),0);
 			if ( $test_existance != '0' )
 			{
 				$requete = "DELETE FROM ".$prefix_base."vs_alerts_types WHERE groupe_alert_type = '".$id_alert_groupe."'";
 		              	mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			}
 		      // on vérifie s'il existe des alert eleve définie pour ce groupe si oui on les supprimes
-		      $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'"),0);
+		      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'"),0);
 			if ( $test_existance != '0' )
 			{
 				$requete = "DELETE FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'";
@@ -357,7 +357,7 @@ if ( $action_sql === 'supprimer_alert_groupe' and $valide_form === 'yes' ) {
 if ( $action === 'modifier_alert_groupe' and $valide_form === 'yes' ) {
 
 	// on vérifie s'il n'existe pas une alerte de même nom
-	      $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'"),0);
+	      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'"),0);
 		if ( $test_existance != '0' )
 		{
 			$requete_alert_groupe = "SELECT * FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'";
@@ -381,7 +381,7 @@ if ( ( $action_sql === 'creer_alert_type' or $action_sql === 'modifier_alert_typ
 if ( $action_sql === 'supprimer_alert_type' and $valide_form === 'yes' ) {
 
 	// on vérifie s'il n'existe pas une alerte de même nom
-	      $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'"),0);
+	      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'"),0);
 		if ( $test_existance != '0' )
 		{
 	              $requete = "DELETE FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'";
@@ -392,7 +392,7 @@ if ( $action_sql === 'supprimer_alert_type' and $valide_form === 'yes' ) {
 if ( $action === 'modifier_alert_type' and $valide_form === 'yes' ) {
 
 	// on vérifie s'il n'existe pas une alerte de même nom
-	      $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'"),0);
+	      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'"),0);
 		if ( $test_existance != '0' )
 		{
 			$requete_alert_type = "SELECT * FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'";
@@ -672,7 +672,7 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo 
 	<?php if ( $id_alert_groupe != '' and ( $action === 'editer_alert_groupe' or $action === 'modifier_alert_type' ) ) { ?>
 			<?php
 			// on vérifie s'il existe des alert eleve définie si oui on ne peut plus ajouter ou modifier les type pour ce groupe
-		      	$test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'"),0);
+		      	$test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'"),0);
 			if ( $test_existance != '0' ) { $editer_ce_groupe = 'non'; } else {  $editer_ce_groupe = 'oui'; } ?>
 		<div style="background-color: #EFEFEF; border-left: 4px solid #BF0000; width: 98.5%; margin-left: 4px; text-align: left;">
 		<a name="eg"></a>

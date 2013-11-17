@@ -62,7 +62,7 @@ if (isset($is_posted)) {
 
     $i = 0;
     while ($i < $nombre_lignes) {
-        $reg_matiere = mysql_result($callinfo, $i, "matiere");
+        $reg_matiere = old_mysql_result($callinfo, $i, "matiere");
         $reg_matiere_max_profs = $reg_matiere."_max";
         $max = $_POST[$reg_matiere_max_profs];
         $m = 0;
@@ -167,7 +167,7 @@ if (isset($is_posted)) {
                 $k = 0;
                 $suppression = '';
                 while ($k < $nb_eleves) {
-                    $login_eleve[$k] = mysql_result($query_eleves, $k, 'login');
+                    $login_eleve[$k] = old_mysql_result($query_eleves, $k, 'login');
                     $test1 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (matiere='".$reg_matiere."' and login='".$login_eleve[$k]."')");
                     $nb_test1 = mysqli_num_rows($test1);
                     $test2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (matiere='".$reg_matiere."' and login='".$login_eleve[$k]."')");
@@ -218,7 +218,7 @@ if (isset($is_posted)) {
                     $nb_prof = mysqli_num_rows($test3);
                     $m = 0;
                     while ($m < $nb_prof) {
-                        $login_prof = mysql_result($test3, $m, 'professeur');
+                        $login_prof = old_mysql_result($test3, $m, 'professeur');
                         $test4 = mysqli_query($GLOBALS["mysqli"], "select distinct id_professeur from  j_classes_matieres_professeurs
                         where (
                         id_professeur='".$login_prof."' and
@@ -278,7 +278,7 @@ echo add_token_field();
 echo "<p class=bold>|<a href=\"index.php\" onclick=\"return confirm_abandon(this, change, '".$themessage."')\">Retour</a>";
 echo "|<a href='javascript:centrerpopup(\"help_modify_class.html\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Aide</a>";
 
-$test_prof_mat = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres"),0);
+$test_prof_mat = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres"),0);
 if ($test_prof_mat==0) {
     echo "<p class='grand'>Aucune affectation professeur<->matière n'est disponible !</p>";
     echo "<p>Vous devez d'abord définir des professeurs et leur affecter des matières !</p>";
@@ -286,8 +286,8 @@ if ($test_prof_mat==0) {
 }
 
 
-$test1 = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM temp_gep_import"),0);
-$test2 = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_classes_matieres_professeurs WHERE id_classe='$id_classe'"),0);
+$test1 = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM temp_gep_import"),0);
+$test2 = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_classes_matieres_professeurs WHERE id_classe='$id_classe'"),0);
 if (($test1 != 0) and ($test2 != 0)) {
     ?>
     |<a href="init_options.php?id_classe=<?echo $id_classe?>">Initialisation des Options à partir de Gep</a>
@@ -297,7 +297,7 @@ echo "|<input type=\"submit\" onclick=\"return VerifChargement()\" name=\"Envoye
 echo "|</p>";
 
 $call_nom_class = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-$classe = mysql_result($call_nom_class, 0, 'classe');
+$classe = old_mysql_result($call_nom_class, 0, 'classe');
 echo "<H3>Classe : $classe</H3>";
 
 echo "<b>Pour toutes les matières, forcer les valeurs de priorité d'affichage aux valeurs par défaut :</b>
@@ -329,14 +329,14 @@ $nombre_ligne = mysqli_num_rows($call_class_info);
 
 $i=0;
 while ($i < $nombre_ligne) {
-    $priority = mysql_result($call_class_info, $i, "priorite");
-    $reg_matiere = mysql_result($call_class_info, $i, "matiere");
-    $reg_matiere_complet = mysql_result($call_class_info, $i, "nom_complet");
+    $priority = old_mysql_result($call_class_info, $i, "priorite");
+    $reg_matiere = old_mysql_result($call_class_info, $i, "matiere");
+    $reg_matiere_complet = old_mysql_result($call_class_info, $i, "nom_complet");
     $reg_priority = $reg_matiere."_priority";
     $reg_matiere_max_profs = $reg_matiere."_max";
     $call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_classes_matieres_professeurs WHERE ( id_classe='$id_classe' and id_matiere = '$reg_matiere') ORDER BY ordre_prof");
     $nombre_profs = mysqli_num_rows($call_profs);
-    $coef = mysql_result($call_class_info, $i, "coef");
+    $coef = old_mysql_result($call_class_info, $i, "coef");
     $reg_coef = $reg_matiere."_coef";
 
     // priorité par défaut
@@ -403,7 +403,7 @@ while ($i < $nombre_ligne) {
         echo "</td><td>Coefficient : <input type=\"text\" name=\"".$reg_coef."\" value=\"$coef\" size=\"5\" onchange=\"changement()\" /></td></tr></table>";
         $k = 0;
         while ($k < $nombre_profs+1) {
-            $prof[$k] = @mysql_result($call_profs, $k, "id_professeur");
+            $prof[$k] = @old_mysql_result($call_profs, $k, "id_professeur");
             $reg_matiere_prof[$k] = $reg_matiere."_prof".$k;
             $num_prof = $k+1;
             echo "<span class=\"norme\">Professeur $num_prof : <select size=1 name=$reg_matiere_prof[$k] onchange=\"changement()\">";
@@ -413,9 +413,9 @@ while ($i < $nombre_ligne) {
             echo "<option value=$login_list>(vide)</option>";
             $m = '0';
             while ($m < $nombreligneutilisateur){
-                $login_list = mysql_result($calldata, $m, "login");
-                $nom_list = mysql_result($calldata, $m, "nom");
-                $prenom_list = mysql_result($calldata, $m, "prenom");
+                $login_list = old_mysql_result($calldata, $m, "login");
+                $nom_list = old_mysql_result($calldata, $m, "nom");
+                $prenom_list = old_mysql_result($calldata, $m, "prenom");
                 echo "<option value=$login_list"; if ($login_list == $prof[$k]) {echo " SELECTED";} echo ">$prenom_list $nom_list</option>";
                 $m++;
             }

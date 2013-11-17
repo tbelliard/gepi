@@ -83,7 +83,7 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 
 /*
 	for($i=0;$i<$nombre_lignes;$i++){
-		$id_classe = mysql_result($call_data, $i, "id");
+		$id_classe = old_mysql_result($call_data, $i, "id");
 		if (isset($_POST[$id_classe]) and ($_POST[$id_classe] == "yes")) {
 			$test=mysql_query("SELECT 1=1 FROM j_scol_classes WHERE id_classe='$id_classe' AND login='".$_POST['reg_scollogin']."'");
 			if(mysql_num_rows($test)==0){
@@ -303,9 +303,9 @@ else{
 	$call_scol = mysql_query("SELECT login,nom,prenom FROM utilisateurs WHERE (statut='scolarite' AND etat='actif') ORDER BY nom,prenom");
 	$nb = mysql_num_rows($call_scol);
 	for ($i="0";$i<$nb;$i++) {
-		$scolresp = mysql_result($call_scol, $i, "login");
-		$scolresp_nom = mysql_result($call_scol, $i, "nom");
-		$scolresp_prenom = mysql_result($call_scol, $i, "prenom");
+		$scolresp = old_mysql_result($call_scol, $i, "login");
+		$scolresp_nom = old_mysql_result($call_scol, $i, "nom");
+		$scolresp_prenom = old_mysql_result($call_scol, $i, "prenom");
 		echo "<option value='$scolresp'>" . $scolresp_prenom . " " . $scolresp_nom ;
 		echo "</option>\n";
 	}
@@ -320,10 +320,10 @@ else{
 		echo "<table style='margin-left: 50px;' cellpadding=3 cellspacing=0 border=0>\n";
 		$i = 0;
 		while ($i < $nombre_lignes){
-			$id_classe = mysql_result($call_data, $i, "id");
-			$classe = mysql_result($call_data, $i, "classe");
+			$id_classe = old_mysql_result($call_data, $i, "id");
+			$classe = old_mysql_result($call_data, $i, "classe");
 
-			$test_existing = mysql_result(mysql_query("select count(*) total FROM j_scol_classes WHERE id_classe='$id_classe'"), "0", "total");
+			$test_existing = old_mysql_result(mysql_query("select count(*) total FROM j_scol_classes WHERE id_classe='$id_classe'"), "0", "total");
 
 			if ($disp_filter == "all" OR ($disp_filter == "only_undefined" AND $test_existing == "0")) {
 				echo "<tr";

@@ -1023,7 +1023,7 @@ class Eleve extends BaseEleve {
 			// On récupère le login de l'élève
 			$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
 			$query = mysql_query($sql);
-			$_elenoet_ou_login = mysql_result($query, 0,'login');
+			$_elenoet_ou_login = old_mysql_result($query, 0,'login');
 		  }
 
 		  if(file_exists($chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg")) {

@@ -313,33 +313,33 @@ else {
   $call_data_projet = mysqli_query($GLOBALS["mysqli"], "select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
 }
 
-$aid_nom = mysql_result($call_data_projet, 0, "nom");
-$reg_resume = @mysql_result($call_data_projet,0,"resume");
-$reg_contacts = @mysql_result($call_data_projet,0,"contacts");
-$reg_divers = @mysql_result($call_data_projet,0,"divers");
-$reg_famille = @mysql_result($call_data_projet,0,"famille");
-$reg_discipline1 = @mysql_result($call_data_projet,0,"matiere1");
-$reg_discipline2 = @mysql_result($call_data_projet,0,"matiere2");
-$reg_adresse1 = @mysql_result($call_data_projet,0,"adresse1");
-$reg_productions = @mysql_result($call_data_projet,0,"productions");
-$reg_public = @mysql_result($call_data_projet,0,"public_destinataire");
-$reg_mots_cles = @mysql_result($call_data_projet,0,"mots_cles");
-$reg_adresse2 = @mysql_result($call_data_projet,0,"adresse2");
-$reg_num = @mysql_result($call_data_projet,0,"numero");
-$reg_fiche_publique = @mysql_result($call_data_projet,0,"fiche_publique");
-$reg_affiche_adresse1 = @mysql_result($call_data_projet,0,"affiche_adresse1");
-$reg_en_construction = @mysql_result($call_data_projet,0,"en_construction");
+$aid_nom = old_mysql_result($call_data_projet, 0, "nom");
+$reg_resume = @old_mysql_result($call_data_projet,0,"resume");
+$reg_contacts = @old_mysql_result($call_data_projet,0,"contacts");
+$reg_divers = @old_mysql_result($call_data_projet,0,"divers");
+$reg_famille = @old_mysql_result($call_data_projet,0,"famille");
+$reg_discipline1 = @old_mysql_result($call_data_projet,0,"matiere1");
+$reg_discipline2 = @old_mysql_result($call_data_projet,0,"matiere2");
+$reg_adresse1 = @old_mysql_result($call_data_projet,0,"adresse1");
+$reg_productions = @old_mysql_result($call_data_projet,0,"productions");
+$reg_public = @old_mysql_result($call_data_projet,0,"public_destinataire");
+$reg_mots_cles = @old_mysql_result($call_data_projet,0,"mots_cles");
+$reg_adresse2 = @old_mysql_result($call_data_projet,0,"adresse2");
+$reg_num = @old_mysql_result($call_data_projet,0,"numero");
+$reg_fiche_publique = @old_mysql_result($call_data_projet,0,"fiche_publique");
+$reg_affiche_adresse1 = @old_mysql_result($call_data_projet,0,"affiche_adresse1");
+$reg_en_construction = @old_mysql_result($call_data_projet,0,"en_construction");
 if ($annee=='') {
-  $reg_perso1 = @mysql_result($call_data_projet,0,"perso1");
-  $reg_perso2 = @mysql_result($call_data_projet,0,"perso2");
-  $reg_perso3 = @mysql_result($call_data_projet,0,"perso3");
-  $reg_eleve_peut_modifier = @mysql_result($call_data_projet,0,"eleve_peut_modifier");
-  $reg_prof_peut_modifier = @mysql_result($call_data_projet,0,"prof_peut_modifier");
-  $reg_cpe_peut_modifier = @mysql_result($call_data_projet,0,"cpe_peut_modifier");
+  $reg_perso1 = @old_mysql_result($call_data_projet,0,"perso1");
+  $reg_perso2 = @old_mysql_result($call_data_projet,0,"perso2");
+  $reg_perso3 = @old_mysql_result($call_data_projet,0,"perso3");
+  $reg_eleve_peut_modifier = @old_mysql_result($call_data_projet,0,"eleve_peut_modifier");
+  $reg_prof_peut_modifier = @old_mysql_result($call_data_projet,0,"prof_peut_modifier");
+  $reg_cpe_peut_modifier = @old_mysql_result($call_data_projet,0,"cpe_peut_modifier");
 } else {
-  $eleves_resp = @mysql_result($call_data_projet,0,"eleves_resp");
-  $eleves = @mysql_result($call_data_projet,0,"eleves");
-  $responsables = @mysql_result($call_data_projet,0,"responsables");
+  $eleves_resp = @old_mysql_result($call_data_projet,0,"eleves_resp");
+  $eleves = @old_mysql_result($call_data_projet,0,"eleves");
+  $responsables = @old_mysql_result($call_data_projet,0,"responsables");
 }
 
 $style_specifique = "aid/style_fiche";
@@ -420,11 +420,11 @@ if ($annee=='') {
   $nombre = mysqli_num_rows($call_liste_data);
   $i = "0";
   while ($i < $nombre) {
-    $login_eleve = mysql_result($call_liste_data, $i, "login");
-    $nom_eleve = mysql_result($call_liste_data, $i, "nom");
-    $prenom_eleve = @mysql_result($call_liste_data, $i, "prenom");
+    $login_eleve = old_mysql_result($call_liste_data, $i, "login");
+    $nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
+    $prenom_eleve = @old_mysql_result($call_liste_data, $i, "prenom");
     $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-    $classe_eleve = @mysql_result($call_classe, '0', "classe");
+    $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
     echo "$nom_eleve $prenom_eleve ($classe_eleve)";
     if ($i < $nombre-1) echo " - ";
     $i++;
@@ -444,9 +444,9 @@ if ($annee=='') {
   $nombre = mysqli_num_rows($call_liste_data);
   $i = "0";
   while ($i < $nombre) {
-    $login_eleve = mysql_result($call_liste_data, $i, "login");
-    $nom_eleve = mysql_result($call_liste_data, $i, "nom");
-    $prenom_eleve = @mysql_result($call_liste_data, $i, "prenom");
+    $login_eleve = old_mysql_result($call_liste_data, $i, "login");
+    $nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
+    $prenom_eleve = @old_mysql_result($call_liste_data, $i, "prenom");
     echo $nom_eleve." ".$prenom_eleve;
     if ($i < $nombre-1) echo " - ";
   $i++;
@@ -606,8 +606,8 @@ If ($action != "visu") {
     echo "<option value=\"\">(choisissez)</option>\n";
     $k = 0;
     while ($k < $nb_famille) {
-        $id_famille = mysql_result($call_famille,$k,"id");
-        $nom_famille = mysql_result($call_famille,$k,"type");
+        $id_famille = old_mysql_result($call_famille,$k,"id");
+        $nom_famille = old_mysql_result($call_famille,$k,"type");
         echo "<option value=\"".$id_famille."\" ";
         if ($id_famille == $reg_famille) echo " selected ";
         echo ">".$nom_famille."</option>\n";
@@ -685,8 +685,8 @@ If ($action != "visu")  {
     $k = 0;
     while ($k < $nb_productions) {
         if ($newligne == 1) echo "<tr>";
-        $id_productions = mysql_result($call_productions,$k,"id");
-        $nom_productions = mysql_result($call_productions,$k,"nom");
+        $id_productions = old_mysql_result($call_productions,$k,"id");
+        $nom_productions = old_mysql_result($call_productions,$k,"nom");
         echo "<td><input type=\"checkbox\" name=\"p".$k."\" value=\"".$id_productions."\" ";
         if (in_array($id_productions, $p))  echo " checked ";
         echo " onClick=\"compteur_coches(this)\" />";
@@ -740,8 +740,8 @@ If ($action != "visu") {
     $k = 0;
     while ($k < $nb_public) {
         if ($newligne == 1) echo "<tr>";
-        $id_public = mysql_result($call_public,$k,"id");
-        $nom_public = mysql_result($call_public,$k,"public");
+        $id_public = old_mysql_result($call_public,$k,"id");
+        $nom_public = old_mysql_result($call_public,$k,"public");
         echo "<td><input type=\"checkbox\" name=\"public".$k."\" value=\"".$id_public."\" ";
         if (in_array($id_public, $public))  echo " checked ";
         echo " />";
@@ -842,8 +842,8 @@ If ($action != "visu") {
     $k = 0;
     $discipline_reconnue=FALSE;
     while ($k < $nb_discipline) {
-        $id_discipline = mysql_result($call_discipline,$k,"matiere");
-        $nom_discipline = mysql_result($call_discipline,$k,"nom_complet");
+        $id_discipline = old_mysql_result($call_discipline,$k,"matiere");
+        $nom_discipline = old_mysql_result($call_discipline,$k,"nom_complet");
         echo "<option value=\"".$id_discipline."\" ";
         if ($id_discipline == $reg_discipline1) {
             echo " selected ";
@@ -883,8 +883,8 @@ If ($action != "visu") {
     $k = 0;
     $discipline_reconnue=FALSE;
     while ($k < $nb_discipline) {
-        $id_discipline = mysql_result($call_discipline,$k,"matiere");
-        $nom_discipline = mysql_result($call_discipline,$k,"nom_complet");
+        $id_discipline = old_mysql_result($call_discipline,$k,"matiere");
+        $nom_discipline = old_mysql_result($call_discipline,$k,"nom_complet");
         echo "<option value=\"".$id_discipline."\" ";
         if ($id_discipline == $reg_discipline2) {
             echo " selected ";

@@ -4262,8 +4262,8 @@ else{
 					$nombre_ligne = mysqli_num_rows($call_group);
 					$i=0;
 					while ($i < $nombre_ligne) {
-						$id_groupe = mysql_result($call_group, $i, "id");
-						$nom_groupe = mysql_result($call_group, $i, "name");
+						$id_groupe = old_mysql_result($call_group, $i, "id");
+						$nom_groupe = old_mysql_result($call_group, $i, "name");
 						$id_group[$j] = $id_groupe."_".$j;
 						$test_query = mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_eleves_groupes WHERE (" .
 								"id_groupe = '" . $id_groupe . "' and " .
@@ -4464,8 +4464,8 @@ else{
 					$i=0;
 					$alt=-1;
 					while ($i < $nombre_ligne) {
-						$id_groupe = mysql_result($call_group, $i, "id");
-						$nom_groupe = mysql_result($call_group, $i, "name");
+						$id_groupe = old_mysql_result($call_group, $i, "id");
+						$nom_groupe = old_mysql_result($call_group, $i, "name");
 
 						$tmp_group=get_group($id_groupe,$tab_champs_grp);
 						$chaine_profs="";

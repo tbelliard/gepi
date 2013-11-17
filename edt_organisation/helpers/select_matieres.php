@@ -47,8 +47,8 @@ if(mysqli_num_rows($res_udt_corresp)>0) {
 //echo "$matiere_selected<br />";
 
 for($i = 0; $i < $nbre; $i++) {
-    $matiere[$i] = mysql_result($query, $i, "matiere");
-    $nom[$i] = mysql_result($query, $i, "nom_complet");
+    $matiere[$i] = old_mysql_result($query, $i, "matiere");
+    $nom[$i] = old_mysql_result($query, $i, "nom_complet");
 
 	$matiere_nettoyee[$i]=my_strtoupper(trim(remplace_accents($matiere[$i], 'all_nospace')));
 	$nom_nettoye[$i]=my_strtoupper(trim(remplace_accents($nom[$i], 'all_nospace')));

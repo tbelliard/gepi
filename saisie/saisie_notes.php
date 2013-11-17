@@ -344,7 +344,7 @@ if($periode_cn==0){
 if ($periode_cn != 0) {
 	$login_prof = $_SESSION['login'];
 	$appel_cahier_notes = mysql_query("SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$periode_cn')");
-	$id_racine = @mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+	$id_racine = @old_mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
 
 }
 */
@@ -376,10 +376,10 @@ if ($periode_cn != 0) {
 	//echo "$sql<br />";
 	$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($appel_cahier_notes)>0) {
-		$id_racine = mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+		$id_racine = old_mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
 	}
 
-	//$id_racine = @mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+	//$id_racine = @old_mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
 }
 
 
@@ -798,7 +798,7 @@ foreach ($liste_eleves as $eleve_login) {
 	while ($k < $nb_periode) {
 
 		$appel_cahier_notes_periode = mysqli_query($GLOBALS["mysqli"], "SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$k')");
-		$id_racine_periode = @mysql_result($appel_cahier_notes_periode, 0, 'id_cahier_notes');
+		$id_racine_periode = @old_mysql_result($appel_cahier_notes_periode, 0, 'id_cahier_notes');
 
 
 		if (in_array($eleve_login, $current_group["eleves"][$k]["list"])) {
@@ -814,8 +814,8 @@ foreach ($liste_eleves as $eleve_login) {
 			// si l'élève suit la matière
 			//
 			$note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
-			$eleve_statut = @mysql_result($note_query, 0, "statut");
-			$eleve_note = @mysql_result($note_query, 0, "note");
+			$eleve_statut = @old_mysql_result($note_query, 0, "statut");
+			$eleve_note = @old_mysql_result($note_query, 0, "note");
 			$eleve_login_t[$k] = $eleve_login."_t".$k;
 
 			if (($eleve_statut == '')&&($eleve_note!="")) {
@@ -833,9 +833,9 @@ foreach ($liste_eleves as $eleve_login) {
 
 				//$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
 				$moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine_periode')");
-				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
+				$statut_moy = @old_mysql_result($moyenne_query, 0, "statut");
 				if ($statut_moy == 'y') {
-					$moy = @mysql_result($moyenne_query, 0, "note");
+					$moy = @old_mysql_result($moyenne_query, 0, "note");
 				} else {
 					$moy = '&nbsp;';
 				}
@@ -890,9 +890,9 @@ foreach ($liste_eleves as $eleve_login) {
 
 				//$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
 				$moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine_periode')");
-				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
+				$statut_moy = @old_mysql_result($moyenne_query, 0, "statut");
 				if ($statut_moy == 'y') {
-					$moy = @mysql_result($moyenne_query, 0, "note");
+					$moy = @old_mysql_result($moyenne_query, 0, "note");
 					$temoin_notes++;
 				} else {
 					$moy = '&nbsp;';
@@ -929,7 +929,7 @@ foreach ($liste_eleves as $eleve_login) {
 					if (($periode_cn == $k) and ($is_posted=='bascule')) {
 						//$mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
 						if ($statut_moy == 'y') {
-							$mess[$k] = $mess[$k]."\"".@mysql_result($moyenne_query, 0, "note")."\"";
+							$mess[$k] = $mess[$k]."\"".@old_mysql_result($moyenne_query, 0, "note")."\"";
 						} else {
 							$mess[$k] = $mess[$k]."\"\"";
 							$tab_recopie_vide[]="$eleve_nom $eleve_prenom";
@@ -1047,7 +1047,7 @@ while ($k < $nb_periode) {
 		(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 
 		$appel_cahier_notes_periode = mysqli_query($GLOBALS["mysqli"], "SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$k')");
-		$id_racine_periode = @mysql_result($appel_cahier_notes_periode, 0, 'id_cahier_notes');
+		$id_racine_periode = @old_mysql_result($appel_cahier_notes_periode, 0, 'id_cahier_notes');
 
 		$call_moy_moy = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE
 		(
@@ -1058,7 +1058,7 @@ while ($k < $nb_periode) {
 		n.id_conteneur='$id_racine_periode'
 		)");
 
-		$moy_moy = mysql_result($call_moy_moy, 0, "moyenne");
+		$moy_moy = old_mysql_result($call_moy_moy, 0, "moyenne");
 		if ($moy_moy != '') {
 			$affiche_moy = $moy_moy;
 		} else {
@@ -1093,7 +1093,7 @@ while ($k < $nb_periode) {
 									"j.id_groupe = n.id_groupe AND " .
 									"n.periode='$k' AND j.periode='$k'" .
 									")");
-		$moyenne_t[$k] = mysql_result($call_moyenne_t[$k], 0, "moyenne");
+		$moyenne_t[$k] = old_mysql_result($call_moyenne_t[$k], 0, "moyenne");
 		if ($moyenne_t[$k] != '') {
 			echo "<td ".$temp."><center><b>$moyenne_t[$k]</b></center></td>\n";
 		} else {

@@ -295,7 +295,7 @@ if(!$tempdir) {
 											$tab_classes_inconnues[]=$tab_classe[$loop];
 										}
 										else {
-											$id_classe=mysql_result($res_classe, 0, "id");
+											$id_classe=old_mysql_result($res_classe, 0, "id");
 											if($chaine_jgc!="") {$chaine_jgc.=" OR ";}
 											$chaine_jgc.="jgc.id_classe='$id_classe'";
 										}
@@ -486,7 +486,7 @@ if(!$tempdir) {
 				require("../lib/footer.inc.php");
 				die();
 			}
-			$en_tete=explode(";", mysql_result($res, 0, "col2"));
+			$en_tete=explode(";", old_mysql_result($res, 0, "col2"));
 
 			// On range dans tabindice les indices des champs retenus
 			for ($k = 0; $k < count($tabchamps); $k++) {
@@ -510,7 +510,7 @@ if(!$tempdir) {
 					echo "<span style='color:red'>Ligne n°".$ligne_a_enregistrer[$i]." non trouvée.</span><br />\n";
 				}
 				else {
-					$col2=mysql_result($res, 0, "col2");
+					$col2=old_mysql_result($res, 0, "col2");
 					if($col2!='') {
 						$tab=explode(";",$col2);
 
@@ -528,7 +528,7 @@ if(!$tempdir) {
 							$sql="SELECT * FROM matieres WHERE matiere='".$matiere."';";
 							$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_mat)>0) {
-								$categorie_id=mysql_result($res_mat,0,"categorie_id");
+								$categorie_id=old_mysql_result($res_mat,0,"categorie_id");
 
 								$tab_classes_inconnues=array();
 								$nom_des_classes=$tab[$tabindice[3]];
@@ -551,7 +551,7 @@ if(!$tempdir) {
 											$tab_classes_inconnues[]=$tab_classe[$loop];
 										}
 										else {
-											$id_classe=mysql_result($res_classe, 0, "id");
+											$id_classe=old_mysql_result($res_classe, 0, "id");
 											if(!in_array($id_classe, $reg_clazz)) {
 												$reg_clazz[]=$id_classe;
 											}
@@ -611,7 +611,7 @@ if(!$tempdir) {
 																$ordre_matiere=1;
 															}
 															else {
-																$ordre_matiere=mysql_result($res_ordre, 0, "max_ordre_matiere")+1;
+																$ordre_matiere=old_mysql_result($res_ordre, 0, "max_ordre_matiere")+1;
 															}
 
 															$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$tab_profs[$loo]."', id_matiere='$matiere', ordre_matieres='$ordre_matiere';";

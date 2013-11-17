@@ -76,8 +76,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 		$msg.="Le type de ".$mod_disc_terme_sanction." est inconnu???<br />";
 	}
 	else {
-		$type_sanction=mysql_result($res_ns, 0, "type");
-		$nature_sanction=mysql_result($res_ns, 0, "nature");
+		$type_sanction=old_mysql_result($res_ns, 0, "type");
+		$nature_sanction=old_mysql_result($res_ns, 0, "nature");
 
 		if($type_sanction=='retenue') {
 
@@ -795,7 +795,7 @@ if(isset($odt)&&
 				$qualification_faits="";
 			}
 			else {
-				$qualification_faits=mysql_result($res_incident,0,"description");
+				$qualification_faits=old_mysql_result($res_incident,0,"description");
 			}
 
 			$sql="SELECT * FROM s_travail WHERE id_sanction='$id_sanction';";
@@ -821,7 +821,7 @@ if(isset($odt)&&
 				$qualification_faits="";
 			}
 			else {
-				$qualification_faits=mysql_result($res_incident,0,"description");
+				$qualification_faits=old_mysql_result($res_incident,0,"description");
 			}
 
 			$sql="SELECT sas.*, sts.nature FROM s_autres_sanctions sas, s_types_sanctions sts WHERE sas.id_sanction='$id_sanction' AND sas.id_nature=sts.id_nature;";

@@ -486,8 +486,8 @@ if(!isset($tab_classe)) {
 				echo "<td>\n";
 			}
 
-			$id_classe_temp = mysql_result($call_data, $i, "id");
-			$classe = mysql_result($call_data, $i, "classe");
+			$id_classe_temp = old_mysql_result($call_data, $i, "id");
+			$classe = old_mysql_result($call_data, $i, "classe");
 			if (get_period_number($id_classe_temp) == get_period_number($id_classe)) {
 				//echo "<input type='checkbox' name='classe_" . $id_classe_temp . "' id='classe_" . $id_classe_temp . "' value='yes'";
 				//if($id_classe_temp!=$id_classe){

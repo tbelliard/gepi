@@ -67,9 +67,9 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
 }
 
 $appel_cahier_notes=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
-$id_groupe=mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$id_groupe=old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group=get_group($id_groupe);
-$periode_num=mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num=old_mysql_result($appel_cahier_notes, 0, 'periode');
 include "../lib/periodes.inc.php";
 
 unset($id_dev);
@@ -83,10 +83,10 @@ if(!isset($id_dev)) {
 $sql="SELECT * FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
 $query=mysqli_query($GLOBALS["mysqli"], $sql);
 if($query) {
-	$id_cn_dev=mysql_result($query, 0, 'id_cn_dev');
-	$nom_court_dev=mysql_result($query, 0, 'nom_court');
-	$nom_complet_dev=mysql_result($query, 0, 'nom_complet');
-	$description_dev=mysql_result($query, 0, 'description');
+	$id_cn_dev=old_mysql_result($query, 0, 'id_cn_dev');
+	$nom_court_dev=old_mysql_result($query, 0, 'nom_court');
+	$nom_complet_dev=old_mysql_result($query, 0, 'nom_complet');
+	$description_dev=old_mysql_result($query, 0, 'description');
 }
 else {
 	header("Location: index.php?msg=".rawurlencode("Le numéro de devoir n est pas associé à ce groupe."));
@@ -108,11 +108,11 @@ if(mysqli_num_rows($query)==0) {
 	die();
 }
 
-$nom_court=mysql_result($query, 0, 'nom_court');
-$nom_complet=mysql_result($query, 0, 'nom_complet');
-$description=mysql_result($query, 0, 'description');
-$display_date=mysql_result($query, 0, 'date');
-$note_sur=mysql_result($query, 0, 'note_sur');
+$nom_court=old_mysql_result($query, 0, 'nom_court');
+$nom_complet=old_mysql_result($query, 0, 'nom_complet');
+$description=old_mysql_result($query, 0, 'description');
+$display_date=old_mysql_result($query, 0, 'date');
+$note_sur=old_mysql_result($query, 0, 'note_sur');
 
 $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : "classe");
 
@@ -268,7 +268,7 @@ if (isset($_POST['is_posted'])) {
 					elseif (my_ereg ("^[0-9\.\,]{1,}$", $note)) {
 						$note = str_replace(",", ".", "$note");
 						$appel_note_sur = mysqli_query($GLOBALS["mysqli"], "SELECT note_sur FROM cc_eval WHERE id='$id_eval'");
-						$note_sur_verif = mysql_result($appel_note_sur,0 ,'note_sur');
+						$note_sur_verif = old_mysql_result($appel_note_sur,0 ,'note_sur');
 						if (($note < 0) or ($note > $note_sur_verif)) {
 							$note = '';
 							$elev_statut = 'v';
@@ -439,7 +439,7 @@ $note_sur_verif = $note_sur;
 /*
 if ($id_eval != 0) {
         $appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_eval'");
-        $note_sur_verif = mysql_result($appel_note_sur,'0' ,'note_sur');
+        $note_sur_verif = old_mysql_result($appel_note_sur,'0' ,'note_sur');
 	//echo "<p class='cn'>Taper une note de 0 à 20 pour chaque élève, ou à défaut le code 'abs' pour 'absent', le code 'disp' pour 'dispensé', le code '-' pour absence de note.</p>\n";
 	echo "<p class='cn'>Taper une note de 0 à ".$note_sur_verif." pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code '-' ou 'n' pour absence de note.</p>\n";
 	echo "<p class='cn'>Vous pouvez également <b>importer directement vos notes par \"copier/coller\"</b> à partir d'un tableur ou d'une autre application : voir tout en bas de cette page.</p>\n";

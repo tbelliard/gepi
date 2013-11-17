@@ -731,9 +731,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				$sql="SELECT * FROM absences WHERE (login='".$lig->login."' AND periode='$loop');";
 				$current_eleve_absences_query=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($current_eleve_absences_query)>0) {
-					$current_eleve_absences+=@mysql_result($current_eleve_absences_query, 0, "nb_absences");
-					$current_eleve_nj+=@mysql_result($current_eleve_absences_query, 0, "non_justifie");
-					$current_eleve_retards+=@mysql_result($current_eleve_absences_query, 0, "nb_retards");
+					$current_eleve_absences+=@old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
+					$current_eleve_nj+=@old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
+					$current_eleve_retards+=@old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
 				}
 				/*
 				else {

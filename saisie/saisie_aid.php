@@ -51,11 +51,11 @@ $aid_id = isset($_POST["aid_id"]) ? $_POST["aid_id"] : (isset($_GET["aid_id"]) ?
 
 // On appelle les informations de l'aid pour les afficher :
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-$nom_aid = @mysql_result($call_data, 0, "nom");
-$note_max = @mysql_result($call_data, 0, "note_max");
-$type_note = @mysql_result($call_data, 0, "type_note");
-$display_begin = @mysql_result($call_data, 0, "display_begin");
-$display_end = @mysql_result($call_data, 0, "display_end");
+$nom_aid = @old_mysql_result($call_data, 0, "nom");
+$note_max = @old_mysql_result($call_data, 0, "note_max");
+$type_note = @old_mysql_result($call_data, 0, "type_note");
+$display_begin = @old_mysql_result($call_data, 0, "display_begin");
+$display_end = @old_mysql_result($call_data, 0, "display_end");
 
 
 
@@ -83,7 +83,7 @@ if (isset($_POST['is_posted'])) {
 	//echo "\$lignes=$lignes (nombre d'élèves inscrits dans l'AID)<br />";
 	$j = '0';
 	while($j < $lignes) {
-		$reg_eleve_login = mysql_result($quels_eleves, $j, "login");
+		$reg_eleve_login = old_mysql_result($quels_eleves, $j, "login");
 
 		//echo "<hr /><p>Elève $reg_eleve_login<br />";
 
@@ -96,7 +96,7 @@ if (isset($_POST['is_posted'])) {
 		// On passe en revue tous les élèves inscrits à l'AID, même si ils ne sont pas dans une classe...
 		// ... par contre, dans la partie saisie, seuls les élèves effectivement dans une classe sont proposés.
 		if(mysqli_num_rows($call_classe)>0){
-			$id_classe = mysql_result($call_classe, '0', "id_classe");
+			$id_classe = old_mysql_result($call_classe, '0', "id_classe");
 			$sql="SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode";
 			//echo "$sql<br />";
 			$periode_query = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -106,7 +106,7 @@ if (isset($_POST['is_posted'])) {
 			while ($k < $nb_periode + 1) {
 				//echo "<p>Période $k<br />";
 				if (($k >= $display_begin) and ($k <= $display_end)) {
-					$ver_periode[$k] = mysql_result($periode_query, $k-1, "verouiller");
+					$ver_periode[$k] = old_mysql_result($periode_query, $k-1, "verouiller");
 					//if ($ver_periode[$k] == "N"){
 					if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] != "O"))||
 						(($_SESSION['statut']!='secours')&&($ver_periode[$k] == "N"))) {
@@ -242,14 +242,14 @@ $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes");
 $nombre_lignes = mysqli_num_rows($call_data);
 $i = 0;
 while ($i < $nombre_lignes){
-	$id_classe = mysql_result($call_data, $i, "id");
+	$id_classe = old_mysql_result($call_data, $i, "id");
 	$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 	$k = mysqli_num_rows($periode_query);
 	$call_reg = mysqli_query($GLOBALS["mysqli"], "insert into $nom_table Values('$id_classe', '$k')");
 	$i++;
 }
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT max(num) as max FROM $nom_table");
-$nb_periode_max = mysql_result($call_data, 0, "max");
+$nb_periode_max = old_mysql_result($call_data, 0, "max");
 
 $message_enregistrement = "Les modifications ont été enregistrées !";
 $themessage  = 'Des notes ou des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -279,9 +279,9 @@ if (!isset($aid_id)) {
 			$i = "0";
 			echo "<p>Vous êtes professeur responsable dans les $nom_aid :<br />\n";
 			while ($i < $nombre_aid) {
-				$aid_display = mysql_result($call_prof_aid, $i, "nom");
-				$aid_id = mysql_result($call_prof_aid, $i, "id");
-				$aid_numero = mysql_result($call_prof_aid, $i, "numero")." : ";
+				$aid_display = old_mysql_result($call_prof_aid, $i, "nom");
+				$aid_id = old_mysql_result($call_prof_aid, $i, "id");
+				$aid_numero = old_mysql_result($call_prof_aid, $i, "numero")." : ";
 				if ($aid_numero == " : ") {$aff_numero_aid = "";} else {$aff_numero_aid = $aid_numero;}
 				echo "<br /><span class='bold'>".$aff_numero_aid.$aid_display."</span>
 				 --- <a href='saisie_aid.php?aid_id=".$aid_id."&amp;indice_aid=".$indice_aid."'>Saisir les appréciations pour cette rubrique</a>\n";
@@ -298,9 +298,9 @@ if (!isset($aid_id)) {
 			$i = "0";
 			echo "<p><b>".$nom_aid." - Saisie des appréciations :</b><br />\n";
 			while ($i < $nombre_aid) {
-				$aid_display = mysql_result($call_prof_aid, $i, "nom");
-				$aid_id = mysql_result($call_prof_aid, $i, "id");
-				$aid_numero = mysql_result($call_prof_aid, $i, "numero")." : ";
+				$aid_display = old_mysql_result($call_prof_aid, $i, "nom");
+				$aid_id = old_mysql_result($call_prof_aid, $i, "id");
+				$aid_numero = old_mysql_result($call_prof_aid, $i, "numero")." : ";
 				if ($aid_numero == " : ") {$aff_numero_aid = "";} else {$aff_numero_aid = $aid_numero;}
 				echo "<br /><span class='bold'>".$aff_numero_aid.$aid_display."</span> --- <a href='saisie_aid.php?aid_id=$aid_id&amp;indice_aid=$indice_aid'>Saisir les appréciations.</a>\n";
 				$i++;
@@ -320,7 +320,7 @@ if (!isset($aid_id)) {
 	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 
 	$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
-	$aid_nom = mysql_result($calldata, 0, "nom");
+	$aid_nom = old_mysql_result($calldata, 0, "nom");
 
 
 	echo "<p class='grand'>Appréciations $nom_aid : $aid_nom</p>\n";
@@ -349,12 +349,12 @@ if (!isset($aid_id)) {
 			echo "<th><b>Nom Prénom</b></th>\n";
 
 			$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $nom_table WHERE num = '$num' ");
-			$id_classe = mysql_result($call_data, '0', 'id_classe');
+			$id_classe = old_mysql_result($call_data, '0', 'id_classe');
 			$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
 
 			$i = "1";
 			while ($i < $num + 1) {
-				$nom_periode[$i] = mysql_result($periode_query, $i-1, "nom_periode");
+				$nom_periode[$i] = old_mysql_result($periode_query, $i-1, "nom_periode");
 				echo "<th><b>$nom_periode[$i]</b></th>\n";
 				$i++;
 			}
@@ -367,13 +367,13 @@ if (!isset($aid_id)) {
 			$i = "0";
 			$alt=1;
 			while($i < $nombre_lignes) {
-				$current_eleve_login = mysql_result($appel_login_eleves, $i, 'login');
+				$current_eleve_login = old_mysql_result($appel_login_eleves, $i, 'login');
 				$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE (login = '$current_eleve_login')");
-				$current_eleve_nom = mysql_result($appel_donnees_eleves, '0', "nom");
-				$current_eleve_prenom = mysql_result($appel_donnees_eleves, '0', "prenom");
+				$current_eleve_nom = old_mysql_result($appel_donnees_eleves, '0', "nom");
+				$current_eleve_prenom = old_mysql_result($appel_donnees_eleves, '0', "prenom");
 				$appel_classe_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_classes cc WHERE (cc.login = '$current_eleve_login' AND cc.id_classe = c.id) ORDER BY cc.periode DESC");
-				$current_eleve_classe = mysql_result($appel_classe_eleve, '0', "classe");
-				$current_eleve_id_classe = mysql_result($appel_classe_eleve, '0', "id");
+				$current_eleve_classe = old_mysql_result($appel_classe_eleve, '0', "classe");
+				$current_eleve_id_classe = old_mysql_result($appel_classe_eleve, '0', "id");
 
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
@@ -386,13 +386,13 @@ if (!isset($aid_id)) {
 					if (($k >= $display_begin) and ($k <= $display_end)) {
 
 						$current_eleve_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
-						$current_eleve_statut_t[$k] = @mysql_result($current_eleve_app_query, 0, "statut");
-						$current_eleve_app_t[$k] = @mysql_result($current_eleve_app_query, 0, "appreciation");
-						$current_eleve_note_t[$k] = @mysql_result($current_eleve_app_query, 0, "note");
+						$current_eleve_statut_t[$k] = @old_mysql_result($current_eleve_app_query, 0, "statut");
+						$current_eleve_app_t[$k] = @old_mysql_result($current_eleve_app_query, 0, "appreciation");
+						$current_eleve_note_t[$k] = @old_mysql_result($current_eleve_app_query, 0, "note");
 						$current_eleve_login_t[$k] = $current_eleve_login."_t".$k;
 						$current_eleve_login_n_t[$k] = $current_eleve_login."_n_t".$k;
 
-						$ver_periode[$k] = mysql_result($periode_query, $k-1, "verouiller");
+						$ver_periode[$k] = old_mysql_result($periode_query, $k-1, "verouiller");
 						//if ($ver_periode[$k] != "N") {
 						if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] == "O"))||
 							(($_SESSION['statut']!='secours')&&($ver_periode[$k] != "N"))) {

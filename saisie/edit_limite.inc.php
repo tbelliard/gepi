@@ -311,7 +311,7 @@ if ($choix_edit != '2') {
     $i=0;
     $k=0;
     while ($i < $nombre_eleves) {
-        $current_eleve_login = mysql_result($appel_liste_eleves, $i, "login");
+        $current_eleve_login = old_mysql_result($appel_liste_eleves, $i, "login");
         $k++;
         //bulletin($current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
         //bulletin($current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories);

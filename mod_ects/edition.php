@@ -93,8 +93,8 @@ if (!$id_classe) {
     unset($tab_txt);
     $nombreligne = mysqli_num_rows($call_classe);
     while ($i < $nombreligne){
-        $tab_lien[$i] = "edition.php?id_classe=".mysql_result($call_classe, $i, "id");
-        $tab_txt[$i] = mysql_result($call_classe, $i, "classe");
+        $tab_lien[$i] = "edition.php?id_classe=".old_mysql_result($call_classe, $i, "id");
+        $tab_txt[$i] = old_mysql_result($call_classe, $i, "classe");
         $i++;
 
     }
@@ -126,7 +126,7 @@ if (!$id_classe) {
         $noms_classes = '';
         $nb_classes = mysqli_num_rows($call_classes);
         for($i=0;$i<$nb_classes;$i++) {
-            $noms_classes .= mysql_result($call_classes, $i, 'classe');
+            $noms_classes .= old_mysql_result($call_classes, $i, 'classe');
             if ($i != $nb_classes-1) {
                 $noms_classes .= ', ';
             }
@@ -143,7 +143,7 @@ if (!$id_classe) {
         } else {
             echo "<select size=\"1\" id=\"select_annee_derniere\" name=\"annee_derniere\">\n";
             for ($a=0;$a<$nb_annees;$a++) {
-                $annee = mysql_result($annees, $a);
+                $annee = old_mysql_result($annees, $a);
               echo "<option value='".$annee."'>".$annee."</option>\n";
             }
             echo "</select>\n";

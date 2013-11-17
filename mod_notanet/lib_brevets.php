@@ -1445,7 +1445,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	//echo "$sql<br />";
 	$res_ele_type=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_ele_type)>0) {
-		$type_brevet_ele=mysql_result($res_ele_type, 0, "type_brevet");
+		$type_brevet_ele=old_mysql_result($res_ele_type, 0, "type_brevet");
 	}
 	//echo "<tr></td>\$type_brevet_ele=$type_brevet_ele</td></tr>";
 

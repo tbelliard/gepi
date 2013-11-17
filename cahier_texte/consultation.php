@@ -160,7 +160,7 @@ $selected_eleve_login = $selected_eleve ? $selected_eleve->login : "";
 
 // Nom complet de la classe
 $appel_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$id_classe'");
-$classe_nom = @mysql_result($appel_classe, 0, "classe");
+$classe_nom = @old_mysql_result($appel_classe, 0, "classe");
 // Nom complet de la matière
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
@@ -407,11 +407,11 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 
             // Affichage des devoirs dans chaque matière
             while ($ind < $nb_devoirs_cahier_texte) {
-                $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
-                $date_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
-                $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
-                $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
-                $matiere_devoirs = mysql_result($appel_devoirs_cahier_texte,$ind, 'description');
+                $content = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
+                $date_devoirs = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
+                $id_devoirs =  old_mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
+                $id_groupe_devoirs = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
+                $matiere_devoirs = old_mysql_result($appel_devoirs_cahier_texte,$ind, 'description');
                 //$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
                 $test_prof = "SELECT nom, prenom,u.login FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
                 $res_prof = sql_query($test_prof);
@@ -570,11 +570,11 @@ echo "<div class=\"centre_cont_texte\">\n";
 
             // Affichage des devoirs dans chaque matière
             while ($ind < $nb_devoirs_cahier_texte) {
-              $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
-              $date_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
-              $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
-              $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
-              $matiere_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'description');
+              $content = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
+              $date_devoirs = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
+              $id_devoirs =  old_mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
+              $id_groupe_devoirs = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
+              $matiere_devoirs = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'description');
 //$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
               $test_prof = "SELECT nom, prenom,u.login FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
               $res_prof = sql_query($test_prof);
@@ -606,8 +606,8 @@ echo "<div class=\"centre_cont_texte\">\n";
     $appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 
     $nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
-    $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
-    $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
+    $content = @old_mysql_result($appel_info_cahier_texte, 0, 'contenu');
+    $id_ct = @old_mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 // documents joints
     $content .= affiche_docs_joints($id_ct,"c");
     if ($content != '') {

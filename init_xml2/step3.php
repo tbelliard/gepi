@@ -83,41 +83,41 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     $i = "0";
     while ($i < $nb) {
         //$req = mysql_query("select col2 from tempo2 where col1 = '$i'");
-        //$reg_login = @mysql_result($req, 0, 'col2');
+        //$reg_login = @old_mysql_result($req, 0, 'col2');
 
-        $id_tempo = @mysql_result($call_data, $i, "ID_TEMPO");
+        $id_tempo = @old_mysql_result($call_data, $i, "ID_TEMPO");
 
-	    $no_gep = @mysql_result($call_data, $i, "ELENONAT");
+	    $no_gep = @old_mysql_result($call_data, $i, "ELENONAT");
 
-	    $reg_nom = @mysql_result($call_data, $i, "ELENOM");
+	    $reg_nom = @old_mysql_result($call_data, $i, "ELENOM");
 	    $reg_nom = nettoyer_caracteres_nom($reg_nom, "a", " '_-", "");
 	    $reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
 
-	    $reg_prenom = @mysql_result($call_data, $i, "ELEPRE");
+	    $reg_prenom = @old_mysql_result($call_data, $i, "ELEPRE");
 	    $tab_prenom = explode(" ",$reg_prenom);
 	    $tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0], "a", " '_-", "");
 	    $reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
 
-	    $reg_elenoet = @mysql_result($call_data, $i, "ELENOET");
-	    //$reg_ereno = @mysql_result($call_data, $i, "ERENO");
-	    $reg_ele_id = @mysql_result($call_data, $i, "ELE_ID");
-	    $reg_sexe = @mysql_result($call_data, $i, "ELESEXE");
-	    $reg_naissance = @mysql_result($call_data, $i, "ELEDATNAIS");
-	    $reg_doublant = @mysql_result($call_data, $i, "ELEDOUBL");
-	    $reg_classe = @mysql_result($call_data, $i, "DIVCOD");
-	    $reg_etab = @mysql_result($call_data, $i, "ETOCOD_EP");
-	    $reg_regime = mysql_result($call_data, $i, "ELEREG");
+	    $reg_elenoet = @old_mysql_result($call_data, $i, "ELENOET");
+	    //$reg_ereno = @old_mysql_result($call_data, $i, "ERENO");
+	    $reg_ele_id = @old_mysql_result($call_data, $i, "ELE_ID");
+	    $reg_sexe = @old_mysql_result($call_data, $i, "ELESEXE");
+	    $reg_naissance = @old_mysql_result($call_data, $i, "ELEDATNAIS");
+	    $reg_doublant = @old_mysql_result($call_data, $i, "ELEDOUBL");
+	    $reg_classe = @old_mysql_result($call_data, $i, "DIVCOD");
+	    $reg_etab = @old_mysql_result($call_data, $i, "ETOCOD_EP");
+	    $reg_regime = old_mysql_result($call_data, $i, "ELEREG");
 
-	    $reg_lieu_naissance = mysql_result($call_data, $i, "LIEU_NAISSANCE");
+	    $reg_lieu_naissance = old_mysql_result($call_data, $i, "LIEU_NAISSANCE");
 
-	    $reg_mef_code = mysql_result($call_data, $i, "MEF_CODE");
+	    $reg_mef_code = old_mysql_result($call_data, $i, "MEF_CODE");
 
-	    $reg_date_entree = mysql_result($call_data, $i, "DATE_ENTREE");
+	    $reg_date_entree = old_mysql_result($call_data, $i, "DATE_ENTREE");
 
 		$reg_login="";
 	    $req = mysqli_query($GLOBALS["mysqli"], "select col2 from tempo2 where col1 = '$id_tempo'");
 	    if($req) {
-		    $reg_login = @mysql_result($req, 0, 'col2');
+		    $reg_login = @old_mysql_result($req, 0, 'col2');
 		}
 		else {
 		    echo "<p style='color:red'>Erreur pour l'élève $reg_nom $reg_prenom (<em>non trouvé dans 'tempo2', donc pas de login trouvé</em>).</p>\n";
@@ -176,10 +176,10 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 		    $nb_classes = mysqli_num_rows($call_classes);
 		    $j = 0;
 		    while ($j < $nb_classes) {
-		        $classe = mysql_result($call_classes, $j, "classe");
+		        $classe = old_mysql_result($call_classes, $j, "classe");
 		        if ($reg_classe == $classe) {
-		            $id_classe = mysql_result($call_classes, $j, "id");
-		            $number_periodes = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe='$id_classe'"),0);
+		            $id_classe = old_mysql_result($call_classes, $j, "id");
+		            $number_periodes = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe='$id_classe'"),0);
 		            $u = 1;
 		            while ($u <= $number_periodes) {
 		                $reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_classes SET login='$reg_login',id_classe='$id_classe',periode='$u', rang='0'");
@@ -313,31 +313,31 @@ else {
 	
 			$alt=$alt*(-1);
 			$ligne_pb = 'no';
-			$id_tempo = mysql_result($call_data, $i, "ID_TEMPO");
-			$no_gep = mysql_result($call_data, $i, "ELENONAT");
+			$id_tempo = old_mysql_result($call_data, $i, "ID_TEMPO");
+			$no_gep = old_mysql_result($call_data, $i, "ELENONAT");
 
-			$reg_nom = mysql_result($call_data, $i, "ELENOM");
+			$reg_nom = old_mysql_result($call_data, $i, "ELENOM");
 			$reg_nom = nettoyer_caracteres_nom($reg_nom, "a", " '_-", "");
 			$reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
 
-			$reg_prenom = mysql_result($call_data, $i, "ELEPRE");
+			$reg_prenom = old_mysql_result($call_data, $i, "ELEPRE");
 			$tab_prenom = explode(" ",$reg_prenom);
 			$reg_prenom = $tab_prenom[0];
 			$reg_prenom = nettoyer_caracteres_nom($tab_prenom[0], "a", " '_-", "");
 			$reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
 
-			$reg_elenoet = mysql_result($call_data, $i, "ELENOET");
-			//$reg_ereno = mysql_result($call_data, $i, "ERENO");
-			$reg_ele_id = mysql_result($call_data, $i, "ELE_ID");
-			$reg_sexe = mysql_result($call_data, $i, "ELESEXE");
-			$reg_naissance = mysql_result($call_data, $i, "ELEDATNAIS");
-			$reg_doublant = mysql_result($call_data, $i, "ELEDOUBL");
-			$reg_classe = mysql_result($call_data, $i, "DIVCOD");
-			$reg_etab = mysql_result($call_data, $i, "ETOCOD_EP");
+			$reg_elenoet = old_mysql_result($call_data, $i, "ELENOET");
+			//$reg_ereno = old_mysql_result($call_data, $i, "ERENO");
+			$reg_ele_id = old_mysql_result($call_data, $i, "ELE_ID");
+			$reg_sexe = old_mysql_result($call_data, $i, "ELESEXE");
+			$reg_naissance = old_mysql_result($call_data, $i, "ELEDATNAIS");
+			$reg_doublant = old_mysql_result($call_data, $i, "ELEDOUBL");
+			$reg_classe = old_mysql_result($call_data, $i, "DIVCOD");
+			$reg_etab = old_mysql_result($call_data, $i, "ETOCOD_EP");
 
-			$reg_mef_code = mysql_result($call_data, $i, "MEF_CODE");
+			$reg_mef_code = old_mysql_result($call_data, $i, "MEF_CODE");
 
-			$reg_date_entree = mysql_result($call_data, $i, "DATE_ENTREE");
+			$reg_date_entree = old_mysql_result($call_data, $i, "DATE_ENTREE");
 
 			if(!isset($tab_mef[$reg_mef_code])) {
 				$tab_mef[$reg_mef_code]="<span style='color:red' title=\"Code MEF inconnu : $reg_mef_code\">???</span>";
@@ -358,7 +358,7 @@ else {
 				}
 			}
 
-			$reg_regime = mysql_result($call_data, $i, "ELEREG");
+			$reg_regime = old_mysql_result($call_data, $i, "ELEREG");
 			if ($no_gep != '') {
 				$no_gep_aff = $no_gep;
 			} else {
@@ -422,7 +422,7 @@ else {
 					$nbre = mysqli_num_rows($query_p);
 					if ($nbre >= 1) {
 						// On considère que l'information est bonne puisqu'elle a été construite avec la même source sconet
-						$login_eleve = mysql_result($query_p, 0,"login_u");
+						$login_eleve = old_mysql_result($query_p, 0,"login_u");
 					}else{
 						// Il faudra trouver une solution dans ce cas là (même s'il ne doit pas être très fréquent
 						//$login_eleve = "erreur_".$i;
@@ -528,7 +528,7 @@ else {
 			$j = 0;
 			$classe_error = 'yes';
 			while ($j < $nb_classes) {
-				$classe = mysql_result($call_classes, $j, "classe");
+				$classe = old_mysql_result($call_classes, $j, "classe");
 				if ($reg_classe == $classe) {
 					$classe_aff = $classe;
 					$classe_error = 'no';
@@ -543,9 +543,9 @@ else {
 				$calletab = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM etablissements WHERE (id = '$reg_etab')");
 				$result_etab = mysqli_num_rows($calletab);
 				if ($result_etab != 0) {
-					$etab_nom = @mysql_result($calletab, 0, "nom");
-					$etab_cp = @mysql_result($calletab, 0, "cp");
-					$etab_ville = @mysql_result($calletab, 0, "ville");
+					$etab_nom = @old_mysql_result($calletab, 0, "nom");
+					$etab_cp = @old_mysql_result($calletab, 0, "cp");
+					$etab_ville = @old_mysql_result($calletab, 0, "ville");
 					$reg_etab_aff = "$etab_nom, $etab_cp $etab_ville";
 				} else {
 					$reg_etab_aff = "<span style='color:red'>RNE : $reg_etab, étab. non répertorié</span>";

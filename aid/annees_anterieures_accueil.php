@@ -60,7 +60,7 @@ if (!isset($annee_scolaire))  {
         echo "<select name=\"annee_scolaire\" size=\"1\">\n";
         $k = 0;
         while ($k < $nb_annee) {
-            $annee_scolaire_ = mysql_result($res,$k,"annee");
+            $annee_scolaire_ = old_mysql_result($res,$k,"annee");
             echo "<option value=\"".$annee_scolaire_."\">".$annee_scolaire_."</option>\n";
             $k++;
         }
@@ -83,7 +83,7 @@ if (($indice_aid =='') and ($annee_scolaire!=''))  {
         $i = 0;
         $k=0;
         while ($i < $nb_projet) {
-          $indice_aid = mysql_result($call_aid,$i,"id");
+          $indice_aid = old_mysql_result($call_aid,$i,"id");
           $nb_fiches_publiques[$indice_aid] = sql_query1("SELECT count(id) FROM archivage_aids WHERE id_type_aid ='".$indice_aid."'");
           if ($nb_fiches_publiques[$indice_aid]!=0)
             $k++;
@@ -94,10 +94,10 @@ if (($indice_aid =='') and ($annee_scolaire!=''))  {
             echo "<ul>\n";
             $i = 0;
             while ($i < $nb_projet) {
-              $indice_aid = mysql_result($call_aid,$i,"id");
+              $indice_aid = old_mysql_result($call_aid,$i,"id");
               if ($nb_fiches_publiques[$indice_aid]!=0) {
-                    $nom = mysql_result($call_aid,$i,"nom");
-                    $nom_complet = mysql_result($call_aid,$i,"nom_complet");
+                    $nom = old_mysql_result($call_aid,$i,"nom");
+                    $nom_complet = old_mysql_result($call_aid,$i,"nom_complet");
                     echo "<li><a href='annees_anterieures_accueil.php?indice_aid=".$indice_aid."&amp;annee_scolaire=".$annee_scolaire."'>".$nom_complet."</a> (".$nom.")</li>\n";
               }
               $i++;

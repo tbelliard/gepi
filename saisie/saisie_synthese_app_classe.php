@@ -135,7 +135,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 	$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$num_periode');";
 	//echo "$sql<br />";
 	$res_current_synthese=mysqli_query($GLOBALS["mysqli"], $sql);
-	$synthese=@mysql_result($res_current_synthese, 0, "synthese");
+	$synthese=@old_mysql_result($res_current_synthese, 0, "synthese");
 
 	//====================================
 	$titre_page="Synthèse classe";
@@ -447,8 +447,8 @@ if(!isset($id_classe)) {
 		echo "<td align='left'>\n";
 	$i = 0;
 	while ($i < $nombreligne){
-		$id_classe = mysql_result($res_classe, $i, "id");
-		$classe_liste = mysql_result($res_classe, $i, "classe");
+		$id_classe = old_mysql_result($res_classe, $i, "id");
+		$classe_liste = old_mysql_result($res_classe, $i, "classe");
 		//echo "<tr><td><a href='index3.php?id_classe=$id_classe'>$classe_liste</a></td></tr>\n";
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 			echo "</td>\n";
@@ -474,7 +474,7 @@ else {
 		require("../lib/footer.inc.php");
 		die();
 	}
-	$nom_classe = mysql_result($res_classe, 0, "classe");
+	$nom_classe = old_mysql_result($res_classe, 0, "classe");
 
 	echo "<p class='grand'>Classe de $nom_classe</p>\n";
 

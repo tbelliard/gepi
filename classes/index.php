@@ -87,8 +87,8 @@ if ($nombre_lignes != 0) {
 	$alt=1;
 	while ($i < $nombre_lignes){
 		$alt=$alt*(-1);
-		$id_classe = mysql_result($call_data, $i, "id");
-		$classe = mysql_result($call_data, $i, "classe");
+		$id_classe = old_mysql_result($call_data, $i, "id");
+		$classe = old_mysql_result($call_data, $i, "classe");
 		echo "<tr";
 		echo " class='lig$alt white_hover'";
 		echo ">\n";

@@ -230,13 +230,13 @@ if ($etape == 4) {
 		$R_encodage=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='encodage_nom_photo' LIMIT 1");
 		if (!$R_encodage) {$ok='no';
 		} else {
-				$encodage=@mysql_result($R_encodage,0);
+				$encodage=@old_mysql_result($R_encodage,0);
 				if ($encodage=="yes") {
 					// on récupère la valeur de 'alea_nom_photo' dans la table 'setting'
 					$R_alea=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='alea_nom_photo' LIMIT 1");
 					if (!$R_alea) {$ok='no';
 					} else { 
-						$alea=@mysql_result($R_alea,0);
+						$alea=@old_mysql_result($R_alea,0);
 						// on crée le fichier témoin
 						$fic_temoin=@fopen("../photos/eleves/encodage_active.txt","w");
 						if (!$fic_temoin) {

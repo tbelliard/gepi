@@ -377,7 +377,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 		// Détermination du format de la date de naissance
 		$call_eleve_test = mysqli_query($GLOBALS["mysqli"], "SELECT naissance FROM eleves WHERE 1");
-		$test_eleve_naissance = @mysql_result($call_eleve_test, "0", "naissance");
+		$test_eleve_naissance = @old_mysql_result($call_eleve_test, "0", "naissance");
 		$format = mb_strlen($test_eleve_naissance);
 
 
@@ -479,11 +479,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 							/*
 							$sql="SELECT MAX(ele_id) max_ele_id FROM eleves";
 							$res_ele_id_eleve=mysql_query($sql);
-							$max_ele_id = mysql_result($call_resp , 0, "max_ele_id");
+							$max_ele_id = old_mysql_result($call_resp , 0, "max_ele_id");
 
 							$sql="SELECT MAX(ele_id) max_ele_id FROM responsables2";
 							$res_ele_id_responsables2=mysql_query($sql);
-							$max_ele_id2 = mysql_result($call_resp , 0, "max_ele_id");
+							$max_ele_id2 = old_mysql_result($call_resp , 0, "max_ele_id");
 
 							if($max_ele_id2>$max_ele_id){$max_ele_id=$max_ele_id2;}
 							$ele_id=$max_ele_id+1;
@@ -614,7 +614,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 			else {
 				/*
 				// On met à jour la table utilisateurs si un compte existe pour cet élève
-				$test_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$eleve_login ."'"), 0);
+				$test_login = old_mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$eleve_login ."'"), 0);
 				if ($test_login > 0) {
 				*/
 				if($temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve=='n') {
@@ -821,7 +821,7 @@ elseif((($_SESSION['statut']=="professeur")&&($is_pp))||($_SESSION['statut']=="c
 			$msg.="L'élève n'a pas d'elenoet.<br />La mise en place de la photo n'est pas possible.<br />";
 		}
 		else {
-			$reg_no_gep=mysql_result($test,0,"elenoet");
+			$reg_no_gep=old_mysql_result($test,0,"elenoet");
 
 			// Envoi de la photo
 			if((isset($reg_no_gep))&&(isset($eleve_login))) {
@@ -952,9 +952,9 @@ elseif((($_SESSION['statut']=="professeur")&&($is_pp))||($_SESSION['statut']=="c
 // On appelle les informations de l'utilisateur pour les afficher :
 if (isset($eleve_login)) {
     $call_eleve_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$eleve_login'");
-    $eleve_nom = mysql_result($call_eleve_info, "0", "nom");
-    $eleve_prenom = mysql_result($call_eleve_info, "0", "prenom");
-    $eleve_email = mysql_result($call_eleve_info, "0", "email");
+    $eleve_nom = old_mysql_result($call_eleve_info, "0", "nom");
+    $eleve_prenom = old_mysql_result($call_eleve_info, "0", "prenom");
+    $eleve_email = old_mysql_result($call_eleve_info, "0", "email");
 
 	if(getSettingValue('mode_email_ele')=='mon_compte') {
 		$sql_test="SELECT email FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
@@ -981,8 +981,8 @@ if (isset($eleve_login)) {
 		}
 	}
 
-    $eleve_sexe = mysql_result($call_eleve_info, "0", "sexe");
-    $eleve_naissance = mysql_result($call_eleve_info, "0", "naissance");
+    $eleve_sexe = old_mysql_result($call_eleve_info, "0", "sexe");
+    $eleve_naissance = old_mysql_result($call_eleve_info, "0", "naissance");
     if (mb_strlen($eleve_naissance) == 10) {
         // YYYY-MM-DD
         $eleve_naissance_annee = mb_substr($eleve_naissance, 0, 4);
@@ -1005,11 +1005,11 @@ if (isset($eleve_login)) {
         $eleve_naissance_jour = "????";
     }
 
-    $eleve_lieu_naissance = mysql_result($call_eleve_info, "0", "lieu_naissance");
+    $eleve_lieu_naissance = old_mysql_result($call_eleve_info, "0", "lieu_naissance");
 
 	//=======================================
 	//Date de sortie de l'élève (timestamps), à zéro par défaut
-	$eleve_date_de_sortie =mysql_result($call_eleve_info, "0", "date_sortie"); 
+	$eleve_date_de_sortie =old_mysql_result($call_eleve_info, "0", "date_sortie"); 
 
 	//echo "Date de sortie de l'élève dans la base :  $eleve_date_de_sortie <br/>";
 	//conversion en seconde (timestamp)
@@ -1028,7 +1028,7 @@ if (isset($eleve_login)) {
 	}
 	//=======================================
 	// Date d'entrée de l'élève dans l'établissement
-	$eleve_date_entree =mysql_result($call_eleve_info, "0", "date_entree"); 
+	$eleve_date_entree =old_mysql_result($call_eleve_info, "0", "date_entree"); 
 	$eleve_date_entree_time=strtotime($eleve_date_entree);
 	if ($eleve_date_entree!=0) {
 	//récupération du jour, du mois et de l'année
@@ -1042,21 +1042,21 @@ if (isset($eleve_login)) {
 	}
 	//=======================================
 
-    //$eleve_no_resp = mysql_result($call_eleve_info, "0", "ereno");
-    $reg_no_nat = mysql_result($call_eleve_info, "0", "no_gep");
-    $reg_no_gep = mysql_result($call_eleve_info, "0", "elenoet");
-	$reg_ele_id = mysql_result($call_eleve_info, "0", "ele_id");
-	$reg_mef_code = mysql_result($call_eleve_info, "0", "mef_code");
+    //$eleve_no_resp = old_mysql_result($call_eleve_info, "0", "ereno");
+    $reg_no_nat = old_mysql_result($call_eleve_info, "0", "no_gep");
+    $reg_no_gep = old_mysql_result($call_eleve_info, "0", "elenoet");
+	$reg_ele_id = old_mysql_result($call_eleve_info, "0", "ele_id");
+	$reg_mef_code = old_mysql_result($call_eleve_info, "0", "mef_code");
 
-	$reg_tel_pers = mysql_result($call_eleve_info, "0", "tel_pers");
-	$reg_tel_port = mysql_result($call_eleve_info, "0", "tel_port");
-	$reg_tel_prof = mysql_result($call_eleve_info, "0", "tel_prof");
+	$reg_tel_pers = old_mysql_result($call_eleve_info, "0", "tel_pers");
+	$reg_tel_port = old_mysql_result($call_eleve_info, "0", "tel_port");
+	$reg_tel_prof = old_mysql_result($call_eleve_info, "0", "tel_prof");
 
     //$call_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)");
     $id_etab=0;
 	if($reg_no_gep!="") {
 		$call_etab = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$reg_no_gep' and e.id = j.id_etablissement)");
-	    $id_etab = @mysql_result($call_etab, "0", "id");
+	    $id_etab = @old_mysql_result($call_etab, "0", "id");
 	}
 
 	//echo "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)<br />";
@@ -1079,7 +1079,7 @@ if (isset($eleve_login)) {
 
 
 	if(!isset($ele_id)){
-		$ele_id=mysql_result($call_eleve_info, "0", "ele_id");
+		$ele_id=old_mysql_result($call_eleve_info, "0", "ele_id");
 	}
 
 	$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='1'";
@@ -1728,7 +1728,7 @@ if(isset($eleve_login)) {
 	$test_compte=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_compte)>0) {
 		$compte_eleve_existe="y";
-		$user_auth_mode=mysql_result($test_compte, 0, "auth_mode");
+		$user_auth_mode=old_mysql_result($test_compte, 0, "auth_mode");
 	}
 	else {
 		$compte_eleve_existe="n";

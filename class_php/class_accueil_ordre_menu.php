@@ -357,12 +357,12 @@ class class_accueil_ordre_menu extends class_page_accueil {
 	$nb_aid = mysqli_num_rows($call_data);
 	$i=0;
 	while ($i < $nb_aid) {
-	  $indice_aid = @mysql_result($call_data, $i, "indice_aid");
+	  $indice_aid = @old_mysql_result($call_data, $i, "indice_aid");
 	  $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_utilisateurs
 								WHERE indice_aid = '".$indice_aid."'");
 	  $nb_result = mysqli_num_rows($call_prof);
 	  if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
-		$nom_aid = @mysql_result($call_data, $i, "nom");
+		$nom_aid = @old_mysql_result($call_data, $i, "nom");
 		$this->creeNouveauItem("/saisie/saisie_aid.php?indice_aid=".$indice_aid,
 				$nom_aid,
 				"Cet outil permet la saisie des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les $nom_aid.");
@@ -467,12 +467,12 @@ class class_accueil_ordre_menu extends class_page_accueil {
 	  $nb_aid = mysqli_num_rows($call_data);
 	  $i=0;
 	  while ($i < $nb_aid) {
-		$indice_aid = @mysql_result($call_data, $i, "indice_aid");
+		$indice_aid = @old_mysql_result($call_data, $i, "indice_aid");
 		$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_utilisateurs_gest
 								  WHERE indice_aid = '$indice_aid'");
 		$nb_result = mysqli_num_rows($call_prof);
 		if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
-		  $nom_aid = @mysql_result($call_data, $i, "nom");
+		  $nom_aid = @old_mysql_result($call_data, $i, "nom");
 		  $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
 				  $nom_aid,
 				  "Cet outil vous permet de visualiser quels ".$this->gepiSettings['denomination_eleves']." ont le droit d'envoyer/modifier leur photo.");
@@ -744,12 +744,12 @@ class class_accueil_ordre_menu extends class_page_accueil {
 
 	$i=0;
 	while ($i < $nb_aid) {
-	  $indice_aid = @mysql_result($call_data, $i, "indice_aid");
+	  $indice_aid = @old_mysql_result($call_data, $i, "indice_aid");
 	  $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_utilisateurs
 								WHERE indice_aid = '".$indice_aid."'");
 	  $nb_result = mysqli_num_rows($call_prof);
 	  if ($nb_result != 0) {
-		$nom_aid = @mysql_result($call_data, $i, "nom");
+		$nom_aid = @old_mysql_result($call_data, $i, "nom");
 		$this->creeNouveauItem("/prepa_conseil/visu_aid.php?indice_aid=".$indice_aid,
 				"Visualiser des appréciations ".$nom_aid,
 				"Cet outil permet la visualisation et l'impression des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les ".$nom_aid.".");
@@ -1051,7 +1051,7 @@ class class_accueil_ordre_menu extends class_page_accueil {
 	  $i=0;
 
 	  while ($i < $nb_aid) {
-		$indice_aid = @mysql_result($call_data, $i, "indice_aid");
+		$indice_aid = @old_mysql_result($call_data, $i, "indice_aid");
 		$call_prof1 = mysqli_query($GLOBALS["mysqli"], "SELECT *
 					FROM j_aid_utilisateurs_gest
 					WHERE indice_aid = '".$indice_aid."'");
@@ -1062,7 +1062,7 @@ class class_accueil_ordre_menu extends class_page_accueil {
 		$nb_result2 = mysqli_num_rows($call_prof2);
 
 		if (($nb_result1 != 0) or ($nb_result2 != 0)) {
-		  $nom_aid = @mysql_result($call_data, $i, "nom");
+		  $nom_aid = @old_mysql_result($call_data, $i, "nom");
   		if ($nb_result2 != 0)
       		$this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
 				  $nom_aid,

@@ -156,8 +156,8 @@ if(isset($_GET['clean_anomalie_dev'])) {
 	}
 	elseif(isset($_GET['id_racine'])) {
 		$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='".$_GET['id_racine']."';");
-		$tmp_id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
-		$tmp_periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+		$tmp_id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
+		$tmp_periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
 	}
 
 	if((!isset($tmp_id_groupe))||(!isset($tmp_periode_num))) {
@@ -229,7 +229,7 @@ fclose($fich);
 if (isset($_REQUEST['id_devoir'])) {
     $appel_devoir = mysqli_query($GLOBALS["mysqli"], "SELECT id_racine FROM cn_devoirs WHERE (id='".$_REQUEST['id_devoir']."')");
     if (mysqli_num_rows($appel_devoir) != 0) {
-    	$id_racine = mysql_result($appel_devoir, 0, 'id_racine');
+    	$id_racine = old_mysql_result($appel_devoir, 0, 'id_racine');
     }
 }
 
@@ -271,7 +271,7 @@ if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
             $reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine'");
         }
     } else {
-        $id_racine = mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+        $id_racine = old_mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
     }
 }
 
@@ -294,18 +294,18 @@ if ((isset($_GET['creer_structure'])) and (($current_group["classe"]["ver_period
     $nb_lignes = mysqli_num_rows($query_cont);
     $i = 0;
     while ($i < $nb_lignes) {
-        $id_prec = mysql_result($query_cont,$i,'id');
-        $val2 = mysql_result($query_cont,$i,'id_racine');
-        $val3 = mysql_result($query_cont,$i,'nom_court');
-        $val4 = mysql_result($query_cont,$i,'nom_complet');
-        $val5 = mysql_result($query_cont,$i,'description');
-        $val6 = mysql_result($query_cont,$i,'mode');
-        $val7 = mysql_result($query_cont,$i,'coef');
-        $val8 = mysql_result($query_cont,$i,'arrondir');
-        $val9 = mysql_result($query_cont,$i,'ponderation');
-        $val10 = mysql_result($query_cont,$i,'display_parents');
-        $val11 = mysql_result($query_cont,$i,'display_bulletin');
-        $val12 = mysql_result($query_cont,$i,'parent');
+        $id_prec = old_mysql_result($query_cont,$i,'id');
+        $val2 = old_mysql_result($query_cont,$i,'id_racine');
+        $val3 = old_mysql_result($query_cont,$i,'nom_court');
+        $val4 = old_mysql_result($query_cont,$i,'nom_complet');
+        $val5 = old_mysql_result($query_cont,$i,'description');
+        $val6 = old_mysql_result($query_cont,$i,'mode');
+        $val7 = old_mysql_result($query_cont,$i,'coef');
+        $val8 = old_mysql_result($query_cont,$i,'arrondir');
+        $val9 = old_mysql_result($query_cont,$i,'ponderation');
+        $val10 = old_mysql_result($query_cont,$i,'display_parents');
+        $val11 = old_mysql_result($query_cont,$i,'display_bulletin');
+        $val12 = old_mysql_result($query_cont,$i,'parent');
         $query_insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO cn_conteneurs
         set id_racine = '".$id_racine."',
         nom_court = '".traitement_magic_quotes($val3)."',
@@ -350,12 +350,12 @@ fclose($fich);
 */
 if  (isset($id_racine) and ($id_racine!='')) {
     $appel_conteneurs = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id ='$id_racine'");
-    $nom_court = mysql_result($appel_conteneurs, 0, 'nom_court');
+    $nom_court = old_mysql_result($appel_conteneurs, 0, 'nom_court');
 
     $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes = '$id_racine'");
-    $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
+    $id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
     if (!isset($current_group)) $current_group = get_group($id_groupe);
-    $periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+    $periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
     include "../lib/periodes.inc.php";
 
 	$acces_exceptionnel_saisie=false;
@@ -393,7 +393,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
 				echo "<p style='color:red'>Le devoir $temp n'a pas été trouvé.</p>\n";
 			}
 			else {
-				$id_cont = mysql_result($sql, 0, 'id_conteneur');
+				$id_cont = old_mysql_result($sql, 0, 'id_conteneur');
 
 				if($current_group["classe"]["ver_periode"]["all"][$periode_num]!=3) {
 					$sql="SELECT * FROM cn_devoirs WHERE id='$temp';";

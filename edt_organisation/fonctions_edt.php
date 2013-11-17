@@ -556,7 +556,7 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
 		$sql="SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode='$id_creneaux';";
 		$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_tmp)>0) {
-			$tab_data_jour['heuredebut'][$index_box] = mysql_result($res_tmp, 0, 'heuredebut_definie_periode');
+			$tab_data_jour['heuredebut'][$index_box] = old_mysql_result($res_tmp, 0, 'heuredebut_definie_periode');
 		}
 	}
 
@@ -707,7 +707,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$req_nbre_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."' ORDER BY login");
 		$aff_nbre_eleve = mysqli_num_rows($req_nbre_eleves);
 		for($a=0; $a < $aff_nbre_eleve; $a++) {
-			$rep_eleves[$a]["login"] = mysql_result($req_nbre_eleves, $a, "login");
+			$rep_eleves[$a]["login"] = old_mysql_result($req_nbre_eleves, $a, "login");
 			$noms = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login = '".$rep_eleves[$a]["login"]."'"));
 			$contenu .= $noms["nom"]." ".$noms["prenom"]."<br />";
 		}
@@ -1016,10 +1016,10 @@ function retourne_horaire(){
 		$num_nom_horaire = mysqli_num_rows($req_nom_horaire);
 		$horaire = array();
 		for($i=0; $i<$num_nom_horaire; $i++) {
-			$horaire1[$i]["heure_debut"] = mysql_result($req_nom_horaire, $i, "heuredebut_definie_periode");
+			$horaire1[$i]["heure_debut"] = old_mysql_result($req_nom_horaire, $i, "heuredebut_definie_periode");
 			$exp_hor = explode(":", $horaire1[$i]["heure_debut"]);
 			$horaire[$i]["heure_debut"] = $exp_hor[0].":".$exp_hor[1]; // On enlève les secondes
-			$horaire1[$i]["heure_fin"] = mysql_result($req_nom_horaire, $i, "heurefin_definie_periode");
+			$horaire1[$i]["heure_fin"] = old_mysql_result($req_nom_horaire, $i, "heurefin_definie_periode");
 			$exp_hor = explode(":", $horaire1[$i]["heure_fin"]);
 			$horaire[$i]["heure_fin"] = $exp_hor[0].":".$exp_hor[1];
 		}
@@ -1117,7 +1117,7 @@ function semaine_actu(){
 		$semaine = date("W") + ($sem);
 
 		$query_s = mysqli_query($GLOBALS["mysqli"], "SELECT type_edt_semaine FROM edt_semaines WHERE id_edt_semaine = '".$semaine."' LIMIT 1");
-		$rep["type"] = mysql_result($query_s, 0);
+		$rep["type"] = old_mysql_result($query_s, 0);
 
 		return $rep;
 	}
@@ -1183,9 +1183,9 @@ function renvoie_liste($type) {
 	$tab_liste = array();
 
 		for($i=0;$i<$nb_liste;$i++) {
-			$rep_liste[$i]["nom"] = mysql_result($req_liste, $i, "nom");
-			$rep_liste[$i]["prenom"] = mysql_result($req_liste, $i, "prenom");
-			$rep_liste[$i]["login"] = mysql_result($req_liste, $i, "login");
+			$rep_liste[$i]["nom"] = old_mysql_result($req_liste, $i, "nom");
+			$rep_liste[$i]["prenom"] = old_mysql_result($req_liste, $i, "prenom");
+			$rep_liste[$i]["login"] = old_mysql_result($req_liste, $i, "login");
 			}
 	return $rep_liste;
 	}
@@ -1197,8 +1197,8 @@ function renvoie_liste($type) {
 	$tab_liste = array();
 
 		for($i=0;$i<$nb_liste;$i++) {
-			$rep_liste[$i]["id"] = mysql_result($req_liste, $i, "id");
-			$rep_liste[$i]["classe"] = mysql_result($req_liste, $i, "classe");
+			$rep_liste[$i]["id"] = old_mysql_result($req_liste, $i, "id");
+			$rep_liste[$i]["classe"] = old_mysql_result($req_liste, $i, "classe");
 			}
 	return $rep_liste;
 	}
@@ -1210,9 +1210,9 @@ function renvoie_liste($type) {
 	$tab_liste = array();
 
 		for($i=0;$i<$nb_liste;$i++) {
-			$rep_liste[$i]["id_salle"] = mysql_result($req_liste, $i, "id_salle");
-			$rep_liste[$i]["numero_salle"] = mysql_result($req_liste, $i, "numero_salle");
-			$rep_liste[$i]["nom_salle"] = mysql_result($req_liste, $i, "nom_salle");
+			$rep_liste[$i]["id_salle"] = old_mysql_result($req_liste, $i, "id_salle");
+			$rep_liste[$i]["numero_salle"] = old_mysql_result($req_liste, $i, "numero_salle");
+			$rep_liste[$i]["nom_salle"] = old_mysql_result($req_liste, $i, "nom_salle");
 			}
 	return $rep_liste;
 	}
@@ -1224,9 +1224,9 @@ function renvoie_liste($type) {
 	$tab_liste = array();
 
 		for($i=0;$i<$nb_liste;$i++) {
-			$rep_liste[$i]["nom"] = mysql_result($req_liste, $i, "nom");
-			$rep_liste[$i]["prenom"] = mysql_result($req_liste, $i, "prenom");
-			$rep_liste[$i]["login"] = mysql_result($req_liste, $i, "login");
+			$rep_liste[$i]["nom"] = old_mysql_result($req_liste, $i, "nom");
+			$rep_liste[$i]["prenom"] = old_mysql_result($req_liste, $i, "prenom");
+			$rep_liste[$i]["login"] = old_mysql_result($req_liste, $i, "login");
 			}
 	return $rep_liste;
 	}
@@ -1257,9 +1257,9 @@ function renvoie_liste_a($type, $alpha){
 	$rep_liste = array();
 
 		for($i=0;$i<$nb_liste;$i++) {
-			$rep_liste[$i]["nom"] = mysql_result($req_eleves_a, $i, "nom");
-			$rep_liste[$i]["prenom"] = mysql_result($req_eleves_a, $i, "prenom");
-			$rep_liste[$i]["login"] = mysql_result($req_eleves_a, $i, "login");
+			$rep_liste[$i]["nom"] = old_mysql_result($req_eleves_a, $i, "nom");
+			$rep_liste[$i]["prenom"] = old_mysql_result($req_eleves_a, $i, "prenom");
+			$rep_liste[$i]["login"] = old_mysql_result($req_eleves_a, $i, "login");
 			}
 	return $rep_liste;
 	}
@@ -1275,7 +1275,7 @@ function renvoie_liste_classe($id_classe_post){
 
 		for($i=0; $i<$nb_eleves; $i++) {
 
-			$rep_liste_eleves[$i]["login"] = mysql_result($req_liste_login, $i, "login");
+			$rep_liste_eleves[$i]["login"] = old_mysql_result($req_liste_login, $i, "login");
 		}
 	return $rep_liste_eleves;
 }
@@ -1286,29 +1286,29 @@ function renvoie_nom_long($id, $type){
 	{
 	if ($type == "prof") {
 		$req_nom_long = mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom, civilite FROM utilisateurs WHERE login = '".$id."'");
-		$nom = @mysql_result($req_nom_long, 0, 'nom');
-    	$prenom = @mysql_result($req_nom_long, 0, 'prenom');
-    	$civilite = @mysql_result($req_nom_long, 0, 'civilite');
+		$nom = @old_mysql_result($req_nom_long, 0, 'nom');
+    	$prenom = @old_mysql_result($req_nom_long, 0, 'prenom');
+    	$civilite = @old_mysql_result($req_nom_long, 0, 'civilite');
 
     	$nom_long = $civilite." ".$nom." ".$prenom;
 	}
 
 	elseif ($type == "eleve") {
 		$req_nom_long = mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login = '".$id."'");
-		$nom = @mysql_result($req_nom_long, 0, 'nom');
-    	$prenom = @mysql_result($req_nom_long, 0, 'prenom');
+		$nom = @old_mysql_result($req_nom_long, 0, 'nom');
+    	$prenom = @old_mysql_result($req_nom_long, 0, 'prenom');
 
     	$nom_long = $prenom." ".$nom;
 	}
 	elseif ($type == "salle") {
 		$req_nom_long = mysqli_query($GLOBALS["mysqli"], "SELECT nom_salle FROM salle_cours WHERE id_salle = '".$id."'");
-		$nom = @mysql_result($req_nom_long, 0, 'nom_salle');
+		$nom = @old_mysql_result($req_nom_long, 0, 'nom_salle');
 
     	$nom_long = 'la '.$nom;
 	}
 	elseif ($type == "classe") {
 		$req_nom_long = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM classes WHERE id = '".$id."'");
-		$nom = @mysql_result($req_nom_long, 0, 'nom_complet');
+		$nom = @old_mysql_result($req_nom_long, 0, 'nom_complet');
 
 		$nom_long = 'la classe de '.$nom;
 	}
@@ -1402,8 +1402,8 @@ function renvoieAid($statut, $nom){
 		// Et on retourne le tableau
 			$resultat = array();
 		for($i = 0; $i < $nbre; $i++) {
-			$resultat[$i]["id_aid"] = mysql_result($requete, $i, "id_aid");
-			$resultat[$i]["indice_aid"] = mysql_result($requete, $i, "indice_aid");
+			$resultat[$i]["id_aid"] = old_mysql_result($requete, $i, "id_aid");
+			$resultat[$i]["indice_aid"] = old_mysql_result($requete, $i, "indice_aid");
 		}
 		return $resultat;
 

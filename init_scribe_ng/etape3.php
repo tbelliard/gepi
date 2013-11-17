@@ -164,7 +164,7 @@ if ($_POST['step'] == "3") {
             
             // On s'assure qu'on a bien un élève correspondant !
             if (mysqli_num_rows($req_eleid) == 1) {
-              $eleve_associe_ele_id = mysql_result($req_eleid, 0);
+              $eleve_associe_ele_id = old_mysql_result($req_eleid, 0);
               /*
                * Il faut ensuite effectuer le lien entre Responsable et Eleve
                */

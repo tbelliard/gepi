@@ -94,7 +94,7 @@ if ($_SESSION['statut'] == "responsable") {
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
-	if (mysql_result($test, 0) == 0) {
+	if (old_mysql_result($test, 0) == 0) {
 	    tentative_intrusion(3, "Tentative d'un parent de visualiser un bulletin simplifié d'un élève dont il n'est pas responsable légal.");
 	    echo "Vous ne pouvez visualiser que les bulletins simplifiés des élèves pour lesquels vous êtes responsable légal.\n";
 	    require("../lib/footer.inc.php");

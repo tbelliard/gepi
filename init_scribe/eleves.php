@@ -113,7 +113,7 @@ if (isset($_POST['step'])) {
 
             $j=0;
             while ($j < count($liste_tables_del)) {
-                if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+                if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
                     $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
                 }
                 $j++;
@@ -129,7 +129,7 @@ if (isset($_POST['step'])) {
 
                 // On enregistre la classe
                 // On teste d'abord :
-                $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
+                $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
 
                 if ($test == "0") {
                     //$reg_classe = mysql_query("INSERT INTO classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($_POST['reg_nom_complet'][$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($_POST['reg_suivi'][$classe]))."',formule='".traitement_magic_quotes(corriger_caracteres($_POST['reg_formule'][$classe]))."', format_nom='np'");
@@ -142,8 +142,8 @@ if (isset($_POST['step'])) {
 
                 // On enregistre les périodes pour cette classe
                 // On teste d'abord :
-                $id_classe = mysql_result(mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$classe'"),0,'id');
-                $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE (id_classe='$id_classe')"),0);
+                $id_classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$classe'"),0,'id');
+                $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE (id_classe='$id_classe')"),0);
                 if ($test == "0") {
                     $j = '0';
                     while ($j < $_POST['reg_periodes_num'][$classe]) {
@@ -198,15 +198,15 @@ if (isset($_POST['step'])) {
             $sql = mysqli_query($GLOBALS["mysqli"], "select distinct id_classe from periodes where verouiller='T'");
             $k = 0;
             while ($k < mysqli_num_rows($sql)) {
-               $id_classe = mysql_result($sql, $k);
+               $id_classe = old_mysql_result($sql, $k);
                $res1 = mysqli_query($GLOBALS["mysqli"], "delete from classes where id='".$id_classe."'");
                // On supprime les groupes qui étaient liées à la classe
                $get_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT id_groupe FROM j_groupes_classes WHERE id_classe = '" . $id_classe . "'");
                for ($l=0;$l<$nb_groupes;$l++) {
-                    $id_groupe = mysql_result($get_groupes, $l, "id_groupe");
+                    $id_groupe = old_mysql_result($get_groupes, $l, "id_groupe");
                     $delete2 = mysqli_query($GLOBALS["mysqli"], "delete from j_groupes_classes WHERE id_groupe = '" . $id_groupe . "'");
                     // On regarde si le groupe est toujours lié à une autre classe ou pas
-                    $check = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_groupes_classes WHERE id_groupe = '" . $id_groupe . "'"), 0);
+                    $check = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_groupes_classes WHERE id_groupe = '" . $id_groupe . "'"), 0);
                     if ($check == "0") {
                         $delete1 = mysqli_query($GLOBALS["mysqli"], "delete from groupes WHERE id = '" . $id_groupe . "'");
                         $delete2 = mysqli_query($GLOBALS["mysqli"], "delete from j_groupes_matieres WHERE id_groupe = '" . $id_groupe . "'");
@@ -326,12 +326,12 @@ if (isset($_POST['step'])) {
                     $formule = "";
                     $nb_per = '3';
                 } else {
-                    $id_classe = mysql_result($test_classe_exist, 0, 'id');
+                    $id_classe = old_mysql_result($test_classe_exist, 0, 'id');
                     $nb_per = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "select num_periode from periodes where id_classe='$id_classe'"));
                     $nom_court = "<font color=green>".$classe_id."</font>";
-                    $nom_complet = mysql_result($test_classe_exist, 0, 'nom_complet');
-                    $suivi_par = mysql_result($test_classe_exist, 0, 'suivi_par');
-                    $formule = mysql_result($test_classe_exist, 0, 'formule');
+                    $nom_complet = old_mysql_result($test_classe_exist, 0, 'nom_complet');
+                    $suivi_par = old_mysql_result($test_classe_exist, 0, 'suivi_par');
+                    $formule = old_mysql_result($test_classe_exist, 0, 'formule');
                 }
                 echo "<tr>";
                 echo "<td><center><input type=\"checkbox\"></center></td>\n";
@@ -378,8 +378,8 @@ if (isset($_POST['step'])) {
         $nb_classes = mysqli_num_rows($classes);
         $pp = array();
         for ($i=0;$i<$nb_classes;$i++) {
-            $current_classe = mysql_result($classes, $i, "classe");
-            $current_classe_id = mysql_result($classes, $i, "id");
+            $current_classe = old_mysql_result($classes, $i, "classe");
+            $current_classe_id = old_mysql_result($classes, $i, "id");
             $sr = ldap_search($ldap_server->ds,$ldap_server->base_dn,"(&(objectClass=administrateur)(divcod=" . $current_classe ."))");
             $prof = ldap_get_entries($ldap_server->ds,$sr);
             if (array_key_exists(0, $prof)) {
@@ -424,9 +424,9 @@ if (isset($_POST['step'])) {
                             $date_naissance);
                             //$info[$i]["employeenumber"]);
 
-            $id_classe = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT id FROM classes WHERE classe = '" . $info[$i]["divcod"][0] . "'"), 0);
+            $id_classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT id FROM classes WHERE classe = '" . $info[$i]["divcod"][0] . "'"), 0);
 
-            $check = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_eleves_professeurs WHERE (login = '" . $info[$i]["uid"][0] . "')"), 0);
+            $check = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_eleves_professeurs WHERE (login = '" . $info[$i]["uid"][0] . "')"), 0);
             if ($check > 0) {
                 $del = mysqli_query($GLOBALS["mysqli"], "DELETE from j_eleves_professeurs WHERE login = '" . $info[$i]["uid"][0] . "'");
             }
@@ -435,9 +435,9 @@ if (isset($_POST['step'])) {
                 $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_professeurs SET login = '" . $info[$i]["uid"][0] . "', id_classe = '" . $id_classe . "', professeur = '" . $pp[$id_classe] . "'");
             }
 
-            $get_periode_num = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE (id_classe = '" . $id_classe . "')"), 0);
+            $get_periode_num = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE (id_classe = '" . $id_classe . "')"), 0);
 
-            $check = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_eleves_classes WHERE (login = '" . $info[$i]["uid"][0] . "')"), 0);
+            $check = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_eleves_classes WHERE (login = '" . $info[$i]["uid"][0] . "')"), 0);
             if ($check > 0) {
                 $del = mysqli_query($GLOBALS["mysqli"], "DELETE from j_eleves_classes WHERE login = '" . $info[$i]["uid"][0] . "'");
             }
@@ -472,7 +472,7 @@ if (isset($_POST['step'])) {
     $j=0;
     $flag=0;
     while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
             $flag=1;
         }
         $j++;

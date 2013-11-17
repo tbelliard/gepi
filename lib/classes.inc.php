@@ -16,9 +16,9 @@
 							"id = '" . $_id_classe . "'".
 							")");
 
-	$temp["id"] = mysql_result($query, 0, "id");
-	$temp["classe"] = mysql_result($query, 0, "classe");
-	$temp["nom_complet"] = mysql_result($query, 0, "nom_complet");
+	$temp["id"] = old_mysql_result($query, 0, "id");
+	$temp["classe"] = old_mysql_result($query, 0, "classe");
+	$temp["nom_complet"] = old_mysql_result($query, 0, "nom_complet");
 
 	return $temp;
 }
@@ -39,10 +39,10 @@ function get_eleves_classe($_id_classe){
 
 	for($i = 0 ; $i < $nbre ; $i++){
 
-		$retour[$i]["nom"] = mysql_result($query, $i, "nom");
-		$retour[$i]["prenom"] = mysql_result($query, $i, "prenom");
-		$retour[$i]["login"] = mysql_result($query, $i, "login");
-		$retour[$i]["id_eleve"] = mysql_result($query, $i, "id_eleve");
+		$retour[$i]["nom"] = old_mysql_result($query, $i, "nom");
+		$retour[$i]["prenom"] = old_mysql_result($query, $i, "prenom");
+		$retour[$i]["login"] = old_mysql_result($query, $i, "login");
+		$retour[$i]["id_eleve"] = old_mysql_result($query, $i, "id_eleve");
 
 	}
 	return $retour;

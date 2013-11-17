@@ -294,11 +294,11 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 
 	if ($id_classe != NULL) {
 		$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
-		$current_classe = mysql_result($calldata, 0, "classe");
+		$current_classe = old_mysql_result($calldata, 0, "classe");
 	} else {
 		$sql = "SELECT * FROM classes WHERE id = '$id_classe'";
 		$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
-		$current_classe = mysql_result($calldata, 0, "classe");
+		$current_classe = old_mysql_result($calldata, 0, "classe");
 	}
 
 	if (($option_affiche_pp==1)) {
@@ -313,7 +313,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		$sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
 		//echo "$sql<br />\n";
 		$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
-		$current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
+		$current_eleve_profsuivi_login = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
 
 		$pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,casse_mot(getSettingValue("gepi_prof_suivi"),'majf2').' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
 	} else {
@@ -387,7 +387,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		$sql_current_eleve_avis = "SELECT avis FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='".$donnees_eleves[$nb_eleves_i]['id_periode']."')";
 		//echo "$sql_current_eleve_avis<br />\n";
 		$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], $sql_current_eleve_avis);
-		$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
+		$current_eleve_avis = @old_mysql_result($current_eleve_avis_query, 0, "avis");
 
 		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-5) {
 		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$h_cell-5) {

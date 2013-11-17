@@ -114,7 +114,7 @@ if (($id_classe!=-1)&&($id_classe!='')) {
 	$sql="SELECT classe FROM classes WHERE id='$id_classe';";
 	$appel_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($appel_classe)>0) {
-		$classe_nom = mysql_result($appel_classe, 0, "classe");
+		$classe_nom = old_mysql_result($appel_classe, 0, "classe");
 	}
 }
 
@@ -189,8 +189,8 @@ echo "<div class='centre_table'>\n";
 				//echo "$sql<br />";
 				$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_classe)>0) {
-					//$id_classe = mysql_result($res_classe, 0, 'id_classe');
-					$tmp_id_classe = mysql_result($res_classe, 0, 'id_classe');
+					//$id_classe = old_mysql_result($res_classe, 0, 'id_classe');
+					$tmp_id_classe = old_mysql_result($res_classe, 0, 'id_classe');
 				}
 			//}
 
@@ -209,8 +209,8 @@ echo "<div class='centre_table'>\n";
 					//echo "$sql<br />";
 					$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
 					$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
-					$content .= @mysql_result($appel_info_cahier_texte, 0, 'contenu');
-					$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
+					$content .= @old_mysql_result($appel_info_cahier_texte, 0, 'contenu');
+					$id_ct = @old_mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 
 					$content .= affiche_docs_joints($id_ct,"c");
 
@@ -800,8 +800,8 @@ if ($nb_test == 0) {
 // Affichage des informations générales
 $appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 $nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
-$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
-$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
+$content = @old_mysql_result($appel_info_cahier_texte, 0, 'contenu');
+$id_ct = @old_mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 $content .= affiche_docs_joints($id_ct,"c");
 if ($content != '') {
 	echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>INFORMATIONS GENERALES</strong>\n</h2>\n";

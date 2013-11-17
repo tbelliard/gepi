@@ -107,7 +107,7 @@ if (!isset($step2)) {
     while (($j < count($liste_tables_del)) and ($flag==0)) {
 		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE '$liste_tables_del[$j]'"));
 		if($test==1){
-			if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+			if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 				$flag=1;
 			}
 		}
@@ -175,10 +175,10 @@ if (isset($is_posted)) {
     $i = "0";
 
     while ($i < $nb) {
-        $classe = mysql_result($call_data, $i, "classe");
+        $classe = old_mysql_result($call_data, $i, "classe");
         // On enregistre la classe
         // On teste d'abord :
-        $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
+        $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
         if ($test == "0") {
             $reg_classe = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " _-","")) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " _-","")) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',suivi_par='".mysql_real_escape_string(nettoyer_caracteres_nom($reg_suivi[$classe]),  "an",  " ',._-", "")."',formule='".html_entity_decode(((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " ',._-","")) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")))."', format_nom='cni'");
 
@@ -200,8 +200,8 @@ if (isset($is_posted)) {
 
         // On enregistre les périodes pour cette classe
         // On teste d'abord :
-        $id_classe = mysql_result(mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$classe'"),0,'id');
-        $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE (id_classe='$id_classe')"),0);
+        $id_classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$classe'"),0,'id');
+        $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE (id_classe='$id_classe')"),0);
         if ($test == "0") {
             $j = '0';
             while ($j < $reg_periodes_num[$classe]) {
@@ -258,7 +258,7 @@ if (isset($is_posted)) {
     $sql = mysqli_query($GLOBALS["mysqli"], "select distinct id_classe from periodes where verouiller='T'");
     $k = 0;
     while ($k < mysqli_num_rows($sql)) {
-       $id_classe = mysql_result($sql, $k);
+       $id_classe = old_mysql_result($sql, $k);
        $res1 = mysqli_query($GLOBALS["mysqli"], "delete from classes where id='".$id_classe."'");
        $res2 = mysqli_query($GLOBALS["mysqli"], "delete from j_groupes_classes where id_classe='".$id_classe."'");
        $k++;
@@ -360,7 +360,7 @@ onclick="javascript:MetVal('pour')" />
 <th><p class=\"small\">Nombres de périodes</p></th></tr>\n";
 	$alt=1;
     while ($i < $nb) {
-        $classe_id = mysql_result($call_data, $i, "classe");
+        $classe_id = old_mysql_result($call_data, $i, "classe");
         $test_classe_exist = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE classe='$classe_id'");
         $nb_test_classe_exist = mysqli_num_rows($test_classe_exist);
 
@@ -371,12 +371,12 @@ onclick="javascript:MetVal('pour')" />
             $formule = "";
             $nb_per = '3';
         } else {
-            $id_classe = mysql_result($test_classe_exist, 0, 'id');
+            $id_classe = old_mysql_result($test_classe_exist, 0, 'id');
             $nb_per = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "select num_periode from periodes where id_classe='$id_classe'"));
             $nom_court = "<font color=green>".$classe_id."</font>";
-            $nom_complet = mysql_result($test_classe_exist, 0, 'nom_complet');
-            $suivi_par = mysql_result($test_classe_exist, 0, 'suivi_par');
-            $formule = mysql_result($test_classe_exist, 0, 'formule');
+            $nom_complet = old_mysql_result($test_classe_exist, 0, 'nom_complet');
+            $suivi_par = old_mysql_result($test_classe_exist, 0, 'suivi_par');
+            $formule = old_mysql_result($test_classe_exist, 0, 'formule');
         }
 		$alt=$alt*(-1);
         echo "<tr class='lig$alt white_hover'>\n";

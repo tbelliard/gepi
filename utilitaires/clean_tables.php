@@ -248,9 +248,9 @@ function clean_table_matieres_appreciations() {
 	$fin = '';
 	$cpt_2 = 0;
 	while (($offset<$nb_lignes) and ($fin == '')) {
-		$login_user = mysql_result($req,$offset,'login');
-		$id_groupe = mysql_result($req,$offset,'id_groupe');
-		$periode = mysql_result($req,$offset,'periode');
+		$login_user = old_mysql_result($req,$offset,'login');
+		$id_groupe = old_mysql_result($req,$offset,'id_groupe');
+		$periode = old_mysql_result($req,$offset,'periode');
 
 		// Détection des doublons
 		$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM matieres_appreciations
@@ -362,9 +362,9 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 	$fin = '';
 	$cpt_2 = 0;
 	while (($offset<$nb_lignes) and ($fin == '')) {
-		$login_user = mysql_result($req,$offset,'login');
-		$id_groupe = mysql_result($req,$offset,'id_groupe');
-		$periode = mysql_result($req,$offset,'periode');
+		$login_user = old_mysql_result($req,$offset,'login');
+		$id_groupe = old_mysql_result($req,$offset,'id_groupe');
+		$periode = old_mysql_result($req,$offset,'periode');
 
 		// Détection des doublons
 		$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM matieres_notes
@@ -542,8 +542,8 @@ function clean_tables_aid_et_autres() {
 		$i = 0;
 		$affiche = 'yes';
 		while ($i < $nb_lignes) {
-			$temp1 = mysql_result($req,$i,$val[2]);
-			$temp2 = mysql_result($req,$i,$val[3]);
+			$temp1 = old_mysql_result($req,$i,$val[2]);
+			$temp2 = old_mysql_result($req,$i,$val[3]);
 
 			$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $key j, $val[0] t1, $val[1] t2
 
@@ -559,7 +559,7 @@ function clean_tables_aid_et_autres() {
 				$nb = $nb_lignes2-1;
 				// cas j_aid_eleves et j_aid_utilisateurs
 				if (($key == "j_aid_eleves") or ($key == "j_aid_utilisateurs") or ($key == "j_aid_eleves_resp") or ($key == "j_aid_utilisateurs_gest")) {
-					$indice_aid = mysql_result($req,$i,'indice_aid');
+					$indice_aid = old_mysql_result($req,$i,'indice_aid');
 					$test = sql_query1("select a.indice_aid from aid_config ac, aid a
 					where
 					ac.indice_aid ='$indice_aid' and
@@ -623,9 +623,9 @@ function clean_table_j_eleves_professeurs() {
 	$i = 0;
 	while ($i < $nb_lignes) {
 
-	$login_user = mysql_result($req,$i,'login');
-		$professeur = mysql_result($req,$i,'professeur');
-		$id_classe = mysql_result($req,$i,'id_classe');
+	$login_user = old_mysql_result($req,$i,'login');
+		$professeur = old_mysql_result($req,$i,'professeur');
+		$id_classe = old_mysql_result($req,$i,'id_classe');
 
 		// Détection des doublons
 		$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_professeurs
@@ -706,9 +706,9 @@ function clean_table_j_eleves_classes() {
 	$nb_lignes = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_lignes) {
-		$login_user = mysql_result($req,$i,'login');
-		$id_classe = mysql_result($req,$i,'id_classe');
-		$periode = mysql_result($req,$i,'periode');
+		$login_user = old_mysql_result($req,$i,'login');
+		$id_classe = old_mysql_result($req,$i,'id_classe');
+		$periode = old_mysql_result($req,$i,'periode');
 		// Détection des doublons
 		$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_classes
 			where
@@ -779,10 +779,10 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 	$nb_lignes = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_lignes) {
-		$login_user = mysql_result($req,$i,'login');
-		$id_aid = mysql_result($req,$i,'id_aid');
+		$login_user = old_mysql_result($req,$i,'login');
+		$id_aid = old_mysql_result($req,$i,'id_aid');
 
-	$periode = mysql_result($req,$i,'periode');
+	$periode = old_mysql_result($req,$i,'periode');
 
 
 	$test = mysqli_query($GLOBALS["mysqli"], "select aa.login
@@ -836,8 +836,8 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 	$nb_lignes = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_lignes) {
-		$login_user = mysql_result($req,$i,'login');
-		$periode = mysql_result($req,$i,'periode');
+		$login_user = old_mysql_result($req,$i,'login');
+		$periode = old_mysql_result($req,$i,'periode');
 
 		$test = mysqli_query($GLOBALS["mysqli"], "select acc.login
 		from

@@ -233,6 +233,7 @@ require_once($chemin_relatif_gepi."/lib/mysqli.inc.php");
 
 require_once($chemin_relatif_gepi."/lib/mysql.inc");
    
+require($chemin_relatif_gepi."/lib/old_mysql_result.php");
 
 /**
  * Pour permettre de caser Gepi dans un iframe avec M$IE sur certains ENT

@@ -107,8 +107,8 @@ if (!isset($id_classe)) {
         echo "<tr valign='top' align='center'>\n";
         echo "<td align='left'>\n";
    while ($i < $nombreligne) {
-        $id_classe = mysql_result($call_classes, $i, "id");
-        $l_classe = mysql_result($call_classes, $i, "classe");
+        $id_classe = old_mysql_result($call_classes, $i, "id");
+        $l_classe = old_mysql_result($call_classes, $i, "classe");
 	if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 		echo "</td>\n";
 		//echo "<td style='padding: 0 10px 0 10px'>\n";
@@ -206,7 +206,7 @@ if (!isset($id_classe)) {
     $graph_title = "";
 
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = $id_classe");
-    $classe = mysql_result($call_data, 0, "classe");
+    $classe = old_mysql_result($call_data, 0, "classe");
 
 	//echo "<a href='stats_classe.php'>Choisir une autre classe</a></p>\n";
 
@@ -259,7 +259,7 @@ if (!isset($id_classe)) {
     $prev_cat_id = null;
 	$alt=1;
     while ($i < $nombre_lignes) {
-        $group_id = mysql_result($call_groupes, $i, "id_groupe");
+        $group_id = old_mysql_result($call_groupes, $i, "id_groupe");
         $current_group = get_group($group_id);
 
         if ($affiche_categories) {
@@ -268,8 +268,8 @@ if (!isset($id_classe)) {
                 $prev_cat_id = $current_group["classes"]["classes"][$id_classe]["categorie_id"];
                 // On est dans une nouvelle catégorie
                 // On récupère les infos nécessaires, et on affiche une ligne
-                //$cat_name = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
-                $cat_name = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
+                //$cat_name = html_entity_decode(old_mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
+                $cat_name = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
                 // On détermine le nombre de colonnes pour le colspan
                 $nb_total_cols = 1;
                 $k = '1';
@@ -291,7 +291,7 @@ if (!isset($id_classe)) {
         $k = '1';
         while ($k < $nb_periode) {
             $moyenne_classe_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$k' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
-            $moyenne_classe = mysql_result($moyenne_classe_query, 0, "moyenne");
+            $moyenne_classe = old_mysql_result($moyenne_classe_query, 0, "moyenne");
             if ($moyenne_classe == '') {$moyenne_classe = '-';}
             echo "<td>$moyenne_classe</td>\n";
             (preg_match("/^[0-9\.\,]{1,}$/", $moyenne_classe)) ? array_push($datay[$k],"$moyenne_classe") : array_push($datay[$k],"0");
@@ -308,7 +308,7 @@ if (!isset($id_classe)) {
     $k = '1';
     while ($k < $nb_periode) {
         $moyenne_generale_classe_query = mysql_query("SELECT round(avg(n.note),1) moyenne_generale FROM matieres_notes n, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = n.login AND n.periode='$k' AND n.statut ='')");
-        $moyenne_generale_classe = mysql_result($moyenne_generale_classe_query, 0, "moyenne_generale");
+        $moyenne_generale_classe = old_mysql_result($moyenne_generale_classe_query, 0, "moyenne_generale");
         if ($moyenne_generale_classe == '') {$moyenne_generale_classe = '-';}
         echo "<td>$moyenne_generale_classe</td>";
         $k++;

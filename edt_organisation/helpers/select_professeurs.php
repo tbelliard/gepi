@@ -37,10 +37,10 @@ echo '
 	$verif = 0;
 	for($i = 0; $i < $nbre; $i++){
 
-		$utilisateur[$i] = mysql_result($query, $i, "login");
-		$nom[$i] = mysql_result($query, $i, "nom");
-		$nom_m[$i] = my_strtoupper(remplace_accents(mysql_result($query, $i, "nom"), 'all_nospace'));
-		$prenom[$i] = mysql_result($query, $i, "prenom");
+		$utilisateur[$i] = old_mysql_result($query, $i, "login");
+		$nom[$i] = old_mysql_result($query, $i, "nom");
+		$nom_m[$i] = my_strtoupper(remplace_accents(old_mysql_result($query, $i, "nom"), 'all_nospace'));
+		$prenom[$i] = old_mysql_result($query, $i, "prenom");
 
 		//Pour les noms composés, on ajoute un test
 		$test = explode(" ", $nom_m[$i]);

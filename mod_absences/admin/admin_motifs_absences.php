@@ -81,8 +81,8 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
             // Vérification des champs nom et prenom (si il ne sont pas vides ?)
             if($init_motif_absence_ins != "" && $def_motif_absence_ins != "")
             {
-                 if($action_sql == "ajouter") { $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_motifs WHERE init_motif_absence = '".$init_motif_absence_ins."'"),0); }
-                 if($action_sql == "modifier") { $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_motifs WHERE id_motif_absence != '".$id_motif_absence_ins."' AND init_motif_absence = '".$init_motif_absence_ins."'"),0); }
+                 if($action_sql == "ajouter") { $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_motifs WHERE init_motif_absence = '".$init_motif_absence_ins."'"),0); }
+                 if($action_sql == "modifier") { $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_motifs WHERE id_motif_absence != '".$id_motif_absence_ins."' AND init_motif_absence = '".$init_motif_absence_ins."'"),0); }
                  if ($test == "0")
                   {
                      if($action_sql == "ajouter")
@@ -139,7 +139,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 }
 
 if ($action_sql == "supprimer") {
-      $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_motifs, absences_eleves
+      $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_motifs, absences_eleves
       WHERE absences_eleves.motif_absence_eleve = absences_motifs.init_motif_absence
       and id_motif_absence ='".$id_motif."'"),0);
       if ($test == "0")
@@ -259,7 +259,7 @@ echo "</p>";
           <td>
            <?php
            if($action==='modifier') {
-               $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_eleves WHERE absences_eleves.motif_absence_eleve = '".$data_modif_motif['init_motif_absence']."'"),0);
+               $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_eleves WHERE absences_eleves.motif_absence_eleve = '".$data_modif_motif['init_motif_absence']."'"),0);
                if ($test != '0') {
                    ?><input name="init_motif_absence[<?php echo $nb; ?>]" type="hidden" id="init_motif_absence" size="2" maxlength="2" value="<?php if($action=="modifier") { echo $data_modif_motif['init_motif_absence']; } elseif (isset($init_motif_absence_erreur[$nb])) { echo $init_motif_absence_erreur[$nb]; } ?>" /><?php if($action=="modifier") { echo $data_modif_motif['init_motif_absence']; } elseif (isset($init_motif_absence_erreur[$nb])) { echo $init_motif_absence_erreur[$nb]; } ?><?php
                } else {

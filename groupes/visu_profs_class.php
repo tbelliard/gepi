@@ -704,8 +704,8 @@ else {
 	//echo "<option value='null'>-- Sélectionner la classe --</option>\n";
 	/*
 	for ($i=0;$i<$nb_classes;$i++) {
-		$classe=mysql_result($query, $i, "classe");
-		$id_classe=mysql_result($query, $i, "id");
+		$classe=old_mysql_result($query, $i, "classe");
+		$id_classe=old_mysql_result($query, $i, "id");
 		echo "<option value='$id_classe'>" . htmlspecialchars($classe) . "</option>\n";
 	}
 	*/

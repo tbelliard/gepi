@@ -123,8 +123,8 @@ $nbre = mysqli_num_rows($req_classe);
 
 for($i = 0; $i < $nbre; $i++) {
 	// On récupère le nom de toutes les classes
-	$rep_classe[$i]["classe"] = mysql_result($req_classe, $i, "classe");
-	$rep_classe[$i]["id"] = mysql_result($req_classe, $i, "id");
+	$rep_classe[$i]["classe"] = old_mysql_result($req_classe, $i, "classe");
+	$rep_classe[$i]["id"] = old_mysql_result($req_classe, $i, "id");
 	echo '
 		<tr>
 			<td>'.$rep_classe[$i]["classe"].'</td>
@@ -139,7 +139,7 @@ for($i = 0; $i < $nbre; $i++) {
 	$nbre_a = mysqli_num_rows($req_repas);
 
 	for($b = 0; $b < $nbre_a; $b++){
-		$rep_absences[$b]["eleve_id"] = mysql_result($req_repas, $b, "eleve_id");
+		$rep_absences[$b]["eleve_id"] = old_mysql_result($req_repas, $b, "eleve_id");
 		$req_id_classe = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 
 		// On affiche l'élève en fonction de la classe à laquelle il appartient

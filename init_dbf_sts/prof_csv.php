@@ -101,13 +101,13 @@ if (!isset($step1)) {
     $j=0;
     $flag=0;
     while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
             $flag=1;
         }
         $j++;
     }
 
-    $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM utilisateurs WHERE statut='professeur'"),0);
+    $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM utilisateurs WHERE statut='professeur'"),0);
     if ($test != 0) {$flag=1;}
 
     if ($flag != 0){
@@ -128,7 +128,7 @@ if (!isset($step1)) {
 if (!isset($is_posted)) {
     $j=0;
     while ($j < count($liste_tables_del)) {
-        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
         $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
         }
         $j++;
@@ -284,14 +284,14 @@ if (!isset($is_posted)) {
                                 $exist = 'no';
                             } else {
                                 $exist = 'yes';
-                                $login_prof_gepi = mysql_result($test_exist2,0,'login');
+                                $login_prof_gepi = old_mysql_result($test_exist2,0,'login');
                             }
                         } else {
                             $exist = 'no';
                         }
                     } else {
                         $exist = 'yes';
-                        $login_prof_gepi = mysql_result($test_exist,0,'login');
+                        $login_prof_gepi = old_mysql_result($test_exist,0,'login');
                     }
                     if ($exist == 'no') {
 

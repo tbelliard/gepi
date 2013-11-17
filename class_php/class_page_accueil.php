@@ -1941,7 +1941,7 @@ if(getSettingAOui('active_bulletins')) {
             $nbre = $query_f->num_rows;
 		
 		if ($nbre >= 1) {
-		  $rep_f = mysql_result($query_f, 0, "autorisation");
+		  $rep_f = old_mysql_result($query_f, 0, "autorisation");
 		}else{
 		  $rep_f = '';
 		}
@@ -2075,7 +2075,7 @@ if(getSettingAOui('active_bulletins')) {
                           WHERE indice_aid = '".$indice_aid."' and id_utilisateur='".$this->loginUtilisateur."'");
                 $nb_result2 = $call_prof2->num_rows;
                 if (($nb_result1 != 0) or ($nb_result2 != 0)) {
-                  $nom_aid = @mysql_result($call_data, $i, "nom");
+                  $nom_aid = @old_mysql_result($call_data, $i, "nom");
                 if ($nb_result2 != 0)
                     $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
                           $nom_aid,

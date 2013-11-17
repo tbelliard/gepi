@@ -326,7 +326,7 @@ if (isset($_GET['action'])) {
 	$max_priority_cat=0;
 	$get_max_cat = mysqli_query($GLOBALS["mysqli"], "SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
 	if(mysqli_num_rows($get_max_cat)>0) {
-		$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
+		$max_priority_cat=old_mysql_result($get_max_cat, 0, "priority");
 	}
 
 	$temoin_anomalie_categ_Aucune='n';

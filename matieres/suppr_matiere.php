@@ -295,7 +295,7 @@ die();
 if(!isset($verif)) {
 	echo "<h2>Vérification des groupes</h2>\n";
 	echo "<p>Cette page est destinée à repérer la cause d'éventuelles erreurs du type:</p>\n";
-	echo "<pre style='color:green;'>Warning: mysql_result(): Unable to jump to row 0
+	echo "<pre style='color:green;'>Warning: old_mysql_result(): Unable to jump to row 0
 on MySQL result index 468 in /var/wwws/gepi/lib/groupes.inc.php on line 143</pre>\n";
 	echo "<p>Pour procéder à la vérification, cliquez sur ce lien: <a href='".$_SERVER['PHP_SELF']."?verif=oui'>Vérification</a><br />(<i>l'opération peut être très longue</i>)</p>\n";
 }

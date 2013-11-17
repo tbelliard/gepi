@@ -170,7 +170,7 @@ echo "<script type='text/javascript'>
 
 
 $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-$classe = mysql_result($call_classe, "0", "classe");
+$classe = old_mysql_result($call_classe, "0", "classe");
 echo "<p><span class = 'grand'>Première phase d'importation des appréciations </span>";
 echo "<p class = 'bold'>Classe : $classe | Période : $nom_periode[$periode_num]</p>";
 
@@ -268,12 +268,12 @@ if (isset($is_posted ) and ($is_posted==1)) {
                             $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$data[$c]'");
                             $test = @mysqli_num_rows($call_login);
                             if ($test != 0) {
-                                $nom_eleve = @mysql_result($call_login, 0, "nom");
-                                $prenom_eleve = @mysql_result($call_login, 0, "prenom");
+                                $nom_eleve = @old_mysql_result($call_login, 0, "nom");
+                                $prenom_eleve = @old_mysql_result($call_login, 0, "prenom");
 
                                 $classe_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_classes j WHERE (j.login = '$data[$c]' AND j.id_classe =  c.id AND j.periode='$periode_num')");
-                                $eleve_classe = @mysql_result($classe_eleve, 0, "classe");
-                                $eleve_id_classe = @mysql_result($classe_eleve, 0, "id");
+                                $eleve_classe = @old_mysql_result($classe_eleve, 0, "classe");
+                                $eleve_id_classe = @old_mysql_result($classe_eleve, 0, "id");
                                 if ($eleve_classe == '') {
                                    $eleve_classe = "<font color='red'>???</font>";
                                    $valid = 0;

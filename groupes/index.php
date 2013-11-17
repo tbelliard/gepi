@@ -85,8 +85,8 @@ if ($nombre_lignes != 0) {
     echo "<table cellpadding=3 cellspacing=0 border=0>\n";
     $i = 0;
     while ($i < $nombre_lignes){
-        $id_classe = mysql_result($call_data, $i, "id");
-        $classe = mysql_result($call_data, $i, "classe");
+        $id_classe = old_mysql_result($call_data, $i, "id");
+        $classe = old_mysql_result($call_data, $i, "classe");
 
         // On n'affiche que si la classe en question n'est pas une classe virtuelle
 	    if (get_period_number($id_classe) != "0") {

@@ -305,16 +305,16 @@ $data['nbre_affcalendar'] = mysqli_num_rows($data['req_affcalendar']);
 $a = 1;
 
 for ($i=0; $i<$data['nbre_affcalendar']; $i++) {
-	$data['rep_affcalendar'][$i]["id_calendrier"] = mysql_result($data['req_affcalendar'], $i, "id_calendrier");
-	$data['rep_affcalendar'][$i]["classe_concerne_calendrier"] = mysql_result($data['req_affcalendar'], $i, "classe_concerne_calendrier");
-	$data['rep_affcalendar'][$i]["nom_calendrier"] = mysql_result($data['req_affcalendar'], $i, "nom_calendrier");
-	$data['rep_affcalendar'][$i]["jourdebut_calendrier"] = mysql_result($data['req_affcalendar'], $i, "jourdebut_calendrier");
-	$data['rep_affcalendar'][$i]["heuredebut_calendrier"] = mysql_result($data['req_affcalendar'], $i, "heuredebut_calendrier");
-	$data['rep_affcalendar'][$i]["jourfin_calendrier"] = mysql_result($data['req_affcalendar'], $i, "jourfin_calendrier");
-	$data['rep_affcalendar'][$i]["heurefin_calendrier"] = mysql_result($data['req_affcalendar'], $i, "heurefin_calendrier");
-	$data['rep_affcalendar'][$i]["numero_periode"] = mysql_result($data['req_affcalendar'], $i, "numero_periode");
-	$data['rep_affcalendar'][$i]["etabferme_calendrier"] = mysql_result($data['req_affcalendar'], $i, "etabferme_calendrier");
-	$data['rep_affcalendar'][$i]["etabvacances_calendrier"] = mysql_result($data['req_affcalendar'], $i, "etabvacances_calendrier");
+	$data['rep_affcalendar'][$i]["id_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "id_calendrier");
+	$data['rep_affcalendar'][$i]["classe_concerne_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "classe_concerne_calendrier");
+	$data['rep_affcalendar'][$i]["nom_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "nom_calendrier");
+	$data['rep_affcalendar'][$i]["jourdebut_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "jourdebut_calendrier");
+	$data['rep_affcalendar'][$i]["heuredebut_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "heuredebut_calendrier");
+	$data['rep_affcalendar'][$i]["jourfin_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "jourfin_calendrier");
+	$data['rep_affcalendar'][$i]["heurefin_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "heurefin_calendrier");
+	$data['rep_affcalendar'][$i]["numero_periode"] = old_mysql_result($data['req_affcalendar'], $i, "numero_periode");
+	$data['rep_affcalendar'][$i]["etabferme_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "etabferme_calendrier");
+	$data['rep_affcalendar'][$i]["etabvacances_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "etabvacances_calendrier");
 
 	// établissement ouvert ou fermé ?
 	if ($data['rep_affcalendar'][$i]["etabferme_calendrier"] == "1") {
@@ -411,7 +411,7 @@ if (isset($data['calendrier']) AND isset($data['modifier'])) {
 		*/
 		$sql="SELECT id_classe FROM classes c, periodes p WHERE p.id_classe=c.id ORDER BY p.num_periode DESC, c.classe LIMIT 1;";
 		$res_clas_max_per=mysqli_query($GLOBALS["mysqli"], $sql);
-		$id_classe_max_per=mysql_result($res_clas_max_per,0,"id_classe");
+		$id_classe_max_per=old_mysql_result($res_clas_max_per,0,"id_classe");
 		$req_periodes = mysqli_query($GLOBALS["mysqli"], "SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '$id_classe_max_per'");
 		$nbre_periodes = mysqli_num_rows($req_periodes);
 	

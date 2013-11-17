@@ -101,7 +101,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$sql="SELECT professeur FROM j_eleves_professeurs WHERE login='".$_GET['login_ele']."' AND id_classe='$lig->id_classe';";
 				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
-					$pp_actuel=mysql_result($res2, 0, 'professeur');
+					$pp_actuel=old_mysql_result($res2, 0, 'professeur');
 				}
 
 				$sql="SELECT DISTINCT u.login FROM j_groupes_classes jgc, j_groupes_professeurs jgp, utilisateurs u WHERE jgc.id_groupe=jgp.id_groupe AND jgc.id_classe='$lig->id_classe' AND u.login=jgp.login ORDER BY u.nom, u.prenom;";
@@ -293,7 +293,7 @@ if (isset($is_posted) and ($is_posted == '2')) {
 		$nb_enr = mysqli_num_rows($call_data);
 		$nb = 0;
 		while ($nb < $nb_enr) {
-			$num = mysql_result($call_data, $nb, 'num');
+			$num = old_mysql_result($call_data, $nb, 'num');
 			$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM log WHERE SESSION_ID = '$num'");
 			$nb_en = mysqli_num_rows($test);
 			if ($nb_en == 0) {
@@ -306,7 +306,7 @@ if (isset($is_posted) and ($is_posted == '2')) {
 		$nb = mysqli_num_rows($classes_list);
 		$i ='0';
 		while ($i < $nb) {
-			$id_classe = mysql_result($classes_list, $i, 'id');
+			$id_classe = old_mysql_result($classes_list, $i, 'id');
 			$tempo = "case_".$id_classe;
 			$temp = isset($_POST[$tempo])?$_POST[$tempo]:NULL;
 			if ($temp == 'yes') {
@@ -330,7 +330,7 @@ elseif ((isset($quelles_classes))&&($quelles_classes == 'certaines')&&(isset($id
 	$nb_enr = mysqli_num_rows($call_data);
 	$nb = 0;
 	while ($nb < $nb_enr) {
-		$num = mysql_result($call_data, $nb, 'num');
+		$num = old_mysql_result($call_data, $nb, 'num');
 		$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM log WHERE SESSION_ID = '$num'");
 		$nb_en = mysqli_num_rows($test);
 		if ($nb_en == 0) {
@@ -360,8 +360,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 		$liste_cible = '';
 		$liste_cible2 = '';
 		while ($i < $nombreligne){
-			$eleve_login = mysql_result($calldata, $i, "login");
-			$eleve_elenoet = mysql_result($calldata, $i, "elenoet");
+			$eleve_login = old_mysql_result($calldata, $i, "login");
+			$eleve_elenoet = old_mysql_result($calldata, $i, "elenoet");
 			//$delete_login = 'delete_'.$eleve_login;
 			//$del_eleve = isset($_POST[$delete_login])?$_POST[$delete_login]:NULL;
 			//if ($del_eleve == 'yes') {
@@ -439,7 +439,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 					$acces_upload_photo="n";
 				}
 				else {
-					$login_eleve=mysql_result($res_login, 0, "login");
+					$login_eleve=old_mysql_result($res_login, 0, "login");
 
 					if(!is_pp($_SESSION['login'], "", $login_eleve)) {
 						// Le prof n'est pas PP de cet élève en particulier
@@ -474,7 +474,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 						$msg.="Anomalie : Impossible de trouver le login de l'élève dont l'ELENOET est ".$quiestce[$cpt_photo]."<br />";
 					}
 					else {
-						$login_eleve=mysql_result($res_login, 0, "login");
+						$login_eleve=old_mysql_result($res_login, 0, "login");
 						$msg.="Vous n'avez pas le droit d'uploader la photo pour ".civ_nom_prenom($login_eleve)."<br />";
 					}
 				}
@@ -550,7 +550,7 @@ if(getSettingValue('eleves_index_debug_var')=='y') {
 		$nb = mysqli_num_rows($classes_list);
 		$k = '0';
 		while ($k < $nb) {
-			$id_classe = mysql_result($classes_list, $k, 'id');
+			$id_classe = old_mysql_result($classes_list, $k, 'id');
 
 			?>
 				document.formulaire.case_<?php echo $id_classe; ?>.checked = false;
@@ -1442,9 +1442,9 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 				echo "<td align='left'>\n";
 
 				while ($i < $nb) {
-					$id_classe = mysql_result($classes_list, $i, 'id');
+					$id_classe = old_mysql_result($classes_list, $i, 'id');
 					$temp = "case_".$id_classe;
-					$classe = mysql_result($classes_list, $i, 'classe');
+					$classe = old_mysql_result($classes_list, $i, 'classe');
 	
 					if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 						echo "</td>\n";
@@ -1658,22 +1658,22 @@ if(isset($quelles_classes)) {
 	$alt=1;
 	while ($i < $nombreligne){
 		if(!isset($tab_eleve[$i])){
-			$eleve_login = mysql_result($calldata, $i, "login");
-			$eleve_nom = mysql_result($calldata, $i, "nom");
-			$eleve_prenom = mysql_result($calldata, $i, "prenom");
-			$eleve_sexe = mysql_result($calldata, $i, "sexe");
-			$eleve_naissance = mysql_result($calldata, $i, "naissance");
-			$elenoet = mysql_result($calldata, $i, "elenoet");
-			$date_sortie_elv = mysql_result($calldata, $i, "date_sortie");
+			$eleve_login = old_mysql_result($calldata, $i, "login");
+			$eleve_nom = old_mysql_result($calldata, $i, "nom");
+			$eleve_prenom = old_mysql_result($calldata, $i, "prenom");
+			$eleve_sexe = old_mysql_result($calldata, $i, "sexe");
+			$eleve_naissance = old_mysql_result($calldata, $i, "naissance");
+			$elenoet = old_mysql_result($calldata, $i, "elenoet");
+			$date_sortie_elv = old_mysql_result($calldata, $i, "date_sortie");
 			// 20130607
-			$mef_code = mysql_result($calldata, $i, "mef_code");
+			$mef_code = old_mysql_result($calldata, $i, "mef_code");
 			if($quelles_classes=='no_regime') {
 				$eleve_regime = "-";
 				$eleve_doublant =  "-";
 			}
 			else {
-				$eleve_regime =  mysql_result($calldata, $i, "regime");
-				$eleve_doublant =  mysql_result($calldata, $i, "doublant");
+				$eleve_regime =  old_mysql_result($calldata, $i, "regime");
+				$eleve_doublant =  old_mysql_result($calldata, $i, "doublant");
 			}
 		}
 		else{
@@ -1685,15 +1685,15 @@ if(isset($quelles_classes)) {
 			$elenoet =  $tab_eleve[$i]["elenoet"];
 			$eleve_regime =  $tab_eleve[$i]["regime"];
 			$eleve_doublant =  $tab_eleve[$i]["doublant"];
-			//$date_sortie_elv = mysql_result($calldata, $i, "date_sortie");
+			//$date_sortie_elv = old_mysql_result($calldata, $i, "date_sortie");
 			$date_sortie_elv = $tab_eleve[$i]["date_sortie"];
 			// 20130607
 			$mef_code = $tab_eleve[$i]["mef_code"];
 		}
 
 		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT n.classe, n.id FROM j_eleves_classes c, classes n WHERE (c.login ='$eleve_login' and c.id_classe = n.id) order by c.periode DESC");
-		$eleve_classe = @mysql_result($call_classe, 0, "classe");
-		$eleve_id_classe = @mysql_result($call_classe, 0, "id");
+		$eleve_classe = @old_mysql_result($call_classe, 0, "classe");
+		$eleve_id_classe = @old_mysql_result($call_classe, 0, "id");
 		$pas_de_classe="n";
 		if ($eleve_classe == '') {
 			$eleve_classe = "<font color='red'>N/A</font>";
@@ -1710,8 +1710,8 @@ if(isset($quelles_classes)) {
 			$eleve_profsuivi_prenom = "";
 		}
 		else{
-			$eleve_profsuivi_nom = @mysql_result($call_suivi, 0, "nom");
-			$eleve_profsuivi_prenom = @mysql_result($call_suivi, 0, "prenom");
+			$eleve_profsuivi_nom = @old_mysql_result($call_suivi, 0, "nom");
+			$eleve_profsuivi_prenom = @old_mysql_result($call_suivi, 0, "prenom");
 		}
 
 		if ($eleve_profsuivi_nom == '') {
@@ -2030,7 +2030,7 @@ if(isset($quelles_classes)) {
 	//=========================
 	$sql="SELECT max(num_periode) AS max_per FROM classes c, periodes p WHERE p.id_classe=c.id;";
 	$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
-	$max_per=mysql_result($res_per, 0, 'max_per');
+	$max_per=old_mysql_result($res_per, 0, 'max_per');
 
 	$sql="SELECT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
 	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);

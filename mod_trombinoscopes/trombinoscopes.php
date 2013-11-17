@@ -176,7 +176,7 @@ if(isset($_POST['upload_photo'])) {
 				$msg.="Aucun elenoet n'a été trouvé pour renommer la photo de cet élève.<br />\n";
 			}
 			else {
-				$quiestce=encode_nom_photo(mysql_result($res_elenoet,0,'elenoet'));
+				$quiestce=encode_nom_photo(old_mysql_result($res_elenoet,0,'elenoet'));
 				if (!deplacer_fichier_upload($sav_photo['tmp_name'], $rep_photos.$quiestce.".jpg")) {
 					$msg.="Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/eleves/<br />";
 				} else {

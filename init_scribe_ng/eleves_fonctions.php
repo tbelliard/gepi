@@ -55,7 +55,7 @@ function formater_date_pour_mysql($date) {
 
 function is_table_vide($table_name) {
     $query_count = "select count(*) from $table_name";
-    $count = mysql_result(mysqli_query($GLOBALS["mysqli"], $query_count), 0);
+    $count = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $query_count), 0);
     return ($count == 0 ? true : false);
 }
 

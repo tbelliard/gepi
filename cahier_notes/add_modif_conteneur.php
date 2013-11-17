@@ -79,7 +79,7 @@ $id_retour = isset($_POST["id_retour"]) ? $_POST["id_retour"] : (isset($_GET["id
 
 if ($id_conteneur)  {
     $query = mysqli_query($GLOBALS["mysqli"], "SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
-    $id_racine = mysql_result($query, 0, 'id_racine');
+    $id_racine = old_mysql_result($query, 0, 'id_racine');
 } else if (isset($_POST['id_racine']) or (isset($_GET['id_racine']))) {
     $id_racine = isset($_POST['id_racine']) ? $_POST['id_racine'] : (isset($_GET['id_racine']) ? $_GET['id_racine'] : NULL);
 } else {
@@ -102,10 +102,10 @@ if(!getSettingAOui('GepiPeutCreerBoitesProf')) {
 
 
 $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes = '$id_racine'");
-$id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 
-$periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
 /**
  * Gestion des périodes
  */
@@ -300,17 +300,17 @@ if (isset($_POST['ok'])) {
 if ($id_conteneur)  {
     $new_conteneur = 'no';
     $appel_conteneur = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
-    $id_racine = mysql_result($appel_conteneur, 0, 'id_racine');
-    $nom_court = mysql_result($appel_conteneur, 0, 'nom_court');
-    $nom_complet = mysql_result($appel_conteneur, 0, 'nom_complet');
-    $description = mysql_result($appel_conteneur, 0, 'description');
-    $mode = mysql_result($appel_conteneur, 0, 'mode');
-    $coef = mysql_result($appel_conteneur, 0, 'coef');
-    $arrondir = mysql_result($appel_conteneur, 0, 'arrondir');
-    $ponderation = mysql_result($appel_conteneur, 0, 'ponderation');
-    $display_parents = mysql_result($appel_conteneur, 0, 'display_parents');
-    $display_bulletin = mysql_result($appel_conteneur, 0, 'display_bulletin');
-    $parent = mysql_result($appel_conteneur, 0, 'parent');
+    $id_racine = old_mysql_result($appel_conteneur, 0, 'id_racine');
+    $nom_court = old_mysql_result($appel_conteneur, 0, 'nom_court');
+    $nom_complet = old_mysql_result($appel_conteneur, 0, 'nom_complet');
+    $description = old_mysql_result($appel_conteneur, 0, 'description');
+    $mode = old_mysql_result($appel_conteneur, 0, 'mode');
+    $coef = old_mysql_result($appel_conteneur, 0, 'coef');
+    $arrondir = old_mysql_result($appel_conteneur, 0, 'arrondir');
+    $ponderation = old_mysql_result($appel_conteneur, 0, 'ponderation');
+    $display_parents = old_mysql_result($appel_conteneur, 0, 'display_parents');
+    $display_bulletin = old_mysql_result($appel_conteneur, 0, 'display_bulletin');
+    $parent = old_mysql_result($appel_conteneur, 0, 'parent');
     // liste des sous_conteneur
     $nom_sous_cont = array();
     $id_sous_cont  = array();
@@ -329,7 +329,7 @@ if ($id_conteneur)  {
     $appel_nom_racine = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id ='$id_racine'");
 
     // Nom du conteneur racine
-    $nom_racine = mysql_result($appel_nom_racine, 0, 'nom_court');
+    $nom_racine = old_mysql_result($appel_nom_racine, 0, 'nom_court');
 
     // Nom du conteneur racine
 

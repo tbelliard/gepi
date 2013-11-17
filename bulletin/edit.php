@@ -558,8 +558,8 @@ unset($call_data_aid_e);
 
 // Données nom de la classe et nom complet de la classe
 $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
-$current_classe = mysql_result($calldata, 0, "classe");
-$current_classe_nom_complet = mysql_result($calldata, 0, "nom_complet");
+$current_classe = old_mysql_result($calldata, 0, "classe");
+$current_classe_nom_complet = old_mysql_result($calldata, 0, "nom_complet");
 
 // On appelle la liste des groupes si ça n'a pas été fait
 
@@ -602,7 +602,7 @@ $j=0;
 while ($j < $nombre_groupes) {
     // si cela n'a pas été fait dans calcul_rang_inc.php ou dans calcul_moy_gen, on prépare le tableau $current_matiere
     if (($affiche_rang != 'y') and ($test_coef==0)) {
-        $group_id = mysql_result($appel_liste_groupes, $j, "id_groupe");
+        $group_id = old_mysql_result($appel_liste_groupes, $j, "id_groupe");
         $current_group[$j] = get_group($group_id);
     }
 
@@ -634,11 +634,11 @@ while ($j < $nombre_groupes) {
         periode='$periode_num'
         )
         ");
-        $current_classe_matiere_moyenne[$j] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
+        $current_classe_matiere_moyenne[$j] = old_mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
 
         $i=0;
         while ($i < $nombre_eleves) {
-            $current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
+            $current_eleve_login[$i] = old_mysql_result($appel_liste_eleves, $i, "login");
             // Maintenant on regarde si l'élève suit bien cette matière ou pas
             if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
                 // $count[$j][$i] == "0"
@@ -648,8 +648,8 @@ while ($j < $nombre_groupes) {
                 periode='$periode_num' AND
                 id_groupe='".$current_group[$j]["id"]."'
                 )");
-                $current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
-                $current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
+                $current_eleve_note[$j][$i] = @old_mysql_result($current_eleve_note_query, 0, "note");
+                $current_eleve_statut[$j][$i] = @old_mysql_result($current_eleve_note_query, 0, "statut");
 
 				// On détermine le coefficient pour cette matière
 				if((isset($coefficients_a_1))&&($coefficients_a_1=="oui")){
@@ -662,7 +662,7 @@ while ($j < $nombre_groupes) {
 							"id_groupe = '".$current_group[$j]["id"]."' AND " .
 							"name = 'coef')");
 					if (mysqli_num_rows($test_coef_eleve) > 0) {
-						$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
+						$current_eleve_coef[$j][$i] = old_mysql_result($test_coef_eleve, 0);
 					} else {
 						$current_eleve_coef[$j][$i] = $current_coef[$j];
 					}
@@ -682,7 +682,7 @@ while ($j < $nombre_groupes) {
 			// EST-CE QU'ON NE VA PAS AVOIR UNE BLAGUE A REAFFECTER LE TABLEAU $current_eleve_login???
 			// IL FAUDRAIT VOIR CE QUE DONNE calcul_moy_inc.php
 			// PROVOQUER L'AFFICHAGE...
-            //$current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
+            //$current_eleve_login[$i] = old_mysql_result($appel_liste_eleves, $i, "login");
 
 			//echo "$current_eleve_login[$i]<br />";
 			// L'ordre a l'air d'être le même...
@@ -701,7 +701,7 @@ while ($j < $nombre_groupes) {
 							"id_groupe = '".$current_group[$j]["id"]."' AND " .
 							"name = 'coef')");
 					if (mysqli_num_rows($test_coef_eleve) > 0) {
-						$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
+						$current_eleve_coef[$j][$i] = old_mysql_result($test_coef_eleve, 0);
 					} else {
 						$current_eleve_coef[$j][$i] = $current_coef[$j];
 					}
@@ -722,9 +722,9 @@ if ($current_classe_nom_complet == '') {
     $current_classe_nom_complet = "<font color='red'>* NOM A PRECISER *</font>";
 }
 
-$current_classe_suivi_par = @mysql_result($calldata, 0, "suivi_par");
+$current_classe_suivi_par = @old_mysql_result($calldata, 0, "suivi_par");
 
-$current_classe_formule = mysql_result($calldata, 0, "formule");
+$current_classe_formule = old_mysql_result($calldata, 0, "formule");
 if ($current_classe_formule == '') {
     $current_classe_formule = "<font color='red'>* FORMULE A PRECISER *</font>";
 }
@@ -810,7 +810,7 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 			$j=0;
 			while ($j < $nombre_groupes) {
 				//$i=0;
-				//$current_eleve_login[$i]=mysql_result($appel_liste_eleves, $i, "login");
+				//$current_eleve_login[$i]=old_mysql_result($appel_liste_eleves, $i, "login");
 				$current_eleve_login[$i]=$login_ele;
 				// Maintenant on regarde si l'élève suit bien cette matière ou pas
 				if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
@@ -820,8 +820,8 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 					periode='$periode_num' AND
 					id_groupe='".$current_group[$j]["id"]."'
 					)");
-					$current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
-					$current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
+					$current_eleve_note[$j][$i] = @old_mysql_result($current_eleve_note_query, 0, "note");
+					$current_eleve_statut[$j][$i] = @old_mysql_result($current_eleve_note_query, 0, "statut");
 
 					// On détermine le coefficient pour cette matière
 
@@ -835,7 +835,7 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 								"id_groupe = '".$current_group[$j]["id"]."' AND " .
 								"name = 'coef')");
 						if (mysqli_num_rows($test_coef_eleve) > 0) {
-							$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
+							$current_eleve_coef[$j][$i] = old_mysql_result($test_coef_eleve, 0);
 						} else {
 							$current_eleve_coef[$j][$i] = $current_coef[$j];
 						}
@@ -913,29 +913,29 @@ while ($i < $nombre_eleves2) {
 
 	// On est dans la première boucle. On appelle les données complètes de l'élève :
 	//-------------------------------
-	$current_eleve_nom = mysql_result($appel_liste_eleves, $i, "nom");
-	$current_eleve_prenom = mysql_result($appel_liste_eleves, $i, "prenom");
-	$current_eleve_sexe = mysql_result($appel_liste_eleves, $i, "sexe");
+	$current_eleve_nom = old_mysql_result($appel_liste_eleves, $i, "nom");
+	$current_eleve_prenom = old_mysql_result($appel_liste_eleves, $i, "prenom");
+	$current_eleve_sexe = old_mysql_result($appel_liste_eleves, $i, "sexe");
 	$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$current_eleve_login[$i]."' and id_classe='$id_classe')");
-	$current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
-	$current_eleve_naissance = mysql_result($appel_liste_eleves, $i, "naissance");
+	$current_eleve_profsuivi_login = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
+	$current_eleve_naissance = old_mysql_result($appel_liste_eleves, $i, "naissance");
 	$current_eleve_naissance = affiche_date_naissance($current_eleve_naissance);
 	$regime_doublant_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_regime WHERE login = '".$current_eleve_login[$i]."'");
-	$current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
-	$current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
+	$current_eleve_regime = old_mysql_result($regime_doublant_eleve, 0, "regime");
+	$current_eleve_doublant = old_mysql_result($regime_doublant_eleve, 0, "doublant");
 	$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num')");
-	$current_eleve_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
-	$current_eleve_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
-	$current_eleve_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
-	$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+	$current_eleve_absences = @old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
+	$current_eleve_nj = @old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
+	$current_eleve_retards = @old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
+	$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
 	if ($current_eleve_absences == '') { $current_eleve_absences = "?"; }
 	if ($current_eleve_nj == '') { $current_eleve_nj = "?"; }
 	if ($current_eleve_retards=='') { $current_eleve_retards = "?"; }
 	$query = mysqli_query($GLOBALS["mysqli"], "SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '" . $current_eleve_login[$i] . "')");
-	$current_eleve_cperesp_login = @mysql_result($query, "0", "login");
+	$current_eleve_cperesp_login = @old_mysql_result($query, "0", "login");
 
 	// Numéro INE de l'élève:
-	$current_eleve_INE = mysql_result($appel_liste_eleves, $i, "no_gep");
+	$current_eleve_INE = old_mysql_result($appel_liste_eleves, $i, "no_gep");
 
 
     //determination du nombre de bulletins à imprimer
@@ -946,7 +946,7 @@ while ($i < $nombre_eleves2) {
     if ( $affiche_page_garde == 'yes' OR $affiche_adresse == 'y') {
 
         $ele_id='';
-        $ele_id = @mysql_result($appel_liste_eleves, $i, "ele_id");
+        $ele_id = @old_mysql_result($appel_liste_eleves, $i, "ele_id");
         if ($ele_id!='') {
 		$sql="SELECT rp.nom, rp.prenom, rp.civilite, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
 					WHERE r.ele_id='$ele_id' AND
@@ -1171,26 +1171,26 @@ while ($i < $nombre_eleves2) {
 /*
         // On est dans la première boucle. On appelle les données complètes de l'élève :
         //-------------------------------
-        $current_eleve_nom = mysql_result($appel_liste_eleves, $i, "nom");
-        $current_eleve_prenom = mysql_result($appel_liste_eleves, $i, "prenom");
-        $current_eleve_sexe = mysql_result($appel_liste_eleves, $i, "sexe");
+        $current_eleve_nom = old_mysql_result($appel_liste_eleves, $i, "nom");
+        $current_eleve_prenom = old_mysql_result($appel_liste_eleves, $i, "prenom");
+        $current_eleve_sexe = old_mysql_result($appel_liste_eleves, $i, "sexe");
         $call_profsuivi_eleve = mysql_query("SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$current_eleve_login[$i]."' and id_classe='$id_classe')");
-        $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
-        $current_eleve_naissance = mysql_result($appel_liste_eleves, $i, "naissance");
+        $current_eleve_profsuivi_login = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
+        $current_eleve_naissance = old_mysql_result($appel_liste_eleves, $i, "naissance");
         $current_eleve_naissance = affiche_date_naissance($current_eleve_naissance);
         $regime_doublant_eleve = mysql_query("SELECT * FROM j_eleves_regime WHERE login = '".$current_eleve_login[$i]."'");
-        $current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
-        $current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
+        $current_eleve_regime = old_mysql_result($regime_doublant_eleve, 0, "regime");
+        $current_eleve_doublant = old_mysql_result($regime_doublant_eleve, 0, "doublant");
         $current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num')");
-        $current_eleve_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
-        $current_eleve_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
-        $current_eleve_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
-        $current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+        $current_eleve_absences = @old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
+        $current_eleve_nj = @old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
+        $current_eleve_retards = @old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
+        $current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
         if ($current_eleve_absences == '') { $current_eleve_absences = "?"; }
         if ($current_eleve_nj == '') { $current_eleve_nj = "?"; }
         if ($current_eleve_retards=='') { $current_eleve_retards = "?"; }
         $query = mysql_query("SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '" . $current_eleve_login[$i] . "')");
-        $current_eleve_cperesp_login = @mysql_result($query, "0", "login");
+        $current_eleve_cperesp_login = @old_mysql_result($query, "0", "login");
 */
 
 
@@ -1435,9 +1435,9 @@ echo "'>\n";
 		//echo "getSettingValue(\"activer_photo_bulletin\")=".getSettingValue("activer_photo_bulletin")."<br />";
 		//echo "getSettingValue(\"active_module_trombinoscopes\")=".getSettingValue("active_module_trombinoscopes")."<br />";
 
-		$current_eleve_elenoet=mysql_result($appel_liste_eleves, $i, "elenoet");
+		$current_eleve_elenoet=old_mysql_result($appel_liste_eleves, $i, "elenoet");
 		if (getSettingValue("activer_photo_bulletin")=='y' and getSettingValue("active_module_trombinoscopes")=='y') {
-			//$current_eleve_idphoto=mysql_result($appel_liste_eleves, $i, "elenoet");
+			//$current_eleve_idphoto=old_mysql_result($appel_liste_eleves, $i, "elenoet");
 			$current_eleve_idphoto=$current_eleve_elenoet;
 			$photo=nom_photo($current_eleve_idphoto);
 			if($photo){
@@ -1516,12 +1516,12 @@ echo "'>\n";
 		if($bull_affiche_etab=="y"){
 			//$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_login[$i]."' AND e.id = j.id_etablissement) ");
 			$data_etab = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_elenoet."' AND e.id = j.id_etablissement) ");
-			$current_eleve_etab_id = @mysql_result($data_etab, 0, "id");
-			$current_eleve_etab_nom = @mysql_result($data_etab, 0, "nom");
-			$current_eleve_etab_niveau = @mysql_result($data_etab, 0, "niveau");
-			$current_eleve_etab_type = @mysql_result($data_etab, 0, "type");
-			$current_eleve_etab_cp = @mysql_result($data_etab, 0, "cp");
-			$current_eleve_etab_ville = @mysql_result($data_etab, 0, "ville");
+			$current_eleve_etab_id = @old_mysql_result($data_etab, 0, "id");
+			$current_eleve_etab_nom = @old_mysql_result($data_etab, 0, "nom");
+			$current_eleve_etab_niveau = @old_mysql_result($data_etab, 0, "niveau");
+			$current_eleve_etab_type = @old_mysql_result($data_etab, 0, "type");
+			$current_eleve_etab_cp = @old_mysql_result($data_etab, 0, "cp");
+			$current_eleve_etab_ville = @old_mysql_result($data_etab, 0, "ville");
 
 			if ($current_eleve_etab_niveau!='') {
 			foreach ($type_etablissement as $type_etab => $nom_etablissement) {
@@ -1598,7 +1598,7 @@ echo "'>\n";
 		//echo "getSettingValue(\"activer_photo_bulletin\")=".getSettingValue("activer_photo_bulletin")."<br />";
 		//echo "getSettingValue(\"active_module_trombinoscopes\")=".getSettingValue("active_module_trombinoscopes")."<br />";
 		if (getSettingValue("activer_photo_bulletin")=='y' and getSettingValue("active_module_trombinoscopes")=='y') {
-			$current_eleve_idphoto=mysql_result($appel_liste_eleves, $i, "elenoet");
+			$current_eleve_idphoto=old_mysql_result($appel_liste_eleves, $i, "elenoet");
 			$photo=nom_photo($current_eleve_idphoto);
 			if($photo){
 				if(file_exists($photo)){
@@ -1669,12 +1669,12 @@ echo "'>\n";
 
 		if($bull_affiche_etab=="y"){
 			$data_etab = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_login[$i]."' AND e.id = j.id_etablissement) ");
-			$current_eleve_etab_id = @mysql_result($data_etab, 0, "id");
-			$current_eleve_etab_nom = @mysql_result($data_etab, 0, "nom");
-			$current_eleve_etab_niveau = @mysql_result($data_etab, 0, "niveau");
-			$current_eleve_etab_type = @mysql_result($data_etab, 0, "type");
-			$current_eleve_etab_cp = @mysql_result($data_etab, 0, "cp");
-			$current_eleve_etab_ville = @mysql_result($data_etab, 0, "ville");
+			$current_eleve_etab_id = @old_mysql_result($data_etab, 0, "id");
+			$current_eleve_etab_nom = @old_mysql_result($data_etab, 0, "nom");
+			$current_eleve_etab_niveau = @old_mysql_result($data_etab, 0, "niveau");
+			$current_eleve_etab_type = @old_mysql_result($data_etab, 0, "type");
+			$current_eleve_etab_cp = @old_mysql_result($data_etab, 0, "cp");
+			$current_eleve_etab_ville = @old_mysql_result($data_etab, 0, "ville");
 
 			if ($current_eleve_etab_niveau!='') {
 			foreach ($type_etablissement as $type_etab => $nom_etablissement) {
@@ -1828,7 +1828,7 @@ echo "'>\n";
             //
             // Appel des données :
             $current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num')");
-            $current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
+            $current_eleve_avis = @old_mysql_result($current_eleve_avis_query, 0, "avis");
 
 
             // Tableau de l'avis des conseil de classe

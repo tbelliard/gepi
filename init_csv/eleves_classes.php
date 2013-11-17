@@ -151,7 +151,7 @@ if (!isset($_POST["action"])) {
 				//echo "$sql<br />";
 				$test = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (mysqli_num_rows($test) == 1) {
-					$login_eleve = mysql_result($test, 0, "login");
+					$login_eleve = old_mysql_result($test, 0, "login");
 
 					// Maintenant que tout est propre et que l'élève existe, on fait un test sur la table pour voir si la classe existe
 
@@ -191,8 +191,8 @@ if (!isset($_POST["action"])) {
 					} else {
 						// La classe existe
 						// On récupère son ID
-						$classe_id = mysql_result($test, 0, "id");
-						$num_periods = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $classe_id . "'"), 0);
+						$classe_id = old_mysql_result($test, 0, "id");
+						$num_periods = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $classe_id . "'"), 0);
 					}
 
 					// Maintenant qu'on a l'ID de la classe et le nombre de périodes, on enregistre l'association

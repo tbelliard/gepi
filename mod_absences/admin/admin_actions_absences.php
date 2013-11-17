@@ -81,8 +81,8 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
             // Vérification des champs nom et prenom (si il ne sont pas vides ?)
             if($init_absence_action_ins != "" && $def_absence_action_ins != "")
             {
-                 if($action_sql == "ajouter") { $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_actions WHERE init_absence_action = '".$init_absence_action_ins."'"),0); }
-                 if($action_sql == "modifier") { $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_actions WHERE id_absence_action != '".$id_absence_action_ins."' AND init_absence_action = '".$init_absence_action_ins."'"),0); }
+                 if($action_sql == "ajouter") { $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_actions WHERE init_absence_action = '".$init_absence_action_ins."'"),0); }
+                 if($action_sql == "modifier") { $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_actions WHERE id_absence_action != '".$id_absence_action_ins."' AND init_absence_action = '".$init_absence_action_ins."'"),0); }
                  if ($test == "0")
                   {
                      if($action_sql == "ajouter")
@@ -139,7 +139,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 }
 
 if ($action_sql == "supprimer") {
-      $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_actions, suivi_eleve_cpe
+      $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM absences_actions, suivi_eleve_cpe
       WHERE  suivi_eleve_cpe.action_suivi_eleve_cpe = absences_actions.init_absence_action
       and id_absence_action ='".$id_motif."'"),0);
       if ($test == "0")
@@ -312,7 +312,7 @@ if ($action == "reinit_lettres_pdf") {
           <td>
            <?php
            if($action==="modifier") {
-               $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM suivi_eleve_cpe WHERE suivi_eleve_cpe.action_suivi_eleve_cpe = '".$data_modif_motif['init_absence_action']."'"),0);
+               $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM suivi_eleve_cpe WHERE suivi_eleve_cpe.action_suivi_eleve_cpe = '".$data_modif_motif['init_absence_action']."'"),0);
                if ($test != "0") {
                    ?><input name="init_absence_action[<?php echo $nb; ?>]" type="hidden" id="init_absence_action" size="2" maxlength="2" value="<?php if($action=="modifier") { echo $data_modif_motif['init_absence_action']; } elseif (isset($init_absence_action_erreur[$nb])) { echo $init_absence_action_erreur[$nb]; } ?>" /><?php if($action=="modifier") { echo $data_modif_motif['init_absence_action']; } elseif (isset($init_absence_action_erreur[$nb])) { echo $init_absence_action_erreur[$nb]; } ?><?php
                } else {

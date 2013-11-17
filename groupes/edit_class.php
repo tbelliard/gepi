@@ -688,8 +688,8 @@ echo "<td>\n";
 echo "<select name='matiere' size='1'>\n";
 echo "<option value='null'>-- Sélectionner une matière --</option>\n";
 for ($i=0;$i<$nb_mat;$i++) {
-    $matiere = mysql_result($query, $i, "matiere");
-    $nom_matiere = mysql_result($query, $i, "nom_complet");
+    $matiere = old_mysql_result($query, $i, "matiere");
+    $nom_matiere = old_mysql_result($query, $i, "nom_complet");
 
     $sql="SELECT u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$matiere."' ORDER BY u.nom, u.prenom;";
     $res_profs_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -823,7 +823,7 @@ echo add_token_field();
 
 
 $call_nom_class = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
-$display_rang = mysql_result($call_nom_class, 0, 'display_rang');
+$display_rang = old_mysql_result($call_nom_class, 0, 'display_rang');
 if($display_rang=='y') {
 	$titre="Recalcul des rangs";
 	$texte="<p>Un utilisateur a rencontré un jour le problème suivant&nbsp;:<br />Le rang était calculé pour les enseignements, mais pas pour le rang général de l'élève.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang général.<br />Le recalcul sera effectué lors du prochain affichage de bulletin ou de moyennes.</p>";
@@ -878,7 +878,7 @@ for($i=0;$i<10;$i++){
 <?php
     // si le module ECTS est activé, on calcul la valeur total d'ECTS attribués aux groupes
     if ($gepiSettings['active_mod_ects'] == "y") {
-        $total_ects = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT sum(valeur_ects) FROM j_groupes_classes WHERE (id_classe = '".$id_classe."' and saisie_ects = TRUE)"), 0);
+        $total_ects = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT sum(valeur_ects) FROM j_groupes_classes WHERE (id_classe = '".$id_classe."' and saisie_ects = TRUE)"), 0);
         echo "<p style='margin-top: 10px;'>Nombre total d'ECTS actuellement attribués pour cette classe : ".intval($total_ects)."</p>\n";
         if ($total_ects < 30) {
             echo "<p style='color: red;'>Attention, le total d'ECTS pour un semestre devrait être au moins égal à 30.</p>\n";

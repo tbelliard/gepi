@@ -219,7 +219,7 @@ if ( $lettre_action === 'originaux' ) {
 		$nombre_de_responsable = 0;
 		$sql="SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal!='0' )";
 		//echo "\$sql=$sql<br />";
-		$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
+		$nombre_de_responsable =  old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
 
 		if($nombre_de_responsable != 0)
 		{

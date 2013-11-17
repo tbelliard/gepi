@@ -260,8 +260,8 @@ else {
 
 		$i = 0;
 		while ($i < $nombre_lignes){
-			$classe = mysql_result($call_data, $i, "classe");
-			$ide_classe = mysql_result($call_data, $i, "id");
+			$classe = old_mysql_result($call_data, $i, "classe");
+			$ide_classe = old_mysql_result($call_data, $i, "id");
 			//echo "<a href='eleve_classe.php?id_classe=$ide_classe'>$classe</a><br />\n";
 			//echo "<option value='$ide_classe'>$classe</option>\n";
 

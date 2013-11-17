@@ -94,7 +94,7 @@ Notez que ces tentatives pourraient provoquer une désactivation de votre compte
 		$sql="INSERT INTO ct_devoirs_faits SET id_ct='".$id_ct_devoir."', login='$login_eleve', date_initiale='$date_courante', date_modif='$date_courante', etat='$nouvel_etat', commentaire='';";
 	}
 	else {
-		$etat=mysql_result($res, 0, 'etat');
+		$etat=old_mysql_result($res, 0, 'etat');
 		if($etat=="") {
 			$nouvel_etat='fait';
 		}

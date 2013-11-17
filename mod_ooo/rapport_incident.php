@@ -299,21 +299,21 @@ if ($mode=='module_discipline') {
 						$autres_mesures_prises .= "Travail\n";
 						$r_sql="SELECT travail FROM s_travail WHERE id_sanction='".$lig_autre_sanction->id_sanction."'";
 						$R=mysqli_query($GLOBALS["mysqli"], $r_sql);
-						if ($R) {$autres_mesures_prises .= " ° ".mysql_result($R,0)."\n";}
+						if ($R) {$autres_mesures_prises .= " ° ".old_mysql_result($R,0)."\n";}
 						break;
 					case "retenue" :
 						if ($nb_eleves>1) {$autres_mesures_prises .=$donnee_tab_protagonistes[$r_tab_protagonistes[$lig_autre_sanction->login]]['nom']." : ";}
 						$autres_mesures_prises .= "Retenue\n";
 						$r_sql="SELECT travail FROM s_retenues WHERE id_sanction='".$lig_autre_sanction->id_sanction."'";
 						$R=mysqli_query($GLOBALS["mysqli"], $r_sql);
-						if ($R) {$autres_mesures_prises .= " ° Travail : ".mysql_result($R,0)."\n";}
+						if ($R) {$autres_mesures_prises .= " ° Travail : ".old_mysql_result($R,0)."\n";}
 						break;
 					case "exclusion" :
 						if ($nb_eleves>1) {$autres_mesures_prises .=$donnee_tab_protagonistes[$r_tab_protagonistes[$lig_autre_sanction->login]]['nom']." : ";}
 						$autres_mesures_prises .= "Exclusion\n";
 						$r_sql="SELECT travail,type_exclusion,qualification_faits FROM s_exclusions WHERE id_sanction='".$lig_autre_sanction->id_sanction."'";
 						$R=mysqli_query($GLOBALS["mysqli"], $r_sql);
-						if ($R) {$autres_mesures_prises .= " ° Type : ".mysql_result($R,0,1)."\n ° Travail : ".mysql_result($R,0,0)."\n ° Qualifications des faits : ".mysql_result($R,0,2)."\n";}
+						if ($R) {$autres_mesures_prises .= " ° Type : ".old_mysql_result($R,0,1)."\n ° Travail : ".old_mysql_result($R,0,0)."\n ° Qualifications des faits : ".old_mysql_result($R,0,2)."\n";}
 						break;
 				}
 			}

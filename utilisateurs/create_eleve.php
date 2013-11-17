@@ -61,7 +61,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 	$msg = "";
 	if ($create_mode == "individual") {
 		$test = mysqli_query($GLOBALS["mysqli"], "SELECT count(e.login) FROM eleves e WHERE (e.login = '" . $_POST['eleve_login'] ."')");
-		if (mysql_result($test, 0) == "0") {
+		if (old_mysql_result($test, 0) == "0") {
 			$error = true;
 			$msg .= "Erreur lors de la création de l'utilisateur : aucun élève avec ce login n'a été trouvé !<br />";
 		} else {

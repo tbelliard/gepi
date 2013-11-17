@@ -915,7 +915,7 @@ if(isset($_POST['enregistrement_saisie_manuelle'])) {
 			$sql="SELECT statut FROM utilisateurs WHERE login='$login_gepi';";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==1) {
-				$statut_compte=mysql_result($res, 0, "statut");
+				$statut_compte=old_mysql_result($res, 0, "statut");
 
 				$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='$login_gepi';";
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -4813,7 +4813,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 						$sql="SELECT mel FROM resp_pers WHERE login='".$tab[2]."' AND mel LIKE '%@%';";
 						$res_mel=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_mel)>0) {
-							$mel=mysql_result($res_mel, 0, 'mel');
+							$mel=old_mysql_result($res_mel, 0, 'mel');
 							if(check_mail($mel, "", "y")) {
 								$tab_classe_parent[$tab[11]][$cpt]['email_gepi']=$mel;
 							}

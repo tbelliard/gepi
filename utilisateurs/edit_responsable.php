@@ -112,7 +112,7 @@ if (!$error) {
 		// Désactivation d'utilisateurs actifs
 		if ($mode == "individual") {
 			// Désactivation pour un utilisateur unique
-			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'actif')"), 0);
+			$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'actif')"), 0);
 			if ($test == "0") {
 				$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà inactif.";
 			} else {
@@ -126,7 +126,7 @@ if (!$error) {
 		} elseif ($mode == "classe" and !$error) {
 			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
 			while ($current_parent = mysqli_fetch_object($quels_parents)) {
-				$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
 					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
 					$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat = 'inactif' WHERE login = '" . $current_parent->login . "'");
@@ -143,7 +143,7 @@ if (!$error) {
 		// Activation d'utilisateurs préalablement désactivés
 		if ($mode == "individual") {
 			// Activation pour un utilisateur unique
-			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'inactif')"), 0);
+			$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'inactif')"), 0);
 			if ($test == "0") {
 				$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà actif.";
 			} else {
@@ -157,7 +157,7 @@ if (!$error) {
 		} elseif ($mode == "classe") {
 			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
 			while ($current_parent = mysqli_fetch_object($quels_parents)) {
-				$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
 					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
 					$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $current_parent->login . "'");
@@ -175,7 +175,7 @@ if (!$error) {
 		// Suppression d'un ou plusieurs utilisateurs
 		if ($mode == "individual") {
 			// Suppression pour un utilisateur unique
-			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."')"), 0);
+			$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."')"), 0);
 			if ($test == "0") {
 				$msg .= "Erreur lors de la suppression de l'utilisateur : celui-ci n'existe pas.";
 			} else {
@@ -194,7 +194,7 @@ if (!$error) {
 		} elseif ($mode == "classe") {
 			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
 			while ($current_parent = mysqli_fetch_object($quels_parents)) {
-				$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
 					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
 					// Suppression du compte proprement dite:
@@ -238,7 +238,7 @@ if (!$error) {
 			$msg .= "Erreur : Vous devez sélectionner une classe.";
 		} elseif ($mode == "classe") {
 			while ($current_parent = mysqli_fetch_object($quels_parents)) {
-				$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
 					// L'utilisateur existe bien dans la tables utilisateurs, on modifie
 					// Si on change le mode d'authentification, il faut quelques opérations particulières
@@ -251,7 +251,7 @@ if (!$error) {
 						// On regarde si des opérations spécifiques sont nécessaires
 						if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
 							// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
-							$oldmd5password = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT password FROM utilisateurs WHERE login = '".$current_parent->login."'"), 0);
+							$oldmd5password = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT password FROM utilisateurs WHERE login = '".$current_parent->login."'"), 0);
 							mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$current_parent->login."'");
 							// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
 							if ($ldap_write_access) {

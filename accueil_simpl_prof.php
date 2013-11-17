@@ -1095,12 +1095,12 @@ $i=0;
 $tmp_nb_aid_a_afficher=0;
 $nb_aid=0;
 while ($i < $tmp_nb_aid) {
-	$tmp_indice_aid = @mysql_result($res_aid, $i, "indice_aid");
-	$tmp_aid_display_begin = @mysql_result($res_aid, $i, "display_begin");
-	$tmp_aid_display_end = @mysql_result($res_aid, $i, "display_end");
-	$tmp_aid_display_bulletin = @mysql_result($res_aid, $i, "display_bulletin");
-	$tmp_aid_bull_simplifie = @mysql_result($res_aid, $i, "bull_simplifie");
-	$tmp_aid_type_note = @mysql_result($res_aid, $i, "type_note");
+	$tmp_indice_aid = @old_mysql_result($res_aid, $i, "indice_aid");
+	$tmp_aid_display_begin = @old_mysql_result($res_aid, $i, "display_begin");
+	$tmp_aid_display_end = @old_mysql_result($res_aid, $i, "display_end");
+	$tmp_aid_display_bulletin = @old_mysql_result($res_aid, $i, "display_bulletin");
+	$tmp_aid_bull_simplifie = @old_mysql_result($res_aid, $i, "bull_simplifie");
+	$tmp_aid_type_note = @old_mysql_result($res_aid, $i, "type_note");
 
 	$sql="SELECT * FROM j_aid_utilisateurs
 		WHERE (id_utilisateur = '".$_SESSION['login']."'
@@ -1109,7 +1109,7 @@ while ($i < $tmp_nb_aid) {
 	$tmp_call_prof = mysqli_query($GLOBALS["mysqli"], $sql);
 	$tmp_nb_result = mysqli_num_rows($tmp_call_prof);
 	if (($tmp_nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
-		$tmp_nom_aid = @mysql_result($tmp_call_data, $i, "nom");
+		$tmp_nom_aid = @old_mysql_result($tmp_call_data, $i, "nom");
 
 		$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom";
 		//echo "$sql<br />";

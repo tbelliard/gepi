@@ -376,10 +376,10 @@ function liste_devoirs_conteneurs($id_dev_cc, $id_conteneur, $periode_num) {
 	$nb_cont = mysqli_num_rows($appel_conteneurs);
 	if ($nb_cont != 0) {
 		echo "<ul>\n";
-		$id_cont = mysql_result($appel_conteneurs, 0, 'id');
-		$id_parent = mysql_result($appel_conteneurs, 0, 'parent');
-		//$id_racine = mysql_result($appel_conteneurs, 0, 'id_racine');
-		$nom_conteneur = mysql_result($appel_conteneurs, 0, 'nom_court');
+		$id_cont = old_mysql_result($appel_conteneurs, 0, 'id');
+		$id_parent = old_mysql_result($appel_conteneurs, 0, 'parent');
+		//$id_racine = old_mysql_result($appel_conteneurs, 0, 'id_racine');
+		$nom_conteneur = old_mysql_result($appel_conteneurs, 0, 'nom_court');
 		echo "<li>\n";
 		echo "$nom_conteneur ";
 		/*
@@ -398,8 +398,8 @@ function liste_devoirs_conteneurs($id_dev_cc, $id_conteneur, $periode_num) {
 				echo "<ul>\n";
 				while ($j < $nb_dev) {
 
-					$nom_devoir_cn = mysql_result($appel_dev, $j, 'nom_court');
-					$id_devoir_cn = mysql_result($appel_dev, $j, 'id');
+					$nom_devoir_cn = old_mysql_result($appel_dev, $j, 'nom_court');
+					$id_devoir_cn = old_mysql_result($appel_dev, $j, 'id');
 					echo "<li>\n";
 					echo "<font color='green'>$nom_devoir_cn</font>";
 					echo " - <a href='transfert_cc_vers_cn.php?id_dev_cc=$id_dev_cc&amp;id_racine=$id_racine&amp;id_conteneur=$id_cont&amp;id_devoir_cn=$id_devoir_cn&amp;ecraser_contenu_dev=y".add_token_in_url()."' onclick=\"return confirm('Vous allez remplacer le contenu de cette évaluation. Etes-vous sûr?')\">Utiliser ce devoir</a>";
@@ -438,16 +438,16 @@ function liste_devoirs_conteneurs($id_dev_cc, $id_conteneur, $periode_num) {
 			echo "<ul>\n";
 			$i = 0;
 			while ($i < $nb_cont) {
-				$id_cont = mysql_result($appel_conteneurs, $i, 'id');
-				$id_parent = mysql_result($appel_conteneurs, $i, 'parent');
-				//$id_racine = mysql_result($appel_conteneurs, $i, 'id_racine');
-				$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
+				$id_cont = old_mysql_result($appel_conteneurs, $i, 'id');
+				$id_parent = old_mysql_result($appel_conteneurs, $i, 'parent');
+				//$id_racine = old_mysql_result($appel_conteneurs, $i, 'id_racine');
+				$nom_conteneur = old_mysql_result($appel_conteneurs, $i, 'nom_court');
 				if ($id_cont != $id_parent) {
 					echo "<li>\n";
 					echo "$nom_conteneur - <a href='transfert_cc_vers_cn.php?id_dev_cc=$id_dev_cc&amp;id_racine=$id_racine&amp;id_conteneur=$id_cont&amp;creer_dev=y".add_token_in_url()."'>Créer une nouvelle évaluation dans ce conteneur</a>\n";
 
-					$display_bulletin=mysql_result($appel_conteneurs, $i, 'display_bulletin');
-					$coef=mysql_result($appel_conteneurs, $i, 'coef');
+					$display_bulletin=old_mysql_result($appel_conteneurs, $i, 'display_bulletin');
+					$coef=old_mysql_result($appel_conteneurs, $i, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
 					if($display_bulletin==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='$gepi_denom_boite visible sur le bulletin' alt='$gepi_denom_boite visible sur le bulletin' />";}
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='$gepi_denom_boite non visible sur le bulletin' alt='$gepi_denom_boite non visible sur le bulletin' />\n";}
@@ -466,8 +466,8 @@ function liste_devoirs_conteneurs($id_dev_cc, $id_conteneur, $periode_num) {
 					if($nb_dev>0) {
 						echo "<ul>\n";
 						while ($j < $nb_dev) {
-							$nom_devoir_cn = mysql_result($appel_dev, $j, 'nom_court');
-							$id_devoir_cn = mysql_result($appel_dev, $j, 'id');
+							$nom_devoir_cn = old_mysql_result($appel_dev, $j, 'nom_court');
+							$id_devoir_cn = old_mysql_result($appel_dev, $j, 'id');
 							echo "<li>\n";
 							echo "<font color='green'>$nom_devoir_cn</font>";
 							echo " - <a href='transfert_cc_vers_cn.php?id_dev_cc=$id_dev_cc&amp;id_racine=$id_racine&amp;id_conteneur=$id_cont&amp;id_devoir=$id_devoir_cn&amp;ecraser_contenu_dev=y".add_token_in_url()."' onclick=\"return confirmlink(this, 'Vous allez remplacer le contenu de cette évaluation. Etes-vous sûr?')\">Utiliser ce devoir</a>";

@@ -418,13 +418,13 @@ if((isset($mode))&&($mode=='repondre')) {
 		else {
 			$retour=marquer_message_lu($id_msg);
 
-			$login_dest=mysql_result($res,0,"login_src");
-			$sujet="Re: ".mysql_result($res,0,"sujet");
+			$login_dest=old_mysql_result($res,0,"login_src");
+			$sujet="Re: ".old_mysql_result($res,0,"sujet");
 
-			//$date_visibilite=mysql_result($res,0,"date_visibilite");
-			$date_msg=mysql_result($res,0,"date_msg");
+			//$date_visibilite=old_mysql_result($res,0,"date_visibilite");
+			$date_msg=old_mysql_result($res,0,"date_msg");
 
-			$message="Le ".formate_date($date_msg, 'y').", vous avez écrit:\n================================\n".mysql_result($res,0,"message")."\n================================\n";
+			$message="Le ".formate_date($date_msg, 'y').", vous avez écrit:\n================================\n".old_mysql_result($res,0,"message")."\n================================\n";
 
 			$in_reply_to=$id_msg;
 		}

@@ -70,7 +70,7 @@ if (!isset($_GET['id_eleve']))
 </div>
 <?php
 //affiche s'il y a quelque chose pour l'élève
-$cpt_eleves = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$_GET['id_eleve']."' and type_absence_eleve = '".$_GET['type']."'"),0);
+$cpt_eleves = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$_GET['id_eleve']."' and type_absence_eleve = '".$_GET['type']."'"),0);
 if ($cpt_eleves!=0) {
 ?>
     <div style="width: 240px; margin: auto;">

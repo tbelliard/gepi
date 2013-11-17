@@ -294,11 +294,11 @@ if($msg!=""){
 			echo "</tr>\n";
 		}
 
-		$user_nom = mysql_result($calldata, $cpt, "nom");
-		$user_prenom = mysql_result($calldata, $cpt, "prenom");
-		//$user_statut = mysql_result($calldata, $cpt, "statut");
-		$user_login = mysql_result($calldata, $cpt, "login");
-		//$user_etat[$cpt] = mysql_result($calldata, $cpt, "etat");
+		$user_nom = old_mysql_result($calldata, $cpt, "nom");
+		$user_prenom = old_mysql_result($calldata, $cpt, "prenom");
+		//$user_statut = old_mysql_result($calldata, $cpt, "statut");
+		$user_login = old_mysql_result($calldata, $cpt, "login");
+		//$user_etat[$cpt] = old_mysql_result($calldata, $cpt, "etat");
 
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";

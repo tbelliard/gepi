@@ -80,9 +80,9 @@ if (!(Verif_prof_cahier_notes($_SESSION['login'],$id_racine))) {
 }
 
 $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
-$id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
-$periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
 /**
  * Gestion des périodes
  */
@@ -94,12 +94,12 @@ if ($id_dev)  {
 	$sql="SELECT * FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
 	$query = mysqli_query($GLOBALS["mysqli"], $sql);
 	if($query) {
-		$id_cn_dev = mysql_result($query, 0, 'id_cn_dev');
-		$nom_court = mysql_result($query, 0, 'nom_court');
-		$nom_complet = mysql_result($query, 0, 'nom_complet');
-		$description = nettoyage_retours_ligne_surnumeraires(mysql_result($query, 0, 'description'));
-	    $precision = mysql_result($query, 0, 'arrondir');
-        $famille=mysql_result($query, 0, 'vision_famille');
+		$id_cn_dev = old_mysql_result($query, 0, 'id_cn_dev');
+		$nom_court = old_mysql_result($query, 0, 'nom_court');
+		$nom_complet = old_mysql_result($query, 0, 'nom_complet');
+		$description = nettoyage_retours_ligne_surnumeraires(old_mysql_result($query, 0, 'description'));
+	    $precision = old_mysql_result($query, 0, 'arrondir');
+        $famille=old_mysql_result($query, 0, 'vision_famille');
 	}
 	else {
 		header("Location: index.php?msg=".rawurlencode("Le numéro de devoir n est pas associé à ce groupe."));

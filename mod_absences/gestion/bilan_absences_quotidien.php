@@ -176,8 +176,8 @@ $nbre = mysqli_num_rows($req_classe);
 
 for($i = 0; $i < $nbre; $i++) {
 	// On récupère le nom de toutes les classes
-	$rep_classe[$i]["classe"] = mysql_result($req_classe, $i, "classe");
-	$rep_classe[$i]["id"] = mysql_result($req_classe, $i, "id");
+	$rep_classe[$i]["classe"] = old_mysql_result($req_classe, $i, "classe");
+	$rep_classe[$i]["id"] = old_mysql_result($req_classe, $i, "id");
 	echo '
 		<tr>
 			<td><a href="bilan_absences_classe.php?id_classe='.$rep_classe[$i]["id"].'">'.$rep_classe[$i]["classe"].'</a></td>
@@ -204,7 +204,7 @@ for($i = 0; $i < $nbre; $i++) {
 	$nbre_a = mysqli_num_rows($req_absences);
 
 	for($b = 0; $b < $nbre_a; $b++){
-		$rep_absences[$b]["eleve_id"] = mysql_result($req_absences, $b, "eleve_id");
+		$rep_absences[$b]["eleve_id"] = old_mysql_result($req_absences, $b, "eleve_id");
 		$req_id_classe = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 
 		// On affiche l'élève en fonction de la classe à laquelle il appartient
@@ -227,7 +227,7 @@ for($i = 0; $i < $nbre; $i++) {
 			}
 			$nbre_creneaux = mysqli_num_rows($req_creneaux);
 			for($a=0; $a<$nbre_creneaux; $a++){
-				$id_creneaux[$a]["id"] = mysql_result($req_creneaux, $a, "id_definie_periode");
+				$id_creneaux[$a]["id"] = old_mysql_result($req_creneaux, $a, "id_definie_periode");
 				echo '
 				'.suivi_absence($id_creneaux[$a]["id"], $rep_absences[$b]["eleve_id"], $date_choisie);
 			} // for $a

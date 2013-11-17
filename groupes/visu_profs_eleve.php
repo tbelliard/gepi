@@ -60,7 +60,7 @@ if ($_SESSION['statut'] == "responsable") {
 	$get_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 	if (mysqli_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
-		$login_eleve = mysql_result($get_eleves, 0);
+		$login_eleve = old_mysql_result($get_eleves, 0);
 	} elseif (mysqli_num_rows($get_eleves) == 0) {
 		$error_login = true;
 	}
@@ -197,9 +197,9 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 
 	// On a un élève. On affiche l'équipe pédagogique !
 	$eleve = mysqli_query($GLOBALS["mysqli"], "SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
-	$nom_eleve = mysql_result($eleve, 0, "nom");
-	$prenom_eleve = mysql_result($eleve, 0, "prenom");
-	//$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
+	$nom_eleve = old_mysql_result($eleve, 0, "nom");
+	$prenom_eleve = old_mysql_result($eleve, 0, "prenom");
+	//$id_classe = old_mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
 
 	//$sql="SELECT DISTINCT jec.id_classe, c.* FROM j_eleves_classes jec, classes c WHERE jec.login='".$login_eleve."' AND jec.id_classe=c.id ORDER BY periode DESC LIMIT 1";
 	$sql="SELECT DISTINCT jec.id_classe, c.* FROM j_eleves_classes jec, classes c WHERE jec.login='".$login_eleve."' AND jec.id_classe=c.id ORDER BY periode;";

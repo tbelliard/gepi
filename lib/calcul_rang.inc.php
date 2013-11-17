@@ -90,7 +90,7 @@ while ($i < $nombre_eleves) {
 $calcul_moy_gen = 'no';
 $j=0;
 while ($j < $nombre_groupes) {
-    $group_id = mysql_result($appel_liste_groupes, $j, "id_groupe");
+    $group_id = old_mysql_result($appel_liste_groupes, $j, "id_groupe");
     $current_group[$j] = get_group($group_id);
     // Dans tous les cas, on effectue cette requête qui permet de calculer le tableau $nb_notes[] utilisé lors de l'affichage du rang
     $quer = mysqli_query($GLOBALS["mysqli"], "select distinct note, login  from matieres_notes
@@ -118,11 +118,11 @@ while ($j < $nombre_groupes) {
 		$max_rang=0;
         //mise à jour du champ des rangs
         while ($k < $nb_notes[$group_id][$periode_num]) {
-            if ($k >=1) $note_prec = mysql_result($quer, $k-1, 'note');
-            $note = mysql_result($quer, $k, 'note');
+            if ($k >=1) $note_prec = old_mysql_result($quer, $k-1, 'note');
+            $note = old_mysql_result($quer, $k, 'note');
             if ($note == $note_prec) $rang = $rang_prec; else $rang = ($k+1);
             $rang_prec = $rang;
-            $login_eleve_temp = mysql_result($quer, $k, 'login');
+            $login_eleve_temp = old_mysql_result($quer, $k, 'login');
 			
             $reg_rang = mysqli_query($GLOBALS["mysqli"], "update matieres_notes set rang='".$rang."' where (
             periode = '".$periode_num."' and
@@ -177,12 +177,12 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
             periode='$periode_num'
             )
             ");
-        $current_classe_matiere_moyenne[$j] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
+        $current_classe_matiere_moyenne[$j] = old_mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
 
         // Calcul de la moyenne des élèves et de la moyenne de la classe
         $i=0;
         while ($i < $nombre_eleves) {
-            $current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
+            $current_eleve_login[$i] = old_mysql_result($appel_liste_eleves, $i, "login");
             // Maintenant on regarde si l'élève suit bien cette matière ou pas
 
             if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
@@ -192,8 +192,8 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
                 periode='$periode_num' AND
                 id_groupe='".$current_group[$j]["id"]."'
                 )");
-                $current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
-                $current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
+                $current_eleve_note[$j][$i] = @old_mysql_result($current_eleve_note_query, 0, "note");
+                $current_eleve_statut[$j][$i] = @old_mysql_result($current_eleve_note_query, 0, "statut");
                 
 		        // On teste si l'élève a un coef spécifique pour cette matière
 		        $test_coef = mysqli_query($GLOBALS["mysqli"], "SELECT value FROM eleves_groupes_settings WHERE (" .
@@ -201,7 +201,7 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
 		        		"id_groupe = '".$current_group[$j]["id"]."' AND " .
 		        		"name = 'coef')");
 		        if (mysqli_num_rows($test_coef) > 0) {
-		        	$coef_eleve = mysql_result($test_coef, 0);
+		        	$coef_eleve = old_mysql_result($test_coef, 0);
 		        } else {
 		        	$coef_eleve = $current_coef[$j];
 		        }

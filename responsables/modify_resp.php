@@ -157,12 +157,12 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					$msg.="Erreur lors de la mise à jour dans 'resp_pers'. ";
 				} else {
 					// On met également à jour la table utilisateurs si le responsable a un compte
-					$test1_login = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT login FROM resp_pers WHERE pers_id = '$pers_id'"), 0);
+					$test1_login = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT login FROM resp_pers WHERE pers_id = '$pers_id'"), 0);
 					//echo "\$test1_login=$test1_login<br />\n";
 					if ($test1_login != '') {
 						$sql="SELECT count(login) FROM utilisateurs WHERE login = '".$test1_login."'";
 						//echo "$sql<br />\n";
-						$test2_login = mysql_result(mysqli_query($GLOBALS["mysqli"], $sql), 0);
+						$test2_login = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql), 0);
 						if ($test2_login == 1) {
 							$sql="UPDATE utilisateurs SET nom = '".$resp_nom."', prenom = '" . $resp_prenom . "', civilite='$civilite'";
 							//if((getSettingValue('mode_email_resp')!='mon_compte')&&(isset($mel))) {
@@ -693,7 +693,7 @@ if ((!isset($pers_id))&&(isset($login_resp))&&($login_resp!="")) {
 	$sql="SELECT pers_id FROM resp_pers WHERE login='$login_resp';";
 	$res_pers_id=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_pers_id)>0) {
-		$pers_id=mysql_result($res_pers_id, 0, "pers_id");
+		$pers_id=old_mysql_result($res_pers_id, 0, "pers_id");
 	}
 }
 

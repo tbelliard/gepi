@@ -83,13 +83,13 @@ for($i = 0; $i < $nbre; ){
 	// et on les mets en forme
 	for($a = 0; $a < $nbre_absence; $a++){
 		// on récupère ce dont on a besoin
-		$abs[$a]["d_date_absence_eleve"] = mysql_result($query, $a, "d_date_absence_eleve");
-		$abs[$a]["a_date_absence_eleve"] = mysql_result($query, $a, "a_date_absence_eleve");
-		$abs[$a]["heuredeb_absence"] = mysql_result($query, $a, "d_heure_absence_eleve");
-		$abs[$a]["heurefin_absence"] = mysql_result($query, $a, "a_heure_absence_eleve");
-		$abs[$a]["justification"] = mysql_result($query, $a, "justify_absence_eleve");
-		$abs[$a]["type"] = mysql_result($query, $a, "type_absence_eleve");
-		$abs[$a]["id"] = mysql_result($query, $a, "id_absence_eleve");
+		$abs[$a]["d_date_absence_eleve"] = old_mysql_result($query, $a, "d_date_absence_eleve");
+		$abs[$a]["a_date_absence_eleve"] = old_mysql_result($query, $a, "a_date_absence_eleve");
+		$abs[$a]["heuredeb_absence"] = old_mysql_result($query, $a, "d_heure_absence_eleve");
+		$abs[$a]["heurefin_absence"] = old_mysql_result($query, $a, "a_heure_absence_eleve");
+		$abs[$a]["justification"] = old_mysql_result($query, $a, "justify_absence_eleve");
+		$abs[$a]["type"] = old_mysql_result($query, $a, "type_absence_eleve");
+		$abs[$a]["id"] = old_mysql_result($query, $a, "id_absence_eleve");
 		// on vérifie le type
 		if ($abs[$a]["type"] == "A") {
 			$type = "<td style=\"abs\">Abs.</td>";
@@ -144,11 +144,11 @@ for($i = 0; $i < $nbre; ){
 			<tbody>
 		';
 		for($ab = 0; $ab < $verif; $ab++){
-			$absbull[$ab]["periode"] = mysql_result($query_b, $ab, "periode");
-			$absbull[$ab]["nb_absences"] = mysql_result($query_b, $ab, "nb_absences");
-			$absbull[$ab]["non_justifie"] = mysql_result($query_b, $ab, "non_justifie");
-			$absbull[$ab]["nb_retards"] = mysql_result($query_b, $ab, "nb_retards");
-			$absbull[$ab]["appreciation"] = mysql_result($query_b, $ab, "appreciation");
+			$absbull[$ab]["periode"] = old_mysql_result($query_b, $ab, "periode");
+			$absbull[$ab]["nb_absences"] = old_mysql_result($query_b, $ab, "nb_absences");
+			$absbull[$ab]["non_justifie"] = old_mysql_result($query_b, $ab, "non_justifie");
+			$absbull[$ab]["nb_retards"] = old_mysql_result($query_b, $ab, "nb_retards");
+			$absbull[$ab]["appreciation"] = old_mysql_result($query_b, $ab, "appreciation");
 			if ($absbull[$ab]["appreciation"] == "") {
 				$appreciation = "Aucune";
 			}else {

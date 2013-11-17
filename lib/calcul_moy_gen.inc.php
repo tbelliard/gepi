@@ -207,7 +207,7 @@ $temoin_tous_coef_a_1="y";
 $j=0;
 $prev_cat = null;
 while ($j < $nombre_groupes) {
-	$group_id = mysql_result($appel_liste_groupes, $j, "id_groupe");
+	$group_id = old_mysql_result($appel_liste_groupes, $j, "id_groupe");
 	$current_group[$j] = get_group($group_id);
 
 	calc_moy_debug("\$current_group[$j]['name']=".$current_group[$j]['name']."\n");
@@ -215,8 +215,8 @@ while ($j < $nombre_groupes) {
 	// DEBUG
 	//echo "\$current_group[$j]['name']=".$current_group[$j]['name']."<br />";
 
-	$current_coef[$j] = mysql_result($appel_liste_groupes, $j, "coef");
-	calc_moy_debug("\$current_coef[$j]=mysql_result(\$appel_liste_groupes, $j, \"coef\")=$current_coef[$j]\n");
+	$current_coef[$j] = old_mysql_result($appel_liste_groupes, $j, "coef");
+	calc_moy_debug("\$current_coef[$j]=old_mysql_result(\$appel_liste_groupes, $j, \"coef\")=$current_coef[$j]\n");
 	if($current_coef[$j]!=1) {$temoin_tous_coef_a_1="n";}
 
 	if(isset($coefficients_a_1)){
@@ -237,8 +237,8 @@ while ($j < $nombre_groupes) {
 	//===============
 	calc_moy_debug("\$current_coef[$j]=$current_coef[$j]\n");
 
-	$current_mode_moy[$j]=mysql_result($appel_liste_groupes, $j, "mode_moy");
-	calc_moy_debug("\$current_mode_moy[$j]=mysql_result(\$appel_liste_groupes, $j, \"mode_moy\")=$current_mode_moy[$j]\n");
+	$current_mode_moy[$j]=old_mysql_result($appel_liste_groupes, $j, "mode_moy");
+	calc_moy_debug("\$current_mode_moy[$j]=old_mysql_result(\$appel_liste_groupes, $j, \"mode_moy\")=$current_mode_moy[$j]\n");
 
 	if((isset($utiliser_coef_perso))&&($utiliser_coef_perso=='y')) {
 		if(isset($mode_moy_perso[$current_group[$j]["id"]])) {
@@ -262,7 +262,7 @@ while ($j < $nombre_groupes) {
 	calc_moy_debug("$sql\n");
 	$current_classe_matiere_moyenne_query = mysqli_query($GLOBALS["mysqli"], $sql);
 
-	$current_classe_matiere_moyenne[$j] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
+	$current_classe_matiere_moyenne[$j] = old_mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
 	calc_moy_debug("\$current_classe_matiere_moyenne[$j]=$current_classe_matiere_moyenne[$j]\n");
 
 	//===================================
@@ -290,8 +290,8 @@ while ($j < $nombre_groupes) {
 		statut=''
 		)";
 	$res_note_min_max=mysqli_query($GLOBALS["mysqli"], $sql);
-	$moy_min_classe_grp[$j]= @mysql_result($res_note_min_max, 0, "note_min");
-	$moy_max_classe_grp[$j]= @mysql_result($res_note_min_max, 0, "note_max");
+	$moy_min_classe_grp[$j]= @old_mysql_result($res_note_min_max, 0, "note_min");
+	$moy_max_classe_grp[$j]= @old_mysql_result($res_note_min_max, 0, "note_max");
 	//======================================
 
 	$sql="SELECT COUNT(note) as quartile1 FROM matieres_notes WHERE (periode='$periode_num' AND
@@ -341,7 +341,7 @@ while ($j < $nombre_groupes) {
 
 	//======================================
 	while ($i < $nombre_eleves) {
-		$current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
+		$current_eleve_login[$i] = old_mysql_result($appel_liste_eleves, $i, "login");
 		//===============
 		// Ajout J.Etheve
 		$tab_login_indice[my_strtoupper($current_eleve_login[$i])]=$i;
@@ -404,7 +404,7 @@ while ($j < $nombre_groupes) {
 				calc_moy_debug("$sql\n");
 				$test_coef = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (mysqli_num_rows($test_coef) > 0) {
-					$coef_eleve = mysql_result($test_coef, 0);
+					$coef_eleve = old_mysql_result($test_coef, 0);
 				} else {
 					$coef_eleve = $current_coef[$j];
 				}
@@ -442,7 +442,7 @@ while ($j < $nombre_groupes) {
 
 			//=====================================
 			if ((isset($affiche_rang))&&($affiche_rang=='y')) {
-				$current_eleve_rang[$j][$i]=@mysql_result($current_eleve_note_query, 0, "rang");
+				$current_eleve_rang[$j][$i]=@old_mysql_result($current_eleve_note_query, 0, "rang");
 				if(($current_eleve_rang[$j][$i]==0)||($current_eleve_rang[$j][$i]=="-1")) {$current_eleve_rang[$j][$i]="-";}
 			}
 			//=====================================

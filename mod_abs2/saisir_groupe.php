@@ -1192,7 +1192,7 @@ if ($eleve_col->isEmpty()) {
 						$sql="SELECT id_groupe FROM edt_cours WHERE id_cours='".$id_cours."';";
 						$res_edt=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_edt)>0) {
-							$id_groupe=mysql_result($res_edt, 0, "id_groupe");
+							$id_groupe=old_mysql_result($res_edt, 0, "id_groupe");
 
 							$sql="SELECT 1=1 FROM t_plan_de_classe WHERE id_groupe='".$id_groupe."' AND login_prof='".$_SESSION['login']."';";
 							$test_pdc=mysqli_query($GLOBALS["mysqli"], $sql);

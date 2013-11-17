@@ -272,7 +272,7 @@ $i = 0;
                 while($data_id = mysqli_fetch_array($resultat_id)) { ?>
                         <strong><?php echo strtoupper($data_id['nom']); ?></strong><br /><?php echo ucfirst($data_id['prenom']); $id_eleve = $data_id['login']; $id_eleve_photo = $data_id['elenoet']; ?><br /><span class="norme_absence_bleu"><strong><?php echo classe_de($data_id['login']); } ?></strong></span><br />
                 <?php
-                  $compte = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT COUNT(*) FROM ".$prefix_base."absences_eleves
+                  $compte = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT COUNT(*) FROM ".$prefix_base."absences_eleves
                                                    WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='I'"),0);
                   if (getSettingValue("active_module_trombinoscopes")=='y') {
                   	  $nom_photo = '';

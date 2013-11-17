@@ -46,7 +46,7 @@ if (isset($_POST['login'])) {
 
 		// On va maintenant vérifier son statut, et s'assurer que le statut en question
 		// est bien autorisé à utiliser l'outil de réinitialisation
-		$user_statut = mysql_result($test, 0);
+		$user_statut = old_mysql_result($test, 0);
 		$ok = false;
 
 		if (
@@ -132,8 +132,8 @@ if (isset($_POST['no_anti_inject_password'])) {
 	if (mysqli_num_rows($req) != 1) {
 		$message = "Erreur : le lien n'est pas valide ! <a href='recover_password.php'>Cliquez ici</a> pour formuler une nouvelle demande de changement de mot de passe.";
 	} else {
-		$user_status = mysql_result($req, 0, "statut");
-		$expiration = mysql_result($req, 0, "expiration");
+		$user_status = old_mysql_result($req, 0, "statut");
+		$expiration = old_mysql_result($req, 0, "expiration");
 		if ($expiration < time()) {
 			$message = "Erreur : le délai de sécurité pour l'utilisation du lien est dépassé. Vous pouvez reformuler une demande en <a href='recover_password.php'>cliquant ici</a>.";
 		} else {
@@ -152,7 +152,7 @@ if (isset($_POST['no_anti_inject_password'])) {
 			}
 			if (!$message) {
 				// Si aucune erreur n 'a été renvoyée, on enregistre le mot de passe
-                                $user_login = mysql_result($req, 0, "login");
+                                $user_login = old_mysql_result($req, 0, "login");
                                 $res = Session::change_password_gepi($user_login,$NON_PROTECT["password"]);
 				if ($res) {
                                         $res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password_ticket = '' WHERE password_ticket = '" . $_GET['ticket'] . "'");
@@ -219,7 +219,7 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
 		} else {
 			// Si on arrive là, c'est que le ticket est valide !
 			// On affiche le formulaire pour changer le mot de passe.
-			$user_status = mysql_result($test, 0);
+			$user_status = old_mysql_result($test, 0);
 			if (($user_status == 'professeur') or ($user_status == 'cpe') or ($user_status == 'responsable') or ($user_status == 'eleve')) {
 			    // Mot de passe comportant des lettres et des chiffres
 			    $flag = 0;

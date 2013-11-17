@@ -377,11 +377,11 @@ echo "</pre>";
 
 			if ($id_classe != NULL) {
 			  $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
-			  $current_classe = mysql_result($calldata, 0, "classe");
+			  $current_classe = old_mysql_result($calldata, 0, "classe");
 			} else {
 			   $sql = "SELECT * FROM classes WHERE id = '$id_classe'";
 			   $calldata = mysqli_query($GLOBALS["mysqli"], $sql);
-			   $current_classe = mysql_result($calldata, 0, "classe");
+			   $current_classe = old_mysql_result($calldata, 0, "classe");
 			}
 
 			if (($affiche_pp==1)) {
@@ -415,7 +415,7 @@ echo "</pre>";
 			   } else {
 				   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
 				   $call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
-				   $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
+				   $current_eleve_profsuivi_login = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
 
 				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst(getSettingValue("gepi_prof_suivi")).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
 			   }

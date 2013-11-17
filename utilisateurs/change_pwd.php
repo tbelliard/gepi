@@ -64,7 +64,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 	}
 
 	if(($mdp_INE=='y')&&($user_statut=='eleve')&&($ine_password!="")) {
-		$auth_mode = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+		$auth_mode = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
 		if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == 'yes') {
 			// On est en mode d'écriture LDAP
 			$ldap_server = new LDAPServer;
@@ -92,7 +92,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			$msg = "Erreur lors de la saisie du mot de passe (<em>voir les recommandations</em>), veuillez recommencer !";
 			if((isset($info_verif_mot_de_passe))&&($info_verif_mot_de_passe!="")) {$msg.="<br />".$info_verif_mot_de_passe;}
 		} else {
-			$auth_mode = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+			$auth_mode = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
 			if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == 'yes') {
 				// On est en mode d'écriture LDAP
 				$ldap_server = new LDAPServer;
@@ -119,10 +119,10 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 // On appelle les informations de l'utilisateur
 if (isset($user_login) and ($user_login!='')) {
     $call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT nom,prenom,statut,auth_mode FROM utilisateurs WHERE login='".$user_login."'");
-    $auth_mode = mysql_result($call_user_info, "0", "auth_mode");
-    $user_statut = mysql_result($call_user_info, "0", "statut");
-    $user_nom = mysql_result($call_user_info, "0", "nom");
-    $user_prenom = mysql_result($call_user_info, "0", "prenom");
+    $auth_mode = old_mysql_result($call_user_info, "0", "auth_mode");
+    $user_statut = old_mysql_result($call_user_info, "0", "statut");
+    $user_nom = old_mysql_result($call_user_info, "0", "nom");
+    $user_prenom = old_mysql_result($call_user_info, "0", "prenom");
 }
 
 //**************** EN-TETE *****************

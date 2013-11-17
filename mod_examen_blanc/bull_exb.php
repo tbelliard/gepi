@@ -726,12 +726,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									//echo "$sql<br />";
 									$data_etab = mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($data_etab)>0) {
-										$tab_ele['etab_id'] = @mysql_result($data_etab, 0, "id");
-										$tab_ele['etab_nom'] = @mysql_result($data_etab, 0, "nom");
-										$tab_ele['etab_niveau'] = @mysql_result($data_etab, 0, "niveau");
-										$tab_ele['etab_type'] = @mysql_result($data_etab, 0, "type");
-										$tab_ele['etab_cp'] = @mysql_result($data_etab, 0, "cp");
-										$tab_ele['etab_ville'] = @mysql_result($data_etab, 0, "ville");
+										$tab_ele['etab_id'] = @old_mysql_result($data_etab, 0, "id");
+										$tab_ele['etab_nom'] = @old_mysql_result($data_etab, 0, "nom");
+										$tab_ele['etab_niveau'] = @old_mysql_result($data_etab, 0, "niveau");
+										$tab_ele['etab_type'] = @old_mysql_result($data_etab, 0, "type");
+										$tab_ele['etab_cp'] = @old_mysql_result($data_etab, 0, "cp");
+										$tab_ele['etab_ville'] = @old_mysql_result($data_etab, 0, "ville");
 				
 										if ($tab_ele['etab_niveau']!='') {
 										foreach ($type_etablissement as $type_etab => $nom_etablissement) {

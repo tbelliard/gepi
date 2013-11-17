@@ -41,7 +41,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 
 		// on vérify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
 		// première option il existe une lettre qui fait seulement référence à cette id donc suppression
-		$cpt_lettre_suivi = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
+		$cpt_lettre_suivi = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
 		if( $cpt_lettre_suivi == 1 )
 		{
 
@@ -57,7 +57,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 		{
 
 			// deuxième option il existe une lettre qui fait référence à cette id mais à d'autre aussi donc modification
-			$cpt_lettre_suivi = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
+			$cpt_lettre_suivi = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
 			if( $cpt_lettre_suivi == 1 )
 			{
 
@@ -183,7 +183,7 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
 	{
 
 		// on vérifie qu'une absence ne se trouve pas entre le début et la fin de celle saisie
-		$cpt_ligne = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*)
+		$cpt_ligne = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*)
 										   		 FROM " . $prefix_base . "absences_rb
 										   		WHERE eleve_id = '" . $eleve_id . "'
 										   		  AND retard_absence = '" . $retard_absence . "'
@@ -278,7 +278,7 @@ function suppr_absences_rb($id)
     {
 
 		// on vérifie qu'une absence ne se trouve pas entre le début et la fin de celle saisie
-		$cpt_ligne = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*)
+		$cpt_ligne = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*)
 											   FROM " . $prefix_base . "absences_eleves
 											   WHERE id_absence_eleve = '" . $id . "'"
 											 ),0);
@@ -359,7 +359,7 @@ function modifier_absences_rb($id,$debut_ts_modif,$fin_ts_modif)
     {
 
 		// on vérifie qu'une absence ne se trouve pas entre le début et la fin de celle saisie
-		$cpt_ligne = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*)
+		$cpt_ligne = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*)
 											   FROM " . $prefix_base . "absences_eleves
 											   WHERE id_absence_eleve = '" . $id . "'"
 											 ),0);

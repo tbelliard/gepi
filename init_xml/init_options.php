@@ -56,19 +56,19 @@ echo "<center><h3 class='gepi'>Cinquième phase d'initialisation<br />Affectatio
 
 echo "<h3 class='gepi'>Deuxième étape : importation des options suivies par les élèves.</h3>";
 
-$test1 = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM eleves"),0);
+$test1 = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM eleves"),0);
 if ($test1 ==0) {
     echo "<p class='grand'>Aucun élève actuellement dans la base : la procédure d'initialisation des options ne peut continuer !</p>";
     die();
 } else {
-    $test2 = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_eleves_classes"),0);
+    $test2 = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_eleves_classes"),0);
     if ($test2 ==0) {
         echo "<p class='grand'>Les classes n'ont pas encore été constituées : la procédure d'initialisation des options ne peut continuer !</p>";
         die();
     } else {
 
-        //$test3 = mysql_result(mysql_query("SELECT count(*) FROM temp_gep_import WHERE LOGIN !=''"),0);
-        $test3 = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM temp_gep_import2 WHERE LOGIN !=''"),0);
+        //$test3 = old_mysql_result(mysql_query("SELECT count(*) FROM temp_gep_import WHERE LOGIN !=''"),0);
+        $test3 = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM temp_gep_import2 WHERE LOGIN !=''"),0);
         if ($test3 ==0) {
             echo "<p class='grand'>Afin de procéder à la phase de définition des options suivies par les élèves, vous devez d'abord effectuer la première phase d'importation des élèves à partir du fichier ELEVES.CSV</p>";
             die();
@@ -88,7 +88,7 @@ while ($classe_row = mysqli_fetch_object($appel_donnees_classes)) {
 	// Initialisation de la variable pour indiquer qu'un groupe n'existe pas pour la matière indiquée en option
 	$no_group = array();
 
-    $nb_per = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
+    $nb_per = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
 
     $nb_options = 0;
     $i = 1;
@@ -144,7 +144,7 @@ while ($classe_row = mysqli_fetch_object($appel_donnees_classes)) {
                 	// On commence par récupérer l'ID du groupe concerné
 
                 	if (!in_array($tab_options[$j], $no_group)) {
-	                	$group_id = @mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT g.id FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm where (" .
+	                	$group_id = @old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT g.id FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm where (" .
 	                			"g.id = jgm.id_groupe and " .
 	                			"jgm.id_matiere = '" . $tab_options[$j] . "' and " .
 	                			"jgm.id_groupe = jgc.id_groupe and " .

@@ -137,7 +137,7 @@ if((!isset($id_groupe))||($id_groupe=="")) {
 		$sql="SELECT dim_photo FROM t_plan_de_classe WHERE id_groupe='".$tab_groups[$loop]['id']."' AND login_prof='".$_SESSION['login']."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
-			$dim_photo=mysql_result($res,0);
+			$dim_photo=old_mysql_result($res,0);
 		}
 		echo "<input type='text' name='dim_photo_".$tab_groups[$loop]['id']."' value='$dim_photo' size='3' />";
 		echo "</td>\n";

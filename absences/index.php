@@ -72,8 +72,8 @@ if (!isset($id_classe)) {
 	/*
 	$i = 0;
 	while ($i < $nombreligne){
-		$id_classe = mysql_result($calldata, $i, "id");
-		$classe_liste = mysql_result($calldata, $i, "classe");
+		$id_classe = old_mysql_result($calldata, $i, "id");
+		$classe_liste = old_mysql_result($calldata, $i, "classe");
 		echo "<br /><a href='index.php?id_classe=$id_classe'>$classe_liste</a>\n";
 		$i++;
 
@@ -86,8 +86,8 @@ if (!isset($id_classe)) {
 	$tab_txt=array();
 	$tab_lien=array();
 	while ($i < $nombreligne){
-		$tab_lien[$i] = "index.php?id_classe=".mysql_result($calldata, $i, "id");
-		$tab_txt[$i] = mysql_result($calldata, $i, "classe");
+		$tab_lien[$i] = "index.php?id_classe=".old_mysql_result($calldata, $i, "id");
+		$tab_txt[$i] = old_mysql_result($calldata, $i, "classe");
 		$i++;
 	}
 	tab_liste($tab_txt,$tab_lien,3);
@@ -106,7 +106,7 @@ if (!isset($id_classe)) {
 	echo "</p>\n";
 
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-	$classe = mysql_result($call_classe, "0", "classe");
+	$classe = old_mysql_result($call_classe, "0", "classe");
 	echo "<h2>Classe de ".$classe."</h2>\n";
 	echo "<p><b>Saisie manuelle - Choisissez la période : </b></p>\n";
 	//echo "<ul>\n";

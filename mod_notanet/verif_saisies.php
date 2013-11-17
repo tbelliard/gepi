@@ -110,7 +110,7 @@ if($nb_types_brevets==0) {
 }
 
 if($nb_types_brevets==1) {
-	$type_brevet=mysql_result($res, 0, 'type_brevet');
+	$type_brevet=old_mysql_result($res, 0, 'type_brevet');
 }
 
 if(!isset($type_brevet)) {
@@ -161,8 +161,8 @@ if ((!isset($id_classe))||(count($id_classe)==0)||(($check_app=='n')&&($check_av
 
 	$i = 0;
 	while ($i < $nombre_lignes){
-		$classe = mysql_result($call_data, $i, "classe");
-		$ide_classe = mysql_result($call_data, $i, "id");
+		$classe = old_mysql_result($call_data, $i, "classe");
+		$ide_classe = old_mysql_result($call_data, $i, "id");
 		//echo "<a href='eleve_classe.php?id_classe=$ide_classe'>$classe</a><br />\n";
 		//echo "<option value='$ide_classe'>$classe</option>\n";
 
@@ -302,7 +302,7 @@ for($i=0;$i<count($id_classe);$i++) {
 				if(mysqli_num_rows($res_notanet)>0) {
 					// Test appréciation
 					if($check_app=='y') {
-						$matiere=mysql_result($res_notanet, 0, 'matiere');
+						$matiere=old_mysql_result($res_notanet, 0, 'matiere');
 						//$sql="SELECT * FROM notanet_app WHERE login='".$lig_ele->login."' AND id_mat='$j' AND matiere='".$matiere."' AND appreciation!='';";
 						// id_mat n'est pas rempli dans notanet_app
 						// Est-ce qu'on pourrait associer deux fois une matière Gepi à des matières notanet différentes?

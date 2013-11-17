@@ -87,11 +87,11 @@ $nombre_lignes = mysqli_num_rows($appel_donnees);
 
 $j= 0;
 while($j< $nombre_lignes) {
-	$user_login = mysql_result($appel_donnees, $j, "login");
-	$user_nom = mysql_result($appel_donnees, $j, "nom");
-	$user_prenom = mysql_result($appel_donnees, $j, "prenom");
-	$user_email = mysql_result($appel_donnees, $j, "email");
-	$user_statut = mysql_result($appel_donnees, $j, "statut");
+	$user_login = old_mysql_result($appel_donnees, $j, "login");
+	$user_nom = old_mysql_result($appel_donnees, $j, "nom");
+	$user_prenom = old_mysql_result($appel_donnees, $j, "prenom");
+	$user_email = old_mysql_result($appel_donnees, $j, "email");
+	$user_statut = old_mysql_result($appel_donnees, $j, "statut");
 	$fd.=$user_nom.";".$user_prenom.";".$user_login.";".$user_email;
 	if($export_statut=='personnels') {$fd.=";".$user_statut;}
 	elseif($export_statut=='responsable') {
@@ -107,7 +107,7 @@ while($j< $nombre_lignes) {
 		$sql="SELECT pers_id, civilite FROM resp_pers WHERE login='$user_login';";
 		$res_pers_id=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_pers_id)==1) {
-			$civ=mysql_result($res_pers_id, 0, 'civilite');
+			$civ=old_mysql_result($res_pers_id, 0, 'civilite');
 			if(($civ=='Mme')||($civ=='Mlle')) {
 				$fd.=";F";
 			}
@@ -115,7 +115,7 @@ while($j< $nombre_lignes) {
 				$fd.=";M";
 			}
 
-			$pers_id=mysql_result($res_pers_id, 0, 'pers_id');
+			$pers_id=old_mysql_result($res_pers_id, 0, 'pers_id');
 			$fd.=";R".$pers_id;
 		}
 		else {

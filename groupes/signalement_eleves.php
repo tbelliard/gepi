@@ -494,7 +494,7 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 	$eleves_list = array();
 	$eleves_list["list"]=array();
 	for ($i=0;$i<$nb;$i++) {
-		$e_login = mysql_result($calldata, $i, "login");
+		$e_login = old_mysql_result($calldata, $i, "login");
 		//================================
 		//echo "<input type='hidden' name='login_eleve[$i]' value='$e_login' />\n";
 		echo "<input type='hidden' name='login_eleve[$i]' id='login_eleve_$i' value='$e_login' />\n";
@@ -502,10 +502,10 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 		$login_eleve[$i]=$e_login;
 		//=========================
 		//================================
-		$e_nom = mysql_result($calldata, $i, "nom");
-		$e_prenom = mysql_result($calldata, $i, "prenom");
-		$e_id_classe = mysql_result($calldata, $i, "id_classe");
-		$classe = mysql_result($calldata, $i, "classe");
+		$e_nom = old_mysql_result($calldata, $i, "nom");
+		$e_prenom = old_mysql_result($calldata, $i, "prenom");
+		$e_id_classe = old_mysql_result($calldata, $i, "id_classe");
+		$classe = old_mysql_result($calldata, $i, "classe");
 		$eleves_list["list"][] = $e_login;
 		$eleves_list["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "classe" => $classe, "id_classe" => $e_id_classe);
 	}
@@ -932,17 +932,17 @@ $nb = mysqli_num_rows($calldata);
 $eleves_list = array();
 $eleves_list["list"]=array();
 for ($i=0;$i<$nb;$i++) {
-	$e_login = mysql_result($calldata, $i, "login");
+	$e_login = old_mysql_result($calldata, $i, "login");
 	//================================
 	//echo "<input type='hidden' name='login_eleve[$i]' value='$e_login' />\n";
 	echo "<input type='hidden' name='login_eleve[$i]' id='login_eleve_$i' value='$e_login' />\n";
 	//=========================
 	$login_eleve[$i]=$e_login;
 	//=========================
-	$e_nom = mysql_result($calldata, $i, "nom");
-	$e_prenom = mysql_result($calldata, $i, "prenom");
-	$e_id_classe = mysql_result($calldata, $i, "id_classe");
-	$classe = mysql_result($calldata, $i, "classe");
+	$e_nom = old_mysql_result($calldata, $i, "nom");
+	$e_prenom = old_mysql_result($calldata, $i, "prenom");
+	$e_id_classe = old_mysql_result($calldata, $i, "id_classe");
+	$classe = old_mysql_result($calldata, $i, "classe");
 	$eleves_list["list"][] = $e_login;
 	$eleves_list["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "classe" => $classe, "id_classe" => $e_id_classe);
 }

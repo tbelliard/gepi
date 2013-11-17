@@ -110,15 +110,15 @@ include "../lib/periodes.inc.php";
 
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 
-$nom_aid = @mysql_result($call_data, 0, "nom");
+$nom_aid = @old_mysql_result($call_data, 0, "nom");
 
-$note_max = @mysql_result($call_data, 0, "note_max");
+$note_max = @old_mysql_result($call_data, 0, "note_max");
 
-$type_note = @mysql_result($call_data, 0, "type_note");
+$type_note = @old_mysql_result($call_data, 0, "type_note");
 
-$display_begin = @mysql_result($call_data, 0, "display_begin");
+$display_begin = @old_mysql_result($call_data, 0, "display_begin");
 
-$display_end = @mysql_result($call_data, 0, "display_end");
+$display_end = @old_mysql_result($call_data, 0, "display_end");
 
 
 
@@ -147,9 +147,9 @@ if (!isset($aid_id)) {
 
         while ($i < $nombre_aid) {
 
-            $aid_display = mysql_result($call_prof_aid, $i, "nom");
+            $aid_display = old_mysql_result($call_prof_aid, $i, "nom");
 
-            $aid_id = mysql_result($call_prof_aid, $i, "id");
+            $aid_id = old_mysql_result($call_prof_aid, $i, "id");
 
             echo "<br /><span class='bold'>$aid_display</span> --- <a href='visu_aid.php?aid_id=$aid_id&aid=yes&indice_aid=$indice_aid'>Visualiser les appréciations pour cette rubrique</a>\n";
 
@@ -185,7 +185,7 @@ if (!isset($aid_id)) {
 
     while ($i < $nombre_lignes){
 
-        $id_classe = mysql_result($call_data, $i, "id");
+        $id_classe = old_mysql_result($call_data, $i, "id");
 
         $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 
@@ -199,7 +199,7 @@ if (!isset($aid_id)) {
 
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT max(num) as max FROM $nom_table");
 
-    $nb_periode_max = mysql_result($call_data, 0, "max");
+    $nb_periode_max = old_mysql_result($call_data, 0, "max");
 
 
 
@@ -215,7 +215,7 @@ if (!isset($aid_id)) {
 
     $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
 
-    $aid_nom = mysql_result($calldata, 0, "nom");
+    $aid_nom = old_mysql_result($calldata, 0, "nom");
 
     echo "<p class='bold'>Appréciations $nom_aid : $aid_nom</p>\n";
 
@@ -323,9 +323,9 @@ if (!isset($aid_id)) {
 
     while($i < $nombre_eleves) {
 
-        $login_eleve[$i] = mysql_result($appel_login_eleves, $i, "login");
+        $login_eleve[$i] = old_mysql_result($appel_login_eleves, $i, "login");
 
-        $col[1][$i] = mysql_result($appel_login_eleves, $i, "prenom")." ".mysql_result($appel_login_eleves, $i, "nom");
+        $col[1][$i] = old_mysql_result($appel_login_eleves, $i, "prenom")." ".old_mysql_result($appel_login_eleves, $i, "nom");
 
         $k = $display_begin;
 
@@ -341,7 +341,7 @@ if (!isset($aid_id)) {
 
                 $app_query = mysqli_query($GLOBALS["mysqli"], "SELECT appreciation FROM aid_appreciations WHERE (login='$login_eleve[$i]' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
 
-                $app = @mysql_result($app_query, 0, "appreciation");
+                $app = @old_mysql_result($app_query, 0, "appreciation");
 
                 if ($app != '') {
 
@@ -363,9 +363,9 @@ if (!isset($aid_id)) {
 
                 $note_query = mysqli_query($GLOBALS["mysqli"], "SELECT note, statut FROM aid_appreciations WHERE (login='$login_eleve[$i]' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
 
-                $note = @mysql_result($note_query, 0, "note");
+                $note = @old_mysql_result($note_query, 0, "note");
 
-                $statut = @mysql_result($note_query, 0, "statut");
+                $statut = @old_mysql_result($note_query, 0, "statut");
 
                 if ($note !='') {
 
@@ -411,7 +411,7 @@ if (!isset($aid_id)) {
 
     $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
 
-    $aid_nom = mysql_result($calldata, 0, "nom");
+    $aid_nom = old_mysql_result($calldata, 0, "nom");
 
     echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | Année : ".getSettingValue("gepiYear")." | Appréciations $nom_aid : $aid_nom</p>";
 

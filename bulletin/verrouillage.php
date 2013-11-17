@@ -114,7 +114,7 @@ if (isset($_POST['ok'])) {
 			$periode_en_cours = $periode;
 			$periode_suivante = $periode+1;
 			//Pour la période modifiée on récupère son état
-			$etat_periode=mysql_result($result_periode, $periode-1, "verouiller");
+			$etat_periode=old_mysql_result($result_periode, $periode-1, "verouiller");
 			//echo "<br/>".$etat_periode;
 			//echo "<br/>".$periode_en_cours;
 			//echo "<br/>".$nb_periodes_classe;

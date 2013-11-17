@@ -88,7 +88,7 @@ echo "<center><h3 class='gepi'>Cinquième phase d'initialisation" .
 echo "<h3 class='gepi'>Première étape : affectation des matières à chaque professeur et affectation des professeurs dans chaque classe.</h3>";
 
 if (!isset($step1)) {
-	$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_groupes_professeurs"),0);
+	$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_groupes_professeurs"),0);
 	if ($test != 0) {
 		echo "<p><b>ATTENTION ...</b><br />";
 		echo "Des données concernant l'affectation de professeurs dans des classes sont actuellement présentes dans la base GEPI<br /></p>";
@@ -305,7 +305,7 @@ if (!isset($is_posted)) {
 						affiche_debug("==========================<br />\n");
 						$req = mysqli_query($GLOBALS["mysqli"], "select col1 from tempo2 where col2 = '$affiche[1]'");
 						affiche_debug("On recherche si un prof assure le cours correspondant au groupe: select col1 from tempo2 where col2 = '$affiche[1]'<br />\n");
-						$login_prof = @mysql_result($req, 0, 'col1');
+						$login_prof = @old_mysql_result($req, 0, 'col1');
 
 						// A REVOIR... IL FAUDRAIT PEUT-ETRE CREER QUAND MEME LE GROUPE POUR L'ASSOCIATION groupe/matiere/classe même si il n'y a pas encore de prof (dans le F_MEN)
 						if ($login_prof != '') {
@@ -355,7 +355,7 @@ if (!isset($is_posted)) {
 							for($i=0;$i<count($tabtmp);$i++){
 								$test = mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$tabtmp[$i]'");
 
-								$id_classe = @mysql_result($test,0,'id');
+								$id_classe = @old_mysql_result($test,0,'id');
 								affiche_debug("select id from classes where classe='$tabtmp[$i]' donne \$id_classe=$id_classe<br />\n");
 
 								if ($id_classe != '') {
@@ -412,7 +412,7 @@ if (!isset($is_posted)) {
 											$priority = sql_query("select priority from matieres where matiere='".$affiche[0]."'");
 											if ($priority == "-1") $priority = "0";
 
-											$matiere_nom = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres WHERE matiere = '" . $affiche[0] . "'"), 0);
+											$matiere_nom = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres WHERE matiere = '" . $affiche[0] . "'"), 0);
 											if($temoin_groupe_deja_cree=="non"){
 												$res = mysqli_query($GLOBALS["mysqli"], "insert into groupes set name = '" . $affiche[0] . "', description = '" . $matiere_nom . "', recalcul_rang = 'y'");
 												affiche_debug("insert into groupes set name = '" . $affiche[0] . "', description = '" . $matiere_nom . "', recalcul_rang = 'y'<br />\n");
@@ -457,14 +457,14 @@ if (!isset($is_posted)) {
 											$get_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(login) FROM j_eleves_classes WHERE id_classe = '" . $id_classe . "'");
 											$nb_eleves = mysqli_num_rows($get_eleves);
 											affiche_debug("\$nb_eleves=$nb_eleves<br />\n");
-											$nb_per = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
+											$nb_per = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
 											affiche_debug("\$nb_per=$nb_per<br />\n");
 
 											// DEBUG :: echo "<br/>Classe : " . $id_classe . "<br/>Nb el. : " . $nb_eleves . "<br/>Nb per.: " . $nb_per . "<br/><br/>";
 											if($nb_eleves>0){
 												echo "Ajout à ce groupe des élèves suivants: ";
 												for ($m=0;$m<$nb_eleves;$m++) {
-													$e_login = mysql_result($get_eleves, $m, "login");
+													$e_login = old_mysql_result($get_eleves, $m, "login");
 													for ($n=1;$n<=$nb_per;$n++) {
 														$insert_e = mysqli_query($GLOBALS["mysqli"], "INSERT into j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $e_login . "', periode = '" . $n . "'");
 														affiche_debug("INSERT into j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $e_login . "', periode = '" . $n . "'<br />\n");
@@ -487,7 +487,7 @@ if (!isset($is_posted)) {
 											// est en train de traiter n'est pas encore associé au groupe
 											// C'est le cas de deux professeurs pour un même groupe/classe dans une matière.
 											affiche_debug("Le groupe existe déjà pour la classe \$id_classe=$id_classe, on ajoute le professeur $login_prof au groupe:<br />\n");
-											$group_id = mysql_result($verif2, 0);
+											$group_id = old_mysql_result($verif2, 0);
 											$res = mysqli_query($GLOBALS["mysqli"], "insert into j_groupes_professeurs set id_groupe = '" . $group_id . "', login ='" . $login_prof . "'");
 											affiche_debug("insert into j_groupes_professeurs set id_groupe = '" . $group_id . "', login ='" . $login_prof . "'<br />\n");
 											echo "Ajout de $login_prof à un groupe existant (<i>plus d'un professeur pour ce groupe</i>).<br />\n";

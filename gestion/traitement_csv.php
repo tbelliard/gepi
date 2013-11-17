@@ -125,7 +125,7 @@ for ($row=1; $row<$nb_row; $row++) {
     }
 
     $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM classes WHERE classe='$reg_classe'");
-    $id_classe = @mysql_result($call_classe, 0, 'id');
+    $id_classe = @old_mysql_result($call_classe, 0, 'id');
     $call_test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE login='$reg_login'");
     $test = mysqli_num_rows($call_test);
     if ($test == 0) {

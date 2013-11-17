@@ -130,10 +130,10 @@ $aff_debug = $aff_nom_classe = $aff_liste_abs = $aff_bilan = $aff_liste_eleves =
 			//while($rep = mysql_fetch_array($query_a)){
 			for($k = 0 ; $k < $nbre_rep ; $k++){
 
-				$rep[$k]["debut_ts"] = mysql_result($query_a, $k, "debut_ts");
-				$rep[$k]["fin_ts"] = mysql_result($query_a, $k, "fin_ts");
-				$rep[$k]["eleve_id"] = mysql_result($query_a, $k, "eleve_id");
-				$rep[$k]["retard_absence"] = mysql_result($query_a, $k, "retard_absence");
+				$rep[$k]["debut_ts"] = old_mysql_result($query_a, $k, "debut_ts");
+				$rep[$k]["fin_ts"] = old_mysql_result($query_a, $k, "fin_ts");
+				$rep[$k]["eleve_id"] = old_mysql_result($query_a, $k, "eleve_id");
+				$rep[$k]["retard_absence"] = old_mysql_result($query_a, $k, "retard_absence");
 
 				// On va calculer le nombre d'entrées saisies pour chaque jour demandé
 				if ($rep[$k]["debut_ts"] >= $ts AND

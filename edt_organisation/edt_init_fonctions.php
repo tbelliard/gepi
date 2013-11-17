@@ -34,7 +34,7 @@ function renvoiLoginProf($numero){
 
 		$test = mysqli_num_rows($query);
 		if ($test >= 1) {
-			$retour = mysql_result($query, 0,"nom_gepi");
+			$retour = old_mysql_result($query, 0,"nom_gepi");
 		}else{
 			$retour = 'erreur_prof';
 		}
@@ -54,7 +54,7 @@ function renvoiIdSalle($chiffre){
 	$cherche = mb_substr($chiffre, 0, 10);
 	$query = mysqli_query($GLOBALS["mysqli"], "SELECT id_salle FROM salle_cours WHERE numero_salle = '".$cherche."'");
 	if ($query) {
-		//$reponse = mysql_result($query, 0,"id_salle");
+		//$reponse = old_mysql_result($query, 0,"id_salle");
 		$reponse = mysqli_fetch_array($query);
 		if ($reponse["id_salle"] == '') {
 			$retour = "inc";
@@ -134,7 +134,7 @@ function renvoiIdCreneau($heure_brute, $jour){
 	if ($query) {
 		$nbre = mysqli_num_rows($query);
 		if ($nbre >= 1) {
-			$retour = mysql_result($query, 0,"id_definie_periode");
+			$retour = old_mysql_result($query, 0,"id_definie_periode");
 		}else{
 			$retour = '0';
 		}
@@ -398,7 +398,7 @@ function testerSalleCsv2($numero){
 	// On teste la table
 	$query = mysqli_query($GLOBALS["mysqli"], "SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'")
 				OR trigger_error('Erreur dans la requête '.$query.' : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-	$rep = @mysql_result($query, 0,"id_salle");
+	$rep = @old_mysql_result($query, 0,"id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
 		// On renvoie "ok"
 		return "ok";
@@ -421,7 +421,7 @@ function salleifexists($numero){
 	$query = mysqli_query($GLOBALS["mysqli"], $sql)
 				OR trigger_error('Impossible de vérifier l\'existence de cette salle : la requête '.$sql.' a échoué : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
 	// On force tout de même le résultat
-	$rep = @mysql_result($query, 0,"id_salle");
+	$rep = @old_mysql_result($query, 0,"id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
 		// On renvoie "oui"
 		return "oui";
@@ -750,7 +750,7 @@ if ($tab[4] != '') {
 	if ($nbre >= 1) {
 
 		// alors il existe déjà, on le met à jour et on s'en va
-		//$rep_id = mysql_result($query_verif, 0,"id");
+		//$rep_id = old_mysql_result($query_verif, 0,"id");
 		$rep_id = mysqli_fetch_array($query_verif);
 		$maj = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_gr_nom SET subdivision_type = 'autre', subdivision = 'plusieurs' WHERE id = '".$rep_id["id"]."'");
 
@@ -767,7 +767,7 @@ if ($tab[4] != '') {
 												AND nom_long = '".$nom_long."'
 												AND subdivision_type = '".$type_sub."'
 												AND subdivision = '".$subdivision."");
-		//$recup_id = mysql_result($query_id, 0,"id");
+		//$recup_id = old_mysql_result($query_id, 0,"id");
 		$recup_id = mysqli_fetch_array($query_id);
 		$create_prof = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_gr_prof (id, id_gr_nom, id_utilisateurs)
 																				VALUES('', '".$recup_id["id"]."', '".renvoiConcordances($tab[4], 4)."')");

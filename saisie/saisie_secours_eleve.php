@@ -264,8 +264,8 @@ function cherche_eleves(champ) {
 		unset($txt_classe);
 		$i = 0;
 		while ($i < $nombreligne){
-			$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($calldata, $i, "id");
-			$txt_classe[]=mysql_result($calldata, $i, "classe");
+			$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".old_mysql_result($calldata, $i, "id");
+			$txt_classe[]=old_mysql_result($calldata, $i, "classe");
 			$i++;
 		}
 

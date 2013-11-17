@@ -93,11 +93,11 @@ require_once("../lib/header.inc.php");
 <?php
 if ((isset($id)) and ($champs_vides == "non")) {
 	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM etablissements WHERE id = '$id'");
-	$nom_etab = @mysql_result($call_data, 0, "nom");
-	$niveau_etab = @mysql_result($call_data, 0, "niveau");
-	$type_etab = @mysql_result($call_data, 0, "type");
-	$cp_etab = @mysql_result($call_data, 0, "cp");
-	$ville_etab = @mysql_result($call_data, 0, "ville");
+	$nom_etab = @old_mysql_result($call_data, 0, "nom");
+	$niveau_etab = @old_mysql_result($call_data, 0, "niveau");
+	$type_etab = @old_mysql_result($call_data, 0, "type");
+	$cp_etab = @old_mysql_result($call_data, 0, "cp");
+	$ville_etab = @old_mysql_result($call_data, 0, "ville");
 }
 
 if (!isset($nom_etab)) $nom_etab='';

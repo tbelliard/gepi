@@ -197,7 +197,7 @@ if (!isset($_POST["action"])) {
 
 			// Maintenant que tout est propre, on fait un test pour voir si le compte n'existe pas déjà
 
-			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $reg_login . "'"), 0);
+			$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $reg_login . "'"), 0);
 
 			if ($test == 0) {
 				// Test négatif : aucun professeur avec ce login. On enregistre.
@@ -349,7 +349,7 @@ if (!isset($_POST["action"])) {
 										$query_p = mysqli_query($GLOBALS["mysqli"], $sql_p);
 										$nbre = mysqli_num_rows($query_p);
 										if ($nbre >= 1 AND $nbre < 2) {
-											$login_prof = mysql_result($query_p, 0,"login_u");
+											$login_prof = old_mysql_result($query_p, 0,"login_u");
 										}else{
 											// Il faudrait alors proposer une alternative à ce cas
 											$login_prof = "erreur_".$k;
@@ -365,7 +365,7 @@ if (!isset($_POST["action"])) {
 							}
 						} else {
 							// Le prof semble déjà exister. On récupère son login actuel
-							$login_prof = mysql_result($test, 0, "login");
+							$login_prof = old_mysql_result($test, 0, "login");
 							$prof_exists = true;
 						}
 

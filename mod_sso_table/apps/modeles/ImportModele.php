@@ -122,7 +122,7 @@ class ImportModele {
   function get_nbre_by_profil($profil) {
     $this->req = "SELECT COUNT(*) FROM utilisateurs u,sso_table_correspondance p WHERE p.login_gepi=u.login AND statut='" . $profil . "'";
     $this->res = mysqli_query($GLOBALS["mysqli"], $this->req) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-    return(mysql_result($this->res, 0));
+    return(old_mysql_result($this->res, 0));
   }
 
   function del_by_profil($profil) {
@@ -147,7 +147,7 @@ class ImportModele {
                    WHERE u.statut='" . $profil . "'";
     }
     $this->res = mysqli_query($GLOBALS["mysqli"], $this->req) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-    return(mysql_result($this->res, 0));
+    return(old_mysql_result($this->res, 0));
   }
 
   function del_by_classe_profil($classe, $profil) {

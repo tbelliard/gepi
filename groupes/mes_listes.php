@@ -446,7 +446,7 @@ else {
 
 	$sql="SELECT MAX(num_periode) AS maxper FROM periodes WHERE id_classe='".$tab_id_classe[0]."';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	$nb_per=mysql_result($res, 0);
+	$nb_per=old_mysql_result($res, 0);
 
 	echo "<div id='div_champs_periodes'>\n";
 	for($i=1;$i<=$nb_per;$i++) {

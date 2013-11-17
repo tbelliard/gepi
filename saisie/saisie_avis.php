@@ -115,8 +115,8 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') o
 		$j = "0";
 		$alt=1;
 		while ($j < $nombre_classe) {
-			$id_classe = mysql_result($call_classe, $j, "id");
-			$classe_suivi = mysql_result($call_classe, $j, "classe");
+			$id_classe = old_mysql_result($call_classe, $j, "id");
+			$classe_suivi = old_mysql_result($call_classe, $j, "classe");
 
 			/*
 			echo "<br /><b>$classe_suivi</b> --- <a href='saisie_avis1.php?id_classe=$id_classe'>Saisir les avis, pour toute la classe, avec rappel des avis des autres périodes.</a>";
@@ -179,8 +179,8 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') o
         $j = "0";
         echo "<p>Vous êtes ".getSettingValue("gepi_prof_suivi")." dans la classe de :</p>";
         while ($j < $nombre_classe) {
-            $id_classe = mysql_result($call_prof_classe, $j, "id");
-            $classe_suivi = mysql_result($call_prof_classe, $j, "classe");
+            $id_classe = old_mysql_result($call_prof_classe, $j, "id");
+            $classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
             echo "<br />$classe_suivi --- <a href='saisie_avis1.php?id_classe=$id_classe'>Saisir les avis pour mon groupe.</a>";
             echo "<br />$classe_suivi --- <a href='saisie_avis2.php?id_classe=$id_classe'>Saisir les avis pour mon groupe, avec visualisation des résultats.</a>";
             include "../lib/periodes.inc.php";

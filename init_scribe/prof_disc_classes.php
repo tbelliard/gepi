@@ -93,7 +93,7 @@ if (!isset($_POST["action"])) {
 
         $j=0;
         while ($j < count($liste_tables_del)) {
-            if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+            if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
                 $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
             }
             $j++;
@@ -132,7 +132,7 @@ if (!isset($_POST["action"])) {
             if ($reg_type) {
 
                 // Première étape : on s'assure que le prof existe. S'il n'existe pas, on laisse tomber.
-                $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $reg_prof . "'"),0);
+                $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $reg_prof . "'"),0);
                 if ($test == 1) {
 
                     // Le prof existe. cool. Maintenant on récupère la matière.
@@ -144,7 +144,7 @@ if (!isset($_POST["action"])) {
                         $reg_matiere_complet = $reg_matiere;
                         $warning_matiere = true;
                     } else {
-                        $reg_matiere_complet = mysql_result($test, 0, "nom_complet");
+                        $reg_matiere_complet = old_mysql_result($test, 0, "nom_complet");
                     }
 
                     // Maintenant on en arrive aux classes
@@ -169,7 +169,7 @@ if (!isset($_POST["action"])) {
                     $valid_classes = array();
                     foreach ($reg_classes as $classe) {
                         $test = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM classes WHERE classe = '" . $classe . "'");
-                        if (mysqli_num_rows($test) == 1) $valid_classes[] = mysql_result($test, 0, "id");
+                        if (mysqli_num_rows($test) == 1) $valid_classes[] = old_mysql_result($test, 0, "id");
                     }
 
                     if (count($valid_classes) > 0) {
@@ -196,11 +196,11 @@ if (!isset($_POST["action"])) {
                         if ($reg_type == "CG") {
 
                             // On récupère le nombre de périodes pour la classe
-                            $periods = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $valid_classes[0] . "'"), 0);
+                            $periods = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $valid_classes[0] . "'"), 0);
                             $get_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT(login) FROM j_eleves_classes WHERE id_classe = '" . $valid_classes[0] . "'");
                             $nb = mysqli_num_rows($get_eleves);
                             for ($e=0;$e<$nb;$e++) {
-                                $current_eleve = mysql_result($get_eleves, $e, "login");
+                                $current_eleve = old_mysql_result($get_eleves, $e, "login");
                                 for ($p=1;$p<=$periods;$p++) {
                                     $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_groupes SET login = '" . $current_eleve . "', id_groupe = '" . $group_id . "', periode = '" . $p . "'");
                                     if (!$res) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));

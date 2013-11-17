@@ -210,7 +210,7 @@ if (isset($_POST['is_posted'])) {
 	$j = '0';
 	$pb_record = 'no';
 	while($j < $lignes) {
-		$reg_eleve_login = mysql_result($quels_eleves, $j, "login");
+		$reg_eleve_login = old_mysql_result($quels_eleves, $j, "login");
 		$i = '1';
 		while ($i < $nb_periode) {
 			if ($ver_periode[$i] != "O"){
@@ -669,7 +669,7 @@ if ($insert_mass_appreciation_type=="y") {
 		$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$k');";
 		//echo "$sql<br />";
 		$res_current_synthese=mysqli_query($GLOBALS["mysqli"], $sql);
-		$current_synthese[$k] = @mysql_result($res_current_synthese, 0, "synthese");
+		$current_synthese[$k] = @old_mysql_result($res_current_synthese, 0, "synthese");
 		if ($current_synthese[$k] == '') {$current_synthese[$k] = ' -';}
 
 		$k++;
@@ -734,10 +734,10 @@ if ($insert_mass_appreciation_type=="y") {
 	$i = "0";
 	//$num_id=10;
 	while($i < $nombre_lignes) {
-		$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
-		$current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
-		$current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
-		$current_eleve_sexe = mysql_result($appel_donnees_eleves, $i, "sexe");
+		$current_eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
+		$current_eleve_nom = old_mysql_result($appel_donnees_eleves, $i, "nom");
+		$current_eleve_prenom = old_mysql_result($appel_donnees_eleves, $i, "prenom");
+		$current_eleve_sexe = old_mysql_result($appel_donnees_eleves, $i, "sexe");
 
 		//========================
 		// AJOUT boireaus 20071115
@@ -803,9 +803,9 @@ if ($insert_mass_appreciation_type=="y") {
 		$k='1';
 		while ($k < $nb_periode) {
 			$current_eleve_avis_query[$k]= mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$k')");
-			$current_eleve_avis_t[$k] = @mysql_result($current_eleve_avis_query[$k], 0, "avis");
+			$current_eleve_avis_t[$k] = @old_mysql_result($current_eleve_avis_query[$k], 0, "avis");
 			// ***** AJOUT POUR LES MENTIONS *****
-			$current_eleve_mention_t[$k] = @mysql_result($current_eleve_avis_query[$k], 0, "id_mention");
+			$current_eleve_mention_t[$k] = @old_mysql_result($current_eleve_avis_query[$k], 0, "id_mention");
 			// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 			$current_eleve_login_t[$k] = $current_eleve_login."_t".$k;
 			$k++;

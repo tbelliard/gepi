@@ -42,12 +42,12 @@ if (!checkAccess()) {
 
 
 function test_before_eleve_grp_removal($_login, $_id_groupe, $_periode) {
-    $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(*) FROM matieres_notes WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND periode = '" . $_periode . "')"), 0);
+    $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(*) FROM matieres_notes WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND periode = '" . $_periode . "')"), 0);
 
-    $test2 = mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(*) FROM matieres_appreciations WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND periode = '" . $_periode . "')"), 0);
+    $test2 = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(*) FROM matieres_appreciations WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND periode = '" . $_periode . "')"), 0);
 
 	// cnd.statut='': on ne compte que les vraies notes: pas abs, disp, - ou v
-    $test3 = mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(*) FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '" . $_login . "' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '" . $_id_groupe . "' AND ccn.periode = '" . $_periode . "')"), 0);
+    $test3 = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(*) FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '" . $_login . "' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '" . $_id_groupe . "' AND ccn.periode = '" . $_periode . "')"), 0);
 
     if ($test == 0 and $test2 == 0 and $test3 == 0) {
         return true;

@@ -35,10 +35,10 @@ if ((isset($id_classe))||(isset($current_group))) {
 		$nb_periode = mysqli_num_rows($periode_query) + 1 ;
 		$i = "1";
 		while ($i < $nb_periode) {
-			$nom_periode[$i] = mysql_result($periode_query, $i-1, "nom_periode");
-			$ver_periode[$i] = mysql_result($periode_query, $i-1, "verouiller");
-			$date_ver_periode[$i] = mysql_result($periode_query, $i-1, "date_verrouillage");
-			$date_fin_periode[$i] = mysql_result($periode_query, $i-1, "date_fin");
+			$nom_periode[$i] = old_mysql_result($periode_query, $i-1, "nom_periode");
+			$ver_periode[$i] = old_mysql_result($periode_query, $i-1, "verouiller");
+			$date_ver_periode[$i] = old_mysql_result($periode_query, $i-1, "date_verrouillage");
+			$date_fin_periode[$i] = old_mysql_result($periode_query, $i-1, "date_fin");
 			$i++;
 		}
 	}

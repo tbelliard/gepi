@@ -121,7 +121,7 @@ if ($action == "upload_file") {
 				$etape = 1;
 			}else{
 				// On récupère d'abord le numéro de l'étape actuel
-				$etape = mysql_result($query, 0,"nom_export");
+				$etape = old_mysql_result($query, 0,"nom_export");
 				// On incrémentera de 1 si cette nouvelle étape est validée
 			}
 

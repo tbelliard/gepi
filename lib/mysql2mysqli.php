@@ -477,10 +477,10 @@ if (!extension_loaded('mysql')) {
 		return mysqli_real_escape_string(mysql_ensure_link($link_identifier), $unescaped_string);
 	}
 
-	# mysql_result - Get result data
-	# string mysql_result ( resource $result , int $row [, mixed $field = 0 ] )
+	# old_mysql_result - Get result data
+	# string old_mysql_result ( resource $result , int $row [, mixed $field = 0 ] )
 	# no equivalent function exists in mysqli - mysqli_data_seek() in conjunction with mysqli_field_seek() and mysqli_fetch_field()
-	function __mysql_result ($result , $row , $field = 0) {
+	function __old_mysql_result ($result , $row , $field = 0) {
 	
 		# try to seek position
 		if (mysqli_data_seek($result, $row) === false) return false;
@@ -494,7 +494,7 @@ if (!extension_loaded('mysql')) {
 	}
 	// Correctif :
 	// suivant le type du paramètre $field il faut lire un tableau indicé ou associatif
-	function mysql_result ($result , $row , $field = 0) {
+	function old_mysql_result ($result , $row , $field = 0) {
 		if (mysqli_data_seek($result, $row) === false) return false;
 		if (is_int($field)) $line=mysqli_fetch_array($result); else $line=mysqli_fetch_assoc($result);
 		if (!isset($line[$field])) return false;

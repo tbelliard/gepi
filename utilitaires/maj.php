@@ -65,7 +65,7 @@ if (isset ($_POST['submit'])) {
 			$_SESSION['login'] = $_POST['login'];
 			$_SESSION['statut'] = 'administrateur';
 			$_SESSION['etat'] = 'actif';
-			$_SESSION['start'] = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT now();"),0);
+			$_SESSION['start'] = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT now();"),0);
 			$sql = "INSERT INTO log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
 					'" . $_SESSION['login'] . "',
 					'".$_SESSION['start']."',

@@ -207,7 +207,7 @@ if (isset($_GET['action'])) {
   	  $get_classes = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $id_groupe . "')");
       $nb_classes = mysqli_num_rows($get_classes);
       for ($c=0;$c<$nb_classes;$c++) {
-      	$current_classe = mysql_result($get_classes, $c, "classe");
+      	$current_classe = old_mysql_result($get_classes, $c, "classe");
       	$classes .= $current_classe;
       	if ($c+1<$nb_classes) $classes .= ", ";
       }
@@ -247,7 +247,7 @@ if (isset($_GET['action'])) {
         $get_classes = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $new_id_groupe . "')");
 	    $nb_classes = mysqli_num_rows($get_classes);
 	      for ($c=0;$c<$nb_classes;$c++) {
-	      	$current_classe = mysql_result($get_classes, $c, "classe");
+	      	$current_classe = old_mysql_result($get_classes, $c, "classe");
 	      	$classes .= $current_classe;
 	      	if ($c+1<$nb_classes) $classes .= ", ";
 	      }
@@ -340,7 +340,7 @@ if (!(isset($_GET['action']))) {
       $nb_classes = mysqli_num_rows($get_classes);
       $classes = null;
       for ($c=0;$c<$nb_classes;$c++) {
-      	$current_classe = mysql_result($get_classes, $c, "classe");
+      	$current_classe = old_mysql_result($get_classes, $c, "classe");
       	$classes .= $current_classe;
       	if ($c+1<$nb_classes) $classes .= ", ";
       }

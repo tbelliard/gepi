@@ -85,7 +85,7 @@ require_once("./lib/header.inc.php");
 function acces($id,$statut) {
 	$tab_id = explode("?",$id);
 	$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
-	$droit = @mysql_result($query_droits, 0, $statut);
+	$droit = @old_mysql_result($query_droits, 0, $statut);
 	if ($droit == "V") {
 		return "1";
 	} else {
@@ -246,11 +246,11 @@ if ($condition_releve_note ||  (getSettingValue("GepiAccesBulletinSimplePP")=="y
 		$nb_aid = mysqli_num_rows($call_data);
 		$i=0;
 		while ($i < $nb_aid) {
-			$indice_aid = @mysql_result($call_data, $i, "indice_aid");
+			$indice_aid = @old_mysql_result($call_data, $i, "indice_aid");
 			$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_SESSION['login'] . "' and indice_aid = '$indice_aid')");
 			$nb_result = mysqli_num_rows($call_prof);
 			if (($nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
-				$nom_aid = @mysql_result($call_data, $i, "nom");
+				$nom_aid = @old_mysql_result($call_data, $i, "nom");
 				$chemin[] = "/aid/index2.php?indice_aid=".$indice_aid;
 				$titre[] = $nom_aid;
 				$expli[] = "Cet outil vous permet de visualiser quels ".$gepiSettings['denomination_eleves']." ont le droit d'envoyer/modifier leur photo.";
@@ -275,9 +275,9 @@ if ($condition_releve_note ||  (getSettingValue("GepiAccesBulletinSimplePP")=="y
 		$expli = array();
 		$i = 0;
 		while ($i<$nb_aid) {
-			$indice_aid = mysql_result($call_data,$i,"indice_aid");
-			$_indice_aid[] = mysql_result($call_data,$i,"indice_aid");
-			$nom_aid = mysql_result($call_data,$i,"nom");
+			$indice_aid = old_mysql_result($call_data,$i,"indice_aid");
+			$_indice_aid[] = old_mysql_result($call_data,$i,"indice_aid");
+			$nom_aid = old_mysql_result($call_data,$i,"nom");
 			$chemin[]="/aid/index_fiches.php?indice_aid=".$indice_aid;
 			$titre[] = $nom_aid;
 			$expli[] = "Tableau r&eacute;capitulatif, liste des ".$gepiSettings['denomination_eleves'].", ...";

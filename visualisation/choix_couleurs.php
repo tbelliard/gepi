@@ -281,7 +281,7 @@ $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige"
 
 	$sql="SELECT max(num_periode) maxper FROM periodes";
 	$res_max_per=mysqli_query($GLOBALS["mysqli"], $sql);
-	$max_per=mysql_result($res_max_per, 0, "maxper");
+	$max_per=old_mysql_result($res_max_per, 0, "maxper");
 
 	for($i=4;$i<$max_per+1;$i++){
 		echo "<tr>\n";

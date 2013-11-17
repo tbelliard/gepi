@@ -61,7 +61,7 @@ function verifChecked($id){
 		$query_ds = mysqli_query($GLOBALS["mysqli"], $sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
 		$count = mysqli_num_rows($query_ds);
 		if ($count >= 1) {
-			$rep = mysql_result($query_ds, 0,"autorisation");
+			$rep = old_mysql_result($query_ds, 0,"autorisation");
 		}else{
 			$rep = 'F';
 		}
@@ -104,7 +104,7 @@ if ($action == 'ajouter') {
 		$sql = "INSERT INTO droits_statut (id, nom_statut) VALUES ('', '".$insert_statut."')";
 		$enregistre = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Impossible d\'enregistrer ce nouveau statut', E_USER_WARNING);
 		$cherche_id = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");
-		$last_id = mysql_result($cherche_id, 0,"id");
+		$last_id = old_mysql_result($cherche_id, 0,"id");
 
 		if ($enregistre) {
 
@@ -160,7 +160,7 @@ if ($action == 'modifier') {
 	$test=array();
 	for($a = 0; $a < $nbre; $a++){
 
-		$b = mysql_result($query, $a, "id");
+		$b = old_mysql_result($query, $a, "id");
 
 		$test[$a][0] = isset($_POST["suppr|".$b]) ? $_POST["suppr|".$b] : NULL;
 		$test[$a][1] = isset($_POST["ne|".$b]) ? $_POST["ne|".$b] : NULL;

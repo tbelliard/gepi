@@ -168,11 +168,11 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 	$nb_cont = mysqli_num_rows($appel_conteneurs);
 	if ($nb_cont != 0) {
 		echo "<ul>\n";
-		$id_cont = mysql_result($appel_conteneurs, 0, 'id');
-		$id_parent = mysql_result($appel_conteneurs, 0, 'parent');
-		$id_racine = mysql_result($appel_conteneurs, 0, 'id_racine');
-		$nom_conteneur = mysql_result($appel_conteneurs, 0, 'nom_court');
-		$modeBoiteMoy = mysql_result($appel_conteneurs, 0, 'mode');
+		$id_cont = old_mysql_result($appel_conteneurs, 0, 'id');
+		$id_parent = old_mysql_result($appel_conteneurs, 0, 'parent');
+		$id_racine = old_mysql_result($appel_conteneurs, 0, 'id_racine');
+		$nom_conteneur = old_mysql_result($appel_conteneurs, 0, 'nom_court');
+		$modeBoiteMoy = old_mysql_result($appel_conteneurs, 0, 'mode');
 		echo "<li>\n";
 		echo htmlspecialchars($nom_conteneur);
 		if ($ver_periode <= 1) {
@@ -180,7 +180,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 		}
 		echo "- <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
 
-		$ponderation_cont=mysql_result($appel_conteneurs, 0, 'ponderation');
+		$ponderation_cont=old_mysql_result($appel_conteneurs, 0, 'ponderation');
 		if($ponderation_cont!='0.0') {
 			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée d'un coefficient +$ponderation_cont";
 			echo " - <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
@@ -234,10 +234,10 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 						echo '</form>';
 					}
 					
-					$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
-					$id_dev = mysql_result($appel_dev, $j, 'id');
-					$date_dev = mysql_result($appel_dev, $j, 'date');
-					$date_ele_resp_dev = mysql_result($appel_dev, $j, 'date_ele_resp');
+					$nom_dev = old_mysql_result($appel_dev, $j, 'nom_court');
+					$id_dev = old_mysql_result($appel_dev, $j, 'id');
+					$date_dev = old_mysql_result($appel_dev, $j, 'date');
+					$date_ele_resp_dev = old_mysql_result($appel_dev, $j, 'date_ele_resp');
 					echo "<li>\n";
 					echo "<span style='color:green;'>$nom_dev</span>";
 					echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
@@ -293,13 +293,13 @@ Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='1
 						echo " <a href=\"#\" onclick=\"afficher_div('anomalie2_$id_dev','y',100,100);return false;\" title=\"Mode de prise en compte ou non dans la moyenne non défini.\"><img src='../images/icons/flag.png' width='17' height='18' alt='' /></a>";
 					}
 
-					$note_sur=mysql_result($appel_dev, $j, 'note_sur');
+					$note_sur=old_mysql_result($appel_dev, $j, 'note_sur');
 					if($note_sur!='20') {
 						echo " (<em><span title='Note sur $note_sur'>/$note_sur</span></em>)";
 					}
 
-					$display_parents=mysql_result($appel_dev, $j, 'display_parents');
-					$coef=mysql_result($appel_dev, $j, 'coef');
+					$display_parents=old_mysql_result($appel_dev, $j, 'display_parents');
+					$coef=old_mysql_result($appel_dev, $j, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
 					if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".formate_date($date_dev)." visible sur le relevé de notes.
 Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et élèves.' alt='Evaluation visible sur le relevé de notes' />";}
@@ -332,17 +332,17 @@ Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et �
 			echo "<ul>\n";
 			$i = 0;
 			while ($i < $nb_cont) {
-				$id_cont = mysql_result($appel_conteneurs, $i, 'id');
-				$id_parent = mysql_result($appel_conteneurs, $i, 'parent');
-				$id_racine = mysql_result($appel_conteneurs, $i, 'id_racine');
-				$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
+				$id_cont = old_mysql_result($appel_conteneurs, $i, 'id');
+				$id_parent = old_mysql_result($appel_conteneurs, $i, 'parent');
+				$id_racine = old_mysql_result($appel_conteneurs, $i, 'id_racine');
+				$nom_conteneur = old_mysql_result($appel_conteneurs, $i, 'nom_court');
 				if ($id_cont != $id_parent) {
 					echo "<li>\n";
 					echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a>";
 					echo " - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
 
-					$display_bulletin=mysql_result($appel_conteneurs, $i, 'display_bulletin');
-					$coef=mysql_result($appel_conteneurs, $i, 'coef');
+					$display_bulletin=old_mysql_result($appel_conteneurs, $i, 'display_bulletin');
+					$coef=old_mysql_result($appel_conteneurs, $i, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
 					if($display_bulletin==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='$gepi_denom_boite visible sur le bulletin' alt='$gepi_denom_boite visible sur le bulletin' />";}
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title=\"".ucfirst($gepi_denom_boite)." non visible sur le bulletin.
@@ -350,7 +350,7 @@ Cela ne signifie pas que les notes ne sont pas prises en compte dans le calcul d
 En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('gepi_denom_boite_genre')=='f') ? "tte" : "")." ".$gepi_denom_boite." dans le bulletin.\" alt='".ucfirst($gepi_denom_boite)." non visible sur le bulletin.' />\n";}
 					echo "</i>)";
 
-					$ponderation_cont=mysql_result($appel_conteneurs, $i, 'ponderation');
+					$ponderation_cont=old_mysql_result($appel_conteneurs, $i, 'ponderation');
 					if($ponderation_cont!='0.0') {
 						$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée d'un coefficient +$ponderation_cont";
 						echo " - <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
@@ -376,10 +376,10 @@ En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('g
 					if($nb_dev>0) {
 						echo "<ul>\n";
 						while ($j < $nb_dev) {
-							$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
-							$id_dev = mysql_result($appel_dev, $j, 'id');
-							$date_dev = mysql_result($appel_dev, $j, 'date');
-							$date_ele_resp_dev = mysql_result($appel_dev, $j, 'date_ele_resp');
+							$nom_dev = old_mysql_result($appel_dev, $j, 'nom_court');
+							$id_dev = old_mysql_result($appel_dev, $j, 'id');
+							$date_dev = old_mysql_result($appel_dev, $j, 'date');
+							$date_ele_resp_dev = old_mysql_result($appel_dev, $j, 'date_ele_resp');
 							echo "<li>\n";
 							echo "<font color='green'>$nom_dev</font> - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
 
@@ -431,13 +431,13 @@ Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='1
 								echo " <a href=\"#\" onclick=\"afficher_div('anomalie2_$id_dev','y',100,100);return false;\" title=\"Mode de prise en compte ou non dans la moyenne non défini.\"><img src='../images/icons/flag.png' width='17' height='18' alt='' /></a>";
 							}
 
-							$note_sur=mysql_result($appel_dev, $j, 'note_sur');
+							$note_sur=old_mysql_result($appel_dev, $j, 'note_sur');
 							if($note_sur!='20') {
 								echo " (<em><span title='Note sur $note_sur'>/$note_sur</span></em>)";
 							}
 
-							$display_parents=mysql_result($appel_dev, $j, 'display_parents');
-							$coef=mysql_result($appel_dev, $j, 'coef');
+							$display_parents=old_mysql_result($appel_dev, $j, 'display_parents');
+							$coef=old_mysql_result($appel_dev, $j, 'coef');
 							echo " (<i><span title='Coefficient $coef'>$coef</span> ";
 							if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".formate_date($date_dev)." visible sur le relevé de notes.
 Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et élèves.' alt='Evaluation visible sur le relevé de notes' />";}
@@ -496,37 +496,37 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
     //============================
 
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = $indice_aid");
-    $AID_NOM_COMPLET = @mysql_result($call_data, 0, "nom_complet");
-    $note_max = @mysql_result($call_data, 0, "note_max");
-    $type_note = @mysql_result($call_data, 0, "type_note");
-    $message = @mysql_result($call_data, 0, "message");
-    $display_nom = @mysql_result($call_data, 0, "display_nom");
-    $display_end = @mysql_result($call_data, 0, "display_end");
+    $AID_NOM_COMPLET = @old_mysql_result($call_data, 0, "nom_complet");
+    $note_max = @old_mysql_result($call_data, 0, "note_max");
+    $type_note = @old_mysql_result($call_data, 0, "type_note");
+    $message = @old_mysql_result($call_data, 0, "message");
+    $display_nom = @old_mysql_result($call_data, 0, "display_nom");
+    $display_end = @old_mysql_result($call_data, 0, "display_end");
 
 
     $aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
-    $aid_nom = @mysql_result($aid_nom_query, 0, "nom");
+    $aid_nom = @old_mysql_result($aid_nom_query, 0, "nom");
     //------
     // On regarde maintenant quelle sont les profs responsables de cette AID
     $aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
     $nb_lig = mysqli_num_rows($aid_prof_resp_query);
     $n = '0';
     while ($n < $nb_lig) {
-        $aid_prof_resp_login[$n] = mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+        $aid_prof_resp_login[$n] = old_mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
         $n++;
     }
     //------
     // On appelle l'appréciation de l'élève, et sa note
     //------
     $current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
-    $current_eleve_aid_appreciation = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
+    $current_eleve_aid_appreciation = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
     $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
     $periode_max = mysqli_num_rows($periode_query);
     if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
     if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
         $place_eleve = "";
-        $current_eleve_aid_note = @mysql_result($current_eleve_aid_appreciation_query, 0, "note");
-        $current_eleve_aid_statut = @mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
+        $current_eleve_aid_note = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "note");
+        $current_eleve_aid_statut = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
         if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
             $current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
         }
@@ -545,14 +545,14 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
         }
         $aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
 
-        $aid_note_min = @mysql_result($aid_note_min_query, 0, "note_min");
+        $aid_note_min = @old_mysql_result($aid_note_min_query, 0, "note_min");
         if ($aid_note_min == '') {
             $aid_note_min = '-';
         } else {
             $aid_note_min=number_format($aid_note_min,1, ',', ' ');
         }
         $aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-        $aid_note_max = @mysql_result($aid_note_max_query, 0, "note_max");
+        $aid_note_max = @old_mysql_result($aid_note_max_query, 0, "note_max");
 
         if ($aid_note_max == '') {
             $aid_note_max = '-';
@@ -561,7 +561,7 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
         }
 
         $aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-        $aid_note_moyenne = @mysql_result($aid_note_moyenne_query, 0, "moyenne");
+        $aid_note_moyenne = @old_mysql_result($aid_note_moyenne_query, 0, "moyenne");
         if ($aid_note_moyenne == '') {
             $aid_note_moyenne = '-';
         } else {

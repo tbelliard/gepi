@@ -240,7 +240,7 @@ if(isset($_POST['add_groupes_classes'])) {
 		$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe[$i]' ORDER BY num_periode DESC LIMIT 1";
 		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_per)>0) {
-			$nb_per=mysql_result($res_per, 0);
+			$nb_per=old_mysql_result($res_per, 0);
 
 			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe[$i]';";
 			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -259,7 +259,7 @@ if(isset($_POST['add_groupes_classes'])) {
 					//echo "$sql<br />";
 					$res_prof_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_prof_mat)==1) {
-						$tab_profs[$j][]=mysql_result($res_prof_mat, 0);
+						$tab_profs[$j][]=old_mysql_result($res_prof_mat, 0);
 					}
 				}
 
@@ -267,7 +267,7 @@ if(isset($_POST['add_groupes_classes'])) {
 				$sql="SELECT nom_complet FROM matieres WHERE matiere='$matiere[$j]';";
 				$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_mat)>0) {
-					$description=mysql_result($res_mat, 0);
+					$description=old_mysql_result($res_mat, 0);
 				}
 
 				//echo "<br /><p>\$matiere[$j]=".$matiere[$j]."<br />";

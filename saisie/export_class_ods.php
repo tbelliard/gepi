@@ -145,7 +145,7 @@ $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
 $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
-$nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
+$nom_periode = old_mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 
 //**************** EN-TETE *****************

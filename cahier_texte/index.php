@@ -388,7 +388,7 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 			//echo "$sql<br />";
 			$req = mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($req)>0) {
-				$contenu_precedent=mysql_result($req, 0, 'contenu');
+				$contenu_precedent=old_mysql_result($req, 0, 'contenu');
 				if($contenu_precedent!=$contenu_cor) {
 					$date_modif=strftime("%Y-%m-%d %H:%M:%S");
 					$sql="UPDATE ct_devoirs_faits SET etat='', commentaire='Le professeur a modifié la notice de travail à faire ($date_modif).', date_modif='".$date_modif."' WHERE id_ct='$id_ct';";
@@ -482,11 +482,11 @@ else {
 if ($test_cahier_texte != 0) {
     // Il y a une notice à modifier
     if (!isset($edit_devoir))
-        $heure_entry = mysql_result($appel_cahier_texte, 0,'heure_entry');
+        $heure_entry = old_mysql_result($appel_cahier_texte, 0,'heure_entry');
     // on initialise heure_entry si nouveau = heure actuelle si modification on prend celui de la base de donéne
-    $contenu = mysql_result($appel_cahier_texte, 0,'contenu');
+    $contenu = old_mysql_result($appel_cahier_texte, 0,'contenu');
 
-    $id_ct = mysql_result($appel_cahier_texte, 0,'id_ct');
+    $id_ct = old_mysql_result($appel_cahier_texte, 0,'id_ct');
 } else {
     // Il s'agit d'une nouvelle notice
     $contenu = '';
@@ -981,8 +981,8 @@ while (true) {
 // Affichage des info générales
 $appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT heure_entry, contenu, id_ct  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' and date_ct='') ORDER BY heure_entry");
 $nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
-$content = @mysql_result($appel_info_cahier_texte, 0,'contenu');
-$id_ctexte = @mysql_result($appel_info_cahier_texte, 0,'id_ct');
+$content = @old_mysql_result($appel_info_cahier_texte, 0,'contenu');
+$id_ctexte = @old_mysql_result($appel_info_cahier_texte, 0,'id_ct');
   $architecture= "/documents/cl".$current_group["id"];
   $sql = "SELECT titre, emplacement FROM ct_documents WHERE id_ct='".$id_ctexte."' ORDER BY titre";
   $res = sql_query($sql);

@@ -168,8 +168,8 @@ if (isset($choix_prof)) {
 	$tab_select_jour = array();
 
 	for($a = 0; $a < $nbre; $a++) {
-		$tab_select_jour[$a]["id"] = mysql_result($req_jour, $a, "id_horaire_etablissement");
-		$tab_select_jour[$a]["jour_sem"] = mysql_result($req_jour, $a, "jour_horaire_etablissement");
+		$tab_select_jour[$a]["id"] = old_mysql_result($req_jour, $a, "id_horaire_etablissement");
+		$tab_select_jour[$a]["jour_sem"] = old_mysql_result($req_jour, $a, "jour_horaire_etablissement");
 		if(isset($ch_jour_semaine)){
 			if($ch_jour_semaine == $tab_select_jour[$a]["jour_sem"]){
 				$selected = " selected='selected'";
@@ -198,10 +198,10 @@ if (isset($choix_prof)) {
 
 	for($b=0; $b<$rep_heure; $b++) {
 
-		$tab_select_heure[$b]["id_heure"] = mysql_result($req_heure, $b, "id_definie_periode");
-		$tab_select_heure[$b]["creneaux"] = mysql_result($req_heure, $b, "nom_definie_periode");
-		$tab_select_heure[$b]["heure_debut"] = mysql_result($req_heure, $b, "heuredebut_definie_periode");
-		$tab_select_heure[$b]["heure_fin"] = mysql_result($req_heure, $b, "heurefin_definie_periode");
+		$tab_select_heure[$b]["id_heure"] = old_mysql_result($req_heure, $b, "id_definie_periode");
+		$tab_select_heure[$b]["creneaux"] = old_mysql_result($req_heure, $b, "nom_definie_periode");
+		$tab_select_heure[$b]["heure_debut"] = old_mysql_result($req_heure, $b, "heuredebut_definie_periode");
+		$tab_select_heure[$b]["heure_fin"] = old_mysql_result($req_heure, $b, "heurefin_definie_periode");
 		if(isset($ch_heure)){
 			if($ch_heure == $tab_select_heure[$b]["id_heure"]){
 				$selected=" selected='selected'";
@@ -257,7 +257,7 @@ if (isset($choix_prof)) {
 	$nbre_semaines = mysqli_num_rows($req_semaines);
 
 	for ($s=0; $s<$nbre_semaines; $s++) {
-			$rep_semaines[$s]["type_edt_semaine"] = mysql_result($req_semaines, $s, "type_edt_semaine");
+			$rep_semaines[$s]["type_edt_semaine"] = old_mysql_result($req_semaines, $s, "type_edt_semaine");
 		echo '
 				<option value="'.$rep_semaines[$s]["type_edt_semaine"].'">Semaine '.$rep_semaines[$s]["type_edt_semaine"].'</option>
 		';
@@ -301,8 +301,8 @@ if (isset($choix_prof)) {
 	$req_calendrier = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
 	$nbre_calendrier = mysqli_num_rows($req_calendrier);
 		for ($a=0; $a<$nbre_calendrier; $a++) {
-			$rep_calendrier[$a]["id_calendrier"] = mysql_result($req_calendrier, $a, "id_calendrier");
-			$rep_calendrier[$a]["nom_calendrier"] = mysql_result($req_calendrier, $a, "nom_calendrier");
+			$rep_calendrier[$a]["id_calendrier"] = old_mysql_result($req_calendrier, $a, "id_calendrier");
+			$rep_calendrier[$a]["nom_calendrier"] = old_mysql_result($req_calendrier, $a, "nom_calendrier");
 			echo '
 				<option value="'.$rep_calendrier[$a]["id_calendrier"].'">'.$rep_calendrier[$a]["nom_calendrier"].'</option>
 			'."\n";
@@ -398,7 +398,7 @@ if (isset($choix_prof)) {
 					$query = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."'");
 					$nbre = mysqli_num_rows($query);
 					for($a = 0; $a < $nbre; $a++){
-						$nom[$a] = mysql_result($query, $a, "login");
+						$nom[$a] = old_mysql_result($query, $a, "login");
 						// On récupère ses nom et prénom
 						$query_n = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login = '".$nom[$a]."'"));
 						$contenu .= $query_n["nom"].' '.$query_n["prenom"].'<br />';

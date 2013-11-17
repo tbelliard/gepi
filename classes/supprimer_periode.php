@@ -65,7 +65,7 @@ if(!isset($id_classe)) {
 }
 
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-$classe = mysql_result($call_data, 0, "classe");
+$classe = old_mysql_result($call_data, 0, "classe");
 $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 $test_periode = mysqli_num_rows($periode_query) ;
 include "../lib/periodes.inc.php";

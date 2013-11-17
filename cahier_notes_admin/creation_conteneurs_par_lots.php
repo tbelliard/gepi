@@ -101,7 +101,7 @@ function get_arbo_boites($id_cahier_notes, $id_groupe="", $periode="") {
 		$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
-			$id_cahier_notes=mysql_result($res, 0, "id_cahier_notes");
+			$id_cahier_notes=old_mysql_result($res, 0, "id_cahier_notes");
 		}
 	}
 
@@ -412,7 +412,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 					}
 					else {
 						if($debug_appliquer_modele) echo "Le carnet de notes existait déjà en période ".$num_periode[$k].".<br />";
-						$id_cahier_notes=mysql_result($res_ccn, 0, "id_cahier_notes");
+						$id_cahier_notes=old_mysql_result($res_ccn, 0, "id_cahier_notes");
 					}
 					if($debug_appliquer_modele) echo "\$id_cahier_notes=$id_cahier_notes<br />";
 
@@ -451,7 +451,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 							}
 							else {
 								if($debug_appliquer_modele) echo "Un conteneur existe déjà avec modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."'<br />";
-								$id_conteneur=mysql_result($res_cn, 0, "id");
+								$id_conteneur=old_mysql_result($res_cn, 0, "id");
 								// Faut-il modifier parent pour remettre à la racine du carnet de notes?
 								// Faut-il réimposer le id_racine qui doit déjà être à $id_cahier_notes
 								$sql="UPDATE cn_conteneurs SET id_racine='$id_cahier_notes',

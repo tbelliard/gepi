@@ -69,7 +69,7 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
     $nb_lignes = mysqli_num_rows($res);
     $k=0;
     while($k < $nb_lignes) {
-      $id = mysql_result($res,$k,"id");
+      $id = old_mysql_result($res,$k,"id");
       $res_supp=mysqli_query($GLOBALS["mysqli"], "DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
       $k++;
     }
@@ -115,7 +115,7 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_AID")) {
     $nb_lignes = mysqli_num_rows($res);
     $k=0;
     while($k < $nb_lignes) {
-      $id = mysql_result($res,$k,"id");
+      $id = old_mysql_result($res,$k,"id");
       $res_supp1=mysqli_query($GLOBALS["mysqli"], "DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
    		$res_supp2=mysqli_query($GLOBALS["mysqli"], "DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."' and id_aid='".$id."'");
       $k++;
@@ -306,16 +306,16 @@ if(!isset($annee_scolaire)){
     $tab1 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id</b></td><td><b>Année</b></td><td><b>Nom</b></td><td><b>Nom complet</b></td><td><b>Note sur</b></td><td><b>Type de note</b></td></tr>\n";
     $flag_tab1 = 0;
     while ($i < $nb_type) {
-      $nom_type = mysql_result($res_aid,$i,"nom");
-      $nom_complet_type = mysql_result($res_aid,$i,"nom_complet");
-      $note_max_type  = mysql_result($res_aid,$i,"note_max");
-      $type_note_type = mysql_result($res_aid,$i,"type_note");
-      $display_begin = mysql_result($res_aid,$i,"display_begin");
-      $display_end = mysql_result($res_aid,$i,"display_end");
-      $outils_complementaires = mysql_result($res_aid,$i,"outils_complementaires");
-      $display_bulletin = mysql_result($res_aid,$i,"display_bulletin");
-      $bull_simplifie = mysql_result($res_aid,$i,"bull_simplifie");
-      $outils_complementaires= mysql_result($res_aid,$i,"outils_complementaires");
+      $nom_type = old_mysql_result($res_aid,$i,"nom");
+      $nom_complet_type = old_mysql_result($res_aid,$i,"nom_complet");
+      $note_max_type  = old_mysql_result($res_aid,$i,"note_max");
+      $type_note_type = old_mysql_result($res_aid,$i,"type_note");
+      $display_begin = old_mysql_result($res_aid,$i,"display_begin");
+      $display_end = old_mysql_result($res_aid,$i,"display_end");
+      $outils_complementaires = old_mysql_result($res_aid,$i,"outils_complementaires");
+      $display_bulletin = old_mysql_result($res_aid,$i,"display_bulletin");
+      $bull_simplifie = old_mysql_result($res_aid,$i,"bull_simplifie");
+      $outils_complementaires= old_mysql_result($res_aid,$i,"outils_complementaires");
       if (($display_bulletin == 'y') or ($bull_simplifie=='y'))
           $display = 'y';
       else
@@ -359,22 +359,22 @@ if(!isset($annee_scolaire)){
       $flag_tab4 = 0;
       $flag_tab5 = 0;
       while ($j < $nb_aid) {
-          $id = mysql_result($res_aid2,$j,"id");
-          $nom = mysql_result($res_aid2,$j,"nom");
-          $productions = mysql_result($res_aid2,$j,"productions");
-          $resume = mysql_result($res_aid2,$j,"resume");
-          $famille = mysql_result($res_aid2,$j,"famille");
-          $mots_cles = mysql_result($res_aid2,$j,"mots_cles");
-          $adresse1 = mysql_result($res_aid2,$j,"adresse1");
-          $adresse2 = mysql_result($res_aid2,$j,"adresse2");
-          $public_destinataire = mysql_result($res_aid2,$j,"public_destinataire");
-          $contacts = mysql_result($res_aid2,$j,"contacts");
-          $divers = mysql_result($res_aid2,$j,"divers");
-          $matiere1 = mysql_result($res_aid2,$j,"matiere1");
-          $matiere2 = mysql_result($res_aid2,$j,"matiere2");
-          $fiche_publique = mysql_result($res_aid2,$j,"fiche_publique");
-          $affiche_adresse1 = mysql_result($res_aid2,$j,"affiche_adresse1");
-          $en_construction = mysql_result($res_aid2,$j,"en_construction");
+          $id = old_mysql_result($res_aid2,$j,"id");
+          $nom = old_mysql_result($res_aid2,$j,"nom");
+          $productions = old_mysql_result($res_aid2,$j,"productions");
+          $resume = old_mysql_result($res_aid2,$j,"resume");
+          $famille = old_mysql_result($res_aid2,$j,"famille");
+          $mots_cles = old_mysql_result($res_aid2,$j,"mots_cles");
+          $adresse1 = old_mysql_result($res_aid2,$j,"adresse1");
+          $adresse2 = old_mysql_result($res_aid2,$j,"adresse2");
+          $public_destinataire = old_mysql_result($res_aid2,$j,"public_destinataire");
+          $contacts = old_mysql_result($res_aid2,$j,"contacts");
+          $divers = old_mysql_result($res_aid2,$j,"divers");
+          $matiere1 = old_mysql_result($res_aid2,$j,"matiere1");
+          $matiere2 = old_mysql_result($res_aid2,$j,"matiere2");
+          $fiche_publique = old_mysql_result($res_aid2,$j,"fiche_publique");
+          $affiche_adresse1 = old_mysql_result($res_aid2,$j,"affiche_adresse1");
+          $en_construction = old_mysql_result($res_aid2,$j,"en_construction");
 
           // Les responsables des aids
           $liste_profs = "";
@@ -386,8 +386,8 @@ if(!isset($annee_scolaire)){
           $k = "0";
           while ($k < $nombre_prof) {
             if ($liste_profs != "") $liste_profs .= ", ";
-            $nom_prof = @mysql_result($call_liste_data, $k, "nom");
-            $prenom_prof = @mysql_result($call_liste_data, $k, "prenom");
+            $nom_prof = @old_mysql_result($call_liste_data, $k, "nom");
+            $prenom_prof = @old_mysql_result($call_liste_data, $k, "prenom");
             $nom_prenom = $nom_prof." ".$prenom_prof;
             $liste_profs .= $nom_prenom;
             $k++;
@@ -401,12 +401,12 @@ if(!isset($annee_scolaire)){
           $k = "0";
           $liste_eleves = "";
           while ($k < $nombre) {
-            $login_eleve = mysql_result($call_liste_data, $k, "login");
-            $no_gep = mysql_result($call_liste_data, $k, "no_gep");
-            $prenom_eleve = @mysql_result($call_liste_data, $k, "prenom");
-            $nom_eleve = @mysql_result($call_liste_data, $k, "nom");
+            $login_eleve = old_mysql_result($call_liste_data, $k, "login");
+            $no_gep = old_mysql_result($call_liste_data, $k, "no_gep");
+            $prenom_eleve = @old_mysql_result($call_liste_data, $k, "prenom");
+            $nom_eleve = @old_mysql_result($call_liste_data, $k, "nom");
             $call_classe = sql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-            $classe_eleve = @mysql_result($call_classe, '0', "classe");
+            $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
             if ($liste_eleves != "") $liste_eleves .= ", ";
             $liste_eleves .=$nom_eleve." ".$prenom_eleve." (".$classe_eleve.")";
             $k++;
@@ -420,12 +420,12 @@ if(!isset($annee_scolaire)){
           $k = "0";
           $liste_eleves_resp = "";
           while ($k < $nombre) {
-            $login_eleve = mysql_result($call_liste_data, $k, "login");
-            $no_gep = mysql_result($call_liste_data, $k, "no_gep");
-            $prenom_eleve = @mysql_result($call_liste_data, $k, "prenom");
-            $nom_eleve = @mysql_result($call_liste_data, $k, "nom");
+            $login_eleve = old_mysql_result($call_liste_data, $k, "login");
+            $no_gep = old_mysql_result($call_liste_data, $k, "no_gep");
+            $prenom_eleve = @old_mysql_result($call_liste_data, $k, "prenom");
+            $nom_eleve = @old_mysql_result($call_liste_data, $k, "nom");
             $call_classe = sql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-            $classe_eleve = @mysql_result($call_classe, '0', "classe");
+            $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
             if ($liste_eleves_resp != "") $liste_eleves_resp .= ", ";
             $liste_eleves_resp .=$nom_eleve." ".$prenom_eleve." (".$classe_eleve.")";
             $k++;
@@ -445,12 +445,12 @@ if(!isset($annee_scolaire)){
               $liste_max .= "|";
               $liste_moyenne .= "|";
             }
-            $num_periode = mysql_result($sql_moyenne,$k,"periode");
-            $min = mysql_result($sql_moyenne,$k,"min");
+            $num_periode = old_mysql_result($sql_moyenne,$k,"periode");
+            $min = old_mysql_result($sql_moyenne,$k,"min");
             if ($min=='') $min = '-';
-            $max = mysql_result($sql_moyenne,$k,"max");
+            $max = old_mysql_result($sql_moyenne,$k,"max");
             if ($max=='') $max = '-';
-            $moyenne = mysql_result($sql_moyenne,$k,"moyenne");
+            $moyenne = old_mysql_result($sql_moyenne,$k,"moyenne");
             if ($moyenne=='') $moyenne = '-';
             $liste_min .= "période N° ".$num_periode.":".$min;
             $liste_max .= "période N° ".$num_periode.":".$max;
@@ -512,8 +512,8 @@ if(!isset($annee_scolaire)){
           $nombre = mysqli_num_rows($call_liste_data);
           $k = "0";
           while ($k < $nombre) {
-            $login_eleve = mysql_result($call_liste_data, $k, "login");
-            $no_gep = mysql_result($call_liste_data, $k, "no_gep");
+            $login_eleve = old_mysql_result($call_liste_data, $k, "login");
+            $no_gep = old_mysql_result($call_liste_data, $k, "no_gep");
             if ($no_gep =='') {
                 $no_gep = "LOGIN_".$login_eleve;
       					$no_gep = cree_substitut_INE_unique($no_gep);
@@ -547,30 +547,30 @@ if(!isset($annee_scolaire)){
             $nombre_app = mysqli_num_rows($call_liste_data_app);
             $t = "0";
             while ($t < $nombre_app) {
-              $login_eleve = mysql_result($call_liste_data_app, $t, "login");
-              $periode = mysql_result($call_liste_data_app, $t, "periode");
-              $appreciation = mysql_result($call_liste_data_app, $t, "appreciation");
+              $login_eleve = old_mysql_result($call_liste_data_app, $t, "login");
+              $periode = old_mysql_result($call_liste_data_app, $t, "periode");
+              $appreciation = old_mysql_result($call_liste_data_app, $t, "appreciation");
               $call_classe = sql_query("SELECT c.id, c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '".$login_eleve."' and j.id_classe = c.id and j.periode='".$periode."')");
-              $id_classe = @mysql_result($call_classe, '0', "id");
+              $id_classe = @old_mysql_result($call_classe, '0', "id");
               $periode_max = sql_query("select count(num_periode) from periodes where id_classe='".$id_classe."'");
               $last_periode_aid = min($periode_max,$display_end);
-              $classe = @mysql_result($call_classe, '0', "classe");
+              $classe = @old_mysql_result($call_classe, '0', "classe");
 	            if (($periode >= $display_begin) and ($periode <= $display_end) and
 		          (($type_note_type == 'every') or (($type_note_type == 'last') and ($periode == $last_periode_aid)))) {
-                $statut = mysql_result($call_liste_data_app, $t, "statut");
+                $statut = old_mysql_result($call_liste_data_app, $t, "statut");
                 if ($statut == '')
-                  $note = mysql_result($call_liste_data_app, $t, "note");
+                  $note = old_mysql_result($call_liste_data_app, $t, "note");
                 else
                   $note = $statut;
                 if ($note == '') $note = '-';
                 if ($note == 'other') $note = '-';
                 $sql_moyenne = sql_query("SELECT MIN(note) note_min, MAX(note) note_max, round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '".$id_classe."' and a.statut='' and a.indice_aid='".$id_type[0]."' and a.periode='".$periode."')");
                 $flag="0";
-                $min = mysql_result($sql_moyenne,0,"note_min");
+                $min = old_mysql_result($sql_moyenne,0,"note_min");
                 if ($min=='') $min = '-';
-                $max = mysql_result($sql_moyenne,0,"note_max");
+                $max = old_mysql_result($sql_moyenne,0,"note_max");
                 if ($max=='') $max = '-';
-                $moyenne = mysql_result($sql_moyenne,0,"moyenne");
+                $moyenne = old_mysql_result($sql_moyenne,0,"moyenne");
                 if ($moyenne=='') $moyenne = '-';
               } else {
                 $note = '-';

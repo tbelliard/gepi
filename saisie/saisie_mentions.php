@@ -363,9 +363,9 @@ else {
 		echo "<td align='left'>\n";
 
 		while ($i < $nb) {
-			$id_classe=mysql_result($classes_list, $i, 'id');
+			$id_classe=old_mysql_result($classes_list, $i, 'id');
 			//$temp = "id_classe_".$id_classe;
-			$classe=mysql_result($classes_list, $i, 'classe');
+			$classe=old_mysql_result($classes_list, $i, 'classe');
 
 			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 				echo "</td>\n";

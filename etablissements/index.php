@@ -98,13 +98,13 @@ $alt=1;
 while ($i < $nombre_lignes){
 	$alt=$alt*(-1);
 
-    $current_id = mysql_result($call_data, $i, "id");
-    $current_nom = mysql_result($call_data, $i, "nom");
-    $current_niveau = mysql_result($call_data, $i, "niveau");
+    $current_id = old_mysql_result($call_data, $i, "id");
+    $current_nom = old_mysql_result($call_data, $i, "nom");
+    $current_niveau = old_mysql_result($call_data, $i, "niveau");
     foreach ($type_etablissement as $type_etab => $nom_etablissement) {
         if ($current_niveau == $type_etab) {$current_niveau_nom = $nom_etablissement;}
     }
-    $current_type = mysql_result($call_data, $i, "type");
+    $current_type = old_mysql_result($call_data, $i, "type");
     if ($current_type == 'aucun'){
         $current_type = '';
 	}
@@ -116,8 +116,8 @@ while ($i < $nombre_lignes){
 			$current_type = '';
 		}
     }
-	$current_cp = mysql_result($call_data, $i, "cp");
-    $current_ville = mysql_result($call_data, $i, "ville");
+	$current_cp = old_mysql_result($call_data, $i, "cp");
+    $current_ville = old_mysql_result($call_data, $i, "ville");
     echo "<tr class='lig$alt white_hover'><td><a href='modify_etab.php?id=$current_id'>$current_id</a></td>\n";
     echo "<td>$current_nom</td>\n";
     echo "<td>$current_niveau_nom</td>\n";

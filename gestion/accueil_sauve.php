@@ -1508,7 +1508,7 @@ if (isset($action) and ($action == 'system_dump'))  {
 		$dbDb = escapeshellarg($dbDb);
 	}
 
-	$req_version = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT version();"), 0);
+	$req_version = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT version();"), 0);
 	$ver_mysql = explode(".", $req_version);
 	if (!is_numeric(mb_substr($ver_mysql[2], 1, 1))) {
 		$ver_mysql[2] = mb_substr($ver_mysql[2], 0, 1);

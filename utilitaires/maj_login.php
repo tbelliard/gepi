@@ -121,7 +121,7 @@ while ($j < count($liste_tables))  {
   $i = 0;
   $affiche = 'yes';
   while ($i < $nb_lignes) {
-      $temp = mysql_result($req, $i, 'login');
+      $temp = old_mysql_result($req, $i, 'login');
       $pos = strpos($temp, "-");
       if ($pos >=1) {
           $tempo = str_replace("-", "_", $temp);
@@ -141,7 +141,7 @@ $nb_lignes = mysqli_num_rows($req);
 $affiche = 'yes';
 $i = 0;
 while ($i < $nb_lignes) {
-    $temp = mysql_result($req, $i, 'id_eleve');
+    $temp = old_mysql_result($req, $i, 'id_eleve');
     $pos = strpos($temp, "-");
     if ($pos >=1) {
 		// A ce stade, la table 'eleves' a déjà été mise à jour

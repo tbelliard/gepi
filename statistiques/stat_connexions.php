@@ -439,7 +439,7 @@ elseif($mode==1) {
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		// Toujours vrai si on est connecté pour consulter cette page
-		$date_premier_log=mysql_result($res, 0);
+		$date_premier_log=old_mysql_result($res, 0);
 		echo "<p>Les journaux de connexion remontent au ".formate_date($date_premier_log)."</p>";
 	}
 	

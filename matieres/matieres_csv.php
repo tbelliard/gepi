@@ -129,7 +129,7 @@ else {
 								echo "<tr class='lig$alt white_hover'><td><p><font color='red'>".htmlspecialchars($affiche[0])."</font></p></td><td><p>".htmlspecialchars($affiche[1])."</p></td></tr>\n";
 							}
 						} else {
-							$nom_complet = mysql_result($verif,0,'nom_complet');
+							$nom_complet = old_mysql_result($verif,0,'nom_complet');
 							echo "<tr class='lig$alt white_hover'><td><p><font color='green'>".htmlspecialchars($affiche[0])."</font></p></td><td><p>".htmlspecialchars($nom_complet)."</p></td></tr>\n";
 						}
 					}

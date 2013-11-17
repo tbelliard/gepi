@@ -68,18 +68,18 @@ for ($i=0; $i<sizeof($id_periode) ; $i++) {
 		{
 		 $call_resp = @mysql_query('SELECT * FROM responsables WHERE ereno = "'.$ereno[$cpt_i].'"');
 		     $civilite_parents[$ident_eleve_sel1][0] = "M. et Mme";
-			 $nom_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "nom1");
-			 $prenom_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "prenom1");
-			 $adresse1_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "adr1");
-			 $adresse2_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "adr1_comp");
-			 $ville_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "commune1");
-			 $cp_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "cp1");
-			 $nom_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "nom2");
-			 $prenom_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "prenom2");
-			 $adresse1_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "adr2");
-			 $adresse2_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "adr2_comp");
-			 $ville_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "commune2");
-			 $cp_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "cp2");
+			 $nom_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "nom1");
+			 $prenom_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "prenom1");
+			 $adresse1_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "adr1");
+			 $adresse2_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "adr1_comp");
+			 $ville_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "commune1");
+			 $cp_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "cp1");
+			 $nom_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "nom2");
+			 $prenom_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "prenom2");
+			 $adresse1_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "adr2");
+			 $adresse2_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "adr2_comp");
+			 $ville_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "commune2");
+			 $cp_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "cp2");
 		} else {
 			 $civilite_parents[$ident_eleve_sel1][0] = '';
 				 $nom_parents[$ident_eleve_sel1][0] = '';

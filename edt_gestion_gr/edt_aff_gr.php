@@ -132,7 +132,7 @@ if ($action == "ajouter_gr") {
 			//$id_gr_nom = mysql_insert_id($query_e);
 			// Avec une connexion permanente à la base, impossible de récupérer l'id
 			$select_id = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM edt_gr_nom WHERE nom = '".$nom_gr."' LIMIT 1");
-			$id_gr_nom = mysql_result($select_id, 0,"id");
+			$id_gr_nom = old_mysql_result($select_id, 0,"id");
 
 			if ($choix_prof != NULL AND $choix_prof != 'plusieurs' AND $prof != 'plusieurs') {
 				// On ajoute aussi une ligne pour le/les professeurs de ce edt_gr
@@ -221,8 +221,8 @@ while($gr = mysqli_fetch_array($query_g)){
 			';
 
 		for($i = 0; $i < $nbre; $i++){
-			$classes[$i] = mysql_result($query, $i, "id");
-			$nom[$i] = mysql_result($query, $i, "classe");
+			$classes[$i] = old_mysql_result($query, $i, "id");
+			$nom[$i] = old_mysql_result($query, $i, "classe");
 
 			$aff_select_classes .= '
 			<option value="'.$classes[$i].'">'.$nom[$i].'</option>';
@@ -243,9 +243,9 @@ while($gr = mysqli_fetch_array($query_g)){
 
 	for($i = 0 ; $i < $nbre_p ; $i++){
 
-		$login_p[$i] = mysql_result($query_p, $i, "login");
-		$nom_p[$i] = mysql_result($query_p, $i, "nom");
-		$prenom_p[$i] = mysql_result($query_p, $i, "prenom");
+		$login_p[$i] = old_mysql_result($query_p, $i, "login");
+		$nom_p[$i] = old_mysql_result($query_p, $i, "nom");
+		$prenom_p[$i] = old_mysql_result($query_p, $i, "prenom");
 
 		$aff_select_profs .= '
 		<option value="'.$login_p[$i].'">'.$nom_p[$i].' '.$prenom_p[$i].'</option>';

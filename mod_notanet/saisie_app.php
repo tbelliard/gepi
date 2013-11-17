@@ -277,7 +277,7 @@ else {
 			//echo "<tr><td colspan='3'>$sql</td></tr>";
 			$app_query = mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($app_query)>0) {
-				$eleve_app = @mysql_result($app_query, 0, "appreciation");
+				$eleve_app = @old_mysql_result($app_query, 0, "appreciation");
 			}
 			else {
 				$eleve_app="";
@@ -290,7 +290,7 @@ else {
 			$note_query = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($note_query)>0) {
-				$eleve_note = @mysql_result($note_query, 0, "note");
+				$eleve_note = @old_mysql_result($note_query, 0, "note");
 			}
 			else {
 				$eleve_note="";

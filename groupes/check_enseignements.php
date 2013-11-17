@@ -227,7 +227,7 @@ echo "</p>\n";
 $sql="SELECT display_mat_cat FROM classes WHERE id='".$_id_classe."';";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)>0) {
-	$display_mat_cat=mysql_result($res,0,"display_mat_cat");
+	$display_mat_cat=old_mysql_result($res,0,"display_mat_cat");
 }
 */
 if(!isset($_GET['tri'])) {

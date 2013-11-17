@@ -131,8 +131,8 @@ if ($test_champ>0) {
 					}
 				}
 				else {
-					//$tab_id_nature_sanction[$tab_nature_sanction[$loop]]=mysql_result($res_ns, 0, "id_nature");
-					$id_nature_sanction_courante=mysql_result($res_ns, 0, "id_nature");
+					//$tab_id_nature_sanction[$tab_nature_sanction[$loop]]=old_mysql_result($res_ns, 0, "id_nature");
+					$id_nature_sanction_courante=old_mysql_result($res_ns, 0, "id_nature");
 
 					// La nature était en minuscule dans s_sanctions et il faut maintenant qu'elle coïncide avec la casse de s_types_sanctions2.nature (donc avec une initiale en majuscule)
 					$sql="UPDATE s_sanctions SET id_nature_sanction='$id_nature_sanction_courante', nature='".$tab_nature_sanction[$loop]."' WHERE nature='".$tab_nature_sanction[$loop]."';";

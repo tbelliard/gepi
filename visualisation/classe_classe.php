@@ -107,8 +107,8 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
     echo "<select name='id_classe' size='1'>\n";
     $i = "0" ;
     while ($i < $nombreligne) {
-        $id_classe = mysql_result($call_classes, $i, "id");
-        $l_classe = mysql_result($call_classes, $i, "classe");
+        $id_classe = old_mysql_result($call_classes, $i, "id");
+        $l_classe = old_mysql_result($call_classes, $i, "classe");
         //echo "<option value='$id_classe' size='1'>$l_classe</option>\n";
         echo "<option value='$id_classe'>$l_classe</option>\n";
     $i++;
@@ -118,8 +118,8 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
     echo "<p><select name='id_classe2' size='1'>";
     $i = "0" ;
     while ($i < $nombreligne) {
-        $id_classe = mysql_result($call_classes, $i, "id");
-        $l_classe = mysql_result($call_classes, $i, "classe");
+        $id_classe = old_mysql_result($call_classes, $i, "id");
+        $l_classe = old_mysql_result($call_classes, $i, "classe");
         //echo "<option value='$id_classe' size='1'>$l_classe</option>\n";
         echo "<option value='$id_classe'>$l_classe</option>\n";
     $i++;
@@ -140,9 +140,9 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
 
 
     $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-    $classe = mysql_result($call_classe, "0", "classe");
+    $classe = old_mysql_result($call_classe, "0", "classe");
     $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe2'");
-    $classe2 = mysql_result($call_classe, "0", "classe");
+    $classe2 = old_mysql_result($call_classe, "0", "classe");
 
     ?> | <a href="classe_classe.php?id_classe=">Choix des classes</a></p><?php
     // On appelle les informations de l'utilisateur pour les afficher :
@@ -197,7 +197,7 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
     $prev_cat_id = null;
     while ($i < $nombre_lignes) {
 
-        $group_id = mysql_result($call_groupes, $i, "id_groupe");
+        $group_id = old_mysql_result($call_groupes, $i, "id_groupe");
         //echo "\$group_id=$group_id<br />";
         $current_group = get_group($group_id);
 
@@ -209,7 +209,7 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
                 "jgm.id_matiere = '" . $current_group["matiere"]["matiere"] . "')");
 
         if (mysqli_num_rows($call_group2) == 1) {
-            $group2_id = mysql_result($call_group2, 0, "id_groupe");
+            $group2_id = old_mysql_result($call_group2, 0, "id_groupe");
             $current_group2 = get_group($group2_id);
         } elseif (mysqli_num_rows($call_group2) > 1) {
             while ($row = mysqli_fetch_object($call_group2)) {
@@ -236,8 +236,8 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
                     $prev_cat_id = $current_group["classes"]["classes"][$id_classe]["categorie_id"];
                     // On est dans une nouvelle catégorie
                     // On récupère les infos nécessaires, et on affiche une ligne
-                    //$cat_name = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
-                    $cat_name = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
+                    //$cat_name = html_entity_decode(old_mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
+                    $cat_name = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
                     // On détermine le nombre de colonnes pour le colspan
                     $nb_total_cols = 1;
                     $k = '1';
@@ -258,9 +258,9 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
             $k = '1';
             while ($k < $nb_periode) {
                 $moyenne_classe_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$k' AND id_groupe='" . $current_group["id"] . "' AND statut = '')");
-                $moyenne_classe = mysql_result($moyenne_classe_query, 0, "moyenne");
+                $moyenne_classe = old_mysql_result($moyenne_classe_query, 0, "moyenne");
                 $moyenne_classe2_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$k' AND id_groupe='" . $current_group2["id"] . "' AND statut = '')");
-                $moyenne_classe2 = mysql_result($moyenne_classe2_query, 0, "moyenne");
+                $moyenne_classe2 = old_mysql_result($moyenne_classe2_query, 0, "moyenne");
                 if ($moyenne_classe == '') {$moyenne_classe = '-';}
                 if ($moyenne_classe2 == '') {$moyenne_classe2 = '-';}
                 echo "<td>$moyenne_classe</td><td>$moyenne_classe2</td>\n";

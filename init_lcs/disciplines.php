@@ -125,7 +125,7 @@ if (isset($_POST['is_posted'])) {
             $nbmat = mysqli_num_rows($get_matieres);
             $matieres = array();
             for($j=0;$j<$nbmat;$j++) {
-                $matieres[] = mysql_result($get_matieres, $j, "matiere");
+                $matieres[] = old_mysql_result($get_matieres, $j, "matiere");
             }
 
             if (!in_array($matiere, $matieres)) {
@@ -144,7 +144,7 @@ if (isset($_POST['is_posted'])) {
                 if (trim($member) !="") {
                     if ($list_member != "") $list_member .=", ";
                     $list_member .=$member;
-                    $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
+                    $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
                     if ($test == 0) {
                         $res = mysqli_query($GLOBALS["mysqli"], "INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
                     }
@@ -156,7 +156,7 @@ if (isset($_POST['is_posted'])) {
                 if (trim($member) !="") {
                     if ($list_member != "") $list_member .=", ";
                     $list_member .=$member;
-                    $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
+                    $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
                     if ($test == 0) {
                         $res = mysqli_query($GLOBALS["mysqli"], "INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
                     }
@@ -202,9 +202,9 @@ if (isset($_POST['is_posted'])) {
                     $nom_complet = $description;
                     $nom_court = "<font color=red>".$matiere."</font>";
                 } else {
-                    $id_matiere = mysql_result($test_exist, 0, 'matiere');
+                    $id_matiere = old_mysql_result($test_exist, 0, 'matiere');
                     $nom_court = "<font color=green>".$matiere."</font>";
-                    $nom_complet = mysql_result($test_exist, 0, 'nom_complet');
+                    $nom_complet = old_mysql_result($test_exist, 0, 'nom_complet');
                 }
                 echo "<tr>";
                 echo "<td>";

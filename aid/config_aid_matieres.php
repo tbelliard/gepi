@@ -53,7 +53,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
     $nb_lignes = mysqli_num_rows($res);
     $i = 0;
     while ($i < $nb_lignes) {
-        $matiere = mysql_result($res,$i,"matiere");
+        $matiere = old_mysql_result($res,$i,"matiere");
         if (isset($_POST["id_".$matiere])) {
             $req = mysqli_query($GLOBALS["mysqli"], "update matieres set matiere_aid='y' where matiere='".$matiere."'");
             if (!$req) {
@@ -107,9 +107,9 @@ $nb_lignes = mysqli_num_rows($res);
 $i = 0;
 $alt=1;
 while ($i < $nb_lignes) {
-    $matiere = mysql_result($res,$i,"matiere");
-    $nom_complet = mysql_result($res,$i,"nom_complet");
-    $matiere_aid  = mysql_result($res,$i,"matiere_aid");
+    $matiere = old_mysql_result($res,$i,"matiere");
+    $nom_complet = old_mysql_result($res,$i,"nom_complet");
+    $matiere_aid  = old_mysql_result($res,$i,"matiere_aid");
     $alt=$alt*(-1);
     echo "<tr class='lig$alt'>";
     echo "<td>".$matiere."</td>\n";

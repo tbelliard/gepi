@@ -120,11 +120,11 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 	$prof_list = array();
 	$prof_list["list"] = array();
 	for ($i=0;$i<$nb;$i++) {
-		$prof_login = mysql_result($calldata, $i, "login");
-		$prof_nom = mysql_result($calldata, $i, "nom");
-		$prof_prenom = mysql_result($calldata, $i, "prenom");
-		$civilite = mysql_result($calldata, $i, "civilite");
-		$prof_statut = mysql_result($calldata, $i, "statut");
+		$prof_login = old_mysql_result($calldata, $i, "login");
+		$prof_nom = old_mysql_result($calldata, $i, "nom");
+		$prof_prenom = old_mysql_result($calldata, $i, "prenom");
+		$civilite = old_mysql_result($calldata, $i, "civilite");
+		$prof_statut = old_mysql_result($calldata, $i, "statut");
 
 		$prof_list["list"][] = $prof_login;
 		$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => casse_mot($prof_nom,'maj'), "prenom" => casse_mot($prof_prenom,'majf2'), "civilite" => $civilite, "statut" => $prof_statut);
@@ -487,7 +487,7 @@ if (isset($_POST['is_posted'])) {
 				$ordre_matiere=1;
 			}
 			else {
-				$ordre_matiere=mysql_result($res_ordre, 0, "max_ordre_matiere")+1;
+				$ordre_matiere=old_mysql_result($res_ordre, 0, "max_ordre_matiere")+1;
 			}
 
 			$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$reg_professeurs[$loo]."', id_matiere='$reg_matiere', ordre_matieres='$ordre_matiere';";
@@ -797,8 +797,8 @@ if ($mode == "groupe") {
 		if ($nombre_lignes != 0) {
 			$i = 0;
 			while ($i < $nombre_lignes){
-				$id_classe2 = mysql_result($call_data, $i, "id");
-				$classe = mysql_result($call_data, $i, "classe");
+				$id_classe2 = old_mysql_result($call_data, $i, "id");
+				$classe = old_mysql_result($call_data, $i, "classe");
 				if (get_period_number($id_classe2) != "0") {
 					echo "<option value='" . $id_classe2 . "'";
 					if (in_array($id_classe2, $reg_clazz)) echo " SELECTED";
@@ -850,8 +850,8 @@ if ($mode == "groupe") {
 		$tmp_tab_classe=array();
 		$tmp_tab_id_classe=array();
 		while ($i < $nombre_lignes){
-			$id_classe_temp=mysql_result($call_data, $i, "id");
-			$classe=mysql_result($call_data, $i, "classe");
+			$id_classe_temp=old_mysql_result($call_data, $i, "id");
+			$classe=old_mysql_result($call_data, $i, "classe");
 			if (get_period_number($id_classe_temp) == get_period_number($id_classe)) {
 				$tmp_tab_classe[]=$classe;
 				$tmp_tab_id_classe[]=$id_classe_temp;
@@ -1018,8 +1018,8 @@ echo " onchange='changement(); maj_liste_profs_matiere();'";
 echo ">\n";
 
 for ($i=0;$i<$nb_mat;$i++) {
-	$matiere = mysql_result($query, $i, "matiere");
-	$nom_matiere = mysql_result($query, $i, "nom_complet");
+	$matiere = old_mysql_result($query, $i, "matiere");
+	$nom_matiere = old_mysql_result($query, $i, "nom_complet");
 	echo "<option value='" . $matiere . "'";
 	if ($reg_matiere == $matiere) echo " SELECTED";
 	echo " nom_matiere=\"$nom_matiere\"";

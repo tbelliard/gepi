@@ -227,7 +227,7 @@ if (isset($_POST['is_posted'])) {
 		//echo "$sql<br />";
 		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_eleve = mysqli_num_rows($appel_donnees_eleves);
-		$current_eleve_login = @mysql_result($appel_donnees_eleves, $ind_eleve_login_suiv, "login");
+		$current_eleve_login = @old_mysql_result($appel_donnees_eleves, $ind_eleve_login_suiv, "login");
 		$ind_eleve_login_suiv++;
 		if ($ind_eleve_login_suiv >= $nb_eleve)  $ind_eleve_login_suiv = 0;
 		//header("Location: saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv&amp;fiche=y&amp;msg=$msg&amp;affiche_message=$affiche_message#app");
@@ -551,15 +551,15 @@ echo "</form>\n";
 	$alt=1;
 	$tab_mentions_distribuees=array();
 	while($i < $nombre_lignes) {
-		$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
+		$current_eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
 		$ind_eleve_login_suiv = 0;
 		if ($i < $nombre_lignes-1) $ind_eleve_login_suiv = $i+1;
-		$current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
-		$current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
+		$current_eleve_nom = old_mysql_result($appel_donnees_eleves, $i, "nom");
+		$current_eleve_prenom = old_mysql_result($appel_donnees_eleves, $i, "prenom");
 		$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
-		$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
+		$current_eleve_avis = @old_mysql_result($current_eleve_avis_query, 0, "avis");
 		// ***** AJOUT POUR LES MENTIONS *****
-        $current_eleve_mention = @mysql_result($current_eleve_avis_query, 0, "id_mention");
+        $current_eleve_mention = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
 		// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
@@ -605,7 +605,7 @@ echo "</form>\n";
 
 	$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$periode_num');";
 	$res_current_synthese=mysqli_query($GLOBALS["mysqli"], $sql);
-	$current_synthese= @mysql_result($res_current_synthese, 0, "synthese");
+	$current_synthese= @old_mysql_result($res_current_synthese, 0, "synthese");
 	if ($current_synthese=='') {$current_synthese='-';}
 
 	echo "<br />\n";
@@ -990,9 +990,9 @@ if (isset($fiche)) {
 	//bulletin($current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
 	bulletin($tab_moy,$current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories,'y');
 	$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
-	$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
+	$current_eleve_avis = @old_mysql_result($current_eleve_avis_query, 0, "avis");
 	// ***** AJOUT POUR LES MENTIONS *****
-	$current_eleve_mention = @mysql_result($current_eleve_avis_query, 0, "id_mention");
+	$current_eleve_mention = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
 	// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_avis2.php\" method=\"post\">\n";
 	echo add_token_field();

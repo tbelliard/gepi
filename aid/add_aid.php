@@ -62,7 +62,7 @@ if (isset($is_posted) and ($is_posted =="1")) {
     $i = 0;
     $new_id = 0;
     while ($i < $count_id) {
-       $id = mysql_result($call_id, $i, 'id');
+       $id = old_mysql_result($call_id, $i, 'id');
        while ($new_id <= $id) $new_id++;
        $i++;
     }
@@ -103,7 +103,7 @@ if (isset($is_posted) and ($is_posted =="2")) {
     $count = mysqli_num_rows($test);
     $flag = 0;
     if ($count != "0") {
-        $aid_id_test = mysql_result($test, 0, "id");
+        $aid_id_test = old_mysql_result($test, 0, "id");
         if ($aid_id_test != $aid_id) {$flag = 1;}
     }
     $reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE aid SET nom='$reg_nom', numero='$reg_num' WHERE (id = '$aid_id' and indice_aid='$indice_aid')");
@@ -139,8 +139,8 @@ require_once("../lib/header.inc.php");
 <?php
 	if ($action == "modif_aid") {
 		//$calldata = mysql_query("SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
-		//$aid_nom = mysql_result($calldata, 0, "nom");
-		//$aid_num = mysql_result($calldata, 0, "numero");
+		//$aid_nom = old_mysql_result($calldata, 0, "nom");
+		//$aid_num = old_mysql_result($calldata, 0, "numero");
 
 		$sql="SELECT id FROM aid where indice_aid='$indice_aid' ORDER BY id";
 		//echo "$sql<br />";
@@ -215,9 +215,9 @@ if ($action == "modif_aid") { ?>
 
 		$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
 
-		$aid_nom = mysql_result($calldata, 0, "nom");
+		$aid_nom = old_mysql_result($calldata, 0, "nom");
 		
-		$aid_num = mysql_result($calldata, 0, "numero");
+		$aid_num = old_mysql_result($calldata, 0, "numero");
 	?>
 
 

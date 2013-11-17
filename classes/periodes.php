@@ -74,7 +74,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
                 $nb_ligne = mysqli_num_rows($test);
                 $j = 0;
                 while ($j < $nb_ligne) {
-                    $login_eleve = mysql_result($test, $j, 'login');
+                    $login_eleve = old_mysql_result($test, $j, 'login');
                     $efface = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_groupes WHERE (periode = '$k' AND login = '$login_eleve')");
                     if (!$efface) {$pb_reg_per = 'yes';}
                     $j++;
@@ -140,7 +140,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 }
 
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-$classe = mysql_result($call_data, 0, "classe");
+$classe = old_mysql_result($call_data, 0, "classe");
 $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 $test_periode = mysqli_num_rows($periode_query) ;
 include "../lib/periodes.inc.php";

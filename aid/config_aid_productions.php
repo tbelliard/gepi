@@ -112,8 +112,8 @@ $nb_lignes = mysqli_num_rows($res);
 $i = 0;
 $alt=1;
 while ($i < $nb_lignes) {
-    $id = mysql_result($res,$i,"id");
-    $nom = mysql_result($res,$i,"nom");
+    $id = old_mysql_result($res,$i,"id");
+    $nom = old_mysql_result($res,$i,"nom");
     echo "<tr class='lig$alt'>";
     echo "<td>".$id."</td>\n";
     echo "<td><input type=\"text\" name=\"".$id."\" value =\"".htmlspecialchars($nom)."\" size=\"40\" /></td>\n";

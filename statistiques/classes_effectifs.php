@@ -203,7 +203,7 @@ if(mysqli_num_rows($res_per)==0) {
 	echo "<p style='color:red'>Aucune classe avec périodes n'a été trouvée.</p>\n";
 }
 else {
-	$max_per=mysql_result($res_per, 0, "num_periode");
+	$max_per=old_mysql_result($res_per, 0, "num_periode");
 	for($loop=1;$loop<=$max_per;$loop++) {
 		echo "<div style='float:left; width:15em;'>\n";
 		echo "<p class='bold'>Effectifs en période $loop&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs&amp;num_periode=$loop'>Export CSV</a></p>\n";

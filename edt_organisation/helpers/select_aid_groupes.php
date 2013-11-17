@@ -61,11 +61,11 @@ echo '
 	$query = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom FROM aid");
 	$nbre = mysqli_num_rows($query);
 	for($i = 0; $i < $nbre; $i++){
-		$nom[$i] = mysql_result($query, $i, "nom");
-		$indice_aid[$i] = mysql_result($query, $i, "id");
+		$nom[$i] = old_mysql_result($query, $i, "nom");
+		$indice_aid[$i] = old_mysql_result($query, $i, "id");
 		/*/ On récupère le nom précis de cette AID
 		$query2 = mysql_query("SELECT nom FROM aid WHERE id = '".$indice_aid[$i]."' ORDER BY nom");
-		$nom_aid = mysql_result($query2, 0,"nom");
+		$nom_aid = old_mysql_result($query2, 0,"nom");
 		$query3 = mysql_query("SELECT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid[$i]."'");
 		$nbre_eleves = mysql_num_rows($query3);
 		 ('.$nom_aid.' avec '.$nbre_eleves.' élèves)*/
@@ -91,9 +91,9 @@ echo '
 		$query = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nbre_groupes = mysqli_num_rows($query);
 		for($a = 0; $a < $nbre_groupes; $a++){
-			$id_groupe[$a]["id"] = mysql_result($query, $a, "id");
-			$id_groupe[$a]["description"] = mysql_result($query, $a, "description");
-			$id_groupe[$a]["name"] = mysql_result($query, $a, "name");
+			$id_groupe[$a]["id"] = old_mysql_result($query, $a, "id");
+			$id_groupe[$a]["description"] = old_mysql_result($query, $a, "description");
+			$id_groupe[$a]["name"] = old_mysql_result($query, $a, "name");
 
 			// On récupère toutes les infos pour l'affichage
 			// On n'utilise pas getGroup() car elle est trop longue et récupère trop de choses dont on n'a pas besoin
@@ -148,9 +148,9 @@ echo '
 	$query = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nbre_groupes = mysqli_num_rows($query);
 	for($a = 0; $a < $nbre_groupes; $a++){
-		$id_groupe[$a]["id"] = mysql_result($query, $a, "id");
-		$id_groupe[$a]["description"] = mysql_result($query, $a, "description");
-		$id_groupe[$a]["name"] = mysql_result($query, $a, "name");
+		$id_groupe[$a]["id"] = old_mysql_result($query, $a, "id");
+		$id_groupe[$a]["description"] = old_mysql_result($query, $a, "description");
+		$id_groupe[$a]["name"] = old_mysql_result($query, $a, "name");
 
 		// On récupère toutes les infos pour l'affichage
 		// On n'utilise pas getGroup() car elle est trop longue et récupère trop de choses dont on n'a pas besoin

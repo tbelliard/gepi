@@ -75,9 +75,9 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
 }
 
 $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
-$id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
-$periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
 include "../lib/periodes.inc.php";
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];

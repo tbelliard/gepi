@@ -71,8 +71,8 @@ if($_SESSION['statut']=="administrateur") {
 			$nombre_ligne = mysqli_num_rows($call_group);
 			$i=0;
 			while ($i < $nombre_ligne) {
-				$id_groupe = mysql_result($call_group, $i, "id");
-				$nom_groupe = mysql_result($call_group, $i, "name");
+				$id_groupe = old_mysql_result($call_group, $i, "id");
+				$nom_groupe = old_mysql_result($call_group, $i, "name");
 				$id_group[$j] = $id_groupe."_".$j;
 				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (" .
 						"id_groupe = '" . $id_groupe . "' and " .
@@ -299,11 +299,11 @@ if($_SESSION['statut']=="administrateur"){
 }
 
 $call_nom_class = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-$classe = mysql_result($call_nom_class, 0, 'classe');
+$classe = old_mysql_result($call_nom_class, 0, 'classe');
 
 $call_data_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE (login = '$login_eleve')");
-$nom_eleve = @mysql_result($call_data_eleves, '0', 'nom');
-$prenom_eleve = @mysql_result($call_data_eleves, '0', 'prenom');
+$nom_eleve = @old_mysql_result($call_data_eleves, '0', 'nom');
+$prenom_eleve = @old_mysql_result($call_data_eleves, '0', 'prenom');
 
 
 echo "<h3>";
@@ -404,10 +404,10 @@ $nb_erreurs=0;
 $i=0;
 $alt=1;
 while ($i < $nombre_ligne) {
-	$id_groupe = mysql_result($call_group, $i, "id");
-	$nom_groupe = mysql_result($call_group, $i, "name");
-	//$description_groupe = mysql_result($call_group, $i, "description");
-	$description_groupe = htmlspecialchars(mysql_result($call_group, $i, "description"));
+	$id_groupe = old_mysql_result($call_group, $i, "id");
+	$nom_groupe = old_mysql_result($call_group, $i, "name");
+	//$description_groupe = old_mysql_result($call_group, $i, "description");
+	$description_groupe = htmlspecialchars(old_mysql_result($call_group, $i, "description"));
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover' id='tr_$i'>\n";
 	echo "<td>";

@@ -162,10 +162,10 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				}
 				$tab_priorites_categories[]=$reg_priority;
 				//echo "$reg_priority<br />";
-				//$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
+				//$test = old_mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
 
 				$res_test=mysqli_query($GLOBALS["mysqli"], "select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')");
-				$test = mysql_result($res_test, 0);
+				$test = old_mysql_result($res_test, 0);
 
 				if ($test == 0) {
 					// Pas d'entrée... on créé
@@ -457,40 +457,40 @@ if (isset($id_classe)) {
 		die();
 	}
 
-	$classe = mysql_result($call_nom_class, 0, 'classe');
-	$nom_complet = mysql_result($call_nom_class, 0, 'nom_complet');
-	$suivi_par = mysql_result($call_nom_class, 0, 'suivi_par');
-	$formule = mysql_result($call_nom_class, 0, 'formule');
-	$format_nom = mysql_result($call_nom_class, 0, 'format_nom');
-	$display_rang = mysql_result($call_nom_class, 0, 'display_rang');
-	$display_address = mysql_result($call_nom_class, 0, 'display_address');
-	$display_coef = mysql_result($call_nom_class, 0, 'display_coef');
-	$display_mat_cat = mysql_result($call_nom_class, 0, 'display_mat_cat');
-	$display_nbdev = mysql_result($call_nom_class, 0, 'display_nbdev');
-	$display_moy_gen = mysql_result($call_nom_class, 0, 'display_moy_gen');
-	$modele_bulletin_pdf = mysql_result($call_nom_class, 0, 'modele_bulletin_pdf');
+	$classe = old_mysql_result($call_nom_class, 0, 'classe');
+	$nom_complet = old_mysql_result($call_nom_class, 0, 'nom_complet');
+	$suivi_par = old_mysql_result($call_nom_class, 0, 'suivi_par');
+	$formule = old_mysql_result($call_nom_class, 0, 'formule');
+	$format_nom = old_mysql_result($call_nom_class, 0, 'format_nom');
+	$display_rang = old_mysql_result($call_nom_class, 0, 'display_rang');
+	$display_address = old_mysql_result($call_nom_class, 0, 'display_address');
+	$display_coef = old_mysql_result($call_nom_class, 0, 'display_coef');
+	$display_mat_cat = old_mysql_result($call_nom_class, 0, 'display_mat_cat');
+	$display_nbdev = old_mysql_result($call_nom_class, 0, 'display_nbdev');
+	$display_moy_gen = old_mysql_result($call_nom_class, 0, 'display_moy_gen');
+	$modele_bulletin_pdf = old_mysql_result($call_nom_class, 0, 'modele_bulletin_pdf');
 
 	// =========================
-	$rn_nomdev=mysql_result($call_nom_class, 0, 'rn_nomdev');
-	$rn_toutcoefdev=mysql_result($call_nom_class, 0, 'rn_toutcoefdev');
-	$rn_coefdev_si_diff=mysql_result($call_nom_class, 0, 'rn_coefdev_si_diff');
-	$rn_datedev=mysql_result($call_nom_class, 0, 'rn_datedev');
-	$rn_formule=mysql_result($call_nom_class, 0, 'rn_formule');
-	$rn_sign_chefetab=mysql_result($call_nom_class, 0, 'rn_sign_chefetab');
-	$rn_sign_pp=mysql_result($call_nom_class, 0, 'rn_sign_pp');
-	$rn_sign_resp=mysql_result($call_nom_class, 0, 'rn_sign_resp');
-	$rn_sign_nblig=mysql_result($call_nom_class, 0, 'rn_sign_nblig');
+	$rn_nomdev=old_mysql_result($call_nom_class, 0, 'rn_nomdev');
+	$rn_toutcoefdev=old_mysql_result($call_nom_class, 0, 'rn_toutcoefdev');
+	$rn_coefdev_si_diff=old_mysql_result($call_nom_class, 0, 'rn_coefdev_si_diff');
+	$rn_datedev=old_mysql_result($call_nom_class, 0, 'rn_datedev');
+	$rn_formule=old_mysql_result($call_nom_class, 0, 'rn_formule');
+	$rn_sign_chefetab=old_mysql_result($call_nom_class, 0, 'rn_sign_chefetab');
+	$rn_sign_pp=old_mysql_result($call_nom_class, 0, 'rn_sign_pp');
+	$rn_sign_resp=old_mysql_result($call_nom_class, 0, 'rn_sign_resp');
+	$rn_sign_nblig=old_mysql_result($call_nom_class, 0, 'rn_sign_nblig');
 
-	//$rn_col_moy=mysql_result($call_nom_class, 0, 'rn_col_moy');
+	//$rn_col_moy=old_mysql_result($call_nom_class, 0, 'rn_col_moy');
 	// =========================
-	$rn_abs_2=mysql_result($call_nom_class, 0, 'rn_abs_2');
+	$rn_abs_2=old_mysql_result($call_nom_class, 0, 'rn_abs_2');
 	//=========================
 	// Ajout : Module ECTS
-	$ects_type_formation = mysql_result($call_nom_class, 0, 'ects_type_formation');
-	$ects_parcours = mysql_result($call_nom_class, 0, 'ects_parcours');
-	$ects_code_parcours = mysql_result($call_nom_class, 0, 'ects_code_parcours');
-	$ects_fonction_signataire_attestation = mysql_result($call_nom_class, 0, 'ects_fonction_signataire_attestation');
-	$ects_domaines_etude = mysql_result($call_nom_class, 0, 'ects_domaines_etude');
+	$ects_type_formation = old_mysql_result($call_nom_class, 0, 'ects_type_formation');
+	$ects_parcours = old_mysql_result($call_nom_class, 0, 'ects_parcours');
+	$ects_code_parcours = old_mysql_result($call_nom_class, 0, 'ects_code_parcours');
+	$ects_fonction_signataire_attestation = old_mysql_result($call_nom_class, 0, 'ects_fonction_signataire_attestation');
+	$ects_domaines_etude = old_mysql_result($call_nom_class, 0, 'ects_domaines_etude');
 	// =========================
 	// 20121027
 	// Paramètres enregistrés dans la table 'classes_param':
@@ -643,7 +643,7 @@ td {
 		$max_priority_cat=0;
 		$get_max_cat = mysqli_query($GLOBALS["mysqli"], "SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
 		if(mysqli_num_rows($get_max_cat)>0) {
-			$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
+			$max_priority_cat=old_mysql_result($get_max_cat, 0, "priority");
 		}
 
 		$tab_priorites_categories=array();

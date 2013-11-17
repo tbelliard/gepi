@@ -683,19 +683,19 @@ $pdf->SetFillColor(255,255,255);
 	// placement du bloc
  	$pdf->SetXY($x_divers,$y_divers);
 	// nombre de lettre expédié à la famille
-        $cpt_lettre_envoye = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."'"),0);
+        $cpt_lettre_envoye = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."'"),0);
 	$pdf->Cell($l_divers, $h_divers, ('Nombre de lettres expédiées : ').$cpt_lettre_envoye, 0, 2, 'L', 0);
 	// nombre de lettre resté sans réponse
-        $cpt_lettre_envoye_sans_reponse = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND quireception_lettre_suivi = ''"),0);
+        $cpt_lettre_envoye_sans_reponse = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND quireception_lettre_suivi = ''"),0);
 	$pdf->Cell($l_divers, $h_divers, ('Lettres restées sans réponse : ').$cpt_lettre_envoye_sans_reponse, 0, 2, 'L', 0);
 	// nombre d'avertissement
-        $cpt_lettre_avertissement = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%avertissement%'"),0);
+        $cpt_lettre_avertissement = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%avertissement%'"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Nombre d\'avertissements : '.$cpt_lettre_avertissement, 0, 2, 'L', 0);
 	// nombre d'exclusion
-        $cpt_lettre_exclusion = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%exclusion%'"),0);
+        $cpt_lettre_exclusion = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%exclusion%'"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Nombre d\'exclusions : '.$cpt_lettre_exclusion, 0, 2, 'L', 0);
 	// nombre de retenue
-        $cpt_lettre_retenue = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%retenu%'"),0);
+        $cpt_lettre_retenue = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%retenu%'"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Nombre de retenues : '.$cpt_lettre_retenue, 0, 2, 'L', 0);
 
 
@@ -1074,7 +1074,7 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 		$tab_jour['dimanche'] = '0';
 
 		// calcul du nombre de période à affiché dans la semaine
-		$maxHor = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."edt_creneaux
+		$maxHor = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."edt_creneaux
 							WHERE suivi_definie_periode = '1'"),0);
 
 		// si il est égale à 0 alors on l'initialise à 11

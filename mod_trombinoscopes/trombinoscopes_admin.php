@@ -244,7 +244,7 @@ function purge_dossier_photos($type_utilisateurs) {
 			{
 			while ($pt<mysqli_num_rows($R_identifiants))
 				{
-				$identifiant=mysql_result($R_identifiants,$pt++);
+				$identifiant=old_mysql_result($R_identifiants,$pt++);
 				$tab_identifiants[]=encode_nom_photo($identifiant);
 				}
 			}
@@ -257,7 +257,7 @@ function purge_dossier_photos($type_utilisateurs) {
 
 		while ($pt<mysqli_num_rows($R_identifiants))
 			{
-			$identifiant=mysql_result($R_identifiants,$pt++);
+			$identifiant=old_mysql_result($R_identifiants,$pt++);
 			if ($type_utilisateurs=="personnels") $identifiant=md5(mb_strtolower($identifiant));
 			if ($type_utilisateurs=="eleves") $identifiant=encode_nom_photo($identifiant);
 			$tab_identifiants[]=$identifiant;
@@ -279,14 +279,14 @@ function purge_dossier_photos($type_utilisateurs) {
 			while ($pt<mysqli_num_rows($R_inactifs))
 				{
 				// dans tous les cas (élèves ou personnels) on cherchera parmi les fichiers login.jpg
-				$identifiant=mysql_result($R_inactifs,$pt,'login');
+				$identifiant=old_mysql_result($R_inactifs,$pt,'login');
 				if ($type_utilisateurs=="personnels") $identifiant=md5(mb_strtolower($identifiant));
 				if ($type_utilisateurs=="eleves") $identifiant=encode_nom_photo($identifiant);
 				$tab_identifiants_inactifs[]=$identifiant;
 				// dans le cas des élèves on cherchera également parmi les fichiers elenoet.jpg
 				if ($type_utilisateurs=="eleves")
 					{
-					$identifiant=mysql_result($R_inactifs,$pt,'elenoet');
+					$identifiant=old_mysql_result($R_inactifs,$pt,'elenoet');
 					$tab_identifiants_inactifs[]=encode_nom_photo($identifiant);
 					}
 				$pt++;
@@ -925,8 +925,8 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
   $nb_aid = mysqli_num_rows($req_trombino);
   $i = 0;
   for($i = 0;$i < $nb_aid;$i++){
-	  $aid_trouve[$i]["indice"]= mysql_result($req_trombino,$i,'indice_aid');
-	  $aid_trouve[$i]["nom"]= mysql_result($req_trombino,$i,'nom');
+	  $aid_trouve[$i]["indice"]= old_mysql_result($req_trombino,$i,'indice_aid');
+	  $aid_trouve[$i]["nom"]= old_mysql_result($req_trombino,$i,'nom');
 	  if (getSettingValue("num_aid_trombinoscopes")==$aid_trouve[$i]["indice"]){
 		$aid_trouve[$i]["selected"]= TRUE;
 		echo getSettingValue("num_aid_trombinoscopes")." : ".$aid_trouve[$i]["indice"];

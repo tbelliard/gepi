@@ -62,12 +62,12 @@
             //------------------------------
             $z=0;
             while ($z < $nb_aid_b) {
-                $display_begin = @mysql_result($call_data_aid_b, $z, "display_begin");
-                $display_end = @mysql_result($call_data_aid_b, $z, "display_end");
+                $display_begin = @old_mysql_result($call_data_aid_b, $z, "display_begin");
+                $display_end = @old_mysql_result($call_data_aid_b, $z, "display_end");
                 if (($periode_num >= $display_begin) and ($periode_num <= $display_end)) {
-                    $indice_aid = @mysql_result($call_data_aid_b, $z, "indice_aid");
+                    $indice_aid = @old_mysql_result($call_data_aid_b, $z, "indice_aid");
                     $aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
-                    $aid_id = @mysql_result($aid_query, 0, "id_aid");
+                    $aid_id = @old_mysql_result($aid_query, 0, "id_aid");
                     if ($aid_id != '') {
                         //affich_aid($affiche_graph, $affiche_rang, $affiche_coef,$test_coef,$indice_aid,$aid_id,$current_eleve_login[$i],$periode_num,$id_classe, 'bulletin');
                         affich_aid0($affiche_graph, $affiche_rang, $affiche_coef,$test_coef,$affiche_nbdev,$indice_aid,$aid_id,$current_eleve_login[$i],$periode_num,$id_classe, 'bulletin');
@@ -99,9 +99,9 @@
             $nb_ligne_cn = mysqli_num_rows($test_cn);
             $n = 0;
             while ($n < $nb_ligne_cn) {
-                $cn_id[$n] = mysql_result($test_cn, $n, 'c.id');
-                $cn_nom[$n] = mysql_result($test_cn, $n, 'c.nom_court');
-                $cn_note[$n] = @mysql_result($test_cn, $n ,'nc.note');
+                $cn_id[$n] = old_mysql_result($test_cn, $n, 'c.id');
+                $cn_nom[$n] = old_mysql_result($test_cn, $n, 'c.nom_court');
+                $cn_note[$n] = @old_mysql_result($test_cn, $n ,'nc.note');
                 $cn_note[$n] = number_format($cn_note[$n],1, ',', ' ');
                 $n++;
             }
@@ -156,7 +156,7 @@
                         $prev_cat_id = $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"];
                         // On est dans une nouvelle catégorie
                         // On récupère les infos nécessaires, et on affiche une ligne
-                        $cat_name = html_entity_decode(mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
+                        $cat_name = html_entity_decode(old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
                         // On détermine le nombre de colonnes pour le colspan
 			if($min_max_moyclas!=1){
 				//========================
@@ -192,14 +192,14 @@
                         if ($bull_affiche_appreciations == 'y') {$nb_total_cols++; $nb_last_cols++;}
 
                         // On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
-                        //$affiche_cat_moyenne = mysql_result(mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')"), 0);
+                        //$affiche_cat_moyenne = old_mysql_result(mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')"), 0);
                         $sql="SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')";
-                        //$affiche_cat_moyenne = mysql_result(mysql_query($sql), 0);
+                        //$affiche_cat_moyenne = old_mysql_result(mysql_query($sql), 0);
 		                $affiche_cat_moyenne_query = mysqli_query($GLOBALS["mysqli"], $sql);
 		                if (mysqli_num_rows($affiche_cat_moyenne_query) == "0") {
 		                	$affiche_cat_moyenne = false;
 		                } else {
-		                	$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
+		                	$affiche_cat_moyenne = old_mysql_result($affiche_cat_moyenne_query, 0);
 		                }
 
                         // On a toutes les infos. On affiche !
@@ -427,12 +427,12 @@
             //------------------------------
             $z=0;
             while ($z < $nb_aid_e) {
-                $display_begin = @mysql_result($call_data_aid_e, $z, "display_begin");
-                $display_end = @mysql_result($call_data_aid_e, $z, "display_end");
+                $display_begin = @old_mysql_result($call_data_aid_e, $z, "display_begin");
+                $display_end = @old_mysql_result($call_data_aid_e, $z, "display_end");
                 if (($periode_num >= $display_begin) and ($periode_num <= $display_end)) {
-                    $indice_aid = @mysql_result($call_data_aid_e, $z, "indice_aid");
+                    $indice_aid = @old_mysql_result($call_data_aid_e, $z, "indice_aid");
                     $aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
-                    $aid_id = @mysql_result($aid_query, 0, "id_aid");
+                    $aid_id = @old_mysql_result($aid_query, 0, "id_aid");
                     if ($aid_id != '') {
 			//affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$indice_aid,$aid_id,$current_eleve_login[$i],$periode_num,$id_classe, 'bulletin');
 			affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$affiche_nbdev,$indice_aid,$aid_id,$current_eleve_login[$i],$periode_num,$id_classe, 'bulletin');

@@ -92,9 +92,9 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_pro
 
 // On appelle les informations de l'aid pour les afficher :
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-$nom_aid = @mysql_result($call_data, 0, "nom");
-$activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
-$autoriser_inscript_multiples = @mysql_result($call_data, 0, "autoriser_inscript_multiples");
+$nom_aid = @old_mysql_result($call_data, 0, "nom");
+$activer_outils_comp = @old_mysql_result($call_data, 0, "outils_complementaires");
+$autoriser_inscript_multiples = @old_mysql_result($call_data, 0, "autoriser_inscript_multiples");
 
 if (isset($add_eleve) and ($add_eleve == "yes")) {
 	check_token();
@@ -107,7 +107,7 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
     $nombre = mysqli_num_rows($call_eleves);
     $i = "0";
     while ($i < $nombre) {
-        $login_eleve = mysql_result($call_eleves, $i, "login");
+        $login_eleve = old_mysql_result($call_eleves, $i, "login");
         if (isset($_POST[$login_eleve."_resp"])) {
             sql_query("insert into j_aid_eleves_resp set id_aid='$aid_id', login='$login_eleve', indice_aid='$indice_aid'");
         }
@@ -155,7 +155,7 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
     $nombreligne = mysqli_num_rows($calldata);
     $i = 0;
     while ($i < $nombreligne){
-        $aid_id = @mysql_result($calldata, $i, "id");
+        $aid_id = @old_mysql_result($calldata, $i, "id");
         // Y-a-il des profs responsables
         $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs WHERE id_aid = '$aid_id' and indice_aid='$indice_aid'");
         if ($test1 == 0) {
@@ -210,7 +210,7 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
     $nombreligne = mysqli_num_rows($calldata);
     $i = 0;
     while ($i < $nombreligne){
-        $aid_id = @mysql_result($calldata, $i, "id");
+        $aid_id = @old_mysql_result($calldata, $i, "id");
         // Y-a-il des profs responsables
         $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE id_aid = '$aid_id' and indice_aid='$indice_aid'");
         if ($test1 == 0) {
@@ -227,7 +227,7 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
 }
 
 $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
-$aid_nom = mysql_result($calldata, 0, "nom");
+$aid_nom = old_mysql_result($calldata, 0, "nom");
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 if (!isset($_GET["aid_id"]) OR !isset($_GET["indice_aid"]) OR !isset($_GET["flag"])) {
@@ -257,7 +257,7 @@ $aff_suivant = '';
 
 // On recherche les AID précédente et suivante
 for($a = 0; $a < $nbre; $a++){
-	$aid_p[$a]["id"] = mysql_result($query, $a, "id");
+	$aid_p[$a]["id"] = old_mysql_result($query, $a, "id");
 
 	// On teste pour savoir quel est le aid_id actuellement affiché
 	if ($a != 0) {
@@ -272,7 +272,7 @@ for($a = 0; $a < $nbre; $a++){
 	if ($a < ($nbre - 1)) {
 		// alors on propose un lien vers l'AID suivante
 		if ($aid_p[$a]["id"] == $aid_id) {
-			$aid_suivant = mysql_result($query, $a+1, "id");
+			$aid_suivant = old_mysql_result($query, $a+1, "id");
 			$aff_suivant = '
 			<a href="modify_aid.php?flag='.$flag.'&amp;indice_aid='.$indice_aid.'&amp;aid_id='.$aid_suivant.'">&nbsp;Aid suivante</a>';
 		}
@@ -324,9 +324,9 @@ if ($flag == "prof") { ?>
     }
     $i = "0";
     while ($i < $nombre) {
-        $login_prof = mysql_result($call_liste_data, $i, "login");
-        $nom_prof = mysql_result($call_liste_data, $i, "nom");
-        $prenom_prof = @mysql_result($call_liste_data, $i, "prenom");
+        $login_prof = old_mysql_result($call_liste_data, $i, "login");
+        $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
+        $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
         echo "<tr><td><b>";
         echo "$nom_prof $prenom_prof</b></td><td><a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_prof_aid".add_token_in_url()."'>\n<font size=2><img src=\"../images/icons/delete.png\" title=\"Supprimer ce professeur\" alt=\"Supprimer\" /></font></a></td>\n";
         echo "</tr>";
@@ -348,9 +348,9 @@ if ($flag == "prof") { ?>
     $nombreligne = mysqli_num_rows($call_prof);
     $i = "0" ;
     while ($i < $nombreligne) {
-        $login_prof = mysql_result($call_prof, $i, 'login');
-        $nom_el = mysql_result($call_prof, $i, 'nom');
-        $prenom_el = mysql_result($call_prof, $i, 'prenom');
+        $login_prof = old_mysql_result($call_prof, $i, 'login');
+        $nom_el = old_mysql_result($call_prof, $i, 'nom');
+        $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
 
         echo "<option value=\"".$login_prof."\">".my_strtoupper($nom_el)." ".casse_mot($prenom_el,'majf2')."</option>\n";
     $i++;
@@ -392,8 +392,8 @@ if ($flag == "prof") { ?>
       $i = 0;
       echo "<select name=\"liste_aids[]\" size=\"6\" multiple>\n";
       while ($i < $nombreligne){
-        $aid_id = @mysql_result($calldata, $i, "id");
-        $aid_nom = @mysql_result($calldata, $i, "nom");
+        $aid_id = @old_mysql_result($calldata, $i, "id");
+        $aid_nom = @old_mysql_result($calldata, $i, "nom");
         echo "<option value=\"$aid_id\">$aid_nom</option>\n";
         $i++;
       }
@@ -425,9 +425,9 @@ if ($flag == "prof_gest") { ?>
     }
     $i = "0";
     while ($i < $nombre) {
-        $login_prof = mysql_result($call_liste_data, $i, "login");
-        $nom_prof = mysql_result($call_liste_data, $i, "nom");
-        $prenom_prof = @mysql_result($call_liste_data, $i, "prenom");
+        $login_prof = old_mysql_result($call_liste_data, $i, "login");
+        $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
+        $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
         echo "<tr><td><b>";
         echo "$nom_prof $prenom_prof</b></td><td><a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_gest_aid".add_token_in_url()."'>\n<font size=2><img src=\"../images/icons/delete.png\" title=\"Supprimer ce professeur\" alt=\"Supprimer\" /></font></a></td>\n";
         echo "</tr>";
@@ -448,9 +448,9 @@ if ($flag == "prof_gest") { ?>
     $nombreligne = mysqli_num_rows($call_prof);
     $i = "0" ;
     while ($i < $nombreligne) {
-        $login_prof = mysql_result($call_prof, $i, 'login');
-        $nom_el = mysql_result($call_prof, $i, 'nom');
-        $prenom_el = mysql_result($call_prof, $i, 'prenom');
+        $login_prof = old_mysql_result($call_prof, $i, 'login');
+        $nom_el = old_mysql_result($call_prof, $i, 'nom');
+        $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
         echo "<option value=\"".$login_prof."\">".my_strtoupper($nom_el)." ".casse_mot($prenom_el,'majf2')."</option>\n";
     $i++;
     }
@@ -485,7 +485,7 @@ if ($flag == "eleve") {
 	$req_profs = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$aid_id."'");
 	$nbre_profs = mysqli_num_rows($req_profs);
 	for($a=0; $a<$nbre_profs; $a++) {
-		$rep_profs[$a]["id_utilisateur"] = mysql_result($req_profs, $a, "id_utilisateur");
+		$rep_profs[$a]["id_utilisateur"] = old_mysql_result($req_profs, $a, "id_utilisateur");
 		$rep_profs_a = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, civilite FROM utilisateurs WHERE login = '".$rep_profs[$a]["id_utilisateur"]."'"));
 		$aff_profs .= "".$rep_profs_a["civilite"].$rep_profs_a["nom"]." ";
 	}
@@ -530,13 +530,13 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
     $i = "0";
     while ($i < $nombre) {
         $vide = 0;
-        $login_eleve = mysql_result($call_liste_data, $i, "login");
-        $nom_eleve = mysql_result($call_liste_data, $i, "nom");
-        $prenom_eleve = @mysql_result($call_liste_data, $i, "prenom");
+        $login_eleve = old_mysql_result($call_liste_data, $i, "login");
+        $nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
+        $prenom_eleve = @old_mysql_result($call_liste_data, $i, "prenom");
         $eleve_resp = sql_query1("select login from j_aid_eleves_resp where id_aid='$aid_id' and login ='$login_eleve' and indice_aid='$indice_aid'");
         $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-        $classe_eleve = @mysql_result($call_classe, '0', "classe");
-        $v_elenoet=mysql_result($call_liste_data, $i, 'elenoet');
+        $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
+        $v_elenoet=old_mysql_result($call_liste_data, $i, 'elenoet');
         echo "<tr><td>\n";
         echo "<b>$nom_eleve $prenom_eleve</b>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid".add_token_in_url()."'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
 
@@ -605,10 +605,10 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
         echo "<option value=''>(aucun)</option>\n";
         $i = "0" ;
         while ($i < $nombreligne) {
-            $eleve = mysql_result($call_eleve, $i, 'login');
-            $nom_el = mysql_result($call_eleve, $i, 'nom');
-            $prenom_el = mysql_result($call_eleve, $i, 'prenom');
-            $v_elenoet=mysql_result($call_eleve, $i, 'elenoet');
+            $eleve = old_mysql_result($call_eleve, $i, 'login');
+            $nom_el = old_mysql_result($call_eleve, $i, 'nom');
+            $prenom_el = old_mysql_result($call_eleve, $i, 'prenom');
+            $v_elenoet=old_mysql_result($call_eleve, $i, 'elenoet');
             $photo=nom_photo($v_elenoet);
             if (isset($_SESSION['eleves_sans_photos']) and ($photo!=""))
                 $affiche_ligne = "no";
@@ -616,7 +616,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
                 $affiche_ligne = "yes";
             if ($affiche_ligne == "yes") {
             $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$eleve' and j.id_classe = c.id) order by j.periode DESC");
-            $classe_eleve = @mysql_result($call_classe, '0', "classe");
+            $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
 	        echo "<option value=\"".$eleve."\">".my_strtoupper($nom_el)." ".casse_mot($prenom_el,'majf2')." $classe_eleve</option>\n";
             }
         $i++;
