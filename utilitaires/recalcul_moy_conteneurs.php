@@ -82,7 +82,7 @@ if(!isset($_POST['recalculer'])){
 		echo "<p class='bold'>Cette page est destinée à effectuer le recalcul des moyennes de conteneurs.<br />Un bug pouvait provoquer une erreur lors de déplacement de devoirs/conteneurs(boites) d'un conteneur(boite) à un autre.</p>\n";
 
 		$sql="SELECT DISTINCT num_periode FROM periodes ORDER BY num_periode";
-		$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_per)==0){
 			echo "<p>Il semble qu'aucune période ne soit encore définie.</p>\n";
 		}
@@ -106,7 +106,7 @@ if(!isset($_POST['recalculer'])){
 		echo "</p></div>\n";
 
 		$sql="SELECT id,classe FROM classes ORDER BY classe;";
-		$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb=mysqli_num_rows($res_clas);
 		if($nb==0) {
 			echo "<p>Aucune classe n'a été trouvée.</p>\n";
@@ -210,7 +210,7 @@ else{
 					c.id='".$id_classe[$lloop]."'
 					ORDER BY c.classe,g.description";
 				//echo "$sql";
-				$resultat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$resultat=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($resultat)==0){
 					//echo "<p>Il semble qu'aucun carnet de notes ne soit encore défini pour la période $periode_num.</p>\n";
 					echo "<p>Il semble qu'aucun carnet de notes ne soit encore défini pour la période $periode_num et pour la classe $classe.</p>\n";
@@ -261,7 +261,7 @@ else{
 								cc.id=cnc.id_conteneur AND
 								ccn.id_groupe='$id_groupe' AND
 								ccn.periode='$periode_num'";
-						$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 						while($lig_moy=mysqli_fetch_object($res_moy)){
 							if($lig_moy->statut=="y"){
 								//$tabmoy1["$lig_moy->login"]=$lig_moy->note;
@@ -283,7 +283,7 @@ else{
 								cc.id=cnc.id_conteneur AND
 								ccn.id_groupe='$id_groupe' AND
 								ccn.periode='$periode_num'";
-						$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 						$chaine="";
 						while($lig_moy=mysqli_fetch_object($res_moy)){
 							//$tabmoy2["$lig_moy->login"]=$lig_moy->note;

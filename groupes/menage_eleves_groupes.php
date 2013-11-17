@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/groupes/menage_eleves_groupes.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO droits SET id='/groupes/menage_eleves_groupes.php',
 	administrateur='V',
@@ -48,7 +48,7 @@ if(mysqli_num_rows($test)==0) {
 	autre='F',
 	description='Groupes: Desinscription des eleves sans notes ni appreciations',
 	statut='';";
-	$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -67,23 +67,23 @@ if((isset($id_classe))&&(isset($num_periode))&&(isset($_GET['confirmation_menage
 	$nb_erreurs_desinscriptions=0;
 	if((preg_match("/^[0-9]*$/",$id_classe))&&(preg_match("/^[0-9]*$/",$num_periode))) {
 		$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe' AND num_periode='$num_periode';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==1) {
 			//$groups=get_groups_for_class($id_classe,"","n");
 			//foreach($groups as $current_group) {
 			$sql="select g.id from groupes g, j_groupes_classes j where (g.id = j.id_groupe and j.id_classe='".$id_classe."') ORDER BY j.priorite, g.name";
-			$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$query=mysqli_query($GLOBALS["mysqli"], $sql);
 			while($lig_group=mysqli_fetch_object($query)) {
 				$current_group=get_group($lig_group->id);
 				foreach($current_group["eleves"][$num_periode]["users"] as $tab_ele) {
 					// Pour ne traiter que les élèves de la classe courante:
 					$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$tab_ele['login']."' AND periode='$num_periode' AND id_classe='$id_classe';";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
 						if (test_before_eleve_removal($tab_ele['login'], $current_group['id'], $num_periode)) {
 							$sql="DELETE FROM j_eleves_groupes WHERE id_groupe='".$current_group['id']."' AND login='".$tab_ele['login']."' AND periode='".$num_periode."';";
 							//echo "$sql<br />\n";
-							$resultat_nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$resultat_nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($resultat_nettoyage) {
 								$nb_desinscriptions++;
 							}
@@ -115,7 +115,7 @@ if((isset($id_classe))&&(isset($num_periode))&&(isset($_GET['confirmation_menage
 // =================================
 $chaine_options_classes="";
 $sql="SELECT id, classe FROM classes ORDER BY classe";
-$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_class_tmp)>0){
 	$id_class_prec=0;
 	$id_class_suiv=0;
@@ -131,7 +131,7 @@ if(mysqli_num_rows($res_class_tmp)>0){
 
 		// On relance la requête pour récupérer le suivant et la chaine des classes
 		$sql="SELECT id, classe FROM classes ORDER BY classe";
-		$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
@@ -267,7 +267,7 @@ echo "<p>Cette page est destinée à désinscrire des groupes/enseignements de l
 if(!isset($num_periode)) {
 	echo "<p>Pour quelle période souhaitez-vous effectuer le ménage dans la classe de <b>".$classe."</b>?</p>\n";
 	$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode;";
-	$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 	while($lig_per=mysqli_fetch_object($res_per)) {
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;num_periode=$lig_per->num_periode'>$lig_per->nom_periode</a><br />\n";
 	}
@@ -297,7 +297,7 @@ $sql="select g.id FROM groupes g,
 		AND jgc.id_groupe=g.id
 		)
 	ORDER BY jgc.priorite,jgm.id_matiere, g.name;";
-$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$query=mysqli_query($GLOBALS["mysqli"], $sql);
 while($lig_group=mysqli_fetch_object($query)) {
 	$current_group=get_group($lig_group->id);
 
@@ -311,7 +311,7 @@ while($lig_group=mysqli_fetch_object($query)) {
 	foreach($current_group["eleves"][$num_periode]["users"] as $tab_ele) {
 		// Pour ne traiter que les élèves de la classe courante:
 		$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$tab_ele['login']."' AND periode='$num_periode' AND id_classe='$id_classe';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			if($cpt>0) {echo ", ";}
 			if (test_before_eleve_removal($tab_ele['login'], $current_group['id'], $num_periode)) {

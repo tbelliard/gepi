@@ -14,10 +14,10 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/bulletin/test_modele_bull.php';";
-$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/bulletin/test_modele_bull.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Test de modèle pour les bulletins PDF', '1');";
-	$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -32,7 +32,7 @@ require_once("../lib/header.inc.php");
 echo "<p>Page de test pour convertir la table 'model_bulletin' en une table à trois champs.<br />Pour les tests, la table 'model_bulletin' n'est pas supprimée.<br />Une table 'model<b>e</b>_bulletin' est créée à la place.</p>\n";
 
 $sql="SELECT * FROM model_bulletin;";
-$res_model=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_model=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_model)>0) {
 	$cpt=0;
 	/*
@@ -66,14 +66,14 @@ if(mysqli_num_rows($res_model)>0) {
 	//$nettoyage=mysql_query($sql);
 
 	$sql="DROP TABLE modele_bulletin;";
-	$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$sql="CREATE TABLE IF NOT EXISTS modele_bulletin (
 		id_model_bulletin INT( 11 ) NOT NULL ,
 		nom VARCHAR( 255 ) NOT NULL ,
 		valeur VARCHAR( 255 ) NOT NULL
 		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$res_model=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_model=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res_model) {
 		echo "<p>ERREUR sur $sql</p>\n";
 	}
@@ -88,7 +88,7 @@ if(mysqli_num_rows($res_model)>0) {
 					if($cpt>0) {echo ", ";}
 
 					$sql="INSERT INTO modele_bulletin SET id_model_bulletin='".$id_model[$i]."', nom='".$key."', valeur='".$value."';";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($insert) {
 						echo "<span style='color:green;'>$key:$value</span> ";
 					}
@@ -108,7 +108,7 @@ echo "<p><br /></p>\n";
 echo "<p><b>Test:</b><br />\n";
 $num=1;
 $sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='$num';";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 while($lig=mysqli_fetch_object($res)) {
    $nom=$lig->nom;

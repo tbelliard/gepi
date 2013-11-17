@@ -571,7 +571,7 @@ require_once("'.$pref_arbo.'/entete.php");
 					date2 DATETIME NOT NULL default '0000-00-00 00:00:00',
 					PRIMARY KEY (id)
 					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-			$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$create_table) {
 				echo "<p style='color:red'>Erreur lors de la création de la table 'acces_cdt':<br />$sql</p>\n";
 				return false;
@@ -582,25 +582,25 @@ require_once("'.$pref_arbo.'/entete.php");
 						id_groupe INT(11) NOT NULL,
 						PRIMARY KEY (id)
 						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-				$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$create_table) {
 					echo "<p style='color:red'>Erreur lors de la création de la table 'acces_cdt_groupes':<br />$sql</p>\n";
 					return false;
 				}
 				else {
 					$sql="INSERT INTO acces_cdt SET description='".addslashes($description_acces)."', chemin='$chemin', date1='$date1_acces', date2='$date2_acces';";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
 						echo "<p style='color:red'>Erreur lors de la création de l'enregistrement dans la table 'acces_cdt':<br />$sql</p>\n";
 						return false;
 					}
 					else {
-						$id_acces=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+						$id_acces=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 	
 						$retour=true;
 						for($loop=0;$loop<count($id_groupe);$loop++) {
 							$sql="INSERT INTO acces_cdt_groupes SET id_acces='$id_acces', id_groupe='$id_groupe[$loop]';";
-							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$insert) {
 								echo "<p style='color:red'>Erreur lors de la création de l'enregistrement dans la table 'acces_cdt_groupes'&nbsp;:<br />$sql</p>\n";
 								$retour=false;
@@ -649,7 +649,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				AND id_groupe='".$id_groupe."'
 				) ORDER BY date_ct DESC, heure_entry DESC;";
 			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			$cpt=0;
 			while($lig=mysqli_fetch_object($res)) {
 		
@@ -676,7 +676,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				AND id_groupe='".$id_groupe."'
 				) ORDER BY date_ct DESC;";
 			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			$cpt=0;
 			$timestamp_courant=time();
 			while($lig=mysqli_fetch_object($res)) {
@@ -741,7 +741,7 @@ require_once("'.$pref_arbo.'/entete.php");
 
 		$sql="select g.id from groupes g, j_groupes_classes j where (g.id = j.id_groupe and j.id_classe = '" . $id_classe . "') ORDER BY j.priorite, g.name";
 		//echo "$sql<br />";
-		$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$query=mysqli_query($GLOBALS["mysqli"], $sql);
 		$tab_champs=array('classes', 'profs');
 		$alt=1;
 		$cpt=0;
@@ -817,7 +817,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				AND date_ct < '".$timestamp_debut."'
 				ORDER BY date_ct DESC;";
 		//echo "$sql<br />\n";
-		$res_prec=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_prec=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_prec)>0) {
 			$lig=mysqli_fetch_object($res_prec);
 			$precedent=$lig->date_ct;
@@ -833,7 +833,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				AND date_ct > '".$timestamp_fin."'
 				ORDER BY date_ct ASC;";
 		//echo "$sql<br />\n";
-		$res_suiv=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suiv=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_suiv)>0) {
 			$lig=mysqli_fetch_object($res_suiv);
 			$suivant=$lig->date_ct;
@@ -872,7 +872,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				AND date_ct <= '".$timestamp_fin."'
 				ORDER BY date_ct;";
 		//echo "$sql<br />\n";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 
 			while($lig=mysqli_fetch_object($res)) {
@@ -899,7 +899,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				AND date_ct != ''
 				ORDER BY date_ct;";
 		//echo "$sql<br />\n";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 
 			while($lig=mysqli_fetch_object($res)) {
@@ -936,7 +936,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				AND date_ct != ''
 				ORDER BY date_ct;";
 		echo "$sql<br />\n";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_object($res)) {
 				$tab_dates[]=$lig->date_ct;

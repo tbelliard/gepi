@@ -30,7 +30,7 @@ function retourneDevoirs($ele_login){
 	fwrite($fich, strftime("%Y%m%d %H%M%S")." : ".preg_replace("/\t/","",$sql)."\n");
 	fclose($fich);
 	*/
-	$res_ct = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ct = mysqli_query($GLOBALS["mysqli"], $sql);
 	$cpt2 = 0; // on initialise un compteur pour le while
 
 	if(mysqli_num_rows($res_ct)>0) {
@@ -45,7 +45,7 @@ function retourneDevoirs($ele_login){
 			$tab_ele['cdt_dev'][$cpt2]['contenu'] = $lig_ct->contenu;
 
 			$sql="SELECT * FROM ct_devoirs_documents WHERE id_ct_devoir='".$lig_ct->id_ct."' AND visible_eleve_parent='1';";
-			$res_doc_joint=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_doc_joint=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_doc_joint)>0) {
 				$tab_ele['cdt_dev'][$cpt2]['doc_joint'] = array();
 				$cpt_doc=0;

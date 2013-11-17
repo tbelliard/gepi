@@ -169,7 +169,7 @@
 			$matiere_nom_long[$i]=$matiere[$i];
 		}
 		else {
-			$call_matiere = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
+			$call_matiere = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
 			if(mysqli_num_rows($call_matiere)>0) {
 				$matiere_nom_long[$i] = mysql_result($call_matiere, "0", "nom_complet");
 			}
@@ -205,7 +205,7 @@
 
 	$eleve1=$_GET['v_legend1'];
 	$sql="SELECT * FROM eleves WHERE login='$eleve1'";
-	$resultat_infos_eleve1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$resultat_infos_eleve1=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($resultat_infos_eleve1)>0) {
 		$ligne=mysqli_fetch_object($resultat_infos_eleve1);
 		//$nom_eleve1=$ligne->nom." ".$ligne->prenom;
@@ -225,7 +225,7 @@
 		$eleve2="";
 
 		$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode";
-		$result_periode=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$result_periode=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_periode=mysqli_num_rows($result_periode);
 
 		$cpt=1;
@@ -304,7 +304,7 @@
 				break;
 			default:
 				$sql="SELECT * FROM eleves WHERE login='$eleve2'";
-				$resultat_infos_eleve2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$resultat_infos_eleve2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($resultat_infos_eleve2)>0) {
 					$ligne=mysqli_fetch_object($resultat_infos_eleve2);
 					//$nom_eleve2=$ligne->nom." ".$ligne->prenom;
@@ -416,7 +416,7 @@
 	for($i=0;$i<count($tab);$i++){
 		for($j=0;$j<count($comp);$j++){
 			$sql="SELECT value FROM setting WHERE name='couleur_".$tab[$i]."_".$comp[$j]."'";
-			$res_couleur=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_couleur=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_couleur)>0){
 				$tmp=mysqli_fetch_object($res_couleur);
 				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
@@ -444,7 +444,7 @@
 		for($i=4;$i<=$nb_series;$i++){
 			for($j=0;$j<count($comp);$j++){
 				$sql="SELECT value FROM setting WHERE name='couleur_Periode_".$i."_".$comp[$j]."'";
-				$res_couleur=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_couleur=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_couleur)>0){
 					$tmp=mysqli_fetch_object($res_couleur);
 					$tabcouleurs["Periode_".$i][$comp[$j]]=$tmp->value;

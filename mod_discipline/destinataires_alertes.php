@@ -75,7 +75,7 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
 			if(isset($_POST['case_'.$i.'_'.$j])){
 			    $requete= "SELECT 1=1 FROM s_alerte_mail WHERE id_classe='".$tab_id_clas[$j]."' AND destinataire='".$tab_statut[$i]."'";
 				//echo $requete; echo "</br>";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+				$test=mysqli_query($GLOBALS["mysqli"], $requete);
 				if(mysqli_num_rows($test)==0){
 				    // Modif Eric Ajout Adresse autre
 					if(isset($_POST['adresse_'.$i.'_'.$j]) and isset($_POST['case_'.$i.'_'.$j])){ 
@@ -87,7 +87,7 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
 					    $sql="INSERT INTO s_alerte_mail SET id_classe='".$tab_id_clas[$j]."', destinataire='".$tab_statut[$i]."'";
 					}
 					// Fin modif
-					$reg_data=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$reg_data=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$reg_data){
 						$msg.= "Erreur lors de l'insertion d'un nouvel enregistrement $tab_id_clas[$j] pour $tab_statut[$i].";
 						$notok = true;
@@ -96,10 +96,10 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
 				// Sinon: l'enregistrement est déjà présent.
 			}
 			else{
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM s_alerte_mail WHERE id_classe='".$tab_id_clas[$j]."' AND destinataire='".$tab_statut[$i]."'");
+				$test=mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM s_alerte_mail WHERE id_classe='".$tab_id_clas[$j]."' AND destinataire='".$tab_statut[$i]."'");
 				if(mysqli_num_rows($test)>0){
 					$sql="DELETE FROM s_alerte_mail WHERE id_classe='".$tab_id_clas[$j]."' AND destinataire='".$tab_statut[$i]."'";
-					$reg_data=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$reg_data=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$reg_data){
 						$msg.= "Erreur lors de la suppression de l'enregistrement $tab_id_clas[$j] pour $tab_statut[$i].";
 						$notok = true;
@@ -176,7 +176,7 @@ echo "</p>\n";
 	echo "<th>&nbsp;</th>\n";
 	echo "</tr>\n";
 
-	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes ORDER BY classe");
+	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes ORDER BY classe");
 	$nombre_lignes = mysqli_num_rows($call_data);
 	
 	if ($nombre_lignes != 0) {
@@ -198,7 +198,7 @@ echo "</p>\n";
 			for($i=0;$i<count($tab_statut);$i++){
 				$sql="SELECT 1=1 FROM s_alerte_mail WHERE id_classe='".$lig_clas->id."' AND destinataire='".$tab_statut[$i]."';";
 				//echo "$sql<br />";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				//if(mysql_num_rows($test)==0){$checked="";$bgcolor="";}else{$checked="checked ";$bgcolor="background-color: #AAE6AA;";}
 				if(mysqli_num_rows($test)==0){$checked="";$bgcolor="";}else{$checked="checked ";$bgcolor="background-color: plum;";}
 
@@ -207,7 +207,7 @@ echo "</p>\n";
 				//Ajout Eric traitement autre mail
 				$sql="SELECT * FROM s_alerte_mail WHERE id_classe='".$lig_clas->id."' AND destinataire='mail';";
 				//echo $sql;
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)!=0) {
 					$contenu_requete=mysqli_fetch_object($test);
 					if ($tab_statut[$i]== 'mail') {

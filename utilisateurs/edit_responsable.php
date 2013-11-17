@@ -65,21 +65,21 @@ $error = false;
 if ($mode == "classe") {
 	$nb_comptes = 0;
 	if ($_POST['classe'] == "all") {
-		$quels_parents = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT distinct(r.login), u.auth_mode " .
+		$quels_parents = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(r.login), u.auth_mode " .
 				"FROM utilisateurs u, resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e WHERE (" .
 				"u.login = r.login AND r.pers_id = re.pers_id AND " .
 				"re.ele_id = e.ele_id AND " .
 				"e.login = jec.login AND " .
 				"jec.id_classe = c.id)");
-		if (!$quels_parents) $msg .= ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		if (!$quels_parents) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	} elseif (is_numeric($_POST['classe'])) {
-		$quels_parents = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT distinct(r.login), u.auth_mode " .
+		$quels_parents = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(r.login), u.auth_mode " .
 				"FROM utilisateurs u, resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e WHERE (" .
 				"u.login = r.login AND r.pers_id = re.pers_id AND " .
 				"re.ele_id = e.ele_id AND " .
 				"e.login = jec.login AND " .
 				"jec.id_classe = '" . $_POST['classe']."')");
-		if (!$quels_parents) $msg .= ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		if (!$quels_parents) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	} else {
 		$error = true;
 		$msg .= "Vous devez sélectionner au moins une classe !<br />";
@@ -92,7 +92,7 @@ if((isset($_GET['acces_resp_legal_0']))&&(($_GET['acces_resp_legal_0']=='y')||($
 	check_token();
 
 	$sql="UPDATE responsables2 SET acces_sp='".$_GET['acces_resp_legal_0']."' WHERE pers_id='".$_GET['pers_id']."' AND ele_id='".$_GET['ele_id']."';";
-	$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($update) {
 		$msg="Modification de l'accès aux données pour pers_id=".$_GET['pers_id']." et ele_id=".$_GET['ele_id']." effectuée.<br />";
 	}
@@ -112,11 +112,11 @@ if (!$error) {
 		// Désactivation d'utilisateurs actifs
 		if ($mode == "individual") {
 			// Désactivation pour un utilisateur unique
-			$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'actif')"), 0);
+			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'actif')"), 0);
 			if ($test == "0") {
 				$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà inactif.";
 			} else {
-				$res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET etat='inactif' WHERE (login = '".$_GET['parent_login']."')");
+				$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat='inactif' WHERE (login = '".$_GET['parent_login']."')");
 				if ($res) {
 					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été désactivé.";
 				} else {
@@ -126,10 +126,10 @@ if (!$error) {
 		} elseif ($mode == "classe" and !$error) {
 			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
 			while ($current_parent = mysqli_fetch_object($quels_parents)) {
-				$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
 					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
-					$res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET etat = 'inactif' WHERE login = '" . $current_parent->login . "'");
+					$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat = 'inactif' WHERE login = '" . $current_parent->login . "'");
 					if (!$res) {
 						$msg .= "Erreur lors de la désactivation du compte ".$current_parent->login."<br />";
 					} else {
@@ -143,11 +143,11 @@ if (!$error) {
 		// Activation d'utilisateurs préalablement désactivés
 		if ($mode == "individual") {
 			// Activation pour un utilisateur unique
-			$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'inactif')"), 0);
+			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'inactif')"), 0);
 			if ($test == "0") {
 				$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà actif.";
 			} else {
-				$res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET etat='actif' WHERE (login = '".$_GET['parent_login']."')");
+				$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat='actif' WHERE (login = '".$_GET['parent_login']."')");
 				if ($res) {
 					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été activé.";
 				} else {
@@ -157,10 +157,10 @@ if (!$error) {
 		} elseif ($mode == "classe") {
 			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
 			while ($current_parent = mysqli_fetch_object($quels_parents)) {
-				$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
 					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
-					$res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $current_parent->login . "'");
+					$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $current_parent->login . "'");
 					if (!$res) {
 						$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
 					} else {
@@ -175,18 +175,18 @@ if (!$error) {
 		// Suppression d'un ou plusieurs utilisateurs
 		if ($mode == "individual") {
 			// Suppression pour un utilisateur unique
-			$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."')"), 0);
+			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."')"), 0);
 			if ($test == "0") {
 				$msg .= "Erreur lors de la suppression de l'utilisateur : celui-ci n'existe pas.";
 			} else {
 				// Suppression du compte proprement dite:
-				$res = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM utilisateurs WHERE (login = '".$_GET['parent_login']."')");
+				$res = mysqli_query($GLOBALS["mysqli"], "DELETE FROM utilisateurs WHERE (login = '".$_GET['parent_login']."')");
 				if ($res) {
 					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été supprimé.";
 					// Réinitialisation du champ login dans la table 'resp_pers':
-					$res2 = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE resp_pers SET login='' WHERE login = '".$_GET['parent_login'] . "'");
+					$res2 = mysqli_query($GLOBALS["mysqli"], "UPDATE resp_pers SET login='' WHERE login = '".$_GET['parent_login'] . "'");
 					// Suppression de scorie éventuelle:
-					$res3 = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM sso_table_correspondance WHERE login_gepi = '".$_GET['parent_login']."'");
+					$res3 = mysqli_query($GLOBALS["mysqli"], "DELETE FROM sso_table_correspondance WHERE login_gepi = '".$_GET['parent_login']."'");
 				} else {
 					$msg .= "Erreur lors de la suppression de l'utilisateur.";
 				}
@@ -194,18 +194,18 @@ if (!$error) {
 		} elseif ($mode == "classe") {
 			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
 			while ($current_parent = mysqli_fetch_object($quels_parents)) {
-				$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
 					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
 					// Suppression du compte proprement dite:
-					$res = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM utilisateurs WHERE login = '" . $current_parent->login . "'");
+					$res = mysqli_query($GLOBALS["mysqli"], "DELETE FROM utilisateurs WHERE login = '" . $current_parent->login . "'");
 					if (!$res) {
 						$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
 					} else {
 						// Réinitialisation du champ login dans la table 'resp_pers':
-						$res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE resp_pers SET login = '' WHERE login = '" . $current_parent->login ."'");
+						$res = mysqli_query($GLOBALS["mysqli"], "UPDATE resp_pers SET login = '' WHERE login = '" . $current_parent->login ."'");
 						// Suppression de scorie éventuelle:
-						$res3 = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM sso_table_correspondance WHERE login_gepi = '".$current_parent->login."'");
+						$res3 = mysqli_query($GLOBALS["mysqli"], "DELETE FROM sso_table_correspondance WHERE login_gepi = '".$current_parent->login."'");
 						$nb_comptes++;
 					}
 				}
@@ -238,7 +238,7 @@ if (!$error) {
 			$msg .= "Erreur : Vous devez sélectionner une classe.";
 		} elseif ($mode == "classe") {
 			while ($current_parent = mysqli_fetch_object($quels_parents)) {
-				$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
 					// L'utilisateur existe bien dans la tables utilisateurs, on modifie
 					// Si on change le mode d'authentification, il faut quelques opérations particulières
@@ -246,13 +246,13 @@ if (!$error) {
 					if ($_POST['reg_auth_mode'] != $old_auth_mode) {
 						// On modifie !
 						$nb_comptes++;
-						$res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET auth_mode = '".$reg_auth_mode."' WHERE login = '".$current_parent->login."'");
+						$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET auth_mode = '".$reg_auth_mode."' WHERE login = '".$current_parent->login."'");
 
 						// On regarde si des opérations spécifiques sont nécessaires
 						if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
 							// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
-							$oldmd5password = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT password FROM utilisateurs WHERE login = '".$current_parent->login."'"), 0);
-							mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$current_parent->login."'");
+							$oldmd5password = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT password FROM utilisateurs WHERE login = '".$current_parent->login."'"), 0);
+							mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$current_parent->login."'");
 							// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
 							if ($ldap_write_access) {
 								$create_ldap_user = true;
@@ -270,7 +270,7 @@ if (!$error) {
 						// On effectue les opérations LDAP
 						if (isset($create_ldap_user) && $create_ldap_user) {
 							if (!$ldap_server->test_user($current_parent->login)) {
-								$parent = mysqli_fetch_object(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT distinct(r.login), r.nom, r.prenom, r.civilite, r.mel " .
+								$parent = mysqli_fetch_object(mysqli_query($GLOBALS["mysqli"], "SELECT distinct(r.login), r.nom, r.prenom, r.civilite, r.mel " .
 														"FROM resp_pers r WHERE (" .
 														"r.login = '" . $current_parent->login."')"));
 								$write_ldap_success = $ldap_server->add_user($parent->login, $parent->nom, $parent->prenom, $parent->mel, $parent->civilite, md5(rand()), "responsable");
@@ -315,7 +315,7 @@ aff_time();
 <a href="create_responsable.php"> Ajouter de nouveaux comptes</a>
 <?php
 
-	$quels_parents = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom LIMIT 1");
+	$quels_parents = mysqli_query($GLOBALS["mysqli"], "SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom LIMIT 1");
 	if(mysqli_num_rows($quels_parents)==0){
 		echo "<p>Aucun compte responsable n'existe encore.<br />Vous pouvez ajouter des comptes responsables à l'aide du lien ci-dessus.</p>\n";
 		require("../lib/footer.inc.php");
@@ -351,7 +351,7 @@ Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL;ENFANTS;SEXE;IDENTIFIAN
 	echo "<option value='all'>Toutes les classes</option>\n";
 
 	//$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
-	$quelles_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.id,c.classe FROM classes c,
+	$quelles_classes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.id,c.classe FROM classes c,
 																		j_eleves_classes jec,
 																		eleves e,
 																		responsables2 r,
@@ -527,7 +527,7 @@ Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL;ENFANTS;SEXE;IDENTIFIAN
 	$rowspan=6;
 	$sql="SELECT u.*,rp.pers_id FROM utilisateurs u, resp_pers rp, responsables2 r, eleves e  WHERE u.statut='responsable' AND rp.login=u.login AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes) ORDER BY u.nom,u.prenom;";
 	//echo "$sql<br />";
-	$test_parents = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test_parents = mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_parents)>0) {
 		$rowspan++;
 	}
@@ -564,7 +564,7 @@ Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL;ENFANTS;SEXE;IDENTIFIAN
 	echo "<select name='critere_id_classe'>\n";
 	echo "<option value=''>---</option>\n";
 	$sql="SELECT DISTINCT id, classe FROM classes c, j_eleves_classes jec, eleves e, utilisateurs u, resp_pers rp, responsables2 r WHERE c.id=jec.id_classe AND jec.login=e.login AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND rp.login=u.login ORDER BY classe;";
-	$res_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_classes)>0) {
 		while($lig_classe=mysqli_fetch_object($res_classes)) {
 			echo "<option value='$lig_classe->id'";
@@ -606,13 +606,13 @@ Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL;ENFANTS;SEXE;IDENTIFIAN
 
 	$style_etat_actif="";
 	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.etat='actif';";
-	$res_etat_actif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_etat_actif=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_etat_actif=mysqli_num_rows($res_etat_actif);
 	if($nb_etat_actif==0) {$style_etat_actif=" style='color:red'";}
 
 	$style_etat_inactif="";
 	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.etat='inactif';";
-	$res_etat_inactif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_etat_inactif=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_etat_inactif=mysqli_num_rows($res_etat_inactif);
 	if($nb_etat_inactif==0) {$style_etat_inactif=" style='color:red'";}
 
@@ -632,19 +632,19 @@ Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL;ENFANTS;SEXE;IDENTIFIAN
 
 	$style_auth_mode_gepi="";
 	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.auth_mode='gepi';";
-	$res_auth_mode_gepi=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_auth_mode_gepi=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_auth_mode_gepi=mysqli_num_rows($res_auth_mode_gepi);
 	if($nb_auth_mode_gepi==0) {$style_auth_mode_gepi=" style='color:red'";}
 
 	$style_auth_mode_sso="";
 	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.auth_mode='sso';";
-	$res_auth_mode_sso=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_auth_mode_sso=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_auth_mode_sso=mysqli_num_rows($res_auth_mode_sso);
 	if($nb_auth_mode_sso==0) {$style_auth_mode_sso=" style='color:red'";}
 
 	$style_auth_mode_ldap="";
 	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.auth_mode='ldap';";
-	$res_auth_mode_ldap=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_auth_mode_ldap=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_auth_mode_ldap=mysqli_num_rows($res_auth_mode_ldap);
 	if($nb_auth_mode_ldap==0) {$style_auth_mode_ldap=" style='color:red'";}
 
@@ -666,7 +666,7 @@ Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL;ENFANTS;SEXE;IDENTIFIAN
 	echo "</tr>\n";
 
 	$sql="SELECT 1=1 FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login;";
-	$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_resp=mysqli_num_rows($res_resp);
 
 	echo "<tr>\n";
@@ -807,7 +807,7 @@ if((!isset($_POST['afficher_resp_eleves_sans_classe']))||($_POST['afficher_resp_
 
 	// Effectif sans login avec filtrage sur le nom:
 	if($afficher_tous_les_resp!='y'){
-		$nb_lignes_avant_limit=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
+		$nb_lignes_avant_limit=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql));
 		//if(($critere_recherche=="")&&($critere_recherche_login=="")&&($critere_id_classe=="")) {
 			$sql.=" LIMIT $critere_limit";
 		//}
@@ -818,7 +818,7 @@ else {
 	$sql="SELECT DISTINCT u.*,rp.pers_id FROM utilisateurs u, resp_pers rp, responsables2 r, eleves e  WHERE u.statut='responsable' AND rp.login=u.login AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes) ORDER BY u.nom,u.prenom;";
 }
 //echo "$sql<br />\n";
-$quels_parents = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$quels_parents = mysqli_query($GLOBALS["mysqli"], $sql);
 
 // Effectif sans login avec filtrage sur le nom:
 $nb1 = mysqli_num_rows($quels_parents);
@@ -867,7 +867,7 @@ while ($current_parent = mysqli_fetch_object($quels_parents)) {
 												r.ele_id=e.ele_id AND
 												r.pers_id='$current_parent->pers_id'
 											ORDER BY e.nom,e.prenom";
-		$res_enfants=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_enfants=mysqli_query($GLOBALS["mysqli"], $sql);
 		//echo "$sql<br />";
 		if(mysqli_num_rows($res_enfants)==0){
 			echo "<span style='color:red;' title='Aucun élève, ou plus des élèves qui ne sont plus dans aucune classe'>Aucun élève</span>";

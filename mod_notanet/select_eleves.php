@@ -84,24 +84,24 @@ login VARCHAR( 50 ) NOT NULL ,
 type_brevet TINYINT NOT NULL ,
 PRIMARY KEY ( login )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res) {
 		$msg.="ERREUR lors de la création de la table 'notanet_ele_type'.<br />";
 	}
 	else {
 		$sql="DELETE FROM notanet_ele_type WHERE type_brevet='$type_brevet';";
-		$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$nb_err=0;
 		$cpt_enr=0;
 		for($i=0;$i<count($ele_login);$i++) {
 			$sql="SELECT type_brevet FROM notanet_ele_type WHERE login='$ele_login[$i]';";
-			$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res1)==0) {
 				if(isset($coche_ele_login[$i])) {
 					$sql="INSERT INTO notanet_ele_type SET login='$ele_login[$i]', type_brevet='$type_brevet';";
-					$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res2) {
 						$msg.="ERREUR lors de l'insertion de l'association pour $ele_login[$i].<br />";
 						$nb_err++;
@@ -116,7 +116,7 @@ PRIMARY KEY ( login )
 				if($lig1->type_brevet==$type_brevet) {
 					if(isset($coche_ele_login[$i])) {
 						$sql="UPDATE notanet_ele_type SET type_brevet='$type_brevet' WHERE login='$ele_login[$i]';";
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res2) {
 							$msg.="ERREUR lors de la mise à jour de l'association pour $ele_login[$i].<br />";
 							$nb_err++;
@@ -127,7 +127,7 @@ PRIMARY KEY ( login )
 					}
 					else {
 						$sql="DELETE FROM notanet_ele_type WHERE login='$ele_login[$i]';";
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res2) {
 							$msg.="ERREUR lors de la mise à jour de l'association pour $ele_login[$i].<br />";
 							$nb_err++;
@@ -140,7 +140,7 @@ PRIMARY KEY ( login )
 				else {
 					if(isset($coche_ele_login[$i])) {
 						$sql="UPDATE notanet_ele_type SET type_brevet='$type_brevet' WHERE login='$ele_login[$i]';";
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res2) {
 							$msg.="ERREUR lors de la mise à jour de l'association pour $ele_login[$i].<br />";
 							$nb_err++;
@@ -245,7 +245,7 @@ else {
 		echo "<input type='hidden' name='type_brevet' value='$type_brevet' />\n";
 		echo "<p>Sélectionnez les classes : </p>\n";
 		echo "<blockquote>\n";
-		$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+		$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 		$nombre_lignes = mysqli_num_rows($call_data);
 		//echo "<select name='id_classe[]' multiple='true' size='10'>\n";
 
@@ -280,7 +280,7 @@ else {
 							jec.id_classe='$ide_classe' AND
 							n.type_brevet='$type_brevet'
 					ORDER BY e.nom,e.prenom";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)!=0) {
 				echo "checked ";
 			}
@@ -332,7 +332,7 @@ else {
 					WHERE jec.login=e.login AND
 							jec.id_classe='$id_classe[$i]'
 					ORDER BY e.nom,e.prenom";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
 				echo "<p>Aucun élève n'est affecté dans cette classe.</p>\n";
 			}
@@ -372,7 +372,7 @@ else {
 					*/
 
 					$sql="SELECT * FROM notanet_ele_type WHERE login='$lig->login';";
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res1)!=0) {
 						$lig_tmp=mysqli_fetch_object($res1);
 						if($lig_tmp->type_brevet==$type_brevet) {

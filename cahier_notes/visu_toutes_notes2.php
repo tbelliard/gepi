@@ -87,7 +87,7 @@ if (isset($id_classe)) {
 	if ($_SESSION['statut'] == "professeur" AND 
 	getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND
 	getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
-		$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 		if ($test == "0") {
 			if((!is_pp($_SESSION['login'], $id_classe))||(!getSettingAOui('GepiAccesReleveProfP'))) {
 				$classe=get_nom_classe($id_classe);
@@ -170,7 +170,7 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesPr
 		// On ne sélectionne que les élèves que le professeur a en cours
 		if ($referent=="une_periode")
 			// Calcul sur une seule période
-			$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* " .
+			$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* " .
 					"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 					"WHERE (" .
 					"jec.id_classe='$id_classe' AND " .
@@ -183,7 +183,7 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesPr
 					"ORDER BY e.nom,e.prenom");
 		else {
 			// Calcul sur l'année
-			$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* " .
+			$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* " .
 					"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 					"WHERE (" .
 					"jec.id_classe='$id_classe' AND " .
@@ -197,19 +197,19 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesPr
 	else {
 		if ($referent=="une_periode")
 			// Calcul sur une seule période
-			$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login AND j.periode='$num_periode') ORDER BY nom,prenom");
+			$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login AND j.periode='$num_periode') ORDER BY nom,prenom");
 		else {
 			// Calcul sur l'année
-			$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom,prenom");
+			$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom,prenom");
 		}
 	}
 } else {
 	if ($referent=="une_periode")
 		// Calcul sur une seule période
-		$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login AND j.periode='$num_periode') ORDER BY nom,prenom");
+		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login AND j.periode='$num_periode') ORDER BY nom,prenom");
 	else {
 		// Calcul sur l'année
-		$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom,prenom");
+		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom,prenom");
 	}
 }
 
@@ -284,7 +284,7 @@ else{
 
 
 // On teste la présence d'au moins un coeff pour afficher la colonne des coef
-$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 $ligne_supl = 0;
 if ($test_coef != 0) $ligne_supl = 1;
 
@@ -319,7 +319,7 @@ if ($affiche_categories == "y") {
 */
 
 if ($affiche_categories) {
-	$get_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM matieres_categories");
+	$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM matieres_categories");
 	$categories = array();
 	while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
 		$categories[] = $row["id"];
@@ -331,14 +331,14 @@ if ($affiche_categories) {
 
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		$cat_names[$cat_id] = html_entity_decode(mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		$cat_names[$cat_id] = html_entity_decode(mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
 	}
 }
 // Calcul du nombre de matières à afficher
 
 if ($affiche_categories) {
 	// On utilise les valeurs spécifiées pour la classe en question
-	$groupeinfo = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
+	$groupeinfo = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
 	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
 	"WHERE ( " .
 	"jgc.categorie_id = jmcc.categorie_id AND " .
@@ -348,7 +348,7 @@ if ($affiche_categories) {
 	") " .
 	"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
 } else {
-	$groupeinfo = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT jgc.id_groupe, jgc.coef
+	$groupeinfo = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT jgc.id_groupe, jgc.coef
 	FROM j_groupes_classes jgc, j_groupes_matieres jgm
 	WHERE (
 	jgc.id_classe='".$id_classe."' AND
@@ -382,7 +382,7 @@ while($j < $nb_lignes_tableau) {
 
 	// colonne régime
 	if (($aff_reg) or ($aff_doub))
-		$regime_doublant_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login[$j]'");
+		$regime_doublant_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login[$j]'");
 	if ($aff_reg) {
 		$col[$ind][$j+$ligne_supl] = @mysql_result($regime_doublant_eleve, 0, "regime");
 		$ind++;
@@ -652,7 +652,7 @@ while($i < $lignes_groupes) {
 			cnc.id_conteneur=cc.id AND
 			cc.id=cc.id_racine AND
 			cnc.statut='y'";
-			$call_moyenne = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$call_moyenne = mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 		else{
 			$sql="SELECT round(avg(cnc.note),1) moyenne FROM cn_cahier_notes ccn, cn_conteneurs cc, cn_notes_conteneurs cnc WHERE
@@ -661,7 +661,7 @@ while($i < $lignes_groupes) {
 			cnc.id_conteneur=cc.id AND
 			cc.id=cc.id_racine AND
 			cnc.statut='y'";
-			$call_moyenne = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$call_moyenne = mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	
 		$moy_classe_tmp = @mysql_result($call_moyenne, 0, "moyenne");
@@ -683,7 +683,7 @@ while($i < $lignes_groupes) {
 					"login = '".$current_eleve_login[$j]."' AND " .
 					"id_groupe = '".$current_group["id"]."' AND " .
 					"name = 'coef')";
-			$test_coef_personnalise = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_coef_personnalise = mysqli_query($GLOBALS["mysqli"], $sql);
 			if (mysqli_num_rows($test_coef_personnalise) > 0) {
 				$coef_eleve = mysql_result($test_coef_personnalise, 0);
 			} else {
@@ -709,7 +709,7 @@ while($i < $lignes_groupes) {
 					cc.id=cc.id_racine AND
 					cnc.login='".$current_eleve_login[$j]."'";
 					//echo "$sql";
-					$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 					if(mysqli_num_rows($res_moy)>0) {
 						$lig_moy=mysqli_fetch_object($res_moy);
@@ -765,7 +765,7 @@ while($i < $lignes_groupes) {
 					}
 	
 					$sql="SELECT * FROM j_eleves_groupes WHERE id_groupe='".$current_group["id"]."' AND periode='$num_periode'";
-					$test_eleve_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test_eleve_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_eleve_grp)>0){
 						if(!isset($chaine_matieres[$j+$ligne_supl])){
 						//if($chaine_matieres[$j+$ligne_supl]==""){
@@ -827,7 +827,7 @@ while($i < $lignes_groupes) {
 						cc.id=cc.id_racine AND
 						cnc.login='".$current_eleve_login[$j]."'";
 						//echo "$sql";
-						$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 						if(mysqli_num_rows($res_moy)>0){
 							$lig_moy=mysqli_fetch_object($res_moy);
@@ -904,7 +904,7 @@ while($i < $lignes_groupes) {
 	
 	
 				$sql="SELECT * FROM j_eleves_groupes WHERE id_groupe='".$current_group["id"]."'";
-				$test_eleve_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_eleve_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test_eleve_grp)>0) {
 					//if($chaine_matieres[$j+$ligne_supl]==""){
 					if(!isset($chaine_matieres[$j+$ligne_supl])){
@@ -950,7 +950,7 @@ while($i < $lignes_groupes) {
 			cnc.id_conteneur=cc.id AND
 			cc.id=cc.id_racine AND
 			cnc.statut='y'";
-			$call_moyenne = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$call_moyenne = mysqli_query($GLOBALS["mysqli"], $sql);
 	
 			//$call_max = mysql_query("SELECT max(note) note_max FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$num_periode')");
 			$sql="SELECT max(cnc.note) note_max FROM cn_cahier_notes ccn, cn_conteneurs cc, cn_notes_conteneurs cnc WHERE
@@ -960,7 +960,7 @@ while($i < $lignes_groupes) {
 			cnc.id_conteneur=cc.id AND
 			cc.id=cc.id_racine AND
 			cnc.statut='y'";
-			$call_max = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$call_max = mysqli_query($GLOBALS["mysqli"], $sql);
 	
 			//$call_min = mysql_query("SELECT min(note) note_min FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$num_periode')");
 			$sql="SELECT min(cnc.note) note_min FROM cn_cahier_notes ccn, cn_conteneurs cc, cn_notes_conteneurs cnc WHERE
@@ -970,7 +970,7 @@ while($i < $lignes_groupes) {
 			cnc.id_conteneur=cc.id AND
 			cc.id=cc.id_racine AND
 			cnc.statut='y'";
-			$call_min = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$call_min = mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 		else {
 			//$call_moyenne = mysql_query("SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "')");
@@ -980,7 +980,7 @@ while($i < $lignes_groupes) {
 			cnc.id_conteneur=cc.id AND
 			cc.id=cc.id_racine AND
 			cnc.statut='y'";
-			$call_moyenne = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$call_moyenne = mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 		//================================
 	
@@ -1909,24 +1909,24 @@ require_once("../lib/header.inc.php");
 if($vtn_coloriser_resultats=='y') {
 	//check_token();
 	$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_%';";
-	$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	foreach($vtn_couleur_texte as $key => $value) {
 		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_couleur_texte$key', value='$value';";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 	foreach($vtn_couleur_cellule as $key => $value) {
 		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_couleur_cellule$key', value='$value';";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 	foreach($vtn_borne_couleur as $key => $value) {
 		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_borne_couleur$key', value='$value';";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
 //=================================================
 $sql="DELETE FROM preferences WHERE name LIKE 'vtn_pref_%' AND login='".$_SESSION['login']."';";
-$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 //$tab_pref=array('num_periode', 'larg_tab', 'bord', 'couleur_alterne', 'aff_abs', 'aff_reg', 'aff_doub', 'aff_date_naiss', 'aff_rang');
 $tab_pref=array('num_periode', 'larg_tab', 'bord', 'couleur_alterne', 'aff_abs', 'aff_reg', 'aff_doub', 'aff_rang');
@@ -1935,11 +1935,11 @@ for($loop=0;$loop<count($tab_pref);$loop++) {
 	if($$tmp_var=='') {$$tmp_var="n";}
 	$sql="INSERT INTO preferences SET name='vtn_pref_".$tmp_var."', value='".$$tmp_var."', login='".$_SESSION['login']."';";
 	//echo "$sql<br />";
-	$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	$_SESSION['vtn_pref_'.$tmp_var]=$$tmp_var;
 }
 $sql="INSERT INTO preferences SET name='vtn_pref_coloriser_resultats', value='$vtn_coloriser_resultats', login='".$_SESSION['login']."';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 $_SESSION['vtn_pref_coloriser_resultats']=$vtn_coloriser_resultats;
 //=================================================
 

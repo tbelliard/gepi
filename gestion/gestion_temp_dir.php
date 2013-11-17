@@ -63,7 +63,7 @@ if(isset($reinitialiser)) {
 		}
 		else{
 			$sql="SELECT temp_dir FROM utilisateurs WHERE login='$reinit[$i]';";
-			$res_td=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_td=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res_td)=="1"){
 				$lig_td=mysqli_fetch_object($res_td);
@@ -114,7 +114,7 @@ if(isset($reinitialiser)) {
 					if($res_suppr) {
 						// On vide le champ temp_dir... une nouvelle valeur sera générée au prochain login
 						$sql="UPDATE utilisateurs SET temp_dir='' WHERE login='".$reinit[$i]."'";
-						$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res_update) {
 							$msg.="Erreur lors de la réinitialisation de temp_dir pour $reinit[$i].<br />\n";
 						}
@@ -200,7 +200,7 @@ if(isset($reinitialiser)) {
 	echo "<p>La réinitialisation des dossiers temporaires permet de supprimer le dossier temporaire d'un utilisateur et de vider le chemin aléatoire de ce dossier de façon à ce qu'une nouvelle valeur soit générée au login suivant.</p>\n";
 
 	$sql="SELECT login,nom,prenom FROM utilisateurs WHERE temp_dir!='' ORDER BY statut,nom,prenom";
-	$res_user=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_user=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res_user)==0){
 		echo "<p>Aucun utilisateur n'est encore concerné par la réinitialisation...</p>\n";
@@ -382,7 +382,7 @@ else{
 				else{
 					$sql="SELECT nom,prenom,statut,etat FROM utilisateurs WHERE login='$tabtmp[0]'";
 					//echo "<!-- $sql -->\n";
-					$res_user=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_user=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(mysqli_num_rows($res_user)==0){
 						echo "<td>$tabtmp[0]</td>\n";

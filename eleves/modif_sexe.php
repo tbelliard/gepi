@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/eleves/modif_sexe.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/eleves/modif_sexe.php',
 administrateur='V',
@@ -49,7 +49,7 @@ secours='F',
 autre='F',
 description='Eleves: Modification ajax du sexe d un eleve',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -74,7 +74,7 @@ if(($login_eleve=='')||(($sexe!='M')&&($sexe!='F'))) {
 }
 else {
 	$sql="UPDATE eleves SET sexe='$sexe' WHERE login='$login_eleve';";
-	$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($update) {
 		if($mode_retour=="image") {
 			echo "<img src='../images/";

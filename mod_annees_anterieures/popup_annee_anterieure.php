@@ -135,7 +135,7 @@ elseif($_SESSION['statut']=="professeur"){
 								jgc.id_groupe=jgp.id_groupe AND
 								jgp.login='".$_SESSION['login']."';";
 		//echo "$sql<br />";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			$acces="y";
 		}
@@ -147,7 +147,7 @@ elseif($_SESSION['statut']=="professeur"){
 								jeg.id_groupe=jgp.id_groupe AND
 								jgp.login='".$_SESSION['login']."';";
 		//echo "$sql<br />";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			$acces="y";
 		}
@@ -157,7 +157,7 @@ elseif($_SESSION['statut']=="professeur"){
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND
 														login='$logineleve';";
 		//echo "$sql<br />";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			$acces="y";
 		}
@@ -177,7 +177,7 @@ elseif($_SESSION['statut']=="cpe"){
 	elseif($AACpeResp=="yes"){
 		$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND
 													e_login='$logineleve'";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			$acces="y";
 		}
@@ -199,7 +199,7 @@ elseif($_SESSION['statut']=="scolarite"){
 						WHERE jec.login='$logineleve' AND
 								jec.id_classe=jsc.id_classe AND
 								jsc.login='".$_SESSION['login']."';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			$acces="y";
 		}
@@ -214,7 +214,7 @@ elseif($_SESSION['statut']=="responsable"){
 																			rp.pers_id=r.pers_id AND
 																			r.ele_id=e.ele_id AND
 																			e.login='$logineleve'";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==1){
 			$acces="y";
 		}
@@ -233,7 +233,7 @@ elseif($_SESSION['statut']=="autre"){
 	//$sql="SELECT 1=1 FROM droits_speciaux ds WHERE ds.id_statut='".$_SESSION['statut_special_id']."' AND ds.nom_fichier='/voir_anna' AND ds.autorisation='V';";
 
 	$sql="SELECT 1=1 FROM droits_speciaux ds WHERE ds.id_statut='".$_SESSION['statut_special_id']."' AND ds.nom_fichier='/mod_annees_anterieures/popup_annee_anterieure.php' AND ds.autorisation='V';";
-	$res_acces=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_acces=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res_acces)>0){
 		$acces="y";

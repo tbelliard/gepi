@@ -16,7 +16,7 @@ for ($i=0; $i<sizeof($id_periode) ; $i++) {
     $requete='SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id  AND '.$prefix_base.'periode='.$id_periode[$i]. ' AND ' .$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'j_eleves_regime.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'; 		//on compte les élèves sélectionné
 	//echo $requete;
 	//echo sizeof($id_periode)." : $i : ==>$requete <br />";
-	$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete);	
+	$call_eleve = mysqli_query($GLOBALS["mysqli"], $requete);	
 	$nb_eleves = @mysqli_num_rows($call_eleve);
 	
 	//en réalité, le nombre de ligne
@@ -120,7 +120,7 @@ global $prefix_base ;
 
 		$sql="SELECT classe, nom_complet FROM classes WHERE id='".$current_eleve["classe"]."'";
 	    //echo "$sql<br />";
-		$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_tmp)==0){
 			die("$eleve_login ne serait dans aucune classe???</body></html>");
 		}
@@ -133,7 +133,7 @@ global $prefix_base ;
 		//$sql="SELECT id_classe,naissance,ereno,doublant,regime FROM eleves, j_eleves_classes, j_eleves_regime WHERE eleves.login='$eleve_login' AND j_eleves_classes.login='$eleve_login' AND j_eleves_regime.login='$eleve_login'";
 		$sql="SELECT id_classe,naissance,ereno FROM eleves, j_eleves_classes WHERE eleves.login='$eleve_login' AND j_eleves_classes.login=eleves.login;";
 	    //echo "$sql<br />";
-		$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_tmp)==0){
 			die("Problème avec les infos de $eleve_login</body></html>");
@@ -146,7 +146,7 @@ global $prefix_base ;
 
 			// A quoi servent les données ci-dessous? Je n'ai pas vu dans les pages appelant liste.inc.php
 			$sql="SELECT doublant,regime FROM j_eleves_regime WHERE login='$eleve_login';";
-			$res_regime=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_regime=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_regime)==0) {
 				$eleve_doublant='';
 				$eleve_regime='';

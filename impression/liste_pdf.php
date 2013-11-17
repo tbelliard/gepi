@@ -137,7 +137,7 @@ if(isset($_POST['id_modele'])) {
 	if($_POST['id_modele']!='') {
 		$sql="SELECT * FROM modeles_grilles_pdf_valeurs WHERE id_modele='".$_POST['id_modele']."';";
 		//echo "$sql<br >\n";
-		$res_modele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_modele=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_modele)) {
 			while($lig_modele=mysqli_fetch_object($res_modele)) {
 				$nom_champ=$lig_modele->nom;
@@ -163,7 +163,7 @@ elseif(isset($_SESSION['id_modele'])) {
 	// On verifie que le modele existe et on recupere les valeurs
 	$sql="SELECT * FROM modeles_grilles_pdf_valeurs WHERE id_modele='".$_SESSION['id_modele']."';";
 	//echo "$sql<br >\n";
-	$res_modele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_modele=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_modele)) {
 		while($lig_modele=mysqli_fetch_object($res_modele)) {
 			$nom_champ=$lig_modele->nom;
@@ -376,11 +376,11 @@ echo "</pre>";
 			$pdf->Setxy($X_entete_classe,$Y_entete_classe);
 
 			if ($id_classe != NULL) {
-			  $calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes WHERE id = '$id_classe'");
+			  $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 			  $current_classe = mysql_result($calldata, 0, "classe");
 			} else {
 			   $sql = "SELECT * FROM classes WHERE id = '$id_classe'";
-			   $calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			   $calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 			   $current_classe = mysql_result($calldata, 0, "classe");
 			}
 
@@ -394,7 +394,7 @@ echo "</pre>";
 				$current_group = get_group($id_groupe);
 			  // On n'affiche pas le PP (il peut y en avoir plusieurs) ==> on affiche la période
 			    $sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='$id_periode' ORDER BY num_periode";
-				$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_per)==0){
 					die("Problème avec les infos de la classe $id_classe</body></html>");
 				}
@@ -414,7 +414,7 @@ echo "</pre>";
 				}
 			   } else {
 				   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
-				   $call_profsuivi_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				   $call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 				   $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
 
 				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst(getSettingValue("gepi_prof_suivi")).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
@@ -426,7 +426,7 @@ echo "</pre>";
 			  if ($id_groupe != NULL) {
 				$current_group = get_group($id_groupe);
 				$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='$id_periode' ORDER BY num_periode";
-				$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_per)==0){
 					die("Problème avec les infos de la classe $id_classe</body></html>");
 				}
@@ -465,7 +465,7 @@ echo "</pre>";
 			        $pdf->SetFont('DejaVu','I',11);
 
 				$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode=$id_periode ORDER BY num_periode";
-				$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_per)==0){
 					die("Problème avec les infos de la classe $id_classe</body></html>");
 				}

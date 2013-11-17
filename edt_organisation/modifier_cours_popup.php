@@ -109,7 +109,7 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 	if (ProfDisponible($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, $id_cours, $message, $periode_calendrier)) {
         if (SalleDisponible($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, $id_cours, $message, $periode_calendrier)) {
             if (GroupeDisponible($enseignement, $id_aid, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, $id_cours, $message, $periode_calendrier)) {
-	            $req_modif = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_cours SET id_groupe = '$enseignement',
+	            $req_modif = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_cours SET id_groupe = '$enseignement',
                     id_aid = '$id_aid',
 	                id_salle = '$login_salle',
 	                jour_semaine = '$ch_jour_semaine',
@@ -119,7 +119,7 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 	                id_semaine = '$choix_semaine',
 	                id_calendrier = '$periode_calendrier'
 	                WHERE id_cours = '".$id_cours."'")
-	                or die('Erreur dans la mofication du cours : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'');
+	                or die('Erreur dans la mofication du cours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'');
                     $_SESSION['edt_prof_enseignement'] = $enseignement;
                     $_SESSION['edt_prof_salle'] = $login_salle;
 	        }
@@ -130,7 +130,7 @@ elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 	if (ProfDisponible($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, -1, $message, $periode_calendrier)) {
 		if (SalleDisponible($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, -1, $message, $periode_calendrier)) {
             if (GroupeDisponible($enseignement, $id_aid, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, -1, $message, $periode_calendrier)) {
-				$nouveau_cours = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO edt_cours SET id_groupe = '$enseignement',
+				$nouveau_cours = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_cours SET id_groupe = '$enseignement',
                      id_aid = '$id_aid',
 					 id_salle = '$login_salle',
 					 jour_semaine = '$ch_jour_semaine',
@@ -140,7 +140,7 @@ elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 					 id_semaine = '$choix_semaine',
 					 id_calendrier = '$periode_calendrier',
 					 login_prof = '".$identite."'")
-				OR DIE('Erreur dans la création du cours : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				OR DIE('Erreur dans la création du cours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                 $_SESSION['edt_prof_enseignement'] = $enseignement;
                 $_SESSION['edt_prof_salle'] = $login_salle;
 			}
@@ -195,7 +195,7 @@ if (isset($modifier_cours) AND ($modifier_cours == "ok" OR $modifier_cours == "n
 if ($autorise == "oui") {
 	// On récupère les infos sur le cours
 	if (isset($id_cours)) {
-		$req_cours = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM edt_cours WHERE id_cours = '".$id_cours."'");
+		$req_cours = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours WHERE id_cours = '".$id_cours."'");
 		$rep_cours = mysqli_fetch_array($req_cours);
 	} else {
 		$rep_cours["jour_semaine"] = NULL;
@@ -209,7 +209,7 @@ if ($autorise == "oui") {
 	}
 
 	// On récupère les infos sur le professeur
-	$rep_prof = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, prenom FROM utilisateurs WHERE login = '".$identite."'"));
+	$rep_prof = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM utilisateurs WHERE login = '".$identite."'"));
 
 	// On insère alors le message d'erreur s'il existe
 	if (isset($message)) {
@@ -234,8 +234,8 @@ if ($autorise == "oui") {
 	$tab_enseignements = get_groups_for_prof($identite);
 	// Si c'est un AID, on inscrit son nom
 	if ($rep_cours["id_aid"] != NULL) {
-		$nom_aid = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, indice_aid FROM aid WHERE id = '".$rep_cours["id_aid"]."'"));
-		$req_nom_complet = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
+		$nom_aid = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, indice_aid FROM aid WHERE id = '".$rep_cours["id_aid"]."'"));
+		$req_nom_complet = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
 		$rep_nom_complet = mysqli_fetch_array($req_nom_complet);
 		$aff_intro = $rep_nom_complet["nom"]." : ".$nom_aid["nom"];
 	}else {
@@ -276,8 +276,8 @@ if ($autorise == "oui") {
 	// On ajoute les AID s'il y en a
 	$tab_aid = renvoieAid("prof", $identite);
 	for($i = 0; $i < count($tab_aid); $i++) {
-		$nom_aid = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, indice_aid FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
-		$req_nom_complet = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
+		$nom_aid = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, indice_aid FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
+		$req_nom_complet = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
 		$rep_nom_complet = mysqli_fetch_array($req_nom_complet);
         $complete_aid = $tab_aid[$i]["id_aid"];
 		if(isset($_SESSION['edt_prof_enseignement'])){
@@ -317,7 +317,7 @@ if ($autorise == "oui") {
 
 	// On propose aussi le choix du jour
 
-	$req_jour = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
+	$req_jour = mysqli_query($GLOBALS["mysqli"], "SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
 	$rep_jour = mysqli_fetch_array($req_jour);
 	$nbre = mysqli_num_rows($req_jour);
 	$tab_select_jour = array();
@@ -350,7 +350,7 @@ if ($autorise == "oui") {
 
 	// On propose aussi le choix de l'horaire
 
-	$req_heure = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+	$req_heure = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	$rep_heure = mysqli_num_rows($req_heure);
 
 	for($b = 0; $b < $rep_heure; $b++) {
@@ -466,7 +466,7 @@ if ($autorise == "oui") {
 		';
 		// on récupère les types de semaines
 
-	$req_semaines = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines WHERE type_edt_semaine != '' LIMIT 5 ");
+	$req_semaines = mysqli_query($GLOBALS["mysqli"], "SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines WHERE type_edt_semaine != '' LIMIT 5 ");
 	$nbre_semaines = mysqli_num_rows($req_semaines);
 
 	for ($s=0; $s<$nbre_semaines; $s++) {
@@ -548,7 +548,7 @@ if ($autorise == "oui") {
 			<td>
     ';
 
-	$req_calendrier = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
+	$req_calendrier = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
 	$nbre_calendrier = mysqli_num_rows($req_calendrier);
     if ($nbre_calendrier == 0) {
         echo '		<input type="hidden" name="periode_calendrier" value="0" />';
@@ -563,7 +563,7 @@ if ($autorise == "oui") {
 		    
 	    // ================================================== Choix de la période définie dans le calendrier ================================
     
-        $req_id_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_cours['id_groupe']."' ");
+        $req_id_classe = mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_cours['id_groupe']."' ");
         
         // ==== On récupère l'id de la classe concernée
         if ($rep_id_classe = mysqli_fetch_array($req_id_classe)) {

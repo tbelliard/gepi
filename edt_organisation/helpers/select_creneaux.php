@@ -45,8 +45,8 @@ echo '
 //$sql="SELECT * FROM edt_creneaux WHERE type_creneaux != 'pause' AND type_creneaux != 'repas' ORDER BY heuredebut_definie_periode";
 $sql="SELECT * FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
 
-$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql)
-			OR trigger_error('Erreur dans la recherche des créneaux : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$query = mysqli_query($GLOBALS["mysqli"], $sql)
+			OR trigger_error('Erreur dans la recherche des créneaux : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 $cpt_creneau_cours=0;
 while($creneaux = mysqli_fetch_array($query)) {

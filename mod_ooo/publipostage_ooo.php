@@ -86,7 +86,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 			$classe=get_class_from_id($id_classe[$i]);
 
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY e.nom, e.prenom;";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				while($lig=mysqli_fetch_object($res)) {
 					$tab_eleves_OOo[$nb_eleve]=array();
@@ -117,7 +117,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 			$current_group=get_group($id_groupe[$i]);
 
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]' ORDER BY e.nom, e.prenom;";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				while($lig=mysqli_fetch_object($res)) {
 					$tab_eleves_OOo[$nb_eleve]=array();
@@ -493,7 +493,7 @@ else {
 			$sql="SELECT c.id, c.classe FROM classes c ORDER BY c.classe;";
 		}
 		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."'>\n";
 			echo "<p>Pour quelle(s) classe(s) souhaitez-vous imprimer le document <b>".$tab_file[$num_fich]."</b>&nbsp;?";

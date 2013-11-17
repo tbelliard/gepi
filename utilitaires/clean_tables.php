@@ -60,7 +60,7 @@ function get_tab_utilisateurs_responsables_fantomes() {
 	$retour=array();
 
 	$sql="select login from utilisateurs where statut='responsable' and login not in (select login from resp_pers);";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sq);
+	$res=mysqli_query($GLOBALS["mysqli"], $sq);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$retour[]=$lig->login;
@@ -71,7 +71,7 @@ function get_tab_utilisateurs_responsables_fantomes() {
 
 function menage_utilisateurs_responsables() {
 	$sql="delete from utilisateurs where statut='responsable' and login not in (select login from resp_pers);";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res) {
 		return false;
 	}
@@ -82,7 +82,7 @@ function menage_utilisateurs_responsables() {
 
 function desactivation_utilisateurs_responsables_sans_eleve() {
 	$sql="update utilisateurs set statut='inactif' where statut='responsable' and login not in (select login from resp_pers);";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res) {
 		return false;
 	}
@@ -93,7 +93,7 @@ function desactivation_utilisateurs_responsables_sans_eleve() {
 
 function desactivation_utilisateurs_responsables_sans_eleve_scolarise() {
 	$sql="update utilisateurs set statut='inactif' where statut='responsable' and login in (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes));";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res) {
 		return false;
 	}
@@ -106,7 +106,7 @@ function get_tab_utilisateurs_eleves_fantomes() {
 	$retour=array();
 
 	$sql="select login from utilisateurs where statut='eleve' and login not in (select login from eleves);";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sq);
+	$res=mysqli_query($GLOBALS["mysqli"], $sq);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$retour[]=$lig->login;
@@ -117,7 +117,7 @@ function get_tab_utilisateurs_eleves_fantomes() {
 
 function menage_utilisateurs_eleves() {
 	$sql="delete from utilisateurs where statut='eleve' and login not in (select login from eleves);";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res) {
 		return false;
 	}
@@ -201,14 +201,14 @@ function update_infos_action_nettoyage($id_info, $texte) {
 
 	$sql="SELECT description FROM infos_actions WHERE id='$id_info';";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
 
 		//$sql="UPDATE infos_actions SET description='".addslashes($lig->description).addslashes($texte)."<hr align=\"center\" width=\"200\" />' WHERE id='$id_info';";
 		$sql="UPDATE infos_actions SET description='".addslashes($lig->description).addslashes($texte)."' WHERE id='$id_info';";
 		//echo "$sql<br />\n";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {$retour="ERREUR lors de la mise à jour de la description de l'information n°$id_info.";}
 	}
 	else {
@@ -238,7 +238,7 @@ function clean_table_matieres_appreciations() {
 
 	global $TPSCOUR,$offset,$duree,$cpt,$nb_lignes;
 	// Cas de la table matieres_appreciations
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_appreciations order by login,id_groupe,periode");
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations order by login,id_groupe,periode");
 	$nb_lignes = mysqli_num_rows($req);
 	if ($offset >= $nb_lignes) {
 		$offset = -1;
@@ -253,7 +253,7 @@ function clean_table_matieres_appreciations() {
 		$periode = mysql_result($req,$offset,'periode');
 
 		// Détection des doublons
-		$req2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM matieres_appreciations
+		$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM matieres_appreciations
 		where
 		login ='$login_user' and
 		id_groupe ='$id_groupe' and
@@ -264,7 +264,7 @@ function clean_table_matieres_appreciations() {
 			$nb = $nb_lignes2-1;
 			//echo "Suppression d'un doublon : login = $login_user - identifiant matiere = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from matieres_appreciations where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from matieres_appreciations where
 			login ='$login_user' and
 			id_groupe ='$id_groupe' and
 			periode ='$periode' LIMIT $nb");
@@ -307,13 +307,13 @@ function clean_table_matieres_appreciations() {
 			jec.periode = '$periode' and
 			jeg.id_groupe = '$id_groupe'
 			";
-		$test = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test = mysqli_query($GLOBALS["mysqli"], $sql);
 		//echo "$sql<br />\n";
 		$nb_lignes2 = mysqli_num_rows($test);
 		if ($nb_lignes2 == "0") {
 			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from matieres_appreciations where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from matieres_appreciations where
 			login ='$login_user' and
 			id_groupe ='$id_groupe' and
 			periode ='$periode'");
@@ -321,7 +321,7 @@ function clean_table_matieres_appreciations() {
 			$cpt_2++;
 		}
 		// on regarde si l'élève suit l'option pour la période donnée.
-		$test2 = mysqli_query($GLOBALS["___mysqli_ston"], "select login from j_eleves_groupes where
+		$test2 = mysqli_query($GLOBALS["mysqli"], "select login from j_eleves_groupes where
 		login = '$login_user' and
 		id_groupe = '$id_groupe' and
 		periode = '$periode'");
@@ -329,7 +329,7 @@ function clean_table_matieres_appreciations() {
 		if ($nb_lignes2 == "0") {
 			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from matieres_appreciations where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from matieres_appreciations where
 			login ='$login_user' and
 			id_groupe ='$id_groupe' and
 			periode ='$periode'");
@@ -352,7 +352,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 	global $TPSCOUR,$offset,$duree,$cpt,$nb_lignes;
 	// Cas de la table matieres_appreciations
 	//$req = mysql_query("SELECT * FROM matieres_notes order by login,matiere,periode");
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_notes order by login,id_groupe,periode");
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes order by login,id_groupe,periode");
 	$nb_lignes = mysqli_num_rows($req);
 	if ($offset >= $nb_lignes) {
 		$offset = -1;
@@ -367,7 +367,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 		$periode = mysql_result($req,$offset,'periode');
 
 		// Détection des doublons
-		$req2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM matieres_notes
+		$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM matieres_notes
 		where
 		login ='$login_user' and
 		id_groupe ='$id_groupe' and
@@ -378,7 +378,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 			$nb = $nb_lignes2-1;
 			//echo "Suppression d'un doublon : login = $login_user - identifiant matiere = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from matieres_notes where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from matieres_notes where
 			login ='$login_user' and
 			id_groupe ='$id_groupe' and
 			periode ='$periode' LIMIT $nb");
@@ -419,13 +419,13 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 			jec.periode = '$periode' and
 			jeg.id_groupe = '$id_groupe'
 			";
-		$test = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test = mysqli_query($GLOBALS["mysqli"], $sql);
 		//echo "$sql<br />\n";
 		$nb_lignes2 = mysqli_num_rows($test);
 		if ($nb_lignes2 == "0") {
 			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from matieres_notes where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from matieres_notes where
 			login ='$login_user' and
 			id_groupe ='$id_groupe' and
 			periode ='$periode'");
@@ -433,7 +433,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 			$cpt_2++;
 		}
 		// on regarde si l'élève suit l'option pour la période donnée.
-		$test2 = mysqli_query($GLOBALS["___mysqli_ston"], "select login from j_eleves_groupes where
+		$test2 = mysqli_query($GLOBALS["mysqli"], "select login from j_eleves_groupes where
 		login = '$login_user' and
 		id_groupe = '$id_groupe' and
 		periode = '$periode'");
@@ -441,7 +441,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 		if ($nb_lignes2 == "0") {
 			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from matieres_notes where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from matieres_notes where
 			login ='$login_user' and
 			id_groupe ='$id_groupe' and
 			periode ='$periode'");
@@ -537,7 +537,7 @@ function clean_tables_aid_et_autres() {
 		// $val[0] : le nom de la première table
 		// $val[1] : le nom de la deuxième table
 		// etc...
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM $key order by $val[2],$val[3]");
+		$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $key order by $val[2],$val[3]");
 		$nb_lignes = mysqli_num_rows($req);
 		$i = 0;
 		$affiche = 'yes';
@@ -545,7 +545,7 @@ function clean_tables_aid_et_autres() {
 			$temp1 = mysql_result($req,$i,$val[2]);
 			$temp2 = mysql_result($req,$i,$val[3]);
 
-			$req2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM $key j, $val[0] t1, $val[1] t2
+			$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $key j, $val[0] t1, $val[1] t2
 
 			where
 			j.$val[2]=t1.$val[4] and
@@ -567,20 +567,20 @@ function clean_tables_aid_et_autres() {
 					a.indice_aid = '$indice_aid' ");
 					if ($test == "-1") {
 						//echo "Suppression d'un doublon : $temp1 - $temp2<br />\n";
-						$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from $key where ($val[2]='$temp1' and $val[3]='$temp2' and indice_aid='$indice_aid')");
+						$del = mysqli_query($GLOBALS["mysqli"], "delete from $key where ($val[2]='$temp1' and $val[3]='$temp2' and indice_aid='$indice_aid')");
 						$cpt++;
 					}
 					// autres cas
 				} else {
 					//echo "Suppression d'un doublon : $temp1 - $temp2<br />\n";
-					$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from $key where ($val[2]='$temp1' and $val[3]='$temp2') LIMIT $nb");
+					$del = mysqli_query($GLOBALS["mysqli"], "delete from $key where ($val[2]='$temp1' and $val[3]='$temp2') LIMIT $nb");
 					$cpt++;
 				}
 			}
 			// On supprime les lignes inutiles
 			if ($nb_lignes2 == "0") {
 				//echo "Suppression d'une ligne inutile : $temp1 - $temp2<br />\n";
-				$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from $key where $val[2]='$temp1' and $val[3]='$temp2'");
+				$del = mysqli_query($GLOBALS["mysqli"], "delete from $key where $val[2]='$temp1' and $val[3]='$temp2'");
 				$cpt++;
 			}
 			$i++;
@@ -595,10 +595,10 @@ function clean_tables_aid_et_autres() {
 			// Le test plus haut ne fonctionne pas completement: s'il y a eu des collisions de logins (?) d'une année sur l'autre, et des tables non nettoyées, on peut se retrouver avec un login attribué à un parent alors que c'était le login d'un prof l'année précédente... et si j_professeurs_matieres n'a pas été nettoyée, on se retrouve avec un parent d'élève proposé comme professeur lors de l'ajout d'enseignement
 			//$sql="select * from j_professeurs_matieres j, resp_pers rp where rp.login=j.id_professeur AND j.id_professeur not in (select login from utilisateurs where statut='professeur');";
 			$sql="SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur NOT IN (SELECT login FROM utilisateurs WHERE statut='professeur');";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur NOT IN (SELECT login FROM utilisateurs WHERE statut='professeur');";
-				$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($del) {$retour.="<font color=\"red\">Suppression de ".mysqli_num_rows($test)." enregistrements supplémentaires.</font><br />\n";}
 			}
 		}
@@ -618,7 +618,7 @@ function clean_table_j_eleves_professeurs() {
 
 	// cas j_eleves_professeurs
 	$retour.="<h2>Vérification de la table j_eleves_professeurs</h2>\n";
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_professeurs order by login,professeur,id_classe");
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_professeurs order by login,professeur,id_classe");
 	$nb_lignes = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_lignes) {
@@ -628,7 +628,7 @@ function clean_table_j_eleves_professeurs() {
 		$id_classe = mysql_result($req,$i,'id_classe');
 
 		// Détection des doublons
-		$req2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_professeurs
+		$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_professeurs
 		where
 		login ='$login_user' and
 		professeur ='$professeur' and
@@ -639,7 +639,7 @@ function clean_table_j_eleves_professeurs() {
 			$nb = $nb_lignes2-1;
 			//$retour.="Suppression d'un doublon : identifiant élève : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from j_eleves_professeurs where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from j_eleves_professeurs where
 			login ='$login_user' and
 			professeur ='$professeur' and
 			id_classe ='$id_classe' LIMIT $nb");
@@ -647,7 +647,7 @@ function clean_table_j_eleves_professeurs() {
 		}
 
 		// Détection des lignes inutiles
-		$req3 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT *
+		$req3 = mysqli_query($GLOBALS["mysqli"], "SELECT *
 		FROM j_eleves_professeurs j,
 		eleves e,
 		utilisateurs u,
@@ -671,7 +671,7 @@ function clean_table_j_eleves_professeurs() {
 			$nb = $nb_lignes2-1;
 			//$retour.="Suppression d'une ligne inutile : identifiant élève : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from j_eleves_professeurs where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from j_eleves_professeurs where
 			login ='$login_user' and
 			professeur ='$professeur' and
 			id_classe ='$id_classe'");
@@ -702,7 +702,7 @@ function clean_table_j_eleves_classes() {
 	// Vérification de la table j_eleves_classes
 
 	$retour.="<h2>Vérification de la table j_eleves_classes</h2>\n";
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_classes");
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_classes");
 	$nb_lignes = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_lignes) {
@@ -710,7 +710,7 @@ function clean_table_j_eleves_classes() {
 		$id_classe = mysql_result($req,$i,'id_classe');
 		$periode = mysql_result($req,$i,'periode');
 		// Détection des doublons
-		$req2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_classes
+		$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_classes
 			where
 			login ='$login_user' and
 			id_classe ='$id_classe' and
@@ -721,14 +721,14 @@ function clean_table_j_eleves_classes() {
 			$nb = $nb_lignes2-1;
 			//$retour.="Suppression d'un doublon : login = $login_user - identifiant classe = $id_classe - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from j_eleves_classes where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from j_eleves_classes where
 			login ='$login_user' and
 			id_classe ='$id_classe' and
 			periode ='$periode' LIMIT $nb");
 			$cpt++;
 		}
 		// Détection des lignes inutiles
-		$req3 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_classes j, eleves e, classes c, periodes p
+		$req3 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_classes j, eleves e, classes c, periodes p
 		where
 		j.login ='$login_user' and
 		j.id_classe ='$id_classe' and
@@ -745,7 +745,7 @@ function clean_table_j_eleves_classes() {
 			$nb = $nb_lignes2-1;
 			//$retour.="Suppression d'une ligne inutile : login = $login_user - identifiant classe = $id_classe - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from j_eleves_classes where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from j_eleves_classes where
 			login ='$login_user' and
 			id_classe ='$id_classe' and
 			periode ='$periode'");
@@ -775,7 +775,7 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 
 	// Cas de la table aid_appreciations
 	$retour.="<h2>Nettoyage de la table aid_appreciations (tables des appréciations AID)</h2>\n";
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_appreciations order by login,id_aid,periode");
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations order by login,id_aid,periode");
 	$nb_lignes = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_lignes) {
@@ -785,7 +785,7 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 	$periode = mysql_result($req,$i,'periode');
 
 
-	$test = mysqli_query($GLOBALS["___mysqli_ston"], "select aa.login
+	$test = mysqli_query($GLOBALS["mysqli"], "select aa.login
 		from
 		aid_appreciations aa,
 		eleves e,
@@ -813,7 +813,7 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 		if ($nb_lignes2 == "0") {
 			//$retour.="Suppression d'une donnée orpheline : login = $login_user - identifiant aid = $id_aid - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from aid_appreciations where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from aid_appreciations where
 			login ='$login_user' and
 			id_aid ='$id_aid' and
 			periode ='$periode'");
@@ -832,14 +832,14 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 
 	// Cas de la table avis_conseil_classe
 	$retour.="<h2>Nettoyage de la table avis_conseil_classe (tables des avis du conseil de classe)</h2>\n";
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM avis_conseil_classe order by login,periode");
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe order by login,periode");
 	$nb_lignes = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_lignes) {
 		$login_user = mysql_result($req,$i,'login');
 		$periode = mysql_result($req,$i,'periode');
 
-		$test = mysqli_query($GLOBALS["___mysqli_ston"], "select acc.login
+		$test = mysqli_query($GLOBALS["mysqli"], "select acc.login
 		from
 		avis_conseil_classe acc,
 		eleves e,
@@ -861,7 +861,7 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 		if ($nb_lignes2 == "0") {
 			//$retour.="Suppression d'une donnée orpheline : login = $login_user - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from avis_conseil_classe where
+			$del = mysqli_query($GLOBALS["mysqli"], "delete from avis_conseil_classe where
 			login ='$login_user' and
 			periode ='$periode'");
 			$cpt++;
@@ -1027,7 +1027,7 @@ if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and 
 	}
 
 	if (!isset($_GET['nb_lignes'])) {
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_appreciations order by login,id_groupe,periode");
+		$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations order by login,id_groupe,periode");
 
 		$nb_lignes = mysqli_num_rows($req);
 	} else {
@@ -1100,7 +1100,7 @@ if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and 
 	}
 
 	if (!isset($_GET['nb_lignes'])) {
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_notes order by login,id_groupe,periode");
+		$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes order by login,id_groupe,periode");
 		$nb_lignes = mysqli_num_rows($req);
 	} else {
 		$nb_lignes = $_GET['nb_lignes'];
@@ -1172,7 +1172,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 
 		// Aucun groupe non associé à une matière ou à une classe ne doit exister
 		$sql="select g.* from groupes g left join j_groupes_classes jgc on jgc.id_groupe=g.id where jgc.id_groupe is NULL;";
-		$res_grp2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_grp2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp2)>0){
 			$texte_info_action="<p>Un ou des groupes existent sans être associés à aucune classe.<br />C'est une anomalie.<br />En voici la liste&nbsp;:<br />\n";
 			while($ligne=mysqli_fetch_object($res_grp2)) {
@@ -1195,7 +1195,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 		}
 
 		$sql="select g.* from groupes g left join j_groupes_matieres jgm on jgm.id_groupe=g.id where jgm.id_groupe is NULL;";
-		$res_grp2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_grp2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp2)>0){
 			$texte_info_action="<p>Un ou des groupes existent sans être associés à aucune matière.<br />C'est une anomalie.<br />En voici la liste&nbsp;:<br />\n";
 			while($ligne=mysqli_fetch_object($res_grp2)) {
@@ -1221,14 +1221,14 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 			$err_no=0;
 			$sql="SELECT DISTINCT id_groupe FROM ".$table[$i]." ORDER BY id_groupe";
 			//echo "$sql<br />";
-			$res_grp1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_grp1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res_grp1)>0){
 				//echo "<p>On parcourt la table '".$table[$i]."'.</p>\n";
 				while($ligne=mysqli_fetch_array($res_grp1)){
 					$sql="SELECT 1=1 FROM groupes WHERE id='".$ligne[0]."'";
 					//echo "$sql<br />";
-					$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(mysqli_num_rows($res_test)==0){
 						$sql="DELETE FROM $table[$i] WHERE id_groupe='$ligne[0]'";
@@ -1237,7 +1237,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 						echo $texte_info_action;
 						update_infos_action_nettoyage($id_info, $texte_info_action);
 						//echo "$sql<br />\n";
-						$res_suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 						$err_no++;
 					}
 				}
@@ -1278,7 +1278,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 		// BOUCLE sur les classes
 		$sql="SELECT id FROM classes ORDER BY classe;";
 		//echo "$sql<br />\n";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			$texte_info_action="<p>Aucune classe n'est enregistrée dans la table 'classes'.</p>\n";
 			echo $texte_info_action;
@@ -1294,7 +1294,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 
 				$sql="SELECT jeg.* FROM j_eleves_groupes jeg, j_groupes_classes jgc WHERE jgc.id_classe='$lig->id' AND jeg.id_groupe=jgc.id_groupe AND jeg.periode NOT IN (SELECT num_periode FROM periodes WHERE id_classe='$lig->id');";
 				//echo "$sql<br />\n";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$nb_suppr=0;
 					$texte_info_action.=mysqli_num_rows($res2)." inscriptions en erreur d'élèves dans 'j_eleves_groupes' pour une période non associée à la classe ".get_class_from_id($lig->id)."&nbsp;: ";
@@ -1302,16 +1302,16 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 					while($lig2=mysqli_fetch_object($res2)) {
 						$sql="SELECT * FROM matieres_notes WHERE login='$lig2->login' AND id_groupe='$lig2->id_groupe' AND periode='$lig2->periode';";
 						//echo "$sql<br />\n";
-						$res_liste_notes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_liste_notes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$sql="SELECT * FROM matieres_appreciations WHERE login='$lig2->login' AND id_groupe='$lig2->id_groupe' AND periode='$lig2->periode';";
 						//echo "$sql<br />\n";
-						$res_liste_appreciations=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_liste_appreciations=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if((mysqli_num_rows($res_liste_notes)==0)&&(mysqli_num_rows($res_liste_appreciations)==0)){
 							$sql="DELETE FROM j_eleves_groupes WHERE id_groupe='$lig2->id_groupe' AND login='$lig2->login' AND periode='$lig2->periode';";
 							//echo "$sql<br />\n";
-							$resultat_nettoyage_initial=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$resultat_nettoyage_initial=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($resultat_nettoyage_initial) {$nb_suppr++;}
 						}
 						else {
@@ -1344,13 +1344,13 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 col1 varchar(100) NOT NULL default '',
 col2 varchar(100) NOT NULL default ''
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="TRUNCATE tempo2;";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="INSERT INTO tempo2 SELECT DISTINCT login,periode FROM j_eleves_groupes ORDER BY login,periode;";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		echo "<p>Vous allez rechercher les incohérences de groupes.</p>\n";
 
@@ -1364,7 +1364,7 @@ col2 varchar(100) NOT NULL default ''
 		echo "<input type='hidden' name='nettoyage_grp' value='y' />\n";
 
 		$sql="SELECT 1=1 FROM tempo2;";
-		$res0=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res0=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_assoc_login_periode=mysqli_num_rows($res0);
 		if($nb_assoc_login_periode>0) {
 			echo "<p>$nb_assoc_login_periode association(s) login/période reste(nt) à contrôler.</p>\n";
@@ -1385,7 +1385,7 @@ col2 varchar(100) NOT NULL default ''
 		// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
 		$sql="SELECT col1 AS login,col2 AS periode FROM tempo2 LIMIT $tranche;";
 		//echo "$sql<br />\n";
-		$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_ele)>0) {
 
 			//$cpt_affichage_info=0;
@@ -1407,12 +1407,12 @@ col2 varchar(100) NOT NULL default ''
 				// Récupération de la liste des groupes auxquels l'élève est inscrit sur la période en cours d'analyse:
 				$sql="SELECT id_groupe FROM j_eleves_groupes WHERE login='$lig_ele->login' AND periode='$lig_ele->periode'";
 				//echo "$sql<br />\n";
-				$res_jeg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_jeg=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if(mysqli_num_rows($res_jeg)>0){
 					// On vérifie si l'élève est dans une classe pour cette période:
 					$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$lig_ele->login' AND periode='$lig_ele->periode'";
-					$res_jec=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_jec=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(mysqli_num_rows($res_jec)==0){
 						// L'élève n'est dans aucune classe sur la période choisie.
@@ -1425,7 +1425,7 @@ col2 varchar(100) NOT NULL default ''
 							//$tmp_groupe=get_group($id_groupe);
 							//$nom_groupe=$tmp_groupe['description'];
 							$sql="SELECT description FROM groupes WHERE id='$id_groupe'";
-							$res_grp_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_grp_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_grp_tmp)==0){
 								$nom_groupe="<font color='red'>GROUPE INEXISTANT</font>\n";
 							}
@@ -1435,16 +1435,16 @@ col2 varchar(100) NOT NULL default ''
 							}
 
 							// On va le supprimer du groupe après un dernier test:
-							$test1=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
+							$test1=mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
 							$nb_test1 = mysqli_num_rows($test1);
 
-							$test2=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
+							$test2=mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
 							$nb_test2 = mysqli_num_rows($test2);
 
 							if (($nb_test1 != 0) or ($nb_test2 != 0)) {
 								$texte_info_action.="<br /><font color='red'>Impossible de supprimer cette option pour l'élève $lig_ele->login car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $lig_ele->periode !<br />\nCommencez par supprimer ces données !</font><br />\n";
 							} else {
-								if($req=mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' and id_groupe='".$id_groupe."' and periode = '".$lig_ele->periode."')")){
+								if($req=mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' and id_groupe='".$id_groupe."' and periode = '".$lig_ele->periode."')")){
 									if($cpt_tmp>1){echo ", ";}
 									$texte_info_action.="$nom_groupe (<i>n°$id_groupe</i>)";
 									$cpt_tmp++;
@@ -1458,7 +1458,7 @@ col2 varchar(100) NOT NULL default ''
 							while($lig_grp=mysqli_fetch_object($res_jeg)){
 								// On cherche si l'association groupe/classe existe:
 								$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_groupe='$lig_grp->id_groupe' AND id_classe='$lig_clas->id_classe'";
-								$res_test_grp_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_test_grp_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 
 								if(mysqli_num_rows($res_test_grp_clas)==0){
 
@@ -1467,12 +1467,12 @@ col2 varchar(100) NOT NULL default ''
 									$nom_groupe=$tmp_groupe['description'];
 
 									$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
-									$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 									$lig_tmp=mysqli_fetch_object($res_tmp);
 									$clas_tmp=$lig_tmp->classe;
 
 									$sql="SELECT description FROM groupes WHERE id='$lig_grp->id_groupe'";
-									$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 									$lig_tmp=mysqli_fetch_object($res_tmp);
 									$grp_tmp=$lig_tmp->description;
 
@@ -1481,16 +1481,16 @@ col2 varchar(100) NOT NULL default ''
 
 									$texte_info_action.="Suppression de l'élève du groupe ";
 									// On va le supprimer du groupe après un dernier test:
-									$test1=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
+									$test1=mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
 									$nb_test1 = mysqli_num_rows($test1);
 
-									$test2=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
+									$test2=mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
 									$nb_test2 = mysqli_num_rows($test2);
 
 									if (($nb_test1 != 0) or ($nb_test2 != 0)) {
 										$texte_info_action.="<br /><font color='red'>Impossible de supprimer cette option pour l'élève $lig_ele->login car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $lig_ele->periode !<br />\nCommencez par supprimer ces données !</font><br />\n";
 									} else {
-										if($req=mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' and id_groupe='".$id_groupe."' and periode = '".$lig_ele->periode."')")){
+										if($req=mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' and id_groupe='".$id_groupe."' and periode = '".$lig_ele->periode."')")){
 											$texte_info_action.="$nom_groupe (<i>n°$id_groupe</i>)";
 											//$cpt_tmp++;
 										}
@@ -1506,7 +1506,7 @@ col2 varchar(100) NOT NULL default ''
 							$texte_info_action.="<b>$lig_ele->login</b> est inscrit dans plusieurs classes sur la période $lig_ele->periode:<br />\n";
 							while($lig_clas=mysqli_fetch_object($res_jec)){
 								$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
-								$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 								$lig_tmp=mysqli_fetch_object($res_tmp);
 								$clas_tmp=$lig_tmp->classe;
 								$texte_info_action.="Classe de <a href='../classes/classes_const.php?id_classe=$lig_clas->id_classe&amp;quitter_la_page=y' target='_blank'>$clas_tmp</a> (<i>n°$lig_clas->id_classe</i>)<br />\n";
@@ -1521,7 +1521,7 @@ col2 varchar(100) NOT NULL default ''
 					// Cette association login/periode a été parcourue:
 					$sql="DELETE FROM tempo2 WHERE col1='$lig_ele->login' AND col2='$lig_ele->periode';";
 					//echo "$sql<br />\n";
-					$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
 				echo $texte_info_action;
@@ -1592,13 +1592,13 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="10")) or (isset($_GET['maj'
 col1 varchar(100) NOT NULL default '',
 col2 varchar(100) NOT NULL default ''
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="TRUNCATE tempo2;";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="INSERT INTO tempo2 SELECT login,statut FROM utilisateurs WHERE statut='eleve' OR statut='responsable';";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		echo "<p>Vous allez supprimer les comptes d'élèves ayant quitté l'établissement et de responsables n'ayant plus d'enfant scolarisé dans l'établissement.</p>\n";
 
@@ -1609,9 +1609,9 @@ col2 varchar(100) NOT NULL default ''
 	else {
 		// Suppression d'anomalies
 		$sql="DELETE FROM resp_pers WHERE pers_id='';";
-		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM responsables2 WHERE pers_id='';";
-		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 		$cpt_suppr=isset($_POST['cpt_suppr']) ? $_POST['cpt_suppr'] : 0;
@@ -1619,14 +1619,14 @@ col2 varchar(100) NOT NULL default ''
 		$cpt_suppr_etape=0;
 
 		$sql="SELECT 1=1 FROM tempo2;";
-		$res0=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res0=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_comptes=mysqli_num_rows($res0);
 		if($nb_comptes>0) {echo "<p>$nb_comptes comptes reste(nt) à contrôler.</p>\n";}
 
 		$tranche=20;
 		$sql="SELECT * FROM tempo2 LIMIT $tranche;";
 		//echo "$sql<br />\n";
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res1)>0) {
 
 			$cpt_affichage_info=0;
@@ -1637,14 +1637,14 @@ col2 varchar(100) NOT NULL default ''
 				if($lig1->col2=='eleve') {
 					$sql="SELECT 1=1 FROM eleves WHERE login='$lig1->col1';";
 					//echo "$sql<br />\n";
-					$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res2)==0) {
 						if($cpt_affichage_info==0) {$texte_info_action.="<p>";}
 
 						$texte_info_action.="L'élève $lig1->col1 est absent de la table 'eleves', son compte utilisateur doit être supprimé.<br />\n";
 						$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
 						//echo "$sql<br />\n";
-						$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$cpt_suppr_etape++;
 
@@ -1652,14 +1652,14 @@ col2 varchar(100) NOT NULL default ''
 					}
 					else {
 						$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$lig1->col1';";
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res2)==0) {
 							if($cpt_affichage_info==0) {$texte_info_action.="<p>";}
 	
 							$texte_info_action.="L'élève $lig1->col1 n'est dans aucune classe, son compte utilisateur doit être supprimé.<br />\n";
 							$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
 							//echo "$sql<br />\n";
-							$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 							$cpt_suppr_etape++;
 	
@@ -1669,13 +1669,13 @@ col2 varchar(100) NOT NULL default ''
 				}
 				else {
 					$sql="SELECT rp.pers_id FROM resp_pers rp WHERE rp.login='$lig1->col1';";
-					$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res2)==0) {
 						if($cpt_affichage_info==0) {$texte_info_action.="<p>";}
 						$texte_info_action.="Le responsable $lig1->col1 est absent de la table 'resp_pers', son compte utilisateur doit être supprimé.<br />\n";
 						$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
 						//echo "$sql<br />\n";
-						$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$cpt_suppr_etape++;
 						$cpt_affichage_info++;
@@ -1683,19 +1683,19 @@ col2 varchar(100) NOT NULL default ''
 					else {
 						$sql="SELECT e.login FROM eleves e, resp_pers rp, responsables2 r WHERE rp.login='$lig1->col1' AND r.pers_id=rp.pers_id AND e.ele_id=r.ele_id;";
 						//echo "$sql<br />\n";
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res2)==0) {
 							if($cpt_affichage_info==0) {$texte_info_action.="<p>";}
 							$texte_info_action.="Le responsable $lig1->col1 n'est pas associé à un élève; \n";
 							$sql="SELECT pers_id FROM resp_pers WHERE login='$lig1->col1';";
 							//echo "$sql<br />\n";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res3)>0) {
 								$lig3=mysqli_fetch_object($res3);
 								$texte_info_action.="suppression des éventuelles associations fantomes dans 'responsables2'.<br />\n";
 								$sql="DELETE FROM responsables2 WHERE pers_id='$lig3->pers_id';";
 								//echo "$sql<br />\n";
-								$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 								$cpt_affichage_info++;
 							}
 
@@ -1703,12 +1703,12 @@ col2 varchar(100) NOT NULL default ''
 							$texte_info_action.="Suppression du responsable $lig1->col1 dans 'resp_pers'.<br />\n";
 							$sql="DELETE FROM resp_pers WHERE login='$lig1->col1';";
 							//echo "$sql<br />\n";
-							$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							$texte_info_action.="Suppression du responsable $lig1->col1 dans 'utilisateurs'.<br />\n";
 							$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
 							//echo "$sql<br />\n";
-							$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							$cpt_suppr_etape++;
 							$cpt_affichage_info++;
@@ -1718,7 +1718,7 @@ col2 varchar(100) NOT NULL default ''
 							$temoin_eleve_classe="n";
 							while($lig_ele_clas=mysqli_fetch_object($res2)) {
 								$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$lig_ele_clas->login';";
-								$test_ele_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$test_ele_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test_ele_clas)>0) {
 									$temoin_eleve_classe="y";
 									break;
@@ -1729,7 +1729,7 @@ col2 varchar(100) NOT NULL default ''
 								$texte_info_action.="Désactivation du responsable $lig1->col1 dans 'utilisateurs' qui n'a plus d'élève dans aucune classe.<br />\n";
 								$sql="UPDATE utilisateurs SET etat='inactif' WHERE login='$lig1->col1';";
 								//echo "$sql<br />\n";
-								$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 								$cpt_suppr_etape++;
 								$cpt_affichage_info++;
@@ -1740,7 +1740,7 @@ col2 varchar(100) NOT NULL default ''
 
 				$sql="DELETE FROM tempo2 WHERE col1='$lig1->col1';";
 				//echo "$sql<br />\n";
-				$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				//if($cpt_affichage_info==0) {echo "<p style='color:green; font-size:xx-small;'>Compte $lig1->col1 conservé.</p>";}
 			}
@@ -1817,7 +1817,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 	$texte_info_action="<h2>Nettoyage des modèles de grilles PDF</h2>\n";
 
 	$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE login NOT IN (SELECT login FROM utilisateurs);";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_scories=mysqli_num_rows($test);
 	if($nb_scories==0) {
 		$texte_info_action.="<p>Toutes les grilles sont associées à des utilisateurs existants.</p>\n";
@@ -1826,14 +1826,14 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 		$texte_info_action.="<p>$nb_scories grille(s) ne sont associées à aucun utilisateurs existants&nbsp;: ";
 
 		$sql="DELETE FROM modeles_grilles_pdf WHERE login NOT IN (SELECT login FROM utilisateurs);";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($del) {$texte_info_action.="<span style='color:green'>Nettoyées</span>";}
 		else {$texte_info_action.="<span style='color:red'>Echec du nettoyage</span>";}
 		$texte_info_action.="</p>\n";
 	}
 
 	$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE id_modele NOT IN (SELECT id_modele FROM modeles_grilles_pdf_valeurs);";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_scories=mysqli_num_rows($test);
 	if($nb_scories==0) {
 		$texte_info_action.="<p>Toutes les grilles sont associées à des paramètres de grilles.</p>\n";
@@ -1842,14 +1842,14 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 		$texte_info_action.="<p>$nb_scories grille(s) ne sont associées à aucun paramètre de grille&nbsp;: ";
 
 		$sql="DELETE FROM modeles_grilles_pdf WHERE id_modele NOT IN (SELECT id_modele FROM modeles_grilles_pdf_valeurs);";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($del) {$texte_info_action.="<span style='color:green'>Nettoyées</span>";}
 		else {$texte_info_action.="<span style='color:red'>Echec du nettoyage</span>";}
 		$texte_info_action.="</p>\n";
 	}
 
 	$sql="SELECT 1=1 FROM modeles_grilles_pdf_valeurs WHERE id_modele NOT IN (SELECT id_modele FROM modeles_grilles_pdf);";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_scories=mysqli_num_rows($test);
 	if($nb_scories==0) {
 		$texte_info_action.="<p>Tous les paramètres de grilles sont associés à des grilles existantes.</p>\n";
@@ -1858,7 +1858,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 		$texte_info_action.="<p>$nb_scories paramètres de grilles ne sont associées à aucune grille&nbsp;: ";
 
 		$sql="DELETE FROM modeles_grilles_pdf_valeurs WHERE id_modele NOT IN (SELECT id_modele FROM modeles_grilles_pdf);";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($del) {$texte_info_action.="<span style='color:green'>Nettoyées</span>";}
 		else {$texte_info_action.="<span style='color:red'>Echec du nettoyage</span>";}
 		$texte_info_action.="</p>\n";
@@ -1898,7 +1898,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="12")) or (isset($_GET['maj'
 	$texte_info_action="<h2>Suppression des adresses responsables non associées</h2>\n";
 
 	$sql="select 1=1 from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_scories=mysqli_num_rows($test);
 	if($nb_scories==0) {
 		$texte_info_action.="<p>Toutes les adresses sont associées à des responsables.</p>\n";
@@ -1907,7 +1907,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="12")) or (isset($_GET['maj'
 		$texte_info_action.="<p>$nb_scories adresses ne sont pas associées à des responsables&nbsp;: ";
 
 		$sql="delete from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($del) {$texte_info_action.="<span style='color:green'>Nettoyées</span>";}
 		else {$texte_info_action.="<span style='color:red'>Echec du nettoyage</span>";}
 		$texte_info_action.="</p>\n";
@@ -1983,12 +1983,12 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		echo "<p>\n";
 		for($i=0;$i<count($liste_tab);$i+=3){
 			$sql="SHOW TABLES LIKE '$liste_tab[$i]'";
-			$test=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
+			$test=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql));
 			//echo "$test<br />\n";
 			if($test>0){
 				$sql="show columns from $liste_tab[$i] like '".$liste_tab[$i+1]."';";
 				//echo "$sql<br />\n";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0){
 					unset($lig);
 					$lig=mysqli_fetch_array($res);
@@ -2013,7 +2013,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 						echo "<br /><b>Test d'intégrité :</b> ";
 						$sql="SELECT 1=1 FROM $liste_tab[$i] WHERE ".$liste_tab[$i+1]."='0'";
-						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test)==0){
 							echo "<font color='blue'>Aucun dégat ne semble encore fait sur cette table.</font><br />\n";
 						} else {
@@ -2038,7 +2038,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				foreach($corrections as $correct_table) {
 					echo "<br />Correction de la table ".$correct_table[0]." : ";
 					$sql="ALTER TABLE ".$correct_table[0]." CHANGE ".$correct_table[1]." ".$correct_table[2];
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if ($res) {
 						// La correction s'est bien passée
 						echo "<font color='green'>OK</font>\n";
@@ -2091,11 +2091,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 		// Les champs vides pouvaient apparaitre avec le bug (désormais corrigé) sur les POINTS et TIRETS dans les noms de login.
 		$sql="SELECT * FROM j_eleves_cpe WHERE cpe_login='' OR e_login='';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_pb_cpe=mysqli_num_rows($test);
 		if($nb_pb_cpe>0){
 			$sql="DELETE FROM j_eleves_cpe WHERE cpe_login='' OR e_login='';";
-			$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if($nettoyage){
 				$texte_info_action="<p>$nb_pb_cpe erreur(s) nettoyée(s) dans la table 'j_eleves_cpe'.</p>\n";
@@ -2111,7 +2111,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 		// Problème de suppression de l'association eleve/cpe après suppression d'un élève de toutes les périodes... (plus dans aucune classe)
 		$sql="SELECT jecpe.e_login FROM j_eleves_cpe jecpe LEFT JOIN j_eleves_classes jec ON jecpe.e_login=jec.login WHERE jec.login is NULL;";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_pb_cpe=mysqli_num_rows($test);
 		if($nb_pb_cpe>0){
 			$texte_info_action="<p>Suppression d'associations CPE/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
@@ -2120,7 +2120,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				if($cpt_ele_cpe>0){echo ", ";}
 				$sql="SELECT e.nom,e.prenom FROM eleves e WHERE login='$lig->e_login';";
 				//echo "<!-- $sql -->\n";
-				$info=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$info=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($info)>0) {
 					$lig2=mysqli_fetch_object($info);
 					$eleve=ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
@@ -2134,7 +2134,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 				$sql="DELETE FROM j_eleves_cpe WHERE e_login='$lig->e_login';";
 				//echo "<!-- $sql -->\n";
-				$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($nettoyage){
 					$texte_info_action.=$eleve;
 				}
@@ -2149,11 +2149,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="SELECT * FROM j_eleves_professeurs WHERE login='' OR professeur='';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_pb_pp=mysqli_num_rows($test);
 		if($nb_pb_pp>0){
 			$sql="DELETE FROM j_eleves_professeurs WHERE login='' OR professeur='';";
-			$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if($nettoyage){
 				$texte_info_action="<p>$nb_pb_pp erreur(s) nettoyée(s) dans la table 'j_eleves_professeurs'.</p>\n";;
@@ -2167,7 +2167,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 		// Problème de suppression de l'association eleve/professeur après suppression d'un élève de toutes les périodes... (plus dans aucune classe)
 		$sql="SELECT jep.login FROM j_eleves_professeurs jep LEFT JOIN j_eleves_classes jec ON jep.login=jec.login WHERE jec.login is NULL;";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_pb_pp=mysqli_num_rows($test);
 		if($nb_pb_pp>0){
 			$texte_info_action="<p>Suppression d'associations Professeur/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
@@ -2175,7 +2175,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			while($lig=mysqli_fetch_object($test)){
 				if($cpt_ele_pp>0){echo ", ";}
 				$sql="SELECT e.nom,e.prenom FROM eleves e WHERE login='$lig->login';";
-				$info=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$info=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($info)>0) {
 					$lig2=mysqli_fetch_object($info);
 					$eleve=ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
@@ -2187,7 +2187,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				if($cpt_ele_pp>0) {$texte_info_action.=", ";}
 
 				$sql="DELETE FROM j_eleves_professeurs WHERE login='$lig->login';";
-				$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($nettoyage){
 					$texte_info_action.=$eleve;
 				}
@@ -2233,7 +2233,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 		$temoin_pb="n";
 		$sql="SELECT * FROM j_eleves_cpe WHERE cpe_login='' OR e_login='';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_pb_cpe=mysqli_num_rows($test);
 		if($nb_pb_cpe==0){
 			echo "<p>Aucun enregistrement dans la table 'j_eleves_cpe' n'a de login élève ou de login CPE vide.</p>\n";
@@ -2252,7 +2252,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		flush();
 
 		$sql="SELECT jecpe.e_login FROM j_eleves_cpe jecpe LEFT JOIN j_eleves_classes jec ON jecpe.e_login=jec.login WHERE jec.login is NULL;";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_pb_cpe=mysqli_num_rows($test);
 		if($nb_pb_cpe==0){
 			echo "<p>Aucun enregistrement dans la table 'j_eleves_cpe' n'associe un élève non scolarisé à un CPE.</p>\n";
@@ -2269,7 +2269,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="SELECT * FROM j_eleves_professeurs WHERE login='' OR professeur='';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_pb_pp=mysqli_num_rows($test);
 		if($nb_pb_pp==0){
 			echo "<p>Aucun enregistrement dans la table 'j_eleves_professeurs' n'a de login élève ou de login $gepi_prof_suivi vide.</p>\n";
@@ -2288,7 +2288,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="SELECT jep.login FROM j_eleves_professeurs jep LEFT JOIN j_eleves_classes jec ON jep.login=jec.login WHERE jec.login is NULL;";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_pb_cpe=mysqli_num_rows($test);
 		if($nb_pb_cpe==0){
 			echo "<p>Aucun enregistrement dans la table 'j_eleves_professeurs' n'associe un élève non scolarisé à un $gepi_prof_suivi.</p>\n";
@@ -2331,7 +2331,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		echo $tab_table[$i];
 		$sql="TRUNCATE TABLE $tab_table[$i];";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 	echo "</p>\n";
 
@@ -2382,54 +2382,54 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		echo "absences_rb (abs1)";
 		$sql="DELETE FROM absences_rb WHERE date_saisie < ".mktime("0","0","0",$mois,$jour,$annee).";";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo ", ";
 
 		echo "absences_eleves (abs1)";
 		$sql="DELETE FROM absences_eleves WHERE a_date_absence_eleve < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo ", ";
 
 		echo "absences_repas (abs1)";
 		$sql="DELETE FROM absences_repas WHERE a_date_absence_eleve < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo ", ";
 
 		echo "lettres_suivis (abs1)";
 		$sql="DELETE FROM lettres_suivis WHERE emis_date_lettre_suivi < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo ", ";
 
 		echo "a_agregation_decompte (abs2)";
 		$sql="DELETE FROM a_agregation_decompte WHERE debut_abs < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo ", ";
 
 		echo "a_notifications (abs2)";
 		$sql="DELETE FROM a_notifications WHERE created_at < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		echo "a_saisies (abs2)";
 		$sql="DELETE FROM a_saisies WHERE debut_abs < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo ", ";
 
 		echo "a_saisies_version (abs2)";
 		$sql="DELETE FROM a_saisies_version WHERE debut_abs < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo ", ";
 
 		echo "a_traitements (abs2)";
 		$sql="DELETE FROM a_traitements WHERE created_at < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo ", ";
 
 		echo "</p>\n";
@@ -2487,7 +2487,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		echo $tab_table[$i];
 		$sql="TRUNCATE TABLE $tab_table[$i];";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 	echo "</p>\n";
 
@@ -2517,7 +2517,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	update_infos_action_nettoyage($id_info, $texte_info_action);
 
 	$sql="SHOW TABLES;";
-	$res_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_table=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_table)==0) {
 		$texte_info_action="<p style='color:red;'>Aucune table n'a été trouvée???</p>\n";
 	}
@@ -2546,7 +2546,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			//$sql="show fields from $tab[0] where type like 'varchar%' or type like 'char%';";
 			$sql="show full columns from $tab[0] where type like 'varchar%' or type like 'char%';";
 			//$sql="show full columns from $tab[0];";
-			$res_champs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_champs=mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb_champs=mysqli_num_rows($res_champs);
 			$texte_info_action.="<tr class='lig$alt'>";
 			$texte_info_action.="<td style='vertical-align:top;'";
@@ -2646,9 +2646,9 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	if((isset($_GET['table']))&&(preg_match("/^[A-Za-z0-9_]*$/",$_GET['table']))) {
 		echo "Correction de la table ".$_GET['table']." : ";
 		$sql="ALTER TABLE `".$_GET['table']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
-			echo "<span style='color:red; font-weight:bold;'>Erreur ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />";
+			echo "<span style='color:red; font-weight:bold;'>Erreur ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />";
 		}
 		else {
 			echo "<span style='color:green'>Ok</span>";
@@ -2657,14 +2657,14 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	}
 	else {
 		$nb_corr=0;
-		$r_sql = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLE STATUS");
+		$r_sql = mysqli_query($GLOBALS["mysqli"], "SHOW TABLE STATUS");
 		while ($une_table = mysqli_fetch_array($r_sql)) {
 			if($une_table['Collation']!="utf8_general_ci") {
 				echo "Correction de la table ".$une_tableune_table['Name']." : ";
 				$sql="ALTER TABLE `".$une_table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
-					echo "<span style='color:red; font-weight:bold;'>Erreur ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />";
+					echo "<span style='color:red; font-weight:bold;'>Erreur ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />";
 				}
 				else {
 					echo "<span style='color:green'>Ok</span>";
@@ -2674,7 +2674,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			}
 			else {
 				$sql="SHOW FULL COLUMNS FROM ".$une_table['Name'];
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					echo "<span style='color:red; font-weight:bold;'>Erreur lors de l'extraction des champs de ".$une_table['Name']."</span><br />";
 				}
@@ -2690,9 +2690,9 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 						if($correction_table_requise=="y") {
 							echo "Correction de la table ".$une_table['Name']." : ";
 							$sql="ALTER TABLE `".$une_table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res3) {
-								echo "<span style='color:red; font-weight:bold;'>Erreur ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />";
+								echo "<span style='color:red; font-weight:bold;'>Erreur ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />";
 							}
 							else {
 								echo "<span style='color:green'>Ok</span>";
@@ -2727,7 +2727,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 	$sql="SELECT * FROM j_professeurs_matieres ORDER BY id_professeur, ordre_matieres, id_matiere;";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$texte_info_action="<p>Aucune association professeur/matière n'est enregistrée dans la table 'j_professeurs_matieres'.</p>\n";
 	}
@@ -2751,7 +2751,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			}
 			$tab_ordre_matieres[]=$lig->ordre_matieres;
 			$sql="UPDATE j_professeurs_matieres SET ordre_matieres='$cpt' WHERE id_professeur='$lig->id_professeur' AND id_matiere='$lig->id_matiere';";
-			$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$update) {$nb_erreurs++;}
 			$cpt++;
 		}
@@ -2797,7 +2797,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 	$sql="SELECT id, classe FROM classes ORDER BY classe;";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$texte_info_action.="<p>Aucune classe n'est enregistrée dans la table 'classes'.</p>\n";
 	}
@@ -2808,12 +2808,12 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		while($lig=mysqli_fetch_object($res)) {
 			// categorie_id=='0' pour la "catégorie" Aucune... non présente dans matieres_categories
 			$sql="SELECT DISTINCT categorie_id, id_classe FROM j_groupes_classes jgc WHERE id_classe='$lig->id' and categorie_id!='0' AND categorie_id not in (select categorie_id from j_matieres_categories_classes where classe_id='$lig->id');";
-			$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res2)>0) {
 				while($lig2=mysqli_fetch_object($res2)) {
 
 					$sql="SELECT id, nom_court, nom_complet, priority FROM matieres_categories WHERE id='$lig2->categorie_id'";
-					$res_cat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_cat)==0) {
 						$texte_info_action.="<span style='color:red'>La catégorie n°$lig2->categorie_id associée à la classe n°$lig->id ($lig->classe) n'existe pas dans la table 'matieres_categories'.</span><br />Vous devriez revoir le paramétrage des catégories.<br />Une solution consiste à forcer le même paramétrage pour toutes les classes depuis la page de <a href='../matieres/index.php' target='_blank'>Gestion des matières</a><br />Sinon, vous pouvez contrôler et Enregistrer dans la page <a href='../groupes/edit_class.php?id_classe=$lig->id' target='_blank'>Gestion des classes/&lt;$lig->classe&gt;/Enseignements</a> (<i>voir le ou les icones <img src='../images/icons/flag2.gif' width='17' height='18' /></i>).<br />";
 						$nb_erreurs++;
@@ -2823,7 +2823,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	
 						$texte_info_action.="Insertion de l'association de la catégorie de matière '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) avec la classe ".get_class_from_id($lig->id)."&nbsp;: ";
 						$sql="INSERT INTO j_matieres_categories_classes SET classe_id='$lig->id', categorie_id='$lig2->categorie_id', priority='$lig_cat->priority', affiche_moyenne='0';";
-						$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res3) {
 							$texte_info_action.="<span style='color:red'>Echec</span>";
 							$nb_erreurs++;
@@ -2844,13 +2844,13 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 	$texte_info_action="";
 	$sql="SELECT * FROM matieres_categories WHERE id='0';";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		$lig_cat=mysqli_fetch_object($test);
 		$texte_info_action.="<p><span style='color:red'>Anomalie&nbsp;:</span> Une catégorie de matière '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) a l'identifiant 0 dans la table 'matieres_categories'.<br />Cet identifiant est réservé à la \"catégorie\" Aucune qui sert pour les matières ne devant être dans aucune catégorie (<i>une astuce qui permet de ne pas faire apparaitre certains enseignements sur les bulletins (demi-groupes de TP par exemple)</i>).</p>\n";
 		$texte_info_action.="<p>Suppression de cette catégorie&nbsp;: ";
 		$sql="DELETE FROM matieres_categories WHERE id='0';";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($del) {$texte_info_action.="<span style='color:green'>Succès</span>";} else {echo "<span style='color:red'>Echec</span>";}
 		$texte_info_action.="</p>";
 	}
@@ -2890,7 +2890,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		echo $tab_table[$i];
 		$sql="TRUNCATE TABLE $tab_table[$i];";
 		//echo "$sql<br />\n";
-		$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 	echo "</p>\n";
 
@@ -2939,7 +2939,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	//insert into s_traitement_incident set login_ele='titi', id_incident='4';
 
 	$sql="select * from s_traitement_incident str where str.login_ele not in (select login from s_protagonistes spr where spr.id_incident=str.id_incident);";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		echo mysqli_num_rows($test)." protagonistes dans un traitement d'incident ne correspondent à aucun protagoniste d'incident&nbsp;: ";
 
@@ -2947,7 +2947,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$nb_suppr=0;
 		while($lig_tmp=mysqli_fetch_object($test)) {
 			$sql="delete from s_traitement_incident where id_incident='$lig_tmp->id_incident' and login_ele='$lig_tmp->login_ele';";
-			$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($del) {$nb_suppr++;} else {$nb_err++;}
 		}
 
@@ -2964,7 +2964,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	//insert into s_sanctions set login='toto', id_incident='4';
 
 	$sql="select * from s_sanctions san where san.login not in (select login from s_protagonistes spr where spr.id_incident=san.id_incident);";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		echo mysqli_num_rows($test)." protagonistes dans une sanction ne correspondent à aucun protagoniste d'incident&nbsp;: ";
 
@@ -2972,7 +2972,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$nb_suppr=0;
 		while($lig_tmp=mysqli_fetch_object($test)) {
 			$sql="delete from s_sanctions where id_incident='$lig_tmp->id_incident' and login='$lig_tmp->login';";
-			$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($del) {$nb_suppr++;} else {$nb_err++;}
 		}
 
@@ -2987,11 +2987,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	}
 
 	$sql="select * from s_traitement_incident where id_incident not in (select id_incident from s_incidents);";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		echo mysqli_num_rows($test)." traitements ne correspondent à aucun incident&nbsp;: ";
 		$sql="delete from s_traitement_incident where id_incident not in (select id_incident from s_incidents);";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($del) {
 			echo "<span style='color:green'>nettoyés</span>";
 			$cpt_nettoyage+=mysqli_num_rows($test);
@@ -3003,11 +3003,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	}
 
 	$sql="select * from s_protagonistes where id_incident not in (select id_incident from s_incidents);";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		echo mysqli_num_rows($test)." protagonistes ne correspondent à aucun incident&nbsp;: ";
 		$sql="delete from s_protagonistes where id_incident not in (select id_incident from s_incidents);";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($del) {
 			echo "<span style='color:green'>nettoyés</span>";
 			$cpt_nettoyage+=mysqli_num_rows($test);
@@ -3019,11 +3019,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	}
 
 	$sql="select * from s_sanctions where id_incident not in (select id_incident from s_incidents);";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		echo mysqli_num_rows($test)." sanctions ne correspondent à aucun incident&nbsp;: ";
 		$sql="delete from s_sanctions where id_incident not in (select id_incident from s_incidents);";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($del) {
 			echo "<span style='color:green'>nettoyés</span>";
 			$cpt_nettoyage+=mysqli_num_rows($test);
@@ -3038,11 +3038,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$tab_txt_sanction=array("exclusions","retenues","travaux","autres sanctions");
 	for($loop=0;$loop<count($tab_sanction);$loop++) {
 		$sql="select * from ".$tab_sanction[$loop]." where id_sanction not in (select id_sanction from s_sanctions);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			echo mysqli_num_rows($test)." ".$tab_txt_sanction[$loop]." ne correspondent à aucune sanction&nbsp;: ";
 			$sql="delete from s_sanctions where id_incident not in (select id_incident from s_incidents);";
-			$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($del) {
 				echo "<span style='color:green'>nettoyés</span>";
 				$cpt_nettoyage+=mysqli_num_rows($test);
@@ -3069,7 +3069,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$cpt_scories=0;
 
 		$sql="select * from ct_entry where id_groupe not in (select id FROM groupes);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			echo mysqli_num_rows($test)." compte-rendu(s) de séance(s) pour un ou des groupes n'existant plus a(ont) été trouvé(s).<br />\n";
 
@@ -3096,13 +3096,13 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="select * from ct_documents where id_ct not in (select id_ct FROM ct_entry);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			echo mysqli_num_rows($test)." document(s) joint(s) ne correspond(ent) à aucun compte-rendu existant.<br />\n";
 		}
 
 		$sql="select * from ct_devoirs_entry where id_groupe not in (select id FROM groupes);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			echo mysqli_num_rows($test)." notice(s) de devoir(s) pour un ou des groupes n'existant plus a(ont) été trouvé(s).<br />\n";
 
@@ -3129,13 +3129,13 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="select * from ct_devoirs_documents where id_ct_devoir not in (select id_ct FROM ct_devoirs_entry);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			echo mysqli_num_rows($test)." document(s) joint(s) ne correspond(ent) à aucune notice de devoir existante.<br />\n";
 		}
 
 		$sql="select * from ct_private_entry where id_groupe not in (select id FROM groupes);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			echo mysqli_num_rows($test)." notice(s) privée(s) pour un ou des groupes n'existant plus a(ont) été trouvé(s).<br />\n";
 
@@ -3162,7 +3162,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="select id from ct_sequences;";
-		$res_seq=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_seq=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_seq)>0) {
 			$tab_seq=array();
 			while($lig_seq=mysqli_fetch_object($res_seq)) {
@@ -3171,7 +3171,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 			$tab_seq2=array();
 			$sql="(select id_sequence FROM ct_entry) UNION (select id_sequence FROM ct_devoirs_entry) UNION (select id_sequence FROM ct_private_entry);";
-			$res_seq=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_seq=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_seq)>0) {
 				while($lig_seq=mysqli_fetch_object($res_seq)) {
 					$tab_seq2[]=$lig_seq->id_sequence;
@@ -3202,12 +3202,12 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$cpt_nettoyage=0;
 
 		$sql="select * from ct_entry where id_groupe not in (select id FROM groupes);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			echo "Suppression de ".mysqli_num_rows($test)." compte-rendu(s) de séance(s) pour un ou des groupes n'existant plus&nbsp;: ";
 
 			$sql="DELETE FROM ct_entry where id_groupe not in (select id FROM groupes);";
-			$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($del) {
 				echo "<span style='color:green'>OK</span>";
 				$cpt_nettoyage+=mysqli_num_rows($test);
@@ -3222,7 +3222,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="select * from ct_documents where id_ct not in (select id_ct FROM ct_entry);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			$nb_err=0;
 			echo "Suppression de ".mysqli_num_rows($test)." document(s) joint(s) ne correspondant à aucun compte-rendu existant&nbsp;: \n";
@@ -3260,13 +3260,13 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="select * from ct_devoirs_entry where id_groupe not in (select id FROM groupes);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			echo mysqli_num_rows($test)." notice(s) de devoir(s) pour un ou des groupes n'existant plus a(ont) été trouvé(s).<br />\n";
 			echo "Suppression de ".mysqli_num_rows($test)." notice(s) de devoir(s) pour un ou des groupes n'existant plus&nbsp;: ";
 
 			$sql="DELETE FROM ct_devoirs_entry where id_groupe not in (select id FROM groupes);";
-			$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($del) {
 				echo "<span style='color:green'>OK</span>";
 				$cpt_nettoyage+=mysqli_num_rows($test);
@@ -3281,7 +3281,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="select * from ct_devoirs_documents where id_ct_devoir not in (select id_ct FROM ct_devoirs_entry);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			$nb_err=0;
 			echo "Suppression de ".mysqli_num_rows($test)." document(s) joint(s) ne correspondant à aucune notice de devoir existante&nbsp;: \n";
@@ -3319,12 +3319,12 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="select * from ct_private_entry where id_groupe not in (select id FROM groupes);";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			echo "Suppression de ".mysqli_num_rows($test)." notice(s) privée(s) pour un ou des groupes n'existant plus&nbsp;: ";
 
 			$sql="DELETE FROM ct_private_entry where id_groupe not in (select id FROM groupes);";
-			$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($del) {
 				echo "<span style='color:green'>OK</span>";
 				$cpt_nettoyage+=mysqli_num_rows($test);
@@ -3340,7 +3340,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		$sql="select id from ct_sequences;";
-		$res_seq=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_seq=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_seq)>0) {
 			$tab_seq=array();
 			while($lig_seq=mysqli_fetch_object($res_seq)) {
@@ -3349,7 +3349,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 			$tab_seq2=array();
 			$sql="(select id_sequence FROM ct_entry) UNION (select id_sequence FROM ct_devoirs_entry) UNION (select id_sequence FROM ct_private_entry);";
-			$res_seq=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_seq=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_seq)>0) {
 				while($lig_seq=mysqli_fetch_object($res_seq)) {
 					$tab_seq2[]=$lig_seq->id_sequence;
@@ -3360,7 +3360,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				if(!in_array($tab_seq[$loop], $tab_seq2)) {
 					echo "Suppression de la séquence n°".$tab_seq[$loop]." associée à aucune notice&nbsp;: ";
 					$sql="DELETE FROM ct_sequences where id='".$tab_seq[$loop]."';";
-					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($del) {
 						echo "<span style='color:green'>OK</span>";
 						$cpt_nettoyage++;

@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_texte_2/correction_notices_cdt_formules_maths.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/cahier_texte_2/correction_notices_cdt_formules_maths.php',
 administrateur='V',
@@ -51,7 +51,7 @@ secours='F',
 autre='F',
 description='Correction des notices CDT',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -86,11 +86,11 @@ echo "<p>Pendant un temps, la génération d'images de formule mathématiques da
 echo "<br />\n";
 
 $sql="SELECT * FROM ct_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_ct_entry=mysqli_num_rows($res);
 
 $sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_ct_devoirs_entry=mysqli_num_rows($res);
 
 if(!isset($telecharger_et_corriger)) {
@@ -109,11 +109,11 @@ else {
 	correction_notices_cdt_formules_maths($eff_parcours);
 
 	$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_ct_entry=mysqli_num_rows($res);
 
 	$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%src=\"http://latex.codecogs.com/%' OR contenu LIKE '%src=\"https://latex.codecogs.com/%';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_ct_devoirs_entry=mysqli_num_rows($res);
 
 	if(($nb_ct_entry>0)||($nb_ct_devoirs_entry>0)) {

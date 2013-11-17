@@ -44,7 +44,7 @@ class Calendrier {
 		$sql="UPDATE edt_calendrier_manager SET
 				nom_calendrier = '".$this->nom."'
 				WHERE id = '".$this->id."' ";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			return true;
 		}
@@ -59,7 +59,7 @@ class Calendrier {
  
 	public function exists() {
 		$sql="SELECT id FROM edt_calendrier_manager WHERE id = '".$this->id."' ";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			if (mysqli_num_rows($req) != 0) {
 				return true;
@@ -79,7 +79,7 @@ class Calendrier {
  
 	public function delete() {
 		$sql="DELETE FROM edt_calendrier_manager WHERE id = '".$this->id."' ";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			// ======== Suppression des périodes calendaires
 			$PeriodesCalendaires = new PeriodeCalendaire;
@@ -111,7 +111,7 @@ class Calendrier {
 	public function save() {
 		$sql="INSERT INTO edt_calendrier_manager SET 
 				nom_calendrier = '".$this->nom."'	";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			return true;
 		}
@@ -129,7 +129,7 @@ class Calendrier {
 	public static function getCalendriers() {
 		$result = array();
 		$sql="SELECT id, nom_calendrier FROM edt_calendrier_manager ORDER BY id ASC ";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			while ($rep = mysqli_fetch_array($req)) {
 				$result['id'][] = $rep['id'];
@@ -147,7 +147,7 @@ class Calendrier {
 	public static function getNom($id) {
 		$result = null;
 		$sql="SELECT nom_calendrier FROM edt_calendrier_manager WHERE id='".$id."' ";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			$rep = mysqli_fetch_array($req);
 			$result = $rep['nom_calendrier'];

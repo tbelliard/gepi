@@ -48,10 +48,10 @@ if ($resultat_session == 'c') {
 // INSERT INTO droits VALUES ('/edt_organisation/transferer_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'transférer un edt', '');
 
 $sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/transferer_edt.php';";
-$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/edt_organisation/transferer_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','transférer un edt', '');";
-	$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
@@ -82,11 +82,11 @@ if (isset($supprimer) AND isset($login)) {
     }
     else if ($supprimer== "confirme_suppression") {
         // ====================== Vérifier que $login est bien un professeur
-        $req_statut = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT statut FROM utilisateurs WHERE login = '".addslashes($login)."' ");
+        $req_statut = mysqli_query($GLOBALS["mysqli"], "SELECT statut FROM utilisateurs WHERE login = '".addslashes($login)."' ");
         $rep_statut = mysqli_fetch_array($req_statut);
         if ($rep_statut["statut"] == "professeur") {
-            $req_suppression = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM edt_cours WHERE login_prof = '".addslashes($login)."' ");
-            $deletedRows = mysqli_affected_rows($GLOBALS["___mysqli_ston"]);
+            $req_suppression = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours WHERE login_prof = '".addslashes($login)."' ");
+            $deletedRows = mysqli_affected_rows($GLOBALS["mysqli"]);
             if ($deletedRows != 0) {
                 $message = "<div class=\"cadreInformation\">L'emploi du temps a été supprimé avec succès.</div>";
             }
@@ -112,21 +112,21 @@ if (isset($couper) AND isset($login)) {
 if (isset($coller) AND isset($login) AND isset($_SESSION["couper_edt"])) {
     if ($login != $_SESSION["couper_edt"]) {
         // ====================== Vérifier que $login est bien un professeur
-        $req_statut = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT statut FROM utilisateurs WHERE login = '".addslashes($login)."' ");
+        $req_statut = mysqli_query($GLOBALS["mysqli"], "SELECT statut FROM utilisateurs WHERE login = '".addslashes($login)."' ");
         $rep_statut = mysqli_fetch_array($req_statut);
         if ($rep_statut["statut"] == "professeur") {
 
-            $req_compare_groupes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_groupe FROM j_groupes_professeurs WHERE 
+            $req_compare_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT id_groupe FROM j_groupes_professeurs WHERE 
                                     login = '".$_SESSION["couper_edt"]."' AND
                                     id_groupe NOT IN (SELECT id_groupe FROM j_groupes_professeurs WHERE
                                                     login = '".$login."' ) 
                                     ");
             if (mysqli_num_rows($req_compare_groupes) == 0) {
-                $req_edt_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM edt_cours WHERE 
+                $req_edt_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours WHERE 
                                                             login_prof = '".$login."'
-                                                            ") or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));  
+                                                            ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));  
                 if (mysqli_num_rows($req_edt_prof) == 0) {
-                        $remplacement = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_cours SET login_prof = '".$login."' WHERE login_prof = '".$_SESSION["couper_edt"]."' ");
+                        $remplacement = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_cours SET login_prof = '".$login."' WHERE login_prof = '".$_SESSION["couper_edt"]."' ");
                         $message = "<div class=\"cadreInformation\">transfert réalisé. Les cours ont été déplacés avec succès</div>";
                 }
                 else {
@@ -194,10 +194,10 @@ if (!strstr($ua, "MSIE 6.0")) {
 		echo "<div class=\"titre_creneau_t_edt\">créneaux</div>";
         echo "<div style=\"clear:both;\"></div>";
 
-	$req_profs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom , prenom FROM utilisateurs WHERE
+	$req_profs = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom , prenom FROM utilisateurs WHERE
 					statut = 'professeur' ORDER BY nom ASC");
 	while ($rep_profs = mysqli_fetch_array($req_profs)) {
-		$req_cours = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_cours FROM edt_cours WHERE
+		$req_cours = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours FROM edt_cours WHERE
 					login_prof = '".$rep_profs['login']."'");
 		echo "<div class=\"texte_nom_t_edt\"><strong>".$rep_profs['nom']."</strong></div>";
 		echo "<div class=\"texte_prenom_t_edt\">".$rep_profs['prenom']."</div>";

@@ -51,7 +51,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : (isset($_POST['mode']) ? $_POST['
 if(isset($reg_matiere)){
     if($reg_matiere!="" && $reg_matiere != "null"){
         $sql="SELECT * FROM matieres WHERE matiere='$reg_matiere'";
-        $resultat_recup_matiere=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+        $resultat_recup_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
 
         $ligne=mysqli_fetch_object($resultat_recup_matiere);
         $reg_nom_groupe=$ligne->matiere;
@@ -138,7 +138,7 @@ echo "</pre>";
 				if($visibilite_groupe_domaine_courant=='n') {
 					$sql="INSERT j_groupes_visibilite SET id_groupe='".$create."', domaine='".$tab_domaines[$loo]."', visible='n';";
 					//echo "$sql<br />";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilité du groupe n°".$create." sur les ".$tab_domaines_texte[$loo].".<br />";}
 				}
 			}
@@ -147,7 +147,7 @@ echo "</pre>";
 				foreach($reg_clazz as $tmp_id_classe){
 					$sql="update j_groupes_classes set coef = '" . $_POST['coef'] . "' WHERE (id_groupe = '" . $create . "' and id_classe = '" . $tmp_id_classe . "');";
 					//echo "$sql<br />\n";
-					$res_coef=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_coef=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res_coef) {
 						$msg.="Erreur lors de l'enregistrement du coefficient du groupe n°".$create." en classe n°$tmp_id_classe.<br />";
 					}
@@ -175,7 +175,7 @@ echo "</pre>";
 												u.login=jgp.login AND
 												jgp.id_groupe=jgc.id_groupe AND
 												jgc.id_classe='".$clazz[$loo]."';";
-						$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_prof)>0) {
 							while($lig_prof=mysqli_fetch_object($res_prof)) {
 								if(!in_array($lig_prof->login, $reg_professeurs)) {
@@ -187,7 +187,7 @@ echo "</pre>";
 				}
 				elseif(isset($_POST['associer_tous_les_profs_de_l_etablissement'])) {
 					$sql="SELECT login FROM utilisateurs WHERE statut='professeur' AND etat='actif';";
-					$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_prof)>0) {
 						while($lig_prof=mysqli_fetch_object($res_prof)) {
 							if(!in_array($lig_prof->login, $reg_professeurs)) {
@@ -199,7 +199,7 @@ echo "</pre>";
 
 				$tab_profs_matiere=array();
 				$sql="SELECT DISTINCT id_professeur FROM j_professeurs_matieres WHERE id_matiere='$reg_matiere';";
-				$res_prof_matiere=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_prof_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_prof_matiere)>0){
 					while($lig_prof_matiere=mysqli_fetch_object($res_prof_matiere)){
 						$tab_profs_matiere[]=$lig_prof_matiere->id_professeur;
@@ -211,7 +211,7 @@ echo "</pre>";
 					if(!in_array($reg_professeurs[$loo], $tab_profs_matiere)) {
 						$sql="SELECT MAX(ordre_matieres) AS max_ordre_matiere FROM j_professeurs_matieres WHERE id_professeur='".$reg_professeurs[$loo]."';";
 						//echo "$sql<br />";
-						$res_ordre=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ordre=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ordre)==0) {
 							$ordre_matiere=1;
 						}
@@ -221,7 +221,7 @@ echo "</pre>";
 
 						$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$reg_professeurs[$loo]."', id_matiere='$reg_matiere', ordre_matieres='$ordre_matiere';";
 						//echo "$sql<br />";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
@@ -242,7 +242,7 @@ echo "</pre>";
 						}
 						//$sql.=" ORDER BY c.classe, e.nom, e.prenom;";
 						//echo "$sql<br />";
-						$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 						$nb_ele=mysqli_num_rows($res_ele);
 						if($nb_ele>0){
 							$cpt_ele=1;
@@ -262,7 +262,7 @@ echo "</pre>";
 						foreach($reg_clazz as $tmp_id_classe){
 							$sql="SELECT jec.login FROM j_eleves_classes jec, eleves e, classes c WHERE id_classe='$tmp_id_classe' AND periode='".$period['num_periode']."' AND jec.login=e.login AND jec.id_classe=c.id ORDER BY e.nom, e.prenom;";
 							//echo "$sql<br />";
-							$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 							$nb_ele=mysqli_num_rows($res_ele);
 							if($nb_ele>0){
 								$cpt_ele=1;
@@ -344,7 +344,7 @@ echo " <a href=\"javascript:afficher_div('suffixe_nom_grp','y',-100,20)\"><img s
 
 echo add_token_field();
 
-$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
+$query = mysqli_query($GLOBALS["mysqli"], "SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysqli_num_rows($query);
 
 echo "<select name='matiere' id='matiere' size='1' onchange=\"changement();\">\n";
@@ -365,7 +365,7 @@ if ($mode == "groupe") {
     echo "<p>Classe à laquelle appartient le nouvel enseignement&nbsp;:\n";
     echo "<select name='id_classe' size='1' onchange=\"changement();\">\n";
 
-    $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes ORDER BY classe");
+    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes ORDER BY classe");
     $nombre_lignes = mysqli_num_rows($call_data);
     if ($nombre_lignes != 0) {
         $i = 0;
@@ -388,7 +388,7 @@ if ($mode == "groupe") {
     echo "<p>Sélectionnez les classes auxquelles appartient le nouvel enseignement&nbsp;:<br />\n";
     echo "<span style='color: red;'>Note : n'apparaissent que les classes ayant le même nombre de périodes.</span>\n";
     $current_classe_period_num = get_period_number($id_classe);
-    $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes ORDER BY classe");
+    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes ORDER BY classe");
     $nombre_lignes = mysqli_num_rows($call_data);
     if ($nombre_lignes != 0) {
 
@@ -440,7 +440,7 @@ if ($mode == "groupe") {
 }
 echo "<p>Catégorie de matière à laquelle appartient l'enseignement&nbsp;: ";
 echo "<select size='1' name='categorie' onchange=\"changement();\">\n";
-$get_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, nom_court FROM matieres_categories");
+$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court FROM matieres_categories");
 $test = mysqli_num_rows($get_cat);
 
 echo "<option value='0'";
@@ -494,7 +494,7 @@ if ($reg_matiere != null) {
 
     $sql="SELECT u.login, u.nom, u.prenom, u.civilite,u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
     //echo "$sql<br />";
-	$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
     $nb = mysqli_num_rows($calldata);
     $prof_list = array();
     $prof_list["list"] = array();

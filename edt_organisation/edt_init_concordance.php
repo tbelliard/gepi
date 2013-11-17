@@ -64,9 +64,9 @@ if ($etape != NULL) {
 				$type_semaine = array();
 			for($s = 1; $s < ($nbre_ligne + 1); $s++){
 				$type_semaine[$s] = isset($_POST["semaine_".$s]) ? $_POST["semaine_".$s] : NULL;
-				$update = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_semaines SET type_edt_semaine = '".$type_semaine[$s]."' WHERE num_edt_semaine = ".$s."");
+				$update = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_semaines SET type_edt_semaine = '".$type_semaine[$s]."' WHERE num_edt_semaine = ".$s."");
 				if (!$update) {
-					$erreur .= 'erreur'.$s.'('.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).') | ';
+					$erreur .= 'erreur'.$s.'('.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).') | ';
 				}
 			}
 			if ($erreur == 'non') {
@@ -81,7 +81,7 @@ if ($etape != NULL) {
 		}else{
 			// On ne fait rien puisque cette table est initialisée à la base (/sql/data_gepi.sql)
 			$prochaine_etape = $etape + 1;
-			$vers_etape2 = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte'");
+			$vers_etape2 = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte'");
 			echo '
 			<h3>L\'opération a réussi</h3>
 			<a href="./edt_init_texte.php">Revenez en arrière et recommencer la même opération pour l\'étape '.$prochaine_etape.'.</a>';
@@ -115,8 +115,8 @@ if ($etape != NULL) {
 			$salle = renvoiIdSalle($elements_cours[9]);
 			if ($salle == "inc") {
 				// on insère cette nouvelle classe dans la table adéquate
-				$query = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO salle_cours SET numero_salle = '".$elements_cours[9]."', nom_salle = ''");
-				$salle = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+				$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO salle_cours SET numero_salle = '".$elements_cours[9]."', nom_salle = ''");
+				$salle = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 			}
 
 			// Le type de semaine
@@ -150,7 +150,7 @@ if ($etape != NULL) {
 
 				}else{
 					// On vérifie que ce cours n'existe pas déjà
-					$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_cours FROM edt_cours WHERE
+					$query = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours FROM edt_cours WHERE
 										id_groupe = '".$groupe."' AND
 										id_salle = '".$salle."' AND
 										jour_semaine = '".$jour."' AND
@@ -161,7 +161,7 @@ if ($etape != NULL) {
 										id_calendrier = '0' AND
 										modif_edt = '0' AND
 										login_prof = '".$prof."'")
-											OR DIE('Erreur dans la vérification sur l\'existence du cours : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+											OR DIE('Erreur dans la vérification sur l\'existence du cours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 					$verif_exist = mysqli_num_rows($query);
 					if ($verif_exist >= 1) {
 						// On n'enregistre pas une deuxième fois
@@ -176,8 +176,8 @@ if ($etape != NULL) {
 					// Au final, on insère dans la table edt_cours
 					$sql = "INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, id_calendrier, modif_edt, login_prof)
 								VALUES ('', '".$groupe_insert."', '".$salle."', '".$jour."', '".$debut."', '".$duree."', '".$debut_dec."', '".$week_type."', '0', '0', '".$prof."') ";
-					$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql)
-								OR DIE('Erreur dans l\'enregistrement du cours '.$sql.'<br /> -> '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					$query = mysqli_query($GLOBALS["mysqli"], $sql)
+								OR DIE('Erreur dans l\'enregistrement du cours '.$sql.'<br /> -> '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 				}
 
@@ -199,13 +199,13 @@ if ($etape != NULL) {
 		}
 		// On envoie toutes les requêtes d'un coup
 		echo $values;
-		$envoie = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
-					VALUES ".$values." ('', ".$etape.", 'fin', 'fin')") OR DIE ('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />'.$envoie);
+		$envoie = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
+					VALUES ".$values." ('', ".$etape.", 'fin', 'fin')") OR DIE ('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />'.$envoie);
 
 		// si l'envoi est une réussite alors on passe à l'étape suivante
 		if ($envoie) {
 			$prochaine_etape = $etape + 1;
-			$vers_etape2 = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte'");
+			$vers_etape2 = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte'");
 			echo '
 			<h3>L\'opération a réussi</h3>';
 			// Certaines étapes ne donnent lieu à aucun enregistrement

@@ -33,8 +33,8 @@ echo '
 		<option value="aucun">Liste des jours</option>
 ';
 // On appele la liste des créneaux
-$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM horaires_etablissement LIMIT 0, 7")
-			OR error_reporting('Erreur dans la recherche des jours : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM horaires_etablissement LIMIT 0, 7")
+			OR error_reporting('Erreur dans la recherche des jours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 while($jours = mysqli_fetch_array($query)){
 	// le selected

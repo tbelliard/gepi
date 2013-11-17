@@ -63,7 +63,7 @@ id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 login VARCHAR( 255 ) NOT NULL ,
 app TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$resultat_creation_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$resultat_creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 ?>
 
@@ -143,11 +143,11 @@ elseif(isset($valide_import_cmnt)) {
 
 						$sql="SELECT 1=1 FROM commentaires_types_profs WHERE login='".$_SESSION['login']."' AND app='".addslashes($ligne)."';";
 						//echo "$sql<br />";
-						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test)==0) {
 							$sql="INSERT INTO commentaires_types_profs SET login='".$_SESSION['login']."', app='".addslashes($ligne)."';";
 							//echo "$sql<br />";
-							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($insert) {
 								$nb_reg++;
 							}
@@ -182,7 +182,7 @@ if(isset($compteur_nb_commentaires)) {
 	// Nettoyage des commentaires déjà saisis pour cette classe et ces périodes:
 	$sql="DELETE FROM commentaires_types_profs WHERE login='".$_SESSION['login']."';";
 	//echo "sql=$sql<br />";
-	$resultat_nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$resultat_nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	// Validation des saisies/modifs...
 	for($i=1;$i<=$compteur_nb_commentaires;$i++){
@@ -194,7 +194,7 @@ if(isset($compteur_nb_commentaires)) {
 				if($commentaire_courant!=""){
 					$sql="INSERT INTO commentaires_types_profs SET login='".$_SESSION['login']."', app='$commentaire_courant';";
 					//echo "sql=$sql<br />";
-					$resultat_insertion_commentaire=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$resultat_insertion_commentaire=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 		}
@@ -205,7 +205,7 @@ if(isset($compteur_nb_commentaires)) {
 // Recherche des commentaires déjà saisis:
 $sql="SELECT DISTINCT app,id FROM commentaires_types_profs WHERE login='".$_SESSION['login']."' ORDER BY app;";
 //echo "$sql";
-$resultat_commentaires=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$resultat_commentaires=mysqli_query($GLOBALS["mysqli"], $sql);
 $cpt=1;
 if(mysqli_num_rows($resultat_commentaires)!=0){
 	echo "<p>Voici la liste de vos commentaires-types:</p>\n";

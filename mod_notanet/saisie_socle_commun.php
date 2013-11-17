@@ -70,20 +70,20 @@ if (isset($_POST['is_posted'])) {
 			$sql3="";
 			$maj_notanet="n";
 			$sql="SELECT 1=1 FROM notanet WHERE login='".$ele_login[$i]."';";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				$maj_notanet="y";
 			}
 
 			$sql="DELETE FROM notanet_socle_commun WHERE login='".$ele_login[$i]."' AND champ='116';";
-			$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="INSERT INTO notanet_socle_commun SET login='".$ele_login[$i]."', champ='116', valeur='".$socle_commun[$i]."';";
 			//$sql2="UPDATE notanet SET note='".$socle_commun[$i]."', note_notanet='116'";
 			//$sql2.=" WHERE login='".$ele_login[$i]."' AND notanet_mat='SOCLE COMMUN';";
 
 			//echo "$sql<br />";
-			$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$register=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$register) {
 				$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
 				//echo "ERREUR<br />";
@@ -144,22 +144,22 @@ elseif((isset($_POST['action']))&&($_POST['action']=='upload_file')) {
 							if((isset($tab[0]))&&($tab[0]!='')&&(isset($tab[1]))&&($tab[1]!='')&&(isset($tab[2]))&&($tab[2]!='')) {
 								$sql="SELECT DISTINCT login FROM notanet WHERE ine='$tab[0]';";
 								//echo "$sql<br />\n";
-								$res_login=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_login)==1) {
 									$lig=mysqli_fetch_object($res_login);
 									$sql="DELETE FROM notanet_socle_commun WHERE login='$lig->login' AND champ='$tab[1]';";
 									//echo "$sql<br />";
-									$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 									$sql="INSERT INTO notanet_socle_commun SET login='$lig->login', champ='$tab[1]', valeur='$tab[2]';";
 									//echo "$sql<br />";
-									$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($insert) {$nb_reg++;} else {$msg.="Erreur sur la requête $sql<br />";}
 								}
 								else {
 									$info_supplementaire="";
 									$sql="SELECT DISTINCT nom, prenom, classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.no_gep='$tab[0]';";
-									$res_ele_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_ele_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_ele_clas)==1) {
 										$lig_ele_clas=mysqli_fetch_object($res_ele_clas);
 										$info_supplementaire=" (<em>$lig_ele_clas->nom $lig_ele_clas->prenom ($lig_ele_clas->classe)</em>)";
@@ -190,22 +190,22 @@ elseif((isset($_POST['action']))&&($_POST['action']=='upload_file')) {
 					if((isset($tab[0]))&&($tab[0]!='')&&(isset($tab[1]))&&($tab[1]!='')&&(isset($tab[2]))&&($tab[2]!='')) {
 						$sql="SELECT DISTINCT login FROM notanet WHERE ine='$tab[0]';";
 						//echo "$sql<br />\n";
-						$res_login=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_login)==1) {
 							$lig=mysqli_fetch_object($res_login);
 							$sql="DELETE FROM notanet_socle_commun WHERE login='$lig->login' AND champ='$tab[1]';";
 							//echo "$sql<br />";
-							$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							$sql="INSERT INTO notanet_socle_commun SET login='$lig->login', champ='$tab[1]', valeur='$tab[2]';";
 							//echo "$sql<br />";
-							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($insert) {$nb_reg++;} else {$msg.="Erreur sur la requête $sql<br />";}
 						}
 						else {
 							$info_supplementaire="";
 							$sql="SELECT DISTINCT nom, prenom, classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.no_gep='$tab[0]';";
-							$res_ele_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_ele_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_ele_clas)==1) {
 								$lig_ele_clas=mysqli_fetch_object($res_ele_clas);
 								$info_supplementaire=" (<em>$lig_ele_clas->nom $lig_ele_clas->prenom ($lig_ele_clas->classe)</em>)";
@@ -296,7 +296,7 @@ elseif(!isset($id_classe)) {
 	echo "</p>\n";
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, notanet n,notanet_ele_type net WHERE p.id_classe = c.id AND c.id=n.id_classe ORDER BY classe;";
 	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, notanet_ele_type net WHERE p.id_classe = c.id AND c.id=jec.id_classe AND jec.login=net.login ORDER BY classe;";
-	$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_classes=mysqli_num_rows($call_classes);
 	if($nb_classes==0){
@@ -379,7 +379,7 @@ else {
 			echo "<input type='hidden' name='id_classe[$i]' value='".$id_classe[$i]."' />\n";
 	
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE (jec.id_classe='".$id_classe[$i]."' AND jec.login=e.login) ORDER BY e.nom,e.prenom,e.naissance;";
-			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_ele)==0) {
 				echo "Aucun élève dans cette classe.</p>\n";
 			}
@@ -459,7 +459,7 @@ else {
 					echo "</td>\n";
 	
 					$sql="SELECT * FROM notanet_socle_commun WHERE login='".$lig_ele->login."' AND champ='116';";
-					$res_socle=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_socle=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_socle)==0) {
 						$def_socle="";
 					}

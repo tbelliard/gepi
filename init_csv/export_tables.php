@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/init_csv/export_tables.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/init_csv/export_tables.php',
 administrateur='V',
@@ -46,7 +46,7 @@ secours='F',
 autre='F',
 description='Initialisation CSV: Export tables',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -102,7 +102,7 @@ echo "<p>Génération des fichiers CSV au format 'init_csv'&nbsp;:</p>\n";
 
 // Nom ; Prénom ; Date de naissance ; n° identifiant interne (étab) ; n° identifiant national ; Code établissement précédent ; Doublement (OUI | NON) ; Régime (INTERN | EXTERN | IN.EX. | DP DAN) ; Sexe (F ou M)
 $sql="SELECT * FROM eleves e, j_eleves_regime jer WHERE jer.login=e.login ORDER BY e.nom, e.prenom;";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucun élève n'a été trouvé.</p>\n";
 }
@@ -112,7 +112,7 @@ else {
 		$lignes.="$lig->nom;$lig->prenom;".formate_date($lig->naissance).";$lig->elenoet;$lig->no_gep;";
 
 		$sql="SELECT * FROM j_eleves_etablissements WHERE id_eleve='$lig->elenoet';";
-		$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res2)>0) {
 			$lig2=mysqli_fetch_object($res2);
 			$lignes.=$lig2->id_etablissement;
@@ -152,7 +152,7 @@ else {
 
 //n° d'identifiant élève interne à l'établissement ; Nom du responsable ; Prénom du responsable ; Civilité ; Ligne 1 Adresse ; Ligne 2 Adresse ; Code postal ; Commune
 $sql="SELECT r.*, rp.*, ra.*, e.elenoet FROM eleves e, responsables2 r, resp_pers rp, resp_adr ra WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND r.resp_legal!='0' ORDER BY rp.nom, rp.prenom;";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucun responsable n'a été trouvé.</p>\n";
 }
@@ -177,7 +177,7 @@ else {
 
 //Nom court matière ; Nom long matière
 $sql="SELECT matiere, nom_complet FROM matieres;";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucune matière n'a été trouvée.</p>\n";
 }
@@ -202,7 +202,7 @@ else {
 
 //Nom ; Prénom ; Civilité ; Adresse e-mail
 $sql="SELECT * FROM utilisateurs WHERE statut='professeur' ORDER BY nom, prenom;";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucun professeur n'a été trouvé.</p>\n";
 }
@@ -228,7 +228,7 @@ else {
 //n° d'identifiant élève interne à l'établissement ; Identifiant court de la classe 
 $tab_ele_clas=array();
 $sql="SELECT DISTINCT e.elenoet, c.classe FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND c.id=jec.id_classe ORDER BY c.classe,e.nom,e.prenom;";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucune association élève/classe n'a été trouvée.</p>\n";
 }
@@ -255,7 +255,7 @@ else {
 
 //Login du professeur ; Nom court de la matière ; Le ou les identifiants de classe (séparés par des !) ; Le type de cours (CG (= cours général) | OPT (= option))
 $sql="SELECT * FROM utilisateurs WHERE statut='professeur' ORDER BY nom, prenom;";
-$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_prof)==0) {
 	echo "<p>Aucun professeur n'a été trouvé.</p>\n";
 }
@@ -264,11 +264,11 @@ else {
 	while($lig_prof=mysqli_fetch_object($res_prof)) {
 		//$sql="SELECT jgm.id_matiere, FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_groupe=jgp.id_groupe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='$lig->login' ORDER BY jgc.id_classe, jgm.id_matiere;";
 		$sql="SELECT jgm.id_matiere, jgm.id_groupe FROM j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE jgm.id_groupe=jgp.id_groupe AND jgp.login='$lig_prof->login' ORDER BY jgm.id_matiere;";
-		$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp)>0) {
 			while($lig_grp=mysqli_fetch_object($res_grp)) {
 				$sql="SELECT DISTINCT c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_groupe='$lig_grp->id_groupe' AND jgc.id_classe=c.id ORDER BY c.classe;";
-				$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_clas)>0) {
 					$classes="";
 					$cpt_classes=0;
@@ -300,11 +300,11 @@ else {
 					else {
 						// Tous les élèves de la classe suivent-ils l'enseignement?
 						$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$lig_grp->id_groupe';";
-						$test1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						//$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$lig_clas->id';";
 						$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$current_id_classe';";
-						$test2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test1)==mysqli_num_rows($test2)) {
 							$lignes.="CG;";
 						}
@@ -333,7 +333,7 @@ else {
 
 //n° d'identifiant élève interne à l'établissement ; Identifiants des matières suivies en option, séparés par des !
 $sql="SELECT e.elenoet, e.login FROM eleves e ORDER BY e.nom,e.prenom;";
-$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_ele)==0) {
 	echo "<p>Aucun élève n'a été trouvé.</p>\n";
 }
@@ -342,7 +342,7 @@ else {
 	while($lig_ele=mysqli_fetch_object($res_ele)) {
 
 		$sql="SELECT DISTINCT jgm.id_matiere FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.login='$lig_ele->login' AND jeg.id_groupe=jgm.id_groupe ORDER BY id_matiere;";
-		$res_matiere=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_matiere)>0) {
 			$matieres="";
 			$nb_mat=0;

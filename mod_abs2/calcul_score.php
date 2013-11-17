@@ -239,7 +239,7 @@ echo "<p><a href='".$_SERVER['PHP_SELF']."'>Choisir une classe</a></p>\n";
 $tab_classe=array();
 $chaine_opt_classes="";
 $sql="SELECT DISTINCT id, classe FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY classe;";
-$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 while($lig_clas=mysqli_fetch_object($res_clas)) {
 	$tab_classe[$lig_clas->id]=$lig_clas->classe;
 
@@ -263,7 +263,7 @@ if(!isset($id_classe)) {
 	foreach($tab_classe as $current_id_classe => $current_nom_classe) {
 		echo "<p><strong>$current_nom_classe</strong>&nbsp;: ";
 		$sql="SELECT * FROM periodes WHERE id_classe='$current_id_classe' ORDER BY num_periode;";
-		$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt_per=0;
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$current_id_classe'>Toutes les périodes</a>";
 		$cpt_per++;
@@ -306,7 +306,7 @@ echo "<form id='choix_autre_classe' name='choix_autre_classe' action='".$_SERVER
 if(!isset($num_periode)) {
 	$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 	//echo "$sql<br />";
-	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$eleve = EleveQuery::create()->findOneByLogin($lig_ele->login);
 
@@ -454,7 +454,7 @@ else {
 
 	$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.periode='$num_periode' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 	//echo "$sql<br />";
-	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	$alt=1;
 	while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$eleve = EleveQuery::create()->findOneByLogin($lig_ele->login);

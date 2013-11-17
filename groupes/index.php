@@ -78,7 +78,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 // On va chercher les classes déjà existantes, et on les affiche.
 
-$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes ORDER BY classe");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes ORDER BY classe");
 $nombre_lignes = mysqli_num_rows($call_data);
 if ($nombre_lignes != 0) {
     $flag = 1;

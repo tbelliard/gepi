@@ -78,7 +78,7 @@ if (isset($_POST['is_posted'])) {
 			//if(($favorable[$i]=='O')||($favorable[$i]=='N')) {
 			if(($favorable[$i]=='O')||($favorable[$i]=='N')||($favorable[$i]=='')) {
 				$sql="SELECT 1=1 FROM notanet_avis WHERE login='".$ele_login[$i]."';";
-				$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_ele)==0) {
 					$sql="INSERT INTO notanet_avis SET login='".$ele_login[$i]."'";
 					$sql.=",favorable='".$favorable[$i]."'";
@@ -89,7 +89,7 @@ if (isset($_POST['is_posted'])) {
 					$sql="UPDATE notanet_avis SET favorable='".$favorable[$i]."', avis='".$app."' WHERE login='".$ele_login[$i]."';";
 				}
 				//echo "$sql<br />";
-				$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$register=mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!$register) {
 					$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
 					//echo "ERREUR<br />";
@@ -104,7 +104,7 @@ if (isset($_POST['is_posted'])) {
 		else {
 			// Si on ne coche pas l'avis favorable... pour ne pas perdre les saisies...
 			$sql="SELECT 1=1 FROM notanet_avis WHERE login='".$ele_login[$i]."';";
-			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_ele)==0) {
 				$sql="INSERT INTO notanet_avis SET login='".$ele_login[$i]."'";
 				//$sql.=",favorable='".$favorable[$i]."'";
@@ -117,7 +117,7 @@ if (isset($_POST['is_posted'])) {
 				$sql="UPDATE notanet_avis SET favorable='', avis='".$app."' WHERE login='".$ele_login[$i]."';";
 			}
 			//echo "$sql<br />";
-			$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$register=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$register) {
 				$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
 				//echo "ERREUR<br />";
@@ -160,7 +160,7 @@ if(!isset($id_classe)) {
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, notanet n,notanet_ele_type net WHERE p.id_classe = c.id AND c.id=n.id_classe ORDER BY classe;";
 	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec,notanet_ele_type net WHERE c.id=jec.id_classe AND net.login=jec.login ORDER BY classe;";
 	//echo "$sql<br />";
-	$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_classes=mysqli_num_rows($call_classes);
 	if($nb_classes==0){
@@ -217,7 +217,7 @@ else {
 		avis TEXT NOT NULL ,
 		PRIMARY KEY ( login )
 		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 	echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
@@ -242,7 +242,7 @@ else {
 
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE (jec.id_classe='".$id_classe[$i]."' AND jec.login=e.login) ORDER BY e.nom,e.prenom,e.naissance;";
 		//echo "$sql<br />";
-		$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_ele)==0) {
 			echo "Aucun élève dans cette classe.</p>\n";
 		}
@@ -293,7 +293,7 @@ else {
 
 				//========================
 				$sql="SELECT elenoet FROM eleves WHERE login='$lig_ele->login';";
-				$res_ele2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_ele2=mysqli_query($GLOBALS["mysqli"], $sql);
 				$lig_ele2=mysqli_fetch_object($res_ele2);
 				$eleve_elenoet=$lig_ele2->elenoet;
 
@@ -331,7 +331,7 @@ else {
 
 
 				$sql="SELECT * FROM notanet_avis WHERE login='".$lig_ele->login."';";
-				$res_avis=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_avis=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_avis)==0) {
 					$def_fav="";
 					$def_avis="";

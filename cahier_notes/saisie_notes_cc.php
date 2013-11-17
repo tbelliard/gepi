@@ -66,7 +66,7 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
     die();
 }
 
-$appel_cahier_notes=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
+$appel_cahier_notes=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
 $id_groupe=mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group=get_group($id_groupe);
 $periode_num=mysql_result($appel_cahier_notes, 0, 'periode');
@@ -81,7 +81,7 @@ if(!isset($id_dev)) {
 }
 
 $sql="SELECT * FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
-$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$query=mysqli_query($GLOBALS["mysqli"], $sql);
 if($query) {
 	$id_cn_dev=mysql_result($query, 0, 'id_cn_dev');
 	$nom_court_dev=mysql_result($query, 0, 'nom_court');
@@ -101,7 +101,7 @@ if(!isset($id_eval)) {
 }
 
 $sql="SELECT * FROM cc_eval WHERE id='$id_eval' AND id_dev='$id_dev';";
-$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$query=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($query)==0) {
 	$mess="L'évaluation n°$id_eval n'est pas associée au $nom_cc n°$id_dev.<br />";
 	header("Location: index_cc.php?id_racine=$id_racine&msg=$mess");
@@ -122,7 +122,7 @@ if(isset($_GET['export_csv'])) {
 
 	$sql="SELECT cc.*, c.classe, e.nom, e.prenom FROM cc_notes_eval cc, classes c, eleves e, j_eleves_classes jec WHERE cc.id_eval='$id_eval' AND cc.login=e.login AND cc.login=jec.login AND jec.id_classe=c.id AND jec.periode='$periode_num' ORDER BY e.login;";
 	//echo "$sql<br />";
-	$res_note=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_note)>0) {
 		while($lig_note=mysqli_fetch_object($res_note)) {
 			if($lig_note->statut=='v') {
@@ -267,7 +267,7 @@ if (isset($_POST['is_posted'])) {
 					}
 					elseif (my_ereg ("^[0-9\.\,]{1,}$", $note)) {
 						$note = str_replace(",", ".", "$note");
-						$appel_note_sur = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT note_sur FROM cc_eval WHERE id='$id_eval'");
+						$appel_note_sur = mysqli_query($GLOBALS["mysqli"], "SELECT note_sur FROM cc_eval WHERE id='$id_eval'");
 						$note_sur_verif = mysql_result($appel_note_sur,0 ,'note_sur');
 						if (($note < 0) or ($note > $note_sur_verif)) {
 							$note = '';
@@ -279,16 +279,16 @@ if (isset($_POST['is_posted'])) {
 						$elev_statut = 'v';
 					}
 
-					$test_eleve_note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cc_notes_eval WHERE (login='$reg_eleve_login' AND id_eval = '$id_eval')");
+					$test_eleve_note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cc_notes_eval WHERE (login='$reg_eleve_login' AND id_eval = '$id_eval')");
 					$test = mysqli_num_rows($test_eleve_note_query);
 					if ($test != "0") {
 						$sql="UPDATE cc_notes_eval SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_eval='".$id_eval."')";
 						//echo "$sql<br />";
-						$register = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$register = mysqli_query($GLOBALS["mysqli"], $sql);
 					} else {
 						$sql="INSERT INTO cc_notes_eval SET login='".$reg_eleve_login."', id_eval='".$id_eval."',note='".$note."',statut='".$elev_statut."',comment='".$comment."'";
 						//echo "$sql<br />";
-						$register = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$register = mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 
 				//}
@@ -340,7 +340,7 @@ echo "<p class='bold'>\n";
 echo "<a href=\"index_cc.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
 
 $sql="SELECT * FROM cc_eval WHERE id_dev='$id_dev' ORDER BY date, nom_court;";
-$res_eval=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_eval=mysqli_query($GLOBALS["mysqli"], $sql);
 $id_eval_prec=-1;
 $id_eval_suiv=-1;
 $indice_id_eval_courant=-1;
@@ -552,7 +552,7 @@ $prev_classe = null;
 
 $sql="SELECT * FROM cc_notes_eval WHERE id_eval='$id_eval' ORDER BY login;";
 //echo "$sql<br />";
-$res_note=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_note)>0) {
 	while($lig_note=mysqli_fetch_object($res_note)) {
 		if($lig_note->statut=='v') {
@@ -595,7 +595,7 @@ foreach ($liste_eleves as $eleve) {
 
 	$elenoet="";
 	$sql="SELECT elenoet FROM eleves WHERE login='".$eleve_login[$i]."';";
-	$res_elenoet=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_elenoet)>0) {
 		$tmp_lig=mysqli_fetch_object($res_elenoet);
 		$elenoet=$tmp_lig->elenoet;

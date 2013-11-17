@@ -51,7 +51,7 @@ if (!isset($annee_scolaire))  {
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
     echo "</p>\n";
     $sql = "select distinct annee from archivage_types_aid WHERE outils_complementaires = 'y'";
-    $res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $res = mysqli_query($GLOBALS["mysqli"], $sql);
     $nb_annee = mysqli_num_rows($res);
     if ($nb_annee >= 1) {
         echo "<form name=\"form1\" action=\"annees_anterieures_accueil.php\" method=\"post\">\n";
@@ -76,7 +76,7 @@ if (($indice_aid =='') and ($annee_scolaire!=''))  {
   echo "<a href=\"annees_anterieures_accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
   echo "</p>\n";
   echo "<center><h1 class='gepi'>Année scolaire " . $annee_scolaire."<br />";
-  $call_aid = mysqli_query($GLOBALS["___mysqli_ston"], "select * from archivage_types_aid where outils_complementaires='y' and annee='".$annee_scolaire."' order by nom");
+  $call_aid = mysqli_query($GLOBALS["mysqli"], "select * from archivage_types_aid where outils_complementaires='y' and annee='".$annee_scolaire."' order by nom");
 
   $nb_projet = mysqli_num_rows($call_aid);
   if ($nb_projet!=0) {

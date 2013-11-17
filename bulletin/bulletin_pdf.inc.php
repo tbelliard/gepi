@@ -439,7 +439,7 @@
 
 	function get_max_id_model_bulletin() {
 		$sql="SELECT MAX(id_model_bulletin) AS max_id_model_bulletin FROM modele_bulletin;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			// Ca ne devrait pas arriver: en 1 il doit y avoir le modèle standard
 			return 2;

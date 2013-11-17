@@ -54,10 +54,10 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 	for($j=0;$j<count($tab_id_clas);$j++){
 		for($i=0;$i<count($scol_login);$i++){
 			if(isset($_POST['case_'.$i.'_'.$j])){
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'");
+				$test=mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'");
 				if(mysqli_num_rows($test)==0){
 					$sql="INSERT INTO j_scol_classes SET id_classe='".$tab_id_clas[$j]."', login='".$scol_login[$i]."'";
-					$reg_data=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$reg_data=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$reg_data){
 						$msg.= "Erreur lors de l'insertion d'un nouvel enregistrement $tab_id_clas[$j] pour $scol_login[$i].";
 						$notok = true;
@@ -66,10 +66,10 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 				// Sinon: l'enregistrement est déjà présent.
 			}
 			else{
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'");
+				$test=mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'");
 				if(mysqli_num_rows($test)>0){
 					$sql="DELETE FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'";
-					$reg_data=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$reg_data=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$reg_data){
 						$msg.= "Erreur lors de la suppression de l'enregistrement $tab_id_clas[$j] pour $scol_login[$i].";
 						$notok = true;
@@ -163,7 +163,7 @@ else{
 	$ligne_comptes_scol="<tr style='background-color:#FAFABE;'>\n";
 	//$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>Comptes</td>\n";
 	$ligne_comptes_scol.="<th style='text-align:center; font-weight:bold;'>Comptes</th>\n";
-	$call_scol = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login,nom,prenom FROM utilisateurs WHERE (statut='scolarite' AND etat='actif') ORDER BY nom,prenom");
+	$call_scol = mysqli_query($GLOBALS["mysqli"], "SELECT login,nom,prenom FROM utilisateurs WHERE (statut='scolarite' AND etat='actif') ORDER BY nom,prenom");
 	$nb = mysqli_num_rows($call_scol);
 	$i=0;
 	$scol_login=array();
@@ -205,7 +205,7 @@ else{
 	echo "</th>\n";
 	echo "</tr>\n";
 
-	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes ORDER BY classe");
+	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes ORDER BY classe");
 	$nombre_lignes = mysqli_num_rows($call_data);
 
 	if ($nombre_lignes != 0) {
@@ -225,7 +225,7 @@ else{
 			echo "$lig_clas->classe";
 			echo "</td>\n";
 			for($i=0;$i<$nb;$i++){
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$lig_clas->id."' AND login='".$scol_login[$i]."'");
+				$test=mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$lig_clas->id."' AND login='".$scol_login[$i]."'");
 				//if(mysql_num_rows($test)==0){$checked="";$bgcolor="";}else{$checked="checked ";$bgcolor="background-color: #AAE6AA;";}
 				if(mysqli_num_rows($test)==0){$checked="";$bgcolor="";}else{$checked="checked ";$bgcolor="background-color: plum;";}
 

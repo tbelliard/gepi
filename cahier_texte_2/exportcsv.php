@@ -74,7 +74,7 @@ $req_devoirs =
     where contenu != ''
     and id_groupe = '" . $current_group["id"] ."'";
 $req_union = "select * from (" . $req_notices . ") as notices UNION (" . $req_devoirs . ") order by date_ct desc";
-$sql_union = mysqli_query($GLOBALS["___mysqli_ston"], $req_union);
+$sql_union = mysqli_query($GLOBALS["mysqli"], $req_union);
 
 //nom du fichier à telecharger
 $nom_fic = mb_substr($current_group["description"],0 , 4);

@@ -62,7 +62,7 @@ ou par téléphone au ".getSettingValue('gepiSchoolTel')."</p>
 <p class='bold' style='margin-top:2em;'>Voici les informations vous concernant personnellement&nbsp;:</p>";
 
 $sql="SELECT rp.* FROM resp_pers rp WHERE login='".$_SESSION['login']."';";
-$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 //echo "$sql<br />";
 if(mysqli_num_rows($res_resp)==0) {
 	echo "<p class='red'>Vous n'avez pas été trouvé dans la table 'resp_pers'&nbsp;???<br />
@@ -108,7 +108,7 @@ echo "
 		</tr>";
 
 $sql="SELECT * FROM resp_adr WHERE adr_id='".$lig->adr_id."';";
-$res_adr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_adr)==0) {
 	echo "
 		<tr>
@@ -157,7 +157,7 @@ $sql="(SELECT e.* FROM eleves e,
 				WHERE e.ele_id=r.ele_id AND
 					r.pers_id='".$lig->pers_id."' AND
 				(r.resp_legal='1' OR r.resp_legal='2') ORDER BY e.nom,e.prenom)";
-$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_adr)==0) {
 	echo "<p style='color:red'>Vous n'êtes responsable légal d'aucun élève enregistré dans la base.</p>";
 	echo "</div>\n";
@@ -170,7 +170,7 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 
 	$ligne_login="";
 	$sql="SELECT etat, auth_mode FROM utilisateurs WHERE statut='eleve' AND etat='actif' AND login='$lig_ele->login';";
-	$test_compte=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test_compte=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_compte)>0) {
 		$lig_user=mysqli_fetch_object($test_compte);
 		$ligne_login="
@@ -221,7 +221,7 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 
 	$ligne_regime="";
 	$sql="SELECT * FROM j_eleves_regime WHERE login='$lig_ele->login';";
-	$res_reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_reg)>0) {
 		$lig_reg=mysqli_fetch_object($res_reg);
 		$ligne_regime="

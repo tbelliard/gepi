@@ -102,7 +102,7 @@ $materiel='';
 if (($mode=='module_discipline')||($mode=='module_retenue')) {
 	// on récupère les données à transmettre au modèle de retenue open office.
 	$sql_incident="SELECT * FROM `s_incidents` WHERE `id_incident`=$id_incident";
-	$res_incident=mysqli_query($GLOBALS["___mysqli_ston"], $sql_incident);
+	$res_incident=mysqli_query($GLOBALS["mysqli"], $sql_incident);
 	if(mysqli_num_rows($res_incident)>0) {
 		$lig_incident=mysqli_fetch_object($res_incident);
 		
@@ -132,7 +132,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 		else {
 			$sql="SELECT rp.civilite,rp.nom,rp.prenom,ra.adr1,ra.adr2,ra.adr3,ra.cp,ra.commune FROM resp_pers rp, resp_adr ra, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND e.login='$ele_login' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
 		}
-		$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_resp)==0) {
 			$ad_nom_resp="";
 			$adr1_resp="";
@@ -154,7 +154,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 		//le déclarant On récupère le nom et le prénom (et la qualité)
 		$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$lig_incident->declarant';";
 		//echo "$sql<br />\n";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			$lig=mysqli_fetch_object($res);
 			//var retenue
@@ -169,7 +169,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 			$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
 											WHERE du.login_user = '".$lig_incident->declarant."'
 											AND du.id_statut = ds.id;";
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$query = mysqli_query($GLOBALS["mysqli"], $sql);
 			$result = mysqli_fetch_array($query);
 	        
 			//var retenue
@@ -192,7 +192,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 	//On Traite ici la date et l'heure de la retenue posée
 	if ($mode=='module_retenue') {	
 	     $sql_sanction = "SELECT * FROM `s_retenues` WHERE `id_sanction`=$id_sanction";
-	     $res_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql_sanction);
+	     $res_sanction=mysqli_query($GLOBALS["mysqli"], $sql_sanction);
 	    if(mysqli_num_rows($res_sanction)>0) {
 			$lig_sanction=mysqli_fetch_object($res_sanction);
 			
@@ -213,7 +213,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 			//recherche de l'heure de début. C'est le crénaux qui est enregistré.
 			$sql_heure = "SELECT * FROM `edt_creneaux` WHERE `nom_definie_periode`='$lig_sanction->heure_debut'";
 			//echo $sql_heure;
-			$res_heure = mysqli_query($GLOBALS["___mysqli_ston"], $sql_heure);
+			$res_heure = mysqli_query($GLOBALS["mysqli"], $sql_heure);
 			if(mysqli_num_rows($res_heure)>0) {
 			    $lig_heure=mysqli_fetch_object($res_heure); 
 				$h_deb = $lig_heure->heuredebut_definie_periode;

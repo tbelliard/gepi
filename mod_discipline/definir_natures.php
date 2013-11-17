@@ -34,10 +34,10 @@ if ($resultat_session == 'c') {
 	die();
 }
 $sql = "SELECT 1=1 FROM `droits` WHERE id='/mod_discipline/definir_natures.php';";
-$test = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test = mysqli_query($GLOBALS["mysqli"], $sql);
 if (mysqli_num_rows($test) == 0) {
 	$sql = "INSERT INTO droits VALUES ( '/mod_discipline/definir_natures.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les natures', '')";
-	$test = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test = mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -84,7 +84,7 @@ if (isset($suppr_nature)) {
 		if (isset($suppr_nature[$i])) {
 			$sql = "DELETE FROM s_natures WHERE id='$suppr_nature[$i]';";
 			//echo "$sql<br />";
-			$suppr = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$suppr = mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$suppr) {
 				//$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_lieu[$i].".<br />\n";
 				$msg.="ERREUR lors de la suppression de la nature n°" . $suppr_nature[$i] . ".<br />\n";
@@ -98,7 +98,7 @@ if (isset($suppr_nature)) {
 $tab_categorie=array();
 $sql = "SELECT * FROM s_categories ORDER BY categorie;";
 //echo "$sql<br />";
-$res2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res2 = mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res2)>0) {
 	while ($lig2=mysqli_fetch_object($res2)) {
 		$tab_categorie[$lig2->id]=$lig2->categorie;
@@ -112,7 +112,7 @@ if ((isset($nature))&&($nature != '')) {
 
 	$sql = "SELECT nature FROM s_natures ORDER BY nature;";
 	//echo "$sql<br />";
-	$res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res = mysqli_query($GLOBALS["mysqli"], $sql);
 	if (mysqli_num_rows($res) > 0) {
 		$tab_nature = array();
 		while ($lig = mysqli_fetch_object($res)) {
@@ -133,9 +133,9 @@ if ((isset($nature))&&($nature != '')) {
 			$msg.="La catégorie choisie pour la nouvelle nature n'existe pas.<br />";
 		}
 
-		$sql = "INSERT INTO s_natures SET nature='" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $nature) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', id_categorie='".$id_categorie_nature_nouvelle."';";
+		$sql = "INSERT INTO s_natures SET nature='" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nature) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', id_categorie='".$id_categorie_nature_nouvelle."';";
 		//echo "$sql<br />";
-		$res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$res) {
 			$msg.="ERREUR lors de l'enregistrement de " . $nature . "<br />\n";
 		} else {
@@ -153,7 +153,7 @@ if((isset($id_nature))&&(count($id_nature)>0)&&(isset($id_categorie))&&(count($i
 		if(($id_categorie[$i]==0)||(array_key_exists($id_categorie[$i],$tab_categorie))) {
 			$sql="UPDATE s_natures SET id_categorie='$id_categorie[$i]' WHERE id='$id_nature[$i]';";
 			//echo "$sql<br />";
-			$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$update) {
 				//$msg.="Erreur lors de la mise à jour de la catégorie pour la nature ".$tab_nature[$id_nature[$i]]['nature']."<br />";
 				$msg.="Erreur lors de la mise à jour de la catégorie pour la nature n°".$id_nature[$i]."<br />";
@@ -168,11 +168,11 @@ $tab_nature=array();
 // Il y a un problème de tri avec UNION SELECT... je passe à deux requêtes
 $sql = "SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie;";
 //echo "$sql<br />";
-$res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res = mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql = "SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature;";
 //echo "$sql<br />";
-$res2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res2 = mysqli_query($GLOBALS["mysqli"], $sql);
 if((mysqli_num_rows($res)>0)||(mysqli_num_rows($res2)>0)) {
 	$cpt=0;
 	while ($lig=mysqli_fetch_object($res)) {
@@ -194,12 +194,12 @@ else {
 	for($i=0;$i<count($tab_natures_par_defaut);$i++) {
 		$sql="INSERT INTO s_natures SET nature='".$tab_natures_par_defaut[$i]."';";
 		//echo "$sql<br />";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	$sql = "SELECT * FROM s_natures ORDER BY nature;";
 	//echo "$sql<br />";
-	$res2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res2 = mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res2)>0) {
 		$cpt=0;
 		while ($lig2=mysqli_fetch_object($res2)) {

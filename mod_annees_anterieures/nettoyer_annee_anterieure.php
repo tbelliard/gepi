@@ -65,21 +65,21 @@ if(isset($confirmer)) {
 	$nb_err=0;
 	for($i=0;$i<count($suppr);$i++){
     $sql="DELETE FROM archivage_eleves WHERE ine='$suppr[$i]';";
-		$res_suppr1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="DELETE FROM archivage_eleves2 WHERE ine='$suppr[$i]';";
-		$res_suppr2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr2=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM archivage_aid_eleve WHERE id_eleve='$suppr[$i]';";
-		$res_suppr3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr3=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM archivage_appreciations_aid WHERE id_eleve='$suppr[$i]';";
-		$res_suppr4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr4=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM archivage_disciplines WHERE INE='$suppr[$i]';";
-		$res_suppr5=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr5=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM archivage_ects WHERE INE='$suppr[$i]';";
-		$res_suppr6=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr6=mysqli_query($GLOBALS["mysqli"], $sql);
     if (isset($flag_port_folio)) {
       $sql="DELETE FROM port_folio_validations_archives  WHERE login='$suppr[$i]';";
-  		mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+  		mysqli_query($GLOBALS["mysqli"], $sql);
     }
 
 		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)  and ($res_suppr5) and ($res_suppr6)) {
@@ -121,7 +121,7 @@ $sql="SELECT DISTINCT a.nom,a.prenom,a.ine,a.naissance
 			LEFT JOIN eleves e
 			ON a.ine=e.no_gep
 			WHERE e.no_gep IS NULL;";
-$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_ele=mysqli_num_rows($res1);
 if($nb_ele==0){
 	echo "<p>Tous les élèves présents dans la table 'annees_anterieures' sont dans la table 'eleves'.</p>\n";

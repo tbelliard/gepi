@@ -67,7 +67,7 @@ if ($_SESSION['statut'] == "responsable") {
 	}
 	$sql.=";";
 	//echo "$sql<br />";
-	$get_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$get_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if (mysqli_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
@@ -90,7 +90,7 @@ if ($login_eleve and $login_eleve != null) {
 	// On récupère la classe de l'élève, pour déterminer automatiquement le nombre de périodes
 	// On part du postulat que même si l'élève change de classe en cours d'année, c'est pour aller
 	// dans une classe qui a le même nombre de périodes...
-	$id_classe = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
+	$id_classe = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
 }
 
 if (isset($id_classe)) {
@@ -112,7 +112,7 @@ if (isset($id_classe)) {
 		//echo "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')<br />";
 
 		if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
-			$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+			$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 			if ($test == "0") {
 				tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
 				echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
@@ -124,7 +124,7 @@ if (isset($id_classe)) {
 			$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
 			//echo "\$gepi_prof_suivi=$gepi_prof_suivi<br/>";
 
-			$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM j_eleves_classes jec, j_eleves_professeurs jep WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe = '".$id_classe."')"));
+			$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_eleves_classes jec, j_eleves_professeurs jep WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe = '".$id_classe."')"));
 			if ($test == "0") {
 				tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'est pas $gepi_prof_suivi, sans en avoir l'autorisation.");
 				echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas $gepi_prof_suivi!";
@@ -222,7 +222,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 	}
 	//echo "$sql<br />\n";
-	$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nombreligne = mysqli_num_rows($calldata);
 	echo " | Total : $nombreligne classes </p>\n";
 
@@ -272,7 +272,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 							re.acces_sp='y'))";
 	}
 	$sql.=";";
-	$quels_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$quels_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 	echo "<p>Cliquez sur le nom d'un ".$gepiSettings['denomination_eleve']." pour visualiser son bulletin simplifié :</p>";
@@ -337,7 +337,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		$chaine_options_classes="";
 
-		$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_class_tmp)>0){
 			$id_class_prec=0;
 			$id_class_suiv=0;
@@ -383,7 +383,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// =================================
 
 
-		$classe_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes WHERE id='$id_classe'");
+		$classe_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id='$id_classe'");
 		$nom_classe = mysql_result($classe_eleve, 0, "classe");
 		echo "<p class='grand'>Classe de $nom_classe</p>\n";
 		echo "<p>Afficher&nbsp;:</p>\n";
@@ -404,7 +404,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 		echo "</label></td></tr>\n";
 
-		$call_suivi = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe' ORDER BY professeur");
+		$call_suivi = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe' ORDER BY professeur");
 		$nb_lignes = mysqli_num_rows($call_suivi);
 		$indice = 1;
 		if ($nb_lignes > 1) {
@@ -419,7 +419,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$i=0;
 			while ($i < $nb_lignes) {
 				$login_pr = mysql_result($call_suivi,$i,"professeur");
-				$call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM utilisateurs WHERE login='$login_pr'");
+				$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login='$login_pr'");
 				$nom_prof = mysql_result($call_prof,0,"nom");
 				$prenom_prof = mysql_result($call_prof,0,"prenom");
 				echo "<option value=".$login_pr."";
@@ -477,7 +477,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 						"e.login = jep.login AND " .
 						"jep.login = jec.login AND " .
 						"jep.professeur = '".$_SESSION['login']."')) ORDER BY nom,prenom;";
-					$appel_liste_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 				else {
 					$sql="SELECT DISTINCT e.* " .
@@ -487,7 +487,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 						"e.login = jep.login AND " .
 						"jep.login = jec.login AND " .
 						"jep.professeur = '".$_SESSION['login']."') ORDER BY e.nom,e.prenom;";
-					$appel_liste_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 			else {
@@ -500,14 +500,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 					"jeg.id_groupe = jgp.id_groupe AND " .
 					"jgp.login = '".$_SESSION['login']."') " .
 					"ORDER BY e.nom,e.prenom";
-				$appel_liste_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 
 		} else {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom, prenom";
 		}
 		//echo "$sql<br />\n";
-		$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$call_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nombreligne = mysqli_num_rows($call_eleve);
 		$i = "0" ;
 		while ($i < $nombreligne) {
@@ -535,7 +535,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
 		if($_SESSION['statut']=='responsable') {
-			$quels_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom " .
+			$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom " .
 						"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
 						"e.ele_id = re.ele_id AND " .
 						"re.pers_id = r.pers_id AND " .
@@ -546,7 +546,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 		echo "</p>\n";
 
-		$eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
+		$eleve = mysqli_query($GLOBALS["mysqli"], "SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
 		$prenom_eleve = mysql_result($eleve, 0, "prenom");
 		$nom_eleve = mysql_result($eleve, 0, "nom");
 
@@ -605,7 +605,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		*/
 		$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' AND verouiller='N' ORDER BY num_periode DESC LIMIT 1;";
 		//echo "$sql<br />";
-		$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_per)) {
 			$lig_per=mysqli_fetch_object($res_per);
 			//$max_per=$lig_per->max_per;
@@ -615,7 +615,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			// La solution ci-dessous n'est pas fiable: si un groupe est à cheval sur plusieurs classes et que les périodes ouvertes sur les déifférentes classes ne sont pas les mêmes
 			$sql="SELECT max(periode) AS max_per FROM matieres_notes mn, j_groupes_classes jgc WHERE mn.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe';";
 			//echo "$sql<br />";
-			$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_per)) {
 				$lig_per=mysqli_fetch_object($res_per);
 				$max_per=$lig_per->max_per;

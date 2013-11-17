@@ -110,7 +110,7 @@ if(isset($id_groupe)) {
 		}
 
 		$sql="SELECT classe FROM classes WHERE id='$id_classe'";
-		$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_classe)==1){
 			$lig_classe=mysqli_fetch_object($res_classe);
 			$classe=$lig_classe->classe;
@@ -309,7 +309,7 @@ if($gepi_prof_suivi==""){
 		// Liste des CPE:
 		//$sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
 		$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.email, jec.cpe_login FROM utilisateurs u, j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
-		$result_cpe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$result_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($result_cpe)>0) {
 			echo "<table class='boireaus' border='1'>\n";
 			$alt=1;
@@ -331,7 +331,7 @@ if($gepi_prof_suivi==""){
 			//$sql="SELECT DISTINCT e.nom,e.prenom,e.email FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
 		}
-		$res_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_eleves=mysqli_num_rows($res_eleves);
 
 		echo "<p>Effectif de la classe: $nb_eleves</p>\n";
@@ -386,7 +386,7 @@ if($gepi_prof_suivi==""){
 		echo "<table class='boireaus' border='1'>\n";
 		$sql="SELECT jgp.login,u.nom,u.prenom,u.email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$id_groupe' AND u.login=jgp.login";
 		//echo "$sql<br />";
-		$result_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$result_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo "<tr valign='top'><th>Professeur";
 		if(mysqli_num_rows($result_prof)>1){echo "s";}
 		echo ":</th>\n";
@@ -399,7 +399,7 @@ if($gepi_prof_suivi==""){
 			// Le prof est-il PP d'au moins un élève de la classe?
 			$sql="SELECT * FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$lig_prof->login'";
 			//echo " (<i>$sql</i>)\n";
-			$res_pp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_pp)>0){
 					echo " (<i>".$gepi_prof_suivi."</i>)";
 			}
@@ -420,7 +420,7 @@ if($gepi_prof_suivi==""){
 			//$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
 			$sql="SELECT DISTINCT e.*,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
 		}
-		$res_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_eleves=mysqli_num_rows($res_eleves);
 
 		if(isset($periode_num)) {
@@ -429,7 +429,7 @@ if($gepi_prof_suivi==""){
 		else {
 			$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login ORDER BY e.nom,e.prenom";
 		}
-		$res_tous_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_tous_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_tous_eleves=mysqli_num_rows($res_tous_eleves);
 
 		echo "<p>Effectif de l'enseignement: $nb_eleves/$nb_tous_eleves</p>\n";
@@ -485,7 +485,7 @@ if($gepi_prof_suivi==""){
 		echo "<table class='boireaus' border='1'>\n";
 		$sql="SELECT DISTINCT jgp.login,u.nom,u.prenom,u.email, jgc.id_classe FROM j_groupes_professeurs jgp,utilisateurs u, j_groupes_classes jgc WHERE jgp.id_groupe='$id_groupe' AND u.login=jgp.login AND jgp.id_groupe=jgc.id_groupe ORDER BY u.nom, u.prenom";
 		//echo "$sql<br />";
-		$result_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$result_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 		$tab_prof_tmp=array();
 		$tab_id_classe_tmp=array();
 		while($lig_prof=mysqli_fetch_object($result_prof)){
@@ -528,7 +528,7 @@ if($gepi_prof_suivi==""){
 			$orderby=" ORDER BY e.nom,e.prenom";
 		}
 		$sql.=$orderby;
-		$res_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_eleves=mysqli_num_rows($res_eleves);
 		echo "<p>Effectif: $nb_eleves</p>\n";
 		if($nb_eleves>0){

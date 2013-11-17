@@ -92,7 +92,7 @@ if ($id_groupe != NULL) {
 if (is_numeric($id_groupe) && $id_groupe > 0) {
 
     $sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='".$_SESSION['login']."';";
-    $test_prof_groupe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $test_prof_groupe=mysqli_query($GLOBALS["mysqli"], $sql);
     if(mysqli_num_rows($test_prof_groupe)==0) {
         $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
 		unset($_SESSION['id_groupe_session']);
@@ -123,16 +123,16 @@ if(isset($_GET['clean_anomalie_cn'])) {
 	$suppr_id_dev=$_GET['suppr_id_dev'];
 	if(preg_match('/^[0-9]*$/', $suppr_id_dev)) {
 		$sql="SELECT 1=1 FROM cn_devoirs cd, cn_cahier_notes ccn, j_groupes_professeurs jgp WHERE cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND cd.id='".$suppr_id_dev."';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			$sql="DELETE FROM cn_notes_devoirs WHERE id_devoir='".$suppr_id_dev."';";
-			$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$suppr) {
 				$msg.="Erreur lors de la suppression des notes associées au devoir n°$suppr_id_dev.<br />";
 			}
 			else {
 				$sql="DELETE FROM cn_devoirs WHERE id='".$suppr_id_dev."';";
-				$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$suppr) {
 					$msg.="Erreur lors de la suppression du devoir n°$suppr_id_dev.<br />";
 				}
@@ -155,7 +155,7 @@ if(isset($_GET['clean_anomalie_dev'])) {
 		//echo "A<br />";
 	}
 	elseif(isset($_GET['id_racine'])) {
-		$appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='".$_GET['id_racine']."';");
+		$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='".$_GET['id_racine']."';");
 		$tmp_id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
 		$tmp_periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
 	}
@@ -173,7 +173,7 @@ if(isset($_GET['clean_anomalie_dev'])) {
 						cc.id=cd.id_conteneur AND
 						cd.id='".$_GET['clean_anomalie_dev']."';";
 		//echo "$sql<br />";
-		$test_cn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_cn)==0) {
 			$msg="Tentative d'accès à un devoir non associé à un de vos carnet de notes.<br />";
 		}
@@ -181,7 +181,7 @@ if(isset($_GET['clean_anomalie_dev'])) {
 			$lig_tmp=mysqli_fetch_object($test_cn);
 			$sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='".$_GET['clean_anomalie_dev']."' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$tmp_periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$tmp_id_groupe' and periode='$tmp_periode_num');";
 			//echo "$sql<br />";
-			$res_a=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_a=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_a)==0) {
 				$msg="Aucune anomalie n'est relevée pour le devoir n°".$_GET['clean_anomalie_dev'].".<br />";
 			}
@@ -190,7 +190,7 @@ if(isset($_GET['clean_anomalie_dev'])) {
 				while($lig_a=mysqli_fetch_object($res_a)) {
 					$sql="DELETE FROM cn_notes_devoirs WHERE id_devoir='".$_GET['clean_anomalie_dev']."' AND login NOT IN (select login from j_eleves_groupes where id_groupe='$tmp_id_groupe' and periode='$tmp_periode_num');";
 					//echo "$sql<br />";
-					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($del) {
 						$msg.="Ménage effectué pour $lig_a->login : $lig_a->note - $lig_a->statut sur le devoir n°".$_GET['clean_anomalie_dev'].".<br />\n";
 					}
@@ -227,7 +227,7 @@ fclose($fich);
 
 //-----------------------------------------------------------------------------------
 if (isset($_REQUEST['id_devoir'])) {
-    $appel_devoir = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_racine FROM cn_devoirs WHERE (id='".$_REQUEST['id_devoir']."')");
+    $appel_devoir = mysqli_query($GLOBALS["mysqli"], "SELECT id_racine FROM cn_devoirs WHERE (id='".$_REQUEST['id_devoir']."')");
     if (mysqli_num_rows($appel_devoir) != 0) {
     	$id_racine = mysql_result($appel_devoir, 0, 'id_racine');
     }
@@ -259,16 +259,16 @@ if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
 		die();
 	}
 
-    $appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe' and periode='$periode_num')");
+    $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe' and periode='$periode_num')");
     $nb_cahier_note = mysqli_num_rows($appel_cahier_notes);
     if ($nb_cahier_note == 0) {
         $nom_complet_matiere = $current_group["matiere"]["nom_complet"];
         $nom_court_matiere = $current_group["matiere"]["matiere"];
-        $reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($current_group["description"])."', nom_complet='". traitement_magic_quotes($nom_complet_matiere)."', description = '', mode = '".getPref($_SESSION['login'], 'cnBoitesModeMoy', (getSettingValue('cnBoitesModeMoy')!="" ? getSettingValue('cnBoitesModeMoy') : 2))."', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
+        $reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($current_group["description"])."', nom_complet='". traitement_magic_quotes($nom_complet_matiere)."', description = '', mode = '".getPref($_SESSION['login'], 'cnBoitesModeMoy', (getSettingValue('cnBoitesModeMoy')!="" ? getSettingValue('cnBoitesModeMoy') : 2))."', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
         if ($reg) {
-            $id_racine = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
-            $reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine'");
-            $reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine'");
+            $id_racine = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
+            $reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine'");
+            $reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine'");
         }
     } else {
         $id_racine = mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
@@ -286,7 +286,7 @@ if ((isset($_GET['creer_structure'])) and (($current_group["classe"]["ver_period
 
   function recopie_arbo($id_racine, $id_prec,$id_new) {
     global $vide;
-    $query_cont = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_conteneurs
+    $query_cont = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs
     WHERE (
         id != id_racine and
         parent = '".$id_prec."'
@@ -306,7 +306,7 @@ if ((isset($_GET['creer_structure'])) and (($current_group["classe"]["ver_period
         $val10 = mysql_result($query_cont,$i,'display_parents');
         $val11 = mysql_result($query_cont,$i,'display_bulletin');
         $val12 = mysql_result($query_cont,$i,'parent');
-        $query_insert = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO cn_conteneurs
+        $query_insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO cn_conteneurs
         set id_racine = '".$id_racine."',
         nom_court = '".traitement_magic_quotes($val3)."',
         nom_complet = '".traitement_magic_quotes($val4)."',
@@ -319,7 +319,7 @@ if ((isset($_GET['creer_structure'])) and (($current_group["classe"]["ver_period
         display_bulletin = '".$val11."',
         parent = '".$id_new."' ");
         $vide = 'no';
-        $id_new1 = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+        $id_new1 = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
         recopie_arbo($id_racine, $id_prec, $id_new1);
         $i++;
     }
@@ -349,10 +349,10 @@ fwrite($fich,"Avant isset(\$id_racine)\n");
 fclose($fich);
 */
 if  (isset($id_racine) and ($id_racine!='')) {
-    $appel_conteneurs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_conteneurs WHERE id ='$id_racine'");
+    $appel_conteneurs = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id ='$id_racine'");
     $nom_court = mysql_result($appel_conteneurs, 0, 'nom_court');
 
-    $appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes = '$id_racine'");
+    $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes = '$id_racine'");
     $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
     if (!isset($current_group)) $current_group = get_group($id_groupe);
     $periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
@@ -388,7 +388,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
 		if (($current_group["classe"]["ver_periode"]["all"][$periode_num]==3)||($acces_exceptionnel_saisie)) {
 			$sql0="SELECT id_conteneur FROM cn_devoirs WHERE id='$temp'";
 			//echo "$sql0<br />";
-			$sql= mysqli_query($GLOBALS["___mysqli_ston"], $sql0);
+			$sql= mysqli_query($GLOBALS["mysqli"], $sql0);
 			if(mysqli_num_rows($sql)==0) {
 				echo "<p style='color:red'>Le devoir $temp n'a pas été trouvé.</p>\n";
 			}
@@ -398,7 +398,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
 				if($current_group["classe"]["ver_periode"]["all"][$periode_num]!=3) {
 					$sql="SELECT * FROM cn_devoirs WHERE id='$temp';";
 					//echo "$sql<br />";
-					$res_cd=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_cd=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_cd)>0) {
 						$lig_cd=mysqli_fetch_object($res_cd);
 						$texte="Suppression du devoir n°$temp : ".$lig_cd->nom_court." (".$lig_cd->nom_complet.") du ".formate_date($lig_cd->date).".\n";
@@ -406,25 +406,25 @@ if  (isset($id_racine) and ($id_racine!='')) {
 					}
 				}
 
-				$sql = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM cn_notes_devoirs WHERE id_devoir='$temp'");
-				$sql = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM cn_devoirs WHERE id='$temp'");
+				$sql = mysqli_query($GLOBALS["mysqli"], "DELETE FROM cn_notes_devoirs WHERE id_devoir='$temp'");
+				$sql = mysqli_query($GLOBALS["mysqli"], "DELETE FROM cn_devoirs WHERE id='$temp'");
 		
 				// On teste si le conteneur est vide
-				$sql= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM cn_devoirs WHERE id_conteneur='$id_cont'");
+				$sql= mysqli_query($GLOBALS["mysqli"], "SELECT id FROM cn_devoirs WHERE id_conteneur='$id_cont'");
 				$nb_dev = mysqli_num_rows($sql);
-				$sql= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM cn_conteneurs WHERE parent='$id_cont'");
+				$sql= mysqli_query($GLOBALS["mysqli"], "SELECT id FROM cn_conteneurs WHERE parent='$id_cont'");
 				$nb_cont = mysqli_num_rows($sql);
 				if (($nb_dev == 0) or ($nb_cont == 0)) {
-					$sql = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_cont'");
+					$sql = mysqli_query($GLOBALS["mysqli"], "DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_cont'");
 				}
 		
 				// On teste si le carnet de notes est vide
-				$sql= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM cn_devoirs WHERE id_conteneur='$id_racine'");
+				$sql= mysqli_query($GLOBALS["mysqli"], "SELECT id FROM cn_devoirs WHERE id_conteneur='$id_racine'");
 				$nb_dev = mysqli_num_rows($sql);
-				$sql= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM cn_conteneurs WHERE parent='$id_racine'");
+				$sql= mysqli_query($GLOBALS["mysqli"], "SELECT id FROM cn_conteneurs WHERE parent='$id_racine'");
 				$nb_cont = mysqli_num_rows($sql);
 				if (($nb_dev == 0) and ($nb_cont == 0)) {
-					$sql = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_racine'");
+					$sql = mysqli_query($GLOBALS["mysqli"], "DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_racine'");
 				} else {
 					$arret = 'no';
 					mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
@@ -440,24 +440,24 @@ if  (isset($id_racine) and ($id_racine!='')) {
 
 		if (($current_group["classe"]["ver_periode"]["all"][$periode_num]==3)||($acces_exceptionnel_saisie)) {
 			$temp = $_GET['del_cont'];
-			$sql= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM cn_devoirs WHERE id_conteneur='$temp'");
+			$sql= mysqli_query($GLOBALS["mysqli"], "SELECT id FROM cn_devoirs WHERE id_conteneur='$temp'");
 			$nb_dev = mysqli_num_rows($sql);
-			$sql= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM cn_conteneurs WHERE parent='$temp'");
+			$sql= mysqli_query($GLOBALS["mysqli"], "SELECT id FROM cn_conteneurs WHERE parent='$temp'");
 			$nb_cont = mysqli_num_rows($sql);
 			if (($nb_dev != 0) or ($nb_cont != 0)) {
 				echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 				echo 'alert("Impossible de supprimer une boîte qui n\'est pas vide !");\n';
 				echo "</script>\n";
 			} else {
-				$sql = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM cn_conteneurs WHERE id='$temp'");
-				$sql = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$temp'");
+				$sql = mysqli_query($GLOBALS["mysqli"], "DELETE FROM cn_conteneurs WHERE id='$temp'");
+				$sql = mysqli_query($GLOBALS["mysqli"], "DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$temp'");
 				// On teste si le carnet de notes est vide
-				$sql= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM cn_devoirs WHERE id_conteneur='$id_racine'");
+				$sql= mysqli_query($GLOBALS["mysqli"], "SELECT id FROM cn_devoirs WHERE id_conteneur='$id_racine'");
 				$nb_dev = mysqli_num_rows($sql);
-				$sql= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM cn_conteneurs WHERE parent='$id_racine'");
+				$sql= mysqli_query($GLOBALS["mysqli"], "SELECT id FROM cn_conteneurs WHERE parent='$id_racine'");
 				$nb_cont = mysqli_num_rows($sql);
 				if (($nb_dev == 0) and ($nb_cont == 0)) {
-					$sql = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_racine'");
+					$sql = mysqli_query($GLOBALS["mysqli"], "DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_racine'");
 				} else {
 					$arret = 'no';
 					mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
@@ -583,7 +583,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 	// Recuperer la liste des cahiers de notes
 	$sql="SELECT * FROM cn_cahier_notes ccn where id_groupe='$id_groupe' ORDER BY periode;";
-	$res_cn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_cn)>1) {
 		// On ne propose pas de champ SELECT pour un seul canier de notes
 		echo "<script type='text/javascript'>
@@ -720,7 +720,7 @@ var tab_per_cn=new Array();\n";
 		$info_anomalie="";
 		foreach($tab_anomalie_cn_pour_groupe_hors_cn as $tmp_id_groupe => $tmp_cn) {
 			$sql="SELECT * FROM cn_devoirs WHERE id_racine='$tmp_cn';";
-			$res_cn_dev=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_cn_dev=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_cn_dev)>0) {
 				if($info_anomalie=="") {
 					$info_anomalie="<div style='border:1px solid red; margin: 1em;'><p><span style='color:red; font-weight:bold;'>ANOMALIE&nbsp;:</span> Un devoir au moins a été créé dans un enseignement qui ne doit normalement pas apparaître dans les Carnets de notes.<br />Il conviendrait de le supprimer, ou de le transférer (<em>si par exemple, il a été créé dans un sous-groupe, au lieu du groupe classe</em>).</p>\n";
@@ -735,7 +735,7 @@ var tab_per_cn=new Array();\n";
 					if($lig_dev->nom_complet!='') {$info_anomalie.=" (<em>".$lig_dev->nom_complet."</em>)";}
 
 					$sql="SELECT DISTINCT login FROM cn_notes_devoirs WHERE id_devoir='$lig_dev->id';";
-					$test_notes_dev=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test_notes_dev=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_notes_dev)==0) {
 						$info_anomalie.=" - Aucune note - ";
 					}
@@ -770,18 +770,18 @@ var tab_per_cn=new Array();\n";
 
     if (($empty != 'yes')&&(getSettingAOui('active_bulletins'))) {
 		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
-		$test_jgv=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_jgv=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_jgv)==0) {
 			//if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
 			if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 				echo "<h3 class='gepi'>Saisie du bulletin ($nom_periode[$periode_num])</h3>\n";
 	
 				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
-				$res_ele_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 				$nb_ele_grp=mysqli_num_rows($res_ele_grp);
 	
 				$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND periode='$periode_num' AND statut!='-';";
-				$res_mn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_mn=mysqli_query($GLOBALS["mysqli"], $sql);
 				$nb_mn=mysqli_num_rows($res_mn);
 				if($nb_mn==0) {
 					$info_mn="<span style='color:red; font-size: small;'>(actuellement vide)</span>";
@@ -796,7 +796,7 @@ var tab_per_cn=new Array();\n";
 				}
 	
 				$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='$id_groupe' AND periode='$periode_num' AND appreciation!='';";
-				$res_ma=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_ma=mysqli_query($GLOBALS["mysqli"], $sql);
 				$nb_ma=mysqli_num_rows($res_ma);
 				if($nb_ma==0) {
 					$info_ma="<span style='color:red; font-size: small;'>(actuellement vide)</span>";
@@ -828,7 +828,7 @@ var tab_per_cn=new Array();\n";
 
 	if((isset($id_racine))&&(getPref($_SESSION['login'], 'cnBoitesModeMoy', '')=="")) {
 		$sql="SELECT 1=1 FROM cn_conteneurs WHERE id_racine='$id_racine';";
-		$res_nb_conteneurs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_nb_conteneurs=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_nb_conteneurs)>1) {
 			echo "<p><br /></p><p><strong style='color:red'>ATTENTION&nbsp;:</strong> Vous n'avez pas encore choisi le mode de calcul de moyenne que vous souhaitez adopter <strong>par défaut</strong> quand vous créez des ".getSettingValue('gepi_denom_boite')."s.</p>\n";
 			echo "<div style='margin-left:7em;'>";
@@ -862,7 +862,7 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
         echo "<p><a href='index.php?id_groupe=$id_groupe&amp;periode_num=$i'>".ucfirst($current_group["periodes"][$i]["nom_periode"])."</a>";
 
 	$sql="SELECT * FROM periodes WHERE num_periode='$i' AND id_classe='".$current_group["classes"]["list"][0]."' AND verouiller='N'";
-	$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_test)==0){
 		echo " (<i>période close</i>)";
 

@@ -72,13 +72,13 @@ if (isset($_POST['is_posted'])) {
 			$sql3="";
 			$maj_notanet="n";
 			$sql="SELECT 1=1 FROM notanet WHERE login='".$ele_login[$i]."';";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				$maj_notanet="y";
 			}
 
 			$sql="DELETE FROM notanet_socles WHERE login='".$ele_login[$i]."';";
-			$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="INSERT INTO notanet_socles SET login='".$ele_login[$i]."'";
 
@@ -126,7 +126,7 @@ if (isset($_POST['is_posted'])) {
 
 			if((isset($lv[$i]))&&($lv[$i]!='')) {
 				$sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jeg.login='".$ele_login[$i]."' AND jeg.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$lv[$i]."');";
-				$res_mat_suivie=mysqli_query($GLOBALS["___mysqli_ston"], $sql2);
+				$res_mat_suivie=mysqli_query($GLOBALS["mysqli"], $sql2);
 				if(mysqli_num_rows($res_mat_suivie)!=0) {
 					$sql.=",lv='".$lv[$i]."'";
 				}
@@ -142,7 +142,7 @@ if (isset($_POST['is_posted'])) {
 			$sql3.=" WHERE login='".$ele_login[$i]."' AND notanet_mat='SOCLE NIVEAU A2 DE LANGUE';";
 
 			//echo "$sql<br />";
-			$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$register=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$register) {
 				$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
 				//echo "ERREUR<br />";
@@ -151,8 +151,8 @@ if (isset($_POST['is_posted'])) {
 
 			if($maj_notanet=='y') {
 				// On met à jour la table notanet avec les corrections apportées sur notanet_socles
-				$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql2);
-				$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql3);
+				$register=mysqli_query($GLOBALS["mysqli"], $sql2);
+				$register=mysqli_query($GLOBALS["mysqli"], $sql3);
 			}
 
 		}
@@ -192,7 +192,7 @@ if(!isset($id_classe)) {
 
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, notanet n,notanet_ele_type net WHERE p.id_classe = c.id AND c.id=n.id_classe ORDER BY classe;";
 	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, notanet_ele_type net WHERE p.id_classe = c.id AND c.id=jec.id_classe AND jec.login=net.login ORDER BY classe;";
-	$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_classes=mysqli_num_rows($call_classes);
 	if($nb_classes==0){
@@ -250,7 +250,7 @@ else {
 		lv VARCHAR( 50 ) NOT NULL ,
 		PRIMARY KEY ( login )
 		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 	echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
@@ -268,7 +268,7 @@ else {
 		echo "<input type='hidden' name='id_classe[$i]' value='".$id_classe[$i]."' />\n";
 
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE (jec.id_classe='".$id_classe[$i]."' AND jec.login=e.login) ORDER BY e.nom,e.prenom,e.naissance;";
-		$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_ele)==0) {
 			echo "Aucun élève dans cette classe.</p>\n";
 		}
@@ -276,7 +276,7 @@ else {
 			echo "<table class='boireaus' border='1' summary='Saisie B2I A2'>\n";
 
 			$sql="SELECT DISTINCT id_matiere FROM j_groupes_classes jgc, j_groupes_matieres jgm, notanet_corresp nc WHERE (jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."' AND nc.matiere=jgm.id_matiere AND notanet_mat LIKE 'LANGUE VIVANTE %') ORDER BY id_matiere;";
-			$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			//$nb_colspan_mat=3+mysql_num_rows($res_mat);
 			$nb_colspan_mat=4+mysqli_num_rows($res_mat);
@@ -426,7 +426,7 @@ else {
 				echo "</td>\n";
 
 				$sql="SELECT * FROM notanet_socles WHERE login='".$lig_ele->login."';";
-				$res_socle=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_socle=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_socle)==0) {
 					$def_b2i="";
 					$def_a2="";
@@ -475,7 +475,7 @@ else {
 
 				for($j=0;$j<count($tab_mat);$j++) {
 					$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jeg.login='".$lig_ele->login."' AND jeg.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$tab_mat[$j]."');";
-					$res_mat_suivie=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_mat_suivie=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_mat_suivie)==0) {
 						echo "<td>&nbsp;</td>\n";
 					}

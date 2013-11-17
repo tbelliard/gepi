@@ -44,7 +44,7 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/admin.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/admin.php',
 administrateur='V',
@@ -57,7 +57,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Activation/désactivation',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 

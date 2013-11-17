@@ -58,7 +58,7 @@ function verifChecked($id){
 	for($i = 1 ; $i < $iter ; $i++){
 		// On récupère les droits de ce statut privé
 		$sql_ds = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$id."' AND nom_fichier = '".$autorise[$i][0]."'";
-		$query_ds = mysqli_query($GLOBALS["___mysqli_ston"], $sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
+		$query_ds = mysqli_query($GLOBALS["mysqli"], $sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
 		$count = mysqli_num_rows($query_ds);
 		if ($count >= 1) {
 			$rep = mysql_result($query_ds, 0,"autorisation");
@@ -92,7 +92,7 @@ if ($action == 'ajouter') {
 	$insert_statut = htmlspecialchars($stat_3, ENT_QUOTES);
 
 	// On ajoute le statut privé après avoir vérifié qu'il n'existe pas déjà
-	$query_v = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");
+	$query_v = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");
 	$verif = mysqli_num_rows($query_v);
 
 	if ($verif >= 1) {
@@ -102,8 +102,8 @@ if ($action == 'ajouter') {
 	}else{
 
 		$sql = "INSERT INTO droits_statut (id, nom_statut) VALUES ('', '".$insert_statut."')";
-		$enregistre = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR trigger_error('Impossible d\'enregistrer ce nouveau statut', E_USER_WARNING);
-		$cherche_id = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");
+		$enregistre = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Impossible d\'enregistrer ce nouveau statut', E_USER_WARNING);
+		$cherche_id = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");
 		$last_id = mysql_result($cherche_id, 0,"id");
 
 		if ($enregistre) {
@@ -135,8 +135,8 @@ if ($action == 'ajouter') {
 				}
 			}
 
- 			$autorise_b = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO droits_speciaux (id, id_statut, nom_fichier, autorisation) VALUES ".$values_b."")
-			 										OR trigger_error('Impossible d\'enregistrer : '.$values_b.' : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
+ 			$autorise_b = mysqli_query($GLOBALS["mysqli"], "INSERT INTO droits_speciaux (id, id_statut, nom_fichier, autorisation) VALUES ".$values_b."")
+			 										OR trigger_error('Impossible d\'enregistrer : '.$values_b.' : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
 
 			if ($autorise_b) {
 				$msg .= '<h4 style="color: green;">Ce statut est enregistr&eacute !</h4>';
@@ -154,7 +154,7 @@ if ($action == 'modifier') {
 	// On initialise toutes les variables envoyées
 	$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
 	//echo "$sql<br />";
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR trigger_error('Erreur '.$sql, E_USER_ERROR);
+	$query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Erreur '.$sql, E_USER_ERROR);
 	$nbre = mysqli_num_rows($query);
 
 	$test=array();
@@ -194,14 +194,14 @@ if ($action == 'modifier') {
 		if ($test[$a][0] == 'on') {
 			// On supprime le statut demandé
 			$sql_d = "DELETE FROM droits_statut WHERE id = '".$b."'";
-			$query_d = mysqli_query($GLOBALS["___mysqli_ston"], $sql_d) OR trigger_error('Impossible de supprimer ce statut : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_NOTICE);
+			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_NOTICE);
 
 			// Il faut aussi effacer toutes les références à ce statut dans les autres tables
 			$sql_d = "DELETE FROM droits_utilisateurs WHERE id_statut = '".$b."'";
-			$query_d = mysqli_query($GLOBALS["___mysqli_ston"], $sql_d) OR trigger_error('Impossible de supprimer ce statut du : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_NOTICE);
+			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut du : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_NOTICE);
 
 			$sql_d = "DELETE FROM droits_speciaux WHERE id_statut = '".$b."'";
-			$query_d = mysqli_query($GLOBALS["___mysqli_ston"], $sql_d) OR trigger_error('Impossible de supprimer ce statut ds : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_NOTICE);
+			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut ds : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_NOTICE);
 
 		}else{
                   // On va vérifier les droits un par un
@@ -221,12 +221,12 @@ if ($action == 'modifier') {
                     for($i = 0 ; $i < $nbre2 ; $i++){
                       //$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
                       //$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise à jour  : ".mysql_error(), E_USER_WARNING);
-                      $query_select = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM droits_speciaux WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'");
+                      $query_select = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM droits_speciaux WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'");
                       $result = mysqli_fetch_array($query_select);
                       if (!empty ($result)){
-                        $query_maj = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'");
+                        $query_maj = mysqli_query($GLOBALS["mysqli"], "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'");
                       }else{
-                        $query_maj = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise[$m][$i]."','".$vf."')");
+                        $query_maj = mysqli_query($GLOBALS["mysqli"], "INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise[$m][$i]."','".$vf."')");
                       }
 
                       if (!$query_maj) {
@@ -248,7 +248,7 @@ if ($action == 'modifier') {
 // On récupère tous les statuts nouveaux qui existent
 $aff_tableau = $aff_select = $aff_users = $selected = '';
 $sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
-$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$query = mysqli_query($GLOBALS["mysqli"], $sql);
 $nbre_statuts = mysqli_num_rows($query);
 
 if ($query) {
@@ -313,7 +313,7 @@ if ($query) {
 		check_token();
 
 		// On vérifie si cet utilisateur existe déjà
-		$query_v2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$login_user."'")
+		$query_v2 = mysqli_query($GLOBALS["mysqli"], "SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$login_user."'")
 									OR trigger_error('Impossible de vérifier le statut privé de cet utilisateur.', E_USER_WARNING);
 		$verif_v2 = mysqli_num_rows($query_v2);
 		if ($verif_v2 >= 1) {
@@ -323,7 +323,7 @@ if ($query) {
 			$sql_d = "INSERT INTO droits_utilisateurs (id, id_statut, login_user) VALUES ('', '".$statut_user."', '".$login_user."')";
 		}
 
-		$query_statut = mysqli_query($GLOBALS["___mysqli_ston"], $sql_d) OR trigger_error('Impossible d\'enregistrer dans la base.'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
+		$query_statut = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible d\'enregistrer dans la base.'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
 
 		if ($query_statut) {
 			$msg2 .= '<h4 style="color: green;">Modification enregistrée.</h4>';
@@ -336,14 +336,14 @@ if ($query) {
 											WHERE statut = 'autre'
 											AND etat = 'actif'
 											ORDER BY nom, prenom";
-	$query_u = mysqli_query($GLOBALS["___mysqli_ston"], $sql_u);
+	$query_u = mysqli_query($GLOBALS["mysqli"], $sql_u);
 
 	// On affiche la liste des utilisateurs avec un select des statuts privés
 	$i = 1;
 	while($tab = mysqli_fetch_array($query_u)){
 
 		// On récupère son statut s'il existe
-		$query_s = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$tab["login"]."'");
+		$query_s = mysqli_query($GLOBALS["mysqli"], "SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$tab["login"]."'");
 		$statut = mysqli_fetch_array($query_s);
 
 		$aff_users .= '
@@ -362,7 +362,7 @@ if ($query) {
 				<option value="rien">Choix du statut</option>';
 
 		$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
-		$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$query = mysqli_query($GLOBALS["mysqli"], $sql);
 		while($rep = mysqli_fetch_array($query)){
 			if ($statut["id_statut"] == $rep["id"]) {
 				$selected = ' selected="selected"';

@@ -80,7 +80,7 @@ else {
 	}
 }
 //echo "$sql<br />";
-$appel_donnees = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$appel_donnees = mysqli_query($GLOBALS["mysqli"], $sql);
 $nombre_lignes = mysqli_num_rows($appel_donnees);
 
 //echo "\$nombre_lignes=$nombre_lignes<br />";
@@ -105,7 +105,7 @@ while($j< $nombre_lignes) {
 
 		// Ajout d'infos:
 		$sql="SELECT pers_id, civilite FROM resp_pers WHERE login='$user_login';";
-		$res_pers_id=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_pers_id=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_pers_id)==1) {
 			$civ=mysql_result($res_pers_id, 0, 'civilite');
 			if(($civ=='Mme')||($civ=='Mlle')) {
@@ -126,7 +126,7 @@ while($j< $nombre_lignes) {
 
 		if($avec_adresse=='y') {
 			$sql="SELECT * FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
-			$res_adr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_adr)==0) {
 				$fd.=";".";".";".";".";".";".";";
 			}

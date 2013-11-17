@@ -50,7 +50,7 @@
 
 
 	$sql="show tables";
-	$res_tables=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_tables=mysqli_query($GLOBALS["mysqli"], $sql);
 	$temoin_commentaires_types="";
 	while($lig_table=mysqli_fetch_array($res_tables)){
 		if($lig_table[0]=='commentaires_types'){
@@ -61,7 +61,7 @@
 	if($temoin_commentaires_types=="oui"){
 		$sql="select * from commentaires_types where id_classe='$id_classe' and num_periode='$periode_num' order by commentaire";
 		//echo "<p>$sql</p>\n";
-		$resultat_commentaire=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$resultat_commentaire=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($resultat_commentaire)>0){
 			echo "<br />\n";
 			echo "Commentaires-types: <select name='ajout_commentaire_type' id='ajout_commentaire_type'>\n";

@@ -222,13 +222,13 @@ else{
 		echo "<p>Initialisation du processus.</p>\n";
 
 		$sql="TRUNCATE TABLE tempo2;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="INSERT INTO tempo2 SELECT pers_id,adr_id FROM resp_pers;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="SELECT 1=1 FROM tempo2;";
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_resp=mysqli_num_rows($res1);
 		if($nb_resp==0){
 			echo "<p>La table 'tempo2' est vide???<br />Aucun responsable ne serait encore défini?</p>\n";
@@ -257,7 +257,7 @@ else{
 	//==============================
 
 	$sql="SELECT * FROM tempo2 LIMIT 20;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Dédoublonnage achevé.</p>\n";
 		require("../lib/footer.inc.php");
@@ -271,14 +271,14 @@ else{
 		//$adr_id=$lig->col2;
 		//$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$pers_id';";
 		$sql="SELECT adr_id, nom, prenom FROM resp_pers WHERE pers_id='$pers_id';";
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 		$lig1=mysqli_fetch_object($res1);
 		$adr_id=$lig1->adr_id;
 
 		//echo "<p>\$pers_id=$pers_id (adr_id=$adr_id) ";
 
 		$sql="SELECT * FROM resp_adr WHERE adr_id='$adr_id';";
-		$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res2)>0) {
 			$lig2=mysqli_fetch_object($res2);
 			if((($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!=""))&&
@@ -287,7 +287,7 @@ else{
 				$sql="SELECT ra.adr_id, rp.pers_id, rp.nom, rp.prenom FROM resp_adr ra, resp_pers rp
 					WHERE ra.adr_id!='$adr_id' AND ra.adr1='".addslashes($lig2->adr1)."' AND ra.adr2='".addslashes($lig2->adr2)."' AND ra.adr3='".addslashes($lig2->adr3)."' AND ra.adr4='".addslashes($lig2->adr4)."' AND ra.cp='".addslashes($lig2->cp)."' AND ra.commune='".addslashes($lig2->commune)."' AND ra.pays='".addslashes($lig2->pays)."' AND ra.adr_id=rp.adr_id;";
 				//echo "<br />$sql<br />";
-				$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res3)>0) {
 					while($lig3=mysqli_fetch_object($res3)) {
 						$temoin="n";
@@ -295,7 +295,7 @@ else{
 						$tab_ele1=array();
 						// On vérifie si les deux responsables sont bien liés via responsables2
 						$sql="SELECT ele_id FROM responsables2 WHERE pers_id='$pers_id' AND (resp_legal='1' OR resp_legal='2');";
-						$res_ele1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ele1=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele1)>0) {
 							while($lig_ele1=mysqli_fetch_object($res_ele1)) {
 								$tab_ele1[]=$lig_ele1->ele_id;
@@ -305,7 +305,7 @@ else{
 						//$tab_ele2=array();
 						// On vérifie si les deux responsables sont bien liés via responsables2
 						$sql="SELECT ele_id FROM responsables2 WHERE pers_id='$lig3->pers_id' AND (resp_legal='1' OR resp_legal='2');";
-						$res_ele2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ele2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele2)>0) {
 							while($lig_ele2=mysqli_fetch_object($res_ele2)) {
 								//$tab_ele2[]=$lig_ele2->ele_id;
@@ -320,7 +320,7 @@ else{
 						if($temoin=="y") {
 							$sql="UPDATE resp_pers SET adr_id='$adr_id' WHERE pers_id='$lig3->pers_id';";
 							//echo "<br />$sql<br />";
-							$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							/*
 							$sql="UPDATE tempo2 SET col2='$adr_id' WHERE col1='$lig3->pers_id';";
@@ -343,7 +343,7 @@ else{
 
 		//$sql="DELETE FROM tempo2 WHERE col1='$pers_id' AND col2='$adr_id';";
 		$sql="DELETE FROM tempo2 WHERE col1='$pers_id';";
-		$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 	if($cpt>0) {echo "</p>\n";}
 

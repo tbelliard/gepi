@@ -85,7 +85,7 @@ if($_SESSION['statut']=='professeur') {
 		jgp.login = '".$_SESSION['login']."' AND
 		g.id=jgp.id_groupe
 		ORDER BY g.description";
-	$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res_grp)==0){
 		echo "<p>Vous n'avez apparemment aucun enseignement.</p>\n";
@@ -104,7 +104,7 @@ if($_SESSION['statut']=='professeur') {
 				jgc.id_classe=c.id
 				ORDER BY c.classe";
 			//echo "$sql<br />\n";
-			$res_class=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_class=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_class)>0){
 				$chaine_class="";
 				$cpt=0;
@@ -115,7 +115,7 @@ if($_SESSION['statut']=='professeur') {
 						$tabnumper=array();
 						$tabnomper=array();
 						$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-						$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_per)==0){
 							$message_erreur.="<p><span style='color:red'>ERREUR&nbsp;:</span> Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 							/*
@@ -313,7 +313,7 @@ else {
 		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY classe";
 	}
-	$result_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_classes = mysqli_num_rows($result_classes);
 
 	if(mysqli_num_rows($result_classes)==0){
@@ -346,7 +346,7 @@ else {
 		}
 
 		$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-		$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_per)==0){
 			$message_erreur.="<p><span style='color:red'>ERREUR&nbsp;:</span> Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
@@ -445,7 +445,7 @@ else {
 	echo "</select>\n";
 
 	$sql="SELECT MAX(num_periode) AS maxper FROM periodes WHERE id_classe='".$tab_id_classe[0]."';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_per=mysql_result($res, 0);
 
 	echo "<div id='div_champs_periodes'>\n";

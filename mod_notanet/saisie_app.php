@@ -74,7 +74,7 @@ if (isset($_POST['is_posted'])) {
 		if(isset($log_eleve[$i])) {
 			$sql="SELECT 1=1 FROM notanet n, j_eleves_groupes jeg WHERE n.login=jeg.login AND jeg.login='$log_eleve[$i]' AND jeg.id_groupe='$id_groupe';";
 			//echo "$sql<br />";
-			$verif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($verif)>0) {
 
@@ -93,17 +93,17 @@ if (isset($_POST['is_posted'])) {
 
 				$sql="SELECT * FROM notanet_app WHERE (login='$log_eleve[$i]' AND matiere='$matiere');";
 				//echo "$sql<br />";
-				$test_eleve_avis_query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_eleve_avis_query=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$test = mysqli_num_rows($test_eleve_avis_query);
 				if ($test != "0") {
 					$sql="UPDATE notanet_app SET appreciation='$app' WHERE (login='$log_eleve[$i]' AND matiere='$matiere');";
 					//echo "$sql<br />";
-					$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$register=mysqli_query($GLOBALS["mysqli"], $sql);
 				} else {
 					$sql="INSERT INTO notanet_app SET appreciation='$app', login='$log_eleve[$i]', matiere='$matiere';";
 					//echo "$sql<br />";
-					$register=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$register=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 				if (!$register) {
 					$msg = "Erreur lors de l'enregistrement des données pour $log_eleve[$i]<br />";
@@ -171,7 +171,7 @@ if(!isset($id_groupe)) {
 						jgm.id_matiere=n.matiere
 					ORDER BY jgc.id_classe;";
 	//echo "$sql<br />";
-	$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_grp)==0) {
 		//echo "<p>Aucune de vos classes n'est concernée par le Brevet des collèges.<br />Ou alors votre administrateur n'a pas encore défini les classes/élèves concernés par le brevet.</p>\n";
 		echo "<p>Aucune de vos classes n'est concernée par le Brevet des collèges.<br />Ou alors votre administrateur n'a pas encore effectué l'extraction des moyennes pour le brevet.</p>\n";
@@ -254,7 +254,7 @@ else {
 
 			//========================
 			$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login';";
-			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			$lig_ele=mysqli_fetch_object($res_ele);
 			$eleve_elenoet=$lig_ele->elenoet;
 
@@ -275,7 +275,7 @@ else {
 									na.matiere=n.matiere
 								);";
 			//echo "<tr><td colspan='3'>$sql</td></tr>";
-			$app_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$app_query = mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($app_query)>0) {
 				$eleve_app = @mysql_result($app_query, 0, "appreciation");
 			}
@@ -287,7 +287,7 @@ else {
 			//$sql="SELECT * FROM notanet n WHERE (n.login='$eleve_login' AND n.mat='$matiere');";
 			$sql="SELECT n.note FROM notanet n WHERE (n.login='$eleve_login' AND n.matiere='$matiere');";
 			//echo "<tr><td colspan='3'>$sql</td></tr>";
-			$note_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$note_query = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($note_query)>0) {
 				$eleve_note = @mysql_result($note_query, 0, "note");
@@ -298,7 +298,7 @@ else {
 
 			// Notes des périodes
 			$sql="SELECT * FROM matieres_notes WHERE (login='$eleve_login' AND id_groupe='$id_groupe') ORDER BY periode;";
-			$res_note_trim=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_note_trim=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$eleve_notes_trim="";
 			if(mysqli_num_rows($res_note_trim)>0) {
@@ -344,7 +344,7 @@ else {
 			echo "<td>\n";
 
 			$sql="SELECT 1=1 FROM notanet WHERE login='$eleve_login';";
-			$test_notanet=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_notanet=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_notanet)>0) {
 				echo "<input type='hidden' name='log_eleve[$i]' value=\"".$eleve_login."\" />\n";
 
@@ -361,7 +361,7 @@ else {
 										nv.type_brevet=net.type_brevet
 										;";
 				//echo "$sql<br />";
-				$test_verrouillage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_verrouillage=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test_verrouillage)==0) {
 					$verrou="O";
 				}

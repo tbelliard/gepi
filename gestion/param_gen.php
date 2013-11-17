@@ -301,14 +301,14 @@ if (isset($_POST['is_posted'])) {
 			}
 			else {
 				$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage mode_email_resp requis';";
-				$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_test)>0) {
 					while($lig_ia=mysqli_fetch_object($res_test)) {
 						$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$lig_ia->id';";
-						$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
 						if($del) {
 							$sql="DELETE FROM infos_actions WHERE id='$lig_ia->id';";
-							$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 				}
@@ -322,14 +322,14 @@ if (isset($_POST['is_posted'])) {
 			}
 			else {
 				$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage mode_email_ele requis';";
-				$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_test)>0) {
 					while($lig_ia=mysqli_fetch_object($res_test)) {
 						$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$lig_ia->id';";
-						$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
 						if($del) {
 							$sql="DELETE FROM infos_actions WHERE id='$lig_ia->id';";
-							$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 				}
@@ -545,7 +545,7 @@ if (isset($_POST['is_posted'])) {
 				else {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
-					$modif_maxlong = mysqli_query($GLOBALS["___mysqli_ston"], $req);
+					$modif_maxlong = mysqli_query($GLOBALS["mysqli"], $req);
 
 					$format_login_ok++;				}
 			}
@@ -573,7 +573,7 @@ if (isset($_POST['is_posted'])) {
 				else {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login_eleve']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_eleve'";
-					$modif_maxlong = mysqli_query($GLOBALS["___mysqli_ston"], $req);
+					$modif_maxlong = mysqli_query($GLOBALS["mysqli"], $req);
 
 					$format_login_ok++;
 				}
@@ -602,7 +602,7 @@ if (isset($_POST['is_posted'])) {
 				else {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login_responsable']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_responsable'";
-					$modif_maxlong = mysqli_query($GLOBALS["___mysqli_ston"], $req);
+					$modif_maxlong = mysqli_query($GLOBALS["mysqli"], $req);
 
 					$format_login_ok++;
 				}
@@ -611,7 +611,7 @@ if (isset($_POST['is_posted'])) {
 
 		if($format_login_ok==3) {
 			$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
-			$test_ia=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_ia=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_ia)>0) {
 				while($lig=mysqli_fetch_object($test_ia)) {
 					del_info_action($lig->id);

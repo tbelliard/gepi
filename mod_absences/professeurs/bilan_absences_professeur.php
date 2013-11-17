@@ -60,10 +60,10 @@ $creneaux = retourne_creneaux();
 			$choix_date = explode("/", $date_choisie);
 			$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		if (date("w", $date_choisie_ts) == getSettingValue("creneau_different")) {
-			$req_sql = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux_bis WHERE id_definie_periode = '".$creneau_id."'");
+			$req_sql = mysqli_query($GLOBALS["mysqli"], "SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux_bis WHERE id_definie_periode = '".$creneau_id."'");
 		}
 		else {
-			$req_sql = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$creneau_id."'");
+			$req_sql = mysqli_query($GLOBALS["mysqli"], "SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$creneau_id."'");
 		}
 		$rep_sql = mysqli_fetch_array($req_sql);
 		$heuredeb = explode(":", $rep_sql["heuredebut_definie_periode"]);
@@ -72,7 +72,7 @@ $creneaux = retourne_creneaux();
 		$ts_heuredeb = mktime($heuredeb[0], $heuredeb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		$ts_heurefin = mktime($heurefin[0], $heurefin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		// On teste si l'élève était absent ou en retard le cours du créneau (on ne teste que le début du créneau)
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, retard_absence FROM absences_rb WHERE eleve_id = '".$eleve_id."' AND debut_ts = '".$ts_heuredeb."'");
+		$req = mysqli_query($GLOBALS["mysqli"], "SELECT id, retard_absence FROM absences_rb WHERE eleve_id = '".$eleve_id."' AND debut_ts = '".$ts_heuredeb."'");
 		$rep = mysqli_fetch_array($req);
 			// S'il est marqué absent A -> fond rouge
 		if ($rep["retard_absence"] == "A") {
@@ -140,7 +140,7 @@ $creneaux = retourne_creneaux();
 <?php
 	// Quelques variables utiles
 	$jour_choisi = retourneJour(date("w"));
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'");
+	$query = mysqli_query($GLOBALS["mysqli"], "SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'");
 
 	$nbre_rep = mysqli_num_rows($query);
 	if ($nbre_rep >= 1) {
@@ -154,7 +154,7 @@ $creneaux = retourne_creneaux();
 
 
 // Affichage des noms répartis par classe
-$req_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, classe FROM classes ORDER BY classe");
+$req_classe = mysqli_query($GLOBALS["mysqli"], "SELECT id, classe FROM classes ORDER BY classe");
 $nbre = mysqli_num_rows($req_classe);
 
 for($i=0; $i<$nbre; $i++){
@@ -168,24 +168,24 @@ for($i=0; $i<$nbre; $i++){
 		</tr>
 		';
 	// On traite alors l'affichage de tous les élèves de chaque classe
-	$req_absences = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT eleve_id FROM absences_rb WHERE eleve_id != 'appel' AND date_saisie >= '".$date_choisie_deb_ts."' AND date_saisie <= '".$date_choisie_fin_ts."' AND retard_absence = 'A' AND login_saisie = '".$_SESSION["login"]."' ORDER BY eleve_id");
+	$req_absences = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT eleve_id FROM absences_rb WHERE eleve_id != 'appel' AND date_saisie >= '".$date_choisie_deb_ts."' AND date_saisie <= '".$date_choisie_fin_ts."' AND retard_absence = 'A' AND login_saisie = '".$_SESSION["login"]."' ORDER BY eleve_id");
 	$nbre_a = mysqli_num_rows($req_absences);
 
 	for($b=0; $b<$nbre_a; $b++){
 		$rep_absences[$b]["eleve_id"] = mysql_result($req_absences, $b, "eleve_id");
-		$req_id_classe = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
+		$req_id_classe = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 
 		// On affiche l'élève en fonction de la classe à laquelle il appartient
 		if ($rep_classe[$i]["id"] == $req_id_classe["id_classe"]) {
 			// On récupère nom et prénom de l'élève
-			$rep_nom = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, prenom FROM eleves WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
+			$rep_nom = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 			echo '<tr>
 			<td></td>
 			<td>'.$rep_nom["nom"].' '.$rep_nom["prenom"].'</td>
 			<td>
 			';
 			// On affiche toutes les dates où l'élève a été absent
-			$req_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT debut_ts FROM absences_rb WHERE eleve_id = '".$rep_absences[$b]["eleve_id"]."' AND debut_ts >= '".$date_choisie_deb_ts."' AND fin_ts <= '".$date_choisie_fin_ts."' AND login_saisie = '".$_SESSION["login"]."' AND retard_absence = 'A'");
+			$req_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT debut_ts FROM absences_rb WHERE eleve_id = '".$rep_absences[$b]["eleve_id"]."' AND debut_ts >= '".$date_choisie_deb_ts."' AND fin_ts <= '".$date_choisie_fin_ts."' AND login_saisie = '".$_SESSION["login"]."' AND retard_absence = 'A'");
 			$nbre_absences = mysqli_num_rows($req_eleve);
 
 			for($ab=0; $ab<$nbre_absences; $ab++) {

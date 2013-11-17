@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_epreuve_blanche/saisie_notes.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_epreuve_blanche/saisie_notes.php',
 administrateur='V',
@@ -51,7 +51,7 @@ secours='F',
 autre='F',
 description='Epreuve blanche: Saisie des notes',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -70,7 +70,7 @@ if(isset($_POST['saisie_notes'])) {
 	check_token();
 
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
@@ -90,7 +90,7 @@ if(isset($_POST['saisie_notes'])) {
 				$saisie="y";
 				if($_SESSION['statut']=='professeur') {
 					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='$n_anonymat[$i]';";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		
 					if(mysqli_num_rows($test)==0) {
 						$saisie="n";
@@ -126,7 +126,7 @@ if(isset($_POST['saisie_notes'])) {
 					}
 					if(($elev_note!='')or($elev_statut!='')){
 						$sql="UPDATE eb_copies SET note='$elev_note', statut='$elev_statut' WHERE id_epreuve='$id_epreuve' AND n_anonymat='$n_anonymat[$i]';";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
 							$msg.="Erreur: $sql<br />";
 						}
@@ -151,7 +151,7 @@ elseif((isset($mode))&&($mode=='export_csv')) {
 	// Vérifier que l'accès est autorisé
 	if($_SESSION['statut']=='professeur') {
 		$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 		if(mysqli_num_rows($test)==0) {
 			$export="n";
@@ -165,7 +165,7 @@ elseif((isset($mode))&&($mode=='export_csv')) {
 	}
 
 	if($export=="y") {
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if($_SESSION['statut']=='professeur') {
 			$csv="N_ANONYMAT;NOTE;\n";
@@ -220,7 +220,7 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 	if($_SESSION['statut']=='professeur') {
 		$sql="SELECT * FROM eb_epreuves ee, eb_profs ep WHERE ee.etat!='clos' AND ee.id=ep.id_epreuve AND ep.login_prof='".$_SESSION['login']."' AND ep.id_epreuve='$id_epreuve';";
 		//echo "$sql<br />\n";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			$msg="Accès non autorisé à cette épreuve.<br />\n";
 			$upload_autorise="n";
@@ -233,7 +233,7 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 	else {
 		$sql="SELECT * FROM eb_epreuves ee WHERE ee.etat!='clos' AND ep.id_epreuve='$id_epreuve';";
 		//echo "$sql<br />\n";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			$msg="Cette épreuve est close ou inexistante.<br />\n";
 			$upload_autorise="n";
@@ -265,7 +265,7 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 					if((isset($data[1]))&&($data[0]!='')&&($data[1]!='')) {
 						if($_SESSION['statut']=='professeur') {
 							$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[0]."';";
-							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res)==0) {
 								$msg.="Le numéro d'anonymat ".$data[0]." ne vous est pas attribué.<br />";
 							}
@@ -273,7 +273,7 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 								$note_courante=preg_replace("/,/", ".", $data[1]);
 								if((preg_match("/^[0-9\.\,]{1,}$/", $data[1]))&&($note_courante>=0)&&($note_courante<=$note_sur)) {
 									$sql="UPDATE eb_copies SET note='$note_courante', statut='' WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[0]."';";
-									$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($update) {
 										$nb_reg++;
 									}
@@ -283,7 +283,7 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 								}
 								elseif(($data[1]=="abs")||($data[1]=="disp")||($data[1]=="-")) {
 									$sql="UPDATE eb_copies SET note='0.0', statut='".$data[1]."' WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[0]."';";
-									$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($update) {
 										$nb_reg++;
 									}
@@ -298,7 +298,7 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 						}
 						else {
 							$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[0]."';";
-							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res)==0) {
 								$msg.="Le numéro d'anonymat ".$data[0]." n'est pas associé à .<br />";
 							}
@@ -306,7 +306,7 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 								$note_courante=preg_replace("/,/", ".", $data[1]);
 								if((preg_match("/^[0-9\.\,]{1,}$/", $data[1]))&&($note_courante>=0)&&($note_courante<=$note_sur)) {
 									$sql="UPDATE eb_copies SET note='$note_courante', statut='' WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[0]."';";
-									$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($update) {
 										$nb_reg++;
 									}
@@ -316,7 +316,7 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 								}
 								elseif(($data[1]=="abs")||($data[1]=="disp")||($data[1]=="-")) {
 									$sql="UPDATE eb_copies SET note='0.0', statut='".$data[1]."' WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[0]."';";
-									$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($update) {
 										$nb_reg++;
 									}
@@ -394,7 +394,7 @@ if(!isset($id_epreuve)) {
 	}
 
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucune épreuve non close.</p>\n";
 	}
@@ -444,7 +444,7 @@ echo "</p>\n";
 if($_SESSION['statut']=='professeur') {
 	$sql="SELECT * FROM eb_epreuves ee, eb_profs ep WHERE ee.etat!='clos' AND ee.id=ep.id_epreuve AND ep.login_prof='".$_SESSION['login']."' AND ep.id_epreuve='$id_epreuve' ORDER BY ee.date, ee.intitule;";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Accès non autorisé.</p>\n";
 
@@ -460,7 +460,7 @@ if($_SESSION['statut']=='professeur') {
 echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
 
 $sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 	require("../lib/footer.inc.php");
@@ -485,7 +485,7 @@ echo "</blockquote>\n";
 //========================================================
 if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 	$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' ORDER BY n_anonymat";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 	if(mysqli_num_rows($res)==0) {
 		echo "<p style='color:red;'>Aucune copie n'a été trouvée.<br />Avez-vous associé des groupes/enseignements à l'épreuve&nbsp;?</p>\n";
@@ -495,7 +495,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 }
 elseif($_SESSION['statut']=='professeur') {
 	$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' ORDER BY n_anonymat;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 	if(mysqli_num_rows($res)==0) {
 		echo "<p style='color:red;'>Aucune copie ne vous a été attribuée.<br />Pour un peu, vous auriez corrigé les copies pour rien;o)</p>\n";
@@ -514,10 +514,10 @@ else {
 
 //========================================================
 $sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve';";
-$test1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="SELECT DISTINCT n_anonymat FROM eb_copies WHERE id_epreuve='$id_epreuve';";
-$test2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test2=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test1)!=mysqli_num_rows($test2)) {
 	echo "<p style='color:red;'>Les numéros anonymats ne sont pas uniques sur l'épreuve (<i>cela ne devrait pas arriver</i>).<br />La saisie n'est pas possible.</p>\n";
 	require("../lib/footer.inc.php");
@@ -525,7 +525,7 @@ if(mysqli_num_rows($test1)!=mysqli_num_rows($test2)) {
 }
 
 $sql="SELECT login_ele FROM eb_copies WHERE n_anonymat='' AND id_epreuve='$id_epreuve';";
-$test3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test3=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test3)>0) {
 	echo "<p style='color:red;'>Un ou des numéros anonymats ne sont pas valides sur l'épreuve&nbsp;: ";
 	$cpt=0;
@@ -540,7 +540,7 @@ if(mysqli_num_rows($test3)>0) {
 }
 
 $sql="SELECT 1=1 FROM eb_groupes WHERE transfert='y' AND id_epreuve='$id_epreuve';";
-$test4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test4=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test4)>0) {
 	echo "<p style='color:red;'><b>Anomalie&nbsp;:</b> L'épreuve n'est pas close et le transfert des notes vers les carnets de notes a déjà été effectué pour un enseignement/groupe au moins.<br />Merci de prendre contact avec l'administrateur ou avec le responsable de l'épreuve (<i>en principe titulaire d'un compte 'scolarité'</i>) pour qu'il effectue à nouveau le transfert une fois les notes modifiées/corrigées.";
 }

@@ -59,13 +59,13 @@ if ($rss == "y") {
 send_file_download_headers('text/x-csv',$nom_fic);
 
 $fd = '';
-$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 $nb_classes = mysqli_num_rows($call_classe);
 $i = 0;
 while ($i < $nb_classes) {
 	$id_classe = mysql_result($call_classe, $i, 'id');
 	$classe = mysql_result($call_classe, $i, 'classe');
-	$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom, prenom");
+	$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom, prenom");
 	$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 	$j= 0;
 	while($j< $nombre_lignes) {
@@ -78,7 +78,7 @@ while ($i < $nb_classes) {
 		// Dispositif pour les URI des rss
 		if ($rss == "y") {
 			// On récupère l'URI de cet élève
-			$uri = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT user_uri FROM rss_users WHERE user_login = '".$eleve_login."' LIMIT 1");
+			$uri = mysqli_query($GLOBALS["mysqli"], "SELECT user_uri FROM rss_users WHERE user_login = '".$eleve_login."' LIMIT 1");
 			$nb_uri = mysqli_num_rows($uri);
 			if ($nb_uri == 1) {
 				$eleve_uri = mysql_result($uri, 0,"user_uri");

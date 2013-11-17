@@ -214,7 +214,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	$jour_choisi = retourneJour(date("w", $date_choisie_ts));
 
 	// on recherche l'horaire d'ouverture et de fermetture de l'établissement
-	$requete = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement
+	$requete = mysqli_query($GLOBALS["mysqli"], "SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement
 				FROM horaires_etablissement
 				WHERE jour_horaire_etablissement = '" . $jour_choisi . "'");
 	$nbre_rep = mysqli_num_rows($requete);
@@ -275,7 +275,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	// compteur de classe temporaire
 	$cpt_classe = 0;
 
-	$execution_classes = mysqli_query($GLOBALS["___mysqli_ston"], $requete_classes) or die('Erreur SQL !'.$requete_classes.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_classes = mysqli_query($GLOBALS["mysqli"], $requete_classes) or die('Erreur SQL !'.$requete_classes.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	while ( $donnee_classes = mysqli_fetch_array($execution_classes) )
 	{
 
@@ -297,7 +297,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	$eleve_precedent = '';
 	$classe_precedent = '';
 
-	$execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 	while ( $donnee = mysqli_fetch_array($execution))
 	{

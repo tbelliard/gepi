@@ -91,7 +91,7 @@ if(!preg_match("/^[0-9]*$/", $id_devoir)) {
 
 $sql="SELECT * FROM cn_devoirs WHERE id ='$id_devoir';";
 //echo "$sql<br />";
-$appel_devoir = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$appel_devoir = mysqli_query($GLOBALS["mysqli"], $sql);
 if (mysqli_num_rows($appel_devoir)==0) {
 	header("Location: index.php?msg=".rawurlencode("Le devoir choisi n°$id_devoir est invalide."));
 	die();
@@ -102,7 +102,7 @@ $nom_devoir = mysql_result($appel_devoir, 0, 'nom_court');
 //$note_sur_dev_choisi=mysql_result($appel_devoir, 0, 'note_sur');
 
 $sql="SELECT id_conteneur, id_racine FROM cn_devoirs WHERE id = '$id_devoir';";
-$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$query = mysqli_query($GLOBALS["mysqli"], $sql);
 $id_racine = mysql_result($query, 0, 'id_racine');
 $id_conteneur = mysql_result($query, 0, 'id_conteneur');
 
@@ -113,7 +113,7 @@ if(!Verif_prof_cahier_notes ($_SESSION['login'],$id_racine)) {
 }
 
 $sql="SELECT * FROM cn_cahier_notes WHERE id_cahier_notes='$id_racine';";
-$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_grp)==0) {
 	$mess=rawurlencode("Le carnet de notes n°$id_racine n'existe pas???");
 	header("Location: index.php?msg=$mess");
@@ -164,12 +164,12 @@ if((isset($id_groupe_dest))&&(isset($periode_num_dest))) {
 				// Récupération des infos du devoir d'origine
 				$sql="SELECT * FROM cn_devoirs WHERE id='$id_devoir';";
 				//echo "$sql<br />";
-				$appel_devoir = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$appel_devoir = mysqli_query($GLOBALS["mysqli"], $sql);
 				$lig_dev_src=mysqli_fetch_object($appel_devoir);
 
 				$tab_note=array();
 				$sql="SELECT * FROM cn_notes_devoirs WHERE id_devoir='$id_devoir';";
-				$appel_notes_devoir = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$appel_notes_devoir = mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($appel_notes_devoir)>0) {
 					while($lig_note_src=mysqli_fetch_object($appel_notes_devoir)) {
 						$tab_note[$lig_note_src->login]['note']=$lig_note_src->note;
@@ -182,9 +182,9 @@ if((isset($id_groupe_dest))&&(isset($periode_num_dest))) {
 				$sql="insert into cn_devoirs SET
 					id_racine='$id_cn_dest',
 					id_conteneur='$id_cn_dest',
-					nom_court='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig_dev_src->nom_court) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					nom_complet='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig_dev_src->nom_complet) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					description='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $lig_dev_src->description) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+					nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_court) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+					nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_complet) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+					description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->description) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
 					coef='".$lig_dev_src->coef."',
 					note_sur='".$lig_dev_src->note_sur."',
 					ramener_sur_referentiel='".$lig_dev_src->ramener_sur_referentiel."',
@@ -194,8 +194,8 @@ if((isset($id_groupe_dest))&&(isset($periode_num_dest))) {
 					display_parents='".$lig_dev_src->display_parents."',
 					display_parents_app='".$lig_dev_src->display_parents_app."';";
 				//echo "$sql<br />\n";
-				$creation_dev=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
-				$id_devoir_dest = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+				$creation_dev=mysqli_query($GLOBALS["mysqli"], $sql);
+				$id_devoir_dest = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 				if(!$id_devoir_dest) {
 					$msg.="Echec de la création du devoir destination sur la période $periode_num_dest pour le groupe n°$id_groupe_dest.<br />";
@@ -206,8 +206,8 @@ if((isset($id_groupe_dest))&&(isset($periode_num_dest))) {
 						if($groupe_dest["classe"]["ver_periode"][$tmp_id_classe][$periode_num_dest]=='N') {
 							foreach($groupe_dest["eleves"][$periode_num_dest]["telle_classe"][$tmp_id_classe] as $ele_login) {
 								if(isset($tab_note[$ele_login])) {
-									$sql="INSERT INTO cn_notes_devoirs SET id_devoir='$id_devoir_dest', login='$ele_login', note='".$tab_note[$ele_login]['note']."', statut='".$tab_note[$ele_login]['statut']."', comment='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab_note[$ele_login]['comment']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
-									$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$sql="INSERT INTO cn_notes_devoirs SET id_devoir='$id_devoir_dest', login='$ele_login', note='".$tab_note[$ele_login]['note']."', statut='".$tab_note[$ele_login]['statut']."', comment='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_note[$ele_login]['comment']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$insert) {
 										$msg.="Erreur lors de l'enregistrement de la note pour ".civ_nom_prenom($ele_login)."<br />";
 									}

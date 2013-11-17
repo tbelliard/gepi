@@ -56,7 +56,7 @@ Attention ! Les données exportées vont ensuite être intégrées dans la plate
 
 <?php
 // Sélection des classes concernées par l'export
-$req_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id,classe,nom_complet, MAX(p.num_periode) periodes FROM classes c, periodes p WHERE c.apb_niveau = 'terminale' AND p.id_classe = c.id GROUP BY c.id");
+$req_classes = mysqli_query($GLOBALS["mysqli"], "SELECT id,classe,nom_complet, MAX(p.num_periode) periodes FROM classes c, periodes p WHERE c.apb_niveau = 'terminale' AND p.id_classe = c.id GROUP BY c.id");
 
 $all_classes = array();
 while($classe = mysqli_fetch_object($req_classes)) {

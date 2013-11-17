@@ -88,7 +88,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 
 		// Liste des CPE:
 		$sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY u.nom, u.prenom, jec.cpe_login";
-		$result_cpe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$result_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($result_cpe)>0){
 			$tab_enseignements[$cpt]['id_groupe']="VIE_SCOLAIRE";
 			$tab_enseignements[$cpt]['grp_name']="VIE SCOLAIRE";
@@ -96,7 +96,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 
 			for($loop=0;$loop<count($nom_periode);$loop++) {
 				$sql="SELECT DISTINCT nom,prenom FROM eleves e,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jec.e_login=e.login AND jecl.id_classe='$id_classe' AND jecl.periode='".($loop+1)."';";
-				$result_eleve=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$result_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
 				$tab_enseignements[$cpt]['nb_eleves'][$loop+1]=mysqli_num_rows($result_eleve);
 			}
 
@@ -112,7 +112,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 
 				for($loop=0;$loop<count($nom_periode);$loop++) {
 					$sql="SELECT DISTINCT nom,prenom FROM eleves e,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jec.e_login=e.login AND jecl.id_classe='$id_classe' AND jec.cpe_login='$lig_cpe->cpe_login' AND jecl.periode='".($loop+1)."';";
-					$result_eleve=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$result_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
 					$tab_enseignements[$cpt]['prof'][$cpt2]['nb_eleves'][$loop+1]=mysqli_num_rows($result_eleve);
 				}
 
@@ -124,7 +124,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 		// Liste des enseignements et professeurs:
 		$sql="SELECT m.nom_complet,jgm.id_groupe, g.name, g.description FROM j_groupes_classes jgc, j_groupes_matieres jgm, matieres m, groupes g WHERE jgc.id_groupe=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY jgc.priorite, m.matiere";
 		//echo "$sql<br />";
-		$result_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$result_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig_grp=mysqli_fetch_object($result_grp)){
 			$tab_enseignements[$cpt]['id_groupe']=$lig_grp->id_groupe;
 			$tab_enseignements[$cpt]['grp_name']=$lig_grp->name;
@@ -133,7 +133,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 
 			// Le groupe est-il composé uniquement d'élèves de la classe?
 			$sql="SELECT * FROM j_groupes_classes jgc WHERE jgc.id_groupe='$lig_grp->id_groupe'";
-			$res_nb_class_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_nb_class_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb_class_grp=mysqli_num_rows($res_nb_class_grp);
 			$tab_enseignements[$cpt]['nb_class_grp']=$nb_class_grp;
 
@@ -155,7 +155,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 																	jeg.periode=jec.periode AND 
 																	jec.periode='".($loop+1)."' 
 																ORDER BY e.nom,e.prenom";
-				$res_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 				$nb_eleves=mysqli_num_rows($res_eleves);
 				$tab_enseignements[$cpt]['nb_eleves'][$loop+1]=$nb_eleves;
 
@@ -176,7 +176,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 																		jec.periode='".($loop+1)."' AND 
 																		jec.login=e.login 
 																	ORDER BY e.nom,e.prenom";
-					$res_tous_eleves_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_tous_eleves_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 					$nb_tous_eleves_grp=mysqli_num_rows($res_tous_eleves_grp);
 
 					$tab_enseignements[$cpt]['nb_tous_eleves_grp'][$loop+1]=$nb_tous_eleves_grp;
@@ -187,7 +187,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 			// Professeurs
 			$sql="SELECT jgp.login,u.nom,u.prenom,u.email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$lig_grp->id_groupe' AND u.login=jgp.login";
 			//echo "$sql<br />";
-			$result_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$result_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 			$cpt2=0;
 			while($lig_prof=mysqli_fetch_object($result_prof)){
 
@@ -202,7 +202,7 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 				$tab_enseignements[$cpt]['prof'][$cpt2]['is_pp']="n";
 				$sql="SELECT * FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$lig_prof->login'";
 				//echo " (<i>$sql</i>)\n";
-				$res_pp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_pp)>0){
 					$tab_enseignements[$cpt]['prof'][$cpt2]['is_pp']="y";
 				}
@@ -312,7 +312,7 @@ if(isset($id_classe)){
 
 		$chaine_options_classes="";
 
-		$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_class_tmp)>0){
 			$id_class_prec=0;
 			$id_class_suiv=0;
@@ -398,7 +398,7 @@ if(isset($id_classe)){
 </script>\n";
 
 		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe'";
-		$res_eleves_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eleves_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_eleves_classe=mysqli_num_rows($res_eleves_classe);
 
 		if(count($tab_enseignements)==0) {
@@ -698,7 +698,7 @@ else {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
 
-	$result_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_classes = mysqli_num_rows($result_classes);
 	//echo "<select name='id_classe' size='1'>\n";
 	//echo "<option value='null'>-- Sélectionner la classe --</option>\n";

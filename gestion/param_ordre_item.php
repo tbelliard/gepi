@@ -81,11 +81,11 @@ if ($optimiser){$enregistrer=TRUE;} // On enregistre l'ordre des menus puis on o
 
 if ($initialiser){
   $sql="DROP TABLE IF EXISTS `mn_ordre_accueil`;";
-  if (!mysqli_query($GLOBALS["___mysqli_ston"], $sql)){
+  if (!mysqli_query($GLOBALS["mysqli"], $sql)){
 	$tbs_msg= "erreur lors de la suppression de la table mn_ordre_accueil";
   }
   $sql="DROP TABLE IF EXISTS `mn_ordre_accueil_item`;";
-  if (!mysqli_query($GLOBALS["___mysqli_ston"], $sql)){
+  if (!mysqli_query($GLOBALS["mysqli"], $sql)){
 	$tbs_msg= "erreur lors de la suppression de la table mn_ordre_accueil_item";
   }
 
@@ -109,9 +109,9 @@ num_item INT NOT NULL ,
 nouveau_nom VARCHAR( 50 ) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 
-  if (!mysqli_query($GLOBALS["___mysqli_ston"], $sql)){
+  if (!mysqli_query($GLOBALS["mysqli"], $sql)){
 	$tbs_msg= "erreur lors de la création de la table mn_ordre_accueil";
-  }else if (!mysqli_query($GLOBALS["___mysqli_ston"], $sql2)){
+  }else if (!mysqli_query($GLOBALS["mysqli"], $sql2)){
 	$tbs_msg= "erreur lors de la création de la table mn_ordre_accueil_item";
   } else {
 // les tables existent

@@ -556,7 +556,7 @@ if(!empty($valide_modif_model))
 				//$sql="INSERT INTO modele_bulletin SET id_model_bulletin='$id_model_bulletin', nom='$nom', valeur='".$$nom."';";
 				$sql="INSERT INTO modele_bulletin SET id_model_bulletin='$id_model_bulletin', nom='$nom', valeur='".$valeur."';";
 				//echo "$sql<br />\n";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 			else {
 				// Normalement, cela ne devrait pas arriver si on récupère correctement les valeurs soumises du formulaire.
@@ -578,18 +578,18 @@ if(!empty($valide_modif_model))
 				}
 
 				$sql="SELECT 1=1 FROM modele_bulletin WHERE id_model_bulletin='$id_model_bulletin' AND nom='$nom';";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)==0) {
 					//$sql="INSERT INTO modele_bulletin SET id_model_bulletin='$id_model_bulletin', nom='$nom', valeur='".$$nom."';";
 					$sql="INSERT INTO modele_bulletin SET id_model_bulletin='$id_model_bulletin', nom='$nom', valeur='".$valeur."';";
 					//echo "$sql<br />\n";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 				else {
 					//$sql="UPDATE modele_bulletin SET valeur='".$$nom."' WHERE id_model_bulletin='$id_model_bulletin' AND nom='$nom';";
 					$sql="UPDATE modele_bulletin SET valeur='".$valeur."' WHERE id_model_bulletin='$id_model_bulletin' AND nom='$nom';";
 					//echo "$sql<br />\n";
-					$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 			/*
@@ -607,9 +607,9 @@ if(!empty($valide_modif_model))
 			//AJOUT ERIC Si on supprime un modèle, s'il est utilisé pour une classe on réinitialise pour la classe la valeur à NULL du champs modele_bulletin_pdf
 			$requete_classe="UPDATE classes SET modele_bulletin_pdf=NULL WHERE (modele_bulletin_pdf='$id_model_bulletin')";
 			//echo $requete_classe;
-			mysqli_query($GLOBALS["___mysqli_ston"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br>'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br>'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-			mysqli_query($GLOBALS["___mysqli_ston"], $requete_model) or die('Erreur SQL !'.$requete_model.'<br>'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			mysqli_query($GLOBALS["mysqli"], $requete_model) or die('Erreur SQL !'.$requete_model.'<br>'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		}
 	}
 	//mysql_query($requete_model) or die('Erreur SQL !'.$requete_model.'<br>'.mysql_error());
@@ -683,7 +683,7 @@ if ( isset($action) and $action === 'importmodelcsv' ) {
 						if($tab_valeurs_csv[$indice]=="") {
 							$sql="SELECT DISTINCT id_model_bulletin FROM modele_bulletin WHERE nom='nom_model_bulletin' AND valeur='".$tab_valeurs_csv[$indice_nom_modele]."';";
 							//echo "$sql<br />";
-							$res_nom_model=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_nom_model=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							if(mysqli_num_rows($res_nom_model)>0) {
 								$tmp_lig_nom_model=mysqli_fetch_object($res_nom_model);
@@ -692,7 +692,7 @@ if ( isset($action) and $action === 'importmodelcsv' ) {
 							else {
 								$sql="SELECT MAX(id_model_bulletin) AS max_id_model_bulletin FROM modele_bulletin;";
 								//echo "$sql<br />";
-								$res_max=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_max=mysqli_query($GLOBALS["mysqli"], $sql);
 
 								if(mysqli_num_rows($res_max)>0) {
 									$tmp_lig_max=mysqli_fetch_object($res_max);
@@ -709,13 +709,13 @@ if ( isset($action) and $action === 'importmodelcsv' ) {
 						if($tab_valeurs_csv[$indice_nom_modele]!="") {
 							$sql="DELETE FROM modele_bulletin WHERE id_model_bulletin='".$tab_valeurs_csv[$indice]."';";
 							//echo "$sql<br />";
-							$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							for($i=0;$i<count($tab_champs_csv);$i++) {
 								if($i!=$indice) {
 									$sql="INSERT modele_bulletin SET id_model_bulletin='".$tab_valeurs_csv[$indice]."', nom='".$tab_champs_csv[$i]."', valeur='".$tab_valeurs_csv[$i]."';";
 									//echo "$sql<br />";
-									$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
 							}
 						}
@@ -809,7 +809,7 @@ function DecocheCheckbox() {
 		echo "<br /><br />\n";
 
 		$sql="SHOW TABLES LIKE 'modele_bulletin';";
-		$test_modele_bulletin=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_modele_bulletin=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_modele_bulletin)==0) {
 			echo "<p style='color:red'>La table 'modele_bulletin' n'existe pas.</p>\n";
 
@@ -849,7 +849,7 @@ function DecocheCheckbox() {
 		$nb_modele = '0'; $varcoche = '';
 
 		//$requete_model = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin');
-		$requete_model = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_model_bulletin, valeur FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY id_model_bulletin;");
+		$requete_model = mysqli_query($GLOBALS["mysqli"], "SELECT id_model_bulletin, valeur FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY id_model_bulletin;");
         if(mysqli_num_rows($requete_model)==0) {
             $message_alerte="<p style='text-align:center; color:red;'>Il semble qu'aucun modèle ne soit défini.<br />Ce n'est pas normal.<br />";
             if($_SESSION['login']=='administrateur') {
@@ -1050,7 +1050,7 @@ function DecocheCheckbox() {
 			// On récupère les valeurs du modèle $id_model_bulletin (que ce soit le modèle actuellement modifié ou celui qui sert de modèle pour une recopie)
 			$sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='".$id_model_bulletin."';";
 			//echo "$sql<br />\n";
-			$res_modele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_modele=mysqli_query($GLOBALS["mysqli"], $sql);
 			while ($lig=mysqli_fetch_object($res_modele)) {
 				$nom=$lig->nom;
 				$valeur=$lig->valeur;
@@ -1100,7 +1100,7 @@ function DecocheCheckbox() {
 			// sélection des modèles des bulletins.
 			//$requete_model = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
 			$sql="SELECT id_model_bulletin, valeur FROM modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY nom ASC";
-			$requete_model = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$requete_model = mysqli_query($GLOBALS["mysqli"], $sql);
 			while($donner_model = mysqli_fetch_array($requete_model))
 			{
 				echo "<option value='".$donner_model['id_model_bulletin']."'";
@@ -1828,7 +1828,7 @@ function check_coherence_coches_bulletin_pdf() {
 		echo "<h2>Supprimer un modèle de bulletin</h2>\n";
 
 		$sql="SELECT valeur FROM modele_bulletin WHERE id_model_bulletin='$model_bulletin' AND nom='nom_model_bulletin';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "<p>Aucun modèle n'a été trouvé pour l'identifiant $model_bulletin</p>\n";
 			require("../lib/footer.inc.php");

@@ -111,7 +111,7 @@ if (!isset($id_classe)) {
 	}
 	*/
 
-	$call_data=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_data=mysqli_query($GLOBALS["mysqli"], $sql);
 
     $nombre_lignes = mysqli_num_rows($call_data);
     $i = 0;
@@ -167,7 +167,7 @@ if (!isset($id_classe)) {
 	*/
 	$chaine_options_classes="";
 
-	$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
 		$id_class_suiv=0;
@@ -217,7 +217,7 @@ if (!isset($id_classe)) {
 
 
     if (!$periode) {
-        $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+        $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
         $classe = mysql_result($call_classe, "0", "classe");
 
         ?>
@@ -241,9 +241,9 @@ if (!isset($id_classe)) {
         <br />
         <?php
     } else {
-        $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+        $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
         $classe = mysql_result($call_classe, "0", "classe");
-        $call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) order by nom");
+        $call_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) order by nom");
         $nombreligne = mysqli_num_rows($call_eleve);
 
         if (!isset($v_eleve)) {$v_eleve = @mysql_result($call_eleve, 0, 'login');}
@@ -288,7 +288,7 @@ if (!isset($id_classe)) {
         </form></td></tr></table>
         <?php
         // On appelle les informations de l'utilisateur pour les afficher :
-        $call_eleve_info = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login,nom,prenom FROM eleves WHERE login='$v_eleve'");
+        $call_eleve_info = mysqli_query($GLOBALS["mysqli"], "SELECT login,nom,prenom FROM eleves WHERE login='$v_eleve'");
         $eleve_nom = mysql_result($call_eleve_info, "0", "nom");
         $eleve_prenom = mysql_result($call_eleve_info, "0", "prenom");
 
@@ -315,7 +315,7 @@ if (!isset($id_classe)) {
 
         if ($affiche_categories) {
             // On utilise les valeurs spécifiées pour la classe en question
-            $call_groupes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT jgc.id_groupe ".
+            $call_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT jgc.id_groupe ".
             "FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
             "WHERE ( " .
             "jeg.login = '" . $v_eleve ."' AND " .
@@ -328,7 +328,7 @@ if (!isset($id_classe)) {
             ") " .
             "ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
         } else {
-            $call_groupes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT jgc.id_groupe, jgc.coef " .
+            $call_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT jgc.id_groupe, jgc.coef " .
             "FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_eleves_groupes jeg " .
             "WHERE ( " .
             "jeg.login = '" . $v_eleve . "' AND " .
@@ -355,12 +355,12 @@ if (!isset($id_classe)) {
             if ($periode != 'annee') {
                 if (in_array($v_eleve, $current_group["eleves"][$periode]["list"])) {
                     $inserligne="yes";
-                    $note_eleve_query=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_notes WHERE (login='$v_eleve' AND periode='$periode' AND id_groupe='" . $current_group["id"] . "')");
+                    $note_eleve_query=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$v_eleve' AND periode='$periode' AND id_groupe='" . $current_group["id"] . "')");
                     $eleve_matiere_statut = @mysql_result($note_eleve_query, 0, "statut");
                     $note_eleve = @mysql_result($note_eleve_query, 0, "note");
                     if ($eleve_matiere_statut != "") { $note_eleve = $eleve_matiere_statut;}
                     if ($note_eleve == '') {$note_eleve = '-';}
-                    $moyenne_classe_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$periode' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
+                    $moyenne_classe_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$periode' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
                     $moyenne_classe = mysql_result($moyenne_classe_query, 0, "moyenne");
                 }
             } else {
@@ -373,12 +373,12 @@ if (!isset($id_classe)) {
                 if ($reponse == 'yes') {
                     // L'élève suit la matière au moins sur une des périodes de l'année, donc on affiche la matière dans le tableau.
                     $inserligne="yes";
-                    $note_eleve_annee_query=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (login='$v_eleve' AND id_groupe='" . $current_group["id"] ."' AND statut='')");
+                    $note_eleve_annee_query=mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (login='$v_eleve' AND id_groupe='" . $current_group["id"] ."' AND statut='')");
                     $note_eleve = @mysql_result($note_eleve_annee_query, 0, "moyenne");
                     if ($note_eleve == '') {$note_eleve = '-';}
                     $z = 1;
                     while ($z < $nb_periode) {
-                        $moyenne_classe_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$z' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
+                        $moyenne_classe_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$z' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
                         $temp = @mysql_result($moyenne_classe_query, 0, "moyenne");
                         $moyenne_classe = $moyenne_classe + $temp;
                         $z++;
@@ -395,7 +395,7 @@ if (!isset($id_classe)) {
                         // On est dans une nouvelle catégorie
                         // On récupère les infos nécessaires, et on affiche une ligne
                         //$cat_name = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
-                        $cat_name = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
+                        $cat_name = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
                         // On détermine le nombre de colonnes pour le colspan
                         $nb_total_cols = 4;
 

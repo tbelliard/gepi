@@ -48,10 +48,10 @@ if ($resultat_session == 'c') {
 // INSERT INTO droits VALUES ('/edt_organisation/voir_base.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'voir la table edt_cours', '');
 
 $sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/voir_base.php';";
-$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/edt_organisation/voir_base.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','voir la table edt_cours', '');";
-	$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -146,7 +146,7 @@ require_once("./menu.inc.php");
 	echo "<div class=\"titre_voir_base_15\"><a href=\"./voir_base.php?trier=11\" >login_prof</a></div>";
     echo "<div style=\"clear:both;\"></div>";
 
-    $req_cours = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM edt_cours ORDER BY ".$colonne." ASC  LIMIT ".$start_list.",50 ");
+    $req_cours = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours ORDER BY ".$colonne." ASC  LIMIT ".$start_list.",50 ");
 	while ($rep_cours = mysqli_fetch_array($req_cours)) {
 
 

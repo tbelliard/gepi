@@ -68,7 +68,7 @@ if ( $action === 'export' ) {
 
 	$sql="SELECT DISTINCT id_model_bulletin FROM modele_bulletin ORDER BY id_model_bulletin;";
 	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	while($lig=mysqli_fetch_object($res)) {
 		$id_model_bulletin=$lig->id_model_bulletin;
 
@@ -86,7 +86,7 @@ if ( $action === 'export' ) {
 			for($i=0;$i<count($champ_bull_pdf);$i++) {
 				$fd.=";";
 				$sql="SELECT valeur FROM modele_bulletin WHERE nom='".$champ_bull_pdf[$i]."' AND id_model_bulletin='".$id_model_bulletin."';";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$lig2=mysqli_fetch_object($res2);
 					$fd.=$lig2->valeur;

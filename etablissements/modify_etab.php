@@ -47,7 +47,7 @@ $champs_vides = "non";
 if (isset($is_posted) and ($is_posted == '1')) {
 	check_token();
 	if (($id != '') and ($nom_etab != '') and ($niveau_etab != '') and ($type_etab != '') and ($cp_etab != '') ) {
-		$call_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM etablissements WHERE id = '$id'");
+		$call_test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM etablissements WHERE id = '$id'");
 		$count = mysqli_num_rows($call_test);
 
 		// CORRECTION DU CONTENU DES CHAMPS: on interdit les guillemets,...
@@ -57,7 +57,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		$ville_etab=strtr($ville_etab,'"',' ');
 
 		if ($count == "0") {
-			$register_etab = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO etablissements SET id = '".$id."', nom='".$nom_etab."', niveau='".$niveau_etab."', type='".$type_etab."', cp= '".$cp_etab."', ville= '".$ville_etab."'");
+			$register_etab = mysqli_query($GLOBALS["mysqli"], "INSERT INTO etablissements SET id = '".$id."', nom='".$nom_etab."', niveau='".$niveau_etab."', type='".$type_etab."', cp= '".$cp_etab."', ville= '".$ville_etab."'");
 			if (!$register_etab) {
 				$msg = "Une erreur s'est produite lors de l'enregistrement du nouvel établissement.";
 			} else {
@@ -65,7 +65,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			}
 		} else {
 			if ($nouvel_etab == 'no') {
-				$register_etab = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE etablissements SET nom='".$nom_etab."', niveau='".$niveau_etab."', type='".$type_etab."', cp= '".$cp_etab."', ville= '".$ville_etab."' WHERE id = '".$id."'");
+				$register_etab = mysqli_query($GLOBALS["mysqli"], "UPDATE etablissements SET nom='".$nom_etab."', niveau='".$niveau_etab."', type='".$type_etab."', cp= '".$cp_etab."', ville= '".$ville_etab."' WHERE id = '".$id."'");
 				if (!$register_etab) {
 					$msg = "Une erreur s'est produite lors de la modification de l'établissement.";
 					} else {
@@ -92,7 +92,7 @@ require_once("../lib/header.inc.php");
 
 <?php
 if ((isset($id)) and ($champs_vides == "non")) {
-	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM etablissements WHERE id = '$id'");
+	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM etablissements WHERE id = '$id'");
 	$nom_etab = @mysql_result($call_data, 0, "nom");
 	$niveau_etab = @mysql_result($call_data, 0, "niveau");
 	$type_etab = @mysql_result($call_data, 0, "type");

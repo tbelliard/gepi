@@ -85,14 +85,14 @@ if ($id_classe == 'all') {
     if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
         // On ne sélectionne que les classes qui ont au moins un enseignement ouvrant à crédits ECTS
         if($_SESSION['statut']=='scolarite'){
-            $call_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.id
+            $call_classes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.id
                                         FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
                                         WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id=jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
         } else {
-            $call_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.id FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
+            $call_classes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.id FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
         }
     } else {
-        $call_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.id FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
+        $call_classes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.id FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
     }
     $nb_classes = mysqli_num_rows($call_classes);
     $Eleves = array();
@@ -158,7 +158,7 @@ foreach($Eleves as $Eleve) {
 						(r.resp_legal='1' OR r.resp_legal='2')
 					ORDER BY r.resp_legal";
 
-    $call_resp=@mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $call_resp=@mysqli_query($GLOBALS["mysqli"], $sql);
 
     $nom_resp=array();
     $prenom_resp=array();
@@ -298,7 +298,7 @@ foreach($Eleves as $Eleve) {
 
     // On commence par les années archivées
     // On récupère la liste des années archivées pour l'élève
-    $annees = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT(a.annee) FROM archivage_ects a WHERE a.ine = '".$Eleve->getNoGep()."' ORDER BY a.annee ASC");
+    $annees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT(a.annee) FROM archivage_ects a WHERE a.ine = '".$Eleve->getNoGep()."' ORDER BY a.annee ASC");
     $annees_archivees = array();
     $nb_annees = mysqli_num_rows($annees);
     $t_index = 0;

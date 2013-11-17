@@ -100,11 +100,11 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 				}
 				else {
 					$sql="DELETE FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$periode';";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$date_limite_email="$annee/$mois/$jour à $heure:$minute";
 					$sql="INSERT INTO matieres_app_delais SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00';";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";
 					}
@@ -120,7 +120,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 							$email_personne_autorisant="";
 							$nom_personne_autorisant="";
 							$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
-							$req=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$req=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($req)>0) {
 								$lig_u=mysqli_fetch_object($req);
 								$nom_personne_autorisant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
@@ -132,7 +132,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 							// Recherche des profs du groupe
 							$sql="SELECT DISTINCT u.email, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.email!='';";
 							//echo "$sql<br />";
-							$req=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$req=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($req)>0) {
 								$lig_u=mysqli_fetch_object($req);
 								$designation_destinataires.=remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace');
@@ -276,7 +276,7 @@ if(!isset($id_classe)) {
 		die();
 	}
 
-	$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_clas)>0) {
 		echo "<p>Choisir une classe&nbsp;:</p>\n";
 
@@ -326,7 +326,7 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 
 		echo "<td>\n";
 		$sql="SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_groupes_professeurs j WHERE (u.login = j.login and j.id_groupe = '" . $current_group['id'] . "') ORDER BY u.nom, u.prenom";
-		$get_profs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$get_profs=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$nb = mysqli_num_rows($get_profs);
 		for ($i=0;$i<$nb;$i++){
@@ -345,7 +345,7 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 				echo "<td>\n";
 				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;id_groupe=".$current_group['id']."&amp;periode=$i'>Période $i</a>\n";
 				$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$current_group['id']."' AND periode='$i';";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					$lig=mysqli_fetch_object($res);
 					if($lig->date_limite>$date_courante) {
@@ -378,7 +378,7 @@ else {
 		echo "<p>Vous souhaitez autoriser exceptionnellement un enseignant à proposer des saisies/corrections d'apprécations pour l'enseignement ".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']."</span>) en période $periode.</p>\n";
 
 		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$group['id']."' AND periode='$periode';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			$lig=mysqli_fetch_object($res);
 			$date_limite=$lig->date_limite;

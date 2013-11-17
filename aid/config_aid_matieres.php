@@ -49,13 +49,13 @@ if (isset($is_posted) and ($is_posted == "1")) {
 
     $msg = "";
     $pb = "no";
-    $res = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+    $res = mysqli_query($GLOBALS["mysqli"], $requete);
     $nb_lignes = mysqli_num_rows($res);
     $i = 0;
     while ($i < $nb_lignes) {
         $matiere = mysql_result($res,$i,"matiere");
         if (isset($_POST["id_".$matiere])) {
-            $req = mysqli_query($GLOBALS["___mysqli_ston"], "update matieres set matiere_aid='y' where matiere='".$matiere."'");
+            $req = mysqli_query($GLOBALS["mysqli"], "update matieres set matiere_aid='y' where matiere='".$matiere."'");
             if (!$req) {
                 $msg .= "Problème lors de l'enregistrement de la matière ".$matiere.".<br />";
                 $pb="yes";
@@ -66,7 +66,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
                 $msg .= "La matière ".$matiere." ne peut être supprimée car elle est déjà utilisée dans au moins une fiche projet.<br />";
                 $pb = "yes";
             } else {
-                $req = mysqli_query($GLOBALS["___mysqli_ston"], "update matieres set matiere_aid='n' where matiere='".$matiere."'");
+                $req = mysqli_query($GLOBALS["mysqli"], "update matieres set matiere_aid='n' where matiere='".$matiere."'");
                 if (!$req) {
                     $msg .= "Problème lors de la suppression de la matière ".$matiere.".<br />";
                     $pb="yes";
@@ -102,7 +102,7 @@ echo "<tr><th><b>Identifiant de la matière</b></th>
 <th><span class='small'>Nom complet de la matière</span></th>
 <th><span class='small'>La matière fait partie de la liste des disciplines proposées dans les fiches projet</span></th>
 </tr>";
-$res = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+$res = mysqli_query($GLOBALS["mysqli"], $requete);
 $nb_lignes = mysqli_num_rows($res);
 $i = 0;
 $alt=1;

@@ -73,7 +73,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 			jgp.login = '".$_SESSION['login']."' AND
 			g.id=jgp.id_groupe
 			ORDER BY g.description";
-		$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_grp)==0) {
 			echo "<p>Vous n'avez apparemment aucun enseignement.</p>\n";
@@ -91,7 +91,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 					jgc.id_classe=c.id
 					ORDER BY c.classe";
 				//echo "$sql<br />\n";
-				$res_class=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_class=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_class)>0) {
 					$chaine_class="";
 					$cpt=0;
@@ -102,7 +102,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 							$tabnumper=array();
 							$tabnomper=array();
 							$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-							$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_per)==0) {
 								echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 								echo "</body></html>\n";
@@ -147,7 +147,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 		//$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
-	$result_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_classes = mysqli_num_rows($result_classes);
 
 	if(mysqli_num_rows($result_classes)==0) {
@@ -172,7 +172,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 			}
 
 			$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-			$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res_per)==0) {
 				echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";

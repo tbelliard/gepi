@@ -70,13 +70,13 @@ class infos{
 		return $gd["GD Version"];
 	}
 	function versionMysql(){
-		$test = ((is_null($___mysqli_res = mysqli_get_server_info($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+		$test = ((is_null($___mysqli_res = mysqli_get_server_info($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 		// On regarde si c'est une version 4 ou 5
 		$version = mb_substr($test, 0, 1);
 		if ($version == 4 OR $version == 5) {
-			$retour = '<span style="color: green;">'.((is_null($___mysqli_res = mysqli_get_server_info($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res).'</span>';
+			$retour = '<span style="color: green;">'.((is_null($___mysqli_res = mysqli_get_server_info($GLOBALS["mysqli"]))) ? false : $___mysqli_res).'</span>';
 		}else{
-			$retour = '<span style="color: red;">'.((is_null($___mysqli_res = mysqli_get_server_info($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res).'(version ancienne !)</span>';
+			$retour = '<span style="color: red;">'.((is_null($___mysqli_res = mysqli_get_server_info($GLOBALS["mysqli"]))) ? false : $___mysqli_res).'(version ancienne !)</span>';
 		}
 		return $retour;
 	}

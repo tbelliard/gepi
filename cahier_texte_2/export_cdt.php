@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_texte_2/export_cdt.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/cahier_texte_2/export_cdt.php',
 administrateur='V',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Export de CDT',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -195,7 +195,7 @@ if(!isset($id_groupe)) {
 		
 			// Liste des classes avec élève:
 			$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
-			$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 		
 			$nb_classes=mysqli_num_rows($call_classes);
 			if($nb_classes==0){
@@ -241,7 +241,7 @@ if(!isset($id_groupe)) {
 			//+++++++++++++++++++++++++++
 
 			$sql="SELECT DISTINCT u.login, u.nom, u.prenom FROM j_groupes_professeurs jgp, utilisateurs u WHERE u.login=jgp.login ORDER BY u.nom, u.prenom;";
-			$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb_profs=mysqli_num_rows($res_prof);
 			if($nb_profs==0){
 				echo "<p>Aucun professeur assurant un enseignement n'a été trouvé.</p>\n";
@@ -957,7 +957,7 @@ if($action=='afficher_tous_docs_joints') {
 		$sql.="(SELECT cdd.id_ct_devoir AS id_ct,cdd.titre,cdd.emplacement,cde.date_ct FROM ct_devoirs_documents cdd, ct_devoirs_entry cde WHERE cdd.id_ct_devoir=cde.id_ct AND cde.id_groupe='".$current_group['id']."')";
 		$sql.=" ORDER BY date_ct;";
 		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "<p>Aucun document n'est joint à ce cahier de textes.</p>\n";
 		}

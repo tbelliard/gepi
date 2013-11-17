@@ -112,7 +112,7 @@ function DureeMax2ColonnesSalle($jour_sem, $id_salle, $tab_id_creneaux, $elapse_
                 else {
     
     
-                    $req_id_semaine = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT type_edt_semaine FROM edt_semaines GROUP BY type_edt_semaine") or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    $req_id_semaine = mysqli_query($GLOBALS["mysqli"], "SELECT type_edt_semaine FROM edt_semaines GROUP BY type_edt_semaine") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     
                     if (mysqli_num_rows($req_id_semaine) <= 1) {
                         $id_semaine2 = '0';
@@ -326,23 +326,23 @@ function ConstruireColonneSalle($elapse_time, $req_creneau, $duree_max, $jour_se
             while (isset($tab_id_creneaux[$k]) AND (!$end_process) AND ($duree1<$duree_max)) {
                 //if ($id_semaine_previous == '0') {
                 if (isset($id_semaine)) {
-                    $req_demicreneau = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_cours, duree, id_groupe, id_aid, heuredeb_dec, id_semaine FROM edt_cours WHERE 
+                    $req_demicreneau = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours, duree, id_groupe, id_aid, heuredeb_dec, id_semaine FROM edt_cours WHERE 
                                                 jour_semaine = '".$jour_sem."' AND
                                                 id_salle = '".$id_salle."' AND
                                                 id_definie_periode = '".$tab_id_creneaux[$k]."' AND
                                                 id_semaine = '".$id_semaine."' AND
                                                 (id_calendrier = '".$period."' OR id_calendrier = '0')
-                                                ") or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                                ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                 }
                 else {
-                    $req_demicreneau = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_cours, duree, id_groupe, id_aid, heuredeb_dec, id_semaine FROM edt_cours WHERE 
+                    $req_demicreneau = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours, duree, id_groupe, id_aid, heuredeb_dec, id_semaine FROM edt_cours WHERE 
                                                 jour_semaine = '".$jour_sem."' AND
                                                 id_salle = '".$id_salle."' AND
                                                 id_definie_periode = '".$tab_id_creneaux[$k]."' AND
                                                 id_semaine <> '".$id_semaine_previous."' AND
                                                 id_semaine <> '0' AND
                                                 (id_calendrier = '".$period."' OR id_calendrier = '0')
-                                                ") or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                                ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
                 }
                 $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
@@ -440,7 +440,7 @@ function ConstruireColonneSalle($elapse_time, $req_creneau, $duree_max, $jour_se
 function GetColorClass($id_groupe) {
 
 	if (GetSettingEdt("edt_aff_couleur_salle") == "coul") {
-		$req_matiere = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$id_groupe."'");
+		$req_matiere = mysqli_query($GLOBALS["mysqli"], "SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$id_groupe."'");
 		$rep_matiere = mysqli_fetch_array($req_matiere);
 		$matiere = $rep_matiere['id_matiere'];
 		$recher_couleur = "M_".$matiere;
@@ -474,7 +474,7 @@ function ConstruireEDTSalle($id_salle, $period)
     $type_edt = "salle";
 
 
-$req_jours = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $jour_sem_tab = array();
 while($data_sem_tab = mysqli_fetch_array($req_jours)) {
 	$jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];
@@ -483,8 +483,8 @@ while($data_sem_tab = mysqli_fetch_array($req_jours)) {
 
 
 $jour=0;
-$req_id_creneaux = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_definie_periode FROM edt_creneaux
-							WHERE type_creneaux != 'pause'") or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$req_id_creneaux = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode FROM edt_creneaux
+							WHERE type_creneaux != 'pause'") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $nbre_lignes = mysqli_num_rows($req_id_creneaux);
 if ($nbre_lignes == 0) {
     $nbre_lignes = 1;
@@ -501,12 +501,12 @@ if ($type_edt=="salle") {
     $j = 0;
     $elapse_time = 0;
     while (isset($tab_id_creneaux[$j])) {
-        $req_creneau = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_cours, id_aid, duree, id_groupe, heuredeb_dec, id_semaine FROM edt_cours WHERE 
+        $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours, id_aid, duree, id_groupe, heuredeb_dec, id_semaine FROM edt_cours WHERE 
                                     jour_semaine = '".$jour_sem_tab[$jour]."' AND
                                     id_salle = '".$id_salle."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$j]."' AND
                                     (id_calendrier = '".$period."' OR id_calendrier = '0')
-                                    ") or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         $rep_creneau = mysqli_fetch_array($req_creneau);
         $nb_rows = mysqli_num_rows($req_creneau);
 

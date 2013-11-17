@@ -17,7 +17,7 @@ function champ_select_prof($defaut='', $avec_nb_mat='n', $form_onchange_submit='
 	$sql="SELECT * FROM utilisateurs WHERE statut='professeur'";
 	if(($etat=='actif')||($etat=='inactif')) {$sql.=" AND etat='$etat'";}
 	$sql.=" ORDER BY nom, prenom;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$tab=array();
 	$cpt=0;
 	$indice_login_prof=0;
@@ -31,7 +31,7 @@ function champ_select_prof($defaut='', $avec_nb_mat='n', $form_onchange_submit='
 		if($avec_nb_mat=='y') {
 			$sql="SELECT * FROM j_professeurs_matieres WHERE id_professeur='".$lig->login."';";
 			//$retour.="$sql<br />";
-			$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 			$tab[$cpt]['nb_matieres']=mysqli_num_rows($res2);
 			//$retour.="\$tab[$cpt]['nb_matieres']=".$tab[$cpt]['nb_matieres']."<br />";
 		}
@@ -87,7 +87,7 @@ function reordonner_matieres($login_prof='', $avec_echo='n') {
 	if($login_prof!='') {$sql.="WHERE id_professeur='$login_prof' ";}
 	$sql.="ORDER BY id_professeur, ordre_matieres, id_matiere;";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$nb_corrections=0;
 		$nb_erreurs=0;
@@ -108,7 +108,7 @@ function reordonner_matieres($login_prof='', $avec_echo='n') {
 			}
 			$tab_ordre_matieres[]=$lig->ordre_matieres;
 			$sql="UPDATE j_professeurs_matieres SET ordre_matieres='$cpt' WHERE id_professeur='$lig->id_professeur' AND id_matiere='$lig->id_matiere';";
-			$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$update) {$nb_erreurs++;}
 			$cpt++;
 		}
@@ -131,7 +131,7 @@ function champ_select_matiere($defaut='', $avec_nb_prof='n', $form_onchange_subm
 	if($defaut=='') {$retour.=" selected";}
 	$retour.=">---</option>\n";
 	$sql="SELECT * FROM matieres ORDER BY matiere;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$tab=array();
 	$cpt=0;
 	$indice_matiere=0;
@@ -145,7 +145,7 @@ function champ_select_matiere($defaut='', $avec_nb_prof='n', $form_onchange_subm
 		if($avec_nb_prof=='y') {
 			$sql="SELECT jpm.* FROM j_professeurs_matieres jpm, utilisateurs u WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$lig->matiere."' AND u.etat='actif';";
 			//$retour.="$sql<br />";
-			$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 			$tab[$cpt]['nb_profs']=mysqli_num_rows($res2);
 		}
 		$cpt++;

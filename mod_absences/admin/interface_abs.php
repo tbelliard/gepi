@@ -80,14 +80,14 @@ if ($clic == "ok") {
 				$message = "";
 	// On fait tous les tests pour tous les réglages
 	for($a = 0; $a < 6; $a++) {
-		$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = '".$test_query[$a]."'");
+		$query = mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = '".$test_query[$a]."'");
 		$verif = mysqli_num_rows($query);
 
 			// Si le setting n'existe pas, on le crée
 		if ($verif == 0) {
-			$creationSetting = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO setting (name, value) values ('".$test_query[$a]["name"]."', '".$test_query[$a]["value"]."')");
+			$creationSetting = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting (name, value) values ('".$test_query[$a]["name"]."', '".$test_query[$a]["value"]."')");
 			// On recharge la requête car elle a été mise à jour
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = '".$test_query[$a]."'");
+			$query = mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = '".$test_query[$a]."'");
 		}
 		// et on récupère sa valeur
 		$rep_phase1 = mysqli_fetch_array($query);
@@ -95,7 +95,7 @@ if ($clic == "ok") {
 		if ($rep_phase1["value"] == $test_query[$a]["value"]) {
 		// On ne fait rien
 		}else {
-			$modif = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE setting SET value = '".$test_query[$a]["value"]."' WHERE name = '".$test_query[$a]["name"]."'");
+			$modif = mysqli_query($GLOBALS["mysqli"], "UPDATE setting SET value = '".$test_query[$a]["value"]."' WHERE name = '".$test_query[$a]["name"]."'");
 			if (!$modif) {
 				$message .= "<p style=\"color: red;\">Une erreur est survenue lors de l'enregistrement !(".$test_query[$a]["name"].")</p>";
 			}else{

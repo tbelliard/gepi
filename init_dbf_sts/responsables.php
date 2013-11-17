@@ -102,7 +102,7 @@ if (isset($step1)) {
     $j=0;
     $flag=0;
     while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
             $flag=1;
         }
         $j++;
@@ -122,8 +122,8 @@ if (isset($step1)) {
 if (!isset($is_posted)) {
     $j=0;
     while ($j < count($liste_tables_del)) {
-        if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-            $del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM $liste_tables_del[$j]");
+        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+            $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
         }
         $j++;
     }
@@ -195,7 +195,7 @@ if (!isset($is_posted)) {
                 for($i = 0; $i < count($tabchamps); $i++) {
                     $affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[$tabindice[$i]]))));
                 }
-                $req = mysqli_query($GLOBALS["___mysqli_ston"], "insert into responsables set
+                $req = mysqli_query($GLOBALS["mysqli"], "insert into responsables set
                 ereno = '$affiche[0]',
                 nom1 = '$affiche[1]',
                 prenom1 = '$affiche[2]',
@@ -211,7 +211,7 @@ if (!isset($is_posted)) {
                 commune2 = '$affiche[11]'
                 ");
                 if(!$req) {
-                    $nb_reg_no++; echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+                    $nb_reg_no++; echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
                 } else {
                     $nb_record++;
                 }

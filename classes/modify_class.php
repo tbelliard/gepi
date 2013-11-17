@@ -57,7 +57,7 @@ if (isset($is_posted)) {
     $mess_avertissement2 = 'no';
     $msg = '';
     // J'appelle les différentes matières existantes :
-    $callinfo = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres");
+    $callinfo = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres");
     $nombre_lignes = mysqli_num_rows($callinfo);
 
     $i = 0;
@@ -91,13 +91,13 @@ if (isset($is_posted)) {
             if ($test_prof == '') {
                 // Il n'y a aucun prof associé à la matière
                 // Il faut donc tester s'il y a des notes ou des appréciations associées
-                $test1 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_notes mn, j_eleves_classes j  WHERE (
+                $test1 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes mn, j_eleves_classes j  WHERE (
                 mn.matiere='".$reg_matiere."' and
                 mn.login=j.login and
                 j.id_classe='".$id_classe."'
                 )");
                 $nb_test1 = mysqli_num_rows($test1);
-                $test2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_appreciations ma, j_eleves_classes j  WHERE (
+                $test2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations ma, j_eleves_classes j  WHERE (
                 ma.matiere='".$reg_matiere."' and
                 ma.login=j.login and
                 j.id_classe='".$id_classe."'
@@ -111,7 +111,7 @@ if (isset($is_posted)) {
             // AMELIORATION DU SCRIPT
             // Remarque : il faudrait normalement faire des test sur le carnet de notes et interdire la suppression d'un prof
             // si celui-ci a commencé à rentrer des notes. Ou bien, il faudrait systématiquement supprimer le carnet de note correspondant
-            $del = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_classes_matieres_professeurs
+            $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_classes_matieres_professeurs
             WHERE
             (
             id_classe='$id_classe' and
@@ -122,7 +122,7 @@ if (isset($is_posted)) {
             $compteur = 1;
             While ($m < $max) {
                 if ((isset($prof[$m])) and ($prof[$m] != '')) {
-                    $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_professeur FROM j_classes_matieres_professeurs
+                    $test = mysqli_query($GLOBALS["mysqli"], "SELECT id_professeur FROM j_classes_matieres_professeurs
                         WHERE (
                         id_classe='$id_classe' and
                         id_matiere='$reg_matiere' and
@@ -130,14 +130,14 @@ if (isset($is_posted)) {
                         )");
                     $nb = mysqli_num_rows($test);
                     if ($nb == 0) {
-                        $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_classes_matieres_professeurs SET id_professeur='$prof[$m]', priorite='$priority', id_classe='$id_classe', id_matiere='$reg_matiere', ordre_prof='$compteur', coef='$coef', recalcul_rang='y'");
+                        $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_classes_matieres_professeurs SET id_professeur='$prof[$m]', priorite='$priority', id_classe='$id_classe', id_matiere='$reg_matiere', ordre_prof='$compteur', coef='$coef', recalcul_rang='y'");
                         $compteur++;
                     }
                     $prof[$m] = '';
                 }
                 $m++;
             }
-            $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_classes_matieres_professeurs
+            $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_classes_matieres_professeurs
                 WHERE (
                 id_classe='$id_classe' and
                 id_matiere='$reg_matiere'
@@ -154,23 +154,23 @@ if (isset($is_posted)) {
             // Si oui, on teste s'il y a des notes et appréciations associées
             // s'il y a des notes et appréciations associées, on ne peut pas supprimer la matière, sinon, on peut
                         // On efface la ligne relatives à la classe et à la matière
-            $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_classes_matieres_professeurs
+            $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_classes_matieres_professeurs
                 WHERE (
                 id_classe='$id_classe' and
                 id_matiere='$reg_matiere'
                 )");
             $nb = mysqli_num_rows($test);
             if ($nb != 0) {
-                $query_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "select distinct login from j_eleves_classes where id_classe='".$id_classe."'");
+                $query_eleves = mysqli_query($GLOBALS["mysqli"], "select distinct login from j_eleves_classes where id_classe='".$id_classe."'");
                 $nb_eleves = mysqli_num_rows($query_eleves);
                 // on va tester s'il y a des notes et appréciations associées
                 $k = 0;
                 $suppression = '';
                 while ($k < $nb_eleves) {
                     $login_eleve[$k] = mysql_result($query_eleves, $k, 'login');
-                    $test1 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_notes WHERE (matiere='".$reg_matiere."' and login='".$login_eleve[$k]."')");
+                    $test1 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (matiere='".$reg_matiere."' and login='".$login_eleve[$k]."')");
                     $nb_test1 = mysqli_num_rows($test1);
-                    $test2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres_appreciations WHERE (matiere='".$reg_matiere."' and login='".$login_eleve[$k]."')");
+                    $test2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (matiere='".$reg_matiere."' and login='".$login_eleve[$k]."')");
                     $nb_test2 = mysqli_num_rows($test2);
                     if (($nb_test1 != 0) or ($nb_test2 != 0)) $suppression = 'impossible';
                     $k++;
@@ -182,7 +182,7 @@ if (isset($is_posted)) {
                 } else {
                     // Si le test est concluant
                     // On supprime la ligne dans j_classes_matieres_professeurs
-                    $del1 = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_classes_matieres_professeurs
+                    $del1 = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_classes_matieres_professeurs
                     WHERE
                     (
                     id_classe='$id_classe' and
@@ -192,7 +192,7 @@ if (isset($is_posted)) {
                     // On supprime les élèves non inscrits
                     $k = 0;
                     while ($k < $nb_eleves) {
-                        $del2 = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_eleves_matieres
+                        $del2 = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_matieres
                         WHERE
                         (
                         login = '".$login_eleve[$k]."' and
@@ -207,7 +207,7 @@ if (isset($is_posted)) {
                     // celui-ci le cas échéant.
 
                     // reste à également faire le ménage dans  j_eleves_professeurs
-                    $test3 = mysqli_query($GLOBALS["___mysqli_ston"], "select distinct j.professeur
+                    $test3 = mysqli_query($GLOBALS["mysqli"], "select distinct j.professeur
                     from j_eleves_professeurs j, j_professeurs_matieres m
                     where (
                     j.id_classe='".$id_classe."' and
@@ -219,13 +219,13 @@ if (isset($is_posted)) {
                     $m = 0;
                     while ($m < $nb_prof) {
                         $login_prof = mysql_result($test3, $m, 'professeur');
-                        $test4 = mysqli_query($GLOBALS["___mysqli_ston"], "select distinct id_professeur from  j_classes_matieres_professeurs
+                        $test4 = mysqli_query($GLOBALS["mysqli"], "select distinct id_professeur from  j_classes_matieres_professeurs
                         where (
                         id_professeur='".$login_prof."' and
                         id_classe='".$id_classe."'
                         )");
                         if (mysqli_num_rows($test4) == 0)
-                            $del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from j_eleves_professeurs
+                            $del = mysqli_query($GLOBALS["mysqli"], "delete from j_eleves_professeurs
                             where (
                             id_classe='".$id_classe."' and
                             professeur = '".$login_prof."'
@@ -239,7 +239,7 @@ if (isset($is_posted)) {
 
         if (isset($_POST['force_defaut'])) {
             $priority_defaut = sql_query1("select priority from matieres where matiere='".$reg_matiere."'");
-            $req = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE j_classes_matieres_professeurs SET priorite='".$priority_defaut."'
+            $req = mysqli_query($GLOBALS["mysqli"], "UPDATE j_classes_matieres_professeurs SET priorite='".$priority_defaut."'
             WHERE (
             id_classe='".$id_classe."' AND
             id_matiere='".$reg_matiere."'
@@ -269,7 +269,7 @@ change = 'no';
 $themessage = "Des changements ont eu lieu sur cette page et n\'ont pas été enregistrés. Si vous cliquez sur OK les changements seront perdus.";
 
 // Calcul du nombre d'élèves dans la classe à la première periode:
-$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' and c.login = e.login and c.periode='1')");
+$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' and c.login = e.login and c.periode='1')");
 $nombre_eleves = mysqli_num_rows($appel_donnees_eleves);
 ?>
 <form action="modify_class.php" name='form2' method=post>
@@ -278,7 +278,7 @@ echo add_token_field();
 echo "<p class=bold>|<a href=\"index.php\" onclick=\"return confirm_abandon(this, change, '".$themessage."')\">Retour</a>";
 echo "|<a href='javascript:centrerpopup(\"help_modify_class.html\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Aide</a>";
 
-$test_prof_mat = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM j_professeurs_matieres"),0);
+$test_prof_mat = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres"),0);
 if ($test_prof_mat==0) {
     echo "<p class='grand'>Aucune affectation professeur<->matière n'est disponible !</p>";
     echo "<p>Vous devez d'abord définir des professeurs et leur affecter des matières !</p>";
@@ -286,8 +286,8 @@ if ($test_prof_mat==0) {
 }
 
 
-$test1 = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM temp_gep_import"),0);
-$test2 = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM j_classes_matieres_professeurs WHERE id_classe='$id_classe'"),0);
+$test1 = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM temp_gep_import"),0);
+$test2 = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_classes_matieres_professeurs WHERE id_classe='$id_classe'"),0);
 if (($test1 != 0) and ($test2 != 0)) {
     ?>
     |<a href="init_options.php?id_classe=<?echo $id_classe?>">Initialisation des Options à partir de Gep</a>
@@ -296,7 +296,7 @@ if (($test1 != 0) and ($test2 != 0)) {
 echo "|<input type=\"submit\" onclick=\"return VerifChargement()\" name=\"Envoyer\" value=\"Enregistrer les modifications\">";
 echo "|</p>";
 
-$call_nom_class = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+$call_nom_class = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_nom_class, 0, 'classe');
 echo "<H3>Classe : $classe</H3>";
 
@@ -310,7 +310,7 @@ $cas = 0;
 while ($cas < 2) {
 // Tout d'abord les matières ayant un ou plusieurs profs enregistrés
 if ($cas==0)
-$call_class_info = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT m.*, j.priorite, j.coef FROM matieres m, j_classes_matieres_professeurs j
+$call_class_info = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT m.*, j.priorite, j.coef FROM matieres m, j_classes_matieres_professeurs j
 Where (
 m.matiere=j.id_matiere and
 j.id_classe='$id_classe'
@@ -318,7 +318,7 @@ j.id_classe='$id_classe'
 
 // Ensuite les matières n'ayant aucun profs enregistrés
 if ($cas==1)
-$call_class_info = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT m.*, j.priorite, j.coef FROM matieres m LEFT JOIN
+$call_class_info = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT m.*, j.priorite, j.coef FROM matieres m LEFT JOIN
 j_classes_matieres_professeurs j ON (m.matiere=j.id_matiere and
  j.id_classe='$id_classe')
  where (j.id_matiere IS NULL)
@@ -334,7 +334,7 @@ while ($i < $nombre_ligne) {
     $reg_matiere_complet = mysql_result($call_class_info, $i, "nom_complet");
     $reg_priority = $reg_matiere."_priority";
     $reg_matiere_max_profs = $reg_matiere."_max";
-    $call_profs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_classes_matieres_professeurs WHERE ( id_classe='$id_classe' and id_matiere = '$reg_matiere') ORDER BY ordre_prof");
+    $call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_classes_matieres_professeurs WHERE ( id_classe='$id_classe' and id_matiere = '$reg_matiere') ORDER BY ordre_prof");
     $nombre_profs = mysqli_num_rows($call_profs);
     $coef = mysql_result($call_class_info, $i, "coef");
     $reg_coef = $reg_matiere."_coef";
@@ -349,7 +349,7 @@ while ($i < $nombre_ligne) {
         echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
         echo "<table border = '0' width='100%'><tr><td width='30%'>";
         echo "<input type=checkbox value=yes name=$reg_matiere onchange=\"changement()\" CHECKED>";
-        if (($nombre_profs != 0) and (mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "select id_classe from periodes where id_classe = '$id_classe'")) != 0)) {
+        if (($nombre_profs != 0) and (mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "select id_classe from periodes where id_classe = '$id_classe'")) != 0)) {
             echo "<span class=\"norme\"><b>$reg_matiere ($reg_matiere_complet)</b></span>";
         } else {
             echo "<span class=\"norme\"><b><font color='red'>$reg_matiere ($reg_matiere_complet)</font></b></span>";
@@ -359,7 +359,7 @@ while ($i < $nombre_ligne) {
         // Calcul du nombre d'inscrits pour chaque période
         $tmpInscrits = null;
         for ($m=1;$m<$nb_periode;$m++) {
-            $testquery = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT j.login FROM j_eleves_matieres j, j_eleves_classes c WHERE (".
+            $testquery = mysqli_query($GLOBALS["mysqli"], "SELECT j.login FROM j_eleves_matieres j, j_eleves_classes c WHERE (".
                     "j.login = c.login AND " .
                     "c.id_classe = '" . $id_classe . "' AND " .
                     "j.matiere = '" . $reg_matiere . "' AND " .
@@ -369,7 +369,7 @@ while ($i < $nombre_ligne) {
 
             $test = mysqli_num_rows($testquery);
 
-            $total_eleves_periode = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login AND c.periode = '" . $m . "')"));
+            $total_eleves_periode = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login AND c.periode = '" . $m . "')"));
 
             $inscrits = $total_eleves_periode-$test;
             $tmpInscrits .= $inscrits . "-";
@@ -407,7 +407,7 @@ while ($i < $nombre_ligne) {
             $reg_matiere_prof[$k] = $reg_matiere."_prof".$k;
             $num_prof = $k+1;
             echo "<span class=\"norme\">Professeur $num_prof : <select size=1 name=$reg_matiere_prof[$k] onchange=\"changement()\">";
-            $calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT u.* FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.login");
+            $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT u.* FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.login");
             $nombreligneutilisateur = mysqli_num_rows($calldata);
             $login_list = '';
             echo "<option value=$login_list>(vide)</option>";

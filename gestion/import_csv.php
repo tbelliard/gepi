@@ -136,7 +136,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                             $reg_login = "reg_".$row."_login";
                             $reg_statut = "reg_".$row."_statut";
                             $data[$c] =    my_strtoupper($data[$c]);
-                            $call_login = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM eleves WHERE login='$data[$c]'");
+                            $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves WHERE login='$data[$c]'");
                             $test = mysqli_num_rows($call_login);
                             if ($test != 0) {
                                 echo "<td><p><font color = red>$data[$c]</font></p></td>";
@@ -161,7 +161,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                         $test_nom_prenom_existant = 'no';
                         if (preg_match ("/^.{1,30}$/", $data[$c])) {
                             $temp = $c+1;
-                            $call_nom = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom FROM eleves WHERE (nom='$data[$c]' and prenom = '$data[$temp]')");
+                            $call_nom = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM eleves WHERE (nom='$data[$c]' and prenom = '$data[$temp]')");
                             $test = @mysqli_num_rows($call_nom);
                             if ($test != 0) {
                                 $test_nom_prenom_existant = 'yes';
@@ -222,7 +222,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                             if ($login_exist == "non") {
                                 $valeur_classe='-';
                             } else {
-                                $test_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_classes WHERE login='$login_valeur'");
+                                $test_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_classes WHERE login='$login_valeur'");
                                 $result_test = mysqli_num_rows($test_classe);
                                 if ($result_test == 0) {
                                     $valeur_classe='-';
@@ -231,7 +231,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                                 }
                             }
                         } else {
-                            $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM classes WHERE classe='$data[$c]'");
+                            $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM classes WHERE classe='$data[$c]'");
                             $test = mysqli_num_rows($call_classe);
                             if ($test == 0) {
                                 $valeur_classe='????';
@@ -240,7 +240,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                                 if ($login_exist == "non") {
                                     $valeur_classe = $data[$c];
                                 } else {
-                                    $test_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_classes WHERE (login='$login_valeur' and id_classe='$id_classe')");
+                                    $test_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_classes WHERE (login='$login_valeur' and id_classe='$id_classe')");
                                     $result_test = mysqli_num_rows($test_classe);
                                     if ($result_test == 0) {
                                         $valeur_classe='????';
@@ -294,7 +294,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                                 $valeur_prof = '-';
                             }
                         } else {
-                            $call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM utilisateurs u, j_groupes_professeurs jgp, j_groupes_classes jgc WHERE (" .
+                            $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs u, j_groupes_professeurs jgp, j_groupes_classes jgc WHERE (" .
                             		"u.login = '$data[$c]' AND " .
                             		"u.login = jgp.id_professeur and " .
                             		"jgp.id_groupe = jgc.id_groupe and " .
@@ -318,7 +318,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                         break;
                         case 9:
                         //établissement d'origine
-                        $call_etab = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM etablissements WHERE id = '$data[$c]'");
+                        $call_etab = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM etablissements WHERE id = '$data[$c]'");
                         $test = mysqli_num_rows($call_etab);
                         if (($test != 0) or ($data[$c] == '-')) {
                             echo "<td><p>$data[$c]</p></td>";

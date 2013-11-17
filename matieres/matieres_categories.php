@@ -75,11 +75,11 @@ if (isset($_POST['action'])) {
         }
 
         if (!$error) {
-            $res = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "'");
+            $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "'");
         }
         if (!$res) {
             $msg .= "Erreur lors de l'enregistrement de la nouvelle catégorie.</br>";
-            echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+            echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
         }
     } elseif ($_POST['action'] == "edit") {
         // On met à jour une catégorie
@@ -108,7 +108,7 @@ if (isset($_POST['action'])) {
 
         if (!$error) {
             // On enregistre
-            $res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "' WHERE id = '".$_POST['categorie_id']."'");
+            $res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "' WHERE id = '".$_POST['categorie_id']."'");
         }
 
         if (!$res) $msg .= "Erreur lors de la mise à jour de la catégorie.";
@@ -129,7 +129,7 @@ if (isset($_POST['action'])) {
 				$cat_id=preg_replace("/^priority_/", "", $key);
 				$sql="UPDATE matieres_categories SET priority = '" . $value . "' WHERE id = '".$cat_id."';";
 				//echo "$sql<br />";
-				$res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if (!$res) $msg .= "Erreur lors de la mise à jour de la catégorie.";
 			}
@@ -151,11 +151,11 @@ if (isset($_POST['action'])) {
             } else {
 
                 // On teste l'utilisation de cette catégorie
-                $res = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT matiere FROM matieres WHERE categorie_id = '" . $_POST['categorie_id'] ."'");
+                $res = mysqli_query($GLOBALS["mysqli"], "SELECT matiere FROM matieres WHERE categorie_id = '" . $_POST['categorie_id'] ."'");
                 $test = mysqli_num_rows($res);
 
                 //$res2 = mysql_query("SELECT DISTINCT id_groupe, c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
-                $res2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
+                $res2 = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
                 $test2 = mysqli_num_rows($res2);
 
                 if ($test>0) {
@@ -176,7 +176,7 @@ if (isset($_POST['action'])) {
                     $msg .= "La catégorie n'a pas pu être supprimée, car elle a déjà été associée à des enseignements pour des classes (<i>$liste_classes_associees</i>).<br/>";
                 }
 				else {
-                    $res = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM matieres_categories WHERE id = '" . $_POST['categorie_id']."'");
+                    $res = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_categories WHERE id = '" . $_POST['categorie_id']."'");
                     if (!$res) {
                         $msg .= "Erreur lors de la suppression de la catégorie.<br/>";
                     } else {
@@ -192,14 +192,14 @@ elseif((isset($_GET['action']))&&($_GET['action'] == "corrige_accents_html")) {
 
 	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
 	$sql="SELECT * FROM matieres_categories;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$correction=ensure_utf8(strtr($lig->nom_complet, $tab));
 			if($lig->nom_complet!=$correction) {
 				$sql="UPDATE matieres_categories SET nom_complet='$correction' WHERE id='$lig->id';";
 				//echo "$sql<br />";
-				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($update) {
 					$msg .= "Correction de l'encodage d'un nom de catégorie de matière en '$correction'<br />";
 				}
@@ -251,7 +251,7 @@ if (isset($_GET['action'])) {
         // On édite la catégorie existante
         if (!is_numeric($_GET['categorie_id'])) $_GET['categorie_id'] == 0;
 
-        $res = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, nom_court, nom_complet, priority FROM matieres_categories WHERE id = '" . $_GET['categorie_id'] . "'");
+        $res = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, nom_complet, priority FROM matieres_categories WHERE id = '" . $_GET['categorie_id'] . "'");
         $current_cat = mysqli_fetch_array($res,  MYSQLI_ASSOC);
 
         if ($current_cat) {
@@ -295,7 +295,7 @@ if (isset($_GET['action'])) {
 		$tab_priorites_categories=array();
 		$temoin_pb_ordre_categories="n";
 		$sql="select * from matieres_categories;";
-		$res_cat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_cat)>0) {
 			while($lig_cat=mysqli_fetch_object($res_cat)) {
 				$current_priority=$lig_cat->priority;
@@ -324,14 +324,14 @@ if (isset($_GET['action'])) {
 </tr>
     <?php
 	$max_priority_cat=0;
-	$get_max_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
+	$get_max_cat = mysqli_query($GLOBALS["mysqli"], "SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
 	if(mysqli_num_rows($get_max_cat)>0) {
 		$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
 	}
 
 	$temoin_anomalie_categ_Aucune='n';
 	$alt=1;
-    $res = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, nom_court, nom_complet, priority FROM matieres_categories ORDER BY $orderby");
+    $res = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, nom_complet, priority FROM matieres_categories ORDER BY $orderby");
     while ($current_cat = mysqli_fetch_array($res,  MYSQLI_ASSOC)) {
 		$alt=$alt*(-1);
         echo "<tr class='lig$alt white_hover'>\n";
@@ -380,7 +380,7 @@ if (isset($_GET['action'])) {
 
 	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
 	$sql="SELECT * FROM matieres_categories;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$alerte_accents_html="<br /><p><span style='color:red; font-weight:bold;'>Attention&nbsp;:</span> Une ou des catégories ont des accents HTML dans leur nom complet (<em>accents enregistrés sous forme HTML dans la base de données</em>).<br />Cela peut perturber l'affichage des noms de catégories de matières dans les bulletins PDF (<em>et ailleurs peut-être</em>)</p>\n<ul>\n";
 		$ajout="";

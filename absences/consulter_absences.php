@@ -63,7 +63,7 @@ change = 'no';
 
 
 <?php
-$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
 ?>
 <p><b>Classe de <?php echo "$classe"; ?> - Consultation des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
@@ -79,9 +79,9 @@ $classe = mysql_result($call_classe, "0", "classe");
 </tr>
 <?php
 if ($_SESSION['statut'] == "cpe") {
-		$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.* FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num') order by e.nom, e.prenom");
+		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num') order by e.nom, e.prenom");
 	} else {
-		$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.* FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num') order by e.nom, e.prenom");
+		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num') order by e.nom, e.prenom");
 }
 
 $nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
@@ -90,7 +90,7 @@ $num_id=10;
 $alt=1;
 while($i < $nombre_lignes) {
 	$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
-	$current_eleve_absences_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM  absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
+	$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM  absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 	$current_eleve_nb_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
 	$current_eleve_nb_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
 	$current_eleve_nb_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");

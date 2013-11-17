@@ -83,7 +83,7 @@ if ($id_choix_periode == 0) {
 	echo "'>Sélectionnez la période pour laquelle vous souhaitez imprimer les listes.</legend>\n";
 	echo "<form method=\"post\" action=\"impression_serie.php\" name=\"imprime_serie\">\n";
 	$requete_periode = "SELECT DISTINCT `num_periode` FROM `periodes`";
-	$resultat_periode = mysqli_query($GLOBALS["___mysqli_ston"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	echo "<br />\n";
 	While ( $data_periode = mysqli_fetch_array($resultat_periode)) {
 		echo "<label for='id_choix_periode".$data_periode['num_periode']."' style='cursor: pointer;'>Période ".$data_periode['num_periode']." : </label><input type='radio' name='id_choix_periode' id='id_choix_periode".$data_periode['num_periode']."' value='".$data_periode['num_periode']."' /> <br />\n";
@@ -103,7 +103,7 @@ else {
 	// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
 	$sql="SELECT * FROM modeles_grilles_pdf WHERE login='".$_SESSION['login']."' ORDER BY nom_modele;";
 	//echo "$sql<br />";
-	$res_modeles=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_modeles=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_modeles=mysqli_num_rows($res_modeles);
 	$cpt=0;
 	if($nb_modeles>0) {
@@ -152,7 +152,7 @@ else {
 			else {
 				$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
 			}
-			$resultat_classe = mysqli_query($GLOBALS["___mysqli_ston"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			echo "		<optgroup label=\"-- Les classes --\">\n";
 			While ( $data_classe = mysqli_fetch_array($resultat_classe)) {
 						echo "		<option value=\"";
@@ -235,7 +235,7 @@ else {
 				else {
 					$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
 				}
-				$resultat_classe = mysqli_query($GLOBALS["___mysqli_ston"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				echo "		<optgroup label=\"-- Les classes --\">\n";
 				While ( $data_classe = mysqli_fetch_array($resultat_classe)) {
 							echo "		<option value=\"";
@@ -295,7 +295,7 @@ else {
 				echo "<p class='bold'>Enseignements de ".get_class_from_id($id_liste_classes[$i])."</p>\n";
 				$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, groupes g WHERE g.id=jgc.id_groupe AND jgc.id_classe='".$id_liste_classes[$i]."' ORDER BY g.name;";
 				//echo "$sql<br />";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)==0) {
 					echo "<p style='color:red'>Aucun enseignement dans cette classe.</p>\n";
 				}

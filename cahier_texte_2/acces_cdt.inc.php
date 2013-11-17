@@ -190,7 +190,7 @@ for($i=0;$i<count($id_groupe);$i++) {
 		AND date_ct <= '".$timestamp_fin_export."'
 		AND id_groupe='".$id_groupe[$i]."'
 		) ORDER BY date_ct DESC, heure_entry DESC;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$cpt=0;
 	while($lig=mysqli_fetch_object($res)) {
 
@@ -212,7 +212,7 @@ for($i=0;$i<count($id_groupe);$i++) {
 		AND date_ct <= '".$timestamp_fin_export."'
 		AND id_groupe='".$id_groupe[$i]."'
 		) ORDER BY date_ct DESC;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$cpt=0;
 	while($lig=mysqli_fetch_object($res)) {
 		$date_dev=strftime("%a %d %b %y", $lig->date_ct);

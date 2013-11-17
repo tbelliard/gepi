@@ -82,17 +82,17 @@ require_once("./menu.inc.php");
 		<th>- professeurs -</th>
 	</tr>';
 
-$req_nbr_group = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM groupes");
+$req_nbr_group = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM groupes");
 $aff_nbr_group = mysqli_num_rows($req_nbr_group);
 
 	for($i=0; $i<$aff_nbr_group; $i++) {
 		$gr[$i]["id"] = mysql_result($req_nbr_group, $i, "id");
 		$groupe_complet = get_group($gr[$i]["id"]);
-    		$get_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.categorie_id FROM classes c, j_groupes_classes j WHERE (" .
+    		$get_classes = mysqli_query($GLOBALS["mysqli"], "SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.categorie_id FROM classes c, j_groupes_classes j WHERE (" .
                                     "c.id = j.id_classe and j.id_groupe = '" . $gr[$i]["id"] . "')");
     		$nb_classes = mysqli_num_rows($get_classes);
 
-    		$get_profs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_groupes_professeurs j WHERE (" .
+    		$get_profs = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_groupes_professeurs j WHERE (" .
                                 "u.login = j.login and j.id_groupe = '" . $gr[$i]["id"] . "') ORDER BY u.nom, u.prenom");
 
     		$nb = mysqli_num_rows($get_profs);

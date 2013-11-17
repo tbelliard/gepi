@@ -47,7 +47,7 @@ $requete = "select * from droits_aid where (id!='cpe_peut_modifier' and id!='pro
 if (isset($is_posted) and ($is_posted == "1")) {
 	check_token();
 
-    $res = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+    $res = mysqli_query($GLOBALS["mysqli"], $requete);
     $nb_lignes = mysqli_num_rows($res);
     $i = 0;
     while ($i < $nb_lignes) {
@@ -58,7 +58,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
         if (!(isset($_POST["cpe_".$id]))) $_POST["cpe_".$id] = '-';
         if (!(isset($_POST["eleve_".$id]))) $_POST["eleve_".$id] = '-';
         if (!(isset($_POST["statut_".$id]))) $_POST["statut_".$id]= '0';
-        $sql = mysqli_query($GLOBALS["___mysqli_ston"], "update droits_aid set
+        $sql = mysqli_query($GLOBALS["mysqli"], "update droits_aid set
         public = '".$_POST["public_".$id]."',
         professeur = '".$_POST["professeur_".$id]."',
         cpe = '".$_POST["cpe_".$id]."',
@@ -105,7 +105,7 @@ echo "<tr><th><b>Champ de la fiche projet</b></th>
 <th><span class='small'>Les élèves peuvent modifier ce champ</span></th>
 <th><span class='small'>Le champ est actif</span></th>
 </tr>";
-$res = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+$res = mysqli_query($GLOBALS["mysqli"], $requete);
 $nb_lignes = mysqli_num_rows($res);
 $i = 0;
 $alt=1;

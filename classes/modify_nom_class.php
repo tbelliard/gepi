@@ -110,7 +110,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			//$register_class = mysql_query("UPDATE classes SET classe='$reg_class_name', nom_complet='$reg_nom_complet', suivi_par='$reg_suivi_par', formule= '$reg_formule', format_nom='$reg_format', display_rang='$display_rang', display_address='$display_address', display_coef='$display_coef', display_mat_cat ='$display_mat_cat', display_nbdev ='$display_nbdev',display_moy_gen='$display_moy_gen' WHERE id = '$id_classe'");
 
-			$register_class = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE classes SET classe='$reg_class_name',
+			$register_class = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET classe='$reg_class_name',
 													nom_complet='$reg_nom_complet',
 													suivi_par='$reg_suivi_par',
 													formule= '".html_entity_decode($reg_formule)."',
@@ -148,7 +148,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			// On enregistre les infos relatives aux catégories de matières
 			$tab_priorites_categories=array();
 			$temoin_pb_ordre_categories="n";
-			$get_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, nom_court, priority FROM matieres_categories");
+			$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, priority FROM matieres_categories");
 			while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
 				//echo $row['nom_court']." : ";
 				$reg_priority = $_POST['priority_'.$row["id"]];
@@ -164,7 +164,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				//echo "$reg_priority<br />";
 				//$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
 
-				$res_test=mysqli_query($GLOBALS["___mysqli_ston"], "select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')");
+				$res_test=mysqli_query($GLOBALS["mysqli"], "select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')");
 				$test = mysql_result($res_test, 0);
 
 				if ($test == 0) {
@@ -175,7 +175,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					$sql="UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "');";
 				}
 				//echo "$sql<br />";
-				$res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!$res) {
 					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
 				}
@@ -203,7 +203,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		if ($reg_class_name) {
 		//$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat'");
 		//$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat', display_nbdev ='$display_nbdev'");
-		$register_class = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO classes SET classe = '$reg_class_name',
+		$register_class = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe = '$reg_class_name',
 													nom_complet = '$reg_nom_complet',
 													suivi_par = '$reg_suivi_par',
 													formule = '$reg_formule',
@@ -235,12 +235,12 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			$msg .= "Une erreur s'est produite lors de l'enregistrement de la nouvelle classe.";
 		} else {
 			$msg .= "La nouvelle classe a bien été enregistrée.";
-			$id_classe = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+			$id_classe = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 			// On enregistre les infos relatives aux catégories de matières
 			$tab_priorites_categories=array();
 			$temoin_pb_ordre_categories="n";
-			$get_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, nom_court, priority FROM matieres_categories");
+			$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, priority FROM matieres_categories");
 			while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
 				$reg_priority = $_POST['priority_'.$row["id"]];
 				if (isset($_POST['moyenne_'.$row["id"]])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
@@ -253,7 +253,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				}
 				$tab_priorites_categories[]=$reg_priority;
 
-				$res = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
+				$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
 
 				if (!$res) {
 					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
@@ -265,12 +265,12 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			}
 
 			$sql="SELECT login FROM utilisateurs WHERE etat='actif' AND statut='scolarite';";
-			$res_scol=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_scol=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_scol)>0) {
 				$nb_scol=0;
 				while($lig_scol=mysqli_fetch_object($res_scol)) {
 					$sql="INSERT INTO j_scol_classes SET login='$lig_scol->login', id_classe='$id_classe';";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
 						$msg.="<br />Erreur lors de l'association du compte $lig_scol->login avec la classe.";
 					}
@@ -323,7 +323,7 @@ if (isset($id_classe)) {
 	// AJOUT: boireaus
 	//$chaine_options_classes="";
 	$sql="SELECT id, classe FROM classes ORDER BY classe";
-	$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
 		$id_class_suiv=0;
@@ -449,7 +449,7 @@ if(getSettingValue('GepiAdminImprBulSettings')!='yes') {
 
 if (isset($id_classe)) {
 
-	$call_nom_class = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes WHERE id = '$id_classe'");
+	$call_nom_class = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 
 	if(mysqli_num_rows($call_nom_class)==0) {
 		echo "<p>L'identifiant de classe '$id_classe' est inconnu.</p>\n";
@@ -641,20 +641,20 @@ td {
 		</tr>
 		<?php
 		$max_priority_cat=0;
-		$get_max_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
+		$get_max_cat = mysqli_query($GLOBALS["mysqli"], "SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
 		if(mysqli_num_rows($get_max_cat)>0) {
 			$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
 		}
 
 		$tab_priorites_categories=array();
 		$temoin_pb_ordre_categories="n";
-		$get_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, nom_court, priority FROM matieres_categories");
+		$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, priority FROM matieres_categories");
 		while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
 			// Pour la catégorie, on récupère les infos déjà enregistrées pour la classe
 			if (isset($id_classe)) {
 				$sql="SELECT priority, affiche_moyenne FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] ."' and classe_id = '" . $id_classe . "');";
 				//echo "$sql<br />";
-				$res_cat_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_cat_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 				$infos = mysqli_fetch_object($res_cat_classe);
 			} else {
 				$infos = false;
@@ -769,7 +769,7 @@ td {
 
 		// sélection des modèle des bulletins.
 		//$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
-		$requete_modele = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_model_bulletin, valeur as nom_model_bulletin FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC;");
+		$requete_modele = mysqli_query($GLOBALS["mysqli"], "SELECT id_model_bulletin, valeur as nom_model_bulletin FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC;");
 		if(mysqli_num_rows($requete_modele)==0) {
 			echo "<p style='color:red'>ANOMALIE&nbsp;: Il n'existe aucun modèle de bulletin PDF.";
 			if($_SESSION['login']=='administrateur') {
@@ -810,7 +810,7 @@ if(isset($id_classe)) {
 	<td><?php
 		$sql="SELECT DISTINCT m.* FROM j_mentions_classes j, mentions m WHERE j.id_classe='$id_classe' AND j.id_mention=m.id ORDER BY j.ordre, m.mention;";
 		//echo "$sql<br />\n";
-		 $res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "<p>Aucune $gepi_denom_mention n'est définie pour cette classe.</p>\n";
 		}

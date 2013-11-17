@@ -192,7 +192,7 @@ $couleur_calcul_moy = '#AAAAE6';
 */
 
 // Calcul du nombre de periodes à afficher : $nb_cahier_note
-$appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT periode, id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe') ORDER BY periode");
+$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT periode, id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe') ORDER BY periode");
 $nb_cahier_note = mysqli_num_rows($appel_cahier_notes);
 
 if ($nb_cahier_note == 0) {
@@ -225,10 +225,10 @@ $j=0;
 $num_per = 0;
 while ($num_per < $nb_cahier_note) {
     $id_conteneur[$num_per]  = mysql_result($appel_cahier_notes , $num_per, 'id_cahier_notes');
-    $appel_conteneur = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_conteneurs WHERE id ='".$id_conteneur[$num_per]."'");
+    $appel_conteneur = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id ='".$id_conteneur[$num_per]."'");
     $nom_conteneur[$num_per] = mysql_result($appel_conteneur, 0, 'nom_court');
     $mode[$num_per] = mysql_result($appel_conteneur, 0, 'mode');
-    $periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+    $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
     $periode_num = mysql_result($appel_cahier_notes , $num_per, 'periode');
     $nom_periode[$num_per] = mysql_result($periode_query, $periode_num-1, "nom_periode");
 
@@ -245,7 +245,7 @@ while ($num_per < $nb_cahier_note) {
     sous_conteneurs($id_conteneur[$num_per],$nb_sous_cont[$num_per],$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all',$ponderation_sous_cont);
 
     // Détermination du nombre de devoirs à afficher
-    $appel_dev = mysqli_query($GLOBALS["___mysqli_ston"], "select * from cn_devoirs where (id_conteneur='".$id_conteneur[$num_per]."' and id_racine='".$id_conteneur[$num_per]."') order by date");
+    $appel_dev = mysqli_query($GLOBALS["mysqli"], "select * from cn_devoirs where (id_conteneur='".$id_conteneur[$num_per]."' and id_racine='".$id_conteneur[$num_per]."') order by date");
     $nb_dev[$num_per]  = $nb_dev[$num_per-1] + mysqli_num_rows($appel_dev);
     // Détermination des noms et identificateurs des devoirs
     $k=0;
@@ -282,7 +282,7 @@ foreach ($current_group["eleves"]["all"]["list"] as $_login) {
 
         $k=0;
         while ($k < $nb_dev[$nb_cahier_note-1]) {
-            $note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
+            $note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
             $eleve_statut = @mysql_result($note_query, 0, "statut");
             $eleve_note = @mysql_result($note_query, 0, "note");
             $mess_note[$i][$k] = '';
@@ -322,7 +322,7 @@ while ($num_per < $nb_cahier_note) {
     $nb_colspan = $nb_dev[$num_per]-$nb_dev[$num_per-1];
     $i = $nb_sous_cont[$num_per-1];
     while ($i < $nb_sous_cont[$num_per]) {
-        $query_nb_dev = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_devoirs where (id_conteneur='$id_sous_cont[$i]') order by date");
+        $query_nb_dev = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_devoirs where (id_conteneur='$id_sous_cont[$i]') order by date");
         $nb_colspan++;
         $nb_colspan += mysqli_num_rows($query_nb_dev);
         $i++;
@@ -357,7 +357,7 @@ while ($num_per < $nb_cahier_note) {
 
     $i = $nb_sous_cont[$num_per-1];
     while ($i < $nb_sous_cont[$num_per]) {
-        $query_nb_dev = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_devoirs where (id_conteneur='$id_sous_cont[$i]') order by date");
+        $query_nb_dev = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_devoirs where (id_conteneur='$id_sous_cont[$i]') order by date");
         $nb_dev_s_cont[$i]  = mysqli_num_rows($query_nb_dev);
         $m = 0;
         while ($m < $nb_dev_s_cont[$i]) {
@@ -604,7 +604,7 @@ while($i < $nombre_lignes) {
             $m = 0;
             while ($m < $nb_dev_s_cont[$k]) {
                 $temp = $id_s_dev[$k][$m];
-                $note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
+                $note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
                 $eleve_statut = @mysql_result($note_query, 0, "statut");
                 $eleve_note = @mysql_result($note_query, 0, "note");
                 if (($eleve_statut != '') and ($eleve_statut != 'v')) {
@@ -625,7 +625,7 @@ while($i < $nombre_lignes) {
                 echo "<td class=cn bgcolor=$couleur_devoirs><center><b>$tmp</b></center></td>\n";
                 $m++;
             }
-            $moyenne_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
+            $moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
             $statut_moy = @mysql_result($moyenne_query, 0, "statut");
             if ($statut_moy == 'y') {
                 $moy = @mysql_result($moyenne_query, 0, "note");
@@ -642,7 +642,7 @@ while($i < $nombre_lignes) {
         //
         //$moy="";
         $sql = "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='".$id_conteneur[$num_per]."')";
-        $moyenne_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+        $moyenne_query = mysqli_query($GLOBALS["mysqli"], $sql);
         if(mysqli_num_rows($moyenne_query)==0) {
             $moy = '&nbsp;';
             $data_pdf[$i+1][] = "";
@@ -667,7 +667,7 @@ while($i < $nombre_lignes) {
         //
 		if($avec_moy_bull=="y") {
 	        $sql="SELECT * FROM matieres_notes WHERE login='$eleve_login[$i]' AND id_groupe='$id_groupe' AND periode='$num_periode';";
-	        $res_moy_bull=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	        $res_moy_bull=mysqli_query($GLOBALS["mysqli"], $sql);
 	        if(mysqli_num_rows($res_moy_bull)==0) {
 	            $moy_bull = '&nbsp;';
 	            $data_pdf[$i+1][] = "";
@@ -727,7 +727,7 @@ $num_per = 0;
 while ($num_per < $nb_cahier_note) {
     $i = $nb_dev[$num_per-1];
     while ($i < $nb_dev[$num_per]) {
-        $call_moyenne = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
+        $call_moyenne = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
         j.id_groupe='$id_groupe' AND
         j.login = n.login AND
         j.periode = '".($num_per+1)."' AND
@@ -751,7 +751,7 @@ while ($num_per < $nb_cahier_note) {
     while ($i < $nb_sous_cont[$num_per]) {
         $m = 0;
         while ($m < $nb_dev_s_cont[$i]) {
-            $call_moy = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
+            $call_moy = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
             j.id_groupe='$id_groupe' AND
             j.login = n.login AND
             j.periode = '".($num_per+1)."' AND
@@ -768,7 +768,7 @@ while ($num_per < $nb_cahier_note) {
             }
             $m++;
         }
-        $call_moy_moy = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE (
+        $call_moy_moy = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE (
         j.id_groupe='$id_groupe' AND
         j.login = n.login AND
         j.periode = '".($num_per+1)."' AND
@@ -788,7 +788,7 @@ while ($num_per < $nb_cahier_note) {
     //
     // Moyenne des moyennes du conteneur
     //
-    $call_moy_moy = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE (
+    $call_moy_moy = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE (
     j.id_groupe='$id_groupe' AND
     j.periode = '".($num_per+1)."' AND
     j.login = n.login AND
@@ -812,7 +812,7 @@ while ($num_per < $nb_cahier_note) {
 		mn.id_groupe='$id_groupe' AND
 		mn.periode = '".($num_per+1)."' AND
 		mn.statut='')";
-		$call_moy_moy_bull = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$call_moy_moy_bull = mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($call_moy_moy_bull)==0) {
 			echo "<td class=cn>&nbsp;</td>\n";
 			$data_pdf[$tot_data_pdf][] = "";

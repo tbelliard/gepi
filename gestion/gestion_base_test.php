@@ -162,7 +162,7 @@ function test_ecriture_backup() {
 }
 
 function mysql_version2() {
-   $result = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT VERSION() AS version');
+   $result = mysqli_query($GLOBALS["mysqli"], 'SELECT VERSION() AS version');
    if ($result != FALSE && @mysqli_num_rows($result) > 0)
    {
       $row = mysqli_fetch_array($result);
@@ -170,7 +170,7 @@ function mysql_version2() {
    }
    else
    {
-      $result = @mysqli_query($GLOBALS["___mysqli_ston"], 'SHOW VARIABLES LIKE \'version\'');
+      $result = @mysqli_query($GLOBALS["mysqli"], 'SHOW VARIABLES LIKE \'version\'');
       if ($result != FALSE && @mysqli_num_rows($result) > 0)
       {
          $row = mysqli_fetch_row($result);
@@ -221,7 +221,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         $todump.="# ******* debut du fichier ********\n";
         fwrite ($fileHandle,$todump);
     }
-    $result=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES FROM $db");
+    $result=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES FROM $db");
     $numtab=0;
     while ($t = mysqli_fetch_array($result)) {
 	if ($t[0] == "log" ||
@@ -236,8 +236,8 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         $tables[$numtab]=$t[0];
         $numtab++;
     }
-    if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
-       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr/>\n";
+    if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
+       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr/>\n";
        return false;
        die();
     }
@@ -304,10 +304,10 @@ function extractMySqlDump($dumpFile,$duree,$force) {
 	    if((mb_substr($query,-1)==";")&&(mb_substr($query,0,3)!="-- ")) {
 	    //=============================================
 		    $query = "REPLACE" . mb_substr($query,6, mb_strlen($query));
-		    $reg = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		    $reg = mysqli_query($GLOBALS["mysqli"], $query);
 		    echo "<p>$query</p>\n";
 		    if (!$reg) {
-			echo "<p><font color=red>ERROR</font> : '$query' Erreur retournée : ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</p>\n";
+			echo "<p><font color=red>ERROR</font> : '$query' Erreur retournée : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</p>\n";
 			$result_ok = 'no';
 		    }
 	    }
@@ -337,7 +337,7 @@ function get_content($db, $table,$from,$limit) {
     // les données de la table
     $def = '';
     $query = "SELECT DISTINCT * FROM $table LIMIT $from,$limit";
-    $resData = @mysqli_query($GLOBALS["___mysqli_ston"], $query);
+    $resData = @mysqli_query($GLOBALS["mysqli"], $query);
     //peut survenir avec la corruption d'une table, on prévient
     if (!$resData) {
         $def .="Problème avec les données de $table, corruption possible !\n";
@@ -553,7 +553,7 @@ if (isset($action) and ($action == 'dump'))  {
          } else $fichier=$_GET["fichier"];
 
 
-        $tab=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES FROM $dbDb");
+        $tab=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES FROM $dbDb");
         $tot=mysqli_num_rows($tab);
         if(isset($offsettable)){
             if ($offsettable>=0)

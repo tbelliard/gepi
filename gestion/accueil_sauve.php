@@ -213,7 +213,7 @@ function test_ecriture_backup() {
 }
 
 function mysql_version2() {
-   $result = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT VERSION() AS version');
+   $result = mysqli_query($GLOBALS["mysqli"], 'SELECT VERSION() AS version');
    if ($result != FALSE && @mysqli_num_rows($result) > 0)
    {
       $row = mysqli_fetch_array($result);
@@ -221,7 +221,7 @@ function mysql_version2() {
    }
    else
    {
-      $result = @mysqli_query($GLOBALS["___mysqli_ston"], 'SHOW VARIABLES LIKE \'version\'');
+      $result = @mysqli_query($GLOBALS["mysqli"], 'SHOW VARIABLES LIKE \'version\'');
       if ($result != FALSE && @mysqli_num_rows($result) > 0)
       {
          $row = mysqli_fetch_row($result);
@@ -272,14 +272,14 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         fwrite ($fileHandle,$todump);
     }
 	$sql="SHOW TABLES;";
-    $result=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $result=mysqli_query($GLOBALS["mysqli"], $sql);
     $numtab=0;
     while ($t = mysqli_fetch_array($result)) {
         $tables[$numtab]=$t[0];
         $numtab++;
     }
-    if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
-       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr/>\n";
+    if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
+       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr/>\n";
        return false;
        die();
     }
@@ -345,7 +345,7 @@ function restoreMySqlDump($duree) {
 
 	$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value!='log' AND value!='setting' AND value!='utilisateurs' AND value!='a_tmp_setting' ORDER BY name LIMIT 1;";
 	if($debug_restaure=='y') {echo "<span style='color:red; font-size: x-small;'>$sql</span><br />\n";}
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
 
@@ -359,12 +359,12 @@ function restoreMySqlDump($duree) {
 		}
 
 		$sql="SELECT value FROM a_tmp_setting WHERE name='nb_tables';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$lig=mysqli_fetch_object($res);
 		$nb_tables=$lig->value;
 
 		$sql="SELECT 1=1 FROM a_tmp_setting WHERE name LIKE 'table_%';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_tables_passees=$nb_tables-mysqli_num_rows($res);
 		// Ca ne correspond plus à un nombre de tables, mais à un nombre de fichiers
 
@@ -404,7 +404,7 @@ function restoreMySqlDump($duree) {
 				//echo $formattedQuery."<hr />";
 				if ($formattedQuery) {
 					$sql = $formattedQuery;
-					if (mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {//réussie sinon continue à concaténer
+					if (mysqli_query($GLOBALS["mysqli"], $sql)) {//réussie sinon continue à concaténer
 						if(preg_match("/^DROP TABLE /",$sql)) {
 							echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
 						}
@@ -441,15 +441,15 @@ function restoreMySqlDump($duree) {
 			echo "$cpt_insert enregistrement(s) restauré(s).";
 		}
 
-		if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
-			echo "<hr />\nERREUR à partir de ".nl2br($formattedQuery)." <br />".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr />\n";
+		if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
+			echo "<hr />\nERREUR à partir de ".nl2br($formattedQuery)." <br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr />\n";
 			$erreur_mysql=TRUE;
 		}
 		gzclose($fileHandle);
 
 		$sql="DELETE FROM a_tmp_setting WHERE name='table_".$num_table."';";
 		if($debug_restaure=='y') {
-			if($nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+			if($nettoyage=mysqli_query($GLOBALS["mysqli"], $sql)) {
 				echo "Succès de la suppression dans a_tmp_setting.<br />\n";
 			}
 			else {
@@ -464,7 +464,7 @@ function restoreMySqlDump($duree) {
 			}
 		}
 		else {
-			if(!$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+			if(!$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql)) {
 				echo "<p style='color:red;'>Erreur lors de la suppression dans 'a_tmp_setting'.</p>\n";
 			}
 
@@ -482,7 +482,7 @@ function restoreMySqlDump($duree) {
 		for($i=0;$i<count($tab_tables);$i++) {
 
 			$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value='".$tab_tables[$i]."';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				// On peut avoir plusieurs enregistrements pour une même table s'il y a plus de 1000 enregistrements dans la table
 				// Ou alors, il ne faut pas scinder ces tables
@@ -530,7 +530,7 @@ function restoreMySqlDump($duree) {
 							//echo $formattedQuery."<hr />";
 							if ($formattedQuery) {
 								$sql = $formattedQuery;
-								if (mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {//réussie sinon continue à concaténer
+								if (mysqli_query($GLOBALS["mysqli"], $sql)) {//réussie sinon continue à concaténer
 									if(preg_match("/^DROP TABLE /",$sql)) {
 										echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
 									}
@@ -568,8 +568,8 @@ function restoreMySqlDump($duree) {
 						//echo "</div>\n";
 					}
 	
-					if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
-						echo "<hr />\nERREUR à partir de <br />".nl2br($formattedQuery)."<br />".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr />\n";
+					if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
+						echo "<hr />\nERREUR à partir de <br />".nl2br($formattedQuery)."<br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr />\n";
 						$erreur_mysql=TRUE;
 					}
 	
@@ -577,7 +577,7 @@ function restoreMySqlDump($duree) {
 	
 					$sql="DELETE FROM a_tmp_setting WHERE name='table_".$num_table."';";
 					if($debug_restaure=='y') {
-						if($nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+						if($nettoyage=mysqli_query($GLOBALS["mysqli"], $sql)) {
 							echo "Succès de la suppression dans a_tmp_setting.<br />\n";
 						}
 						else {
@@ -592,7 +592,7 @@ function restoreMySqlDump($duree) {
 						}
 					}
 					else {
-						if(!$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+						if(!$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql)) {
 							echo "<p style='color:red;'>Erreur lors de la suppression dans 'a_tmp_setting'.</p>\n";
 						}
 	
@@ -669,7 +669,7 @@ function extractMySqlDump($dumpFile,$duree) {
 				$nom_table=trim(preg_replace("/[ `;]/","",preg_replace("/^DROP TABLE /","",preg_replace("/^DROP TABLE IF EXISTS /","",$buffer))));
 
 				$sql="INSERT INTO a_tmp_setting SET name='table_".sprintf("%03d",$num_table)."', value='$nom_table';";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$cpt_lignes_fichier=0;
 
@@ -692,7 +692,7 @@ function extractMySqlDump($dumpFile,$duree) {
 						$fich=fopen("../backup/".$dirname."/base_extraite_table_".sprintf("%03d",$num_table).".sql","w+");
 						// Le nom de table n'a pas changé:	
 						$sql="INSERT INTO a_tmp_setting SET name='table_".sprintf("%03d",$num_table)."', value='$nom_table';";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$cpt_lignes_fichier=0;
 						$num_table++; // Du coup, la variable ne correspond plus au nombre de tables, mais au nombre de morceaux.
@@ -711,7 +711,7 @@ function extractMySqlDump($dumpFile,$duree) {
     gzclose($fileHandle);
 
 	$sql="INSERT INTO a_tmp_setting SET name='nb_tables', value='$num_table';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
     return TRUE;
 }
@@ -767,7 +767,7 @@ function restoreMySqlDump_old($dumpFile,$duree) {
               //echo $formattedQuery."<hr />";
             if (trim($formattedQuery)!="") {
                 $sql = $formattedQuery;
-                if (mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {//réussie sinon continue à concaténer
+                if (mysqli_query($GLOBALS["mysqli"], $sql)) {//réussie sinon continue à concaténer
                     $offset=gztell($fileHandle);
                     //echo $offset;
                     $formattedQuery = "";
@@ -779,8 +779,8 @@ function restoreMySqlDump_old($dumpFile,$duree) {
         }
     }
 
-    if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
-        echo "<hr />\nERREUR à partir de ".nl2br($formattedQuery)."<br />".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr />\n";
+    if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
+        echo "<hr />\nERREUR à partir de ".nl2br($formattedQuery)."<br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr />\n";
 		$erreur_mysql=TRUE;
     }
 
@@ -804,7 +804,7 @@ function get_def($db, $table) {
     $def .="DROP TABLE IF EXISTS `$table`;\n";
     // requete de creation de la table
     $query = "SHOW CREATE TABLE $table";
-    $resCreate = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+    $resCreate = mysqli_query($GLOBALS["mysqli"], $query);
     $row = mysqli_fetch_array($resCreate);
     $schema = $row[1].";";
     $def .="$schema\n";
@@ -817,7 +817,7 @@ function get_content($db, $table,$from,$limit) {
     // les données de la table
     $def = '';
     $query = "SELECT * FROM $table LIMIT $from,$limit";
-    $resData = @mysqli_query($GLOBALS["___mysqli_ston"], $query);
+    $resData = @mysqli_query($GLOBALS["mysqli"], $query);
     //peut survenir avec la corruption d'une table, on prévient
     if (!$resData) {
         $def .="Problème avec les données de $table, corruption possible !\n";
@@ -1195,11 +1195,11 @@ if (isset($action) and ($action == 'restaure'))  {
 			// EXTRAIRE -> SCINDER
 
 			$sql="SHOW TABLES LIKE 'a_tmp_setting';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				// Nettoyage au cas où la restauration précédente aurait échoué
 				$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%';";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {
 						$num_table=preg_replace('/^table_/','',$lig->name);
@@ -1210,18 +1210,18 @@ if (isset($action) and ($action == 'restaure'))  {
 
 			// On achève le ménage:
 			$sql="DROP TABLE a_tmp_setting;";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="CREATE TABLE a_tmp_setting (
 name VARCHAR(255) NOT NULL,
 value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="INSERT INTO a_tmp_setting SET name='offset', value='0';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="INSERT INTO a_tmp_setting SET name='nom_table', value='';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			echo "<p>Extraction de l'archive...<br />";
 			if(extractMySqlDump($path.$file,$duree)) {
@@ -1232,7 +1232,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 		else {
 			// TESTER S'IL RESTE DES table_%
 			$sql="SELECT 1=1 FROM a_tmp_setting WHERE name LIKE 'table_%';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				$erreur_mysql=FALSE;
 				// Il reste des tables à restaurer
@@ -1269,7 +1269,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			//$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%';";
 			// Pour nettoyer aussi une trace d'une sauvegarde consécutive à une restauration ratée... pas sûr que ce soit prudent...
 			$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value!='a_tmp_setting';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
 				echo "<div id='div_fin_restauration' class='infobulle_corps' style='position:absolute; top: 200px; left:100px; border:1px solid black; width: 30em;'>\n";
 
@@ -1289,7 +1289,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 				// Il peut rester un fichier base_extraite_table_XXX.sql correspondant à a_tmp_setting si on a restauré une sauvegarde faite après une restauration ratée/incomplète... inquiètant.
 
 				$sql="DROP TABLE a_tmp_setting;";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				// Il ne faut pas recharger la page après restauration des tables log, setting, utilisateurs.
 
@@ -1377,7 +1377,7 @@ if (isset($action) and ($action == 'dump'))  {
 
 
 		$sql="SHOW TABLES;";
-		$tab=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$tab=mysqli_query($GLOBALS["mysqli"], $sql);
         $tot=mysqli_num_rows($tab);
         if(isset($offsettable)){
             if ($offsettable>=0)
@@ -1508,7 +1508,7 @@ if (isset($action) and ($action == 'system_dump'))  {
 		$dbDb = escapeshellarg($dbDb);
 	}
 
-	$req_version = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT version();"), 0);
+	$req_version = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT version();"), 0);
 	$ver_mysql = explode(".", $req_version);
 	if (!is_numeric(mb_substr($ver_mysql[2], 1, 1))) {
 		$ver_mysql[2] = mb_substr($ver_mysql[2], 0, 1);

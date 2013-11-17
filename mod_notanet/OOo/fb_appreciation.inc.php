@@ -21,7 +21,7 @@
 			// Si une des appréciations est non vide pour une matière gepi associée à la matière notanet courante, sans note saisie... on sélectionne celle-là:
 			$sql.=" AND na.appreciation!='';";
 			//echo "$sql<br />";
-			$res_app=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_app)>0){
 				$lig_app=mysqli_fetch_object($res_app);
 				$tab_eleves_OOo[$nb_eleve][$j][4]=$lig_app->appreciation;

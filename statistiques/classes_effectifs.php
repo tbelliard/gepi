@@ -39,7 +39,7 @@ if ($resultat_session == "c") {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/statistiques/classes_effectifs.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/statistiques/classes_effectifs.php',
 administrateur='V',
@@ -52,7 +52,7 @@ secours='F',
 autre='F',
 description='Effectifs des classes',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -63,7 +63,7 @@ if (!checkAccess()) {
 
 $sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";
 //echo "$sql<br />\n";
-$res_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_classes=mysqli_num_rows($res);
 if($nb_classes>0) {
 	$tab_classe=array();
@@ -86,14 +86,14 @@ if(isset($_GET['export_csv'])) {
 		for($i=0;$i<count($tab_classe);$i++) {
 			$csv.=$tab_classe[$i]['classe'].";";
 			$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND e.login=jec.login AND jec.periode='$num_periode';";
-			$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			$csv.=mysqli_num_rows($res_eff).";\r\n";
 		}
 
 		$csv.="Total;";
 		$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.periode='$num_periode';";
 		//echo "$sql<br />";
-		$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 		$csv.=mysqli_num_rows($res_eff).";\r\n";
 
 		send_file_download_headers('text/x-csv',$nom_fic);
@@ -106,7 +106,7 @@ if(isset($_GET['export_csv'])) {
 
 		$csv="Groupe;Effectifs;\r\n";
 		$sql="SELECT distinct id_groupe, count(id_classe) FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe=c.id group by id_groupe HAVING COUNT(id_classe)>1 order by c.classe;";
-		$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp)>0) {
 			$tab_grp=array();
 			while($lig_grp=mysqli_fetch_object($res_grp)) {
@@ -116,7 +116,7 @@ if(isset($_GET['export_csv'])) {
 			for($i=0;$i<count($tab_grp);$i++) {
 				$csv.=get_info_grp($tab_grp[$i], array('classes')).";";
 				$sql="SELECT e.login FROM j_eleves_groupes jeg, eleves e WHERE jeg.id_groupe='".$tab_grp[$i]."' AND e.login=jeg.login AND jeg.periode='$num_periode';";
-				$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 				$csv.=mysqli_num_rows($res_eff).";\r\n";
 			}
 			/*
@@ -142,17 +142,17 @@ if(isset($_GET['export_csv'])) {
 
 			$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND e.login=jec.login AND jec.periode='$num_periode' AND e.sexe='M';";
 			//echo "$sql<br />\n";
-			$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			$csv.=mysqli_num_rows($res_eff).";";
 		
 			$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND e.login=jec.login AND jec.periode='$num_periode' AND e.sexe='F';";
 			//echo "$sql<br />\n";
-			$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			$csv.=mysqli_num_rows($res_eff).";";
 		
 			$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND e.login=jec.login AND jec.periode='$num_periode';";
 			//echo "$sql<br />\n";
-			$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			$csv.=mysqli_num_rows($res_eff).";\r\n";
 		}
 
@@ -160,17 +160,17 @@ if(isset($_GET['export_csv'])) {
 
 		$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.periode='$num_periode' AND e.sexe='M';";
 		//echo "$sql<br />\n";
-		$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 		$csv.=mysqli_num_rows($res_eff).";";
 	
 		$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.periode='$num_periode' AND e.sexe='F';";
 		//echo "$sql<br />\n";
-		$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 		$csv.=mysqli_num_rows($res_eff).";";
 	
 		$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.periode='$num_periode';";
 		//echo "$sql<br />\n";
-		$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 		$csv.=mysqli_num_rows($res_eff).";\r\n";
 
 		send_file_download_headers('text/x-csv',$nom_fic);
@@ -198,7 +198,7 @@ if($nb_classes==0) {
 }
 
 $sql="SELECT num_periode FROM periodes p, classes c WHERE p.id_classe=c.id ORDER BY num_periode DESC LIMIT 1";
-$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_per)==0) {
 	echo "<p style='color:red'>Aucune classe avec périodes n'a été trouvée.</p>\n";
 }
@@ -221,7 +221,7 @@ else {
 			echo "<td>";
 			$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND e.login=jec.login AND jec.periode='$loop';";
 			//echo "$sql<br />\n";
-			$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			echo mysqli_num_rows($res_eff);
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -233,7 +233,7 @@ else {
 		echo "<th>";
 		$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.periode='$loop';";
 		//echo "$sql<br />\n";
-		$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo mysqli_num_rows($res_eff);
 		echo "</th>\n";
 		echo "</tr>\n";
@@ -248,7 +248,7 @@ else {
 
 	//$sql="SELECT distinct id_groupe, count(id_classe) FROM j_groupes_classes group by id_groupe HAVING COUNT(id_classe)>1;";
 	$sql="SELECT distinct id_groupe, count(id_classe) FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe=c.id group by id_groupe HAVING COUNT(id_classe)>1 order by c.classe;";
-	$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_grp)>0) {
 		$tab_grp=array();
 		while($lig_grp=mysqli_fetch_object($res_grp)) {
@@ -274,7 +274,7 @@ else {
 				echo "<td>";
 				$sql="SELECT e.login FROM j_eleves_groupes jeg, eleves e WHERE jeg.id_groupe='".$tab_grp[$i]."' AND e.login=jeg.login AND jeg.periode='$loop';";
 				//echo "$sql<br />\n";
-				$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 				echo mysqli_num_rows($res_eff);
 				echo "</td>\n";
 				echo "</tr>\n";
@@ -321,21 +321,21 @@ else {
 			echo "<td>";
 			$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND e.login=jec.login AND jec.periode='$loop' AND e.sexe='M';";
 			//echo "$sql<br />\n";
-			$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			echo mysqli_num_rows($res_eff);
 			echo "</td>\n";
 
 			echo "<td>";
 			$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND e.login=jec.login AND jec.periode='$loop' AND e.sexe='F';";
 			//echo "$sql<br />\n";
-			$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			echo mysqli_num_rows($res_eff);
 			echo "</td>\n";
 
 			echo "<td>";
 			$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND e.login=jec.login AND jec.periode='$loop';";
 			//echo "$sql<br />\n";
-			$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			echo mysqli_num_rows($res_eff);
 			echo "</td>\n";
 
@@ -346,19 +346,19 @@ else {
 	<th>";
 		$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.periode='$loop' AND e.sexe='M';";
 		//echo "$sql<br />\n";
-		$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo mysqli_num_rows($res_eff);
 		echo "</th>
 	<th>";
 		$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.periode='$loop' AND e.sexe='F';";
 		//echo "$sql<br />\n";
-		$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo mysqli_num_rows($res_eff);
 		echo "</th>
 	<th>";
 		$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.periode='$loop';";
 		//echo "$sql<br />\n";
-		$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo mysqli_num_rows($res_eff);
 		echo "</th>
 </tr>\n";

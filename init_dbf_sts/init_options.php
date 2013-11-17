@@ -58,18 +58,18 @@ echo "<center><h3 class='gepi'>Cinquième phase d'initialisation<br />Affectatio
 
 echo "<h3 class='gepi'>Deuxième étape : importation des options suivies par les élèves.</h3>";
 
-$test1 = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM eleves"),0);
+$test1 = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM eleves"),0);
 if ($test1 ==0) {
     echo "<p class='grand'>Aucun élève actuellement dans la base : la procédure d'initialisation des options ne peut continuer !</p>";
     die();
 } else {
-    $test2 = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM j_eleves_classes"),0);
+    $test2 = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_eleves_classes"),0);
     if ($test2 ==0) {
         echo "<p class='grand'>Les classes n'ont pas encore été constituées : la procédure d'initialisation des options ne peut continuer !</p>";
         die();
     } else {
 
-        $test3 = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM temp_gep_import WHERE LOGIN !=''"),0);
+        $test3 = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM temp_gep_import WHERE LOGIN !=''"),0);
         if ($test3 ==0) {
             echo "<p class='grand'>Afin de procéder à la phase de définition des options suivies par les élèves, vous devez d'abord effectuer la première phase d'importation des élèves à partir du fichier F_ELE.DBF</p>";
             die();
@@ -78,7 +78,7 @@ if ($test1 ==0) {
 }
 //$del = @mysql_query("delete from j_eleves_groupes");
 
-$appel_donnees_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, classe FROM classes");
+$appel_donnees_classes = mysqli_query($GLOBALS["mysqli"], "SELECT id, classe FROM classes");
 $nb_classe = mysqli_num_rows($appel_donnees_classes);
 $z=0;
 
@@ -89,7 +89,7 @@ while ($classe_row = mysqli_fetch_object($appel_donnees_classes)) {
 	// Initialisation de la variable pour indiquer qu'un groupe n'existe pas pour la matière indiquée en option
 	$no_group = array();
 
-    $nb_per = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
+    $nb_per = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
 
     $nb_options = 0;
     $i = 1;
@@ -100,7 +100,7 @@ while ($classe_row = mysqli_fetch_object($appel_donnees_classes)) {
     }
     $tempo = mb_substr($tempo, 0, -2);
 
-    $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT $tempo FROM temp_gep_import WHERE DIVCOD = '$classe'");
+    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT $tempo FROM temp_gep_import WHERE DIVCOD = '$classe'");
     $tab_options = array();
     while ($row = mysqli_fetch_object($call_data)) {
     	 $i = 1;
@@ -124,11 +124,11 @@ while ($classe_row = mysqli_fetch_object($appel_donnees_classes)) {
     }
 
 
-    $appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login FROM eleves e, j_eleves_classes j WHERE (e.login = j.login and j.id_classe = '$id_classe')");
+    $appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.login FROM eleves e, j_eleves_classes j WHERE (e.login = j.login and j.id_classe = '$id_classe')");
 
     while($i = mysqli_fetch_object($appel_donnees_eleves)) {
         $current_eleve_login = $i->login;
-        $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT ELEOPT1,ELEOPT2,ELEOPT3,ELEOPT4,ELEOPT5,ELEOPT6,ELEOPT7,ELEOPT8,ELEOPT9,ELEOPT10,ELEOPT11,ELEOPT12 FROM temp_gep_import WHERE LOGIN = '$current_eleve_login'");
+        $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT ELEOPT1,ELEOPT2,ELEOPT3,ELEOPT4,ELEOPT5,ELEOPT6,ELEOPT7,ELEOPT8,ELEOPT9,ELEOPT10,ELEOPT11,ELEOPT12 FROM temp_gep_import WHERE LOGIN = '$current_eleve_login'");
         while ($row = mysqli_fetch_array($call_data,  MYSQLI_NUM)) {
 	        $j="0";
 	        while ($j < $nb_options) {
@@ -143,13 +143,13 @@ while ($classe_row = mysqli_fetch_object($appel_donnees_classes)) {
                 	// On commence par récupérer l'ID du groupe concerné
 
                 	if (!in_array($tab_options[$j], $no_group)) {
-	                	$group_id = @mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT g.id FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm where (" .
+	                	$group_id = @mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT g.id FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm where (" .
 	                			"g.id = jgm.id_groupe and " .
 	                			"jgm.id_matiere = '" . $tab_options[$j] . "' and " .
 	                			"jgm.id_groupe = jgc.id_groupe and " .
 	                			"jgc.id_classe = '" . $id_classe . "')"), 0);
 	                	if (is_numeric($group_id)) {
-	                    	$reg = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_eleves_groupes WHERE (id_groupe = '" . $group_id . "' and login='". $current_eleve_login . "')");
+	                    	$reg = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_groupes WHERE (id_groupe = '" . $group_id . "' and login='". $current_eleve_login . "')");
 	                    	// DEBUG :: echo "<br/>DELETED FROM GROUPE : " . $group_id;
 	                	} else {
 	                		$no_group[] = $tab_options[$j];

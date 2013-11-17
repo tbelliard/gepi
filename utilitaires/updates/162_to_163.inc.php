@@ -115,9 +115,9 @@ if ($test == -1) {
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'date_visibilite' à la table 'messagerie'<br />";
-$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM messagerie LIKE 'date_visibilite';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM messagerie LIKE 'date_visibilite';"));
 if ($test_champ==0) {
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE messagerie ADD date_visibilite timestamp NOT NULL AFTER date_msg;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE messagerie ADD date_visibilite timestamp NOT NULL AFTER date_msg;");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -223,7 +223,7 @@ $result .= "<br />";
 $result .= "<strong>MEF :</strong><br />";
 $result .= "Contrôle du champ 'mef_code' dans la table 'mef' : ";
 $sql="show columns from mef where type like 'bigint%' and field='mef_code';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 //echo "$sql<br />";
 //echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
 if(mysqli_num_rows($test)>0) {
@@ -235,7 +235,7 @@ if(mysqli_num_rows($test)>0) {
 	*/
 	$sql ="ALTER TABLE mef CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';";
 	//echo "$sql<br />";
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$query = mysqli_query($GLOBALS["mysqli"], $sql);
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -262,9 +262,9 @@ else {
 
 $result .= "Contrôle du champ 'mef_code' dans la table 'eleves' : ";
 $sql="show columns from eleves where type like 'bigint%' and field='mef_code';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)>0) {
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE eleves CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE eleves CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -285,9 +285,9 @@ if(	$temoin_modif_mef_code=="y") {
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'code_mefstat' à la table 'mef'<br />";
-$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM mef LIKE 'code_mefstat';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM mef LIKE 'code_mefstat';"));
 if ($test_champ==0) {
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE mef ADD code_mefstat varchar(50) NOT NULL default '';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE mef ADD code_mefstat varchar(50) NOT NULL default '';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -298,9 +298,9 @@ if ($test_champ==0) {
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'mef_rattachement' à la table 'mef'<br />";
-$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM mef LIKE 'mef_rattachement';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM mef LIKE 'mef_rattachement';"));
 if ($test_champ==0) {
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE mef ADD mef_rattachement varchar(50) NOT NULL default '';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE mef ADD mef_rattachement varchar(50) NOT NULL default '';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {

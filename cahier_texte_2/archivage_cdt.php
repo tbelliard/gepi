@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_texte_2/archivage_cdt.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/cahier_texte_2/archivage_cdt.php',
 administrateur='V',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Archivage des CDT',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -184,7 +184,7 @@ else {
 	if($step==1) {
 		// Remplissage d'une table temporaire avec la liste des groupes.
 		$sql="TRUNCATE TABLE tempo2;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors du nettoyage de la table 'tempo2'.</p>\n";
 			echo "<p><br /></p>\n";
@@ -195,7 +195,7 @@ else {
 		//$sql="INSERT INTO tempo2 SELECT id,name FROM groupes;";
 		// On ne retient que les groupes associés à des classes... les autres sont des scories qui devraient être supprimées par un Nettoyage de la base
 		$sql="INSERT INTO tempo2 SELECT id,name FROM groupes WHERE id IN (SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_texte' AND visible='n'));";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors de l'insertion de la liste des groupes dans la table 'tempo2'.</p>\n";
 			echo "<p><br /></p>\n";
@@ -204,7 +204,7 @@ else {
 		}
 
 		$sql="CREATE TABLE IF NOT EXISTS tempo3_cdt (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Erreur lors de la création de la table temporaire 'tempo3_cdt'.</p>\n";
 			echo "<p><br /></p>\n";
@@ -213,7 +213,7 @@ else {
 		}
 
 		$sql="TRUNCATE TABLE tempo3_cdt;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors du nettoyage de la table 'tempo3_cdt'.</p>\n";
 			echo "<p><br /></p>\n";
@@ -385,7 +385,7 @@ else {
 		}
 
 		$sql="SELECT * FROM tempo2 LIMIT $largeur_tranche;";
-		$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp)>0) {
 			echo "<p><b>Archivage de</b>&nbsp;:<br />\n";
 			while($lig_grp=mysqli_fetch_object($res_grp)) {
@@ -470,7 +470,7 @@ else {
 					AND id_groupe='".$id_groupe."'
 					) ORDER BY date_ct DESC, heure_entry DESC;";
 				//echo "$sql<br />";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				$cpt=0;
 				while($lig=mysqli_fetch_object($res)) {
 					//echo "$lig->date_ct<br />";
@@ -493,7 +493,7 @@ else {
 					AND id_groupe='".$id_groupe."'
 					) ORDER BY date_ct DESC;";
 				//echo "$sql<br />";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				$cpt=0;
 				while($lig=mysqli_fetch_object($res)) {
 					//echo "$lig->date_ct<br />";
@@ -545,7 +545,7 @@ else {
 					if(count($tab_dates)>0) {
 						//$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".$value['classe']." (".$value['nom_complet'].")"."', matiere='$nom_complet_matiere', enseignement='$nom_enseignement', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
 						$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".addslashes($value['classe'])." (".addslashes($value['nom_complet']).")"."', matiere='".addslashes($nom_complet_matiere)."', enseignement='".addslashes($nom_enseignement)."', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$insert) {
 							$temoin_erreur="y";
 		
@@ -555,7 +555,7 @@ else {
 				}
 
 				$sql="DELETE FROM tempo2 WHERE col1='$id_groupe';";
-				$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$menage) {
 					$temoin_erreur="y";
 
@@ -592,7 +592,7 @@ else {
 			// ============================
 			//$sql="SELECT * FROM tempo3_cdt ORDER BY classe, matiere;";
 			$sql="SELECT DISTINCT id_classe, classe FROM tempo3_cdt ORDER BY classe;";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 
 				$content='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'../../../index.'.$extension.'\'>Retour</a></div>';
@@ -630,7 +630,7 @@ else {
 			// Page index des classes de l'archive CDT
 			// =======================================
 			$sql="SELECT DISTINCT id_classe, classe FROM tempo3_cdt ORDER BY classe;";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				while($lig_class=mysqli_fetch_object($res)) {
 
@@ -646,7 +646,7 @@ else {
 
 					$sql="SELECT * FROM tempo3_cdt WHERE classe='".addslashes($lig_class->classe)."';";
 					//echo "$sql<br />";
-					$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res2)>0) {
 						$content.="<div align='center'>\n";
 						$content.="<table summary='Tableau des enseignements'>\n";
@@ -654,7 +654,7 @@ else {
 							//$content.="<b>$lig_mat->matiere</b>&nbsp;:<a href='$lig_mat->fichier'> $lig_mat->enseignement</a><br />";
 
 							$sql="SELECT DISTINCT u.* FROM utilisateurs u, j_groupes_professeurs jgp, tempo3_cdt t WHERE t.id_groupe=jgp.id_groupe AND u.login=jgp.login AND t.fichier='$lig_mat->fichier';";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res3)>0) {
 								$liste_profs="";
 								while($lig_prof=mysqli_fetch_object($res3)) {
@@ -682,7 +682,7 @@ else {
 			// Page index des professeurs de l'archive CDT
 			// ===========================================
 			$sql="SELECT DISTINCT u.* FROM tempo3_cdt t, j_groupes_professeurs jgp, utilisateurs u WHERE jgp.id_groupe=t.id_groupe AND jgp.login=u.login ORDER BY u.nom, u.prenom;";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				$content='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index.'.$extension.'\'>Retour</a></div>';
 
@@ -699,7 +699,7 @@ else {
 					$content.="<a href='cdt_".$lig_prof->login.".$extension'> $lig_prof->civilite ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."</a><br />";
 
 					$sql="SELECT * FROM tempo3_cdt t, j_groupes_professeurs jgp WHERE jgp.id_groupe=t.id_groupe AND jgp.login='$lig_prof->login' ORDER BY classe, matiere;";
-					$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res2)>0) {
 						// ================================================================================================
 						// Page index des enseignements du professeur courant ((essoufflé) dans la boucle) de l'archive CDT

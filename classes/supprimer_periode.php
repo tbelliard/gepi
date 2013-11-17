@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/classes/supprimer_periode.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/classes/supprimer_periode.php',
 administrateur='V',
@@ -48,7 +48,7 @@ secours='F',
 autre='F',
 description='Classes: Supprimer des périodes',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -64,9 +64,9 @@ if(!isset($id_classe)) {
 	die();
 }
 
-$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_data, 0, "classe");
-$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 $test_periode = mysqli_num_rows($periode_query) ;
 include "../lib/periodes.inc.php";
 
@@ -74,7 +74,7 @@ include "../lib/periodes.inc.php";
 // AJOUT: boireaus
 $chaine_options_classes="";
 $sql="SELECT id, classe FROM classes ORDER BY classe";
-$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_class_tmp)>0){
 	$id_class_prec=0;
 	$id_class_suiv=0;
@@ -198,12 +198,12 @@ function search_liaisons_classes_via_groupes($id_classe) {
 
 	$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc WHERE jgc.id_classe='$id_classe';";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$sql="SELECT c.classe, jgc.id_classe, g.* FROM j_groupes_classes jgc, groupes g, classes c WHERE jgc.id_classe!='$id_classe' AND g.id=jgc.id_groupe AND c.id=jgc.id_classe AND jgc.id_groupe='$lig->id_groupe' ORDER BY c.classe;";
 			//echo "$sql<br />\n";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				while($lig2=mysqli_fetch_object($test)) {
 					if(!in_array($lig2->id_classe,$tab_liaisons_classes)) {
@@ -221,7 +221,7 @@ function search_periodes_non_vides($id_classe) {
 
 	// Recherche des périodes non vides
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			if(!in_array($lig->num_periode, $tab_periode_non_supprimable)) {
@@ -240,7 +240,7 @@ function search_periodes_non_vides($id_classe) {
 				// Contrôle de la présence de notes sur les bulletins
 				$sql="SELECT jec.login FROM j_eleves_classes jec, matieres_notes mn WHERE jec.id_classe='$id_classe' AND jec.periode='$lig->num_periode' AND jec.periode=mn.periode AND jec.login=mn.login;";
 				//echo "$sql<br />\n";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)>0) {
 					$tab_periode_non_supprimable[]=$lig->num_periode;
 				}
@@ -248,7 +248,7 @@ function search_periodes_non_vides($id_classe) {
 					// Contrôle de la présence d'appréciations sur les bulletins
 					$sql="SELECT jec.login FROM j_eleves_classes jec, matieres_appreciations ma WHERE jec.id_classe='$id_classe' AND jec.periode='$lig->num_periode' AND jec.periode=ma.periode AND jec.login=ma.login;";
 					//echo "$sql<br />\n";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
 						$tab_periode_non_supprimable[]=$lig->num_periode;
 					}
@@ -256,7 +256,7 @@ function search_periodes_non_vides($id_classe) {
 						// Contrôle de la présence de notes dans les carnets de notes
 						$sql="SELECT 1=1 FROM j_groupes_classes jgc, cn_cahier_notes ccn, cn_devoirs cd, cn_conteneurs cc, cn_notes_devoirs cnd WHERE jgc.id_groupe=ccn.id_groupe AND cc.id=cd.id_conteneur AND cc.id_racine=ccn.id_cahier_notes AND cnd.id_devoir=cd.id AND cnd.statut!='v' AND jgc.id_classe='$id_classe' AND ccn.periode='$lig->num_periode';";
 						//echo "$sql<br />\n";
-						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test)>0) {
 							$tab_periode_non_supprimable[]=$lig->num_periode;
 						}
@@ -270,7 +270,7 @@ function search_periodes_non_vides($id_classe) {
 if(!isset($suppr_periode)) {
 
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe."' ORDER BY num_periode DESC LIMIT 1;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe." n'a actuellement aucune période.</p>\n";
 		require("../lib/footer.inc.php");
@@ -300,7 +300,7 @@ if(!isset($suppr_periode)) {
 	
 	$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc WHERE jgc.id_classe='$id_classe';";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "Aucune liaison n'a été trouvée.<br />La suppression de période ne présente donc pas de difficulté.</p>\n";
 	}
@@ -308,7 +308,7 @@ if(!isset($suppr_periode)) {
 		while($lig=mysqli_fetch_object($res)) {
 			$sql="SELECT c.classe, jgc.id_classe, g.* FROM j_groupes_classes jgc, groupes g, classes c WHERE jgc.id_classe!='$id_classe' AND g.id=jgc.id_groupe AND c.id=jgc.id_classe AND jgc.id_groupe='$lig->id_groupe' ORDER BY c.classe;";
 			//echo "$sql<br />\n";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				$cpt=0;
 				while($lig2=mysqli_fetch_object($test)) {
@@ -464,7 +464,7 @@ else {
 	// Il ne faut pas se retrouver avec une classe qui aurait des périodes 1, 2, 3 puis passerait à 5 sans période 4.
 	
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe."' ORDER BY num_periode DESC LIMIT 1;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe." n'a actuellement aucune période.</p>\n";
 		require("../lib/footer.inc.php");
@@ -485,7 +485,7 @@ else {
 		echo "<blockquote>\n";
 
 		$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe_courant."' ORDER BY num_periode DESC LIMIT 1;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe_courante." n'a actuellement aucune période.</p>\n";
 		}
@@ -501,7 +501,7 @@ else {
 					//$sql="DELETE FROM j_eleves_groupes WHERE periode='$suppr_periode[$j]' AND id_groupe IN (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe_courant');";
 					echo "Nettoyage des inscriptions d'élèves dans des groupes/enseignements pour la période $j&nbsp;: ";
 					$sql="DELETE FROM j_eleves_groupes WHERE periode='$j' AND id_groupe IN (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe_courant');";
-					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$del) {
 						echo "<span style='color:red'>ECHEC</span>";
 						echo "<br />\n";
@@ -515,7 +515,7 @@ else {
 						//$sql="DELETE FROM j_eleves_classes WHERE periode='$suppr_periode[$j]' AND id_classe='$id_classe_courant';";
 						echo "Nettoyage des inscriptions d'élèves dans la classe $classe_courante pour la période $j&nbsp;: ";
 						$sql="DELETE FROM j_eleves_classes WHERE periode='$j' AND id_classe='$id_classe_courant';";
-						$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$del) {
 							echo "<span style='color:red'>ECHEC</span>";
 							echo "<br />\n";
@@ -527,7 +527,7 @@ else {
 							// Nettoyer edt_calendrier
 							$poursuivre="y";
 							$sql="SELECT * FROM edt_calendrier WHERE numero_periode='$j' AND (classe_concerne_calendrier LIKE '$id_classe_courant;%' OR classe_concerne_calendrier LIKE '%;$id_classe_courant;%');";
-							$res_edt_calendrier=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_edt_calendrier=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_edt_calendrier)>0) {
 								echo "Nettoyage de edt_calendrier pour la classe $classe_courante sur la période $j&nbsp;: ";
 								// Normalement, on ne fait qu'un tour dans la boucle
@@ -542,7 +542,7 @@ else {
 									$chaine_classe=preg_replace("/^;/","",$chaine_classe);
 
 									$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='$chaine_classe' WHERE id_calendrier='$lig_edt_cal->id_calendrier';";
-									$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$del) {
 										echo "<span style='color:red'>ECHEC</span>";
 										echo "<br />\n";
@@ -561,7 +561,7 @@ else {
 								//$sql="DELETE FROM periodes WHERE id_classe='$id_classe_courant' AND num_periode='$suppr_periode[$j]';";
 								echo "Suppression de la période $j pour la classe $classe_courante&nbsp;: ";
 								$sql="DELETE FROM periodes WHERE id_classe='$id_classe_courant' AND num_periode='$j';";
-								$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$del=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$del) {
 									echo "<span style='color:red'>ECHEC</span>";
 									echo "<br />\n";

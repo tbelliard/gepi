@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_trombinoscopes/trombino_decoupe.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_trombinoscopes/trombino_decoupe.php',
 administrateur='V',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Génération d une grille PDF pour les trombinoscopes,...',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -86,16 +86,16 @@ $sql="CREATE TABLE IF NOT EXISTS trombino_decoupe (
 	page_global SMALLINT(6) NOT NULL,
 	PRIMARY KEY (id_grille, elenoet)
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
-$test=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM trombino_decoupe LIKE 'id_grille';");
+$test=mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM trombino_decoupe LIKE 'id_grille';");
 if(mysqli_num_rows($test)==0) {
-	$query=mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE trombino_decoupe ADD id_grille INT(11) NOT NULL;");
+	$query=mysqli_query($GLOBALS["mysqli"], "ALTER TABLE trombino_decoupe ADD id_grille INT(11) NOT NULL;");
 }
 
-$test=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW index FROM trombino_decoupe WHERE Key_name='PRIMARY';");
+$test=mysqli_query($GLOBALS["mysqli"], "SHOW index FROM trombino_decoupe WHERE Key_name='PRIMARY';");
 if(mysqli_num_rows($test)<2) {
-	$query=mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE trombino_decoupe DROP PRIMARY KEY, ADD PRIMARY KEY ( id_grille,elenoet );");
+	$query=mysqli_query($GLOBALS["mysqli"], "ALTER TABLE trombino_decoupe DROP PRIMARY KEY, ADD PRIMARY KEY ( id_grille,elenoet );");
 }
 
 $sql="CREATE TABLE IF NOT EXISTS trombino_decoupe_param (
@@ -104,7 +104,7 @@ $sql="CREATE TABLE IF NOT EXISTS trombino_decoupe_param (
 	valeur VARCHAR(255) NOT NULL default '',
 	PRIMARY KEY (id_grille, nom)
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 //=================================================
 
 //=================================================
@@ -132,11 +132,11 @@ if(isset($_POST['suppr_grille'])) {
 	$suppr_grille=$_POST['suppr_grille'];
 	for($i=0;$i<count($suppr_grille);$i++) {
 		$sql="DELETE FROM trombino_decoupe WHERE id_grille='$suppr_grille[$i]';";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$del) {$msg.="Erreur lors de la suppression de la grille n°$suppr_grille[$i]<br />";}
 		else {
 			$sql="DELETE FROM trombino_decoupe_param WHERE id_grille='$suppr_grille[$i]';";
-			$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$del) {$msg.="Erreur lors de la suppression des paramètres de la grille n°$suppr_grille[$i]<br />";}
 		}
 	}
@@ -222,7 +222,7 @@ if(isset($_POST['upload_scan'])) {
 	else {
 		//echo "2";
 		$sql="SELECT page_global FROM trombino_decoupe WHERE id_grille='$id_grille' ORDER BY page_global DESC LIMIT 1;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			$msg="L'id_grille n°$id_grille ne correspond à aucun enregistrement dans la table 'trombino_decoupe'.<br />\n";
 		}
@@ -231,7 +231,7 @@ if(isset($_POST['upload_scan'])) {
 			// Récuperer les paramètres et calculer les dimensions des cadres d'après les nombres de colonnes et de lignes
 			$sql="SELECT * FROM trombino_decoupe_param WHERE id_grille='$id_grille';";
 			//$msg.="$sql<br />";
-			$res_param=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_param=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_param)==0) {
 				$msg="Aucun paramètre n'a été trouvé pour l'id_grille n°$id_grille dans la table 'trombino_decoupe_param'.<br />\n";
 			}
@@ -318,7 +318,7 @@ if(isset($_POST['upload_scan'])) {
 								else {
 									$sql="SELECT * FROM trombino_decoupe WHERE page_global='$i' AND id_grille='$id_grille';";
 								}
-								$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res2)>0) {
 									$img_source=imagecreatefromjpeg($dest_file);
 									// Dimensions de l'image scannée
@@ -435,7 +435,7 @@ if(isset($generer_pdf)) {
 		//======================================
 		// Nouvel id_grille
 		$sql="SELECT id_grille FROM trombino_decoupe ORDER BY id_grille DESC LIMIT 1;";
-		$res_grille=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_grille=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grille)==0) {
 			$id_grille=1;
 		}
@@ -445,16 +445,16 @@ if(isset($generer_pdf)) {
 		}
 		//======================================
 		$sql="INSERT INTO trombino_decoupe_param SET id_grille='$id_grille', nom='trombino_pdf_nb_lig', valeur='$trombino_pdf_nb_lig';";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="INSERT INTO trombino_decoupe_param SET id_grille='$id_grille', nom='trombino_pdf_nb_col', valeur='$trombino_pdf_nb_col';";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		//======================================
 
 		$nb_total_pages=0;
 		
 		for($i=0;$i<count($id_classe);$i++) {
 			$sql="SELECT DISTINCT e.login, e.elenoet, e.nom, e.prenom FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe[$i]' AND jec.login=e.login ORDER BY e.nom,e.prenom, e.login;";
-			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		
 			$tab_ele=array();
 			if(mysqli_num_rows($res_ele)>0) {
@@ -518,7 +518,7 @@ if(isset($generer_pdf)) {
 								$texte=mb_strtoupper($tab_ele[$cpt]['nom'])." ".casse_mot($tab_ele[$cpt]['prenom'],'majf2');
 		
 								$sql="INSERT INTO trombino_decoupe SET id_grille='$id_grille', classe='$classe', elenoet='".$tab_ele[$cpt]['elenoet']."', x='$k', y='$m', page='$j', page_global='$nb_total_pages';";
-								$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							}
 		
 							//cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
@@ -582,7 +582,7 @@ if(!isset($mode)) {
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=parametrer'>Paramétrer les grilles</a></li>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=generer_grille'>Générer des grilles</a></li>\n";
 	$sql="SELECT 1=1 FROM trombino_decoupe;";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=uploader'>Uploader les grilles scannées après collage des photos</a></li>\n";
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=suppr_grille'>Supprimer des grilles</a></li>\n";
@@ -672,7 +672,7 @@ elseif($mode=='generer_grille') {
 	echo "</p>\n";
 
 	$sql="SELECT classe, id FROM classes ORDER BY classe;";
-	$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_classes=mysqli_num_rows($call_classes);
 	if($nb_classes==0) {
 		echo "<p style='color:red'>ERREUR&nbsp;: Il n'existe encore aucune classe.</p>\n";
@@ -760,7 +760,7 @@ elseif($mode=='uploader') {
 
 	if(!isset($id_grille)) {
 		$sql="SELECT DISTINCT id_grille FROM trombino_decoupe ORDER BY id_grille;";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			echo "<p style='color:red'>ERREUR&nbsp;: Aucune grille n'a encore été générée.</p>\n";
 			require("../lib/footer.inc.php");
@@ -779,14 +779,14 @@ elseif($mode=='uploader') {
 
 				$sql="SELECT DISTINCT classe FROM trombino_decoupe WHERE id_grille='$lig->id_grille' ORDER BY classe;";
 				//echo "$sql<br />";
-				$res_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 				$lig_clas=mysqli_fetch_object($res_classes);
 				echo " (<i>".$lig_clas->classe;
 				while($lig_clas=mysqli_fetch_object($res_classes)) {
 					echo ", ".$lig_clas->classe;
 				}
 				$sql="SELECT * FROM trombino_decoupe_param WHERE id_grille='$lig->id_grille' ORDER BY nom;";
-				$res_param=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_param=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig_param=mysqli_fetch_object($res_param)) {
 					$nom=$lig_param->nom;
 					$$nom=$lig_param->valeur;
@@ -806,7 +806,7 @@ elseif($mode=='uploader') {
 	echo "<p class='bold'>Grille n°$id_grille</p>\n";
 
 	$sql="SELECT DISTINCT classe, page, page_global FROM trombino_decoupe WHERE id_grille='$id_grille' ORDER BY page_global, page;";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)==0) {
 		echo "<p style='color:red'>ERREUR&nbsp;: Aucune classe n'est associée à la grille n°$id_grille.</p>\n";
 	}
@@ -888,7 +888,7 @@ elseif($mode=='suppr_grille') {
 	echo "</p>\n";
 
 	$sql="SELECT DISTINCT id_grille FROM trombino_decoupe ORDER BY id_grille;";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)==0) {
 		echo "<p style='color:red'>ERREUR&nbsp;: Aucune grille n'a encore été générée.</p>\n";
 		require("../lib/footer.inc.php");
@@ -904,14 +904,14 @@ elseif($mode=='suppr_grille') {
 
 			$sql="SELECT DISTINCT classe FROM trombino_decoupe WHERE id_grille='$lig->id_grille' ORDER BY classe;";
 			//echo "$sql<br />";
-			$res_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 			$lig_clas=mysqli_fetch_object($res_classes);
 			echo " (<i>".$lig_clas->classe;
 			while($lig_clas=mysqli_fetch_object($res_classes)) {
 				echo ", ".$lig_clas->classe;
 			}
 			$sql="SELECT * FROM trombino_decoupe_param WHERE id_grille='$lig->id_grille' ORDER BY nom;";
-			$res_param=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_param=mysqli_query($GLOBALS["mysqli"], $sql);
 			while($lig_param=mysqli_fetch_object($res_param)) {
 				$nom=$lig_param->nom;
 				$$nom=$lig_param->valeur;

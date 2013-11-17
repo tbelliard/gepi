@@ -64,14 +64,14 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 <?php
 // On va chercher les classes déjà existantes, et on les affiche.
-$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes ORDER BY classe");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes ORDER BY classe");
 $nombre_lignes = mysqli_num_rows($call_data);
 if ($nombre_lignes != 0) {
 	// 20130313
 	$classe_sans_scol="n";
 	$sql="SELECT c.* FROM classes c, periodes p WHERE p.id_classe=c.id AND c.id NOT IN (SELECT id_classe FROM j_scol_classes jsc, utilisateurs u WHERE u.login=jsc.login AND u.etat='actif');";
 	//echo "$sql<br />";
-	$test_scol=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test_scol=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_scol)>0) {
 		$classe_sans_scol="y";
 		$tab_classe_sans_scol=array();
@@ -101,7 +101,7 @@ if ($nombre_lignes != 0) {
 		//echo "<td>|<a href='modify_class.php?id_classe=$id_classe'>Gérer les matières</a></td>\n";
 
 		$sql="select id_classe from periodes where id_classe = '$id_classe';";
-		$res_nb_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_nb_per=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_per = mysqli_num_rows($res_nb_per);
 		echo "<td>\n";
 		if ($nb_per != 0) {

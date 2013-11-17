@@ -80,7 +80,7 @@ $req_devoirs =
     and d.id_groupe = " . $group["id"] . "
     and d.date_ct > " . $_GET['debut'] . "
     order by d.date_ct desc";
-$res_devoirs = mysqli_query($GLOBALS["___mysqli_ston"], $req_devoirs);
+$res_devoirs = mysqli_query($GLOBALS["mysqli"], $req_devoirs);
 if (!$res_devoirs) echo ((is_object($res_devoirs)) ? mysqli_error($res_devoirs) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
     if (mysqli_num_rows($res_devoirs) > 0) {
         while ($devoir = mysqli_fetch_object($res_devoirs)) {
@@ -105,7 +105,7 @@ if (!$res_devoirs) echo ((is_object($res_devoirs)) ? mysqli_error($res_devoirs) 
             if (($res1) and (sql_count($res1)!=0)) {
                 $content_dos = "<small style=\"font-weight: bold;\">Document(s) joint(s):</small>";
                     $content_dos .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
-                    $res_docs = mysqli_query($GLOBALS["___mysqli_ston"], $req_docs);
+                    $res_docs = mysqli_query($GLOBALS["mysqli"], $req_docs);
                     while ($doc = mysqli_fetch_object($res_docs)) {
                         $content_dos .= "<li style=\"padding: 0px; margin: 0px; \"><a href=\"$doc->emplacement\">$doc->titre</a></li>";
                     }

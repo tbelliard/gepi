@@ -75,7 +75,7 @@ $aff_etape = NULL;
 
 echo 	'<div id="lecorps">';
 // On teste d'abord pour savoir à quelle étape on est
-$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_export FROM edt_init WHERE ident_export = 'fichierTexte'");
+$query = mysqli_query($GLOBALS["mysqli"], "SELECT nom_export FROM edt_init WHERE ident_export = 'fichierTexte'");
 // On affiche le numéro de l'étape
 if ($query) {
 	$etape_effectuee = mysqli_fetch_array($query);
@@ -109,7 +109,7 @@ if ($action == "upload_file") {
         }else {
 			// On vérifie si on demande d'effacer la table en question
 			if ($truncate_cours == "oui") {
-			$vider_table = mysqli_query($GLOBALS["___mysqli_ston"], "TRUNCATE TABLE edt_init");
+			$vider_table = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE edt_init");
 			} // fin du !fp
 
 			// On peut enfin s'attaquer au travail sur le fichier
@@ -117,7 +117,7 @@ if ($action == "upload_file") {
 			if ($nbre_rep === 0) {
 				// C'est qu'on est au tout début, au premier passage et donc
 				// on crée le champ fichierTexte
-				$insert = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO edt_init SET ident_export = 'fichierTexte', nom_export = '1', nom_gepi = '".date("d-m-Y h:i")."'");
+				$insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_init SET ident_export = 'fichierTexte', nom_export = '1', nom_gepi = '".date("d-m-Y h:i")."'");
 				$etape = 1;
 			}else{
 				// On récupère d'abord le numéro de l'étape actuel

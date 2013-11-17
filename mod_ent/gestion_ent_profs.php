@@ -63,10 +63,10 @@ if ($action == "modifier") {
 
 		// On met à jour les deux tables tempo2 et utilisateurs
 		$sql1 = "UPDATE tempo2 SET col1 = '".$login_a_modifier."' WHERE col2 = '".$id_col2."'";
-		$query1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql1) OR DIE('Erreur sur la requête '.$sql1.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />Veuillez contacter les services concernés.');
+		$query1 = mysqli_query($GLOBALS["mysqli"], $sql1) OR DIE('Erreur sur la requête '.$sql1.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />Veuillez contacter les services concernés.');
 
 		$sql2 = "UPDATE utilisateurs SET login = '".$login_a_modifier."' WHERE numind = '".$id_col2."'";
-		$query1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql2) OR DIE('Erreur sur la requête '.$sql2.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />Veuillez contacter les services concernés.');
+		$query1 = mysqli_query($GLOBALS["mysqli"], $sql2) OR DIE('Erreur sur la requête '.$sql2.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />Veuillez contacter les services concernés.');
 
 	}
 
@@ -74,7 +74,7 @@ if ($action == "modifier") {
 
 	// On récupère la liste de tous les professeurs de la table ldap_bx
 	$sql_bx = "SELECT * FROM ldap_bx WHERE statut_u = 'teacher' ORDER BY nom_u, prenom_u";
-	$query_bx = mysqli_query($GLOBALS["___mysqli_ston"], $sql_bx) OR DIE('Erreur dans la requête '.$sql_bx.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$query_bx = mysqli_query($GLOBALS["mysqli"], $sql_bx) OR DIE('Erreur dans la requête '.$sql_bx.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 	$aff_ldap_bx = '<p>Liste des professeurs disponibles dans l\'ENT</p>
 					<p>Pour ajouter des utilisateurs, contactez votre administrateur ENT</p>';
@@ -91,8 +91,8 @@ if ($action == "modifier") {
 														AND u.login = t.col1
 														AND u.login LIKE 'erreur_%'
 														ORDER BY u.nom, u.prenom";
-	$query_p = mysqli_query($GLOBALS["___mysqli_ston"], $sql_p)
-				OR DIE('Erreur dans la requête '.$sql_p.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br /> Veuillez en informer le gestionnaire du système');
+	$query_p = mysqli_query($GLOBALS["mysqli"], $sql_p)
+				OR DIE('Erreur dans la requête '.$sql_p.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br /> Veuillez en informer le gestionnaire du système');
 
 	$j = 0;
 

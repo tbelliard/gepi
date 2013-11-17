@@ -80,7 +80,7 @@ if ($_POST['step'] == "3") {
       ->filterByStatut('responsable')
       ->delete();
 */
-  $del = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM utilisateurs WHERE statut = 'responsable'");
+  $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM utilisateurs WHERE statut = 'responsable'");
     
     // On parcours tous les responsables
 
@@ -95,7 +95,7 @@ if ($_POST['step'] == "3") {
         $pers_id = array_key_exists('intid', $responsables[$nb]) ? $responsables[$nb]['intid'][0] : '';
         
         // On teste si le responsable est déjà enregistré, sur la base de son identifiant sconet
-        $test_resp = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM resp_pers WHERE pers_id = '".$pers_id."'"));
+        $test_resp = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT * FROM resp_pers WHERE pers_id = '".$pers_id."'"));
         
         if ($test_resp == 0) {
           $resp = new ResponsableEleve();
@@ -127,7 +127,7 @@ if ($_POST['step'] == "3") {
           $resp_cp = array_key_exists('entpersoncodepostal', $responsables[$nb]) ? $responsables[$nb]['entpersoncodepostal'][0] : '';
           $resp_pays = array_key_exists('entpersonpays', $responsables[$nb]) ? $responsables[$nb]['entpersonpays'][0] : '';
           
-          $test_adr = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM resp_adr WHERE adr_id = '".$pers_id."'"));
+          $test_adr = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT * FROM resp_adr WHERE adr_id = '".$pers_id."'"));
           
           if ($resp_addr && $test_adr == 0) {
             $adr = new Adresse();
@@ -160,7 +160,7 @@ if ($_POST['step'] == "3") {
 
             $eleve_associe_login = mb_substr($eleve_uid[0], 4);
             
-            $req_eleid = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'");
+            $req_eleid = mysqli_query($GLOBALS["mysqli"], "SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'");
             
             // On s'assure qu'on a bien un élève correspondant !
             if (mysqli_num_rows($req_eleid) == 1) {
@@ -173,9 +173,9 @@ if ($_POST['step'] == "3") {
               // On initialise le numero de responsable
               $numero_responsable = 1;
               $req_nb_resp_deja_presents = "SELECT count(*) FROM responsables2 WHERE ele_id = '$eleve_associe_ele_id'";
-              $res_nb_resp = mysqli_query($GLOBALS["___mysqli_ston"], $req_nb_resp_deja_presents);
-              if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
-                  error_log("Erreur : ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+              $res_nb_resp = mysqli_query($GLOBALS["mysqli"], $req_nb_resp_deja_presents);
+              if (((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
+                  error_log("Erreur : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                   die("Une erreur s'est produite lors la r&eacute;cup&eacute;ration des responsables d&eacute;j&agrave; pr&eacute;sents.");
               }
               $nb_resp = mysqli_fetch_array($res_nb_resp);
@@ -195,8 +195,8 @@ if ($_POST['step'] == "3") {
 
               // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
               $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getResponsableEleveId()."','$numero_responsable','','')";
-              mysqli_query($GLOBALS["___mysqli_ston"], $req_ajout_lien_eleve_resp);
-              if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
+              mysqli_query($GLOBALS["mysqli"], $req_ajout_lien_eleve_resp);
+              if (((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
                   die("Une erreur s'est produite lors de l'affectation d'un &eacute;l&egrave;ve &agrave; son responsable l&eacute;gal.");
               }
               $valid_associations++;

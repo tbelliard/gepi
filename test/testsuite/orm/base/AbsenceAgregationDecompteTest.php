@@ -49,12 +49,12 @@ class AbsenceAgregationDecompteTest extends GepiEmptyTestBase
 	    $tomorow->modify("+1 day");
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    $saisie_id = $florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId();
-	    mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$saisie_id);
+	    mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$saisie_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(SAMEDI_s40j6.' 00:00:00'),new DateTime(MARDI_s41j2.' 23:59:59'), 0));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(MARDI_s41j2.' 23:59:59'), 0));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(MARDI_s41j2.' 23:59:59'), 1));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(MARDI_s41j2.' 23:59:59'), 10));
-	    mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies set updated_at = now() where id = ".$saisie_id);
+	    mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now() where id = ".$saisie_id);
 
 	    //on va modifier à la main une saisie, un traitement et une version de saisie
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
@@ -63,79 +63,79 @@ class AbsenceAgregationDecompteTest extends GepiEmptyTestBase
 	    }
 	    sleep(1);
 	    $saisie_id = $florence_eleve->getAbsenceEleveSaisiesDuJour(SAMEDI_s40j6)->getFirst()->getId();
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies set updated_at = now() where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now() where id = ".$saisie_id);
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),10));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies set updated_at = now()-10 where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now()-10 where id = ".$saisie_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies set deleted_at = now() where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set deleted_at = now() where id = ".$saisie_id);
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),10));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies set deleted_at = now()-10 where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set deleted_at = now()-10 where id = ".$saisie_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
 	    
 	    $traitement_id = AbsenceEleveTraitementQuery::create()->filterByAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour(SAMEDI_s40j6)->getFirst())->findOne()->getId();
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_traitements set updated_at = now() where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = now() where id = ".$traitement_id);
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),10));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_traitements set updated_at = now()-10 where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = now()-10 where id = ".$traitement_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_traitements set deleted_at = now() where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set deleted_at = now() where id = ".$traitement_id);
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),10));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_traitements set deleted_at = now()-10 where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set deleted_at = now()-10 where id = ".$traitement_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
 	    
 	    $saisie_version_id = AbsenceEleveSaisieVersionQuery::create()->filterByAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst())->findOne()->getId();
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies_version set updated_at = now() where id = ".$saisie_version_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set updated_at = now() where id = ".$saisie_version_id);
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),10));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies_version set updated_at = now()-10 where id = ".$saisie_version_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set updated_at = now()-10 where id = ".$saisie_version_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies_version set deleted_at = now() where id = ".$saisie_version_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set deleted_at = now() where id = ".$saisie_version_id);
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),10));
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies_version set deleted_at = now()-10 where id = ".$saisie_version_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set deleted_at = now()-10 where id = ".$saisie_version_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
 	    
 	    //on test sur un marqueur d'appel effectué, ça ne doit pas avoir d'incidence sur la table d'agrégation
 	    $saisie_id = AbsenceEleveSaisieQuery::create()->filterByFinAbs(DIMANCHE_s41j7.' 09:00:00')->findOne()->getId();
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies set updated_at = now() where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now() where id = ".$saisie_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),10));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies set updated_at = now()-10 where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now()-10 where id = ".$saisie_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
 	    
 	    $saisie_version_id = AbsenceEleveSaisieVersionQuery::create()->filterByAbsenceEleveSaisie(AbsenceEleveSaisieQuery::create()->filterByFinAbs(DIMANCHE_s41j7.' 09:00:00')->findOne())->findOne()->getId();
-	    mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies_version set updated_at = now() where id = ".$saisie_version_id);
+	    mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set updated_at = now() where id = ".$saisie_version_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),10));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies_version set updated_at = now()-10 where id = ".$saisie_version_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set updated_at = now()-10 where id = ".$saisie_version_id);
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
 	    
 	    $saisie = AbsenceEleveSaisieQuery::create()->filterByDebutAbs(SAMEDI_s42j6.' 08:00:00')->findOne();
 	    $traitement = $saisie->getAbsenceEleveTraitements()->getFirst();
-	    mysqli_query($GLOBALS["___mysqli_ston"], "update a_traitements set updated_at = now() where id = ".$traitement->getId());
+	    mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = now() where id = ".$traitement->getId());
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(SAMEDI_s42j6.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(SAMEDI_s42j6.' 23:59:59'),10));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
-	    mysqli_query($GLOBALS["___mysqli_ston"], "update a_traitements set updated_at = now()-10 where id = ".$traitement->getId());
+	    mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = now()-10 where id = ".$traitement->getId());
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(SAMEDI_s42j6.' 23:59:59'),0));
 	    $this->assertTrue(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
         
@@ -161,7 +161,7 @@ class AbsenceAgregationDecompteTest extends GepiEmptyTestBase
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour(SAMEDI_s40j6)->getFirst();
 	    $saisie_id = $saisie->getId();
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies set updated_at = now() where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now() where id = ".$saisie_id);
 	    $this->assertFalse(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable(null, null, 0));
 	    $col = new PropelCollection();
 	    $col->append($saisie);
@@ -177,7 +177,7 @@ class AbsenceAgregationDecompteTest extends GepiEmptyTestBase
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst();
 	    $saisie_id = $saisie->getId();
-        mysqli_query($GLOBALS["___mysqli_ston"], "update a_saisies set fin_abs = '".VENDREDI_s40j5." 08:10:00' where id = ".$saisie_id);//ça devient un retard
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set fin_abs = '".VENDREDI_s40j5." 08:10:00' where id = ".$saisie_id);//ça devient un retard
 	    $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee(VENDREDI_s40j5)->findOne();
         $this->assertTrue($decompte->getManquementObligationPresence());
         $this->assertEquals(0,$decompte->getRetards());

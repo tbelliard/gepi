@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_epreuve_blanche/genere_bordereaux.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_epreuve_blanche/genere_bordereaux.php',
 administrateur='V',
@@ -49,7 +49,7 @@ secours='F',
 autre='F',
 description='Epreuve blanche: Génération des bordereaux professeurs',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -91,7 +91,7 @@ if(isset($imprime)) {
 
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$msg="L'épreuve n°$id_epreuve n'existe pas.";
 	}
@@ -102,7 +102,7 @@ if(isset($imprime)) {
 	
 		$salle=array();
 		$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
-		$res_salle=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_salle=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig_salle=mysqli_fetch_object($res_salle)) {
 			$salle[$lig_salle->id]=$lig_salle->salle;
 		}
@@ -115,7 +115,7 @@ if(isset($imprime)) {
 
 		$sql="SELECT u.login, u.nom, u.prenom, u.civilite FROM eb_profs ep, utilisateurs u WHERE u.login=ep.login_prof AND ep.id_epreuve='$id_epreuve' ORDER BY u.nom, u.prenom;";
 		//echo "$sql<br />\n";
-		$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 		
 		while($lig=mysqli_fetch_object($res_prof)) {
 			$profs[$cpt]['login']=$lig->login;
@@ -143,7 +143,7 @@ if(isset($imprime)) {
 								jec.login=e.login 
 						ORDER BY ec.n_anonymat, e.nom, e.prenom;";
 				//echo "$sql<br />\n";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					//$csv.="Epreuve:;$intitule_epreuve ($date_epreuve);\n";
 					$csv.="Epreuve:;$intitule_epreuve;\n";
@@ -333,7 +333,7 @@ if(isset($imprime)) {
 								jec.login=e.login 
 						ORDER BY ec.n_anonymat, e.nom, e.prenom;";
 				//echo "$sql<br />\n";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					//echo "Retour non vide<br />\n",
 
@@ -663,7 +663,7 @@ if(!isset($imprime)) {
 
 	echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 		require("../lib/footer.inc.php");
@@ -684,10 +684,10 @@ if(!isset($imprime)) {
 
 	//========================================================
 	$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve';";
-	$test1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test1=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 	$sql="SELECT DISTINCT n_anonymat FROM eb_copies WHERE id_epreuve='$id_epreuve';";
-	$test2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test2=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test1)!=mysqli_num_rows($test2)) {
 		echo "<p style='color:red;'>Les numéros anonymats ne sont pas uniques sur l'épreuve (<i>cela ne devrait pas arriver</i>).</p>\n";
 		require("../lib/footer.inc.php");
@@ -695,7 +695,7 @@ if(!isset($imprime)) {
 	}
 
 	$sql="SELECT login_ele FROM eb_copies WHERE n_anonymat='' AND id_epreuve='$id_epreuve';";
-	$test3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test3=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test3)>0) {
 		echo "<p style='color:red;'>Un ou des numéros anonymats ne sont pas valides sur l'épreuve&nbsp;: ";
 		$cpt=0;
@@ -715,7 +715,7 @@ if(!isset($imprime)) {
 	//echo "<p style='color:red;'>A FAIRE&nbsp;: Contrôler si certains élèves n'ont pas été affectés dans des salles.</p>\n";
 	$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle='-1';";
 	//echo "$sql<br />\n";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_tmp=mysqli_num_rows($test);
 	if($nb_tmp==1) {
 		echo "<p style='color:red;'>$nb_tmp élève n'est pas affecté dans une salle.</p>\n";

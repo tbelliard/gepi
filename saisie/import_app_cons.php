@@ -87,7 +87,7 @@ elseif($_SESSION['statut']=='cpe'){
 $cpt_classe=0;
 $num_classe=-1;
 $chaine_options_classes="";
-$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_class_tmp)>0){
 	$id_class_prec=0;
 	$id_class_suiv=0;
@@ -169,7 +169,7 @@ echo "<script type='text/javascript'>
 // ===========================================
 
 
-$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
 echo "<p><span class = 'grand'>Première phase d'importation des appréciations </span>";
 echo "<p class = 'bold'>Classe : $classe | Période : $nom_periode[$periode_num]</p>";
@@ -265,13 +265,13 @@ if (isset($is_posted ) and ($is_posted==1)) {
                             //login
                             $reg_login = "reg_".$row."_login";
                             $reg_statut = "reg_".$row."_statut";
-                            $call_login = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM eleves WHERE login='$data[$c]'");
+                            $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$data[$c]'");
                             $test = @mysqli_num_rows($call_login);
                             if ($test != 0) {
                                 $nom_eleve = @mysql_result($call_login, 0, "nom");
                                 $prenom_eleve = @mysql_result($call_login, 0, "prenom");
 
-                                $classe_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, j_eleves_classes j WHERE (j.login = '$data[$c]' AND j.id_classe =  c.id AND j.periode='$periode_num')");
+                                $classe_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_classes j WHERE (j.login = '$data[$c]' AND j.id_classe =  c.id AND j.periode='$periode_num')");
                                 $eleve_classe = @mysql_result($classe_eleve, 0, "classe");
                                 $eleve_id_classe = @mysql_result($classe_eleve, 0, "id");
                                 if ($eleve_classe == '') {
@@ -283,7 +283,7 @@ if (isset($is_posted ) and ($is_posted==1)) {
                                 // On verifie que l'élève a bien pour professeur principal le professeur connecté.
                                 //
                                 if ($_SESSION['statut'] != 'scolarite') {
-                                    $eleve_profsuivi_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM  j_eleves_professeurs
+                                    $eleve_profsuivi_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM  j_eleves_professeurs
                                     WHERE (
                                     login='$data[$c]' AND
                                     professeur='".$_SESSION['login']."' AND
@@ -432,16 +432,16 @@ if (isset($is_posted ) and ($is_posted==2)) {
                 $reg_app = '';
             }
             if (($reg_app != "") and ($reg_login !='')) {
-                $test_eleve_app_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM avis_conseil_classe
+                $test_eleve_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe
                 WHERE (login='$reg_login' AND
                 periode='$periode_num')");
                 $test = mysqli_num_rows($test_eleve_app_query);
                 if ($test != "0") {
-                    $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE avis_conseil_classe
+                    $reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE avis_conseil_classe
                     SET avis='$reg_app', statut=''
                     WHERE (login='$reg_login' AND periode='$periode_num')");
                 } else {
-                    $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO avis_conseil_classe
+                    $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO avis_conseil_classe
                     SET login='$reg_login',
                     periode='$periode_num',
                     avis='$reg_app',

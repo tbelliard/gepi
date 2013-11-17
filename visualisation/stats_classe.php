@@ -98,7 +98,7 @@ if (!isset($id_classe)) {
 	}
 	*/
 
-	$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
     $nombreligne = mysqli_num_rows($call_classes);
     $i = "0" ;
  	$nb_class_par_colonne=round($nombreligne/3);
@@ -150,7 +150,7 @@ if (!isset($id_classe)) {
 	*/
 	$chaine_options_classes="";
 
-	$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
 		$id_class_suiv=0;
@@ -205,7 +205,7 @@ if (!isset($id_classe)) {
     $etiquette = array();
     $graph_title = "";
 
-    $call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = $id_classe");
+    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = $id_classe");
     $classe = mysql_result($call_data, 0, "classe");
 
 	//echo "<a href='stats_classe.php'>Choisir une autre classe</a></p>\n";
@@ -230,7 +230,7 @@ if (!isset($id_classe)) {
 
     if ($affiche_categories) {
             // On utilise les valeurs spécifiées pour la classe en question
-            $call_groupes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
+            $call_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
             "FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
             "WHERE ( " .
             "jgc.categorie_id = jmcc.categorie_id AND " .
@@ -241,7 +241,7 @@ if (!isset($id_classe)) {
             ") " .
             "ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
     } else {
-        $call_groupes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT jgc.id_groupe, jgc.coef
+        $call_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT jgc.id_groupe, jgc.coef
         FROM j_groupes_classes jgc, j_groupes_matieres jgm
         WHERE (
         jgc.id_classe='".$id_classe."' AND
@@ -269,7 +269,7 @@ if (!isset($id_classe)) {
                 // On est dans une nouvelle catégorie
                 // On récupère les infos nécessaires, et on affiche une ligne
                 //$cat_name = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
-                $cat_name = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
+                $cat_name = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
                 // On détermine le nombre de colonnes pour le colspan
                 $nb_total_cols = 1;
                 $k = '1';
@@ -290,7 +290,7 @@ if (!isset($id_classe)) {
         echo "<td>" . htmlspecialchars($current_group["description"]) . "</td>\n";
         $k = '1';
         while ($k < $nb_periode) {
-            $moyenne_classe_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$k' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
+            $moyenne_classe_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$k' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
             $moyenne_classe = mysql_result($moyenne_classe_query, 0, "moyenne");
             if ($moyenne_classe == '') {$moyenne_classe = '-';}
             echo "<td>$moyenne_classe</td>\n";

@@ -3,8 +3,8 @@
 
 require_once dirname(__FILE__) . '/../fixtures/config/connect.test.inc.php';
 
-$link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($GLOBALS['dbHost'],  $GLOBALS['dbUser'],  $GLOBALS['dbPass']));
-((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE $GLOBALS['dbDb']"));
+$link = ($GLOBALS["mysqli"] = mysqli_connect($GLOBALS['dbHost'],  $GLOBALS['dbUser'],  $GLOBALS['dbPass']));
+((bool)mysqli_query($GLOBALS["mysqli"], "USE $GLOBALS['dbDb']"));
 $fd = fopen(dirname(__FILE__) ."/../../sql/structure_gepi.sql", "r");
 if (!$fd) {
 	echo "Erreur : fichier sql/structure_gepi.sql non trouve\n";
@@ -19,10 +19,10 @@ while (!feof($fd)) {
 		$query = trim($query); 
 	}
 	if ($query!="") {
-		$reg = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$reg = mysqli_query($GLOBALS["mysqli"], $query);
 		if (!$reg) {
 			echo "ERROR : '$query' : \n";
-			echo "Erreur retournée : ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."\n";
+			echo "Erreur retournée : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."\n";
 			$result_ok = 'no';
 		}
 	}
@@ -39,10 +39,10 @@ if ($result_ok == 'yes') {
 		$query = fgets($fd, 5000);
 		$query = trim($query);
 		if((substr($query,-1)==";")&&(substr($query,0,3)!="-- ")) {
-			$reg = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			$reg = mysqli_query($GLOBALS["mysqli"], $query);
 			if (!$reg) {
 				echo "ERROR : '$query' \n";
-				echo "Erreur retournée : ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."\n";
+				echo "Erreur retournée : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."\n";
 				$result_ok = 'no';
 			}
 		}

@@ -22,12 +22,12 @@
  	}
  		
  	// Si l'utilisateur existe déjà, on met simplement à jour ses informations...
- 	$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM utilisateurs WHERE login = '" . $_login . "'");
+ 	$test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM utilisateurs WHERE login = '" . $_login . "'");
  	if (mysqli_num_rows($test) > 0) {
- 		$record = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET nom = '" . $_nom . "', prenom = '" . $_prenom . "', civilite = '" . $_civilite . "', statut = '" . $_statut . "', email = '" . $_email . "', auth_mode = '".$auth_mode."', etat = 'actif' WHERE login = '" . $_login . "'");
+ 		$record = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET nom = '" . $_nom . "', prenom = '" . $_prenom . "', civilite = '" . $_civilite . "', statut = '" . $_statut . "', email = '" . $_email . "', auth_mode = '".$auth_mode."', etat = 'actif' WHERE login = '" . $_login . "'");
  	} else {
 		$query = "INSERT into utilisateurs SET login= '" . $_login . "', nom = '" . $_nom . "', prenom = '" . $_prenom . "', password = '', salt = '', civilite = '" . $_civilite . "', statut = '" . $_statut . "', email = '" . $_email . "', auth_mode = '".$auth_mode."', etat ='actif', change_mdp = 'n'";
-		$record = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$record = mysqli_query($GLOBALS["mysqli"], $query);
  	}
 
 	if ($record) {
@@ -49,12 +49,12 @@
  	}
  	
  	// Si l'élève existe déjà, on met simplement à jour ses informations...
- 	$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM eleves WHERE login = '" . $_login . "'");
+ 	$test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves WHERE login = '" . $_login . "'");
  	if (mysqli_num_rows($test) > 0) {
- 		$record = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE eleves SET nom = '" . $_nom . "', prenom = '" . $_prenom . "', sexe = '" . $_civilite . "', naissance = '" . $_naissance . "', elenoet = '" . $_elenoet . "' WHERE login = '" . $_login . "'");
+ 		$record = mysqli_query($GLOBALS["mysqli"], "UPDATE eleves SET nom = '" . $_nom . "', prenom = '" . $_prenom . "', sexe = '" . $_civilite . "', naissance = '" . $_naissance . "', elenoet = '" . $_elenoet . "' WHERE login = '" . $_login . "'");
  	} else {
 		$query = "INSERT into eleves SET login= '" . $_login . "', nom = '" . $_nom . "', prenom = '" . $_prenom . "', sexe = '" . $_civilite . "', naissance = '" . $_naissance . "', elenoet = '" . $_elenoet . "'";
-		$record = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$record = mysqli_query($GLOBALS["mysqli"], $query);
  	}
 
 	if ($record) {

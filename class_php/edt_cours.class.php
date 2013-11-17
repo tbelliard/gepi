@@ -73,7 +73,7 @@ class edt{
 												WHERE id_cours = '".$this->id."'
 												AND edt_cours.id_salle = salle_cours.id_salle
 												LIMIT 1";
-		$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR trigger_error('Impossible de récupérer les infos du cours.', E_USER_ERROR);
+		$query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Impossible de récupérer les infos du cours.', E_USER_ERROR);
 		$rep = mysqli_fetch_array($query);
 
 		// on charge les variables de classe
@@ -103,10 +103,10 @@ class edt{
 
 		$sem = date("W") + ($this->sem);
 
-		$query_s = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT type_edt_semaine FROM edt_semaines WHERE id_edt_semaine = '".$sem."' LIMIT 1");
+		$query_s = mysqli_query($GLOBALS["mysqli"], "SELECT type_edt_semaine FROM edt_semaines WHERE id_edt_semaine = '".$sem."' LIMIT 1");
 		$rep["type"] = mysql_result($query_s, 0,"type_edt_semaine");
 
-		$query_se = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT type_edt_semaine FROM edt_semaines WHERE num_semaines_etab = '".$sem."' LIMIT 1");
+		$query_se = mysqli_query($GLOBALS["mysqli"], "SELECT type_edt_semaine FROM edt_semaines WHERE num_semaines_etab = '".$sem."' LIMIT 1");
 		$compter = mysqli_num_rows($query_se);
 		if ($compter >= 1) {
 			$rep["etab"] = mysql_result($query_se, 0, "type_edt_semaine");
@@ -126,7 +126,7 @@ class edt{
 	public function creneau($cren){
 		// On cherche le créneau de début du cours
 		$sql_c = "SELECT * FROM edt_creneaux WHERE type_creneau != 'pause' AND id_definie_periode = '".$cren."' LIMIT 1";
-		$query_c = mysqli_query($GLOBALS["___mysqli_ston"], $sql_c);
+		$query_c = mysqli_query($GLOBALS["mysqli"], $sql_c);
 		$verif = mysqli_num_rows($query_c);
 
 		if ($verif >= 1) {
@@ -139,7 +139,7 @@ class edt{
 	public function joursOuverts(){
 		// Liste des jours ouverts
 		$sql = "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1 LIMIT 7";
-		$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$query = mysqli_query($GLOBALS["mysqli"], $sql);
 		$retour = array();
 		$i = 0;
 		while($rep = mysqli_fetch_array($query)){
@@ -185,7 +185,7 @@ class edt{
 			$calend = $this->edt_calend;
 			if ($calend != 0) {
 				// On recherche les infos sur la période existante
-				$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_calendrier, debut_calendrier_ts, fin_calendrier_ts
+				$query = mysqli_query($GLOBALS["mysqli"], "SELECT nom_calendrier, debut_calendrier_ts, fin_calendrier_ts
 															FROM edt_calendrier
 															WHERE id_calendrier = '".$calend."'");
 				$retour = mysqli_fetch_array($query);
@@ -202,7 +202,7 @@ class edt{
 		// Pour savoir qui est le professeur qui anime le cours $this->edt_prof;
 		if (isset($this->edt_prof)) {
 			$sql = "SELECT nom, prenom, civilite FROM utilisateurs WHERE login = '".$this->edt_prof."'";
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$query = mysqli_query($GLOBALS["mysqli"], $sql);
 			$retour = mysqli_fetch_array($query);
 			//$retour = $this->edt_prof;
 		}else{
@@ -216,7 +216,7 @@ class edt{
 		if ($this->edt_gr != NULL) {
 			// C'est donc un 'groupe'
 			$sql = "SELECT * FROM groupes WHERE id = '".$this->edt_gr."'";
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$query = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$matiere = mysqli_fetch_array($query);
 
@@ -251,12 +251,12 @@ class edt{
 
 		}
 		if ($sql != '') {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$query = mysqli_query($GLOBALS["mysqli"], $sql);
 			$matiere = mysqli_fetch_array($query);
 
 			// on cherche la couleur rattachée
 			$sql2 = "SELECT valeur FROM edt_setting WHERE reglage = 'M_".$matiere["matiere"]."' LIMIT 1";
-			$query2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql2);
+			$query2 = mysqli_query($GLOBALS["mysqli"], $sql2);
 			$verif = mysqli_num_rows($query2);
 
 			if ($verif == 1) {
@@ -301,7 +301,7 @@ class edtAfficher{
 							AND type_creneaux != 'repas'
 							ORDER BY heuredebut_definie_periode";
 
-		$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$query = mysqli_query($GLOBALS["mysqli"], $sql);
 		$rep["nbre"] = mysqli_num_rows($query);
 
 		if ($query AND $rep["nbre"] > 0) {
@@ -495,7 +495,7 @@ class edtAfficher{
 			return 'Ce_mode '.$this->type_edt.' n\'est pas encore disponible';
 		}
 
-		$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$query = mysqli_query($GLOBALS["mysqli"], $sql);
 		$rep["nbre"] = mysqli_num_rows($query);
 
 		for($a = 0 ; $a < $rep["nbre"] ; $a++){

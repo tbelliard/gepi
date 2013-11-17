@@ -48,19 +48,19 @@ if (!isset($_SESSION['order_by'])) {$_SESSION['order_by'] = "date ASC";}
 $_SESSION['order_by'] = isset($_POST['order_by']) ? $_POST['order_by'] : (isset($_GET['order_by']) ? $_GET['order_by'] : $_SESSION['order_by']);
 $order_by = $_SESSION['order_by'];
 
-$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM inscription_items ORDER BY $order_by");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM inscription_items ORDER BY $order_by");
 $nombre_lignes = mysqli_num_rows($call_data);
 
 
 if (isset($_POST['is_posted'])) {
 	check_token();
 
-    $del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from inscription_j_login_items where login='".$_SESSION['login']."'");
+    $del = mysqli_query($GLOBALS["mysqli"], "delete from inscription_j_login_items where login='".$_SESSION['login']."'");
     $i = 0;
     while ($i < $nombre_lignes){
         $id = mysql_result($call_data, $i, "id");
         if (isset($_POST[$id])) {
-            $req = mysqli_query($GLOBALS["___mysqli_ston"], "insert into inscription_j_login_items
+            $req = mysqli_query($GLOBALS["mysqli"], "insert into inscription_j_login_items
             set login='".$_SESSION['login']."',
             id = '".$id."'
             ");
@@ -137,7 +137,7 @@ while ($i < $nombre_lignes){
 		where login='".$_SESSION['login']."' and id='".$id."' ");
 
 
-		$inscrits = mysqli_query($GLOBALS["___mysqli_ston"], "select login from inscription_j_login_items
+		$inscrits = mysqli_query($GLOBALS["mysqli"], "select login from inscription_j_login_items
 		where id='".$id."' ");
 		$nb_inscrits = mysqli_num_rows($inscrits);
 		if ($nb_inscrits == 0) $noms_inscrits = "<center>-</center>"; else $noms_inscrits = "";

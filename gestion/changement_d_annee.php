@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/gestion/changement_d_annee.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/gestion/changement_d_annee.php',
 administrateur='V',
@@ -48,7 +48,7 @@ secours='F',
 autre='F',
 description='Changement d\'année.',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 // Check access
@@ -83,11 +83,11 @@ if (isset($_POST['is_posted'])) {
 		if((isset($_POST['reserve_comptes_eleves']))&&($_POST['reserve_comptes_eleves']=='y')) {
 			$sql="DELETE FROM tempo_utilisateurs WHERE statut='eleve';";
 			//echo "<span style='color:green;'>$sql</span><br />";
-			$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="INSERT INTO tempo_utilisateurs SELECT u.login,u.password,u.salt,u.email,e.ele_id,e.elenoet,u.statut,u.auth_mode,NOW(),u.statut FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve';";
 			//echo "<span style='color:green;'>$sql</span><br />";
-			$svg_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$svg_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($svg_insert) {
 				$msg.="Mise en réserve des comptes élèves effectuée.<br />";
 			}
@@ -99,11 +99,11 @@ if (isset($_POST['is_posted'])) {
 		if((isset($_POST['reserve_comptes_responsables']))&&($_POST['reserve_comptes_responsables']=='y')) {
 			$sql="DELETE FROM tempo_utilisateurs WHERE statut='responsable';";
 			//echo "<span style='color:green;'>$sql</span><br />";
-			$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="INSERT INTO tempo_utilisateurs SELECT u.login,u.password,u.salt,u.email,rp.pers_id,rp.pers_id,u.statut,u.auth_mode,NOW(),u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.statut='responsable';";
 			//echo "<span style='color:green;'>$sql</span><br />";
-			$svg_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$svg_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($svg_insert) {
 				$msg.="Mise en réserve des comptes responsables effectuée.<br />";
 			}
@@ -128,7 +128,7 @@ if (isset($_POST['is_posted'])) {
 if (isset($_GET['reinit_dates_verrouillage_periode'])) {
 	check_token();
 	$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($res) {
 		$msg.="Réinitialisation des dates de verrouillage de périodes effectuée.<br />";
 	}
@@ -140,7 +140,7 @@ if (isset($_GET['reinit_dates_verrouillage_periode'])) {
 if (isset($_GET['suppr_reserve_eleve'])) {
 	check_token();
 	$sql="DELETE FROM tempo_utilisateurs WHERE statut='eleve';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($res) {
 		$msg.="Suppression de la réserve sur les comptes élèves effectuée.<br />";
 	}
@@ -152,7 +152,7 @@ if (isset($_GET['suppr_reserve_eleve'])) {
 if (isset($_GET['suppr_reserve_resp'])) {
 	check_token();
 	$sql="DELETE FROM tempo_utilisateurs WHERE statut='responsable';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($res) {
 		$msg.="Suppression de la réserve sur les comptes responsables effectuée.<br />";
 	}
@@ -273,14 +273,14 @@ auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
 date_reserve DATE DEFAULT '0000-00-00',
 temoin VARCHAR( 50 ) NOT NULL
 );";
-$creation_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 echo "<p>Pour pouvoir imposer les mêmes comptes parents et/ou élèves d'une année sur l'autre (<em>pour se connecter dans Gepi, consulter les cahiers de textes, les notes,...</em>), il convient avant d'initialiser la nouvelle année (<em>opération qui vide/nettoye un certain nombre de tables</em>) de mettre en réserve dans une table temporaire les login, mot de passe, email et statut des parents/élèves de façon à leur redonner le même login et restaurer l'accès lors de l'initialisation.</p>\n";
 
 echo "<p>";
 $sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
 if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)>0) {
 	echo "Il existe actuellement ".mysqli_num_rows($test)." comptes élèves.<br />";
 	$temoin_compte_ele="y";
@@ -291,12 +291,12 @@ else {
 }
 $sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='eleve';";
 if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)>0) {
 	echo mysqli_num_rows($test)." comptes élèves sont actuellement mis en réserve";
 	$sql="SELECT DISTINCT date_reserve FROM tempo_utilisateurs WHERE statut='eleve' ORDER BY date_reserve;";
 	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		echo " (<em>date de mise en réserve&nbsp;: ";
 		$cpt=0;
@@ -319,7 +319,7 @@ echo "</p>\n";
 echo "<p>";
 $sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
 if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)>0) {
 	echo "Il existe actuellement ".mysqli_num_rows($test)." comptes responsables.<br />";
 	$temoin_compte_resp="y";
@@ -330,12 +330,12 @@ else {
 }
 $sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
 if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)>0) {
 	echo mysqli_num_rows($test)." comptes responsables sont actuellement mis en réserve";
 	$sql="SELECT DISTINCT date_reserve FROM tempo_utilisateurs WHERE statut='responsable' ORDER BY date_reserve;";
 	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		echo " (<em>date de mise en réserve&nbsp;: ";
 		$cpt=0;

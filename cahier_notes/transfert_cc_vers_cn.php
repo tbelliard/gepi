@@ -42,7 +42,7 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/transfert_cc_vers_cn.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/cahier_notes/transfert_cc_vers_cn.php',
 administrateur='F',
@@ -55,7 +55,7 @@ secours='F',
 autre='F',
 description='Transfert des evaluations-cumul vers le carnet de notes',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -71,7 +71,7 @@ $id_racine=isset($_POST['id_racine']) ? $_POST['id_racine'] : (isset($_GET['id_r
 $id_dev_cc=isset($_POST['id_dev_cc']) ? $_POST['id_dev_cc'] : (isset($_GET['id_dev_cc']) ? $_GET['id_dev_cc'] : NULL);
 
 $sql="SELECT * FROM cn_cahier_notes WHERE id_cahier_notes='$id_racine';";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<span style='color:red'>Le cahier de notes choisi est invalide.</span>\n";
 	die();
@@ -95,7 +95,7 @@ require('cc_lib.php');
 
 
 $sql="SELECT * FROM cc_dev WHERE id='$id_dev_cc';";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<span style='color:red'>Le $nom_cc choisi ($id_dev_cc) n'existe pas.</span>\n";
 	die();
@@ -135,7 +135,7 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 		// Contrôler que le devoir appartient bien au prof, que le cn est bien $id_racine et que la période est ouverte
 
 		$sql="SELECT * FROM cn_cahier_notes ccn, cn_devoirs cd WHERE cd.id_racine=ccn.id_cahier_notes AND cd.id='$id_devoir_cn';";
-		$res_dev=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_dev=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_dev)==0) {
 			echo "<span style='color:red'>Le devoir n°$id_devoir_cn n'existe pas.</span>\n";
 			die();
@@ -151,47 +151,47 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 		// Prévoir par la suite de pouvoir définir ici les paramètres
 		$sql="INSERT INTO cn_devoirs SET id_racine='$id_racine', id_conteneur='$id_conteneur', nom_court='nouveau', ramener_sur_referentiel='F', note_sur='20';";
 		//echo "$sql<br />";
-		$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$reg) {
 			$msg.="Erreur lors de la création du devoir pour l'enseignement associé au cahier de notes n°$current_id_cn.<br />";
 			$reg_ok="no";
 		}
 		else {
-			$id_devoir_cn=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+			$id_devoir_cn=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 			$sql="UPDATE cn_devoirs SET nom_court='".corriger_caracteres($nom_court_cc_dev)."' WHERE id='$id_devoir_cn'";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$reg) {$reg_ok = "no";}
 	
 			$sql="UPDATE cn_devoirs SET nom_complet='".corriger_caracteres($nom_complet_cc_dev)."' WHERE id='$id_devoir_cn'";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$reg) {$reg_ok = "no";}
 	
 			if($description_cc_dev!='')  {
-				$sql="UPDATE cn_devoirs SET nom_complet='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $description_cc_dev) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE id='$id_devoir_cn'";
-				$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$sql="UPDATE cn_devoirs SET nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $description_cc_dev) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE id='$id_devoir_cn'";
+				$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!$reg) {$reg_ok = "no";}
 			}
 	
 			$tmp_coef=1;
 			$sql="UPDATE cn_devoirs SET coef='$tmp_coef' WHERE id='$id_devoir_cn'";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$reg) {$reg_ok = "no";}
 
 			$sql="UPDATE cn_devoirs SET date='".strftime('%Y-%m-%d 00:00:00')."' WHERE id='$id_devoir_cn'";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$reg) {$reg_ok = "no";}
 
 			$sql="UPDATE cn_devoirs SET date_ele_resp='".strftime('%Y-%m-%d 00:00:00')."' WHERE id='$id_devoir_cn'";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$reg) {$reg_ok = "no";}
 	
 			$sql="UPDATE cn_devoirs SET facultatif='O' WHERE id='$id_devoir_cn'";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$reg) {$reg_ok = "no";}
 	
 			$sql="UPDATE cn_devoirs SET display_parents='1' WHERE id='$id_devoir_cn'";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$reg) {$reg_ok = "no";}
 	
 		}
@@ -204,7 +204,7 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 		// Transférer les notes
 		$sql="SELECT * FROM cc_eval WHERE id_dev='$id_dev_cc' ORDER BY date, nom_court, nom_complet;";
 		//echo "$sql<br />";
-		$res_eval=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eval=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_eval)==0) {
 			$msg="Aucune évaluation n'est associée au $nom_cc n°$id_dev_cc<br />";
 		}
@@ -220,7 +220,7 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 	
 				$sql="SELECT cc.* FROM cc_notes_eval cc WHERE cc.id_eval='$lig_eval->id' ORDER BY cc.login;";
 				//echo "$sql<br />";
-				$res_en=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_en=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_en)>0) {
 					while($lig_en=mysqli_fetch_object($res_en)) {
 	
@@ -248,7 +248,7 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 				$chaine_commentaire_part2="";
 
 				$sql="DELETE FROM cn_notes_devoirs WHERE id_devoir='$id_devoir_cn' AND login='$ele_login';";
-				$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$sql="INSERT INTO cn_notes_devoirs SET id_devoir='$id_devoir_cn', login='$ele_login'";
 
@@ -316,7 +316,7 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 				//$csv.="$moy;\r\n";
 				//echo "$sql<br />";
 				//echo "<br />";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($insert) {
 					$succes_insert_note++;
 				}
@@ -338,7 +338,7 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 		}
 
 		$sql="UPDATE cc_dev SET id_cn_dev='$id_devoir_cn' WHERE id='$id_dev_cc';";
-		$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$id_cn_dev=$id_devoir_cn;
 
@@ -372,7 +372,7 @@ function liste_devoirs_conteneurs($id_dev_cc, $id_conteneur, $periode_num) {
 	$gepi_denom_boite=getSettingValue("gepi_denom_boite");
 
 	$sql="SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')";
-	$appel_conteneurs = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$appel_conteneurs = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_cont = mysqli_num_rows($appel_conteneurs);
 	if ($nb_cont != 0) {
 		echo "<ul>\n";
@@ -389,7 +389,7 @@ function liste_devoirs_conteneurs($id_dev_cc, $id_conteneur, $periode_num) {
 		*/
 
 		echo "- <a href='transfert_cc_vers_cn.php?id_dev_cc=$id_dev_cc&amp;id_racine=$id_racine&amp;id_conteneur=$id_cont&amp;creer_dev=y".add_token_in_url()."'>Créer une nouvelle évaluation dans ce conteneur</a>\n";
-		$appel_dev = mysqli_query($GLOBALS["___mysqli_ston"], "select * from cn_devoirs where id_conteneur='$id_cont' order by date");
+		$appel_dev = mysqli_query($GLOBALS["mysqli"], "select * from cn_devoirs where id_conteneur='$id_cont' order by date");
 		$nb_dev  = mysqli_num_rows($appel_dev);
 		if ($nb_dev != 0) {$empty = 'no';}
 		//if ($ver_periode >= 2) {
@@ -432,7 +432,7 @@ function liste_devoirs_conteneurs($id_dev_cc, $id_conteneur, $periode_num) {
 	}
 
 	//if ($ver_periode >= 2) {
-		$appel_conteneurs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_conteneurs WHERE (parent='$id_conteneur') order by nom_court");
+		$appel_conteneurs = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE (parent='$id_conteneur') order by nom_court");
 		$nb_cont = mysqli_num_rows($appel_conteneurs);
 		if($nb_cont>0) {
 			echo "<ul>\n";
@@ -453,13 +453,13 @@ function liste_devoirs_conteneurs($id_dev_cc, $id_conteneur, $periode_num) {
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='$gepi_denom_boite non visible sur le bulletin' alt='$gepi_denom_boite non visible sur le bulletin' />\n";}
 					echo "</i>)";
 
-					$appel_dev = mysqli_query($GLOBALS["___mysqli_ston"], "select * from cn_devoirs where id_conteneur='$id_cont' order by date");
+					$appel_dev = mysqli_query($GLOBALS["mysqli"], "select * from cn_devoirs where id_conteneur='$id_cont' order by date");
 					$nb_dev  = mysqli_num_rows($appel_dev);
 					if ($nb_dev != 0) {$empty = 'no';}
 
 					// Existe-t-il des sous-conteneurs?
 					$sql="SELECT 1=1 FROM cn_conteneurs WHERE (parent='$id_cont')";
-					$test_sous_cont=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test_sous_cont=mysqli_query($GLOBALS["mysqli"], $sql);
 					$nb_sous_cont=mysqli_num_rows($test_sous_cont);
 
 					$j = 0;
@@ -529,7 +529,7 @@ echo "</p>\n";
 echo "<p class='bold'>$nom_cc n°$id_dev_cc</p>\n";
 
 $sql="SELECT * FROM cc_dev WHERE id='$id_dev_cc';";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>Le $nom_cc choisi (<i>$id_dev_cc</i>) n'existe pas.</p>\n";
 	require("../lib/footer.inc.php");

@@ -65,9 +65,9 @@ if ($annee=='') {
 else {
     $nom_projet = sql_query1("select nom from  archivage_types_aid where id='".$indice_aid."' and annee='".$annee."'");
 }
-$call_productions = mysqli_query($GLOBALS["___mysqli_ston"], "select * from aid_productions");
+$call_productions = mysqli_query($GLOBALS["mysqli"], "select * from aid_productions");
 $nb_productions = mysqli_num_rows($call_productions);
-$call_public = mysqli_query($GLOBALS["___mysqli_ston"], "select * from aid_public order by ordre_affichage");
+$call_public = mysqli_query($GLOBALS["mysqli"], "select * from aid_public order by ordre_affichage");
 $nb_public = mysqli_num_rows($call_public );
 
 // Si l'utilisateur n'est pas autorisé à modifier la fiche, on force $action = "visu"
@@ -307,10 +307,10 @@ if (isset($_POST["is_posted"])) {
 }
 // Appel de toutes les infos sur le projet
 if ($annee=='') {
-  $call_data_projet = mysqli_query($GLOBALS["___mysqli_ston"], "select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+  $call_data_projet = mysqli_query($GLOBALS["mysqli"], "select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
 }
 else {
-  $call_data_projet = mysqli_query($GLOBALS["___mysqli_ston"], "select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
+  $call_data_projet = mysqli_query($GLOBALS["mysqli"], "select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
 }
 
 $aid_nom = mysql_result($call_data_projet, 0, "nom");
@@ -413,7 +413,7 @@ echo "<div class='bloc'>";
 echo "<span class = 'bold'>Elèves responsables du projet :</span>\n";
 if ($annee=='') {
   // appel de la liste des élèves de l'AID :
-  $call_liste_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom
+  $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom
   FROM eleves e, j_aid_eleves_resp j
   WHERE (j.id_aid='$aid_id' and e.login=j.login and j.indice_aid='$indice_aid')
   ORDER BY nom, prenom");
@@ -423,7 +423,7 @@ if ($annee=='') {
     $login_eleve = mysql_result($call_liste_data, $i, "login");
     $nom_eleve = mysql_result($call_liste_data, $i, "nom");
     $prenom_eleve = @mysql_result($call_liste_data, $i, "prenom");
-    $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
+    $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
     $classe_eleve = @mysql_result($call_classe, '0', "classe");
     echo "$nom_eleve $prenom_eleve ($classe_eleve)";
     if ($i < $nombre-1) echo " - ";
@@ -437,7 +437,7 @@ if ($annee=='') {
 echo "\n<br /><span class = 'bold'>Professeurs responsables du projet : </span>\n";
 if ($annee=='') {
   // appel de la liste des professeurs de l'AID :
-  $call_liste_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom
+  $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom
   FROM utilisateurs e, j_aid_utilisateurs j
   WHERE (j.id_aid='$aid_id' and e.login=j.id_utilisateur and j.indice_aid='$indice_aid')
   ORDER BY nom, prenom");
@@ -600,7 +600,7 @@ echo "<div class='bloc'>";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'famille',"W",$annee)) {
     echo "<span class = 'bold'>Classez votre projet parmi la liste suivante (classification Dewey) : </span><br />\n";
-    $call_famille = mysqli_query($GLOBALS["___mysqli_ston"], "select * from aid_familles order by ordre_affichage");
+    $call_famille = mysqli_query($GLOBALS["mysqli"], "select * from aid_familles order by ordre_affichage");
     $nb_famille = mysqli_num_rows($call_famille);
     echo "<select name=\"reg_famille\" size=\"1\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";
@@ -835,7 +835,7 @@ echo "<div class='bloc'>";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'matiere1',"W",$annee)) {
     echo "<span class = 'bold'>Indiquez la discipline principale à laquelle se rattache votre projet : </span><br />\n";
-    $call_discipline = mysqli_query($GLOBALS["___mysqli_ston"], "select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
+    $call_discipline = mysqli_query($GLOBALS["mysqli"], "select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
     $nb_discipline = mysqli_num_rows($call_discipline);
     echo "<select name=\"reg_discipline1\" size=\"1\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";
@@ -876,7 +876,7 @@ echo "<div class='bloc'>";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'matiere2',"W,$annee")) {
     echo "<span class = 'bold'>Indiquez la discipline secondaire à laquelle se rattache votre projet : </span><br />\n";
-    $call_discipline = mysqli_query($GLOBALS["___mysqli_ston"], "select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
+    $call_discipline = mysqli_query($GLOBALS["mysqli"], "select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
     $nb_discipline = mysqli_num_rows($call_discipline);
     echo "<select name=\"reg_discipline2\" size=\"1\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";

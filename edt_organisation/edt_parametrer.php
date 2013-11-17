@@ -78,113 +78,113 @@ $aff_cherche_salle = isset($_POST["aff_cherche_salle"]) ? $_POST["aff_cherche_sa
 $parametrer=isset($_POST['parametrer']) ? $_POST['parametrer'] : NULL;
 $parametrer_ok=isset($_POST['parametrer1']) ? $_POST['parametrer1'] : NULL;
 $param_menu_edt = isset($_POST["param_menu_edt"]) ? $_POST["param_menu_edt"] : NULL;
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_salle'");
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_salle'");
 	$test = mysqli_fetch_array($req);
 	if (!$test) {
-		mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO edt_setting SET valeur = 'nb', 
+		mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_setting SET valeur = 'nb', 
 												 reglage = 'edt_aff_couleur_salle'");		
 	}
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_prof'");
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_prof'");
 	$test = mysqli_fetch_array($req);
 	if (!$test) {
-		mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO edt_setting SET 	valeur = 'nb' ,
+		mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_setting SET 	valeur = 'nb' ,
 													reglage = 'edt_aff_couleur_prof'");		
 	}
 // Récupérer les paramètres tels qu'ils sont déjà définis
 if (isset($parametrer_ok)) {
 	$aff_message = "";
 	// Le réglage de l'affichage des matières
-	$req_reg_mat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_matiere'");
+	$req_reg_mat = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_matiere'");
 	$tab_reg_mat = mysqli_fetch_array($req_reg_mat);
 
 	if ($edt_aff_matiere === $tab_reg_mat['valeur']) {
 		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage des matières</p>\n";
 	}
 	else {
-		$modif_aff_mat = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_setting SET valeur = '$edt_aff_matiere' WHERE reglage = 'edt_aff_matiere'");
+		$modif_aff_mat = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_setting SET valeur = '$edt_aff_matiere' WHERE reglage = 'edt_aff_matiere'");
 		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des matières enregistrée</p>\n";
 	}
 
 	// Le réglage de l'affichage du type d'heure
-	$req_reg_cre = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_creneaux'");
+	$req_reg_cre = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_creneaux'");
 	$tab_reg_cre = mysqli_fetch_array($req_reg_cre);
 
 	if ($edt_aff_creneaux === $tab_reg_cre['valeur']) {
 		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage des créneaux</p>\n";
 	}
 	else {
-		$modif_aff_cre = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_setting SET valeur = '$edt_aff_creneaux' WHERE reglage = 'edt_aff_creneaux'");
+		$modif_aff_cre = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_setting SET valeur = '$edt_aff_creneaux' WHERE reglage = 'edt_aff_creneaux'");
 		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des créneaux enregistrée</p>\n";
 	}
 
 	// Le réglage de l'affichage des couleurs
-	$req_reg_coul = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur'");
+	$req_reg_coul = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur'");
 	$tab_reg_coul = mysqli_fetch_array($req_reg_coul);
 
 	if ($edt_aff_couleur === $tab_reg_coul['valeur']) {
 		$aff_message .= "<p class=\"accept\">Aucune modification des couleurs</p>\n";
 	}
 	else {
-		$modif_aff_coul = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_setting SET valeur = '$edt_aff_couleur' WHERE reglage = 'edt_aff_couleur'");
+		$modif_aff_coul = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_setting SET valeur = '$edt_aff_couleur' WHERE reglage = 'edt_aff_couleur'");
 		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée</p>\n";
 	}
 	// Le réglage de l'affichage des couleurs profs
-	$req_reg_coul = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_prof'");
+	$req_reg_coul = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_prof'");
 	$tab_reg_coul = mysqli_fetch_array($req_reg_coul);
 
 	if ($edt_aff_couleur_prof === $tab_reg_coul['valeur']) {
 		$aff_message .= "<p class=\"accept\">Aucune modification des couleurs</p>\n";
 	}
 	else {
-		$modif_aff_coul = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_setting SET valeur = '$edt_aff_couleur_prof' WHERE reglage = 'edt_aff_couleur_prof'");
+		$modif_aff_coul = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_setting SET valeur = '$edt_aff_couleur_prof' WHERE reglage = 'edt_aff_couleur_prof'");
 		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée (prof)</p>\n";
 	}
 	
 	// Le réglage de l'affichage des couleurs salles
-	$req_reg_coul = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_salle'");
+	$req_reg_coul = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_salle'");
 	$tab_reg_coul = mysqli_fetch_array($req_reg_coul);
 
 	if ($edt_aff_couleur_salle === $tab_reg_coul['valeur']) {
 		$aff_message .= "<p class=\"accept\">Aucune modification des couleurs</p>\n";
 	}
 	else {
-		$modif_aff_coul = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_setting SET valeur = '$edt_aff_couleur_salle' WHERE reglage = 'edt_aff_couleur_salle'");
+		$modif_aff_coul = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_setting SET valeur = '$edt_aff_couleur_salle' WHERE reglage = 'edt_aff_couleur_salle'");
 		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée (salle)</p>\n";
 	}
 
 	//Le réglage de l'affichage des salles
-	$req_reg_salle = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_salle'");
+	$req_reg_salle = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_salle'");
 	$tab_reg_salle = mysqli_fetch_array($req_reg_salle);
 
 	if ($edt_aff_salle === $tab_reg_salle['valeur']) {
 		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage des salles</p>\n";
 	}
 	else {
-		$modif_aff_salle = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_setting SET valeur = '$edt_aff_salle' WHERE reglage = 'edt_aff_salle'");
+		$modif_aff_salle = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_setting SET valeur = '$edt_aff_salle' WHERE reglage = 'edt_aff_salle'");
 		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des salle enregistrée</p>\n";
 
 	}
 
 	// le réglage de l'affichage du menu CHERCHER
-	$req_cherche_salle = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT valeur FROM edt_setting WHERE reglage = 'aff_cherche_salle'");
+	$req_cherche_salle = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = 'aff_cherche_salle'");
 	$rep_cherche_salle = mysqli_fetch_array($req_cherche_salle);
 
 	if ($aff_cherche_salle === $rep_cherche_salle["valeur"]) {
 		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage du menu CHERCHER</p>\n";
 	}
 	else {
-		$modif_cherch_salle = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_setting SET valeur = '$aff_cherche_salle' WHERE reglage = 'aff_cherche_salle'");
+		$modif_cherch_salle = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_setting SET valeur = '$aff_cherche_salle' WHERE reglage = 'aff_cherche_salle'");
 		$aff_message .= "<p class=\"refus\">Modification de l'affichage du menu CHERCHER enregistrée</p>\n";
 	}
 
 	// Le réglage du fonctionnement du menu (param_menu_edt)
-	$req_param_menu = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'");
+	$req_param_menu = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'");
 	$rep_param_menu = mysqli_fetch_array($req_param_menu);
 
 	if ($param_menu_edt === $rep_param_menu["valeur"]) {
 		$aff_message .= "<p class=\"accept\">Aucune modification du fonctionnement du menu.</p>\n";
 	} else {
-		$modif_param_menu = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_setting SET valeur = '$param_menu_edt' WHERE reglage = 'param_menu_edt'");
+		$modif_param_menu = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_setting SET valeur = '$param_menu_edt' WHERE reglage = 'param_menu_edt'");
 		$aff_message .= "<p class=\"refus\">Modification du fonctionnement du menu enregistrée.</p>\n";
 	}
 

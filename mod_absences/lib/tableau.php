@@ -222,7 +222,7 @@ $pagedarriver = isset($_GET['pagedarriver']) ? $_GET['pagedarriver'] : (isset($_
 
 // On ajoute un paramètre sur les élèves de ce CPE en particulier
 $sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
-$query_eleves_cpe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$query_eleves_cpe = mysqli_query($GLOBALS["mysqli"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $test_cpe = array();
 
 $test_nbre_eleves_cpe = mysqli_num_rows($query_eleves_cpe);
@@ -615,7 +615,7 @@ if( $pagedarriver === 'gestion_absences') {
                  	<option value="tous" <?php if (empty($motif)) {?>selected="selected"<?php } ?>>tous</option>
 
 	<?php
-		$resultat_liste_motif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_motif) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_liste_motif = mysqli_query($GLOBALS["mysqli"], $requete_liste_motif) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		while ( $data_liste_motif = mysqli_fetch_array($resultat_liste_motif))
 		{
 			if ($motif==$data_liste_motif['init_motif_absence']) {
@@ -634,7 +634,7 @@ if( $pagedarriver === 'gestion_absences') {
 				<select name="classe_choix" id="classe_choix">
 					<option value="tous" <?php if (empty($classe_choix)) {?>selected="selected"<?php } ?>>toutes</option>
     <?php
-		$resultat_liste_classe = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_liste_classe = mysqli_query($GLOBALS["mysqli"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		While ( $data_liste_classe = mysqli_fetch_array($resultat_liste_classe))
 		{
 			if ($classe_choix==$data_liste_classe['id']) {
@@ -654,7 +654,7 @@ if( $pagedarriver === 'gestion_absences') {
             	<select name="eleve_choix" id="eleve_choix" style="width: 25em;">
 					<option value="tous" <?php if (empty($eleve_choix)) {?>selected<?php } ?>>tous</option>
 	<?php
-		$resultat_liste_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_liste_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		While ( $data_liste_eleve = mysqli_fetch_array($resultat_liste_eleve))
 		{
 			if ($eleve_choix==$data_liste_eleve['login']) {
@@ -696,7 +696,7 @@ if( $pagedarriver === 'gestion_absences') {
 if ($type == "A" or $type == "tous")
 {
 
-	$execution_div = mysqli_query($GLOBALS["___mysqli_ston"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_div = mysqli_query($GLOBALS["mysqli"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	while ( $data_div = mysqli_fetch_array( $execution_div ) )
 	{
 		if (in_array($data_div['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -833,7 +833,7 @@ if ($type == "A" or $type == "tous")
       $init = "";
       $init_v = "";
       $ic = 1;
-      $execution_recherche = mysqli_query($GLOBALS["___mysqli_ston"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $execution_recherche = mysqli_query($GLOBALS["mysqli"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       while ( $data_recherche = mysqli_fetch_array( $execution_recherche ) )
 	  {
 		if (in_array($data_recherche['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -868,7 +868,7 @@ if ($type == "A" or $type == "tous")
 }
 if ($type == "R" or $type == "tous") { ?>
 <?php
-	$execution_div = mysqli_query($GLOBALS["___mysqli_ston"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_div = mysqli_query($GLOBALS["mysqli"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	while ( $data_div = mysqli_fetch_array( $execution_div ) )
 	{
 		if (in_array($data_div['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -971,7 +971,7 @@ if ($type == "R" or $type == "tous") { ?>
     $init = "";
     $init_v = "";
     $ic = 1;
-    $execution_recherche = mysqli_query($GLOBALS["___mysqli_ston"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_recherche = mysqli_query($GLOBALS["mysqli"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     while ( $data_recherche = mysqli_fetch_array( $execution_recherche ) )
 	{
 		if (in_array($data_recherche['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -1003,7 +1003,7 @@ if ($type == "R" or $type == "tous") { ?>
 }
 if ($type == "D" or $type == "tous") { ?>
 <?php
-	$execution_div = mysqli_query($GLOBALS["___mysqli_ston"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_div = mysqli_query($GLOBALS["mysqli"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     while ( $data_div = mysqli_fetch_array( $execution_div ) )
 	{
 		if (in_array($data_div['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -1098,7 +1098,7 @@ if ($type == "D" or $type == "tous") { ?>
 	$init = "";
 	$init_v = "";
 	$ic = 1;
-	$execution_recherche = mysqli_query($GLOBALS["___mysqli_ston"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_recherche = mysqli_query($GLOBALS["mysqli"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     while ( $data_recherche = mysqli_fetch_array( $execution_recherche ) )
 	{
 		if (in_array($data_recherche['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -1131,7 +1131,7 @@ if ($type == "D" or $type == "tous") { ?>
 }
 if ($type == "I" or $type == "tous") { ?>
 <?php
-      $execution_div = mysqli_query($GLOBALS["___mysqli_ston"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $execution_div = mysqli_query($GLOBALS["mysqli"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     while ( $data_div = mysqli_fetch_array( $execution_div ) )
 	{
 		if (in_array($data_div['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -1232,7 +1232,7 @@ if ($type == "I" or $type == "tous") { ?>
 	$init = "";
 	$init_v = "";
 	$ic = 1;
-	$execution_recherche = mysqli_query($GLOBALS["___mysqli_ston"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_recherche = mysqli_query($GLOBALS["mysqli"], $requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     while ( $data_recherche = mysqli_fetch_array( $execution_recherche ) )
 	{
 		if (in_array($data_recherche['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {

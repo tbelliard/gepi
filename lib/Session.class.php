@@ -150,7 +150,7 @@ class Session {
                     $tmp_fin_session = $tmp_fin_session->END;
                     $result->close();
                 } else {
-                    $tmp_res_fin_session=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                    $tmp_res_fin_session=mysqli_query($GLOBALS["mysqli"], $sql);
                     $tmp_fin_session=mysql_result($tmp_res_fin_session,0,'END');
                 }  
                 
@@ -980,7 +980,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 					    // L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
 						// On s'assure que la chaîne est bien enregistrée en UTF-8.
 						$valeur = ensure_utf8($valeur);
-						$this->cas_extra_attributes[$attribut] = trim(((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $valeur) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")));
+						$this->cas_extra_attributes[$attribut] = trim(((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $valeur) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")));
 					}
         }
       }
@@ -1106,11 +1106,11 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 			// A ce stade, l'utilisateur est authentifié
 			// Etablir à nouveau la connexion à la base
 			if (isset($GLOBALS['db_nopersist']) && !$GLOBALS['db_nopersist'])
-				$db_c = ($GLOBALS["___mysqli_ston"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
+				$db_c = ($GLOBALS["mysqli"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
 			else
-				$db_c = ($GLOBALS["___mysqli_ston"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
+				$db_c = ($GLOBALS["mysqli"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
 
-			if (!$db_c || !((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE $dbDb"))) {
+			if (!$db_c || !((bool)mysqli_query($GLOBALS["mysqli"], "USE $dbDb"))) {
 				echo "\n<p>Erreur : Echec de la connexion à la base de données";
 				exit;
 			}
@@ -1158,7 +1158,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
             $matiere_principale = sql_query1($sql);
             $row = $query->fetch_object();
         } else {
-            $query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+            $query = mysqli_query($GLOBALS["mysqli"], $sql);
 
             # Est-ce qu'on a bien une entrée ?
             if (mysqli_num_rows($query) != "1") {
@@ -1713,7 +1713,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		$offset_minutes = $offset / 60 % 60;
 		$offset_minutes = mb_strlen($offset_minutes) == '1' ? "0".$offset_minutes : $offset_minutes;
 		$mysql_offset = $offset_sign . $offset_hours . ":" . $offset_minutes;
-		$test = mysqli_query($GLOBALS["___mysqli_ston"], "SET time_zone = '".$mysql_offset."'");
+		$test = mysqli_query($GLOBALS["mysqli"], "SET time_zone = '".$mysql_offset."'");
 	    }
 	    return $update_timezone;
     }

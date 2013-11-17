@@ -29,7 +29,7 @@ function RecupereNotices(&$tab_data, $entetes) {
 																date_ct >= '".$timestamp."' AND 
 																date_ct < '".($timestamp+24*3600)."' ORDER BY date_ct;";
 			//echo $sql_request."<br/>";
-			$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql_request);
+			$req = mysqli_query($GLOBALS["mysqli"], $sql_request);
 			if ($rep = mysqli_fetch_array($req)) {
 			//echo $rep['id_ct']."  ".$rep['date_ct'];
 				$tab_data[$jour]['id_ct'][$index_box] = $rep['id_ct'];
@@ -158,7 +158,7 @@ function AfficheBarCommutateurSemaines_CDT($login_edt, $visioedt, $type_edt_2, $
     $avec_semAB="y";
     if($avec_semAB=='y') {
     	$sql="SELECT type_edt_semaine FROM edt_semaines WHERE id_edt_semaine='$week_selected' AND type_edt_semaine!='';";
-    	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    	$res=mysqli_query($GLOBALS["mysqli"], $sql);
     	if(mysqli_num_rows($res)>0) {
     		$lig=mysqli_fetch_object($res);
     		echo " ($lig->type_edt_semaine)";

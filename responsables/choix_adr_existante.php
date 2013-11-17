@@ -67,10 +67,10 @@ if(isset($is_posted)) {
 		}
 		else{
 			$sql="SELECT 1=1 FROM resp_adr WHERE adr_id='$adr_id_existant'";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0){
 				$sql="UPDATE resp_pers SET adr_id='$adr_id_existant' WHERE pers_id='$pers_id'";
-				$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res_update){
 					$msg.="Erreur lors de l'insertion de l'association personne/adresse. ";
 				}
@@ -96,7 +96,7 @@ require_once("../lib/header.inc.php");
 
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0){
 		echo "<p>Une conversion des données responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -105,7 +105,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)==0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -114,7 +114,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 	else{
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -162,7 +162,7 @@ else {
 //$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
 //$res_adr=mysql_query($sql);
 $sql="SELECT COUNT(adr_id) nb_adr FROM resp_adr";
-$res_nb=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_nb=mysqli_query($GLOBALS["mysqli"], $sql);
 $tmp_nb=mysqli_fetch_object($res_nb);
 $nb_adr=$tmp_nb->nb_adr;
 //if(mysql_num_rows($res_adr)==0){
@@ -171,7 +171,7 @@ if($nb_adr==0){
 }
 else{
 	$sql="SELECT nom,prenom FROM resp_pers WHERE pers_id='$pers_id'";
-	$res_info_pers=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_info_pers=mysqli_query($GLOBALS["mysqli"], $sql);
 	$lig_pers=mysqli_fetch_object($res_info_pers);
 
 
@@ -415,7 +415,7 @@ else{
 		$sql.=" LIMIT $debut,$limit";
 	}
 	//echo "<tr><td colspan='7'>$sql</td></tr>";
-	$res_adr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 	$cpt=0;
@@ -457,7 +457,7 @@ else{
 
 	if((isset($adr_id_actuel))&&($temoin_adr_actuelle_dans_la_page=="non")) {
 		$sql="SELECT * FROM resp_adr WHERE adr_id='$adr_id_actuel'";
-		$res_adr_actuelle=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_adr_actuelle=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_adr_actuelle)!=0){
 			$lig_adr_actuelle=mysqli_fetch_object($res_adr_actuelle);
@@ -489,7 +489,7 @@ else{
 
 			echo "<td style='text-align:center;'>";
 			$sql="SELECT nom,prenom,pers_id FROM resp_pers WHERE adr_id='$lig_adr_actuelle->adr_id'";
-			$res_pers=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_pers=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_pers)>0){
 				$ligtmp=mysqli_fetch_object($res_pers);
 				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(mb_strtolower($ligtmp->prenom))."</a>";
@@ -560,7 +560,7 @@ else{
 
 			echo "<td style='text-align:center;'>";
 			$sql="SELECT nom,prenom,pers_id FROM resp_pers WHERE adr_id='".$tab_adr[$i]["adr_id"]."'";
-			$res_pers=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_pers=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_pers)>0){
 				$ligtmp=mysqli_fetch_object($res_pers);
 				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(mb_strtolower($ligtmp->prenom))."</a>";

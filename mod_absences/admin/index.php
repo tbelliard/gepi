@@ -114,8 +114,8 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Absences"))
 
 $lien_sup=array();
 $a=0;
-$req_setting = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'autorise_edt_admin'")) OR DIE ('Erreur requête req_setting () : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-$req_setting2 = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'autorise_edt_tous'")) OR DIE ('Erreur requête req_setting2 () : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$req_setting = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = 'autorise_edt_admin'")) OR DIE ('Erreur requête req_setting () : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$req_setting2 = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = 'autorise_edt_tous'")) OR DIE ('Erreur requête req_setting2 () : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 if ($req_setting["value"] == 'y' OR $req_setting2["value"] == 'y') {
  // On initialise le $_SESSION["retour"] pour pouvoir revenir proprement
   $_SESSION["retour"] = "../mod_absences/admin/index";

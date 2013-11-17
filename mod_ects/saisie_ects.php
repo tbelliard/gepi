@@ -175,7 +175,7 @@ if (isset($_POST['is_posted'])) {
         
         // En accès complet ou en présaisie, on récupère tous les élèves de la classe.
         if ($acces_scol) {
-            $appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
+            $appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
             WHERE (
             c.id_classe='$id_classe' AND
             c.login = e.login AND
@@ -185,7 +185,7 @@ if (isset($_POST['is_posted'])) {
             
         // Pour un prof principal, on ne récupère que les élèves dont il est responsable
         } else if ($acces_prof_suivi && !$presaisie) {
-            $appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
+            $appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
             WHERE (c.id_classe='$id_classe' AND
             c.login = e.login AND
             p.login = c.login AND
@@ -196,7 +196,7 @@ if (isset($_POST['is_posted'])) {
         // En présaisie, on ne propose que les élèves pour lesquels le prof enseigne au moins
         // dans un groupe de la classe.
         } else if ($presaisie) {
-            $appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg, j_groupes_professeurs jgp
+            $appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg, j_groupes_professeurs jgp
               WHERE (
                 e.login = jeg.login AND
                 jeg.id_groupe = jgp.id_groupe AND
@@ -299,7 +299,7 @@ $chaine_options_classes="";
 $cpt_classe=0;
 $num_classe=-1;
 
-$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_classes_suivies=mysqli_num_rows($res_class_tmp);
 if($nb_classes_suivies>0){
 	$id_class_prec=0;
@@ -414,7 +414,7 @@ echo "</form>\n";
               ) ORDER BY nom,prenom";
         }
 
-        $appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+        $appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
         $nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
         $i = "0";
         $alt=1;
@@ -520,7 +520,7 @@ function updateMention(id,valeur){
 
     $chaine_options_eleves="";
 
-    $res_ele_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $res_ele_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
     if(mysqli_num_rows($res_ele_tmp)>0){
         $ele_login_prec="";
         $ele_login_suiv="";

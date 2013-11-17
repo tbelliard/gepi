@@ -417,7 +417,7 @@ function retourneCreneau(){
 			heurefin_definie_periode > '".$heure."'";
             
 		$query = mysqli_query($mysqli, $sql)
-                    OR DIE('Le creneau n\'est pas trouvé : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    OR DIE('Le creneau n\'est pas trouvé : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         if ($query) {
             $reponse = $query->fetch_object();
             if ($reponse) {
@@ -494,7 +494,7 @@ function retourneCours($prof){
 			ORDER BY edt_cours.id_semaine";
              
 		$query = mysqli_query($mysqli, $sql)
-                    or die('Erreur : retourneCours(prof) !'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    or die('Erreur : retourneCours(prof) !'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         $nbreCours = $query->num_rows;
         if ($nbreCours >= 1) {
             $reponse = $query->fetch_object();
@@ -512,7 +512,7 @@ function retourneCours($prof){
                 (id_semaine = '".typeSemaineActu()."' OR id_semaine = '0')
                 ORDER BY id_semaine";
             $query_aid = mysqli_query($mysqli, $sql_aid)
-                    or die('Erreur : retourneCours(prof) !'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    or die('Erreur : retourneCours(prof) !'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
             $nbreCours = $query_aid->num_rows;
             if ($nbreCours >= 1) {
                 $reponse_aid = $query_aid->fetch_object();

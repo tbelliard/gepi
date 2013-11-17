@@ -69,7 +69,7 @@ function get_infos_devoir($id_devoir) {
 	$retour="";
 	$sql="SELECT * FROM cn_devoirs cd WHERE cd.id='$id_devoir';";
 	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
 

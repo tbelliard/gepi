@@ -48,10 +48,10 @@ if ($resultat_session == 'c') {
 // INSERT INTO droits VALUES ('/edt_organisation/aid_maintenance.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'aide à la maintenance', '');
 
 $sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/aide_maintenance.php';";
-$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/edt_organisation/aide_maintenance.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'aide à la maintenance edt', '');";
-	$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");

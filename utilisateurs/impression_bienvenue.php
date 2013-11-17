@@ -100,7 +100,7 @@ if(!isset($user_login)) {
 		for($i=0;$i<count($user_statut);$i++) {
 			if(in_array($user_statut[$i],$tab_statut)) {
 				$sql="SELECT login FROM utilisateurs WHERE statut='$user_statut[$i]' AND etat='actif' ORDER BY nom, prenom;";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {$user_login[]=$lig->login;}
 				}
@@ -134,7 +134,7 @@ if(!isset($user_login)) {
 												rp.login=u.login AND
 												jec.id_classe=c.id
 										ORDER BY classe;";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
 				echo "<p>Aucune compte responsable n'a encore été créé.</p>\n";
 			}
@@ -183,7 +183,7 @@ if(!isset($user_login)) {
 															rp.login=u.login AND
 															jec.id_classe='$id_classe[$i]'
 													ORDER BY u.nom, u.prenom;";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res)>0) {
 							while ($lig=mysqli_fetch_object($res)) {
 								if(!in_array($lig->login,$user_login)) {
@@ -206,7 +206,7 @@ if(!isset($user_login)) {
 													rp.login=u.login AND
 													jec.id_classe='$id_classe[$i]'
 											ORDER BY u.nom, u.prenom;";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					while ($lig=mysqli_fetch_object($res)) {
 						if(!in_array($lig->login,$user_login)) {
@@ -239,7 +239,7 @@ if(!isset($user_login)) {
 									WHERE jec.login=u.login AND
 											jec.id_classe=c.id
 									ORDER BY classe;";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
 				echo "<p>Aucune compte élève n'a encore été créé.</p>\n";
 			}
@@ -267,7 +267,7 @@ if(!isset($user_login)) {
 										WHERE jec.login=u.login AND
 												jec.id_classe='$id_classe[$i]'
 										ORDER BY u.nom, u.prenom;";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res)>0) {
 							while ($lig=mysqli_fetch_object($res)) {
 								if(!in_array($lig->login,$user_login)) {
@@ -283,7 +283,7 @@ if(!isset($user_login)) {
 								WHERE jec.login=u.login AND
 										jec.id_classe='$id_classe'
 								ORDER BY u.nom, u.prenom;";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					while ($lig=mysqli_fetch_object($res)) {
 						if(!in_array($lig->login,$user_login)) {
@@ -352,7 +352,7 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL, $mode_retour="echo") {
 
 	$lignes_FB="";
 
-	$call_user_info = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM utilisateurs WHERE login='$user_login'");
+	$call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login='$user_login'");
 	
 	//$user_login = mysql_result($call_user_info, "0", "login");
 	$user_nom = mysql_result($call_user_info, "0", "nom");
@@ -361,7 +361,7 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL, $mode_retour="echo") {
 	$user_email = mysql_result($call_user_info, "0", "email");
 
 	if($user_statut=='professeur') {
-		$call_matieres = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
+		$call_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
 		$nb_mat = mysqli_num_rows($call_matieres);
 		$k = 0;
 		while ($k < $nb_mat) {
@@ -423,7 +423,7 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL, $mode_retour="echo") {
 		*/
 
 		$sql="SELECT ra.*,rp.nom,rp.prenom,rp.civilite FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
-		$res_adr_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_adr_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_adr_resp)==0) {
 			$ligne1="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
 			$ligne2="";

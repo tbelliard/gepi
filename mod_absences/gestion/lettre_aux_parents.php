@@ -121,7 +121,7 @@ $p = 1;
             if (isset($a_imprimer[$t]))
             {
               $id_eleve_pdf = $id_eleve[$t];
-              $eleve_sql=mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'eleves WHERE login = "'.$id_eleve_pdf.'"');
+              $eleve_sql=mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'eleves WHERE login = "'.$id_eleve_pdf.'"');
               while($eleve_data = mysqli_fetch_array($eleve_sql))
                 {
                      $id[$nb] =  $eleve_data['login'];
@@ -144,10 +144,10 @@ $p = 1;
                if (isset($a_imprimer[$t_1]))
                 {
                     $id_eleve_pdf = $id_eleve[$t_1];
-                    $test_responsable = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT count(*) FROM '.$prefix_base.'eleves, '.$prefix_base.'responsables WHERE login = "'.$id_eleve_pdf.'" AND '.$prefix_base.'eleves.ereno = '.$prefix_base.'responsables.ereno'),0);
+                    $test_responsable = mysql_result(mysqli_query($GLOBALS["mysqli"], 'SELECT count(*) FROM '.$prefix_base.'eleves, '.$prefix_base.'responsables WHERE login = "'.$id_eleve_pdf.'" AND '.$prefix_base.'eleves.ereno = '.$prefix_base.'responsables.ereno'),0);
                     if ($test_responsable != 0)
                     {
-                          $eleve_sql=mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'responsables WHERE login = "'.$id_eleve_pdf.'" AND '.$prefix_base.'eleves.ereno = '.$prefix_base.'responsables.ereno');
+                          $eleve_sql=mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'responsables WHERE login = "'.$id_eleve_pdf.'" AND '.$prefix_base.'eleves.ereno = '.$prefix_base.'responsables.ereno');
                           while($eleve_data = mysqli_fetch_array($eleve_sql))
                             {
                                $civilite_responsable[$nb_1] = "M. et Mme";
@@ -194,7 +194,7 @@ $p = 1;
                           $cpe_pdf = $cpe[$t_cpe2];
                         }
                       }
-              $cpe_sql=mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT '.$prefix_base.'utilisateurs.login, '.$prefix_base.'utilisateurs.nom, '.$prefix_base.'utilisateurs.prenom, '.$prefix_base.'utilisateurs.civilite FROM '.$prefix_base.'utilisateurs WHERE '.$prefix_base.'utilisateurs.login="'.$cpe_pdf.'"');
+              $cpe_sql=mysqli_query($GLOBALS["mysqli"], 'SELECT '.$prefix_base.'utilisateurs.login, '.$prefix_base.'utilisateurs.nom, '.$prefix_base.'utilisateurs.prenom, '.$prefix_base.'utilisateurs.civilite FROM '.$prefix_base.'utilisateurs WHERE '.$prefix_base.'utilisateurs.login="'.$cpe_pdf.'"');
               while($cpe_data = mysqli_fetch_array($cpe_sql))
                 {
                    $civilite_cpe[$nb_cpe] = $cpe_data['civilite'];
@@ -323,7 +323,7 @@ $pdf->SetY(120);
             $pdf->Cell(22, 5, 'Type', 1, 0, 'C', '');
             $pdf->Cell(54, 5, 'Merci d\'indiquer le motif', 1, 1, 'C', '');
 $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve = '".date_sql($du)."' OR (d_date_absence_eleve <= '".date_sql($du)."' AND a_date_absence_eleve >= '".date_sql($du)."')) AND justify_absence_eleve != 'O' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
-$execution_1 = mysqli_query($GLOBALS["___mysqli_ston"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 while ( $data_1 = mysqli_fetch_array($execution_1))
       {
       //tableau des absences

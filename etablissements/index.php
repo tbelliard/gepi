@@ -59,7 +59,7 @@ require_once("../lib/header.inc.php");
 <?php
 // On va chercher les établissements déjà existant, et on les affiche.
 if (!isset($order_by)) {$order_by = "id";}
-$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM etablissements ORDER BY $order_by");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM etablissements ORDER BY $order_by");
 $nombre_lignes = mysqli_num_rows($call_data);
 
 $res='';

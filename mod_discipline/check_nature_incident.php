@@ -85,7 +85,7 @@ if(isset($chaine_rech)) {
 		$sql="SELECT DISTINCT nature FROM s_natures WHERE $chaine_mysql ORDER BY nature;";
 	}
 	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		echo "<ul>";
 		$alt=1;

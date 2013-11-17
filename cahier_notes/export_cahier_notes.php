@@ -145,7 +145,7 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
 // id_conteneur
 // id_devoir
 
-$appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
+$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
 $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 $id_classe = $current_group["classes"]["list"][0];
@@ -182,7 +182,7 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
-$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 $nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 if(!isset($type_export)) {
@@ -348,7 +348,7 @@ if($type_export=="CSV") {
 
 
 	// On fait la liste des devoirs de ce carnet de notes
-	$appel_dev = mysqli_query($GLOBALS["___mysqli_ston"], "select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
+	$appel_dev = mysqli_query($GLOBALS["mysqli"], "select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
 	$nb_dev = mysqli_num_rows($appel_dev);
 
 	$ligne_entete="GEPI_INFOS;GEPI_LOGIN_ELEVE;NOM;PRENOM;CLASSE;MOYENNE;GEPI_COL_1ER_DEVOIR";
@@ -390,7 +390,7 @@ if($type_export=="CSV") {
          * @todo A améliorer par la suite: calculer la moyenne de la classe:
          */
 		$sql="SELECT SUM(note) AS somme,COUNT(note) AS nb FROM cn_notes_devoirs WHERE (id_devoir='$id_dev[$cpt]' AND statut='')";
-		$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($res_moy) {
 			$lig_moy=mysqli_fetch_array($res_moy);
 			if($lig_moy[1]!=0) {
@@ -460,7 +460,7 @@ if($type_export=="CSV") {
 		// Calculer la moyenne de l'élève est assez illusoire si on ne gère pas les boites et leurs coefficients...
 
 		while ($k < $nb_dev) {
-			$note_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
+			$note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
 
 			if(mysqli_num_rows($note_query)==0) {
 				$eleve_note='';
@@ -506,7 +506,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	savePref($_SESSION['login'], 'export_cn', 'ods');
 
 	// On fait la liste des devoirs de ce carnet de notes
-	$appel_dev = mysqli_query($GLOBALS["___mysqli_ston"], "select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
+	$appel_dev = mysqli_query($GLOBALS["mysqli"], "select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
 	$nb_dev  = mysqli_num_rows($appel_dev);
 
 	unset($id_dev);
@@ -535,7 +535,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		// Moyenne
 		$moy="";
 		$sql="SELECT SUM(note) AS somme,COUNT(note) AS nb FROM cn_notes_devoirs WHERE (id_devoir='$id_dev[$cpt]' AND statut='')";
-		$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($res_moy) {
 			$lig_moy=mysqli_fetch_array($res_moy);
 			if($lig_moy[1]!=0) {
@@ -765,7 +765,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 		$num_col=6;
 		while ($k < $nb_dev) {
-			$note_query=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
+			$note_query=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
 
 			if(mysqli_num_rows($note_query)==0) {
 				$eleve_note='';

@@ -42,10 +42,10 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/gestion/gestion_infos_actions.php';";
-$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');";
-	$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -99,7 +99,7 @@ require_once("../lib/header.inc.php");
 echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 $sql="SELECT * FROM infos_actions ORDER BY date;";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "</p>\n";
 
@@ -115,11 +115,11 @@ if($_SESSION['statut']!='administrateur') {
 
 if(!isset($nature)) {
 	$sql="SELECT DISTINCT valeur FROM infos_actions_destinataires WHERE nature='statut' ORDER BY valeur;";
-	$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_statuts_dest=mysqli_num_rows($res2);
 
 	$sql="SELECT DISTINCT valeur FROM infos_actions_destinataires WHERE nature='individu' ORDER BY valeur;";
-	$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_individus_dest=mysqli_num_rows($res3);
 
 	if($nb_statuts_dest+$nb_individus_dest!=1) {
@@ -183,7 +183,7 @@ else {
 	die();
 }
 
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "</p>\n";
 
@@ -263,7 +263,7 @@ while($lig=mysqli_fetch_object($res)) {
 	if($_SESSION['statut']=='administrateur') {
 		echo "<td>";
 		$sql="SELECT * FROM infos_actions_destinataires WHERE id_info='$lig->id' ORDER BY valeur;";
-		$res_iad=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_iad=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_iad)) {
 			$cpt_iad=0;
 			while($lig_iad=mysqli_fetch_object($res_iad)) {

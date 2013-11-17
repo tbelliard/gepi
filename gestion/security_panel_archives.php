@@ -172,8 +172,8 @@ $sql.="t.date DESC ".$requete1;
 
 //echo $sql;
 
-$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
-if (!$req) echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+$req = mysqli_query($GLOBALS["mysqli"], $sql);
+if (!$req) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 $alt=1;
 while ($row = mysqli_fetch_object($req)) {
 	$alt=$alt*(-1);
@@ -182,7 +182,7 @@ while ($row = mysqli_fetch_object($req)) {
 	echo "<td>\n";
 	if ($row->login != "-") {
 		// On récupère des informations sur l'utilisateur :
-		$user_req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
+		$user_req = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
 		$user = mysqli_fetch_object($user_req);
 	}
 

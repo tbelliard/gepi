@@ -129,11 +129,11 @@ if(isset($_POST['form_rss_selection_ele_is_posted'])) {
 	for($loop=0;$loop<count($rss_ele_a_initialiser);$loop++) {
 		// Ménage préalable parce qu'il n'y a pas de clé primaire sur rss_users
 		$sql="DELETE FROM rss_users WHERE user_login='".$rss_ele_a_initialiser[$loop]."';";
-		$menage = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$menage = mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$uri_el = md5($rss_ele_a_initialiser[$loop].getSettingValue("gepiSchoolRne").mt_rand());
 		$sql = "INSERT INTO rss_users (id, user_login, user_uri) VALUES ('', '".$rss_ele_a_initialiser[$loop]."', '".$uri_el."');";
-		$insert = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$insert) {
 			$erreur .= 'Erreur sur '.$rss_ele_a_initialiser[$loop].'<br />';
 		}
@@ -147,7 +147,7 @@ if(isset($_POST['form_rss_selection_ele_is_posted'])) {
 }
 
 // On teste si l'admin veut autoriser les flux pour créer la table adéquate
-  $test_table = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'rss_users'"));
+  $test_table = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'rss_users'"));
 
 if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 	check_token();
@@ -156,7 +156,7 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 	$result .= '<p>Gepi vérifie si la table nécessaire est bien dans la base.</p>';
 
     if ($test_table == 0) {
-		$query1 = mysqli_query($GLOBALS["___mysqli_ston"], "CREATE TABLE `rss_users` (`id` int(11) NOT NULL auto_increment, `user_login` varchar(30) NOT NULL, `user_uri` varchar(30) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		$query1 = mysqli_query($GLOBALS["mysqli"], "CREATE TABLE `rss_users` (`id` int(11) NOT NULL auto_increment, `user_login` varchar(30) NOT NULL, `user_uri` varchar(30) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
         if ($query1) {
             $result .= "<span class='green'>La table nécessaire est bien créée !</span><br />";
 			$creeTable=1;
@@ -173,16 +173,16 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 
 	// ICI, on remplit la table
 	// Mais on la vide avant de la re-remplir (ou de la remplir).
-	$truncate = mysqli_query($GLOBALS["___mysqli_ston"], "TRUNCATE TABLE `rss_users`");
+	$truncate = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE `rss_users`");
 
-	$select_el = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT login FROM eleves ORDER BY nom, prenom");
+	$select_el = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM eleves ORDER BY nom, prenom");
 	$erreur = '';
 
 	while($rep_el = mysqli_fetch_array($select_el)){
 
 		// On produit une URI pour chaque utilisateur à partir du login, du RNE et d'un nombre aléatoire
 		$uri_el = md5($rep_el["login"].getSettingValue("gepiSchoolRne").mt_rand());
-		$insert = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO rss_users (id, user_login, user_uri) VALUES ('', '".$rep_el["login"]."', '".$uri_el."')");
+		$insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO rss_users (id, user_login, user_uri) VALUES ('', '".$rep_el["login"]."', '".$uri_el."')");
 		if (!$insert) {
 			$erreur .= 'Erreur sur '.$rep_el["login"].'<br />';
 		}
@@ -203,7 +203,7 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 }
 
 // On teste si l'admin veut autoriser les flux pour créer la table adéquate
-  $test_table = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'rss_users'"));
+  $test_table = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'rss_users'"));
 
   if ($test_table == 0) {
 	if (getSettingValue("rss_cdt_eleve") == "y") {

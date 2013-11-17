@@ -659,7 +659,7 @@ function AfficheBarCommutateurPeriodes($login_edt, $visioedt, $type_edt_2)
     echo "</ul>";
 
 
-    $req_periode = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_calendrier FROM edt_calendrier WHERE id_calendrier='".$_SESSION['period_id']."'");
+    $req_periode = mysqli_query($GLOBALS["mysqli"], "SELECT nom_calendrier FROM edt_calendrier WHERE id_calendrier='".$_SESSION['period_id']."'");
     $rep_periode = mysqli_fetch_array($req_periode);
 
     echo "<ul class=\"Period\">";
@@ -706,7 +706,7 @@ function AfficheBarCommutateurPeriodesEleve()
     echo "</ul>";
 
 
-    $req_periode = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_calendrier FROM edt_calendrier WHERE id_calendrier='".$_SESSION['period_id']."'");
+    $req_periode = mysqli_query($GLOBALS["mysqli"], "SELECT nom_calendrier FROM edt_calendrier WHERE id_calendrier='".$_SESSION['period_id']."'");
     $rep_periode = mysqli_fetch_array($req_periode);
 
     echo "<ul class=\"Period\">";

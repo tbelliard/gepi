@@ -56,7 +56,7 @@ $msg="";
 // AJOUT: boireaus
 $chaine_options_classes="";
 $sql="SELECT id, classe FROM classes ORDER BY classe";
-$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_class_tmp)>0){
 	$id_class_prec=0;
 	$id_class_suiv=0;
@@ -119,7 +119,7 @@ if (isset($_POST['is_posted'])) {
                         echo "<!--\$checkmat[$i]=nouveau_groupe-->\n";
 
                         $sql="SELECT * FROM matieres WHERE matiere='$id_matiere[$i]'";
-                        $resultat_matiere=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                        $resultat_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
                         $ligne_matiere=mysqli_fetch_object($resultat_matiere);
 
                         $reg_clazz[0]=$id_classe;
@@ -136,7 +136,7 @@ if (isset($_POST['is_posted'])) {
 
                             $id_groupe=$create;
                             $sql="INSERT INTO j_groupes_professeurs VALUES('$id_groupe','$prof[$i]','')";
-                            $resultat_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                            $resultat_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 
                             // Affectation de tous les élèves de la classe dans le groupe:
                             $current_group = get_group($id_groupe);
@@ -153,14 +153,14 @@ if (isset($_POST['is_posted'])) {
                             }
                             */
                             $sql="SELECT * FROM periodes WHERE id_classe='$id_classe'";
-                            $result_list_periodes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                            $result_list_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
                             while($ligne_periode=mysqli_fetch_object($result_list_periodes)){
                                 //echo "<!-- \$ligne_periode->num_periode=$ligne_periode->num_periode -->\n";
                                 //echo "\$ligne_periode->num_periode=$ligne_periode->num_periode <br />\n";
                                 $reg_eleves[$ligne_periode->num_periode]=array();
                                 //$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY periode,login";
                                 $sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$ligne_periode->num_periode' ORDER BY periode,login";
-                                $result_list_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                                $result_list_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
                                 while($ligne_eleve=mysqli_fetch_object($result_list_eleves)){
                                     $reg_eleves[$ligne_periode->num_periode][]=$ligne_eleve->login;
                                     //echo "<!-- \$ligne_eleve->login=$ligne_eleve->login -->\n";
@@ -185,7 +185,7 @@ if (isset($_POST['is_posted'])) {
                         $group=get_group($id_groupe);
 
                         $sql="SELECT * FROM matieres WHERE matiere='$id_matiere[$i]'";
-                        $resultat_matiere=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                        $resultat_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
                         $ligne_matiere=mysqli_fetch_object($resultat_matiere);
 
                         $reg_clazz[0]=$id_classe;
@@ -221,18 +221,18 @@ if (isset($_POST['is_posted'])) {
                         else{
                             if($prof[$i]==""){
                                 $sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='$id_groupe'";
-                                $resultat_suppr_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                                $resultat_suppr_prof=mysqli_query($GLOBALS["mysqli"], $sql);
                             }
                             else{
                                 $sql="SELECT * FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$prof[$i]'";
-                                $resultat_verif_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                                $resultat_verif_prof=mysqli_query($GLOBALS["mysqli"], $sql);
                                 if(mysqli_num_rows($resultat_verif_prof)==0){
                                     // On supprime le professeur précédemment affecté s'il y en avait un pour mettre le nouveau:
                                     $sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='$id_groupe'";
-                                    $resultat_suppr_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                                    $resultat_suppr_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 
                                     $sql="INSERT INTO j_groupes_professeurs VALUES('$id_groupe','$prof[$i]','')";
-                                    $resultat_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                                    $resultat_prof=mysqli_query($GLOBALS["mysqli"], $sql);
                                     $nb_grp_maj++;
                                 }
                                 else{
@@ -414,10 +414,10 @@ echo "<th style='font-weight: bold;'>Professeur</th>\n";
 echo "</tr>\n";
 if($tri_matiere=='alpha') {
 	//$result_matiere=mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
-	$result_matiere=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet, matiere");
+	$result_matiere=mysqli_query($GLOBALS["mysqli"], "SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet, matiere");
 }
 else {
-	$result_matiere=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT matiere, nom_complet FROM matieres ORDER BY priority");
+	$result_matiere=mysqli_query($GLOBALS["mysqli"], "SELECT matiere, nom_complet FROM matieres ORDER BY priority");
 }
 $nb_mat=mysqli_num_rows($result_matiere);
 $cpt=0;
@@ -430,7 +430,7 @@ while($ligne_matiere=mysqli_fetch_object($result_matiere)){
 	$display_current = false;
 	// Récupération des infos déjà saisies:
 	$sql="SELECT jgm.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='$id_classe' AND jgm.id_matiere='$ligne_matiere->matiere' AND jgc.id_groupe=jgm.id_groupe";
-	$result_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$result_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($result_grp)==0 and $display == "new") {
 		$display_current = true;
 		echo "<tr class='lig$alt'>\n";
@@ -448,7 +448,7 @@ while($ligne_matiere=mysqli_fetch_object($result_matiere)){
 		$ligne_grp=mysqli_fetch_object($result_grp);
 
 		$sql="SELECT * FROM j_groupes_professeurs WHERE id_groupe='$ligne_grp->id_groupe'";
-		$result_verif_grp_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$result_verif_grp_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($result_verif_grp_prof)>1){
 			//echo "<td colspan='3'>Le groupe associé à la matière $ligne_matiere->matiere pour cette classe a plusieurs professeurs définis.<br />Ce n'est pas un enseignement 'simple'.<br />A traiter ailleurs...</td>\n";
 
@@ -461,7 +461,7 @@ while($ligne_matiere=mysqli_fetch_object($result_matiere)){
 		else {
 			$sql="SELECT * FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_groupe='$ligne_grp->id_groupe' AND jgm.id_matiere='$ligne_matiere->matiere' AND jgc.id_groupe=jgm.id_groupe";
 			//echo "<td>$sql</td>\n";
-			$result_verif_grp_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$result_verif_grp_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($result_verif_grp_classes)==1) {
 				echo "<td>\n";
 				echo "<input type='hidden' name='id_matiere[$cpt]' value='$ligne_matiere->matiere' />\n";
@@ -505,7 +505,7 @@ while($ligne_matiere=mysqli_fetch_object($result_matiere)){
 		echo "</td>\n";
 		//$sql="SELECT jpm.id_professeur,u.nom,u.prenom,u.civilite FROM j_professeurs_matieres jpm, matieres m, utilisateurs u WHERE jpm.id_matiere=m.matiere AND m.matiere='$ligne_matiere->matiere' AND u.login=jpm.id_professeur ORDER BY jpm.id_professeur";
 		$sql="SELECT jpm.id_professeur,u.nom,u.prenom,u.civilite FROM j_professeurs_matieres jpm, matieres m, utilisateurs u WHERE jpm.id_matiere=m.matiere AND m.matiere='$ligne_matiere->matiere' AND u.login=jpm.id_professeur AND u.etat='actif' ORDER BY jpm.id_professeur";
-		$result_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$result_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo "<td style='text-align:left;'>\n";
 		echo "<select name='prof[$cpt]' id='prof_".$cpt."' onchange='test_prof($cpt);changement();'>\n";
 		echo "<option value=''>---</option>\n";
@@ -513,7 +513,7 @@ while($ligne_matiere=mysqli_fetch_object($result_matiere)){
 		while($ligne_prof=mysqli_fetch_object($result_prof)) {
 			if($groupe_existant=="oui"){
 				$sql="SELECT * FROM j_groupes_professeurs jgp WHERE jgp.id_groupe='$ligne_grp->id_groupe' AND jgp.login='$ligne_prof->id_professeur'";
-				$result_verif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$result_verif=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($result_verif)==0) {
 					$selected="";
 				}

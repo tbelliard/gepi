@@ -53,30 +53,30 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 		for($i=0;$i<count($suppr_resp);$i++){
 			$sql="DELETE FROM responsables2 WHERE pers_id='$suppr_resp[$i]' AND resp_legal='1';";
 			//echo "$sql<br />\n";
-			$res0=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res0=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($res0){
 				// Est-ce que ce responsable est encore responsable de quelqu'un?
 				$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$suppr_resp[$i]';";
 				//echo "$sql<br />\n";
-				$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_test)==0){
 					// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
 					$sql="SELECT adr_id, login FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 					//echo "$sql<br />\n";
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res1)>0){
 						$lig1=mysqli_fetch_object($res1);
 
 
 						$sql="SELECT statut FROM utilisateurs WHERE login='$lig1->login';";
 						//echo "$sql<br />\n";
-						$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res3)>0){
 							$lig3=mysqli_fetch_object($res3);
 							if($lig3->statut=='responsable') {
 								$sql="DELETE FROM utilisateurs WHERE login='$lig1->login';";
 								//echo "$sql<br />\n";
-								$res4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res4=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res4){
 									$msg.="Erreur lors de la suppression du compte d'utilisateur $lig1->login.<br />\n";
 								}
@@ -92,7 +92,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 
 						$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 						//echo "$sql<br />\n";
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res2){
 							$msg.="Erreur lors de la suppression du responsable $suppr_resp[$i] de la table 'resp_pers'.<br />\n";
 						}
@@ -100,11 +100,11 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 							// On supprime l'adresse si elle n'est plus associée à aucun parent
 							$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id';";
 							//echo "$sql<br />\n";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res3)==0){
 								$sql="DELETE FROM resp_adr WHERE adr_id='$lig1->adr_id';";
 								//echo "$sql<br />\n";
-								$res4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res4=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res4){
 									$msg.="Erreur lors de la suppression de l'adresse $lig1->adr_id de la table 'resp_adr'.<br />\n";
 								}
@@ -128,17 +128,17 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 		for($i=0;$i<count($suppr_resp);$i++){
 			$sql="DELETE FROM responsables2 WHERE pers_id='$suppr_resp[$i]' AND resp_legal='2';";
 			//echo "$sql<br />\n";
-			$res0=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res0=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($res0){
 				// Est-ce que ce responsable est encore responsable de quelqu'un?
 				$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$suppr_resp[$i]';";
 				//echo "$sql<br />\n";
-				$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_test)==0){
 					// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
 					$sql="SELECT adr_id, login FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 					//echo "$sql<br />\n";
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res1)>0){
 						$lig1=mysqli_fetch_object($res1);
 
@@ -146,13 +146,13 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 
 						$sql="SELECT statut FROM utilisateurs WHERE login='$lig1->login';";
 						//echo "$sql<br />\n";
-						$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res3)>0){
 							$lig3=mysqli_fetch_object($res3);
 							if($lig3->statut=='responsable') {
 								$sql="DELETE FROM utilisateurs WHERE login='$lig1->login';";
 								//echo "$sql<br />\n";
-								$res4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res4=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res4){
 									$msg.="Erreur lors de la suppression du compte d'utilisateur $lig1->login.<br />\n";
 								}
@@ -169,7 +169,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 
 						$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 						//echo "$sql<br />\n";
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res2){
 							$msg.="Erreur lors de la suppression du responsable $suppr_resp[$i] de la table 'resp_pers'.<br />\n";
 						}
@@ -177,11 +177,11 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 							// On supprime l'adresse si elle n'est plus associée à aucun parent
 							$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id';";
 							//echo "$sql<br />\n";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res3)==0){
 								$sql="DELETE FROM resp_adr WHERE adr_id='$lig1->adr_id';";
 								//echo "$sql<br />\n";
-								$res4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res4=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res4){
 									$msg.="Erreur lors de la suppression de l'adresse $lig1->adr_id de la table 'resp_adr'.<br />\n";
 								}
@@ -211,23 +211,23 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 			// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
 			$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 			//echo "$sql<br />\n";
-			$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res1)>0){
 				$lig1=mysqli_fetch_object($res1);
 				$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 				//echo "$sql<br />\n";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res2){
 					$msg.="Erreur lors de la suppression du responsable $suppr_resp[$i] de la table 'resp_pers'.<br />\n";
 				}
 				else{
 					$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id';";
 					//echo "$sql<br />\n";
-					$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res3)==0){
 						$sql="DELETE FROM resp_adr WHERE adr_id='$lig1->adr_id';";
 						//echo "$sql<br />\n";
-						$res4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res4=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res4){
 							$msg.="Erreur lors de la suppression de l'adresse $lig1->adr_id de la table 'resp_adr'.<br />\n";
 						}
@@ -255,7 +255,7 @@ require_once("../lib/header.inc.php");
 
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	//echo "mysql_num_rows($test)=".mysql_num_rows($test)."<br />";
 	if(mysqli_num_rows($test)>0){
 		echo "<p>Une conversion des données ".$gepiSettings['denomination_responsables']." est requise.</p>\n";
@@ -265,7 +265,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)==0){
 		echo "<p>Une conversion des données ".$gepiSettings['denomination_eleves']."/".$gepiSettings['denomination_responsables']." est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -274,7 +274,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 	else{
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			if ($_SESSION['statut'] == 'administrateur'){
 				echo "<p class='bold'><a href=\"../accueil_admin.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
@@ -315,7 +315,7 @@ if ($_SESSION['statut'] == 'administrateur') {
 	echo " | <a href=\"gerer_adr.php\">Gérer les adresses</a>\n";
 
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
-	$test_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_resp)>0) {
 		echo " | <a href=\"synchro_mail.php\">Synchroniser les adresses mail responsables</a>\n";
 	}
@@ -332,7 +332,7 @@ if($_SESSION['statut']=="scolarite") {
 	}
 
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
-	$test_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_resp)>0) {
 		echo " | <a href=\"synchro_mail.php\">Synchroniser les adresses mail responsables</a>\n";
 	}
@@ -454,7 +454,7 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 		*/
 
 		$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			echo "<p>Suppression de responsabilités sans ".$gepiSettings['denomination_eleve'].".<br />Voici la liste des identifiants de ".$gepiSettings['denomination_responsables']." qui étaient associés à des ".$gepiSettings['denomination_eleves']." inexistants: \n";
 			$cpt_nett=0;
@@ -462,7 +462,7 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 				if($cpt_nett>0){echo ", ";}
 				echo "<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>".$lig_nett->pers_id."</a>";
 				$sql="DELETE FROM responsables2 WHERE pers_id='$lig_nett->pers_id' AND ele_id='$lig_nett->ele_id';";
-				$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 				flush();
 				$cpt_nett++;
 			}
@@ -485,7 +485,7 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 			LEFT JOIN eleves e ON e.ele_id=r.ele_id
 			WHERE e.ele_id is NULL);";
 		*/
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=mysqli_num_rows($res1);
 		//echo "\$cpt=$cpt<br />";
 		//echo "\$cpt2=$cpt2<br />";
@@ -500,7 +500,7 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 			//echo "<!--$sql-->\n";
 		}
 		$sql.=" ORDER BY $order_by";
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=mysqli_num_rows($res1);
 	}
 	elseif(($order_by=="nom,prenom")&&($num_resp==2)){
@@ -512,7 +512,7 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 			//echo "<!--$sql-->\n";
 		}
 		$sql.=" ORDER BY $order_by";
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=mysqli_num_rows($res1);
 	}
 	elseif(($order_by=="nom,prenom")&&($num_resp=="ele")){
@@ -522,7 +522,7 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 			//echo "<!--$sql-->\n";
 		}
 		$sql.=" ORDER BY e.nom,e.prenom";
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=mysqli_num_rows($res1);
 	}
 
@@ -574,7 +574,7 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 					if(isset($chaine_recherche)){
 						$sql.=" AND $chaine_recherche_resp";
 					}
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt=mysqli_num_rows($res1);
 
 					echo "
@@ -603,7 +603,7 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 					if(isset($chaine_recherche_resp)){
 						$sql.=" AND $chaine_recherche_resp";
 					}
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt=mysqli_num_rows($res1);
 
 					echo "
@@ -632,7 +632,7 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 					if(isset($chaine_recherche_resp)){
 						$sql.=" AND $chaine_recherche_resp";
 					}
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt=mysqli_num_rows($res1);
 
 					echo "
@@ -659,7 +659,7 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 					if(isset($chaine_recherche_ele)){
 						$sql.=" AND $chaine_recherche_ele";
 					}
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt=mysqli_num_rows($res1);
 
 					echo "
@@ -1075,7 +1075,7 @@ if("$num_resp"=="0"){
 		$sql.=" LIMIT $debut,$limit";
 	}
 	echo "<!--$sql-->\n";
-	$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 	$alt=1;
 	if(mysqli_num_rows($res1)>0){
 
@@ -1160,7 +1160,7 @@ if("$num_resp"=="0"){
 				echo "<td style='text-align:center;'>\n";
 				$sql="SELECT ra.* FROM resp_adr ra WHERE
 								ra.adr_id='$lig1->adr_id'";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0){
 					$lig2=mysqli_fetch_object($res2);
 					if($lig2->adr1!=''){echo "$lig2->adr1\n";}
@@ -1307,7 +1307,7 @@ else{
 		}
 		echo "<!--$sql-->\n";
 		//echo "<tr><td colspan='7'>$sql</td></tr>\n";
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res1)){
 			$alt=1;
@@ -1343,11 +1343,11 @@ else{
 										rp.adr_id=ra.adr_id AND
 										rp.pers_id='$lig1->pers_id'
 									ORDER BY $order_by";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0){
 					while($lig2=mysqli_fetch_object($res2)){
 						$sql="SELECT DISTINCT e.ele_id,e.login,e.nom,e.prenom FROM responsables2 r, eleves e WHERE r.pers_id='$lig1->pers_id' AND r.resp_legal='$num_resp' AND r.ele_id=e.ele_id";
-						$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 						//if(mysql_num_rows($res3)>0){
 							//echo "<tr style='background-color:".$alt.";'>\n";
 							echo "<tr class='lig$alt'>\n";
@@ -1425,7 +1425,7 @@ else{
 										rp.adr_id=ra.adr_id AND
 										r.ele_id='$lig3->ele_id' AND
 										r.resp_legal=$autre_resp";
-									$res4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res4=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res4)>0){
 										//$cpt_res4=0;
 										while($lig4=mysqli_fetch_object($res4)){
@@ -1503,7 +1503,7 @@ else{
 		}
 		echo "<!--$sql-->\n";
 		//echo "<tr><td colspan='7'>$sql</td></tr>\n";
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res1)){
 			$cpt=0;
@@ -1530,13 +1530,13 @@ else{
 										rp.adr_id=ra.adr_id AND
 										rp.pers_id='$lig1->pers_id'
 									ORDER BY $order_by";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0){
 					if($_SESSION['statut']=='administrateur') {$avec_lien="y";}
 					else {$avec_lien="n";}
 					while($lig2=mysqli_fetch_object($res2)){
 						$sql="SELECT DISTINCT e.ele_id,e.login,e.nom,e.prenom FROM responsables2 r, eleves e WHERE r.pers_id='$lig1->pers_id' AND r.resp_legal='$num_resp' AND r.ele_id=e.ele_id";
-						$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 						//if(mysql_num_rows($res3)>0){
 							//echo "<tr style='background-color:".$alt.";'>\n";
 							echo "<tr class='lig$alt'>\n";
@@ -1557,7 +1557,7 @@ else{
 										rp.adr_id=ra.adr_id AND
 										r.ele_id='$lig3->ele_id' AND
 										r.resp_legal=$autre_resp";
-									$res4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res4=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res4)>0){
 										while($lig4=mysqli_fetch_object($res4)){
 											echo "<td style='text-align:center;'>\n";
@@ -1739,7 +1739,7 @@ else{
 		if($limit!='TOUS'){
 			$sql.=" LIMIT $debut,$limit";
 		}
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		//echo "<tr><td colspan='5'>AAA</td></tr>\n";
 		if(mysqli_num_rows($res1)>0){
@@ -1768,7 +1768,7 @@ else{
 						rp.adr_id=ra.adr_id AND
 						r.resp_legal='1' AND
 						r.ele_id='$lig1->ele_id'";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				//echo "<tr>\n";
 				//echo "<tr style='background-color:".$alt.";'>\n";
@@ -1830,7 +1830,7 @@ else{
 						rp.adr_id=ra.adr_id AND
 						r.resp_legal='2' AND
 						r.ele_id='$lig1->ele_id'";
-				$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res3)>0){
 					$lig3=mysqli_fetch_object($res3);
 					echo "<td style='text-align:center;'>\n";

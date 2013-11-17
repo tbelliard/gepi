@@ -12,7 +12,7 @@
 
 	$sql="SELECT * FROM commentaires_types_profs WHERE login='".$_SESSION['login']."' ORDER BY app;";
 	//echo "$sql<br />";
-	$res_cmt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_cmt=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_cmt)>0) {
 
 		$titre_bulle="Commentaires-types";

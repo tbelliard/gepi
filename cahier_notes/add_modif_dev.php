@@ -78,12 +78,12 @@ $mode_navig = isset($_POST["mode_navig"]) ? $_POST["mode_navig"] : (isset($_GET[
 
 
 if ($id_devoir)  {
-    $query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_conteneur, id_racine FROM cn_devoirs WHERE id = '$id_devoir'");
+    $query = mysqli_query($GLOBALS["mysqli"], "SELECT id_conteneur, id_racine FROM cn_devoirs WHERE id = '$id_devoir'");
     $id_racine = mysql_result($query, 0, 'id_racine');
     $id_conteneur = mysql_result($query, 0, 'id_conteneur');
 } else if ((isset($_POST['id_conteneur'])) or (isset($_GET['id_conteneur']))) {
     $id_conteneur = isset($_POST['id_conteneur']) ? $_POST['id_conteneur'] : (isset($_GET['id_conteneur']) ? $_GET['id_conteneur'] : NULL);
-    $query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
+    $query = mysqli_query($GLOBALS["mysqli"], "SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
     $id_racine = mysql_result($query, 0, 'id_racine');
 } else {
     header("Location: ../logout.php?auto=1");
@@ -110,7 +110,7 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
     die();
 }
 
-$appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
+$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
 $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 $periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
@@ -151,8 +151,8 @@ if (isset($_POST['ok'])) {
     $reg_ok = "yes";
     $new='no';
     if ((isset($_POST['new_devoir'])) and ($_POST['new_devoir'] == 'yes')) {
-        $reg = mysqli_query($GLOBALS["___mysqli_ston"], "insert into cn_devoirs (id_racine,id_conteneur,nom_court) values ('$id_racine','$id_conteneur','nouveau')");
-        $id_devoir = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+        $reg = mysqli_query($GLOBALS["mysqli"], "insert into cn_devoirs (id_racine,id_conteneur,nom_court) values ('$id_racine','$id_conteneur','nouveau')");
+        $id_devoir = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
         $new='yes';
         if (!$reg) {$reg_ok = "no";}
 
@@ -165,7 +165,7 @@ if (isset($_POST['ok'])) {
 			$id_emplacement=isset($_POST['id_emplacement']) ? $_POST['id_emplacement'] : $id_racine;
 
 			$sql="SELECT * FROM cn_conteneurs WHERE id='$id_emplacement';";
-			$res_infos_conteneur=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_infos_conteneur=mysqli_query($GLOBALS["mysqli"], $sql);
 			$lig_conteneur=mysqli_fetch_object($res_infos_conteneur);
 			$nom_court_conteneur=$lig_conteneur->nom_court;
 			$nom_complet_conteneur=$lig_conteneur->nom_complet;
@@ -188,19 +188,19 @@ if (isset($_POST['ok'])) {
 
 					$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='".$tmp_group['id']."' AND periode='$periode_num');";
 					//echo "$sql<br />\n";
-					$res_idcn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_idcn=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_idcn)==0) {
 						// On crée le cahier de notes
 
 						$tmp_nom_complet_matiere = $tmp_group["matiere"]["nom_complet"];
 						$tmp_nom_court_matiere = $tmp_group["matiere"]["matiere"];
-						$reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($tmp_group["description"])."', nom_complet='". traitement_magic_quotes($tmp_nom_complet_matiere)."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
+						$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($tmp_group["description"])."', nom_complet='". traitement_magic_quotes($tmp_nom_complet_matiere)."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
 						if ($reg) {
-							$tmp_id_racine = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+							$tmp_id_racine = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 							// On renseigne le champ id_racine avec la même valeur que l'id du conteneur: c'est la racine du cahier de notes
-							$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_conteneurs SET id_racine='$tmp_id_racine', parent = '0' WHERE id='$tmp_id_racine'");
+							$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_conteneurs SET id_racine='$tmp_id_racine', parent = '0' WHERE id='$tmp_id_racine'");
 							// On déclare le cahier de notes avec cet identifiant
-							$reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO cn_cahier_notes SET id_groupe = '".$tmp_group['id']."', periode = '$periode_num', id_cahier_notes='$tmp_id_racine'");
+							$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO cn_cahier_notes SET id_groupe = '".$tmp_group['id']."', periode = '$periode_num', id_cahier_notes='$tmp_id_racine'");
 						}
 					}
 					else {
@@ -214,7 +214,7 @@ if (isset($_POST['ok'])) {
 							// La même boite existe-t-elle dans cet autre enseignement?
 							$sql="SELECT * FROM cn_conteneurs WHERE nom_court='".addslashes($nom_court_conteneur)."' AND id_racine='$tmp_id_racine';";
 							//echo "$sql<br />\n";
-							$test_conteneur=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$test_conteneur=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test_conteneur)>0) {
 								$lig_tmp=mysqli_fetch_object($test_conteneur);
 								$tmp_id_conteneur=$lig_tmp->id;
@@ -236,8 +236,8 @@ if (isset($_POST['ok'])) {
 																		display_parents='".addslashes($display_parents_conteneur)."',
 																		display_bulletin='".addslashes($display_bulletin_conteneur)."',
 																		parent='$tmp_id_racine';";
-									if($insert_conteneur=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
-										$tmp_id_conteneur=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+									if($insert_conteneur=mysqli_query($GLOBALS["mysqli"], $sql)) {
+										$tmp_id_conteneur=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 									}
 									else {
 										// Sinon, le devoir sera a la racine... mais on met un avertissement
@@ -255,8 +255,8 @@ if (isset($_POST['ok'])) {
 						if((is_numeric($tmp_id_conteneur))&&(is_numeric($tmp_id_racine))) {
 							$sql="insert into cn_devoirs (id_racine,id_conteneur,nom_court) values ('$tmp_id_racine','$tmp_id_conteneur','nouveau');";
 							//echo "$sql<br />\n";
-							$creation_dev=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
-							$tmp_id_devoir = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+							$creation_dev=mysqli_query($GLOBALS["mysqli"], $sql);
+							$tmp_id_devoir = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 	
 							$tab_group[$cpt]=$tmp_group;
 							$tab_group[$cpt]['id_racine']=$tmp_id_racine;
@@ -281,7 +281,7 @@ if (isset($_POST['ok'])) {
 	$chaine_log="";
 	if ($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) {
 		$sql="SELECT * FROM cn_devoirs WHERE id = '$id_devoir';";
-		$res_old=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_old=mysqli_query($GLOBALS["mysqli"], $sql);
 		$lig_old=mysqli_fetch_object($res_old);
 		$temoin_log="y";
 	}
@@ -294,12 +294,12 @@ if (isset($_POST['ok'])) {
 	if(($temoin_log=="y")&&($nom_court!=$lig_old->nom_court)) {
 		$chaine_log.=". Modification du nom court : $nom_court -> $lig_old->nom_court\n";
 	}
-	$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '$id_devoir'");
+	$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
-		$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	if (isset($_POST['nom_complet'])) {
@@ -310,25 +310,25 @@ if (isset($_POST['ok'])) {
 	if(($temoin_log=="y")&&($nom_complet!=$lig_old->nom_complet)) {
 		$chaine_log.=". Modification du nom complet : $nom_complet -> $lig_old->nom_complet\n";
 	}
-	$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '$id_devoir'");
+	$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
-		$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	if (isset($_POST['description'])) {
 		if(($temoin_log=="y")&&($_POST['description']!=$lig_old->description)) {
 			$chaine_log.=". Modification de la description :\n$lig_old->description\n->\n".$_POST['description']."\n";
 		}
-		$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '$id_devoir'");
+		$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '$id_devoir'");
 		if (!$reg)  $reg_ok = "no";
 	}
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
-		$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	if (isset($_POST['id_emplacement'])) {
@@ -336,13 +336,13 @@ if (isset($_POST['ok'])) {
 		if(($temoin_log=="y")&&($lig_old->id_conteneur!=$id_emplacement)) {
 			$chaine_log.=". Modification du conteneur dans lequel se trouve le devoir : $lig_old->id_conteneur -> ".$id_emplacement."\n";
 		}
-		$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET id_conteneur = '".$id_emplacement."' WHERE id = '$id_devoir'");
+		$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET id_conteneur = '".$id_emplacement."' WHERE id = '$id_devoir'");
 		if (!$reg)  $reg_ok = "no";
 
 		for($i=0;$i<count($tab_group);$i++) {
 			$sql="UPDATE cn_devoirs SET id_conteneur = '".$tab_group[$i]['id_conteneur']."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
 			//echo "$sql<br />\n";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
 
@@ -366,12 +366,12 @@ if (isset($_POST['ok'])) {
 	if(($temoin_log=="y")&&($lig_old->coef!=$tmp_coef)) {
 		$chaine_log.=". Modification du coefficient du devoir : $lig_old->coef -> ".$tmp_coef."\n";
 	}
-	$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET coef='".$tmp_coef."' WHERE id='$id_devoir'");
+	$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET coef='".$tmp_coef."' WHERE id='$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET coef='".$tmp_coef."' WHERE id='".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
-		$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	$note_sur=isset($_POST['note_sur']) ? $_POST['note_sur'] : getSettingValue("referentiel_note");
@@ -391,12 +391,12 @@ if (isset($_POST['ok'])) {
 	if(($temoin_log=="y")&&($lig_old->note_sur!=$note_sur)) {
 		$chaine_log.=". Modification du référentiel de note (note_sur) du devoir : $lig_old->note_sur -> ".$note_sur."\n";
 	}
-	$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='$id_devoir'");
+	$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
-		$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	if ((isset($_POST['ramener_sur_referentiel']))&&($_POST['ramener_sur_referentiel']=="V")) {
@@ -407,21 +407,21 @@ if (isset($_POST['ok'])) {
 	if(($temoin_log=="y")&&($lig_old->ramener_sur_referentiel!=$ramener_sur_referentiel)) {
 		$chaine_log.=". Modification du paramètre ramener_sur_referentiel du devoir : $lig_old->ramener_sur_referentiel -> ".$ramener_sur_referentiel."\n";
 	}
-	$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET ramener_sur_referentiel = '$ramener_sur_referentiel' WHERE id = '$id_devoir'");
+	$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET ramener_sur_referentiel = '$ramener_sur_referentiel' WHERE id = '$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET ramener_sur_referentiel='$ramener_sur_referentiel' WHERE id='".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
-		$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	if (isset($_POST['facultatif']) and preg_match("/^(O|N|B)$/", $_POST['facultatif'])) {
-		$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET facultatif = '".$_POST['facultatif']."' WHERE id = '$id_devoir'");
+		$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET facultatif = '".$_POST['facultatif']."' WHERE id = '$id_devoir'");
 		if (!$reg)  $reg_ok = "no";
 		for($i=0;$i<count($tab_group);$i++) {
 			$sql="UPDATE cn_devoirs SET facultatif='".$_POST['facultatif']."' WHERE id='".$tab_group[$i]['id_devoir']."';";
 			//echo "$sql<br />\n";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
 
@@ -439,12 +439,12 @@ if (isset($_POST['ok'])) {
 		if(($temoin_log=="y")&&($lig_old->date!=$date)) {
 			$chaine_log.=". Modification de la date du devoir : ".formate_date($lig_old->date)." -> ".formate_date($date)."\n";
 		}
-		$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET date = '".$date."' WHERE id = '$id_devoir'");
+		$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET date = '".$date."' WHERE id = '$id_devoir'");
 		if (!$reg)  $reg_ok = "no";
 		for($i=0;$i<count($tab_group);$i++) {
 			$sql="UPDATE cn_devoirs SET date='".$date."' WHERE id='".$tab_group[$i]['id_devoir']."';";
 			//echo "$sql<br />\n";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
 
@@ -463,12 +463,12 @@ if (isset($_POST['ok'])) {
 		if(($temoin_log=="y")&&($lig_old->date_ele_resp!=$date)) {
 			$chaine_log.=". Modification de la date de visibilité élève/parent du devoir : ".formate_date($lig_old->date_ele_resp)." -> ".formate_date($date)."\n";
 		}
-		$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET date_ele_resp='".$date."' WHERE id = '$id_devoir'");
+		$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET date_ele_resp='".$date."' WHERE id = '$id_devoir'");
 		if (!$reg)  $reg_ok = "no";
 		for($i=0;$i<count($tab_group);$i++) {
 			$sql="UPDATE cn_devoirs SET date_ele_resp='".$date."' WHERE id='".$tab_group[$i]['id_devoir']."';";
 			//echo "$sql<br />\n";
-			$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
 	//====================================================
@@ -486,12 +486,12 @@ if (isset($_POST['ok'])) {
 	if(($temoin_log=="y")&&($lig_old->display_parents!=$display_parents)) {
 		$chaine_log.=". Modification de la visibilité du devoir pour les parents/élèves : $lig_old->display_parents -> ".$display_parents."\n";
 	}
-	$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET display_parents = '$display_parents' WHERE id = '$id_devoir'");
+	$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET display_parents = '$display_parents' WHERE id = '$id_devoir'");
 	if (!$reg) {$reg_ok = "no";}
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET display_parents='$display_parents' WHERE id='".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
-		$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	if (isset($_POST['display_parents_app'])) {
@@ -507,12 +507,12 @@ if (isset($_POST['ok'])) {
 	if(($temoin_log=="y")&&($lig_old->display_parents_app!=$display_parents_app)) {
 		$chaine_log.=". Modification de la visibilité par les parents/élèves du commentaire saisi : $lig_old->display_parents_app -> ".$display_parents_app."\n";
 	}
-	$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_devoirs SET display_parents_app = '$display_parents_app' WHERE id = '$id_devoir'");
+	$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET display_parents_app = '$display_parents_app' WHERE id = '$id_devoir'");
 	if (!$reg) {$reg_ok = "no";}
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET display_parents_app='$display_parents_app' WHERE id='".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
-		$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	if ($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) {
@@ -551,7 +551,7 @@ if (isset($_POST['ok'])) {
     // Ajout d'un test:
     // Si on modifie un devoir alors que des notes ont été reportées sur le bulletin, il faut penser à mettre à jour la recopie vers le bulletin.
     $sql="SELECT 1=1 FROM matieres_notes WHERE periode='".$periode_num."' AND id_groupe='".$id_groupe."';";
-    $test_bulletin=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $test_bulletin=mysqli_query($GLOBALS["mysqli"], $sql);
     if(mysqli_num_rows($test_bulletin)>0) {
         $msg.=" ATTENTION: Des notes sont présentes sur les bulletins. Si vous avez modifié un coefficient, des notes,... pensez à mettre à jour la recopie vers les bulletins.";
     }
@@ -576,7 +576,7 @@ if (isset($_POST['ok'])) {
 
 if ($id_devoir)  {
     $new_devoir = 'no';
-    $appel_devoir = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_devoirs WHERE (id ='$id_devoir' and id_racine='$id_racine')");
+    $appel_devoir = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_devoirs WHERE (id ='$id_devoir' and id_racine='$id_racine')");
     $nom_court = mysql_result($appel_devoir, 0, 'nom_court');
     $nom_complet = mysql_result($appel_devoir, 0, 'nom_complet');
     $description = mysql_result($appel_devoir, 0, 'description');
@@ -677,7 +677,7 @@ echo "\n";
 echo " | <a href='../gestion/config_prefs.php#add_modif_dev' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer l'interface simplifiée</a>";
 
 $sql="SELECT * FROM cn_devoirs WHERE id_racine='$id_racine' ORDER BY date, nom_court, nom_complet;";
-$res_cd=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_cd=mysqli_query($GLOBALS["mysqli"], $sql);
 $chaine="";
 $index_num_devoir=0;
 $cpt_dev=0;
@@ -922,7 +922,7 @@ if($interface_simplifiee=="y"){
 		echo "<td>\n";
 
 		echo "<select size='1' name='id_emplacement' onchange=\"changement();\">\n";
-		$appel_conteneurs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court");
+		$appel_conteneurs = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court");
 		$nb_cont = mysqli_num_rows($appel_conteneurs);
 		$i = 0;
 		while ($i < $nb_cont) {
@@ -972,7 +972,7 @@ else{
 	echo "<br />\n";
 	echo "<table summary='Emplacement du devoir'><tr><td><h3 class='gepi'>Emplacement de l'évaluation : </h3></td>\n<td>";
 	echo "<select size='1' name='id_emplacement' onchange=\"changement();\">\n";
-	$appel_conteneurs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court");
+	$appel_conteneurs = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court");
 	$nb_cont = mysqli_num_rows($appel_conteneurs);
 	$i = 0;
 	while ($i < $nb_cont) {

@@ -52,7 +52,7 @@ if(isset($_POST['suppr'])) {
 	$cpt_suppr=0;
 	for($i=0;$i<count($suppr);$i++) {
 		$sql="DELETE FROM log_maj_sconet WHERE id='".$suppr[$i]."';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			$msg.="Erreur lors de la suppression du compte-rendu n°".$suppr[$i]."<br />";
 		}
@@ -76,7 +76,7 @@ echo "<p class='bold'>
 echo "<h2>Mises à jour d'après Sconet/Siècle</h2>";
 
 $sql="SELECT * FROM log_maj_sconet ORDER BY date_debut;";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0){
 	echo "<p>Aucun compte-rendu de mise à jour d'après Sconet n'est enregistré dans la table 'log_maj_sconet'.</p>\n";
 	require("../lib/footer.inc.php");

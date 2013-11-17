@@ -278,7 +278,7 @@ echo add_token_field();
 	LEFT JOIN rss_users ru ON jec.login=ru.user_login
 	WHERE ru.user_login IS NULL;";
 	//echo "$sql<br />";
-	$res_ele_sans_flux=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele_sans_flux=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_ele_sans_flux)==0) {
 		echo "
 		<p>Tous les élèves ont un flux RSS initialisé.</p>\n";

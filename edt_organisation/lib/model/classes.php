@@ -43,7 +43,7 @@ class Classe {
 	public static function getClasses() {
 		$result = array();
 		$sql="SELECT id, classe FROM classes ORDER BY classe ASC";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			while ($rep = mysqli_fetch_array($req)) {
 				$result['id'][] = $rep['id'];
@@ -60,7 +60,7 @@ class Classe {
 	public function getShortName() {
 		$result = null;
 		$sql="SELECT classe FROM classes WHERE id = '".$this->id."' ";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			$rep = mysqli_fetch_array($req);
 			$result = $rep['classe'];

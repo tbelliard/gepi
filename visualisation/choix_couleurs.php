@@ -240,7 +240,7 @@ $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige"
 
 		for($j=0;$j<count($comp);$j++){
 			$sql="SELECT value FROM setting WHERE name='couleur_".$tab[$i]."_".$comp[$j]."'";
-			$res_couleur=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_couleur=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_couleur)>0){
 				$tmp=mysqli_fetch_object($res_couleur);
 				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
@@ -280,7 +280,7 @@ $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige"
 */
 
 	$sql="SELECT max(num_periode) maxper FROM periodes";
-	$res_max_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_max_per=mysqli_query($GLOBALS["mysqli"], $sql);
 	$max_per=mysql_result($res_max_per, 0, "maxper");
 
 	for($i=4;$i<$max_per+1;$i++){
@@ -288,7 +288,7 @@ $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige"
 		echo "<td>Periode_$i</td>\n";
 		for($j=0;$j<count($comp);$j++){
 			$sql="SELECT value FROM setting WHERE name='couleur_Periode_".$i."_".$comp[$j]."'";
-			$res_couleur=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_couleur=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_couleur)>0){
 				$tmp=mysqli_fetch_object($res_couleur);
 				$composante=$tmp->value;

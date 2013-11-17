@@ -78,7 +78,7 @@ function recherche_eleves_sans_photo() {
 	AND jec.id_classe = c.id
 	GROUP BY e.login
 	ORDER BY id_classe, nom, prenom ASC";
-  $res_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_eleve);
+  $res_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve);
   while ($row = mysqli_fetch_object($res_eleve)) {
 	$nom_photo = nom_photo($row->elenoet);
 	if (!($nom_photo and file_exists($nom_photo))) {
@@ -100,7 +100,7 @@ function recherche_personnel_sans_photo($statut='professeur') {
   $requete_liste_personnel = "SELECT login,nom,prenom FROM utilisateurs u
 	WHERE u.statut='".$statut."' AND u.etat='actif' 
 	ORDER BY nom, prenom ASC";
-  $res_personnel = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_personnel);
+  $res_personnel = mysqli_query($GLOBALS["mysqli"], $requete_liste_personnel);
   while ($row = mysqli_fetch_object($res_personnel)) {
 	$nom_photo = nom_photo($row->login,"personnels");
 	if (!($nom_photo and file_exists($nom_photo))) {

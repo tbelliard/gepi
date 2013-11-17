@@ -161,7 +161,7 @@ echo '
 	// choix de l'horaire
 
 	$sql="SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode, type_creneaux FROM edt_creneaux ORDER BY heuredebut_definie_periode";
-	$req_heure = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$req_heure = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_heure=mysqli_num_rows($req_heure);
 	$rep_heure = mysqli_fetch_array($req_heure);
 
@@ -224,7 +224,7 @@ echo "</select>\n<i> *</i>\n<br />\n";
 
 	// choix du jour
 
-	$req_jour = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement");
+	$req_jour = mysqli_query($GLOBALS["mysqli"], "SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement");
 	$rep_jour = mysqli_fetch_array($req_jour);
 
 echo "<select name=\"ch_jour_semaine\">\n";
@@ -252,7 +252,7 @@ echo "</select>\n<i> *</i>\n<br />\n";
 
 	// choix de la semaine
 
-	$req_semaine = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM edt_semaines");
+	$req_semaine = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_semaines");
 	$rep_semaine = mysqli_fetch_array($req_semaine);
 
 echo "<select name=\"semaine\">\n";
@@ -278,7 +278,7 @@ echo "</form>\n";
 
 if ($auto_aff_2 === 1) {
 		// On reprend les infos sur les horaires demandés
-		$requete_creneaux = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$ch_heure."'");
+		$requete_creneaux = mysqli_query($GLOBALS["mysqli"], "SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$ch_heure."'");
 		$reponse_tab_creneaux = mysqli_fetch_array($requete_creneaux);
 	echo"<fieldset>\n<legend>Résultats</legend>\n";
 	echo "Les salles libres le <font color=\"green\">".$ch_jour_semaine."</font> de <font color=\"green\">".$reponse_tab_creneaux["heuredebut_definie_periode"]." à ".$reponse_tab_creneaux["heurefin_definie_periode"]." ( ".$reponse_tab_creneaux["nom_definie_periode"]." )</font> sont :\n";

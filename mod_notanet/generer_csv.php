@@ -123,7 +123,7 @@ else {
 		//$fd.="\$extract_mode=$extract_mode".$eol;
 
 		$sql="SELECT DISTINCT type_brevet FROM notanet_corresp WHERE $sql_indices_types_brevets ORDER BY type_brevet;";
-		$res0=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res0=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res0)>0) {
 			while($lig0=mysqli_fetch_object($res0)) {
 
@@ -134,7 +134,7 @@ else {
 
 				//$sql="SELECT DISTINCT login,type_brevet FROM notanet_ele_type WHERE type_brevet='$lig0->type_brevet';";
 				$sql="SELECT DISTINCT login,type_brevet FROM notanet_ele_type WHERE type_brevet='$type_brevet';";
-				$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res1)>0) {
 					while($lig1=mysqli_fetch_object($res1)) {
 						/*
@@ -149,7 +149,7 @@ else {
 									WHERE n.login='$lig1->login'
 									ORDER BY n.id_mat;";
 						//$fd.=$sql.$eol;
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res2)>0) {
 							$TOT=0;
 							$ine="";
@@ -183,14 +183,14 @@ else {
 								$classe_ele="";
 
 								$sql="SELECT * FROM eleves WHERE login='$lig1->login';";
-								$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_ele)>0) {
 									$nom_ele=mysql_result($res_ele,0,"nom");
 									$prenom_ele=mysql_result($res_ele,0,"prenom");
 								}
 
 								$sql="SELECT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig1->login' ORDER BY periode DESC LIMIT 1;";
-								$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_clas)>0) {
 									$classe_ele=mysql_result($res_clas,0,"classe");
 								}
@@ -222,7 +222,7 @@ else {
 
 		//$sql="SELECT DISTINCT login,type_brevet FROM notanet_ele_type WHERE type_brevet='$lig0->type_brevet';";
 		$sql="SELECT DISTINCT login,type_brevet FROM notanet_ele_type WHERE type_brevet='$type_brevet';";
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res1)>0) {
 			while($lig1=mysqli_fetch_object($res1)) {
 				/*
@@ -237,7 +237,7 @@ else {
 							WHERE n.login='$lig1->login'
 							ORDER BY n.id_mat;";
 				//$fd.=$sql.$eol;
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$TOT=0;
 					$ine="";
@@ -271,14 +271,14 @@ else {
 						$classe_ele="";
 
 						$sql="SELECT * FROM eleves WHERE login='$lig1->login';";
-						$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele)>0) {
 							$nom_ele=mysql_result($res_ele,0,"nom");
 							$prenom_ele=mysql_result($res_ele,0,"prenom");
 						}
 
 						$sql="SELECT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig1->login' ORDER BY periode DESC LIMIT 1;";
-						$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_clas)>0) {
 							$classe_ele=mysql_result($res_clas,0,"classe");
 						}

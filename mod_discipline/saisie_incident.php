@@ -56,7 +56,7 @@ function choix_heure($champ_heure,$div_choix_heure) {
 	global $tabdiv_infobulle;
 
 	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
-	$res_abs_cren=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_abs_cren=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_abs_cren)>0) {
 		echo " <a href='#' onclick=\"afficher_div('$div_choix_heure','y',10,-40); return false;\">Choix</a>";
 
@@ -94,7 +94,7 @@ function recherche_protagoniste($rech_nom,$page) {
 
 	echo "<div style='float:left; width:40%'>\n";
 	$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%';";
-	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_ele=mysqli_num_rows($res_ele);
 
@@ -129,7 +129,7 @@ function recherche_protagoniste($rech_nom,$page) {
 			echo "<label for='ele_login_$cpt1' style='cursor:pointer;'>".htmlspecialchars(casse_mot($ele_nom, 'maj')." ".casse_mot($ele_prenom, 'majf2'))."</label>";
 
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
-			$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_clas)==0) {
 				echo "<td>\n";
 				echo "aucune classe";
@@ -155,7 +155,7 @@ function recherche_protagoniste($rech_nom,$page) {
 
 	echo "<div style='float:left; width:40%'>\n";
 	$sql="SELECT * FROM utilisateurs WHERE (nom LIKE '%$rech_nom%' AND statut!='responsable' AND statut!='eleve');";
-	$res_utilisateur=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_utilisateur=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_utilisateur=mysqli_num_rows($res_utilisateur);
 
@@ -204,7 +204,7 @@ function recherche_ele($rech_nom,$page) {
 	$rech_nom=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸]/","",$rech_nom);
 
 	$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%';";
-	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_ele=mysqli_num_rows($res_ele);
 
@@ -239,7 +239,7 @@ function recherche_ele($rech_nom,$page) {
 			echo "<label for='ele_login_$cpt1' style='cursor:pointer;'>".htmlspecialchars("$ele_nom $ele_prenom")."</label>";
 
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
-			$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_clas)==0) {
 				echo "<td>\n";
 				echo "aucune classe";
@@ -267,7 +267,7 @@ function recherche_utilisateur($rech_nom,$page) {
 	$rech_nom=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸]/","",$rech_nom);
 
 	$sql="SELECT * FROM utilisateurs WHERE (nom LIKE '%$rech_nom%' AND statut!='responsable');";
-	$res_utilisateur=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_utilisateur=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_utilisateur=mysqli_num_rows($res_utilisateur);
 
@@ -349,7 +349,7 @@ $clore_incident=isset($_POST['clore_incident']) ? $_POST['clore_incident'] : NUL
 $etat_incident="";
 if(isset($id_incident)) {
 	$sql="SELECT 1=1 FROM s_incidents WHERE id_incident='$id_incident' AND etat='clos';";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		$etat_incident="clos";
 		$step=2;
@@ -360,7 +360,7 @@ if(isset($id_incident)) {
 		// Il doit s'adresser à un cpe, scol, admin ou au déclarant pour apporter un commentaire.
 		// Remarque: S'il arrive sur cette page c'est qu'il est protagoniste de l'incident ou déclarant... ou alors il a bricolé les valeurs en barre d'adresse... -> METTRE DES TESTS POUR L'INTERDIRE
 		$sql="SELECT 1=1 FROM s_incidents WHERE id_incident='$id_incident' AND declarant!='".$_SESSION['login']."';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			$etat_incident="clos";
 			$step=2;
@@ -374,14 +374,14 @@ $msg="";
 if (($change_declarant=='Changer') && isset($_POST['choixProf']) && ($_POST['choixProf']!= '0') && ($etat_incident!='clos')) {
     check_token();
     $sql="UPDATE  s_incidents SET declarant='".$_POST['choixProf']."' WHERE id_incident='".$_POST['id_incident']."'";
-    $test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $test=mysqli_query($GLOBALS["mysqli"], $sql);
     $msg .= "Déclarant modifié";
     // On recherche le primo-déclarant
-    $resPrimo=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT primo_declarant FROM s_incidents WHERE id_incident='".$id_incident."'");
+    $resPrimo=mysqli_query($GLOBALS["mysqli"], "SELECT primo_declarant FROM s_incidents WHERE id_incident='".$id_incident."'");
     if (mysqli_fetch_object($resPrimo)->primo_declarant == '') {
         $sql="UPDATE  s_incidents SET primo_declarant ='".$_SESSION['login']."' WHERE id_incident='".$_POST['id_incident']."'";
         // echo $sql;
-        $test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+        $test=mysqli_query($GLOBALS["mysqli"], $sql);
         $msg .= " - Primo-déclarant modifié";
     }
 }
@@ -395,21 +395,21 @@ if($etat_incident!='clos') {
 		$suppr_ele_incident=$_POST['suppr_ele_incident'];
 		for($i=0;$i<count($suppr_ele_incident);$i++) {
 			$sql="SELECT 1=1 FROM s_sanctions WHERE login='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
-			$test_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_sanction)>0) {
 				$msg.="ERREUR: Il n'est pas possible de supprimer ".$suppr_ele_incident[$i]." pour l'".$mod_disc_terme_incident." $id_incident car une ou des ".$mod_disc_terme_sanction."s sont prises. Vous devez d'abord supprimer les ".$mod_disc_terme_sanction."s associées.<br />\n";
 			}
 			else {
 				$sql="DELETE FROM s_traitement_incident WHERE login_ele='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
 				//echo "$sql<br />";
-				$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$menage) {
 					$msg.="ERREUR lors de la suppression des traitements associés à ".$suppr_ele_incident[$i]." pour l'".$mod_disc_terme_incident." $id_incident. Les mesures demandées ou prises posent un problème.<br />\n";
 				}
 				else {
 					$sql="DELETE FROM s_protagonistes WHERE login='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="ERREUR lors de la suppression de ".$suppr_ele_incident[$i]." pour l'".$mod_disc_terme_incident." $id_incident<br />\n";
 					}
@@ -429,11 +429,11 @@ if($etat_incident!='clos') {
 				if(isset($ele_login[$i])) {
 					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)==0) {
 						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
 							$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
 						}
@@ -443,7 +443,7 @@ if($etat_incident!='clos') {
 						$sql="UPDATE s_protagonistes SET qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
 						//$sql="UPDATE s_protagonistes SET qualite='".$qualite[$i]."' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
 							$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
 						}
@@ -452,7 +452,7 @@ if($etat_incident!='clos') {
 					if(isset($avertie[$i])) {
 						$sql="UPDATE s_protagonistes SET avertie='$avertie[$i]' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."';";
 						//echo "$sql<br />\n";
-						$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$update) {
 							echo "Echec de l'enregistrement pour la famille de ".$ele_login[$i].".";
 						}
@@ -464,11 +464,11 @@ if($etat_incident!='clos') {
 				if(isset($u_login[$i])) {
 					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)==0) {
 						$tmp_statut="";
 						$sql="SELECT statut FROM utilisateurs WHERE login='".$u_login[$i]."'";
-						$res_statut=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_statut=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_statut)>0) {
 							$lig_statut=mysqli_fetch_object($res_statut);
 							$tmp_statut=$lig_statut->statut;
@@ -476,7 +476,7 @@ if($etat_incident!='clos') {
 
 						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
 							$msg.="ERREUR lors de l'enregistrement de ".$u_login[$i]."<br />\n";
 						}
@@ -484,7 +484,7 @@ if($etat_incident!='clos') {
 					else {
 						$sql="UPDATE s_protagonistes SET qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
 							$msg.="ERREUR lors de l'enregistrement de ".$u_login[$i]."<br />\n";
 						}
@@ -581,12 +581,12 @@ if($etat_incident!='clos') {
 													id_lieu='$id_lieu',
 													message_id='$message_id';";
 				//echo "$sql<br />\n";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					$msg.="ERREUR lors de l'enregistrement de l'".$mod_disc_terme_incident."&nbsp;:".$sql."<br />\n";
 				}
 				else {
-					$id_incident=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+					$id_incident=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 					$msg.="Enregistrement de l'".$mod_disc_terme_incident." n°".$id_incident." effectué.<br />\n";
 				}
 	
@@ -627,7 +627,7 @@ if($etat_incident!='clos') {
 					$sql.="nature='".traitement_magic_quotes(corriger_caracteres($nature))."' ,";
 					//on vérifie si une catégorie est définie pour cette nature
 					$sql2="SELECT id_categorie FROM s_incidents WHERE nature='".traitement_magic_quotes(corriger_caracteres($nature))."' GROUP BY id_categorie";
-					$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql2);
+					$res2=mysqli_query($GLOBALS["mysqli"], $sql2);
 					//if($res2) {
 					if(mysqli_num_rows($res2)>0) {
 						while ($lign_cat=mysqli_fetch_object($res2)){
@@ -682,7 +682,7 @@ if($etat_incident!='clos') {
 					check_token();
 
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="ERREUR lors de la mise à jour de l'".$mod_disc_terme_incident." ".$id_incident."<br />\n";
 					}
@@ -692,7 +692,7 @@ if($etat_incident!='clos') {
 				}
 				
 				$sql_declarant="SELECT declarant FROM s_incidents WHERE id_incident='$id_incident';";
-		        $res_declarant=mysqli_query($GLOBALS["___mysqli_ston"], $sql_declarant);
+		        $res_declarant=mysqli_query($GLOBALS["mysqli"], $sql_declarant);
 		        if(mysqli_num_rows($res_declarant)>0) {
 			        $lig_decclarant=mysqli_fetch_object($res_declarant);
 			        $texte_mail= "Déclaration initiale de l'".$mod_disc_terme_incident." par ".u_p_nom($lig_decclarant->declarant)."\n";
@@ -714,12 +714,12 @@ if($etat_incident!='clos') {
 				for($i=0;$i<count($ele_login);$i++) {
 					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)==0) {
 						check_token();
 						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
 							$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
 						}
@@ -730,20 +730,20 @@ if($etat_incident!='clos') {
 				for($i=0;$i<count($u_login);$i++) {
 					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)==0) {
 						check_token();
 
 						$tmp_statut="";
 						$sql="SELECT statut FROM utilisateurs WHERE login='".$u_login[$i]."'";
-						$res_statut=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_statut=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_statut)>0) {
 							$lig_statut=mysqli_fetch_object($res_statut);
 							$tmp_statut=$lig_statut->statut;
 	
 							$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."';";
 							//echo "$sql<br />\n";
-							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res) {
 								$msg.="ERREUR lors de l'enregistrement de ".$u_login[$i]."<br />\n";
 							}
@@ -773,7 +773,7 @@ $destinataires,
 $headers);
 </pre>";
 */
-						$res_mes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_mes=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_mes)>0) {
 							while($lig_mes=mysqli_fetch_object($res_mes)) {
 								//$tab_mes_enregistree[]=$lig_mes->mesure;
@@ -871,18 +871,18 @@ $headers);
 	
 								if($texte_travail=="") {
 									$sql="DELETE FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
-									$res_del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_del=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
 								else {
 									$sql="SELECT * FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
-									$res_mes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_mes=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_mes)>0) {
 										$sql="UPDATE s_travail_mesure SET travail='".$texte_travail."' WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
-										$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									}
 									else {
 										$sql="INSERT INTO s_travail_mesure SET travail='".$texte_travail."', id_incident='$id_incident', login_ele='".$mesure_ele_login[$i]."';";
-										$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									}
 								}
 							}
@@ -891,7 +891,7 @@ $headers);
 						//$tab_mesure_possible=array();
 						//$sql="SELECT mesure FROM s_mesures;";
 						$sql="SELECT * FROM s_mesures;";
-						$res_mes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_mes=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_mes)>0) {
 							while($lig_mes=mysqli_fetch_object($res_mes)) {
 								//$tab_mesure_possible[]=$lig_mes->mesure;
@@ -902,7 +902,7 @@ $headers);
 										// Cette mesure n'a plus lieu d'être enregistrée
 										//$sql="DELETE FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."' AND mesure='".$lig_mes->mesure."';";
 										$sql="DELETE FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."' AND id_mesure='".$lig_mes->id."';";
-										$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$suppr) {
 											$msg.="ERREUR lors de la suppression de la mesure ".$lig_mes->mesure." pour ".$mesure_ele_login[$i]."<br />\n";
 										}
@@ -915,7 +915,7 @@ $headers);
 										// Cette mesure doit être enregistrée
 										//$sql="INSERT INTO s_traitement_incident SET id_incident='$id_incident', login_ele='".$mesure_ele_login[$i]."', mesure='".$lig_mes->mesure."', login_u='".$_SESSION['login']."';";
 										$sql="INSERT INTO s_traitement_incident SET id_incident='$id_incident', login_ele='".$mesure_ele_login[$i]."', id_mesure='".$lig_mes->id."', login_u='".$_SESSION['login']."';";
-										$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert) {
 											$msg.="ERREUR lors de l'enregistrement de la mesure ".$lig_mes->mesure." pour ".$mesure_ele_login[$i]."<br />\n";
 										}
@@ -933,7 +933,7 @@ $headers);
 					check_token();
 
 					$sql="UPDATE s_incidents SET etat='clos' WHERE id_incident='$id_incident';";
-					$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$update) {
 						$msg.="ERREUR lors de la clôture de l'".$mod_disc_terme_incident." n°$id_incident.<br />\n";
 					}
@@ -958,7 +958,7 @@ $headers);
 					if((!isset($nature))||($nature=='')) {
 						$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident' AND (nature!='' OR description!='');";
 						//echo "$sql<br />";
-						$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_test)==0) {
 							$temoin_envoyer_mail="n";
 						}
@@ -968,12 +968,12 @@ $headers);
 	
 						// Recuperation du message_id pour les fils de discussion dans les mails
 						$sql_mi="SELECT message_id FROM s_incidents WHERE id_incident='$id_incident';";
-						$res_mi=mysqli_query($GLOBALS["___mysqli_ston"], $sql_mi);
+						$res_mi=mysqli_query($GLOBALS["mysqli"], $sql_mi);
 						$lig_mi=mysqli_fetch_object($res_mi);
 						if($lig_mi->message_id=="") {
 							$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".mb_substr(md5(microtime()),0,6);
 							$sql="UPDATE s_incidents SET message_id='$message_id' WHERE id_incident='$id_incident';";
-							$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 						else {
 							$references_mail=$lig_mi->message_id;
@@ -985,7 +985,7 @@ $headers);
 						$liste_protagonistes_responsables="";
 						$sql="SELECT * FROM s_protagonistes WHERE id_incident='$id_incident' ORDER BY login;";
 						//echo "$sql<br />";
-						$res_prot=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_prot=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_prot)>0) {
 							$texte_mail.="\n";
 							$texte_mail.="Protagonistes de l'".$mod_disc_terme_incident.": \n";
@@ -1002,7 +1002,7 @@ $headers);
 								if(mb_strtolower($lig_prot->qualite)=='responsable') {
 									$sql="SELECT DISTINCT c.classe FROM classes c,j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig_prot->login' ORDER BY jec.periode DESC limit 1;";
 									//echo "$sql<br />";
-									$res_prot_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_prot_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_prot)>0) {
 										$lig_prot_classe=mysqli_fetch_object($res_prot_classe);
 										$info_classe_prot="[$lig_prot_classe->classe]";
@@ -1017,7 +1017,7 @@ $headers);
 	
 								$sql="SELECT * FROM s_mesures sm, s_traitement_incident sti WHERE sti.id_incident='$id_incident' AND sti.login_ele='".$lig_prot->login."' AND sti.id_mesure=sm.id ORDER BY type, mesure;";
 								//echo "$sql<br />";
-								$res_mes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_mes=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_mes)>0) {
 									while($lig_mes=mysqli_fetch_object($res_mes)) {
 										$texte_mail.="   $lig_mes->mesure ($lig_mes->type)\n";
@@ -1028,7 +1028,7 @@ $headers);
 								// On va avoir des personnes alertees inutilement pour les élèves qui ont changé de classe.
 								// NON
 								$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='$lig_prot->login' ORDER BY periode DESC LIMIT 1;";
-								$res_clas_prot=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_clas_prot=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_clas_prot)>0) {
 									$lig_clas_prot=mysqli_fetch_object($res_clas_prot);
 									if(!in_array($lig_clas_prot->id_classe,$tab_alerte_classe)) {
@@ -1127,7 +1127,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='cpe')||($_SES
 	$sql="SELECT 1=1 FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
 	WHERE sp.id_incident IS NULL;";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 ?>
     <a href='incidents_sans_protagonistes.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
@@ -1152,7 +1152,7 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	$sql="SELECT 1=1 FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
 	WHERE sp.id_incident IS NULL;";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 ?>
     <a href='incidents_sans_protagonistes.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
@@ -1163,7 +1163,7 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	}
 	// Rechercher les incidents signalés par le prof ou ayant le prof pour protagoniste
 	$sql="SELECT 1=1 FROM s_incidents WHERE declarant='".$_SESSION['login']."';";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 ?>
     <a href='traiter_incident.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
@@ -1173,7 +1173,7 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	}
 	else {
 		$sql="SELECT 1=1 FROM s_protagonistes WHERE login='".$_SESSION['login']."';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 ?>
     <a href='traiter_incident.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
@@ -1183,7 +1183,7 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 		}
 		else {
 			$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 ?>
     <a href='traiter_incident.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
@@ -1218,7 +1218,7 @@ if(acces("/mod_discipline/aide.php", $_SESSION['statut'])) {
 $etat_incident="";
 if(isset($id_incident)) {
 	$sql="SELECT 1=1 FROM s_incidents WHERE id_incident='$id_incident' AND etat='clos';";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		$etat_incident="clos";
 		$step=2;
@@ -1229,7 +1229,7 @@ if(isset($id_incident)) {
 		// Il doit s'adresser à un cpe, scol, admin ou au déclarant pour apporter un commentaire.
 		// Remarque: S'il arrive sur cette page c'est qu'il est protagoniste de l'incident ou déclarant.
 		$sql="SELECT 1=1 FROM s_incidents WHERE id_incident='$id_incident' AND declarant!='".$_SESSION['login']."';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			$etat_incident="clos";
 			$step=2;
@@ -1280,7 +1280,7 @@ if($step!=2) {
 }
 $nb_droit_prof_saisie_sanction=0;
 $sql="SELECT 1=1 FROM s_types_sanctions2 WHERE saisie_prof='y';";
-$test_droit_prof_saisie_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test_droit_prof_saisie_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_droit_prof_saisie_sanction=mysqli_num_rows($test_droit_prof_saisie_sanction);
 if((isset($id_incident))&&
 	(
@@ -1310,7 +1310,7 @@ if(isset($id_incident) ) {
         if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
             $peutChanger = FALSE;
             // On recherche le primo-déclarant
-            $resPrimo=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT primo_declarant , declarant FROM s_incidents WHERE id_incident='".$id_incident."'");
+            $resPrimo=mysqli_query($GLOBALS["mysqli"], "SELECT primo_declarant , declarant FROM s_incidents WHERE id_incident='".$id_incident."'");
             $response = mysqli_fetch_object($resPrimo);
             if ($response->primo_declarant == $_SESSION['login'] || ($response->primo_declarant == '' && $response->declarant == $_SESSION['login'])) {
                 $peutChanger= TRUE;
@@ -1333,7 +1333,7 @@ if(isset($id_incident) ) {
                         ORDER BY u.nom , u.prenom";
                 }
                 // echo $sqlProf."<br />";
-                $resProf=mysqli_query($GLOBALS["___mysqli_ston"], $sqlProf);
+                $resProf=mysqli_query($GLOBALS["mysqli"], $sqlProf);
     ?>
         <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='change_declare'>
         <fieldset style='border: 1px solid grey; margin-bottom:0.5em; background-image: url("../images/background/opacite50.png");'>
@@ -1372,7 +1372,7 @@ if(isset($id_incident) ) {
     // Récupération des qualités
     $tab_qualite=array();
     $sql="SELECT * FROM s_qualites ORDER BY qualite;";
-    $res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $res=mysqli_query($GLOBALS["mysqli"], $sql);
     if(mysqli_num_rows($res)>0) {
             while($lig=mysqli_fetch_object($res)) {
                     $tab_qualite[]=$lig->qualite;
@@ -1383,7 +1383,7 @@ if(isset($id_incident) ) {
 
     $sql="SELECT * FROM s_protagonistes WHERE id_incident='$id_incident' ORDER BY statut,qualite,login;";
     //echo "$sql<br />";
-    $res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $res=mysqli_query($GLOBALS["mysqli"], $sql);
     if(mysqli_num_rows($res)>0) {
         if($etat_incident!='clos') {
 ?>
@@ -1445,7 +1445,7 @@ if(isset($id_incident) ) {
 <?php
         $sql="SELECT nom,prenom FROM eleves WHERE login='$lig->login';";
             //echo "$sql<br />\n";
-            $res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+            $res2=mysqli_query($GLOBALS["mysqli"], $sql);
             if(mysqli_num_rows($res2)>0) {
                 $ele_login[]=$lig->login;
                 $lig2=mysqli_fetch_object($res2);
@@ -1501,7 +1501,7 @@ if(isset($id_incident) ) {
 <?php
                 $sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$lig->login';";
                 //echo "$sql<br />\n";
-                $res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                $res2=mysqli_query($GLOBALS["mysqli"], $sql);
                 if(mysqli_num_rows($res2)>0) {
                     $lig2=mysqli_fetch_object($res2);
                     echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
@@ -1521,7 +1521,7 @@ if(isset($id_incident) ) {
                     $sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
                                                                                     WHERE du.login_user = '".$lig->login."'
                                                                                     AND du.id_statut = ds.id;";
-                    $query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                    $query = mysqli_query($GLOBALS["mysqli"], $sql);
                     $result = mysqli_fetch_array($query);
 ?>
                 <td><?php echo $result['nom_statut']; ?></td>
@@ -1746,7 +1746,7 @@ if(isset($id_incident) ) {
 
                 if($step!=2) {
                     $sql="SELECT 1=1 FROM s_incidents WHERE id_incident='$id_incident' AND (nature!='' OR description!='');";
-                    $test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                    $test=mysqli_query($GLOBALS["mysqli"], $sql);
                     if(mysqli_num_rows($test)==0) {
 ?>
         <p style='color:red;'>
@@ -1867,7 +1867,7 @@ if(isset($id_incident) ) {
 	elseif(isset($id_classe)) {
             $sql="SELECT DISTINCT e.login,e.nom,e.prenom FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom;";
             //echo "$sql<br />";
-            $res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+            $res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
             if(mysqli_num_rows($res_ele)>0) {
 ?>
         <p>Elèves de la classe de <?php echo get_class_from_id($id_classe); ?>&nbsp;:</p>
@@ -1968,7 +1968,7 @@ if(isset($id_incident) ) {
 	}
 	//echo "$sql<br />";
 	if ($_SESSION['statut']!='autre') { //statut autre : ajout Eric de la condition 
-		$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_clas)>0) {   
 ?>
     <div style='float:left; width:58%; padding:0.5em; margin-right:1%; border: 1px solid grey; margin-top:0.5em; background-image: url("../images/background/opacite50.png");'>
@@ -2007,7 +2007,7 @@ if(isset($id_incident) ) {
 echo "<div style='float:left; width: 38%; padding:0.5em; border: 1px solid grey; margin-top:0.5em; background-image: url(\"../images/background/opacite50.png\");'>\n";
 	//$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' ORDER BY statut;";
 	$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' AND statut!='eleve' AND etat='actif' ORDER BY statut;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		// Ca ne doit pas arriver;o)
 ?>
@@ -2022,7 +2022,7 @@ echo "<div style='float:left; width: 38%; padding:0.5em; border: 1px solid grey;
 <?php
 	if(isset($categ_u)) {
 		$sql="SELECT login, nom, prenom, civilite FROM utilisateurs WHERE statut='$categ_u' ORDER BY nom, prenom;";
-		$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res2)==0) {
 			// Ca ne doit pas arriver;o)
 ?>
@@ -2107,7 +2107,7 @@ echo "<div style='float:left; width: 38%; padding:0.5em; border: 1px solid grey;
 			$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
 											WHERE du.login_user = '".$lig2->login."'
 											AND du.id_statut = ds.id;";
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$query = mysqli_query($GLOBALS["mysqli"], $sql);
 			$result = mysqli_fetch_array($query);
 ?>
                             <td><?php echo $result['nom_statut']; ?></td>
@@ -2170,7 +2170,7 @@ elseif($step==1) {
 
 	//$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' ORDER BY statut;";
 	$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' AND statut!='eleve' AND etat='actif' ORDER BY statut;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		// Ca ne doit pas arriver;o)
 ?>
@@ -2233,7 +2233,7 @@ elseif($step==1) {
 	}
 	elseif(isset($categ_u)) {
 		$sql="SELECT login, nom, prenom, civilite FROM utilisateurs WHERE statut='$categ_u' ORDER BY nom, prenom;";
-		$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res2)==0) {
 			// Ca ne doit pas arriver;o)
 ?>
@@ -2314,7 +2314,7 @@ elseif($step==1) {
 			$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
 											WHERE du.login_user = '".$lig2->login."'
 											AND du.id_statut = ds.id;";
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$query = mysqli_query($GLOBALS["mysqli"], $sql);
 			$result = mysqli_fetch_array($query);
 ?>
                             <td><?php echo $result['nom_statut']; ?></td>
@@ -2368,7 +2368,7 @@ elseif($step==2) {
 		echo " n°$id_incident";
 
 		$sql="SELECT declarant FROM s_incidents WHERE id_incident='$id_incident';";
-		$res_dec=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_dec=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_dec)>0) {
 			$lig_dec=mysqli_fetch_object($res_dec);
 ?>
@@ -2403,7 +2403,7 @@ elseif($step==2) {
 
 	//$timestamp_heure=time();
 	$sql="SELECT nom_definie_periode FROM edt_creneaux WHERE CURTIME()>=heuredebut_definie_periode AND CURTIME()<heurefin_definie_periode;";
-	$res_time=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_time=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_time)>0) {
 		$lig_time=mysqli_fetch_object($res_time);
 		$display_heure=$lig_time->nom_definie_periode;
@@ -2423,7 +2423,7 @@ elseif($step==2) {
 <?php
 		}
 		$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
-		$res_inc=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_inc=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_inc)>0) {
 			$lig_inc=mysqli_fetch_object($res_inc);                        
 			$display_date=formate_date($lig_inc->date);
@@ -2551,7 +2551,7 @@ elseif($step==2) {
 
 	$sql="(SELECT * FROM s_lieux_incidents WHERE lieu!='')";
 	//echo "$sql<br />\n";
-	$res_lieu=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_lieu=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_lieu)>0) {
 		$alt=$alt*(-1);
 ?>
@@ -2610,7 +2610,7 @@ elseif($step==2) {
 			
 			// On limite les natures d'incident au contenu de s_natures
 			$sql="SELECT DISTINCT nature FROM s_natures WHERE nature!='' ORDER BY nature;";
-			$res_nat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_nat=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_nat)>0) {
 				$saisie_nature_libre="n";
 ?>
@@ -2657,7 +2657,7 @@ new Ajax.Autocompleter (
 			else {
 				$sql="SELECT DISTINCT nature FROM s_natures WHERE nature!='' ORDER BY nature;";
 			}
-			$res_nat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_nat=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_nat)>0) {
 ?>
                     <a href='#' 
@@ -2930,7 +2930,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 			$tab_mes_prise=array();
 			//$sql="SELECT mesure FROM s_mesures WHERE type='prise';";
 			$sql="SELECT * FROM s_mesures WHERE type='prise';";
-			$res_mes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_mes=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_mes)>0) {
 				while($lig_mes=mysqli_fetch_object($res_mes)) {
 					$tab_id_mes_prise[]=$lig_mes->id;
@@ -2942,7 +2942,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 			$tab_mes_demandee=array();
 			//$sql="SELECT mesure FROM s_mesures WHERE type='demandee';";
 			$sql="SELECT * FROM s_mesures WHERE type='demandee';";
-			$res_mes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_mes=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_mes)>0) {
 				while($lig_mes=mysqli_fetch_object($res_mes)) {
 					$tab_id_mes_demandee[]=$lig_mes->id;
@@ -3007,7 +3007,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 					$tab_mes_eleve=array();
 					//$sql="SELECT mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$ele_login[$i]."';";
 					$sql="SELECT id_mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$ele_login[$i]."';";
-					$res_mes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_mes=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_mes)>0) {
 						while($lig_mes=mysqli_fetch_object($res_mes)) {
 							//$tab_mes_eleve[]=$lig_mes->mesure;
@@ -3114,7 +3114,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 					}
 
 					$sql="SELECT * FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$ele_login[$i]."';";
-					$res_travail_mesure_demandee=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_travail_mesure_demandee=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_travail_mesure_demandee)>0) {
 						$lig_travail_mesure_demandee=mysqli_fetch_object($res_travail_mesure_demandee);
 						$texte_travail=$lig_travail_mesure_demandee->travail;

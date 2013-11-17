@@ -115,7 +115,7 @@ function age($date_de_naissance_fr)
          function pp($classe_choix)
           {
             global $prefix_base;
-               $call_prof_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.classe = '".$classe_choix."'");
+               $call_prof_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.classe = '".$classe_choix."'");
                $data_prof_classe = mysqli_fetch_array($call_prof_classe);
                $suivi_par = $data_prof_classe['suivi_par'];
                return($suivi_par);
@@ -123,7 +123,7 @@ function age($date_de_naissance_fr)
 
 // On ajoute un paramètre sur les élèves de ce CPE en particulier
 $sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
-$query_eleves_cpe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$query_eleves_cpe = mysqli_query($GLOBALS["mysqli"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $test_cpe = array();
 
 $test_nbre_eleves_cpe = mysqli_num_rows($query_eleves_cpe);
@@ -164,16 +164,16 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
                               $requete = "UPDATE ".$prefix_base."suivi_eleve_cpe SET parqui_suivi_eleve_cpe='".$_SESSION['login']."', komenti_suivi_eleve_cpe = '$data_info_suivi', niveau_message_suivi_eleve_cpe = '$niveau_urgent', action_suivi_eleve_cpe = '$action_suivi', support_suivi_eleve_cpe = '".$support_suivi_eleve_cpe."' WHERE id_suivi_eleve_cpe = '".$id_suivi_eleve_cpe."'";
                       }
                             // Execution de cette requete dans la base cartouche
-                             mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-			     if(!empty($id_suivi_eleve_cpe)) { $id_saisi = $id_suivi_eleve_cpe; } else { $id_saisi = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res); }
+                             mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			     if(!empty($id_suivi_eleve_cpe)) { $id_saisi = $id_suivi_eleve_cpe; } else { $id_saisi = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res); }
                              $verification = 1;
 
 			     // si le support d'action est le courrier alors on ajout le courrier dans le suivi des courriers
 			     if($support_suivi_eleve_cpe === '4' and !empty($lettre_type))
 			      {
 	                             $requete_courrier = "INSERT INTO ".$prefix_base."lettres_suivis (quirecois_lettre_suivi, partde_lettre_suivi, partdenum_lettre_suivi, quiemet_lettre_suivi, emis_date_lettre_suivi, emis_heure_lettre_suivi, envoye_date_lettre_suivi, envoye_heure_lettre_suivi, type_lettre_suivi, reponse_date_lettre_suivi, statu_lettre_suivi) VALUES ('".$eleve_suivi_eleve_cpe."', 'suivi_eleve_cpe', '".$id_saisi."', '".$_SESSION['login']."', '".$date_fiche."', '".$heure_fiche."', '', '', '".$lettre_type."', '', 'en attente')";
-	                             mysqli_query($GLOBALS["___mysqli_ston"], $requete_courrier) or die('Erreur SQL !'.$requete_courrier.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-				     $courrier_suivi_eleve_cpe = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+	                             mysqli_query($GLOBALS["mysqli"], $requete_courrier) or die('Erreur SQL !'.$requete_courrier.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				     $courrier_suivi_eleve_cpe = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 			      }
             } else {
                      // vérification = 3 - Tous les champs ne sont pas remplis
@@ -195,21 +195,21 @@ if ($action_sql === "supprimer")
          //Requete de suppresion MYSQL
             $requete = "DELETE FROM ".$prefix_base."suivi_eleve_cpe WHERE id_suivi_eleve_cpe ='$id_suivi_eleve_cpe'";
          // Execution de cette requete
-            mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+            mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
  }
 
 if ($action == "modifier")
  {
       $id_suivi_eleve_cpe = $_GET['id_suivi_eleve_cpe'];
       $requete_modif_fiche = 'SELECT * FROM '.$prefix_base.'suivi_eleve_cpe WHERE id_suivi_eleve_cpe="'.$id_suivi_eleve_cpe.'"';
-      $resultat_modif_fiche = mysqli_query($GLOBALS["___mysqli_ston"], $requete_modif_fiche) or die('Erreur SQL !'.$requete_modif_fiche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat_modif_fiche = mysqli_query($GLOBALS["mysqli"], $requete_modif_fiche) or die('Erreur SQL !'.$requete_modif_fiche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       $data_modif_fiche = mysqli_fetch_array($resultat_modif_fiche);
  }
 
 if ($action_sql === 'detacher_courrier')
  {
 	$requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
-	mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
  }
 
 // requête liste des classes en fonction du cpe didier
@@ -381,8 +381,8 @@ function pagin(numpage){
 				GROUP BY e.login ORDER BY count DESC LIMIT 0, ".$TOP;
 			}
 		}
-		$execution_top10 = mysqli_query($GLOBALS["___mysqli_ston"], $requete_top10)
-			or die('Erreur SQL !'.$requete_top10.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$execution_top10 = mysqli_query($GLOBALS["mysqli"], $requete_top10)
+			or die('Erreur SQL !'.$requete_top10.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		// On définit le margin_top pour la suite
 			$margin_top = 50;
 		while ( $data_top10 = mysqli_fetch_array($execution_top10)) {
@@ -435,7 +435,7 @@ function pagin(numpage){
 			                           FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."eleves e WHERE ( e.login = ae.eleve_absence_eleve AND ae.type_absence_eleve = '".$type."' )
 									   GROUP BY e.login ORDER BY count DESC LIMIT 0, 10"; }
           }
-         $execution_top10 = mysqli_query($GLOBALS["___mysqli_ston"], $requete_top10) or die('Erreur SQL !'.$requete_top10.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+         $execution_top10 = mysqli_query($GLOBALS["mysqli"], $requete_top10) or die('Erreur SQL !'.$requete_top10.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
          while ( $data_top10 = mysqli_fetch_array($execution_top10))
          {
                      if ($ic === '1') { $ic='2'; $couleur_cellule='td_tableau_absence_1'; } else { $couleur_cellule='td_tableau_absence_2'; $ic='1'; }
@@ -471,7 +471,7 @@ function pagin(numpage){
           <select name="classe_choix" onchange="javascript:document.form1.submit()">
             <option value="" selected="selected" onclick="javascript:document.form1.submit()">Toutes les classes</option>
                 <?php
-				$resultat_liste_classe = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				$resultat_liste_classe = mysqli_query($GLOBALS["mysqli"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				while ( $data_liste_classe = mysqli_fetch_array($resultat_liste_classe)) {
 					if ($classe_choix == $data_liste_classe['id']) {
 						$selected = "selected";
@@ -533,7 +533,7 @@ if ($choix=="sm" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 
 	//pagination didier
 
-  $retour_total=mysqli_query($GLOBALS["___mysqli_ston"], $compte);
+  $retour_total=mysqli_query($GLOBALS["mysqli"], $compte);
 	$donnees_total = mysqli_fetch_assoc($retour_total);
 	$total = $donnees_total['total'];
 
@@ -589,7 +589,7 @@ if ($test_nbre_eleves_cpe === 0){
 										WHERE ( jecp.e_login=e.login AND jecp.cpe_login = '".$_SESSION['login']."'  AND e.login = ae.eleve_absence_eleve AND e.login = jer.login AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve LIMIT ".$premiereEntree.",".$messageParPage."";
 	 }
 }
-	 $execution_sans_motif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	 $execution_sans_motif = mysqli_query($GLOBALS["mysqli"], $requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 	}
 	// Pour la position du premier div, on définit le margin-top mise à zero pour eviter clignotement si information rentrée
@@ -696,7 +696,7 @@ if ($test_nbre_eleves_cpe === 0){
          $total = 0;
          $i = 0;
          $ic = 1;
-           $execution_sans_motif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+           $execution_sans_motif = mysqli_query($GLOBALS["mysqli"], $requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		while ( $data_sans_motif = mysqli_fetch_array($execution_sans_motif))
 		{
 			if (in_array($data_sans_motif['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -799,7 +799,7 @@ if ($test_nbre_eleves_cpe === 0){
           <select name="classe_choix" onchange="javascript:document.form1.submit()">
             <option value="" selected onclick="javascript:document.form1.submit()">Toutes les classes</option>
                 <?php
-                  $resultat_liste_classe = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                  $resultat_liste_classe = mysqli_query($GLOBALS["mysqli"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                   while($data_liste_classe = mysqli_fetch_array($resultat_liste_classe)) {
                          if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
             <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onclick="javascript:document.form1.submit()">
@@ -857,7 +857,7 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 								   WHERE (e.login = ae.eleve_absence_eleve AND jecp.e_login=e.login AND jecp.cpe_login='".$_SESSION['login']."' AND ae.justify_absence_eleve != 'O' AND ae.type_absence_eleve = '".$type."' )";
 					}
 			}
-		 $retour_total=mysqli_query($GLOBALS["___mysqli_ston"], $compte);
+		 $retour_total=mysqli_query($GLOBALS["mysqli"], $compte);
 	$donnees_total = mysqli_fetch_assoc($retour_total);
 	$total = $donnees_total['total'];
 	$messageParPage = 50;
@@ -905,8 +905,8 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 								   FROM ".$prefix_base."j_eleves_cpe jecp, ".$prefix_base."eleves e, ".$prefix_base."j_eleves_regime jer, ".$prefix_base."absences_eleves ae
 								   WHERE ( e.login = ae.eleve_absence_eleve AND jecp.e_login=e.login AND jecp.cpe_login='".$_SESSION['login']."' AND e.login = jer.login AND ae.justify_absence_eleve!='O' AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve LIMIT ".$premiereEntree.",".$messageParPage.""; }
 		 }
-		$execution_sans_motif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_sans_motif)
-			or die('Erreur SQL !'.$requete_sans_motif.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$execution_sans_motif = mysqli_query($GLOBALS["mysqli"], $requete_sans_motif)
+			or die('Erreur SQL !'.$requete_sans_motif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			}
 		// Pour la position du premier div, on définit le margin-top mise à zero pour éviter clignotement si information saisie didier
 			$margin_top = 0;
@@ -1015,7 +1015,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
          $total = 0;
          $i = 0;
          $ic = 1;
-         $execution_sans_motif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+         $execution_sans_motif = mysqli_query($GLOBALS["mysqli"], $requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
          while ( $data_sans_motif = mysqli_fetch_array($execution_sans_motif))
          {
 			if (in_array($data_sans_motif['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -1121,7 +1121,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
           <select name="classe_choix" onChange="javascript:document.form1.submit()">
             <option value="" selected onClick="javascript:document.form1.submit()">Toutes les classes</option>
                 <?php
-                  $resultat_liste_classe = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                  $resultat_liste_classe = mysqli_query($GLOBALS["mysqli"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                   while ( $data_liste_classe = mysqli_fetch_array($resultat_liste_classe)) {
                          if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
             <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onclick="javascript:document.form1.submit()">
@@ -1168,7 +1168,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 			WHERE ( e.login = ae.eleve_absence_eleve AND jecp.e_login=e.login AND jecp.cpe_login='".$_SESSION['login']."' AND ae.justify_absence_eleve = 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' )";
 					}
        }
-		 $retour_total=mysqli_query($GLOBALS["___mysqli_ston"], $compte);
+		 $retour_total=mysqli_query($GLOBALS["mysqli"], $compte);
 	$donnees_total = mysqli_fetch_assoc($retour_total);
 	$total = $donnees_total['total'];
 	//echo $total;
@@ -1229,8 +1229,8 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 				ORDER BY nom,prenom,d_heure_absence_eleve LIMIT ".$premiereEntree.",".$messageParPage."";
 			}
 		}
-		$execution_avec_motif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_avec_motif)
-		 	or die('Erreur SQL !'.$requete_avec_motif.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$execution_avec_motif = mysqli_query($GLOBALS["mysqli"], $requete_avec_motif)
+		 	or die('Erreur SQL !'.$requete_avec_motif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		// On construit alors le div de la fiche élève
 		// Pour la position du premier div, on définit le margin-top mise a zero pour eviter clignotement si information saisie didier
 			$margin_top = 0;
@@ -1360,8 +1360,8 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 		$total = 0;
 		$i = 0;
 		$ic = 1;
-		$execution_avec_motif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_avec_motif)
-			or die('Erreur SQL !'.$requete_avec_motif.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$execution_avec_motif = mysqli_query($GLOBALS["mysqli"], $requete_avec_motif)
+			or die('Erreur SQL !'.$requete_avec_motif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		while ( $data_avec_motif = mysqli_fetch_array($execution_avec_motif)) {
 
 			if ($ic==1) {
@@ -1469,7 +1469,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
             <select name="classe_choix" onChange="javascript:document.form1.submit()">
               <option value="" selected onClick="javascript:document.form1.submit()">Toutes les classes</option>
                   <?php
-                    $resultat_liste_classe = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    $resultat_liste_classe = mysqli_query($GLOBALS["mysqli"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                     While ( $data_liste_classe = mysqli_fetch_array($resultat_liste_classe)) {
                            if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
               <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onclick="javascript:document.form1.submit()">

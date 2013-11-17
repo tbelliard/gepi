@@ -46,7 +46,7 @@ if (is_numeric($id_groupe)) {
 }
 
 // Nom complet de la classe
-$appel_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id='$id_classe'");
+$appel_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$id_classe'");
 $classe_nom = @mysql_result($appel_classe, 0, "classe");
 // Nom complet de la matière
 
@@ -113,7 +113,7 @@ if ($current_group) {
     echo " - <a href=index.php?id_classe=$id_classe&amp;id_groupe=$id_groupe>Retour</a> - ";
 }
 echo "<hr />";
-$test_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
+$test_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
 $nb_test = mysqli_num_rows($test_cahier_texte);
 if ($nb_test == 0) {
     echo "<center><h3 class='gepi'>Choisissez une classe et une matière.</h3></center>";
@@ -121,7 +121,7 @@ if ($nb_test == 0) {
     die();
 }
 // Affichage des informations générales
-$appel_info_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
+$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 $nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
@@ -144,7 +144,7 @@ $req_notices =
     and date_ct <= '$current_time'
     and date_ct <= '".getSettingValue("end_bookings")."')
     ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
-$res_notices = mysqli_query($GLOBALS["___mysqli_ston"], $req_notices);
+$res_notices = mysqli_query($GLOBALS["mysqli"], $req_notices);
 $notice = mysqli_fetch_object($res_notices);
 
 $req_devoirs =
@@ -156,7 +156,7 @@ $req_devoirs =
     and date_ct >= '".getSettingValue("begin_bookings")."'
     and date_ct <= '".getSettingValue("end_bookings")."'
     ) order by date_ct ".$current_ordre;
-$res_devoirs = mysqli_query($GLOBALS["___mysqli_ston"], $req_devoirs);
+$res_devoirs = mysqli_query($GLOBALS["mysqli"], $req_devoirs);
 $devoir = mysqli_fetch_object($res_devoirs);
 
 // Boucle d'affichage des notices dans la colonne de gauche

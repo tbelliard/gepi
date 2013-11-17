@@ -121,43 +121,43 @@ Class Modele_Incidents extends Modele {
     if(isset($natures_selected)) {
       foreach ($natures_selected as $nature) {
         $this->sql="UPDATE s_incidents SET id_categorie=".$categorie_selected." WHERE nature='".traitement_magic_quotes($nature)."';";
-        $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+        $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
       }
     }else {
       $this->sql="UPDATE s_incidents SET id_categorie=".$categorie_selected." WHERE id_categorie=".$categorie.";";
-      $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+      $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     }
   }
 
   private function get_db_liste($champ,$table) {
     $this->sql='SELECT DISTINCT '.$champ.' from '.$table.'';
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     return($this->data=parent::set_array('object',$this->res));
   }
   private function get_db_infos_natures() {
     $this->sql='SELECT DISTINCT nature,id_categorie from s_incidents ORDER BY id_categorie ASC';
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     return($this->data=parent::set_array('object',$this->res));
   }
   private function get_db_infos_categories($id=Null) {
     $this->sql="SELECT  id,categorie,sigle from s_categories ";
     if ($id) $this->sql.="WHERE id='".$id."'";
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     return($this->data=parent::set_array('object',$this->res));
   }
   private function get_db_types_sanctions() {
     $this->sql="SELECT id_nature,nature from s_types_sanctions2";
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     return($this->data=parent::set_array('object',$this->res));
   }
   private function get_db_types_roles() {
     $this->sql="SELECT  id,qualite from s_qualites";
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     return($this->data=parent::set_array('object',$this->res));
   }
   private function get_db_types_mesures() {
     $this->sql="SELECT  id,mesure from s_mesures";
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     return($this->data=parent::set_array('object',$this->res));
   }
 
@@ -203,7 +203,7 @@ Class Modele_Incidents extends Modele {
       else $this->sql.=")";
     }
     $this->sql.=''.$this->filter_individu($choix,$critere);
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     return(parent::set_array('object',$this->res));
   }
 
@@ -230,7 +230,7 @@ Class Modele_Incidents extends Modele {
                     LEFT JOIN classes c ON jec.id_classe=c.id
                     WHERE id_incident IN ('".$liste_incidents."')";
     $this->sql.=' GROUP BY spr.id';
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     if($this->res) {
       while($this->row=mysqli_fetch_object($this->res)) {
         $this->protagonistes[$this->row->id_incident][$this->row->login]=$this->row;
@@ -246,7 +246,7 @@ Class Modele_Incidents extends Modele {
                     AND (str.id_incident=spr.id_incident AND spr.login=str.login_ele) 
                     AND str.id_incident IN ('".$liste_incidents."')";
     $this->sql.=' GROUP BY str.id';
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     if($this->res) {
       while($this->row=mysqli_fetch_object($this->res)) {
         $this->mesures[$this->row->id_incident][$this->row->login_ele][$this->row->id_mesure]=$this->row;
@@ -269,7 +269,7 @@ Class Modele_Incidents extends Modele {
                     INNER JOIN s_protagonistes spr ON (spr.id_incident=san.id_incident AND spr.login=san.login)
                     WHERE  san.id_incident IN ('".$liste_incidents."')";
     $this->sql.=' GROUP BY san.id_sanction';
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     while($this->row=mysqli_fetch_object($this->res)) {
       $this->sanctions[$this->row->id_incident][$this->row->login][$this->row->id_sanction]=$this->row;
     }
@@ -279,7 +279,7 @@ Class Modele_Incidents extends Modele {
     $this->sql='SELECT COUNT(id_incident) from s_incidents WHERE date BETWEEN \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['du']).
             '\' AND \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['au']).'\' ';
     if($liste) $this->sql.=" AND id_incident IN ('".parent::make_list_for_request_in($liste)."')";
-    return(mysqli_fetch_row($this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql)));
+    return(mysqli_fetch_row($this->res=mysqli_query($GLOBALS["mysqli"], $this->sql)));
   }
   private function get_db_nbre_total_mesures($liste=Null,$type=Null) {
 
@@ -292,7 +292,7 @@ Class Modele_Incidents extends Modele {
     if($liste)$this->sql.=" AND sin.id_incident IN ('".parent::make_list_for_request_in($liste)."')";
     if ($type)$this->sql.=" AND smes.type='".$type."'";
     // $this->sql.=" OR sin.id_incident is null";
-    return(mysqli_fetch_row($this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql)));
+    return(mysqli_fetch_row($this->res=mysqli_query($GLOBALS["mysqli"], $this->sql)));
   }
   private function get_db_nbre_total_sanctions($liste=Null) {
 
@@ -303,11 +303,11 @@ Class Modele_Incidents extends Modele {
             '\' AND \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['au']).'\'  ';
     if($liste)$this->sql.=" AND sin.id_incident IN ('".parent::make_list_for_request_in($liste)."')";
     //$this->sql.=" OR sin.id_incident is null"; (je pense que les sanctions ne sont pas supprimées)
-    return(mysqli_fetch_row($this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql)));
+    return(mysqli_fetch_row($this->res=mysqli_query($GLOBALS["mysqli"], $this->sql)));
   }
   private function get_db_infos_crenaux() {
     $this->sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     if($this->res) {
       while($this->row=mysqli_fetch_object($this->res)) {
         $this->crenaux[$this->row->nom_definie_periode]=$this->row;
@@ -340,7 +340,7 @@ Class Modele_Incidents extends Modele {
     }
     $this->sql.='GROUP BY sp.login ';    
     $this->sql.='ORDER BY nb DESC LIMIT 10 ';
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     if($this->res) {
       while($this->row=mysqli_fetch_object($this->res)) {
         $this->top_incidents[]=$this->row;        
@@ -375,7 +375,7 @@ Class Modele_Incidents extends Modele {
     }
     $this->sql.='GROUP BY ssan.login ';
     $this->sql.='ORDER BY count(ssan.login) DESC LIMIT 10 ';
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     if($this->res) {
       while($this->row=mysqli_fetch_object($this->res)) {
         $this->top_sanctions[]=$this->row;
@@ -409,7 +409,7 @@ Class Modele_Incidents extends Modele {
     }
     $this->sql.=' GROUP BY ssan.id_sanction ';
    // $this->sql.=' ORDER BY sum(sret.duree) DESC LIMIT 10 ';
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     if($this->res) {
       while($this->row=mysqli_fetch_object($this->res)) {          
         if(!isset($this->top_retenues[$this->row->login])){
@@ -449,7 +449,7 @@ Class Modele_Incidents extends Modele {
     }
     $this->sql.=' GROUP BY ssan.login ';
     $this->sql.=' ORDER BY count(se.id_exclusion) DESC LIMIT 10 ';
-    $this->res=mysqli_query($GLOBALS["___mysqli_ston"], $this->sql);
+    $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     if($this->res) {
       while($this->row=mysqli_fetch_object($this->res)) {
         $this->top_exclusions[]=$this->row;

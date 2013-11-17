@@ -24,8 +24,8 @@
 
 
 	include("../secure/connect.inc.php");
-	$mysql_db = @($GLOBALS["___mysqli_ston"] = mysqli_connect("localhost",  $dbUser,  $dbPass));
-	@((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE $dbDb"));
+	$mysql_db = @($GLOBALS["mysqli"] = mysqli_connect("localhost",  $dbUser,  $dbPass));
+	@((bool)mysqli_query($GLOBALS["mysqli"], "USE $dbDb"));
 
 	// CONTROLER CE QUI EST POSTé
 	if((mb_strlen(my_ereg_replace("[A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸ -]","",$_POST['nom_ele']))!=0)||(mb_strlen(my_ereg_replace("[A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸ -]","",$_POST['prenom_ele']))!=0)){
@@ -34,7 +34,7 @@
 	else{
 		$sql="SELECT no_gep,nom,prenom,naissance FROM eleves WHERE nom LIKE '%".$_POST['nom_ele']."%' AND prenom LIKE '%".$_POST['prenom_ele']."%' ";
 
-		$res=@mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=@mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res)==0){
 			$chaine="Aucun résultat retourné.";

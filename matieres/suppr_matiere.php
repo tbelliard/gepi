@@ -62,7 +62,7 @@ if(!isset($matiere)) {
 }
 
 $sql="SELECT * FROM matieres WHERE matiere='$matiere';";
-$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_mat)==0) {
 	echo "<p>La matière '$matiere' n'existe pas dans la table 'matieres'.</p>\n";
 
@@ -74,7 +74,7 @@ if(!isset($confirmation_suppr)) {
 	echo "<p>Vous souhaitez supprimer la matière '$matiere'.<br />\n";
 
 	$sql="SELECT id_groupe FROM j_groupes_matieres WHERE id_matiere='$matiere';";
-	$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_grp=mysqli_num_rows($res_grp);
 	if($nb_grp==0) {
@@ -136,7 +136,7 @@ else {
 	*/
 
 	$sql="SELECT id_groupe FROM j_groupes_matieres WHERE id_matiere='$matiere' LIMIT 1;";
-	$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_grp=mysqli_num_rows($res_grp);
 	if($nb_grp==0) {
@@ -148,12 +148,12 @@ else {
 		// - j_professeurs_matieres
 
 		$sql="SELECT * FROM j_professeurs_matieres WHERE id_matiere='$matiere';";
-		$res_jpm=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_jpm=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_jpm=mysqli_num_rows($res_jpm);
 		if($nb_jpm>0) {
 			echo "Suppression de $nb_jpm association(s) professeur/matière: ";
 			$sql="DELETE FROM j_professeurs_matieres WHERE id_matiere='$matiere';";
-			$res_jpm=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_jpm=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($res_jpm) {
 				echo "<span style='color:green;'>OK</span><br />\n";
 			}
@@ -164,12 +164,12 @@ else {
 
 		// - aid
 		$sql="SELECT * FROM aid WHERE matiere1='$matiere';";
-		$res_aid=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_aid=mysqli_num_rows($res_aid);
 		if($nb_aid>0) {
 			echo "Suppression de $nb_aid association(s) aid/matiere1: ";
 			$sql="UPDATE aid SET matiere1='' WHERE matiere1='$matiere';";
-			$res_aid=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($res_aid) {
 				echo "<span style='color:green;'>OK</span><br />\n";
 			}
@@ -179,12 +179,12 @@ else {
 		}
 
 		$sql="SELECT * FROM aid WHERE matiere2='$matiere';";
-		$res_aid=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_aid=mysqli_num_rows($res_aid);
 		if($nb_aid>0) {
 			echo "Suppression de $nb_aid association(s) aid/matiere2: ";
 			$sql="UPDATE aid SET matiere2='' WHERE matiere2='$matiere';";
-			$res_aid=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($res_aid) {
 				echo "<span style='color:green;'>OK</span><br />\n";
 			}
@@ -194,15 +194,15 @@ else {
 		}
 
 		// - observatoire
-		$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'observatoire';");
+		$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'observatoire';");
 		if(mysqli_num_rows($test_existence)>0){
 			$sql="SELECT * FROM observatoire WHERE matiere='$matiere';";
-			$res_obs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_obs=mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb_obs=mysqli_num_rows($res_obs);
 			if($nb_obs>0) {
 				echo "Suppression de $nb_obs association(s) observatoire/matiere: ";
 				$sql="DELETE FROM observatoire WHERE matiere='$matiere';";
-				$res_obs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_obs=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($res_obs) {
 					echo "<span style='color:green;'>OK</span><br />\n";
 				}
@@ -213,15 +213,15 @@ else {
 		}
 
 		// - observatoire_comment
-		$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'observatoire_comment';");
+		$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'observatoire_comment';");
 		if(mysqli_num_rows($test_existence)>0){
 			$sql="SELECT * FROM observatoire_comment WHERE matiere='$matiere';";
-			$res_obs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_obs=mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb_obs=mysqli_num_rows($res_obs);
 			if($nb_obs>0) {
 				echo "Suppression de $nb_obs association(s) observatoire/matiere: ";
 				$sql="DELETE FROM observatoire_comment WHERE matiere='$matiere';";
-				$res_obs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_obs=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($res_obs) {
 					echo "<span style='color:green;'>OK</span><br />\n";
 				}
@@ -234,7 +234,7 @@ else {
 		// - matieres
 		echo "Suppression de la matière $matiere de la table 'matieres': ";
 		$sql="DELETE FROM matieres WHERE matiere='$matiere';";
-		$res_obs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_obs=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($res_obs) {
 			echo "<span style='color:green;'>OK</span><br />\n";
 		}
@@ -309,7 +309,7 @@ else{
 
 	// Liste des numéros de périodes
 	$sql="SELECT DISTINCT num_periode FROM periodes ORDER BY num_periode;";
-	$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_per)==0) {
 		echo "<p>Aucune période n'est encore définie.</p>\n";
 		require("../lib/footer.inc.php");
@@ -324,10 +324,10 @@ else{
 
 	if(!isset($_POST['c_est_parti'])) {
 		$sql="TRUNCATE tempo2;";
-		$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="SELECT DISTINCT login FROM j_eleves_groupes ORDER BY login;";
-		$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_ele)==0) {
 			echo "<p>Aucun élève n'est encore inscrit dans un groupe.</p>\n";
@@ -337,7 +337,7 @@ else{
 
 		while($lig=mysqli_fetch_object($res_ele)) {
 			$sql="INSERT INTO tempo2 SET col1='$lig->login', col2='verif_grp';";
-			$res_tempo2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_tempo2=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 
 
@@ -347,10 +347,10 @@ else{
 		col2 TEXT,
 		PRIMARY KEY  (id)
 		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="TRUNCATE tempo3;";
-		$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$ini="";
 	}
@@ -363,7 +363,7 @@ else{
 	*/
 
 	$sql="SELECT * FROM tempo3 WHERE col1='rapport_verif_grp' ORDER BY id;";
-	$res_rapport=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_rapport=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_rapport)>0) {
 		while($lig_rapp=mysqli_fetch_object($res_rapport)){
 			echo $lig_rapp->col2;
@@ -373,7 +373,7 @@ else{
 	$nb=20;
 	$sql="SELECT col1 AS login FROM tempo2 WHERE col2='verif_grp' ORDER BY col1 LIMIT $nb";
 	//echo "$sql<br />";
-	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	//$ini="A";
 	//$ini="";
@@ -400,7 +400,7 @@ else{
 				$sql="SELECT id_groupe FROM j_eleves_groupes WHERE login='$lig_ele->login' AND periode='$num_periode'";
 				//echo "$sql<br />\n";
 				affiche_debug($sql,$lig_ele->login);
-				$res_jeg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_jeg=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				//while($lig_jeg=mysql_fetch_object($res_jeg)){
 				if(mysqli_num_rows($res_jeg)>0){
@@ -408,20 +408,20 @@ else{
 					//$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$lig_ele->login' AND periode='$num_periode'";
 					$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$lig_ele->login' AND periode='$num_periode'";
 					affiche_debug($sql,$lig_ele->login);
-					$res_jec=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_jec=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(mysqli_num_rows($res_jec)==0){
 						$temoin_erreur="y";
 						// L'élève n'est dans aucune classe sur la période choisie.
 						$sql="SELECT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$lig_ele->login' AND periode='$num_periode' AND jec.id_classe=c.id";
 						affiche_debug($sql,$lig_ele->login);
-						$res_class_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_class_test=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						// Le test ci-dessous est forcément vrai si on est arrivé là!
 						if(mysqli_num_rows($res_class_test)==0){
 							$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec WHERE jec.login='$lig_ele->login' AND jec.id_classe=c.id";
 							affiche_debug($sql,$lig_ele->login);
-							$res_class=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_class=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							$chaine_msg="";
 							$chaine_classes="";
@@ -451,7 +451,7 @@ else{
 								while($lig_grp=mysqli_fetch_object($res_jeg)){
 									$tab_tmp_grp[]=$lig_grp->id_groupe;
 									$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc WHERE jgc.id_classe=c.id AND jgc.id_groupe='$lig_grp->id_groupe'";
-									$res_grp2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_grp2=mysqli_query($GLOBALS["mysqli"], $sql);
 									while($lig_tmp_clas=mysqli_fetch_object($res_grp2)){
 										if(!in_array($lig_tmp_clas->classe,$tab_tmp_clas)){
 											$tab_tmp_clas[]=$lig_tmp_clas->classe;
@@ -504,7 +504,7 @@ else{
 						// Est-ce qu'en plus l'élève aurait des notes ou moyennes saisies sur la période?
 						//$sql="SELECT * FROM matieres_notes WHERE id_groupe='$tab_tmp_grp[$i]' AND periode='$num_periode' AND login='$lig_ele->login'"
 						$sql="SELECT * FROM matieres_notes WHERE periode='$num_periode' AND login='$lig_ele->login'";
-						$res_mat_not=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_mat_not=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_mat_not)>0){
 							$info="<b>$lig_ele->login</b> a de plus des moyennes saisies pour le bulletin sur la période <b>$num_periode</b>";
 							echo $info;
@@ -525,17 +525,17 @@ else{
 								// On cherche si l'association groupe/classe existe:
 								$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_groupe='$lig_grp->id_groupe' AND id_classe='$lig_clas->id_classe'";
 								affiche_debug($sql,$lig_ele->login);
-								$res_test_grp_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_test_grp_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 
 								if(mysqli_num_rows($res_test_grp_clas)==0){
 									$temoin_erreur="y";
 									$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
-									$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 									$lig_tmp=mysqli_fetch_object($res_tmp);
 									$clas_tmp=$lig_tmp->classe;
 
 									$sql="SELECT description FROM groupes WHERE id='$lig_grp->id_groupe'";
-									$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 									$lig_tmp=mysqli_fetch_object($res_tmp);
 									$grp_tmp=$lig_tmp->description;
 
@@ -548,7 +548,7 @@ else{
 									// /groupes/edit_eleves.php?id_groupe=285&id_classe=8
 									//$sql="SELECT id_classe FROM j_groupes_classes WHERE id_groupe='$lig_grp->id_groupe';";
 									$sql="SELECT jgc.id_classe, c.classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_groupe='$lig_grp->id_groupe' AND jgc.id_classe=c.id;";
-									$res_tmp_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_tmp_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_tmp_clas)>0){
 										//$lig_tmp_clas=mysql_fetch_object($res_tmp_clas);
 										//echo "Vous pouvez tenter de décocher l'élève de <b>$clas_tmp</b> du groupe <b>$grp_tmp</b> dans cette <a href='../groupes/edit_eleves.php?id_groupe=".$lig_grp->id_groupe."&id_classe=".$lig_tmp_clas->id_classe."' target='_blank'>page</a> si il s'y trouve.<br />\n";
@@ -598,7 +598,7 @@ else{
 
 							while($lig_clas=mysqli_fetch_object($res_jec)){
 								$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
-								$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 								$lig_tmp=mysqli_fetch_object($res_tmp);
 								$clas_tmp=$lig_tmp->classe;
 								$info="Classe de <a href='../classes/classes_const.php?id_classe=$lig_clas->id_classe'>$clas_tmp</a> (<i>n°$lig_clas->id_classe</i>)<br />\n";
@@ -619,13 +619,13 @@ else{
 			}
 
 			$sql="UPDATE tempo2 SET col2='$temoin_erreur' WHERE col1='$lig_ele->login';";
-			$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 
 
 		// INSERER $chaine_rapport DANS UNE TABLE
 		$sql="INSERT INTO tempo3 SET col1='rapport_verif_grp', col2='".addslashes($chaine_rapport)."';";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		echo "<form action=\"".$_SERVER['PHP_SELF']."#suite\" name='suite' method=\"post\">\n";
 		echo "<input type=\"hidden\" name=\"verif\" value=\"y\" />\n";
@@ -648,7 +648,7 @@ else{
 	else {
 
 		$sql="SELECT 1=1 FROM tempo2 WHERE col2='y';";
-		$test_err=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_err=mysqli_query($GLOBALS["mysqli"], $sql);
 		$err_no=mysqli_num_rows($test_err);
 
 		if($err_no==0){
@@ -673,13 +673,13 @@ else{
 
 		for($i=0;$i<count($table);$i++){
 			$sql="SELECT DISTINCT id_groupe FROM ".$table[$i]." ORDER BY id_groupe";
-			$res_grp1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_grp1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res_grp1)>0){
 				echo "<p>On parcourt la table '".$table[$i]."'.</p>\n";
 				while($ligne=mysqli_fetch_array($res_grp1)){
 					$sql="SELECT 1=1 FROM groupes WHERE id='".$ligne[0]."'";
-					$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(mysqli_num_rows($res_test)==0){
 						echo "<b>Erreur:</b> Le groupe d'identifiant $ligne[0] est utilisé dans $table[$i] alors que le groupe n'existe pas dans la table 'groupes'.<br />\n";

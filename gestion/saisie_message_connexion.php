@@ -59,7 +59,7 @@ id int(11) NOT NULL auto_increment,
 texte text NOT NULL,
 PRIMARY KEY  (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$resultat_creation_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$resultat_creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 ?>
 
@@ -140,7 +140,7 @@ elseif(isset($valide_import_message)) {
 
 						$sql="INSERT INTO message_login SET texte='".addslashes($ligne)."';";
 						//echo "$sql<br />";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if($insert) {
 							$nb_reg++;
 						}
@@ -177,7 +177,7 @@ if(isset($compteur_nb_messages)){
 	for($i=1;$i<=$compteur_nb_messages;$i++){
 		if(isset($suppr[$i])) {
 			$sql="DELETE FROM message_login WHERE id='".$suppr[$i]."';";
-			$resultat_suppr_message=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$resultat_suppr_message=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 		else {
 			$nom_log = "message_".$i;
@@ -187,7 +187,7 @@ if(isset($compteur_nb_messages)){
 				if($message_courant!=""){
 					$sql="UPDATE message_login SET texte='$message_courant' WHERE id='".$id_message[$i]."';";
 					//echo "sql=$sql<br />";
-					$resultat_update_message=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$resultat_update_message=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 		}
@@ -199,7 +199,7 @@ if(isset($compteur_nb_messages)){
 		if(trim($message_courant)!='') {
 			$sql="INSERT INTO message_login SET texte='$message_courant';";
 			//echo "sql=$sql<br />";
-			$resultat_insertion_message=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$resultat_insertion_message=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
 }
@@ -208,7 +208,7 @@ if(isset($compteur_nb_messages)){
 // Recherche des messages déjà saisis:
 $sql="SELECT * FROM message_login ORDER BY texte;";
 //echo "$sql";
-$resultat_messages=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$resultat_messages=mysqli_query($GLOBALS["mysqli"], $sql);
 $cpt=1;
 if(mysqli_num_rows($resultat_messages)!=0){
 	echo "<p>Voici la liste de vos messages:</p>\n";

@@ -63,7 +63,7 @@ echo "<div class='noprint'>\n";
 echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour à l'accueil Notanet</a>";
 
 $sql="SELECT DISTINCT type_brevet FROM notanet_ele_type ORDER BY type_brevet;";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "</p>\n";
 	echo "</div>\n";
@@ -75,7 +75,7 @@ if(mysqli_num_rows($res)==0) {
 }
 
 $sql="SELECT DISTINCT type_brevet FROM notanet_corresp WHERE $sql_indices_types_brevets ORDER BY type_brevet;";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_type_brevet=mysqli_num_rows($res);
 //if(mysql_num_rows($res)==0) {
 if($nb_type_brevet==0) {

@@ -78,23 +78,23 @@ if((isset($tab_id_classe))&&(isset($prof_principal))) {
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		if($prof_principal[$i]=="") {
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
-			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb_ele=mysqli_num_rows($res_ele);
 
 			$sql="DELETE FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
-			$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 			$msg.="$nb_ele associations supprimées en ".get_nom_classe($tab_id_classe[$i])."<br />";
 		}
 		else {
 			$sql="DELETE FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
-			$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$nb_ele=0;
 			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$tab_id_classe[$i]."';";
-			$res_ele_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			while($lig=mysqli_fetch_object($res_ele_classe)) {
 				$sql="INSERT INTO j_eleves_professeurs SET id_classe='".$tab_id_classe[$i]."', login='".$lig->login."', professeur='".$prof_principal[$i]."';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($insert) {
 					$nb_ele++;
 				}
@@ -107,7 +107,7 @@ if((isset($tab_id_classe))&&(isset($prof_principal))) {
 if (isset($is_posted) and ($is_posted == '1')) {
 	check_token();
 
-	$call_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' AND e.login = c.login)");
+	$call_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' AND e.login = c.login)");
 	$nombreligne = mysqli_num_rows($call_eleves);
 	//=========================
 	// AJOUT: boireaus 20071010
@@ -138,16 +138,16 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			if(isset($prof_principal[$num_eleve])){$reg_prof=$prof_principal[$num_eleve];}
 			//=========================
 
-			$call_profsuivi_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT professeur FROM j_eleves_professeurs WHERE (login = '$login_eleve' AND id_classe='$id_classe')");
+			$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT professeur FROM j_eleves_professeurs WHERE (login = '$login_eleve' AND id_classe='$id_classe')");
 			$eleve_profsuivi = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
 			if (($reg_prof == '') and ($eleve_profsuivi != '')) {
-				$reg = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')");
+				$reg = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')");
 			}
 			if  (($reg_prof != '') and ($eleve_profsuivi != '') and ($reg_prof != $eleve_profsuivi)) {
-				$reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE j_eleves_professeurs SET professeur ='$reg_prof' WHERE (login='$login_eleve' AND id_classe='$id_classe')");
+				$reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE j_eleves_professeurs SET professeur ='$reg_prof' WHERE (login='$login_eleve' AND id_classe='$id_classe')");
 			}
 			if  (($reg_prof != '') and ($eleve_profsuivi == '')) {
-					$reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_eleves_professeurs VALUES ('$login_eleve', '$reg_prof', '$id_classe')");
+					$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_professeurs VALUES ('$login_eleve', '$reg_prof', '$id_classe')");
 			}
 		}
 		$k++;
@@ -168,7 +168,7 @@ require_once("../lib/header.inc.php");
 // Ligne de liens sous l'entête avec choix de classes
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 if(isset($id_classe)) {
-	$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 	$classe = mysql_result($call_classe, "0", "classe");
 
 	echo "<p class='bold'><a href='classes_const.php?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
@@ -182,7 +182,7 @@ if(!isset($id_classe)) {
 	$chaine_options_classes.="<option value=''>---</option>\n";
 }
 $sql="SELECT id, classe FROM classes ORDER BY classe";
-$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 $num_classe=-1;
 if(mysqli_num_rows($res_class_tmp)>0){
     $id_class_prec=0;
@@ -278,7 +278,7 @@ if(!isset($id_classe)) {
 		$nom_js_func="check_bold_classe";
 
 		$sql="SELECT * FROM classes ORDER BY classe, nom_complet;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "<p style='color:red'>Il n'existe encore aucune classe.</p>";
 			require("../lib/footer.inc.php");
@@ -325,7 +325,7 @@ if(!isset($id_classe)) {
 		<span id='span_tab_id_classe_".$i."'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_".$i."' value='".$tab_id_classe[$i]."' onchange=\"checkbox_change('tab_id_classe_".$i."');\" checked /><label for='tab_id_classe_".$i."' id='label_tab_id_classe_".$i."'>".get_nom_classe($tab_id_classe[$i])."</label>\n";
 
 		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$tab_id_classe[$i]."';";
-		$res_ele_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ele_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_ele_classe=mysqli_num_rows($res_ele_classe);
 
 		// Liste des professeurs principaux de la classe
@@ -344,7 +344,7 @@ if(!isset($id_classe)) {
 				<option value='".$tab_profs_classe[$j]['login']."'";
 				if(in_array($tab_profs_classe[$j]['login'] ,$tab_prof_suivi)) {
 					$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$tab_profs_classe[$j]['login']."' AND id_classe='".$tab_id_classe[$i]."';";
-					$res_ele_pp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_ele_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 					$nb_ele_pp=mysqli_num_rows($res_ele_pp);
 
 					echo " selected='selected' style='background-color: lightgreen' title=\"Ce professeur est $gepi_prof_suivi de $nb_ele_pp élèves sur $nb_ele_classe élèves dans la classe.\">".$tab_profs_classe[$j]['civ_nom_prenom']." ($nb_ele_pp/$nb_ele_classe)</option>";
@@ -394,7 +394,7 @@ Si vous voulez conserver plusieurs '$gepi_prof_suivi', effectuez un paramétrage
 <?php
 if (!isset($nb_prof) or ($nb_prof == '')) {
 	// On regarde combien il y a de profs de suivi actuellement dans la classe
-	$call_profsuivi = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe'");
+	$call_profsuivi = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe'");
 	$nb_prof = mysqli_num_rows($call_profsuivi);
 ?>
 
@@ -420,7 +420,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 ?>
 	<p>Pour chaque <?php echo getSettingValue("gepi_prof_suivi"); ?>, précisez le professeur : </p>
 	<?php
-	$call_profsuivi = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe'");
+	$call_profsuivi = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe'");
 	$nb_prof_exist = mysqli_num_rows($call_profsuivi);
 	$i = 0;
 
@@ -429,7 +429,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 		$i++;
 	}
 
-	$call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT u.login, u.nom, u.prenom " .
+	$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT u.login, u.nom, u.prenom " .
 				"FROM utilisateurs u, j_groupes_professeurs jgp, j_groupes_classes jgc WHERE (" .
 				"u.statut = 'professeur' and " .
 				"u.login = jgp.login and " .
@@ -491,7 +491,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 		echo "</form>\n";
 	} else {
 		echo "<form enctype=\"multipart/form-data\" action=\"prof_suivi.php\" method=\"post\">\n";
-		$call_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT j.login FROM j_eleves_classes j WHERE (j.id_classe = '$id_classe') ORDER BY login");
+		$call_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT j.login FROM j_eleves_classes j WHERE (j.id_classe = '$id_classe') ORDER BY login");
 		$nombreligne = mysqli_num_rows($call_eleves);
 		if ($nombreligne == '0') {
 			echo "<p>Il n'y a pas d'élèves actuellement dans cette classe.</p>\n";
@@ -504,7 +504,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 			echo "<table border='1' cellpadding='5' class='boireaus' summary='Choix des élèves'>\n";
 			echo "<tr><th>Nom Prénom</th>\n";
 			for ($i=1; $i < $nb_prof_suivi+1; $i++) {
-				$call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM utilisateurs WHERE login = '$tab_prof[$i]'");
+				$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login = '$tab_prof[$i]'");
 				$prof_nom = mysql_result($call_prof, 0, "nom");
 				$prof_prenom = mysql_result($call_prof, 0, "prenom");
 				echo "<th><p class='small'>".ucfirst(getSettingValue("gepi_prof_suivi"))." :<br />$prof_nom $prof_prenom<br />\n";
@@ -521,10 +521,10 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 			While ($k < $nombreligne) {
 				$login_eleve = mysql_result($call_eleves, $k, 'login');
 				$prof_login = "prof_".$login_eleve;
-				$call_data_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM eleves WHERE (login = '$login_eleve')");
+				$call_data_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE (login = '$login_eleve')");
 				$nom_eleve = @mysql_result($call_data_eleves, '0', 'nom');
 				$prenom_eleve = @mysql_result($call_data_eleves, '0', 'prenom');
-				$call_profsuivi_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_professeurs WHERE (login = '$login_eleve' and id_classe='$id_classe')");
+				$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_professeurs WHERE (login = '$login_eleve' and id_classe='$id_classe')");
 				$eleve_profsuivi = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
 				$prof_login = "prof_".$login_eleve;
 

@@ -60,13 +60,13 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof
 	check_token();
 
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
-    $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_aid_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
+    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
     $test2 = mysqli_num_rows($test);
     if ($test2 != "0") {
         $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
     } else {
         if ($reg_prof_login != '') {
-            $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'");
+            $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'");
             if (!$reg_data) { $msg = "Erreur lors de l'ajout du professeur !"; } else { $msg = "Le professeur a bien été ajouté !"; }
         }
     }
@@ -77,13 +77,13 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_pro
 	check_token();
 
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
-    $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
+    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
     $test2 = mysqli_num_rows($test);
     if ($test2 != "0") {
         $msg = "L'utilisateur que vous avez tenté d'ajouter appartient déjà à la liste des gestionnaires de cette AID";
     } else {
         if ($reg_prof_login != '') {
-            $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_aid_utilisateurs_gest SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'");
+            $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_utilisateurs_gest SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'");
             if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'utilisateur !"; } else { $msg = "L'utilisateur a bien été ajouté !"; }
         }
     }
@@ -91,7 +91,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_pro
 }
 
 // On appelle les informations de l'aid pour les afficher :
-$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 $nom_aid = @mysql_result($call_data, 0, "nom");
 $activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
 $autoriser_inscript_multiples = @mysql_result($call_data, 0, "autoriser_inscript_multiples");
@@ -103,7 +103,7 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
     // On commence par supprimer les élèves responsables
     sql_query("delete from j_aid_eleves_resp where id_aid='$aid_id' and indice_aid='$indice_aid'");
     // Les élèves responsable sont à sélectionner parmi les élèves de l'AID
-    $call_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_aid_eleves WHERE (indice_aid='$indice_aid' and id_aid='$aid_id')");
+    $call_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_eleves WHERE (indice_aid='$indice_aid' and id_aid='$aid_id')");
     $nombre = mysqli_num_rows($call_eleves);
     $i = "0";
     while ($i < $nombre) {
@@ -116,15 +116,15 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
 
     // On commence par vérifier que l'élève n'est pas déjà présent dans cette liste, ni dans aucune.
     if ($autoriser_inscript_multiples == 'y')
-      $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and id_aid='$aid_id' and indice_aid='$indice_aid')");
+      $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and id_aid='$aid_id' and indice_aid='$indice_aid')");
     else
-      $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and indice_aid='$indice_aid')");
+      $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and indice_aid='$indice_aid')");
     $test2 = mysqli_num_rows($test);
     if ($test2 != "0") {
         $msg = "L'élève que vous avez tenté d'ajouter appartient déjà à une AID";
     } else {
         if ($reg_add_eleve_login != '') {
-            $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_aid_eleves SET login='$reg_add_eleve_login', id_aid='$aid_id', indice_aid='$indice_aid'");
+            $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='$reg_add_eleve_login', id_aid='$aid_id', indice_aid='$indice_aid'");
             if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'élève"; } else { $msg = "L'élève a bien été ajouté."; }
         }
     }
@@ -146,12 +146,12 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
     $msg = "";
     // On récupère la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
-    $query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     while($temp = mysqli_fetch_array($query)) {
         $liste_profs[] = $temp["id_utilisateur"];
     }
     // On appelle toutes les aids de la catégorie
-    $calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid WHERE indice_aid='$indice_aid'");
+    $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid'");
     $nombreligne = mysqli_num_rows($calldata);
     $i = 0;
     while ($i < $nombreligne){
@@ -161,7 +161,7 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
         if ($test1 == 0) {
           // Pas de profs responsable donc on applique les changements
           foreach($liste_profs as $key){
-              $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$key', id_aid = '$aid_id', indice_aid='$indice_aid'");
+              $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$key', id_aid = '$aid_id', indice_aid='$indice_aid'");
               if (!$reg_data) { $msg .= "Erreur lors de l'ajout du professeur $key !<br />"; }
           }
         }
@@ -177,7 +177,7 @@ if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
     $msg = "";
     // On récupère la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
-    $query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     while($temp = mysqli_fetch_array($query)) {
         $liste_profs[] = $temp["id_utilisateur"];
     }
@@ -185,7 +185,7 @@ if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
       foreach($liste_profs as $key2){
         $test = sql_query1("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$key1."' and id_utilisateur = '".$key2."' and indice_aid='$indice_aid'");
         if ($test == -1) {
-          $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$key2', id_aid = '$key1', indice_aid='$indice_aid'");
+          $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$key2', id_aid = '$key1', indice_aid='$indice_aid'");
           if (!$reg_data) { $msg .= "Erreur lors de l'ajout du professeur $key2 à l'aid dont l'identifiant est $key1 !<br />"; }
         }
      }
@@ -201,12 +201,12 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
     $msg = "";
     // On récupère la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
-    $query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     while($temp = mysqli_fetch_array($query)) {
         $liste_profs[] = $temp["id_utilisateur"];
     }
     // On appelle toutes les aids de la catégorie
-    $calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid WHERE indice_aid='$indice_aid'");
+    $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid'");
     $nombreligne = mysqli_num_rows($calldata);
     $i = 0;
     while ($i < $nombreligne){
@@ -216,7 +216,7 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
         if ($test1 == 0) {
           // Pas de profs responsable donc on applique les changements
           foreach($liste_profs as $key){
-              $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_aid_utilisateurs_gest SET id_utilisateur= '$key', id_aid = '$aid_id', indice_aid='$indice_aid'");
+              $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_utilisateurs_gest SET id_utilisateur= '$key', id_aid = '$aid_id', indice_aid='$indice_aid'");
               if (!$reg_data) { $msg .= "Erreur lors de l'ajout de l'utilisateur $key !<br />"; }
           }
         }
@@ -226,7 +226,7 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
     if ($msg == '') $msg = "Les modifications ont été enregistrées.";
 }
 
-$calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
 $aid_nom = mysql_result($calldata, 0, "nom");
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
@@ -249,7 +249,7 @@ else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
     $sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
 
 
-$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR DIE('Erreur dans la requête select * from aid : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête select * from aid : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $nbre = mysqli_num_rows($query);
 
 $aff_precedent = '';
@@ -286,7 +286,7 @@ echo '<form action="modify_aid.php" method="post" name="autre_aid">
 	';
 
 // On recommence le query
-$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR trigger_error('Erreur dans la requête select * from aid : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+$query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Erreur dans la requête select * from aid : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
 while($infos = mysqli_fetch_array($query)){
 	// On affiche la liste des "<option>"
 	if ($aid_id == $infos["id"]) {
@@ -307,7 +307,7 @@ echo '
 if ($flag == "prof") { ?>
    <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
    <?php
-    $call_liste_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
+    $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysqli_num_rows($call_liste_data);
     echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">";
 
@@ -344,7 +344,7 @@ if ($flag == "prof") { ?>
     <!--option value=''><p>(aucun)</p></option-->
     <option value=''>(aucun)</option>
     <?php
-    $call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom");
+    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom");
     $nombreligne = mysqli_num_rows($call_prof);
     $i = "0" ;
     while ($i < $nombreligne) {
@@ -387,7 +387,7 @@ if ($flag == "prof") { ?>
       echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
       echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
       // On appelle toutes les aids de la catégorie
-      $calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero, nom");
+      $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero, nom");
       $nombreligne = mysqli_num_rows($calldata);
       $i = 0;
       echo "<select name=\"liste_aids[]\" size=\"6\" multiple>\n";
@@ -414,7 +414,7 @@ if ($flag == "prof_gest") { ?>
 
 	echo add_token_field();
 
-    $call_liste_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
+    $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysqli_num_rows($call_liste_data);
     if ($nombre !=0) {
     ?>
@@ -444,7 +444,7 @@ if ($flag == "prof_gest") { ?>
     <select size=1 name="reg_prof_login">
     <option value=''>(aucun)</option>
     <?php
-    $call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' or statut = 'cpe' or statut = 'scolarite') order by nom, prenom");
+    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' or statut = 'cpe' or statut = 'scolarite') order by nom, prenom");
     $nombreligne = mysqli_num_rows($call_prof);
     $i = "0" ;
     while ($i < $nombreligne) {
@@ -482,11 +482,11 @@ if ($flag == "prof_gest") { ?>
 if ($flag == "eleve") {
 	// On ajoute le nom des profs et le nombre d'élèves
 	$aff_profs = "<font style=\"color: brown; font-size: 12px;\">(";
-	$req_profs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$aid_id."'");
+	$req_profs = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$aid_id."'");
 	$nbre_profs = mysqli_num_rows($req_profs);
 	for($a=0; $a<$nbre_profs; $a++) {
 		$rep_profs[$a]["id_utilisateur"] = mysql_result($req_profs, $a, "id_utilisateur");
-		$rep_profs_a = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, civilite FROM utilisateurs WHERE login = '".$rep_profs[$a]["id_utilisateur"]."'"));
+		$rep_profs_a = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, civilite FROM utilisateurs WHERE login = '".$rep_profs[$a]["id_utilisateur"]."'"));
 		$aff_profs .= "".$rep_profs_a["civilite"].$rep_profs_a["nom"]." ";
 	}
 		$aff_profs .= ")</font>";
@@ -504,7 +504,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
 
 	echo "<table class=\"aid_tableau\" border=\"0\" summary=''>";
     // appel de la liste des élèves de l'AID :
-    $call_liste_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.login, e.nom, e.prenom, e.elenoet
+    $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.login, e.nom, e.prenom, e.elenoet
 							FROM eleves e, j_aid_eleves j, j_eleves_classes jec, classes c
 							WHERE (j.id_aid = '$aid_id' and
 							e.login = j.login and
@@ -534,7 +534,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
         $nom_eleve = mysql_result($call_liste_data, $i, "nom");
         $prenom_eleve = @mysql_result($call_liste_data, $i, "prenom");
         $eleve_resp = sql_query1("select login from j_aid_eleves_resp where id_aid='$aid_id' and login ='$login_eleve' and indice_aid='$indice_aid'");
-        $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
+        $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
         $classe_eleve = @mysql_result($call_classe, '0', "classe");
         $v_elenoet=mysql_result($call_liste_data, $i, 'elenoet');
         echo "<tr><td>\n";
@@ -588,7 +588,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
 						FROM eleves e LEFT JOIN j_aid_eleves j ON
 						(e.login = j.login  and
 						j.indice_aid = '$indice_aid') WHERE j.login is null order by e.nom, e.prenom";
-    $call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+    $call_eleve = mysqli_query($GLOBALS["mysqli"], $requete);
     $nombreligne = mysqli_num_rows($call_eleve);
     if ($nombreligne != 0) {
 
@@ -615,7 +615,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
             else
                 $affiche_ligne = "yes";
             if ($affiche_ligne == "yes") {
-            $call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$eleve' and j.id_classe = c.id) order by j.periode DESC");
+            $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$eleve' and j.id_classe = c.id) order by j.periode DESC");
             $classe_eleve = @mysql_result($call_classe, '0', "classe");
 	        echo "<option value=\"".$eleve."\">".my_strtoupper($nom_el)." ".casse_mot($prenom_el,'majf2')." $classe_eleve</option>\n";
             }

@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/select_arriv_red.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/select_arriv_red.php',
 administrateur='V',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Sélection des arrivants/redoublants',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -73,11 +73,11 @@ if((isset($projet))&&(isset($choix))&&(($choix=='Red')||($choix=='Arriv'))&&(iss
 		if(($ele_login[$i]!='')&&(my_ereg_replace("[A-Za-z0-9_.-]","",$ele_login[$i])=='')) {
 			$sql="DELETE FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$ele_login[$i]';";
 			//echo "$sql<br />";
-			$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="INSERT INTO gc_ele_arriv_red SET projet='$projet', login='$ele_login[$i]', statut='$choix';";
 			//echo "$sql<br />";
-			if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+			if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 				$nb_reg++;
 			}
 			else {
@@ -117,7 +117,7 @@ if(isset($_POST['suppr'])) {
 
 	for($i=0;$i<count($suppr);$i++) {
 		$sql="DELETE FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$suppr[$i]';";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
 
@@ -145,7 +145,7 @@ if(!isset($choix)) {
 	//echo "<p style='color:red'>Mettre la liste des red/arriv déjà saisi et pouvoir en supprimer.</p>\n";
 
 	$sql="SELECT * FROM gc_ele_arriv_red WHERE projet='$projet' ORDER BY statut, login;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		echo "<p>Liste des red/arriv déjà saisis&nbsp;:</p>\n";
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
@@ -165,7 +165,7 @@ if(!isset($choix)) {
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
 			$sql="SELECT nom,prenom FROM eleves WHERE login='$lig->login';";
-			$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 			$lig2=mysqli_fetch_object($res2);
 			echo "<label for='suppr_$cpt'>".strtoupper($lig2->nom)." ".ucfirst(mb_strtolower($lig2->prenom))."</label>";
 			echo "</td>\n";
@@ -196,7 +196,7 @@ elseif($choix=='Red') {
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
 		$sql="SELECT id,classe FROM classes ORDER BY classe;";
-		$res_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_classes=mysqli_num_rows($res_classes);
 		// Ajouter des classes
 		echo "<p>Dans quelles classes sont les redoublants à inscrire dans le projet '$projet'&nbsp;:\n";
@@ -265,7 +265,7 @@ elseif($choix=='Red') {
 							AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%')
 				ORDER BY e.nom,e.prenom;";
 			*/
-			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			$alt=1;
 			while($lig_ele=mysqli_fetch_object($res_ele)) {
 				$alt=$alt*(-1);
@@ -275,7 +275,7 @@ elseif($choix=='Red') {
 				echo "<td><input type='checkbox' name='ele_login[]' id='tab_selection_ele_".$i."_".$cpt."' value=\"".$lig_ele->login."\" ";
 
 				$sql="SELECT 1=1 FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$lig_ele->login' AND statut='$choix';";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)>0) { echo "checked ";}
 		
 				echo "/></td>\n";
@@ -347,7 +347,7 @@ elseif($choix=='Arriv') {
 		LEFT JOIN j_eleves_classes jec ON jec.login=e.login
 		where jec.login is NULL AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%');";
 	*/
-	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	$alt=1;
 	while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$alt=$alt*(-1);
@@ -357,7 +357,7 @@ elseif($choix=='Arriv') {
 		echo "<td><input type='checkbox' name='ele_login[]' id='tab_selection_ele_".$cpt."' value=\"".$lig_ele->login."\" ";
 
 		$sql="SELECT 1=1 FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$lig_ele->login' AND statut='$choix';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) { echo "checked ";}
 		echo "/></td>\n";
 		

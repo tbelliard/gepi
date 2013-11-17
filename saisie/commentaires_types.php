@@ -60,13 +60,13 @@ $sql="CREATE TABLE IF NOT EXISTS `commentaires_types` (
 `num_periode` INT NOT NULL ,
 `id_classe` INT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$resultat_creation_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$resultat_creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 function get_classe_from_id($id){
 	//$sql="SELECT * FROM classes WHERE id='$id_classe[0]'";
 	$sql="SELECT * FROM classes WHERE id='$id'";
-	$resultat_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$resultat_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($resultat_classe)!=1){
 		//echo "<p>ERREUR! La classe d'identifiant '$id_classe[0]' n'a pas pu être identifiée.</p>";
 		echo "<p>ERREUR! La classe d'identifiant '$id' n'a pas pu être identifiée.</p>";
@@ -92,7 +92,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 	die("Droits insuffisants pour effectuer cette opération");
 }
 */
-if ((($_SESSION['statut']=='professeur') AND (getSettingValue("CommentairesTypesPP")=='yes') AND (mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))>0))
+if ((($_SESSION['statut']=='professeur') AND (getSettingValue("CommentairesTypesPP")=='yes') AND (mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))>0))
 	OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("CommentairesTypesScol")=='yes'))
 	OR (($_SESSION['statut']=='cpe') AND (getSettingValue("CommentairesTypesCpe")=='yes'))
 	)
@@ -166,7 +166,7 @@ else{
 				require("../lib/footer.inc.php");
 			}
 
-			$resultat_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$resultat_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($resultat_classes)==0){
 				echo "<p>Aucune classe n'est encore définie...</p>\n</form>\n</body>\n</html>\n";
 				exit();
@@ -242,7 +242,7 @@ else{
 
 				$sql="select * from periodes where id_classe='$id_classe' order by num_periode";
 				//echo "$sql<br />";
-				$resultat_num_periode=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$resultat_num_periode=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($resultat_num_periode)==0){
 					echo "Aucune période n'est encore définie pour cette classe...<br />\n";
 					echo "</body>\n</html>\n";
@@ -262,7 +262,7 @@ else{
 
 						// AFFICHER LES COMMENTAIRES-TYPE POUR CHAQUE PERIODE
 						$sql="select * from commentaires_types where id_classe='$id_classe' and num_periode='$ligne_periode->num_periode' order by commentaire";
-						$resultat_commentaires=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$resultat_commentaires=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($resultat_commentaires)>0){
 							echo "<ul>\n";
 							while($ligne_commentaires=mysqli_fetch_object($resultat_commentaires)){
@@ -288,7 +288,7 @@ else{
 
 				// Récupération du nom de la classe
 				$sql="select * from classes where id='$id_classe'";
-				$resultat_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$resultat_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($resultat_classe)==0){
 					echo "<p>L'identifiant de la classe semble erroné.</p>\n</form>\n</body>\n</html>\n";
 					exit();
@@ -299,7 +299,7 @@ else{
 
 				$sql="select * from periodes where id_classe='$id_classe' order by num_periode";
 				//echo "$sql<br />";
-				$resultat_num_periode=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$resultat_num_periode=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($resultat_num_periode)==0){
 					echo "Aucune période n'est encore définie pour cette classe...<br />\n";
 				}
@@ -376,7 +376,7 @@ else{
 					}
 					$sql=$sql.")";
 					//echo "sql=$sql<br />";
-					$resultat_nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$resultat_nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					// Validation des saisies/modifs...
 					//for($i=1;$i<=count($commentaire);$i++){
@@ -402,7 +402,7 @@ else{
 										$sql="insert into commentaires_types values('','".$commentaire_courant."','$num_periode[$j]','$id_classe')";
 										//=========================
 										//echo "sql=$sql<br />";
-										$resultat_insertion_commentaire=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$resultat_insertion_commentaire=mysqli_query($GLOBALS["mysqli"], $sql);
 									}
 								}
 							}
@@ -423,7 +423,7 @@ else{
 
 				// Récupération du nom de la classe
 				$sql="select * from classes where id='$id_classe'";
-				$resultat_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$resultat_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($resultat_classe)==0){
 					echo "<p>L'identifiant de la classe semble erroné.</p>\n</form>\n</body>\n</html>\n";
 					exit();
@@ -446,7 +446,7 @@ else{
 				//$sql=$sql.")";
 				$sql=$sql.") order by commentaire";
 				//echo "$sql";
-				$resultat_commentaires=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$resultat_commentaires=mysqli_query($GLOBALS["mysqli"], $sql);
 				$cpt=1;
 				if(mysqli_num_rows($resultat_commentaires)!=0){
 					echo "<p>Voici la liste des commentaires-type existants pour la classe et la/les période(s) choisie(s):</p>\n";
@@ -516,7 +516,7 @@ else{
 			echo "<p>De quelle classe souhaitez-vous recopier les commentaires-type?</p>\n";
 			echo "<blockquote>\n";
 			$sql="select distinct id,classe from classes order by classe";
-			$resultat_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$resultat_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($resultat_classes)==0){
 				echo "<p>Aucune classe n'est encore définie...</p>\n</form>\n</body>\n</html>\n";
 				exit();
@@ -590,7 +590,7 @@ else{
 
 			// Récupération du nom de la classe
 			$sql="select * from classes where id='$id_classe'";
-			$resultat_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$resultat_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($resultat_classe)==0){
 				echo "<p>L'identifiant de la classe semble erroné.</p>\n</form>\n</body>\n</html>\n";
 				exit();
@@ -610,7 +610,7 @@ else{
 
 				$sql="select * from periodes where id_classe='$id_classe' order by num_periode";
 				//echo "$sql<br />";
-				$resultat_num_periode=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$resultat_num_periode=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($resultat_num_periode)==0){
 					echo "Aucune période n'est encore définie pour cette classe...<br />\n";
 					echo "</body>\n</html>\n";
@@ -631,7 +631,7 @@ else{
 
 						// AFFICHER LES COMMENTAIRES-TYPE POUR CHAQUE PERIODE
 						$sql="select * from commentaires_types where id_classe='$id_classe' and num_periode='$ligne_periode->num_periode' order by commentaire";
-						$resultat_commentaires=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$resultat_commentaires=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($resultat_commentaires)>0){
 							echo "<ul>\n";
 							while($ligne_commentaires=mysqli_fetch_object($resultat_commentaires)){
@@ -667,7 +667,7 @@ else{
 
 				$sql="select * from periodes where id_classe='$id_classe' order by num_periode";
 				//echo "$sql<br />";
-				$resultat_num_periode=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$resultat_num_periode=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($resultat_num_periode)==0){
 					echo "<p>Aucune période n'est encore définie pour cette classe...</p>\n";
 				}
@@ -746,7 +746,7 @@ else{
 					for($i=0;$i<count($num_periode);$i++){
 						echo "<li>\n";
 						$sql="select nom_periode from periodes where num_periode='$num_periode[$i]'";
-						$resultat_periode=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$resultat_periode=mysqli_query($GLOBALS["mysqli"], $sql);
 						$ligne_nom_periode=mysqli_fetch_object($resultat_periode);
 						echo "<p><b>$ligne_nom_periode->nom_periode</b>:</p>\n";
 
@@ -754,7 +754,7 @@ else{
 
 						// AFFICHER LES COMMENTAIRES-TYPE POUR CHAQUE PERIODE
 						$sql="select * from commentaires_types where id_classe='$id_classe' and num_periode='$num_periode[$i]' order by commentaire";
-						$resultat_commentaires=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$resultat_commentaires=mysqli_query($GLOBALS["mysqli"], $sql);
 						echo "<ul>\n";
 						while($ligne_commentaires=mysqli_fetch_object($resultat_commentaires)){
 							echo "<li>".stripslashes(nl2br(trim($ligne_commentaires->commentaire)))."</li>\n";
@@ -785,7 +785,7 @@ else{
 						// CA NE DEVRAIT PAS ARRIVER...
 						$sql="select distinct id,classe from classes order by classe";
 					}
-					$resultat_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$resultat_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($resultat_classes)==0){
 						echo "<p>Aucune classe n'est encore définie...</p>\n</form>\n</body>\n</html>\n";
 						exit();
@@ -839,7 +839,7 @@ function tout_decocher(){
 						}
 						$sql=$sql.")";
 						//echo "sql=$sql<br />";
-						$resultat_nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$resultat_nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 
 /*
@@ -867,7 +867,7 @@ function tout_decocher(){
 					for($i=0;$i<count($num_periode);$i++){
 						// Nom de la période courante:
 						$sql="select nom_periode from periodes where num_periode='$num_periode[$i]'";
-						$resultat_periode=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$resultat_periode=mysqli_query($GLOBALS["mysqli"], $sql);
 						$ligne_nom_periode=mysqli_fetch_object($resultat_periode);
 						echo "<p><b>$ligne_nom_periode->nom_periode</b>:</p>\n";
 						echo "<blockquote>\n";
@@ -875,7 +875,7 @@ function tout_decocher(){
 						// Récupération des commentaires à insérer:
 						$sql="select commentaire from commentaires_types where id_classe='$id_classe' and num_periode='$num_periode[$i]' order by commentaire";
 						//echo "sql=$sql<br />";
-						$resultat_commentaires_source=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$resultat_commentaires_source=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($resultat_commentaires_source)==0){
 							echo "<p>C'est malin... il n'existe pas de commentaires-type pour la classe modèle et la période choisie.<br />\nDe plus, les commentaires existants pour les classes destination ont été supprimés...</p>\n";
 						}
@@ -886,7 +886,7 @@ function tout_decocher(){
 
 									// Récupération du nom de la classe:
 									$sql="select classe from classes where id='$id_dest_classe[$j]'";
-									$resultat_classe_dest=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$resultat_classe_dest=mysqli_query($GLOBALS["mysqli"], $sql);
 									$ligne_classe_dest=mysqli_fetch_object($resultat_classe_dest);
 
 									//echo "<b>Insertion pour $ligne_classe_dest->classe:</b><br /> ".stripslashes(nl2br(trim($ligne_commentaires_source->commentaire)))."<br />\n";
@@ -899,7 +899,7 @@ function tout_decocher(){
 									$sql="insert into commentaires_types values('','$commentaire_courant','$num_periode[$i]','$id_dest_classe[$j]')";
 
 									//echo "sql=$sql<br />";
-									$resultat_insertion_commentaire=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$resultat_insertion_commentaire=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
 								echo "</table>\n";
 							}

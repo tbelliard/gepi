@@ -27,7 +27,7 @@ echo '
 	<select name ="'.$increment.'"'.$id_select.' onmouseover="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'yellow\'}" onmouseout="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'\'}">
 		<option value="aucun">Liste des classes</option>';
 	// on recherche la liste des classes
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, classe FROM classes ORDER BY classe");
+	$query = mysqli_query($GLOBALS["mysqli"], "SELECT id, classe FROM classes ORDER BY classe");
 	$nbre = mysqli_num_rows($query);
 	for($i = 0; $i < $nbre; $i++){
 

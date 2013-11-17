@@ -95,9 +95,9 @@ if ($_POST['step'] == "2") {
             // Pour chaque periode, jusqu'au nombre souhaite (REVOIR pour choix non faits...)
             for ($i=1; $i<=$_POST[$indice]; $i++) {
                 $req_insertion_periode = "INSERT INTO periodes VALUES ('P$i','$i','T', '$key',NULL,NULL)";
-                mysqli_query($GLOBALS["___mysqli_ston"], $req_insertion_periode);
+                mysqli_query($GLOBALS["mysqli"], $req_insertion_periode);
                 // Si tout s'est bien deroule
-                if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
+                if (((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
                     die("Une erreur s'est produite lors de la creation des p&eacute;riodes");
                 }
             }
@@ -108,7 +108,7 @@ if ($_POST['step'] == "2") {
         }
 
 		$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($res) {
 			echo "Réinitialisation des dates de verrouillage de périodes effectuée.<br />";
 		}
@@ -139,7 +139,7 @@ if ($_POST['step'] == "2") {
             // Recuperation des periodes correspondantes a la classe de l'eleve
             echo "recuperation des periodes pour la classe ".$relation_ec->getIdClasse()." <br>";
             $req_periodes_classe = "SELECT * FROM periodes WHERE id_classe = ".$relation_ec->getIdClasse();
-            $periodes_de_la_classe = mysqli_query($GLOBALS["___mysqli_ston"], $req_periodes_classe);
+            $periodes_de_la_classe = mysqli_query($GLOBALS["mysqli"], $req_periodes_classe);
             // Si on trouve des periodes,
             echo mysqli_num_rows($periodes_de_la_classe)." periodes trouvees<br>";
             if (mysqli_num_rows($periodes_de_la_classe) > 0) {
@@ -205,8 +205,8 @@ else {
     echo "<p>Une fois celles-ci cr&eacute;&eacute;es, les &eacute;l&egrave;ves seront affect&eacute;s &agrave; toutes les p&eacute;riodes de leur(s) classe(s)</p>";
 
     $req_classes_sans_periodes = "select id, classe from classes WHERE id NOT IN(Select id_classe from periodes) ORDER BY classe ASC";
-    $res = mysqli_query($GLOBALS["___mysqli_ston"], $req_classes_sans_periodes);
-    if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
+    $res = mysqli_query($GLOBALS["mysqli"], $req_classes_sans_periodes);
+    if (((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
         echo "<br>Impossible de r&eacute;cup&eacute;rer les classes dans la base GEPI.<br>";
         require("../lib/footer.inc.php");
         die();

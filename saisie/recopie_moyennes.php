@@ -57,7 +57,7 @@ if(isset($_POST['recopier'])) {
 
 	// Vérification:
 	$sql="SELECT 1=1 FROM periodes WHERE num_periode='$num_periode' AND id_classe='$id_classe' AND verouiller='O';";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		$msg="La période n°$num_periode est close.";
 	}
@@ -81,7 +81,7 @@ if(isset($_POST['recopier'])) {
 					id_groupe='$id_groupe[$i]' AND
 					periode='$num_periode'";
 				//echo "$sql<br />\n";
-				$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_test)==0){
 					$sql="INSERT INTO matieres_notes SET
 						login='$login[$i]',
@@ -89,7 +89,7 @@ if(isset($_POST['recopier'])) {
 						periode='$num_periode',
 						note=$moy[$i]";
 					//echo "$sql<br />\n";
-					$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res_insert){
 						$nberr++;
 					}
@@ -104,7 +104,7 @@ if(isset($_POST['recopier'])) {
 						id_groupe='$id_groupe[$i]' AND
 						periode='$num_periode'";
 					//echo "$sql<br />\n";
-					$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res_update){
 						$nberr++;
 					}
@@ -177,7 +177,7 @@ if(!isset($id_classe)){
 	//echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
 	echo "<p>Cette page est destinée à effectuer la recopie des moyennes des carnets de notes vers les bulletins.<br />Ne seront recopiées que les moyennes autres que 'abs', 'disp' et '-'.</p>\n";
 	$sql="SELECT DISTINCT id,classe FROM classes ORDER BY classe";
-	$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res_classe)==0){
 		echo "<p>Il semble qu'aucune classe ne soit définie.</p>\n";
@@ -242,7 +242,7 @@ else{
 
 	$chaine_options_classes="";
 
-	$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
 		$id_class_suiv=0;
@@ -302,7 +302,7 @@ else{
 
 		//$sql="SELECT classe FROM classes WHERE id='".$_POST['id_classe']."'";
 		$sql="SELECT classe FROM classes WHERE id='".$id_classe."'";
-		$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_classe)==0){
 			echo "<p>Il semble que la classe choisie n'existe pas.</p>\n";
@@ -321,7 +321,7 @@ else{
 
 			//$sql="SELECT * FROM periodes WHERE id_classe='".$_POST['id_classe']."' ORDER BY num_periode";
 			$sql="SELECT * FROM periodes WHERE id_classe='".$id_classe."' ORDER BY num_periode";
-			$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			/*
 			echo "<select name='num_periode'>\n";
@@ -352,7 +352,7 @@ else{
 		//$id_classe=$_POST['id_classe'];
 
 		$sql="SELECT classe FROM classes WHERE id='$id_classe'";
-		$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_classe)==0){
 			echo "<p>Il semble que la classe choisie n'existe pas.</p>\n";
 			echo "<p><br /></p>\n";
@@ -364,7 +364,7 @@ else{
 		}
 
 		$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='$num_periode'";
-		$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_per)==0){
 			echo "<p>Il semble que la période choisie n'existe pas.</p>\n";
 			echo "<p><br /></p>\n";
@@ -378,7 +378,7 @@ else{
 		$sql="SELECT count(login) nb FROM j_eleves_classes jec WHERE
 			jec.periode='$num_periode' AND
 			jec.id_classe='$id_classe'";
-		$res_eff_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_eff_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		$lig_nb=mysqli_fetch_object($res_eff_classe);
 		$effectif_classe=$lig_nb->nb;
 
@@ -391,7 +391,7 @@ else{
 			c.id='$id_classe'
 			ORDER BY g.description";
 		//echo "$sql<br />\n";
-		$resultat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$resultat=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($resultat)==0){
 			echo "<p>Il semble qu'aucun carnet de notes ne soit encore défini.</p>\n";
 			die("</body></html>");
@@ -472,7 +472,7 @@ else{
 					jgc.id_classe=jec.id_classe
 					ORDER BY e.nom,e.prenom";
 				//echo "<!-- $sql -->\n";
-				$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_ele)==0){
 					echo "<td colspan='3'>Aucun élève dans cette classe et ce groupe!</td>\n";
 					echo "</tr>\n";
@@ -493,7 +493,7 @@ else{
 						echo "<td>".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</td>\n";
 
 						$sql="SELECT * FROM cn_notes_conteneurs WHERE login='$lig_ele->login' AND id_conteneur='$id_racine' AND statut='y'";
-						$res_moy_carnet=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_moy_carnet=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_moy_carnet)==0){
 							$moy_carnet="-";
 						}
@@ -504,7 +504,7 @@ else{
 
 
 						$sql="SELECT * FROM matieres_notes WHERE login='$lig_ele->login' AND id_groupe='$id_groupe' AND statut='' AND periode='$num_periode'";
-						$res_moy_bull=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_moy_bull=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_moy_bull)==0){
 							// IL VA FALLOIR MODIFIER POUR GERER LES statut=abs, statut=disp
 							$moy_bull="-";

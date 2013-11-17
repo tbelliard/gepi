@@ -68,7 +68,7 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
     die();
 }
 
-$appel_cahier_notes=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
+$appel_cahier_notes=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
 $id_groupe=mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group=get_group($id_groupe);
 $periode_num=mysql_result($appel_cahier_notes, 0, 'periode');
@@ -83,7 +83,7 @@ if(!isset($id_dev)) {
 }
 
 $sql="SELECT * FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
-$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$query=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($query)>0) {
 	$id_cn_dev=mysql_result($query, 0, 'id_cn_dev');
 	$nom_court_dev=mysql_result($query, 0, 'nom_court');
@@ -109,7 +109,7 @@ if(isset($_GET['export_csv'])) {
 
 	$sql="SELECT * FROM cc_eval WHERE id_dev='$id_dev' ORDER BY date, nom_court, nom_complet;";
 	//echo "$sql<br />";
-	$res_eval=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_eval=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_eval)==0) {
 		$msg="Aucune évaluation n'est associée au $nom_cc n°$id_dev<br />";
 	}
@@ -136,7 +136,7 @@ if(isset($_GET['export_csv'])) {
 
 			$sql="SELECT cc.* FROM cc_notes_eval cc WHERE cc.id_eval='$lig_eval->id' ORDER BY cc.login;";
 			//echo "$sql<br />";
-			$res_en=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_en=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_en)>0) {
 				while($lig_en=mysqli_fetch_object($res_en)) {
 
@@ -144,7 +144,7 @@ if(isset($_GET['export_csv'])) {
 					if(!isset($tab_ele[$lig_en->login])) {
 						$sql="SELECT c.classe, e.nom, e.prenom FROM classes c, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe=c.id AND jec.periode='$periode_num' AND e.login='$lig_en->login';";
 						//echo "$sql<br />";
-						$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele)>0) {
 							$lig_ele=mysqli_fetch_object($res_ele);
 							$tab_ele[$lig_en->login]['classe']=$lig_ele->classe;
@@ -236,7 +236,7 @@ if(isset($_GET['export_pdf'])) {
 
 	$sql="SELECT * FROM cc_eval WHERE id_dev='$id_dev' ORDER BY date, nom_court, nom_complet;";
 	//echo "$sql<br />";
-	$res_eval=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_eval=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_eval)==0) {
 		$msg="Aucune évaluation n'est associée au $nom_cc n°$id_dev<br />";
 	}
@@ -258,7 +258,7 @@ if(isset($_GET['export_pdf'])) {
 
 			$sql="SELECT cc.* FROM cc_notes_eval cc WHERE cc.id_eval='$lig_eval->id' ORDER BY cc.login;";
 			//echo "$sql<br />";
-			$res_en=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_en=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_en)>0) {
 				while($lig_en=mysqli_fetch_object($res_en)) {
 
@@ -266,7 +266,7 @@ if(isset($_GET['export_pdf'])) {
 					if(!isset($tab_ele[$lig_en->login])) {
 						$sql="SELECT c.classe, e.nom, e.prenom FROM classes c, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe=c.id AND jec.periode='$periode_num' AND e.login='$lig_en->login';";
 						//echo "$sql<br />";
-						$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele)>0) {
 							$lig_ele=mysqli_fetch_object($res_ele);
 							$tab_ele[$lig_en->login]['classe']=$lig_ele->classe;
@@ -608,7 +608,7 @@ echo "<h2 class='noprint'>$nom_cc n°$id_dev&nbsp;: $nom_court_dev (<i>$nom_comp
 
 $cc_eval=array();
 $sql="SELECT * FROM cc_eval WHERE id_dev='$id_dev' ORDER BY date, nom_court;";
-$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res2)>0) {
 	$i=0;
 	while($lig2=mysqli_fetch_object($res2)) {
@@ -620,7 +620,7 @@ if(mysqli_num_rows($res2)>0) {
 		$cc_eval[$i]['date']=formate_date($lig2->date);
 
 		$sql="SELECT * FROM cc_notes_eval WHERE id_eval='$lig2->id' ORDER BY login;";
-		$res_note=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_note)>0) {
 			while($lig_note=mysqli_fetch_object($res_note)) {
 				if($lig_note->statut=='v') {

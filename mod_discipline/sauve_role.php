@@ -63,7 +63,7 @@ if((isset($id_incident))&&(isset($login))&&(isset($qualite))) {
 	echo "\$qualite=$qualite<br />";
 	*/
 	$sql="UPDATE s_protagonistes SET qualite='$qualite' WHERE id_incident='$id_incident' AND login='$login';";
-	$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($update) {
 		//echo "Mise &agrave; jour de la qualit&eacute; \"$qualite\" effectu&eacute;e pour $login.";
 		echo "Mise &agrave; jour du r&ocirc;le \"".htmlspecialchars($qualite)."\" effectu&eacute; pour $login.";

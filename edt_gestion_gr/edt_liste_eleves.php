@@ -32,7 +32,7 @@
 function get_login_eleve($id_eleve){
 
 	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql) OR trigger_error('Impossible de récupérer le login de cet élève.', E_USER_ERROR);
+	$query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Impossible de récupérer le login de cet élève.', E_USER_ERROR);
 	if ($query) {
 		$retour = mysql_result($query, 0,"login");
 	}else{
@@ -80,7 +80,7 @@ $aff_classes_g = $aff_classes_m = $aff_gr_d = $aff_entete = NULL;
 // ============================== fin de l'initialisation des variables =====================
 
 // En haut, on affiche les informations sur ce groupe
-$query_i = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM edt_gr_nom WHERE id = '".$id_gr."'") OR trigger_error('Ce groupe n\'existe pas !', E_USER_ERROR);
+$query_i = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_gr_nom WHERE id = '".$id_gr."'") OR trigger_error('Ce groupe n\'existe pas !', E_USER_ERROR);
 $rep_gr = mysqli_fetch_array($query_i);
 
 // Et on ajoute le nom des professeurs qui le composent
@@ -102,11 +102,11 @@ if ($id_eleve != NULL AND $action != 'del_eleve_gr') {
 		if (is_numeric($id_eleve)) {
 
 			$sql_el = "INSERT INTO edt_gr_eleves (id, id_gr_nom, id_eleve) VALUES ('', '".$id_gr."', '".$id_eleve."')";
-			$query_el = mysqli_query($GLOBALS["___mysqli_ston"], $sql_el) OR trigger_error('Impossible d\'enregistrer cet élève.', E_USER_ERROR);
+			$query_el = mysqli_query($GLOBALS["mysqli"], $sql_el) OR trigger_error('Impossible d\'enregistrer cet élève.', E_USER_ERROR);
 			//echo $sql_el;
 			// On vérifie si sa classe est déjà enregistrée dans la base sinon on l'enregistre
 			$id_classe_ele = get_class_from_ele_login(get_login_eleve($id_eleve));
-			$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_classe, id FROM edt_gr_classes WHERE id_gr_nom = '".$id_gr."' LIMIT 1");
+			$test = mysqli_query($GLOBALS["mysqli"], "SELECT id_classe, id FROM edt_gr_classes WHERE id_gr_nom = '".$id_gr."' LIMIT 1");
 			if (mysqli_num_rows($test) >= 1) {
 				// On ajoute une classe dans la ligne ci-dessus
 				$classes = mysqli_fetch_array($test);
@@ -121,12 +121,12 @@ if ($id_eleve != NULL AND $action != 'del_eleve_gr') {
 				}
 				if ($up == 'oui') {
 					$ajout = $classes["id_classe"].$id_classe_ele["id0"].'|';
-					$update = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_gr_classes SET id_classe = '".$ajout."' WHERE id = '".$test["id"]."'");
+					$update = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_gr_classes SET id_classe = '".$ajout."' WHERE id = '".$test["id"]."'");
 				}
 
 			}else{
 
-				$enregistre = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO edt_gr_classes (id, id_gr_nom, id_classe) VALUES ('', '".$id_gr."', '".$id_classe_ele["id0"]."|')");
+				$enregistre = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_gr_classes (id, id_gr_nom, id_classe) VALUES ('', '".$id_gr."', '".$id_classe_ele["id0"]."|')");
 
 			}
 		}
@@ -138,7 +138,7 @@ elseif($action == "del_eleve_gr"){
 	if (is_numeric($id_eleve) AND is_numeric($id_gr)) {
 		// Après cette petite vérfication, on efface
 		$sql_del = "DELETE FROM edt_gr_eleves WHERE id_gr_nom = '".$id_gr."' AND id_eleve = '".$id_eleve."' LIMIT 1";
-		$query_del = mysqli_query($GLOBALS["___mysqli_ston"], $sql_del) OR trigger_error('Impossible d\'effacer cet élève !', E_USER_ERROR);
+		$query_del = mysqli_query($GLOBALS["mysqli"], $sql_del) OR trigger_error('Impossible d\'effacer cet élève !', E_USER_ERROR);
 
 	}
 }
@@ -153,7 +153,7 @@ elseif($action == "del_eleve_gr"){
 
 // Affichage de la liste des classes par $aff_classes_g
 
-	$req_liste_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, classe FROM classes ORDER BY classe");
+	$req_liste_classe = mysqli_query($GLOBALS["mysqli"], "SELECT id, classe FROM classes ORDER BY classe");
 	$nbre_classe = mysqli_num_rows($req_liste_classe);
 
 	for($a=0; $a<$nbre_classe; $a++) {
@@ -174,14 +174,14 @@ elseif($action == "del_eleve_gr"){
 if ($classe_e AND is_numeric($classe_e) AND $rep_gr["subdivision_type"] != "classe") {
 
 
-	$aff_nom_classe = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '".$classe_e."'"));
+	$aff_nom_classe = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '".$classe_e."'"));
 
 	// Récupérer la liste des élèves de la classe en question
-	$req_ele = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.login, e.id_eleve, nom, prenom, sexe
+	$req_ele = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.login, e.id_eleve, nom, prenom, sexe
 					FROM j_eleves_classes jec, eleves e
 					WHERE id_classe = '".$classe_e."'
 					AND jec.login = e.login ORDER BY nom, prenom")
-						OR DIE('Erreur dans la requête $req_ele : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						OR DIE('Erreur dans la requête $req_ele : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$nbre_ele_m = mysqli_num_rows($req_ele);
 
 	$aff_classes_m .= "
@@ -207,7 +207,7 @@ if ($classe_e AND is_numeric($classe_e) AND $rep_gr["subdivision_type"] != "clas
 						";
 
 	for($b=0; $b<$nbre_ele_m; $b++) {
-		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 			$aff_ele_m[$b]["id_eleve"] = mysql_result($req_ele, $b, "id_eleve");
 			$aff_ele_m[$b]["nom"] = mysql_result($req_ele, $b, "nom");
@@ -215,7 +215,7 @@ if ($classe_e AND is_numeric($classe_e) AND $rep_gr["subdivision_type"] != "clas
 			$aff_ele_m[$b]["sexe"] = mysql_result($req_ele, $b, "sexe");
 
 			// On vérifie que cet élève n'est pas déjà membre de l'AID
-			$req_verif = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_eleve FROM edt_gr_eleves WHERE id_eleve = '".$aff_ele_m[$b]["id_eleve"]."' AND id_gr_nom = '".$id_gr."'");
+			$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT id_eleve FROM edt_gr_eleves WHERE id_eleve = '".$aff_ele_m[$b]["id_eleve"]."' AND id_gr_nom = '".$id_gr."'");
 			$nbre_verif = mysqli_num_rows($req_verif);
 
 				if ($nbre_verif >> 0) {
@@ -257,19 +257,19 @@ if ($rep_gr["subdivision_type"] == 'classe') {
 									AND	jec.id_classe = '".$rep_gr["subdivision"]."'
 									AND jec.id_classe = c.id
 									ORDER BY nom, prenom";
-	$req_ele_gr = mysqli_query($GLOBALS["___mysqli_ston"], $sql_e) OR trigger_error('Impossible de récupérer la liste des élèves', E_USER_ERROR);
+	$req_ele_gr = mysqli_query($GLOBALS["mysqli"], $sql_e) OR trigger_error('Impossible de récupérer la liste des élèves', E_USER_ERROR);
 
 
 }else{
 
-	$req_ele_gr = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT ege.id_eleve, e.nom, e.prenom, e.login, c.classe, c.id
+	$req_ele_gr = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT ege.id_eleve, e.nom, e.prenom, e.login, c.classe, c.id
 										FROM edt_gr_eleves ege, eleves e, j_eleves_classes jec, classes c
 										WHERE ege.id_gr_nom = '".$id_gr."' AND
 										ege.id_eleve = e.id_eleve AND
 										e.login = jec.login AND
 										jec.id_classe = c.id
 										ORDER BY c.classe, e.nom, e.prenom")
-									OR trigger_error('Impossible de récupérer la liste des élèves : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+									OR trigger_error('Impossible de récupérer la liste des élèves : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
 
 }
 

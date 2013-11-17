@@ -61,7 +61,7 @@ $reg_professeurs = (array)$current_group["profs"]["list"];
 //================================
 $invisibilite_groupe=array();
 $sql="SELECT jgv.* FROM j_groupes_visibilite jgv WHERE id_groupe='$id_groupe' AND jgv.visible='n';";
-$res_jgv=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_jgv=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_jgv)>0) {
 	while($lig_jgv=mysqli_fetch_object($res_jgv)) {
 		$invisibilite_groupe[]=$lig_jgv->domaine;
@@ -115,7 +115,7 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 
 	$sql="SELECT u.login, u.nom, u.prenom, u.civilite, u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
 	//echo "$sql<br />";
-	$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb = mysqli_num_rows($calldata);
 	$prof_list = array();
 	$prof_list["list"] = array();
@@ -315,11 +315,11 @@ if (isset($_POST['is_posted'])) {
 					$test=0;
 					$test2=0;
 					$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$tmpid'";
-					$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 					while($lig_tmp=mysqli_fetch_object($res_tmp)){
 						$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND login='$lig_tmp->login'";
 						//echo "$sql<br />\n";
-						$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_test)>0){
 							//echo "$lig_tmp->login<br />\n";
 							if(!in_array($lig_tmp->login,$tabtmp)){$tabtmp[]=$lig_tmp->login;}
@@ -327,7 +327,7 @@ if (isset($_POST['is_posted'])) {
 						}
 						$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='$id_groupe' AND login='$lig_tmp->login'";
 						//echo "$sql<br />\n";
-						$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_test)>0){
 							//echo "$lig_tmp->login<br />\n";
 							if(!in_array($lig_tmp->login,$tabtmp)){$tabtmp[]=$lig_tmp->login;}
@@ -336,7 +336,7 @@ if (isset($_POST['is_posted'])) {
 					}
 		
 					$sql="SELECT classe FROM classes WHERE id='$tmpid'";
-					$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 					$lig_tmp=mysqli_fetch_object($res_tmp);
 					$clas_tmp=$lig_tmp->classe;
 		
@@ -372,7 +372,7 @@ if (isset($_POST['is_posted'])) {
 									jeg.id_groupe='$id_groupe' AND
 									jec.id_classe='$tmpid'";
 						//echo "$sql<br />\n";
-						$res_ele_clas_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ele_clas_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele_clas_grp)>0){
 							$error = true;
 							$msg .= "Des données existantes bloquent la suppression de la classe $clas_tmp du groupe.<br />\nAucun élève de la classe ne doit être inscrit dans le groupe.<br />\n<a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=$tmpid'>Enlevez les élèves du groupe</a> avant.<br />\n";
@@ -400,7 +400,7 @@ if (isset($_POST['is_posted'])) {
 			if($visibilite_groupe_domaine_courant!='n') {
 				$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='".$id_groupe."' AND domaine='".$tab_domaines[$loo]."';";
 				//echo "$sql<br />";
-				$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$suppr) {$msg.="Erreur lors de la suppression de l'invisibilité du groupe n°".$id_groupe." sur les ".$tab_domaines_texte[$loo].".<br />";}
 			}
 		}
@@ -408,7 +408,7 @@ if (isset($_POST['is_posted'])) {
 			if($visibilite_groupe_domaine_courant=='n') {
 				$sql="INSERT j_groupes_visibilite SET id_groupe='".$id_groupe."', domaine='".$tab_domaines[$loo]."', visible='n';";
 				//echo "$sql<br />";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilité du groupe n°".$id_groupe." sur les ".$tab_domaines_texte[$loo].".<br />";}
 			}
 		}
@@ -426,7 +426,7 @@ if (isset($_POST['is_posted'])) {
 			//$reg_professeurs[] = $proflogin;
 
 			$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='$proflogin' AND id_matiere='$reg_matiere';";
-			$test_prof_matiere=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_prof_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_prof_matiere)>0) {
 				$reg_professeurs[] = $proflogin;
 			}
@@ -446,7 +446,7 @@ if (isset($_POST['is_posted'])) {
 									u.login=jgp.login AND
 									jgp.id_groupe=jgc.id_groupe AND
 									jgc.id_classe='".$clazz[$loo]."';";
-			$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_prof)>0) {
 				while($lig_prof=mysqli_fetch_object($res_prof)) {
 					if(!in_array($lig_prof->login, $reg_professeurs)) {
@@ -458,7 +458,7 @@ if (isset($_POST['is_posted'])) {
 	}
 	elseif(isset($_POST['associer_tous_les_profs_de_l_etablissement'])) {
 		$sql="SELECT login FROM utilisateurs WHERE statut='professeur' AND etat='actif';";
-		$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_prof)>0) {
 			while($lig_prof=mysqli_fetch_object($res_prof)) {
 				if(!in_array($lig_prof->login, $reg_professeurs)) {
@@ -470,7 +470,7 @@ if (isset($_POST['is_posted'])) {
 
 	$tab_profs_matiere=array();
 	$sql="SELECT DISTINCT id_professeur FROM j_professeurs_matieres WHERE id_matiere='$reg_matiere';";
-	$res_prof_matiere=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_prof_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_prof_matiere)>0){
 		while($lig_prof_matiere=mysqli_fetch_object($res_prof_matiere)){
 			$tab_profs_matiere[]=$lig_prof_matiere->id_professeur;
@@ -482,7 +482,7 @@ if (isset($_POST['is_posted'])) {
 		if(!in_array($reg_professeurs[$loo], $tab_profs_matiere)) {
 			$sql="SELECT MAX(ordre_matieres) AS max_ordre_matiere FROM j_professeurs_matieres WHERE id_professeur='".$reg_professeurs[$loo]."';";
 			//echo "$sql<br />";
-			$res_ordre=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ordre=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_ordre)==0) {
 				$ordre_matiere=1;
 			}
@@ -492,7 +492,7 @@ if (isset($_POST['is_posted'])) {
 
 			$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$reg_professeurs[$loo]."', id_matiere='$reg_matiere', ordre_matieres='$ordre_matiere';";
 			//echo "$sql<br />";
-			$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
 
@@ -568,7 +568,7 @@ if (isset($_POST['is_posted'])) {
 									if($visibilite_groupe_domaine_courant!='n') {
 										$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='".$id_sous_groupe."' AND domaine='".$tab_domaines[$loo]."';";
 										//echo "$sql<br />";
-										$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$suppr) {$msg.="Erreur lors de la suppression de l'invisibilité du groupe n°".$id_sous_groupe." sur les ".$tab_domaines_texte[$loo].".<br />";}
 									}
 								}
@@ -576,7 +576,7 @@ if (isset($_POST['is_posted'])) {
 									if($visibilite_groupe_domaine_courant=='n') {
 										$sql="INSERT j_groupes_visibilite SET id_groupe='".$id_sous_groupe."', domaine='".$tab_domaines[$loo]."', visible='n';";
 										//echo "$sql<br />";
-										$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilité du groupe n°".$id_sous_groupe." sur les ".$tab_domaines_texte[$loo].".<br />";}
 									}
 								}
@@ -792,7 +792,7 @@ if ($mode == "groupe") {
 		echo " onchange='changement();'";
 		echo ">\n";
 	
-		$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes ORDER BY classe");
+		$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes ORDER BY classe");
 		$nombre_lignes = mysqli_num_rows($call_data);
 		if ($nombre_lignes != 0) {
 			$i = 0;
@@ -841,7 +841,7 @@ if ($mode == "groupe") {
 	//$sql="SELECT * FROM classes c, periodes p WHERE p.id_classe=c.id AND MAX(p.num_periode)='".get_period_number($id_classe)."' ORDER BY classe;";
 	$sql="SELECT * FROM classes ORDER BY classe;";
 	//echo "$sql<br />";
-	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_data = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nombre_lignes = mysqli_num_rows($call_data);
 	if ($nombre_lignes != 0) {
 
@@ -920,7 +920,7 @@ echo "<p>Visibilité de l'enseignement sur&nbsp;: <br />\n";
 for($loop=0;$loop<count($tab_domaines);$loop++) {
 	echo "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."' id='visibilite_groupe_".$tab_domaines[$loop]."' value='y' ";
 	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='".$tab_domaines[$loop]."' AND visible='n';";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)==0) {
 		echo "checked ";
 	}
@@ -1010,7 +1010,7 @@ echo "<div style='width: 45%; float: right;'>\n";
 
 echo "<p>Sélectionnez la matière enseignée à ce groupe&nbsp;: ";
 
-$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
+$query = mysqli_query($GLOBALS["mysqli"], "SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysqli_num_rows($query);
 
 echo "<select name='matiere' id='matiere' size='1'";
@@ -1066,7 +1066,7 @@ for(i=0;i<$p;i++) {
 }
 
 $sql="SELECT 1=1 FROM utilisateurs WHERE statut='professeur';";
-$res_nb_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_nb_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_prof_etab=mysqli_num_rows($res_nb_prof);
 
 echo "<script type='text/javascript'>

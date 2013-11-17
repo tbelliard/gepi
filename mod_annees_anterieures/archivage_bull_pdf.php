@@ -206,7 +206,7 @@ else {
 		fwrite($fich_index, $entete."<title>Index ".getSettingValue('gepiYear')."</title></head><body><div id='contenu'><h1>Index ".getSettingValue('gepiYear')."</h1>\n");
 
 		$sql="SELECT * FROM tempo4 ORDER BY col4;";
-		$res_t4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_t4=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_t4)>0) {
 			fwrite($fich_index, "<p><a href='index_eleves.html'>Index alphabétique des élèves</a></p>\n");
 
@@ -220,14 +220,14 @@ else {
 		}
 
 		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, tempo4 t WHERE c.id=t.col1 ORDER BY c.classe;";
-		$res_t_c=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_t_c=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_t_c)>0) {
 			fwrite($fich_index, "<p><strong>Classes&nbsp;:</strong></p>\n");
 			while($lig_t_c=mysqli_fetch_object($res_t_c)) {
 				fwrite($fich_index, "<p><a href='classe_".$lig_t_c->id.".html'>".$lig_t_c->classe."</a></p>\n");
 
 				$sql="SELECT * FROM tempo4 WHERE col1='".$lig_t_c->id."' ORDER BY col4;";
-				$res_t4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_t4=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_t4)>0) {
 					$fich_index_classe=fopen("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/classe_".$lig_t_c->id.".html","w+");
 					fwrite($fich_index_classe, $entete."<title>Classe de ".$lig_t_c->classe." ".getSettingValue('gepiYear')."</title></head><body><div id='contenu'><h1>Classe de ".$lig_t_c->classe." ".getSettingValue('gepiYear')."</h1>\n");
@@ -256,7 +256,7 @@ else {
 
 	//$sql="SELECT * FROM classes ORDER BY classe;";
 	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY classe;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucune classe trouvée.</p>";
 		require("../lib/footer.inc.php");
@@ -278,7 +278,7 @@ else {
 
 		if(isset($_GET['ele_chgt_classe'])) {
 			$sql="SELECT DISTINCT col1 FROM tempo2;";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				echo "<p>Il reste à traiter ".mysqli_num_rows($test)." élève(s) ayant changé de classe en cours d'année.</p>\n";
 				$ele_chgt_classe="y";
@@ -303,7 +303,7 @@ else {
 		else {
 			// Reste-t-il des élèves à parcourir dans cette classe?
 			$sql="SELECT col2 FROM tempo2 WHERE col1='$id_classe';";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				for($loop=0;$loop<$cpt;$loop++) {
 					if($tab_classe[$loop]['id_classe']==$id_classe) {
@@ -338,14 +338,14 @@ else {
 					echo "<p>Toutes les classes ont été parcourues.<br />Il ne reste que les élèves ayant changé de classe à traiter.</p>\n";
 
 					$sql="SELECT DISTINCT login, id_classe FROM j_eleves_classes ORDER BY login, id_classe;";
-					$res_ele_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_ele_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)>0) {
 						//$tab_login_ele_chgt_classe=array();
 						//$tab_id_classe_chgt_classe=array();
 
 						// Normalement, à ce stade, la table est vide
 						$sql="TRUNCATE tempo2;";
-						$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$ele_prec="";
 						while($lig=mysqli_fetch_object($res_ele_classe)) {
@@ -361,7 +361,7 @@ else {
 								*/
 
 								$sql="INSERT INTO tempo2 SET col1='$lig->login';";
-								$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							}
 							$ele_prec=$lig->login;
 						}
@@ -421,14 +421,14 @@ else {
 
 		// On va stocker la liste des id_classe,login,fichiers
 		$sql="TRUNCATE tempo4;";
-		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		// On va faire la liste des élèves:
 		$sql="TRUNCATE tempo2;";
-		$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="INSERT INTO tempo2 (SELECT DISTINCT id_classe, login FROM j_eleves_classes ORDER BY id_classe, login);";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		// On commence avec la première classe:
 		$id_classe=$tab_classe[0]['id_classe'];

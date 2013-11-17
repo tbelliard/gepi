@@ -52,7 +52,7 @@ if ($indice_aid =='') {
     header("Location: index.php");
     die();
 }
-$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 $nom_aid = @mysql_result($call_data, 0, "nom");
 $activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
 
@@ -61,7 +61,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
 
     // Enregistrement des données
     // On va chercher les aid déjà existantes
-    $calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid WHERE indice_aid='$indice_aid'");
+    $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid'");
     $nombreligne = mysqli_num_rows($calldata);
     $i = 0;
     $msg_inter = "";
@@ -69,50 +69,50 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
         $aid_id = @mysql_result($calldata, $i, "id");
         // Enregistrement de fiche publique
         if (isset($_POST["fiche_publique_".$aid_id])) {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set fiche_publique='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set fiche_publique='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         } else {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set fiche_publique='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set fiche_publique='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
 			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée fiche_publique de l'aid $aid_id <br />\n";
         // Enregistrement de eleve_peut_modifier
         if (isset($_POST["eleve_peut_modifier_".$aid_id])) {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set eleve_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set eleve_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         } else {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set eleve_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set eleve_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
 			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée eleve_peut_modifier de l'aid $aid_id <br />\n";
          // Enregistrement de prof_peut_modifier
         if (isset($_POST["prof_peut_modifier_".$aid_id])) {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set prof_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set prof_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         } else {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set prof_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set prof_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
 			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée prof_peut_modifier de l'aid $aid_id <br />\n";
         // Enregistrement de cpe_peut_modifier
         if (isset($_POST["cpe_peut_modifier_".$aid_id])) {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set cpe_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set cpe_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         } else {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set cpe_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set cpe_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
 			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée cpe_peut_modifier de l'aid $aid_id <br />\n";
 
         // Enregistrement de affiche_adresse1
         if (isset($_POST["affiche_adresse1_".$aid_id])) {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set affiche_adresse1='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set affiche_adresse1='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         } else {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set affiche_adresse1='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set affiche_adresse1='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
 			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée affiche_adresse1 de l'aid $aid_id <br />\n";
         // Enregistrement de en_construction
         if (isset($_POST["en_construction_".$aid_id])) {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set en_construction='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set en_construction='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         } else {
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], "update aid set en_construction='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set en_construction='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
 			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée en_construction de l'aid $aid_id <br />\n";
@@ -150,7 +150,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outil
 echo "<p class=\"medium\">";
 // On va chercher les aid déjà existantes, et on les affiche.
 if (!isset($order_by)) {$order_by = "numero,nom";}
-$calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
+$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
 $nombreligne = mysqli_num_rows($calldata);
 
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y"))

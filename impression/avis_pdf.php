@@ -293,11 +293,11 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 	$pdf->Setxy($X_entete_classe,$Y_entete_classe);
 
 	if ($id_classe != NULL) {
-		$calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes WHERE id = '$id_classe'");
+		$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 		$current_classe = mysql_result($calldata, 0, "classe");
 	} else {
 		$sql = "SELECT * FROM classes WHERE id = '$id_classe'";
-		$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 		$current_classe = mysql_result($calldata, 0, "classe");
 	}
 
@@ -312,7 +312,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		//$sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves['login'][0]."' and id_classe='$id_classe')";
 		$sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
 		//echo "$sql<br />\n";
-		$call_profsuivi_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 		$current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
 
 		$pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,casse_mot(getSettingValue("gepi_prof_suivi"),'majf2').' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
@@ -343,7 +343,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 
 		if ($nb_periodes==1) {
 			$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='".$donnees_eleves[0]['id_periode']."' ORDER BY num_periode";
-			$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_per)==0){
 				die("Problème avec les infos de la classe $id_classe</body></html>");
 			}
@@ -386,7 +386,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		$login_elv = $donnees_eleves[$nb_eleves_i]['login'];
 		$sql_current_eleve_avis = "SELECT avis FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='".$donnees_eleves[$nb_eleves_i]['id_periode']."')";
 		//echo "$sql_current_eleve_avis<br />\n";
-		$current_eleve_avis_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql_current_eleve_avis);
+		$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], $sql_current_eleve_avis);
 		$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 
 		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-5) {

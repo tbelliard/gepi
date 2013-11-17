@@ -110,7 +110,7 @@ if($acces=="y") {
 		//debug_var();
 
 		$sql="SELECT * FROM eleves WHERE login='$logineleve';";
-		$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 		if(mysqli_num_rows($res_ele)==0) {
 			// On ne devrait pas arriver là.
@@ -145,7 +145,7 @@ if($acces=="y") {
 			// Si l'année scolaire n'a pas été passée en variable, on récupère la première année scolaire pour laquelle il y a des archives pour cet élève.
 			if(!isset($annee_scolaire)) {
 				$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee";
-				$res_annee=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if(mysqli_num_rows($res_annee)==0) {
 					echo "<p>Aucune année archivée pour cet élève.</p>\n";
@@ -163,7 +163,7 @@ if($acces=="y") {
 
 			//$sql="SELECT DISTINCT nom_periode FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
 			$sql="SELECT DISTINCT nom_periode, classe FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire';";
-			$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 			if(mysqli_num_rows($res_per)==0) {
 				$nom_periode="période $num_periode";
@@ -201,7 +201,7 @@ if($acces=="y") {
 			$alt=1;
 			$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='' ORDER BY matiere";
 			//echo "$sql<br />\n";
-			$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 			if(mysqli_num_rows($res_mat)==0) {
 				// On ne devrait pas arriver là.
@@ -236,7 +236,7 @@ if($acces=="y") {
 				type.display_bulletin='y'
 				ORDER BY type.nom, aid.nom";
 			//echo "$sql<br />";
-			$res_aid=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_aid)>0) {
 				while($lig_aid=mysqli_fetch_object($res_aid)) {
 					$alt=$alt*(-1);
@@ -266,7 +266,7 @@ if($acces=="y") {
 			// Affichage des absences
 			$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='ABSENCES'";
 			//echo "$sql<br />\n";
-			$res_abs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_abs=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 			if(mysqli_num_rows($res_abs)==0) {
 				echo "<p>Aucune information sur les absences/retards.</p>\n";
@@ -307,7 +307,7 @@ if($acces=="y") {
 			// Affichage de l'avis du conseil
 			$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='AVIS_CONSEIL'";
 			//echo "$sql<br />\n";
-			$res_avis=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_avis=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 	
 			//echo "<table class='table_annee_anterieure' width='100%' summary='Avis du conseil'>\n";

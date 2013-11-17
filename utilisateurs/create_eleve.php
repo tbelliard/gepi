@@ -60,28 +60,28 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 	$error = false;
 	$msg = "";
 	if ($create_mode == "individual") {
-		$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(e.login) FROM eleves e WHERE (e.login = '" . $_POST['eleve_login'] ."')");
+		$test = mysqli_query($GLOBALS["mysqli"], "SELECT count(e.login) FROM eleves e WHERE (e.login = '" . $_POST['eleve_login'] ."')");
 		if (mysql_result($test, 0) == "0") {
 			$error = true;
 			$msg .= "Erreur lors de la création de l'utilisateur : aucun élève avec ce login n'a été trouvé !<br />";
 		} else {
-			$quels_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.* FROM eleves e WHERE (" .
+			$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e WHERE (" .
 				"e.login = '" . $_POST['eleve_login'] ."')");
 		}
 	} else {
 		// On est en mode 'classe'
 		if ($_POST['classe'] == "all") {
-			$quels_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT distinct(e.login), e.nom, e.prenom, e.sexe, e.email " .
+			$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(e.login), e.nom, e.prenom, e.sexe, e.email " .
 					"FROM classes c, j_eleves_classes jec, eleves e WHERE (" .
 					"e.login = jec.login AND " .
 					"jec.id_classe = c.id)");
-			if (!$quels_eleves) $msg .= ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			if (!$quels_eleves) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 		} elseif (is_numeric($_POST['classe'])) {
-			$quels_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT distinct(e.login), e.nom, e.prenom, e.sexe, e.email " .
+			$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(e.login), e.nom, e.prenom, e.sexe, e.email " .
 					"FROM classes c, j_eleves_classes jec, eleves e WHERE (" .
 					"e.login = jec.login AND " .
 					"jec.id_classe = '" . $_POST['classe']."')");
-			if (!$quels_eleves) $msg .= ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			if (!$quels_eleves) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 		} else {
 			$error = true;
 			$msg .= "Vous devez sélectionner au moins une classe !<br />";
@@ -135,9 +135,9 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 				$sql="SELECT 1=1 FROM utilisateurs WHERE login='".$current_eleve->login."';";
 				//echo "$sql<br />";
-				$test_existence_compte=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_existence_compte=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test_existence_compte)==0) {
-					$reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO utilisateurs SET " .
+					$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO utilisateurs SET " .
 							"login = '" . $current_eleve->login . "', " .
 							"nom = '" . addslashes($current_eleve->nom) . "', " .
 							"prenom = '". addslashes($current_eleve->prenom) ."', " .
@@ -154,7 +154,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					} else {
 						// Ménage:
 						$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouvel %l%ve%($current_eleve->login)';";
-						$res_actions=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_actions=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_actions)>0) {
 							while($lig_action=mysqli_fetch_object($res_actions)) {
 								$menage=del_info_action($lig_action->id);
@@ -165,11 +165,11 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						// Génération de l'URI RSS si l'accès y est donné directement dans la page d'accueil pour le compte élève/resp connecté:
 						if((getSettingValue('rss_acces_ele')=='direct')&&((getSettingAOui('rss_cdt_ele'))||(getSettingAOui('rss_cdt_responsable')))) {
 							$sql="SELECT 1=1 FROM rss_users WHERE user_login='".$current_eleve->login."';";
-							$test_rss = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$test_rss = mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test_rss)==0) {
 								$uri_el = md5($current_eleve->login.getSettingValue("gepiSchoolRne").mt_rand());
 								$sql = "INSERT INTO rss_users (id, user_login, user_uri) VALUES ('', '".$current_eleve->login."', '".$uri_el."');";
-								$insert_rss = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$insert_rss = mysqli_query($GLOBALS["mysqli"], $sql);
 								if (!$insert_rss) {
 									$msg.="Erreur lors de l'initialisation de l'URI RSS pour ".$current_eleve->login."<br />";
 								}
@@ -248,7 +248,7 @@ require_once("../lib/header.inc.php");
 <a href="edit_eleve.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 <?php
-$quels_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.* FROM eleves e LEFT JOIN utilisateurs u ON e.login=u.login WHERE (" .
+$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e LEFT JOIN utilisateurs u ON e.login=u.login WHERE (" .
 		"u.login IS NULL) " .
 		"ORDER BY e.nom,e.prenom");
 $nb = mysqli_num_rows($quels_eleves);
@@ -293,7 +293,7 @@ else{
 	echo "<option value='none'>Sélectionnez une classe</option>\n";
 	echo "<option value='all'>Toutes les classes</option>\n";
 
-	$quelles_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id,classe FROM classes ORDER BY classe");
+	$quelles_classes = mysqli_query($GLOBALS["mysqli"], "SELECT id,classe FROM classes ORDER BY classe");
 	while ($current_classe = mysqli_fetch_object($quelles_classes)) {
 		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
@@ -388,7 +388,7 @@ else{
 		}
 	}
 	//echo "$sql<br />";
-	$quels_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$quels_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb2=mysqli_num_rows($quels_eleves);
 
 

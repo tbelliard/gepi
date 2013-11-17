@@ -71,7 +71,7 @@ class class_accueil_change_menu {
 
   private function chargeAncienOrdre(){
 	$sql="SELECT * FROM mn_ordre_accueil";
-	$resp = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$resp = mysqli_query($GLOBALS["mysqli"], $sql);
 	if ($resp){
 	  if (mysqli_num_rows($resp)>0){
 		while($lig_log=mysqli_fetch_array($resp)) {
@@ -111,7 +111,7 @@ class class_accueil_change_menu {
 				'".$nouvelOrdre['nouveauNom']."');";
 	  }
 
-	  if(!mysqli_query($GLOBALS["___mysqli_ston"], $sql))
+	  if(!mysqli_query($GLOBALS["mysqli"], $sql))
 		return false;
 	  unset ($AncienOrdre);
 	}
@@ -155,7 +155,7 @@ $ordreDemande=$this->ordreFuturMenu ;
 	$sql1 = "SELECT	`bloc`,`statut` FROM `mn_ordre_accueil`
 			  ORDER BY `statut` ASC,`num_menu` ASC;";
 	
-	$resp1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql1);
+	$resp1 = mysqli_query($GLOBALS["mysqli"], $sql1);
 	if ($resp1){
 	  while ($nouvelOrdre = mysqli_fetch_array($resp1)) {
 		if ($statut==$nouvelOrdre['statut'])
@@ -171,7 +171,7 @@ $ordreDemande=$this->ordreFuturMenu ;
 			WHERE `bloc` ='".$nouvelOrdre['bloc']."'
 			AND `statut`= '".$nouvelOrdre['statut']."' ;";
 		 //$resp2 = mysql_query($sql2);
-		 if (!mysqli_query($GLOBALS["___mysqli_ston"], $sql2))
+		 if (!mysqli_query($GLOBALS["mysqli"], $sql2))
 		   echo 'ça coince <br />';
 	  }
 	  unset($nouvelOrdre) ;

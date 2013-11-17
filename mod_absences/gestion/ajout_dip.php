@@ -152,7 +152,7 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
 
                            // on vérifie que les périodes existe bien dans la base
                               $sql = "SELECT * from ".$prefix_base."edt_creneaux";
-                              $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die('Erreur SQL !'.$sql.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                              $resultat = mysqli_query($GLOBALS["mysqli"], $sql) or die('Erreur SQL !'.$sql.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                               while ($data_Per = mysqli_fetch_array($resultat))
                                {
                                    $p = $data_Per['nom_definie_periode'];
@@ -179,7 +179,7 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
                                                                                                 a_date_absence_eleve = '$a_date_absence_eleve',
                                                                                                 saisie_absence_eleve = '".$_SESSION['login']."'
                                                                                                 WHERE id_absence_eleve = '".$id_absence_eleve."'"; }
-                              $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                              $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                          } else { $verification = '3'; $erreur='1'; $texte_erreur = "Il y a une erreur dans la  spécificationr des jours."; }
                  }
 
@@ -197,14 +197,14 @@ if ($action === 'supprimer')
         // Vérification des champs
         $requete_sup = "SELECT eleve_absence_eleve FROM ".$prefix_base."absences_eleves
 								WHERE id_absence_eleve ='$id_dispense_eleve'";
-	   $resultat_sup = mysqli_query($GLOBALS["___mysqli_ston"], $requete_sup) or die('Erreur SQL !'.$requete_sup.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	   $resultat_sup = mysqli_query($GLOBALS["mysqli"], $requete_sup) or die('Erreur SQL !'.$requete_sup.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	   $login_eleve = mysqli_fetch_array($resultat_sup);
         if($id_dispense_eleve != '')
         {
           //Requete d'insertion MYSQL
             $requete_del = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='$id_dispense_eleve'";
           // Execution de cette requete
-            mysqli_query($GLOBALS["___mysqli_ston"], $requete_del) or die('Erreur SQL !'.$requete_del.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+            mysqli_query($GLOBALS["mysqli"], $requete_del) or die('Erreur SQL !'.$requete_del.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
             if($fiche === 'oui') {
 		 	header("Location:gestion_absences.php?type=A&select_fiche_eleve=$login_eleve[0]&aff_fiche=abseleve#abseleve");
 			} else {
@@ -218,7 +218,7 @@ $i = '0';
 if ($action === 'modifier')
 {
         $requete_modif = "SELECT * FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id."'";
-        $resultat_modif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_modif) or die('Erreur SQL !'.$requete_modif.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $resultat_modif = mysqli_query($GLOBALS["mysqli"], $requete_modif) or die('Erreur SQL !'.$requete_modif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         while ($data_modif = mysqli_fetch_array($resultat_modif))
         {
           $eleve_dispense_eleve = $data_modif['eleve_absence_eleve'];
@@ -298,7 +298,7 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
           <td class="centre">
               <?php
                 $requete_id="SELECT * FROM ".$prefix_base."eleves WHERE login='".$eleve_absent[0]."'";
-                $resultat_id = mysqli_query($GLOBALS["___mysqli_ston"], $requete_id) or die('Erreur SQL !'.$requete_id.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                $resultat_id = mysqli_query($GLOBALS["mysqli"], $requete_id) or die('Erreur SQL !'.$requete_id.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                 While ( $data_id = mysqli_fetch_array($resultat_id)) {
               ?>
                         <strong><?php echo strtoupper($data_id['nom']); ?></strong><br /><?php echo ucfirst($data_id['prenom']); $id_eleve = $data_id['login']; $id_eleve_photo = $data_id['elenoet']; ?><br /><span class="norme_absence_bleu"><strong><?php echo classe_de($data_id['login']); } ?></strong></span><br />
@@ -312,7 +312,7 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
                       ?><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><br /><?php
               }
 
-                   $test_dispense = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='D'"),0);
+                   $test_dispense = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='D'"),0);
                    if ($test_dispense != 0)
                     {  ?>
                         <table class="tableau_info_compt" border="0" cellspacing="0" cellpadding="2">
@@ -351,7 +351,7 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
 </div>
 <?php
         $requete_t = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$id_eleve."' AND  d_date_absence_eleve <= '".$datej."' AND   a_date_absence_eleve >= '".$datej."' and type_absence_eleve = 'D'";
-        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete_t) or die('Erreur SQL !'.$requete_t.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $resultat = mysqli_query($GLOBALS["mysqli"], $requete_t) or die('Erreur SQL !'.$requete_t.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 ?>
                  <div class="norme_absence_rouge"><strong>liste des dispenses déjas enregistré pour cette date</strong></div>
                  <?php /* div de centrage du tableau pour ie5 */ ?>

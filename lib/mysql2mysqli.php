@@ -138,7 +138,7 @@ if (!extension_loaded('mysql')) {
 	# mysql_connect - Open a connection to a MySQL Server
 	# resource mysql_connect ([ string $server = ini_get("mysql.default_host") [, string $username = ini_get("mysql.default_user") [, string $password = ini_get("mysql.default_password") [, bool $new_link = false [, int $client_flags = 0 ]]]]] )
 	# mysqli mysqli_connect ([ string $host = ini_get("mysqli.default_host") [, string $username = ini_get("mysqli.default_user") [, string $passwd = ini_get("mysqli.default_pw") [, string $dbname = "" [, int $port = ini_get("mysqli.default_port") [, string $socket = ini_get("mysqli.default_socket") ]]]]]] )
-	function ((($GLOBALS["___mysqli_ston"] = mysqli_init()) && (mysqli_real_connect($GLOBALS["___mysqli_ston"], $server = MYSQL_DEFAULT_HOST,  $username = MYSQL_DEFAULT_USER,  $password = MYSQL_DEFAULT_PASSWORD, NULL, 3306, NULL,  $client_flags = 0))) ? $GLOBALS["___mysqli_ston"] : FALSE) {
+	function ((($GLOBALS["mysqli"] = mysqli_init()) && (mysqli_real_connect($GLOBALS["mysqli"], $server = MYSQL_DEFAULT_HOST,  $username = MYSQL_DEFAULT_USER,  $password = MYSQL_DEFAULT_PASSWORD, NULL, 3306, NULL,  $client_flags = 0))) ? $GLOBALS["mysqli"] : FALSE) {
 		global $mysql_links;
 
 		# no newlink but s/u/p matches prev ones-take last link
@@ -183,7 +183,7 @@ if (!extension_loaded('mysql')) {
 	# bool mysql_create_db ( string $database_name [, resource $link_identifier = NULL ] )
 	# CREATE DATABASE
 	function ((is_null($___mysqli_res = mysqli_query( $link_identifier = NULL, "CREATE DATABASE $database_name"))) ? false : $___mysqli_res) {
-		return mysqli_query( $link_identifier, 'CREATE DATABASE "'.((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $database_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")).'"');
+		return mysqli_query( $link_identifier, 'CREATE DATABASE "'.((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $database_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")).'"');
 	}
 
 	# mysql_data_seek - Move internal result pointer
@@ -212,7 +212,7 @@ if (!extension_loaded('mysql')) {
 	# bool mysql_drop_db ( string $database_name [, resource $link_identifier = NULL ] )
 	# DROP DATABASE
 	function ((is_null($___mysqli_res = mysqli_query( $link_identifier = NULL, "DROP DATABASE $database_name"))) ? false : $___mysqli_res) {
-		return mysqli_query( $link_identifier, 'DROP DATABASE "'.((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $database_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")).'"');
+		return mysqli_query( $link_identifier, 'DROP DATABASE "'.((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $database_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")).'"');
 	}
 
 	# mysql_errno -Returns the numerical value of the error message from previous MySQL operation
@@ -232,8 +232,8 @@ if (!extension_loaded('mysql')) {
 	# mysql_escape_string - Escapes a string for use in a # mysql_query
 	# string mysql_escape_string ( string $unescaped_string )
 	# string mysqli::real_escape_string ( string $escapestr )
-	function ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $unescaped_string) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) {
-		return ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $unescaped_string) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+	function ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $unescaped_string) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) {
+		return ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $unescaped_string) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
 	}
 
 	# mysql_fetch_array - Fetch a result row as an associative array, a numeric array, or both
@@ -414,7 +414,7 @@ if (!extension_loaded('mysql')) {
 	# resource mysql_list_fields ( string $database_name , string $table_name [, resource $link_identifier = NULL ] )
 	# SQL Query: SHOW COLUMNS FROM sometable
 	function (($___mysqli_tmp = mysqli_query( $link_identifier = NULL, "SHOW COLUMNS FROM $database_name.$table_name")) ? $___mysqli_tmp : false) {
-		return mysqli_query( mysql_ensure_link($link_identifier), 'SHOW COLUMNS FROM "'.((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $database_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")).'.'.((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $table_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")).'"');
+		return mysqli_query( mysql_ensure_link($link_identifier), 'SHOW COLUMNS FROM "'.((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $database_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")).'.'.((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $table_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")).'"');
 	}
 
 	# mysql_list_processes - List MySQL processes
@@ -428,7 +428,7 @@ if (!extension_loaded('mysql')) {
 	# resource mysql_list_tables ( string $database [, resource $link_identifier = NULL ] )
 	# SQL Query: SHOW TABLES FROM sometable
 	function mysql_list_tables($database_name,  $table_name,  $link_identifier = NULL) {
-		return mysqli_query( mysql_ensure_link($link_identifier), 'SHOW TABLES FROM "'.((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $database_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")).'"');
+		return mysqli_query( mysql_ensure_link($link_identifier), 'SHOW TABLES FROM "'.((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $database_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")).'"');
 	}
 
 	# mysql_num_fields - Get number of fields in result
@@ -452,8 +452,8 @@ if (!extension_loaded('mysql')) {
 	# mysql_pconnect - Open a persistent connection to a MySQL server
 	# resource mysql_pconnect ([ string $server = ini_get("mysql.default_host") [, string $username = ini_get("mysql.default_user") [, string $password = ini_get("mysql.default_password") [, int $client_flags = 0 ]]]] )
 	# mysqli_connect() with p: host prefix
-	function ($GLOBALS["___mysqli_ston"] = mysqli_connect($server = MYSQL_DEFAULT_HOST,  $username = MYSQL_DEFAULT_USER,  $password = MYSQL_DEFAULT_PASSWORD)) {
-		return ((($GLOBALS["___mysqli_ston"] = mysqli_init()) && (mysqli_real_connect($GLOBALS["___mysqli_ston"], 'p:'.$server,  $username,  $password, NULL, 3306, NULL,  $client_flags))) ? $GLOBALS["___mysqli_ston"] : FALSE);
+	function ($GLOBALS["mysqli"] = mysqli_connect($server = MYSQL_DEFAULT_HOST,  $username = MYSQL_DEFAULT_USER,  $password = MYSQL_DEFAULT_PASSWORD)) {
+		return ((($GLOBALS["mysqli"] = mysqli_init()) && (mysqli_real_connect($GLOBALS["mysqli"], 'p:'.$server,  $username,  $password, NULL, 3306, NULL,  $client_flags))) ? $GLOBALS["mysqli"] : FALSE);
 	}
 	
 	# mysql_ping - Ping a server connection or reconnect if there is no connection

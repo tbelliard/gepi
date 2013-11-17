@@ -43,7 +43,7 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_epreuve_blanche/transfert_cn.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_epreuve_blanche/transfert_cn.php',
 administrateur='V',
@@ -56,7 +56,7 @@ secours='F',
 autre='F',
 description='Epreuve blanche: Transfert vers carnet de notes',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -77,7 +77,7 @@ if(isset($_GET['creer_cn'])) {
 	check_token();
 
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
@@ -94,19 +94,19 @@ if(isset($_GET['creer_cn'])) {
 		}
 		else {
 			$sql="SELECT 1=1 FROM groupes WHERE id='$id_groupe';";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)==0) {
 				$msg="Le groupe n°$id_groupe choisi n'existe pas.\n";
 			}
 			else {
 				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode';";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)==0) {
 					$msg="Aucun élève n'est affecté dans le groupe n°$id_groupe sur la période $periode.\n";
 				}
 				else {
 					$sql="SELECT 1=1 FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode';";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
 						$msg="Le cahier de notes existe déjà pour le groupe n°$id_groupe sur la période $periode.\n";
 					}
@@ -118,11 +118,11 @@ if(isset($_GET['creer_cn'])) {
 
 						$nom_complet_matiere = $tmp_group["matiere"]["nom_complet"];
 						$nom_court_matiere = $tmp_group["matiere"]["matiere"];
-						$reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($tmp_group["description"])."', nom_complet='". traitement_magic_quotes($nom_complet_matiere)."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
+						$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($tmp_group["description"])."', nom_complet='". traitement_magic_quotes($nom_complet_matiere)."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
 						if ($reg) {
-							$id_racine = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
-							$reg = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine'");
-							$reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode', id_cahier_notes='$id_racine'");
+							$id_racine = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
+							$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine'");
+							$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode', id_cahier_notes='$id_racine'");
 							if(!$reg) {
 								$msg="Erreur lors de la création du cahier de notes.\n";
 							}
@@ -144,7 +144,7 @@ if(isset($_POST['transfert_cn'])) {
 	check_token();
 
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
@@ -176,7 +176,7 @@ if(isset($_POST['transfert_cn'])) {
 				$transfert="y";
 				$sql="SELECT 1=1 FROM periodes p, j_groupes_classes jgc, eb_groupes eg, cn_cahier_notes ccn WHERE p.id_classe=jgc.id_classe AND (p.verouiller='O' OR p.verouiller='P') AND p.num_periode='$current_periode' AND eg.id_epreuve='$id_epreuve' AND eg.id_groupe=jgc.id_groupe AND ccn.id_groupe=jgc.id_groupe AND ccn.id_cahier_notes='$current_id_cn';";
 				//echo "$sql<br />";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 				if(mysqli_num_rows($test)>0) {
 					$transfert="n";
@@ -193,57 +193,57 @@ if(isset($_POST['transfert_cn'])) {
 					// Créer le devoir
 					$sql="INSERT INTO cn_devoirs SET id_racine='$id_racine', id_conteneur='$id_conteneur', nom_court='nouveau', ramener_sur_referentiel='F', note_sur='$note_sur';";
 					//echo "$sql<br />";
-					$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$reg) {
 						$msg.="Erreur lors de la création du devoir pour l'enseignement associé au cahier de notes $current_id_cn.<br />";
 					}
 					else {
-						$id_devoir=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+						$id_devoir=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 						$new='yes';
 						$reg_ok='yes';
 
 						$nom_court=$intitule;
 						$sql="UPDATE cn_devoirs SET nom_court='".corriger_caracteres($nom_court)."' WHERE id='$id_devoir'";
-						$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$reg) {$reg_ok = "no";}
 
 						$nom_complet=$nom_court;
 						$sql="UPDATE cn_devoirs SET nom_complet='".corriger_caracteres($nom_court)."' WHERE id='$id_devoir'";
-						$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$reg) {$reg_ok = "no";}
 
 						if($description!='')  {
 							$sql="UPDATE cn_devoirs SET nom_complet='".corriger_caracteres($description)."' WHERE id='$id_devoir'";
-							$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$reg) {$reg_ok = "no";}
 						}
 
 						$tmp_coef=1;
 						$sql="UPDATE cn_devoirs SET coef='$tmp_coef' WHERE id='$id_devoir'";
-						$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$reg) {$reg_ok = "no";}
 
 						$sql="UPDATE cn_devoirs SET date='$date_epreuve' WHERE id='$id_devoir'";
-						$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$reg) {$reg_ok = "no";}
 
 						$sql="UPDATE cn_devoirs SET date_ele_resp='$date_epreuve' WHERE id='$id_devoir'";
-						$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$reg) {$reg_ok = "no";}
 
 						$sql="UPDATE cn_devoirs SET facultatif='O' WHERE id='$id_devoir'";
-						$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$reg) {$reg_ok = "no";}
 
 						$sql="UPDATE cn_devoirs SET display_parents='1' WHERE id='$id_devoir'";
-						$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$reg) {$reg_ok = "no";}
 
 
 						// Transférer les notes
 						$sql="SELECT DISTINCT ec.login_ele, ec.note, ec.statut FROM eb_copies ec, j_eleves_groupes jeg, cn_cahier_notes ccn WHERE ccn.id_groupe=jeg.id_groupe AND ccn.id_cahier_notes='$current_id_cn' AND ec.id_epreuve='$id_epreuve' AND jeg.periode='$current_periode' AND jeg.login=ec.login_ele;";
 						//echo "$sql<br />";
-						$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 						while($lig_ele=mysqli_fetch_object($res_ele)) {
 							if(getSettingValue("note_autre_que_sur_referentiel")=="F") {
 								if($lig_ele->statut=='') {
@@ -259,7 +259,7 @@ if(isset($_POST['transfert_cn'])) {
 								$sql="INSERT INTO cn_notes_devoirs SET login='$lig_ele->login_ele', id_devoir='$id_devoir', note='$lig_ele->note', statut='$lig_ele->statut';";
 							}
 							//echo "$sql<br />";
-							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$insert) {
 								$msg.="Erreur lors de l'insertion de la note ($lig_ele->note|$lig_ele->statut) pour $lig_ele->login_ele sur le devoir n°$id_devoir<br />";
 								//echo "Erreur lors de l'insertion de la note ($lig_ele->note|$lig_ele->statut) pour $lig_ele->login_ele sur le devoir n°$id_devoir<br />";
@@ -272,14 +272,14 @@ if(isset($_POST['transfert_cn'])) {
 
 						// Préparatifs de la mise à jour des moyennes de conteneurs
 						$sql="SELECT id_groupe FROM cn_cahier_notes WHERE id_cahier_notes='$current_id_cn';";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						$lig=mysqli_fetch_object($res);
 						$current_group=get_group($lig->id_groupe);
 						$periode_num=$current_periode;
 
 						// Renseignement d'un témoin comme quoi le transfert a déjà été effectué pour le groupe
 						$sql="UPDATE eb_groupes SET transfert='y' WHERE id_epreuve='$id_epreuve' AND id_groupe='$lig->id_groupe';";
-						$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						// Mise à jour des moyennes de conteneurs
 						recherche_enfant($id_racine);
@@ -331,7 +331,7 @@ echo "</p>\n";
 echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
 
 $sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 	require("../lib/footer.inc.php");
@@ -353,7 +353,7 @@ echo "</blockquote>\n";
 
 
 $sql="SELECT g.*,eg.transfert FROM eb_groupes eg, groupes g WHERE eg.id_epreuve='$id_epreuve' AND g.id=eg.id_groupe ORDER BY g.name,g.description;";
-$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_grp)==0) {
 	echo "<p>Aucun groupe n'est associé à l'épreuve choisie (<i>$id_epreuve</i>).</p>\n";
 	require("../lib/footer.inc.php");
@@ -375,7 +375,7 @@ while($lig=mysqli_fetch_object($res_grp)) {
 	// Récupérer la liste des classes associées
 	$sql="SELECT DISTINCT c.classe FROM classes c, j_groupes_classes jgc WHERE c.id=jgc.id_classe AND jgc.id_groupe='$lig->id' ORDER BY c.classe;";
 	//echo "$sql<br />";
-	$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 	$clas_list="";
 	$cpt2=0;
 	while($lig_clas=mysqli_fetch_object($res_clas)) {
@@ -388,7 +388,7 @@ while($lig=mysqli_fetch_object($res_grp)) {
 	// Récupérer la liste des profs associés
 	$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_groupes_professeurs jgp WHERE u.login=jgp.login AND jgp.id_groupe='$lig->id' ORDER BY u.nom,u.prenom;";
 	//echo "$sql<br />";
-	$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 	$prof_list="";
 	$cpt2=0;
 	while($lig_prof=mysqli_fetch_object($res_prof)) {
@@ -401,13 +401,13 @@ while($lig=mysqli_fetch_object($res_grp)) {
 	// Récupérer la liste des périodes
 	$sql="SELECT MAX(p.num_periode) AS max_num_per FROM periodes p, j_groupes_classes jgc WHERE p.id_classe=jgc.id_classe AND jgc.id_groupe='$lig->id' ORDER BY p.num_periode;";
 	//echo "$sql<br />";
-	$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 	$lig_per=mysqli_fetch_object($res_per);
 
 	if($lig_per->max_num_per>$max_num_per_tt_grp) {$max_num_per_tt_grp=$lig_per->max_num_per;}
 	for($i=1;$i<=$lig_per->max_num_per;$i++) {
 		$sql="SELECT 1=1 FROM periodes p, j_groupes_classes jgc WHERE p.id_classe=jgc.id_classe AND jgc.id_groupe='$lig->id' AND num_periode='$i' AND (verouiller='P' OR verouiller='O');";
-		$res_ver=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ver=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_ver)==0) {
 			$tab_grp[$cpt]['ver_periode'][$i]='N';
 		}
@@ -416,7 +416,7 @@ while($lig=mysqli_fetch_object($res_grp)) {
 		}
 
 		$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$lig->id' AND periode='$i';";
-		$res_cn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 		/*
 		if(mysql_num_rows($res_cn)==0) {
 			$tab_grp[$cpt]['id_cn'][$i]='';

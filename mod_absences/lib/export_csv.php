@@ -145,7 +145,7 @@ die();
 header("Content-Type: application/csv-tab-delimited-table");
 header("Content-disposition: filename=exportation.csv");
 
-	$executer = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br>'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$executer = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br>'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
     echo "NOM;PRENOM;CLASSE;TYPE ABS;JUSTIFIE;MOTIF;DATE DU;HEURE DE;DATE AU;HEURE A;\n";
 

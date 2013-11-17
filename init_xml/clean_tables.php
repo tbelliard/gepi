@@ -85,7 +85,7 @@ echo "</form>";
 	$j=0;
 	$flag=0;
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
-		if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)==0) {
+		if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)==0) {
 			$flag=1;
 		}
 		$j++;
@@ -98,21 +98,21 @@ echo "</form>";
 	}
 	//Suppression des données inutiles dans la tables utilisateurs
 	echo "<h3 class='gepi'>Vérification des données concernant les professeurs</h3>";
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "select login from utilisateurs where (statut = 'professeur' and etat='actif')");
+	$req = mysqli_query($GLOBALS["mysqli"], "select login from utilisateurs where (statut = 'professeur' and etat='actif')");
 	$sup = 'no';
 	$nb_prof = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_prof) {
 		$login_prof = mysql_result($req, $i, 'login');
-		$test = mysqli_query($GLOBALS["___mysqli_ston"], "select id_professeur from j_professeurs_matieres where id_professeur = '$login_prof'");
+		$test = mysqli_query($GLOBALS["mysqli"], "select id_professeur from j_professeurs_matieres where id_professeur = '$login_prof'");
 		if (mysqli_num_rows($test)==0) {
-			$del = @mysqli_query($GLOBALS["___mysqli_ston"], "delete from utilisateurs where login = '$login_prof'");
+			$del = @mysqli_query($GLOBALS["mysqli"], "delete from utilisateurs where login = '$login_prof'");
 			echo "Le professeur $login_prof a été supprimé de la base.<br />";
 			$sup = 'yes';
 		} else {
-			$test = mysqli_query($GLOBALS["___mysqli_ston"], "select login from j_groupes_professeurs where login = '$login_prof'");
+			$test = mysqli_query($GLOBALS["mysqli"], "select login from j_groupes_professeurs where login = '$login_prof'");
 			if (mysqli_num_rows($test)==0) {
-				$del = @mysqli_query($GLOBALS["___mysqli_ston"], "delete from utilisateurs where login = '$login_prof'");
+				$del = @mysqli_query($GLOBALS["mysqli"], "delete from utilisateurs where login = '$login_prof'");
 				echo "Le professeur $login_prof a été supprimé de la base.<br />";
 				$sup = 'yes';
 			}
@@ -124,17 +124,17 @@ echo "</form>";
 	}
 	//Suppression des données inutiles dans la tables des matières
 	echo "<h3 class='gepi'>Vérification des données concernant les matières</h3>";
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "select matiere from matieres");
+	$req = mysqli_query($GLOBALS["mysqli"], "select matiere from matieres");
 	$sup = 'no';
 	$nb_mat = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_mat) {
 		$mat = mysql_result($req, $i, 'matiere');
-		$test1 = mysqli_query($GLOBALS["___mysqli_ston"], "select id_matiere from j_professeurs_matieres where id_matiere = '$mat'");
+		$test1 = mysqli_query($GLOBALS["mysqli"], "select id_matiere from j_professeurs_matieres where id_matiere = '$mat'");
 		if (mysqli_num_rows($test1)==0) {
-			$test2 = mysqli_query($GLOBALS["___mysqli_ston"], "select id_matiere from j_groupes_matieres where id_matiere = '$mat'");
+			$test2 = mysqli_query($GLOBALS["mysqli"], "select id_matiere from j_groupes_matieres where id_matiere = '$mat'");
 			if (mysqli_num_rows($test2)==0) {
-				$del = @mysqli_query($GLOBALS["___mysqli_ston"], "delete from matieres where matiere = '$mat'");
+				$del = @mysqli_query($GLOBALS["mysqli"], "delete from matieres where matiere = '$mat'");
 				echo "La matière $mat a été supprimée de la base.<br />";
 				$sup = 'yes';
 			}
@@ -171,7 +171,7 @@ echo "</form>";
 		$i++;
 	}
 */
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "select pers_id,nom,prenom,adr_id from resp_pers order by nom,prenom");
+	$req = mysqli_query($GLOBALS["mysqli"], "select pers_id,nom,prenom,adr_id from resp_pers order by nom,prenom");
 	$sup = 'no';
 	$nb_resp = mysqli_num_rows($req);
 	$i = 0;
@@ -181,11 +181,11 @@ echo "</form>";
 		$prenom_resp=mysql_result($req, $i, 'prenom');
 		$adr_id=mysql_result($req, $i, 'adr_id');
 
-		$test1 = mysqli_query($GLOBALS["___mysqli_ston"], "select r.ele_id from responsables2 r, eleves e where r.pers_id='$pers_id' AND e.ele_id=r.ele_id");
+		$test1 = mysqli_query($GLOBALS["mysqli"], "select r.ele_id from responsables2 r, eleves e where r.pers_id='$pers_id' AND e.ele_id=r.ele_id");
 		//$test1 = mysql_query("select ele_id from eleves where ele_id='$ele_id'");
 		if (mysqli_num_rows($test1)==0) {
-			$del=@mysqli_query($GLOBALS["___mysqli_ston"], "delete from responsables2 where pers_id='$pers_id'");
-			$del=@mysqli_query($GLOBALS["___mysqli_ston"], "delete from resp_pers where pers_id='$pers_id'");
+			$del=@mysqli_query($GLOBALS["mysqli"], "delete from responsables2 where pers_id='$pers_id'");
+			$del=@mysqli_query($GLOBALS["mysqli"], "delete from resp_pers where pers_id='$pers_id'");
 			echo "Le responsable ".$prenom_resp." ".$nom_resp." a été supprimé de la base.<br />";
 
 			// L'adresse héberge-t-elle encore un représentant d'élève de l'établissement?
@@ -194,10 +194,10 @@ echo "</form>";
 					r.pers_id=rp.pers_id AND
 					r.ele_id=e.ele_id AND
 					adr_id='$adr_id'";
-			$test2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test2=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (mysqli_num_rows($test1)==0) {
 				$sql="delete from resp_adr where adr_id='$adr_id'";
-				$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 
 			$sup = 'yes';
@@ -218,7 +218,7 @@ echo "</form>";
 	$sql="SELECT jec.* FROM j_eleves_etablissements jec
 			LEFT JOIN eleves e ON jec.id_eleve=e.elenoet
 			WHERE e.elenoet IS NULL;";
-	$res_jee=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_jee=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_jee)==0) {
 		echo "<p>Aucune association élève/établissement n'a été supprimée.</p>\n";
 	}
@@ -226,7 +226,7 @@ echo "</form>";
 		$cpt_suppr_jee=0;
 		while($lig_jee=mysqli_fetch_object($res_jee)) {
 			$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='".$lig_jee->id_eleve."' AND id_etablissement='".$lig_jee->id_etablissement."';";
-			$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($suppr) {
 				$cpt_suppr_jee++;
 			}

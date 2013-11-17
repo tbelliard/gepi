@@ -216,7 +216,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $nombre_req++;
 
 
-	$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'observatoire_config';");
+	$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'observatoire_config';");
 	if(mysqli_num_rows($test_existence)>0){
 		$mess[] = "Table des responsables de l'observatoire :";
 		$test_nb[] = "SELECT * FROM observatoire_config WHERE content='$cible1'";
@@ -225,7 +225,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 		$nombre_req++;
 	}
 
-	$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'observatoire_j_resp_champ';");
+	$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'observatoire_j_resp_champ';");
 	if(mysqli_num_rows($test_existence)>0){
 		$mess[] = "Table des responsables de champs particuliers de l'observatoire :";
 		$test_nb[] = "SELECT * FROM observatoire_j_resp_champ WHERE login='$cible1'";
@@ -281,7 +281,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     $nombre_req = 5;
 
-	$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'observatoire';");
+	$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'observatoire';");
 	if(mysqli_num_rows($test_existence)>0){
 		$mess[] = "Table des niveaux (observatoire) :";
 		$test_nb[] = "SELECT * FROM observatoire WHERE matiere ='$cible1'";
@@ -290,7 +290,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 		$nombre_req++;
 	}
 
-	$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'observatoire_comment';");
+	$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'observatoire_comment';");
 	if(mysqli_num_rows($test_existence)>0){
 		$mess[] = "Table des commentaires (observatoire) :";
 		$test_nb[] = "SELECT * FROM observatoire_comment WHERE matiere ='$cible1'";
@@ -363,7 +363,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     $nombre_req = 14;
 
-	$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'observatoire';");
+	$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'observatoire';");
 	if(mysqli_num_rows($test_existence)>0){
 		$mess[] = "Table des niveaux (observatoire) :";
 		$test_nb[] = "SELECT * FROM observatoire WHERE login ='$cible1'";
@@ -372,7 +372,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 		$nombre_req++;
 	}
 
-	$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'observatoire_suivi';");
+	$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'observatoire_suivi';");
 	if(mysqli_num_rows($test_existence)>0){
 		$mess[] = "Table du suivi (observatoire) :";
 		$test_nb[] = "SELECT * FROM observatoire_suivi WHERE login ='$cible1'";
@@ -381,7 +381,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 		$nombre_req++;
 	}
 
-	$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'observatoire_comment';");
+	$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'observatoire_comment';");
 	if(mysqli_num_rows($test_existence)>0){
 		$mess[] = "Table des commentaires (observatoire) :";
 		$test_nb[] = "SELECT * FROM observatoire_comment WHERE login ='$cible1'";
@@ -401,7 +401,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $req[] = "DELETE FROM j_eleves_regime WHERE login ='$cible1'";
 	$nombre_req++;
 
-	$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'j_signalement';");
+	$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'j_signalement';");
 	if(mysqli_num_rows($test_existence)>0){
 		$mess[] = "Table des signalements d'erreurs d'affectation";
 		$test_nb[] = "SELECT * FROM j_signalement WHERE login='$cible1'";
@@ -441,7 +441,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     $nombre_req = 5;
 
-	$test_existence=mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'periodes_observatoire';");
+	$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'periodes_observatoire';");
 	if(mysqli_num_rows($test_existence)>0){
 		$mess[] = "Table des périodes de l'observatoire :";
 		$test_nb[] = "SELECT * FROM periodes_observatoire WHERE id_classe ='$cible1'";
@@ -492,21 +492,21 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     $nombre_req = 1;
     // Suppression de l'association élève-prof de suivi (seulement si l'élève est totalement dissocié d'une classe)
-    if (mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_classes WHERE (login='$cible1' and id_classe = '$cible3')"))=='1') {
+    if (mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_classes WHERE (login='$cible1' and id_classe = '$cible3')"))=='1') {
         $mess[] = "Table de jointure élève/".getSettingValue("gepi_prof_suivi")." : ";
         $test_nb[] = "SELECT * FROM j_eleves_professeurs WHERE (login='$cible1' and id_classe='$cible3')";
         $req[] = "DELETE FROM j_eleves_professeurs WHERE (login='$cible1' and id_classe='$cible3')";
         $nombre_req++;
     }
     // Suppression de l'association élève-cpe (seulement si l'élève est totalement dissocié d'une classe)
-    if (mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_classes WHERE (login='$cible1' and id_classe = '$cible3')"))=='1') {
+    if (mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_classes WHERE (login='$cible1' and id_classe = '$cible3')"))=='1') {
         $mess[] = "Table de jointure élève/cpe : ";
         $test_nb[] = "SELECT * FROM j_eleves_cpe WHERE (e_login='$cible1')";
         $req[] = "DELETE FROM j_eleves_cpe WHERE (e_login='$cible1')";
         $nombre_req++;
     }
     // Suppression des associations élève-groupe
-    if (mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_eleves_groupes WHERE (login='$cible1' and periode = '$cible2')"))>='1') {
+    if (mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_groupes WHERE (login='$cible1' and periode = '$cible2')"))>='1') {
         $mess[] = "Table de jointure élève/groupes (l'élève sera supprimé de tous les enseignements pour la période considérée) : ";
         $test_nb[] = "SELECT * FROM j_eleves_groupes WHERE (login='$cible1' and periode='$cible2')";
         $req[] = "DELETE FROM j_eleves_groupes WHERE (login='$cible1' and periode='$cible2')";
@@ -537,7 +537,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
         if (isset($message)) echo "<p>$message</p>";
         echo "<p>Requête(s) à effectuer : <br /><br />";
         for ($c=0; $c<$nombre_req; $c++) {
-            $call = @mysqli_query($GLOBALS["___mysqli_ston"], $test_nb[$c]);
+            $call = @mysqli_query($GLOBALS["mysqli"], $test_nb[$c]);
 			//echo "\$test_nb[$c]=".$test_nb[$c]."<br />";
             if($call) {
 				$nb_lignes = mysqli_num_rows($call);
@@ -572,14 +572,14 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
         $succes = 'yes';
         if ($_POST['confirm'] == "Oui") {
             for ($c=0; $c<$nombre_req; $c++) {
-                $call = @mysqli_query($GLOBALS["___mysqli_ston"], $test_nb[$c]);
+                $call = @mysqli_query($GLOBALS["mysqli"], $test_nb[$c]);
 				if($call) {
 					$nb_lignes = mysqli_num_rows($call);
 					if ($nb_lignes != 0) {
 						$tab_action = explode(";", $req[$c]);
 						$nbligne = count($tab_action);
 						for ($i = 0; $i < $nbligne; $i++) {
-							$do = mysqli_query($GLOBALS["___mysqli_ston"], $tab_action[$i]);
+							$do = mysqli_query($GLOBALS["mysqli"], $tab_action[$i]);
 						}
 					}
 				}
@@ -587,7 +587,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
             //Vérification
             for ($c=0; $c<$nombre_req; $c++) {
                 //$call = mysql_query($test_nb[$c]);
-                $call = @mysqli_query($GLOBALS["___mysqli_ston"], $test_nb[$c]);
+                $call = @mysqli_query($GLOBALS["mysqli"], $test_nb[$c]);
 				if($call) {
 					$nb_lignes = mysqli_num_rows($call);
 					if ($nb_lignes != 0) {

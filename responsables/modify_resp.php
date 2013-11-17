@@ -52,7 +52,7 @@ if((isset($_GET['acces_resp_legal_0']))&&(($_GET['acces_resp_legal_0']=='y')||($
 	check_token();
 
 	$sql="UPDATE responsables2 SET acces_sp='".$_GET['acces_resp_legal_0']."' WHERE pers_id='".$_GET['pers_id']."' AND ele_id='".$_GET['ele_id']."';";
-	$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($update) {
 		$msg="Modification de l'accès aux données pour pers_id=".$_GET['pers_id']." et ele_id=".$_GET['ele_id']." effectuée.<br />";
 	}
@@ -129,7 +129,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			//if(isset($pers_id)){
 			if((isset($pers_id))&&(isset($tab_nom_prenom_resp))) {
 				$compte_resp_existe="n";
-				$test1_login=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM resp_pers WHERE pers_id = '$pers_id'");
+				$test1_login=mysqli_query($GLOBALS["mysqli"], "SELECT login FROM resp_pers WHERE pers_id = '$pers_id'");
 				if(mysqli_num_rows($test1_login)>0) {$compte_resp_existe="y";}
 
 				$sql="UPDATE resp_pers SET nom='$resp_nom',
@@ -152,17 +152,17 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				*/
 				$sql.=" WHERE pers_id='$pers_id'";
 				//echo "$sql<br />\n";
-				$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res_update){
 					$msg.="Erreur lors de la mise à jour dans 'resp_pers'. ";
 				} else {
 					// On met également à jour la table utilisateurs si le responsable a un compte
-					$test1_login = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM resp_pers WHERE pers_id = '$pers_id'"), 0);
+					$test1_login = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT login FROM resp_pers WHERE pers_id = '$pers_id'"), 0);
 					//echo "\$test1_login=$test1_login<br />\n";
 					if ($test1_login != '') {
 						$sql="SELECT count(login) FROM utilisateurs WHERE login = '".$test1_login."'";
 						//echo "$sql<br />\n";
-						$test2_login = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], $sql), 0);
+						$test2_login = mysql_result(mysqli_query($GLOBALS["mysqli"], $sql), 0);
 						if ($test2_login == 1) {
 							$sql="UPDATE utilisateurs SET nom = '".$resp_nom."', prenom = '" . $resp_prenom . "', civilite='$civilite'";
 							//if((getSettingValue('mode_email_resp')!='mon_compte')&&(isset($mel))) {
@@ -171,7 +171,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 							}
 							$sql.=" WHERE login ='" . $test1_login ."'";
 							//echo "$sql<br />\n";
-							$res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res = mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 				}
@@ -189,7 +189,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 						// Recherche du plus grand adr_id
 						$sql="SELECT adr_id FROM resp_adr WHERE adr_id LIKE 'a%' ORDER BY adr_id DESC";
 						//echo "$sql<br />\n";
-						$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res1)==0){
 							//$adr_id="a1";
 							$adr_id="a".sprintf("%09d","1");
@@ -210,7 +210,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 										pays='$pays',
 										adr_id='$adr_id'";
 						//echo "$sql<br />\n";
-						$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res_insert){
 							$msg.="Erreur lors de l'insertion de la nouvelle adresse. ";
 						}
@@ -218,7 +218,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 							$sql="UPDATE resp_pers SET adr_id='$adr_id' ";
 							$sql.="WHERE pers_id='$pers_id'";
 							//echo "$sql<br />\n";
-							$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res_update){
 								$msg.="Erreur lors de la mise à jour de l'identifiant d'adresse dans 'resp_pers'. ";
 							}
@@ -234,7 +234,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 										pays='$pays'
 									WHERE adr_id='$adr_id'";
 						//echo "$sql<br />\n";
-						$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res_update){
 							$msg.="Erreur lors de la mise à jour de l'adresse dans 'resp_adr'. ";
 						}
@@ -250,7 +250,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 									pays='$pays'
 								WHERE adr_id='$adr_id'";
 					//echo "$sql<br />\n";
-					$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res_update){
 						$msg.="Erreur lors de la mise à jour de l'adresse dans 'resp_adr'. ";
 					}
@@ -274,7 +274,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 						//echo "\$suppr_ele_id[$i]=".$suppr_ele_id[$i]."<br />";
 						$sql="DELETE FROM responsables2 WHERE pers_id='$pers_id' AND ele_id='$suppr_ele_id[$i]'";
 						//echo "$sql<br />\n";
-						$res_suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res_suppr){
 							$msg.="Erreur lors de la suppression de l'association avec l'élève $suppr_ele_id[$i] dans 'responsables2'. ";
 						}
@@ -285,7 +285,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 						if($resp_legal[$i]==0) {
 							$sql="UPDATE responsables2 SET resp_legal='$resp_legal[$i]' WHERE pers_id='$pers_id' AND ele_id='$ele_id[$i]'";
 							//echo "$sql<br />\n";
-							$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res_update){
 								$msg.="Erreur lors de la mise à jour de 'resp_legal' pour le responsable $pers_id. ";
 							}
@@ -304,7 +304,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 									if($loop==0) {
 										$sql="UPDATE responsables2 SET resp_legal='$resp_legal2' WHERE pers_id='".$tmp_pers_id2[$loop]."' AND ele_id='$ele_id[$i]'";
 										//echo "$sql<br />\n";
-										$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_update){
 											$msg.="Erreur lors de la mise à jour de 'resp_legal' pour l'autre responsable (".$tmp_pers_id2[$loop]."). ";
 											$temoin_erreur="oui";
@@ -313,7 +313,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 									else {
 										$sql="UPDATE responsables2 SET resp_legal='0' WHERE pers_id='".$tmp_pers_id2[$loop]."' AND ele_id='$ele_id[$i]'";
 										//echo "$sql<br />\n";
-										$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_update){
 											$msg.="Erreur lors de la mise à jour de 'resp_legal' pour l'autre responsable (".$tmp_pers_id2[$loop]."). ";
 											$temoin_erreur="oui";
@@ -328,7 +328,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 							if($temoin_erreur!="oui"){
 								$sql="UPDATE responsables2 SET resp_legal='$resp_legal[$i]' WHERE pers_id='$pers_id' AND ele_id='$ele_id[$i]'";
 								//echo "$sql<br />\n";
-								$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res_update){
 									$msg.="Erreur lors de la mise à jour de 'resp_legal' pour le responsable $pers_id. ";
 								}
@@ -341,19 +341,19 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			if((isset($add_ele_id))&&(isset($pers_id))&&($msg=='')){
 				if($add_ele_id!=''){
 					$sql="SELECT 1=1 FROM responsables2 WHERE pers_id!='$pers_id' AND ele_id='$add_ele_id'";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)==0){
 						$resp_legal=1;
 					}
 					else{
 						$sql="SELECT resp_legal FROM responsables2 WHERE ele_id='$add_ele_id'";
-						$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 						$ligtmp=mysqli_fetch_object($res_tmp);
 						if($ligtmp->resp_legal==1){$resp_legal=2;}else{$resp_legal=1;}
 					}
 
 					$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$add_ele_id', resp_legal='$resp_legal'";
-					$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res_update){
 						$msg.="Erreur lors de l'ajout de l'élève $add_ele_id. ";
 					}
@@ -367,7 +367,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			// Recherche du plus grand pers_id
 			$sql="SELECT pers_id FROM resp_pers WHERE pers_id LIKE 'p%' ORDER BY pers_id DESC";
 			//echo "$sql<br />\n";
-			$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res1)==0){
 				//$pers_id="p1";
 				$pers_id="p".sprintf("%09d","1");
@@ -392,7 +392,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 								tel_prof='$tel_prof',
 								mel='$mel'";
 			//echo "$sql<br />\n";
-			$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res_insert){
 				$msg.="Erreur lors de l'insertion dans 'resp_pers'. ";
 			}
@@ -405,7 +405,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					// Recherche du plus grand adr_id
 					$sql="SELECT adr_id FROM resp_adr WHERE adr_id LIKE 'a%' ORDER BY adr_id DESC";
 					//echo "$sql<br />\n";
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res1)==0){
 						//$adr_id="a1";
 						$adr_id="a".sprintf("%09d","1");
@@ -428,13 +428,13 @@ if (isset($is_posted) and ($is_posted == '1')) {
 										pays='$pays',
 										adr_id='$adr_id'";
 						//echo "$sql<br />\n";
-						$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res_insert){
 							$msg.="Erreur lors de l'insertion de l'adresse dans 'resp_adr'. ";
 						}
 						else{
 							$sql="UPDATE resp_pers SET adr_id='$adr_id' WHERE pers_id='$pers_id'";
-							$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res_update){
 								$msg.="Erreur lors de la mise à jour de l'association de la personne avec son adresse. ";
 							}
@@ -469,7 +469,7 @@ require_once("../lib/header.inc.php");
 
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0){
 		echo "<p>Une conversion des données responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -478,7 +478,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)==0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -487,7 +487,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 	else{
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -572,12 +572,12 @@ if(isset($associer_eleve)) {
 	$sql="SELECT rp.* FROM resp_pers rp WHERE
 					rp.pers_id='$pers_id'";
 	//echo "$sql<br />\n";
-	$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$lig_pers=mysqli_fetch_object($res_resp);
 
 	$sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom,e.login FROM eleves e ORDER BY e.nom,e.prenom";
-	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res_ele)==0){
 		echo "<p>Il semblerait qu'aucun élève ne soit encore dans la base.</p>\n";
@@ -592,7 +592,7 @@ if(isset($associer_eleve)) {
 		// On ne propose que les élèves n'ayant pas déjà leurs deux responsables légaux
 		//$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id'";
 		$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id' AND (resp_legal='1' OR resp_legal='2')";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)<2){
 
 			if($compteur==0){
@@ -691,7 +691,7 @@ if(isset($quitter_la_page)) {
 
 if ((!isset($pers_id))&&(isset($login_resp))&&($login_resp!="")) {
 	$sql="SELECT pers_id FROM resp_pers WHERE login='$login_resp';";
-	$res_pers_id=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_pers_id=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_pers_id)>0) {
 		$pers_id=mysql_result($res_pers_id, 0, "pers_id");
 	}
@@ -712,7 +712,7 @@ if (isset($pers_id)) {
 	$sql="SELECT rp.* FROM resp_pers rp WHERE
 					rp.pers_id='$pers_id'";
 	//echo "$sql<br />\n";
-	$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res_resp)==0) {
 		echo "<p style='color:red'><strong>Erreur&nbsp;:</strong> Aucun responsable n'est (<em>plus</em>) associé au n°$pers_id dans la table 'resp_pers'.</p>\n";
@@ -734,12 +734,12 @@ if (isset($pers_id)) {
 
 	if(getSettingValue('mode_email_resp')=='mon_compte') {
 		$sql="SELECT email FROM utilisateurs WHERE login='$resp_login_tmp' and statut='responsable';";
-		$res_email_utilisateur_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_email_utilisateur_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_email_utilisateur_resp)>0) {
 			$lig_email_utilisateur_resp=mysqli_fetch_object($res_email_utilisateur_resp);
 			if($lig_email_utilisateur_resp->email!=$mel) {
 				$sql="UPDATE resp_pers SET mel='$lig_email_utilisateur_resp->email' WHERE login='$resp_login_tmp' and statut='responsable';";
-				$update_email=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update_email=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($update_email) {echo "<span style='color:red;'>Adresse mail mise à jour d'après celle du compte d'utilisateur.</span><br />";}
 			}
 			$mel=$lig_email_utilisateur_resp->email;
@@ -750,7 +750,7 @@ if (isset($pers_id)) {
 	$sql="SELECT ra.* FROM resp_adr ra WHERE
 					ra.adr_id='$lig_pers->adr_id'";
 	//echo "$sql<br />\n";
-	$res_adr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_adr)>0){
 		$lig_adr=mysqli_fetch_object($res_adr);
 
@@ -804,7 +804,7 @@ echo "<td valign='top'>\n";
 		echo " (<i>n°$pers_id</i>)";
 
 		$sql="SELECT u.login, u.email, u.auth_mode FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
-		$test_compte=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_compte=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_compte)>0) {
 			$compte_resp_existe="y";
 			$lig_resp_login=mysqli_fetch_object($test_compte);
@@ -962,7 +962,7 @@ if(isset($pers_id)){
 	//$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id' AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY e.nom,e.prenom;";
 	$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal, r.acces_sp FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id') ORDER BY e.nom,e.prenom;";
 	//echo "$sql<br />\n";
-	$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res1)==0){
 		echo "<p>Ce responsable n'est encore rattaché à aucun élève.</p>\n";
 	}
@@ -994,7 +994,7 @@ if(isset($pers_id)){
 			//$sql="SELECT rp.nom,rp.prenom,rp.pers_id FROM resp_pers rp, responsables2 r WHERE (rp.pers_id!='$pers_id' AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2'));";
 			$sql="SELECT rp.nom,rp.prenom,rp.pers_id, r.resp_legal FROM resp_pers rp, responsables2 r WHERE (rp.pers_id!='$pers_id' AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id') ORDER BY r.resp_legal='1' DESC;";
 			//echo "$sql<br />\n";
-			$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			// S'il n'y a pas de deuxième responsable et que le responsable déclaré n'est pas le n°1:
 			if((mysqli_num_rows($res_resp)==0)&&($resp_legal1!=1)){
@@ -1153,7 +1153,7 @@ echo "<div id='div_saisie_ad'>\n";
 if($temoin_adr==1){
 	$sql="SELECT * FROM resp_pers WHERE adr_id='$adr_id'";
 	//echo "$sql<br />\n";
-	$res_adr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_adr)==0){
 		// Bizarre!
 		// Ce n'est pas possible d'après ce qui a été fait auparavant.

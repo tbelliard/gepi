@@ -16,7 +16,7 @@ function get_nom_prenom_eleve($login_ele) {
 */
 function get_denomination_prof($login) {
 	$sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$login';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		return "Utilisateur inconnu";
 	}

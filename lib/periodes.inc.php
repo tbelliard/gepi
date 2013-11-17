@@ -31,7 +31,7 @@ if ((isset($id_classe))||(isset($current_group))) {
 	}
 
 	if(isset($_id_classe)) {
-		$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$_id_classe' ORDER BY num_periode");
+		$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$_id_classe' ORDER BY num_periode");
 		$nb_periode = mysqli_num_rows($periode_query) + 1 ;
 		$i = "1";
 		while ($i < $nb_periode) {

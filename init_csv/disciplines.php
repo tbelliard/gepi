@@ -86,7 +86,7 @@ if (!isset($_POST["action"])) {
 		//
 
 		$sql="SELECT * FROM tempo2;";
-		$res_temp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_temp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_temp)==0) {
 			echo "<p style='color:red'>ERREUR&nbsp;: Aucune association élève/option n'a été trouvée&nbsp;???</p>\n";
 			echo "<p><br /></p>\n";
@@ -123,19 +123,19 @@ if (!isset($_POST["action"])) {
 
 			// Maintenant que tout est propre, on fait un test sur la table pour voir si la matière existe déjà ou pas
 
-			$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(matiere) FROM matieres WHERE matiere = '" . $reg_nom_court . "'"), 0);
+			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(matiere) FROM matieres WHERE matiere = '" . $reg_nom_court . "'"), 0);
 
 			if ($test == 0) {
 				// Test négatif : aucune matière avec ce nom court... on enregistre !
 
-				$insert = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO matieres SET " .
+				$insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres SET " .
 						"matiere = '" . $reg_nom_court . "', " .
-						"nom_complet = '" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $reg_nom_long) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "',priority='0',matiere_aid='n',matiere_atelier='n'");
+						"nom_complet = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom_long) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "',priority='0',matiere_aid='n',matiere_atelier='n'");
 						//"nom_complet = '" . htmlspecialchars($reg_nom_long) . "'");
 
 				if (!$insert) {
 					$error++;
-					echo "<span style='color:red'>".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+					echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
 				} else {
 					$total++;
 				}
@@ -255,7 +255,7 @@ if (!isset($_POST["action"])) {
 				// Maintenant on va afficher tout ça.
 
 				$sql="TRUNCATE TABLE tempo2;";
-				$vide_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$nb_error=0;
 
@@ -272,8 +272,8 @@ if (!isset($_POST["action"])) {
                     echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
 					$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["nom_court"]."',
-					col2='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $data_tab[$i]["nom_long"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					col2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["nom_long"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
 						echo "<span style='color:red'>";
 						echo $data_tab[$i]["nom_court"];

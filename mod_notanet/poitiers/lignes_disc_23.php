@@ -137,7 +137,7 @@
 				$valeur_tmp="&nbsp;";
 				//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 				$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-				$res_note=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_note)){
 					$lig_note=mysqli_fetch_object($res_note);
 					//echo "$lig_note->note";
@@ -317,7 +317,7 @@
 				else{
 					//$sql="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 					$sql="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-					$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_mat)>0){
 						$lig_mat=mysqli_fetch_object($res_mat);
 						//echo "$lig_mat->mat: ";
@@ -325,7 +325,7 @@
 						//$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND mat='".$lig_mat->mat."'";
 						$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND matiere='".$lig_mat->matiere."' AND note!='AB' AND note!='DI' AND note!='NN';";
 						//echo "$sql<br />";
-						$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_moy)>0){
 							$lig_moy=mysqli_fetch_object($res_moy);
 							echo "$lig_moy->moyenne_mat";
@@ -354,7 +354,7 @@
 													nc.notanet_mat='".$tabmatieres[$j][0]."' AND
 													nc.matiere=na.matiere;";
 					//echo "$sql<br />";
-					$res_app=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_app)>0){
 						$lig_app=mysqli_fetch_object($res_app);
 						echo "$lig_app->appreciation";
@@ -432,7 +432,7 @@
 	$j=103;
 	//$sql="SELECT mat,note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 	$sql="SELECT matiere,note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-	$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_mat)>0){
 		$lig_mat=mysqli_fetch_object($res_mat);
 		//echo "$lig_mat->mat: ";
@@ -463,7 +463,7 @@
 											nc.notanet_mat='".$tabmatieres[$j][0]."' AND
 											nc.matiere=na.matiere;";
 			//echo "$sql<br />";
-			$res_app=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_app)>0){
 				$lig_app=mysqli_fetch_object($res_app);
 				$tmp_app="$lig_app->appreciation";
@@ -479,7 +479,7 @@
 
 		// DANS LE CAS DE LA LANGUE VIVANTE on récupère le nom de la langue
 		$sql="SELECT nom_complet FROM matieres WHERE matiere='".$lig_mat->matiere."';";
-		$res_nom_mat_lv=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_nom_mat_lv=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_nom_mat_lv)>0) {
 			$lig_lv=mysqli_fetch_object($res_nom_mat_lv);
@@ -493,7 +493,7 @@
 		//$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND mat='".$lig_mat->mat."'";
 		$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND matiere='".$lig_mat->matiere."' AND note!='AB' AND note!='DI' AND note!='NN';";
 		//echo "$sql<br />";
-		$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_moy)>0){
 			$lig_moy=mysqli_fetch_object($res_moy);
 			$tmp_moy="$lig_moy->moyenne_mat";
@@ -503,7 +503,7 @@
 		$j=104;
 		//$sql="SELECT mat,note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 		$sql="SELECT matiere,note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-		$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_mat)>0){
 			$lig_mat=mysqli_fetch_object($res_mat);
 			//echo "$lig_mat->mat: ";
@@ -536,7 +536,7 @@
 												nc.notanet_mat='".$tabmatieres[$j][0]."' AND
 												nc.matiere=na.matiere;";
 				//echo "$sql<br />";
-				$res_app=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_app)>0){
 					$lig_app=mysqli_fetch_object($res_app);
 					$tmp_app="$lig_app->appreciation";
@@ -554,7 +554,7 @@
 			//$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND mat='".$lig_mat->mat."'";
 			$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND matiere='".$lig_mat->matiere."' AND note!='AB' AND note!='DI' AND note!='NN';";
 			//echo "$sql<br />";
-			$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_moy)>0){
 				$lig_moy=mysqli_fetch_object($res_moy);
 				$tmp_moy="$lig_moy->moyenne_mat";
@@ -721,7 +721,7 @@
 				$valeur_tmp="&nbsp;";
 				//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 				$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-				$res_note=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_note)){
 					$lig_note=mysqli_fetch_object($res_note);
 					//echo "$lig_note->note";
@@ -928,7 +928,7 @@
 				else{
 					//$sql="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 					$sql="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-					$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_mat)>0){
 						$lig_mat=mysqli_fetch_object($res_mat);
 						//echo "$lig_mat->mat: ";
@@ -936,7 +936,7 @@
 						//$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND mat='".$lig_mat->mat."'";
 						$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND matiere='".$lig_mat->matiere."' AND note!='AB' AND note!='DI' AND note!='NN';";
 						//echo "$sql<br />";
-						$res_moy=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_moy)>0){
 							$lig_moy=mysqli_fetch_object($res_moy);
 							echo "$lig_moy->moyenne_mat";
@@ -960,7 +960,7 @@
 													nc.notanet_mat='".$tabmatieres[$j][0]."' AND
 													nc.matiere=na.matiere;";
 					//echo "$sql<br />";
-					$res_app=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_app)>0){
 						$lig_app=mysqli_fetch_object($res_app);
 						echo "$lig_app->appreciation";
@@ -1120,7 +1120,7 @@
 					//echo "<td style='border: 1px solid black; text-align:center;'>\n";
 					//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 					$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-					$res_note=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_note)){
 						$lig_note=mysqli_fetch_object($res_note);
 						echo $lig_note->note."/20";
@@ -1188,7 +1188,7 @@
 														nc.notanet_mat='".$tabmatieres[$j][0]."' AND
 														nc.matiere=na.matiere;";
 						//echo "$sql<br />";
-						$res_app=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_app)>0){
 							$lig_app=mysqli_fetch_object($res_app);
 							echo "$lig_app->appreciation";

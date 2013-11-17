@@ -154,7 +154,7 @@ if(!empty($model_bulletin)) {
 
 		$la_classe = $id_classe[$z];
 		$sql_classe = "SELECT * FROM classes WHERE id='$la_classe'";
-		$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_classe);
+		$call_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe);
 		$result_classe = mysqli_fetch_array($call_classe);
 		$model_bulletin = $result_classe['modele_bulletin_pdf'];
 		if ($model_bulletin == NULL) {
@@ -194,7 +194,7 @@ if(!empty($model_bulletin)) {
 				break;
 		}
 		//echo "$sql<br />";
-		$requete_model = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$requete_model = mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 		/****************** A T T E N T I O N ****************
@@ -465,7 +465,7 @@ if(!empty($model_bulletin)) {
 		$requete_periode_select ="SELECT * FROM ".$prefix_base."periodes p, ".$prefix_base."j_eleves_classes jec WHERE ( (".$prepa_requete.") AND jec.id_classe = p.id_classe ) GROUP BY p.num_periode, p.id_classe ORDER BY p.nom_periode";
 	}
 
-	$execution_periode_select = mysqli_query($GLOBALS["___mysqli_ston"], $requete_periode_select) or die('Erreur SQL !'.$requete_periode_select.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_periode_select = mysqli_query($GLOBALS["mysqli"], $requete_periode_select) or die('Erreur SQL !'.$requete_periode_select.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	while ( $donnee_periode_select = mysqli_fetch_array($execution_periode_select) )
 	{
 		// nom de la période ex: 1er trimestre
@@ -537,31 +537,31 @@ if(!empty($model_bulletin)) {
 			//$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.elenoet AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
 			//echo $requete;
-			$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+			$call_eleve = mysqli_query($GLOBALS["mysqli"], $requete);
 		}
 		if (isset($id_eleve[0])) {
 			//$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC' ;
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.elenoet AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC' ;
 			//echo $requete;
-			$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+			$call_eleve = mysqli_query($GLOBALS["mysqli"], $requete);
 		}
 		break;
 	case "non" :
 		if (isset($id_classe[0])) {
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
 			//echo $requete;
-			$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+			$call_eleve = mysqli_query($GLOBALS["mysqli"], $requete);
 		}
 		if (isset($id_eleve[0])) {
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC' ;
 			//echo $requete;
-			$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+			$call_eleve = mysqli_query($GLOBALS["mysqli"], $requete);
 		}
 		break;
 	default:
 	    echo "defaut";
-		if (isset($id_classe[0])) { $call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
-		if (isset($id_eleve[0])) { $call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
+		if (isset($id_classe[0])) { $call_eleve = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
+		if (isset($id_eleve[0])) { $call_eleve = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
     break;
 	}
 // Fin modif Eric  pour option tri par etab origine
@@ -699,11 +699,11 @@ if(!empty($model_bulletin)) {
 		// on vérifie si l'élève a un établissement d'origine
 		if ( !isset($etablissement_origine) ) {	$etablissement_origine = ''; }
 		//$cpt_etab_origine = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$ident_eleve_sel1."' AND jee.id_etablissement = etab.id"),0);
-		$cpt_etab_origine = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$elenoet_eleve[$cpt_i]."' AND jee.id_etablissement = etab.id"),0);
+		$cpt_etab_origine = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$elenoet_eleve[$cpt_i]."' AND jee.id_etablissement = etab.id"),0);
 		if($cpt_etab_origine != 0) {
 			//$requete_etablissement_origine = "SELECT * FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$ident_eleve_sel1."' AND jee.id_etablissement = etab.id";
 			$requete_etablissement_origine = "SELECT * FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$elenoet_eleve[$cpt_i]."' AND jee.id_etablissement = etab.id";
-			$execution_etablissement_origine = mysqli_query($GLOBALS["___mysqli_ston"], $requete_etablissement_origine) or die('Erreur SQL !'.$requete_etablissement_origine.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$execution_etablissement_origine = mysqli_query($GLOBALS["mysqli"], $requete_etablissement_origine) or die('Erreur SQL !'.$requete_etablissement_origine.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			while ($donnee_etablissement_origine = mysqli_fetch_array($execution_etablissement_origine))
 			{
 				$current_eleve_etab_id = $donnee_etablissement_origine['id'];
@@ -747,7 +747,7 @@ if(!empty($model_bulletin)) {
 // fin modif Eric
 
 		//connaitre le professeur responsable de l'élève
-		$requete_pp = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT professeur FROM '.$prefix_base.'j_eleves_professeurs WHERE (login="'.$ident_eleve[$cpt_i].'" AND id_classe="'.$classe_tableau_id[$cpt_i].'")');
+		$requete_pp = mysqli_query($GLOBALS["mysqli"], 'SELECT professeur FROM '.$prefix_base.'j_eleves_professeurs WHERE (login="'.$ident_eleve[$cpt_i].'" AND id_classe="'.$classe_tableau_id[$cpt_i].'")');
 		$prof_suivi_login = @mysql_result($requete_pp, '0', 'professeur');
 		$pp_classe[$cpt_i] = '<bppc>'.ucfirst(getSettingValue("gepi_prof_suivi")).' : </bppc><ippc>'.affiche_utilisateur($prof_suivi_login,$classe_tableau_id[$cpt_i]).'</ippc>';
 
@@ -756,7 +756,7 @@ if(!empty($model_bulletin)) {
 		//=========================
 		// MODIF: boireaus 20071004
 		//$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
-		$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id  AND (r.resp_legal='1' OR r.resp_legal='2'))"),0);
+		$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id  AND (r.resp_legal='1' OR r.resp_legal='2'))"),0);
 		//=========================
 
 		if($nombre_de_responsable != 0)
@@ -768,7 +768,7 @@ if(!empty($model_bulletin)) {
 			//$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY resp_legal ASC");
 			$sql="SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY resp_legal ASC";
 //echo "$sql<br />";
-			$requete_parents = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$requete_parents = mysqli_query($GLOBALS["mysqli"], $sql);
 			//=========================
 
 			while ($donner_parents = mysqli_fetch_array($requete_parents))
@@ -859,7 +859,7 @@ if(!empty($model_bulletin)) {
 
 
 		//connaître le cpe de l'élève
-		$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '".$ident_eleve[$cpt_i]."')");
+		$query = mysqli_query($GLOBALS["mysqli"], "SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '".$ident_eleve[$cpt_i]."')");
 		$current_eleve_cperesp_login = @mysql_result($query, "0", "login");
 		$cpe_eleve[$cpt_i] = '<i>'.affiche_utilisateur($current_eleve_cperesp_login,$classe_tableau_id[$cpt_i]).'</i>';
 
@@ -1014,7 +1014,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 
 			//============================
 		}
-		$requete_toute_matier = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$requete_toute_matier = mysqli_query($GLOBALS["mysqli"], $sql);
 		//echo "$sql<br />";
 
 		// compteur du nombre de matière
@@ -1036,7 +1036,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					   AND ac.order_display1 = 'b'
 					   AND a.id = aa.id_aid
 					 ORDER BY ac.order_display2 ASC";
-		$resultat_aid = mysqli_query($GLOBALS["___mysqli_ston"], $requete_aid);
+		$resultat_aid = mysqli_query($GLOBALS["mysqli"], $requete_aid);
 
 		while ($donner_aid = mysqli_fetch_array($resultat_aid))
 		{
@@ -1051,7 +1051,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 
 			// on calcule le nombre d'élèves faisant partie de cette aid
 			if(empty($nb_eleve_groupe[$id_groupe_aff])) {
-				$nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT count(*) FROM '.$prefix_base.'j_aid_eleves jae, '.$prefix_base.'aid_config ac, '.$prefix_base.'aid_appreciations aa
+				$nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysqli_query($GLOBALS["mysqli"], 'SELECT count(*) FROM '.$prefix_base.'j_aid_eleves jae, '.$prefix_base.'aid_config ac, '.$prefix_base.'aid_appreciations aa
 																		WHERE ac.indice_aid = jae.indice_aid AND
 																		aa.indice_aid = ac.indice_aid AND
 																		aa.periode = "'.$id_periode.'" AND
@@ -1082,7 +1082,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			}
 
 			// autre requete pour rechercher les professeur responsable de la matière sélectionné
-			$call_profs = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'aid a, '.$prefix_base.'j_aid_utilisateurs jau, '.$prefix_base.'utilisateurs u
+			$call_profs = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'aid a, '.$prefix_base.'j_aid_utilisateurs jau, '.$prefix_base.'utilisateurs u
 							 	  WHERE ( jau.indice_aid = "'.$id_groupe_aff.'"
 							            AND jau.id_utilisateur = u.login
 								    AND a.id = jau.id_aid
@@ -1215,7 +1215,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['affiche_moyenne'] = '1'; // afficher ou ne pas afficher la moyenne de la catégorie
 
 			// calcul du nombre d'élève faisant partie de ce groupe
-			if(empty($nb_eleve_groupe[$id_groupe_aff])) { $nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT count(*) FROM '.$prefix_base.'j_eleves_groupes WHERE periode="'.$id_periode.'" AND id_groupe="'.$id_groupe_aff.'"'),0); }
+			if(empty($nb_eleve_groupe[$id_groupe_aff])) { $nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysqli_query($GLOBALS["mysqli"], 'SELECT count(*) FROM '.$prefix_base.'j_eleves_groupes WHERE periode="'.$id_periode.'" AND id_groupe="'.$id_groupe_aff.'"'),0); }
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_eleve_rang'] = $nb_eleve_groupe[$id_groupe_aff];
 
 			//calcul des moyennes du groupe
@@ -1230,15 +1230,15 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1' or $tab_modele_pdf["active_nombre_note_case"][$classe_id] === '1') {
 				// Nombre total de devoirs
 				$sql="SELECT cd.id FROM cn_devoirs cd, cn_cahier_notes ccn WHERE (cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$id_groupe_aff."' AND ccn.periode='".$id_periode."');";
-				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_total_notes_matiere'] = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_total_notes_matiere'] = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql));
 				//$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere']=mysql_result(mysql_query('SELECT count(*) FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (nd.login = "'.$login_eleve_select.'" and nd.id_devoir = d.id and d.display_parents="1" and cn.id_groupe = "'.$id_groupe_aff.'" and d.id_racine = cn.id_cahier_notes AND cn.periode="1")'),0);
 				// Nombre de devoirs de l'élève
 				$sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login='".$login_eleve_select."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$id_groupe_aff."' AND ccn.periode='".$id_periode."' AND cnd.statut='');";
-				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere'] = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere'] = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql));
 			}
 
 			// autre requete pour rechercher les professeurs responsables de la matière sélectionnée
-			$call_profs = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT u.login FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_groupes_professeurs j WHERE ( u.login = j.login and j.id_groupe="'.$id_groupe_aff.'") ORDER BY j.ordre_prof');
+			$call_profs = mysqli_query($GLOBALS["mysqli"], 'SELECT u.login FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_groupes_professeurs j WHERE ( u.login = j.login and j.id_groupe="'.$id_groupe_aff.'") ORDER BY j.ordre_prof');
 			$nombre_profs = mysqli_num_rows($call_profs);
 			$k = 0;
 			while ($k < $nombre_profs) {
@@ -1247,7 +1247,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					$k++;
 			}
 
-			$res_note_rang = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT note, statut, rang " .
+			$res_note_rang = mysqli_query($GLOBALS["mysqli"], "SELECT note, statut, rang " .
 					"FROM matieres_notes WHERE (" .
 					"login='".$login_eleve_select."' AND " .
 					"id_groupe='".$groupe_matiere."' AND " .
@@ -1271,7 +1271,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$note_rang = '';
 
 			// autre requete pour rechercher les appréciations d'une matière pour une période donné
-			$appreciation = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'matieres_appreciations WHERE login="'.$login_eleve_select.'" AND id_groupe="'.$groupe_matiere.'" AND periode="'.$id_periode.'"'));
+			$appreciation = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'matieres_appreciations WHERE login="'.$login_eleve_select.'" AND id_groupe="'.$groupe_matiere.'" AND periode="'.$id_periode.'"'));
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['appreciation'] = $appreciation['appreciation'];
 			$appreciation=''; //remise à vide de la variable
 
@@ -1302,7 +1302,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			*/
 				if(empty($coef_matiere[$id_classe][$groupe_matiere]['coef'])) // si on le connait on ne retourne pas le chercher
 				{
-					$coef_matiere[$id_classe][$groupe_matiere] = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'j_groupes_classes WHERE id_classe="'.$id_classe.'" AND id_groupe="'.$groupe_matiere.'"'));
+					$coef_matiere[$id_classe][$groupe_matiere] = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'j_groupes_classes WHERE id_classe="'.$id_classe.'" AND id_groupe="'.$groupe_matiere.'"'));
 					if($coef_matiere[$id_classe][$groupe_matiere]['coef']!=0.0)
 					{
 						$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = $coef_matiere[$id_classe][$groupe_matiere]['coef'];
@@ -1327,7 +1327,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			else
 			{
 
-				$test_coef_eleve = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM eleves_groupes_settings WHERE (" .
+				$test_coef_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT value FROM eleves_groupes_settings WHERE (" .
 					"login = '".$login_eleve_select."' AND " .
 					"id_groupe = '".$groupe_matiere."' AND " .
 					"name = 'coef')");
@@ -1395,7 +1395,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 							}
 
 			//on cherche s'il faut affiche des sous matière pour cette matière
-			$test_cn = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT cnc.note, cnc.statut, c.nom_court, c.id from '.$prefix_base.'cn_cahier_notes cn, '.$prefix_base.'cn_conteneurs c, '.$prefix_base.'cn_notes_conteneurs cnc WHERE cnc.login="'.$login_eleve_select.'" AND cn.periode="'.$id_periode.'" AND cn.id_groupe="'.$id_groupe_aff.'" AND cn.id_cahier_notes = c.id_racine AND c.id_racine!=c.id AND c.display_bulletin="1" AND cnc.id_conteneur=c.id');
+			$test_cn = mysqli_query($GLOBALS["mysqli"], 'SELECT cnc.note, cnc.statut, c.nom_court, c.id from '.$prefix_base.'cn_cahier_notes cn, '.$prefix_base.'cn_conteneurs c, '.$prefix_base.'cn_notes_conteneurs cnc WHERE cnc.login="'.$login_eleve_select.'" AND cn.periode="'.$id_periode.'" AND cn.id_groupe="'.$id_groupe_aff.'" AND cn.id_cahier_notes = c.id_racine AND c.id_racine!=c.id AND c.display_bulletin="1" AND cnc.id_conteneur=c.id');
 			$nb_ligne_cn = mysqli_num_rows($test_cn);
 			$n = 0;
 			$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff]['nb']=$nb_ligne_cn;
@@ -1435,7 +1435,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					   AND ac.order_display1 = 'e'
 					   AND a.id = aa.id_aid
 					 ORDER BY ac.order_display2 ASC";
-		$resultat_aid = mysqli_query($GLOBALS["___mysqli_ston"], $requete_aid);
+		$resultat_aid = mysqli_query($GLOBALS["mysqli"], $requete_aid);
 
 		while ($donner_aid = mysqli_fetch_array($resultat_aid))
 		{
@@ -1449,7 +1449,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['affiche_moyenne'] = '1'; // afficher ou ne pas afficher la moyenne de la catégorie
 
 			// calcule du nombre d'élève fesant partie de ce groupe
-			if(empty($nb_eleve_groupe[$id_groupe_aff])) { $nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT count(*) FROM '.$prefix_base.'j_aid_eleves jae, '.$prefix_base.'aid_config ac, '.$prefix_base.'aid_appreciations aa WHERE ac.indice_aid = jae.indice_aid AND aa.indice_aid = ac.indice_aid AND aa.periode = "'.$id_periode.'" AND ac.indice_aid = "'.$id_groupe_aff.'" AND jae.login = aa.login'),0); }
+			if(empty($nb_eleve_groupe[$id_groupe_aff])) { $nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysqli_query($GLOBALS["mysqli"], 'SELECT count(*) FROM '.$prefix_base.'j_aid_eleves jae, '.$prefix_base.'aid_config ac, '.$prefix_base.'aid_appreciations aa WHERE ac.indice_aid = jae.indice_aid AND aa.indice_aid = ac.indice_aid AND aa.periode = "'.$id_periode.'" AND ac.indice_aid = "'.$id_groupe_aff.'" AND jae.login = aa.login'),0); }
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_eleve_rang'] = $nb_eleve_groupe[$id_groupe_aff];
 
 			// désactiver pour l'instant - 20071106
@@ -1473,7 +1473,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			}
 
 			// autre requete pour rechercher les professeur responsable de la matière sélectionné
-			$call_profs = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'aid a, '.$prefix_base.'j_aid_utilisateurs jau, '.$prefix_base.'utilisateurs u
+			$call_profs = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'aid a, '.$prefix_base.'j_aid_utilisateurs jau, '.$prefix_base.'utilisateurs u
 							 	  WHERE ( jau.indice_aid = "'.$id_groupe_aff.'"
 						            AND jau.id_utilisateur = u.login
 								    AND a.id = jau.id_aid
@@ -1638,24 +1638,24 @@ while($cpt_info_eleve<=$nb_eleve_total)
 //                }
 
 		//avis du conseil de classe pour un élève et une période donnée
-		$avis_conseil_de_classe = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM avis_conseil_classe WHERE login="'.$login_eleve_select.'" AND periode="'.$id_periode.'"'));
+		$avis_conseil_de_classe = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM avis_conseil_classe WHERE login="'.$login_eleve_select.'" AND periode="'.$id_periode.'"'));
 			$info_bulletin[$login_eleve_select][$id_periode]['avis_conseil_classe'] = $avis_conseil_de_classe['avis'];
 		$avis_conseil_de_classe=''; //remise à vide de la variable
 
 		//connaitre l'effectif de la classe
 		if(empty($classe_effectif_tab[$id_classe][$id_periode]['effectif'])) // si on le connait on ne retourne pas le chercher
 		{
-			$info_bulletin[$login_eleve_select][$id_periode]['effectif'] = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT count(*) FROM '.$prefix_base.'j_eleves_classes WHERE id_classe="'.$id_classe.'" AND periode="'.$id_periode.'"'),0);
+			$info_bulletin[$login_eleve_select][$id_periode]['effectif'] = mysql_result(mysqli_query($GLOBALS["mysqli"], 'SELECT count(*) FROM '.$prefix_base.'j_eleves_classes WHERE id_classe="'.$id_classe.'" AND periode="'.$id_periode.'"'),0);
 			$classe_effectif_tab[$id_classe][$id_periode]['effectif'] = $info_bulletin[$login_eleve_select][$id_periode]['effectif'];
 		} else { $info_bulletin[$login_eleve_select][$id_periode]['effectif'] = $classe_effectif_tab[$id_classe][$id_periode]['effectif']; }
 
 		// rang de l'élève dans la classe
-		$rang_eleve_classe_requete = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT rang FROM '.$prefix_base.'j_eleves_classes WHERE periode="'.$id_periode.'" AND id_classe="'.$id_classe.'" AND login="'.$login_eleve_select.'"');
+		$rang_eleve_classe_requete = mysqli_query($GLOBALS["mysqli"], 'SELECT rang FROM '.$prefix_base.'j_eleves_classes WHERE periode="'.$id_periode.'" AND id_classe="'.$id_classe.'" AND login="'.$login_eleve_select.'"');
 		$rang_eleve_classe[$login_eleve_select][$id_periode]=@mysql_result($rang_eleve_classe_requete, "0", "rang");
 				if ((isset($rang_eleve_classe[$cpt_i]) and $rang_eleve_classe[$cpt_i] === 0) or (isset($rang_eleve_classe[$cpt_i]) and $rang_eleve_classe[$cpt_i] == -1)) { $rang_eleve_classe[$cpt_i] = "-"; } else { $rang_eleve_classe[$cpt_i] = ''; }
 
 		//absences de l'élève
-		$current_eleve_absences_query = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM absences WHERE (login="'.$login_eleve_select.'" AND periode="'.$id_periode.'")');
+		$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM absences WHERE (login="'.$login_eleve_select.'" AND periode="'.$id_periode.'")');
 			$info_bulletin[$login_eleve_select][$id_periode]['absences'] = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
 			$info_bulletin[$login_eleve_select][$id_periode]['absences_nj'] = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
 			$info_bulletin[$login_eleve_select][$id_periode]['absences_retards'] = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
@@ -1667,7 +1667,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 		//haut responsable de la classe
 		if(empty($info_classe[$id_classe]['nom_hautresponsable']))
 		{
-		$calldata = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'classes WHERE id="'.$id_classe.'"');
+		$calldata = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'classes WHERE id="'.$id_classe.'"');
 		$info_classe[$id_classe]['fonction_hautresponsable']=mysql_result($calldata, 0, "formule");
 		$info_classe[$id_classe]['nom_hautresponsable']= @mysql_result($calldata, 0, "suivi_par");
 		}
@@ -2426,7 +2426,7 @@ if($pays_parents[$ident_eleve_aff][0]!=$pays_parents[$ident_eleve_aff][1]) {
 	$pdf->SetFont('DejaVu', $type_texte, $taille_texte);
 		//connaître le nom de la période
 		if(empty($nom_periode[$id_classe_selection][$id_periode])) {
-		$requete_periode = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'periodes WHERE id_classe="'.$id_classe_selection.'" AND num_periode="'.$id_periode.'"');
+		$requete_periode = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'periodes WHERE id_classe="'.$id_classe_selection.'" AND num_periode="'.$id_periode.'"');
 		$nom_periode[$id_classe_selection][$id_periode] = @mysql_result($requete_periode, '0', 'nom_periode');
 		}
 	$pdf->Cell(90,5, "Bulletin du ".unhtmlentities($nom_periode[$id_classe_selection][$id_periode]),0,2,'C');
@@ -3890,7 +3890,7 @@ $cpt_ordre = $cpt_ordre + 1;
 	// MODIF: boireaus
 	$info_absence = $info_absence." (C.P.E. chargé";
 	$sql="SELECT civilite FROM utilisateurs WHERE login='".$cperesp_login[$i]."'";
-	$res_civi=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_civi=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_civi)>0){
 		$lig_civi=mysqli_fetch_object($res_civi);
 		if($lig_civi->civilite!="M."){

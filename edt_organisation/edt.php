@@ -99,7 +99,7 @@ $message = "";
 	// On effectue la requête
 	if ($modif_setting == "ok") {
 		check_token();
-		$modif = mysqli_query($GLOBALS["___mysqli_ston"], $requete) OR DIE('La modification n\'a pas été enregistrée : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$modif = mysqli_query($GLOBALS["mysqli"], $requete) OR DIE('La modification n\'a pas été enregistrée : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		//$message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";
 		$msg .= "La modification a bien été enregistrée !";
 		$post_reussi=TRUE;
@@ -116,7 +116,7 @@ $message = "";
 
 	// Petite fonction pour déterminer le checked="checked"
 	function eval_checked($Settings, $yn){
-	$req_setting = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = '".$Settings."'")) OR DIE ('Erreur requête eval_setting () : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$req_setting = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = '".$Settings."'")) OR DIE ('Erreur requête eval_setting () : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		if ($req_setting["value"] == $yn) {
 			$aff_check = ' checked="checked"';
 		}else {

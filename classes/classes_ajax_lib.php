@@ -58,7 +58,7 @@ if($mode=='classes_param') {
 		else {
 			$sql="SELECT u.login,u.nom,u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND id_matiere='$matiere' AND etat='actif' ORDER BY u.nom,u.prenom;";
 			//echo "$sql<br />";
-			$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			echo "<select name='professeur_nouvel_enseignement'>\n";
 			// On laisse la possibilité de ne pas associer un des profs si jamais on compte associer le PP via un autre champ (checkbox)

@@ -101,13 +101,13 @@ if (!isset($step1)) {
     $j=0;
     $flag=0;
     while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
             $flag=1;
         }
         $j++;
     }
 
-    $test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM utilisateurs WHERE statut='professeur'"),0);
+    $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM utilisateurs WHERE statut='professeur'"),0);
     if ($test != 0) {$flag=1;}
 
     if ($flag != 0){
@@ -128,12 +128,12 @@ if (!isset($step1)) {
 if (!isset($is_posted)) {
     $j=0;
     while ($j < count($liste_tables_del)) {
-        if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-        $del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM $liste_tables_del[$j]");
+        if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
         }
         $j++;
     }
-    $del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM tempo2");
+    $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM tempo2");
 
     echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>";
     echo "<p>Importation du fichier <b>F_wind.csv</b> contenant les données relatives aux professeurs.";
@@ -160,10 +160,10 @@ if (!isset($is_posted)) {
 
     $dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
     // On commence par rendre inactifs tous les professeurs
-    $req = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs set etat='inactif' where statut = 'professeur'");
+    $req = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs set etat='inactif' where statut = 'professeur'");
 
     // on efface la ligne "display_users" dans la table "setting" de façon à afficher tous les utilisateurs dans la page  /utilisateurs/index.php
-    $req = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE from setting where NAME = 'display_users'");
+    $req = mysqli_query($GLOBALS["mysqli"], "DELETE from setting where NAME = 'display_users'");
 
     //if(strtoupper($dbf_file['name']) == "F_WIND.DBF") {
     if(strtoupper($dbf_file['name']) == "F_WIND.CSV") {
@@ -265,7 +265,7 @@ if (!isset($is_posted)) {
                     $prenom_compose = '';
                     if (isset($prenoms[1])) $prenom_compose = $prenoms[0]."-".$prenoms[1];
 
-                    $test_exist = mysqli_query($GLOBALS["___mysqli_ston"], "select login from utilisateurs where (
+                    $test_exist = mysqli_query($GLOBALS["mysqli"], "select login from utilisateurs where (
                     nom='".traitement_magic_quotes($affiche[0])."' and
                     prenom = '".traitement_magic_quotes($premier_prenom)."' and
                     statut='professeur'
@@ -273,7 +273,7 @@ if (!isset($is_posted)) {
                     $result_test = mysqli_num_rows($test_exist);
                     if ($result_test == 0) {
                         if ($prenom_compose != '') {
-                            $test_exist2 = mysqli_query($GLOBALS["___mysqli_ston"], "select login from utilisateurs
+                            $test_exist2 = mysqli_query($GLOBALS["mysqli"], "select login from utilisateurs
                             where (
                             nom='".traitement_magic_quotes($affiche[0])."' and
                             prenom = '".traitement_magic_quotes($prenom_compose)."' and
@@ -421,17 +421,17 @@ if (!isset($is_posted)) {
 
                     //$res = mysql_query("INSERT INTO utilisateurs VALUES ('".$login_prof."', '".$affiche[0]."', '".$premier_prenom."', '".$civilite."', '".$pwd."', '', 'professeur', 'actif', 'y', '')");
 					$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='$affiche[0]', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y'";
-					$res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res = mysqli_query($GLOBALS["mysqli"], $sql);
 					// Pour debug:
 					//echo "<tr><td colspan='4'>$sql</td></tr>";
 
                     if(!$res) $nb_reg_no++;
-                        $res = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO tempo2 VALUES ('".$login_prof."', '".$affiche[3]."')");
+                        $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO tempo2 VALUES ('".$login_prof."', '".$affiche[3]."')");
                         echo "<tr><td><p><font color='red'>".$login_prof."</font></p></td><td><p>".$affiche[0]."</p></td><td><p>".$premier_prenom."</p></td><td>".$mess_mdp."</td></tr>";
                     } else {
-                        $res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs set etat='actif' where login = '".$login_prof_gepi."'");
+                        $res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs set etat='actif' where login = '".$login_prof_gepi."'");
                         if(!$res) $nb_reg_no++;
-                        $res = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO tempo2 VALUES ('".$login_prof_gepi."', '".$affiche[3]."')");
+                        $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO tempo2 VALUES ('".$login_prof_gepi."', '".$affiche[3]."')");
                         echo "<tr><td><p><font color='green'>".$login_prof_gepi."</font></p></td><td><p>".$affiche[0]."</p></td><td><p>".$affiche[1]."</p></td><td>Inchangé</td></tr>";
                     }
                 }

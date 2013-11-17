@@ -70,21 +70,21 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
     $k=0;
     while($k < $nb_lignes) {
       $id = mysql_result($res,$k,"id");
-      $res_supp=mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
+      $res_supp=mysqli_query($GLOBALS["mysqli"], "DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
       $k++;
     }
     $sql="DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr2=mysqli_query($GLOBALS["mysqli"], $sql);
 
     $sql="DELETE FROM archivage_aids WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr1=mysqli_query($GLOBALS["mysqli"], $sql);
 
     $sql="DELETE FROM archivage_types_aid WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr3=mysqli_query($GLOBALS["mysqli"], $sql);
 
     if (isset($flag_port_folio)) {
       $sql="DELETE FROM port_folio_validations_archives  WHERE annee='".$_GET["annee_supp"]."';";
-  		mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+  		mysqli_query($GLOBALS["mysqli"], $sql);
     }
 
 	// Maintenant, on regarde si l'année est encore utilisée dans archivage_disciplines
@@ -92,7 +92,7 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 	$test = sql_query1("select count(annee) from archivage_disciplines where annee='".$_GET['annee_supp']."'");
 	if ($test == 0) {
 		$sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr4=mysqli_query($GLOBALS["mysqli"], $sql);
 	} else $res_suppr4 = 1;
 
 	// Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
@@ -116,17 +116,17 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_AID")) {
     $k=0;
     while($k < $nb_lignes) {
       $id = mysql_result($res,$k,"id");
-      $res_supp1=mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
-   		$res_supp2=mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."' and id_aid='".$id."'");
+      $res_supp1=mysqli_query($GLOBALS["mysqli"], "DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
+   		$res_supp2=mysqli_query($GLOBALS["mysqli"], "DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."' and id_aid='".$id."'");
       $k++;
     }
 
 
     $sql="DELETE FROM archivage_aids WHERE annee='".$_GET["annee_supp"]."' and id_type_aid='".$_GET['type_aid_supp']."'";
-		$res_suppr1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr1=mysqli_query($GLOBALS["mysqli"], $sql);
 
     $sql="DELETE FROM archivage_types_aid WHERE annee='".$_GET["annee_supp"]."' and id='".$_GET['type_aid_supp']."'";
-		$res_suppr2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_suppr2=mysqli_query($GLOBALS["mysqli"], $sql);
 
     // Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
     suppression_donnees_eleves_inutiles();
@@ -333,7 +333,7 @@ if(!isset($annee_scolaire)){
           $tab1 .= "<tr><td colspan=\"6\"><font color=\"red\">Erreur d'enregistrement pour la requête : ".$sql_archiv."</font></td></tr>";
           $flag_tab1 = 1;
 			} else {
-  	      $nouveau_id_type = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+  	      $nouveau_id_type = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
           if ($log_error != 'y') {
             $tab1 .= "<tr><td class='small'>".$nouveau_id_type."</td><td class='small'>".$annee_scolaire."</td><td class='small'>".$nom_type."</td><td class='small'>".$nom_complet_type."</td><td class='small'>".$note_max_type."</td><td class='small'>".$type_note_type."</td></tr>";
             $flag_tab1 = 1;
@@ -496,7 +496,7 @@ if(!isset($annee_scolaire)){
             $flag_tab2 = 1;
 
 			    } else {
-              $nouveau_id_aid = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+              $nouveau_id_aid = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
               if ($log_error != 'y') {
                 if ($outils_complementaires == 'y')
                   $tab2 .= "<tr><td class='small'>".$nouveau_id_aid."</td><td class='small'>".$annee_scolaire."</td><td class='small'>".$nom."</td><td class='small'>".$nouveau_id_type."</td><td class='small'>".$productions."</td><td class='small'>".$resume."</td><td class='small'>".$famille."</td><td class='small'>".$mots_cles."</td><td class='small'>".$adresse1."</td><td class='small'>".$adresse1."</td><td class='small'>".$public_destinataire."</td><td class='small'>".$contacts."</td><td class='small'>".$matiere1."</td><td class='small'>".$matiere2."</td><td class='small'>".$fiche_publique."</td><td class='small'>".$affiche_adresse1."</td><td class='small'>".$liste_moyenne."</td><td class='small'>".$liste_max."</td><td class='small'>".$liste_min."</td><td class='small'>".$en_construction."</td><td class='small'>".$liste_profs."</td><td class='small'>".$liste_eleves."</td><td class='small'>".$liste_eleves_resp."</td></tr>";

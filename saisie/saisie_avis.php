@@ -76,7 +76,7 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') o
 	else {
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 	}
-	$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_classe = mysqli_query($GLOBALS["mysqli"], $sql);
 
     $nombre_classe = mysqli_num_rows($call_classe);
 	if($nombre_classe==0){
@@ -85,7 +85,7 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') o
 	else{
 
 		$sql="SELECT MAX(num_periode) nb_max_periode FROM periodes;";
-		$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 		$tmp_per=mysqli_fetch_object($res_per);
 		$nb_max_periode=$tmp_per->nb_max_periode;
 
@@ -171,7 +171,7 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') o
 
 	}
 } else {
-    $call_prof_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
+    $call_prof_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
     $nombre_classe = mysqli_num_rows($call_prof_classe);
     if ($nombre_classe == "0") {
         echo "Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." ! Il ne vous revient donc pas de saisir les avis de conseil de classe.";

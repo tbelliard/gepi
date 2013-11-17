@@ -60,7 +60,7 @@ if (!isset($id_classe)) {
 	} else {
 		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe)  ORDER BY classe;";
 	}
-	$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nombreligne = mysqli_num_rows($calldata);
 
 	echo "<p>Total : $nombreligne classe";
@@ -105,7 +105,7 @@ if (!isset($id_classe)) {
 
 	echo "</p>\n";
 
-	$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 	$classe = mysql_result($call_classe, "0", "classe");
 	echo "<h2>Classe de ".$classe."</h2>\n";
 	echo "<p><b>Saisie manuelle - Choisissez la période : </b></p>\n";

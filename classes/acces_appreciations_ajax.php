@@ -20,7 +20,7 @@
 					WHERE jep.professeur='".$_SESSION['login']."' AND
 						jep.login=jec.login AND
 						jec.id_classe='$id_classe';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0){
 			$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 			$msg="Vous n'êtes pas ".$gepi_prof_suivi." de la classe choisie.<br />Vous ne devriez donc pas accéder à cette page.";
@@ -33,7 +33,7 @@
 		$sql="SELECT 1=1 FROM j_scol_classes jsc
 						WHERE jsc.login='".$_SESSION['login']."' AND
 							jsc.id_classe='$id_classe';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0){
 			$msg="Vous n'êtes pas responsable de la classe choisie.<br />Vous ne devriez donc pas accéder à cette page.";
 			header("Location: ../accueil.php?msg=".rawurlencode($msg));
@@ -69,11 +69,11 @@
 			for($i=0;$i<count($tab_liste_statuts);$i++) {
 				$sql="SELECT acces FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
 				//echo $sql;
-				$test_acces=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_acces=mysqli_query($GLOBALS["mysqli"], $sql);
 				if (mysqli_num_rows($test_acces)==0) {
 					$sql="INSERT INTO matieres_appreciations_acces SET acces='n', id_classe='$id_classe', periode='$periode', statut='$tab_liste_statuts[$i]';";
 					//echo "$sql<br />";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 					echo "<div style='background-color:orangered;'>";
 					if($statut=='ele_resp') {
@@ -89,7 +89,7 @@
 					if($lig_acces->acces=='y') {
 						$sql="UPDATE matieres_appreciations_acces SET acces='n' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
 						//echo "$sql<br />";
-						$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						// On n'écrit le DIV de couleur qu'une fois
 						if($i==0) {
@@ -104,7 +104,7 @@
 					}
 					else {
 						$sql="UPDATE matieres_appreciations_acces SET acces='y' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
-						$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
 						//echo "$sql<br />";
 
 						// On n'écrit le DIV de couleur qu'une fois
@@ -155,16 +155,16 @@
 				for($i=0;$i<count($tab_liste_statuts);$i++) {
 					$sql="SELECT acces FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
 					//echo $sql;
-					$test_acces=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test_acces=mysqli_query($GLOBALS["mysqli"], $sql);
 					if (mysqli_num_rows($test_acces)==0) {
 						$sql="INSERT INTO matieres_appreciations_acces SET acces='date', date='".$choix_date."', id_classe='$id_classe', periode='$periode', statut='$tab_liste_statuts[$i]';";
 						//echo "$sql<br />";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 					else {
 						$sql="UPDATE matieres_appreciations_acces SET acces='date', date='".$choix_date."' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
 						//echo "$sql<br />";
-						$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 	
 					// On n'écrit le DIV de couleur qu'une fois
@@ -202,10 +202,10 @@
 			for($i=0;$i<count($tab_liste_statuts);$i++) {
 				$sql="UPDATE matieres_appreciations_acces SET acces='d' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
 				//echo "$sql<br />";
-				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='$periode';";
-				$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 				$lig_per=mysqli_fetch_object($res_per);
 				if($lig_per->verouiller!='O') {
 					$accessible="n";

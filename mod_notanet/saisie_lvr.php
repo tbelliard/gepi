@@ -41,7 +41,7 @@ if ($resultat_session == 'c') {
 //==============================================
 /* Ajout des droits dans la table droits */
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/saisie_lvr.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_notanet/saisie_lvr.php',
 administrateur='V',
@@ -54,7 +54,7 @@ secours='F',
 autre='F',
 description='Notanet: Saisie des notes de Langue Vivante Regionale',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 //==============================================
 
@@ -82,7 +82,7 @@ if((isset($_POST['is_posted']))&&(isset($mode))) {
 		if(isset($lvr)) {
 			foreach($lvr as $key => $value) {
 				$sql="UPDATE notanet_lvr SET intitule='$value' WHERE id='$key';";
-				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$update) {$msg.="Erreur lors de la mise à jour de la LVR $value<br />";$pb_record='y';}
 			}
 		}
@@ -90,10 +90,10 @@ if((isset($_POST['is_posted']))&&(isset($mode))) {
 		if(isset($suppr_lvr)) {
 			foreach($suppr_lvr as $key => $value) {
 				$sql="SELECT 1=1 FROM notanet_lvr_ele WHERE id_lvr='$value';";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)==0) {
 					$sql="DELETE FROM notanet_lvr WHERE id='$value';";
-					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$del) {$msg.="Erreur lors de la suppression de la LVR n°$value<br />";$pb_record='y';}
 				}
 				else {
@@ -111,7 +111,7 @@ if((isset($_POST['is_posted']))&&(isset($mode))) {
 
 			if($ajouter_lvr=='y') {
 				$sql="INSERT INTO notanet_lvr SET intitule='$nouvelle_lvr';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$insert) {$msg.="Erreur lors de l'ajout de la LVR $nouvelle_lvr<br />";$pb_record='y';}
 			}
 		}
@@ -122,7 +122,7 @@ if((isset($_POST['is_posted']))&&(isset($mode))) {
 
 		$sql="SELECT DISTINCT id,intitule FROM notanet_lvr ORDER BY intitule;";
 		//echo "<p>$sql<br />";
-		$res_lvr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_lvr=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig_lvr=mysqli_fetch_object($res_lvr)) {
 			$tab_id_lvr[]=$lig_lvr->id;
 		}
@@ -132,18 +132,18 @@ if((isset($_POST['is_posted']))&&(isset($mode))) {
 				if($lvr[$i]=='') {
 					$sql="DELETE FROM notanet_lvr_ele WHERE login='$login_ele[$i]';";
 					//echo "$sql<br />";
-					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$del) {$msg.="Erreur lors de la suppression pour $login_ele[$i]<br />";$pb_record='y';}
 				}
 				elseif(in_array($lvr[$i],$tab_id_lvr)) {
 					$sql="DELETE FROM notanet_lvr_ele WHERE login='$login_ele[$i]';";
 					//echo "$sql<br />";
-					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$del) {$msg.="Erreur lors de la réinitialisation pour $login_ele[$i]<br />";$pb_record='y';}
 					else {
 						$sql="INSERT INTO notanet_lvr_ele SET login='$login_ele[$i]', id_lvr='$lvr[$i]';";
 						//echo "$sql<br />";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$insert) {$msg.="Erreur lors de l'enregistrement $login_ele[$i]<br />";$pb_record='y';}
 					}
 				}
@@ -163,7 +163,7 @@ if((isset($_POST['is_posted']))&&(isset($mode))) {
 				//$sql="UPDATE notanet_lvr_ele SET note_lvr='' WHERE login='$login_ele[$i]' AND id_lvr='$lvr[$i]';";
 				$sql="UPDATE notanet_lvr_ele SET note='$note_lvr[$i]' WHERE login='$login_ele[$i]';";
 				//echo "$sql<br />";
-				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$update) {$msg.="Erreur lors de l'enregistrement $login_ele[$i]<br />";$pb_record='y';}
 			}
 		}
@@ -193,7 +193,7 @@ id int(11) NOT NULL auto_increment,
 intitule VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_lvr_ele (
 id int(11) NOT NULL auto_increment,
@@ -202,7 +202,7 @@ id_lvr INT( 11 ) NOT NULL ,
 note ENUM ('', 'VA','NV') NOT NULL DEFAULT '',
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 ?>
@@ -226,7 +226,7 @@ if(!isset($mode)) {
 	echo "</li>\n";
 
 	$sql="SELECT * FROM notanet_lvr ORDER BY intitule;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		echo "<li>\n";
 		echo "<a href='".$_SERVER['PHP_SELF']."?mode=select_eleves'>Sélectionner les élèves suivant une Langue Vivante Régionale</a>";
@@ -240,7 +240,7 @@ if(!isset($mode)) {
 
 		// On teste si des élèves ont été affectés dans des LVR...
 		$sql="SELECT 1=1 FROM notanet_lvr_ele;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 
 			echo "<li>\n";
@@ -262,7 +262,7 @@ else {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 		echo add_token_field();
 		$sql="SELECT * FROM notanet_lvr ORDER BY intitule;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			echo "<table class='boireaus' summary='Liste des LVR'>\n";
 			echo "<tr>\n";
@@ -297,7 +297,7 @@ else {
 
 			// Choisir une classe
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, notanet_ele_type net WHERE p.id_classe = c.id AND c.id=jec.id_classe AND jec.login=net.login ORDER BY classe;";
-			$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 		
 			$nb_classes=mysqli_num_rows($call_classes);
 			if($nb_classes==0) {
@@ -357,7 +357,7 @@ else {
 			// Sélectionner des élèves ou s'appuyer sur un groupe
 
 			$sql="SELECT DISTINCT e.login, e.prenom, e.nom FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND id_classe='$id_classe' ORDER BY e.nom, e.prenom";
-			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		
 			$nb_ele=mysqli_num_rows($res_ele);
 			if($nb_ele==0) {
@@ -382,7 +382,7 @@ else {
 
 				$tab_lvr_ele=array();
 				$sql="SELECT * FROM notanet_lvr_ele;";
-				$res_lvr_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_lvr_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig_lvr_ele=mysqli_fetch_object($res_lvr_ele)) {
 					$tab_lvr_ele[$lig_lvr_ele->login]=$lig_lvr_ele->id_lvr;
 				}
@@ -401,7 +401,7 @@ else {
 				$tab_id_lvr=array();
 				$tab_intitule_lvr=array();
 				$sql="SELECT DISTINCT id,intitule FROM notanet_lvr ORDER BY intitule;";
-				$res_lvr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_lvr=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig_lvr=mysqli_fetch_object($res_lvr)) {
 					echo "<th>\n";
 					echo $lig_lvr->intitule;
@@ -455,7 +455,7 @@ else {
 		//$sql="SELECT DISTINCT e.login, e.prenom, e.nom, c.classe, nle.id_lvr FROM eleves e, j_eleves_classes jec, classes c, notanet_lvr_ele nle WHERE e.login=jec.login AND jec.id_classe='$id_classe' AND jec.id_classe=c.id AND nle.login=e.login ORDER BY c.classe, e.nom, e.prenom";
 		$sql="SELECT DISTINCT e.login, e.prenom, e.nom, c.classe, nle.id_lvr FROM eleves e, j_eleves_classes jec, classes c, notanet_lvr_ele nle WHERE e.login=jec.login AND jec.id_classe=c.id AND nle.login=e.login ORDER BY c.classe, e.nom, e.prenom;";
 		//echo "$sql<br />";
-		$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$nb_ele=mysqli_num_rows($res_ele);
 		if($nb_ele==0) {
@@ -471,7 +471,7 @@ else {
 			$tab_lvr_ele=array();
 			$sql="SELECT * FROM notanet_lvr_ele;";
 			//echo "$sql<br />";
-			$res_lvr_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_lvr_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			while($lig_lvr_ele=mysqli_fetch_object($res_lvr_ele)) {
 				$tab_lvr_ele[$lig_lvr_ele->login]=$lig_lvr_ele->id_lvr;
 				$tab_note_lvr_ele[$lig_lvr_ele->login]=$lig_lvr_ele->note;
@@ -481,7 +481,7 @@ else {
 			$tab_intitule_lvr=array();
 			$sql="SELECT DISTINCT id,intitule FROM notanet_lvr ORDER BY intitule;";
 			//echo "$sql<br />";
-			$res_lvr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_lvr=mysqli_query($GLOBALS["mysqli"], $sql);
 			while($lig_lvr=mysqli_fetch_object($res_lvr)) {
 				$tab_intitule_lvr[]=$lig_lvr->intitule;
 				$tab_id_lvr[]=$lig_lvr->id;

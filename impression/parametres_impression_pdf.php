@@ -87,7 +87,7 @@ par_defaut ENUM('y','n') DEFAULT 'n',
 PRIMARY KEY (id_modele)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
-$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS modeles_grilles_pdf_valeurs (
 id_modele INT(11) NOT NULL,
@@ -96,7 +96,7 @@ valeur varchar(255) NOT NULL,
 INDEX id_modele_champ (id_modele, nom)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
-$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 // Contrôle des valeurs validées
 if(isset($id_modele)) {
@@ -108,7 +108,7 @@ if(isset($id_modele)) {
 
 if(isset($id_modele)) {
 	$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE id_modele='$id_modele' AND login='".$_SESSION['login']."';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$msg.="ERREUR&nbsp;: Le modèle '$id_modele' n'existe pas ou ne vous est pas associé.<br />\n";
 		unset($id_modele);
@@ -139,7 +139,7 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 	// Enregistrer...
 	if(isset($id_modele)) {
 		$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE id_modele='$id_modele' AND login='".$_SESSION['login']."';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			$msg.="Le modèle '$id_modele' n'existe pas ou ne vous est pas associé.<br />";
 			unset($id_modele);
@@ -148,7 +148,7 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 
 	if(!isset($id_modele)) {
 		$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE nom_modele='$nom_modele' AND login='".$_SESSION['login']."';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
 			$msg.="ERREUR: Un modèle du même nom existe déjà.<br />";
 		}
@@ -157,7 +157,7 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 	if($temoin_erreur=="n") {
 		if(!isset($id_modele)) {
 			$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE par_defaut='y' AND login='".$_SESSION['login']."';";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				$par_defaut='n';
 			}
@@ -167,18 +167,18 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 
 			$sql="INSERT INTO modeles_grilles_pdf SET login='".$_SESSION['login']."', nom_modele='$nom_modele', par_defaut='$par_defaut';";
 			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res) {
 				$msg.="ERREUR lors de la création du modèle '$nom_modele'.<br />";
 			}
 			else {
-				$id_modele=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+				$id_modele=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 			}
 		}
 		else {
 			$sql="UPDATE modeles_grilles_pdf SET nom_modele='$nom_modele' WHERE id_modele='$id_modele' AND login='".$_SESSION['login']."';";
 			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res) {
 				$msg.="ERREUR lors de la mise à jour du nom de modèle.<br />";
 			}
@@ -191,7 +191,7 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 				if(isset($_POST[$tab_champs[$loop]])) {
 					$sql="INSERT INTO modeles_grilles_pdf_valeurs SET id_modele='$id_modele', nom='".$tab_champs[$loop]."', valeur='".$_POST[$tab_champs[$loop]]."';";
 					//echo "$sql<br />";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="ERREUR lors de l'enregistrement de ".$tab_champs[$loop]." -&gt; ".$_POST[$tab_champs[$loop]]." pour le modèle '$nom_modele'.<br />";
 						$cpt_erreur++;
@@ -224,14 +224,14 @@ elseif(isset($choix_action_modele)) {
 		if($choix_action_modele=='modele_par_defaut') {
 			$sql="UPDATE modeles_grilles_pdf SET par_defaut='n' WHERE login='".$_SESSION['login']."';";
 			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res) {
 				$msg.="ERREUR lors du nettoyage du modèle par défaut.<br />\n";
 			}
 			else {
 				$sql="UPDATE modeles_grilles_pdf SET par_defaut='y' WHERE id_modele='$id_modele' AND login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					$msg.="ERREUR lors de la définition du modèle par défaut à $id_modele.<br />\n";
 				}
@@ -246,14 +246,14 @@ elseif(isset($choix_action_modele)) {
 		elseif($choix_action_modele=='suppr_modele') {
 			$sql="DELETE FROM modeles_grilles_pdf_valeurs WHERE id_modele='$id_modele';";
 			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res) {
 				$msg.="ERREUR lors de la suppression des valeurs associées au modèle n°$id_modele.<br />\n";
 			}
 			else {
 				$sql="DELETE FROM modeles_grilles_pdf WHERE id_modele='$id_modele' AND login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					$msg.="ERREUR lors de la suppression du modèle n°$id_modele.<br />\n";
 				}
@@ -288,7 +288,7 @@ if(!isset($enregistrer_parametres)) {
 	
 		$sql="SELECT * FROM modeles_grilles_pdf WHERE login='".$_SESSION['login']."' ORDER BY nom_modele;";
 		//echo "$sql<br />";
-		$res_modeles=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_modeles=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_modeles=mysqli_num_rows($res_modeles);
 		$cpt=0;
 		if($nb_modeles>0) {
@@ -374,7 +374,7 @@ elseif(isset($modif_modele)) {
 	//$sql="SELECT * FROM modeles_grilles_pdf_valeurs WHERE id_modele='$id_modele' AND login='".$_SESSION['login']."';";	echo "$sql<br />";
 	$sql="SELECT * FROM modeles_grilles_pdf_valeurs WHERE id_modele='$id_modele';";
 	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		// Initialisation au valeurs par défaut
 		for($loop=0;$loop<count($tab_champs);$loop++) {
@@ -389,7 +389,7 @@ elseif(isset($modif_modele)) {
 		}
 
 		$sql="SELECT * FROM modeles_grilles_pdf WHERE id_modele='$id_modele';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			$lig=mysqli_fetch_object($res);
 			$nom_modele=$lig->nom_modele;

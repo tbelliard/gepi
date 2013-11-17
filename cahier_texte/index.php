@@ -302,7 +302,7 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'sup_devoirs') and $valide_
         $msg = "Impossible de supprimer cette notice : Vous devez d'abord supprimer les documents joints";
     } else {
 	//modif Eric interdire la suppression de notice visée
-    $res = mysqli_query($GLOBALS["___mysqli_ston"], "delete from ct_devoirs_entry where (id_ct = '".$_GET['id_ct_del']."' and vise != 'y')");
+    $res = mysqli_query($GLOBALS["mysqli"], "delete from ct_devoirs_entry where (id_ct = '".$_GET['id_ct_del']."' and vise != 'y')");
         if ($res) $msg = "Suppression réussie";
     }
 
@@ -386,14 +386,14 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 			$contenu_precedent="";
 			$sql="SELECT * FROM ct_devoirs_entry WHERE id_ct='$id_ct';";
 			//echo "$sql<br />";
-			$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$req = mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($req)>0) {
 				$contenu_precedent=mysql_result($req, 0, 'contenu');
 				if($contenu_precedent!=$contenu_cor) {
 					$date_modif=strftime("%Y-%m-%d %H:%M:%S");
 					$sql="UPDATE ct_devoirs_faits SET etat='', commentaire='Le professeur a modifié la notice de travail à faire ($date_modif).', date_modif='".$date_modif."' WHERE id_ct='$id_ct';";
 					//echo "$sql<br />";
-					$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 
@@ -402,15 +402,15 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 			if((isset($date_visibilite_eleve))&&($date_visibilite_mal_formatee=="n")) {$sql.=", date_visibilite_eleve='$date_visibilite_eleve'";}
 			$sql.=" WHERE id_ct='$id_ct';";
 			//echo "$sql<br />";
-            $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+            $req = mysqli_query($GLOBALS["mysqli"], $sql);
           } else {
             // On insère la notice dans ct_devoirs_entry
             $sql="INSERT INTO ct_devoirs_entry SET id_ct='0', contenu = '$contenu_cor', id_login='".$_SESSION['login']."', id_groupe='".$id_groupe."', date_ct='$date_travail_a_faire'";
 			if(isset($date_visibilite_eleve)) {$sql.=", date_visibilite_eleve='$date_visibilite_eleve'";}
 			$sql.=";";
 			//echo "$sql<br />";
-            $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
-            $id_ct = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+            $req = mysqli_query($GLOBALS["mysqli"], $sql);
+            $id_ct = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
           }
           if ($req) {$msg.= "Enregistrement réussi.";} else {$msg .= "Problème lors de l'enregistrement !";}
         } else {
@@ -423,10 +423,10 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
         $contenu_cor = traitement_magic_quotes(($_POST['notes']),'');
         if ($contenu_cor == '') $contenu_cor="...";
         if (isset($id_ct)) {
-            $req = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE ct_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."' WHERE id_ct='$id_ct' AND id_groupe='".$current_group["id"]."'");
+            $req = mysqli_query($GLOBALS["mysqli"], "UPDATE ct_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."' WHERE id_ct='$id_ct' AND id_groupe='".$current_group["id"]."'");
         } else {
-            $req = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO ct_entry SET id_ct='0', contenu = '$contenu_cor', heure_entry='$heure_entry', id_login='".$_SESSION['login']."', id_groupe='".$id_groupe."', date_ct='$temp'");
-            $id_ct = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+            $req = mysqli_query($GLOBALS["mysqli"], "INSERT INTO ct_entry SET id_ct='0', contenu = '$contenu_cor', heure_entry='$heure_entry', id_login='".$_SESSION['login']."', id_groupe='".$id_groupe."', date_ct='$temp'");
+            $id_ct = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 //            $today = $temp;
         }
         if ($req) $msg = "Enregistrement réussi."; else $msg = "Problème lors de l'enregistrement !";
@@ -454,7 +454,7 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'del') and $valide_form=='y
 // on crée une notice "info générales" vide
 $test_ct_vide = sql_count(sql_query("SELECT id_ct FROM ct_entry WHERE (id_groupe='" . $current_group["id"]."')"));
 $test_ct_devoirs_vide = sql_count(sql_query("SELECT id_ct FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] ."')"));
-if (($test_ct_vide == 0) and ($test_ct_devoirs_vide != 0)) {$req = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO ct_entry SET id_ct='0', contenu = '', id_login='".$_SESSION['login']."', id_groupe='" . $current_group["id"]. "', date_ct=''");}
+if (($test_ct_vide == 0) and ($test_ct_devoirs_vide != 0)) {$req = mysqli_query($GLOBALS["mysqli"], "INSERT INTO ct_entry SET id_ct='0', contenu = '', id_login='".$_SESSION['login']."', id_groupe='" . $current_group["id"]. "', date_ct=''");}
 
 
 // Détermination de $id_ct
@@ -464,16 +464,16 @@ if($ajout=='oui') {
 }
 else {
     if (isset($_GET['info']) or isset($_POST['info'])) {
-      $appel_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='')");
+      $appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='')");
       $infoyes = "&amp;info=yes";
     } elseif (isset($edit_devoir)) {
-      $appel_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu, id_ct,vise  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
+      $appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct,vise  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
       $infoyes = "";
     } elseif (isset($id_ct)) {
-      $appel_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today' AND id_ct='$id_ct')");
+      $appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today' AND id_ct='$id_ct')");
       $infoyes = "";
     } else {
-      $appel_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='$today') ORDER BY heure_entry ASC LIMIT 1");
+      $appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='$today') ORDER BY heure_entry ASC LIMIT 1");
       $infoyes = "";
     }
     $test_cahier_texte = mysqli_num_rows($appel_cahier_texte);
@@ -542,7 +542,7 @@ if (empty($groups)) {
 foreach($groups as $group) {
 	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group['id']."' AND domaine='cahier_texte' AND visible='n';";
 	//echo "$sql<br />\n";
-	$test_grp_visib=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_grp_visib)==0) {
 		//echo "<b>";
 		if ($group["id"] == $current_group["id"]) {
@@ -780,7 +780,7 @@ foreach ($current_group["classes"]["list"] as $_id_classe) {
             from ct_devoirs_entry
             where (id_groupe = '" . $group["id"] . "'
             and date_ct > $aujourdhui)";
-        $res_total = mysqli_query($GLOBALS["___mysqli_ston"], $req_total);
+        $res_total = mysqli_query($GLOBALS["mysqli"], $req_total);
         $sum = mysqli_fetch_object($res_total);
         $total[$_id_classe] += $sum->total;
         if ($sum->date > $date[$_id_classe]) $date[$_id_classe] = $sum->date;
@@ -824,7 +824,7 @@ $req_devoirs_arendre =
 
 if ($_SESSION['type_display_notices'] != "all")
     $req_devoirs_arendre .= " limit 5";
-$res_devoirs_arendre = mysqli_query($GLOBALS["___mysqli_ston"], $req_devoirs_arendre);
+$res_devoirs_arendre = mysqli_query($GLOBALS["mysqli"], $req_devoirs_arendre);
 $dev_arendre = mysqli_fetch_object($res_devoirs_arendre);
 
 $req_notices =
@@ -838,7 +838,7 @@ $req_notices .= " and date_ct >= $debutCdt
     order by date_ct desc, heure_entry";
 if ($_SESSION['type_display_notices'] != "all")
     $req_notices .= " limit 10";
-$res_notices = mysqli_query($GLOBALS["___mysqli_ston"], $req_notices);
+$res_notices = mysqli_query($GLOBALS["mysqli"], $req_notices);
 $notice = mysqli_fetch_object($res_notices);
 
 $req_devoirs =
@@ -853,7 +853,7 @@ $req_devoirs .= " and date_ct >= $debutCdt
 if ($_SESSION['type_display_notices'] != "all")
     $req_devoirs .= " limit 10";
 
-$res_devoirs = mysqli_query($GLOBALS["___mysqli_ston"], $req_devoirs);
+$res_devoirs = mysqli_query($GLOBALS["mysqli"], $req_devoirs);
 $devoir = mysqli_fetch_object($res_devoirs);
 
 // Boucle d'affichage des notices dans la colonne de gauche
@@ -979,7 +979,7 @@ while (true) {
 ((mysqli_free_result($res_notices) || (is_object($res_notices) && (get_class($res_notices) == "mysqli_result"))) ? true : false);
 
 // Affichage des info générales
-$appel_info_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heure_entry, contenu, id_ct  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' and date_ct='') ORDER BY heure_entry");
+$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT heure_entry, contenu, id_ct  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' and date_ct='') ORDER BY heure_entry");
 $nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0,'contenu');
 $id_ctexte = @mysql_result($appel_info_cahier_texte, 0,'id_ct');
@@ -1043,7 +1043,7 @@ else {
 // Nombre de notices pour ce jour :
 $num_notice = NULL;
 
-$appel_cahier_texte_liste = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='$today') ORDER BY heure_entry ASC");
+$appel_cahier_texte_liste = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='$today') ORDER BY heure_entry ASC");
 // Si plusieurs notices pour ce jour, on numérote la notice en cours
 //if (mysql_num_rows($appel_cahier__liste) > 1) {
 if (mysqli_num_rows($appel_cahier_texte_liste) > 1) {
@@ -1086,7 +1086,7 @@ else {
 echo "<fieldset style=\"width:100%;border: 5px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background: ".$color_fond_notices[$type_couleur].";\">\n";
 if (isset($edit_devoir)) {
     echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Travaux personnels";
-    $test_appel_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu, id_ct  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
+    $test_appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
     if (isset($id_ct)) {
 		echo " - <b><font color=\"red\">Modification de la notice</font></b>";
 		// Pour permettre d'ajouter directement une nouvelle notice sur le travail à effectuer, on ajoute un jour à la date précédente ($today)
@@ -1159,7 +1159,7 @@ if (isset($edit_devoir)) {
 	$jour_courant=strftime("%d/%m/%Y");
 	if($id_ct!='') {
 		$sql="SELECT date_visibilite_eleve FROM ct_devoirs_entry WHERE id_ct='$id_ct';";
-		$res_visibilite=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_visibilite=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_visibilite)>0) {
 			$lig_visibilite=mysqli_fetch_object($res_visibilite);
 			$heure_courante=get_heure_2pt_minute_from_mysql_date($lig_visibilite->date_visibilite_eleve);

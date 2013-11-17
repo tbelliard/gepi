@@ -42,13 +42,13 @@ if(isset($_POST['nom'])) {
                 WHERE nom LIKE '%".$_POST['nom']."%'
                 AND e.login=jec.login AND jec.id_classe=c.id
                 GROUP BY e.login";
-      $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+      $req = mysqli_query($GLOBALS["mysqli"], $sql);
       break;
     case('personnels'):
       $sql = "SELECT nom,prenom,login,statut FROM utilisateurs
                 WHERE nom LIKE '%".$_POST['nom']."%'
                 AND (statut='professeur' OR statut='CPE' OR statut='SCOLARITE' OR statut='AUTRE' OR statut='ADMINISTRATEUR')";
-      $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+      $req = mysqli_query($GLOBALS["mysqli"], $sql);
       break;
   }
   $i = 0;

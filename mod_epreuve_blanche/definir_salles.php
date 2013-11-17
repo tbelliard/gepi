@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_epreuve_blanche/definir_salles.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_epreuve_blanche/definir_salles.php',
 administrateur='V',
@@ -51,7 +51,7 @@ secours='F',
 autre='F',
 description='Epreuve blanche: Définir les salles',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -72,7 +72,7 @@ if(isset($definition_salles)) {
 	check_token();
 
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
@@ -96,13 +96,13 @@ if(isset($definition_salles)) {
 			for($i=0;$i<count($id_salle);$i++) {
 				if(in_array($id_salle[$i],$suppr_salle)) {
 					$sql="UPDATE eb_copies SET id_salle='-1' WHERE id_salle='".$id_salle[$i]."' AND id_epreuve='$id_epreuve';";
-					$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$nettoyage) {
 						$msg.="Erreur lors du nettoyage dans 'eb_copies' de la salle supprimée.<br />";
 					}
 					else {
 						$sql="DELETE FROM eb_salles WHERE id='".$id_salle[$i]."' AND id_epreuve='$id_epreuve';";
-						$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$suppr) {
 							$msg.="Erreur lors de la suppression de la salle $salle[$i].<br />";
 						}
@@ -120,10 +120,10 @@ if(isset($definition_salles)) {
 					else {
 						// Ne pas renommer une salle au même nom qu'un salle existante pour l'épreuve
 						$sql="SELECT id FROM eb_salles WHERE salle='".$temp_salle."' AND id_epreuve='$id_epreuve';";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res)==0) {
 							$sql="UPDATE eb_salles SET salle='".$temp_salle."' WHERE id='".$id_salle[$i]."' AND id_epreuve='$id_epreuve';";
-							$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$update) {$msg.="Erreur lors de la mise à jour de la salle n°$id_salle[$i]<br />";}
 						}
 						else {
@@ -145,7 +145,7 @@ if(isset($definition_salles)) {
 				//$tab_salles=array();
 				//$tab_id_salles=array();
 				$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {
 						$tab_salles[]=$lig->salle;
@@ -167,7 +167,7 @@ if(isset($definition_salles)) {
 					else {
 						//$sql="INSERT INTO eb_salles SET salle='".$tab[$i]."', id_epreuve='$id_epreuve';";
 						$sql="INSERT INTO eb_salles SET salle='".$salle."', id_epreuve='$id_epreuve';";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						//if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$tab[$i]'<br />";}
 						//else {$msg.="Salle '$tab[$i]' ajoutée.<br />";}
 						if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$salle'<br />";}
@@ -180,7 +180,7 @@ if(isset($definition_salles)) {
 			if(isset($id_salle_existante)) {
 				for($i=0;$i<count($id_salle_existante);$i++) {
 					$sql="SELECT salle FROM eb_salles WHERE id='$id_salle_existante[$i]';";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)>0) {
 						// La salle existe
 
@@ -190,7 +190,7 @@ if(isset($definition_salles)) {
 						((is_array($salle))&&(!in_array($lig->salle,$salle))&&(!in_array($lig->salle,$tab_salles))))
 						 {
 							$sql="INSERT INTO eb_salles SET salle='".$lig->salle."', id_epreuve='$id_epreuve';";
-							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$lig->salle'<br />";}
 							else {$msg.="Salle '$lig->salle' ajoutée.<br />";}
 							$tab_salle_existante[]=$lig->salle;
@@ -202,14 +202,14 @@ if(isset($definition_salles)) {
 			if(isset($id_salle_cours_existante)) {
 				for($i=0;$i<count($id_salle_cours_existante);$i++) {
 					$sql="SELECT nom_salle FROM salle_cours WHERE id_salle='$id_salle_cours_existante[$i]';";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)>0) {
 						// La salle existe
 
 						$lig=mysqli_fetch_object($res);
 						if((!in_array($lig->nom_salle,$salle))&&(!in_array($lig->nom_salle,$tab_salles))&&(!in_array($lig->nom_salle,$tab_salle_existante))) {
 							$sql="INSERT INTO eb_salles SET salle='".$lig->nom_salle."', id_epreuve='$id_epreuve';";
-							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$lig->nom_salle'<br />";}
 							else {$msg.="Salle '$lig->nom_salle' ajoutée.<br />";}
 						}
@@ -230,7 +230,7 @@ elseif(isset($_POST['valide_affect_eleves'])) {
 	$id_salle_ele=isset($_POST['id_salle_ele']) ? $_POST['id_salle_ele'] : (isset($_GET['id_salle_ele']) ? $_GET['id_salle_ele'] : array());
 
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
@@ -242,7 +242,7 @@ elseif(isset($_POST['valide_affect_eleves'])) {
 			$msg="";
 			for($i=0;$i<count($login_ele);$i++) {
 				$sql="UPDATE eb_copies SET id_salle='$id_salle_ele[$i]' WHERE id_epreuve='$id_epreuve' AND login_ele='$login_ele[$i]'";
-				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$update) {$msg.="Erreur lors de la mise à jour de la salle n°$id_salle_ele[$i] pour $login_ele[$i].<br />";}
 			}
 		
@@ -283,7 +283,7 @@ if(!isset($mode)) {
 
 	echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 		require("../lib/footer.inc.php");
@@ -313,7 +313,7 @@ if(!isset($mode)) {
 
 	$salles="";
 	$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_salles_epreuve_courante=mysqli_num_rows($res);
 	$tab_salles=array();
 	$tab_id_salles=array();
@@ -345,7 +345,7 @@ if(!isset($mode)) {
 	// Choisir des salles parmi les salles auparavant définies... et qui ne sont pas déjà choisies
 	$sql="SELECT * FROM eb_salles ORDER BY salle;";
 	//echo "$sql<br />";
-	$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res2)>0) {
 		$chaine_salles_existantes="";
 		$tab_salles_existantes=array();
@@ -381,7 +381,7 @@ if(!isset($mode)) {
 
 	//$sql="select * from salle_cours ORDER BY nom_salle;";
 	$sql="select * from salle_cours WHERE nom_salle!='' ORDER BY nom_salle;";
-	$res_salle_cours=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_salle_cours=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_salle_cours)>0) {
 		$chaine_salles_cours_existantes="";
 		$tab_salles_cours_existantes=array();
@@ -500,7 +500,7 @@ if(!isset($mode)) {
 			echo "<td>\n";
 			//$sql="SELECT 1=1 FROM eb_copies WHERE id_salle='$lig->id' AND id_epreuve='$id_epreuve';";
 			$sql="SELECT 1=1 FROM eb_copies WHERE id_salle='$tab_id_salles[$loop]' AND id_epreuve='$id_epreuve';";
-			$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			$eff[$cpt]=mysqli_num_rows($res_eff);
 			echo $eff[$cpt];
 			$eff_aff+=$eff[$cpt];
@@ -523,7 +523,7 @@ if(!isset($mode)) {
 		}
 		else {
 			$sql="SELECT login_ele FROM eb_copies WHERE id_salle='-1' AND id_epreuve='$id_epreuve';";
-			$res_eff=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			$eff[$cpt]=mysqli_num_rows($res_eff);
 			if($eff[$cpt]==0) {
 				echo "<p>Tous les élèves sont affectés dans la/les salles.</p>\n";
@@ -574,7 +574,7 @@ else {
 
 	echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 		require("../lib/footer.inc.php");
@@ -593,7 +593,7 @@ else {
 	echo "</blockquote>\n";
 
 	$sql="SELECT DISTINCT id,salle FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucune salle n'est encore définie.</p>\n";
 		require("../lib/footer.inc.php");
@@ -632,7 +632,7 @@ else {
 		echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves1' value='Valider' /></p>\n";
 	
 		$sql="SELECT DISTINCT g.* FROM eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name, g.description;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "<p>Aucun groupe  n'est encore associé à l'épreuve.</p>\n";
 			require("../lib/footer.inc.php");
@@ -658,7 +658,7 @@ else {
 	
 			$sql="SELECT ec.login_ele,ec.id_salle FROM eb_copies ec, eb_groupes eg WHERE eg.id_epreuve='$id_epreuve' AND ec.id_epreuve=eg.id_epreuve AND eg.id_groupe='$lig->id';";
 			//echo "$sql<br />";
-			$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res2)==0) {
 				echo "<p>Aucune élève n'est encore associé à l'épreuve.</p>\n";
 				require("../lib/footer.inc.php");
@@ -843,7 +843,7 @@ function coche(colonne,rang_groupe,mode) {
 		echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves1' value='Valider' /></p>\n";
 	
 		$sql="SELECT DISTINCT g.* FROM eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name, g.description;";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			echo "<p>Aucun groupe n 'est encore associé à l'épreuve.</p>\n";
 			require("../lib/footer.inc.php");
@@ -852,7 +852,7 @@ function coche(colonne,rang_groupe,mode) {
 
 		$sql="SELECT e.login,e.nom,e.prenom,ec.id_salle FROM eb_copies ec, eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login ORDER BY e.nom,e.prenom;";
 		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$eff_par_salle=ceil(mysqli_num_rows($res)/count($salle));
 

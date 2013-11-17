@@ -199,7 +199,7 @@ else{
 
 								//$sql="SELECT * FROM eleves WHERE elenoet='$affiche[4]'";
 								$sql="SELECT * FROM eleves WHERE (elenoet='$affiche[4]' OR elenoet='".sprintf("%05d",$affiche[4])."')";
-								$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res1)>0){
 									//$sql="UPDATE eleves SET ele_id='$affiche[5]' WHERE elenoet='$affiche[4]'";
 
@@ -267,7 +267,7 @@ else{
 									*/
 
 									$sql="SELECT * FROM j_eleves_regime WHERE (login='$lig_ele->login')";
-									$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res2)>0){
 										$tmp_regime="";
 										$lig2=mysqli_fetch_object($res2);
@@ -729,7 +729,7 @@ else{
 								no_gep='$nonat'
 								WHERE (ele_id='$ele_id')";
 					//			WHERE elenoet='$elenoet'";
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					//echo "<p>$sql</p>\n";
 					if(!$res1){
 						//echo " (<font color='red'>erreur</font>)";
@@ -740,7 +740,7 @@ else{
 					$sql="UPDATE j_eleves_regime SET doublant='$doublant',
 								regime='$regime'
 								WHERE (login='$login_eleve')";
-					$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res2){
 						//echo " (<font color='red'>erreur</font>)";
 						echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -811,7 +811,7 @@ else{
 								ele_id='$ele_id'";
 					//,			login='$login_eleve'
 					//echo "$sql<br />\n";
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res1){
 						//echo " (<font color='red'>erreur</font>)";
 						echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -819,13 +819,13 @@ else{
 					}
 					else{
 						$sql="SELECT 1=1 FROM j_eleves_regime WHERE (login='$login_eleve')";
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res2)==0){
 							$sql="INSERT INTO j_eleves_regime SET doublant='$doublant',
 										regime='$regime',
 										login='$login_eleve'";
 							//echo "$sql<br />\n";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res3){
 								//echo " (<font color='red'>erreur</font>)";
 								echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -837,7 +837,7 @@ else{
 										regime='$regime',
 										WHERE (login='$login_eleve')";
 							//echo "$sql<br />\n";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res3){
 								//echo " (<font color='red'>erreur</font>)";
 								echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -1044,11 +1044,11 @@ else{
 								$temoin_nouvelle_adresse="n";
 								$sql="SELECT * FROM resp_adr WHERE (adr_id='$affiche[0]')";
 								//echo "$sql<br />\n";
-								$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res1)==0){
 									$sql="SELECT * FROM resp_pers WHERE (adr_id='$affiche[0]')";
 									//echo "$sql<br />\n";
-									$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res2)==0){
 										$adr_new[]=$affiche[0];
 										$temoin_nouvelle_adresse="y";
@@ -1214,7 +1214,7 @@ else{
 								}
 
 								$sql="SELECT * FROM resp_pers WHERE (pers_id='$affiche[0]')";
-								$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res1)==0){
 									$pers_new[]=$affiche[0];
 									//echo "Ajout de pers_id=$affiche[0] pour $affiche[1] $affiche[2]<br />\n";
@@ -1323,7 +1323,7 @@ else{
 				}
 				if($temoin==""){
 					$sql="SELECT * FROM resp_pers WHERE (adr_id='".$adr_modif[$i]."')";
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res1)==0){
 						// L'adresse n'est plus utilisée? Mais encore présente dans sconet? et aurait changé?
 					}
@@ -1420,7 +1420,7 @@ else{
 				echo "</td>\n";
 
 				$sql="SELECT * FROM resp_pers WHERE (pers_id='$pers_id')";
-				$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 				$lig1=mysqli_fetch_object($res1);
 
 				echo "<td style='text-align:center;";
@@ -1566,7 +1566,7 @@ else{
 				echo "<td style='text-align:center;";
 				$sql="SELECT * FROM resp_adr WHERE (adr_id='".$personne[$pers_id]["adr_id"]."')";
 				$adr_id=$personne[$pers_id]["adr_id"];
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				$lig2=mysqli_fetch_object($res2);
 				if((in_array($personne[$pers_id]["adr_id"],$adr_modif))||(in_array($personne[$pers_id]["adr_id"],$adr_new))){
 					echo " background-color:lightgreen;'>";
@@ -1763,7 +1763,7 @@ else{
 				echo "<td style='text-align:center;";
 				$sql="SELECT * FROM resp_adr WHERE (adr_id='".$personne[$pers_id]["adr_id"]."')";
 				$adr_id=$personne[$pers_id]["adr_id"];
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				unset($lig2);
 				if(mysqli_num_rows($res2)>0){
@@ -1946,7 +1946,7 @@ else{
 									adr_id='$adr_id'
 								WHERE (pers_id='$pers_id')";
 					//echo "$sql<br />\n";
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res1){
 						//echo " (<font color='red'>erreur</font>)";
 						echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -1967,7 +1967,7 @@ else{
 
 						$sql="SELECT 1=1 FROM resp_adr WHERE (adr_id='$adr_id')";
 						//echo "$sql<br />\n";
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res2)==0){
 							$sql="INSERT INTO resp_adr SET adr_id='$adr_id',
 											adr1='$adr1',
@@ -1978,7 +1978,7 @@ else{
 											commune='$commune',
 											pays='$pays'";
 							//echo "$sql<br />\n";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res3){
 								//echo " (<font color='red'>erreur</font>)";
 								echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -1995,7 +1995,7 @@ else{
 											pays='$pays'
 										WHERE (adr_id='$adr_id')";
 							//echo "$sql<br />\n";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res3){
 								//echo " (<font color='red'>erreur</font>)";
 								echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -2037,7 +2037,7 @@ else{
 									mel='$mel',
 									adr_id='$adr_id'";
 					//echo "$sql<br />\n";
-					$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res1){
 						//echo " (<font color='red'>erreur</font>)";
 						echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -2058,7 +2058,7 @@ else{
 
 						$sql="SELECT 1=1 FROM resp_adr WHERE (adr_id='$adr_id')";
 						//echo "$sql<br />\n";
-						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res2)==0){
 							$sql="INSERT INTO resp_adr SET adr_id='$adr_id',
 											adr1='$adr1',
@@ -2069,7 +2069,7 @@ else{
 											commune='$commune',
 											pays='$pays'";
 							//echo "$sql<br />\n";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res3){
 								//echo " (<font color='red'>erreur</font>)";
 								echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -2086,7 +2086,7 @@ else{
 											pays='$pays'
 										WHERE (adr_id='$adr_id')";
 							//echo "$sql<br />\n";
-							$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res3){
 								//echo " (<font color='red'>erreur</font>)";
 								echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -2289,7 +2289,7 @@ else{
 
 								//$sql="SELECT * FROM responsables2 WHERE ele_id='$affiche[0]' AND pers_id='$affiche[1]'";
 								$sql="SELECT * FROM responsables2 WHERE (ele_id='$ele_id' AND pers_id='$pers_id')";
-								$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res1)==0){
 									// L'association responsable/eleve n'existe pas encore
 									$resp_new[]="$affiche[0]:$affiche[1]";
@@ -2306,7 +2306,7 @@ else{
 									echo ";'>\n";
 
 									$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
-									$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res2)==0){
 										// Problème: On ne peut pas importer l'association sans que la personne existe.
 										// Est-ce que l'étape d'import de la personne a été refusée?
@@ -2345,7 +2345,7 @@ else{
 										echo "<td style='text-align:center;";
 										//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 										$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
-										$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res3)==0){
 											echo "'>\n";
 										}
@@ -2363,7 +2363,7 @@ else{
 
 										// Elève(s) associé(s)
 										$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
-										$res4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$res4=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res4)==0){
 											echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
 											echo "Aucun élève pour ele_id=$ele_id ???";
@@ -2419,7 +2419,7 @@ else{
 										echo ";'>\n";
 
 										$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
-										$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res2)==0){
 											// Problème: On ne peut pas importer l'association sans que la personne existe.
 											// Est-ce que l'étape d'import de la personne a été refusée?
@@ -2459,7 +2459,7 @@ else{
 											echo "<td style='text-align:center;";
 											//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 											$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
-											$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+											$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 											if(mysqli_num_rows($res3)==0){
 												echo "'>\n";
 											}
@@ -2477,7 +2477,7 @@ else{
 
 											// Elève(s) associé(s)
 											$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
-											$res4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+											$res4=mysqli_query($GLOBALS["mysqli"], $sql);
 											if(mysqli_num_rows($res4)==0){
 												echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
 												echo "Aucun élève pour ele_id=$ele_id ???";
@@ -2605,7 +2605,7 @@ else{
 										pers_contact='$pers_contact'
 									WHERE (pers_id='$pers_id' AND ele_id='$ele_id')";
 						//echo "<p>$sql</p>\n";
-						$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res1){
 							//echo " (<font color='red'>erreur</font>)";
 							echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -2655,26 +2655,26 @@ else{
 						// On supprime l'inscription précédente si elle existe:
 						$sql="SELECT pers_id FROM responsables2 WHERE (pers_id='$pers_id' AND ele_id='$ele_id')";
 						//echo "$sql<br />\n";
-						$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res1)>0){
 							//$lig1=mysql_fetch_object($sql);
 							//$sql="DELETE FROM responsables2 WHERE pers_id='$lig1->pers_id',
 							$sql="DELETE FROM responsables2 WHERE (pers_id='$pers_id' AND
 											ele_id='$ele_id')";
 							//echo "$sql<br />\n";
-							$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 
 						// On teste s'il faut supprimer un autre responsable de même rang resp_legal:
 						$sql="SELECT pers_id FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
-						$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res1)==0){
 							$sql="INSERT INTO responsables2 SET pers_id='$pers_id',
 											ele_id='$ele_id',
 											resp_legal='$resp_legal',
 											pers_contact='$pers_contact'";
 							//echo "$sql<br />\n";
-							$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res2){
 								//echo " (<font color='red'>erreur</font>)";
 								echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -2686,7 +2686,7 @@ else{
 							$sql="DELETE FROM responsables2 WHERE (pers_id='$lig1->pers_id' AND
 											ele_id='$ele_id' AND
 											resp_legal='$resp_legal')";
-							$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res2){
 								//echo " (<font color='red'>erreur</font>)";
 								echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -2698,7 +2698,7 @@ else{
 												resp_legal='$resp_legal',
 												pers_contact='$pers_contact'";
 								//echo "$sql<br />\n";
-								$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res3){
 									//echo " (<font color='red'>erreur</font>)";
 									echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";

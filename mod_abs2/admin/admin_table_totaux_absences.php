@@ -66,7 +66,7 @@ $msg="";
 if(isset($_POST['vider_table_absences'])) {
 	check_token();
 	$sql="TRUNCATE TABLE absences;";
-	$vidage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$vidage=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($vidage) {
 		$msg="La table 'absences' a été vidée.<br />";
 	}
@@ -91,7 +91,7 @@ if(isset($_POST['is_posted'])) {
 ";
 
 	$sql="SELECT id, classe FROM classes ORDER BY classe;";
-	$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_clas)>0) {
 
 		// A revoir: On n'utilise pas forcément le CDT
@@ -129,26 +129,26 @@ if(isset($_POST['is_posted'])) {
 				// Récupération de la liste des élèves de la classe
 				$sql="SELECT e.* FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='$id_classe' AND periode='$i' ORDER BY e.nom, e.prenom;";
 				//echo "$sql<br />";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {
 						// Total des absences de l'élève:
 						$sql="select distinct date_demi_jounee from a_agregation_decompte where eleve_id='$lig->id_eleve' and manquement_obligation_presence!='0' and retards='0' and date_demi_jounee>='$date_debut' AND date_demi_jounee<'$date_fin';";
 						//echo "$sql<br />";
-						$res_abs=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_abs=mysqli_query($GLOBALS["mysqli"], $sql);
 						$nb_abs=mysqli_num_rows($res_abs);
 
 						// Les absences non justifiées de l'élève:
 						$sql="select distinct date_demi_jounee from a_agregation_decompte where eleve_id='$lig->id_eleve' and manquement_obligation_presence!='0' and non_justifiee='1' and retards='0' and date_demi_jounee>='$date_debut' AND date_demi_jounee<'$date_fin';";
 						//echo "$sql<br />";
-						$res_nj=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_nj=mysqli_query($GLOBALS["mysqli"], $sql);
 						$nb_nj=mysqli_num_rows($res_nj);
 
 						// Les retards de l'élève:
 						//$sql="select distinct date_demi_jounee from a_agregation_decompte where eleve_id='$lig->id_eleve' and manquement_obligation_presence!='0' and retards='1' and date_demi_jounee>='$date_debut' AND date_demi_jounee<'$date_fin';";
 						$sql="select distinct date_demi_jounee from a_agregation_decompte where eleve_id='$lig->id_eleve' and retards='1' and date_demi_jounee>='$date_debut' AND date_demi_jounee<'$date_fin';";
 						//echo "$sql<br />";
-						$res_ret=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ret=mysqli_query($GLOBALS["mysqli"], $sql);
 						$nb_ret=mysqli_num_rows($res_ret);
 
 						echo "
@@ -159,7 +159,7 @@ if(isset($_POST['is_posted'])) {
 			<td>$nb_ret</td>";
 
 						$sql="SELECT 1=1 FROM absences WHERE login='".$lig->login."' AND periode='$i';";
-						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test)>0) {
 							$sql="UPDATE absences SET nb_absences='$nb_abs',
 															non_justifie='$nb_nj',
@@ -173,7 +173,7 @@ if(isset($_POST['is_posted'])) {
 															non_justifie='$nb_nj',
 															nb_retards='$nb_ret';";
 						}
-						$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$reg) {
 							echo "
 			<td><img src='../../images/disabled.png' class='icon16' alt='Echec' title=\"Echec de l'enregistrement\"/></td>";

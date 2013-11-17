@@ -59,13 +59,13 @@ $msg = $aff_liste_profs = $aff_select_profs = $titre = NULL;
 
 	// Les renseignements sur cet edt_gr
 	$sql_t = "SELECT * FROM edt_gr_nom WHERE id = '".$id_gr."'";
-	$query_t = mysqli_query($GLOBALS["___mysqli_ston"], $sql_t) OR trigger_error('Erreur lors du traitement de cet edt_gr.', E_USER_ERROR);
+	$query_t = mysqli_query($GLOBALS["mysqli"], $sql_t) OR trigger_error('Erreur lors du traitement de cet edt_gr.', E_USER_ERROR);
 	$rep = mysqli_fetch_array($query_t);
 
 	$titre .= '<p>EDT : '.$rep["nom"].'&nbsp;('.$rep["nom_long"].')&nbsp;-&nbsp;Liste des professeurs.</p>';
 
 	// La liste des professeurs de l'établissement
-$query_p = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' AND etat = 'actif' ORDER BY nom, prenom")
+$query_p = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' AND etat = 'actif' ORDER BY nom, prenom")
 						OR trigger_error('Impossible de lire la liste des professeurs.', E_USER_ERROR);
 	$nbre_p = mysqli_num_rows($query_p);
 
@@ -91,13 +91,13 @@ $query_p = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom F
 	if ($action == "ajouter") {
 
 		// On vérifie si ce prof existe et si il n'est pas déjà membre de ce edt_gr
-		$verif_exist = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT etat FROM utilisateurs WHERE login = '".$choix_prof."'");
+		$verif_exist = mysqli_query($GLOBALS["mysqli"], "SELECT etat FROM utilisateurs WHERE login = '".$choix_prof."'");
 		$test1 = mysql_result($verif_exist,0, "etat");
 
 		if ($test1) {
 
 			// On vérifie alors s'il n'est pas déjà membre de cet edt_gr
-			$query_v = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'");
+			$query_v = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'");
 			$test2 = mysql_result($query_v, 0,"id");
 
 			if ($test2 AND is_numeric($test2) AND $test2 >= 1) {
@@ -108,7 +108,7 @@ $query_p = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom F
 
 				// On peut alors insérer cet utilisateur dans la table
 				$sql_insert = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilisateurs) VALUES('', '".$id_gr."', '".$choix_prof."')";
-				$query_insert = mysqli_query($GLOBALS["___mysqli_ston"], $sql_insert);
+				$query_insert = mysqli_query($GLOBALS["mysqli"], $sql_insert);
 
 				if ($query_insert) {
 
@@ -118,7 +118,7 @@ $query_p = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom F
 
 					// On peut alors insérer cet utilisateur dans la table
 					$sql_insert = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilisateurs) VALUES('', '".$id_gr."', '".$choix_prof."')";
-					$query_insert = mysqli_query($GLOBALS["___mysqli_ston"], $sql_insert);
+					$query_insert = mysqli_query($GLOBALS["mysqli"], $sql_insert);
 
 					if ($query_insert) {
 
@@ -139,7 +139,7 @@ $query_p = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom F
 
 		// On efface le prof car c'est demandé ;)
 		$sql_del = "DELETE FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'";
-		$query_del = mysqli_query($GLOBALS["___mysqli_ston"], $sql_del) OR trigger_error('Impossible de supprimer ce professeur : '.$sql_del, E_USER_WARNING);
+		$query_del = mysqli_query($GLOBALS["mysqli"], $sql_del) OR trigger_error('Impossible de supprimer ce professeur : '.$sql_del, E_USER_WARNING);
 
 		if ($query_del) {
 
@@ -158,7 +158,7 @@ $query_p = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom F
 										WHERE u.login = egp.id_utilisateurs
 										AND egp.id_gr_nom = '".$id_gr."'
 										ORDER BY nom, prenom";
-	$query_l = mysqli_query($GLOBALS["___mysqli_ston"], $sql_l) OR trigger_error('Impossible de lister les professeurs de ce groupe', E_USER_WARNING);
+	$query_l = mysqli_query($GLOBALS["mysqli"], $sql_l) OR trigger_error('Impossible de lister les professeurs de ce groupe', E_USER_WARNING);
 
 	while($rep = mysqli_fetch_array($query_l)){
 

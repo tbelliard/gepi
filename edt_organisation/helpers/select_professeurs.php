@@ -29,7 +29,7 @@ echo '
 	<select name ="'.$increment.'"'.$id_select.' onmouseover="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'yellow\'}" onmouseout="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'\'}">
 		<option value="aucun">Liste des professeurs</option>';
 	// on recherche la liste des professeurs
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login, nom, prenom FROM utilisateurs
+	$query = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs
 						WHERE statut = 'professeur' AND
 						etat = 'actif'
 						ORDER BY nom, prenom");

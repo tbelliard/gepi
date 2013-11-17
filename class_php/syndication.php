@@ -17,14 +17,14 @@ $eleve_l = isset($_GET["ele_l"]) ? $_GET["ele_l"] : NULL;
 $uri = isset($_GET["uri"]) ? $_GET["uri"] : NULL;
 
 // On vérifie si la table des uri existe (si elle existe, elle est forcément remplie
-$test_table = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'rss_users'"));
+$test_table = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'rss_users'"));
 if ($test_table == 0) {
 	die();
 }
 else {
 
 	// On peut alors vérifier si l'uri demandée est la bonne
-	$test_uri = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM rss_users WHERE user_login = '".$eleve_l."' AND user_uri = '".$uri."' LIMIT 1"));
+	$test_uri = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT id FROM rss_users WHERE user_login = '".$eleve_l."' AND user_uri = '".$uri."' LIMIT 1"));
 
 	if ($test_uri == 1) {
 		// C'est bon, on peut générer les réponses
@@ -57,7 +57,7 @@ if ($type_rss == "cdt") {
 			 * permet de construire le nom du prof avec la bonne civilité
 			*/
 			$sql = "SELECT nom, civilite, show_email, email FROM utilisateurs WHERE login = '".$prof_l."' AND statut = 'professeur'";
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$query = mysqli_query($GLOBALS["mysqli"], $sql);
 			$test = mysqli_num_rows($query);
 			if ($test == 1) {
 				// c'est bon, on construit son nom
@@ -85,7 +85,7 @@ if ($type_rss == "cdt") {
 		return $rep;
 	}
 	$noms["nom"] = $noms["prenom"] = NULL;
-	$noms = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, prenom FROM eleves WHERE login = '".$eleve_l."' LIMIT 1"));
+	$noms = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login = '".$eleve_l."' LIMIT 1"));
 	$title_rss = 'Cahier de textes - '.getSettingValue("gepiSchoolName").' ('.getSettingValue("gepiYear").')';
 	$title_rss.= ': '.get_nom_prenom_eleve($eleve_l);
 	$description_rss = 'Les devoirs à faire de '.$noms["nom"].' '.$noms["prenom"];

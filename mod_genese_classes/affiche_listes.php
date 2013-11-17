@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/affiche_listes.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/affiche_listes.php',
 administrateur='V',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Affichage de listes',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -69,7 +69,7 @@ if((isset($projet))&&(isset($_POST['chgt_classe']))&&(isset($_POST['login_ele'])
 	$temoin="y";
 	if(($_POST['classe_fut']!='')&&($_POST['classe_fut']!='Red')&&($_POST['classe_fut']!='Dep')) {
 		$sql="SELECT 1=1 FROM gc_divisions WHERE statut='future' AND classe='".$_POST['classe_fut']."' AND projet='$projet';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			$msg="La classe <b>".$_POST['classe_fut']."</b> n'existe pas.<br />";
 			$temoin="n";
@@ -79,7 +79,7 @@ if((isset($projet))&&(isset($_POST['chgt_classe']))&&(isset($_POST['login_ele'])
 	if($temoin=="y") {
 		$sql="UPDATE gc_eleves_options SET classe_future='".$_POST['classe_fut']."' WHERE login='".$_POST['login_ele']."' AND projet='$projet';";
 		//$msg=$sql;
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			$msg="ERREUR lors du changement de classe de ".get_nom_prenom_eleve($_POST['login_ele'])."<br />\n";
 		}
@@ -153,7 +153,7 @@ if(!isset($afficher_listes)) {
 			for($i=0;$i<count($suppr);$i++) {
 				$sql="DELETE FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$suppr[$i]';";
 				//echo "$sql<br />";
-				$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 
 			// Si plus aucune requête ne reste, il faudrait peut-être supprimer le $id_aff... non... il sera réutilisé si on rajoute une requête et il sera perdu et absent de la base si on quitte la page sans ajouter de requête
@@ -186,7 +186,7 @@ if(!isset($afficher_listes)) {
 		if(!isset($id_aff)) {
 			$sql="SELECT MAX(id_aff) AS max_id_aff FROM gc_affichages;";
 			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
 				$id_aff=1;
 			}
@@ -200,7 +200,7 @@ if(!isset($afficher_listes)) {
 			$id_req=$_POST['id_req'];
 			$sql="SELECT 1=1 FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req';";
 			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
 				echo "<p style='color:red'>La requête n°$id_req n'est pas associée à l'affichage n°$id_aff sur le projet $projet.</p>\n";
 
@@ -209,7 +209,7 @@ if(!isset($afficher_listes)) {
 			}
 
 			$sql="DELETE FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req';";
-			$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$menage) {
 				echo "<p style='color:red'>ERREUR lors du ménage préalable de la requête n°$id_req de l'affichage n°$id_aff sur le projet $projet.</p>\n";
 
@@ -220,7 +220,7 @@ if(!isset($afficher_listes)) {
 		else {
 			$sql="SELECT MAX(id_req) AS max_id_req FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff';";
 			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
 				$id_req=1;
 			}
@@ -234,75 +234,75 @@ if(!isset($afficher_listes)) {
 		if(count($id_clas_act)>0) {
 			for($i=0;$i<count($id_clas_act);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='id_clas_act', valeur='$id_clas_act[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($clas_fut)>0) {
 			for($i=0;$i<count($clas_fut);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='clas_fut', valeur='$clas_fut[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 
 		if(count($avec_lv1)>0) {
 			for($i=0;$i<count($avec_lv1);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv1', valeur='$avec_lv1[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($avec_lv2)>0) {
 			for($i=0;$i<count($avec_lv2);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv2', valeur='$avec_lv2[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($avec_lv3)>0) {
 			for($i=0;$i<count($avec_lv3);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv3', valeur='$avec_lv3[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($avec_autre)>0) {
 			for($i=0;$i<count($avec_autre);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_autre', valeur='$avec_autre[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($avec_profil)>0) {
 			for($i=0;$i<count($avec_profil);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_profil', valeur='$avec_profil[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 
 		if(count($sans_lv1)>0) {
 			for($i=0;$i<count($sans_lv1);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv1', valeur='$sans_lv1[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($sans_lv2)>0) {
 			for($i=0;$i<count($sans_lv2);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv2', valeur='$sans_lv2[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($sans_lv3)>0) {
 			for($i=0;$i<count($sans_lv3);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv3', valeur='$sans_lv3[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($sans_autre)>0) {
 			for($i=0;$i<count($sans_autre);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_autre', valeur='$sans_autre[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($sans_profil)>0) {
 			for($i=0;$i<count($sans_profil);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_profil', valeur='$sans_profil[$i]';";
-				$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 
@@ -312,7 +312,7 @@ if(!isset($afficher_listes)) {
 	//========================================================================
 	// Récupération de la liste des classes et options pour le projet en cours
 	$sql="SELECT DISTINCT id_classe, classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle' ORDER BY classe;";
-	$res_clas_act=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_clas_act=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_clas_act=mysqli_num_rows($res_clas_act);
 	if($nb_clas_act==0) {
 		echo "<p>Aucune classe actuelle n'est encore choisie pour ce projet.</p>\n";
@@ -321,7 +321,7 @@ if(!isset($afficher_listes)) {
 	}
 	
 	$sql="SELECT DISTINCT classe FROM gc_divisions WHERE projet='$projet' AND statut='future' ORDER BY classe;";
-	$res_clas_fut=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_clas_fut=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_clas_fut=mysqli_num_rows($res_clas_fut);
 	if($nb_clas_fut==0) {
 		echo "<p>Aucune classe future n'est encore définie pour ce projet.</p>\n";
@@ -330,19 +330,19 @@ if(!isset($afficher_listes)) {
 	}
 
 	$sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' AND type='lv1' ORDER BY opt;";
-	$res_lv1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_lv1=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_lv1=mysqli_num_rows($res_lv1);
 	
 	$sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' AND type='lv2' ORDER BY opt;";
-	$res_lv2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_lv2=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_lv2=mysqli_num_rows($res_lv2);
 	
 	$sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' AND type='lv3' ORDER BY opt;";
-	$res_lv3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_lv3=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_lv3=mysqli_num_rows($res_lv3);
 	
 	$sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' AND type='autre' ORDER BY opt;";
-	$res_autre=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_autre=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_autre=mysqli_num_rows($res_autre);
 	//========================================================================
 
@@ -350,7 +350,7 @@ if(!isset($afficher_listes)) {
 	//=========================================================
 	// Liste des affichages précédemment programmés pour ce projet:
 	$sql="SELECT DISTINCT id_aff,projet FROM gc_affichages WHERE projet='$projet' ORDER BY id_aff;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		echo "<div id='div_autres_aff' style='width:10em; float: right; text-align:center;'>\n";
 		//echo "Autres affichages&nbsp;: ";
@@ -393,7 +393,7 @@ if(!isset($afficher_listes)) {
 		$tab_ed_req=array();
 		$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req';";
 		//echo "$sql<br />\n";
-		$res_edit_req=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_edit_req=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_edit_req)>0) {
 			$tmp_tab_nom_requete=array();
 			while($lig_edit_req=mysqli_fetch_object($res_edit_req)) {
@@ -465,7 +465,7 @@ if(!isset($afficher_listes)) {
 
 		//$sql="SELECT 1=1 FROM gc_eleve_fut_classe WHERE projet='$projet' AND classe='$lig->classe';";
 		$sql="SELECT 1=1 FROM gc_eleves_options WHERE projet='$projet' AND classe_future='$lig->classe';";
-		$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_test)>0) {
 			echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='$lig->classe' ";
 			if((isset($tab_ed_req['clas_fut']))&&(in_array($lig->classe,$tab_ed_req['clas_fut']))) {
@@ -689,7 +689,7 @@ if(!isset($afficher_listes)) {
 	if(isset($id_aff)) {
 
 		$sql="SELECT DISTINCT id_req FROM gc_affichages WHERE projet='$projet'AND id_aff='$id_aff' ORDER BY id_req;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_object($res)) {
 				//$txt_requete="<div style='display:inline; width:20em; margin: 2px; border: 1px solid black;'>\n";
@@ -704,7 +704,7 @@ if(!isset($afficher_listes)) {
 				$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req";
 				$sql="SELECT DISTINCT nom_requete FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='".$lig->id_req."' AND nom_requete!='';";
 				//$txt_requete.="<br />".$sql."<br />";
-				$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
 					$txt_requete.=" (<em>".$lig_tmp->nom_requete."</em>)";
 				}
@@ -721,7 +721,7 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 				$sql_sans_profil="";
 
 				$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req' ORDER BY type;";
-				$res_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
 					switch($lig_tmp->type) {
 						case 'id_clas_act':
@@ -782,7 +782,7 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 		
 				$sql_ele.=";";
 				//echo "$sql_ele<br />\n";
-				$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql_ele);
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql_ele);
 
 				$txt_requete.=" <span style='font-size:small;font-style:italic;'>(".mysqli_num_rows($res_ele).")</span><br />";
 
@@ -790,7 +790,7 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 
 
 				$sql="SELECT * FROM gc_affichages WHERE projet='$projet'AND id_aff='$id_aff' AND type='id_clas_act' AND id_req='$lig->id_req';";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$txt_requete.="Classe actuelle (";
 					$cpt=0;
@@ -808,7 +808,7 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 				}
 
 				$sql="SELECT * FROM gc_affichages WHERE projet='$projet'AND id_aff='$id_aff' AND type='clas_fut' AND id_req='$lig->id_req';";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$txt_requete.="Classe future (";
 					$cpt=0;
@@ -821,7 +821,7 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 				}
 
 				$sql="SELECT * FROM gc_affichages WHERE projet='$projet'AND id_aff='$id_aff' AND type LIKE 'avec_%' AND id_req='$lig->id_req';";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$txt_requete.="Avec les options (<span style='color:green;'>";
 					$cpt=0;
@@ -834,7 +834,7 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 				}
 
 				$sql="SELECT * FROM gc_affichages WHERE projet='$projet'AND id_aff='$id_aff' AND type LIKE 'sans_%' AND id_req='$lig->id_req';";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$txt_requete.="Sans les options (<span style='color:red;'>";
 					$cpt=0;
@@ -905,7 +905,7 @@ else {
 	//=========================================================
 	// Liste des affichages précédemment programmés pour ce projet:
 	$sql="SELECT DISTINCT id_aff,projet FROM gc_affichages WHERE projet='$projet' ORDER BY id_aff;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		echo "<div id='div_autres_aff' style='width:10em; float: right; text-align:center;'>\n";
 		//echo "Autres affichages&nbsp;: ";
@@ -963,7 +963,7 @@ else {
 		unset($tab_id_req);
 		$tab_id_req=array();
 		$sql="SELECT DISTINCT id_req FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' ORDER BY id_req;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
 			$tab_id_req[]=$lig->id_req;
 		}
@@ -984,7 +984,7 @@ else {
 
 	$classe_fut=array();
 	$sql="SELECT DISTINCT classe FROM gc_divisions WHERE projet='$projet' AND statut='future' ORDER BY classe;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucune classe future n'est encore définie pour ce projet.</p>\n";
 		// Est-ce que cela doit vraiment bloquer la saisie des options?
@@ -1005,7 +1005,7 @@ else {
 			//=========================
 			// Options exlues pour la classe
 			$sql="SELECT opt_exclue FROM gc_options_classes WHERE projet='$projet' AND classe_future='$lig->classe';";
-			$res_opt_exclues=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_opt_exclues=mysqli_query($GLOBALS["mysqli"], $sql);
 			while($lig_opt_exclue=mysqli_fetch_object($res_opt_exclues)) {
 				$tab_opt_exclue["$lig->classe"][]=mb_strtoupper($lig_opt_exclue->opt_exclue);
 			}
@@ -1023,7 +1023,7 @@ else {
 	$id_classe_actuelle=array();
 	$classe_actuelle=array();
 	$sql="SELECT DISTINCT id_classe,classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle' ORDER BY classe;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucune classe actuelle n'est encore sélectionnée pour ce projet.</p>\n";
 		require("../lib/footer.inc.php");
@@ -1046,7 +1046,7 @@ else {
 	$chaine_lv1="tab_lv1=new Array(";
 	$lv1=array();
 	$sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='lv1' ORDER BY opt;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$cpt_tmp=0;
 		while($lig=mysqli_fetch_object($res)) {
@@ -1062,7 +1062,7 @@ else {
 	$chaine_lv2="tab_lv2=new Array(";
 	$lv2=array();
 	$sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='lv2' ORDER BY opt;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$cpt_tmp=0;
 		while($lig=mysqli_fetch_object($res)) {
@@ -1077,7 +1077,7 @@ else {
 	$chaine_lv3="tab_lv3=new Array(";
 	$lv3=array();
 	$sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='lv3' ORDER BY opt;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$cpt_tmp=0;
 		while($lig=mysqli_fetch_object($res)) {
@@ -1091,7 +1091,7 @@ else {
 	
 	$autre_opt=array();
 	$sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='autre' ORDER BY opt;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$autre_opt[]=$lig->opt;
@@ -1249,7 +1249,7 @@ else {
 		//=========================
 
 		$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req' ORDER BY type;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
 			switch($lig->type) {
 				case 'id_clas_act':
@@ -1423,13 +1423,13 @@ else {
 
 		$sql_ele.=";";
 		//echo "$sql_ele<br />\n";
-		$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql_ele);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql_ele);
 		while ($lig_ele=mysqli_fetch_object($res_ele)) {
 			$tab_ele[]=$lig_ele->login;
 
 			$sql_tmp="SELECT classe_future FROM gc_eleves_options WHERE projet='$projet' AND login='$lig_ele->login' AND classe_future!='' AND classe_future!='Dep' AND classe_future!='Red';";
 			//echo "$sql_tmp<br />";
-			$res_tmp_ele_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql_tmp);
+			$res_tmp_ele_clas=mysqli_query($GLOBALS["mysqli"], $sql_tmp);
 			if(mysqli_num_rows($res_tmp_ele_clas)>0) {
 				$lig_tmp_ele_clas=mysqli_fetch_object($res_tmp_ele_clas);
 				if(!in_array($lig_tmp_ele_clas->classe_future,$tab_classes_fut_de_cette_requete)) {
@@ -1518,7 +1518,7 @@ else {
 				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' ORDER BY e.nom,e.prenom;";
 
 				$sql_per="SELECT num_periode FROM periodes WHERE id_classe='$id_classe_actuelle[$j]' ORDER BY num_periode DESC LIMIT 1;";
-				$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql_per);
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql_per);
 				if(mysqli_num_rows($res_per)>0) {
 					$lig_per=mysqli_fetch_object($res_per);
 					$num_per2=$lig_per->num_periode;
@@ -1528,7 +1528,7 @@ else {
 				$sql="SELECT DISTINCT e.* FROM eleves e, gc_ele_arriv_red gc WHERE gc.login=e.login AND gc.statut='$id_classe_actuelle[$j]' AND gc.projet='$projet' ORDER BY e.nom,e.prenom;";
 			}
 			//$contenu_affichage_requete_courante.="<tr><td colspan='5'>$sql</tr></tr>\n";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			//$eff_tot_classe=mysql_num_rows($res);
 			//$eff_tot+=$eff_tot_classe;
 			//==========================================
@@ -1575,7 +1575,7 @@ else {
 
 						$tab_ele_opt=array();
 						$sql="SELECT * FROM gc_eleves_options WHERE projet='$projet' AND login='$lig->login';";
-						$res_opt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_opt=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_opt)>0) {
 							$lig_opt=mysqli_fetch_object($res_opt);
 	
@@ -1597,7 +1597,7 @@ else {
 						else {
 							// On récupère les options de l'année écoulée (année qui se termine)
 							$sql="SELECT * FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='$lig->login';";
-							$res_opt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_opt=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_opt)>0) {
 								while($lig_opt=mysqli_fetch_object($res_opt)) {
 									$tab_ele_opt[]=mb_strtoupper($lig_opt->id_matiere);
@@ -1868,7 +1868,7 @@ else {
 	$tab_exclus=array();
 	//$sql="SELECT DISTINCT geo.login FROM gc_eleves_options geo WHERE geo.projet='$projet' ORDER BY geo.login;";
 	$sql="SELECT DISTINCT geo.login FROM gc_eleves_options geo WHERE geo.projet='$projet' ORDER BY geo.login;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	while($lig=mysqli_fetch_object($res)) {
 		if(!in_array($lig->login,$tab_ele_toutes_requetes)) {
 			$tab_exclus[]=$lig->login;
@@ -1889,7 +1889,7 @@ else {
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
 			$sql="SELECT nom,prenom FROM eleves WHERE login='$tab_exclus[$loop]';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			$lig=mysqli_fetch_object($res);
 			echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 			echo "</td>\n";
@@ -1897,7 +1897,7 @@ else {
 			echo "<td>\n";
 			//$sql="SELECT opt FROM gc_eleves_options WHERE projet='$projet' AND login='$tab_exclus[$loop]';";
 			$sql="SELECT liste_opt FROM gc_eleves_options WHERE projet='$projet' AND login='$tab_exclus[$loop]';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			//$compteur=0;
 			while($lig=mysqli_fetch_object($res)) {
 				//if($compteur>0) {echo ", ";}

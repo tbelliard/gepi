@@ -20,14 +20,14 @@
 function add_index($tablename, $indexname, $indexcolumns) {
   $result = "&nbsp;->Ajout de l'index '$indexname' à la table $tablename<br />";
   $req_res=0;
-  $req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW INDEX FROM $tablename");
+  $req_test = mysqli_query($GLOBALS["mysqli"], "SHOW INDEX FROM $tablename");
   if (mysqli_num_rows($req_test)!=0) {
     while ($enrg = mysqli_fetch_object($req_test)) {
       if ($enrg-> Key_name == $indexname) {$req_res++;}
     }
   }
   if ($req_res == 0) {
-    $query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `$tablename` ADD INDEX $indexname ($indexcolumns)");
+    $query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `$tablename` ADD INDEX $indexname ($indexcolumns)");
     if ($query) {
       $result .= msj_ok();
     } else {

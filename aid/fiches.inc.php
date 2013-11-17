@@ -31,9 +31,9 @@ $annee -> il s'agit de l'année en cours. Si non précisé, il s'agit de l'anné
 
 // Initialisation des variables
 if (!isset($annee)) $annee='';
-$call_productions = mysqli_query($GLOBALS["___mysqli_ston"], "select * from aid_productions order by nom");
+$call_productions = mysqli_query($GLOBALS["mysqli"], "select * from aid_productions order by nom");
 $nb_productions = mysqli_num_rows($call_productions);
-$call_public = mysqli_query($GLOBALS["___mysqli_ston"], "select * from aid_public order by public");
+$call_public = mysqli_query($GLOBALS["mysqli"], "select * from aid_public order by public");
 $nb_public = mysqli_num_rows($call_public );
 
 // si le plugin "port_folio" existe et est activé
@@ -53,7 +53,7 @@ else
 if ($_login=="")
     $requete .= " and fiche_publique='y'";
 $requete .= " ORDER BY nom";
-$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+$calldata = mysqli_query($GLOBALS["mysqli"], $requete);
 $nombreligne = mysqli_num_rows($calldata);
 
 echo "Cliquez sur le symbole <img src=\"../images/plier.png\" alt=\"Plus de détails\" title=\"Plus de détails\" style=\"vertical-align: middle;\"/> devant chaque projet pour afficher ou cacher les détails du projet. Vous pouvez aussi ";
@@ -86,9 +86,9 @@ while ($i < $nombreligne){
     $aid_id = @mysql_result($calldata, $i, "id");
     // autres champs :
     if ($annee=='')
-      $call_data_projet = mysqli_query($GLOBALS["___mysqli_ston"], "select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+      $call_data_projet = mysqli_query($GLOBALS["mysqli"], "select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
     else
-      $call_data_projet = mysqli_query($GLOBALS["___mysqli_ston"], "select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
+      $call_data_projet = mysqli_query($GLOBALS["mysqli"], "select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
 
     $resume = @mysql_result($call_data_projet,0,"resume");
     $discipline1 = @mysql_result($call_data_projet,0,"matiere1");

@@ -135,7 +135,7 @@ if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')) {
 
 	$sql="SELECT statut FROM utilisateurs WHERE login='$user_login';";
 	if($debug_create_resp=="y") {echo "$sql<br />\n";}
-	$res_statut=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_statut=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_statut)>0) {
 		$lig_statut=mysqli_fetch_object($res_statut);
 		$user_status=$lig_statut->statut;
@@ -183,7 +183,7 @@ if ($user_login) {
 	// On a fourni un login... on peut retrouver le statut dans utilisateurs:
 	$sql="SELECT statut FROM utilisateurs WHERE login='$user_login';";
 	if($debug_create_resp=="y") {echo "$sql<br />\n";}
-	$res_statut=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_statut=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_statut)>0) {
 		$lig_statut=mysqli_fetch_object($res_statut);
 		$user_status=$lig_statut->statut;
@@ -227,7 +227,7 @@ if ($user_login) {
 		*/
 
 		if($debug_create_resp=="y") {echo "$sql_user_info<br />\n";}
-		$call_user_info = mysqli_query($GLOBALS["___mysqli_ston"], $sql_user_info);
+		$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql_user_info);
 		//echo "mysql_num_rows(\$call_user_info)=".mysql_num_rows($call_user_info)."<br />";
 
 		//$cas_traite=2;
@@ -254,7 +254,7 @@ if ($user_login) {
 				"etat='actif' and " .
 				"statut != 'administrateur');";
 		if($debug_create_resp=="y") {echo "$sql<br />\n";}
-		$call_user_info = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
 else {
@@ -316,13 +316,13 @@ else {
 					$sql_user_resp .= " ORDER BY u.nom,u.prenom";
 				}
 				if($debug_create_resp=="y") {echo "$sql_user_resp<br />\n";}
-				$call_user_info = mysqli_query($GLOBALS["___mysqli_ston"], $sql_user_resp);
+				$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql_user_resp);
 				//echo $sql_user_resp."<br />\n";
 				$cas_traite=1;
 
 				$sql_classe = "SELECT * FROM classes WHERE id='$user_classe'";
 				if($debug_create_resp=="y") {echo "$sql_classe<br />\n";}
-				$data_user_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_classe);
+				$data_user_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe);
 				$classe_resp= mysql_result($data_user_classe, 0, "classe");
 
 			} elseif ($user_status == "eleve") {
@@ -332,7 +332,7 @@ else {
 						"u.login = jec.login AND " .
 						"jec.id_classe = '".$user_classe."') ORDER BY u.nom, u.prenom;";
 				if($debug_create_resp=="y") {echo "$sql<br />\n";}
-				$call_user_info = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		else {
@@ -368,7 +368,7 @@ else {
 									}
 				// Pour les parents de plusieurs enfants, on récupère plusieurs enregistrements par enfant à cause du ele_id: modifié avec getSettingValue('fiches_bienvenue_un_jeu_par_parent')
 				if($debug_create_resp=="y") {echo "$sql_user_info<br />\n";}
-				$call_user_info = mysqli_query($GLOBALS["___mysqli_ston"], $sql_user_info);
+				$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql_user_info);
 				$cas_traite=2;
 
 			} elseif ($user_status == "eleve"){
@@ -383,7 +383,7 @@ else {
 								)
 								ORDER BY c.classe ASC, u.nom ASC";
 				if($debug_create_resp=="y") {echo "$sql_user_info<br />\n";}
-				$call_user_info = mysqli_query($GLOBALS["___mysqli_ston"], $sql_user_info);
+				$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql_user_info);
 			}
 		}
 	}
@@ -399,7 +399,7 @@ else {
 				"statut = 'cpe' OR " .
 				"statut = 'secours'))";
 		if($debug_create_resp=="y") {echo "$sql<br />\n";}
-		$call_user_info = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
 
@@ -490,7 +490,7 @@ while ($p < $nb_users) {
 							)";
 		//echo "<br />\$sql_resp_eleves=".$sql_resp_eleves."<br />";
 		if($debug_create_resp=="y") {echo "<br />$sql_resp_eleves<br />\n";}
-		$call_resp_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql_resp_eleves);
+		$call_resp_eleves=mysqli_query($GLOBALS["mysqli"], $sql_resp_eleves);
 		$nb_elv_resp = mysqli_num_rows($call_resp_eleves);
 		//echo "\$nb_elv_resp=$nb_elv_resp<br />";
 		if($debug_create_resp=="y") {echo "\$nb_elv_resp=$nb_elv_resp<br />\n";}
@@ -536,7 +536,7 @@ while ($p < $nb_users) {
 								)";
 			//echo "<br />\$sql_resp_eleves=".$sql_resp_eleves."<br />";
 			if($debug_create_resp=="y") {echo "<br />$sql_resp_eleves<br />\n";}
-			$call_resp_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql_resp_eleves);
+			$call_resp_eleves=mysqli_query($GLOBALS["mysqli"], $sql_resp_eleves);
 			$nb_elv_resp = mysqli_num_rows($call_resp_eleves);
 			//echo "\$nb_elv_resp=$nb_elv_resp<br />";
 			if($debug_create_resp=="y") {echo "\$nb_elv_resp=$nb_elv_resp<br />\n";}
@@ -569,7 +569,7 @@ while ($p < $nb_users) {
 			$sql_classe = "SELECT * FROM classes WHERE id='$user_classe';";
 			if($debug_create_resp=="y") {echo "$sql_classe<br />\n";}
 			//echo "\$sql_classe=$sql_classe<br />";
-			$data_user_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_classe);
+			$data_user_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe);
 			$classe_resp= mysql_result($data_user_classe, 0, "classe");
 		}
 
@@ -600,7 +600,7 @@ while ($p < $nb_users) {
 		else {
 			$sql="SELECT 1=1 FROM utilisateurs WHERE login='$user_login' AND password!='';";
 			if($debug_create_resp=="y") {echo "$sql<br />\n";}
-			$test_pass_non_vide=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_pass_non_vide=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_pass_non_vide)>0){
 				$new_password="Non modifié";
 				$temoin_user_deja_traite="y";
@@ -609,7 +609,7 @@ while ($p < $nb_users) {
 				if(($user_status=='eleve')&&($mdp_INE=='y')) {
 					$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
 					if($debug_create_resp=="y") {echo "$sql<br />\n";}
-					$res_ine=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_ine=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_ine)>0){
 						$lig_ine=mysqli_fetch_object($res_ine);
 						if($lig_ine->no_gep!='') {
@@ -635,7 +635,7 @@ while ($p < $nb_users) {
 				if ($save_new_pass) {
 					$sql="UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'";
 					if($debug_create_resp=="y") {echo "$sql<br />\n";}
-					mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 		}
@@ -649,7 +649,7 @@ while ($p < $nb_users) {
 		}
 		else {
 			$sql="SELECT login FROM utilisateurs WHERE login='$user_login' AND password!='';";
-			$test_pass_non_vide=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_pass_non_vide=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_pass_non_vide) && $ne_pas_ecraser_passwd>0){
 				$new_password="Non modifié";
 				$ecraser_passwd_user=false;
@@ -658,7 +658,7 @@ while ($p < $nb_users) {
 				$ecraser_passwd_user=true;
 				if(($user_status=='eleve')&&($mdp_INE=='y')) {
 					$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
-					$res_ine=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_ine=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_ine)>0){
 						$lig_ine=mysqli_fetch_object($res_ine);
 						if($lig_ine->no_gep!='') {
@@ -685,7 +685,7 @@ while ($p < $nb_users) {
 				$tab_password[$user_login]=$new_password;
 				if ($user_auth_mode != "gepi") {
 					// L'utilisateur est un utilisateur SSO. On enregistre un mot de passe vide.
-					$save_new_pass = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
+					$save_new_pass = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
 					// Si l'accès LDAP en écriture est paramétré, on va mettre à jour le mot de passe de l'utilisateur
 					// directement dans l'annuaire.
 					if ($gepiSettings['ldap_write_access'] == "yes") {
@@ -706,10 +706,10 @@ while ($p < $nb_users) {
 					if ($ecraser_passwd_user) {
 						$save_new_pass = Session::change_password_gepi($user_login,$new_password);
 						if ($save_new_pass) {
-							mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
+							mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
 							$sql="UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'";
 							if($debug_create_resp=="y") {echo "$sql<br />\n";}
-							mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 				}
@@ -720,7 +720,7 @@ while ($p < $nb_users) {
 
 	$sql="SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres";
 	if($debug_create_resp=="y") {echo "$sql<br />\n";}
-	$call_matieres = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_matieres = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_mat = mysqli_num_rows($call_matieres);
 	$k = 0;
 	while ($k < $nb_mat) {
@@ -728,7 +728,7 @@ while ($p < $nb_users) {
 		$k++;
 	}
 
-	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM classes");
+	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes");
 	$nombre_classes = mysqli_num_rows($call_data);
 	$i = 0;
 	while ($i < $nombre_classes){
@@ -811,7 +811,7 @@ while ($p < $nb_users) {
 	
 						$sql="SELECT ra.*,rp.nom,rp.prenom,rp.civilite FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
 						if($debug_create_resp=="y") {echo "$sql<br />\n";}
-						$res_adr_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_adr_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_adr_resp)==0) {
 							$ligne1="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
 							$ligne2="";
@@ -989,7 +989,7 @@ width:".$largeur1."%;\n";
 						//recherche de la classe de l'élève si mode
 						if ($user_status == 'eleve') {
 							$sql_classe = "SELECT DISTINCT classe FROM `classes` c, `j_eleves_classes` jec WHERE (jec.login='".$user_login."' AND jec.id_classe=c.id)";
-							$data_user_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_classe);
+							$data_user_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe);
 							$classe_eleve = mysql_result($data_user_classe, 0, "classe");
 							$donnees_personne_csv['classe'][$pcsv] = $classe_eleve;
 						}
@@ -1087,7 +1087,7 @@ width:".$largeur1."%;\n";
 				if ($user_status) {
 					if ($user_status == 'eleve') {
 						$sql_classe = "SELECT DISTINCT classe FROM `classes` c, `j_eleves_classes` jec WHERE (jec.login='".$user_login."' AND jec.id_classe=c.id)";
-						$data_user_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_classe);
+						$data_user_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe);
 						$classe_eleve = mysql_result($data_user_classe, 0, "classe");
 					}
 				}
@@ -1180,7 +1180,7 @@ width:".$largeur1."%;\n";
 						*/
 	
 						$sql="SELECT ra.*,rp.nom,rp.prenom,rp.civilite FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
-						$res_adr_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_adr_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_adr_resp)==0) {
 							$ligne1="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
 							$ligne2="";

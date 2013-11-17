@@ -8,14 +8,14 @@
 	$lv_a2="";
 
 	$sql="SELECT * FROM notanet_socles WHERE login='".$lig1->login."';";
-	$res_soc=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_soc=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_soc)>0) {
 		$lig_soc=mysqli_fetch_object($res_soc);
 		$note_b2i=$lig_soc->b2i;
 		$note_a2=$lig_soc->a2;
 
 		$sql="SELECT nom_complet FROM matieres WHERE matiere='".$lig_soc->lv."';";
-		$res_nom_mat_a2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_nom_mat_a2=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_nom_mat_a2)>0) {
 			$lig_lv_a2=mysqli_fetch_object($res_nom_mat_a2);

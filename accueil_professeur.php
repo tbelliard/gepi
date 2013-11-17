@@ -99,7 +99,7 @@ if((getSettingValue('active_cahiers_texte')=='y')&&(getSettingValue('GepiCahierT
 		creer_info_jours_js();
 		if(!file_exists("./temp/info_jours.js")) {
 			$sql="SELECT * FROM infos_actions WHERE titre='Fichier info_jours.js absent'";
-			$test_info_jours=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_info_jours=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_info_jours)==0) {
 				enregistre_infos_actions("Fichier info_jours.js absent","Le fichier info_jours.js destiné à tenir compte des jours ouvrés dans les saisies du cahier de textes n'est pas renseigné.\nVous pouvez le renseigner en <a href='$gepiPath/edt_organisation/admin_horaire_ouverture.php?action=visualiser'>saisissant ou re-validant les horaires d'ouverture</a> de l'établissement.","administrateur",'statut');
 			}
@@ -107,7 +107,7 @@ if((getSettingValue('active_cahiers_texte')=='y')&&(getSettingValue('GepiCahierT
 	}
 	else {
 		$sql="SELECT * FROM infos_actions WHERE titre='Fichier info_jours.js absent'";
-		$test_info_jours=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_info_jours=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_info_jours)>0) {
 			while($lig_action=mysqli_fetch_object($test_info_jours)) {
 				del_info_action($lig_action->id);
@@ -228,7 +228,7 @@ if ($condition_releve_note ||  (getSettingValue("GepiAccesBulletinSimplePP")=="y
 	// Bulletins simplifiés
 	if (getSettingValue("GepiAccesBulletinSimplePP")=="yes") {
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
-		$test_pp=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $sql));
+		$test_pp=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql));
 		if($test_pp>0) {
 			affiche_ligne( "/prepa_conseil/index3.php", "Les bulletins simplifi&eacute;s",   "Cet outil vous permet de visualiser &agrave; l'&eacute;cran et d'imprimer les relev&eacute;s de notes, ".$gepiSettings['denomination_eleve']." par ".$gepiSettings['denomination_eleve'].", classe par classe.", $_SESSION['statut']);
 		}
@@ -242,12 +242,12 @@ if ($condition_releve_note ||  (getSettingValue("GepiAccesBulletinSimplePP")=="y
 		$chemin = array();
 		$titre = array();
 		$expli = array();
-		$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_config WHERE indice_aid= '".getSettingValue("num_aid_trombinoscopes")."' ORDER BY nom");
+		$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid= '".getSettingValue("num_aid_trombinoscopes")."' ORDER BY nom");
 		$nb_aid = mysqli_num_rows($call_data);
 		$i=0;
 		while ($i < $nb_aid) {
 			$indice_aid = @mysql_result($call_data, $i, "indice_aid");
-			$call_prof = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_SESSION['login'] . "' and indice_aid = '$indice_aid')");
+			$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_SESSION['login'] . "' and indice_aid = '$indice_aid')");
 			$nb_result = mysqli_num_rows($call_prof);
 			if (($nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
 				$nom_aid = @mysql_result($call_data, $i, "nom");

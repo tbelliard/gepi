@@ -48,10 +48,10 @@ if ($resultat_session == 'c') {
 // INSERT INTO droits VALUES ('/edt_organisation/verifier_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'vérifier la table edt_cours', '');
 
 $sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/verifier_edt.php';";
-$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/edt_organisation/verifier_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','vérifier la table edt_cours', '');";
-	$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -72,34 +72,34 @@ if (isset($supprimer)) {
 	check_token();
 
     if ($supprimer == "suppression_profs") {
-	    $req_profs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT login_prof FROM edt_cours WHERE
+	    $req_profs = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login_prof FROM edt_cours WHERE
 					    login_prof NOT IN (SELECT login FROM utilisateurs)
                         ");
         if (mysqli_num_rows($req_profs) != 0) {
-            $req_suppression_prof = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM edt_cours WHERE
+            $req_suppression_prof = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours WHERE
                         login_prof NOT IN (SELECT login FROM utilisateurs)
                         ");
         }
     }
     elseif ($supprimer== "suppression_groupes") {
-	    $req_groupes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT id_groupe FROM edt_cours WHERE
+	    $req_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT id_groupe FROM edt_cours WHERE
 					id_groupe NOT IN (SELECT id FROM groupes) AND
                     id_groupe != ''
                     ");
         if (mysqli_num_rows($req_groupes) != 0) {
 	        while ($rep_groupes = mysqli_fetch_array($req_groupes)) {
-                $req_suppression_groupe = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM edt_cours WHERE
+                $req_suppression_groupe = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours WHERE
                             id_groupe = '".$rep_groupes['id_groupe']."'
                             ");
 	        }
         }
-	    $req_groupes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT id_aid FROM edt_cours WHERE
+	    $req_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT id_aid FROM edt_cours WHERE
 					id_aid NOT IN (SELECT id FROM aid) AND
                     id_aid != ''
                     ");
         if (mysqli_num_rows($req_groupes) != 0) {
 	        while ($rep_groupes = mysqli_fetch_array($req_groupes)) {
-                $req_suppression_groupe = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM edt_cours WHERE
+                $req_suppression_groupe = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours WHERE
                             id_aid = '".$rep_groupes['id_aid']."'
                             ");
 	        }
@@ -107,7 +107,7 @@ if (isset($supprimer)) {
 
     }
 	elseif($supprimer == 'suppression_cours_duree_nulle') {
-		$req_suppr_cours_duree_nulle=mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM edt_cours WHERE duree='0';");
+		$req_suppr_cours_duree_nulle=mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours WHERE duree='0';");
 	}
 
 }
@@ -156,7 +156,7 @@ if (!strstr($ua, "MSIE 6.0")) {
 		<div class=\"partiecentralebas\"></div>\n");
 }        
 
-	$req_profs = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT login_prof FROM edt_cours WHERE
+	$req_profs = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login_prof FROM edt_cours WHERE
 					login_prof NOT IN (SELECT login FROM utilisateurs)
                     ");
     if (mysqli_num_rows($req_profs) != 0) {
@@ -192,7 +192,7 @@ if (!strstr($ua, "MSIE 6.0")) {
 		<div class=\"partiecentralebas\"></div>\n");
 }        
 
-	$req_groupes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT id_groupe FROM edt_cours WHERE
+	$req_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT id_groupe FROM edt_cours WHERE
 					id_groupe NOT IN (SELECT id FROM groupes) AND
                     id_groupe != ''
                     ");
@@ -231,7 +231,7 @@ if (!strstr($ua, "MSIE 6.0")) {
 		<div class=\"partiecentralebas\"></div>\n");
 }        
 
-	$req_groupes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT id_aid FROM edt_cours WHERE
+	$req_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT id_aid FROM edt_cours WHERE
 					id_aid NOT IN (SELECT id FROM aid) AND
                     id_aid != '' 
                     ");
@@ -269,7 +269,7 @@ if (!strstr($ua, "MSIE 6.0")) {
 		<div class=\"partiecentralebas\"></div>\n");
 }        
 
-	$req_duree_0=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM edt_cours WHERE duree=0 ORDER BY login_prof, jour_semaine;");
+	$req_duree_0=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours WHERE duree=0 ORDER BY login_prof, jour_semaine;");
     if (mysqli_num_rows($req_duree_0) != 0) {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 4</strong></p>';
 	    echo "<p style=\"text-align:center;\">".mysqli_num_rows($req_duree_0)." enseignement(s) a(ont) une durée nulle.<br />Cela peut causer de grosses perturbations sur l'affichage de l'EDT des professeurs concernés.</p>\n";
@@ -299,7 +299,7 @@ if (!strstr($ua, "MSIE 6.0")) {
 			echo "<td>";
 			if(!isset($tab_creneaux[$lig->id_definie_periode])) {
 				$sql="SELECT ec.* FROM edt_creneaux ec WHERE ec.id_definie_periode='$lig->id_definie_periode';";
-				$res_creneau=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_creneau=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_creneau)>0) {
 					$lig_creneau=mysqli_fetch_object($res_creneau);
 					$tab_creneaux[$lig->id_definie_periode]=$lig_creneau->nom_definie_periode;

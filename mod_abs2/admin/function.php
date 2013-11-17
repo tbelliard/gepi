@@ -458,10 +458,10 @@ function check_sortable_rank_trouble($table, $type) {
 	$retour="";
 
 	$sql="SELECT 1=1 FROM $table;";
-	$res_tot=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_tot=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$sql="SELECT DISTINCT sortable_rank FROM $table;";
-	$res_sr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_sr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res_sr)!=mysqli_num_rows($res_tot)) {
 		$retour="<p style='text-align:center;'><span style='color:red;'><strong>Anomalie&nbsp;:</strong> L'ordre d'affichage des $type dans la table '$table' est incohérent <br />(<em>plusieurs enregistrements ont le même rang</em>)</span><br />\n";

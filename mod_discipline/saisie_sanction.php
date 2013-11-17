@@ -71,7 +71,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 
 	$id_nature_sanction=$_POST['traitement'];
 	$sql="SELECT * FROM s_types_sanctions2 WHERE id_nature='".$id_nature_sanction."';";
-	$res_ns=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ns=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_ns)==0) {
 		$msg.="Le type de ".$mod_disc_terme_sanction." est inconnu???<br />";
 	}
@@ -135,7 +135,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 					// on récupère les informations précédente dans la table s_retenues pour les inscrire dans s_reports
 					$sql="SELECT * FROM s_retenues WHERE id_sanction='$id_sanction';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)==0) {
 						$msg.="La $nature_sanction n°$id_sanction n'existe pas dans 's_retenues'.<br />Elle ne peut pas être reportée.<br />";
 					}
@@ -151,7 +151,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//$sql="INSERT INTO s_reports SET id_sanction='$id_sanction', id_type_sanction='$id_retenue', nature_sanction='retenue', date='$ancienne_date', informations='Durée : ".$ancienne_duree."H', motif_report='$choix_motif_report';";
 					$sql="INSERT INTO s_reports SET id_sanction='$id_sanction', id_type_sanction='$id_retenue', nature_sanction='$nature_sanction', date='$ancienne_date', informations='Durée : ".$ancienne_duree."H', motif_report='$choix_motif_report';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="Erreur lors de l'insertion des informations de report dans 's_reports'.<br />";
 					}
@@ -160,14 +160,14 @@ if(isset($_POST['enregistrer_sanction'])) {
 				// Modification???
 				$sql="SELECT 1=1 FROM s_sanctions WHERE id_sanction='$id_sanction';";
 				//echo "$sql<br />\n";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)==0) {
 					$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
 				}
 				else {
 					$sql="SELECT 1=1 FROM s_retenues WHERE id_sanction='$id_sanction';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)==0) {
 						$msg.="La $nature_sanction n°$id_sanction n'existe pas dans 's_retenues'.<br />Elle ne peut pas être mise à jour.<br />";
 					}
@@ -181,7 +181,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						//$sql="UPDATE s_retenues SET date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N' WHERE id_sanction='$id_sanction';";
 						$sql="UPDATE s_retenues SET date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', materiel='$materiel' WHERE id_sanction='$id_sanction';";
 						//echo "$sql<br />\n";
-						$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$update) {
 							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
@@ -193,12 +193,12 @@ if(isset($_POST['enregistrer_sanction'])) {
 				//$sql="INSERT INTO s_sanctions SET login='$ele_login', nature='retenue', id_incident='$id_incident';";
 				$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 				//echo "$sql<br />\n";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions'.<br />";
 				}
 				else {
-					$id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+					$id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 					//Eric
 					//choix de l'heure de retenue à conserver (champs sasie manuellement ou par la liste déroulante
 					//par defaut la liste déroulante
@@ -208,19 +208,19 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N';";
 					$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', materiel='$materiel';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
 				if(count($autre_protagoniste_meme_sanction)>0) {
 					for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
 						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
 							$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop].<br />";
 						}
 						else {
-							$tmp_id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+							$tmp_id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 							$tab_tmp_id_sanction[]=$tmp_id_sanction;
 							//Eric
 							//choix de l'heure de retenue à conserver (champs sasie manuellement ou par la liste déroulante
@@ -231,7 +231,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 							//$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N';";
 							$sql="INSERT INTO s_retenues SET id_sanction='$tmp_id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', materiel='$materiel';";
 							//echo "$sql<br />\n";
-							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 				}
@@ -341,21 +341,21 @@ if(isset($_POST['enregistrer_sanction'])) {
 				// Modification???
 				$sql="SELECT 1=1 FROM s_sanctions WHERE id_sanction='$id_sanction';";
 				//echo "$sql<br />\n";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)==0) {
 					$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
 				}
 				else {
 					$sql="SELECT 1=1 FROM s_exclusions WHERE id_sanction='$id_sanction';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)==0) {
 						$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_exclusions'.<br />Elle ne peut pas être mise à jour.<br />";
 					}
 					else {
 						$sql="UPDATE s_exclusions SET date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', id_signataire='$signataire' WHERE id_sanction='$id_sanction';";
 						//echo "$sql<br />\n";
-						$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$update) {
 							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
@@ -365,33 +365,33 @@ if(isset($_POST['enregistrer_sanction'])) {
 			else {
 				$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 				//echo "$sql<br />\n";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions'.<br />";
 				}
 				else {
-					$id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+					$id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 					$sql="INSERT INTO s_exclusions SET id_sanction='$id_sanction', date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', id_signataire='$signataire';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
 				if(count($autre_protagoniste_meme_sanction)>0) {
 					for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
 						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
 							$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop].<br />";
 						}
 						else {
-							$tmp_id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+							$tmp_id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 							$tab_tmp_id_sanction[]=$tmp_id_sanction;
 
 							$sql="INSERT INTO s_exclusions SET id_sanction='$tmp_id_sanction', date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', id_signataire='$signataire';";
 							//echo "$sql<br />\n";
-							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 				}
@@ -437,14 +437,14 @@ if(isset($_POST['enregistrer_sanction'])) {
 				// Modification???
 				$sql="SELECT 1=1 FROM s_sanctions WHERE id_sanction='$id_sanction';";
 				//echo "$sql<br />\n";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)==0) {
 					$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
 				}
 				else {
 					$sql="SELECT 1=1 FROM s_travail WHERE id_sanction='$id_sanction';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)==0) {
 						$msg.="Le travail n°$id_sanction n'existe pas dans 's_travail'.<br />Il ne peut pas être mis à jour.<br />";
 					}
@@ -452,7 +452,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						//$sql="UPDATE s_travail SET date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail', effectuee='N' WHERE id_sanction='$id_sanction';";
 						$sql="UPDATE s_travail SET date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail' WHERE id_sanction='$id_sanction';";
 						//echo "$sql<br />\n";
-						$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$update) {
 							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
@@ -462,35 +462,35 @@ if(isset($_POST['enregistrer_sanction'])) {
 			else {
 				$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 				//echo "$sql<br />\n";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions'.<br />";
 				}
 				else {
-					$id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+					$id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 					//$sql="INSERT INTO s_travail SET id_sanction='$id_sanction', date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail', effectuee='N';";
 					$sql="INSERT INTO s_travail SET id_sanction='$id_sanction', date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
 				if(count($autre_protagoniste_meme_sanction)>0) {
 					for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
 						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
 							$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop]<br />";
 						}
 						else {
-							$tmp_id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+							$tmp_id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 							$tab_tmp_id_sanction[]=$tmp_id_sanction;
 
 							//$sql="INSERT INTO s_travail SET id_sanction='$id_sanction', date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail', effectuee='N';";
 							$sql="INSERT INTO s_travail SET id_sanction='$tmp_id_sanction', date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail';";
 							//echo "$sql<br />\n";
-							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 				}
@@ -519,21 +519,21 @@ if(isset($_POST['enregistrer_sanction'])) {
 					// Modification???
 					$sql="SELECT 1=1 FROM s_sanctions WHERE id_sanction='$id_sanction';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)==0) {
 						$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_sanctions'.<br />Elle ne peut pas être mise à jour.<br />";
 					}
 					else {
 						$sql="SELECT 1=1 FROM s_autres_sanctions WHERE id_sanction='$id_sanction';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res)==0) {
 							$msg.="La ".$mod_disc_terme_sanction." n°$id_sanction n'existe pas dans 's_autres_sanctions'.<br />Elle ne peut pas être mis à jour.<br />";
 						}
 						else {
 							$sql="UPDATE s_autres_sanctions SET description='$description', id_nature='$id_nature_sanction' WHERE id_sanction='$id_sanction';";
 							//echo "$sql<br />\n";
-							$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$update) {
 								//$msg.="Erreur lors de la mise à jour de la sanction '$type_sanction' n°$id_sanction.<br />";
 								$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
@@ -544,16 +544,16 @@ if(isset($_POST['enregistrer_sanction'])) {
 				else {
 					$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 					//echo "$sql<br />\n";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions'.<br />";
 					}
 					else {
-						$id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+						$id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 						$sql="INSERT INTO s_autres_sanctions SET id_sanction='$id_sanction', id_nature='$id_nature_sanction', description='$description';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
 							//$msg.="Erreur lors de l'enregistrement de la sanction '$type_sanction' n°$id_sanction.<br />";
 							$msg.="Erreur lors de l'enregistrement de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
@@ -564,17 +564,17 @@ if(isset($_POST['enregistrer_sanction'])) {
 						for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
 							$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 							//echo "$sql<br />\n";
-							$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res) {
 								$msg.="Erreur lors de l'insertion de la ".$mod_disc_terme_sanction." dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop]<br />";
 							}
 							else {
-								$tmp_id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+								$tmp_id_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 								$tab_tmp_id_sanction[]=$tmp_id_sanction;
 
 								$sql="INSERT INTO s_autres_sanctions SET id_sanction='$tmp_id_sanction', id_nature='$id_nature_sanction', description='$description';";
 								//echo "$sql<br />\n";
-								$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res) {
 									//$msg.="Erreur lors de l'enregistrement de la sanction '$type_sanction' n°$tmp_id_sanction.<br />";
 									$msg.="Erreur lors de l'enregistrement de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$tmp_id_sanction.<br />";
@@ -694,17 +694,17 @@ if(($mode=="suppr_sanction")&&(isset($id_sanction))) {
 		$msg.=suppr_doc_joints_sanction($id_sanction);
 
 		$sql="DELETE FROM s_travail WHERE id_sanction='$id_sanction';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM s_exclusions WHERE id_sanction='$id_sanction';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM s_retenues WHERE id_sanction='$id_sanction';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM s_autres_sanctions WHERE id_sanction='$id_sanction';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM s_sanctions WHERE id_sanction='$id_sanction';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM s_reports WHERE id_sanction='$id_sanction';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
 
@@ -712,7 +712,7 @@ if(($mode=="suppr_report")&&(isset($id_report))) {
 	check_token();
 
 	$sql="DELETE FROM s_reports WHERE id_report='$id_report';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if(isset($odt)&&
@@ -751,7 +751,7 @@ if(isset($odt)&&
 	if ($id_sanction != null && $id_sanction != '') {
 		if($odt=='exclusion') {
 			$sql="SELECT * FROM s_exclusions WHERE id_sanction='$id_sanction';";
-			$res_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_sanction)==0) {
 				$num_courrier="";
 				$type_exclusion="";
@@ -773,7 +773,7 @@ if(isset($odt)&&
 			}
 
 			$sql="SELECT * FROM s_delegation WHERE id_delegation='$signataire';";
-			$res_delegation=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_delegation=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_delegation)==0) {
 				$fct_delegation="";
 				$fct_autorite="";
@@ -790,7 +790,7 @@ if(isset($odt)&&
 			$nom_autorite=civ_nom_prenom($_SESSION['login'],'');
 
 			$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
-			$res_incident=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_incident=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_incident)==0) {
 				$qualification_faits="";
 			}
@@ -799,7 +799,7 @@ if(isset($odt)&&
 			}
 
 			$sql="SELECT * FROM s_travail WHERE id_sanction='$id_sanction';";
-			$res_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_sanction)==0) {
 				$date_retour="";
 				$heure_retour="";
@@ -816,7 +816,7 @@ if(isset($odt)&&
 			$nom_autorite=civ_nom_prenom($_SESSION['login'],'');
 
 			$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
-			$res_incident=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_incident=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_incident)==0) {
 				$qualification_faits="";
 			}
@@ -825,7 +825,7 @@ if(isset($odt)&&
 			}
 
 			$sql="SELECT sas.*, sts.nature FROM s_autres_sanctions sas, s_types_sanctions sts WHERE sas.id_sanction='$id_sanction' AND sas.id_nature=sts.id_nature;";
-			$res_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_sanction)==0) {
 				$nature_sanction="";
 				$description_sanction="";
@@ -1031,7 +1031,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 	// Affichage des protagonistes:
 	$sql="SELECT * FROM s_protagonistes WHERE id_incident='$id_incident' ORDER BY statut,qualite,login;";
 	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		//echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 		//echo "<input type='hidden' name='step' value='$step' />\n";
@@ -1059,7 +1059,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				echo "<td>";
 				$sql="SELECT nom,prenom FROM eleves WHERE login='$lig->login';";
 				//echo "$sql<br />\n";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$lig2=mysqli_fetch_object($res2);
 					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
@@ -1081,7 +1081,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				echo "<td>";
 				$sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$lig->login';";
 				//echo "$sql<br />\n";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$lig2=mysqli_fetch_object($res2);
 					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
@@ -1099,7 +1099,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 					$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
 													WHERE du.login_user = '".$lig->login."'
 													AND du.id_statut = ds.id;";
-					$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$query = mysqli_query($GLOBALS["mysqli"], $sql);
 					$result = mysqli_fetch_array($query);
 
 					echo "<td>".$result['nom_statut']."</td>\n";
@@ -1123,8 +1123,8 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				//$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident=$id_incident AND s.login='".$lig->login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
 				$sql="SELECT s.*, sr.*, sts.nature AS nature_sts FROM s_sanctions s, s_retenues sr, s_types_sanctions2 sts WHERE s.id_incident=$id_incident AND s.login='".$lig->login."' AND sr.id_sanction=s.id_sanction AND sts.id_nature=s.id_nature_sanction AND sts.type='retenue' ORDER BY sts.nature, sr.date, sr.heure_debut;";
 				//echo "$sql<br />\n";
-				$res_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
-				$res_sanction_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+				$res_sanction_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_sanction)>0) {
 					echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
 					echo "<tr>\n";
@@ -1227,7 +1227,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				//$sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE s.id_incident=$id_incident AND s.login='".$lig->login."' AND se.id_sanction=s.id_sanction ORDER BY se.date_debut, se.heure_debut;";
 				$sql="SELECT s.*, se.*, sts.nature AS nature_sts  FROM s_sanctions s, s_exclusions se, s_types_sanctions2 sts WHERE s.id_incident=$id_incident AND s.login='".$lig->login."' AND se.id_sanction=s.id_sanction AND sts.id_nature=s.id_nature_sanction AND sts.type='exclusion' ORDER BY sts.nature, se.date_debut, se.heure_debut;";
 				//echo "$sql<br />\n";
-				$res_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_sanction)>0) {
 					echo "<table class='boireaus' border='1' summary='Exclusions' style='margin:2px;'>\n";
 					echo "<tr>\n";
@@ -1287,7 +1287,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				//$sql="SELECT * FROM s_sanctions s, s_travail st WHERE s.id_incident=$id_incident AND s.login='".$lig->login."' AND st.id_sanction=s.id_sanction ORDER BY st.date_retour;";
 				$sql="SELECT s.*, st.*, sts.nature AS nature_sts  FROM s_sanctions s, s_travail st, s_types_sanctions2 sts WHERE s.id_incident=$id_incident AND s.login='".$lig->login."' AND st.id_sanction=s.id_sanction AND sts.id_nature=s.id_nature_sanction AND sts.type='travail' ORDER BY sts.nature, st.date_retour;";
 				//echo "$sql<br />\n";
-				$res_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_sanction)>0) {
 					echo "<table class='boireaus' border='1' summary='Travail' style='margin:2px;'>\n";
 					echo "<tr>\n";
@@ -1340,7 +1340,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				//$sql="SELECT * FROM s_sanctions s, s_autres_sanctions sa, s_types_sanctions sts WHERE s.id_incident='$id_incident' AND s.login='".$lig->login."' AND sa.id_sanction=s.id_sanction AND sa.id_nature=sts.id_nature ORDER BY sts.nature;";
 				$sql="SELECT s.*, sa.*, sts.nature AS nature_sts  FROM s_sanctions s, s_autres_sanctions sa, s_types_sanctions2 sts WHERE s.id_incident='$id_incident' AND s.login='".$lig->login."' AND sa.id_sanction=s.id_sanction AND sa.id_nature=sts.id_nature AND sts.id_nature=s.id_nature_sanction AND sts.type='autre' ORDER BY sts.nature;";
 				//echo "$sql<br />\n";
-				$res_sanction=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_sanction)>0) {
 					echo "<table class='boireaus' border='1' summary='Autres ".$mod_disc_terme_sanction."s' style='margin:2px;'>\n";
 					echo "<tr>\n";
@@ -1439,7 +1439,7 @@ elseif($mode=='ajout') {
 	else {
 		$sql="SELECT * FROM s_types_sanctions2 ORDER BY type, nature;";
 	}
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$tab_autres_sanctions[$lig->id_nature]=$lig->nature;

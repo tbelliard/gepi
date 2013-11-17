@@ -78,7 +78,7 @@ if ($test_outils_comp != 0) {
 }
 echo "</p><p class=\"medium\">";
 
-$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid_config ORDER BY order_display1, order_display2, nom");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config ORDER BY order_display1, order_display2, nom");
 $nb_aid = mysqli_num_rows($call_data);
 if ($nb_aid == 0) {
    echo "<p class='grand'>Il n'y a actuellement aucune catégorie d'AID</p>";

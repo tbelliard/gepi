@@ -60,8 +60,8 @@ $id_inter = isset($_POST['id_inter']) ? $_POST['id_inter'] : (isset($_GET['id_in
 
 // Suppression d'un item
 if (isset($_GET['action']) and ($_GET['action'] == "supprimer")) {
-    $del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from inscription_j_login_items where id='".$_GET['id_inter']."'");
-    $del = mysqli_query($GLOBALS["___mysqli_ston"], "delete from inscription_items where id='".$_GET['id_inter']."'");
+    $del = mysqli_query($GLOBALS["mysqli"], "delete from inscription_j_login_items where id='".$_GET['id_inter']."'");
+    $del = mysqli_query($GLOBALS["mysqli"], "delete from inscription_items where id='".$_GET['id_inter']."'");
     $msg = "Les modifications ont été enregistrées.";
 }
 
@@ -100,13 +100,13 @@ if (isset($_POST['is_posted'])) {
 
 		$msg = "";
 		if ($_POST['is_posted'] == "ajout") {
-		    $req = mysqli_query($GLOBALS["___mysqli_ston"], "insert into inscription_items set
+		    $req = mysqli_query($GLOBALS["mysqli"], "insert into inscription_items set
 		    date='".$date_choisie."',
 		    heure='".$_POST['heure']."',
 		    description='".$_POST['description']."'
 		    ");
 		} else {
-		    $req = mysqli_query($GLOBALS["___mysqli_ston"], "update inscription_items set
+		    $req = mysqli_query($GLOBALS["mysqli"], "update inscription_items set
 		    date='".$date_choisie."',
 		    heure='".$_POST['heure']."',
 		    description='".$_POST['description']."'
@@ -117,7 +117,7 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
-$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM inscription_items ORDER BY $order_by");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM inscription_items ORDER BY $order_by");
 $nombre_lignes = mysqli_num_rows($call_data);
 
 if (!loadSettings()) {
@@ -144,7 +144,7 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
 	echo add_token_field();
 
     if (isset($id_inter)) {
-        $req = mysqli_query($GLOBALS["___mysqli_ston"], "select * from inscription_items where id='".$id_inter."'");
+        $req = mysqli_query($GLOBALS["mysqli"], "select * from inscription_items where id='".$id_inter."'");
         $date = htmlspecialchars(@mysql_result($req, 0, "date"));
         $heure = htmlspecialchars(@mysql_result($req, 0, "heure"));
         $description = htmlspecialchars(@mysql_result($req, 0, "description"));
@@ -243,7 +243,7 @@ Afficher les items :
 		$inscrit = sql_query1("select id from inscription_j_login_items
 		where login='".$_SESSION['login']."' and id='".$id."' ");
 
-		$inscrits = mysqli_query($GLOBALS["___mysqli_ston"], "select login from inscription_j_login_items
+		$inscrits = mysqli_query($GLOBALS["mysqli"], "select login from inscription_j_login_items
 		where id='".$id."' ");
 		$nb_inscrits = mysqli_num_rows($inscrits);
 		if ($nb_inscrits == 0) $noms_inscrits = "<center>-</center>"; else $noms_inscrits = "";

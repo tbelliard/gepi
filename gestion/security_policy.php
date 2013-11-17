@@ -206,14 +206,14 @@ if (isset($_POST['csrf_mode'])) {
 	}
 	else {
 		$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage csrf_mode requis';";
-		$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_test)>0) {
 			while($lig_ia=mysqli_fetch_object($res_test)) {
 				$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$lig_ia->id';";
-				$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($del) {
 					$sql="DELETE FROM infos_actions WHERE id='$lig_ia->id';";
-					$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 		}

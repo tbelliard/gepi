@@ -112,7 +112,7 @@ if(!getSettingAOui('active_bulletins')) {
 				
 				$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".my_ereg_replace("[^.a-zA-Z0-9_-]+","%",html_entity_decode($periode[$j]))."' AND verouiller='N';";
 
-				$test_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_per=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test_per)>0){
 
 					if($message_erreur!=''){$message_erreur.='<br />';}
@@ -252,14 +252,14 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 				    <?php
 					if( $_SESSION['statut'] === 'scolarite' ){ //n'affiche que les classes du profil scolarité
 						$login_scolarite = $_SESSION['login'];
-						$requete_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT c.classe, c.nom_complet, c.id, jsc.login, jsc.id_classe, p.id_classe FROM ".$prefix_base."classes c, ".$prefix_base."j_scol_classes jsc, ".$prefix_base."periodes p WHERE ( jsc.login = '".$login_scolarite."' AND jsc.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY nom_complet ASC");
+						$requete_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe, c.nom_complet, c.id, jsc.login, jsc.id_classe, p.id_classe FROM ".$prefix_base."classes c, ".$prefix_base."j_scol_classes jsc, ".$prefix_base."periodes p WHERE ( jsc.login = '".$login_scolarite."' AND jsc.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY nom_complet ASC");
 					} else {
 					    if ($_SESSION["statut"] == "administrateur") {
 							// on selectionne toutes les classes
 							$sql_classe = "SELECT p.id_classe, c.* FROM classes c, periodes p WHERE (p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY c.classe";
-							$requete_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_classe);
+							$requete_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe);
 						} else {
-						    $requete_classe = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT c.* FROM '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_professeurs jep, '.$prefix_base.'j_eleves_classes jec, '.$prefix_base.'periodes p WHERE ( jep.professeur = "'.$_SESSION['login'].'" AND jep.login = jec.login AND jec.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY c.classe');
+						    $requete_classe = mysqli_query($GLOBALS["mysqli"], 'SELECT c.* FROM '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_professeurs jep, '.$prefix_base.'j_eleves_classes jec, '.$prefix_base.'periodes p WHERE ( jep.professeur = "'.$_SESSION['login'].'" AND jep.login = jec.login AND jec.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY c.classe');
 						}
 				    }
 
@@ -272,7 +272,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 						//=========================
 
 						$sql_cpt_nb_eleve_1 = "SELECT count(eleves.login) FROM eleves, classes, j_eleves_classes WHERE classes.id = ".$donner_classe['id_classe']." AND j_eleves_classes.id_classe=classes.id AND j_eleves_classes.login=eleves.login GROUP BY eleves.login";
-						$requete_cpt_nb_eleve_1 =  mysqli_query($GLOBALS["___mysqli_ston"], $sql_cpt_nb_eleve_1);
+						$requete_cpt_nb_eleve_1 =  mysqli_query($GLOBALS["mysqli"], $sql_cpt_nb_eleve_1);
 
 						$requete_cpt_nb_eleve = mysqli_num_rows($requete_cpt_nb_eleve_1);
 					   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe) and in_array($donner_classe['id_classe'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $donner_classe['nom_complet']." (".$donner_classe['classe'].") "; ?>&nbsp;;&nbsp; Eff : <?php echo $requete_cpt_nb_eleve; ?></option>
@@ -286,7 +286,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 				<select tabindex="5" name="periode[]" size="4" multiple="multiple">
 				  <?php
 					// sélection des période disponible
-			            $requete_periode = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT nom_periode FROM '.$prefix_base.'periodes GROUP BY '.$prefix_base.'periodes.nom_periode ORDER BY '.$prefix_base.'periodes.nom_periode ASC');
+			            $requete_periode = mysqli_query($GLOBALS["mysqli"], 'SELECT nom_periode FROM '.$prefix_base.'periodes GROUP BY '.$prefix_base.'periodes.nom_periode ORDER BY '.$prefix_base.'periodes.nom_periode ASC');
 				  		while($donner_periode = mysqli_fetch_array($requete_periode))
 					  	 {
 						   ?><option value="<?php echo $donner_periode['nom_periode']; ?>" <?php if(!empty($periode) and in_array($donner_periode['nom_periode'], $periode)) { ?> selected="selected"<?php } ?>><?php echo ucfirst($donner_periode['nom_periode']); ?></option>
@@ -304,7 +304,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 					{
 						$cpt_classe_selec = 0; $selection_classe = "";
 						while(!empty($classe[$cpt_classe_selec])) { if($cpt_classe_selec == 0) { $selection_classe = $prefix_base."j_eleves_classes.id_classe = ".$classe[$cpt_classe_selec]; } else { $selection_classe = $selection_classe." OR ".$prefix_base."j_eleves_classes.id_classe = ".$classe[$cpt_classe_selec]; } $cpt_classe_selec = $cpt_classe_selec + 1; }
-			                        $requete_eleve = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE ('.$selection_classe.') AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC');
+			                        $requete_eleve = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE ('.$selection_classe.') AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC');
 				  		while ($donner_eleve = mysqli_fetch_array($requete_eleve))
 					  	 {
 						   ?><option value="<?php echo $donner_eleve['login']; ?>" <?php if(!empty($eleve) and in_array($donner_eleve['login'], $eleve)) { ?> selected="selected"<?php } ?>><?php echo my_strtoupper($donner_eleve['nom'])." ".casse_mot($donner_eleve['prenom'],'majf2'); ?></option>
@@ -334,7 +334,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 			echo "<select tabindex=\"5\" name=\"type_bulletin\">";
 			// sélection des modèle des bulletins.
 			$sql="SELECT id_model_bulletin, valeur FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC";
-			$requete_modele = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$requete_modele = mysqli_query($GLOBALS["mysqli"], $sql);
 			if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
 				echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>";
 			}
@@ -413,13 +413,13 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 
 if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
     if ($_SESSION["statut"] == "scolarite") {
-        $calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+        $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
     } else {
 	    if ($_SESSION["statut"] == "administrateur") {
 		    // on selectionne toutes les classes
-            $calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c WHERE 1");
+            $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c WHERE 1");
         } else {
-		    $calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
+		    $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
 		}
     }
 
@@ -479,7 +479,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 
 	$chaine_options_classes="";
 
-	$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
 		$id_class_suiv=0;
@@ -591,7 +591,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	// AJOUTER LES AUTRES PARAMETRES
 	echo "<p><b>Et les bulletins à imprimer: </b></p>\n";
 	$sql="SELECT DISTINCT e.login,e.nom,e.prenom FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
-	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_ele)==0){
 		echo "<p style='color:red;'>ERREUR: La classe choisie ne compterait aucun élève?</p>\n";
 		echo "</form>\n";
@@ -665,7 +665,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	// A FAIRE:
 	// Tester et ne pas afficher:
 	// - si tous les coeff sont à 1
-	$test_coef=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef!='1.0')"));
+	$test_coef=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef!='1.0')"));
 	if($test_coef>0){
 		echo "<tr>\n";
 		echo "<td colspan=\"2\"><br /><br /><b>Calcul des moyennes générales";

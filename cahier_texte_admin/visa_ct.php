@@ -301,7 +301,7 @@ for ($i=0; ($row=sql_row($query,$i)); $i++) {
 	$id_prop = $row[1];
 	$nom_groupe = sql_query1("select name from groupes where id = '".$id_groupe."'");
 	$nom_matiere = sql_query1("select m.nom_complet from matieres m, j_groupes_matieres jm where (jm.id_groupe = '".$id_groupe."' AND m.matiere = jm.id_matiere)");
-	$get_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT c.id, c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $id_groupe . "')");
+	$get_classes = mysqli_query($GLOBALS["mysqli"], "SELECT c.id, c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $id_groupe . "')");
 	$nb_classes = mysqli_num_rows($get_classes);
 	$id_classe = mysql_result($get_classes, 0, "id"); // On ne garde qu'un id pour ne pas perturber le GET ensuite
 	$classes = null;

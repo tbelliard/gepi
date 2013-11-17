@@ -40,7 +40,7 @@ class jointure_calendar_classes {
  
 	public function delete_classes() {
 		$sql="DELETE FROM edt_j_calendar_classes WHERE id_calendar = '".$this->id_calendar."' ";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			return true;
 		}
@@ -57,7 +57,7 @@ class jointure_calendar_classes {
 	public function save_classe() {
 		$sql="SELECT id_classe FROM edt_j_calendar_classes WHERE
 				id_classe = '".$this->id_classe."'";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			$rep = mysqli_fetch_array($req);
 			if ($rep) {
@@ -68,7 +68,7 @@ class jointure_calendar_classes {
 		$sql="INSERT INTO edt_j_calendar_classes SET 
 				id_calendar = '".$this->id_calendar."',
 				id_classe = '".$this->id_classe."'";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			return true;
 		}
@@ -85,7 +85,7 @@ class jointure_calendar_classes {
 		$sql="SELECT id_calendar FROM edt_j_calendar_classes WHERE 
 				id_calendar = '".$this->id_calendar."' AND
 				id_classe = '".$this->id_classe."'";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			if (mysqli_num_rows($req) > 0) {
 				return true;
@@ -107,7 +107,7 @@ class jointure_calendar_classes {
 		$result = array();
 		$sql="SELECT id_classe FROM edt_j_calendar_classes WHERE 
 				id_calendar = '".$this->id_calendar."' ORDER BY id_classe";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			while ($rep = mysqli_fetch_array($req)) {
 				$result[] = $rep['id_classe'];
@@ -123,7 +123,7 @@ class jointure_calendar_classes {
 	public function bad_calendar() {
 		$sql="SELECT id_calendar FROM edt_j_calendar_classes WHERE 
 				id_classe = '".$this->id_classe."'";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			if (mysqli_num_rows($req) != 0) {
 				$rep= mysqli_fetch_array($req);
@@ -154,7 +154,7 @@ class jointure_calendar_classes {
 		$NumPeriods = 0;
 		$sql="SELECT DISTINCT nom_periode FROM periodes WHERE 
 				id_classe IN (SELECT id_classe FROM edt_j_calendar_classes WHERE id_calendar= '".$this->id_calendar."') ";
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			$NumPeriods = mysqli_num_rows($req);
 			$Classes = $this->getClasses();
@@ -162,7 +162,7 @@ class jointure_calendar_classes {
 				$FirstClass = $Classes[0];
 				$sql="SELECT DISTINCT nom_periode FROM periodes WHERE 
 						id_classe = '".$FirstClass."' ";
-				$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$req = mysqli_query($GLOBALS["mysqli"], $sql);
 				if ($req) {	
 					$NumPeriodsFirstClass = mysqli_num_rows($req);
 				}
@@ -186,7 +186,7 @@ class jointure_calendar_classes {
 		if ($Classes) {
 			$FirstClass = $Classes[0];
 			$sql="SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '".$FirstClass."' ";
-			$req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$req = mysqli_query($GLOBALS["mysqli"], $sql);
 			while ($rep=mysqli_fetch_array($req)) {
 				$result.="<option value=\"".$rep['num_periode']."\">".$rep['nom_periode']."</option>";
 			}

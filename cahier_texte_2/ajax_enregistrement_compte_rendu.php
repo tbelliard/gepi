@@ -77,7 +77,7 @@ if ($uid_post==$uid_prime) {
 		if ($contenu_cor == "" or $contenu_cor == "<br>") {$contenu_cor = "...";}
 	
 		$sql="INSERT INTO ct_private_entry SET date_ct='$date_ct', heure_entry='".strftime("%H:%M:%S")."', id_login='".$_SESSION['login']."', id_groupe='$id_groupe', contenu='<b>COPIE DE SAUVEGARDE</b><br />$contenu_cor';";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		echo("Erreur enregistrement de compte rendu : formulaire déjà posté précédemment.\nUne copie de sauvegarde a été créée en notice privée.");
 	}
@@ -134,7 +134,7 @@ if ($ctCompteRendu->getVise() == 'y') {
 
 if((isset($_POST['get_devoirs_du_jour']))&&($_POST['get_devoirs_du_jour']=='y')) {
 	$sql="SELECT id_ct, contenu FROM ct_devoirs_entry WHERE id_groupe='$id_groupe' AND date_ct='".$date_ct."';";
-	$res_ct=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ct=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_ct)==0) {
 		echo "Erreur : Aucun travail à importer.";
 		die();

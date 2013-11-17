@@ -71,15 +71,15 @@ if(isset($confirmer)) {
 		for($i=0;$i<count($ine);$i++){
 			if($ine_corrige[$i]!=''){
 				$sql="UPDATE archivage_eleves SET ine='$ine_corrige[$i]' WHERE ine='$ine[$i]'";
-				$update1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update1=mysqli_query($GLOBALS["mysqli"], $sql);
 				$sql="UPDATE archivage_eleves2 SET ine='$ine_corrige[$i]' WHERE ine='$ine[$i]'";
-				$update2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update2=mysqli_query($GLOBALS["mysqli"], $sql);
 				$sql="UPDATE archivage_aid_eleve SET id_eleve='$ine_corrige[$i]' WHERE id_eleve='$ine[$i]'";
-				$update3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update3=mysqli_query($GLOBALS["mysqli"], $sql);
 				$sql="UPDATE archivage_appreciations_aid SET id_eleve='$ine_corrige[$i]' WHERE id_eleve='$ine[$i]'";
-				$update4=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update4=mysqli_query($GLOBALS["mysqli"], $sql);
 				$sql="UPDATE archivage_disciplines SET INE='$ine_corrige[$i]' WHERE INE='$ine[$i]'";
-				$update5=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update5=mysqli_query($GLOBALS["mysqli"], $sql);
 				if ((!$update1) or (!$update2) or (!$update3) or (!$update4) or (!$update5)){
 					$msg.="<b>Erreur</b> $ine[$i] -&gt; $ine_corrige[$i]<br />\n";
 					//$msg.="$sql<br />\n";
@@ -171,7 +171,7 @@ elseif($mode=="ine_login"){
 	echo "<p>Affichage des élèves dont le numéro INE n'était pas rempli lors d'une conservation des données antérieures.</p>\n";
 
 	$sql="SELECT DISTINCT ine,nom,prenom,naissance FROM archivage_eleves WHERE ine LIKE 'LOGIN_%' ORDER BY nom,prenom";
-	$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res1)==0){
 		echo "<p>Aucun élève dans la table 'archivage_eleves' n'a d'INE au préfixe 'LOGIN_'<br />(<i>c'est-à-dire dont l'INE était non rempli lors d'une opération de conservation des données antérieures</i>).</p>\n";
@@ -313,7 +313,7 @@ elseif($mode=="recherche"){
 					prenom LIKE '%$recherche1_prenom%'
 				ORDER BY nom,prenom";
 		//echo "$sql<br />";
-		$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res1)==0){
 			echo "<p>Aucun élève dans la table 'archivage_eleves' ne remplit les critères demandés.</p>\n";
@@ -448,7 +448,7 @@ $sql="SELECT DISTINCT a.nom,a.prenom,a.INE,a.naissance
 			LEFT JOIN eleves e
 			ON a.INE=e.no_gep
 			WHERE e.no_gep IS NULL;";
-$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_ele=mysqli_num_rows($res1);
 if($nb_ele==0){
 	echo "<p>Tous les élèves présents dans la table 'archivage_eleves' sont dans la table 'eleves'.</p>\n";

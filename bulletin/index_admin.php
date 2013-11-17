@@ -72,7 +72,7 @@ if(isset($_POST['is_posted'])) {
 
 	if (isset($_POST['vider_absences_bulletins'])) {
 		$sql="DELETE FROM absences;";
-		$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$nettoyage) {$msg = "Erreur lors du \"vidage\" de la table 'absences'.";} else {$msg = "La table 'absences' a été vidée.";}
 	}
 }

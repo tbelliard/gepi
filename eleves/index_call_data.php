@@ -56,7 +56,7 @@
 			)
 			ORDER BY $order_type;";
 		}
-		$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 			echo "<p align='center'>Liste des élèves de la classe choisie.</p>\n";
@@ -86,7 +86,7 @@
 				j.periode=t.max_periode
 				)
 			ORDER BY $order_type;";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves de la ou des classes choisies.</p>\n";
@@ -112,11 +112,11 @@
 				j.id_classe =cl.id
 				)
 				ORDER BY $order_type;";
-				$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			} else {
 				//$calldata = mysql_query("SELECT * FROM eleves ORDER BY $order_type");
-				$calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE jer.login=e.login ORDER BY $order_type");
+				$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE jer.login=e.login ORDER BY $order_type");
 			}
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
@@ -183,7 +183,7 @@
 			WHERE c.login is NULL AND jer.login=e.login
 			ORDER BY $order_type;";
 			//echo "$sql<br />";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves non affectés dans une classe.</p>\n";
@@ -198,7 +198,7 @@
 			WHERE u.login is NULL AND jer.login=e.login
 			ORDER BY $order_type;";
 			//echo "$sql<br />";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves ne disposant pas de compte d'utilisateur.</p>\n";
@@ -212,7 +212,7 @@
 			WHERE u.login=e.login AND jer.login=e.login AND u.etat='inactif'
 			ORDER BY $order_type;";
 			//echo "$sql<br />";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves dont le compte d'utilisateur est inactif.</p>\n";
@@ -241,7 +241,7 @@
 						ORDER BY $order_type;";
 			}
 			//echo "$sql<br />\n";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves dont l'Elenoet ou le Numéro national (INE) n'est pas renseigné.</p>\n";
@@ -271,7 +271,7 @@
 						ORDER BY $order_type;";
 			}
 			//echo "$sql<br />\n";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves dont l'email n'est pas renseigné.</p>\n";
@@ -290,7 +290,7 @@
 				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE e.elenoet!='' AND e.login=jer.login;";
 			}
 			//echo "$sql<br />";
-			$test_elenoet_ok=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_elenoet_ok=mysqli_query($GLOBALS["mysqli"], $sql);
 			$tab_eleve=array();
 			if(mysqli_num_rows($test_elenoet_ok)!=0){
 				//$chaine_photo_manquante="";
@@ -335,14 +335,14 @@
 							e.login=jer.login AND
 							jec.id_classe=c.id AND
 							e.login NOT IN (SELECT e_login FROM j_eleves_cpe) ORDER BY $order_type;";
-				$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 			else{
 				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, j_eleves_regime jer
 						WHERE e.login=jec.login AND
 							e.login=jer.login AND
 							e.login NOT IN (SELECT e_login FROM j_eleves_cpe) ORDER BY $order_type;";
-				$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
@@ -365,7 +365,7 @@
 					WHERE jer.login is null ORDER BY $order_type;";
 			}
 			//echo "$sql<br />";
-			$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves dont le régime n'est pas renseigné.</p>\n";
@@ -382,7 +382,7 @@
 							e.login=jer.login AND
 							jec.id_classe=c.id AND
 							e.login NOT IN (SELECT login FROM j_eleves_professeurs) ORDER BY $order_type;";
-				$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			}
 			else{
@@ -390,7 +390,7 @@
 						WHERE e.login=jec.login AND
 							e.login=jer.login AND
 							e.login NOT IN (SELECT login FROM j_eleves_professeurs) ORDER BY $order_type;";
-				$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			}
 
@@ -410,7 +410,7 @@
 							jec.id_classe=c.id AND
 							e.ele_id NOT IN (SELECT ele_id FROM responsables2) ORDER BY $order_type;";
 				//echo "$sql<br />\n";
-				$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 					echo "<p align='center'>Liste des élèves dans une classe, mais sans responsable.</p>\n";
@@ -427,7 +427,7 @@
 							e.login=jer.login AND
 							e.ele_id NOT IN (SELECT ele_id FROM responsables2) ORDER BY $order_type;";
 				//echo "$sql<br />\n";
-				$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 					echo "<p align='center'>Liste des élèves sans responsable.</p>\n";
@@ -471,7 +471,7 @@
 								ORDER BY $order_type";
 			}
 			//echo "$sql<br />\n";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves dont le prenom $texte_motif <b>$motif_rech</b></p>\n";
@@ -512,7 +512,7 @@
 					ORDER BY $order_type";
 			}
 			//echo "$sql<br />\n";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves dont le nom $texte_motif <b>$motif_rech</b></p>\n";
@@ -587,7 +587,7 @@
 					ORDER BY $order_type";
 			}
 			//echo "$sql<br />\n";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves dont l'elenoet $texte_motif <b>$motif_rech</b></p>\n";
@@ -627,7 +627,7 @@
 					ORDER BY $order_type";
 			}
 			//echo "$sql<br />\n";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves dont l'ele_id $texte_motif <b>$motif_rech</b></p>\n";
@@ -667,7 +667,7 @@
 					ORDER BY $order_type";
 			}
 			//echo "$sql<br />\n";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves dont l'identifiant national $texte_motif <b>$motif_rech</b></p>\n";
@@ -683,7 +683,7 @@
 					LEFT JOIN j_eleves_regime jer ON e.login=jer.login
 					WHERE jer.login =e.login AND e.date_sortie<>0 ORDER BY $order_type;";
 			//echo "$sql<br />";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée.</p>\n";
 		}
@@ -692,7 +692,7 @@
 					LEFT JOIN j_eleves_regime jer ON e.login=jer.login
 					WHERE jer.login =e.login AND e.date_sortie<>0 AND e.login IN (SELECT DISTINCT login FROM j_eleves_classes) ORDER BY $order_type;";
 			//echo "$sql<br />";
-			$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
 				echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée, mais qui sont néanmoins inscrits dans une classe.</p>\n";
@@ -706,7 +706,7 @@
 				//$sql="SELECT distinct e.*,c.classe FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
 				$sql="SELECT distinct e.*,c.classe,jer.* FROM j_eleves_classes jec, classes c, j_eleves_regime jer, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and jer.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
 				//echo "$sql<br />\n";
-				$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 			else{
 				/*
@@ -718,7 +718,7 @@
 					LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet
 					where jee.id_eleve is NULL AND jer.login=e.login ORDER BY $order_type;";
 				//echo "$sql<br />\n";
-				$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		// 20130607
@@ -736,7 +736,7 @@
 																	e.mef_code='$motif_rech_mef'
 																ORDER BY $order_type;";
 						//echo "$sql<br />\n";
-						$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 					else {
 						$sql="SELECT distinct e.*,jer.* FROM j_eleves_regime jer, 
@@ -745,7 +745,7 @@
 															e.mef_code='$motif_rech_mef'
 														ORDER BY $order_type;";
 						//echo "$sql<br />\n";
-						$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 				else {
@@ -760,7 +760,7 @@
 																	e.mef_code NOT IN (SELECT mef_code FROM mef)
 																ORDER BY $order_type;";
 						//echo "$sql<br />\n";
-						$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 					else {
 						$sql="SELECT distinct e.*,jer.* FROM j_eleves_regime jer, 
@@ -769,7 +769,7 @@
 															e.mef_code NOT IN (SELECT mef_code FROM mef)
 														ORDER BY $order_type;";
 						//echo "$sql<br />\n";
-						$calldata=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 			}

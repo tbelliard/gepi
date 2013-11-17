@@ -279,7 +279,7 @@ function titre_lettre_type($id)
  {
 	global $prefix_base;
  	$requete_lettre ="SELECT * FROM ".$prefix_base."lettres_types WHERE id_lettre_type = '".$id."' LIMIT 0, 1";
-	$execution_lettre = mysqli_query($GLOBALS["___mysqli_ston"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_lettre = mysqli_query($GLOBALS["mysqli"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$donner_lettre = mysqli_fetch_array($execution_lettre);
 	$titre_lettre = $donner_lettre['titre_lettre_type'];
 	$reponse_lettre_type = $donner_lettre['reponse_lettre_type'];
@@ -290,13 +290,13 @@ function titre_lettre_type($id)
 if(!empty($lettre_type_nouv) and $action_choix_lettre === 'editer' and $valide_form === 'yes')
  {
 	// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
-        $test_existance = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."'"),0);
+        $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."'"),0);
         if ($test_existance === '0')
 	{
  	      if(empty($reponse_lettre_type)) { $reponse_lettre_type = 'non'; }
               $requete="INSERT INTO ".$prefix_base."lettres_types (titre_lettre_type, categorie_lettre_type, reponse_lettre_type) VALUES ('".$lettre_type_nouv."', 'Type de lettre', '".$reponse_lettre_type."')";
-              $execution_requete = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
-	      $lettre_type = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+              $execution_requete = mysqli_query($GLOBALS["mysqli"], $requete);
+	      $lettre_type = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 	} else { $erreur = 'Il existe déjas un type de lettre de même nom'; }
  }
 
@@ -308,7 +308,7 @@ if($action_lettre === 'ajout_cadre' and $valide_form === 'yes')
 	 {
 	      // nous prenons les informations sur le cadre choisi
                $requete_1 ="SELECT * FROM ".$prefix_base."lettres_cadres WHERE id_lettre_cadre = '".$cadre_selection[$cpt_cs]."'";
-               $execution_1 = mysqli_query($GLOBALS["___mysqli_ston"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+               $execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                while ( $data_1 = mysqli_fetch_array($execution_1))
                 {
 			$x_c = $data_1['x_lettre_cadre'];
@@ -318,7 +318,7 @@ if($action_lettre === 'ajout_cadre' and $valide_form === 'yes')
 			$encad_c = $data_1['encadre_lettre_cadre'];
 	        }
               $requete="INSERT INTO ".$prefix_base."lettres_tcs (type_lettre_tc,cadre_lettre_tc,x_lettre_tc,y_lettre_tc,l_lettre_tc,h_lettre_tc,encadre_lettre_tc) VALUES ('$lettre_type','$cadre_selection[$cpt_cs]','$x_c','$y_c','$l_c','$h_c','$encad_c')";
-              $execution_requete = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+              $execution_requete = mysqli_query($GLOBALS["mysqli"], $requete);
 	      $cpt_cs = $cpt_cs + 1;
 	 }
  }
@@ -329,7 +329,7 @@ if($action_lettre === 'supprimer_cadre' and $valide_form === 'yes')
 	if(!empty($id) and !empty($cadre_selection))
 	{
        		$req_delete = "DELETE FROM ".$prefix_base."lettres_tcs WHERE id_lettre_tc = '".$id."' AND cadre_lettre_tc = '".$cadre_selection."'";
-       		$req_sql2 = mysqli_query($GLOBALS["___mysqli_ston"], $req_delete);
+       		$req_sql2 = mysqli_query($GLOBALS["mysqli"], $req_delete);
 	}
  }
 
@@ -339,7 +339,7 @@ if($action_lettre === 'modifier_cadre' and $valide_form === 'yes')
 	if(!empty($id) and !empty($cadre_selection))
 	{
 		$requete="UPDATE ".$prefix_base."lettres_tcs SET x_lettre_tc = '".$x_lettre_tc."', y_lettre_tc = '".$y_lettre_tc."', l_lettre_tc = '".$l_lettre_tc."', h_lettre_tc = '".$h_lettre_tc."', encadre_lettre_tc = '".$encadre_lettre_tc."' WHERE  id_lettre_tc = '".$id."' AND cadre_lettre_tc = '".$cadre_selection."'";
-	        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}
  }
 
@@ -347,7 +347,7 @@ if($action_lettre === 'modifier_cadre' and $valide_form === 'yes')
 if($action_cadre === 'ajout_cadre' and $valide_form === 'yes')
  {
               $requete="INSERT INTO ".$prefix_base."lettres_cadres (nom_lettre_cadre, x_lettre_cadre, y_lettre_cadre, l_lettre_cadre, h_lettre_cadre, texte_lettre_cadre, encadre_lettre_cadre, couleurdefond_lettre_cadre) VALUES ('".$nom_lettre_cadre."', '".$x_lettre_cadre."', '".$y_lettre_cadre."', '".$l_lettre_cadre."', '".$h_lettre_cadre."', '".$texte_lettre_cadre."', '".$encadre_lettre_cadre."', '".$couleurdefond_lettre_cadre."')";
-              $execution_requete = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+              $execution_requete = mysqli_query($GLOBALS["mysqli"], $requete);
  }
 
 //si action_cadre = supprimer_cadre
@@ -356,11 +356,11 @@ if($action_cadre === 'supprimer_cadre' and $valide_form === 'yes')
 	if(!empty($id))
 	{
 		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
-                $test_existance = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_tcs WHERE cadre_lettre_tc = '".$id."'"),0);
+                $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_tcs WHERE cadre_lettre_tc = '".$id."'"),0);
                 if ($test_existance === '0')
 		{
 	     		$req_delete = "DELETE FROM ".$prefix_base."lettres_cadres WHERE id_lettre_cadre = '".$id."'";
-	       		$req_sql2 = mysqli_query($GLOBALS["___mysqli_ston"], $req_delete);
+	       		$req_sql2 = mysqli_query($GLOBALS["mysqli"], $req_delete);
 		}
 	}
  }
@@ -374,7 +374,7 @@ if($action_cadre === 'modifier_cadre' and $valide_form === 'yes')
 		$texte_lettre_cadre = my_ereg_replace('\]','>',$texte_lettre_cadre);
 		$couleurdefond_lettre_cadre = $r_couleurdefond_lettre_cadre.'|'.$v_couleurdefond_lettre_cadre.'|'.$b_couleurdefond_lettre_cadre;
 		$requete="UPDATE ".$prefix_base."lettres_cadres SET nom_lettre_cadre = '".$nom_lettre_cadre."', x_lettre_cadre = '".$x_lettre_cadre."', y_lettre_cadre = '".$y_lettre_cadre."', l_lettre_cadre = '".$l_lettre_cadre."', h_lettre_cadre = '".$h_lettre_cadre."', texte_lettre_cadre = '".$texte_lettre_cadre."', encadre_lettre_cadre = '".$encadre_lettre_cadre."', couleurdefond_lettre_cadre = '".$couleurdefond_lettre_cadre."' WHERE  id_lettre_cadre = '".$id."'";
-	        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}
  }
 
@@ -384,13 +384,13 @@ if($action_choix_lettre === 'supprimer' and $valide_form === 'yes')
 	if(!empty($lettre_type))
 	{
 		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
-                $test_existance = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE type_lettre_suivi = '".$lettre_type."'"),0);
+                $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE type_lettre_suivi = '".$lettre_type."'"),0);
                 if ($test_existance === '0')
 		{
 	       		$req_delete = "DELETE FROM ".$prefix_base."lettres_tcs WHERE type_lettre_tc = '".$lettre_type."'";
-	       		$req_sql2 = mysqli_query($GLOBALS["___mysqli_ston"], $req_delete);
+	       		$req_sql2 = mysqli_query($GLOBALS["mysqli"], $req_delete);
 	       		$req_delete = "DELETE FROM ".$prefix_base."lettres_types WHERE id_lettre_type = '".$lettre_type."'";
-	       		$req_sql2 = mysqli_query($GLOBALS["___mysqli_ston"], $req_delete);
+	       		$req_sql2 = mysqli_query($GLOBALS["mysqli"], $req_delete);
 		} else { $erreur = 'Impossible de le supprimer car il existe des envoies de ce type'; }
 	}
  }
@@ -401,12 +401,12 @@ if($action_choix_lettre === 'renommer' and $lettre_type_nouv != '' and $valide_f
 	if(!empty($lettre_type_nouv))
 	{
 		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
-                $test_existance = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."' AND id_lettre_type != '".$lettre_type."'"),0);
+                $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."' AND id_lettre_type != '".$lettre_type."'"),0);
                 if ($test_existance === '0')
 		{
 			if(empty($reponse_lettre_type)) { $reponse_lettre_type = 'non'; }
 			$requete="UPDATE ".$prefix_base."lettres_types SET titre_lettre_type = '".$lettre_type_nouv."', reponse_lettre_type = '".$reponse_lettre_type."' WHERE id_lettre_type = '".$lettre_type."'";
-		        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			$action_choix_lettre = '';
 		} else { $erreur = 'Il existe déjas un type de lettre de même nom'; }
 	}
@@ -416,8 +416,8 @@ if($action_choix_lettre === 'renommer' and $lettre_type_nouv != '' and $valide_f
 if(!empty($nom_lettre_cadre) and empty($id) and $valide_form === 'yes')
  {
               $requete="INSERT INTO ".$prefix_base."lettres_cadres (nom_lettre_cadre) VALUES ('".$nom_lettre_cadre."')";
-              $execution_requete = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
-	      $id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+              $execution_requete = mysqli_query($GLOBALS["mysqli"], $requete);
+	      $id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 	      $type_impr = 'crea_lettre';
 	      $action_cadre = 'aff_modifier_cadre';
 	      $sous_rubrique = 'gb';
@@ -438,11 +438,11 @@ if($action_laf === 'reinit_envoi' and $valide_form === 'yes')
 	if(!empty($id))
 	{
 		// on vérifie s'il n'y a pas eu de réponse pour cette envoi si oui on ne peut pas réinitialiser
-                $test_existance = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id."' AND (reponse_date_lettre_suivi = '' OR reponse_date_lettre_suivi != '0000-00-00') AND statu_lettre_suivi = 'recus'"),0);
+                $test_existance = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id."' AND (reponse_date_lettre_suivi = '' OR reponse_date_lettre_suivi != '0000-00-00') AND statu_lettre_suivi = 'recus'"),0);
                 if ($test_existance === '0')
 		{
 			$requete="UPDATE ".$prefix_base."lettres_suivis SET envoye_date_lettre_suivi = '', envoye_heure_lettre_suivi = '', quienvoi_lettre_suivi = '' WHERE id_lettre_suivi = '".$id."'";
-		        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		} else { $erreur = 'Il existe une réponse pour ce courrier donc vous ne pouvez pas réinitialiser l\'envoi'; }
 	}
  }
@@ -455,7 +455,7 @@ if($action_laf === 'modif_status' and $valide_form === 'yes')
         	if( $statu_lettre[0] === 'recus' ) { $date_fiche = date('Y-m-d'); } else { $date_fiche = ''; }
 
 		$requete="UPDATE ".$prefix_base."lettres_suivis SET quireception_lettre_suivi = '".$_SESSION['login']."', reponse_date_lettre_suivi = '".$date_fiche."', reponse_remarque_lettre_suivi = '".$remarque_lettre_suivi[0]."', statu_lettre_suivi = '".$statu_lettre[0]."' WHERE id_lettre_suivi = '".$id."'";
-	        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}
  }
 
@@ -464,8 +464,8 @@ if($action_laf === 'modif_status' and $valide_form === 'yes')
 if(!empty($nom_etiquette_format) and empty($id) and $valide_form === 'yes')
  {
               $requete="INSERT INTO ".$prefix_base."etiquettes_formats (nom_etiquette_format) VALUES ('".$nom_etiquette_format."')";
-              $execution_requete = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
-	      $id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+              $execution_requete = mysqli_query($GLOBALS["mysqli"], $requete);
+	      $id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
  }
 
 //si action_lettre = modifier_cadre
@@ -474,7 +474,7 @@ if($action_etiquette === 'modifier_etiquette_format' and $valide_form === 'yes')
 	if(!empty($id))
 	{
 		$requete="UPDATE ".$prefix_base."etiquettes_formats SET nom_etiquette_format = '".$nom_etiquette_format."', xcote_etiquette_format = '".$xcote_etiquette_format."', ycote_etiquette_format = '".$ycote_etiquette_format."', espacementx_etiquette_format = '".$espacementx_etiquette_format."', espacementy_etiquette_format = '".$espacementy_etiquette_format."', largeur_etiquette_format = '".$largeur_etiquette_format."', hauteur_etiquette_format = '".$hauteur_etiquette_format."', nbl_etiquette_format = '".$nbl_etiquette_format."', nbh_etiquette_format = '".$nbh_etiquette_format."' WHERE  id_etiquette_format = '".$id."'";
-	        $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}
  }
 
@@ -485,7 +485,7 @@ if($action_etiquette === 'supprimer_etiquette_format' and $valide_form === 'yes'
 	if(!empty($id))
 	{
      		$req_delete = "DELETE FROM ".$prefix_base."etiquettes_formats WHERE id_etiquette_format = '".$id."'";
-       		$req_sql2 = mysqli_query($GLOBALS["___mysqli_ston"], $req_delete);
+       		$req_sql2 = mysqli_query($GLOBALS["mysqli"], $req_delete);
 	}
  }
 
@@ -627,7 +627,7 @@ affichercacher('div_1');
 	foreach ($_POST['id_lettre_suivi'] as $i => $value) 
 		{
 		$rq_efface_courriers='DELETE FROM `lettres_suivis` WHERE `id_lettre_suivi`='.$_POST['id_lettre_suivi'][$i].';';
-		$resultat_efface_courriers = mysqli_query($GLOBALS["___mysqli_ston"], $rq_efface_courriers) or die('Erreur SQL !'.$rq_efface_courriers.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_efface_courriers = mysqli_query($GLOBALS["mysqli"], $rq_efface_courriers) or die('Erreur SQL !'.$rq_efface_courriers.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		if ($resultat_efface_courriers!=1){$succes_efface_courriers=0;}
 		}
 	if($succes_efface_courriers==1){echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les lettres ont été effacées !</td></tr></table>');}
@@ -647,7 +647,7 @@ affichercacher('div_1');
 			}
 		/*echo($liste);*/
 		$rq_liste='SELECT `id_lettre_suivi`,`quirecois_lettre_suivi`,`partdenum_lettre_suivi` FROM `lettres_suivis` WHERE `id_lettre_suivi` IN ('.$liste.') AND `envoye_date_lettre_suivi` = "0000-00-00" AND `statu_lettre_suivi`="en attente" ORDER BY `quirecois_lettre_suivi`,`emis_date_lettre_suivi`;';
-		$resultat_rq_liste = mysqli_query($GLOBALS["___mysqli_ston"], $rq_liste) or die('Erreur SQL !'.$rq_liste.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_rq_liste = mysqli_query($GLOBALS["mysqli"], $rq_liste) or die('Erreur SQL !'.$rq_liste.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		/* boucle de rassemblement des absences concernées par un courrier*/
 		$precedent=Array("","","");
 		while($courrier=mysqli_fetch_array($resultat_rq_liste))
@@ -661,11 +661,11 @@ affichercacher('div_1');
 					/*et ecrire  le sql du courier n°courier[0] avec liste absences*/
 					$rq_ajout_courrier='UPDATE `lettres_suivis` SET `envoye_date_lettre_suivi`=0000-00-00 ,`quirecois_lettre_suivi`="'.$courrier[1].'",`quiemet_lettre_suivi`="'.$_SESSION['login'].'" ,`partdenum_lettre_suivi`="'.$liste_absences.'",`statu_lettre_suivi`="en attente", `reponse_date_lettre_suivi`=0000-00-00 ,`envoye_heure_lettre_suivi`=0  WHERE ( `id_lettre_suivi`="'.$courrier[0].'");';
 					/*echo($rq_ajout_courrier);*/
-					mysqli_query($GLOBALS["___mysqli_ston"], $rq_ajout_courrier) or die('Erreur SQL !'.$rq_liste.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					mysqli_query($GLOBALS["mysqli"], $rq_ajout_courrier) or die('Erreur SQL !'.$rq_liste.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 					/*on doit effacer l enregistrement précédent[0] dans sql*/
 					$rq_suppr_prece='DELETE FROM `lettres_suivis` WHERE `id_lettre_suivi`='.$precedent[0].';';
 					/*echo($rq_suppr_prece.'<br>');*/
-					mysqli_query($GLOBALS["___mysqli_ston"], $rq_suppr_prece) or die('Erreur SQL !'.$rq_suppr_prece.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					mysqli_query($GLOBALS["mysqli"], $rq_suppr_prece) or die('Erreur SQL !'.$rq_suppr_prece.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 					$precedent=$courrier;
 				}
 			else 
@@ -693,7 +693,7 @@ affichercacher('div_1');
 	foreach ($_POST['id_lettre_suivi'] as $i => $value) 
 		{
 		$rq_repasse_courriers_attente=' UPDATE `lettres_suivis` SET `envoye_date_lettre_suivi`=0000-00-00 ,`quireception_lettre_suivi`="",`quienvoi_lettre_suivi`="" ,`statu_lettre_suivi`="en attente", `reponse_date_lettre_suivi`=0000-00-00 ,`envoye_heure_lettre_suivi`=0  WHERE ( `id_lettre_suivi`='.$_POST['id_lettre_suivi'][$i].' AND `reponse_date_lettre_suivi`=0000-00-00 );';
-		$resultat_repasse_courriers_attente = mysqli_query($GLOBALS["___mysqli_ston"], $rq_repasse_courriers_attente) or die('Erreur SQL !'.$rq_repasse_courriers_attente.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_repasse_courriers_attente = mysqli_query($GLOBALS["mysqli"], $rq_repasse_courriers_attente) or die('Erreur SQL !'.$rq_repasse_courriers_attente.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		if ($resultat_repasse_courriers_attente!=1){$succes_repasse_courriers_attente=0;}
 		/*echo($rq_repasse_courriers_attente);*/
 		}
@@ -716,7 +716,7 @@ affichercacher('div_1');
 		/*echo($today);
 		echo($_SESSION['login']);*/
 		$rq_reponse_recue='UPDATE `lettres_suivis` SET `quireception_lettre_suivi`="'.$_SESSION['login'].'", `reponse_date_lettre_suivi`="'.$today.'", `statu_lettre_suivi`="recus" WHERE ( `id_lettre_suivi`='.$_POST['id_lettre_suivi'][$i].' AND `envoye_date_lettre_suivi`!=0000-00-00 );';
-		$resultat_rq_reponse_recue = mysqli_query($GLOBALS["___mysqli_ston"], $rq_reponse_recue) or die('Erreur SQL !'.$rq_reponse_recue.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_rq_reponse_recue = mysqli_query($GLOBALS["mysqli"], $rq_reponse_recue) or die('Erreur SQL !'.$rq_reponse_recue.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		if ($resultat_rq_reponse_recue!=1){$succes_reponse_recue=0;}
 		/*echo($rq_reponse_recue);*/
 		}
@@ -766,7 +766,7 @@ affichercacher('div_1');
 		    <?php
 			  $categorie_pass = '';
 			  $requete_lettre ="SELECT * FROM ".$prefix_base."lettres_types, ".$prefix_base."lettres_suivis WHERE id_lettre_type = type_lettre_suivi ".$crearequete."GROUP BY id_lettre_type ORDER BY titre_lettre_type ASC";
-		          $execution_lettre = mysqli_query($GLOBALS["___mysqli_ston"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		          $execution_lettre = mysqli_query($GLOBALS["mysqli"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	  		while ($donner_lettre = mysqli_fetch_array($execution_lettre))
 		  	 {
 			   ?><option value="<?php echo $donner_lettre['id_lettre_type']; ?>" <?php if (isset($lettre_type) and $lettre_type === $donner_lettre['id_lettre_type']) { ?>selected="selected"<?php } ?>><?php echo ucfirst($donner_lettre['titre_lettre_type']); ?></option><?php echo "\n";
@@ -830,7 +830,7 @@ affichercacher('div_1');
 											ORDER BY j_eleves_classes.id_classe ASC, nom ASC, prenom ASC";
 		// On ajoute un paramètre sur les élèves de ce CPE en particulier
 		$sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
-		$query_eleves_cpe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$query_eleves_cpe = mysqli_query($GLOBALS["mysqli"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$test = array();
 
 		$test_nbre_eleves_cpe = mysqli_num_rows($query_eleves_cpe);
@@ -839,7 +839,7 @@ affichercacher('div_1');
 		}
 
 		$varcoche = ''; //variable des checkbox pour la fonction javascript
-		$resultat_liste_courrier = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_courrier) or die('Erreur SQL !'.$requete_liste_courrier.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_liste_courrier = mysqli_query($GLOBALS["mysqli"], $requete_liste_courrier) or die('Erreur SQL !'.$requete_liste_courrier.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$nombre_d_entre = mysqli_num_rows($resultat_liste_courrier);
 	while ( $donner_liste_courrier = mysqli_fetch_array($resultat_liste_courrier))
 	{
@@ -953,7 +953,7 @@ affichercacher('div_1');
                     <option value="tous">toutes</option>
                     <?php
                           $sql_classe = 'SELECT id, classe, nom_complet FROM '.$prefix_base.'classes ORDER BY nom_complet DESC';
-                          $req_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_classe) or die('Erreur SQL ! '.$sql_classe.' '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                          $req_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe) or die('Erreur SQL ! '.$sql_classe.' '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
                           while($data_classe = mysqli_fetch_array($req_classe))
                           {
@@ -970,7 +970,7 @@ affichercacher('div_1');
                          if( $classe == "tous" ) { $sql_eleve = 'SELECT '.$prefix_base.'eleves.login, nom, prenom FROM '.$prefix_base.'eleves ORDER BY nom, prenom ASC'; }
                          if( $classe != "tous" ) { $sql_eleve = 'SELECT DISTINCT '.$prefix_base.'eleves.login, nom, prenom, '.$prefix_base.'j_eleves_classes.login, id_classe FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login AND id_classe="'.$classe.'" ORDER BY nom, prenom ASC'; }
 
-                          $req_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $sql_eleve) or die('Erreur SQL ! '.$sql_eleve.' '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                          $req_eleve = mysqli_query($GLOBALS["mysqli"], $sql_eleve) or die('Erreur SQL ! '.$sql_eleve.' '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
                           while($data_eleve = mysqli_fetch_array($req_eleve))
                           {
@@ -1038,7 +1038,7 @@ affichercacher('div_1');
            $niveau_v = "";
 	   $varcoche = '';
            $requete_1 ="SELECT id, classe, nom_complet FROM ".$prefix_base."classes ORDER BY nom_complet DESC";
-           $execution_1 = mysqli_query($GLOBALS["___mysqli_ston"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+           $execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
            while ( $data_1 = mysqli_fetch_array($execution_1))
                {
            if ($niveau == "") { if (mb_substr($data_1['nom_complet'],0,1) != mb_substr($niveau_v,0,1)) { ?><tr bgcolor="#5E938C"><td colspan="3"><div class="norme_absence_blanc"><strong><?php echo mb_substr($data_1['nom_complet'],0,-1); $ic='2'; ?></strong></div></td></tr><?php $niveau_v =$data_1['nom_complet'];} }
@@ -1052,7 +1052,7 @@ affichercacher('div_1');
                         <select name="cpe[<?php echo $i; ?>]">
                         <?php if($i!=0) { ?><option value="idem">idem</option><?php } ?>
                         <?php
-                             $req_cpe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_cpe) or die('Erreur SQL ! '.$sql_cpe.' '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                             $req_cpe = mysqli_query($GLOBALS["mysqli"], $sql_cpe) or die('Erreur SQL ! '.$sql_cpe.' '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
                               while($data_cpe = mysqli_fetch_array($req_cpe))
                               {
@@ -1122,13 +1122,13 @@ if ( $type_impr == "bj" ) { ?>
 		  <optgroup label="----- Listes des classes -----">
 		    <?php
 			if ($_SESSION["statut"] === 'cpe') {
-	                        $requete_classe = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'classes, '.$prefix_base.'periodes WHERE '.$prefix_base.'periodes.id_classe = '.$prefix_base.'classes.id  GROUP BY id_classe ORDER BY '.$prefix_base.'classes.classe');
+	                        $requete_classe = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'classes, '.$prefix_base.'periodes WHERE '.$prefix_base.'periodes.id_classe = '.$prefix_base.'classes.id  GROUP BY id_classe ORDER BY '.$prefix_base.'classes.classe');
 			} else {
-		                        $requete_classe = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'classes, '.$prefix_base.'j_eleves_professeurs, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'periodes WHERE ('.$prefix_base.'j_eleves_professeurs.professeur="'.$_SESSION['login'].'" AND '.$prefix_base.'j_eleves_professeurs.professeur.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id) AND '.$prefix_base.'periodes.id_classe = '.$prefix_base.'classes.id  GROUP BY id_classe ORDER BY '.$prefix_base.'classes.classe');
+		                        $requete_classe = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'classes, '.$prefix_base.'j_eleves_professeurs, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'periodes WHERE ('.$prefix_base.'j_eleves_professeurs.professeur="'.$_SESSION['login'].'" AND '.$prefix_base.'j_eleves_professeurs.professeur.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id) AND '.$prefix_base.'periodes.id_classe = '.$prefix_base.'classes.id  GROUP BY id_classe ORDER BY '.$prefix_base.'classes.classe');
 			       }
 	  		while ($donner_classe = mysqli_fetch_array($requete_classe))
 		  	 {
-				$requete_cpt_nb_eleve_1 =  mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT count(*) FROM '.$prefix_base.'eleves, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_classes WHERE '.$prefix_base.'classes.id = "'.$donner_classe['id_classe'].'" AND '.$prefix_base.'j_eleves_classes.id_classe='.$prefix_base.'classes.id AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login');
+				$requete_cpt_nb_eleve_1 =  mysqli_query($GLOBALS["mysqli"], 'SELECT count(*) FROM '.$prefix_base.'eleves, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_classes WHERE '.$prefix_base.'classes.id = "'.$donner_classe['id_classe'].'" AND '.$prefix_base.'j_eleves_classes.id_classe='.$prefix_base.'classes.id AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login');
 				$requete_cpt_nb_eleve = mysqli_num_rows($requete_cpt_nb_eleve_1);
 			   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe_multiple) and in_array($donner_classe['id_classe'], $classe_multiple)) { ?>selected="selected"<?php } ?> onClick="javascript:document.form3.submit()"><?php echo $donner_classe['nom_complet']." -".$donner_classe['classe']."- "; ?> (eff. <?php echo $requete_cpt_nb_eleve; ?>)</option><?php
 			 }
@@ -1143,7 +1143,7 @@ if ( $type_impr == "bj" ) { ?>
 			{
 				$cpt_classe_selec = 0; $selection_classe = "";
 				while(!empty($classe_multiple[$cpt_classe_selec])) { if($cpt_classe_selec == 0) { $selection_classe = $prefix_base."j_eleves_classes.id_classe = ".$classe_multiple[$cpt_classe_selec]; } else { $selection_classe = $selection_classe." OR ".$prefix_base."j_eleves_classes.id_classe = ".$classe_multiple[$cpt_classe_selec]; } $cpt_classe_selec = $cpt_classe_selec + 1; }
-	                        $requete_eleve = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE ('.$selection_classe.') AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC');
+	                        $requete_eleve = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE ('.$selection_classe.') AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC');
 		  		while ($donner_eleve = mysqli_fetch_array($requete_eleve))
 			  	 {
 				   ?><option value="<?php echo $donner_eleve['login']; ?>" <?php if(!empty($eleve_multiple) and in_array($donner_eleve['login'], $eleve_multiple)) { ?> selected="selected"<?php } ?>><?php echo strtoupper($donner_eleve['nom'])." ".ucfirst($donner_eleve['prenom']); ?></option><?php
@@ -1197,7 +1197,7 @@ if ( $type_impr == "bj" ) { ?>
                     <option value="tous">toutes</option>
                     <?php
                           $sql_classe = 'SELECT id, classe, nom_complet FROM '.$prefix_base.'classes ORDER BY nom_complet DESC';
-                          $req_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql_classe) or die('Erreur SQL ! '.$sql_classe.' '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                          $req_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe) or die('Erreur SQL ! '.$sql_classe.' '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
                           while($data_classe = mysqli_fetch_array($req_classe))
                           {
@@ -1222,7 +1222,7 @@ if ( $type_impr == "bj" ) { ?>
 		<select name="etiquette_format" style="width: 200px;">
                     <?php
                           $sql_etiquette = 'SELECT * FROM '.$prefix_base.'etiquettes_formats ORDER BY nom_etiquette_format ASC';
-                          $req_etiquette = mysqli_query($GLOBALS["___mysqli_ston"], $sql_etiquette) or die('Erreur SQL ! '.$sql_etiquette.' '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                          $req_etiquette = mysqli_query($GLOBALS["mysqli"], $sql_etiquette) or die('Erreur SQL ! '.$sql_etiquette.' '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                           while($donner_etiquette = mysqli_fetch_array($req_etiquette))
                           {
                             ?><option value="<?php echo $donner_etiquette['id_etiquette_format']; ?>"><?php echo $donner_etiquette['nom_etiquette_format']; ?></option><?php
@@ -1250,7 +1250,7 @@ if ( $type_impr == "bj" ) { ?>
 	  <?php
            $ic = '1';  $i = '0';
            $requete_1 ="SELECT * FROM ".$prefix_base."etiquettes_formats ORDER BY nom_etiquette_format ASC";
-           $execution_1 = mysqli_query($GLOBALS["___mysqli_ston"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+           $execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
            while ( $data_1 = mysqli_fetch_array($execution_1))
                { if ($ic === '1') { $ic = '2'; $couleur_cellule = 'td_tableau_absence_1'; } else { $couleur_cellule = 'td_tableau_absence_2'; $ic = '1'; }
                 ?>
@@ -1303,7 +1303,7 @@ if ( $type_impr == "bj" ) { ?>
 		    <?php
 			  $categorie_pass = '';
 			  $requete_lettre ="SELECT * FROM ".$prefix_base."lettres_types ORDER BY categorie_lettre_type ASC, titre_lettre_type ASC";
-		          $execution_lettre = mysqli_query($GLOBALS["___mysqli_ston"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		          $execution_lettre = mysqli_query($GLOBALS["mysqli"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	  		while ($donner_lettre = mysqli_fetch_array($execution_lettre))
 		  	 {
 			   if($categorie_pass != $donner_lettre['categorie_lettre_type']) {
@@ -1341,7 +1341,7 @@ if ( $type_impr == "bj" ) { ?>
 		    <?php
 			  $categorie_pass = '';
 			  $requete_lettre ="SELECT * FROM ".$prefix_base."lettres_cadres ORDER BY nom_lettre_cadre ASC";
-		          $execution_lettre = mysqli_query($GLOBALS["___mysqli_ston"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		          $execution_lettre = mysqli_query($GLOBALS["mysqli"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	  		while ($donner_lettre = mysqli_fetch_array($execution_lettre))
 		  	 {
 			   ?><option value="<?php echo $donner_lettre['id_lettre_cadre']; ?>"><?php echo ucfirst($donner_lettre['nom_lettre_cadre']); ?></option><?php echo "\n";
@@ -1375,7 +1375,7 @@ if ( $type_impr == "bj" ) { ?>
 	  <?php
            $ic = '1';  $i = '0';
            $requete_1 ="SELECT * FROM ".$prefix_base."lettres_types, ".$prefix_base."lettres_cadres, ".$prefix_base."lettres_tcs WHERE id_lettre_type = '".$lettre_type."' AND id_lettre_type = type_lettre_tc AND id_lettre_cadre = cadre_lettre_tc ORDER BY y_lettre_tc ASC, x_lettre_tc ASC";
-           $execution_1 = mysqli_query($GLOBALS["___mysqli_ston"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+           $execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
            while ( $data_1 = mysqli_fetch_array($execution_1))
                { if ($ic === '1') { $ic = '2'; $couleur_cellule = 'td_tableau_absence_1'; } else { $couleur_cellule = 'td_tableau_absence_2'; $ic = '1'; }
                 ?>
@@ -1418,7 +1418,7 @@ if($sous_rubrique === 'gb') { ?>
 	  <?php
            $ic = '1';  $i = '0';
            $requete_1 ="SELECT * FROM ".$prefix_base."lettres_cadres ORDER BY nom_lettre_cadre ASC";
-           $execution_1 = mysqli_query($GLOBALS["___mysqli_ston"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+           $execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
            while ( $data_1 = mysqli_fetch_array($execution_1))
                { if ($ic === '1') { $ic = '2'; $couleur_cellule = 'td_tableau_absence_1'; } else { $couleur_cellule = 'td_tableau_absence_2'; $ic = '1'; }
                 ?>
@@ -1537,4 +1537,4 @@ if($sous_rubrique === 'gb') { ?>
 
 require("../../lib/footer.inc.php");
 ?>
-<?php ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res); ?>
+<?php ((is_null($___mysqli_res = mysqli_close($GLOBALS["mysqli"]))) ? false : $___mysqli_res); ?>

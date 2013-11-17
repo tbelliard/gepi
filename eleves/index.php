@@ -65,7 +65,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		check_token();
 
 		$sql="SELECT * FROM periodes WHERE id_classe='".$_GET['id_classe']."' ORDER BY num_periode;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_object($res)) {
 				echo "<input type='checkbox' id='num_periode_".$lig->num_periode."' name='num_periode[]' value='".$lig->num_periode."' /><label for='num_periode_".$lig->num_periode."'>".$lig->nom_periode."</label><br />";
@@ -79,7 +79,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 		// Afficher la liste des classes en opt group, puis la liste des profs de chaque classe en mettant en couleur ceux qui sont déjà PP d'autres élèves de la classe
 		$sql="SELECT DISTINCT id_classe, classe FROM j_eleves_classes jec, classes c WHERE jec.login='".$_GET['login_ele']."' AND jec.id_classe=c.id ORDER BY periode;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "<sapn style='color:red'>Cet élève n'est dans aucune classe&nbsp;???</span>";
 		}
@@ -90,7 +90,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 				$tab_pp=array();
 				$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$lig->id_classe';";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					while($lig2=mysqli_fetch_object($res2)) {
 						$tab_pp[]=$lig2->professeur;
@@ -99,13 +99,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 				$pp_actuel="";
 				$sql="SELECT professeur FROM j_eleves_professeurs WHERE login='".$_GET['login_ele']."' AND id_classe='$lig->id_classe';";
-				$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$pp_actuel=mysql_result($res2, 0, 'professeur');
 				}
 
 				$sql="SELECT DISTINCT u.login FROM j_groupes_classes jgc, j_groupes_professeurs jgp, utilisateurs u WHERE jgc.id_groupe=jgp.id_groupe AND jgc.id_classe='$lig->id_classe' AND u.login=jgp.login ORDER BY u.nom, u.prenom;";
-				$res3=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res3)>0) {
 					while($lig3=mysqli_fetch_object($res3)) {
 						echo "<option value='$lig->id_classe|$lig3->login'";
@@ -133,20 +133,20 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		if(isset($tab[1])) {
 			$sql="SELECT 1=1 FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='$tab[1]' AND jgc.id_classe='$tab[0]'";
 			//echo "$sql<br />";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$_GET['login_ele']."' AND id_classe='$tab[0]'";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)>0) {
 					$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='".$_GET['login_ele']."' AND id_classe='$tab[0]'";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
 						$sql="UPDATE j_eleves_professeurs SET professeur='$tab[1]' WHERE login='".$_GET['login_ele']."' AND id_classe='$tab[0]'";
 					}
 					else {
 						$sql="INSERT INTO j_eleves_professeurs SET professeur='$tab[1]', login='".$_GET['login_ele']."', id_classe='$tab[0]'";
 					}
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($res) {
 						echo civ_nom_prenom($tab[1]);
 					}
@@ -234,14 +234,14 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['initialiser_regimes'])
 		LEFT JOIN j_eleves_regime jer ON jec.login=jer.login
 		WHERE jer.login is null;";
 	//echo "$sql<br />";
-	$test_no_regime=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test_no_regime=mysqli_query($GLOBALS["mysqli"], $sql);
 	$test_no_regime_effectif=mysqli_num_rows($test_no_regime);
 	if($test_no_regime_effectif>0){
 		$nb_reg_regime=0;
 		$nb_err_regime=0;
 		while($lig_reg=mysqli_fetch_object($test_no_regime)) {
 			$sql="INSERT INTO j_eleves_regime SET login='".$lig_reg->login."', regime='".$_GET['initialiser_regimes']."';";
-			$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($insert) {$nb_reg_regime++;} else {$nb_err_regime++;}
 		}
 
@@ -269,7 +269,7 @@ if($_SESSION['statut']=="professeur") {
 	else {
 		// Le professeur est-il professeur principal dans une classe au moins.
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if (mysqli_num_rows($test)==0) {
 			tentative_intrusion("2", "Tentative d'accès par un prof qui n'est pas $gepi_prof_suivi à des fiches élèves, sans en avoir l'autorisation.");
 			echo "Vous ne pouvez pas accéder à cette page car vous n'êtes pas $gepi_prof_suivi !";
@@ -285,24 +285,24 @@ if (isset($is_posted) and ($is_posted == '2')) {
 		//
 		// On efface les enregistrements liés à la session en cours
 		//
-		mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM tempo WHERE num = '".SESSION_ID()."'");
+		mysqli_query($GLOBALS["mysqli"], "DELETE FROM tempo WHERE num = '".SESSION_ID()."'");
 		//
 		// On efface les enregistrements obsolètes
 		//
-		$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM tempo");
+		$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM tempo");
 		$nb_enr = mysqli_num_rows($call_data);
 		$nb = 0;
 		while ($nb < $nb_enr) {
 			$num = mysql_result($call_data, $nb, 'num');
-			$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM log WHERE SESSION_ID = '$num'");
+			$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM log WHERE SESSION_ID = '$num'");
 			$nb_en = mysqli_num_rows($test);
 			if ($nb_en == 0) {
-				mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM tempo WHERE num = '$num'");
+				mysqli_query($GLOBALS["mysqli"], "DELETE FROM tempo WHERE num = '$num'");
 			}
 			$nb++;
 		}
 
-		$classes_list = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+		$classes_list = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 		$nb = mysqli_num_rows($classes_list);
 		$i ='0';
 		while ($i < $nb) {
@@ -310,9 +310,9 @@ if (isset($is_posted) and ($is_posted == '2')) {
 			$tempo = "case_".$id_classe;
 			$temp = isset($_POST[$tempo])?$_POST[$tempo]:NULL;
 			if ($temp == 'yes') {
-				$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+				$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 				$nb_periode = mysqli_num_rows($periode_query);
-				$call_reg = mysqli_query($GLOBALS["___mysqli_ston"], "insert into tempo Values('$id_classe','$nb_periode', '".SESSION_ID()."')");
+				$call_reg = mysqli_query($GLOBALS["mysqli"], "insert into tempo Values('$id_classe','$nb_periode', '".SESSION_ID()."')");
 				//$tab_id_classe_quelles_classes[]=$id_classe;
 			}
 			$i++;
@@ -322,26 +322,26 @@ if (isset($is_posted) and ($is_posted == '2')) {
 elseif ((isset($quelles_classes))&&($quelles_classes == 'certaines')&&(isset($id_classe))&&(is_numeric($id_classe))) {
 	// On efface les enregistrements liés à la session en cours
 	//
-	mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM tempo WHERE num = '".SESSION_ID()."'");
+	mysqli_query($GLOBALS["mysqli"], "DELETE FROM tempo WHERE num = '".SESSION_ID()."'");
 	//
 	// On efface les enregistrements obsolètes
 	//
-	$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM tempo");
+	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM tempo");
 	$nb_enr = mysqli_num_rows($call_data);
 	$nb = 0;
 	while ($nb < $nb_enr) {
 		$num = mysql_result($call_data, $nb, 'num');
-		$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM log WHERE SESSION_ID = '$num'");
+		$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM log WHERE SESSION_ID = '$num'");
 		$nb_en = mysqli_num_rows($test);
 		if ($nb_en == 0) {
-			mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM tempo WHERE num = '$num'");
+			mysqli_query($GLOBALS["mysqli"], "DELETE FROM tempo WHERE num = '$num'");
 		}
 		$nb++;
 	}
 
-	$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+	$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 	$nb_periode = mysqli_num_rows($periode_query);
-	$call_reg = mysqli_query($GLOBALS["___mysqli_ston"], "insert into tempo Values('$id_classe','$nb_periode', '".SESSION_ID()."')");
+	$call_reg = mysqli_query($GLOBALS["mysqli"], "insert into tempo Values('$id_classe','$nb_periode', '".SESSION_ID()."')");
 }
 
 // Le statut scolarite ne devrait pas être proposé ici.
@@ -354,7 +354,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 		$delete_eleve=isset($_POST['delete_eleve']) ? $_POST['delete_eleve'] : array();
 		if(!is_array($delete_eleve)) {$delete_eleve=array();$msg="Erreur: La liste d'élèves à supprimer devrait être un tableau.<br />";}
 
-		$calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM eleves");
+		$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves");
 		$nombreligne = mysqli_num_rows($calldata);
 		$i = 0;
 		$liste_cible = '';
@@ -433,7 +433,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 				// Le prof est-il PP de cet élève ou de la classe de cet élève
 				// Récupérer le login et la classe de l'élève
 				$sql="SELECT login FROM eleves WHERE elenoet='".$quiestce[$cpt_photo]."';";
-				$res_login=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_login)==0) {
 					$msg.="Anomalie : Impossible de trouver le login de l'élève dont l'ELENOET est ".$quiestce[$cpt_photo]."<br />";
 					$acces_upload_photo="n";
@@ -452,7 +452,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 
 							// On cherche alors la classe de l'élève
 							$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$login_eleve' ORDER BY periode,classe;";
-							$res_class=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_class=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_class)>0){
 								while($lig_tmp=mysqli_fetch_object($res_class)){
 									if(is_pp($_SESSION['login'], $lig_tmp->id_classe)) {
@@ -469,7 +469,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 			if($acces_upload_photo!="y") {
 				if(!isset($login_eleve)) {
 					$sql="SELECT login FROM eleves WHERE elenoet='".$quiestce[$cpt_photo]."';";
-					$res_login=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_login)==0) {
 						$msg.="Anomalie : Impossible de trouver le login de l'élève dont l'ELENOET est ".$quiestce[$cpt_photo]."<br />";
 					}
@@ -546,7 +546,7 @@ if(getSettingValue('eleves_index_debug_var')=='y') {
 	}
 	function verif2() {
 	<?php
-		$classes_list = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+		$classes_list = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 		$nb = mysqli_num_rows($classes_list);
 		$k = '0';
 		while ($k < $nb) {
@@ -607,7 +607,7 @@ echo "<form action='index.php' method='post' name='form_lien_sous_bandeau'>
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 	$tab_classe=array();
 	$sql="SELECT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
-	$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_classe)>0) {
 		echo " | <select name='id_classe' id='id_classe_form_lien_sous_bandeau' onchange='change_classe()' title=\"Afficher les élèves de telle classe\">
 	<option value=''>---</option>";
@@ -635,7 +635,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	echo "</p></form>";
 
 	$sql="SELECT 1=1 FROM responsables";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 
@@ -651,7 +651,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)==0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 
@@ -667,7 +667,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 	else{
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 
@@ -726,7 +726,7 @@ echo "</p>
 // Titre dans le corps de la page 
 echo "<center><p class='grand'>Visualiser \ modifier une fiche élève</p></center>\n";
 
-$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM eleves");
+$req = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves");
 $test = mysqli_num_rows($req);
 if ($test == '0') {
 	echo "<p class='grand'>Attention : il n'y a aucun élève dans la base GEPI !</p>\n";
@@ -744,7 +744,7 @@ if (!isset($quelles_classes)) {
 
 	if($_SESSION['statut'] == 'professeur') {
 		$sql="SELECT DISTINCT c.* FROM j_eleves_professeurs jep, classes c WHERE c.id=jep.id_classe AND jep.professeur='".$_SESSION['login']."' ORDER BY c.classe;";
-		$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$nb_classes=mysqli_num_rows($call_classes);
 		if($nb_classes==0){
@@ -921,7 +921,7 @@ if (!isset($quelles_classes)) {
 		<option value='' title=\"Par non référencée, il est entendu que le code MEF n'est pas dans la liste des MEF identifiés.
 Mettre à jour votre table mef peut être une solution.\">Vide ou non référencée</option>";
 		$sql="SELECT * FROM mef ORDER BY libelle_court, libelle_edition, libelle_long;";
-		$res_mef=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_mef=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_mef)>0) {
 			while($lig_mef=mysqli_fetch_object($res_mef)) {
 				echo "
@@ -954,7 +954,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		$sql="SELECT 1=1 FROM eleves e
 			LEFT JOIN j_eleves_classes c ON c.login=e.login
 			where c.login is NULL;";
-		$test_na=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_na=mysqli_query($GLOBALS["mysqli"], $sql);
 		//if($test_na){
 		if(mysqli_num_rows($test_na)==0){
 			echo "<tr>\n";
@@ -984,7 +984,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 
 // Eric Les élèves dont la date de sortie de l'établissement est renseignée      
 		$sql="SELECT 1=1 FROM eleves e where e.date_sortie<>0";
-		$test_dse=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_dse=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_dse)==0){
 			echo "<tr>\n";
 			echo "<td>\n";
@@ -1011,7 +1011,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 			echo "</tr>\n";
 
 			$sql="SELECT DISTINCT e.login FROM eleves e, j_eleves_classes jec where e.login=jec.login AND e.date_sortie<>0";
-			$test_dse2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_dse2=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_dse2)>0){
 				echo "<tr>\n";
 				echo "<td style='vertical-align:top;'>\n";
@@ -1028,7 +1028,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		}
 
 		$sql="SELECT 1=1 FROM eleves WHERE elenoet='' OR no_gep='';";
-		$test_incomplet=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_incomplet=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_incomplet)==0){
 			echo "<tr>\n";
 			echo "<td>\n";
@@ -1059,7 +1059,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		// Les photos
 		if (getSettingValue("active_module_trombinoscopes")=='y') {
 			$sql="SELECT elenoet FROM eleves WHERE elenoet!='';";
-			$test_elenoet_ok=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_elenoet_ok=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_elenoet_ok)!=0){
 				$cpt_photo_manquante=0;
 				while($lig_tmp=mysqli_fetch_object($test_elenoet_ok)){
@@ -1120,7 +1120,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		$sql="SELECT DISTINCT login FROM j_eleves_classes jecl
 			LEFT JOIN j_eleves_cpe jec ON jecl.login=jec.e_login
 			WHERE jec.e_login is null;";
-		$test_no_cpe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_no_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
 		//$test_no_cpe_effectif=mysql_num_rows($test_no_cpe)-mysql_num_rows($test_na);
 		$test_no_cpe_effectif=mysqli_num_rows($test_no_cpe);
 		/*
@@ -1164,7 +1164,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 			LEFT JOIN j_eleves_regime jer ON jec.login=jer.login
 			WHERE jer.login is null;";
 		//echo "$sql<br />";
-		$test_no_regime=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_no_regime=mysqli_query($GLOBALS["mysqli"], $sql);
 		$test_no_regime_effectif=mysqli_num_rows($test_no_regime);
 		if($test_no_regime_effectif==0){
 			echo "<tr>\n";
@@ -1211,7 +1211,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		$sql="SELECT 1=1 FROM eleves e
 			LEFT JOIN j_eleves_professeurs jep ON jep.login=e.login
 			where jep.login is NULL;";
-		$test_no_pp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_no_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 		$test_no_pp_effectif=mysqli_num_rows($test_no_pp)-mysqli_num_rows($test_na);
 		//if(mysql_num_rows($test_no_pp)==0){
 		if($test_no_pp_effectif==0){
@@ -1250,7 +1250,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		*/
 		$sql="SELECT DISTINCT e.login FROM eleves e,j_eleves_classes jec
 				WHERE (e.login=jec.login AND e.ele_id NOT IN (SELECT ele_id FROM responsables2));";
-		$test_no_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_no_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 		//$test_no_resp_effectif=mysql_num_rows($test_no_resp)-mysql_num_rows($test_na);
 		$test_no_resp_effectif=mysqli_num_rows($test_no_resp);
 		//if(mysql_num_rows($test_no_resp)==0){
@@ -1285,7 +1285,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		$sql="SELECT 1=1 FROM eleves e
 			LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet
 			where jee.id_eleve is NULL;";
-		$test_no_etab=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_no_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_no_etab)==0){
 			echo "<tr>\n";
 			echo "<td>\n";
@@ -1314,7 +1314,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 
 
 		$sql="SELECT 1=1 FROM eleves WHERE email='';";
-		$test_incomplet=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_incomplet=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_incomplet)==0){
 			echo "<tr>\n";
 			echo "<td>\n";
@@ -1348,7 +1348,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		$sql="select 1=1 from eleves e
 		LEFT JOIN utilisateurs u ON u.login=e.login
 		where u.login is NULL;";
-		$test_sans_compte=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_sans_compte=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_sans_compte)==0){
 			echo "<tr>\n";
 			echo "<td>\n";
@@ -1376,7 +1376,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		}
 
 		$sql="select 1=1 from eleves e, utilisateurs u WHERE u.login=e.login AND u.etat='inactif';";
-		$test_compte_inactif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_compte_inactif=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_compte_inactif)==0){
 			echo "<tr>\n";
 			echo "<td>\n";
@@ -1415,7 +1415,7 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		echo "</td>\n";
 		echo "</tr>\n";
 
-		$classes_list = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+		$classes_list = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 		$nb = mysqli_num_rows($classes_list);
 		if ($nb !=0) {
 			echo "<tr>\n";
@@ -1691,7 +1691,7 @@ if(isset($quelles_classes)) {
 			$mef_code = $tab_eleve[$i]["mef_code"];
 		}
 
-		$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT n.classe, n.id FROM j_eleves_classes c, classes n WHERE (c.login ='$eleve_login' and c.id_classe = n.id) order by c.periode DESC");
+		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT n.classe, n.id FROM j_eleves_classes c, classes n WHERE (c.login ='$eleve_login' and c.id_classe = n.id) order by c.periode DESC");
 		$eleve_classe = @mysql_result($call_classe, 0, "classe");
 		$eleve_id_classe = @mysql_result($call_classe, 0, "id");
 		$pas_de_classe="n";
@@ -1704,7 +1704,7 @@ if(isset($quelles_classes)) {
 			$eleve_classe_csv = $eleve_classe;
 		}
 
-		$call_suivi = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT u.* FROM utilisateurs u, j_eleves_professeurs s WHERE (s.login ='$eleve_login' and s.professeur = u.login and s.id_classe='$eleve_id_classe')");
+		$call_suivi = mysqli_query($GLOBALS["mysqli"], "SELECT u.* FROM utilisateurs u, j_eleves_professeurs s WHERE (s.login ='$eleve_login' and s.professeur = u.login and s.id_classe='$eleve_id_classe')");
 		if(mysqli_num_rows($call_suivi)==0){
 			$eleve_profsuivi_nom = "";
 			$eleve_profsuivi_prenom = "";
@@ -2029,11 +2029,11 @@ if(isset($quelles_classes)) {
 
 	//=========================
 	$sql="SELECT max(num_periode) AS max_per FROM classes c, periodes p WHERE p.id_classe=c.id;";
-	$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 	$max_per=mysql_result($res_per, 0, 'max_per');
 
 	$sql="SELECT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
-	$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$titre_infobulle="Inscription dans une classe";
 	$texte_infobulle="<form action='../classes/ajout_eleve_classe.php' method='post'>

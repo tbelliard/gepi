@@ -38,7 +38,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 			$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%' ORDER BY nom, prenom;";
 		}
 		//echo "$sql<br />";
-		$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 		$nb_ele=mysqli_num_rows($res_ele);
 	
@@ -58,7 +58,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 		else {
 			$sql="SELECT * FROM eleves WHERE prenom LIKE '%$rech_prenom%' ORDER BY nom, prenom;";
 		}
-		$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 		$nb_ele=mysqli_num_rows($res_ele);
 	
@@ -104,7 +104,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 				echo "<tr class='lig$alt'>\n";
 
 				$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
-				$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_clas)==0) {
 					echo "<td>\n";
 					echo htmlspecialchars("$ele_nom $ele_prenom");
@@ -144,7 +144,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 				echo "<tr class='lig$alt'>\n";
 
 				$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
-				$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_clas)==0) {
 					echo "<td>\n";
 					echo htmlspecialchars("$ele_nom $ele_prenom");
@@ -173,7 +173,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 				echo "<a href='$page?ele_login=$ele_login'>".htmlspecialchars("$ele_nom $ele_prenom")."</a>";
 
 				$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
-				$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_clas)==0) {
 					//echo " (<i>";
 					echo "<td>\n";

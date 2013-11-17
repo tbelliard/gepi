@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/eleves/synchro_mail.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/eleves/synchro_mail.php',
 administrateur='V',
@@ -47,7 +47,7 @@ secours='F',
 autre='F',
 description='Synchronisation des mail élèves',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -66,7 +66,7 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 	check_token();
 
 	$sql="SELECT u.*, e.email as e_email FROM utilisateurs u, eleves e WHERE e.login=u.login AND u.statut='eleve' AND u.email!=e.email ORDER BY e.nom, e.prenom;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$msg="Toutes les adresses mail élèves sont déjà synchronisées entre les tables 'eleves' et 'utilisateurs'.<br />\n";
 	}
@@ -76,7 +76,7 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 		if(getSettingValue('mode_email_ele')=='sconet') {
 			while($lig=mysqli_fetch_object($res)) {
 				$sql="UPDATE utilisateurs SET email='$lig->e_email' WHERE login='$lig->login' AND statut='eleve';";
-				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($update) {
 					$cpt++;
 				}
@@ -88,7 +88,7 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 		elseif(getSettingValue('mode_email_ele')=='mon_compte') {
 			while($lig=mysqli_fetch_object($res)) {
 				$sql="UPDATE eleves SET email='$lig->email' WHERE login='$lig->login';";
-				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($update) {
 					$cpt++;
 				}
@@ -124,10 +124,10 @@ if($suppr_infos_actions_diff_mail=='y') {
 	check_token();
 
 	$sql="select * from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignée par l%élève%';";
-	$test_infos_actions=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test_infos_actions=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_infos_actions)>0) {
 		$sql="delete from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignée par l%élève%';";
-		$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$del) {
 			$msg.="ERREUR lors de la suppression des signalements de différence de mail en page d'accueil.<br />\n";
 		}
@@ -149,7 +149,7 @@ require_once("../lib/header.inc.php");
 
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0){
 		echo "<p>Une conversion des données responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -158,7 +158,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
-	$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)==0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -167,7 +167,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 	else{
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -181,14 +181,14 @@ if(!getSettingValue('conv_new_resp_table')){
 <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 <?php
 	$sql="select * from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignée par l%élève%';";
-	$test_infos_actions=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test_infos_actions=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_infos_actions)>0) {
 		echo " | <a href='".$_SERVER['PHP_SELF']."?suppr_infos_actions_diff_mail=y".add_token_in_url()."'>Supprimer les signalements de différences en page d'accueil</a>";
 	}
 	echo "</p>\n";
 
 	$sql="SELECT u.*, e.email as e_email FROM utilisateurs u, eleves e WHERE e.login=u.login AND u.statut='eleve' AND u.email!=e.email ORDER BY e.nom, e.prenom;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Toutes les adresses mail élèves sont synchronisées entre les tables 'eleves' et 'utilisateurs'.</p>\n";
 

@@ -79,7 +79,7 @@ require_once("../lib/header.inc.php");
 		identite_u VARCHAR( 50 ) NOT NULL ,
 		PRIMARY KEY ( id )
 		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 ?>
 </p>

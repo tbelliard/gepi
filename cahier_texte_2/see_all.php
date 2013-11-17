@@ -71,16 +71,16 @@ if (is_numeric($id_groupe)) {
 unset($selected_eleve);
 $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] :(isset($_GET["login_eleve"]) ? $_GET["login_eleve"] :false);
 if ($login_eleve) {
-	$selected_eleve = mysqli_fetch_object(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '" . $login_eleve . "'"));
+	$selected_eleve = mysqli_fetch_object(mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '" . $login_eleve . "'"));
 } else {
 	$selected_eleve = false;
 }
 
 if ($_SESSION['statut'] == 'eleve') {
-	$selected_eleve = mysqli_fetch_object(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
+	$selected_eleve = mysqli_fetch_object(mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
 }
 elseif ($_SESSION['statut'] == "responsable") {
-	$get_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.nom, e.prenom " .
+	$get_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
@@ -112,7 +112,7 @@ $selected_eleve_login = $selected_eleve ? $selected_eleve->login : "";
 //if($id_classe!='-1') {
 if (($id_classe!=-1)&&($id_classe!='')) {
 	$sql="SELECT classe FROM classes WHERE id='$id_classe';";
-	$appel_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$appel_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($appel_classe)>0) {
 		$classe_nom = mysql_result($appel_classe, 0, "classe");
 	}
@@ -187,7 +187,7 @@ echo "<div class='centre_table'>\n";
 			//if((!isset($id_classe))||($id_classe<1)) {
 				$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC LIMIT 1;";
 				//echo "$sql<br />";
-				$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_classe)>0) {
 					//$id_classe = mysql_result($res_classe, 0, 'id_classe');
 					$tmp_id_classe = mysql_result($res_classe, 0, 'id_classe');
@@ -207,7 +207,7 @@ echo "<div class='centre_table'>\n";
 					//$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and (date_ct='' OR date_ct='0'));";
 					$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$tmp_id_groupe' and date_ct='');";
 					//echo "$sql<br />";
-					$appel_info_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
 					$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
 					$content .= @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 					$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
@@ -356,7 +356,7 @@ if(($id_groupe=='Toutes_matieres')&&
 	if($id_classe==-1) {
 		// Cas élève
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC LIMIT 1;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			require("../lib/footer.inc.php");
 			die();
@@ -459,7 +459,7 @@ if(($id_groupe=='Toutes_matieres')&&
 	//$tab_notices_exclues_mail=array();
 
 	$sql="SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe' ORDER BY priorite;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	while($lig=mysqli_fetch_object($res)) {
 		$tab_id_grp[]=$lig->id_groupe;
 	}
@@ -474,7 +474,7 @@ if(($id_groupe=='Toutes_matieres')&&
 			) ORDER BY date_ct DESC, heure_entry DESC, jgc.priorite DESC;";
 			//) ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre.", jgc.priorite;";
 		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=0;
 		while($lig=mysqli_fetch_object($res)) {
 			$date_notice=strftime("%a %d %b %y", $lig->date_ct);
@@ -517,7 +517,7 @@ if(($id_groupe=='Toutes_matieres')&&
 			) ORDER BY date_ct DESC, jgc.priorite DESC;";
 			//) ORDER BY date_ct ".$current_ordre.", jgc.priorite;";
 		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=0;
 		$timestamp_courant=time();
 		while($lig=mysqli_fetch_object($res)) {
@@ -774,7 +774,7 @@ if(($id_groupe=='Toutes_matieres')&&
 
 echo "<hr />\n";
 
-$test_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
+$test_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
 $nb_test = mysqli_num_rows($test_cahier_texte);
 if ($nb_test == 0) {
 	echo "\n<h2 class='gepi centre_texte'>\n";
@@ -798,7 +798,7 @@ if ($nb_test == 0) {
 	die();
 }
 // Affichage des informations générales
-$appel_info_cahier_texte = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
+$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 $nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
@@ -835,7 +835,7 @@ else {
 		ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
 }
 //echo "$req_notices<br />";
-$res_notices = mysqli_query($GLOBALS["___mysqli_ston"], $req_notices);
+$res_notices = mysqli_query($GLOBALS["mysqli"], $req_notices);
 $notice = mysqli_fetch_object($res_notices);
 
 $ts_limite_visibilite_devoirs_pour_eleves=time()+getSettingValue('delai_devoirs')*24*3600;
@@ -855,7 +855,7 @@ $req_devoirs =
 	and date_ct >= '".getSettingValue("begin_bookings")."'
 	and date_ct <= '".$ts_limite_dev."'
 	) order by date_ct ".$current_ordre;
-$res_devoirs = mysqli_query($GLOBALS["___mysqli_ston"], $req_devoirs);
+$res_devoirs = mysqli_query($GLOBALS["mysqli"], $req_devoirs);
 $devoir = mysqli_fetch_object($res_devoirs);
 
 $timestamp_courant=time();

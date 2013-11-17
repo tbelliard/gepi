@@ -133,10 +133,10 @@ if (!isset($_POST["action"])) {
 			if ($test != -1) {
 				if($k>0) {echo ", ";}
 				$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
-				$res_test_tab=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_test_tab=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_test_tab)>0) {
 					$sql="DELETE FROM $liste_tables_del[$j];";
-					$del = @mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$del = @mysqli_query($GLOBALS["mysqli"], $sql);
 					echo "<b>".$liste_tables_del[$j]."</b>";
 					echo " (".mysqli_num_rows($res_test_tab).")";
 				}
@@ -152,10 +152,10 @@ if (!isset($_POST["action"])) {
 		echo "<br />\n";
 		echo "<p><em>On passe tous les utilisateurs en etat 'inactif' pour ne réactiver par la suite que les professeurs encore présents.</em> ";
 
-		$res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET etat='inactif' WHERE statut = 'professeur'");
+		$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat='inactif' WHERE statut = 'professeur'");
 
 		$sql="SELECT * FROM temp_profs;";
-		$res_temp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_temp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_temp)==0) {
 			echo "<p style='color:red'>ERREUR&nbsp;: Aucun professeur n'a été trouvé&nbsp;???</p>\n";
 			echo "<p><br /></p>\n";
@@ -197,7 +197,7 @@ if (!isset($_POST["action"])) {
 
 			// Maintenant que tout est propre, on fait un test pour voir si le compte n'existe pas déjà
 
-			$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $reg_login . "'"), 0);
+			$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $reg_login . "'"), 0);
 
 			if ($test == 0) {
 				// Test négatif : aucun professeur avec ce login. On enregistre.
@@ -225,13 +225,13 @@ if (!isset($_POST["action"])) {
 				}
 
 
-				$insert = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO utilisateurs SET " .
+				$insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO utilisateurs SET " .
 						"login = '" . $reg_login . "', " .
-						"nom = '" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-						"prenom = '" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+						"nom = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+						"prenom = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
 						"civilite = '" . $reg_civilite . "', " .
 						"password = '" . $reg_password . "', " .
-						"email = '" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $reg_email) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+						"email = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_email) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
 						"statut = 'professeur', " .
 						"etat = 'actif', " .
 						"change_mdp = '" . $change_mdp . "', " .
@@ -239,13 +239,13 @@ if (!isset($_POST["action"])) {
 
 				if (!$insert) {
 					$error++;
-					echo "<span style='color:red'>".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+					echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
 				} else {
 					$total++;
 				}
 			} else {
 				// Le login existe déjà. On passe l'utilisateur à nouveau en état 'actif'
-				$res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $reg_login . "'");
+				$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $reg_login . "'");
 				$total_deja_presents++;
 			}
 
@@ -324,7 +324,7 @@ if (!isset($_POST["action"])) {
 
 
 						// On regarde si le prof existe déjà dans la base
-						$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM utilisateurs WHERE (nom = '" . $tabligne[0] . "' AND prenom = '" . $tabligne[1] . "')");
+						$test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM utilisateurs WHERE (nom = '" . $tabligne[0] . "' AND prenom = '" . $tabligne[1] . "')");
 						$prof_exists = false;
 						if (mysqli_num_rows($test) == 0) {
 
@@ -346,7 +346,7 @@ if (!isset($_POST["action"])) {
 													WHERE nom_u = '".my_strtoupper($reg_nom_login)."'
 													AND prenom_u = '".my_strtoupper($reg_prenom_login)."'
 													AND statut_u = 'teacher'";
-										$query_p = mysqli_query($GLOBALS["___mysqli_ston"], $sql_p);
+										$query_p = mysqli_query($GLOBALS["mysqli"], $sql_p);
 										$nbre = mysqli_num_rows($query_p);
 										if ($nbre >= 1 AND $nbre < 2) {
 											$login_prof = mysql_result($query_p, 0,"login_u");
@@ -415,10 +415,10 @@ if (!isset($_POST["action"])) {
 				sso varchar(50) NOT NULL default '',
 				PRIMARY KEY  (id)
 				);";
-				$create_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$sql="TRUNCATE TABLE temp_profs;";
-				$vide_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$nb_error=0;
 
@@ -438,13 +438,13 @@ if (!isset($_POST["action"])) {
 						echo "<td>\n";
 					}
 
-					$sql="INSERT INTO temp_profs SET login='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $data_tab[$i]["reg_login"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $data_tab[$i]["nom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $data_tab[$i]["prenom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					civilite='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $data_tab[$i]["civilite"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					email='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $data_tab[$i]["email"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					sso='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $data_tab[$i]["sso"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$sql="INSERT INTO temp_profs SET login='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["reg_login"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+					nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["nom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+					prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["prenom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+					civilite='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["civilite"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+					email='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["email"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+					sso='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["sso"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
 						echo "<span style='color:red'>";
 						echo $data_tab[$i]["reg_login"];

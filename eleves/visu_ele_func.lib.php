@@ -69,7 +69,7 @@ function info_eleve($ele_login) {
 
 	// Récup des infos sur l'élève, les responsables, le PP, le CPE,...
 	$sql="SELECT * FROM eleves e WHERE e.login='".$ele_login."';";
-	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	$lig_ele=mysqli_fetch_object($res_ele);
 
 	$tab_ele['login']=$ele_login;
@@ -99,7 +99,7 @@ function info_eleve($ele_login) {
 	$AccesDerniereConnexionResp=AccesDerniereConnexionResp("", $ele_login);
 
 	$sql="SELECT * FROM utilisateurs WHERE statut='eleve' AND login='$ele_login';";
-	$res_user=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_user=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_user)==1) {
 		$lig_user=mysqli_fetch_object($res_user);
 
@@ -158,7 +158,7 @@ function info_eleve($ele_login) {
 	// Classes
 	$tab_ele['classe']=array();
 	$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
-	$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_clas)>0) {
 		$tab_ele['liste_classes']="";
 
@@ -192,7 +192,7 @@ function info_eleve($ele_login) {
 
 			// Liste des périodes dans la classe
 			$sql="SELECT p.* FROM periodes p, j_eleves_classes jec WHERE jec.login='$ele_login' AND p.num_periode=jec.periode AND jec.id_classe='".$lig_clas->id."' AND p.id_classe=jec.id_classe ORDER BY p.num_periode;";
-			$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 			$cpt2=0;
 			if(mysqli_num_rows($res_per)>0) {
 				$tab_ele['classe'][$cpt]['periodes'][$cpt2]=array();
@@ -208,7 +208,7 @@ function info_eleve($ele_login) {
 
 			// Récup infos Prof Principal (prof_suivi)
 			$sql="SELECT u.* FROM j_eleves_professeurs jep, utilisateurs u WHERE jep.login='".$ele_login."' AND id_classe='".$lig_clas->id."' AND jep.professeur=u.login;";
-			$res_pp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 			//echo "$sql<br />";
 			if(mysqli_num_rows($res_pp)>0) {
 				$lig_pp=mysqli_fetch_object($res_pp);
@@ -232,7 +232,7 @@ function info_eleve($ele_login) {
 	//$sql="SELECT DISTINCT p.*, jec.id_classe, c.classe, c.nom_complet FROM periodes p, j_eleves_classes jec, classes c WHERE jec.login='$ele_login' AND p.num_periode=jec.periode AND c.id=jec.id_classe ORDER BY p.num_periode;";
 	$sql="SELECT DISTINCT p.*,jec.id_classe, c.classe, c.nom_complet  FROM periodes p, j_eleves_classes jec, classes c WHERE jec.login='$ele_login' AND p.num_periode=jec.periode AND jec.id_classe=p.id_classe AND c.id=jec.id_classe ORDER BY p.num_periode;";
 	//echo "$sql<br />";
-	$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 	$cpt=0;
 	if(mysqli_num_rows($res_per)>0) {
 		if(($acces_releves=='y')||($acces_enseignements=='y')||($acces_bulletins=='y')) {
@@ -284,7 +284,7 @@ function info_eleve($ele_login) {
 				}
 				//$sql="SELECT DISTINCT g.*,m.nom_complet FROM groupes g, j_groupes_matieres jgm, matieres m, j_groupes_classes jgc, j_eleves_groupes jeg WHERE g.id=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_groupe=jgm.id_groupe AND jeg.id_groupe=g.id AND jeg.periode='".$lig_per->num_periode."' AND jeg.login='$ele_login' ORDER BY jgc.priorite,m.nom_complet;";
 				//echo "$sql<br />";
-				$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_grp)>0) {
 					$cpt2=0;
 					while($lig_grp=mysqli_fetch_object($res_grp)) {
@@ -299,7 +299,7 @@ function info_eleve($ele_login) {
 							//$sql="SELECT DISTINCT jgc.categorie_id FROM j_groupes_classes jgc WHERE jgc.id_groupe='".$lig_grp->id."' AND id_classe='".$tab_ele['periodes'][$cpt]['id_classe']."';";
 							$sql="SELECT DISTINCT jgc.categorie_id, mc.nom_court, mc.nom_complet FROM j_groupes_classes jgc, matieres_categories mc WHERE jgc.id_groupe='".$lig_grp->id."' AND id_classe='".$tab_ele['periodes'][$cpt]['id_classe']."' AND mc.id=jgc.categorie_id;";
 							//echo "$sql<br />";
-							$res_cat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_cat)>0) {
 								$lig_cat=mysqli_fetch_object($res_cat);
 								$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['id_cat']=$lig_cat->categorie_id;
@@ -317,7 +317,7 @@ function info_eleve($ele_login) {
 						cn.id_groupe = '".$lig_grp->id."' and
 						cn.periode = '".$lig_per->num_periode."'
 						)";
-						$res_differents_coef=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_differents_coef=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_differents_coef)>1){
 							$differents_coef="y";
 						}
@@ -337,7 +337,7 @@ function info_eleve($ele_login) {
 						)
 						ORDER BY d.date
 						";
-						$query_notes = mysqli_query($GLOBALS["___mysqli_ston"], $sql1);
+						$query_notes = mysqli_query($GLOBALS["mysqli"], $sql1);
 
 						$count_notes = mysqli_num_rows($query_notes);
 						$m = 0;
@@ -373,7 +373,7 @@ function info_eleve($ele_login) {
 
 		$sql="SELECT DISTINCT g.*,m.nom_complet FROM groupes g, j_groupes_matieres jgm, matieres m, j_groupes_classes jgc, j_eleves_groupes jeg WHERE g.id=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_groupe=jgm.id_groupe AND jeg.id_groupe=g.id AND jeg.login='$ele_login' ORDER BY jgc.priorite,m.nom_complet;";
 		//echo "$sql<br />";
-		$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp)>0) {
 			$cpt=0;
 			while($lig_grp=mysqli_fetch_object($res_grp)) {
@@ -386,7 +386,7 @@ function info_eleve($ele_login) {
 				$tab_ele['index_grp'][$lig_grp->id]=$cpt;
 
 				$sql="SELECT periode FROM j_eleves_groupes WHERE login='$ele_login' AND id_groupe='".$lig_grp->id."' ORDER BY periode;";
-				$res_per2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_per2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_per2)>0) {
 					$tab_ele['groupes'][$cpt]['periodes']=array();
 					while($lig_per2=mysqli_fetch_object($res_per2)) {
@@ -395,7 +395,7 @@ function info_eleve($ele_login) {
 				}
 
 				$sql="SELECT u.* FROM utilisateurs u, j_groupes_professeurs jgp WHERE u.login=jgp.login AND id_groupe='".$lig_grp->id."' ORDER BY u.nom, u.prenom;";
-				$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_prof)>0) {
 					$tab_ele['groupes'][$cpt]['prof']=array();
 					$tab_ele['groupes'][$cpt]['prof_liste']="";
@@ -440,7 +440,7 @@ function info_eleve($ele_login) {
 	}
 
 	//===================================
-	$get_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM matieres_categories");
+	$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM matieres_categories");
 	$categories = array();
 	while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
 		$categories[] = $row["id"];
@@ -449,7 +449,7 @@ function info_eleve($ele_login) {
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
 		$sql="SELECT nom_complet FROM matieres_categories WHERE id='".$cat_id."';";
-		$res_cat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($res_cat) {
 			$cat_names[$cat_id]=mysql_result($res_cat, 0);
 		}
@@ -462,7 +462,7 @@ function info_eleve($ele_login) {
 
 	// Régime et redoublement
 	$sql="SELECT * FROM j_eleves_regime WHERE login='".$ele_login."';";
-	$res_ele_reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele_reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_ele_reg)>0) {
 		$lig_ele_reg=mysqli_fetch_object($res_ele_reg);
 
@@ -472,7 +472,7 @@ function info_eleve($ele_login) {
 
 	//$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$ele_login."' AND e.id = j.id_etablissement);";
 	$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$tab_ele['elenoet']."' AND e.id = j.id_etablissement);";
-	$data_etab = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$data_etab = mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($data_etab)>0) {
 		$tab_ele['etab_id'] = @mysql_result($data_etab, 0, "id");
 		$tab_ele['etab_nom'] = @mysql_result($data_etab, 0, "nom");
@@ -501,7 +501,7 @@ function info_eleve($ele_login) {
 
 	// Récup infos CPE
 	$sql="SELECT u.* FROM j_eleves_cpe jec, utilisateurs u WHERE e_login='".$ele_login."' AND jec.cpe_login=u.login;";
-	$res_cpe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_cpe)>0) {
 		$lig_cpe=mysqli_fetch_object($res_cpe);
 		$tab_ele['cpe']=array();
@@ -547,7 +547,7 @@ function info_eleve($ele_login) {
 							r.pers_id=rp.pers_id AND
 							rp.adr_id=ra.adr_id
 					ORDER BY resp_legal;";
-		$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 		//echo "$sql<br />";
 		if(mysqli_num_rows($res_resp)>0) {
 			$cpt=0;
@@ -581,7 +581,7 @@ function info_eleve($ele_login) {
 				if($lig_resp->login!="") {
 					$sql="SELECT etat, auth_mode FROM utilisateurs WHERE login='".$lig_resp->login."';";
 					//echo "$sql<br />";
-					$res_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_u)>0) {
 						$lig_u=mysqli_fetch_object($res_u);
 						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
@@ -607,7 +607,7 @@ function info_eleve($ele_login) {
 							r.pers_id=rp.pers_id AND
 							rp.adr_id=ra.adr_id
 					ORDER BY resp_legal;";
-		$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 		//echo "$sql<br />";
 		if(mysqli_num_rows($res_resp)>0) {
 			//$cpt=0;
@@ -642,7 +642,7 @@ function info_eleve($ele_login) {
 				if($lig_resp->login!="") {
 					$sql="SELECT etat, auth_mode FROM utilisateurs WHERE login='".$lig_resp->login."';";
 					//echo "$sql<br />";
-					$res_u=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_u)>0) {
 						$lig_u=mysqli_fetch_object($res_u);
 						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
@@ -669,7 +669,7 @@ function info_eleve($ele_login) {
 		// Un DISTINCT pour éviter les trois exemplaires dûs à j_eleves_groupes
 		$sql="SELECT DISTINCT cte.* FROM  ct_entry cte, j_eleves_groupes jeg WHERE cte.id_groupe=jeg.id_groupe AND jeg.login='".$ele_login."' AND cte.date_ct>=$date_ct1 AND cte.date_ct<=$date_ct2 AND cte.date_ct<=$ts_limite_visibilite_comptes_rendus_pour_eleves ORDER BY cte.date_ct, cte.id_groupe;";
 		//echo "$sql<br />";
-		$res_ct=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ct=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_ct)>0) {
 			$cpt1=0;
 			while($lig_ct=mysqli_fetch_object($res_ct)) {
@@ -694,7 +694,7 @@ function info_eleve($ele_login) {
 
 		$sql="SELECT DISTINCT ctde.* FROM ct_devoirs_entry ctde, j_eleves_groupes jeg WHERE ctde.id_groupe=jeg.id_groupe AND jeg.login='".$ele_login."' AND ctde.date_ct>=$date_ct1 AND ctde.date_ct<=$date_ct2 AND ctde.date_ct<=$ts_limite_visibilite_devoirs_pour_eleves ORDER BY ctde.date_ct, ctde.id_groupe;";
 		//echo "$sql<br />";
-		$res_ct=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_ct=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt2=0;
 		if(mysqli_num_rows($res_ct)>0) {
 			//$cpt2=0;
@@ -751,7 +751,7 @@ function info_eleve($ele_login) {
 
 	$tab_ele['absences']=array();
 	$sql="SELECT * FROM absences WHERE login='$ele_login' ORDER BY periode;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$cpt=0;
 		while($lig=mysqli_fetch_object($res)) {
@@ -772,7 +772,7 @@ function info_eleve($ele_login) {
 	$ts_quinze_jours_avant = date("U") - 1296000;
 
 	$sql2 = "SELECT DISTINCT * FROM absences_rb WHERE eleve_id = '".$ele_login."' AND date_saisie > '".$ts_quinze_jours_avant."'";
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql2);
+	$query = mysqli_query($GLOBALS["mysqli"], $sql2);
 
 	if ($query) {
 		$test = mysqli_num_rows($query);
@@ -784,7 +784,7 @@ function info_eleve($ele_login) {
 		while($rep = mysqli_fetch_object($query)){
 
 			$jour = date("d/m", $rep->debut_ts);
-			$creneau = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$rep->creneau_id."' LIMIT 1"));
+			$creneau = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$rep->creneau_id."' LIMIT 1"));
 
 			$tab_ele['abs_quotidien'][$s]['retard_absence'] = $rep->retard_absence;
 			$tab_ele['abs_quotidien'][$s]['jour_semaine'] = $rep->jour_semaine . ' ' . $jour;

@@ -68,7 +68,7 @@ echo '
 
 	// choix de l'horaire
 
-	$req_heure = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux ORDER BY heuredebut_definie_periode");
+	$req_heure = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux ORDER BY heuredebut_definie_periode");
 	$rep_heure = mysqli_fetch_array($req_heure);
 
 echo '
@@ -96,7 +96,7 @@ echo '
 
 	// choix du jour
 
-	$req_jour = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id_horaire_etablissement, nom_horaire_etablissement FROM horaires_etablissement");
+	$req_jour = mysqli_query($GLOBALS["mysqli"], "SELECT id_horaire_etablissement, nom_horaire_etablissement FROM horaires_etablissement");
 	$rep_jour = mysqli_fetch_array($req_jour);
 
 echo '

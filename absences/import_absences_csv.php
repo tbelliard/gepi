@@ -39,10 +39,10 @@ if ($resultat_session == 'c') {
 
 // INSERT INTO droits VALUES ('/absences/import_absences_csv.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');
 $sql="SELECT 1=1 FROM droits WHERE id='/absences/import_absences_csv.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits VALUES ('/absences/import_absences_csv.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -99,7 +99,7 @@ include "../lib/periodes.inc.php";
 if(!isset($num_periode)) {
 
 	$sql="SELECT MAX(num_periode) AS max_per, id_classe FROM periodes GROUP BY id_classe ORDER BY max_per;";
-	$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	unset($tab_max_per);
 	$tab_max_per=array();
@@ -186,7 +186,7 @@ else {
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc, periodes p WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe AND p.id_classe = c.id  AND p.num_periode='$num_periode')  ORDER BY classe;";
 		}
 		//echo "$sql<br />\n";
-		$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$nb_classes = mysqli_num_rows($res_classe);
 		if ($nb_classes==0) {
@@ -221,7 +221,7 @@ else {
 				}
 
 				$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if(mysqli_num_rows($test)==0){
 					echo "<tr><td>&nbsp;</td><td>Classe: $classe (<i>pas de période?</i>)</td></tr>\n";
@@ -239,7 +239,7 @@ else {
 						else {
 							$sql="SELECT verouiller FROM periodes WHERE verouiller='N' AND id_classe='$id_classe' AND num_periode='$num_periode';";
 						}
-						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test)==0){
 							echo "<tr><td>&nbsp;</td><td>Classe: $classe (<i>période close</i>)</td></tr>\n";
 						}
@@ -361,13 +361,13 @@ else {
 				nbNonJustif INT(11) NOT NULL default '0',
 				nbRet INT(11) NOT NULL default '0',
 				UNIQUE KEY elenoet (elenoet));";
-				$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				// Menage:
 				//$sql="TRUNCATE TABLE temp_abs_import;";
 				$sql="DELETE FROM temp_abs_import WHERE cpe_login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
-				$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 				// On a fait en sorte à l'étape précédente, qu'il n'y ait qu'une classe ou plusieurs, que l'on transmette un tableau id_classe[]
@@ -406,7 +406,7 @@ else {
 						$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."') AND periode='$num_periode' AND $chaine_liste_classes;";
 						//echo "<!--\n$sql\n-->\n";
 						//echo "$sql<br />\n";
-						$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if(mysqli_num_rows($test)>0){
 
@@ -420,7 +420,7 @@ else {
 										FROM eleves e
 										WHERE (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."')";
 							//echo "<!--\n$sql\n-->\n";
-							$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res1)==0){
 								$ligne_tableau.="<td style='color:red;' colspan='3'>Elève absent de votre table 'eleves'???</td>\n";
 								$nb_err++;
@@ -438,7 +438,7 @@ else {
 									// Le CPE a-t-il bien cet élève:
 									$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='$lig1->login' AND jec.cpe_login='".$_SESSION['login']."'";
 									//echo "<!--\n$sql\n-->\n";
-									$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
 									if((mysqli_num_rows($test)==0)) {
 										$acces_a_cet_eleve="n";
@@ -458,7 +458,7 @@ else {
 									$sql="SELECT c.classe FROM j_eleves_classes jec, classes c
 											WHERE jec.login='$lig1->login' AND
 												jec.id_classe=c.id AND periode='$num_periode'";
-									$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res2)==0){
 										$ligne_tableau.="<span style='color:red;'>NA</span>\n";
 									}
@@ -482,7 +482,7 @@ else {
 									if((isset($eleves[$i]['elenoet']))&&(isset($eleves[$i]['nbAbs']))&&(isset($eleves[$i]['nbNonJustif']))&&(isset($eleves[$i]['nbRet']))) {
 										// Les absences de l'élève ont pu être importées par un autre cpe sans que l'opération soit menée à bout.
 										$sql="DELETE FROM temp_abs_import WHERE login='$lig1->login';";
-										$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 										$sql="INSERT INTO temp_abs_import SET login='$lig1->login',
 																			cpe_login='".$_SESSION['login']."',
@@ -490,7 +490,7 @@ else {
 																			nbAbs='".$eleves[$i]['nbAbs']."',
 																			nbNonJustif='".$eleves[$i]['nbNonJustif']."',
 																			nbRet='".$eleves[$i]['nbRet']."';";
-										$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert) {
 											echo "<span style='color:red;'>Erreur&nbsp;: $sql</span><br />\n";
 										}
@@ -566,7 +566,7 @@ else {
 			check_token();
 
 			$sql="SELECT * FROM temp_abs_import WHERE cpe_login='".$_SESSION['login']."';";
-			$res_t_a_i=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_t_a_i=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_t_a_i)==0) {
 				echo "<p style='color:red'>Aucune absence, retard,... n'ont été trouvés&nbsp;???</p>\n";
 				echo "<p><a href='".$_SERVER['PHP_SELF']."'>Recommencer</a></p>\n";
@@ -597,7 +597,7 @@ else {
 				else {
 					$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$num_periode' AND verouiller='N';";
 				}
-				$test_ver=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_ver=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if(mysqli_num_rows($test_ver)>0) {
 					if((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes'))||($_SESSION['statut']=='secours')) {
@@ -608,14 +608,14 @@ else {
 						$sql="SELECT jecl.login FROM j_eleves_classes jecl, j_eleves_cpe jec WHERE jecl.id_classe='$id_classe[$i]' AND jecl.periode='$num_periode' AND jecl.login=jec.e_login AND jec.cpe_login='".$_SESSION['login']."';";
 					}
 
-					$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_ele)>0){
 						while($lig_tmp=mysqli_fetch_object($res_ele)){
 							$sql="DELETE FROM absences WHERE login='$lig_tmp->login' AND periode='$num_periode';";
-							$res_menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							$sql="INSERT INTO absences SET login='$lig_tmp->login', periode='$num_periode', nb_absences='0', non_justifie='0', nb_retards='0';";
-							$res_ini=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_ini=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 				}
@@ -645,7 +645,7 @@ else {
 							// L'élève est-il associé au CPE:
 							// Il faudrait vraiment une tentative frauduleuse pour que ce ne soit pas le cas...
 							$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='".$log_eleve[$i]."' AND jec.cpe_login='".$_SESSION['login']."';";
-							$res_test0=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_test0=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_test0)!=0){
 								$test0=true;
 							}
@@ -658,21 +658,21 @@ else {
 						$sql="SELECT 1=1 FROM periodes p,j_eleves_classes jec WHERE p.num_periode='$num_periode' AND p.verouiller='N' AND jec.login='$log_eleve[$i]' AND p.id_classe=jec.id_classe AND p.num_periode=jec.periode;";
 					}
 					//echo "$sql<br />";
-					$test2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test2=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					//if($test0==true){
 					if(($test0==true)&&(mysqli_num_rows($test2)>0)) {
 						if(($nb_ok>0)||($nb_err>0)){echo ", ";}
 
 						$sql="SELECT 1=1 FROM absences WHERE periode='$num_periode' AND login='".$log_eleve[$i]."';";
-						$test1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test1=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test1)==0){
 							$sql="INSERT INTO absences SET periode='$num_periode',
 															login='".$log_eleve[$i]."',
 															nb_absences='".$nbabs_eleve[$i]."',
 															nb_retards='".$nbret_eleve[$i]."',
 															non_justifie='".$nbnj_eleve[$i]."';";
-							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($insert){
 								$nb_ok++;
 								echo "<span style='color:green;'>".$log_eleve[$i]."</span>";
@@ -688,7 +688,7 @@ else {
 														non_justifie='".$nbnj_eleve[$i]."'
 													WHERE periode='$num_periode' AND
 															login='".$log_eleve[$i]."';";
-							$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($update){
 								$nb_ok++;
 								echo "<span style='color:green;'>".$log_eleve[$i]."</span>";

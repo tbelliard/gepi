@@ -97,8 +97,8 @@ if ($etape != NULL) {
 		$sql="INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
 					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')";
 		//echo "<br />$sql<br />";
-		$envoie = mysqli_query($GLOBALS["___mysqli_ston"], $sql)
-					OR error_reporting('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />'.$envoie);
+		$envoie = mysqli_query($GLOBALS["mysqli"], $sql)
+					OR error_reporting('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />'.$envoie);
 		// On récupère le nombre de valeurs enregistrées et on affiche
 		if ($etape == 6 OR $etape == 8 OR $etape == 9 OR $etape == 11) {
 			echo '<p>Aucun enregistrement, passez à l\'étape suivante.</p>';
@@ -141,7 +141,7 @@ if ($etape != NULL) {
 		$i=0;
 		//$sql="SELECT * FROM tempo2;";
 		$sql="SELECT texte AS col1 FROM tempo5;";
-		$res_tempo=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_tempo=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig_tempo=mysqli_fetch_object($res_tempo)) {
 			// On initialise toutes les variables et on affiche la valeur de chaque cours
 			//$ligne = isset($_POST["ligne_".$i]) ? $_POST["ligne_".$i] : NULL;
@@ -215,7 +215,7 @@ if ($etape != NULL) {
 	// On incrémente le numéro de l'étape
 	if ($etape != 12) {
 		$prochaine_etape = $etape + 1;
-		$vers_etape2 = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte2'");
+		$vers_etape2 = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte2'");
 		// et on affiche un lien qui permet de continuer
 		echo '
 		<a href="edt_init_csv2.php">Pour continuer les concordances, veuillez recommencer la même procédure pour l\'étape n° '.$prochaine_etape.'</a>';

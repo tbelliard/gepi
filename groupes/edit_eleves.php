@@ -106,31 +106,31 @@ if (isset($_POST['is_posted'])) {
 	// On vide les signalements par un prof lors de l'enregistrement
 	$sql="DELETE FROM j_signalement WHERE id_groupe='$id_groupe' AND nature='erreur_affect';";
 	//echo "$sql<br />";
-	$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	// Elèves
 	$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$id_groupe' ORDER BY login";
 	debug_edit_eleves($sql);
-	$result_liste_eleves_du_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$result_liste_eleves_du_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	while($lig_eleve=mysqli_fetch_object($result_liste_eleves_du_grp)){
 		$temoin_nettoyage="";
 		foreach($current_group["periodes"] as $period) {
 			//$sql="SELECT * FROM matieres_notes WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='$period'";
 			$sql="SELECT * FROM matieres_notes WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='".$period['num_periode']."';";
 			debug_edit_eleves($sql);
-			$res_liste_notes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_liste_notes=mysqli_query($GLOBALS["mysqli"], $sql);
 			//$sql="SELECT * FROM matieres_appreciations WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='$period'";
 			//$sql="SELECT * FROM matieres_appreciations WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='$period'";
 			$sql="SELECT * FROM matieres_appreciations WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='".$period['num_periode']."';";
 			debug_edit_eleves($sql);
-			$res_liste_appreciations=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_liste_appreciations=mysqli_query($GLOBALS["mysqli"], $sql);
 			if((mysqli_num_rows($res_liste_notes)==0)&&(mysqli_num_rows($res_liste_appreciations)==0)){
 				//$sql="DELETE FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='$lig_eleve->login'";
 				//$sql="DELETE FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='$lig_eleve->login' AND periode='$period'";
 				$sql="DELETE FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='$lig_eleve->login' AND periode='".$period['num_periode']."';";
 				debug_edit_eleves($sql);
 				//echo "$sql<br />\n";
-				$resultat_nettoyage_initial=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$resultat_nettoyage_initial=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 	}
@@ -214,7 +214,7 @@ if (isset($_POST['is_posted'])) {
 						$sql="delete from j_eleves_groupes where (id_groupe = '" . $id_groupe . "' and login = '" . $login_eleve[$i] . "' and periode = '" . $period["num_periode"] . "')";
 						debug_edit_eleves($sql);
 						//echo "<!-- sql=$sql -->\n";
-						$res = mysqli_query($GLOBALS["___mysqli_ston"], "delete from j_eleves_groupes where (id_groupe = '" . $id_groupe . "' and login = '" . $login_eleve[$i] . "' and periode = '" . $period["num_periode"] . "')");
+						$res = mysqli_query($GLOBALS["mysqli"], "delete from j_eleves_groupes where (id_groupe = '" . $id_groupe . "' and login = '" . $login_eleve[$i] . "' and periode = '" . $period["num_periode"] . "')");
 						if (!$res) $errors = true;
 					} else {
 						$msg .= "Erreur lors de la suppression de l'élève ayant le login '" . $login_eleve[$i] . "', pour la période '" . $period["num_periode"] . " (des notes ou appréciations existent).<br/>";
@@ -254,7 +254,7 @@ $nb_periode=$current_group['nb_periode'];
 $tab_autres_sig=array();
 $sql="SELECT DISTINCT id_groupe FROM j_signalement WHERE nature='erreur_affect' AND id_groupe!='$id_groupe';";
 //echo "$sql<br />";
-$res_autres_sig=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_autres_sig=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_autres_sig)>0) {
 	while($lig_autres_sig=mysqli_fetch_object($res_autres_sig)) {
 		$tab_autres_sig[]=$lig_autres_sig->id_groupe;
@@ -264,7 +264,7 @@ if(mysqli_num_rows($res_autres_sig)>0) {
 $tab_sig=array();
 $sql="SELECT * FROM j_signalement WHERE id_groupe='$id_groupe' AND nature='erreur_affect' ORDER BY periode, login;";
 //echo "$sql<br />";
-$res_sig=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_sig=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_sig)>0) {
 	while($lig_sig=mysqli_fetch_object($res_sig)) {
 		$tab_sig[$lig_sig->periode][$lig_sig->login]=my_ereg_replace("_"," ",$lig_sig->valeur)." selon ".affiche_utilisateur($lig_sig->declarant,$id_classe);
@@ -370,7 +370,7 @@ else {
 //$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe AND g.id=jgc.id_groupe AND jgc.id_groupe!='$id_groupe' ORDER BY g.name;";
 $sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc WHERE jgc.id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY g.name;";
 //echo "$sql<br />\n";
-$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_grp)>1) {
 	echo " | ";
 
@@ -434,7 +434,7 @@ echo "</div>\n";
 // Formulaire pour passer à un autre groupe de la même matière éventuellement dans une autre classe
 $sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, classes c, j_groupes_matieres jgm WHERE jgc.id_classe=c.id AND g.id=jgc.id_groupe AND g.id=jgm.id_groupe AND jgm.id_matiere='".$current_group['matiere']['matiere']."' ORDER BY c.classe, g.name;";
 //echo "$sql<br />\n";
-$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_grp)>1) {
 
 	echo "<div style='float:left;'>";
@@ -573,7 +573,7 @@ echo "<div style='clear:both;'></div>\n";
 		for($loop_per=1;$loop_per<$current_group["nb_periode"];$loop_per++) {
 			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$current_group["classes"]["list"][$loop]."' AND periode='".$loop_per."';";
 			//echo "$sql<br />";
-			$res_compte=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_compte=mysqli_query($GLOBALS["mysqli"], $sql);
 			$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per]=mysqli_num_rows($res_compte);
 		}
 	}
@@ -582,7 +582,7 @@ echo "<div style='clear:both;'></div>\n";
 
 	$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe AND g.id=jgc.id_groupe AND jgc.id_groupe!='$id_groupe' ORDER BY g.name;";
 	//echo "$sql<br />\n";
-	$res_grp_avec_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_grp_avec_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_grp_avec_eleves)>0) {
 		echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_copie_ele' method='post'>\n";
 		echo "<p>\n";
@@ -721,7 +721,7 @@ echo "<tr><th>";
 unset($login_eleve);
 //=========================
 
-$calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT distinct(j.login), j.id_classe, c.classe, e.nom, e.prenom FROM eleves e, j_eleves_classes j, classes c WHERE (" . $conditions . ") ORDER BY ".$order_conditions);
+$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(j.login), j.id_classe, c.classe, e.nom, e.prenom FROM eleves e, j_eleves_classes j, classes c WHERE (" . $conditions . ") ORDER BY ".$order_conditions);
 $nb = mysqli_num_rows($calldata);
 $eleves_list = array();
 $eleves_list["list"]=array();
@@ -850,7 +850,7 @@ if(count($total_eleves)>0) {
 			// AJOUT: boireaus 20080229
 			// Test de l'appartenance à plusieurs classes
 			$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='$e_login';";
-			$test_plusieurs_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_plusieurs_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_plusieurs_classes)==1) {
 				$temoin_eleve_changeant_de_classe="n";
 			}
@@ -940,7 +940,7 @@ if(count($total_eleves)>0) {
 					//$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$e_login' AND id_classe='".$new_classe."' AND periode='".$period["num_periode"]."'";
 					$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$e_login' AND $chaine_sql_classe AND periode='".$period["num_periode"]."'";
 					//=========================
-					$res_test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_test)>0){
 						//=========================
 						// MODIF: boireaus 20071010
@@ -968,7 +968,7 @@ if(count($total_eleves)>0) {
 						}
 
 						$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";
-						$test_cn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 						$nb_notes_cn=mysqli_num_rows($test_cn);
 						if($nb_notes_cn>0) {
 							echo "<img id='img_cn_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
@@ -986,7 +986,7 @@ if(count($total_eleves)>0) {
 						// AJOUT: boireaus 20080229
 						if($temoin_eleve_changeant_de_classe=="y") {
 							$sql="SELECT c.classe FROM classes c, j_eleves_classes jec WHERE jec.login='$e_login' AND jec.id_classe=c.id AND jec.periode='".$period["num_periode"]."';";
-							$res_classe_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_classe_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_classe_ele)>0){
 								$lig_tmp=mysqli_fetch_object($res_classe_ele);
 								echo " $lig_tmp->classe";

@@ -203,7 +203,7 @@ if (isset($is_posted )) {
                             //login
                             $reg_login = "reg_".$row."_login";
                             $reg_statut = "reg_".$row."_statut";
-                            $call_login = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM eleves WHERE login='" . $data[$c] . "'");
+                            $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='" . $data[$c] . "'");
                             $test = @mysqli_num_rows($call_login);
                             if ($test != 0) {
                                 $nom_eleve = @mysql_result($call_login, 0, "nom");

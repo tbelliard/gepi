@@ -484,7 +484,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 			$sql='SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
 		}
 		//echo "$sql<br />";
-		$call_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$call_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 
 		//on compte les élèves sélectionnés
 		$nb_eleves = mysqli_num_rows($call_eleve);
@@ -496,7 +496,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 			$sexe[$cpt_i] = $donner['sexe'];
 
 			$sql="SELECT * FROM j_eleves_regime WHERE login='".$donner['login']."';";
-			$regime_doublant_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$regime_doublant_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($regime_doublant_eleve)>0)
 			{
 
@@ -569,14 +569,14 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 			//les responsables
 			$nombre_de_responsable = 0;
 			//$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
-			$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2'))"),0);
+			$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2'))"),0);
 			//echo "\$nombre_de_responsable=$nombre_de_responsable<br />";
 			if($nombre_de_responsable != 0)
 			{
 
 				$cpt_parents = 0;
 				//$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
-				$requete_parents = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY resp_legal ASC");
+				$requete_parents = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY resp_legal ASC");
 				while ($donner_parents = mysqli_fetch_array($requete_parents))
 				{
 
@@ -662,7 +662,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 		//echo $sql."<br />";
 
-		$base_complete_information = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$base_complete_information = mysqli_query($GLOBALS["mysqli"], $sql);
 
 		// répartition des informations pour un relevé
 		$id_groupe_avant = "";
@@ -674,7 +674,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 		{
 
 			$sql_groupe = "SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='".$donne_requete['id_groupe']."' AND login='".$donne_requete['login']."';";
-			$test_eleve_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql_groupe);
+			$test_eleve_grp=mysqli_query($GLOBALS["mysqli"], $sql_groupe);
 
 			if ( mysqli_num_rows($test_eleve_grp)>0 )
 			{
@@ -837,7 +837,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					if(empty($prof_groupe[$id_groupe_selectionne][0]))
 					{
 
-						$call_profs = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT u.login FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_groupes_professeurs j WHERE ( u.login = j.login and j.id_groupe="'.$id_groupe_selectionne.'") ORDER BY j.ordre_prof');
+						$call_profs = mysqli_query($GLOBALS["mysqli"], 'SELECT u.login FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_groupes_professeurs j WHERE ( u.login = j.login and j.id_groupe="'.$id_groupe_selectionne.'") ORDER BY j.ordre_prof');
 						$nombre_profs = mysqli_num_rows($call_profs);
 						$k = 0;
 

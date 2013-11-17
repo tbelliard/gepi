@@ -113,7 +113,7 @@ if((isset($id_classe))&&(isset($periode_num))&&(isset($_GET['mode']))&&($_GET['m
 			$sql="UPDATE matieres_appreciations_acces SET acces='y' WHERE id_classe='$id_classe' AND periode='$periode_num';";
 			$msg="L'accès parent/élève est maintenant ouvert pour la période n°$periode_num.<br />";
 		}
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			$msg="Erreur lors de la modification de la visibilité parent/élève.<br />";
 		}
@@ -150,7 +150,7 @@ if (isset($_POST['is_posted'])) {
 
 			// On vérifie que l'élève est bien dans cette classe sur cette période pour éviter qu'un PP mette un avis à un élève qui a changé de classe
 			$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$current_eleve_login."' AND id_classe='$id_classe' AND periode='$periode_num';";
-			$test_ele_clas_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_ele_clas_per=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_ele_clas_per)==0) {
 				$msg = "L'élève ".get_nom_prenom_eleve($current_eleve_login, "avec_classe")." n'est plus dans la classe de ".get_nom_classe($id_classe)." sur la période $periode_num.";
 				$reg = 'no';
@@ -171,13 +171,13 @@ if (isset($_POST['is_posted'])) {
 		if ($reg == 'yes') {
 
 			$sql="DELETE FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num');";
-			$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(($current_eleve_login_ap!='')||((isset($current_eleve_mention)&&($current_eleve_mention!=0)))) {
 				$sql="INSERT INTO avis_conseil_classe SET login='$current_eleve_login',periode='$periode_num',avis='$current_eleve_login_ap',";
 				if(isset($current_eleve_mention)) {$sql.="id_mention='$current_eleve_mention',";}
 				$sql.="statut=''";
-				$register = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$register = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if (!$register) {
 					$msg = "Erreur lors de l'enregistrement des données.";
@@ -225,7 +225,7 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 		//echo "$sql<br />";
-		$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_eleve = mysqli_num_rows($appel_donnees_eleves);
 		$current_eleve_login = @mysql_result($appel_donnees_eleves, $ind_eleve_login_suiv, "login");
 		$ind_eleve_login_suiv++;
@@ -376,7 +376,7 @@ $chaine_options_classes="";
 $cpt_classe=0;
 $num_classe=-1;
 
-$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_classes_suivies=mysqli_num_rows($res_class_tmp);
 if($nb_classes_suivies>0){
 	$id_class_prec=0;
@@ -545,7 +545,7 @@ echo "</form>\n";
 		}
 	}
 	//echo "<tr><td colspan='2'>$sql</td></tr>";
-	$appel_donnees_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 	$i = "0";
 	$alt=1;
@@ -556,7 +556,7 @@ echo "</form>\n";
 		if ($i < $nombre_lignes-1) $ind_eleve_login_suiv = $i+1;
 		$current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
 		$current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
-		$current_eleve_avis_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
+		$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 		$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 		// ***** AJOUT POUR LES MENTIONS *****
         $current_eleve_mention = @mysql_result($current_eleve_avis_query, 0, "id_mention");
@@ -604,7 +604,7 @@ echo "</form>\n";
 	}
 
 	$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$periode_num');";
-	$res_current_synthese=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_current_synthese=mysqli_query($GLOBALS["mysqli"], $sql);
 	$current_synthese= @mysql_result($res_current_synthese, 0, "synthese");
 	if ($current_synthese=='') {$current_synthese='-';}
 
@@ -644,7 +644,7 @@ if (isset($fiche)) {
 */
 
 	// On teste la présence d'au moins un coeff pour afficher la colonne des coef
-	$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+	$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 
 	// On remonte $affiche_categories au-dessus de include "../lib/calcul_rang.inc.php"; sans quoi il se produit des erreurs.
 	$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
@@ -989,7 +989,7 @@ if (isset($fiche)) {
 
 	//bulletin($current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
 	bulletin($tab_moy,$current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories,'y');
-	$current_eleve_avis_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
+	$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 	$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 	// ***** AJOUT POUR LES MENTIONS *****
 	$current_eleve_mention = @mysql_result($current_eleve_avis_query, 0, "id_mention");
@@ -1016,7 +1016,7 @@ if (isset($fiche)) {
 	//==========================
 	// Photo
 	$sql="SELECT elenoet, nom, prenom, sexe FROM eleves WHERE login='$current_eleve_login';";
-	$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	$lig_ele=mysqli_fetch_object($res_ele);
 	$current_eleve_elenoet=$lig_ele->elenoet;
 	$current_eleve_nom=$lig_ele->nom;

@@ -79,7 +79,7 @@ if (!(Verif_prof_cahier_notes($_SESSION['login'],$id_racine))) {
     die();
 }
 
-$appel_cahier_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
+$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
 $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 $periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
@@ -92,7 +92,7 @@ $id_dev = isset($_POST["id_dev"]) ? $_POST["id_dev"] : (isset($_GET["id_dev"]) ?
 
 if ($id_dev)  {
 	$sql="SELECT * FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$query = mysqli_query($GLOBALS["mysqli"], $sql);
 	if($query) {
 		$id_cn_dev = mysql_result($query, 0, 'id_cn_dev');
 		$nom_court = mysql_result($query, 0, 'nom_court');
@@ -139,12 +139,12 @@ if (isset($_POST['is_posted'])) {
 
 	if(!isset($id_dev)) {
 		$sql="INSERT INTO cc_dev SET id_groupe='$id_groupe', nom_court='$nom_court', nom_complet='$nom_complet', description='$description', arrondir='$precision', vision_famille='$famille';";
-		$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$insert) {
 			$msg.="Erreur lors de la création du $nom_cc.";
 		}
 		else {
-			$id_dev=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+			$id_dev=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 			$msg.="Création du $nom_cc effectuée.";
 		}
 		header("Location: index_cc.php?id_racine=$id_racine&msg=$msg");
@@ -157,7 +157,7 @@ if (isset($_POST['is_posted'])) {
 		// Sinon, il faut mettre à jour le devoir associé
 		
 		$sql="UPDATE cc_dev SET nom_court='$nom_court', nom_complet='$nom_complet', description='$description', arrondir='$precision', vision_famille='$famille' WHERE id_groupe='$id_groupe' AND id='$id_dev';";
-		$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$update) {
 			$msg.="Erreur lors de la mise à jour du $nom_cc.";
 		}

@@ -144,7 +144,7 @@ check_token();
 				if((isset($info_verif_mot_de_passe))&&($info_verif_mot_de_passe!="")) {$msg.="<br />".$info_verif_mot_de_passe;}
 			} else {
 				// Le teste suivant détecte si un utilisateur existe avec le même login (insensible à la casse)
-				$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM utilisateurs WHERE (login = '".$_POST['new_login']."' OR login = '".strtoupper($_POST['new_login'])."')");
+				$test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM utilisateurs WHERE (login = '".$_POST['new_login']."' OR login = '".strtoupper($_POST['new_login'])."')");
 				$nombreligne = mysqli_num_rows($test);
 				if ($nombreligne != 0) {
 					$resultat = "NON";
@@ -179,21 +179,21 @@ check_token();
 						// Ensuite, on enregistre dans la base, en distinguant selon le type d'authentification.
 						if ($_POST['reg_auth_mode'] == "gepi") {
 							// On enregistre le mot de passe
-							$reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='$reg_password_c',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='y'");
+							$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='$reg_password_c',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='y'");
 						} else {
 							// Auth LDAP ou SSO, pas de mot de passe.
-							$reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='n'");
+							$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='n'");
 						}
 
 						if ($_POST['reg_statut'] == "professeur") {
-							$del = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$_POST['new_login']."'");
+							$del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$_POST['new_login']."'");
 							$m = 0;
 							while ($m < $_POST['max_mat']) {
 								if ($reg_matiere[$m] != '') {
-									$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_professeurs_matieres WHERE (id_professeur = '".$_POST['new_login']."' and id_matiere = '$reg_matiere[$m]')");
+									$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_professeurs_matieres WHERE (id_professeur = '".$_POST['new_login']."' and id_matiere = '$reg_matiere[$m]')");
 									$resultat = mysqli_num_rows($test);
 									if ($resultat == 0) {
-										$reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_professeurs_matieres SET id_professeur = '".$_POST['new_login']."', id_matiere = '$reg_matiere[$m]', ordre_matieres = '0'");
+										$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_professeurs_matieres SET id_professeur = '".$_POST['new_login']."', id_matiere = '$reg_matiere[$m]', ordre_matieres = '0'");
 									}
 								}
 								$reg_matiere[$m] = '';
@@ -215,11 +215,11 @@ check_token();
 			if($temoin_ajout_ou_modif_ok=="y") {
 				if ($_POST['reg_statut']=='scolarite'){
 					$sql="SELECT c.id FROM classes c;";
-					$res_liste_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_liste_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_liste_classes)>0){
 						while($ligtmp=mysqli_fetch_object($res_liste_classes)) {
 							$sql="INSERT INTO j_scol_classes SET id_classe='$ligtmp->id', login='".$_POST['new_login']."';";
-							$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$insert){
 								$msg.="<br />Erreur lors de l'association avec la classe ".get_class_from_id($ligtmp->id);
 							}
@@ -243,11 +243,11 @@ check_token();
 			}
 
 			// Si on change le mode d'authentification, il faut quelques opérations particulières
-			$old_auth_mode = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+			$old_auth_mode = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
 			if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
 				// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
-				$oldmd5password = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT password FROM utilisateurs WHERE login = '".$user_login."'"), 0);
-				mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$user_login."'");
+				$oldmd5password = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT password FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+				mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$user_login."'");
 				$msg = "Passage à un mode d'authentification externe : ";
 				// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
 				if ($gepiSettings['ldap_write_access'] == "yes") {
@@ -267,7 +267,7 @@ check_token();
 			$change = "yes";
 			$flag = '';
 			if ($_POST['reg_statut'] != "professeur") {
-				$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_groupes_professeurs WHERE (login='".$user_login."')");
+				$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_groupes_professeurs WHERE (login='".$user_login."')");
 				$nb = mysqli_num_rows($test);
 				if ($nb != 0) {
 					$msg = "Impossible de changer le statut. Cet utilisateur est actuellement professeur dans certaines classes !";
@@ -283,7 +283,7 @@ check_token();
 
 			if ($_POST['reg_statut'] == "professeur") {
 				//$test = mysql_query("SELECT jgm.id_matiere FROM j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE (" .
-				$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT(jgm.id_matiere) FROM j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE (" .
+				$test = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT(jgm.id_matiere) FROM j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE (" .
 					"jgp.login = '".$user_login."' and " .
 					"jgm.id_groupe = jgp.id_groupe)");
 				$nb = mysqli_num_rows($test);
@@ -324,14 +324,14 @@ check_token();
 				$temoin_ajout_ou_modif_ok="y";
 
 				$sql="SELECT statut FROM utilisateurs WHERE login='$user_login';";
-				$res_statut_user=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_statut_user=mysqli_query($GLOBALS["mysqli"], $sql);
 				$lig_tmp=mysqli_fetch_object($res_statut_user);
 
 				// Si l'utilisateur était CPE, il faut supprimer les associations dans la table j_eleves_cpe
 				if($lig_tmp->statut=="cpe"){
 					if($_POST['reg_statut']!="cpe"){
 						$sql="DELETE FROM j_eleves_cpe WHERE cpe_login='$user_login';";
-						$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
@@ -339,7 +339,7 @@ check_token();
 				if($lig_tmp->statut=="scolarite"){
 					if($_POST['reg_statut']!="scolarite"){
 						$sql="DELETE FROM j_scol_classes WHERE login='$user_login';";
-						$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
@@ -368,16 +368,16 @@ check_token();
 				}
 
 
-				$reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."',auth_mode='".$_POST['reg_auth_mode']."' WHERE login='".$user_login."'");
-				$del = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$user_login."'");
+				$reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."',auth_mode='".$_POST['reg_auth_mode']."' WHERE login='".$user_login."'");
+				$del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$user_login."'");
 				$m = 0;
 				while ($m < $_POST['max_mat']) {
 					$num=$m+1;
 					if ($reg_matiere[$m] != '') {
-						$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_professeurs_matieres WHERE (id_professeur = '".$user_login."' and id_matiere = '$reg_matiere[$m]')");
+						$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_professeurs_matieres WHERE (id_professeur = '".$user_login."' and id_matiere = '$reg_matiere[$m]')");
 						$resultat = mysqli_num_rows($test);
 						if ($resultat == 0) {
-						$reg = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO j_professeurs_matieres SET id_professeur = '".$user_login."', id_matiere = '$reg_matiere[$m]', ordre_matieres = '$num'");
+						$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_professeurs_matieres SET id_professeur = '".$user_login."', id_matiere = '$reg_matiere[$m]', ordre_matieres = '$num'");
 						}
 						$reg_matiere[$m] = '';
 					}
@@ -404,7 +404,7 @@ check_token();
 			// pour le module trombinoscope
 			// Envoi de la photo
 			$i_photo = 0;
-			$calldata_photo = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM utilisateurs WHERE (login = '".$user_login."')");
+			$calldata_photo = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE (login = '".$user_login."')");
 
 		// En multisite, on ajoute le répertoire RNE
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
@@ -479,7 +479,7 @@ elseif(isset($_POST['suppression_assoc_user_groupes'])) {
 
 	$user_group=isset($_POST["user_group"]) ? $_POST["user_group"] : array();
 
-	$call_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT g.id group_id, g.name name, c.classe classe, c.id classe_id " .
+	$call_classes = mysqli_query($GLOBALS["mysqli"], "SELECT g.id group_id, g.name name, c.classe classe, c.id classe_id " .
 			"FROM j_groupes_professeurs jgp, j_groupes_classes jgc, groupes g, classes c WHERE (" .
 			"jgp.login = '$user_login' and " .
 			"g.id = jgp.id_groupe and " .
@@ -498,7 +498,7 @@ elseif(isset($_POST['suppression_assoc_user_groupes'])) {
 			if(!in_array($user_classe['group_id'],$user_group)) {
 				$sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='".$user_classe['group_id']."' AND login='$user_login';";
 				//echo "$sql<br />\n";
-				$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($suppr) {
 					$msg.="Suppression de l'association avec l'enseignement ".$user_classe['matiere_nom_court']." en ".$user_classe['classe_nom_court']."<br />\n";
 				}
@@ -515,7 +515,7 @@ elseif(isset($_POST['suppression_assoc_user_groupes'])) {
 // On appelle les informations de l'utilisateur pour les afficher :
 if (isset($user_login) and ($user_login!='')) {
 
-	$call_user_info = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM utilisateurs WHERE login='".$user_login."'");
+	$call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login='".$user_login."'");
 	$user_auth_mode = mysql_result($call_user_info, "0", "auth_mode");
 	$user_nom = mysql_result($call_user_info, "0", "nom");
 	$user_prenom = mysql_result($call_user_info, "0", "prenom");
@@ -525,7 +525,7 @@ if (isset($user_login) and ($user_login!='')) {
 	$user_etat = mysql_result($call_user_info, "0", "etat");
 	$date_verrouillage = mysql_result($call_user_info, "0", "date_verrouillage");
 
-	$call_matieres = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '".$user_login."' ORDER BY ordre_matieres");
+	$call_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '".$user_login."' ORDER BY ordre_matieres");
 	$nb_mat = mysqli_num_rows($call_matieres);
 	$k = 0;
 	while ($k < $nb_mat) {
@@ -536,7 +536,7 @@ if (isset($user_login) and ($user_login!='')) {
 	// Utilisateurs précédent/suivant:
 	//$sql="SELECT login,nom,prenom FROM utilisateurs WHERE statut='$user_statut' ORDER BY nom,prenom";
 	$sql="SELECT login,nom,prenom FROM utilisateurs WHERE statut='$user_statut' AND etat='actif' ORDER BY nom,prenom";
-	$res_liste_user=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_liste_user=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_liste_user)>0){
 		$login_user_prec="";
 		$login_user_suiv="";
@@ -866,7 +866,7 @@ while ($k < $nb_mat+1) {
 	echo "Matière N°$num_mat (<em>si professeur</em>)&nbsp;: ";
 	$temp = "matiere_".$k;
 	echo "<select size=1 name='$temp' onchange=\"changement()\">\n";
-	$calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres ORDER BY matiere");
+	$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres ORDER BY matiere");
 	$nombreligne = mysqli_num_rows($calldata);
 	echo "<option value='' "; if (!(isset($user_matiere[$k]))) {echo " selected";} echo ">(vide)</option>\n";
 	$i = 0;

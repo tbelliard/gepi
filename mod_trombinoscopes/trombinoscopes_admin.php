@@ -239,7 +239,7 @@ function purge_dossier_photos($type_utilisateurs) {
 	if ($type_utilisateurs=="eleves")
 		{
 		$r_sql="SELECT `elenoet` FROM `eleves`";
-		$R_identifiants=mysqli_query($GLOBALS["___mysqli_ston"], $r_sql);
+		$R_identifiants=mysqli_query($GLOBALS["mysqli"], $r_sql);
 		if ($R_identifiants)
 			{
 			while ($pt<mysqli_num_rows($R_identifiants))
@@ -251,7 +251,7 @@ function purge_dossier_photos($type_utilisateurs) {
 		}
 	// pour les personnels (et pour les élèves en multisite) on cherchera parmi les fichiers login.jpg
 	$r_sql="SELECT `login` FROM `".($type_utilisateurs=="personnels"?"utilisateurs":"eleves")."`";
-	$R_identifiants=mysqli_query($GLOBALS["___mysqli_ston"], $r_sql);
+	$R_identifiants=mysqli_query($GLOBALS["mysqli"], $r_sql);
 	if ($R_identifiants)
 		{
 
@@ -272,7 +272,7 @@ function purge_dossier_photos($type_utilisateurs) {
 			$r_sql="SELECT `utilisateurs`.`login`,`eleves`.`elenoet` FROM `utilisateurs`,`eleves` WHERE (`statut`='eleve' AND `etat`='inactif' AND `utilisateurs`.`login`=`eleves`.`login`)";
 			else
 			$r_sql="SELECT `utilisateurs`.`login` FROM `utilisateurs` WHERE `etat`='inactif'";
-		$R_inactifs=mysqli_query($GLOBALS["___mysqli_ston"], $r_sql);
+		$R_inactifs=mysqli_query($GLOBALS["mysqli"], $r_sql);
 		if ($R_inactifs)
 			{
 			$pt=0;
@@ -442,7 +442,7 @@ if (isset($_POST['num_aid_trombinoscopes'])) {
 		if (!saveSetting("num_aid_trombinoscopes", $_POST['num_aid_trombinoscopes']))
 				$msg_parametres .= "Erreur lors de l'enregistrement du paramètre num_aid_trombinoscopes !<br />";
 	} else {
-		$del_num_aid_trombinoscopes = mysqli_query($GLOBALS["___mysqli_ston"], "delete from setting where NAME='num_aid_trombinoscopes'");
+		$del_num_aid_trombinoscopes = mysqli_query($GLOBALS["mysqli"], "delete from setting where NAME='num_aid_trombinoscopes'");
 		$gepiSettings['num_aid_trombinoscopes']="";
 	}
 }
@@ -699,7 +699,7 @@ if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
 	$csv="";
 	$csv.="\"classe\",\"nom\",\"prénom\",\"prénom nom\",\"login\",\"elenoet\"\n";
 	$r_sql="SELECT `eleves`.`nom`,`eleves`.`prenom`,`eleves`.`login`,`eleves`.`elenoet`,`classes`.`nom_complet` FROM `eleves`,`j_eleves_classes`,`classes` WHERE (`eleves`.`login`=`j_eleves_classes`.`login` AND `j_eleves_classes`.`id_classe`=`classes`.`id`) GROUP BY `login` ORDER BY `nom_complet`,`nom`,`prenom`";
-	$R_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $r_sql);
+	$R_eleves=mysqli_query($GLOBALS["mysqli"], $r_sql);
 	if ($R_eleves) {
 		while ($un_eleve=mysqli_fetch_assoc($R_eleves)) {
 			$csv.="\"".$un_eleve['nom_complet']."\",\"".$un_eleve['nom']."\",\"".$un_eleve['prenom']."\",\"".$un_eleve['prenom']." ".$un_eleve['nom']."\",\"".$un_eleve['login']."\",\"".$un_eleve['elenoet']."\"\n";
@@ -921,7 +921,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 //debug_var();
 if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 
-  $req_trombino = mysqli_query($GLOBALS["___mysqli_ston"], "select indice_aid, nom from aid_config order by nom");
+  $req_trombino = mysqli_query($GLOBALS["mysqli"], "select indice_aid, nom from aid_config order by nom");
   $nb_aid = mysqli_num_rows($req_trombino);
   $i = 0;
   for($i = 0;$i < $nb_aid;$i++){

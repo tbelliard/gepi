@@ -127,7 +127,7 @@
 
 				if(!in_array($tab_item[$k], $tab_param_table_classes_param)) {
 					$sql="SELECT * FROM classes WHERE id='".$tab_id_classe[$i]."';";
-					$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_class_tmp)>0){
 						$lig_class_tmp=mysqli_fetch_object($res_class_tmp);
 
@@ -358,7 +358,7 @@
 			echo "<label for='rn_sign_nblig_".$i."' class='invisible'>lignes pour la signature</label> 
 					<input type='text' name='rn_sign_nblig[$i]' id='rn_sign_nblig_".$i."' size='2' ";
 			$sql="SELECT * FROM classes WHERE id='".$tab_id_classe[$i]."';";
-			$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_class_tmp)>0){
 				$lig_class_tmp=mysqli_fetch_object($res_class_tmp);
 				echo "value='$lig_class_tmp->rn_sign_nblig' ";
@@ -415,7 +415,7 @@
 			<label for='rn_formule_".$i."' class='invisible'>Formule</label> 
 					<input type='text' name='rn_formule[$i]' id='rn_formule_".$i."' size='40' value=\"";
 			$sql="SELECT * FROM classes WHERE id='".$tab_id_classe[$i]."';";
-			$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_class_tmp)>0){
 				$lig_class_tmp=mysqli_fetch_object($res_class_tmp);
 				echo $lig_class_tmp->rn_formule;

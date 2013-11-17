@@ -39,7 +39,7 @@ if ($resultat_session == "c") {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/statistiques/export_donnees_bulletins.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/statistiques/export_donnees_bulletins.php',
 administrateur='V',
@@ -52,7 +52,7 @@ secours='F',
 autre='F',
 description='Export de données des bulletins',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -167,7 +167,7 @@ if((isset($id_classe))&&
 					for($loop=0;$loop<count($tmp_ele);$loop++) {
 						// On contrôle que l'élève existe dans la table eleves
 						$sql="SELECT * FROM eleves WHERE login='$tmp_ele[$loop]';";
-						$res_ele_info=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ele_info=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele_info)>0) {
 							$tab_ele[]=$tmp_ele[$loop];
 
@@ -189,12 +189,12 @@ if((isset($id_classe))&&
 			}
 			else {
 				$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe[$i]';";
-				$res_ele_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_ele_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_ele_clas)>0) {
 					while($lig_ele=mysqli_fetch_object($res_ele_clas)) {
 						// On contrôle que l'élève existe dans la table eleves
 						$sql="SELECT * FROM eleves WHERE login='$lig_ele->login';";
-						$res_ele_info=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_ele_info=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele_clas)>0) {
 							$tab_ele[]=$lig_ele->login;
 
@@ -234,7 +234,7 @@ if((isset($id_classe))&&
 					}
 					else {
 						$sql="SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe[$i]';";
-						$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_grp)==0) {
 							$temoin_grp="n";
 						}
@@ -254,14 +254,14 @@ if((isset($id_classe))&&
 							$tab_ele_note_grp=array();
 							if(in_array('note',$champ_eleve)) {
 								$sql="SELECT * FROM matieres_notes WHERE id_groupe='$tab_id_groupe[$k]' AND periode='$tab_per[$j]' ORDER BY login;";
-								$res_note=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_note)>0) {
 									while($lig_note=mysqli_fetch_object($res_note)) {
 		
 										for($m=0;$m<count($tab_ele);$m++) {
 											// On contrôle si l'élève est dans la classe pour la période
 											$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$tab_ele[$m]' AND periode='$tab_per[$j]';";
-											$test_ele_clas_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+											$test_ele_clas_per=mysqli_query($GLOBALS["mysqli"], $sql);
 											if(mysqli_num_rows($test_ele_clas_per)>0) {
 												if(in_array($lig_note->login,$tab_ele)) {
 													$tab_ele_note_grp[$lig_note->login]=$lig_note->note;
@@ -275,14 +275,14 @@ if((isset($id_classe))&&
 							$tab_ele_app_grp=array();
 							if(in_array('app',$champ_eleve)) {
 								$sql="SELECT * FROM matieres_appreciations WHERE id_groupe='$tab_id_groupe[$k]' ORDER BY login;";
-								$res_app=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_app)>0) {
 									while($lig_app=mysqli_fetch_object($res_app)) {
 		
 										for($m=0;$m<count($tab_ele);$m++) {
 											// On contrôle si l'élève est dans la classe pour la période
 											$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$tab_ele[$m]' AND periode='$tab_per[$j]';";
-											$test_ele_clas_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+											$test_ele_clas_per=mysqli_query($GLOBALS["mysqli"], $sql);
 											if(mysqli_num_rows($test_ele_clas_per)>0) {
 												if(in_array($lig_app->login,$tab_ele)) {
 													$tab_ele_app_grp[$lig_app->login]=$lig_app->appreciation;
@@ -296,7 +296,7 @@ if((isset($id_classe))&&
 							for($m=0;$m<count($tab_ele);$m++) {
 								// On contrôle si l'élève est dans la classe pour la période
 								$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$tab_ele[$m]' AND periode='$tab_per[$j]';";
-								$test_ele_clas_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$test_ele_clas_per=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test_ele_clas_per)>0) {
 
 									// DONNEES PROFS -> STOCKER DANS TABLEAU
@@ -304,7 +304,7 @@ if((isset($id_classe))&&
 										$tab_prof[$tab_id_groupe[$k]]=array();
 										// PROBLEME: On ne récupère qu'un seul prof si on fait un unique fichier CSV monolithique
 										$sql="SELECT u.* FROM utilisateurs u, j_groupes_professeurs jgp WHERE u.login=jgp.login AND jgp.id_groupe='$tab_id_groupe[$k]';";
-										$res_prof_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$res_prof_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res_prof_grp)>0) {
 											$cpt_prof=0;
 											while($lig_prof_grp=mysqli_fetch_object($res_prof_grp)) {
@@ -348,7 +348,7 @@ if((isset($id_classe))&&
 									//if(!isset($tab_nom_per[$id_classe[$i]][$tab_per[$j]])) {
 									if(!isset($tab_nom_per[$id_classe[$i]])) {
 										$sql="SELECT * FROM periodes WHERE id_classe='$id_classe[$i]' ORDER BY num_periode;";
-										$res_nom_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$res_nom_per=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res_nom_per)>0) {
 											while($lig_nom_per=mysqli_fetch_object($res_nom_per)) {
 												$tab_nom_per[$id_classe[$i]][$lig_nom_per->num_periode]=$lig_nom_per->nom_periode;
@@ -422,7 +422,7 @@ if(!isset($id_classe)) {
 
 	// Liste des classes avec élève:
 	$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
-	$call_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_classes=mysqli_num_rows($call_classes);
 	if($nb_classes==0){
@@ -514,7 +514,7 @@ elseif(!isset($choix_periodes)) {
 	for($i=0;$i<count($id_classe);$i++) {
 		$sql="SELECT * FROM periodes WHERE id_classe='".$id_classe[$i]."' ORDER BY num_periode;";
 		//echo "$sql<br />";
-		$call_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$call_per=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nombre_ligne=mysqli_num_rows($call_per);
 		if($nombre_ligne==0) {
 			echo "<p style='color:red;'>Aucune période  n'est définie dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
@@ -690,7 +690,7 @@ elseif(!isset($choix_matieres)) {
 		//$sql="SELECT DISTINCT g.id, g.name, g.description FROM groupes g, j_groupes_classes jgc WHERE (g.id=jgc.id_groupe and jgc.id_classe='".$id_classe[$i]."') ORDER BY jgc.priorite, g.name";
 		$sql="SELECT DISTINCT g.id, g.name, g.description, jgm.id_matiere FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE (g.id=jgc.id_groupe AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."') ORDER BY jgc.priorite, g.name";
 		//echo "$sql<br />";
-		$call_group = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$call_group = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nombre_ligne = mysqli_num_rows($call_group);
 		if($nombre_ligne==0) {
 			echo "<p style='color:red;'>Aucun enseignement n'est défini dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
@@ -745,7 +745,7 @@ elseif(!isset($choix_matieres)) {
 					echo "<td style='text-align:left; font-weight: bold;'><label for='id_groupe_$cpt' id='label_groupe_$cpt'>$lig_grp->name (<i>$lig_grp->description</i>)</label></td>\n";
 					echo "<td style='text-align:left;'>\n";
 					$sql="SELECT DISTINCT nom,prenom,civilite FROM utilisateurs u, j_groupes_professeurs jgp WHERE u.login=jgp.login AND jgp.id_groupe='$lig_grp->id' ORDER BY u.nom, u.prenom;";
-					$res_prof_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_prof_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_prof_grp)>0) {
 						$lig_prof_grp=mysqli_fetch_object($res_prof_grp);
 						echo $lig_prof_grp->civilite." ".strtoupper($lig_prof_grp->nom)." ".casse_mot($lig_prof_grp->prenom,"majf2");
@@ -911,7 +911,7 @@ elseif(!isset($choix_eleves)) {
 	for($i=0;$i<count($id_classe);$i++) {
 		$sql="SELECT DISTINCT e.login, e.nom, e.prenom, e.sexe, e.naissance FROM eleves e, j_eleves_classes jec WHERE (e.login=jec.login AND jec.id_classe='".$id_classe[$i]."') ORDER BY e.nom, e.prenom;";
 		//echo "$sql<br />";
-		$call_eleves=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$call_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nombre_ligne=mysqli_num_rows($call_eleves);
 		if($nombre_ligne==0) {
 			echo "<p style='color:red;'>Aucun élève n'est inscrit dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";

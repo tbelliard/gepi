@@ -40,15 +40,15 @@ if (!checkAccess()) {
     die();
 
 }
-$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "select max(num_periode) max from periodes");
+$periode_query = mysqli_query($GLOBALS["mysqli"], "select max(num_periode) max from periodes");
 $max_periode = mysql_result($periode_query, 0, 'max');
 
 // On dresse la liste de toutes les classes non virtuelles
-$classes_list = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
+$classes_list = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
 $nb_classe = mysqli_num_rows($classes_list);
 
 // On va chercher les matières existantes
-$matieres_list = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres ORDER BY matiere");
+$matieres_list = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres ORDER BY matiere");
 $nb_matieres = mysqli_num_rows($matieres_list);
 
 
@@ -83,7 +83,7 @@ if (isset($_POST['is_posted'])) {
                     ";
             //echo "$sql<br />\n";
             // BIZARRE: Il ajoute 10 ???
-                    $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                    $reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
         //=============================
                     if (!$reg_data) $reg_ok = 'no'; else $reg_ok = 'yes' ;
                 }
@@ -95,13 +95,13 @@ if (isset($_POST['is_posted'])) {
                     where
                     (jgc.id_classe='".$id_classe."' and jgc.id_groupe = jgm.id_groupe and jgm.id_matiere='".$current_matiere."')
                     ";
-                    $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                    $reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
                     if (!$reg_data) $reg_ok = 'no'; else $reg_ok = 'yes' ;
                 }
 
                 // Le coef
                 if (isset($_POST[$current_matiere.'_coef']) and ($_POST[$current_matiere.'_coef']!='')) {
-                    $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE j_groupes_classes jgc, j_groupes_matieres jgm, groupes g
+                    $reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE j_groupes_classes jgc, j_groupes_matieres jgm, groupes g
                     SET jgc.coef='".$_POST[$current_matiere.'_coef']."' , g.recalcul_rang='y'
                     where
                     (jgc.id_classe='".$id_classe."' and jgc.id_groupe = jgm.id_groupe and g.id = jgm.id_groupe and jgm.id_matiere='".$current_matiere."')
@@ -242,7 +242,7 @@ $alt=1;
 while ($i < $nb_matieres){
     $current_matiere = @mysql_result($matieres_list, $i, "matiere");
     $current_matiere_nom = @mysql_result($matieres_list, $i, "nom_complet");
-    $matquery = mysqli_query($GLOBALS["___mysqli_ston"], "select 1=1 from j_groupes_matieres jgm, j_groupes_classes jgc, classes c
+    $matquery = mysqli_query($GLOBALS["mysqli"], "select 1=1 from j_groupes_matieres jgm, j_groupes_classes jgc, classes c
     where (
     c.id = jgc.id_classe and
     jgc.id_groupe = jgm.id_groupe and
@@ -274,7 +274,7 @@ while ($i < $nb_matieres){
         // Catégorie de matière
         echo "<td>";
         echo "<select size=1 name=\"".$current_matiere."_categorie\">\n";
-        $get_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, nom_court FROM matieres_categories");
+        $get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court FROM matieres_categories");
 
         echo "<option value=''>-----</option>";
         while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {

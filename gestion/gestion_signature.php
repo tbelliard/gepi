@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/gestion/gestion_signature.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/gestion/gestion_signature.php',
 administrateur='V',
@@ -47,7 +47,7 @@ secours='F',
 autre='F',
 description='Gestion signature',
 statut='';";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -75,7 +75,7 @@ id INT(11) unsigned NOT NULL auto_increment,
 login VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 if(isset($_POST['enregistrer_choix_utilisateurs'])) {
 	check_token();
@@ -85,7 +85,7 @@ if(isset($_POST['enregistrer_choix_utilisateurs'])) {
 	$tab_droits_existants=array();
 
 	$sql="SELECT * FROM signature_droits;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$tab_droits_existants[]=$lig->login;
@@ -96,7 +96,7 @@ if(isset($_POST['enregistrer_choix_utilisateurs'])) {
 	for($loop=0;$loop<count($tab_droits_existants);$loop++) {
 		if(!in_array($tab_droits_existants[$loop], $login_user)) {
 			$sql="DELETE FROM droits_signature WHERE login='".$tab_droits_existants[$loop]."';";
-			$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($menage) {
 				$nb_suppr++;
 			}
@@ -110,7 +110,7 @@ if(isset($_POST['enregistrer_choix_utilisateurs'])) {
 	for($loop=0;$loop<count($login_user);$loop++) {
 		if(!in_array($login_user[$loop], $tab_droits_existants)) {
 			$sql="INSERT INTO signature_droits SET login='".$login_user[$loop]."';";
-			$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($insert) {
 				$nb_reg++;
 			}
@@ -137,7 +137,7 @@ type VARCHAR( 255 ) NOT NULL,
 PRIMARY KEY ( id_fichier )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
-$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 if (isset($_POST['ajout_fichier'])) {
 	check_token();
@@ -199,8 +199,8 @@ if (isset($_POST['ajout_fichier'])) {
 						} else {
 							if (file_exists($dirname."/".$sign_file['name'])) {
 								@unlink($dirname."/".$sign_file['name']);
-								$sql="DELETE FROM signature_fichiers WHERE fichier='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND login='$login_user';";
-								$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$sql="DELETE FROM signature_fichiers WHERE fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND login='$login_user';";
+								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 								$msg.= "Un fichier de même nom existait pour cet utilisateur.<br />Le fichier précédent a été supprimé.<br />";
 							}
 							$ok = @copy($sign_file['tmp_name'], $dirname."/".$sign_file['name']);
@@ -212,11 +212,11 @@ if (isset($_POST['ajout_fichier'])) {
 								$msg.= "Le fichier a été transféré.<br />";
 
 								// Par précaution, pour éviter des blagues avec des scories...
-								$sql="DELETE FROM signature_fichiers WHERE fichier='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND login='$login_user';";
-								$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$sql="DELETE FROM signature_fichiers WHERE fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND login='$login_user';";
+								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
-								$sql="INSERT INTO signature_fichiers SET login='$login_user', fichier='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
-								$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$sql="INSERT INTO signature_fichiers SET login='$login_user', fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if (!$insert) {
 									$msg.="Erreur lors de l'enregistrement dans la table 'signature_fichiers'.<br />";
 								}
@@ -245,7 +245,7 @@ if (isset($_POST['suppr_fichier'])) {
 		$cpt_fich_suppr=0;
 		for($loop=0;$loop<count($suppr);$loop++) {
 			$sql="SELECT * FROM signature_fichiers WHERE id_fichier='".$suppr[$loop]."';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				$lig=mysqli_fetch_object($res);
 
@@ -262,16 +262,16 @@ if (isset($_POST['suppr_fichier'])) {
 				}
 
 				$sql="SELECT * FROM signature_classes WHERE id_fichier='".$suppr_fichier[$loop]."';";
-				$res_sc=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_sc=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_sc)>0) {
 					while($lig_sc=mysqli_fetch_object($res_sc)) {
 						$sql="UPDATE signature_classes WHERE SET id_fichier='-1' WHERE login='".$_SESSION['login']."' AND id_classe='".$lig_sc->id_classe."';";
-						$menage2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$menage2=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
 				$sql="DELETE FROM signature_fichiers WHERE id_fichier='".$suppr[$loop]."';";
-				$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($menage) {
 					$cpt_suppr++;
 					/*
@@ -300,7 +300,7 @@ id_classe INT( 11 ) NOT NULL ,
 id_fichier INT( 11 ) NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 if (isset($_POST['enregistrer_choix_assoc_fichier_user_classe'])) {
 	check_token();
@@ -311,14 +311,14 @@ if (isset($_POST['enregistrer_choix_assoc_fichier_user_classe'])) {
 	$cpt_droits_suppr=0;
 	$droits_anterieurs=array();
 	$sql="SELECT * FROM signature_classes ORDER BY login, id_classe;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$droits_anterieurs[$lig->id]=$lig->login."|".$lig->id_classe;
 
 			if(!in_array($lig->login."|".$lig->id_classe, $droit)) {
 				$sql="DELETE FROM signature_classes WHERE id='$lig->id';";
-				$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 				$cpt_droits_suppr++;
 			}
 			else {
@@ -335,7 +335,7 @@ if (isset($_POST['enregistrer_choix_assoc_fichier_user_classe'])) {
 		$tab=explode("|", $value);
 
 		$sql="SELECT * FROM signature_classes WHERE login='".$tab[0]."' AND id_classe='".$tab[1]."';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			// Il y a peut-être un update à faire.
 			$lig=mysqli_fetch_object($res);
@@ -353,7 +353,7 @@ if (isset($_POST['enregistrer_choix_assoc_fichier_user_classe'])) {
 
 			if($id_fichier_a_mettre!=$id_fichier_actuel) {
 				$sql="UPDATE signature_classes SET id_fichier='".$id_fichier_a_mettre."' WHERE login='".$tab[0]."' AND id_classe='".$tab[1]."';";
-				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($update) {
 					$cpt_modif_fichiers++;
 				}
@@ -367,7 +367,7 @@ if (isset($_POST['enregistrer_choix_assoc_fichier_user_classe'])) {
 			}
 
 			$sql="INSERT INTO signature_classes SET login='".$tab[0]."', id_classe='".$tab[1]."', id_fichier='".$id_fichier_courant."';";
-			$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($insert) {
 				$cpt_nouveaux_droits++;
 			}
@@ -497,7 +497,7 @@ if($mode=='choix_utilisateurs') {
 
 	$tab_user_preselectionnes=array();
 	$sql="SELECT * FROM signature_droits;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$tab_user_preselectionnes[]=$lig->login;
@@ -537,7 +537,7 @@ if($mode=='choix_fichier') {
 	$cpt=0;
 	$tab_user=array();
 	$sql="SELECT * FROM signature_droits;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$tab_user[$cpt]['login']=$lig->login;
@@ -568,7 +568,7 @@ if($mode=='choix_fichier') {
 	$login_prec="";
 	$tab_fichiers_utilisateurs=array();
 	$sql="SELECT * FROM signature_fichiers ORDER BY login;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			// Vérifier si le user_temp_directory peut changer?
@@ -689,7 +689,7 @@ if($mode=='choix_assoc_fichier_user_classe') {
 	$cpt=0;
 	$tab_user=array();
 	$sql="SELECT * FROM signature_droits;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$tab_user[$cpt]['login']=$lig->login;
@@ -711,7 +711,7 @@ if($mode=='choix_assoc_fichier_user_classe') {
 	$tab_fichiers=array();
 	$tab_fichiers_utilisateurs=array();
 	$sql="SELECT * FROM signature_fichiers ORDER BY login;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			// Vérifier si le user_temp_directory peut changer?
@@ -748,7 +748,7 @@ if($mode=='choix_assoc_fichier_user_classe') {
 	$tab_fichiers_classes_utilisateurs=array();
 	$tab_fichiers_utilisateurs_classes=array();
 	$sql="SELECT * FROM signature_classes ORDER BY login, id_classe;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$tab_fichiers_classes_utilisateurs[$lig->id_classe][$lig->login]=$lig->id_fichier;
@@ -764,7 +764,7 @@ if($mode=='choix_assoc_fichier_user_classe') {
 
 	$tab_classe=array();
 	$sql="SELECT * FROM classes c ORDER BY c.classe, c.nom_complet;";
-	$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_classe)>0) {
 		$cpt=0;
 		while($lig_classe=mysqli_fetch_object($res_classe)) {

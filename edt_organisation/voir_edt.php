@@ -127,7 +127,7 @@ if(isset($login_edt)){
     if ($type_edt == "prof")
     {
 		$sql="SELECT 1=1 FROM edt_cours WHERE duree='0' AND login_prof='$login_edt';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 	        $tab_data = ConstruireEDTProf($login_edt, $_SESSION['period_id']);
 		}
@@ -150,7 +150,7 @@ if(isset($login_edt)){
     else if ($type_edt == "classe")
     {
 		$sql="SELECT 1=1 FROM edt_cours WHERE duree='0';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			$tab_data = ConstruireEDTClasse($login_edt, $_SESSION['period_id']);
 		}
@@ -173,7 +173,7 @@ if(isset($login_edt)){
     else if ($type_edt == "salle")
     {
 		$sql="SELECT 1=1 FROM edt_cours WHERE duree='0';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			$tab_data = ConstruireEDTSalle($login_edt , $_SESSION['period_id']);
 		}
@@ -197,7 +197,7 @@ if(isset($login_edt)){
     else if ($type_edt == "eleve")
     {
 		$sql="SELECT 1=1 FROM edt_cours WHERE duree='0';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			$tab_data = ConstruireEDTEleve($login_edt , $_SESSION['period_id']);
 		}

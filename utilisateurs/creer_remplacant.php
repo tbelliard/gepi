@@ -90,7 +90,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 	if(($compte_existant!="")&&($utiliser_compte_existant=='y')) {
 		$temoin_erreur_affect_compte_existant="n";
 		$sql="SELECT nom, prenom, civilite FROM utilisateurs WHERE (statut='professeur' AND login='$compte_existant');";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			$msg="Le compte choisi n'existe pas ou n'est pas professeur: '$compte_existant'<br />\n";
 			$temoin_erreur_affect_compte_existant="y";
@@ -102,7 +102,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			// On recheche les matières du prof remplacé qui ne sont pas déjà affectées au prof
 			//$sql_matieres = "select * from j_professeurs_matieres where id_professeur='$login_prof_remplace'";
 			$sql_matieres = "select * from j_professeurs_matieres where id_professeur='$login_prof_remplace' AND id_matiere NOT IN (SELECT id_matiere FROM j_professeurs_matieres where id_professeur='$compte_existant');";
-			$result_matieres = mysqli_query($GLOBALS["___mysqli_ston"], $sql_matieres);
+			$result_matieres = mysqli_query($GLOBALS["mysqli"], $sql_matieres);
 			$nombre_matieres = mysqli_num_rows($result_matieres);
 
 			$id_matiere_prof_remplace=array();
@@ -116,21 +116,21 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			for ($i=0;$i<sizeof($id_matiere_prof_remplace);$i++) {
 				$sql_matieres = "insert into j_professeurs_matieres set id_matiere='$id_matiere_prof_remplace[$i]', id_professeur='$compte_existant', ordre_matieres='$ordre_matiere_prof_remplace[$i]'";
 				//echo "<br>".$sql_matieres;
-				$insertion = mysqli_query($GLOBALS["___mysqli_ston"], $sql_matieres);
+				$insertion = mysqli_query($GLOBALS["mysqli"], $sql_matieres);
 				if(!$insertion) {$temoin_erreur_affect_compte_existant="y";}
 			}
 
 			for($i=0;$i<count($id_groupe);$i++) {
 				$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe[$i]' AND login='$compte_existant';";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)==0) {
 					$sql="select * from j_groupes_professeurs where login='$login_prof_remplace';";
-					$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)>0) {
 						$lig=mysqli_fetch_object($res);
 						$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupe[$i]', login='$compte_existant', ordre_prof='$lig->ordre_prof';";
 						//echo "<br>".$sql_groupes;
-						$insertion = mysqli_query($GLOBALS["___mysqli_ston"], $sql_groupes);
+						$insertion = mysqli_query($GLOBALS["mysqli"], $sql_groupes);
 						if(!$insertion) {$temoin_erreur_affect_compte_existant="y";}
 					}
 				}
@@ -175,7 +175,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					$poursuivre_remplacement="y";
 					if((isset($user_login))&&($user_login!="")) {
 						$sql="SELECT * FROM utilisateurs WHERE login='".$user_login."';";
-						$test_user_exist=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test_user_exist=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test_user_exist)>0) {
 							$lig_user=mysqli_fetch_object($test_user_exist);
 
@@ -203,11 +203,11 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						statut='professeur')";
 						// Pour debug:
 						//echo "$sql<br />";
-						$test_exist = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$test_exist = mysqli_query($GLOBALS["mysqli"], $sql);
 						$result_test = mysqli_num_rows($test_exist);
 						if ($result_test == 0) {
 							if ($prenom_compose != '') {
-								$test_exist2 = mysqli_query($GLOBALS["___mysqli_ston"], "select login from utilisateurs
+								$test_exist2 = mysqli_query($GLOBALS["mysqli"], "select login from utilisateurs
 								where (
 								nom='".traitement_magic_quotes($affiche[0])."' and
 								prenom = '".traitement_magic_quotes($prenom_compose)."' and
@@ -276,7 +276,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 								//choix du format
 								//test du login
-								$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM utilisateurs WHERE login = '".$login_prof."'");
+								$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login = '".$login_prof."'");
 								$nombreligne = mysqli_num_rows($test);
 								if ($nombreligne != 0) {
 									$msg = "*** Attention ! Un utilisateur ayant le même identifiant existe déjà. Enregistrement impossible ! ***";
@@ -284,10 +284,10 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 								}
 								else {
 									if ($is_pwd == "y") {
-										$reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='$reg_password_c',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='y', auth_mode='$reg_auth_mode'");
+										$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='$reg_password_c',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='y', auth_mode='$reg_auth_mode'");
 									}
 									else {
-										$reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='n', auth_mode='$reg_auth_mode'");
+										$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='n', auth_mode='$reg_auth_mode'");
 									}
 								}
 
@@ -310,7 +310,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 								//on recheche les matières du prof remplacé
 								$sql_matieres = "select * from j_professeurs_matieres where id_professeur='$login_prof_remplace'";
 	
-								$result_matieres = mysqli_query($GLOBALS["___mysqli_ston"], $sql_matieres);
+								$result_matieres = mysqli_query($GLOBALS["mysqli"], $sql_matieres);
 								$nombre_matieres = mysqli_num_rows($result_matieres);
 	
 								for ($i=0;$i<$nombre_matieres;$i++) {
@@ -323,17 +323,17 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 								for ($i=0;$i<sizeof($id_matiere_prof_remplace);$i++) {
 									$sql_matieres = "insert into j_professeurs_matieres set id_matiere='$id_matiere_prof_remplace[$i]', id_professeur='$login_prof', ordre_matieres='$ordre_matiere_prof_remplace[$i]'";
 									//echo "<br>".$sql_matieres;
-									$insertion = mysqli_query($GLOBALS["___mysqli_ston"], $sql_matieres);
+									$insertion = mysqli_query($GLOBALS["mysqli"], $sql_matieres);
 								}
 
 								for($i=0;$i<count($id_groupe);$i++) {
 									$sql="select * from j_groupes_professeurs where login='$login_prof_remplace';";
-									$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res)>0) {
 										$lig=mysqli_fetch_object($res);
 										$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupe[$i]', login='$login_prof', ordre_prof='$lig->ordre_prof';";
 										//echo "<br>".$sql_groupes;
-										$insertion = mysqli_query($GLOBALS["___mysqli_ston"], $sql_groupes);
+										$insertion = mysqli_query($GLOBALS["mysqli"], $sql_groupes);
 									}
 								}
 							}
@@ -402,7 +402,7 @@ require_once("../lib/header.inc.php");
 if ($valid!='yes') {
 	// On appelle les informations de l'utilisateur pour les afficher :
 	if (isset($login_prof_remplace) and ($login_prof_remplace!='')) {
-		$call_user_info = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM utilisateurs WHERE login='".$login_prof_remplace."'");
+		$call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login='".$login_prof_remplace."'");
 		$user_nom = mysql_result($call_user_info, "0", "nom");
 		$user_prenom = mysql_result($call_user_info, "0", "prenom");
 		$user_civilite = mysql_result($call_user_info, "0", "civilite");
@@ -501,7 +501,7 @@ if ($valid!='yes') {
 	$sql="SELECT * FROM utilisateurs WHERE (statut='professeur'";
 	if($afficher_inactifs!="y") {$sql.=" AND etat='actif'";}
 	$sql.=") ORDER BY nom,prenom;";
-	$calldata = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nombreligne = mysqli_num_rows($calldata);
 	$i = 0;
 	echo "<option value=''>---</option>\n";

@@ -2129,7 +2129,7 @@ function is_pp_proprio_exb($id_exam, $mode='') {
 	$prof_login=$_SESSION['login'];
 
 	$sql="SELECT * FROM ex_classes WHERE id_exam='$id_exam';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			if(!is_pp($prof_login,$lig->id_classe)) {

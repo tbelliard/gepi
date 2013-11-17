@@ -196,7 +196,7 @@ default://formulaire d'envoi
 	}
 	else {
 		$sql="SELECT email FROM utilisateurs WHERE login='".$_SESSION['login']."';";
-		$res_mail=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_mail)>0) {
 			$lig_mail=mysqli_fetch_object($res_mail);
 			echo "value='$lig_mail->email' ";

@@ -133,7 +133,7 @@ class gepiPlugIn {
         return $_globals["cnx"]->exec($sql);
 
       }else{
-        return mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+        return mysqli_query($GLOBALS["mysqli"], $sql);
       }
 
     }
@@ -174,7 +174,7 @@ class gepiPlugIn {
      * @return integer
      */
     public static function _sqlInsertId($use_PDO = false){
-      return ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+      return ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
     }
 
 }

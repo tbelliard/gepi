@@ -92,7 +92,7 @@ echo "<center><h3 class='gepi'>Cinquième phase d'initialisation" .
 echo "<h3 class='gepi'>Première étape : affectation des matières à chaque professeur et affectation des professeurs dans chaque classe.</h3>";
 
 if (!isset($step1)) {
-	$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM j_groupes_professeurs"),0);
+	$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_groupes_professeurs"),0);
 	if ($test != 0) {
 		echo "<p><b>ATTENTION ...</b><br />";
 		echo "Des données concernant l'affectation de professeurs dans des classes sont actuellement présentes dans la base GEPI<br /></p>";
@@ -122,8 +122,8 @@ if(!$tempdir){
 //if (!isset($is_posted)) {
 if (!isset($suite)) {
 
-	$del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_groupes_professeurs");
-	$del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_professeurs_matieres");
+	$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_groupes_professeurs");
+	$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_professeurs_matieres");
 
 	$dest_file="../temp/".$tempdir."/sts.xml";
 
@@ -245,7 +245,7 @@ if (!isset($suite)) {
 
 	// On récupère les correspondances code/code_gestion sur les matières.
 	$sql="SELECT code,code_gestion FROM temp_matieres_import";
-	$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_mat)==0){
 		echo "<p>La table 'temp_matieres_import' est vide.<br />Auriez-vous sauté des étapes???</p>\n";
 		require("../lib/footer.inc.php");
@@ -272,7 +272,7 @@ if (!isset($suite)) {
 
 	function get_nom_complet_from_matiere($mat) {
 		$sql="SELECT nom_complet FROM matieres WHERE matiere='$mat';";
-		$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_mat)>0) {
 			$lig_mat=mysqli_fetch_object($res_mat);
 			return $lig_mat->nom_complet;
@@ -281,10 +281,10 @@ if (!isset($suite)) {
 
 	function creation_matiere($matiere_name, $matiere_nom_complet, $matiere_priorite=0, $matiere_categorie=0) {
 		$sql="SELECT * from matieres WHERE matiere='$matiere_name';";
-		$verif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);;
+		$verif=mysqli_query($GLOBALS["mysqli"], $sql);;
 		if(mysqli_num_rows($verif)==0) {
-			$sql="INSERT INTO matieres SET matiere='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $matiere_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', nom_complet='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $matiere_nom_complet) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n';";
-			$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$sql="INSERT INTO matieres SET matiere='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_nom_complet) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n';";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
 
@@ -305,7 +305,7 @@ if (!isset($suite)) {
 		echo "<blockquote>\n";
 
 		$sql="SELECT id FROM classes WHERE classe='$classe';";
-		$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_clas=mysqli_num_rows($res_clas);
 		if($nb_clas>1) {
 			echo "<p style='color:red;'>ANOMALIE: ".$nb_clas." classes ont le même nom: ".$classe."<br />Les groupes ne peuvent pas être importés pour ces classes.</p>\n";
@@ -317,7 +317,7 @@ if (!isset($suite)) {
 
 			// Récupération des élèves de la classe
 			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login;";
-			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			$tab_ele=array();
 			if(mysqli_num_rows($res_ele)>0) {
 				while($lig_ele=mysqli_fetch_object($res_ele)) {
@@ -327,7 +327,7 @@ if (!isset($suite)) {
 
 			// Récupération des périodes de la classe
 			$tab_per=array();
-			$periode_query=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode");
+			$periode_query=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode");
 			$nb_periode=mysqli_num_rows($periode_query)+1;
 			$j="1";
 			while ($j<$nb_periode) {
@@ -369,16 +369,16 @@ if (!isset($suite)) {
 							for($k=0;$k<count($divisions[$i]['services'][$j]['enseignants']);$k++) {
 		
 								$sql="select col1 from tempo2 where col2='P".$divisions[$i]['services'][$j]['enseignants'][$k]['id']."';";
-								$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 								$login_prof=@mysql_result($res_prof, 0, 'col1');
 		
 								if ($login_prof!='') {
 									// Associer le groupe au prof:    j_groupes_professeurs
 									$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$login_prof';";
-									$res_grp_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_grp_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_grp_prof)==0) {
 										$sql="INSERT INTO j_groupes_professeurs SET id_groupe='$id_groupe', login='$login_prof';";
-										if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+										if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 											echo "<span style='color:green;'>";
 										}
 										else {
@@ -389,11 +389,11 @@ if (!isset($suite)) {
 	
 									// Associer le prof à la matière: j_professeurs_matieres
 									$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$mat' AND id_professeur='$login_prof';";
-									$res_prof_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_prof_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 									echo " (";
 									if(mysqli_num_rows($res_prof_mat)==0) {
 										$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$mat', id_professeur='$login_prof';";
-										if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+										if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 											echo "<span style='color:green;'>";
 										}
 										else {
@@ -421,10 +421,10 @@ if (!isset($suite)) {
 								if($l>0) {echo "-";}
 								$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele[$k]."' AND periode='".$tab_per[$l]."';";
 								//echo "$sql<br />";
-								$res_ele_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_ele_grp)==0) {
 									$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele[$k]."', periode='".$tab_per[$l]."';";
-									if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+									if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 										echo "<span style='color:green;'>";
 									}
 									else {
@@ -481,7 +481,7 @@ if (!isset($suite)) {
 			for ($ii=0;$ii<count($groupes[$i]['divisions']);$ii++) {
 				$classe=$groupes[$i]['divisions'][$ii]['code'];
 				$sql="SELECT id FROM classes WHERE classe='$classe';";
-				$res_clas=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 				$nb_clas=mysqli_num_rows($res_clas);
 				if($nb_clas==1) {
 					$lig_clas=mysqli_fetch_object($res_clas);
@@ -491,7 +491,7 @@ if (!isset($suite)) {
 
 					// Récupération des périodes de la classe
 					//$tab_per=array();
-					$periode_query=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT MAX(num_periode) FROM periodes WHERE id_classe='$id_classe';");
+					$periode_query=mysqli_query($GLOBALS["mysqli"], "SELECT MAX(num_periode) FROM periodes WHERE id_classe='$id_classe';");
 					if(mysqli_num_rows($periode_query)>0) {
 						$max_per=mysql_result($periode_query,0);
 						$tab_per_clas[]=$max_per;
@@ -500,7 +500,7 @@ if (!isset($suite)) {
 						if(count($tab_test)==1) {
 							// Récupération des élèves de la classe
 							$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login;";
-							$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_ele)>0) {
 								while($lig_ele=mysqli_fetch_object($res_ele)) {
 									$tab_ele[]=$lig_ele->login;
@@ -552,8 +552,8 @@ if (!isset($suite)) {
 					echo "Association des élèves:<br />";
 					echo "<blockquote>\n";
 
-					$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $code_groupe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
-					$get_login_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $code_groupe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$get_login_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($get_login_ele)==0) {
 						// On va mettre tous les élèves dans le groupe
 						$tab_ele_courant=$tab_ele;
@@ -577,11 +577,11 @@ if (!isset($suite)) {
 							//$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele_courant[$k]."' AND periode='".$tab_per[$l]."';";
 							$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele_courant[$k]."' AND periode='".$l."';";
 							//echo "$sql<br />";
-							$res_ele_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_ele_grp)==0) {
 								//$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele_courant[$k]."', periode='".$tab_per[$l]."';";
 								$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele_courant[$k]."', periode='".$l."';";
-								if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+								if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 									echo "<span style='color:green;'>";
 								}
 								else {
@@ -629,16 +629,16 @@ if (!isset($suite)) {
 								if($k>0) {echo ", ";}
 			
 								$sql="select col1 from tempo2 where col2='P".$groupes[$i]['grp'][$i_grp]['enseignant'][$k]['id']."';";
-								$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 								$login_prof=@mysql_result($res_prof, 0, 'col1');
 			
 								if ($login_prof!='') {
 									// Associer le groupe au prof:    j_groupes_professeurs
 									$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$login_prof';";
-									$res_grp_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_grp_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_grp_prof)==0) {
 										$sql="INSERT INTO j_groupes_professeurs SET id_groupe='$id_groupe', login='$login_prof';";
-										if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+										if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 											echo "<span style='color:green;'>";
 										}
 										else {
@@ -649,11 +649,11 @@ if (!isset($suite)) {
 			
 									// Associer le prof à la matière: j_professeurs_matieres
 									$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$mat' AND id_professeur='$login_prof';";
-									$res_prof_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_prof_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 									echo " (";
 									if(mysqli_num_rows($res_prof_mat)==0) {
 										$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$mat', id_professeur='$login_prof';";
-										if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+										if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 											echo "<span style='color:green;'>";
 										}
 										else {
@@ -676,8 +676,8 @@ if (!isset($suite)) {
 						echo "Association des élèves:<br />";
 						echo "<blockquote>\n";
 
-						$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $code_groupe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
-						$get_login_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $code_groupe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						$get_login_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($get_login_ele)==0) {
 							// On va mettre tous les élèves dans le groupe
 							$tab_ele_courant=$tab_ele;
@@ -701,11 +701,11 @@ if (!isset($suite)) {
 								//$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele_courant[$k]."' AND periode='".$tab_per[$l]."';";
 								$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele_courant[$k]."' AND periode='".$l."';";
 								//echo "$sql<br />";
-								$res_ele_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_ele_grp)==0) {
 									//$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele_courant[$k]."', periode='".$tab_per[$l]."';";
 									$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele_courant[$k]."', periode='".$l."';";
-									if($insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql)) {
+									if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 										echo "<span style='color:green;'>";
 									}
 									else {
@@ -885,7 +885,7 @@ else {
 		unset($en_tete2);
 
 		// on range les classes existantes dans un tableau:
-		$req = mysqli_query($GLOBALS["___mysqli_ston"], "select id, classe from classes");
+		$req = mysqli_query($GLOBALS["mysqli"], "select id, classe from classes");
 		$nb_classes = mysqli_num_rows($req);
 		$n = 0;
 
@@ -985,7 +985,7 @@ else {
 						affiche_debug("\$affiche[$i]=dbase_filter(trim(\$tabligne[".$tabindice[$i]."]))=".$affiche[$i]."<br />\n");
 					}
 					affiche_debug("==========================<br />\n");
-					$req = mysqli_query($GLOBALS["___mysqli_ston"], "select col1 from tempo2 where col2 = '$affiche[1]'");
+					$req = mysqli_query($GLOBALS["mysqli"], "select col1 from tempo2 where col2 = '$affiche[1]'");
 					affiche_debug("On recherche si un prof assure le cours correspondant au groupe: select col1 from tempo2 where col2 = '$affiche[1]'<br />\n");
 					$login_prof = @mysql_result($req, 0, 'col1');
 
@@ -993,12 +993,12 @@ else {
 					if ($login_prof != '') {
 						// On relie les profs aux matières
 						affiche_debug("Un (au moins) prof trouvé: $login_prof<br />\n");
-						$verif = mysqli_query($GLOBALS["___mysqli_ston"], "select id_professeur from j_professeurs_matieres where (id_matiere='$affiche[0]' and id_professeur='$login_prof')");
+						$verif = mysqli_query($GLOBALS["mysqli"], "select id_professeur from j_professeurs_matieres where (id_matiere='$affiche[0]' and id_professeur='$login_prof')");
 						affiche_debug("select id_professeur from j_professeurs_matieres where (id_matiere='$affiche[0]' and id_professeur='$login_prof')<br />\n");
 						$resverif = mysqli_num_rows($verif);
 						if($resverif == 0) {
 							// On arrive jusque là.
-							$req = mysqli_query($GLOBALS["___mysqli_ston"], "insert into j_professeurs_matieres set id_matiere='$affiche[0]', id_professeur='$login_prof', ordre_matieres=''");
+							$req = mysqli_query($GLOBALS["mysqli"], "insert into j_professeurs_matieres set id_matiere='$affiche[0]', id_professeur='$login_prof', ordre_matieres=''");
 							affiche_debug("insert into j_professeurs_matieres set id_matiere='$affiche[0]', id_professeur='$login_prof', ordre_matieres=''<br />\n");
 							//echo "Ajout de la correspondance prof/matière suivante: $login_prof/$affiche[0]<br />\n";
 							echo "<p>Ajout de la correspondance prof/matière suivante: $login_prof/$affiche[0]<br />\n";
@@ -1010,7 +1010,7 @@ else {
 						// On vide le tableau de la liste des classes associées au groupe:
 						unset($tabtmp);
 
-						$test = mysqli_query($GLOBALS["___mysqli_ston"], "select id from classes where classe='$affiche[2]'");
+						$test = mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$affiche[2]'");
 						// On initialise le tableau pour que par défaut il contienne $affiche[2] au cas où ce serait une classe...
 						$tabtmp[0]=$affiche[2];
 						affiche_debug("select id from classes where classe='$affiche[2]'<br />\n");
@@ -1035,20 +1035,20 @@ else {
 						// On initialise un témoin pour ne pas recréer le groupe pour la deuxième, troisième,... classe:
 						$temoin_groupe_deja_cree="non";
 						for($i=0;$i<count($tabtmp);$i++){
-							$test = mysqli_query($GLOBALS["___mysqli_ston"], "select id from classes where classe='$tabtmp[$i]'");
+							$test = mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$tabtmp[$i]'");
 
 							$id_classe = @mysql_result($test,0,'id');
 							affiche_debug("select id from classes where classe='$tabtmp[$i]' donne \$id_classe=$id_classe<br />\n");
 
 							if ($id_classe != '') {
 								$sql="SELECT classe FROM classes WHERE id='$id_classe'";
-								$res_classe_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_classe_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 								$lig_classe_tmp=mysqli_fetch_object($res_classe_tmp);
 								$classe=$lig_classe_tmp->classe;
 
 								//echo "<p>\n";
 
-								$verif = mysqli_query($GLOBALS["___mysqli_ston"], "select g.id from " .
+								$verif = mysqli_query($GLOBALS["mysqli"], "select g.id from " .
 										"groupes g, j_groupes_matieres jgm, j_groupes_professeurs jgp, j_groupes_classes jgc " .
 										"where (" .
 										"g.id = jgm.id_groupe and " .
@@ -1071,7 +1071,7 @@ else {
 
 									// Avant d'enregistrer, il faut quand même vérifier si le groupe existe déjà ou pas
 									// ... pour cette classe...
-									$verif2 = mysqli_query($GLOBALS["___mysqli_ston"], "select g.id from " .
+									$verif2 = mysqli_query($GLOBALS["mysqli"], "select g.id from " .
 										"groupes g, j_groupes_matieres jgm, j_groupes_classes jgc " .
 										"where (" .
 										"g.id = jgm.id_groupe and " .
@@ -1094,11 +1094,11 @@ else {
 										$priority = sql_query("select priority from matieres where matiere='".$affiche[0]."'");
 										if ($priority == "-1") $priority = "0";
 
-										$matiere_nom = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_complet FROM matieres WHERE matiere = '" . $affiche[0] . "'"), 0);
+										$matiere_nom = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres WHERE matiere = '" . $affiche[0] . "'"), 0);
 										if($temoin_groupe_deja_cree=="non"){
-											$res = mysqli_query($GLOBALS["___mysqli_ston"], "insert into groupes set name = '" . $affiche[0] . "', description = '" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $matiere_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', recalcul_rang = 'y'");
-											affiche_debug("insert into groupes set name = '" . $affiche[0] . "', description = '" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $matiere_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', recalcul_rang = 'y'<br />\n");
-											$group_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+											$res = mysqli_query($GLOBALS["mysqli"], "insert into groupes set name = '" . $affiche[0] . "', description = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', recalcul_rang = 'y'");
+											affiche_debug("insert into groupes set name = '" . $affiche[0] . "', description = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', recalcul_rang = 'y'<br />\n");
+											$group_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 											$temoin_groupe_deja_cree=$group_id;
 
 											echo "<p>\n";
@@ -1106,10 +1106,10 @@ else {
 											echo "Création d'un groupe (n°$group_id) pour la matière $affiche[0], \n";
 
 
-											$res2 = mysqli_query($GLOBALS["___mysqli_ston"], "insert into j_groupes_matieres set id_groupe = '" . $group_id . "', id_matiere = '" . $affiche[0] . "'");
+											$res2 = mysqli_query($GLOBALS["mysqli"], "insert into j_groupes_matieres set id_groupe = '" . $group_id . "', id_matiere = '" . $affiche[0] . "'");
 											affiche_debug("insert into j_groupes_matieres set id_groupe = '" . $group_id . "', id_matiere = '" . $affiche[0] . "'<br />\n");
 
-											$res4 = mysqli_query($GLOBALS["___mysqli_ston"], "insert into j_groupes_professeurs set id_groupe = '" . $group_id . "', login ='" . $login_prof . "'");
+											$res4 = mysqli_query($GLOBALS["mysqli"], "insert into j_groupes_professeurs set id_groupe = '" . $group_id . "', login ='" . $login_prof . "'");
 											affiche_debug("insert into j_groupes_professeurs set id_groupe = '" . $group_id . "', login ='" . $login_prof . "'<br />\n");
 											echo "le professeur $login_prof\n";
 										}
@@ -1119,7 +1119,7 @@ else {
 										}
 
 
-										$res3 = mysqli_query($GLOBALS["___mysqli_ston"], "insert into j_groupes_classes set id_groupe = '" . $group_id . "', id_classe = '" . $id_classe . "', priorite = '" . $priority . "', coef = '0'");
+										$res3 = mysqli_query($GLOBALS["mysqli"], "insert into j_groupes_classes set id_groupe = '" . $group_id . "', id_classe = '" . $id_classe . "', priorite = '" . $priority . "', coef = '0'");
 										affiche_debug("insert into j_groupes_classes set id_groupe = '" . $group_id . "', id_classe = '" . $id_classe . "', priorite = '" . $priority . "', coef = '0'<br />\n");
 
 										/*
@@ -1136,10 +1136,10 @@ else {
 										// On ajoute tous les élèves de la classe considérée aux groupes. On enlèvera ceux qui ne suivent pas les enseignements
 										// à la prochaine étape
 
-										$get_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT distinct(login) FROM j_eleves_classes WHERE id_classe = '" . $id_classe . "'");
+										$get_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(login) FROM j_eleves_classes WHERE id_classe = '" . $id_classe . "'");
 										$nb_eleves = mysqli_num_rows($get_eleves);
 										affiche_debug("\$nb_eleves=$nb_eleves<br />\n");
-										$nb_per = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
+										$nb_per = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
 										affiche_debug("\$nb_per=$nb_per<br />\n");
 										//echo "\$nb_per=$nb_per<br />";
 
@@ -1149,7 +1149,7 @@ else {
 											for ($m=0;$m<$nb_eleves;$m++) {
 												$e_login = mysql_result($get_eleves, $m, "login");
 												for ($n=1;$n<=$nb_per;$n++) {
-													$insert_e = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT into j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $e_login . "', periode = '" . $n . "'");
+													$insert_e = mysqli_query($GLOBALS["mysqli"], "INSERT into j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $e_login . "', periode = '" . $n . "'");
 													//affiche_debug("INSERT into j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $e_login . "', periode = '" . $n . "'<br />\n");
 													affiche_debug("<br />\nINSERT into j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $e_login . "', periode = '" . $n . "'\n");
 												}
@@ -1172,7 +1172,7 @@ else {
 										// C'est le cas de deux professeurs pour un même groupe/classe dans une matière.
 										affiche_debug("Le groupe existe déjà pour la classe \$id_classe=$id_classe, on ajoute le professeur $login_prof au groupe:<br />\n");
 										$group_id = mysql_result($verif2, 0);
-										$res = mysqli_query($GLOBALS["___mysqli_ston"], "insert into j_groupes_professeurs set id_groupe = '" . $group_id . "', login ='" . $login_prof . "'");
+										$res = mysqli_query($GLOBALS["mysqli"], "insert into j_groupes_professeurs set id_groupe = '" . $group_id . "', login ='" . $login_prof . "'");
 										affiche_debug("insert into j_groupes_professeurs set id_groupe = '" . $group_id . "', login ='" . $login_prof . "'<br />\n");
 										echo "Ajout de $login_prof à un groupe existant (<i>plus d'un professeur pour ce groupe</i>).<br />\n";
 										//echo "Ajout de $login_prof à un groupe existant.<br />\n";

@@ -63,7 +63,7 @@ $sql="SELECT e.* FROM eleves e, j_eleves_classes c
 	c.periode='".$periode_num."'
 	)
 	ORDER BY e.nom, e.prenom";
-$appel_liste_eleves = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 calc_moy_debug($sql."\n");
 //echo "$sql<br />";
 $nombre_eleves = mysqli_num_rows($appel_liste_eleves);
@@ -88,7 +88,7 @@ if ($affiche_categories) {
 	") " .
 	"ORDER BY jmcc.priority,mc.priority,jgc.priorite,m.nom_complet";
 	calc_moy_debug($sql."\n");
-	$appel_liste_groupes = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$appel_liste_groupes = mysqli_query($GLOBALS["mysqli"], $sql);
 } else {
 	calc_moy_debug("\$affiche_categories=\n");
 	$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.mode_moy
@@ -100,7 +100,7 @@ if ($affiche_categories) {
 	)
 	ORDER BY jgc.priorite,jgm.id_matiere";
 	calc_moy_debug($sql."\n");
-	$appel_liste_groupes = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$appel_liste_groupes = mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //echo "$sql<br />";
@@ -138,7 +138,7 @@ $total_coef_cat_classe = array();
 $total_coef_cat_eleve = array();
 
 $i=0;
-$get_cat = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id,nom_complet FROM matieres_categories");
+$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id,nom_complet FROM matieres_categories");
 $categories = array();
 $tab_noms_categories = array();
 $tab_id_categories = array();
@@ -260,7 +260,7 @@ while ($j < $nombre_groupes) {
 		)
 		";
 	calc_moy_debug("$sql\n");
-	$current_classe_matiere_moyenne_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$current_classe_matiere_moyenne_query = mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$current_classe_matiere_moyenne[$j] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
 	calc_moy_debug("\$current_classe_matiere_moyenne[$j]=$current_classe_matiere_moyenne[$j]\n");
@@ -276,7 +276,7 @@ while ($j < $nombre_groupes) {
 		)
 		";
 	calc_moy_debug("$sql\n");
-	$req_current_group_effectif_avec_note = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$req_current_group_effectif_avec_note = mysqli_query($GLOBALS["mysqli"], $sql);
 	$current_group_effectif_avec_note[$j] = mysqli_num_rows($req_current_group_effectif_avec_note);
 	//===================================
 
@@ -289,7 +289,7 @@ while ($j < $nombre_groupes) {
 		id_groupe='".$current_group[$j]["id"]."' AND
 		statut=''
 		)";
-	$res_note_min_max=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_note_min_max=mysqli_query($GLOBALS["mysqli"], $sql);
 	$moy_min_classe_grp[$j]= @mysql_result($res_note_min_max, 0, "note_min");
 	$moy_max_classe_grp[$j]= @mysql_result($res_note_min_max, 0, "note_max");
 	//======================================
@@ -365,7 +365,7 @@ while ($j < $nombre_groupes) {
 			id_groupe='".$current_group[$j]["id"]."'
 			)";
 			calc_moy_debug("$sql\n");
-			$current_eleve_note_query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$current_eleve_note_query = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($current_eleve_note_query)>0) {
 				$lig_tmp=mysqli_fetch_object($current_eleve_note_query);
@@ -402,7 +402,7 @@ while ($j < $nombre_groupes) {
 						"name = 'coef')";
 				//echo "$sql<br />";
 				calc_moy_debug("$sql\n");
-				$test_coef = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_coef = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (mysqli_num_rows($test_coef) > 0) {
 					$coef_eleve = mysql_result($test_coef, 0);
 				} else {

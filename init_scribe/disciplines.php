@@ -77,7 +77,7 @@ if (isset($_POST['is_posted'])) {
             $matiere = $info[$i]["cn"][0];
             $matiere = traitement_magic_quotes(corriger_caracteres(trim($matiere)));
             $matiere = preg_replace("/[^A-Za-z0-9.\-]/","",strtoupper($matiere));
-            $get_matieres = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT matiere FROM matieres");
+            $get_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT matiere FROM matieres");
             $nbmat = mysqli_num_rows($get_matieres);
             $matieres = array();
             for($j=0;$j<$nbmat;$j++) {
@@ -85,9 +85,9 @@ if (isset($_POST['is_posted'])) {
             }
 
             if (!in_array($matiere, $matieres)) {
-                $reg_matiere = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO matieres SET matiere='".$matiere."',nom_complet='".($_POST['reg_nom_complet'][$matiere])."', priority='11',matiere_aid='n',matiere_atelier='n'");
+                $reg_matiere = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres SET matiere='".$matiere."',nom_complet='".($_POST['reg_nom_complet'][$matiere])."', priority='11',matiere_aid='n',matiere_atelier='n'");
             } else {
-                $reg_matiere = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE matieres SET nom_complet='".($_POST['reg_nom_complet'][$matiere])."' WHERE matiere = '" . $matiere . "'");
+                $reg_matiere = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET nom_complet='".($_POST['reg_nom_complet'][$matiere])."' WHERE matiere = '" . $matiere . "'");
             }
             if (!$reg_matiere) echo "<p>Erreur lors de l'enregistrement de la matière $matiere.";
             $new_matieres[] = $matiere;
@@ -95,9 +95,9 @@ if (isset($_POST['is_posted'])) {
             // On regarde maintenant les affectations professeur/matière
             for($k=0;$k<$info[$i]["memberuid"]["count"];$k++) {
                 $member = $info[$i]["memberuid"][$k];
-                $test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
+                $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
                 if ($test == 0) {
-                    $res = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
+                    $res = mysqli_query($GLOBALS["mysqli"], "INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
                 }
             }
 
@@ -108,8 +108,8 @@ if (isset($_POST['is_posted'])) {
         $to_remove = array_diff($matieres, $new_matieres);
 
         foreach($to_remove as $delete) {
-            $res = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE from matieres WHERE matiere = '" . $delete . "'");
-            $res2 = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE from j_professeurs_matieres WHERE id_matiere = '" . $delete . "'");
+            $res = mysqli_query($GLOBALS["mysqli"], "DELETE from matieres WHERE matiere = '" . $delete . "'");
+            $res2 = mysqli_query($GLOBALS["mysqli"], "DELETE from j_professeurs_matieres WHERE id_matiere = '" . $delete . "'");
         }
 
         echo "<p>Opération effectuée.</p>";
@@ -135,7 +135,7 @@ if (isset($_POST['is_posted'])) {
                 $matiere = traitement_magic_quotes(corriger_caracteres(trim($matiere)));
                 $nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",strtoupper($matiere));
                 $nom_long = htmlspecialchars($matiere);
-                $test_exist = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM matieres WHERE matiere='$nom_court'");
+                $test_exist = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres WHERE matiere='$nom_court'");
                 $nb_test_matiere_exist = mysqli_num_rows($test_exist);
 
                 if ($nb_test_matiere_exist==0) {

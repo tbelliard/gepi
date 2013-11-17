@@ -24,17 +24,17 @@ if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
 
 }
 if (!isset($db_nopersist) || $db_nopersist)
-    $db_c = ($GLOBALS["___mysqli_ston"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
+    $db_c = ($GLOBALS["mysqli"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
 else
-    $db_c = ($GLOBALS["___mysqli_ston"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
+    $db_c = ($GLOBALS["mysqli"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
 
-if (!$db_c || !((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE $dbDb")))
+if (!$db_c || !((bool)mysqli_query($GLOBALS["mysqli"], "USE $dbDb")))
 {
     echo "\n<p>Erreur grave: Echec de la connexion à la base de données";
     exit;
 }
 
-mysqli_query($GLOBALS["___mysqli_ston"], "SET NAMES UTF8");
+mysqli_query($GLOBALS["mysqli"], "SET NAMES UTF8");
 
 /** Free a results handle. You need not call this if you call sql_row or
  * sql_row_keyed until the row returns 0, since sql_row frees the results
@@ -57,7 +57,7 @@ function sql_free ($r)
  */
 function sql_command ($sql)
 {
-    if (mysqli_query($GLOBALS["___mysqli_ston"], $sql)) return mysqli_affected_rows($GLOBALS["___mysqli_ston"]);
+    if (mysqli_query($GLOBALS["mysqli"], $sql)) return mysqli_affected_rows($GLOBALS["mysqli"]);
     return -1;
 }
 
@@ -74,7 +74,7 @@ function sql_command ($sql)
  */
 function sql_query1 ($sql)
 {
-    $r = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $r = mysqli_query($GLOBALS["mysqli"], $sql);
     if (! $r) return -1;
     if (mysqli_num_rows($r) != 1 || (($___mysqli_tmp = mysqli_num_fields($r)) ? $___mysqli_tmp : false) != 1
         || ($result = mysql_result($r, 0, 0)) == "") $result = -1;
@@ -93,7 +93,7 @@ function sql_query1 ($sql)
  */
 function sql_query ($sql)
 {
-    $r = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+    $r = mysqli_query($GLOBALS["mysqli"], $sql);
     return $r;
 }
 
@@ -155,7 +155,7 @@ function sql_count ($r)
  */
 function sql_insert_id($table, $field)
 {
-    return ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+    return ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 }
 
 /** Return the text of the last error message.
@@ -164,7 +164,7 @@ function sql_insert_id($table, $field)
  */
 function sql_error()
 {
-    return ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+    return ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 }
 
 /**

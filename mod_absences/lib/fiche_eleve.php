@@ -83,7 +83,7 @@ function age($date_de_naissance_fr)
 function pp($classe_choix)
 {
             global $prefix_base;
-               $call_prof_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.classe = '".$classe_choix."'");
+               $call_prof_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.classe = '".$classe_choix."'");
                $data_prof_classe = mysqli_fetch_array($call_prof_classe);
                $suivi_par = $data_prof_classe['suivi_par'];
                return($suivi_par);
@@ -116,7 +116,7 @@ if(($action_sql === "ajouter" or $action_sql === "modifier") and $valide_form ==
             // Vérification des champs nom et prenom (si il ne sont pas vides ?)
             if($data_info_suivi != '')
             {
-                 $test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."suivi_eleve_cpe WHERE eleve_suivi_eleve_cpe = '".$eleve_suivi_eleve_cpe."' AND date_suivi_eleve_cpe = '".$date_fiche."' AND komenti_suivi_eleve_cpe = '".$data_info_suivi."'"),0);
+                 $test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."suivi_eleve_cpe WHERE eleve_suivi_eleve_cpe = '".$eleve_suivi_eleve_cpe."' AND date_suivi_eleve_cpe = '".$date_fiche."' AND komenti_suivi_eleve_cpe = '".$data_info_suivi."'"),0);
                  if ($test === '0')
                   {
                      if($action_sql === 'ajouter')
@@ -130,7 +130,7 @@ if(($action_sql === "ajouter" or $action_sql === "modifier") and $valide_form ==
                               $requete = "UPDATE ".$prefix_base."suivi_eleve_cpe SET parqui_suivi_eleve_cpe='".$_SESSION['login']."', komenti_suivi_eleve_cpe = '$data_info_suivi', niveau_message_suivi_eleve_cpe = '$niveau_urgent', action_suivi_eleve_cpe = '$action_suivi' WHERE id_suivi_eleve_cpe = '".$id_suivi_eleve_cpe."'";
                       }
                             // Execution de cette requete dans la base cartouche
-                             mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                             mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                              $verification = '1';
                     } else {
                                // vérification = 2 - C'est initiale pour les motif existe déjas
@@ -151,14 +151,14 @@ if ($action_sql === 'supprimer' and $valide_form === 'yes')
          //Requete de suppresion MYSQL
             $requete = "DELETE FROM ".$prefix_base."suivi_eleve_cpe WHERE id_suivi_eleve_cpe ='$id_suivi_eleve_cpe'";
          // Execution de cette requete
-            mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+            mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
  }
 
 if ($action === 'modifier')
  {
       $id_suivi_eleve_cpe = $_GET['id_suivi_eleve_cpe'];
       $requete_modif_fiche = 'SELECT * FROM '.$prefix_base.'suivi_eleve_cpe WHERE id_suivi_eleve_cpe="'.$id_suivi_eleve_cpe.'"';
-      $resultat_modif_fiche = mysqli_query($GLOBALS["___mysqli_ston"], $requete_modif_fiche) or die('Erreur SQL !'.$requete_modif_fiche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat_modif_fiche = mysqli_query($GLOBALS["mysqli"], $requete_modif_fiche) or die('Erreur SQL !'.$requete_modif_fiche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       $data_modif_fiche = mysqli_fetch_array($resultat_modif_fiche);
  }
 
@@ -205,7 +205,7 @@ if ($action === 'modifier')
   <div style="text-align: center;">
   <?php
          $requete_liste_fiche = "SELECT * FROM ".$prefix_base."eleves WHERE ".$prefix_base."eleves.login = '".$select_fiche_eleve."'";
-         $execution_liste_fiche = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+         $execution_liste_fiche = mysqli_query($GLOBALS["mysqli"], $requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
          while ( $data_liste_fiche = mysqli_fetch_array($execution_liste_fiche))
           {
               $login_eleve = $data_liste_fiche['login'];
@@ -271,9 +271,9 @@ if ($action === 'modifier')
        <tr>
            <td class="td_tableau_fiche" style="width: 400px; vertical-align: top">
            <?php
-	     $cpt_komenti = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."'"),0);
+	     $cpt_komenti = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."'"),0);
              $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC LIMIT ".$debut_selection_suivi.", 2";
-             $execution_komenti = mysqli_query($GLOBALS["___mysqli_ston"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
               while ( $data_komenti = mysqli_fetch_array($execution_komenti))
                 {
 			$action_pour_eleve = '';
@@ -330,7 +330,7 @@ if ($action === 'modifier')
 			<select name="action_suivi" style="width: 250px;">
  	                <?php
 			      $requete_liste_action = "SELECT init_absence_action, def_absence_action FROM ".$prefix_base."absences_actions ORDER BY init_absence_action ASC";
-        	              $resultat_liste_action = mysqli_query($GLOBALS["___mysqli_ston"], $requete_liste_action) or die('Erreur SQL !'.$requete_liste_action.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        	              $resultat_liste_action = mysqli_query($GLOBALS["mysqli"], $requete_liste_action) or die('Erreur SQL !'.$requete_liste_action.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	                      while ( $data_liste_action = mysqli_fetch_array($resultat_liste_action)) { ?>
                                      <option value="<?php echo $data_liste_action['init_absence_action']; ?>" <?php if(!empty($data_modif_fiche['action_suivi_eleve_cpe']) and $data_modif_fiche['action_suivi_eleve_cpe'] === $data_liste_action['init_absence_action']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_action['init_absence_action']." - ".$data_liste_action['def_absence_action']; ?></option>
                               <?php } ?>
@@ -340,16 +340,16 @@ if ($action === 'modifier')
             </form>
            </td>
            <td class="td_tableau_fiche bordure_sous_menu" style="width: 100px; vertical-align: top;">
-           <?php $cpt_absences = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A'"),0);
+           <?php $cpt_absences = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A'"),0);
            if($cpt_absences != 0) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=A',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Absences"><?php echo $cpt_absences; ?></a></b> Absence(s)</p>
-           <?php } $cpt_retards = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R'"),0);
+           <?php } $cpt_retards = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R'"),0);
            if($cpt_retards != 0) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=R',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Retards"><?php echo $cpt_retards; ?></a></b> Retards</p>
-           <?php } $cpt_dispences = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='D'"),0);
+           <?php } $cpt_dispences = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='D'"),0);
            if($cpt_dispences != 0) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=D',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Dispences"><?php echo $cpt_dispences; ?></a></b> Dispences</p>
-           <?php } $cpt_infirmeries = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='I'"),0);
+           <?php } $cpt_infirmeries = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='I'"),0);
            if($cpt_infirmeries != 0) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=I',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Infirmerie"><?php echo $cpt_infirmeries; ?></a></b> Infirmeries</p>
            <br />
@@ -362,4 +362,4 @@ if ($action === 'modifier')
 </body>
 
 </html>
-<?php ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res); ?>
+<?php ((is_null($___mysqli_res = mysqli_close($GLOBALS["mysqli"]))) ? false : $___mysqli_res); ?>

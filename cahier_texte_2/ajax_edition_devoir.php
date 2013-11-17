@@ -129,12 +129,12 @@ if(isset($_GET['change_visibilite'])) {
 	$id_document=$_GET['id_document'];
 	if(($id_ct_devoir!='')&&(preg_match("/^[0-9]*$/", $id_ct_devoir))&&($id_document!='')&&(preg_match("/^[0-9]*$/", $id_document))) {
 		$sql="SELECT visible_eleve_parent FROM ct_devoirs_documents WHERE id='$id_document' AND id_ct_devoir='$id_ct_devoir';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			$lig=mysqli_fetch_object($res);
 			if($lig->visible_eleve_parent=='0') {$visible_eleve_parent='1';} else {$visible_eleve_parent='0';}
 			$sql="UPDATE ct_devoirs_documents SET visible_eleve_parent='$visible_eleve_parent' WHERE id='$id_document' AND id_ct_devoir='$id_ct_devoir';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($res) {
 				if($visible_eleve_parent=='1') {
 					echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
@@ -200,7 +200,7 @@ echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 echo "<option value='-1'>choisissez un groupe</option>\n";
 foreach ($utilisateur->getGroupes() as $group_iter) {
 	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group_iter->getId()."' AND domaine='cahier_texte' AND visible='n';";
-	$test_grp_visib=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_grp_visib)==0) {
 		echo "<option id='colonne_droite_select_group_option_".$group_iter->getId()."' value='".$group_iter->getId()."'";
 		if ($groupe->getId() == $group_iter->getId()) echo " SELECTED ";

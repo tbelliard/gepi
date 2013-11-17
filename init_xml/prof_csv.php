@@ -60,16 +60,16 @@ if (!isset($step1)) {
 	$j=0;
 	$flag=0;
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
-		$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE '$liste_tables_del[$j]'"));
+		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE '$liste_tables_del[$j]'"));
 		if($test==1){
-			if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+			if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 				$flag=1;
 			}
 		}
 		$j++;
 	}
 
-	$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM utilisateurs WHERE statut='professeur'"),0);
+	$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM utilisateurs WHERE statut='professeur'"),0);
 	if ($test != 0) {$flag=1;}
 
 	if ($flag != 0){
@@ -94,15 +94,15 @@ if (!isset($step1)) {
 if (!isset($is_posted)) {
 	$j=0;
 	while ($j < count($liste_tables_del)) {
-		$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE '$liste_tables_del[$j]'"));
+		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE '$liste_tables_del[$j]'"));
 		if($test==1){
-			if (mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-				$del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM $liste_tables_del[$j]");
+			if (mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
 			}
 		}
 		$j++;
 	}
-	$del = @mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM tempo2");
+	$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM tempo2");
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>";
 	echo add_token_field();
@@ -162,10 +162,10 @@ if (!isset($is_posted)) {
 
 	$dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
 	// On commence par rendre inactifs tous les professeurs
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs set etat='inactif' where statut = 'professeur'");
+	$req = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs set etat='inactif' where statut = 'professeur'");
 
 	// on efface la ligne "display_users" dans la table "setting" de façon à afficher tous les utilisateurs dans la page  /utilisateurs/index.php
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE from setting where NAME = 'display_users'");
+	$req = mysqli_query($GLOBALS["mysqli"], "DELETE from setting where NAME = 'display_users'");
 
 	if(mb_strtoupper($dbf_file['name']) == "F_WIND.CSV") {
 		$fp=fopen($dbf_file['tmp_name'],"r");
@@ -247,7 +247,7 @@ if (!isset($is_posted)) {
 								if($login_prof_gepi!='') {
 									$lcs_prof_en_erreur="n";
 									$sql="SELECT 1=1 FROM utilisateurs WHERE login='$login_prof_gepi';";
-									$test_exist_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$test_exist_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($test_exist_prof)>0) {
 										$exist = 'yes';
 									}
@@ -267,24 +267,24 @@ if (!isset($is_posted)) {
 							numind!='' and
 							statut='professeur')";
 							//echo "<tr><td>$sql</td></tr>";
-							$test_exist = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$test_exist = mysqli_query($GLOBALS["mysqli"], $sql);
 							$result_test = mysqli_num_rows($test_exist);
 							if ($result_test == 0) {
 								// On tente ensuite une reconnaissance sur nom/prénom, si le test NUMIND a échoué
 								$sql="select login from utilisateurs where (
-								nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
-								prenom = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $premier_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
+								nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
+								prenom = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
 								statut='professeur')";
 								// Pour debug:
 								//echo "$sql<br />";
-								$test_exist = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$test_exist = mysqli_query($GLOBALS["mysqli"], $sql);
 								$result_test = mysqli_num_rows($test_exist);
 								if ($result_test == 0) {
 									if ($prenom_compose != '') {
-										$test_exist2 = mysqli_query($GLOBALS["___mysqli_ston"], "select login from utilisateurs
+										$test_exist2 = mysqli_query($GLOBALS["mysqli"], "select login from utilisateurs
 										where (
-										nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
-										prenom = '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $prenom_compose) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
+										nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
+										prenom = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $prenom_compose) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
 										statut='professeur'
 										)");
 										$result_test2 = mysqli_num_rows($test_exist2);
@@ -333,7 +333,7 @@ if (!isset($is_posted)) {
 														WHERE nom_u = '".my_strtoupper($affiche[0])."'
 														AND prenom_u = '".my_strtoupper($affiche[1])."'
 														AND statut_u = 'teacher'";
-											$query_p = mysqli_query($GLOBALS["___mysqli_ston"], $sql_p);
+											$query_p = mysqli_query($GLOBALS["mysqli"], $sql_p);
 											$nbre = mysqli_num_rows($query_p);
 											if ($nbre >= 1 AND $nbre < 2) {
 												$temp1 = mysql_result($query_p, 0,"login_u");
@@ -388,20 +388,20 @@ if (!isset($is_posted)) {
 	
 								// utilise le prénom composé s'il existe, plutôt que le premier prénom
 	
-								$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $affiche[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', prenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $premier_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y', numind='$affiche[3]'";
-								$res = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y', numind='$affiche[3]'";
+								$res = mysqli_query($GLOBALS["mysqli"], $sql);
 								// Pour debug:
 								//echo "<tr><td colspan='4'>$sql</td></tr>";
 	
 								if(!$res){$nb_reg_no++;}
-								$res = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO tempo2 VALUES ('".$login_prof."', '".$affiche[3]."')");
+								$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO tempo2 VALUES ('".$login_prof."', '".$affiche[3]."')");
 								echo "<tr class='lig$alt white_hover'><td><p><font color='red'>".$login_prof."</font></p></td><td><p>".$affiche[0]."</p></td><td><p>".$premier_prenom."</p></td><td>".$mess_mdp."</td></tr>\n";
 							} else {
 								// On corrige aussi les nom/prénom/civilité et numind parce que la reconnaissance a aussi pu se faire sur le nom/prénom
-								$res = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE utilisateurs set etat='actif', nom='$affiche[0]', prenom='$premier_prenom', civilite='$civilite', numind='$affiche[3]' where login='".$login_prof_gepi."'");
+								$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs set etat='actif', nom='$affiche[0]', prenom='$premier_prenom', civilite='$civilite', numind='$affiche[3]' where login='".$login_prof_gepi."'");
 	
 								if(!$res) $nb_reg_no++;
-								$res = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO tempo2 VALUES ('".$login_prof_gepi."', '".$affiche[3]."')");
+								$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO tempo2 VALUES ('".$login_prof_gepi."', '".$affiche[3]."')");
 								echo "<tr class='lig$alt white_hover'><td><p><font color='green'>".$login_prof_gepi."</font></p></td><td><p>".$affiche[0]."</p></td><td><p>".$affiche[1]."</p></td><td>Inchangé</td></tr>\n";
 							}
 						}

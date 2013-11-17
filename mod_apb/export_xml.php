@@ -118,7 +118,7 @@ if (isset($_POST['num_export'])) {
   die();
 }
 
-$req_classes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, classe, nom_complet, MAX(p.num_periode) periodes, apb_niveau FROM classes c, periodes p WHERE c.apb_niveau = 'terminale' AND p.id_classe = c.id GROUP BY c.id");
+$req_classes = mysqli_query($GLOBALS["mysqli"], "SELECT id, classe, nom_complet, MAX(p.num_periode) periodes, apb_niveau FROM classes c, periodes p WHERE c.apb_niveau = 'terminale' AND p.id_classe = c.id GROUP BY c.id");
 $data_classes = array();
 $data_groupes = array();
 
@@ -170,7 +170,7 @@ $data_etablissement['cp'] = $gepiSettings['gepiSchoolZipCode'];
 $data_eleves = array();
 
 foreach($data_classes as $classe) {
-  $req_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT e.login, e.no_gep, e.nom, e.prenom, e.naissance
+  $req_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.no_gep, e.nom, e.prenom, e.naissance
                                 FROM eleves e, j_eleves_classes jec
                                 WHERE
                                   e.login = jec.login AND
@@ -214,7 +214,7 @@ foreach($data_eleves as &$eleve) {
       
       // Maintenant on boucle sur les différentes notes pour la période considérée
       // On se base sur les mécanismes existants dans le bulletin
-      $req_notes = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT n.id_groupe, n.note, n.statut, n.rang, a.appreciation
+      $req_notes = mysqli_query($GLOBALS["mysqli"], "SELECT n.id_groupe, n.note, n.statut, n.rang, a.appreciation
                                   FROM matieres_notes n LEFT JOIN matieres_appreciations a USING (login, id_groupe, periode)
                                   WHERE n.periode = '".$i."' AND n.login = '".$eleve['login']."'");
       
@@ -223,7 +223,7 @@ foreach($data_eleves as &$eleve) {
         
         // On enregistre ce groupe dans la liste des services_notations s'il n'y est pas déjà
         if (!array_key_exists($note->id_groupe.'_'.$i, $data_services_notations)) {
-          $req_groupe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT(g.id), g.name, g.description, m.nom_complet, m.matiere, jgp.login
+          $req_groupe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT(g.id), g.name, g.description, m.nom_complet, m.matiere, jgp.login
                                         FROM groupes g
                                         LEFT JOIN j_groupes_matieres jgm ON g.id = jgm.id_groupe
                                         LEFT JOIN matieres m ON jgm.id_matiere = m.matiere
@@ -231,13 +231,13 @@ foreach($data_eleves as &$eleve) {
                                         WHERE g.id = '".$note->id_groupe."'");
           $groupe = mysqli_fetch_object($req_groupe);
           
-          $req_stats1 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT COUNT(DISTINCT(jeg.login)) effectif FROM j_eleves_groupes jeg
+          $req_stats1 = mysqli_query($GLOBALS["mysqli"], "SELECT COUNT(DISTINCT(jeg.login)) effectif FROM j_eleves_groupes jeg
                                       WHERE jeg.id_groupe = '".$groupe->id."' AND
                                         jeg.periode = '".$i."'");
 
           $stats1 = mysqli_fetch_object($req_stats1);
 
-          $req_stats2 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT MIN(n.note) note_min, MAX(n.note) note_max FROM matieres_notes n
+          $req_stats2 = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(n.note) note_min, MAX(n.note) note_max FROM matieres_notes n
                                       WHERE
                                         n.id_groupe = '".$groupe->id."' AND
                                         n.statut = '' AND
@@ -257,7 +257,7 @@ foreach($data_eleves as &$eleve) {
           // On regarde si l'enseignant est déjà répertorié
           if (!array_key_exists($groupe->login, $data_enseignants)) {
             // Non, alors on va le chercher...
-            $req_enseignant = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, prenom FROM utilisateurs WHERE login = '".$groupe->login."'");
+            $req_enseignant = mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM utilisateurs WHERE login = '".$groupe->login."'");
             $enseignant = mysqli_fetch_object($req_enseignant);
             $data_enseignants[$groupe->login] = array('code' => $groupe->login, 'nom' => $enseignant->nom, 'prenom' => $enseignant->prenom);            
           }
@@ -272,7 +272,7 @@ foreach($data_eleves as &$eleve) {
         // On regarde si on a déjà enregistré les infos spécifiques à cette classe pour ce groupe dans le tableau (il s'agit du coef)
         if (!array_key_exists($note->id_groupe, $data_groupes[$eleve['code-classe']])) {
           // On récupère les informations nécessaires
-          $coef = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgc.coef FROM j_groupes_classes jgc, classes c WHERE
+          $coef = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT jgc.coef FROM j_groupes_classes jgc, classes c WHERE
                                                   jgc.id_groupe = '".$note->id_groupe."' AND
                                                   jgc.id_classe = c.id AND
                                                   c.classe = '".$eleve['code-classe']."'"), 0);

@@ -50,14 +50,14 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     // Insertion et suppression de périodes
     //
     $pb_reg_per = '';
-    $periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+    $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
     $nb_periode = mysqli_num_rows($periode_query);
     if ($nombre_periode < $nb_periode) {
         $k = $nombre_periode + 1;
         $nb_periode++;
         $autorisation_efface = 'oui';
         while ($k < $nb_periode) {
-            $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM  j_eleves_classes WHERE (periode = '$k' and id_classe='$id_classe')");
+            $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM  j_eleves_classes WHERE (periode = '$k' and id_classe='$id_classe')");
             if (mysqli_num_rows($test) !=0) {
                 $msg .= "Cette classe contient des élèves pour la periode $k ! Suppression impossible. Vous devez d'abord retirer les élèves de la classe.<br />";
                 $autorisation_efface = 'non';
@@ -68,19 +68,19 @@ if (isset($is_posted) and ($is_posted == "yes")) {
             $pb_reg_per = 'no';
             $k = $nombre_periode + 1;
             while ($k < $nb_periode) {
-                $efface = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM periodes WHERE (num_periode = '$k' AND id_classe = '$id_classe')");
+                $efface = mysqli_query($GLOBALS["mysqli"], "DELETE FROM periodes WHERE (num_periode = '$k' AND id_classe = '$id_classe')");
                 if (!$efface) {$pb_reg_per = 'yes';}
-                $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT login FROM j_eleves_classes WHERE (periode = '$k' AND id_classe = '$id_classe')");
+                $test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE (periode = '$k' AND id_classe = '$id_classe')");
                 $nb_ligne = mysqli_num_rows($test);
                 $j = 0;
                 while ($j < $nb_ligne) {
                     $login_eleve = mysql_result($test, $j, 'login');
-                    $efface = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_eleves_groupes WHERE (periode = '$k' AND login = '$login_eleve')");
+                    $efface = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_groupes WHERE (periode = '$k' AND login = '$login_eleve')");
                     if (!$efface) {$pb_reg_per = 'yes';}
                     $j++;
                 }
 
-                $efface = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM j_eleves_classes WHERE (periode='$k' AND id_classe='$id_classe')");
+                $efface = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_classes WHERE (periode='$k' AND id_classe='$id_classe')");
                 if (!$efface) {$pb_reg_per = 'yes';}
                 $k++;
 
@@ -93,7 +93,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         while ($k < $nombre_periode) {
             $sql="INSERT INTO periodes SET nom_periode='période ".$k."', num_periode='$k', verouiller = 'N', id_classe='$id_classe';";
             //echo "$sql<br />";
-            $register = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+            $register = mysqli_query($GLOBALS["mysqli"], $sql);
             if (!$register) {$pb_reg_per = 'yes';}
             $k++;
         }
@@ -105,7 +105,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
     $date_fin_period=isset($_POST['date_fin_period']) ? $_POST['date_fin_period'] : NULL;
 
-    $periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+    $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
     $nb_periode = mysqli_num_rows($periode_query) + 1 ;
     $k = "1";
     while ($k < $nb_periode) {
@@ -125,7 +125,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         }
         $sql.=" WHERE (num_periode='$k' and id_classe='$id_classe');";
         //echo "$sql<br />";
-        $register = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+        $register = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$register) {$pb_reg_per = 'yes';}
         $k++;
     }
@@ -139,9 +139,9 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
 }
 
-$call_data = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_data, 0, "classe");
-$periode_query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 $test_periode = mysqli_num_rows($periode_query) ;
 include "../lib/periodes.inc.php";
 
@@ -151,7 +151,7 @@ include "../lib/periodes.inc.php";
 // AJOUT: boireaus
 $chaine_options_classes="";
 $sql="SELECT id, classe FROM classes ORDER BY classe";
-$res_class_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_class_tmp)>0){
 	$id_class_prec=0;
 	$id_class_suiv=0;
@@ -293,7 +293,7 @@ echo "<p>Nombre de périodes&nbsp;: ";
 
 //$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_classe='$id_classe';";
 $sql="SELECT 1=1 FROM j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe;";
-$verif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($verif)>0) {
 	$temp = $nb_periode - 1;
 	echo "<b>".$temp."</b>";
@@ -382,7 +382,7 @@ if($ouvrir_infobulle_nav=='y') {
 if($nb_periode>1) {
 	//$sql="SELECT num_periode, nom_periode, date_fin, COUNT(date_fin) AS eff_date_fin FROM periodes  GROUP BY nom_periode ORDER BY eff_date_fin DESC, num_periode ASC;";
 	$sql="SELECT DISTINCT num_periode, nom_periode, date_fin FROM periodes ORDER BY num_periode ASC;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		echo "<p>Prendre modèle sur d'autres classes&nbsp;:</p>
 <table class='boireaus'>
@@ -411,7 +411,7 @@ if($nb_periode>1) {
 		<td>";
 			//formate_date($lig->date_fin)
 			$sql="SELECT COUNT(date_fin) AS eff_date_fin FROM periodes p WHERE p.num_periode='".$lig->num_periode."' AND p.nom_periode='".$lig->nom_periode."' AND p.date_fin='".$lig->date_fin."';";
-			$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res2)>0) {
 				$lig2=mysqli_fetch_object($res2);
 				echo $lig2->eff_date_fin;
@@ -421,7 +421,7 @@ if($nb_periode>1) {
 
 			$sql="SELECT c.id, c.classe FROM classes c, periodes p WHERE p.id_classe=c.id AND p.num_periode='".$lig->num_periode."' AND p.nom_periode='".$lig->nom_periode."' AND p.date_fin='".$lig->date_fin."' ORDER BY c.classe;";
 			//echo "$sql<br />";
-			$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res2)>0) {
 				$cpt2=0;
 				while($lig2=mysqli_fetch_object($res2)) {

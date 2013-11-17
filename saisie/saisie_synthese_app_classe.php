@@ -65,7 +65,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 	if($_SESSION['statut']=='professeur') {
 		// Le prof est-il PP
 		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jep.professeur='".$_SESSION['login']."' AND jec.login=jep.login AND jec.id_classe='$id_classe' AND jec.periode='$num_periode';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			//tentative_intrusion("2", "Tentative d'accès par un prof à la saisie de synthèse d'une classe qu'il ne suit pas.");
 			header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse pour cette classe."));
@@ -78,7 +78,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 		}
 		elseif(getSettingAOui('GepiRubConseilCpe')) {
 			$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jecpe.cpe_login='".$_SESSION['login']."' AND jec.login=jecpe.e_login AND jec.id_classe='$id_classe' AND jec.periode='$num_periode';";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)==0) {
 				//tentative_intrusion("2", "Tentative d'accès par un cpe à la saisie de synthèse d'une classe qu'il ne suit pas.");
 				header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse pour cette classe."));
@@ -88,7 +88,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 	}
 	elseif($_SESSION['statut']=='scolarite') {
 		$sql="SELECT 1=1 FROM j_scol_classes WHERE id_classe='$id_classe';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			//tentative_intrusion("2", "Tentative d'accès par un compte scolarité à la saisie de synthèse d'une classe qu'il ne suit pas.");
 			header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse pour cette classe."));
@@ -117,16 +117,16 @@ if((isset($id_classe))&&(isset($num_periode))) {
 		$synthese=suppression_sauts_de_lignes_surnumeraires($synthese);
 
 		$sql="SELECT 1=1 FROM synthese_app_classe WHERE id_classe='$id_classe' AND periode='$num_periode';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			$sql="INSERT INTO synthese_app_classe SET id_classe='$id_classe', periode='$num_periode', synthese='$synthese';";
-			$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$insert) {$msg="Erreur lors de l'enregistrement de la synthèse.";}
 			else {$msg="La synthèse a été enregistrée.";}
 		}
 		else {
 			$sql="UPDATE synthese_app_classe SET synthese='$synthese' WHERE id_classe='$id_classe' AND periode='$num_periode';";
-			$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$update) {$msg="Erreur lors de la mise à jour de la synthèse.";}
 			else {$msg="La synthèse a été mise à jour.";}
 		}
@@ -134,7 +134,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 
 	$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$num_periode');";
 	//echo "$sql<br />";
-	$res_current_synthese=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_current_synthese=mysqli_query($GLOBALS["mysqli"], $sql);
 	$synthese=@mysql_result($res_current_synthese, 0, "synthese");
 
 	//====================================
@@ -164,7 +164,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 		$periode1 = $temp;
 	}
 	// On teste la présence d'au moins un coeff pour afficher la colonne des coef
-	$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+	$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 	//echo "\$test_coef=$test_coef<br />";
 	// Apparemment, $test_coef est réaffecté plus loin dans un des include()
 	$nb_coef_superieurs_a_zero=$test_coef;
@@ -314,7 +314,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 	c.id_classe='$id_classe' AND 
 	e.login = c.login
 	) ORDER BY e.nom,e.prenom;";
-	$res_ele= mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_ele= mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_ele)>0) {
 		while($lig_ele=mysqli_fetch_object($res_ele)) {
 			$tab_moy['eleves'][]=$lig_ele->login;
@@ -388,7 +388,7 @@ if(!isset($id_classe)) {
 	if($_SESSION['statut']=='professeur') {
 		// Le prof est-il PP
 		$sql="SELECT DISTINCT id, classe FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jep.professeur='".$_SESSION['login']."' AND jec.login=jep.login;";
-		$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_classe)==0) {
 			header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse d'une classe."));
 			die();
@@ -396,7 +396,7 @@ if(!isset($id_classe)) {
 	}
 	elseif($_SESSION['statut']=='scolarite') {
 		$sql="SELECT DISTINCT id, classe FROM j_scol_classes jsc, classes c WHERE jsc.id_classe=c.id ORDER BY c.classe;";
-		$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_classe)==0) {
 			header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse pour une classe."));
 			die();
@@ -405,7 +405,7 @@ if(!isset($id_classe)) {
 	elseif($_SESSION['statut']=='cpe') {
 		if(getSettingAOui('GepiRubConseilCpeTous')) {
 			$sql="SELECT DISTINCT id, classe FROM classes c ORDER BY c.classe;";
-			$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_classe)==0) {
 				header('Location: ../accueil.php&msg='.rawurlencode("Aucune classe n'a été trouvée."));
 				die();
@@ -413,7 +413,7 @@ if(!isset($id_classe)) {
 		}
 		elseif(getSettingAOui('GepiRubConseilCpe')) {
 			$sql="SELECT DISTINCT id, classe FROM j_eleves_cpe jecpe, j_eleves_classes jec, classes c WHERE jecpe.cpe_login='".$_SESSION['login']."' AND jec.login=jecpe.e_login AND jec.id_classe=c.id ORDER BY c.classe;";
-			$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_classe)==0) {
 				header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse pour une classe."));
 				die();
@@ -422,7 +422,7 @@ if(!isset($id_classe)) {
 	}
 	elseif($_SESSION['statut']=='secours') {
 		$sql="SELECT DISTINCT id, classe FROM classes c ORDER BY c.classe;";
-		$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_classe)==0) {
 			header('Location: ../accueil.php&msg='.rawurlencode("Aucune classe n'a été trouvée."));
 			die();
@@ -468,7 +468,7 @@ else {
 	echo "</p>\n";
 
 	$sql="SELECT * FROM classes WHERE id='$id_classe'";
-	$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_classe)==0) {
 		echo "<p style='color:red'>La classe choisie n'existe pas.</p>";
 		require("../lib/footer.inc.php");
@@ -481,7 +481,7 @@ else {
 	include "../lib/periodes.inc.php";
 
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' AND verouiller!='O';";
-	$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_classe)==0) {
 		echo "<p>Toutes les périodes sont closes pour cette classe.<br />Plus aucune modification n'est possible.</p>";
 		require("../lib/footer.inc.php");

@@ -162,11 +162,11 @@
 
 			$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
 			if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='eleve';";
 				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)==0) {
 					echo "<p style='color:red'>Il existe un ou des comptes élèves de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes parents et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
 				}
@@ -301,7 +301,7 @@
 						echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
 						$sql="DROP TABLE IF EXISTS temp_gep_import2;";
-						$suppr_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$suppr_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
 						`ID_TEMPO` varchar(40) NOT NULL default '',
@@ -334,21 +334,21 @@
 						DATE_SORTIE DATETIME,
 						DATE_ENTREE DATETIME
 						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-						$create_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 						$sql="TRUNCATE TABLE temp_gep_import2;";
-						$vide_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$sql="CREATE TABLE IF NOT EXISTS temp_grp (
 						id smallint(6) unsigned NOT NULL auto_increment, 
 						ELE_ID varchar(40) NOT NULL default '',
 						NOM_GRP varchar(255) NOT NULL default '',
 						PRIMARY KEY id (id));";
-						$create_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$sql="TRUNCATE TABLE temp_grp;";
-						$vide_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 						// On va lire plusieurs fois le fichier pour remplir des tables temporaires.
 
@@ -436,8 +436,8 @@
 											$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
 										}
 										elseif($eleves[$i]["structures"][$j]["type_structure"]=="G") {
-											$sql="INSERT INTO temp_grp SET ele_id='".$eleves[$i]['eleve_id']."', nom_grp='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $eleves[$i]["structures"][$j]["code_structure"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
-											$insert_assoc_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+											$sql="INSERT INTO temp_grp SET ele_id='".$eleves[$i]['eleve_id']."', nom_grp='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]["structures"][$j]["code_structure"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+											$insert_assoc_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 										}
 									}
 									/*
@@ -453,7 +453,7 @@
 								$sql.="ele_id='".$eleves[$i]['eleve_id']."', ";
 								$sql.="divcod='".$eleves[$i]['classe']."';";
 								//echo "$sql<br />\n";
-								$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res_insert){
 									echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 									$nb_err++;
@@ -493,17 +493,17 @@
 												`ville` char(50) NOT NULL default '',
 												PRIMARY KEY  (`id`)
 												) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-				$create_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$sql="TRUNCATE TABLE temp_etab_import;";
-				$vide_table = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 
 
 				// On récupère les ele_id des élèves qui sont affectés dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
-				$res_ele_id=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_ele_id=mysqli_query($GLOBALS["mysqli"], $sql);
 				affiche_debug("count(\$res_ele_id)=".count($res_ele_id)."<br />");
 
 				unset($tab_ele_id);
@@ -679,15 +679,15 @@
 
 						if($temoin_date_sortie=="y") {
 							$sql="DELETE FROM temp_gep_import2 WHERE ele_id='".$eleves[$i]['eleve_id']."';";
-							$nettoyage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 						else {
 
 							$sql="UPDATE temp_gep_import2 SET ";
 							$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
 							if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
-							$sql.="elenom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $eleves[$i]['nom']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
-							$sql.="elepre='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $eleves[$i]['prenom']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+							$sql.="elenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]['nom']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+							$sql.="elepre='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]['prenom']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
 							if(!isset($eleves[$i]["code_sexe"])) {
 								$eleves[$i]["code_sexe"]=1;
 								$info_anomalie.="Le sexe de ".$eleves[$i]['nom']." ".$eleves[$i]['prenom']." n'est pas renseigné dans le fichier XML.<br />\n";
@@ -707,7 +707,7 @@
 							$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
-							$res_insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res_insert){
 								echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 								$nb_err++;
@@ -731,7 +731,7 @@
 										$tab_list_etab[]=$eleves[$i]["scolarite_an_dernier"]["code_rne"];
 
 										if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
-											$sql.="id='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $eleves[$i]["scolarite_an_dernier"]["code_rne"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+											$sql.="id='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]["scolarite_an_dernier"]["code_rne"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 											$cpt_debut_requete++;
 										}
 
@@ -774,13 +774,13 @@
 												$nom_etab=casse_mot($chaine,'majf2');
 											}
 											//$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
-											$sql.="nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $nom_etab) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+											$sql.="nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nom_etab) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 											$cpt_debut_requete++;
 										}
 										else{
 											$sql.=", ";
 											$nom_etab=casse_mot($chaine,'majf2');
-											$sql.="nom='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $nom_etab) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+											$sql.="nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nom_etab) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 											$cpt_debut_requete++;
 										}
 
@@ -814,7 +814,7 @@
 											// *****************************************
 											// PROBLEME: code_commune_insee!=code_postal
 											// *****************************************
-											$sql.="cp='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+											$sql.="cp='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 											$cpt_debut_requete++;
 										}
 
@@ -823,13 +823,13 @@
 											if($cpt_debut_requete>0){
 												$sql.=", ";
 											}
-											$sql.="ville='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"])) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+											$sql.="ville='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"])) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 											$cpt_debut_requete++;
 										}
 
 										//echo "$sql<br />";
 
-										$res_insert_etab=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$res_insert_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_insert_etab){
 											echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 											$nb_err_etab++;
@@ -871,7 +871,7 @@
 
 				// On récupère les ele_id des élèves qui sont affectés dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
-				$res_ele_id=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_ele_id=mysqli_query($GLOBALS["mysqli"], $sql);
 				//echo "count(\$res_ele_id)=".count($res_ele_id)."<br />";
 
 				unset($tab_ele_id);
@@ -972,7 +972,7 @@
 							$sql.="eleopt$k='".$eleves[$i]["options"][$j]['code_matiere']."'";
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
-							$res_update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res_update){
 								echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 								flush();
@@ -1254,11 +1254,11 @@
 
 						for($loop=0;$loop<count($tab_mef);$loop++) {
 							$sql="SELECT 1=1 FROM mef WHERE mef_code='".$tab_mef[$loop]['code_mef']."';";
-							$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
 								// On n'importe que les MEF associés à des élèves
 								$sql="SELECT 1=1 FROM temp_gep_import2 WHERE MEF_CODE='".$tab_mef[$loop]['code_mef']."';";
-								$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$test=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test)>0) {
 									if((!isset($tab_mef[$loop]['libelle_long']))||($tab_mef[$loop]['libelle_long']=="")) {
 										echo "<span style='color:red'>ERREUR&nbsp;:</span> Pas de libelle_long pour&nbsp;:<br />";
@@ -1282,13 +1282,13 @@
 										}
 
 										$sql="INSERT INTO mef SET mef_code='".$tab_mef[$loop]['code_mef']."',
-																	libelle_court='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab_mef[$loop]['formation']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																	libelle_long='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab_mef[$loop]['libelle_long']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																	libelle_edition='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $tab_mef[$loop]['libelle_edition']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+																	libelle_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['formation']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+																	libelle_long='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['libelle_long']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+																	libelle_edition='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['libelle_edition']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
 																	code_mefstat='".$tab_mef[$loop]['code_mefstat']."',
 																	mef_rattachement='".$tab_mef[$loop]['mef_rattachement']."'
 																	;";
-										$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert) {
 											echo "<span style='color:red'>ERREUR&nbsp;:</span> Erreur lors de l'import suivant&nbsp;:<br />$sql<br />";
 										}
@@ -1299,7 +1299,7 @@
 
 
 						$sql="SELECT * FROM temp_gep_import2";
-						$res1=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if(mysqli_num_rows($res1)==0) {
 							echo "<p>La table 'temp_gep_import2' est vide.<br />Ce n'est pas normal.<br />Auriez-vous sauté des étapes???</p>\n";
@@ -1347,7 +1347,7 @@
 								$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 								$sql.=" WHERE ele_id='$lig->ELE_ID';";
 								affiche_debug($sql."<br />\n");
-								$res2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res2){
 									echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
 									flush();
@@ -1394,7 +1394,7 @@
 
 
 				$sql="SELECT * FROM temp_etab_import ORDER BY ville,nom";
-				$res_etab=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_etab)==0){
 					echo "<p>Aucun établissement précédent n'a été trouvé.</p>\n";
 
@@ -1423,7 +1423,7 @@
 					while($lig=mysqli_fetch_object($res_etab)){
 						$alt=$alt*(-1);
 						$sql="SELECT * FROM etablissements WHERE id='$lig->id'";
-						$res_etab2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_etab2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_etab2)==0){
 							// Nouvelle entrée
 
@@ -1583,7 +1583,7 @@
 					for($i=0;$i<count($rne);$i++){
 						$sql="INSERT INTO etablissements SELECT id,nom,niveau,type,cp,ville FROM temp_etab_import WHERE temp_etab_import.id='".$rne[$i]."'";
 						//echo "$sql<br />";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if(!$res){
 							echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
@@ -1614,11 +1614,11 @@
 					for($i=0;$i<count($rne_modif);$i++){
 						$sql="DELETE FROM etablissements WHERE id='".$rne_modif[$i]."'";
 						//echo "$sql<br />";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$sql="INSERT INTO etablissements SELECT id,nom,niveau,type,cp,ville FROM temp_etab_import WHERE temp_etab_import.id='".$rne_modif[$i]."'";
 						//echo "$sql<br />";
-						$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if(!$res){
 							echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";

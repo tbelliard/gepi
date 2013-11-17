@@ -87,7 +87,7 @@ if (
 
 // Et une autre vérification de sécurité : est-ce que si on a un statut 'responsable' le $login_eleve est bien un élève dont le responsable a la responsabilité
 if ($_SESSION['statut'] == "responsable") {
-	$test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(e.login) " .
+	$test = mysqli_query($GLOBALS["mysqli"], "SELECT count(e.login) " .
 			"FROM eleves e, responsables2 re, resp_pers r " .
 			"WHERE (" .
 			"e.login = '" . $login_eleve . "' AND " .
@@ -120,7 +120,7 @@ if (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND
 
 //if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
-	$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+	$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 	if ($test == "0") {
 		tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
 		echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
@@ -135,7 +135,7 @@ getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes" AND
 getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND
 $choix_edit == "2") {
 
-	$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT jeg.* FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jeg.id_groupe = jgp.id_groupe AND jeg.login = '".$login_eleve."')"));
+	$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT jeg.* FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jeg.id_groupe = jgp.id_groupe AND jeg.login = '".$login_eleve."')"));
 	if ($test == "0") {
 		tentative_intrusion("2", "Tentative d'accès par un prof à un bulletin simplifié d'un élève qu'il n'a pas en cours, sans en avoir l'autorisation.");
 		echo "Vous ne pouvez pas accéder à cet élève !";

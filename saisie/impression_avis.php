@@ -90,7 +90,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 		echo "<legend>Dans un premier temps, sélectionnez la (ou les) périodes pour lesquelles vous souhaitez imprimer les avis</legend>\n";
 		echo "<form method=\"post\" action=\"impression_avis.php\" name=\"imprime_serie\">\n";
 		$requete_periode = "SELECT DISTINCT `num_periode` FROM `periodes`";
-		$resultat_periode = mysqli_query($GLOBALS["___mysqli_ston"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		echo "<select id='id_liste_periodes' name='id_liste_periodes[]' multiple='yes' size='4'>\n";
 		echo "		<optgroup label=\"-- Les périodes --\">\n";
 		While ($data_periode = mysqli_fetch_array($resultat_periode)) {
@@ -142,7 +142,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 			} else {
 				$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_la_premiere_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
 			}
-			$resultat_classe = mysqli_query($GLOBALS["___mysqli_ston"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			echo "		<optgroup label=\"-- Les classes --\">\n";
 			While ( $data_classe = mysqli_fetch_array($resultat_classe)) {
 				echo "		<option value=\"";
@@ -169,7 +169,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 	echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez imprimer les avis :</p>\n";
 
 	$sql = "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
-	$result_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_classes = mysqli_num_rows($result_classes);
 
 	if(mysqli_num_rows($result_classes)==0){
@@ -194,7 +194,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 			}
 
 			$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-			$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res_per)==0){
 				echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
@@ -220,7 +220,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 	}
 } elseif($_SESSION['statut']=='professeur') { // appel pour un prof
     echo "<br />";
-    $call_prof_classe = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
+    $call_prof_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
     $nombre_classe = mysqli_num_rows($call_prof_classe);
     if ($nombre_classe == "0") {
         echo "Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." ! Il ne vous revient donc pas d'imprimer les avis de conseil de classe.";

@@ -71,7 +71,7 @@ $aff_debug = $aff_nom_classe = $aff_liste_abs = $aff_bilan = $aff_liste_eleves =
 
 	// On recherche les renseignements sur cette classe
 	$sql_c = "SELECT classe FROM classes WHERE id = '".$id_classe."' LIMIT 1";
-	$query_c = mysqli_query($GLOBALS["___mysqli_ston"], $sql_c) OR trigger_error('Impossible d\'afficher la classe.', E_USER_WARNING);
+	$query_c = mysqli_query($GLOBALS["mysqli"], $sql_c) OR trigger_error('Impossible d\'afficher la classe.', E_USER_WARNING);
 
 	$rep = mysqli_fetch_array($query_c);
 
@@ -94,7 +94,7 @@ $aff_debug = $aff_nom_classe = $aff_liste_abs = $aff_bilan = $aff_liste_eleves =
 				AND fin_ts <= '".$date_fin_ts."'
 				AND a.eleve_id = e.login
 				ORDER BY nom, prenom";
-	$query_a = mysqli_query($GLOBALS["___mysqli_ston"], $sql_a) OR trigger_error('Impossible de lister les absents.', E_USER_ERROR);
+	$query_a = mysqli_query($GLOBALS["mysqli"], $sql_a) OR trigger_error('Impossible de lister les absents.', E_USER_ERROR);
 	$nbre_rep = mysqli_num_rows($query_a);
 
 	$aff = get_eleves_classe($id_classe);

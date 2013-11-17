@@ -108,7 +108,7 @@ $envoi_mail_actif=getSettingValue('envoi_mail_actif');
 if($envoi_mail_actif!='n') {
 	// Recherche des destinataires
 	$sql="SELECT u.email FROM j_groupes_professeurs jgp, utilisateurs u WHERE u.login=jgp.login AND jgp.id_groupe='$signalement_id_groupe' AND u.email!='' AND u.email LIKE '%@%';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<span style='color:red' title='Erreur lors du signalement de faute'> KO</span>";
 		return false;

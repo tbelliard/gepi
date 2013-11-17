@@ -38,7 +38,7 @@ if(!isset($user_login)) {
 }
 else {
 	$sql="SELECT * FROM utilisateurs WHERE login='".$user_login."';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p style='color:red'>Le login proposé (<em>".$user_login."</em>) n'existe pas</p>\n";
 		require("../lib/footer.inc.php");

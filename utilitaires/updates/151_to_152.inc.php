@@ -15,7 +15,7 @@
 
 		$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.2" . $rc . $beta . " :</h3>";
 
-		$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'sso_display_portail'");
+		$req_test=mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = 'sso_display_portail'");
 		$res_test=mysqli_num_rows($req_test);
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('sso_display_portail','no');");
@@ -28,7 +28,7 @@
 			$result .= msj_present("Le paramètre sso_use_portail existe déjà dans la table setting.");
 		}
 
-		$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'sso_url_portail'");
+		$req_test=mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = 'sso_url_portail'");
 		$res_test=mysqli_num_rows($req_test);
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('sso_url_portail', 'https://www.example.com');");
@@ -41,7 +41,7 @@
 			$result .= msj_present("Le paramètre denomination_eleves existe déjà dans la table setting.");
 		}
 
-		$req_test=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT value FROM setting WHERE name = 'sso_hide_logout'");
+		$req_test=mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = 'sso_hide_logout'");
 		$res_test=mysqli_num_rows($req_test);
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('sso_hide_logout', 'no');");
@@ -92,10 +92,10 @@ qualite VARCHAR( 50 ) NOT NULL
 				for($loop=0;$loop<count($tab_qualite);$loop++) {
 					$sql="SELECT 1=1 FROM s_qualites WHERE qualite='".$tab_qualite[$loop]."';";
 					//echo "$sql<br />";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)==0) {
 						$sql="INSERT INTO s_qualites SET qualite='".$tab_qualite[$loop]."';";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 			}
@@ -117,10 +117,10 @@ nature VARCHAR( 255 ) NOT NULL
 				for($loop=0;$loop<count($tab_type);$loop++) {
 					$sql="SELECT 1=1 FROM s_types_sanctions WHERE nature='".$tab_type[$loop]."';";
 					//echo "$sql<br />";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)==0) {
 						$sql="INSERT INTO s_types_sanctions SET nature='".$tab_type[$loop]."';";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 			}
@@ -160,10 +160,10 @@ commentaire TEXT NOT NULL
 				for($loop=0;$loop<count($tab_mesure);$loop++) {
 					$sql="SELECT 1=1 FROM s_mesures WHERE mesure='".$tab_mesure[$loop]."';";
 					//echo "$sql<br />";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)==0) {
 						$sql="INSERT INTO s_mesures SET mesure='".$tab_mesure[$loop]."', type='prise';";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
@@ -172,10 +172,10 @@ commentaire TEXT NOT NULL
 				for($loop=0;$loop<count($tab_mesure);$loop++) {
 					$sql="SELECT 1=1 FROM s_mesures WHERE mesure='".$tab_mesure[$loop]."';";
 					//echo "$sql<br />";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)==0) {
 						$sql="INSERT INTO s_mesures SET mesure='".$tab_mesure[$loop]."', type='demandee';";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 			}
@@ -213,10 +213,10 @@ lieu VARCHAR( 255 ) NOT NULL
 				for($loop=0;$loop<count($tab_lieu);$loop++) {
 					$sql="SELECT 1=1 FROM s_lieux_incidents WHERE lieu='".$tab_lieu[$loop]."';";
 					//echo "$sql<br />";
-					$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)==0) {
 						$sql="INSERT INTO s_lieux_incidents SET lieu='".$tab_lieu[$loop]."';";
-						$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 			}
@@ -329,9 +329,9 @@ lieu VARCHAR( 255 ) NOT NULL
 
 		//module carnet de note
 		$result .= "<br />Modification de la table 'cn_devoirs'. ";
-		$testcn_devoirs_note_sur = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM cn_devoirs LIKE 'note_sur'"));
+		$testcn_devoirs_note_sur = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM cn_devoirs LIKE 'note_sur'"));
 		if ($testcn_devoirs_note_sur == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `cn_devoirs` ADD `note_sur` INT(11) DEFAULT '20' AFTER `coef` ;");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `cn_devoirs` ADD `note_sur` INT(11) DEFAULT '20' AFTER `coef` ;");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -341,7 +341,7 @@ lieu VARCHAR( 255 ) NOT NULL
 			$result .= "<br />".msj_present("La colonne 'note_sur' existe deja.");
 		}
 
-		$testcn_devoirs_ramener_sur_referentiel = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM cn_devoirs LIKE 'ramener_sur_referentiel'"));
+		$testcn_devoirs_ramener_sur_referentiel = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM cn_devoirs LIKE 'ramener_sur_referentiel'"));
 		if ($testcn_devoirs_ramener_sur_referentiel == 0) {
 			$result_inter = traite_requete("ALTER TABLE `cn_devoirs` ADD `ramener_sur_referentiel` CHAR(1) NOT NULL DEFAULT 'F' AFTER `note_sur` ;");
 			if ($query) {
@@ -353,13 +353,13 @@ lieu VARCHAR( 255 ) NOT NULL
 			$result .= msj_present("La colonne 'ramener_sur_referentiel' existe deja.");
 		}
 
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'note_autre_que_sur_referentiel'");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'note_autre_que_sur_referentiel'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0){
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('note_autre_que_sur_referentiel', 'F');");
 		}
 
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'referentiel_note'");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'referentiel_note'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0){
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('referentiel_note', '20');");
@@ -369,7 +369,7 @@ lieu VARCHAR( 255 ) NOT NULL
 		//fin module carnet de note
 
 		$sql="SELECT 1=1 FROM setting WHERE name='unzipped_max_filesize';";
-		$query = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$query = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (mysqli_num_rows($query)==0) {
 			$result .= "<br />Initialisation de la taille maximale d'un fichier extrait d'une archive ZIP&nbsp;: ";
 			$sql="INSERT INTO setting SET name='unzipped_max_filesize',value='10';";
@@ -392,9 +392,9 @@ lieu VARCHAR( 255 ) NOT NULL
 
 
 		$result .= "&nbsp;->Création de la absences_repas<br />";
-		$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'absences_repas'"));
+		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'absences_repas'"));
 		if ($test == 0) {
-			$query3 = mysqli_query($GLOBALS["___mysqli_ston"], "CREATE TABLE `absences_repas` (`id` int(5) NOT NULL auto_increment, `date_repas` date NOT NULL default '0000-00-00', `id_groupe` varchar(8) NOT NULL, `eleve_id` varchar(30) NOT NULL, `pers_id` varchar(30) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+			$query3 = mysqli_query($GLOBALS["mysqli"], "CREATE TABLE `absences_repas` (`id` int(5) NOT NULL auto_increment, `date_repas` date NOT NULL default '0000-00-00', `id_groupe` varchar(8) NOT NULL, `eleve_id` varchar(30) NOT NULL, `pers_id` varchar(30) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query3) {
 				$result .= msj_ok();
 			} else {
@@ -423,7 +423,7 @@ lieu VARCHAR( 255 ) NOT NULL
 			}
 		}
 
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'GepiCahierTexteVersion'");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiCahierTexteVersion'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiCahierTexteVersion', '1');");
@@ -472,9 +472,9 @@ lieu VARCHAR( 255 ) NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'date_verrouillage' à la table 'periodes': ";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM periodes LIKE 'date_verrouillage'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM periodes LIKE 'date_verrouillage'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE periodes ADD date_verrouillage TIMESTAMP NOT NULL ;");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE periodes ADD date_verrouillage TIMESTAMP NOT NULL ;");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -486,59 +486,59 @@ lieu VARCHAR( 255 ) NOT NULL
 		}
 
 		///Module OOO
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'active_mod_ooo'");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'active_mod_ooo'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('active_mod_ooo', 'n');");
 		}
 
 		// Module ECTS
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'active_mod_ects'");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'active_mod_ects'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('active_mod_ects', 'n');");
 		}
 
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesSaisieEctsPP'");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesSaisieEctsPP'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesSaisieEctsPP', 'no');");
 		}
 
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesSaisieEctsScolarite'");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesSaisieEctsScolarite'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesSaisieEctsScolarite', 'yes');");
 		}
 
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEditionDocsEctsPP'");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEditionDocsEctsPP'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsPP', 'no');");
 		}
 
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEditionDocsEctsScolarite'");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEditionDocsEctsScolarite'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsScolarite', 'yes');");
 		}
 
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'gepiSchoolStatut'");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'gepiSchoolStatut'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('gepiSchoolStatut', 'public');");
 		}
 
-        $req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'gepiSchoolAcademie'");
+        $req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'gepiSchoolAcademie'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('gepiSchoolAcademie', '');");
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'saisie_ects' à la table 'j_groupes_classes': ";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM j_groupes_classes LIKE 'saisie_ects'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM j_groupes_classes LIKE 'saisie_ects'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE j_groupes_classes ADD saisie_ects TINYINT(1) NOT NULL DEFAULT 0;");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE j_groupes_classes ADD saisie_ects TINYINT(1) NOT NULL DEFAULT 0;");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -550,9 +550,9 @@ lieu VARCHAR( 255 ) NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'valeur_ects' à la table 'j_groupes_classes': ";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM j_groupes_classes LIKE 'valeur_ects'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM j_groupes_classes LIKE 'valeur_ects'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE j_groupes_classes ADD valeur_ects DECIMAL(3,1) NOT NULL;");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE j_groupes_classes ADD valeur_ects DECIMAL(3,1) NOT NULL;");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -565,9 +565,9 @@ lieu VARCHAR( 255 ) NOT NULL
 
 
         $result .= "&nbsp;->Création de la table ects_credits<br />";
-		$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'ects_credits'"));
+		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'ects_credits'"));
 		if ($test == 0) {
-			$query2 = mysqli_query($GLOBALS["___mysqli_ston"], "CREATE TABLE ects_credits
+			$query2 = mysqli_query($GLOBALS["mysqli"], "CREATE TABLE ects_credits
                                     (
                                         id INTEGER(11)  NOT NULL AUTO_INCREMENT,
                                         id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve',
@@ -595,9 +595,9 @@ lieu VARCHAR( 255 ) NOT NULL
 		}
 
         $result .= "&nbsp;->Création de la table ects_global_credits<br />";
-		$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'ects_global_credits'"));
+		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'ects_global_credits'"));
 		if ($test == 0) {
-			$query2 = mysqli_query($GLOBALS["___mysqli_ston"], "CREATE TABLE ects_global_credits
+			$query2 = mysqli_query($GLOBALS["mysqli"], "CREATE TABLE ects_global_credits
                                     (
                                         id INTEGER(11)  NOT NULL AUTO_INCREMENT,
                                         id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve',
@@ -620,9 +620,9 @@ lieu VARCHAR( 255 ) NOT NULL
 
 
         $result .= "&nbsp;->Création de la table archivage_ects<br />";
-		$test = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES LIKE 'archivage_ects'"));
+		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'archivage_ects'"));
 		if ($test == 0) {
-			$query2 = mysqli_query($GLOBALS["___mysqli_ston"], "CREATE TABLE archivage_ects
+			$query2 = mysqli_query($GLOBALS["mysqli"], "CREATE TABLE archivage_ects
                                     (
                                         id INTEGER(11)  NOT NULL AUTO_INCREMENT,
                                         annee VARCHAR(255)  NOT NULL COMMENT 'Annee scolaire',
@@ -652,9 +652,9 @@ lieu VARCHAR( 255 ) NOT NULL
 
 
 		$result .= "&nbsp;->Ajout d'un champ 'ects_type_formation' à la table 'classes': ";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM classes LIKE 'ects_type_formation'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM classes LIKE 'ects_type_formation'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE classes ADD ects_type_formation VARCHAR(255) NOT NULL DEFAULT '';");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE classes ADD ects_type_formation VARCHAR(255) NOT NULL DEFAULT '';");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -666,9 +666,9 @@ lieu VARCHAR( 255 ) NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'ects_parcours' à la table 'classes': ";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM classes LIKE 'ects_parcours'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM classes LIKE 'ects_parcours'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE classes ADD ects_parcours VARCHAR(255) NOT NULL DEFAULT '';");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE classes ADD ects_parcours VARCHAR(255) NOT NULL DEFAULT '';");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -680,9 +680,9 @@ lieu VARCHAR( 255 ) NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'ects_code_parcours' à la table 'classes': ";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM classes LIKE 'ects_code_parcours'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM classes LIKE 'ects_code_parcours'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE classes ADD ects_code_parcours VARCHAR(255) NOT NULL DEFAULT '';");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE classes ADD ects_code_parcours VARCHAR(255) NOT NULL DEFAULT '';");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -694,9 +694,9 @@ lieu VARCHAR( 255 ) NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'ects_domaines_etude' à la table 'classes': ";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM classes LIKE 'ects_domaines_etude'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM classes LIKE 'ects_domaines_etude'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE classes ADD ects_domaines_etude VARCHAR(255) NOT NULL DEFAULT '';");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE classes ADD ects_domaines_etude VARCHAR(255) NOT NULL DEFAULT '';");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -708,9 +708,9 @@ lieu VARCHAR( 255 ) NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'ects_fonction_signataire_attestation' à la table 'classes': ";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM classes LIKE 'ects_fonction_signataire_attestation'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM classes LIKE 'ects_fonction_signataire_attestation'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE classes ADD ects_fonction_signataire_attestation VARCHAR(255) NOT NULL DEFAULT '';");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE classes ADD ects_fonction_signataire_attestation VARCHAR(255) NOT NULL DEFAULT '';");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -728,14 +728,14 @@ lieu VARCHAR( 255 ) NOT NULL
 		//$req_test = mysql_query("SHOW INDEX FROM archivage_disciplines WHERE Key_name = 'annee'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW INDEX FROM archivage_disciplines ");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SHOW INDEX FROM archivage_disciplines ");
 		if (mysqli_num_rows($req_test)!=0) {
 			while ($enrg = mysqli_fetch_object($req_test)) {
 				if ($enrg-> Key_name == 'annee') {$req_res++;}
 			}
 		}
 		if ($req_res == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `archivage_disciplines` ADD INDEX annee ( `annee` )");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `archivage_disciplines` ADD INDEX annee ( `annee` )");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -750,14 +750,14 @@ lieu VARCHAR( 255 ) NOT NULL
 		//$req_test = mysql_query("SHOW INDEX FROM archivage_disciplines WHERE Key_name = 'INE'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
-		$req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW INDEX FROM archivage_disciplines ");
+		$req_test = mysqli_query($GLOBALS["mysqli"], "SHOW INDEX FROM archivage_disciplines ");
 		if (mysqli_num_rows($req_test)!=0) {
 			while ($enrg = mysqli_fetch_object($req_test)) {
 				if ($enrg-> Key_name == 'INE') {$req_res++;}
 			}
 		}
 		if ($req_res == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE `archivage_disciplines` ADD INDEX INE ( `INE` )");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `archivage_disciplines` ADD INDEX INE ( `INE` )");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -769,9 +769,9 @@ lieu VARCHAR( 255 ) NOT NULL
 
 
 		$result .= "&nbsp;->Ajout d'un champ 'mode_moy' à la table 'j_groupes_classes'<br />";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM j_groupes_classes LIKE 'mode_moy'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM j_groupes_classes LIKE 'mode_moy'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE j_groupes_classes ADD mode_moy ENUM('-','sup10','bonus') NOT NULL DEFAULT '-' AFTER valeur_ects;");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE j_groupes_classes ADD mode_moy ENUM('-','sup10','bonus') NOT NULL DEFAULT '-' AFTER valeur_ects;");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -783,10 +783,10 @@ lieu VARCHAR( 255 ) NOT NULL
 		}
 
     $result .= "&nbsp;->Ajout d'un setting sur l'utilisation unique du cahier de textes de Gepi<br />";
-    $req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'use_only_cdt'");
+    $req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'use_only_cdt'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0){
-      if (mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO setting VALUES ('use_only_cdt', 'n');")){
+      if (mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting VALUES ('use_only_cdt', 'n');")){
         $result .= msj_ok();
 			} else {
 				$result .= msj_erreur();
@@ -796,10 +796,10 @@ lieu VARCHAR( 255 ) NOT NULL
     }
 
     $result .= "&nbsp;->Ajout d'un setting sur le droit pour le professeur de saisir son edt<br />";
-    $req_test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT VALUE FROM setting WHERE NAME = 'edt_remplir_prof'");
+    $req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'edt_remplir_prof'");
 		$res_test = mysqli_num_rows($req_test);
 		if ($res_test == 0){
-      if (mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO setting VALUES ('edt_remplir_prof', 'n');")){
+      if (mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting VALUES ('edt_remplir_prof', 'n');")){
         $result .= msj_ok();
 			} else {
 				$result .= msj_erreur();
@@ -823,9 +823,9 @@ description TEXT NOT NULL
 		}
 
     $result .= "&nbsp;->Ajout d'un champ 'id_sequence' à la table 'ct_entry'<br />";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM ct_entry LIKE 'id_sequence'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM ct_entry LIKE 'id_sequence'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE ct_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0' AFTER id_login;");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE ct_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0' AFTER id_login;");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -837,9 +837,9 @@ description TEXT NOT NULL
 		}
 
     $result .= "&nbsp;->Ajout d'un champ 'id_sequence' à la table 'ct_devoirs_entry'<br />";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM ct_devoirs_entry LIKE 'id_sequence'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM ct_devoirs_entry LIKE 'id_sequence'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE ct_devoirs_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0';");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE ct_devoirs_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0';");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -851,9 +851,9 @@ description TEXT NOT NULL
 		}
 
     $result .= "&nbsp;->Ajout d'un champ 'id_sequence' à la table 'ct_private_entry'<br />";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM ct_private_entry LIKE 'id_sequence'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM ct_private_entry LIKE 'id_sequence'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE ct_private_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0';");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE ct_private_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0';");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -916,7 +916,7 @@ description_item VARCHAR( 255 ) NOT NULL
 
 		//==========================================================
 		$result .= "<br />&nbsp;->Contrôle des valeurs autorisées pour le champ 'acces' de la table 'matieres_appreciations_acces'&nbsp;: ";
-		$query3 = mysqli_query($GLOBALS["___mysqli_ston"], " ALTER TABLE `matieres_appreciations_acces` CHANGE `acces` `acces` ENUM( 'y', 'n', 'date', 'd' ) NOT NULL DEFAULT 'y';");
+		$query3 = mysqli_query($GLOBALS["mysqli"], " ALTER TABLE `matieres_appreciations_acces` CHANGE `acces` `acces` ENUM( 'y', 'n', 'date', 'd' ) NOT NULL DEFAULT 'y';");
 		if ($query3) {
 			$result .= msj_ok();
 		} else {
@@ -925,9 +925,9 @@ description_item VARCHAR( 255 ) NOT NULL
 		//==========================================================
 
 		$result .= "&nbsp;->Ajout d'un champ 'date_ele_resp' à la table 'cn_devoirs'<br />";
-		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM cn_devoirs LIKE 'date_ele_resp'"));
+		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM cn_devoirs LIKE 'date_ele_resp'"));
 		if ($test1 == 0) {
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE cn_devoirs ADD date_ele_resp DATETIME NOT NULL ;");
+			$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE cn_devoirs ADD date_ele_resp DATETIME NOT NULL ;");
 			if ($query) {
 				$result .= msj_ok();
 			} else {
@@ -950,7 +950,7 @@ description_item VARCHAR( 255 ) NOT NULL
 			}
 			else {
 				$result .= "<br />&nbsp;->Ajout d'un enregistrement pour 'enseignement_invisible' dans 'ref_wiki'<br />";
-				$query = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/wiki/gepi/Enseignement_invisible');");
+				$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/wiki/gepi/Enseignement_invisible');");
 				if ($query) {
 					$result .= msj_ok();
 				} else {
@@ -963,21 +963,21 @@ description_item VARCHAR( 255 ) NOT NULL
 		}
 
 		$result .= "&nbsp;->Migration des fichiers joint des devoirs au format cdt2<br />";
-		$query = mysqli_query($GLOBALS["___mysqli_ston"], "insert into ct_devoirs_documents (id_ct_devoir, titre, taille, emplacement) select id_ct as id_ct_devoir ,titre, taille, emplacement from ct_documents where emplacement like '%/documents/cl_dev%' ;");
+		$query = mysqli_query($GLOBALS["mysqli"], "insert into ct_devoirs_documents (id_ct_devoir, titre, taille, emplacement) select id_ct as id_ct_devoir ,titre, taille, emplacement from ct_documents where emplacement like '%/documents/cl_dev%' ;");
 		if ($query == true) {
 			$result .= msj_present("Migration effectuée");
 			$result .= "&nbsp;->Suppression des fichiers joints devoir au format cdt1<br/>";
 
-			$query = mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM ct_documents where emplacement like '%/documents/cl_dev%';");
+			$query = mysqli_query($GLOBALS["mysqli"], "DELETE FROM ct_documents where emplacement like '%/documents/cl_dev%';");
 			if ($query == true) {
 			    $result .= msj_present("Suppression effectuée");
 			} else {
 			    $result .= msj_erreur();
-			    $result .= "Error: (" . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "< br/>";
+			    $result .= "Error: (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "< br/>";
 			}
 		} else {
 			$result .= msj_erreur();
-			$result .= "Error: (" . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "< br/>";
+			$result .= "Error: (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "< br/>";
 		}
 
 
@@ -985,28 +985,28 @@ description_item VARCHAR( 255 ) NOT NULL
 	$nb_err_synchro_acces_app=0;
 	$sql="SELECT DISTINCT id FROM classes;";
 	//echo "$sql<br />";
-	$res_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_classe)>0) {
 		$result.="&nbsp;->Synchronisation des paramétrages élèves et responsables pour l'accès aux appréciations.<br />";
 		while($lig_clas=mysqli_fetch_object($res_classe)) {
 			$sql="SELECT * FROM matieres_appreciations_acces WHERE statut='eleve' AND id_classe='$lig_clas->id';";
 			//echo "$sql<br />";
-			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_ele)>0) {
 				while($lig_ele=mysqli_fetch_object($res_ele)) {
 					$sql="SELECT 1=1 FROM matieres_appreciations_acces WHERE statut='responsable' AND id_classe='$lig_clas->id' AND periode='$lig_ele->periode';";
 					//echo "$sql<br />";
-					$test_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_resp)>0) {
 						$sql="UPDATE matieres_appreciations_acces SET acces='$lig_ele->acces', date='$lig_ele->date' WHERE statut='responsable' AND id_classe='$lig_clas->id' AND periode='$lig_ele->periode';";
 						//echo "$sql<br />";
-						$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$query=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$query) {$nb_err_synchro_acces_app++;}
 					}
 					else {
 						$sql="INSERT INTO matieres_appreciations_acces SET acces='$lig_ele->acces', date='$lig_ele->date', statut='responsable', id_classe='$lig_clas->id', periode='$lig_ele->periode';";
 						//echo "$sql<br />";
-						$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$query=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$query) {$nb_err_synchro_acces_app++;}
 					}
 				}
@@ -1014,22 +1014,22 @@ description_item VARCHAR( 255 ) NOT NULL
 	
 			$sql="SELECT * FROM matieres_appreciations_acces WHERE statut='responsable' AND id_classe='$lig_clas->id';";
 			//echo "$sql<br />";
-			$res_resp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_resp)>0) {
 				while($lig_resp=mysqli_fetch_object($res_resp)) {
 					$sql="SELECT 1=1 FROM matieres_appreciations_acces WHERE statut='eleve' AND id_classe='$lig_clas->id' AND periode='$lig_resp->periode';";
 					//echo "$sql<br />";
-					$test_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_ele)>0) {
 						$sql="UPDATE matieres_appreciations_acces SET acces='$lig_resp->acces', date='$lig_resp->date' WHERE statut='eleve' AND id_classe='$lig_clas->id' AND periode='$lig_resp->periode';";
 						//echo "$sql<br />";
-						$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$query=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$query) {$nb_err_synchro_acces_app++;}
 					}
 					else {
 						$sql="INSERT INTO matieres_appreciations_acces SET acces='$lig_resp->acces', date='$lig_resp->date', statut='eleve', id_classe='$lig_clas->id', periode='$lig_resp->periode';";
 						//echo "$sql<br />";
-						$query=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$query=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$query) {$nb_err_synchro_acces_app++;}
 					}
 				}
@@ -1045,16 +1045,16 @@ description_item VARCHAR( 255 ) NOT NULL
 
 	# Il semble que sur certaines bases le champ ait pu être manquant:
 	$sql = "SHOW TABLES LIKE 'absences_creneaux'";
-	$req_existence = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$req_existence = mysqli_query($GLOBALS["mysqli"], $sql);
 	$result .= $req_existence;
 	if (mysqli_num_rows($req_existence) != 0) {
 	    $result .= "&nbsp;->Ajout d'un champ 'type_creneaux' à la table 'absences_creneaux'<br />";
-	    $test_type_creneaux=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM absences_creneaux LIKE 'type_creneaux';"));
+	    $test_type_creneaux=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM absences_creneaux LIKE 'type_creneaux';"));
 	    if ($test_type_creneaux>0) {
 		    $result .= msj_present("Le champ existe déjà.");
 	    }
 	    else {
-		    $query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE absences_creneaux ADD type_creneaux VARCHAR( 15 ) NOT NULL;");
+		    $query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE absences_creneaux ADD type_creneaux VARCHAR( 15 ) NOT NULL;");
 		    if ($query) {
 				    $result .= msj_ok();
 		    } else {

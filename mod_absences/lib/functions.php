@@ -5,7 +5,7 @@
 function classe_de($id_classe_eleve) {
     global $prefix_base;
     $requete_classe_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$id_classe_eleve."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id";
-    $execution_classe_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_classe_eleve = mysqli_query($GLOBALS["mysqli"], $requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     $data_classe_eleve = mysqli_fetch_array($execution_classe_eleve);
 	$id_classe_eleve = $data_classe_eleve['nom_complet'];
     return($id_classe_eleve);
@@ -14,7 +14,7 @@ function classe_de($id_classe_eleve) {
 function classe_court_de($id_classe_eleve) {
     global $prefix_base;
     $requete_classe_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$id_classe_eleve."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id";
-    $execution_classe_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_classe_eleve = mysqli_query($GLOBALS["mysqli"], $requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     $data_classe_eleve = mysqli_fetch_array($execution_classe_eleve);
     $id_classe_eleve = $data_classe_eleve['classe'];
     return($id_classe_eleve);
@@ -24,7 +24,7 @@ function classe_court_de($id_classe_eleve) {
 function regime($id_eleve) {
     global $prefix_base;
     $requete_regime_eleve ="SELECT e.login , jer.login , jer.regime FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_regime jer WHERE e.login = jer.login AND e.login = '".$id_eleve."'";
-    $execution_regime_eleve = mysqli_query($GLOBALS["___mysqli_ston"], $requete_regime_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_regime_eleve = mysqli_query($GLOBALS["mysqli"], $requete_regime_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     $data_regime_eleve = mysqli_fetch_array($execution_regime_eleve);
     $regime_eleve = $data_regime_eleve['regime'];
     return($regime_eleve);
@@ -34,7 +34,7 @@ function regime($id_eleve) {
 function motif_de($nc_motif) {
     global $prefix_base;
     $requete_motif ="SELECT * FROM ".$prefix_base."absences_motifs WHERE ".$prefix_base."absences_motifs.init_motif_absence='".$nc_motif."'";
-    $execution_motif = mysqli_query($GLOBALS["___mysqli_ston"], $requete_motif) or die('Erreur SQL !'.$requete_motif.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_motif = mysqli_query($GLOBALS["mysqli"], $requete_motif) or die('Erreur SQL !'.$requete_motif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     $data_motif = mysqli_fetch_array($execution_motif);
     $nc_motif = $data_motif['def_motif_absence'];
     return($nc_motif);
@@ -61,7 +61,7 @@ function present_tel($tel)
 function action_de($nc_action) {
     global $prefix_base;
 	$requete_action = "SELECT init_absence_action, def_absence_action FROM ".$prefix_base."absences_actions WHERE init_absence_action='".$nc_action."'";
-        $resultat_action = mysqli_query($GLOBALS["___mysqli_ston"], $requete_action) or die('Erreur SQL !'.$requete_action.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $resultat_action = mysqli_query($GLOBALS["mysqli"], $requete_action) or die('Erreur SQL !'.$requete_action.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$data_action = mysqli_fetch_array($resultat_action);
         $nc_action = $data_action['def_absence_action'];
     return($nc_action);
@@ -701,7 +701,7 @@ function qui($login_perso)
 {
       global $prefix_base;
       $requete_login_perso ="SELECT * FROM ".$prefix_base."utilisateurs WHERE ".$prefix_base."utilisateurs.login = '".$login_perso."'";
-      $execution_login_perso = mysqli_query($GLOBALS["___mysqli_ston"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $execution_login_perso = mysqli_query($GLOBALS["mysqli"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       $data_login_perso = mysqli_fetch_array($execution_login_perso);
       if($login_perso != "") { $qui_est_ce = $data_login_perso['civilite']." ".strtoupper($data_login_perso['nom'])." ".ucfirst($data_login_perso['prenom']); } else { $qui_est_ce=""; }
       return $qui_est_ce;
@@ -711,7 +711,7 @@ function qui_fonction($login_perso)
 {
       global $prefix_base;
       $requete_login_perso ="SELECT * FROM ".$prefix_base."utilisateurs WHERE ".$prefix_base."utilisateurs.login = '".$login_perso."'";
-      $execution_login_perso = mysqli_query($GLOBALS["___mysqli_ston"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $execution_login_perso = mysqli_query($GLOBALS["mysqli"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       $data_login_perso = mysqli_fetch_array($execution_login_perso);
       if($login_perso != "") { $qui_est_ce_status = $data_login_perso['statut']; } else { $qui_est_ce_status=""; }
       return $qui_est_ce_status;
@@ -722,7 +722,7 @@ function qui_court($login_perso)
 {
       global $prefix_base;
       $requete_login_perso ="SELECT * FROM ".$prefix_base."utilisateurs WHERE ".$prefix_base."utilisateurs.login = '".$login_perso."'";
-      $execution_login_perso = mysqli_query($GLOBALS["___mysqli_ston"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $execution_login_perso = mysqli_query($GLOBALS["mysqli"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       $data_login_perso = mysqli_fetch_array($execution_login_perso);
       if($login_perso != "") { $qui_est_ce = $data_login_perso['civilite']." ".strtoupper($data_login_perso['nom'])." ".ucfirst($data_login_perso['prenom']); } else { $qui_est_ce=""; }
       return $qui_est_ce;
@@ -732,7 +732,7 @@ function qui_eleve($login_perso)
 {
       global $prefix_base;
       $requete_login_perso ="SELECT * FROM ".$prefix_base."eleves WHERE ".$prefix_base."eleves.login = '".$login_perso."'";
-      $execution_login_perso = mysqli_query($GLOBALS["___mysqli_ston"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $execution_login_perso = mysqli_query($GLOBALS["mysqli"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       $data_login_perso = mysqli_fetch_array($execution_login_perso);
       if($login_perso != "") { $qui_est_ce = strtoupper($data_login_perso['nom'])." ".ucfirst($data_login_perso['prenom']); } else { $qui_est_ce=""; }
       return $qui_est_ce;
@@ -742,7 +742,7 @@ function lettre_type($id)
 {
       global $prefix_base;
       $requete ="SELECT * FROM ".$prefix_base."lettres_types WHERE id_lettre_type = '".$id."'";
-      $execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       $donner = mysqli_fetch_array($execution);
       if(!empty($id)) { $type_de_courrier = $donner['titre_lettre_type']; } else { $type_de_courrier = 'inconnu'; }
       return ($type_de_courrier);
@@ -752,7 +752,7 @@ function fiche_action_type($id)
 {
       global $prefix_base;
       $requete ="SELECT * FROM ".$prefix_base."absences_actions WHERE id_absence_action = '".$id."'";
-      $execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       $donner = mysqli_fetch_array($execution);
       if(!empty($id)) { $type_d_action = $donner['def_absence_action']; } else { $type_d_action = 'inconnu'; }
       return ($type_d_action);
@@ -919,7 +919,7 @@ function edt_active_prof($login_prof, $heure, $jour, $semaine)
 {
 	  // requête qui permet de savoir quelle cours à un professeur par rapport à un jour et une heure donnée ainsi que la semaine paire et impaire
           $requete = ('SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$login_prof.'" AND jour_edt_classe = "'.$jour.'" AND semaine_edt_classe = "'.$semaine.'"');
-      	  $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      	  $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	  while($donner = mysqli_fetch_array($resultat))
 	  {
 		$id_groupe_edt = $donner['groupe_edt_classe'];
@@ -938,7 +938,7 @@ function periode_actuel($heure_choix)
       $num_periode="";
       //on liste dans un tableau les périodes existante
       $requete_periode = ('SELECT * FROM edt_creneaux WHERE heuredebut_definie_periode <= "'.$heure_choix .'" AND heurefin_definie_periode >= "'.$heure_choix.'" ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
-      $resultat_periode = mysqli_query($GLOBALS["___mysqli_ston"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       while($data_periode = mysqli_fetch_array($resultat_periode)) {
           $debut=$data_periode['heuredebut_definie_periode'];
           $num_periode=$data_periode['id_definie_periode'];
@@ -977,7 +977,7 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 				        AND type_creneaux != "pause"'
 						);
 
-		$resultat_periode = mysqli_query($GLOBALS["___mysqli_ston"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		while($data_periode = mysqli_fetch_array($resultat_periode))
 		{
 
@@ -1055,7 +1055,7 @@ function creneau_du_jour($id_eleve,$date_choisie)
 	*
 	*/
 
-	$req_sql = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT heuredebut_definie_periode, heurefin_definie_periode
+	$req_sql = mysqli_query($GLOBALS["mysqli"], "SELECT heuredebut_definie_periode, heurefin_definie_periode
 						    FROM " . $prefix_base ."edt_creneaux
 						  	ORDER BY heuredebut_definie_periode ASC
 						 ");
@@ -1126,7 +1126,7 @@ function absence_sur_creneau($id_eleve,$date_choisie,$heure_debut,$heure_fin,$ty
 	if ( $type != '' )
 	{
 
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, retard_absence
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT id, retard_absence
 						FROM absences_rb
 						WHERE eleve_id = '" . $id_eleve . "'
 						AND retard_absence = '" . $type . "'
@@ -1150,7 +1150,7 @@ function absence_sur_creneau($id_eleve,$date_choisie,$heure_debut,$heure_fin,$ty
 	else
 	{
 
-	$req = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id, retard_absence
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT id, retard_absence
 						FROM absences_rb
 						WHERE eleve_id = '" . $id_eleve . "'
 						AND
@@ -1236,7 +1236,7 @@ function creneau_absence_du_jour($id_eleve,$date_choisie,$type='')
 	*
 	*/
 
-	$req_sql = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode
+	$req_sql = mysqli_query($GLOBALS["mysqli"], "SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode
 						    FROM " . $prefix_base ."edt_creneaux
 						  	ORDER BY heuredebut_definie_periode ASC
 						 ");
@@ -1288,7 +1288,7 @@ function lettre_absence_envoye($id_absence_eleve)
 
 	// requête pour compte le nombre de lettre envoyé pour une absence donnée.
 	$cpt_lettre_recus = 0;
-	$cpt_lettre_recus = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*)
+	$cpt_lettre_recus = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*)
 													FROM " . $prefix_base . "lettres_suivis
 												   WHERE partde_lettre_suivi = 'absences_eleves'
 												     AND type_lettre_suivi = '6'
@@ -1330,7 +1330,7 @@ function periode_active_nom($heure_debut, $heure_fin) {
 				        AND type_creneaux != "pause"'
 						);
 
-		$resultat_periode = mysqli_query($GLOBALS["___mysqli_ston"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		while($data_periode = mysqli_fetch_array($resultat_periode)){
 
 			if ( $nom_periode == '' ){
@@ -1358,7 +1358,7 @@ function periode_heure($periode)
 	$debut = ''; $fin = '';
       // on recherche les informations sur la périodes sélectionné
       $requete_periode = ('SELECT * FROM edt_creneaux WHERE id_definie_periode = "'.$periode.'"');
-      $resultat_periode = mysqli_query($GLOBALS["___mysqli_ston"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       while($data_periode = mysqli_fetch_array($resultat_periode)) {
           $debut = $data_periode['heuredebut_definie_periode'];
           $fin   = $data_periode['heurefin_definie_periode'];
@@ -1372,7 +1372,7 @@ function periode_heure_parnom($periode)
 	$debut = ''; $fin = '';
       // on recherche les informations sur la périodes sélectionné
       $requete_periode = ('SELECT * FROM edt_creneaux WHERE nom_definie_periode = "'.$periode.'"');
-      $resultat_periode = mysqli_query($GLOBALS["___mysqli_ston"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       while($data_periode = mysqli_fetch_array($resultat_periode)) {
           $debut = $data_periode['heuredebut_definie_periode'];
           $fin   = $data_periode['heurefin_definie_periode'];
@@ -1414,7 +1414,7 @@ function date_explose($date_parametre)
 function matiere_du_groupe($groupe_parametre)
 {
       $requete = ('SELECT * FROM j_groupes_matieres, matieres WHERE id_groupe = "'.$groupe_parametre.'" AND matiere=id_matiere');
-      $resultat = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       while($donnee = mysqli_fetch_array($resultat)) {
           $nomcomplet = $donnee['nom_complet'];
           $nomcourt   = $donnee['matiere'];
@@ -1635,7 +1635,7 @@ function ouverture() {
     global $prefix_base;
 
 	$requete ="SELECT * FROM ".$prefix_base."horaires_etablissement WHERE date_horaire_etablissement = '0000-00-00'";
-	$execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	while ( $donnee = mysqli_fetch_array($execution) )
 	{
 		$jour = $donnee['jour_horaire_etablissement'];
@@ -1674,7 +1674,7 @@ function repartire($login, $type, $du, $au)
 				       	OR a_date_absence_eleve BETWEEN '".$du."' AND '".$au."'
 				    )
 				  ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve ASC";
-              $execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+              $execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
               while ( $donnee = mysqli_fetch_array($execution))
                 {
 		$i = '0'; $i2 = '0'; $heure_de_debut = '07:00:00'; $heure_de_fin = '19:00:00';
@@ -1741,7 +1741,7 @@ function repartire_jour($login, $type, $du, $au)
 
   	     $tableau_de_donnees = '';
              $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$login."'  AND type_absence_eleve = '".$type."' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve ASC";
-             $execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+             $execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
               while ( $donnee = mysqli_fetch_array($execution))
                 {
 		$i = '0'; $i2 = '0';
@@ -1952,7 +1952,7 @@ function semaine_type($date)
 	$numero_de_la_semaine = date('W', $temps);
 
 	$requete ="SELECT * FROM ".$prefix_base."edt_semaines WHERE num_edt_semaine = '".$numero_de_la_semaine."'";
-	$execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$donnee = mysqli_fetch_array($execution);
 	$type_semaine = $donnee['type_edt_semaine'];
 
@@ -1965,7 +1965,7 @@ function motif_type_abs($motif_absence)
     global $prefix_base;
 
 	$requete ="SELECT * FROM ".$prefix_base."absences_motifs WHERE init_motif_absence = '".$motif_absence."'";
-	$execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$donnee = mysqli_fetch_array($execution);
 	$motif_absence_design = $donnee['def_motif_absence'];
 
@@ -1993,7 +1993,7 @@ function cpe_eleve($login_eleve)
     global $prefix_base;
 
 	$requete ="SELECT * FROM ".$prefix_base."j_eleves_cpe jec, ".$prefix_base."utilisateurs u WHERE jec.e_login = '".$login_eleve."' AND jec.cpe_login = u.login";
-	$execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$donnee = mysqli_fetch_array($execution);
 	$login_cpe = $donnee['login'];
 	$civilite = $donnee['civilite'];
@@ -2014,7 +2014,7 @@ function tel_responsable($ele_id)
 
 	$tel_responsable=array();
 
-	$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal = '1' )"),0);
+	$nombre_de_responsable =  mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal = '1' )"),0);
 	if($nombre_de_responsable != 0)
 	{
 			$cpt_parents = 0;
@@ -2025,7 +2025,7 @@ function tel_responsable($ele_id)
 													WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id )
 													ORDER BY resp_legal ASC");
 			*/
-			$requete_parents = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND (r.resp_legal = '1' OR r.resp_legal = '2' )) ORDER BY resp_legal ASC");
+			$requete_parents = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND (r.resp_legal = '1' OR r.resp_legal = '2' )) ORDER BY resp_legal ASC");
 			while ($donner_parents = mysqli_fetch_array($requete_parents))
 			{
 				$tel_responsable[$cpt_parents]['civilite'] = $donner_parents['civilite']; // nom du responsable suite
@@ -2037,7 +2037,7 @@ function tel_responsable($ele_id)
 				$tel_responsable[$cpt_parents]['resp_legal'] = $donner_parents['resp_legal']; // code représente légal
 
 				$sql="SELECT adr1,cp,commune FROM resp_adr WHERE adr_id='".$donner_parents['adr_id']."';";
-				$res_adr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_adr)==0) {
 					$tel_responsable[$cpt_parents]['adr1'] = ""; // adresse1
 					$tel_responsable[$cpt_parents]['cp'] = ""; // cp
@@ -2059,7 +2059,7 @@ function tel_responsable($ele_id)
 // fonction permettant de combler les trous d'un auto_increment en prévision
 function get_id($champ, $table)
 {
-    $results = @mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT ' . $champ . 'FROM ' . $table );
+    $results = @mysqli_query($GLOBALS["mysqli"], 'SELECT ' . $champ . 'FROM ' . $table );
     while($id = @mysqli_fetch_row($results))
         $ids[] = $id[0];
     for($i = 1, reset($ids); $id = pos($ids) ; next($ids), $i++)
@@ -2079,7 +2079,7 @@ function initial_mode($initial_choix)
       if( $initial_choix == '' ) { $initial_donnee = ''; }
       //on cherche l'initial demandé
 	$requete_initial_choix ="SELECT * FROM ".$prefix_base."absences_motifs WHERE def_motif_absence = '".$initial_choix."'";
-    	$execution_initial_choix = mysqli_query($GLOBALS["___mysqli_ston"], $requete_initial_choix) or die('Erreur SQL !'.$requete_initial_choix.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    	$execution_initial_choix = mysqli_query($GLOBALS["mysqli"], $requete_initial_choix) or die('Erreur SQL !'.$requete_initial_choix.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     	$donnee_initial_choix = mysqli_fetch_array($execution_initial_choix);
     	$initial_donnee = $donnee_initial_choix['init_motif_absence'];
     return($initial_donnee);
@@ -2091,7 +2091,7 @@ function initial_mode($initial_choix)
 function mysql_table_exists($table , $db) {
 
 	$requete = 'SHOW TABLES FROM '.$db.' LIKE \''.$table.'\'';
-	$exec = mysqli_query($GLOBALS["___mysqli_ston"], $requete);
+	$exec = mysqli_query($GLOBALS["mysqli"], $requete);
 	if ($exec) {
 		return mysqli_num_rows($exec);
 	}else{
@@ -2190,7 +2190,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 						          OR fermeture_horaire_etablissement BETWEEN '".$de_heure."' AND '".$a_heure."'
 					      		)";
 	//echo "0 : $sql<br />";
-	$requete_nb = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], $sql),0);
+	$requete_nb = mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
 
 	// ensuit on vérifie qu'une table edt_calendrier existe
 	$table_edt_calendrier = 'non';
@@ -2219,7 +2219,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 						       	  OR fin_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
 							)";
 		//echo "1 : $sql<br />";
-		$requete_nb_calendrier_1 = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], $sql),0);
+		$requete_nb_calendrier_1 = mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
 	}
 	// on fait de même si c'est pour une classe est précisé
 	if ( $table_edt_calendrier === 'oui' and $classe_select != '' )
@@ -2239,7 +2239,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 						       	  OR fin_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
 							)";
 		//echo "2 : $sql<br />";
-		$requete_nb_calendrier_2 = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], $sql),0);
+		$requete_nb_calendrier_2 = mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
 	}
 
 	/*
@@ -2273,7 +2273,7 @@ function nb_absences_nj($identifiant, $du_date, $au_date, $classe_select)
 				)";
 
 	// on fait une boucle pour savoir si cela tombe pendant que l'établissement est ouvert
-        $execution =mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $execution =mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$nb = '0';
         while ( $donnee = mysqli_fetch_array($execution))
 	{
@@ -2384,7 +2384,7 @@ function nb_retard($identifiant, $du_date, $au_date, $classe_select)
 				       	OR a_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
 					)";
 	// on fait une boucle pour savoir si cela tombe pendant que l'établissement est ouvert
-        $execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$nb = '0';
         while ( $donnee = mysqli_fetch_array($execution))
 	{
@@ -2421,7 +2421,7 @@ function nb_total_demijournee_absence($identifiant, $du_date, $au_date, $classe_
 				//DEBUG
 				//echo "\$requete=$requete<br />";
 
-                $execution = mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                $execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                 while ( $donnee = mysqli_fetch_array($execution))
 		{
 

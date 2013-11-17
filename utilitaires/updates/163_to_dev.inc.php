@@ -63,9 +63,9 @@ if ($test == -1) {
 */
 
 $result .= "&nbsp;-> Ajout d'un champ 'date_entree' à la table 'eleves'<br />";
-$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM eleves LIKE 'date_entree';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM eleves LIKE 'date_entree';"));
 if ($test_champ==0) {
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE eleves ADD date_entree DATETIME COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE eleves ADD date_entree DATETIME COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -102,9 +102,9 @@ if ($mod_disc_terme_sanction=="") {
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'saisie_prof' à la table 's_types_sanctions2' : ";
-$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_types_sanctions2 LIKE 'saisie_prof';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM s_types_sanctions2 LIKE 'saisie_prof';"));
 if ($test_champ==0) {
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE s_types_sanctions2 ADD saisie_prof char(1) NOT NULL default 'n';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE s_types_sanctions2 ADD saisie_prof char(1) NOT NULL default 'n';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -115,9 +115,9 @@ if ($test_champ==0) {
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'saisie_par' à la table 's_sanctions' : ";
-$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM s_sanctions LIKE 'saisie_par';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM s_sanctions LIKE 'saisie_par';"));
 if ($test_champ==0) {
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE s_sanctions ADD saisie_par varchar(255) NOT NULL default '';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE s_sanctions ADD saisie_par varchar(255) NOT NULL default '';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -219,10 +219,10 @@ if((getSettingValue('fichier_signature')!="")&&(file_exists("../backup/".getSett
 
 				$result.="Enregistrement du droit d'utiliser un fichier de signature&nbsp;: ";
 				$sql="SELECT 1=1 FROM signature_droits WHERE login='".$_SESSION['login']."';";
-				$test_droit=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_droit=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test_droit)==0) {
 					$sql="INSERT INTO signature_droits SET login='".$_SESSION['login']."';";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
 						$result .= msj_erreur();
 					}
@@ -236,10 +236,10 @@ if((getSettingValue('fichier_signature')!="")&&(file_exists("../backup/".getSett
 
 				$result.="Enregistrement du nom de fichier dans 'signature_fichiers'&nbsp;: ";
 				$sql="SELECT 1=1 FROM signature_fichiers WHERE login='".$_SESSION['login']."' AND fichier='".getSettingValue('fichier_signature')."';";
-				$test_sf=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_sf=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test_droit)==0) {
 					$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".getSettingValue('fichier_signature')."';";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
 						$result .= msj_erreur();
 					}
@@ -254,7 +254,7 @@ if((getSettingValue('fichier_signature')!="")&&(file_exists("../backup/".getSett
 							$result .= msj_ok("Ok !");
 
 							$sql="DELETE FROM setting WHERE name='fichier_signature';";
-							$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 				}
@@ -262,7 +262,7 @@ if((getSettingValue('fichier_signature')!="")&&(file_exists("../backup/".getSett
 					$result .= msj_present("déjà présent");
 
 					$sql="DELETE FROM setting WHERE name='fichier_signature';";
-					$menage=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 			else {
@@ -368,9 +368,9 @@ if ($test == -1) {
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'modele_id_conteneur' à la table 'cn_conteneurs' : ";
-$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM cn_conteneurs LIKE 'modele_id_conteneur';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM cn_conteneurs LIKE 'modele_id_conteneur';"));
 if ($test_champ==0) {
-	$query = mysqli_query($GLOBALS["___mysqli_ston"], "ALTER TABLE cn_conteneurs ADD modele_id_conteneur int(11) NOT NULL default '0';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE cn_conteneurs ADD modele_id_conteneur int(11) NOT NULL default '0';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {

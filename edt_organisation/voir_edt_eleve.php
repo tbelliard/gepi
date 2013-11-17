@@ -154,7 +154,7 @@ if($indice_eleve_select != -1){
 
 			for($i=0; $i<count($tab_select); $i++) {
 
-				$req_nom = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT nom, prenom FROM eleves WHERE login = '".$tab_select[$i]["login"]."'"));
+				$req_nom = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login = '".$tab_select[$i]["login"]."'"));
 
 				// On conserve à l'affichage le nom de l'élève
 				if(isset($login_edt)){

@@ -60,7 +60,7 @@ if((!isset($login_eleve))||
 }
 
 $sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND login='$login_eleve' AND periode='$periode_num';";
-$verif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($verif)==0) {
 	$msg="Erreur: L'élève ne fait pas partie de la classe sur la période choisie.";
 	header("Location: ../accueil.php?msg=".rawurlencode($msg));
@@ -106,7 +106,7 @@ function affiche_debug($texte) {
 function recherche_enfant2($id_parent_tmp, $current_group, $periode_num, $id_racine){
 	$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
 	//echo "<!-- $sql -->\n";
-	$res_enfant=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_enfant=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_enfant)>0){
 		while($lig_conteneur_enfant=mysqli_fetch_object($res_enfant)){
 			recherche_enfant2($lig_conteneur_enfant->id, $current_group, $periode_num, $id_racine);
@@ -134,14 +134,14 @@ echo "<a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_
 echo "</p>\n";
 
 $sql="SELECT classe FROM classes WHERE id = '$id_classe';";
-$call_classe = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$call_classe = mysqli_query($GLOBALS["mysqli"], $sql);
 $classe = mysql_result($call_classe, "0", "classe");
 
 ?>
 
 <?php
 $sql="SELECT * FROM eleves WHERE login='$login_eleve';";
-$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_ele)==0) {
 	echo "<p><b>Erreur:</b> L'élève d'identifiant $login_eleve n'existe pas.</p>\n";
 	require("../lib/footer.inc.php");
@@ -156,9 +156,9 @@ echo ".<br />\n";
 //==============================================
 // On vérifie qu'il n'y a pas de notes/app sur le bulletin pour cette période
 $sql="SELECT 1=1 FROM matieres_notes WHERE login='".$login_eleve."' AND periode='".$periode_num."';";
-$verif=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 $sql="SELECT 1=1 FROM matieres_appreciations WHERE login='".$login_eleve."' AND periode='".$periode_num."';";
-$verif2=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$verif2=mysqli_query($GLOBALS["mysqli"], $sql);
 
 if((mysqli_num_rows($verif)>0)||(mysqli_num_rows($verif2)>0)) {
 	echo "<p>L'élève a des notes et/ou appréciations sur le bulletin.<br />Il n'est plus possible de changer l'élève de classe pour cette période.</p>\n";
@@ -179,7 +179,7 @@ if(!isset($id_future_classe)) {
 	echo "<p><b>ATTENTION:</b> Il est fortement recommandé de prendre soin de générer un relevé de notes de l'élève pour la période ".$nom_periode[$periode_num]." avec toutes les informations utiles avant de procéder au changement de classe.<br />Vous pouvez aussi faire une sauvegarde de la base.<br />Ces précautions vous permettront de revenir en arrière si un problème se produisait.</p>\n";
 
 	echo "<p>Vers quelle classe souhaitez vous déplacer l'élève?</p>\n";
-	$classes_list = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id AND p.num_periode='$periode_num' ORDER BY classe");
+	$classes_list = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id AND p.num_periode='$periode_num' ORDER BY classe");
 	$nb = mysqli_num_rows($classes_list);
 	if ($nb !=0) {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -225,7 +225,7 @@ if(!isset($id_future_classe)) {
 }
 else {
 	$sql="SELECT classe FROM classes WHERE id='$id_future_classe';";
-	$call_classe_future = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$call_classe_future = mysqli_query($GLOBALS["mysqli"], $sql);
 	$classe_future = mysql_result($call_classe_future, "0", "classe");
 
 	echo "<p>Vous souhaitez déplacer l'élève de <b>$classe</b> vers <b>$classe_future</b> sur la période <b>".$nom_periode[$periode_num]."</b>";
@@ -246,7 +246,7 @@ else {
 			ORDER BY jgc.priorite, g.name;";
 	//echo "$sql<br />";
 	affiche_debug("$sql<br />");
-	$res_grp_fut=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_grp_fut=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_grp_fut)==0) {
 		echo "<p>La classe future de l'élève n'a semble-t-il aucun enseignement associé.<br />Vous devez créer des enseignements dans la classe future avant de procéder au changement de classe.</p>\n";
 
@@ -268,7 +268,7 @@ else {
 			WHERE (g.id = jgc.id_groupe AND
 					jgc.id_classe='$id_classe')
 			ORDER BY jgc.priorite, g.name;";
-	$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	//echo "$sql<br />";
 	affiche_debug("$sql<br />");
 	if(mysqli_num_rows($res_grp)==0) {
@@ -351,7 +351,7 @@ else {
 		echo "</table>\n";
 
 		$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe' AND num_periode>$periode_num;";
-		$test_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test_per=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_per)>0) {
 			echo "<input type='checkbox' name='chgt_periode_sup' id='chgt_periode_sup' value='y' checked /><label for='chgt_periode_sup'> Changer l'élève de classe également pour les périodes qui suivent la période $periode_num<br />(<i>pour le reste de l'année scolaire en somme</i>)</label><br />\n";
 		}
@@ -370,14 +370,14 @@ else {
 
 		// Recherche des inscriptions dans des AID pour afficher un avertissement
 		$sql="SELECT a.nom, ac.nom_complet, jae.* FROM j_aid_eleves jae, aid a, aid_config ac WHERE jae.login='$login_eleve' AND jae.id_aid=a.id AND jae.indice_aid=a.indice_aid AND ac.indice_aid=a.indice_aid ORDER BY ac.nom_complet, a.nom";
-		$res_aid=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_aid)>0) {
 			echo "<p><b>".get_nom_prenom_eleve($login_eleve)."</b> est inscrit(e) dans un ou des <b>AID</b>.<br />\nIl faudra contrôler si les contraintes d'emploi du temps permettent de conserver ces inscriptions ou s'il convient d'effectuer des modifications.<br />\nVoici la liste&nbsp;:<br />\n";
 			while($lig_aid=mysqli_fetch_object($res_aid)) {
 				echo "&nbsp;&nbsp;&nbsp;-&nbsp;$lig_aid->nom (<i>$lig_aid->nom_complet</i>)";
 
 				$sql="SELECT DISTINCT jec.login FROM j_eleves_classes jec, j_aid_eleves jae WHERE jec.login=jae.login AND jec.id_classe='$id_future_classe' AND jae.id_aid='$lig_aid->id_aid';";
-				$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				$nb_ele_fut_aid=mysqli_num_rows($test);
 				if($nb_ele_fut_aid==1) {
 					$lig_ele_fut_aid=mysqli_fetch_object($test);
@@ -441,7 +441,7 @@ Evitez les 'fantaisies';o).</p>
 
 		if($chgt_periode_sup=="y") {
 			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode>$periode_num ORDER BY num_periode;";
-			$test_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test_per=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_per)>0) {
 				while($lig_per=mysqli_fetch_object($test_per)) {
 					$tab_per[]=$lig_per->num_periode;
@@ -476,7 +476,7 @@ Evitez les 'fantaisies';o).</p>
 					// Recherche du carnet de notes de l'ancien groupe
 					$sql="SELECT * FROM cn_cahier_notes WHERE id_groupe='".$id_grp[$i]."' AND periode='$current_periode_num';";
 					affiche_debug("$sql<br />");
-					$res_ccn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_ccn=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_ccn)==0) {
 						echo "Aucune note n'était saisie (<i>carnet de notes non initialisé pour la période $current_periode_num</i>).<br />\n";
 					}
@@ -490,7 +490,7 @@ Evitez les 'fantaisies';o).</p>
 								cd.id=cnd.id_devoir AND
 								cnd.login='$login_eleve';";
 						affiche_debug("$sql<br />");
-						$res_cd=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$res_cd=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 						if(mysqli_num_rows($res_cd)==0) {
 							echo "Aucune note n'était saisie (<i>aucun devoir dans le carnet de notes pour la période $current_periode_num</i>).<br />\n";
@@ -505,20 +505,20 @@ Evitez les 'fantaisies';o).</p>
 									// Suppression de la note dans l'ancien carnet de notes
 									$sql="DELETE FROM cn_notes_devoirs WHERE login='$login_eleve' AND id_devoir='$lig_cd->id';";
 									affiche_debug("$sql<br />");
-									$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$del=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
 	
 	
 								// Suppression des anciennes notes de conteneurs
 								$sql="SELECT * FROM cn_conteneurs WHERE id_racine='".$lig_ccn->id_cahier_notes."';";
 								affiche_debug("$sql<br />");
-								$res_cn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 								if(mysqli_num_rows($res_cn)>0) {
 									while($lig_cn=mysqli_fetch_object($res_cn)) {
 										$sql="DELETE FROM cn_notes_conteneurs WHERE login='$login_eleve' AND id_conteneur='".$lig_cn->id."';";
 										affiche_debug("$sql<br />");
-										$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$del=mysqli_query($GLOBALS["mysqli"], $sql);
 									}
 								}
 	
@@ -530,7 +530,7 @@ Evitez les 'fantaisies';o).</p>
 	
 								// Recherche du carnet de notes du nouveau groupe
 								$sql="SELECT * FROM cn_cahier_notes WHERE id_groupe='".$id_grp_fut[$i]."' AND periode='$current_periode_num'";
-								$res_ccn_fut=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_ccn_fut=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_ccn_fut)==0) {
 									// On crée le carnet de notes dans le groupe futur
 	
@@ -549,16 +549,16 @@ Evitez les 'fantaisies';o).</p>
 											display_bulletin = '1',
 											parent = '0'";
 									affiche_debug("$sql<br />");
-									$reg = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 									if ($reg) {
-										$id_racine_fut = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+										$id_racine_fut = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 										$sql="UPDATE cn_conteneurs SET id_racine='$id_racine_fut', parent = '0' WHERE id='$id_racine_fut';";
 										affiche_debug("$sql<br />");
-										$reg = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 										// Je ne saisis pas l'intérêt de la requête au-dessus???
 										$sql="INSERT INTO cn_cahier_notes SET id_groupe = '".$group_fut['id']."', periode = '$current_periode_num', id_cahier_notes='$id_racine_fut';";
 										affiche_debug("$sql<br />");
-										$reg = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 										echo "Création du carnet de notes pour la période ".$current_periode_num." dans le groupe de $classe_future: ";
 										if($reg) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 										echo "<br />\n";
@@ -576,12 +576,12 @@ Evitez les 'fantaisies';o).</p>
 													cd.id_racine='$id_racine_fut'
 													);";
 									affiche_debug("$sql<br />");
-									$res_cd_fut=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$res_cd_fut=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_cd_fut)>0) {
 										while($lig_cd_fut=mysqli_fetch_object($res_cd_fut)) {
 											$sql="INSERT INTO cn_notes_devoirs SET id_devoir='$lig_cd_fut->id', login='$login_eleve', statut='v';";
 											affiche_debug("$sql<br />");
-											$insert_v=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+											$insert_v=mysqli_query($GLOBALS["mysqli"], $sql);
 										}
 									}
 								}
@@ -603,8 +603,8 @@ Evitez les 'fantaisies';o).</p>
 												display_parents='$lig_cd->display_parents',
 												display_parents_app='$lig_cd->display_parents_app';";
 										affiche_debug("$sql<br />");
-										$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
-										$id_devoir_fut=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+										$reg=mysqli_query($GLOBALS["mysqli"], $sql);
+										$id_devoir_fut=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 										echo "Création d'un devoir ".$lig_cd->nom_court."_".$classe." dans le groupe de $classe_future: ";
 										if($reg) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 										echo "<br />\n";
@@ -614,13 +614,13 @@ Evitez les 'fantaisies';o).</p>
 											foreach($group_fut['eleves'][$current_periode_num]["list"] as $grp_fut_ele_login) {
 												$sql="INSERT INTO cn_notes_devoirs SET login='".$grp_fut_ele_login."', id_devoir='$id_devoir_fut', statut='v';";
 												affiche_debug("$sql<br />");
-												$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+												$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 											}
 	
 											// Insertion de la note:
 											$sql="INSERT INTO cn_notes_devoirs SET login='$login_eleve', id_devoir='$id_devoir_fut', note='$lig_cd->note', comment='$lig_cd->comment', statut='$lig_cd->statut';";
 											affiche_debug("$sql<br />");
-											$reg=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+											$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 											echo "Insertion de la note du devoir n°".$lig_cd->id." dans le groupe de $classe_future: ";
 											if($reg) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 											echo "<br />\n";
@@ -630,7 +630,7 @@ Evitez les 'fantaisies';o).</p>
 									// Suppression de la note dans l'ancien carnet de notes
 									$sql="DELETE FROM cn_notes_devoirs WHERE login='$login_eleve' AND id_devoir='$lig_cd->id';";
 									affiche_debug("$sql<br />");
-									$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+									$del=mysqli_query($GLOBALS["mysqli"], $sql);
 									echo "Suppression de la note du devoir n°".$lig_cd->id.": ";
 									if($del) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 									echo "<br />\n";
@@ -639,13 +639,13 @@ Evitez les 'fantaisies';o).</p>
 								// Suppression des anciennes notes de conteneurs
 								$sql="SELECT * FROM cn_conteneurs WHERE id_racine='".$lig_ccn->id_cahier_notes."';";
 								affiche_debug("$sql<br />");
-								$res_cn=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+								$res_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 								if(mysqli_num_rows($res_cn)>0) {
 									while($lig_cn=mysqli_fetch_object($res_cn)) {
 										$sql="DELETE FROM cn_notes_conteneurs WHERE login='$login_eleve' AND id_conteneur='".$lig_cn->id."';";
 										affiche_debug("$sql<br />");
-										$del=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+										$del=mysqli_query($GLOBALS["mysqli"], $sql);
 										echo "Suppression de la note de $gepi_denom_boite n°".$lig_cn->id.": ";
 										if($del) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 										echo "<br />\n";
@@ -659,7 +659,7 @@ Evitez les 'fantaisies';o).</p>
 						// Inscription dans le groupe pour la période
 						$sql="INSERT INTO j_eleves_groupes SET login='$login_eleve', id_groupe='".$id_grp_fut[$i]."', periode='$current_periode_num';";
 						affiche_debug("$sql<br />");
-						$inscription_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$inscription_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 						echo "Inscription dans le groupe de la $classe_future sur la période $current_periode_num: ";
 						if($inscription_grp) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 						echo "<br />\n";
@@ -668,7 +668,7 @@ Evitez les 'fantaisies';o).</p>
 					// Suppression de l'élève de l'ancien groupe
 					$sql="DELETE FROM j_eleves_groupes WHERE login='$login_eleve' AND id_groupe='".$id_grp[$i]."' AND periode='$current_periode_num';";
 					affiche_debug("$sql<br />");
-					$desinscription_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$desinscription_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 					echo "Suppression de l'appartenance au groupe de la $classe sur la période $current_periode_num: ";
 					if($desinscription_grp) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 					echo "<br />\n";
@@ -703,12 +703,12 @@ Evitez les 'fantaisies';o).</p>
 			// Inscription dans la nouvelle classe pour la période
 			$sql="INSERT INTO j_eleves_classes SET login='$login_eleve', id_classe='".$id_future_classe."', periode='$current_periode_num';";
 			affiche_debug("$sql<br />");
-			$inscription_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$inscription_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			echo "<p>Inscription dans la classe de $classe_future sur la période $current_periode_num: ";
 			if($inscription_classe) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 			echo "<br />\n";
 			// Il y aura des rangs à recalculer
-			$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_future_classe."' and coef > 0)"));
+			$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_future_classe."' and coef > 0)"));
 			$affiche_categories=true;
 
 			// calcul_rang.inc.php a besoin de $id_classe et $periode_num et $test_coef et $affiche_categorie
@@ -722,13 +722,13 @@ Evitez les 'fantaisies';o).</p>
 			// Désinscription de l'ancienne classe pour la période
 			$sql="DELETE FROM j_eleves_classes WHERE login='$login_eleve' AND id_classe='".$id_classe."' AND periode='$current_periode_num';";
 			affiche_debug("$sql<br />");
-			$desinscription_classe=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$desinscription_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			echo "Suppression de l'appartenance à la classe de $classe sur la période $current_periode_num: ";
 			if($desinscription_classe) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 			echo "</p>\n";
 			// Il y aura des rangs à recalculer
 			$affiche_categories=true;
-			$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+			$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 			include("../lib/calcul_rang.inc.php");
 			$periode_num=$temp_periode_num;
 		}
@@ -742,7 +742,7 @@ Evitez les 'fantaisies';o).</p>
 
 		// Ménage:
 		$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Changement de classe %($login_eleve)';";
-		$res_actions=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_actions=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_actions)>0) {
 			while($lig_action=mysqli_fetch_object($res_actions)) {
 				$menage=del_info_action($lig_action->id);

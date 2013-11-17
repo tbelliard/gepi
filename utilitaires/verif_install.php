@@ -29,13 +29,13 @@ if (file_exists("./secure/connect.inc.php")) {
     require_once("./secure/connect.inc.php");
     $correct_install = 'yes';
     $maj = 'no';
-    if (@($GLOBALS["___mysqli_ston"] = mysqli_connect("$dbHost",  "$dbUser",  "$dbPass"))) {
-        if (@((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE $dbDb"))) {
+    if (@($GLOBALS["mysqli"] = mysqli_connect("$dbHost",  "$dbUser",  "$dbPass"))) {
+        if (@((bool)mysqli_query($GLOBALS["mysqli"], "USE $dbDb"))) {
             require_once("./lib/global.inc.php");
             // Premier test
             $liste2 = array();
             
-            $tableNames = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLES FROM `$dbDb`");
+            $tableNames = mysqli_query($GLOBALS["mysqli"], "SHOW TABLES FROM `$dbDb`");
             while ($row = mysqli_fetch_row($tableNames)) {
                 $liste2[] = $row[0];
             }
@@ -59,7 +59,7 @@ if (file_exists("./secure/connect.inc.php")) {
             } else {
                 //test sur le contenu des tables
                 $sql="SELECT * FROM utilisateurs;";
-                $req = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+                $req = mysqli_query($GLOBALS["mysqli"], $sql);
                 $test = mysqli_num_rows($req);
                 if ($test == '0') {
                     //$msg = "<p>Il n'y a aucun utilisateur créé !</p>";

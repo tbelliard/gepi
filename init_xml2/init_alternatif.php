@@ -65,7 +65,7 @@ if(isset($_POST['is_posted'])) {
 			$tab_matieres_profs=array();
 			$sql="SELECT id_matiere, ordre_matieres FROM j_professeurs_matieres WHERE id_professeur='".$login_prof."';";
 			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				while($lig=mysqli_fetch_object($res)) {
 					$tab_matieres_profs[]=$lig->id_matiere;
@@ -76,7 +76,7 @@ if(isset($_POST['is_posted'])) {
 			for($i=0;$i<count($tab_matieres_profs);$i++) {
 				if(!in_array($tab_matieres_profs[$i], $matiere)) {
 					$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='$login_prof' AND id_matiere='$tab_matieres_profs[$i]';";
-					$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 
@@ -84,7 +84,7 @@ if(isset($_POST['is_posted'])) {
 				if(!in_array($matiere[$i], $tab_matieres_profs)) {
 					$max_ordre_matiere++;
 					$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$login_prof', id_matiere='".$matiere[$i]."', ordre_matieres='$max_ordre_matiere';";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 
@@ -103,7 +103,7 @@ if(isset($_POST['is_posted'])) {
 				$tab_matieres_profs=array();
 				$sql="SELECT id_matiere, ordre_matieres FROM j_professeurs_matieres WHERE id_professeur='".$login_prof[$k]."';";
 				//echo "$sql<br />";
-				$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {
 						$tab_matieres_profs[]=$lig->id_matiere;
@@ -114,19 +114,19 @@ if(isset($_POST['is_posted'])) {
 				if(!in_array($matiere, $tab_matieres_profs)) {
 					$max_ordre_matiere++;
 					$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$login_prof[$k]', id_matiere='".$matiere."', ordre_matieres='$max_ordre_matiere';";
-					$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
 				echo reordonner_matieres($login_prof);
 			}
 
 			$sql="SELECT id_professeur FROM j_professeurs_matieres WHERE id_matiere='".$matiere."';";
-			$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				while($lig=mysqli_fetch_object($res)) {
 					if(!in_array($lig->id_professeur,$login_prof)) {
 						$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='$lig->id_professeur' AND id_matiere='$matiere';";
-						$suppr=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						echo reordonner_matieres($lig->id_professeur);
 					}
@@ -143,7 +143,7 @@ if((isset($_POST['login_prof_inactif']))&&($_POST['login_prof_inactif']!="")) {
 	check_token();
 
 	$sql="UPDATE utilisateurs SET etat='actif' WHERE login='".$_POST['login_prof_inactif']."';";
-	$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
 	$msg.=civ_nom_prenom($_POST['login_prof_inactif'])." a été activé(e).<br />";
 
 	if($mode=='prof') {
@@ -168,7 +168,7 @@ if(isset($_POST['update_profs_des_groupes'])) {
 		for($j=0;$j<count($tab_login_prof);$j++) {
 			if(!in_array($tab_login_prof[$j], $current_group['profs']['list'])) {
 				$sql="INSERT INTO j_groupes_professeurs SET id_groupe='".$id_groupe[$i]."', login='".$tab_login_prof[$j]."';";
-				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$update) {
 					$msg.="Erreur lors de l'association de ".$tab_login_prof[$j]." avec le groupe n°".$id_groupe[$i]."<br />\n";
 					$nb_err++;
@@ -179,7 +179,7 @@ if(isset($_POST['update_profs_des_groupes'])) {
 		for($j=0;$j<count($current_group['profs']['list']);$j++) {
 			if(!in_array($current_group['profs']['list'][$j], $tab_login_prof)) {
 				$sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='".$id_groupe[$i]."' AND login='".$current_group['profs']['list'][$j]."';";
-				$update=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$update) {
 					$msg.="Erreur lors de la désinscription de ".$current_group['profs']['list'][$j]." du groupe n°".$id_groupe[$i]."<br />\n";
 					$nb_err++;
@@ -204,7 +204,7 @@ if(isset($_GET['suppr_groupe'])) {
 	else {
 		if(test_before_group_deletion($_GET['suppr_groupe'])) {
 			$sql="SELECT 1=1 FROM cn_cahier_notes ccn, cn_conteneurs cc, cn_devoirs cd, cn_notes_devoirs cnd WHERE ccn.id_cahier_notes=cc.id_racine AND cc.id=cd.id_conteneur AND cd.id=cnd.id_devoir AND ccn.id_groupe='".$_GET['suppr_groupe']."';";
-			$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				$msg.="Le groupe n°".$_GET['suppr_groupe']." ne peut pas être supprimé car des notes de devoirs ont été saisies.<br />\n";
 			}
@@ -238,12 +238,12 @@ if(isset($_POST['add_groupes_classes'])) {
 		$tab_eleves=array();
 
 		$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe[$i]' ORDER BY num_periode DESC LIMIT 1";
-		$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_per)>0) {
 			$nb_per=mysql_result($res_per, 0);
 
 			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe[$i]';";
-			$res_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_ele)>0) {
 				while($lig_ele=mysqli_fetch_object($res_ele)) {
 					for($j=1;$j<=$nb_per;$j++) {
@@ -257,7 +257,7 @@ if(isset($_POST['add_groupes_classes'])) {
 					$tab_profs[$j]=array();
 					$sql="SELECT id_professeur FROM j_professeurs_matieres WHERE id_matiere='$matiere[$j]';";
 					//echo "$sql<br />";
-					$res_prof_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$res_prof_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_prof_mat)==1) {
 						$tab_profs[$j][]=mysql_result($res_prof_mat, 0);
 					}
@@ -265,7 +265,7 @@ if(isset($_POST['add_groupes_classes'])) {
 
 				$description=$matiere[$j];
 				$sql="SELECT nom_complet FROM matieres WHERE matiere='$matiere[$j]';";
-				$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_mat)>0) {
 					$description=mysql_result($res_mat, 0);
 				}
@@ -470,7 +470,7 @@ elseif($cat=='profs') {
 		$tab_matieres_profs=array();
 		$sql="SELECT id_matiere FROM j_professeurs_matieres WHERE id_professeur='".$login_prof."';";
 		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_object($res)) {
 				$tab_matieres_profs[]=$lig->id_matiere;
@@ -480,7 +480,7 @@ elseif($cat=='profs') {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		echo "<p>Quelles matières associer à <b>".$civ_nom_prenom_prof."</b>&nbsp;: \n";
 		$sql="SELECT * FROM matieres ORDER BY matiere;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		echo add_token_field();
 
@@ -564,7 +564,7 @@ function checkbox_change(cpt) {
 		}
 
 		$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere';";
-		$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			echo "<p style='color:red;'>La matière <b>$matiere</b> n'existe pas.<br /><a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour</a></p>\n";
 
@@ -576,7 +576,7 @@ function checkbox_change(cpt) {
 		$tab_profs_matiere=array();
 		$sql="SELECT id_professeur FROM j_professeurs_matieres WHERE id_matiere='".$matiere."';";
 		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_object($res)) {
 				$tab_profs_matiere[]=$lig->id_professeur;
@@ -586,7 +586,7 @@ function checkbox_change(cpt) {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		echo "<p>Quels professeurs associer à <b>".$matiere."</b>&nbsp;: \n";
 		$sql="SELECT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u WHERE etat='actif' AND statut='professeur' ORDER BY nom, prenom;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		echo add_token_field();
 
@@ -676,7 +676,7 @@ elseif($cat=='classes') {
 		// Choisir les classes
 		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe ORDER BY classe;";
 		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb=mysqli_num_rows($res);
 		if($nb==0) {
 			echo "<p style='color:red'>Aucune classe avec élèves n'existe encore.</p>\n";
@@ -799,7 +799,7 @@ function checkbox_change(cpt) {
 					)
 				ORDER BY jgc.priorite,jgm.id_matiere, g.name;";
 			//echo "$sql<br />";
-			$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 			$groups=array();
 			while($lig=mysqli_fetch_object($res_grp)) {
 				//echo "Groupe n°$lig->id<br />";
@@ -826,7 +826,7 @@ function checkbox_change(cpt) {
 
 
 				$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE u.login=jpm.id_professeur AND jpm.id_matiere='".$current_group['matiere']['matiere']."' ORDER BY nom, prenom;";
-				$res_prof=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_prof)==0) {
 					echo "<span style='color:red'>Aucun professeur pour cette matière</span>\n";
 				}
@@ -971,7 +971,7 @@ function test_form_classe(id_classe) {
 	echo "</p>\n";
 
 	$sql="SELECT * FROM matieres ORDER BY matiere;";
-	$res_mat=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_mat=mysqli_num_rows($res_mat);
 
 	$nb_par_colonne=round($nb_mat/3);

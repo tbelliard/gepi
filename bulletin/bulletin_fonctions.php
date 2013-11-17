@@ -60,7 +60,7 @@ function calcul_toute_moyenne_classe ($groupe_select, $periode_select)
 	// ===========================================
 	// MODIF: boireaus 20070616
 	//$requete_note = mysql_query('SELECT * FROM '.$prefix_base.'matieres_notes WHERE '.$prefix_base.'matieres_notes.id_groupe = "'.$groupe_select.'" AND '.$prefix_base.'matieres_notes.periode = "'.$periode_select.'"');
-	$requete_note = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'matieres_notes WHERE '.$prefix_base.'matieres_notes.id_groupe = "'.$groupe_select.'" AND '.$prefix_base.'matieres_notes.periode = "'.$periode_select.'" AND matieres_notes.statut=""');
+	$requete_note = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'matieres_notes WHERE '.$prefix_base.'matieres_notes.id_groupe = "'.$groupe_select.'" AND '.$prefix_base.'matieres_notes.periode = "'.$periode_select.'" AND matieres_notes.statut=""');
 	// ===========================================
 	while ($donner_note = mysqli_fetch_array($requete_note))
 	{
@@ -87,7 +87,7 @@ function calcul_toute_moyenne_aid ($indice_aid, $periode_select) {
 	global $prefix_base;
 
 	$addition_des_notes=0; $note=0; $cpt_notes=0; $moyenne_mini=20; $moyenne_maxi=0;
-	$requete_note = mysqli_query($GLOBALS["___mysqli_ston"], 'SELECT * FROM '.$prefix_base.'aid_appreciations aa
+	$requete_note = mysqli_query($GLOBALS["mysqli"], 'SELECT * FROM '.$prefix_base.'aid_appreciations aa
 						WHERE aa.indice_aid = "'.$indice_aid.'" AND
 						aa.periode = "'.$periode_select.'" AND
 						aa.statut = ""');

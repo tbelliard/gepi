@@ -30,7 +30,7 @@ if ($periode1 > $periode2) {
 }
 
 // On teste la présence d'au moins un coeff pour afficher la colonne des coef
-$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 //echo "\$test_coef=$test_coef<br />";
 // Apparemment, $test_coef est réaffecté plus loin dans un des include()
 $nb_coef_superieurs_a_zero=$test_coef;
@@ -195,7 +195,7 @@ WHERE (
 c.id_classe='$id_classe' AND 
 e.login = c.login
 ) ORDER BY e.nom,e.prenom;";
-$res_ele= mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_ele= mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_ele)>0) {
 	while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$tab_moy['eleves'][]=$lig_ele->login;
@@ -243,7 +243,7 @@ if ($choix_edit != '2') {
 	    //if ($choix_edit == '1') {
 	    if (($choix_edit == '1')||(!isset($login_prof))) {
 			// On a alors $choix_edit==1 ou $choix_edit==4
-	        $appel_liste_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* " .
+	        $appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
 				"jec.id_classe='$id_classe' AND " .
@@ -254,7 +254,7 @@ if ($choix_edit != '2') {
 				"ORDER BY e.nom,e.prenom");
 	    } else {
 			// On a alors $choix_edit==3 uniquement les élèves du professeur principal $login_prof
-	        $appel_liste_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* " .
+	        $appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp, j_eleves_professeurs jep " .
 				"WHERE (" .
 				"jec.id_classe='$id_classe' AND " .
@@ -272,7 +272,7 @@ if ($choix_edit != '2') {
 	    //if ($choix_edit == '1') {
 	    if (($choix_edit == '1')||(!isset($login_prof))) {
 			// On a alors $choix_edit==1 ou $choix_edit==4
-	        $appel_liste_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* " .
+	        $appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* " .
 	        		"FROM eleves e, j_eleves_classes c " .
 	        		"WHERE (" .
 	        		"c.id_classe='$id_classe' AND " .
@@ -280,7 +280,7 @@ if ($choix_edit != '2') {
 	        		") ORDER BY e.nom,e.prenom");
 	    } else {
 			// On a alors $choix_edit==3
-	        $appel_liste_eleves = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT e.* " .
+	        $appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* " .
 	        		"FROM eleves e, j_eleves_classes c, j_eleves_professeurs p " .
 	        		"WHERE (" .
 	        		"c.id_classe='$id_classe' AND " .

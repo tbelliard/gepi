@@ -419,7 +419,7 @@ class class_page_accueil_autre {
                 $sql_call_prof = "SELECT * FROM j_aid_utilisateurs_gest
                                           WHERE (id_utilisateur = '" . $this->loginUtilisateur . "'
                                           AND indice_aid = '$indice_aid')";
-                $call_prof = mysqli_query($GLOBALS["___mysqli_ston"], $sql_call_prof);
+                $call_prof = mysqli_query($GLOBALS["mysqli"], $sql_call_prof);
                 $nb_result = $call_prof->num_rows;
                 if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
                   $nom_aid = $obj_aid->nom;

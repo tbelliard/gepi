@@ -99,7 +99,7 @@ if((!isset($lieu))||(!isset($date))||(!isset($heure))||(!isset($duree))||(!isset
 }
 
 $sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
-$res_abs_cren=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_abs_cren=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_abs_cren)==0) {
 	echo "<p>La table edt_creneaux n'est pas renseignée!</p>\n";
 	require("../lib/footer.inc.php");
@@ -149,7 +149,7 @@ $date_mysql=formate_date_mysql($date);
 
 $sql="SELECT * FROM s_retenues sr, s_sanctions s WHERE sr.id_sanction!='$id_sanction' AND sr.date='$date_mysql' AND sr.lieu='$lieu' AND s.id_sanction=sr.id_sanction ORDER BY sr.heure_debut, s.login;";
 //echo "$sql<br />";
-$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucune autre retenue de la journée dans ce lieu.</p>\n";
 	echo "</blockquote>\n";

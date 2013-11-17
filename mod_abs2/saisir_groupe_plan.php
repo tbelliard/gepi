@@ -1173,7 +1173,7 @@ if ($eleve_col->isEmpty()) {
 				if(isset($id_groupe)) {
 					$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='cahier_texte' AND visible='n';";
 					//echo "$sql<br />";
-					$test_cdt=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+					$test_cdt=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_cdt)>0) {
 						$afficher_passer_au_cdt="n";
 					}
@@ -1215,7 +1215,7 @@ En jaune, il n'est pas considéré comme
 				echo "</select></p>\n";
 
 				$sql="SELECT * FROM t_plan_de_classe WHERE id_groupe='".$id_groupe."' AND login_prof='".$_SESSION['login']."';";
-				$test_pdc=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$test_pdc=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test_pdc)==0) {
 					echo "<p>Aucun plan de classe n'a été trouvé pour ce groupe.<br /><a href='saisir_groupe.php?type_selection=id_groupe&amp;id_groupe=$id_groupe&amp;id_creneau=".$current_creneau->getIdDefiniePeriode()."'>Revenir à la saisie classique</a><br />ou <a href='../mod_trombinoscopes/plan_de_classe.php?id_groupe=$id_groupe&amp;dim_photo_$id_groupe=100".add_token_in_url()."' target='_blank'>Définir un plan de classe</a></p>\n";
 					require_once("../lib/footer.inc.php");
@@ -1234,7 +1234,7 @@ En jaune, il n'est pas considéré comme
 				$tab_coord=array();
 				$max_y=0;
 				$sql="SELECT * FROM t_plan_de_classe_ele WHERE id_plan='$id_pdc' ORDER BY login_ele";
-				$res_pdc_ele=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_pdc_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig_pdc_ele=mysqli_fetch_object($res_pdc_ele)) {
 					$tab_coord[$lig_pdc_ele->login_ele]['x']=$lig_pdc_ele->x;
 					$tab_coord[$lig_pdc_ele->login_ele]['y']=$lig_pdc_ele->y+$decalage_vertical;

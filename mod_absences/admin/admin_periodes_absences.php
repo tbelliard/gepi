@@ -90,7 +90,7 @@ if ($demande_jour_semaine == "ok_diff") {
 	// On compare la demande avec le setting actuel
 	if ($jour_semaine != getSettingValue("creneau_different")) {
 		// On met à jour le setting
-		$query = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE setting SET value = '".$jour_semaine."' WHERE name = 'creneau_different'");
+		$query = mysqli_query($GLOBALS["mysqli"], "UPDATE setting SET value = '".$jour_semaine."' WHERE name = 'creneau_different'");
 		$creneau_different = $jour_semaine;
 	}else{
 		$creneau_different = getSettingValue("creneau_different");
@@ -123,10 +123,10 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 				if($heurefin_definie_periode_ins != "00:00") {
 					if($heurefin_definie_periode_ins > $heuredebut_definie_periode_ins) {
 						if($action_sql == "ajouter") {
-							$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins')"),0);
+							$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins')"),0);
 						}
 						if($action_sql == "modifier") {
-							$test = mysql_result(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT count(*) FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE id_definie_periode != '$id_definie_periode_ins' AND (nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins'))"),0);
+							$test = mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE id_definie_periode != '$id_definie_periode_ins' AND (nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins'))"),0);
 						}
                         if ($test == "0") {
                         	if($action_sql == "ajouter") {
@@ -144,7 +144,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 												WHERE id_definie_periode = '".$id_definie_periode_ins."' ";
 							}
 							// Execution de cette requete dans la base cartouche
-							mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$sql.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+							mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$sql.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 							$verification[$total] = 1;
 						} else {
 							// vérification = 2 - Ce créneaux horaires existe déjas
@@ -209,12 +209,12 @@ if ($action_sql == "supprimer") {
 	//Requete d'insertion MYSQL
 	$requete = "DELETE FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE id_definie_periode ='$id_periode'";
 	// Execution de cette requete
-	mysqli_query($GLOBALS["___mysqli_ston"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 
 if ($action == "modifier") {
 	$requete_modif_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux'.$choix_table.' WHERE id_definie_periode="'.$id_periode.'"';
-	$resultat_modif_periode = mysqli_query($GLOBALS["___mysqli_ston"], $requete_modif_periode) or die('Erreur SQL !'.$requete_modif_periode.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$resultat_modif_periode = mysqli_query($GLOBALS["mysqli"], $requete_modif_periode) or die('Erreur SQL !'.$requete_modif_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$data_modif_periode = mysqli_fetch_array($resultat_modif_periode);
 }
 
@@ -283,7 +283,7 @@ if ($action == "visualiser") {
 		</form>';
 	}
 // On teste la table des emplois du temps et on envoie un message adéquat si elle est remplie
-$query = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM edt_cours LIMIT 5");
+$query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours LIMIT 5");
 $compter = mysqli_num_rows($query);
 if ($compter >= 1) {
 	echo "<p class=\"red\">Attention, si vous modifiez les créneaux maintenant, les cours de l'emploi du temps seront perturbés !</p>";
@@ -310,7 +310,7 @@ if ($compter >= 1) {
 <?php
 	$requete_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux'.$choix_table.' ORDER BY heuredebut_definie_periode, nom_definie_periode ASC';
 
-    $execution_periode = mysqli_query($GLOBALS["___mysqli_ston"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     $i=1;
 	while ( $data_periode = mysqli_fetch_array( $execution_periode ) ) {
 		if ($i === '1') {

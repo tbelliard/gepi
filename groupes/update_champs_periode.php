@@ -35,10 +35,10 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/groupes/update_champs_periode.php';";
-$test=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits VALUES ('/groupes/update_champs_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Ajax: Mise à jour de champs', '');";
-$insert=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 // INSERT INTO droits VALUES ('/groupes/update_champs_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Ajax: Mise à jour de champs', '');
@@ -56,7 +56,7 @@ if((isset($id_groupe))&&(is_numeric($id_groupe))&&($id_groupe!=0)) {
 	check_token();
 
 	$sql="SELECT MAX(periode) AS maxper FROM j_eleves_groupes WHERE id_groupe='$id_groupe';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
 
@@ -78,7 +78,7 @@ elseif((isset($id_classe))&&(is_numeric($id_classe))&&($id_classe!=0)) {
 	check_token();
 
 	$sql="SELECT MAX(num_periode) AS maxper FROM periodes WHERE id_classe='$id_classe';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
 

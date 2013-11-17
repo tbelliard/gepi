@@ -49,7 +49,7 @@ require('sanctions_func_lib.php');
 
 function get_denomination_prof($login) {
 	$sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$login';";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		return "Utilisateur inconnu";
 	}
@@ -170,7 +170,7 @@ if(!isset($is_posted)) {
 	echo "<tr class='lig-1'>\n";
 	echo "<td style='vertical-align:top; text-align: left;'>\n";
 	$sql="SELECT DISTINCT nature FROM s_incidents ORDER BY nature;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$cpt=0;
 	while($lig=mysqli_fetch_object($res)) {
 		echo "<input type='checkbox' name='nature[]' id='nature_$cpt' value=\"$lig->nature\" /><label for='nature_$cpt'>";
@@ -183,7 +183,7 @@ if(!isset($is_posted)) {
 
 	echo "<td style='vertical-align:top; text-align: left;'>\n";
 	$sql="SELECT * FROM s_mesures WHERE type='prise' ORDER BY mesure;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$cpt=0;
 	while($lig=mysqli_fetch_object($res)) {
 		echo "<input type='checkbox' name='id_mesure[]' id='id_mesure_$cpt' value='$lig->id' /><label for='id_mesure_$cpt'>$lig->mesure</label><br />\n";
@@ -201,7 +201,7 @@ if(!isset($is_posted)) {
 	$cpt++;
 	*/
 	$sql="SELECT * FROM s_types_sanctions2 ORDER BY type, nature;";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	//$cpt=0;
 	while($lig=mysqli_fetch_object($res)) {
 		//echo "<input type='checkbox' name='id_nature_sanction[]' id='id_nature_sanction_$cpt' value='$lig->id_nature' /><label for='id_nature_sanction_$cpt'>$lig->nature</label><br />\n";
@@ -427,7 +427,7 @@ elseif($mode=='totaux') {
 		echo "</td>\n";
 		echo "<td>\n";
 		$sql="SELECT * FROM s_incidents si WHERE si.nature='$nature[$i]' $restriction_date ORDER BY si.date DESC;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_incidents=mysqli_num_rows($res);
 		echo $nb_incidents;
 		echo "</td>\n";
@@ -470,7 +470,7 @@ elseif($mode=='totaux') {
 		echo "<tr class='lig$alt'>\n";
 		echo "<td>\n";
 		$sql="SELECT * FROM s_mesures WHERE id='$id_mesure[$i]';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "<span style='color:red;'>Anomalie&nbsp;: Mesure inconnue</span>";
 		}
@@ -481,7 +481,7 @@ elseif($mode=='totaux') {
 		echo "</td>\n";
 		echo "<td>\n";
 		$sql="SELECT * FROM s_traitement_incident sti, s_incidents si WHERE si.id_incident=sti.id_incident AND sti.id_mesure='$id_mesure[$i];' $restriction_date;";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo mysqli_num_rows($res);
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -565,7 +565,7 @@ elseif($mode=='totaux') {
 		echo "<tr class='lig$alt'>\n";
 		echo "<td>\n";
 		$sql="SELECT * FROM s_types_sanctions2 WHERE id_nature='$id_nature_sanction[$i]';";
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "<span style='color:red;'>Anomalie&nbsp;: ".ucfirst($mod_disc_terme_sanction)." inconnue</span>";
 		}
@@ -639,7 +639,7 @@ elseif($mode=='totaux') {
 			$sql="SELECT * FROM s_incidents si, s_sanctions s, s_autres_sanctions sas WHERE si.id_incident=s.id_incident AND s.id_sanction=sas.id_sanction AND id_nature='$id_nature_sanction[$i]' $restriction_date;";
 		}
 
-		$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo mysqli_num_rows($res);
 
 		echo "</td>\n";
@@ -748,7 +748,7 @@ elseif($mode=='topten') {
 
 	$sql="select sp.login, count(sp.login) AS nb FROM s_protagonistes sp, s_incidents si WHERE sp.id_incident=si.id_incident AND sp.qualite='responsable' $restriction_date GROUP BY sp.login ORDER BY count(sp.login) DESC LIMIT $nb_ele;";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucun ".$mod_disc_terme_incident." avec élève responsable n'est enregistré.</p>\n";
 	}
@@ -787,7 +787,7 @@ elseif($mode=='topten') {
 
 	$sql="select s.login, count(s.login) AS nb FROM s_sanctions s, s_incidents si WHERE si.id_incident=s.id_incident $restriction_date GROUP BY s.login ORDER BY count(s.login) DESC LIMIT $nb_ele;";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucun avec élève avec ".$mod_disc_terme_sanction." n'est enregistré.</p>\n";
 	}
@@ -826,7 +826,7 @@ elseif($mode=='topten') {
 
 	$sql="select login, sum(duree) AS nb FROM s_retenues sr, s_sanctions s, s_incidents si WHERE s.id_sanction=sr.id_sanction AND si.id_incident=s.id_incident $restriction_date GROUP BY s.login ORDER BY sum(duree) DESC LIMIT $nb_ele;";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucun élève avec retenue n'est enregistré.</p>\n";
 	}
@@ -867,7 +867,7 @@ elseif($mode=='topten') {
 	//$sql="select s.login, count(se.*) AS nb FROM s_exclusions se, s_sanctions s, s_incidents si WHERE s.id_sanction=se.id_sanction AND si.id_incident=s.id_incident $restriction_date GROUP BY s.login ORDER BY count(se.*) desc;";
 	$sql="select s.login, count(se.id_exclusion) AS nb FROM s_exclusions se, s_sanctions s, s_incidents si WHERE s.id_sanction=se.id_sanction AND si.id_incident=s.id_incident $restriction_date GROUP BY s.login ORDER BY count(se.id_exclusion) DESC LIMIT $nb_ele;";
 	//echo "$sql<br />\n";
-	$res=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucun élève avec exclusion n'est enregistré.</p>\n";
 	}

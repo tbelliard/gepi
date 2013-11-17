@@ -62,7 +62,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
 
 $sql="SELECT * FROM modeles_grilles_pdf WHERE login='".$_SESSION['login']."' ORDER BY nom_modele;";
-$res_modeles=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+$res_modeles=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_modeles)>0) {
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>";
 	echo "<p>Modèle de grille&nbsp;: ";
@@ -103,7 +103,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 	} else { //pour tous les statuts sauf scolarité
 	   $sql="SELECT id,classe FROM classes ORDER BY classe";
 	}
-	$result_classes=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_classes = mysqli_num_rows($result_classes);
 
 	if(mysqli_num_rows($result_classes)==0){
@@ -128,7 +128,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 			}
 
 			$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-			$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res_per)==0){
 				echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
@@ -159,7 +159,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 			jgp.login = '".$_SESSION['login']."' AND
 			g.id=jgp.id_groupe
 			ORDER BY g.description";
-		$res_grp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_grp)==0){
 			echo "<p>Vous n'avez apparemment aucun enseignement.</p>\n";
@@ -177,7 +177,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 					jgc.id_classe=c.id
 					ORDER BY c.classe";
 				//echo "$sql<br />\n";
-				$res_class=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+				$res_class=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_class)>0){
 					$chaine_class="";
 					$cpt=0;
@@ -188,7 +188,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 							$tabnumper=array();
 							$tabnomper=array();
 							$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-							$res_per=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+							$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_per)==0){
 								echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 								echo "</body></html>\n";

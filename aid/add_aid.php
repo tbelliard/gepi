@@ -53,11 +53,11 @@ if (isset($is_posted) and ($is_posted =="1")) {
 	check_token();
 
     //  On regarde si une aid porte déjà le même nom
-    $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid WHERE (nom='$reg_nom' and indice_aid='$indice_aid')");
+    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (nom='$reg_nom' and indice_aid='$indice_aid')");
     $count = mysqli_num_rows($test);
 
     // On calcule le nouveau id pour l'aid à insérer.
-    $call_id = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM aid order by 'id'");
+    $call_id = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM aid order by 'id'");
     $count_id = mysqli_num_rows($call_id);
     $i = 0;
     $new_id = 0;
@@ -68,13 +68,13 @@ if (isset($is_posted) and ($is_posted =="1")) {
     }
 
     // Vérification ultime avant d'enregistrer
-    $test_id = mysqli_num_rows( mysqli_query($GLOBALS["___mysqli_ston"], "SELECT id FROM aid WHERE id = '$new_id'"));
+    $test_id = mysqli_num_rows( mysqli_query($GLOBALS["mysqli"], "SELECT id FROM aid WHERE id = '$new_id'"));
     if ($test_id != 0) {
        $mess = rawurlencode("Erreur lors de l'enregistrement des données.");
        header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
        die();
     } else {
-       $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO aid SET id = '$new_id', nom='$reg_nom', numero='$reg_num', indice_aid='$indice_aid'");
+       $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO aid SET id = '$new_id', nom='$reg_nom', numero='$reg_num', indice_aid='$indice_aid'");
        if (!$reg_data) {
           $mess = rawurlencode("Erreur lors de l'enregistrement des données.");
           header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
@@ -99,14 +99,14 @@ if (isset($is_posted) and ($is_posted =="1")) {
 if (isset($is_posted) and ($is_posted =="2")) {
 	check_token();
 // On vérifie d'abord que le nom n'est pas déjà utilisé :
-    $test = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid WHERE (nom='$reg_nom' and indice_aid='$indice_aid')");
+    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (nom='$reg_nom' and indice_aid='$indice_aid')");
     $count = mysqli_num_rows($test);
     $flag = 0;
     if ($count != "0") {
         $aid_id_test = mysql_result($test, 0, "id");
         if ($aid_id_test != $aid_id) {$flag = 1;}
     }
-    $reg_data = mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE aid SET nom='$reg_nom', numero='$reg_num' WHERE (id = '$aid_id' and indice_aid='$indice_aid')");
+    $reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE aid SET nom='$reg_nom', numero='$reg_num' WHERE (id = '$aid_id' and indice_aid='$indice_aid')");
     if (!$reg_data) {
         $msg = "Erreur lors de l'enregistrement des données";
     } else {
@@ -144,7 +144,7 @@ require_once("../lib/header.inc.php");
 
 		$sql="SELECT id FROM aid where indice_aid='$indice_aid' ORDER BY id";
 		//echo "$sql<br />";
-		$res_aid_tmp=mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+		$res_aid_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_aid_tmp)>0){
 			$id_aid_prec=-1;
 			$id_aid_suiv=-1;
@@ -213,7 +213,7 @@ if ($action == "modif_aid") { ?>
 	<?php
 		echo add_token_field();
 
-		$calldata = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+		$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
 
 		$aid_nom = mysql_result($calldata, 0, "nom");
 		
