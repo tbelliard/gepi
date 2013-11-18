@@ -8811,6 +8811,7 @@ function get_profs_from_matiere($matiere) {
  * @return boolean true/false
  */
 function acces_cdt_eleve($login_user, $login_eleve) {
+	global $mysqli;
 	$retour=false;
 
 	$sql="SELECT statut FROM utilisateurs WHERE login='$login_user';";
