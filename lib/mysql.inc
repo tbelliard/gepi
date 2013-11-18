@@ -17,22 +17,6 @@ if (!function_exists("mysqli_connect")) require("mysql2mysqli.php");
  * - Including this file connects you to the database, or exits on error
  * 
  */
-// Etablir la connexion à la base
-if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
-  // On utilise le module pdo de php pour entrer en contact avec la base
-  $cnx = new PDO('mysql:host='.$dbHost.';dbname='.$dbDb, $dbUser, $dbPass);
-
-}
-if (!isset($db_nopersist) || $db_nopersist)
-    $db_c = ($GLOBALS["mysqli"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
-else
-    $db_c = ($GLOBALS["mysqli"] = mysqli_connect($dbHost,  $dbUser,  $dbPass));
-
-if (!$db_c || !((bool)mysqli_query($GLOBALS["mysqli"], "USE `$dbDb`")))
-{
-    echo "\n<p>Erreur grave: Echec de la connexion à la base de données";
-    exit;
-}
 
 mysqli_query($GLOBALS["mysqli"], "SET NAMES UTF8");
 
