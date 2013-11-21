@@ -912,7 +912,7 @@ if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 		$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 
-	debug_var();
+	//debug_var();
 	/*
 	$_POST['mod_disc_mail_cat_incluse']=	Array (*)
 		$_POST[mod_disc_mail_cat_incluse]['0']=	2
