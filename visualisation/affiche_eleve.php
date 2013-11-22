@@ -138,7 +138,8 @@ if(isset($_POST['valider_raz_param'])) {
 'graphe_tronquer_nom_court',
 'affiche_moy_classe',
 'graphe_star_decalage_y',
-'graphe_star_modif_rayon');
+'graphe_star_modif_rayon',
+'delais_defilement_app');
 	for($loop=0;$loop<count($champ_aff);$loop++) {
 		$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name='$champ_aff[$loop]';";
 		$del=mysql_query($sql);
@@ -208,6 +209,8 @@ affiche_moy_classe
 
 			if(isset($_POST['graphe_app_deroulantes_taille_police'])) {save_params_graphe('graphe_app_deroulantes_taille_police',$_POST['graphe_app_deroulantes_taille_police']);}
 
+			if(isset($_POST['graphe_delais_defilement_app'])) {save_params_graphe('graphe_delais_defilement_app',$_POST['graphe_delais_defilement_app']);}
+
 			if(isset($_POST['graphe_taille_police_nom_sous_graphe'])) {save_params_graphe('graphe_taille_police_nom_sous_graphe',$_POST['graphe_taille_police_nom_sous_graphe']);}
 
 			if(isset($_POST['click_plutot_que_survol_aff_app'])) {save_params_graphe('graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
@@ -271,6 +274,8 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['graphe_hauteur_affichage_deroulant'])) {savePref($_SESSION['login'],'graphe_hauteur_affichage_deroulant',$_POST['graphe_hauteur_affichage_deroulant']);}
 
 	if(isset($_POST['graphe_app_deroulantes_taille_police'])) {savePref($_SESSION['login'],'graphe_app_deroulantes_taille_police',$_POST['graphe_app_deroulantes_taille_police']);}
+
+	if(isset($_POST['graphe_delais_defilement_app'])) {savePref($_SESSION['login'],'graphe_delais_defilement_app',$_POST['graphe_delais_defilement_app']);}
 
 	if(isset($_POST['graphe_taille_police_nom_sous_graphe'])) {savePref($_SESSION['login'],'graphe_taille_police_nom_sous_graphe',$_POST['graphe_taille_police_nom_sous_graphe']);}
 
@@ -1508,6 +1513,28 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
+	if(isset($_POST['graphe_delais_defilement_app'])) {
+		$graphe_delais_defilement_app=$_POST['graphe_delais_defilement_app'];
+	}
+	else{
+		$pref_graphe_delais_defilement_app=getPref($_SESSION['login'],'graphe_graphe_delais_defilement_app','');
+		if($pref_graphe_delais_defilement_app!='') {
+			$graphe_delais_defilement_app=$pref_graphe_delais_defilement_app;
+		}
+		else {
+			if(getSettingValue('graphe_delais_defilement_app')) {
+				$graphe_delais_defilement_app=getSettingValue('graphe_delais_defilement_app');
+			}
+			else{
+				$graphe_delais_defilement_app=50;
+			}
+		}
+	}
+	if((mb_strlen(preg_replace("/[0-9]/","",$graphe_delais_defilement_app))!=0)||($graphe_delais_defilement_app=="")) {
+		$graphe_delais_defilement_app=50;
+	}
+
+
 	if(isset($_POST['graphe_taille_police_nom_sous_graphe'])) {
 		$graphe_taille_police_nom_sous_graphe=$_POST['graphe_taille_police_nom_sous_graphe'];
 	}
@@ -1766,6 +1793,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<tr><td><label for='graphe_hauteur_affichage_deroulant' style='cursor: pointer;'>Hauteur de la zone déroulante (<i>en pixels</i>):</label></td><td><input type='text' name='graphe_hauteur_affichage_deroulant' id='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
 
 			echo "<tr><td><label for='graphe_app_deroulantes_taille_police' style='cursor: pointer;'>Taille de la police (<i>en points</i>)&nbsp;:</label></td><td><input type='text' name='graphe_app_deroulantes_taille_police' id='graphe_app_deroulantes_taille_police' value='$graphe_app_deroulantes_taille_police' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
+
+			echo "<tr><td><label for='graphe_delais_defilement_app' style='cursor: pointer;'>Délais pour le défilement du texte des appréciations (<i>en ???</i>)&nbsp;:</label></td><td><input type='text' name='graphe_delais_defilement_app' id='graphe_delais_defilement_app' value='$graphe_delais_defilement_app' size='3' onkeydown=\"clavier_2(this.id,event,1,500);\" /></td></tr>\n";
 
 			echo "<tr><td><label for='graphe_taille_police_nom_sous_graphe' style='cursor: pointer;'>Taille de la police (<i>en points</i>) de la ligne <em>Nom_prénom_né_le_XX/XX/XXXX</em> sous le graphe&nbsp;:</label></td><td><input type='text' name='graphe_taille_police_nom_sous_graphe' id='graphe_taille_police_nom_sous_graphe' value='$graphe_taille_police_nom_sous_graphe' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
 
@@ -2216,6 +2245,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	echo "<input type='hidden' name='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' />\n";
 
 	echo "<input type='hidden' name='graphe_app_deroulantes_taille_police' value='$graphe_app_deroulantes_taille_police' />\n";
+	echo "<input type='hidden' name='graphe_delais_defilement_app' value='$graphe_delais_defilement_app' />\n";
 
 	echo "<input type='hidden' name='graphe_taille_police_nom_sous_graphe' value='$graphe_taille_police_nom_sous_graphe' />\n";
 
@@ -3090,7 +3120,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 						fen.onmouseout=function(){pas=stoc};fen.style.height=h_fen;
 						h_mrq=mrq.offsetHeight;
 						with(mrq.style){position='absolute';top=h_fen;}
-						setInterval('scrollmrq()',50);
+						setInterval('scrollmrq()',$graphe_delais_defilement_app);
 					}
 		
 					document.getElementById('appreciations_defile').innerHTML='".addslashes($txt_appreciations_deroulantes)."';
