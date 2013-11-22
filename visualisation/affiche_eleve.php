@@ -1795,6 +1795,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<tr><td><label for='graphe_app_deroulantes_taille_police' style='cursor: pointer;'>Taille de la police (<i>en points</i>)&nbsp;:</label></td><td><input type='text' name='graphe_app_deroulantes_taille_police' id='graphe_app_deroulantes_taille_police' value='$graphe_app_deroulantes_taille_police' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
 
 			echo "<tr><td><label for='graphe_delais_defilement_app' style='cursor: pointer;'>Délais pour le défilement du texte des appréciations (<i>en ???</i>)&nbsp;:</label></td><td><input type='text' name='graphe_delais_defilement_app' id='graphe_delais_defilement_app' value='$graphe_delais_defilement_app' size='3' onkeydown=\"clavier_2(this.id,event,1,500);\" /></td></tr>\n";
+			echo "<tr><td colspan='2'><em>Remarque&nbsp;:</em> Lors du survol (<em>avec la souris</em>) de la zone déroulante, le défilement s'arrête.</td></tr>\n";
 
 			echo "<tr><td><label for='graphe_taille_police_nom_sous_graphe' style='cursor: pointer;'>Taille de la police (<i>en points</i>) de la ligne <em>Nom_prénom_né_le_XX/XX/XXXX</em> sous le graphe&nbsp;:</label></td><td><input type='text' name='graphe_taille_police_nom_sous_graphe' id='graphe_taille_police_nom_sous_graphe' value='$graphe_taille_police_nom_sous_graphe' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
 
