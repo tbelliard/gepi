@@ -8811,6 +8811,7 @@ function get_profs_from_matiere($matiere) {
  * @return boolean true/false
  */
 function acces_cdt_eleve($login_user, $login_eleve) {
+	global $mysqli;
 	$retour=false;
 
 	$sql="SELECT statut FROM utilisateurs WHERE login='$login_user';";
@@ -8865,6 +8866,12 @@ function acces_cdt_eleve($login_user, $login_eleve) {
 	return $retour;
 }
 
+/** Fonction destinée à récupérer dans la table 'utilisateurs' le mail d'un utilisateur
+ *
+ * @param string $login_user Login de l'utilisateur
+ *
+ * @return string Le mail de l'utilisateur
+ */
 function get_mail_user($login_user) {
 	global $mysqli;
 	$retour="";
@@ -8879,4 +8886,60 @@ function get_mail_user($login_user) {
 	$res->close();
 	return $retour;
 }
+
+/** Fonction destinée à récupérer un tableau associatif des classes concernant un utilisateur
+ *
+ * @param string $login_user Login de l'utilisateur
+ * TODO: Ajouter un paramètre pour spécifier le contexte dans lequel on veut faire l'extraction
+ *       Il n'est pas toujours judicieux de restreindre la liste si par exemple tous les CPE ont les mêmes droits sur tous les élèves.
+ *
+ * @return array Le tableau des classes avec l'id_classe pour indice et classe pour valeur
+ */
+function get_classes_from_user($login_user, $statut) {
+	global $mysqli;
+	$tab=array();
+
+	if($statut=='professeur') {
+		$sql="SELECT DISTINCT id, classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp 
+			WHERE c.id=jgc.id_classe 
+			AND jgc.id_groupe=jgp.id_groupe 
+			AND jgp.login='$login_user'
+				ORDER BY c.classe;";
+	}
+	elseif($statut=='administrateur') {
+		$sql="SELECT DISTINCT id, classe FROM classes c
+				ORDER BY c.classe;";
+	}
+	elseif($statut=='secours') {
+		$sql="SELECT DISTINCT id, classe FROM classes c
+				ORDER BY c.classe;";
+	}
+	elseif($statut=='autre') {
+		$sql="SELECT DISTINCT id, classe FROM classes c
+				ORDER BY c.classe;";
+	}
+	elseif($statut=='scolarite') {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_scol_classes jsc
+				WHERE jsc.id_classe=c.id
+				AND jsc.login='$login_user'
+				ORDER BY c.classe;";
+	}
+	elseif($statut=='cpe') {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, j_eleves_cpe jecpe
+				WHERE jec.id_classe=c.id
+				AND jec.login=jecpe.e_login
+				AND jecpe.cpe_login='$login_user'
+				ORDER BY c.classe;";
+	}
+
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		while($lig=$res->fetch_object()) {
+			$tab[$lig->id]=$lig->classe;
+		}
+	}
+	$res->close();
+	return $tab;
+}
+
 ?>
