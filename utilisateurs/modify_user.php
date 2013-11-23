@@ -85,6 +85,20 @@ $_SESSION['uid_prime'] = $uid;
 
 // fin pour module trombinoscope
 
+$auth_sso=getSettingValue("auth_sso") ? getSettingValue("auth_sso") : "";
+$gepi_non_plugin_lcs_mais_recherche_ldap=false;
+if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("../secure/config_ldap.inc.php"))) {
+	include("../secure/config_ldap.inc.php");
+
+	$lcs_ldap_base_dn=$ldap_base_dn;
+	$lcs_ldap_host=$ldap_host;
+	$lcs_ldap_port=$ldap_port;
+	$gepi_non_plugin_lcs_mais_recherche_ldap=true;
+
+	$lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
+	$lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
+}
+
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 check_token();
 //------------------------------------------------------
@@ -661,7 +675,8 @@ if (isset($user_login)) {
 <!--span class = "norme"-->
 <div class = "norme">
 <b>Identifiant <?php
-if (!isset($user_login)) echo "(<em>" . $longmax_login . " caractères maximum</em>) ";?>:</b>
+if (!isset($user_login)) echo "(<em title=\"La longueur maximale est fonction du format de login choisi
+dans 'Gestion générale/Configuration générale'\">" . $longmax_login . " caractères maximum</em>) ";?>:</b>
 <?php
 if (isset($user_login) and ($user_login!='')) {
 	echo "<b>".$user_login."</b>\n";
@@ -697,7 +712,11 @@ if (($_SESSION['statut']=='administrateur') and (isset($user_login)) and ($user_
 	echo "</div>\n";
 }
 
+if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
+	echo "<div id='suggestion_login' style='float:right; width:400px; height: 200px; border: 1px solid black; overflow:auto;'></div>\n";
+}
 ?>
+
 <table summary="Infos">
 	<tr><td>
 	<table summary="Authentification">
@@ -723,7 +742,49 @@ if ($ldap_write_access) {
 	echo "</td></tr>";
 }
  ?>
-<tr><td>Nom&nbsp;:</td><td><input type=text name=reg_nom size=20 <?php if (isset($user_nom)) { echo "value=\"".$user_nom."\"";}?> /></td></tr>
+<tr><td>Nom&nbsp;:</td><td><input type=text name=reg_nom size=20 <?php
+	if (isset($user_nom)) {
+		echo "value=\"".$user_nom."\"";
+	}
+
+	if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
+
+		//if($auth_sso=='lcs') {
+			echo " onblur=\"affiche_login_lcs('nom')\"";
+		//}
+		echo " />";
+
+		echo "
+	<script type='text/javascript'>
+		// <![CDATA[
+		function affiche_login_lcs(champ) {
+
+			valeur=document.getElementById(champ).value;
+			if(valeur!='') {
+
+				nom=document.getElementById('nom').value;
+				prenom=document.getElementById('prenom').value;
+
+				//alert('valeur='+valeur);
+				/*
+				if(champ=='nom') {
+					//new Ajax.Updater($('suggestion_login'),'cherche_login.php?champ='+champ+'&valeur='+valeur,{method: 'get'});
+					new Ajax.Updater($('suggestion_login'),'cherche_login.php?nom='+nom,{method: 'get'});
+				}
+				elseif(champ=='prenom') {
+				*/
+					new Ajax.Updater($('suggestion_login'),'../eleves/cherche_login.php?nom='+nom+'&prenom='+prenom,{method: 'get'});
+				//}
+			}
+		}
+		//]]>
+	</script>\n";
+	}
+	else {
+		echo " />";
+	}
+
+?></td></tr>
 <tr><td>Prénom&nbsp;:</td><td><input type=text name=reg_prenom size=20 <?php if (isset($user_prenom)) { echo "value=\"".$user_prenom."\"";}?> /></td></tr>
 <tr><td>Civilité&nbsp;:</td><td><select name="reg_civilite" size="1" onchange="changement()">
 <option value=''>(néant)</option>
