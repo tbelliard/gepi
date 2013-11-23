@@ -153,7 +153,7 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 		//echo "$sql<br />";
 		$res_ele=mysql_query($sql);
 		if(mysql_num_rows($res_ele)>0) {
-			echo "<p>".ucfirst($gepiSettings['denomination_eleves'])." de la classe de ".get_class_from_id($id_classe).":</p>\n";
+			echo "<p class='bold'>".casse_mot($gepiSettings['denomination_eleves'], 'majf2')." de la classe de ".get_class_from_id($id_classe).":</p>\n";
 
 			$tab_txt=array();
 			$tab_lien=array();
@@ -296,6 +296,8 @@ else {
 			$onglet="eleve";
 		}
 
+		echo "<span id='champ_select_classe' style='display:none'> : ".champ_select_classe($_SESSION['login'], $_SESSION['statut'], 'select_id_classe', 'select_id_classe', $id_classe, "y", "change_classe_et_submit()")."</span>";
+
 		if($ele_login_prec!=""){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_prec&amp;id_classe=$id_classe";
 			echo $chaine_quitter_page_ou_non;
@@ -338,6 +340,11 @@ else {
 	echo "' />\n";
 	echo "</form>\n";
 
+
+	echo "<form id='form_changement_classe' action='".$_SERVER['PHP_SELF']."' method='post'>
+	<input type='hidden' name='id_classe' id='id_classe_form_changement_classe' value='' />
+</form>\n";
+
 	// Affichage des onglets pour l'élève choisi
 
 	echo "<div id='patience'>
@@ -349,6 +356,17 @@ Patientez pendant l'extraction des données... merci.
 
 	echo "<script type='text/javascript'>
 	document.getElementById('patience').innerHTML=\"Patientez pendant l'extraction des données... merci.\";
+
+	// On affiche le champ si JS est actif
+	if(document.getElementById('champ_select_classe')) {
+		document.getElementById('champ_select_classe').style.display='';
+	}
+
+	function change_classe_et_submit() {
+		id_classe=document.getElementById('select_id_classe').options[document.getElementById('select_id_classe').selectedIndex].value;
+		document.getElementById('id_classe_form_changement_classe').value=id_classe;
+		document.getElementById('form_changement_classe').submit();
+	}
 
 	function passer_a_eleve(ele_login,id_classe) {
 		if(document.getElementById('onglet_courant')) {
