@@ -742,7 +742,7 @@ if ($ldap_write_access) {
 	echo "</td></tr>";
 }
  ?>
-<tr><td>Nom&nbsp;:</td><td><input type=text name=reg_nom size=20 <?php
+<tr><td>Nom&nbsp;:</td><td><input type='text' name='reg_nom' id='reg_nom' size='20' <?php
 	if (isset($user_nom)) {
 		echo "value=\"".$user_nom."\"";
 	}
@@ -762,8 +762,8 @@ if ($ldap_write_access) {
 			valeur=document.getElementById(champ).value;
 			if(valeur!='') {
 
-				nom=document.getElementById('nom').value;
-				prenom=document.getElementById('prenom').value;
+				nom=document.getElementById('reg_nom').value;
+				prenom=document.getElementById('reg_prenom').value;
 
 				//alert('valeur='+valeur);
 				/*
@@ -785,7 +785,13 @@ if ($ldap_write_access) {
 	}
 
 ?></td></tr>
-<tr><td>Prénom&nbsp;:</td><td><input type=text name=reg_prenom size=20 <?php if (isset($user_prenom)) { echo "value=\"".$user_prenom."\"";}?> /></td></tr>
+<tr><td>Prénom&nbsp;:</td><td><input type='text' name='reg_prenom' id='reg_prenom' size='20' <?php
+	if (isset($user_prenom)) { echo "value=\"".$user_prenom."\"";}
+
+	if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
+		echo " onblur=\"affiche_login_lcs('nom')\"";
+	}
+?> /></td></tr>
 <tr><td>Civilité&nbsp;:</td><td><select name="reg_civilite" size="1" onchange="changement()">
 <option value=''>(néant)</option>
 <option value='M.' <?php if ($user_civilite=='M.') echo " selected ";  ?>>M.</option>
