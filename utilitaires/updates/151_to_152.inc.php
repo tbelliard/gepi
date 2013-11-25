@@ -1046,7 +1046,7 @@ description_item VARCHAR( 255 ) NOT NULL
 	# Il semble que sur certaines bases le champ ait pu être manquant:
 	$sql = "SHOW TABLES LIKE 'absences_creneaux'";
 	$req_existence = mysql_query($sql);
-	$result .= $req_existence;
+	//$result .= $req_existence;
 	if (mysql_num_rows($req_existence) != 0) {
 	    $result .= "&nbsp;->Ajout d'un champ 'type_creneaux' à la table 'absences_creneaux'<br />";
 	    $test_type_creneaux=mysql_num_rows(mysql_query("SHOW COLUMNS FROM absences_creneaux LIKE 'type_creneaux';"));
