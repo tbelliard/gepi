@@ -90,13 +90,15 @@ if ($ctTravailAFaire != null) {
 		die();
 	}
 
-	//on cherche si il y a une notice pour le groupe à la date précisée
-	$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
-	$criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $today, '=');
-	$criteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $utilisateur->getLogin());
-	$ctTravailAFaires = $groupe->getCahierTexteTravailAFaires($criteria);
-	$ctTravailAFaire = isset($ctTravailAFaires[0]) ? $ctTravailAFaires[0] : NULL;
-	
+	if ($ajout_nouvelle_notice != "oui") {
+		//on cherche si il y a une notice pour le groupe à la date précisée
+		$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
+		$criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $today, '=');
+		$criteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $utilisateur->getLogin());
+		$ctTravailAFaires = $groupe->getCahierTexteTravailAFaires($criteria);
+		$ctTravailAFaire = isset($ctTravailAFaires[0]) ? $ctTravailAFaires[0] : NULL;
+	}
+
 	if ($ctTravailAFaire == null) {
 		//pas de notices, on initialise un nouvel objet
 		$ctTravailAFaire = new CahierTexteTravailAFaire();
@@ -274,6 +276,19 @@ echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[
 
 if (!$ctTravailAFaire->isNew()) {
 	echo " - <b><font color=\"red\">Modification de la notice</font></b>\n";
+	echo " - 
+			<a href=\"#\" onclick=\"javascript:
+				getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_groupe=".$groupe->getId()."&today=".$ctTravailAFaire->getDateCt()."&ajout_nouvelle_notice=oui',
+					{ onComplete:
+						function(transport) {
+							getWinEditionNotice().updateWidth();
+						}
+					}
+				);
+				return false;
+			\">
+			Ajouter une notice
+			</a> - \n";
 	echo " - <a href=\"#\" onclick=\"javascript:
 				$('dupplication_notice').show();
 				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteTravailAFaire&id_ct=".$ctTravailAFaire->getIdCt()."',
