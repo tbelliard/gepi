@@ -659,7 +659,7 @@ foreach ($donnees as $donnee) { ?>
 		<?php echo $donnee['non_justifiees']; ?>
 	  </td>
 	  <td style="border:1px groove #aaaaaa;text-align: center;
-<?php if (!$donneeBrut && ($donnee['totalDemi'] != $donnee['justifiees'])) echo 'background:#ff0000;'; ?>
+<?php if (!$donneeBrut && ($donnee['totalDemi'] != $donnee['justifiees'])) echo 'background:#ff0000;" title="Le nombre d\'absences justifiées diffère du nombre de demi-journées."'; ?>
 		  ">
 		<?php echo $donnee['justifiees']; ?>
 	  </td>
