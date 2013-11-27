@@ -34,6 +34,7 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
     while ($obj = $appel_messages->fetch_object()) {
         $statuts_destinataires1 = $obj->statuts_destinataires;
         $login_destinataire1 = $obj->login_destinataire;
+        $id_message1 = $obj->id;
         $autre_message = "";
         if ((strpos($statuts_destinataires1, mb_substr($_SESSION['statut'], 0, 1))) || ($_SESSION['login']==$login_destinataire1)) {
             if ($affiche_messages == 'yes') {
@@ -83,7 +84,7 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
             //$tbs_message[]=array("suite"=>$autre_message,"message"=>$content);
 
             // dans accueil.php
-            if (isset($afficheAccueil) && is_object($afficheAccueil)) $afficheAccueil->message[]=array("suite"=>$autre_message,"message"=>$content);
+            if (isset($afficheAccueil) && is_object($afficheAccueil)) $afficheAccueil->message[]=array("id"=>$id_message1, "suite"=>$autre_message,"message"=>$content);
             // dans accueil_simpl_prof.php
             $texte_messages_simpl_prof .= $content;
         }

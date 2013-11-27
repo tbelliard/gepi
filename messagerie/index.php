@@ -334,7 +334,7 @@ echo "</div>";
 
 echo "<script type=\"text/javascript\" language=\"JavaScript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>\n";
 //-----------------------------------------------------------------------------------
-echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."'>Nouveau message</a></p>\n";
 echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
@@ -490,6 +490,7 @@ if (isset($id_mess)) {
 }
 echo "<table style=\"border:1px solid black\" cellpadding=\"5\" cellspacing=\"0\"><tr><td>\n";
 echo "<form action=\"./index.php#debut_de_page\" method=\"post\" style=\"width: 100%;\" name=\"formulaire\">\n";
+echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>\n";
 echo add_token_field();
 if (isset($id_mess)) echo "<input type=\"hidden\" name=\"id_mess\" value=\"$id_mess\" />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"message\" />\n";
@@ -792,6 +793,7 @@ if (isset($id_mess)) echo "<input type=\"submit\" value=\"Annuler\" style=\"font
 echo "</td></tr>\n";
 
 echo "</table>\n";
+echo "</fieldset>\n";
 echo "</form></td></tr></table>\n";
 
 // Fin de la colonne de droite

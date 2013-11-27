@@ -233,11 +233,16 @@
 			<div class="panneau_coingb"></div>
 			<div class="panneau_coindb"></div>
 			<div class="panneau_bas"></div>
-			<div class="panneau_centre">	
+			<div class="panneau_centre">
 				<?php foreach ($afficheAccueil->message as $value) : ?>
-				<div class="postit"><?php echo $value['message']; ?></div>
+				<div class="postit"><?php
+					if(acces("/messagerie/index.php", $_SESSION['statut'])) {
+						echo "<div style='float:right; width:16' title=\"Éditer/modifier le message.\"><a href='$gepiPath/messagerie/index.php?id_mess=".$value['id']."'><img src='images/edit16.png' class='icon16' /></a></div>";
+					}
+					echo $value['message'];
+				?></div>
 				<?php endforeach; ?>
-				<?php unset ($value); ?>	
+				<?php unset ($value); ?>
 			</div>
 		</div>
 	</div>
