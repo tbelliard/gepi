@@ -784,7 +784,8 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 					else {
 						// 20120409
 						if(($current_group["classe"]["ver_periode"][$id_classe][$nb]=='N')&&($_SESSION['statut']=='professeur')&&(in_array($current_group['id'],$tab_mes_groupes))) {
-							echo "<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb') ;return false;\"><img src='../images/edit16.png' width='16' height='16' /></a> ";
+							echo "<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb') ;return false;\" title=\"Modifier l'appréciation.
+Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\"><img src='../images/edit16.png' width='16' height='16' /></a> ";
 						}
 
 						// Tester si l'adresse mail du/des profs de l'enseignement est renseignée et si l'envoi de mail est actif.
@@ -795,7 +796,9 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 							//echo " onclick=\"alert('plop');return false;\"";
 							echo " onclick=\"signaler_une_faute('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb') ;return false;\"";
 						}
-						echo "><img src='../images/icons/mail.png' width='16' height='16' alt='Signaler un problème/faute par mail' /></a>";
+						echo " title=\"Signaler une faute de frappe, d'orthographe ou autre...
+Si vous vous apercevez que ce collègue a fait une erreur, vous pouvez lui envoyer un mail pour l'alerter.
+Ce lien est là pour ça.\"><img src='../images/icons/mail.png' width='16' height='16' alt='Signaler un problème/faute par mail' /></a>";
 
 						echo "<span id='signalement_effectue_".$current_id_eleve."_".$current_group['id']."_$nb'></span>";
 					}
