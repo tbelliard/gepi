@@ -477,6 +477,14 @@ if((isset($mode))&&($mode=='afficher_messages_non_lus')) {
 }
 
 if(peut_poster_message($_SESSION['statut'])) {
+	$tab_user_mae=array();
+	$sql="SELECT value FROM mod_alerte_divers WHERE name='login_exclus';";
+	$res_mae=mysql_query($sql);
+	if(mysql_num_rows($res_mae)>0) {
+		while($lig_mae=mysql_fetch_object($res_mae)) {
+			$tab_user_mae[]=$lig_mae->value;
+		}
+	}
 ?>
 
 <form action='../mod_alerte/form_message.php' method='post' name='formulaire'>
@@ -499,7 +507,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 				<td style='text-align:left;'>
 					<!-- ======================================================= -->
 					<!-- Balises concernant JavaScript -->
-                    <div id='p_ajout_dest_js' style='display:none;float:right;whidth:16px;'><a href="javascript:affiche_ajout_dest();"><img src='../images/icons/add.png'  style='width:16px; height:16px' alt='Ajouter' title='Ajouter un ou des destinataires' /></a></div>
+					<div id='p_ajout_dest_js' style='display:none;float:right;whidth:16px;'><a href="javascript:affiche_ajout_dest();"><img src='../images/icons/add.png'  style='width:16px; height:16px' alt='Ajouter' title='Ajouter un ou des destinataires' /></a></div>
 
 					<div id='div_login_dest_js'>
 						<span style='color:red' id='span_ajoutez_un_ou_des_destinataires'><a href='javascript:affiche_ajout_dest();' style='color:red'>Ajoutez un ou des destinataires --&gt;</a></span>
@@ -520,7 +528,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 										//echo civ_nom_prenom($login_dest[$loop]);
 										echo "<input type='hidden' name='login_dest[]' value='".$value."' />";
 										echo civ_nom_prenom($value);
-                                        echo " <a href=\"javascript:removeElement('span_login_u_choisi_special_$loop')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
+										echo " <a href=\"javascript:removeElement('span_login_u_choisi_special_$loop')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
 										$loop++;
 									}
 								}
@@ -528,7 +536,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 									echo "<br /><span id='span_login_u_choisi_special'>";
 									echo "<input type='hidden' name='login_dest[]' value='".$login_dest."' />";
 									echo civ_nom_prenom($login_dest);
-                                    echo " <a href=\"javascript:removeElement('span_login_u_choisi_special')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
+									echo " <a href=\"javascript:removeElement('span_login_u_choisi_special')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
 								}
 							}
 						?>
@@ -547,21 +555,23 @@ if(peut_poster_message($_SESSION['statut'])) {
 										echo "
 							<optgroup label='".$tab_statut[$loop]."'>";
 										while($lig_u=mysql_fetch_object($res_u)) {
-											echo "
+											if(!in_array($lig_u->login, $tab_user_mae)) {
+												echo "
 								<option value='$lig_u->login'";
-											if(isset($login_dest)) {
-												if(is_array($login_dest)) {
-													if(in_array($lig_u->login, $login_dest)) {
-														echo " selected";
+												if(isset($login_dest)) {
+													if(is_array($login_dest)) {
+														if(in_array($lig_u->login, $login_dest)) {
+															echo " selected";
+														}
+													}
+													else {
+														if($lig_u->login==$login_dest) {
+															echo " selected";
+														}
 													}
 												}
-												else {
-													if($lig_u->login==$login_dest) {
-														echo " selected";
-													}
-												}
+												echo ">$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2')."</option>";
 											}
-											echo ">$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2')."</option>";
 										}
 										echo "
 							</optgroup>";
@@ -621,7 +631,7 @@ Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendema
 							}
 						}
 					?>
-                    <div style='float:right; width:16px;'><a href='javascript:date_visibilite_maintenant()' title="Fixer la date/heure de visibilité à l'instant présent."><img src='../images/icons/wizard.png'  style='width:16px; height:16px' alt='date de visibilité'  /></a></div>
+					<div style='float:right; width:16px;'><a href='javascript:date_visibilite_maintenant()' title="Fixer la date/heure de visibilité à l'instant présent."><img src='../images/icons/wizard.png'  style='width:16px; height:16px' alt='date de visibilité'  /></a></div>
 					<span id='span_nom_jour_semaine'></span> 
 					<input type='text' name='date_visibilite' id='date_visibilite' size='10' value = "<?php echo $date_visibilite;?>" onKeyDown="clavier_date(this.id,event);maj_span_nom_jour_semaine();" AutoComplete="off" title="Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction." onchange="changement();maj_span_nom_jour_semaine();" onblur="maj_span_nom_jour_semaine();" />
 					<a href="#calend" onClick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170);?>;document.getElementById('span_nom_jour_semaine').innerHTML='';"
@@ -683,11 +693,13 @@ for($loop=0;$loop<count($tab_statut);$loop++) {
 		$texte_infobulle.="<div style='margin-left:1em;'><table class='boireaus boireaus_alt'>";
 
 		while($lig_u=mysql_fetch_object($res_u)) {
-			$designation_u="$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2');
-			$texte_infobulle.="<tr class='white_hover'><td style='text-align:left'><input type='checkbox' name='login_dest[]' id='login_dest_$cpt_u' value='$lig_u->login' onchange=\"checkbox_change('login_dest_$cpt_u')\" attribut_statut=\"".$tab_statut[$loop]."\"><label for='login_dest_$cpt_u' id='texte_login_dest_$cpt_u'>$designation_u</label></td></tr>";
-			$chaine_js_login_u.="'$lig_u->login',";
-			$chaine_js_designation_u.="'".preg_replace("/'/", " ", $designation_u)."',";
-			$cpt_u++;
+			if(!in_array($lig_u->login, $tab_user_mae)) {
+				$designation_u="$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2');
+				$texte_infobulle.="<tr class='white_hover'><td style='text-align:left'><input type='checkbox' name='login_dest[]' id='login_dest_$cpt_u' value='$lig_u->login' onchange=\"checkbox_change('login_dest_$cpt_u')\" attribut_statut=\"".$tab_statut[$loop]."\"><label for='login_dest_$cpt_u' id='texte_login_dest_$cpt_u'>$designation_u</label></td></tr>";
+				$chaine_js_login_u.="'$lig_u->login',";
+				$chaine_js_designation_u.="'".preg_replace("/'/", " ", $designation_u)."',";
+				$cpt_u++;
+			}
 		}
 		$texte_infobulle.="</table></div>";
 	}
