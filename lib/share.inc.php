@@ -5205,27 +5205,44 @@ function mysql_date_to_unix_timestamp($mysql_date) {
 }
 
 /**
- * Recherche les profs principaux d'une classe
+ * Recherche les profs principaux d'une classe ou des classes dont un prof est PP
  *
  * @param string $id_classe id de la classe
+ * @param string $login_user si l'id_classe est vide, on recherche les classes dont $login_user est PP
  * @return array Tableau des logins des profs principaux
  */
-function get_tab_prof_suivi($id_classe) {
+function get_tab_prof_suivi($id_classe, $login_user="") {
 	global $mysqli;
 	$tab = array();
 
-	$sql = "SELECT DISTINCT jep.professeur 
-		FROM j_eleves_professeurs jep, j_eleves_classes jec 
-		WHERE jec.id_classe='$id_classe' 
-		AND jec.login=jep.login
-		AND jec.id_classe=jep.id_classe
-		ORDER BY professeur;";
-	$res = mysqli_query($mysqli, $sql);
-	if($res->num_rows > 0) {
-		while($lig = $res->fetch_object()) {
-			$tab[] = $lig->professeur;
+	if($id_classe!="") {
+		$sql = "SELECT DISTINCT jep.professeur 
+			FROM j_eleves_professeurs jep, j_eleves_classes jec 
+			WHERE jec.id_classe='$id_classe' 
+			AND jec.login=jep.login
+			AND jec.id_classe=jep.id_classe
+			ORDER BY professeur;";
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			while($lig = $res->fetch_object()) {
+				$tab[] = $lig->professeur;
+			}
+			$res->close();
 		}
-		$res->close();
+	}
+	elseif($login_user!="") {
+		$sql = "SELECT DISTINCT jep.id_classe 
+			FROM j_eleves_professeurs jep, classes c 
+			WHERE jep.professeur='$login_user'
+			AND jep.id_classe=c.id
+			ORDER BY c.classe;";
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			while($lig = $res->fetch_object()) {
+				$tab[] = $lig->id_classe;
+			}
+			$res->close();
+		}
 	}
 
 	return $tab;
