@@ -288,7 +288,7 @@ if (isset($is_posted )) {
 								//echo "<td>\$data[$c]=$data[$c]</td>";
 								//$data[$c]=my_ereg_replace("|POINT-VIRGULE|",";",$data[$c]);
 								//$data[$c]=my_ereg_replace("\|POINT-VIRGULE\|",";",$data[$c]);
-								$data[$c]=str_replace("|POINT-VIRGULE|",";",$data[$c]);
+								$data[$c]=trim(str_replace("|POINT-VIRGULE|",";",$data[$c]));
 								// =====================================================
                                 //$col3 = $data[$c];
                                 $col3 = ensure_utf8($data[$c]);
