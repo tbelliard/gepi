@@ -282,6 +282,13 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	// on enregistre le message
 	if ($record == 'yes') {
 		$erreur=false;
+
+		/*
+		echo "\$date_debut=$date_debut<br />";
+		echo "\$date_fin=$date_fin<br />";
+		echo "\$date_decompte=$date_decompte<br />";
+		*/
+
 		if (count($t_login_destinataires)==0)
 			if (isset($_POST['id_mess']))
 				$erreur=!update_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,"");
@@ -297,20 +304,21 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 				else
 					$erreur=!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire) && $erreur;
 			}
-	if (!$erreur) {
-		$msg_OK = "Le message a été enregistré.";
-		unset($contenu_cor);
-		unset($_POST['display_date_debut']);
-		unset($_POST['display_date_fin']);
-		unset($_POST['display_date_decompte']);
-		unset($id_mess);
-		unset($statuts_destinataires);
-		unset($login_destinataire);
-		//unset($matiere_destinataire);
-		unset($id_classe);
-	} else {
-		$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".mysql_error();
-	}
+
+		if (!$erreur) {
+			$msg_OK = "Le message a été enregistré.";
+			unset($contenu_cor);
+			unset($_POST['display_date_debut']);
+			unset($_POST['display_date_fin']);
+			unset($_POST['display_date_decompte']);
+			unset($id_mess);
+			unset($statuts_destinataires);
+			unset($login_destinataire);
+			//unset($matiere_destinataire);
+			unset($id_classe);
+		} else {
+			$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".mysql_error();
+		}
 	}
 }
 
@@ -660,7 +668,10 @@ echo "<tr><td  colspan=\"4\" >\n";
 	while($classe=mysql_fetch_array($R_classes))
 		{
 		?>
-		<option value="<?php echo $classe['id']; ?>" <?php if (isset($id_classe)) if ($classe['id']==$id_classe) echo "selected"; ?>><?php
+		<option value="<?php echo $classe['id']; ?>" <?php if (isset($id_classe)) if ($classe['id']==$id_classe) echo "selected"; ?> title="Déposer un message sur le Panneau d'affichage
+pour tous les professeurs de la classe de <?php echo $classe['classe'];?>.
+Pour information, le <?php echo getSettingValue('gepi_prof_suivi')?> de la classe est :
+<?php echo liste_des_prof_suivi_de_telle_classe($classe['id']);?>"><?php
 			echo $classe['nom_complet'];
 			if($classe['nom_complet']!=$classe['classe']) {echo " (".$classe['classe'].")";}
 		?></option>
