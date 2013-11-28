@@ -2951,4 +2951,15 @@ Cela peut vous permettre d'éviter de placer un contrôle en classe alors qu'il 
 
 	return $tab;
 }
+
+function liste_des_prof_suivi_de_telle_classe($id_classe) {
+	$retour="";
+
+	$tab=get_tab_prof_suivi($id_classe);
+	for($loop=0;$loop<count($tab);$loop++) {
+		if($loop>0) {$retour.=", ";}
+		$retour.=civ_nom_prenom($tab[$loop]);
+	}
+	return $retour;
+}
 ?>
