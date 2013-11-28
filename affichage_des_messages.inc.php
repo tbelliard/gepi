@@ -45,7 +45,8 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
             $content = $obj->texte;
             // _DECOMPTE_
             if(strstr($content, '_DECOMPTE_')) {
-                $nb_sec=mysql_result($appel_messages, $ind, 'date_decompte')-time();
+                //$nb_sec=mysql_result($appel_messages, $ind, 'date_decompte')-time();
+                $nb_sec=$obj->date_decompte-time();
                 if($nb_sec>0) {
                     $decompte_remplace="";
                 } elseif($nb_sec==0) {
