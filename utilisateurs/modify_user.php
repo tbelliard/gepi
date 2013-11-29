@@ -680,9 +680,9 @@ dans 'Gestion générale/Configuration générale'\">" . $longmax_login . " cara
 <?php
 if (isset($user_login) and ($user_login!='')) {
 	echo "<b>".$user_login."</b>\n";
-	echo "<input type='hidden' name='reg_login' value=\"".$user_login."\" />\n";
+	echo "<input type='hidden' name='reg_login' id='reg_login' value=\"".$user_login."\" />\n";
 } else {
-	echo "<input type='text' name='new_login' size='20' value=\"";
+	echo "<input type='text' name='new_login' id='reg_login' size='20' value=\"";
 	if (isset($user_login)) {echo $user_login;}
 	elseif(isset($_POST['new_login'])) {echo $_POST['new_login'];}
 	echo "\" onchange=\"changement()\" />\n";
@@ -750,7 +750,7 @@ if ($ldap_write_access) {
 	if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 
 		//if($auth_sso=='lcs') {
-			echo " onblur=\"affiche_login_lcs('nom')\"";
+			echo " onblur=\"affiche_login_lcs('reg_nom')\"";
 		//}
 		echo " />";
 
@@ -773,7 +773,7 @@ if ($ldap_write_access) {
 				}
 				elseif(champ=='prenom') {
 				*/
-					new Ajax.Updater($('suggestion_login'),'../eleves/cherche_login.php?nom='+nom+'&prenom='+prenom,{method: 'get'});
+					new Ajax.Updater($('suggestion_login'),'../eleves/cherche_login.php?statut_recherche=personnel&nom='+nom+'&prenom='+prenom,{method: 'get'});
 				//}
 			}
 		}
@@ -789,17 +789,17 @@ if ($ldap_write_access) {
 	if (isset($user_prenom)) { echo "value=\"".$user_prenom."\"";}
 
 	if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
-		echo " onblur=\"affiche_login_lcs('nom')\"";
+		echo " onblur=\"affiche_login_lcs('reg_nom')\"";
 	}
 ?> /></td></tr>
-<tr><td>Civilité&nbsp;:</td><td><select name="reg_civilite" size="1" onchange="changement()">
+<tr><td>Civilité&nbsp;:</td><td><select name="reg_civilite" id="reg_civilite" size="1" onchange="changement()">
 <option value=''>(néant)</option>
 <option value='M.' <?php if ($user_civilite=='M.') echo " selected ";  ?>>M.</option>
 <option value='Mme' <?php if ($user_civilite=='Mme') echo " selected ";  ?>>Mme</option>
 <option value='Mlle' <?php if ($user_civilite=='Mlle') echo " selected ";  ?>>Mlle</option>
 </select>
 </td></tr>
-<tr><td>Email&nbsp;:</td><td><input type=text name=reg_email size=30 <?php if (isset($user_email)) { echo "value=\"".$user_email."\"";}?> onchange="changement()" /></td></tr>
+<tr><td>Email&nbsp;:</td><td><input type="text" name="reg_email" id="reg_email" size="30" <?php if (isset($user_email)) { echo "value=\"".$user_email."\"";}?> onchange="changement()" /></td></tr>
 </table>
 </td>
 
