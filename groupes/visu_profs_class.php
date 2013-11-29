@@ -382,7 +382,9 @@ if(isset($id_classe)){
 			}
 		}
 
-		echo "<h3>Equipe pédagogique de la classe de ".$classe["classe"]." <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;export=csv' class='noprint' title=\"Exporter l'équipe au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></h3>\n";
+		echo "<h3>Equipe pédagogique de la classe de ".$classe["classe"]." <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;export=csv' class='noprint' title=\"Exporter l'équipe au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>";
+		echo "<span id='span_mail'></span>";
+		echo "</h3>\n";
 
 		echo "<script type='text/javascript' language='JavaScript'>
 	var fen;
@@ -517,7 +519,13 @@ if(isset($id_classe)){
 					$tabmail2[]=$tabmail[$i];
 				}
 			}
-			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."'>mail à tous les membres de l'équipe</a>.</p>\n";
+			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."'>mail à tous les membres de l'équipe</a>.</p>
+<script type='text/javascript'>
+	if(document.getElementById('span_mail')) {
+		document.getElementById('span_mail').innerHTML=\" <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."' title='Envoyer un mail à tous les membres de l équipe'><img src='../images/icons/courrier_envoi.png' class='icone16' alt='Mail' /></a>\";
+	}
+</script>\n";
+
 		}
 
 		//echo "</div>";
