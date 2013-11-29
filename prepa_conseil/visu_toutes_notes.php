@@ -2373,14 +2373,24 @@ echo "\n";
 		//for($i=0;$i<=count($col_csv[1]);$i++) {
 		for($i=0;$i<=count($col[1]);$i++) {
 			// Si on n'affiche pas de coefficient, on ne va pas jusqu'à count($col_csv[1]
-			//if(isset($col_csv[1][$i])) {
-			if(isset($col[1][$i])) {
+
+			$chaine_test="";
+			if(isset($col_csv[1][$i])) {
+				$chaine_test=$col_csv[1][$i];
+			}
+			elseif(isset($col[1][$i])) {
+				$chaine_test=$col[1][$i];
+			}
+
+			if($chaine_test!="") {
 				//echo "\$col_csv[1][$i]=".$col_csv[1][$i]."\n";
 				//$longueur_courante=$pdf->GetStringWidth($col_csv[1][$i]);
-				$longueur_courante=$pdf->GetStringWidth($col[1][$i]);
+				//$longueur_courante=$pdf->GetStringWidth($col[1][$i]);
+				$longueur_courante=$pdf->GetStringWidth($chaine_test);
 				if($longueur_courante>$longueur_max_nom_prenom) {
 					//$texte_test[1]=$col_csv[1][$i];
-					$texte_test[1]=$col[1][$i];
+					//$texte_test[1]=$col[1][$i];
+					$texte_test[1]=$chaine_test;
 					$longueur_max_nom_prenom=$longueur_courante;
 				}
 			}
@@ -2565,6 +2575,7 @@ echo "\n";
 					$texte=" ".$col[$i][$j]." ";
 					//$texte=$col[$i][$j]." ";
 				}
+				//$texte.=$taille_police_col[$i];
 
 				$pdf->SetFont($fonte,$graisse, $taille_police_col[$i]);
 
