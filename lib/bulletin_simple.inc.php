@@ -1051,163 +1051,165 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 	echo "</table>\n";
 	
 	// Les absences
-	
-	echo "<span class='bull_simpl'><b>Absences et retards:</b></span>\n";
-	//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
-	echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary='Absences et retards'>\n";
-	$nb=$periode1;
-	while ($nb < $periode2+1) {
-		//On vérifie si le module est activé
-		if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
-		    $current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
-		    $eleve_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
-		    $eleve_abs_nj[$nb] = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
-		    $eleve_retards[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
-		    $current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-		    $eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-		} else {
-		    // Initialisations files
-		    require_once("../lib/initialisationsPropel.inc.php");
-		    $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
-		    if ($eleve != null) {
-			$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
-			$eleve_abs[$nb] = $eleve->getDemiJourneesAbsenceParPeriode($nb)->count();
-			$eleve_abs_nj[$nb] = $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($nb)->count();
-			$eleve_retards[$nb] = $eleve->getRetardsParPeriode($nb)->count();
-			$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-			$eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-		    }
-		}
-		if (($eleve_abs[$nb] !== '') and ($eleve_abs_nj[$nb] !== '')) {
-			$eleve_abs_j[$nb] = $eleve_abs[$nb]-$eleve_abs_nj[$nb];
-		} else {
-			$eleve_abs_j[$nb] = "?";
-		}
-		if ($eleve_abs_nj[$nb] === '') { $eleve_abs_nj[$nb] = "?"; }
-		if ($eleve_retards[$nb] === '') { $eleve_retards[$nb] = "?";}
-	
-		//====================================
-		// AJOUT: boireaus 20080317
-		if($nb==$periode1) {
-			if($nb==$periode2) {
-				$style_bordure_cell="border: 1px solid black";
-			}
-			else {
-				$style_bordure_cell="border: 1px solid black; border-bottom: 1px dashed black";
-			}
-		}
-		elseif($nb==$periode2) {
-			$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black;";
-		}
-		else {
-			$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
-		}
-		//====================================
-
-		$nb_colspan_abs=0;
-		if(getSettingValue('bull_affiche_abs_tot')=='y') {$nb_colspan_abs++;}
-		if(getSettingValue('bull_affiche_abs_nj')=='y') {$nb_colspan_abs++;}
-		if(getSettingValue('bull_affiche_abs_ret')=='y') {$nb_colspan_abs++;}
-
-		echo "<tr>\n<td valign=top class='bull_simpl' style='$style_bordure_cell'>$nom_periode[$nb]</td>\n";
-		// Test pour savoir si l'élève appartient à la classe pour la période considérée
-		$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
-		if((getSettingValue('bull_affiche_abs_tot')=='y')||(getSettingValue('bull_affiche_abs_nj')=='y')||(getSettingValue('bull_affiche_abs_ret')=='y')) {
-			if ($test_eleve_app != 0) {
-
-				// 20130215
-				if(getSettingValue('bull_affiche_abs_tot')=='y') {
-					if(getSettingValue('bull_affiche_abs_nj')=='y') {
-						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
-						if ($eleve_abs_j[$nb] == "1") {
-							echo "Absences justifiées : une demi-journée";
-						} else if ($eleve_abs_j[$nb] != "0") {
-							echo "Absences justifiées : $eleve_abs_j[$nb] demi-journées";
-						} else {
-							echo "Aucune absence justifiée";
-						}
-						echo "</td>\n";
-
-						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
-						if ($eleve_abs_nj[$nb] == '1') {
-							echo "Absences non justifiées : une demi-journée";
-						} else if ($eleve_abs_nj[$nb] != '0') {
-							echo "Absences non justifiées : $eleve_abs_nj[$nb] demi-journées";
-						} else {
-							echo "Aucune absence non justifiée";
-						}
-						echo "</td>\n";
-					}
-					else {
-						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
-						if ($eleve_abs[$nb]>0) {
-							echo "Nombre de demi-journées : ".$eleve_abs[$nb];
-						} else {
-							echo "Aucune absence";
-						}
-						echo "</td>\n";
-					}
-				}
-				elseif(getSettingValue('bull_affiche_abs_nj')=='y') {
-					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
-					if ($eleve_abs_nj[$nb] == "1") {
-						echo "Absences non-justifiées : une demi-journée";
-					} else if ($eleve_abs_nj[$nb] != "0") {
-						echo "Absences non-justifiées : $eleve_abs_nj[$nb] demi-journées";
-					} else {
-						echo "Aucune absence non-justifiée";
-					}
-					echo "</td>\n";
-				}
-
-				if(getSettingValue('bull_affiche_abs_ret')=='y') {
-					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>Nb. de retards : $eleve_retards[$nb]</td>\n";
-				}
-				echo "</tr>\n";
+	// On ne les affiche que si dans le bulletin HTML, on affiche les absences
+	if(getSettingAOui('bull_affiche_absences')) {
+		echo "<span class='bull_simpl'><b>Absences et retards:</b></span>\n";
+		//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
+		echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary='Absences et retards'>\n";
+		$nb=$periode1;
+		while ($nb < $periode2+1) {
+			//On vérifie si le module est activé
+			if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
+			    $current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
+			    $eleve_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
+			    $eleve_abs_nj[$nb] = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
+			    $eleve_retards[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
+			    $current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+			    $eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
 			} else {
-				if(getSettingValue('bull_affiche_abs_tot')=='y') {
-					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
-				}
-				if(getSettingValue('bull_affiche_abs_nj')=='y') {
-					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
-				}
-				if(getSettingValue('bull_affiche_abs_ret')=='y') {
-					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
-				}
-				echo "</tr>\n";
+			    // Initialisations files
+			    require_once("../lib/initialisationsPropel.inc.php");
+			    $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
+			    if ($eleve != null) {
+				$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
+				$eleve_abs[$nb] = $eleve->getDemiJourneesAbsenceParPeriode($nb)->count();
+				$eleve_abs_nj[$nb] = $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($nb)->count();
+				$eleve_retards[$nb] = $eleve->getRetardsParPeriode($nb)->count();
+				$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+				$eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+			    }
 			}
-		}
-		else {
-			if($nb_colspan_abs>0) {
-				echo "<td colspan='$nb_colspan_abs' valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+			if (($eleve_abs[$nb] !== '') and ($eleve_abs_nj[$nb] !== '')) {
+				$eleve_abs_j[$nb] = $eleve_abs[$nb]-$eleve_abs_nj[$nb];
+			} else {
+				$eleve_abs_j[$nb] = "?";
 			}
-			else {
-				echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
-			}
-			echo "</tr>\n";
-		}
-
-		//Ajout Eric
-		if ($current_eleve_appreciation_absences != "") {
-			if ($test_eleve_app != 0) {
-				echo "<tr>\n";
-				echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>&nbsp;</td>\n";
-				if($nb_colspan_abs>0) {
-					echo "<td valign=top class='bull_simpl' colspan=\"$nb_colspan_abs\" style='text-align:left; $style_bordure_cell'>";
+			if ($eleve_abs_nj[$nb] === '') { $eleve_abs_nj[$nb] = "?"; }
+			if ($eleve_retards[$nb] === '') { $eleve_retards[$nb] = "?";}
+	
+			//====================================
+			// AJOUT: boireaus 20080317
+			if($nb==$periode1) {
+				if($nb==$periode2) {
+					$style_bordure_cell="border: 1px solid black";
 				}
 				else {
-					echo "<td valign=top class='bull_simpl' style='text-align:left; $style_bordure_cell'>";
+					$style_bordure_cell="border: 1px solid black; border-bottom: 1px dashed black";
 				}
-				echo " Observation(s) : $current_eleve_appreciation_absences</td>\n</tr>\n";
-			} else {
-				echo "<tr><td valign=top class='bull_simpl' style='$style_bordure_cell'>&nbsp;</td><td valign=top class='bull_simpl' colspan=\"3\" style='$style_bordure_cell'>-</td>\n</tr>\n";
 			}
+			elseif($nb==$periode2) {
+				$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black;";
+			}
+			else {
+				$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
+			}
+			//====================================
+
+			$nb_colspan_abs=0;
+			if(getSettingValue('bull_affiche_abs_tot')=='y') {$nb_colspan_abs++;}
+			if(getSettingValue('bull_affiche_abs_nj')=='y') {$nb_colspan_abs++;}
+			if(getSettingValue('bull_affiche_abs_ret')=='y') {$nb_colspan_abs++;}
+
+			echo "<tr>\n<td valign=top class='bull_simpl' style='$style_bordure_cell'>$nom_periode[$nb]</td>\n";
+			// Test pour savoir si l'élève appartient à la classe pour la période considérée
+			$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
+			if((getSettingValue('bull_affiche_abs_tot')=='y')||(getSettingValue('bull_affiche_abs_nj')=='y')||(getSettingValue('bull_affiche_abs_ret')=='y')) {
+				if ($test_eleve_app != 0) {
+
+					// 20130215
+					if(getSettingValue('bull_affiche_abs_tot')=='y') {
+						if(getSettingValue('bull_affiche_abs_nj')=='y') {
+							echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
+							if ($eleve_abs_j[$nb] == "1") {
+								echo "Absences justifiées : une demi-journée";
+							} else if ($eleve_abs_j[$nb] != "0") {
+								echo "Absences justifiées : $eleve_abs_j[$nb] demi-journées";
+							} else {
+								echo "Aucune absence justifiée";
+							}
+							echo "</td>\n";
+
+							echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
+							if ($eleve_abs_nj[$nb] == '1') {
+								echo "Absences non justifiées : une demi-journée";
+							} else if ($eleve_abs_nj[$nb] != '0') {
+								echo "Absences non justifiées : $eleve_abs_nj[$nb] demi-journées";
+							} else {
+								echo "Aucune absence non justifiée";
+							}
+							echo "</td>\n";
+						}
+						else {
+							echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
+							if ($eleve_abs[$nb]>0) {
+								echo "Nombre de demi-journées : ".$eleve_abs[$nb];
+							} else {
+								echo "Aucune absence";
+							}
+							echo "</td>\n";
+						}
+					}
+					elseif(getSettingValue('bull_affiche_abs_nj')=='y') {
+						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
+						if ($eleve_abs_nj[$nb] == "1") {
+							echo "Absences non-justifiées : une demi-journée";
+						} else if ($eleve_abs_nj[$nb] != "0") {
+							echo "Absences non-justifiées : $eleve_abs_nj[$nb] demi-journées";
+						} else {
+							echo "Aucune absence non-justifiée";
+						}
+						echo "</td>\n";
+					}
+
+					if(getSettingValue('bull_affiche_abs_ret')=='y') {
+						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>Nb. de retards : $eleve_retards[$nb]</td>\n";
+					}
+					echo "</tr>\n";
+				} else {
+					if(getSettingValue('bull_affiche_abs_tot')=='y') {
+						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+					}
+					if(getSettingValue('bull_affiche_abs_nj')=='y') {
+						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+					}
+					if(getSettingValue('bull_affiche_abs_ret')=='y') {
+						echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+					}
+					echo "</tr>\n";
+				}
+			}
+			else {
+				if($nb_colspan_abs>0) {
+					echo "<td colspan='$nb_colspan_abs' valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+				}
+				else {
+					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n";
+				}
+				echo "</tr>\n";
+			}
+
+			//Ajout Eric
+			if ($current_eleve_appreciation_absences != "") {
+				if ($test_eleve_app != 0) {
+					echo "<tr>\n";
+					echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>&nbsp;</td>\n";
+					if($nb_colspan_abs>0) {
+						echo "<td valign=top class='bull_simpl' colspan=\"$nb_colspan_abs\" style='text-align:left; $style_bordure_cell'>";
+					}
+					else {
+						echo "<td valign=top class='bull_simpl' style='text-align:left; $style_bordure_cell'>";
+					}
+					echo " Observation(s) : $current_eleve_appreciation_absences</td>\n</tr>\n";
+				} else {
+					echo "<tr><td valign=top class='bull_simpl' style='$style_bordure_cell'>&nbsp;</td><td valign=top class='bull_simpl' colspan=\"3\" style='$style_bordure_cell'>-</td>\n</tr>\n";
+				}
+			}
+			$nb++;
 		}
-		$nb++;
+		echo "</table>\n";
 	}
-	echo "</table>\n";
-	
-	
+
+
 	// Maintenant, on met l'avis du conseil de classe :
 	
 	echo "<span class='bull_simpl'><b>Avis du conseil de classe </b> ";
