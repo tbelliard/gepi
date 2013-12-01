@@ -2075,7 +2075,8 @@ if(getSettingAOui('active_bulletins')) {
                           WHERE indice_aid = '".$indice_aid."' and id_utilisateur='".$this->loginUtilisateur."'");
                 $nb_result2 = $call_prof2->num_rows;
                 if (($nb_result1 != 0) or ($nb_result2 != 0)) {
-                  $nom_aid = @mysql_result($call_data, $i, "nom");
+                  //$nom_aid = @mysql_result($call_data, $i, "nom");
+                  $nom_aid = $obj->nom;
                 if ($nb_result2 != 0)
                     $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
                           $nom_aid,
