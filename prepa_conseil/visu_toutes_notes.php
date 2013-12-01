@@ -2291,6 +2291,11 @@ if(isset($_GET['mode'])) {
 
 		// Hauteur par defaut des lignes de tableau:
 		$h_cell=10;
+		// La hauteur de ligne est-elle imposée?
+		// Par défaut, on tente d'utiliser au mieux la hauteur de la page en modifiant $h_cell plus loin.
+		// Il est possible d'interdire la modification
+		// (cela peut servir, en mettant un $h_cell élevé, en DEBUG à forcer l'affichage sur plusieurs pages).
+		$hauteur_ligne_imposee="n";
 
 		// Largeur des colonnes
 		$largeur_col=array();
@@ -2485,7 +2490,9 @@ echo "\n";
 		//$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)-1)));
 		// Il faut ajouter les trois lignes Min/Moy/Max
 		//$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)-1+3)));
-		$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)+3)));
+		if($hauteur_ligne_imposee!="y") {
+			$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)+3)));
+		}
 
 		/*
 		$pdf->SetXY(10, 110);
@@ -2547,6 +2554,9 @@ echo "\n";
 						$x2+=$largeur_dispo;
 					}
 					//===========================
+					// On réinitialise la graisse après la ligne d'entête
+					$graisse='';
+					//===========================
 
 					$x2=$x0;
 					$y2=$y_sous_ligne_titre_tableau_pages_suivantes;
@@ -2603,6 +2613,12 @@ echo "\n";
 }
 
 //**************** EN-TETE *****************
+// Sans $titre_page, on n'affiche pas l'entête, mais on se retrouve alors sans rien dans le titre de la page dans la barre de menu du navigateur
+// Ou plutôt, on se retrouve avec:
+//          : Collège Tartempion
+// $titre_page="";
+// Ajout d'une variable:
+$titre_page_title="Notes des bulletins";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
