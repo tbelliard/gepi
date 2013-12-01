@@ -23,6 +23,7 @@
 require_once("../lib/initialisations.inc.php");
 
 //**************** EN-TETE *****************
+$titre_page_title="Fiche bienvenue";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 $fiche=isset($_POST["fiche"]) ? $_POST["fiche"] : (isset($_GET["fiche"]) ? $_GET["fiche"] : "personnels");
