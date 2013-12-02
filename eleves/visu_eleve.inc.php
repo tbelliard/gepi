@@ -417,7 +417,11 @@ Patientez pendant l'extraction des données... merci.
 		// On ne devrait pas arriver là.
 		echo "<p>L'".$gepiSettings['denomination_eleve']." dont le login serait $ele_login n'est pas dans la table 'eleves'.</p>\n";
 	}
-	else{
+	else {
+		if(getSettingAOui('active_mod_discipline')) {
+			require("../mod_discipline/mod_discipline.lib.php");
+		}
+
 		//================================
 		unset($day);
 		$day = isset($_POST["day"]) ? $_POST["day"] : (isset($_GET["day"]) ? $_GET["day"] : date("d"));
@@ -1190,6 +1194,12 @@ Patientez pendant l'extraction des données... merci.
 		if($onglet!="eleve") {echo " display:none;";}
 		echo "background-color: ".$tab_couleur['eleve']."; ";
 		echo "'>";
+
+		if((getSettingAOui('active_mod_discipline'))&&(acces("/mod_discipline/saisie_incident.php", $_SESSION['statut']))) {
+			//require("../mod_discipline/mod_discipline.lib.php");;
+			echo "<div style='float:right; text-align:center; width: 7em; background-image: url(\"../images/background/opacite50.png\"); border:1px solid black;'><a href='../mod_discipline/saisie_incident.php?ele_login[0]=".$ele_login."&amp;is_posted=y".add_token_in_url()."' title=\"Saisir un nouvel ".$mod_disc_terme_incident." dans le module Discipline\">Saisie<br />".$mod_disc_terme_incident."</a></div>";
+		}
+
 		echo "<h2>Informations sur l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 		//affichage de la date de sortie de l'élève de l'établissement
 		if ($tab_ele['date_sortie']!=0) {
@@ -2857,12 +2867,12 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 				echo "<input type='hidden' name='ele_login[0]' value=\"$ele_login\" />\n";
 				echo "<input type='hidden' name='is_posted' value=\"y\" />\n";
 				echo "<input type='hidden' name='Ajouter' value=\"Ajouter\" />\n";
-				echo "<input type='submit' name='Saisir' value=\"Saisir\" title=\"Saisir un nouvel incident\" />\n";
+				echo "<input type='submit' name='Saisir' value=\"Saisir\" title=\"Saisir un nouvel $mod_disc_terme_incident dans le module Discipline\" />\n";
 				echo "</form>\n";
 				echo "</div>\n";
 			}
 
-			echo "<h2>Incidents \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>".ucfirst($mod_disc_terme_incident)."s \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			//=======================
 			//Configuration du calendrier
