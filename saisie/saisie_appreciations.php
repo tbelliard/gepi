@@ -594,6 +594,8 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+$acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
+
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 
 ?>
@@ -763,6 +765,9 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	// =================================
 }
 
+if($_SESSION['statut']=='professeur') {
+	echo " | <a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
+}
 
 echo "</p>\n";
 if(isset($periode_cn)) {
@@ -1322,6 +1327,7 @@ foreach ($liste_eleves as $eleve_login) {
 			$eleve_note = @mysql_result($note_query, 0, "note");
 			// Formatage de la note
 			$note ="<center>";
+			$note.="<a href='saisie_notes.php?id_groupe=".$current_group["id"]."&amp;periode_cn=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Accéder aux notes du bulletin en période $k\">";
 			if ($eleve_statut != '') {
 				$note .= $eleve_statut;
 			} else {
@@ -1332,6 +1338,7 @@ foreach ($liste_eleves as $eleve_login) {
 					$note .= "&nbsp;";
 				}
 			}
+			$note.="</a>";
 			$note .= "</center>";
 
 			$eleve_login_t[$k] = $eleve_login."_t".$k;
@@ -1603,7 +1610,16 @@ foreach ($liste_eleves as $eleve_login) {
 		echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
 		echo "<th>\n";
 
-		echo "<div align=\"center\"><b><a href='../eleves/visu_eleve.php?ele_login=$eleve_login' target='_blank' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">$eleve_nom $eleve_prenom</a></b>\n";
+		echo "<div align=\"center\"><b>";
+		if($acces_visu_eleve) {
+			echo "<a href='../eleves/visu_eleve.php?ele_login=$eleve_login' target='_blank' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">";
+			echo "$eleve_nom $eleve_prenom";
+			echo "</a>";
+		}
+		else {
+			echo "$eleve_nom $eleve_prenom";
+		}
+		echo "</b>\n";
 
 		//==========================
 		// AJOUT: boireaus 20071115
