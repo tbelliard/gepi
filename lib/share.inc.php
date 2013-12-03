@@ -8959,4 +8959,27 @@ function get_classes_from_user($login_user, $statut) {
 	return $tab;
 }
 
+/** Fonction destinée à tester si un utilisateur est professeur du groupe
+ *
+ * @param string $login Login de l'utilisateur
+ * @param integer $id_groupe Identifiant du groupe
+ *
+ * @return boolean True/False selon que l'utilisateur est ou non prof du groupe
+ */
+function verif_prof_groupe($login,$id_groupe) {
+	if(empty($login) || empty($id_groupe)) {
+		return FALSE;
+		die();
+	}
+
+	$call_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE (id_groupe='".$id_groupe."' and login='" . $login . "')");
+	$nb = mysql_num_rows($call_prof);
+
+	if ($nb != 0) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
 ?>
