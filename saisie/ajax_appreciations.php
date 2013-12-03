@@ -71,6 +71,20 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : "";
 
 // On détermine si les variables envoyées sont bonnes ou pas
 $verif_var1 = explode("_t", $var1);
+if(!preg_match("/_t[0-9]*$/", $var1)) {
+	//echo "var1=$var1 est invalide.<br />";
+	log_ajax_app("var1=$var1 est invalide.");
+	die();
+}
+$login_eleve=preg_replace("/_t[0-9]*$/", "", $var1);
+$num_periode=preg_replace("/^".$login_eleve."_t/","", $var1);
+if(!preg_match("/^[0-9]*$/", $num_periode)) {
+	//echo "Le numéro de période $num_periode extrait de var1=$var1 est invalide.<br />";
+	log_ajax_app("Le numéro de période $num_periode extrait de var1=$var1 est invalide.");
+	die();
+}
+$verif_var1[0]=$login_eleve;
+$verif_var1[1]=$num_periode;
 
 // On vérifie que le login de l'élève soit valable et qu'il corresponde à l'enseignement envoyé par var2
 $temoin_eleve=0;
@@ -88,7 +102,9 @@ if($_SESSION['statut']=='professeur') {
 	// On vérifie que le prof logué peut saisir ces appréciations
 	//$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."'");
 	if($mode!="verif") {
-		$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
+		$sql="SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'";
+		//echo "$sql<br />";
+		$verif_prof = mysql_query($sql);
 		if (mysql_num_rows($verif_prof) >= 1) {
 			// On ne fait rien
 			$temoin_prof=mysql_num_rows($verif_prof);
