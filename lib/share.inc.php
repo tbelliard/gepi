@@ -7807,6 +7807,20 @@ function joueSon($sound, $id_son="") {
 	return $retour;
 }
 
+function acces_exceptionnel_saisie_bull_app_groupe_periode($id_groupe, $num_periode) {
+	global $mysqli;
+	$sql="SELECT 1=1 FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$num_periode' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' AND mode='acces_complet';";
+	//echo "$sql<br />";
+	$test = mysqli_query($mysqli, $sql);
+	if($test->num_rows > 0) {
+		$test->close();
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 function acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $num_periode) {
 	global $mysqli;
 	$sql="SELECT 1=1 FROM acces_exceptionnel_matieres_notes WHERE id_groupe='$id_groupe' AND periode='$num_periode' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."';";
