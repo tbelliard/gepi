@@ -461,7 +461,7 @@ else {
 		echo "</form>\n";
 
 		echo "<br />
-<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Par défaut, lorsque vous donnez un accès exceptionnel, c'est juste la possibilité pour le professeur de proposer des corrections en cliquant sur l'icone <img src='../images/icons/edit16.png' class='icone16' alt='Modifier' /> dans sa page de saisie d'appréciations.<br />Les propositions formulées peuvent ensuite être contrôlées et validées par un compte scolarité ou administrateur.<br />
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Par défaut, lorsque vous donnez un accès exceptionnel, c'est juste la possibilité pour le professeur de proposer des corrections en cliquant sur l'icone <img src='../images/edit16.png' class='icone16' alt='Modifier' /> dans sa page de saisie d'appréciations.<br />Les propositions formulées peuvent ensuite être contrôlées et validées par un compte scolarité ou administrateur.<br />
 		Vous pouvez, en cochant, la case ci-dessus</p>";
 
 /*

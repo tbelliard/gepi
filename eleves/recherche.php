@@ -71,7 +71,7 @@ function extract_utilisateurs($tab_login) {
 			$tab_result_recherche['personnel'][$cpt_pers]['email']=$lig->email;
 			$tab_result_recherche['personnel'][$cpt_pers]['td_email']="";
 			if(check_mail($lig->email)) {
-				$tab_result_recherche['personnel'][$cpt_pers]['td_email']="<a href='mailto:".$lig->email."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI' title='Envoyer un mail à $lig->email'><img src='../images/icons/courrier_envoi.png' class='icon16' alt='Mail' /></a><span id='email_personnel_".$cpt_pers."' style='display:none;'>$lig->email</span>";
+				$tab_result_recherche['personnel'][$cpt_pers]['td_email']="<a href='mailto:".$lig->email."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI' title='Envoyer un mail à $lig->email'><img src='../images/icons/courrier_envoi.png' class='icone16' alt='Mail' /></a><span id='email_personnel_".$cpt_pers."' style='display:none;'>$lig->email</span>";
 			}
 
 			// Compte actif ou non
@@ -354,7 +354,7 @@ if(isset($is_posted_recherche)) {
 					$tab_result_recherche['responsable'][$cpt_resp]['nom_prenom']=casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
 
 					// Le span display none sert dans le tri.
-					$tab_result_recherche['responsable'][$cpt_resp]['td_compte']="<span style='display:none;'>Pas de compte</span><img src='../images/disabled.png' class='icon20' title='Pas de compte' alt='Pas de compte' />";
+					$tab_result_recherche['responsable'][$cpt_resp]['td_compte']="<span style='display:none;'>Pas de compte</span><img src='../images/disabled.png' class='icone20' title='Pas de compte' alt='Pas de compte' />";
 					$tab_result_recherche['responsable'][$cpt_resp]['compte']="";
 					$tab_result_recherche['responsable'][$cpt_resp]['login']="";
 					if($lig->login!="") {
@@ -1014,7 +1014,7 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
              Exemples: (1) Pour rechercher les Mickael, Mickaël et Michael,
                                     il est possible de saisir Mic%ael.
                                (2) La saisie de % comme seul critère permet aussi d'extraire 
-                                    toutes les personnes des catégories choisies."><img src='../images/icons/ico_question_petit.png' class='icon16' alt='Astuce' /></div>
+                                    toutes les personnes des catégories choisies."><img src='../images/icons/ico_question_petit.png' class='icone16' alt='Astuce' /></div>
 		<input type='submit' id='submit_chercher' value='Chercher' />
 		<input type='button' id='button_chercher' value='Chercher' style='display:none' onclick='valider_form_recherche()' />
 	</fieldset>
