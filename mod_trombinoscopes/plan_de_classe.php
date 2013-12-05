@@ -339,6 +339,10 @@ echo "<div style='float:right; width:40px;'>\n";
 	echo "</div\n>";
 echo "</div\n>";
 
+echo "<div style='float:right; width:40px; margin-right:4em;'>\n";
+	echo "<a href='javascript:inverser_plan_classe()' title=\"Inverser le plan : Cette opération est encore en travaux... soyez indulgent;).\">Inverser</a>";
+echo "</div\n>";
+
 echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
 
 echo "<div style='position:absolute; top:0.5em; left:0.5em; width:5em; text-align:center;'>\n";
@@ -464,6 +468,99 @@ echo "<script type='text/javascript'>
 			}
 		}
 	}
+
+
+	function inverser_plan_classe() {
+
+		var x_min=-1;
+		var x_max=-1;
+
+		var y_min=-1;
+		var y_max=-1;
+
+		for(i=0;i<tab_ele.length;i++) {
+			if(document.getElementById('div_'+tab_ele[i])) {
+				x=document.getElementById('div_'+tab_ele[i]).style.left.replace('px','');
+				y=document.getElementById('div_'+tab_ele[i]).style.top.replace('px','');
+
+				if(x_min==-1) {
+					x_min=x;
+				}
+				else {
+					if(x<x_min) {
+						x_min=x;
+					}
+				}
+
+				if(x_max==-1) {
+					x_max=x;
+				}
+				else {
+					if(x>x_max) {
+						x_max=x;
+					}
+				}
+
+				if(y_min==-1) {
+					y_min=y;
+				}
+				else {
+					if(y<y_min) {
+						y_min=y;
+					}
+				}
+
+				if(y_max==-1) {
+					y_max=y;
+				}
+				else {
+					if(y>y_max) {
+						y_max=y;
+					}
+				}
+
+				/*
+				x=document.getElementById('div_'+tab_ele[i]).style.left.replace('px','');
+				x=eval(eval(x)+eval(dx));
+				y=document.getElementById('div_'+tab_ele[i]).style.top.replace('px','');
+				y=eval(eval(y)+eval(dy));
+
+				document.getElementById('div_'+tab_ele[i]).style.left=x+'px';
+				document.getElementById('div_'+tab_ele[i]).style.top=y+'px';
+				*/
+			}
+		}
+		//alert('x_min='+x_min+' x_max='+x_max+' y_min='+y_min+' y_max='+y_max);
+
+		largeur=eval(x_max-x_min);
+		longueur=eval(y_max-y_min);
+
+		for(i=0;i<tab_ele.length;i++) {
+		//for(i=0;i<2;i++) {
+			if(document.getElementById('div_'+tab_ele[i])) {
+
+				//document.getElementById('div_'+tab_ele[i]).style.opacity=0.5;
+
+				x=document.getElementById('div_'+tab_ele[i]).style.left.replace('px','');
+				y=document.getElementById('div_'+tab_ele[i]).style.top.replace('px','');
+
+				x2=eval(x_min)+eval(largeur)-eval(x);
+				y2=eval(y_min)+eval(longueur)-eval(y);
+
+				//alert('x='+x+' et y='+y+'devient x='+x2+' et y='+y2);
+
+				if(x2>0) {
+					document.getElementById('div_'+tab_ele[i]).style.left=x2+'px';
+				}
+				if(y2>0) {
+					document.getElementById('div_'+tab_ele[i]).style.top=y2+'px';
+				}
+
+				//document.getElementById('div_'+tab_ele[i]).style.opacity=1;
+			}
+		}
+	}
+
 
 </script>\n";
 
