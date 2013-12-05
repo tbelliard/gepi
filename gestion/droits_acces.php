@@ -315,7 +315,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='CommentairesTypesPP';
-$texteItem="peut utiliser des commentaires-types dans ces saisies d'avis du conseil de classe
+$texteItem="peut utiliser des commentaires-types dans ses saisies d'avis du conseil de classe
 	  <br />(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
@@ -436,7 +436,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='CommentairesTypesScol';
-$texteItem="peut utiliser des commentaires-types dans ces saisies d'avis du conseil de classe<br />
+$texteItem="peut utiliser des commentaires-types dans ses saisies d'avis du conseil de classe<br />
 			(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
@@ -749,7 +749,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='CommentairesTypesCpe';
-$texteItem="peut utiliser des commentaires-types dans ces saisies d'avis du conseil de classe<br />
+$texteItem="peut utiliser des commentaires-types dans ses saisies d'avis du conseil de classe<br />
 			(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
