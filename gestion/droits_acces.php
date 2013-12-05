@@ -1180,11 +1180,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="CommentairesTypesPP" id="CommentairesTypesPP" value="yes" <?php if (getSettingValue("CommentairesTypesPP")=='yes') echo 'checked="checked"'; ?> onchange='changement();' /></td>
-				<td style='border: 0px;'><label for='CommentairesTypesPP' style='cursor: pointer;'> peut utiliser des commentaires-types dans ces saisies d'avis du conseil de classe<br />(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)</label></td>
+				<td style='border: 0px;'><label for='CommentairesTypesPP' style='cursor: pointer;'> peut utiliser des commentaires-types dans ses saisies d'avis du conseil de classe<br />(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)</label></td>
 			</tr>
 		 */
 $titreItem='CommentairesTypesPP';
-$texteItem="peut utiliser des commentaires-types dans ces saisies d'avis du conseil de classe
+$texteItem="peut utiliser des commentaires-types dans ses saisies d'avis du conseil de classe
 	  <br />(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
@@ -1349,11 +1349,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="CommentairesTypesScol" id="CommentairesTypesScol" value="yes" <?php if (getSettingValue("CommentairesTypesScol")=='yes') echo 'checked="checked"'; ?> onchange='changement();' /></td>
-				<td style='border: 0px;'><label for='CommentairesTypesScol' style='cursor: pointer;'> peut utiliser des commentaires-types dans ces saisies d'avis du conseil de classe<br />(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)</label></td>
+				<td style='border: 0px;'><label for='CommentairesTypesScol' style='cursor: pointer;'> peut utiliser des commentaires-types dans ses saisies d'avis du conseil de classe<br />(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)</label></td>
 			</tr>
 		 */
 $titreItem='CommentairesTypesScol';
-$texteItem="peut utiliser des commentaires-types dans ces saisies d'avis du conseil de classe<br />
+$texteItem="peut utiliser des commentaires-types dans ses saisies d'avis du conseil de classe<br />
 			(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
@@ -1603,7 +1603,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='CommentairesTypesCpe';
-$texteItem="peut utiliser des commentaires-types dans ces saisies d'avis du conseil de classe<br />
+$texteItem="peut utiliser des commentaires-types dans ses saisies d'avis du conseil de classe<br />
 			(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
