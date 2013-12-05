@@ -143,7 +143,8 @@ if ($barre_plugin!="") {
 				$menus .= '            <ul class="niveau3">'."\n";
 				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verif_bulletins.php"'.insert_confirm_abandon().'>Vérif. remplissage bull</a></li>'."\n";
 				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verrouillage.php"'.insert_confirm_abandon().'>Verrouillage périodes</a></li>'."\n";
-				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/autorisation_exceptionnelle_saisie_app.php"'.insert_confirm_abandon().'>Autorisation exceptionnelle de remplissage</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/autorisation_exceptionnelle_saisie_app.php"'.insert_confirm_abandon().'>Autorisation exceptionnelle de remplissage des appréciations</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/autorisation_exceptionnelle_saisie_note.php"'.insert_confirm_abandon().'>Autorisation exceptionnelle de remplissage des notes</a></li>'."\n";
 				$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès resp/ele appréciations</a></li>'."\n";
 				$menus .= '            </ul>'."\n";
 				$menus .= '     </li>'."\n";
@@ -197,6 +198,7 @@ if ($barre_plugin!="") {
 			$menus .= '       <li><a href="'.$gepiPath.'/cahier_notes/index2.php"'.insert_confirm_abandon().' title="Consulter le tableau des moyennes des Carnets de notes pour une classe en particulier.
 Ces moyennes sont des moyennes à un instant T.
 Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,... par les professeurs.">Moyennes des CN</a></li>'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/cahier_notes/autorisation_exceptionnelle_saisie.php"'.insert_confirm_abandon().'>Autorisation exceptionnelle de saisie de notes</a></li>'."\n";
 			$menus .= '   </ul>'."\n";
 			$menus .= '</li>'."\n";
 			//=======================================================
