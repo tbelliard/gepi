@@ -2479,9 +2479,10 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$tabdiv_infobulle[]=creer_div_infobulle('saisie_avis',$titre,"",$texte,"",35,0,'y','y','n','n');
 						}
 						else {
-							$texte_saisie_avis_fixe="<div style='border:1px solid black;'>\n";
+							//$texte_saisie_avis_fixe="<div style='border:1px solid black;'>\n";
+							$texte_saisie_avis_fixe="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+							$texte_saisie_avis_fixe.="<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
 							$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil</p>\n";
-							$texte_saisie_avis_fixe.="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
 							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
@@ -2498,25 +2499,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							if(test_existence_mentions_classe($id_classe)) {
 								$texte_saisie_avis_fixe.="<br/>\n";
 								$texte_saisie_avis_fixe.=ucfirst($gepi_denom_mention)." : ";
-	
 								$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
-								/*
-								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
-								$selectedF="";
-								$selectedM="";
-								$selectedE="";
-								$selectedB="";
-								if($current_eleve_mention=='F') {$selectedF=" selected";}
-								else if($current_eleve_mention=='M') {$selectedM=" selected";}
-								else if($current_eleve_mention=='E') {$selectedE=" selected";}
-								else {$selectedB=" selected";}
-								$texte_saisie_avis_fixe.="<select name='current_eleve_login_me2'>\n";
-								$texte_saisie_avis_fixe.="<option value='B'$selectedB> </option>\n";
-								$texte_saisie_avis_fixe.="<option value='E'$selectedE>Encouragements</option>\n";
-								$texte_saisie_avis_fixe.="<option value='M'$selectedM>Mention honorable</option>\n";
-								$texte_saisie_avis_fixe.="<option value='F'$selectedF>Félicitations</option>\n";
-								$texte_saisie_avis_fixe.="</select>\n";
-								*/
 								$texte_saisie_avis_fixe.="<br/>\n";
 							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
@@ -2541,8 +2524,9 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 
 
 							$texte_saisie_avis_fixe.="</div>\n";
+							$texte_saisie_avis_fixe.="</fieldset>\n";
 							$texte_saisie_avis_fixe.="</form>\n";
-							$texte_saisie_avis_fixe.="</div>\n";
+							//$texte_saisie_avis_fixe.="</div>\n";
 						}
 					}
 				}
@@ -2638,25 +2622,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							if(test_existence_mentions_classe($id_classe)) {
 								$texte.="<br/>\n";
 								$texte.=ucfirst($gepi_denom_mention)." : ";
-	
 								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
-								/*
-								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
-								$selectedF="";
-								$selectedM="";
-								$selectedE="";
-								$selectedB="";
-								if($current_eleve_mention=='F') {$selectedF=" selected";}
-								else if($current_eleve_mention=='M') {$selectedM=" selected";}
-								else if($current_eleve_mention=='E') {$selectedE=" selected";}
-								else {$selectedB=" selected";}
-								$texte.="<select name='current_eleve_login_me2'>\n";
-								$texte.="<option value='B'$selectedB> </option>\n";
-								$texte.="<option value='E'$selectedE>Encouragements</option>\n";
-								$texte.="<option value='M'$selectedM>Mention honorable</option>\n";
-								$texte.="<option value='F'$selectedF>Félicitations</option>\n";
-								$texte.="</select>\n";
-								*/
 								$texte.="<br/>\n";
 							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
@@ -2684,9 +2650,10 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$tabdiv_infobulle[]=creer_div_infobulle('saisie_avis',$titre,"",$texte,"",35,0,'y','y','n','n');
 						}
 						else {
-							$texte_saisie_avis_fixe="<div style='border:1px solid black;'>\n";
+							//$texte_saisie_avis_fixe="<div style='border:1px solid black;'>\n";
+							$texte_saisie_avis_fixe="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+							$texte_saisie_avis_fixe.="<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
 							$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil: $lig_per->nom_periode</p>\n";
-							$texte_saisie_avis_fixe.="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
 							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
@@ -2698,25 +2665,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							if(test_existence_mentions_classe($id_classe)) {
 								$texte_saisie_avis_fixe.="<br/>\n";
 								$texte_saisie_avis_fixe.=ucfirst($gepi_denom_mention)." : ";
-	
 								$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
-								/*
-								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
-								$selectedF="";
-								$selectedM="";
-								$selectedE="";
-								$selectedB="";
-								if($current_eleve_mention=='F') {$selectedF=" selected";}
-								else if($current_eleve_mention=='M') {$selectedM=" selected";}
-								else if($current_eleve_mention=='E') {$selectedE=" selected";}
-								else {$selectedB=" selected";}
-								$texte_saisie_avis_fixe.="<select name='current_eleve_login_me2'>\n";
-								$texte_saisie_avis_fixe.="<option value='B'$selectedB> </option>\n";
-								$texte_saisie_avis_fixe.="<option value='E'$selectedE>Encouragements</option>\n";
-								$texte_saisie_avis_fixe.="<option value='M'$selectedM>Mention honorable</option>\n";
-								$texte_saisie_avis_fixe.="<option value='F'$selectedF>Félicitations</option>\n";
-								$texte_saisie_avis_fixe.="</select>\n";
-								*/
 								$texte_saisie_avis_fixe.="<br/>\n";
 							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
@@ -2740,8 +2689,9 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							}
 
 							$texte_saisie_avis_fixe.="</div>\n";
+							$texte_saisie_avis_fixe.="</fieldset>\n";
 							$texte_saisie_avis_fixe.="</form>\n";
-							$texte_saisie_avis_fixe.="</div>\n";
+							//$texte_saisie_avis_fixe.="</div>\n";
 						}
 					}
 				}
@@ -3078,7 +3028,8 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 								$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'y','y','n','n');
 							}
 							else{
-								$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+								//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+								$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'n','y','n','n');
 							}
 
 							$tab_imagemap_commentaire_present[]=$cpt;
@@ -3169,7 +3120,8 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 						$texte_bulle.="</div>\n";
 						//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
-						$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+						//$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+						$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','y','n','n');
 
 						$temoin_avis_present="y";
 					}
@@ -3963,7 +3915,8 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 						$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$i,$titre_bulle,"",$texte_bulle,"",20,0,'y','y','n','n');
 					}
 					else{
-						$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$i,$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+						//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$i,$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+						$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$i,$titre_bulle,"",$texte_bulle,"",20,0,'n','y','n','n');
 					}
 					//$tab_imagemap_commentaire_present[]=$i;
 				}
@@ -4030,7 +3983,8 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 				$texte_bulle.="</table>\n";
 
 				//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
-				$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+				//$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','y','n','n');
 
 				//==========================================================
 				// COMMENTé ET REMONTé: boireaus 20080218

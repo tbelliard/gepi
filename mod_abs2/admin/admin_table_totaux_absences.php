@@ -176,11 +176,11 @@ if(isset($_POST['is_posted'])) {
 						$reg=mysql_query($sql);
 						if(!$reg) {
 							echo "
-			<td><img src='../../images/disabled.png' class='icon16' alt='Echec' title=\"Echec de l'enregistrement\"/></td>";
+			<td><img src='../../images/disabled.png' class='icone16' alt='Echec' title=\"Echec de l'enregistrement\"/></td>";
 						}
 						else {
 							echo "
-			<td><img src='../../images/enabled.png' class='icon16' alt='Succès' title=\"Succès de l'enregistrement\"/></td>";
+			<td><img src='../../images/enabled.png' class='icone16' alt='Succès' title=\"Succès de l'enregistrement\"/></td>";
 						}
 
 						echo "

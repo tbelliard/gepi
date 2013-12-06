@@ -237,7 +237,7 @@
 				<?php foreach ($afficheAccueil->message as $value) : ?>
 				<div class="postit"><?php
 					if(acces("/messagerie/index.php", $_SESSION['statut'])) {
-						echo "<div style='float:right; width:16' title=\"Éditer/modifier le message.\"><a href='$gepiPath/messagerie/index.php?id_mess=".$value['id']."'><img src='images/edit16.png' class='icon16' /></a></div>";
+						echo "<div style='float:right; width:16' title=\"Éditer/modifier le message.\"><a href='$gepiPath/messagerie/index.php?id_mess=".$value['id']."'><img src='images/edit16.png' class='icone16' /></a></div>";
 					}
 					echo $value['message'];
 				?></div>

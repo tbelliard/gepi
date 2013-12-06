@@ -2523,7 +2523,7 @@ Patientez pendant l'extraction des données... merci.
 			//++++++++++++++++++++++++++++++
 			echo "<div id='lien_mail' style='text-align:right; display:none'><a href=\"javascript:afficher_div('div_envoi_cdt_par_mail','y',10,10)\" title=\"Envoyer par mail *la semaine affichée* du cahier de textes
 (par exemple pour envoyer à un parent d'élève qui a oublié ses compte et mot de passe).
-Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consultation des cahiers de textes.\"><img src='../images/icons/courrier_envoi.png' class='icon16' alt='Mail' /></a></div>
+Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consultation des cahiers de textes.\"><img src='../images/icons/courrier_envoi.png' class='icone16' alt='Mail' /></a></div>
 			<script type='text/javascript'>document.getElementById('lien_mail').style.display=''</script>\n";
 			//echo "</div>\n";
 

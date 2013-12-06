@@ -294,7 +294,13 @@ if (isset($id_classe)) {
 // Première étape : la classe est définie, on definit la période
 if (isset($id_classe) and (!isset($periode_num))) {
 	$classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
-	echo "<p class=bold><a href=\"saisie_avis.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a></p>\n";
+	echo "<p class=bold><a href=\"saisie_avis.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a>";
+	if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
+	(($_SESSION['statut']=='scolarite')&&(getSettingAOui('CommentairesTypesScol')))||
+	(($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesCpe')))) {
+		echo " | <a href='commentaires_types.php'>Saisie de commentaires-types</a>";
+	}
+	echo "</p>\n";
 	echo "<p><b>".$classe_suivi.", choisissez la période : </b></p>\n";
 	include "../lib/periodes.inc.php";
 	$i="1";
@@ -452,6 +458,13 @@ if(isset($id_class_suiv)){
 if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
 	echo "| <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$periode_num'>Impression PDF des avis</a>";
 }
+
+if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('CommentairesTypesScol')))||
+(($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesCpe')))) {
+	echo " | <a href='commentaires_types.php'>Saisie de commentaires-types</a>";
+}
+
 echo "</p>\n";
 
 echo "</form>\n";
@@ -623,7 +636,13 @@ echo "</form>\n";
 
 if (isset($fiche)) {
 
-	echo "<p><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></p>\n";
+	echo "<p><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>";
+	if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
+	(($_SESSION['statut']=='scolarite')&&(getSettingAOui('CommentairesTypesScol')))||
+	(($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesCpe')))) {
+		echo " | <a href='commentaires_types.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie de commentaires-types</a>";
+	}
+	echo "</p>\n";
 
 
 /*

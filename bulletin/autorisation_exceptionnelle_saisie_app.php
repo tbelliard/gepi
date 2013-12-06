@@ -47,6 +47,7 @@ $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_c
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 $periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
 $is_posted=isset($_POST['is_posted']) ? $_POST['is_posted'] : (isset($_GET['is_posted']) ? $_GET['is_posted'] : NULL);
+$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
 $display_date_limite=isset($_POST['display_date_limite']) ? $_POST['display_date_limite'] : (isset($_GET['display_date_limite']) ? $_GET['display_date_limite'] : NULL);
 $display_heure_limite=isset($_POST['display_heure_limite']) ? $_POST['display_heure_limite'] : (isset($_GET['display_heure_limite']) ? $_GET['display_heure_limite'] : NULL);
@@ -56,6 +57,11 @@ $refermer_page=isset($_POST['refermer_page']) ? $_POST['refermer_page'] : (isset
 
 
 $msg="";
+
+if((isset($mode))&&(!in_array($mode, array('proposition', 'acces_complet')))) {
+	$msg.="Mode invalide.<br />";
+	unset($mode);
+}
 
 if((isset($is_posted))&&(isset($_POST['no_anti_inject_message_autorisation_exceptionnelle']))&&($_SESSION['statut']=='administrateur')) {
 	check_token();
@@ -103,7 +109,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 					$res=mysql_query($sql);
 
 					$date_limite_email="$annee/$mois/$jour à $heure:$minute";
-					$sql="INSERT INTO matieres_app_delais SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00';";
+					$sql="INSERT INTO matieres_app_delais SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00', mode='$mode';";
 					$res=mysql_query($sql);
 					if(!$res) {
 						$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";
@@ -437,12 +443,26 @@ else {
 		echo img_calendrier_js("display_date_limite", "img_bouton_display_date_limite");
 
 		echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" autocomplete=\"off\" />\n";
+		echo "<br />";
+
+		echo "<input type='radio' name='mode' id='mode_proposition' value='proposition' checked /><label for='mode_proposition'> Permettre la proposition de corrections (<em>proposition qui devront ensuite être validées par un compte scolarité ou administrateur</em>).</label>\n";
+		echo "<br />";
+		if(getSettingAOui('autoriser_correction_bulletin')) {
+			echo "<span style='color:red'>Ce premier mode ne présente pas d'intérêt ici puisque vous avez donné globalement le droit (<em>en administrateur dans Gestion générale/Droits d'accès</em>) de proposer des corrections tant que la période n'est pas complètement close</span>.<br /><span style='color:red'>Seul le mode ci-dessous apporte quelque chose dans votre configuration.</span><br />";
+		}
+		echo "<input type='radio' name='mode' id='mode_acces_complet' value='acces_complet' /><label for='mode_acces_complet'> Permettre la saisie/modification des appréciations sans contrôle de votre part avant validation.</label>\n";
+		echo "<br />";
+
 		echo "<input type='submit' name='Valider' value='Valider' />\n";
 		echo "</p>\n";
 	
 		// Mail
-	
+
 		echo "</form>\n";
+
+		echo "<br />
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Par défaut, lorsque vous donnez un accès exceptionnel, c'est juste la possibilité pour le professeur de proposer des corrections en cliquant sur l'icone <img src='../images/edit16.png' class='icone16' alt='Modifier' /> dans sa page de saisie d'appréciations.<br />Les propositions formulées peuvent ensuite être contrôlées et validées par un compte scolarité ou administrateur.<br />
+		Vous pouvez, en cochant, la case ci-dessus</p>";
 
 /*
 	}

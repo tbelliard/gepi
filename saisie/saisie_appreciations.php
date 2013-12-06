@@ -90,6 +90,14 @@ if (isset($_POST['is_posted'])) {
 		$log_eleve=isset($_POST['log_eleve_'.$k]) ? $_POST['log_eleve_'.$k] : NULL;
 		//=========================
 
+		// 20131204
+		$acces_exceptionnel_complet="n";
+		$sql="SELECT 1=1 FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$k' AND mode='acces_complet' AND UNIX_TIMESTAMP(date_limite)>'".time()."';";
+		$test_acces_exceptionnel=mysql_query($sql);
+		if(mysql_num_rows($test_acces_exceptionnel)>0) {
+			$acces_exceptionnel_complet="y";
+		}
+
 		//=================================================
 		// AJOUT: boireaus 20080201
 		if(isset($_POST['app_grp_'.$k])){
@@ -150,7 +158,8 @@ if (isset($_POST['is_posted'])) {
 						$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
 						//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
 						if(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="N")||
-							(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]!="O")&&($_SESSION['statut']=='secours'))) {
+							(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]!="O")&&($_SESSION['statut']=='secours'))||
+							(($acces_exceptionnel_complet=="y")&&($_SESSION['statut']=='professeur'))) {
 
 							$nom_log = "app_eleve_".$k."_".$i;
 
@@ -225,20 +234,23 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 	// On n'utilise le dispositif que pour des périodes partiellement closes
 	if($ver_periode[$correction_periode]=='P') {
 
+		$mode_app="proposition";
 		$autorisation_exceptionnelle_de_saisie='n';
-		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$correction_periode';";
+		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite, mode FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$correction_periode';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
 			$lig=mysql_fetch_object($res);
 			$date_limite=$lig->date_limite;
 	
 			$date_courante=time();
-	
+
 			if($date_courante<$date_limite) {
 				$autorisation_exceptionnelle_de_saisie='y';
 			}
+
+			$mode_app="acces_complet";
 		}
-	
+
 		$saisie_valide='n';
 
 		if(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y') {
@@ -294,116 +306,125 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 						$msg.="L'élève $correction_nom_prenom_eleve n'est pas associé au groupe n°$id_groupe pour la période $correction_periode.<br />";
 					}
 					else {
-		
-						$sql="SELECT * FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-						$test_correction=mysql_query($sql);
-						$test=mysql_num_rows($test_correction);
-						if ($test!="0") {
-							if ($app!="") {
-								$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-								$register=mysql_query($sql);
-								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
-								else {
-									$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
-									$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
-								}
-							} else {
-								$sql="DELETE FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-								$register=mysql_query($sql);
-								if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
-								else {
-									$msg.="Suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectuée.<br />";
-									$texte_mail.="Suppression de la proposition de correction pour l'élève $correction_nom_prenom_eleve\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\n";
-								}
-							}
-				
+
+						// 20131204
+						if($mode_app=="acces_complet") {
+							// On valide la saisie
+
+
+
 						}
 						else {
-							if ($app != "") {
-								$sql="INSERT INTO matieres_app_corrections SET login='$correction_login_eleve', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
-								$register=mysql_query($sql);
-								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";}
-								else {
-									$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
-									$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
-								}
-							}
-						}
-				
-						if($texte_mail!="") {
-				
-							$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-							if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-								$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
-							}
-				
-							if($envoi_mail_actif=='y') {
-								$email_destinataires="";
-
-								$sql="SELECT id_classe FROM j_eleves_classes WHERE (login='$correction_login_eleve' AND periode='$correction_periode');";
-								$req=mysql_query($sql);
-								if(mysql_num_rows($req)>0) {
-									$correction_id_classe=mysql_result($req,0,"id_classe");
-									$sql="(SELECT DISTINCT email FROM utilisateurs WHERE statut='secours' AND email!='')
-									UNION (SELECT DISTINCT email FROM utilisateurs u, j_scol_classes jsc WHERE u.login=jsc.login AND id_classe='$correction_id_classe');";
-								}
-								else {
-									//$sql="select email from utilisateurs where statut='secours' AND email!='';";
-									$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
-								}
-								//echo "$sql<br />";
-								$req=mysql_query($sql);
-								if(mysql_num_rows($req)>0) {
-									$lig_u=mysql_fetch_object($req);
-									$email_destinataires=$lig_u->email;
-									while($lig_u=mysql_fetch_object($req)) {
-										$email_destinataires=", ".$lig_u->email;
+							$sql="SELECT * FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+							$test_correction=mysql_query($sql);
+							$test=mysql_num_rows($test_correction);
+							if ($test!="0") {
+								if ($app!="") {
+									$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+									$register=mysql_query($sql);
+									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
+									else {
+										$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
+										$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
 									}
+								} else {
+									$sql="DELETE FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+									$register=mysql_query($sql);
+									if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
+									else {
+										$msg.="Suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectuée.<br />";
+										$texte_mail.="Suppression de la proposition de correction pour l'élève $correction_nom_prenom_eleve\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\n";
+									}
+								}
 				
-									$email_declarant="";
-									$nom_declarant="";
-									$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
+							}
+							else {
+								if ($app != "") {
+									$sql="INSERT INTO matieres_app_corrections SET login='$correction_login_eleve', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
+									$register=mysql_query($sql);
+									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";}
+									else {
+										$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
+										$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+									}
+								}
+							}
+				
+							if($texte_mail!="") {
+				
+								$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+								if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+									$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+								}
+				
+								if($envoi_mail_actif=='y') {
+									$email_destinataires="";
+
+									$sql="SELECT id_classe FROM j_eleves_classes WHERE (login='$correction_login_eleve' AND periode='$correction_periode');";
 									$req=mysql_query($sql);
 									if(mysql_num_rows($req)>0) {
-										$lig_u=mysql_fetch_object($req);
-										$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
-										$email_declarant=$lig_u->email;
+										$correction_id_classe=mysql_result($req,0,"id_classe");
+										$sql="(SELECT DISTINCT email FROM utilisateurs WHERE statut='secours' AND email!='')
+										UNION (SELECT DISTINCT email FROM utilisateurs u, j_scol_classes jsc WHERE u.login=jsc.login AND id_classe='$correction_id_classe');";
 									}
-				
-									$email_autres_profs_grp="";
-									// Recherche des autres profs du groupe
-									$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
+									else {
+										//$sql="select email from utilisateurs where statut='secours' AND email!='';";
+										$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
+									}
 									//echo "$sql<br />";
 									$req=mysql_query($sql);
 									if(mysql_num_rows($req)>0) {
 										$lig_u=mysql_fetch_object($req);
-										$email_autres_profs_grp.=$lig_u->email;
-										while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
-									}
-				
-									$sujet_mail="Demande de validation de correction d'appréciation";
-						
-									$ajout_header="";
-									if($email_declarant!="") {
-										$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
-										if($email_autres_profs_grp!='') {
-											$ajout_header.=", $email_autres_profs_grp";
+										$email_destinataires=$lig_u->email;
+										while($lig_u=mysql_fetch_object($req)) {
+											$email_destinataires=", ".$lig_u->email;
 										}
-										$ajout_header.="\r\n";
-										$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
 				
-									}
-									elseif($email_autres_profs_grp!='') {
-										$ajout_header.="Cc: $email_autres_profs_grp\r\n";
-									}
+										$email_declarant="";
+										$nom_declarant="";
+										$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
+										$req=mysql_query($sql);
+										if(mysql_num_rows($req)>0) {
+											$lig_u=mysql_fetch_object($req);
+											$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
+											$email_declarant=$lig_u->email;
+										}
+				
+										$email_autres_profs_grp="";
+										// Recherche des autres profs du groupe
+										$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
+										//echo "$sql<br />";
+										$req=mysql_query($sql);
+										if(mysql_num_rows($req)>0) {
+											$lig_u=mysql_fetch_object($req);
+											$email_autres_profs_grp.=$lig_u->email;
+											while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
+										}
+				
+										$sujet_mail="Demande de validation de correction d'appréciation";
+						
+										$ajout_header="";
+										if($email_declarant!="") {
+											$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
+											if($email_autres_profs_grp!='') {
+												$ajout_header.=", $email_autres_profs_grp";
+											}
+											$ajout_header.="\r\n";
+											$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
+				
+										}
+										elseif($email_autres_profs_grp!='') {
+											$ajout_header.="Cc: $email_autres_profs_grp\r\n";
+										}
 		
-									$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
-									$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
+										$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
+										$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
 		
-									$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
-								}
-								else {
-									$msg.="Aucun compte scolarité avec adresse mail n'est associé à cet(te) élève.<br />Pas de compte secours avec adresse mail non plus.<br />La correction a été soumise, mais elle n'a pas fait l'objet d'un envoi de mail.<br />";
+										$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
+									}
+									else {
+										$msg.="Aucun compte scolarité avec adresse mail n'est associé à cet(te) élève.<br />Pas de compte secours avec adresse mail non plus.<br />La correction a été soumise, mais elle n'a pas fait l'objet d'un envoi de mail.<br />";
+									}
 								}
 							}
 						}
@@ -594,6 +615,8 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+$acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
+
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 
 ?>
@@ -604,7 +627,6 @@ change = 'no';
 <?php
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
-
 
 $proposer_liens_enregistrement="n";
 $i=1;
@@ -631,6 +653,40 @@ while ($i < $nb_periode) {
 	}
 	$i++;
 }
+
+//=====================================
+// Tableau pour les autorisations exceptionnelles de saisie
+// Il n'est pris en compte comme le getSettingValue('autoriser_correction_bulletin' que pour une période partiellement close
+$une_autorisation_exceptionnelle_de_saisie_au_moins='n';
+$tab_autorisation_exceptionnelle_de_saisie=array();
+$date_courante=time();
+//echo "\$id_groupe=$id_groupe<br />";
+//echo "\$date_courante=$date_courante<br />";
+$k=1;
+while ($k < $nb_periode) {
+	$tab_autorisation_exceptionnelle_de_saisie[$k]='n';
+	$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite, mode FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$k';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		$date_limite=$lig->date_limite;
+		// 20131204
+		//echo "\$date_limite=$date_limite en période $k.<br />";
+		//echo "\$date_courante=$date_courante.<br />";
+
+		if($date_courante<$date_limite) {
+			$tab_autorisation_exceptionnelle_de_saisie[$k]='y';
+			if($lig->mode=='acces_complet') {
+				$tab_autorisation_exceptionnelle_de_saisie[$k]='yy';
+				$proposer_liens_enregistrement="y";
+			}
+			$une_autorisation_exceptionnelle_de_saisie_au_moins='y';
+		}
+	}
+	//echo "\$tab_autorisation_exceptionnelle_de_saisie[$k]=".$tab_autorisation_exceptionnelle_de_saisie[$k]."<br />";
+	$k++;
+}
+//=====================================
 
 
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form1' method=\"post\">\n";
@@ -763,6 +819,9 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	// =================================
 }
 
+if($_SESSION['statut']=='professeur') {
+	echo " | <a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
+}
 
 echo "</p>\n";
 if(isset($periode_cn)) {
@@ -965,6 +1024,7 @@ $cpt_correction=0;
 //=================================
 
 //=================================
+/*
 // Tableau pour les autorisations exceptionnelles de saisie
 // Il n'est pris en compte comme le getSettingValue('autoriser_correction_bulletin' que pour une période partiellement close
 $une_autorisation_exceptionnelle_de_saisie_au_moins='n';
@@ -975,21 +1035,27 @@ $date_courante=time();
 $k=1;
 while ($k < $nb_periode) {
 	$tab_autorisation_exceptionnelle_de_saisie[$k]='n';
-	$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$k';";
+	$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite, mode FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$k';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		$lig=mysql_fetch_object($res);
 		$date_limite=$lig->date_limite;
-		//echo "\$date_limite=$date_limite en période $k.<br />";
+		// 20131204
+		echo "\$date_limite=$date_limite en période $k.<br />";
+		echo "\$date_courante=$date_courante.<br />";
 
 		if($date_courante<$date_limite) {
 			$tab_autorisation_exceptionnelle_de_saisie[$k]='y';
+			if($lig->mode=='acces_complet') {
+				$tab_autorisation_exceptionnelle_de_saisie[$k]='yy';
+			}
 			$une_autorisation_exceptionnelle_de_saisie_au_moins='y';
 		}
 	}
-	//echo "\$tab_autorisation_exceptionnelle_de_saisie[$k]=".$tab_autorisation_exceptionnelle_de_saisie[$k]."<br />";
+	echo "\$tab_autorisation_exceptionnelle_de_saisie[$k]=".$tab_autorisation_exceptionnelle_de_saisie[$k]."<br />";
 	$k++;
 }
+*/
 //=================================
 
 //=================================
@@ -1322,6 +1388,7 @@ foreach ($liste_eleves as $eleve_login) {
 			$eleve_note = @mysql_result($note_query, 0, "note");
 			// Formatage de la note
 			$note ="<center>";
+			$note.="<a href='saisie_notes.php?id_groupe=".$current_group["id"]."&amp;periode_cn=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Accéder aux notes du bulletin en période $k\">";
 			if ($eleve_statut != '') {
 				$note .= $eleve_statut;
 			} else {
@@ -1332,12 +1399,20 @@ foreach ($liste_eleves as $eleve_login) {
 					$note .= "&nbsp;";
 				}
 			}
+			$note.="</a>";
 			$note .= "</center>";
+
+			// 20131204
+			$acces_exceptionnel_complet="n";
+			if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")&&($tab_autorisation_exceptionnelle_de_saisie[$k]=='yy')) {
+				$acces_exceptionnel_complet="y";
+			}
 
 			$eleve_login_t[$k] = $eleve_login."_t".$k;
 			//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N") {
-			if ((($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]!="N")&&($_SESSION['statut']!='secours'))||
-				(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="O")&&($_SESSION['statut']=='secours'))) {
+			if (($acces_exceptionnel_complet=="n")&&
+				((($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]!="N")&&($_SESSION['statut']!='secours'))||
+				(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="O")&&($_SESSION['statut']=='secours')))) {
 
 				//
 				// si la période est verrouillée
@@ -1603,7 +1678,16 @@ foreach ($liste_eleves as $eleve_login) {
 		echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
 		echo "<th>\n";
 
-		echo "<div align=\"center\"><b><a href='../eleves/visu_eleve.php?ele_login=$eleve_login' target='_blank' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">$eleve_nom $eleve_prenom</a></b>\n";
+		echo "<div align=\"center\"><b>";
+		if($acces_visu_eleve) {
+			echo "<a href='../eleves/visu_eleve.php?ele_login=$eleve_login' target='_blank' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">";
+			echo "$eleve_nom $eleve_prenom";
+			echo "</a>";
+		}
+		else {
+			echo "$eleve_nom $eleve_prenom";
+		}
+		echo "</b>\n";
 
 		//==========================
 		// AJOUT: boireaus 20071115
