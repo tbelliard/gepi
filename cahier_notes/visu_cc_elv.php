@@ -51,7 +51,7 @@ function connectMysqli ($dbHost, $dbUser, $dbPass, $dbDb) {
 }
 
 // ***** Ouverture d'une liaison à la base en utilisant mysqli *****
-$mysqli = connectMysqli ($dbHost, $dbUser, $dbPass, $dbDb);
+// $mysqli = connectMysqli ($dbHost, $dbUser, $dbPass, $dbDb);
 
 // ***** En attendant la gestion des droits par les mises à jours *****
 
