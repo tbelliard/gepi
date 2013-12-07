@@ -478,6 +478,10 @@ if(getSettingValue('eleves_index_debug_var')=='y') {
 		document.getElementById('quelles_classes_rech_no_gep').checked=true;
 		verif2();
 	}
+	function verif8(){
+		document.getElementById('quelles_classes_rech_mef').checked=true;
+		verif2();
+	}
 </script>
 
 <?php
@@ -776,7 +780,7 @@ if (!isset($quelles_classes)) {
 		echo "<td>\n";
 		//echo "<label for='' style='cursor: pointer;'>\n";
 		echo "<span class='norme'>Elève dont le MEF est ";
-		echo "<select name='motif_rech_mef' onchange='verif7()'>
+		echo "<select name='motif_rech_mef' onchange='verif8()'>
 		<option value='' title=\"Par non référencée, il est entendu que le code MEF n'est pas dans la liste des MEF identifiés.
 Mettre à jour votre table mef peut être une solution.\">Vide ou non référencée</option>";
 		$sql="SELECT * FROM mef ORDER BY libelle_court, libelle_edition, libelle_long;";
