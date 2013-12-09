@@ -5550,7 +5550,7 @@ function champ_select_mention($nom_champ_select,$id_classe,$id_mention_selected=
 	if(($id_mention_selected=="")||(!array_key_exists($id_mention_selected,$tab_mentions))) {
 		$retour.=" selected='selected'";
 	}
-	$retour.="> </option>\n";
+	$retour.=" title=\"Aucune mention\"> --- </option>\n";
 	foreach($tab_mentions as $key => $value) {
 		$retour.="<option value='$key'";
 		if($id_mention_selected==$key) {
