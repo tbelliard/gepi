@@ -839,8 +839,9 @@ Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhai
 								echo " onclick=\"signaler_une_faute('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb') ;return false;\"";
 							}
 							echo " title=\"Signaler une faute de frappe, d'orthographe ou autre...
-	Si vous vous apercevez que ce collègue a fait une erreur, vous pouvez lui envoyer un mail pour l'alerter.
-	Ce lien est là pour ça.\"><img src='../images/icons/mail.png' width='16' height='16' alt='Signaler un problème/faute par mail' /></a>";
+Si vous vous apercevez que ce collègue a fait une erreur,
+vous pouvez lui envoyer un mail pour l'alerter.
+Ce lien est là pour ça.\"><img src='../images/icons/mail.png' width='16' height='16' alt='Signaler un problème/faute par mail' /></a>";
 
 							echo "<span id='signalement_effectue_".$current_id_eleve."_".$current_group['id']."_$nb'></span>";
 						}
@@ -1298,7 +1299,7 @@ Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhai
 		
 		echo "<tr>\n<td valign=\"top\" width =\"$larg_col1\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>$nom_periode[$nb]</td>\n";
 		
-		echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>$current_eleve_avis[$nb]";
+		echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl' style='text-align:left; $style_bordure_cell' title=\"Avis du conseil de classe en période n°$nb pour ".$current_eleve_prenom." ".$current_eleve_nom."\">$current_eleve_avis[$nb]";
 
 		// Ajouter par la suite une option pour faire apparaître les mentions même si c'est "-"
 		//if(($current_eleve_mention[$nb]=="F")||($current_eleve_mention[$nb]=="M")||($current_eleve_mention[$nb]=="E")) {
