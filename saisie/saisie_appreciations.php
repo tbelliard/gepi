@@ -2029,6 +2029,8 @@ function affiche_div_correction(eleve_login,num_periode,num_eleve) {
 	document.getElementById('correction_app_eleve').value=document.getElementById('reserve_correction_app_eleve_'+num_eleve).value;
 	afficher_div('div_correction','y',-100,20)
 
+	document.getElementById('correction_app_eleve').focus();
+
 	if(change!='no') {
 		alert(\"Des modifications n'ont pas été enregistrées. Si vous validez la proposition de correction sans d'abord enregistrer, les modifications seront perdues.\")
 	}
