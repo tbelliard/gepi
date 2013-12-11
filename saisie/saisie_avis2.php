@@ -860,6 +860,8 @@ if (isset($fiche)) {
 	//echo "\$test_coef=$test_coef<br />";
 	//=====================================
 
+	$affiche_coef=sql_query1("SELECT display_coef FROM classes WHERE id='".$id_classe."';");
+
 	//bulletin($current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
 	bulletin($tab_moy,$current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
 	$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
