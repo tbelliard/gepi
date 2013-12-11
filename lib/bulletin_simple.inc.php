@@ -27,6 +27,14 @@ global $affiche_colonne_moy_classe;
 global $gepi_denom_mention;
 if($gepi_denom_mention=='') {$gepi_denom_mention="mention";}
 
+//=========================
+global $utilisation_tablekit;
+if($periode1!=$periode2) {
+	//unset($utilisation_tablekit);
+	$utilisation_tablekit="no";
+}
+//=========================
+
 $alt=1;
 
 // Initialisation des tableaux 
@@ -239,27 +247,31 @@ if ($on_continue == 'yes') {
 	//=========================
 	// MODIF: boireaus 20080315
 	//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
-	echo "<table width=$larg_tab class='boireaus' cellspacing='1' cellpadding='1' summary='Matières/Notes/Appréciations'>\n";
+	echo "<table width=$larg_tab class='boireaus";
+	if($utilisation_tablekit=="ok") {
+		echo " sortable resizable";
+	}
+	echo "' cellspacing='1' cellpadding='1' summary='Matières/Notes/Appréciations'>\n";
 	//=========================
-	echo "<tr><td width=\"$larg_col1\" class='bull_simpl'>$compteur";
+	echo "<tr><td width=\"$larg_col1\" class='bull_simpl text'>$compteur";
 	if ($total != '') {echo "/$total";}
 	echo "</td>\n";
 	
 	//====================
 	// Modif: boireaus 20070626
 	if($affiche_coef=='y'){
-		if ($test_coef != 0) echo "<td width=\"$larg_col2\" align=\"center\"><p class='bull_simpl'>Coef.</p></td>\n";
+		if ($test_coef != 0) echo "<td width=\"$larg_col2\" align=\"center\" class='number'><p class='bull_simpl'>Coef.</p></td>\n";
 	}
 	//====================
 
 	if($affiche_colonne_moy_classe!='n') {
-		echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Classe</td>\n";
+		echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl text'>Classe</td>\n";
 	}
-	echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl'>&Eacute;lève</td>\n";
+	echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl number'>&Eacute;lève</td>\n";
 	if ($affiche_rang=='y') {
-		echo "<td width=$larg_col4 align=\"center\" class='bull_simpl'><i>Rang</i></td>\n";
+		echo "<td width=$larg_col4 align=\"center\" class='bull_simpl number'><i>Rang</i></td>\n";
 	}
-	echo "<td width=\"$larg_col5\" class='bull_simpl'>$bull_intitule_app</td>\n";
+	echo "<td width=\"$larg_col5\" class='bull_simpl nosort'>$bull_intitule_app</td>\n";
 	if($afficher_signalement_faute=='y') {
 		// A N'INSERER QUE POUR LES COMPTES DE PERSONNELS... de façon à éviter de donner les mails des profs à des élèves
 		echo "<td class='bull_simpl noprint'>Signaler</td>\n";
