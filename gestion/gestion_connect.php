@@ -160,9 +160,9 @@ if(isset($_POST['valid_message'])){
 require_once("../lib/header.inc.php");
 //================================
 
-//debug_var();
+// debug_var();
 
-isset($mode_navig);
+//isset($mode_navig);
 $mode_navig = isset($_POST["mode_navig"]) ? $_POST["mode_navig"] : (isset($_GET["mode_navig"]) ? $_GET["mode_navig"] : NULL);
 if ($mode_navig == 'accueil') {
     $retour = "../accueil.php";
@@ -631,7 +631,7 @@ switch( $duree2 ) {
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png"); '>
 	<p>
         <label for="duree2" >Afficher le journal des connexions : </label>
-	<select id="duree2" size="1">
+	<select id="duree2" name="duree2" size="1">
 		<option <?php if ($duree2 == '20dernieres') echo "selected = 'selected'"; ?> value='20dernieres'>
 			les 20 dernières
 		</option>
@@ -663,7 +663,7 @@ switch( $duree2 ) {
 	</p>
 	<p>
 		<input type="submit" name="Valider" value="Valider" />
-		<input type="hidden" name="mode_navig" value='$mode_navig' />
+		<input type="hidden" name="mode_navig" value="<?php echo $mode_navig; ?>" />
 	</p>
 </fieldset>
 </form>
