@@ -92,6 +92,9 @@ $titre_page = "Absences du jour";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 $dojo = true;
+
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
@@ -232,14 +235,14 @@ $eleve_col = $query
     </form>
     <?php
     $col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
-    echo'<table border="1" style="border: 1px solid black; background-color:lightgrey">';
+    echo'<table class="sortable resizable" border="1" style="border: 1px solid black; background-color:lightgrey">';
     echo'<tr align="center">
-        <th style="border: 1px solid black; background-color: grey;">Créneau</th>
-        <th style="border: 1px solid black; background-color: grey;">Heure</th>
-        <th style="border: 1px solid black; background-color: grey;">Nombre d\'élèves absents</th>
-        <th style="border: 1px solid black; background-color: grey;">Nombre de demi_pensionnaires </th>
-        <th style="border: 1px solid black; background-color: grey;">Nombre d\'internes</th>
-        <th style="border: 1px solid black; background-color: grey;">Nombre d\'externes</th>
+        <th style="border: 1px solid black; background-color: grey;" class="nosort">Créneau</th>
+        <th style="border: 1px solid black; background-color: grey;" title ="Cliquez pour trier sur la colonne" class="text">Heure</th>
+        <th style="border: 1px solid black; background-color: grey;" title ="Cliquez pour trier sur la colonne" class="number">Nombre d\'élèves absents</th>
+        <th style="border: 1px solid black; background-color: grey;" title ="Cliquez pour trier sur la colonne" class="number">Nombre de demi_pensionnaires </th>
+        <th style="border: 1px solid black; background-color: grey;" title ="Cliquez pour trier sur la colonne" class="number">Nombre d\'internes</th>
+        <th style="border: 1px solid black; background-color: grey;" title ="Cliquez pour trier sur la colonne" class="number">Nombre d\'externes</th>
         </tr>';
     
 	$cpt_eleve=0;
