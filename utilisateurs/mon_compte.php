@@ -885,18 +885,86 @@ if(($_SESSION['statut']=='professeur')&&(isset($_POST['saisie_app_nb_cols_textar
 }
 
 
-if(($_SESSION['statut']=='professeur')&&(isset($_POST['ouverture_auto_WinDevoirsDeLaClasse']))) {
+if(($_SESSION['statut']=='professeur')&&(isset($_POST['validation_form_cdt2']))) {
 	check_token();
 
-	if(($_POST['ouverture_auto_WinDevoirsDeLaClasse']=='y')||($_POST['ouverture_auto_WinDevoirsDeLaClasse']=='n')) {
-		if(!savePref($_SESSION['login'],'ouverture_auto_WinDevoirsDeLaClasse',$_POST['ouverture_auto_WinDevoirsDeLaClasse'])) {
-			$msg.="Erreur lors de l'enregistrement de ouverture_auto_WinDevoirsDeLaClasse.<br />";
-			$message_cdt="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+	$message_cdt="";
+	$temoin_erreur_cdt=0;
+	$temoin_reg_cdt=0;
+	if(isset($_POST['ouverture_auto_WinDevoirsDeLaClasse'])) {
+		if(($_POST['ouverture_auto_WinDevoirsDeLaClasse']=='y')||($_POST['ouverture_auto_WinDevoirsDeLaClasse']=='n')) {
+			if(!savePref($_SESSION['login'],'ouverture_auto_WinDevoirsDeLaClasse',$_POST['ouverture_auto_WinDevoirsDeLaClasse'])) {
+				$msg.="Erreur lors de l'enregistrement de ouverture_auto_WinDevoirsDeLaClasse.<br />";
+				$message_cdt.="<p style='color:red'>Erreur lors de l'enregistrement de ouverture_auto_WinDevoirsDeLaClasse.</p>\n";
+				$temoin_erreur_cdt++;
+			}
+			else {
+				$msg.="Enregistrement de ouverture_auto_WinDevoirsDeLaClasse.<br />";
+				$temoin_reg_cdt++;
+				//$message_cdt.="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+			}
+		}
+	}
+
+	if(isset($_POST['cdt2_WinListeNotices_nb_compte_rendus'])) {
+		if((!preg_match("/^[0-9]*$/", $_POST['cdt2_WinListeNotices_nb_compte_rendus']))||($_POST['cdt2_WinListeNotices_nb_compte_rendus']<=0)||($_POST['cdt2_WinListeNotices_nb_compte_rendus']=="")) {
+			$msg.="Valeur invalide pour cdt2_WinListeNotices_nb_compte_rendus.<br />";
+			$temoin_erreur_cdt++;
 		}
 		else {
-			$msg.="Enregistrement de ouverture_auto_WinDevoirsDeLaClasse.<br />";
-			$message_cdt="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+			if(!savePref($_SESSION['login'],'cdt2_WinListeNotices_nb_compte_rendus',$_POST['cdt2_WinListeNotices_nb_compte_rendus'])) {
+				$msg.="Erreur lors de l'enregistrement de cdt2_WinListeNotices_nb_compte_rendus.<br />";
+				$message_cdt.="<p style='color:red'>Erreur lors de l'enregistrement de cdt2_WinListeNotices_nb_compte_rendus.</p>\n";
+				$temoin_erreur_cdt++;
+			}
+			else {
+				$msg.="Enregistrement de cdt2_WinListeNotices_nb_compte_rendus.<br />";
+				$temoin_reg_cdt++;
+			}
 		}
+	}
+
+	if(isset($_POST['cdt2_WinListeNotices_nb_devoirs'])) {
+		if((!preg_match("/^[0-9]*$/", $_POST['cdt2_WinListeNotices_nb_devoirs']))||($_POST['cdt2_WinListeNotices_nb_devoirs']<=0)||($_POST['cdt2_WinListeNotices_nb_devoirs']=="")) {
+			$msg.="Valeur invalide pour cdt2_WinListeNotices_nb_devoirs.<br />";
+			$temoin_erreur_cdt++;
+		}
+		else {
+			if(!savePref($_SESSION['login'],'cdt2_WinListeNotices_nb_devoirs',$_POST['cdt2_WinListeNotices_nb_devoirs'])) {
+				$msg.="Erreur lors de l'enregistrement de cdt2_WinListeNotices_nb_devoirs.<br />";
+				$message_cdt.="<p style='color:red'>Erreur lors de l'enregistrement de cdt2_WinListeNotices_nb_devoirs.</p>\n";
+				$temoin_erreur_cdt++;
+			}
+			else {
+				$msg.="Enregistrement de cdt2_WinListeNotices_nb_devoirs.<br />";
+				$temoin_reg_cdt++;
+			}
+		}
+	}
+
+	if(isset($_POST['cdt2_WinListeNotices_nb_notices_privees'])) {
+		if((!preg_match("/^[0-9]*$/", $_POST['cdt2_WinListeNotices_nb_notices_privees']))||($_POST['cdt2_WinListeNotices_nb_notices_privees']<=0)||($_POST['cdt2_WinListeNotices_nb_notices_privees']=="")) {
+			$msg.="Valeur invalide pour cdt2_WinListeNotices_nb_notices_privees.<br />";
+			$temoin_erreur_cdt++;
+		}
+		else {
+			if(!savePref($_SESSION['login'],'cdt2_WinListeNotices_nb_notices_privees',$_POST['cdt2_WinListeNotices_nb_notices_privees'])) {
+				$msg.="Erreur lors de l'enregistrement de cdt2_WinListeNotices_nb_notices_privees.<br />";
+				$message_cdt.="<p style='color:red'>Erreur lors de l'enregistrement de cdt2_WinListeNotices_nb_notices_privees.</p>\n";
+				$temoin_erreur_cdt++;
+			}
+			else {
+				$msg.="Enregistrement de cdt2_WinListeNotices_nb_notices_privees.<br />";
+				$temoin_reg_cdt++;
+			}
+		}
+	}
+
+	if($temoin_erreur_cdt>0) {
+		$message_cdt.="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+	}
+	elseif($temoin_reg_cdt>0) {
+		$message_cdt.="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 }
 
@@ -912,7 +980,7 @@ if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 		$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 
-	debug_var();
+	//debug_var();
 	/*
 	$_POST['mod_disc_mail_cat_incluse']=	Array (*)
 		$_POST[mod_disc_mail_cat_incluse]['0']=	2
@@ -2346,7 +2414,6 @@ if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "pro
 	echo "background-image: url(\"../images/background/opacite50.png\"); ";
 	echo "'>\n";
 	echo "<legend style='border: 1px solid grey;";
-	//echo "background-image: url(\"../images/background/opacite50.png\"); ";
 	echo "background-color: white; ";
 	echo "'>Cahier de textes 2</legend>\n";
 	echo "<p>Lors de la saisie de notices de Travaux à faire dans le CDT2,<br />\n";
@@ -2363,7 +2430,21 @@ if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "pro
 	$tabindex++;
 	echo " /><label for='ouverture_auto_WinDevoirsDeLaClasse_n' id='texte_ouverture_auto_WinDevoirsDeLaClasse_n'> ne pas ouvrir automatiquement la fenêtre listant les travaux donnés par les autres professeurs.</label><br />\n";
 
+	$cdt2_WinListeNotices_nb_compte_rendus=getPref($_SESSION['login'], 'cdt2_WinListeNotices_nb_compte_rendus', 6);
+	$cdt2_WinListeNotices_nb_devoirs=getPref($_SESSION['login'], 'cdt2_WinListeNotices_nb_devoirs', 6);
+	$cdt2_WinListeNotices_nb_notices_privees=getPref($_SESSION['login'], 'cdt2_WinListeNotices_nb_notices_privees', 6);
+	$tabindex2=$tabindex+1;
+	$tabindex3=$tabindex+2;
+	echo "<br /><br />
+<p style='text-indent:-3em;margin-left:3em;'>Nombre de notices de chaque type à afficher par défaut dans la fenêtre intitulée 'Liste des notices'.<br />
+Compte-rendus&nbsp;:&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_compte_rendus' id='cdt2_WinListeNotices_nb_compte_rendus' value='$cdt2_WinListeNotices_nb_compte_rendus' tabindex='$tabindex' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' /><br />
+Devoirs à faire&nbsp;:&nbsp;&nbsp;&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_devoirs' id='cdt2_WinListeNotices_nb_devoirs' value='$cdt2_WinListeNotices_nb_devoirs' tabindex='$tabindex2' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' /><br />
+Notices privées&nbsp;:&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_notices_privees' id='cdt2_WinListeNotices_nb_notices_privees' value='$cdt2_WinListeNotices_nb_notices_privees' tabindex='$tabindex3' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' /><br />
+<p>(<em>en cliquant sur 'Afficher toutes les notices' en bas de la fenêtre 'Liste des notices', vous pourrez tout de même afficher toutes les notices</em>)</p>";
+	$tabindex=$tabindex3+1;
+
 	echo "<p style='text-align:center;'>\n";
+	echo "<input type='hidden' name='validation_form_cdt2' value='y' />\n";
 	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
 	$tabindex++;
 	echo "</p>\n";

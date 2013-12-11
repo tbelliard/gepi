@@ -413,7 +413,16 @@ else {
 	echo add_token_field();
 	echo "<input type='hidden' name='action_corrections' value='y' />\n";
 
+	$tab_cpt_classe=array();
+	$classe_prec="";
 	for($i=0;$i<count($tab_id_classe);$i++) {
+		if($tab_id_classe[$i]!=$classe_prec) {
+			$tab_cpt_classe[$tab_id_classe[$i]][]=$compteur;
+			$classe_prec=$tab_id_classe[$i];
+			if($i>0) {
+				$tab_cpt_classe[$tab_id_classe[$i-1]][]=$compteur;
+			}
+		}
 		$classe=get_class_from_id($tab_id_classe[$i]);
 		echo "<p class='bold'>".$classe."</p>\n";
 		echo "<input type='hidden' name='tab_id_classe[]' value='$tab_id_classe[$i]' />\n";
@@ -438,9 +447,18 @@ else {
 			echo "</tr>\n";
 
 			echo "<tr>\n";
-			echo "<th>En attente</th>\n";
-			echo "<th>Valider</th>\n";
-			echo "<th>Supprimer</th>\n";
+			echo "<th>
+	En attente<br />
+	<a href=\"javascript:modif_case($tab_id_classe[$i],'attente')\" title='Tout laisser en attente'><img src='../images/enabled.png' width='15' height='15' alt='Tout laisser en attente' /></a>
+</th>\n";
+			echo "<th>
+	Valider<br />
+	<a href=\"javascript:modif_case($tab_id_classe[$i],'valider')\" title='Tout valider'><img src='../images/enabled.png' width='15' height='15' alt='Tout valider' /></a>
+</th>\n";
+			echo "<th>
+	Supprimer<br />
+	<a href=\"javascript:modif_case($tab_id_classe[$i],'supprimer')\" title='Tout supprimer'><img src='../images/enabled.png' width='15' height='15' alt='Tout supprimer' /></a>
+</th>\n";
 			echo "</tr>\n";
 
 			$alt=1;
@@ -550,7 +568,30 @@ else {
 			}
 			echo "</table>\n";
 		}
+		/*
+		echo "<pre>";
+		print_r($tab_cpt_classe);
+		echo "</pre>";
+		*/
 		echo "</blockquote>\n";
+	}
+	$tab_cpt_classe[$tab_id_classe[$i-1]][]=$compteur;
+	/*
+	echo "<br />\$tab_cpt_classe:<pre>";
+	print_r($tab_cpt_classe);
+	echo "</pre>";
+
+	echo "<script type='text/javascript'>
+	alert(0);
+</script>";
+*/
+
+	//$chaine_js="var tab_classe_indice=new Array();\n";
+	$chaine_js="";
+	foreach($tab_cpt_classe as $id_classe => $indice) {
+		//$chaine_js.="var tab_classe_indice[$id_classe][0]=".$indice[0].";\n";
+		//$chaine_js.="var tab_classe_indice[$id_classe][1]=".$indice[1].";\n";
+		$chaine_js.="var tab_classe_indice_$id_classe=new Array(".$indice[0].",".$indice[1].");\n";
 	}
 
 	echo "<p><a href='#' onClick=\"ToutCocher('action_valider_'); return false;\">Tout valider</a> / <a href='#' onClick=\"ToutCocher('action_supprimer_'); return false;\">Tout supprimer</a> / <a href='#' onClick=\"ToutCocher('action_attente_'); return false;\">Tout remettre en attente</a></p>\n";
@@ -564,6 +605,24 @@ else {
 				document.getElementById(prefixe+k).checked=true;
 			}
 		}
+	}
+
+	//alert(1);
+	$chaine_js
+	//alert(2);
+	function modif_case(id_classe, mode) {
+		//alert(3);
+		//rang1=tab_classe_indice[id_classe][0];
+		//rang2=tab_classe_indice[id_classe][1];
+		tab=eval('tab_classe_indice_'+id_classe);
+		rang1=tab[0];
+		rang2=tab[1];
+		for(i=rang1;i<rang2;i++) {
+			if(document.getElementById('action_'+mode+'_'+i)){
+				document.getElementById('action_'+mode+'_'+i).checked=true;
+			}
+		}
+		changement();
 	}
 </script>\n";
 

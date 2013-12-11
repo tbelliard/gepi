@@ -306,7 +306,7 @@ $couleur_devoirs = '#AAE6AA';
 $couleur_fond = '#AAE6AA';
 $couleur_moy_cn = '#96C8F0';
 
-
+$acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
 
 if (!isset($periode_cn)) {$periode_cn = 0;}
 
@@ -544,6 +544,9 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	// =================================
 }
 
+if($_SESSION['statut']=='professeur') {
+	echo " | <a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
+}
 
 echo "</p>\n";
 if(isset($periode_cn)) {
@@ -1006,13 +1009,27 @@ foreach ($liste_eleves as $eleve_login) {
 
 		if ($order_by == "nom" OR $prev_classe == $eleve_classe OR $prev_classe == null) {
 			//echo "<tr><td>$eleve_nom $eleve_prenom</td>";
-			echo "<tr class='lig$alt'><td style='text-align:left;'>$eleve_nom $eleve_prenom</td>";
+			echo "<tr class='lig$alt'><td style='text-align:left;'>";
+			if($acces_visu_eleve) {
+				echo "<a href='../eleves/visu_eleve.php?ele_login=$eleve_login' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\" target='_blank' style='text-decoration:none; color:black;'>$eleve_nom $eleve_prenom</a>";
+			}
+			else {
+				echo "$eleve_nom $eleve_prenom";
+			}
+			echo "</td>";
 			if ($multiclasses) echo "<td style='text-align:center;'>$eleve_classe</td>";
 			echo "\n";
 			$prev_classe = $eleve_classe;
 		} else {
 			//echo "<tr><td style='border-top: 2px solid blue;'>$eleve_nom $eleve_prenom</td>";
-			echo "<tr class='lig$alt'><td style='border-top: 2px solid blue; text-align:left;'>$eleve_nom $eleve_prenom</td>";
+			echo "<tr class='lig$alt'><td style='border-top: 2px solid blue; text-align:left;'>";
+			if($acces_visu_eleve) {
+				echo "<a href='../eleves/visu_eleve.php?ele_login=$eleve_login' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\" target='_blank' style='text-decoration:none; color:black;'>$eleve_nom $eleve_prenom</a>";
+			}
+			else {
+				echo "$eleve_nom $eleve_prenom";
+			}
+			echo "</td>";
 			if ($multiclasses) echo "<td style='border-top: 2px solid blue;'>$eleve_classe</td>";
 			echo "\n";
 			$prev_classe = $eleve_classe;

@@ -144,11 +144,185 @@ $formule=$formule_score_abs_nb_1.$formule_score_abs_plus_moins_RET."(".$formule_
 $formule.=$formule_score_abs_plus_moins_NBNJ."(".$formule_score_abs_scalaire_NBNJ."*NBNJ<sup title='puissance'>".$formule_score_abs_puissance_NBNJ."</sup>)";
 $formule.=$formule_score_abs_plus_moins_NBABS."(".$formule_score_abs_scalaire_NBABS."*NBABS<sup title='puissance'>".$formule_score_abs_puissance_NBABS."</sup>)";
 
+
+if(isset($id_classe)) {
+	$tab_score=array();
+	if(!isset($num_periode)) {
+		$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
+		//echo "$sql<br />";
+		$res_ele=mysql_query($sql);
+		$num_ligne=0;
+		while($lig_ele=mysql_fetch_object($res_ele)) {
+			$eleve = EleveQuery::create()->findOneByLogin($lig_ele->login);
+
+			$tab_score[$num_ligne]["login"]=$lig_ele->login;
+			$tab_score[$num_ligne]["prenom_nom"]=$lig_ele->prenom." ".$lig_ele->nom;
+
+			$cpt_per=0;
+			foreach($eleve->getPeriodeNotes() as $periode_note) {
+				if ($periode_note->getDateDebut() == null) {
+					//periode non commencee
+					continue;
+				}
+				$tab_score[$num_ligne]["periodes"][$cpt_per]['nom_periode']=$periode_note->getNomPeriode();
+				$tab_score[$num_ligne]["periodes"][$cpt_per]['du']=$periode_note->getDateDebut('d/m/Y');
+				if ($periode_note->getDateFin() == null) {
+					$tab_score[$num_ligne]["periodes"][$cpt_per]['au']='(non précisé)';
+				} else {
+					$tab_score[$num_ligne]["periodes"][$cpt_per]['au']=$periode_note->getDateFin('d/m/Y');
+				}
+
+				$nb_abs=$eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count();
+				$nb_nj=$eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_note)->count();
+				$nb_ret=$eleve->getRetardsParPeriode($periode_note)->count();
+				$tab_score[$num_ligne]["periodes"][$cpt_per]['nb_abs']=$nb_abs;
+				$tab_score[$num_ligne]["periodes"][$cpt_per]['nb_nj']=$nb_nj;
+				$tab_score[$num_ligne]["periodes"][$cpt_per]['nb_ret']=$nb_ret;
+
+				$chaine=$formule_score_abs_nb_1;
+				$chaine_title=$formule_score_abs_nb_1;
+				if($formule_score_abs_plus_moins_RET=="+") {
+					$chaine+=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
+					$chaine_title.=" + (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
+				}
+				else {
+					$chaine-=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
+					$chaine_title.=" - (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
+				}
+
+				if($formule_score_abs_plus_moins_NBNJ=="+") {
+					$chaine+=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
+					$chaine_title.=" + (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
+				}
+				else {
+					$chaine-=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
+					$chaine_title.=" - (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
+				}
+
+				if($formule_score_abs_plus_moins_NBABS=="+") {
+					$chaine+=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
+					$chaine_title.=" + (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
+				}
+				else {
+					$chaine-=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
+					$chaine_title.=" - (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
+				}
+
+				$tab_score[$num_ligne]["periodes"][$cpt_per]['chaine_title']=$chaine_title;
+				$tab_score[$num_ligne]["periodes"][$cpt_per]['chaine']=$chaine;
+
+				$cpt_per++;
+			}
+			$num_ligne++;
+		}
+	}
+	else {
+		$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.periode='$num_periode' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
+		//echo "$sql<br />";
+		$res_ele=mysql_query($sql);
+		$num_ligne=0;
+		while($lig_ele=mysql_fetch_object($res_ele)) {
+			$eleve = EleveQuery::create()->findOneByLogin($lig_ele->login);
+			foreach($eleve->getPeriodeNotes() as $periode_note) {
+				if ($periode_note->getDateDebut() == null) {
+					//periode non commencee
+					continue;
+				}
+				/*
+				echo "<pre>";
+				print_r($periode_note);
+				echo "</pre>";
+				*/
+				if($periode_note->getNumPeriode()==$num_periode) {
+
+					$tab_score['eleves'][$num_ligne]["login"]=$lig_ele->login;
+					$tab_score['eleves'][$num_ligne]["prenom_nom"]=$lig_ele->prenom." ".$lig_ele->nom;
+
+					if($num_ligne==0) {
+						$tab_score['nom_periode']=$periode_note->getNomPeriode();
+						$tab_score['du']=$periode_note->getDateDebut('d/m/Y');
+						if ($periode_note->getDateFin() == null) {
+							$tab_score['au']='(non précisé)';
+						} else {
+							$tab_score['au']=$periode_note->getDateFin('d/m/Y');
+						}
+					}
+
+					$nb_abs=$eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count();
+					$nb_nj=$eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_note)->count();
+					$nb_ret=$eleve->getRetardsParPeriode($periode_note)->count();
+
+					$tab_score["eleves"][$num_ligne]['nb_abs']=$nb_abs;
+					$tab_score["eleves"][$num_ligne]['nb_nj']=$nb_nj;
+					$tab_score["eleves"][$num_ligne]['nb_ret']=$nb_ret;
+
+					$chaine=$formule_score_abs_nb_1;
+					$chaine_title=$formule_score_abs_nb_1;
+					if($formule_score_abs_plus_moins_RET=="+") {
+						$chaine+=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
+						$chaine_title.=" + (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
+					}
+					else {
+						$chaine-=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
+						$chaine_title.=" - (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
+					}
+
+					if($formule_score_abs_plus_moins_NBNJ=="+") {
+						$chaine+=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
+						$chaine_title.=" + (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
+					}
+					else {
+						$chaine-=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
+						$chaine_title.=" - (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
+					}
+
+					if($formule_score_abs_plus_moins_NBABS=="+") {
+						$chaine+=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
+						$chaine_title.=" + (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
+					}
+					else {
+						$chaine-=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
+						$chaine_title.=" - (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
+					}
+
+					$tab_score["eleves"][$num_ligne]['chaine_title']=$chaine_title;
+					$tab_score["eleves"][$num_ligne]['chaine']=$chaine;
+				}
+			}
+			$num_ligne++;
+		}
+	}
+}
+
+if((isset($id_classe))&&(isset($_GET['export_csv']))) {
+	check_token();
+
+	$csv="";
+	$fin_de_ligne="\r\n";
+	if(isset($num_periode)) {
+		$csv.="LOGIN;PRENOM_NOM;NB_ABS;NB_NJ;NB_RET;SCORE;".$fin_de_ligne;
+
+		for($loop=0;$loop<count($tab_score['eleves']);$loop++) {
+			$csv.=$tab_score['eleves'][$loop]["login"].";".$tab_score['eleves'][$loop]["prenom_nom"].";".$tab_score["eleves"][$loop]['nb_abs'].";".$tab_score["eleves"][$loop]['nb_nj'].";".$tab_score["eleves"][$loop]['nb_ret'].";".$tab_score["eleves"][$loop]['chaine'].";".$fin_de_ligne;
+		}
+
+		$nom_fic = "score_absences_".remplace_accents(get_nom_classe($id_classe), "all")."_periode_".$num_periode."_".strftime("%Y%m%d_%H%M%S").".csv";
+		send_file_download_headers('text/x-csv',$nom_fic);
+
+		echo echo_csv_encoded($csv);
+		die();
+	}
+}
+
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+
+$javascript_specifique[] = "lib/tablekit";
+//$dojo=true;
+$utilisation_tablekit="ok";
 //**************** EN-TETE *****************
 $titre_page = "Calcul score";
 require_once("../lib/header.inc.php");
@@ -311,7 +485,7 @@ if(!isset($num_periode)) {
 		$eleve = EleveQuery::create()->findOneByLogin($lig_ele->login);
 
 		echo "<table class='boireaus'>\n";
-		echo "<caption>Bilan des absences de <strong>$lig_ele->prenom $lig_ele->nom</strong></caption>\n";
+		echo "<caption>Bilan des absences de <strong>".$tab_score[$loop]["prenom_nom"]."</strong></caption>\n";
 		echo "<tr>\n";
 		echo "<th title=\"Les dates de fin de période correspondent à ce qui est paramétré en colonne 'Date de fin' de la page de Verrouillage des périodes de notes (page accessible en compte scolarité).\">Période</th>\n";
 		echo "<th>Nombre d'absences<br/>(1/2 journées)</th>\n";
@@ -321,56 +495,29 @@ if(!isset($num_periode)) {
 		echo "<th>Score</th>\n";
 		echo "</tr>\n";
 		$alt=1;
-		foreach($eleve->getPeriodeNotes() as $periode_note) {
-			if ($periode_note->getDateDebut() == null) {
-			//periode non commencee
-			continue;
-			}
+		for($loop_per=0;$loop_per<count($tab_score[$loop]["periodes"]);$loop_per++) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td>".$periode_note->getNomPeriode();
-			echo " du ".$periode_note->getDateDebut('d/m/Y');
-			echo " au ";
-			if ($periode_note->getDateFin() == null) {
-			echo '(non précisé)';
-			} else {
-			echo $periode_note->getDateFin('d/m/Y');
-			}
+			echo "<td>".$tab_score[$loop]["periodes"][$loop_per]['nom_periode'];
+			echo " du ".$tab_score[$loop]["periodes"][$loop_per]['du'];
+			echo " au ".$tab_score[$loop]["periodes"][$loop_per]['au'];
 			echo "</td>\n";
-			/*
-			echo "<td>";
-			$nb_abs=$eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count();
-			echo $nb_abs;
-			echo "</td>\n";
-			echo "<td>";
-			$nb_nj=$eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_note)->count();
-			echo $nb_nj;
-			echo "</td>\n";
-			echo "<td>";
-			$nb_ret=$eleve->getRetardsParPeriode($periode_note)->count();
-			echo $nb_ret;
-			echo "</td>\n";
-			*/
+
 			echo "<td";
 			if($formule_score_abs_scalaire_NBABS==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
 			echo ">";
-			$nb_abs=$eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count();
-			echo $nb_abs;
+			echo $tab_score[$loop]["periodes"][$loop_per]['nb_abs'];
 			echo "</td>\n";
 			echo "<td";
 			if($formule_score_abs_scalaire_NBNJ==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
 			echo ">";
-			$nb_nj=$eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_note)->count();
-			echo $nb_nj;
+			echo $tab_score[$loop]["periodes"][$loop_per]['nb_nj'];
 			echo "</td>\n";
 			echo "<td";
 			if($formule_score_abs_scalaire_RET==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
 			echo ">";
-			$nb_ret=$eleve->getRetardsParPeriode($periode_note)->count();
-			echo $nb_ret;
+			echo $tab_score[$loop]["periodes"][$loop_per]['nb_ret'];
 			echo "</td>\n";
-
-
 			/*
 			echo "<td>";
 			// PROBLEME: On n'a plus accès à cette table si on ne remplit pas la table absences.
@@ -383,51 +530,8 @@ if(!isset($num_periode)) {
 			echo "</td>\n";
 			*/
 
-			//$chaine=preg_replace("|NBABS|",$nb_abs,preg_replace("|NBNJ|",$nb_nj,preg_replace("|RET|",$nb_ret,$formule_score_abs)));
-			//echo $chaine."=";
-			//echo eval($chaine);
-
-			/*
-			$chaine=$formule_score_abs_nb_1;
-			if($formule_score_abs_plus_moins_RET=="+") {$chaine+=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);}
-			else {$chaine-=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);}
-			if($formule_score_abs_plus_moins_NBNJ=="+") {$chaine+=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);}
-			else {$chaine-=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);}
-			if($formule_score_abs_plus_moins_NBABS=="+") {$chaine+=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);}
-			else {$chaine-=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);}
-			echo "<td>";
-			*/
-
-			$chaine=$formule_score_abs_nb_1;
-			$chaine_title=$formule_score_abs_nb_1;
-			if($formule_score_abs_plus_moins_RET=="+") {
-				$chaine+=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
-				$chaine_title.=" + (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
-			}
-			else {
-				$chaine-=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
-				$chaine_title.=" - (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
-			}
-
-			if($formule_score_abs_plus_moins_NBNJ=="+") {
-				$chaine+=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
-				$chaine_title.=" + (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
-			}
-			else {
-				$chaine-=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
-				$chaine_title.=" - (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
-			}
-
-			if($formule_score_abs_plus_moins_NBABS=="+") {
-				$chaine+=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
-				$chaine_title.=" + (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
-			}
-			else {
-				$chaine-=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
-				$chaine_title.=" - (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
-			}
-			echo "<td title=\"$chaine_title = $chaine\">";
-			echo $chaine;
+			echo "<td title=\"".$tab_score[$loop]["periodes"][$loop_per]['chaine_title']." = ".$tab_score[$loop]["periodes"][$loop_per]['chaine']."\">";
+			echo $tab_score[$loop]["periodes"][$loop_per]['chaine'];
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -441,15 +545,17 @@ else {
 	else {
 		$info_dates_per=" (<em title=\"Les dates de fin de période correspondent à ce qui est paramétré en colonne 'Date de fin' de la page de Verrouillage des périodes de notes (page accessible en compte scolarité).\">du ".formate_date($date_fin_periode[$num_periode-1])." au ".formate_date($date_fin_periode[$num_periode])."</em>)";
 	}
-	echo "<table class='boireaus'>\n";
+
+	echo "<div id='div_lien_csv' style='float:right; width:16px; margin:0.5em; display:none;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;num_periode=$num_periode&amp;export_csv=y".add_token_in_url()."' title='Exporter ces scores en CSV'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>";
+	echo "<table class='sortable resizable boireaus'>\n";
 	echo "<caption><strong>Bilan des absences en période $num_periode</strong>".$info_dates_per."</caption>\n";
 	echo "<tr>\n";
-	echo "<th title=\"Les dates de fin de période correspondent à ce qui est paramétré en colonne 'Date de fin' de la page de Verrouillage des périodes de notes (page accessible en compte scolarité).\">Période</th>\n";
-	echo "<th>Nombre d'absences<br/>(1/2 journées)</th>\n";
-	echo "<th>Absences non justifiées</th>\n";
-	echo "<th>Nombre de retards</th>\n";
+	echo "<th class='text' title=\"Les dates de fin de période correspondent à ce qui est paramétré en colonne 'Date de fin' de la page de Verrouillage des périodes de notes (page accessible en compte scolarité).\">Période</th>\n";
+	echo "<th class='number' title='Cliquez pour trier'>Nombre d'absences<br/>(1/2 journées)</th>\n";
+	echo "<th class='number' title='Cliquez pour trier'>Absences non justifiées</th>\n";
+	echo "<th class='number' title='Cliquez pour trier'>Nombre de retards</th>\n";
 	//echo "<th>Appréciation</th>\n";
-	echo "<th>Score</th>\n";
+	echo "<th class='number' title='Cliquez pour trier'>Score</th>\n";
 	echo "</tr>\n";
 
 	$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.periode='$num_periode' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
@@ -550,7 +656,12 @@ else {
 			}
 		}
 	}
-	echo "</table>\n";
+	echo "</table>
+<script type='text/javascript'>
+	if(document.getElementById('div_lien_csv')) {
+		document.getElementById('div_lien_csv').style.display='';
+	}
+</script>\n";
 }
 
 echo "

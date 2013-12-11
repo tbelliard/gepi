@@ -61,6 +61,7 @@ $u_login=isset($_POST['u_login']) ? $_POST['u_login'] : (isset($_GET['u_login'])
 if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
 	//**************** EN-TETE *****************************
 	//$titre_page = "Gestion des utilisateurs | Réinitialisation des mots de passe";
+	$titre_page_title="Réinitialisation des mots de passe";
 	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 }

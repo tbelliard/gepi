@@ -5205,27 +5205,44 @@ function mysql_date_to_unix_timestamp($mysql_date) {
 }
 
 /**
- * Recherche les profs principaux d'une classe
+ * Recherche les profs principaux d'une classe ou des classes dont un prof est PP
  *
  * @param string $id_classe id de la classe
+ * @param string $login_user si l'id_classe est vide, on recherche les classes dont $login_user est PP
  * @return array Tableau des logins des profs principaux
  */
-function get_tab_prof_suivi($id_classe) {
+function get_tab_prof_suivi($id_classe, $login_user="") {
 	global $mysqli;
 	$tab = array();
 
-	$sql = "SELECT DISTINCT jep.professeur 
-		FROM j_eleves_professeurs jep, j_eleves_classes jec 
-		WHERE jec.id_classe='$id_classe' 
-		AND jec.login=jep.login
-		AND jec.id_classe=jep.id_classe
-		ORDER BY professeur;";
-	$res = mysqli_query($mysqli, $sql);
-	if($res->num_rows > 0) {
-		while($lig = $res->fetch_object()) {
-			$tab[] = $lig->professeur;
+	if($id_classe!="") {
+		$sql = "SELECT DISTINCT jep.professeur 
+			FROM j_eleves_professeurs jep, j_eleves_classes jec 
+			WHERE jec.id_classe='$id_classe' 
+			AND jec.login=jep.login
+			AND jec.id_classe=jep.id_classe
+			ORDER BY professeur;";
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			while($lig = $res->fetch_object()) {
+				$tab[] = $lig->professeur;
+			}
+			$res->close();
 		}
-		$res->close();
+	}
+	elseif($login_user!="") {
+		$sql = "SELECT DISTINCT jep.id_classe 
+			FROM j_eleves_professeurs jep, classes c 
+			WHERE jep.professeur='$login_user'
+			AND jep.id_classe=c.id
+			ORDER BY c.classe;";
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			while($lig = $res->fetch_object()) {
+				$tab[] = $lig->id_classe;
+			}
+			$res->close();
+		}
 	}
 
 	return $tab;
@@ -5533,7 +5550,7 @@ function champ_select_mention($nom_champ_select,$id_classe,$id_mention_selected=
 	if(($id_mention_selected=="")||(!array_key_exists($id_mention_selected,$tab_mentions))) {
 		$retour.=" selected='selected'";
 	}
-	$retour.="> </option>\n";
+	$retour.=" title=\"Aucune mention\"> --- </option>\n";
 	foreach($tab_mentions as $key => $value) {
 		$retour.="<option value='$key'";
 		if($id_mention_selected==$key) {
@@ -7790,6 +7807,20 @@ function joueSon($sound, $id_son="") {
 	return $retour;
 }
 
+function acces_exceptionnel_saisie_bull_app_groupe_periode($id_groupe, $num_periode) {
+	global $mysqli;
+	$sql="SELECT 1=1 FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$num_periode' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' AND mode='acces_complet';";
+	//echo "$sql<br />";
+	$test = mysqli_query($mysqli, $sql);
+	if($test->num_rows > 0) {
+		$test->close();
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 function acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $num_periode) {
 	global $mysqli;
 	$sql="SELECT 1=1 FROM acces_exceptionnel_matieres_notes WHERE id_groupe='$id_groupe' AND periode='$num_periode' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."';";
@@ -8866,6 +8897,12 @@ function acces_cdt_eleve($login_user, $login_eleve) {
 	return $retour;
 }
 
+/** Fonction destinée à récupérer dans la table 'utilisateurs' le mail d'un utilisateur
+ *
+ * @param string $login_user Login de l'utilisateur
+ *
+ * @return string Le mail de l'utilisateur
+ */
 function get_mail_user($login_user) {
 	global $mysqli;
 	$retour="";
@@ -8880,4 +8917,175 @@ function get_mail_user($login_user) {
 	$res->close();
 	return $retour;
 }
+
+/** Fonction destinée à récupérer un tableau associatif des classes concernant un utilisateur
+ *
+ * @param string $login_user Login de l'utilisateur
+ * TODO: Ajouter un paramètre pour spécifier le contexte dans lequel on veut faire l'extraction
+ *       Il n'est pas toujours judicieux de restreindre la liste si par exemple tous les CPE ont les mêmes droits sur tous les élèves.
+ *
+ * @return array Le tableau des classes avec l'id_classe pour indice et classe pour valeur
+ */
+function get_classes_from_user($login_user, $statut) {
+	global $mysqli;
+	$tab=array();
+
+	if($statut=='professeur') {
+		$sql="SELECT DISTINCT id, classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp 
+			WHERE c.id=jgc.id_classe 
+			AND jgc.id_groupe=jgp.id_groupe 
+			AND jgp.login='$login_user'
+				ORDER BY c.classe;";
+	}
+	elseif($statut=='administrateur') {
+		$sql="SELECT DISTINCT id, classe FROM classes c
+				ORDER BY c.classe;";
+	}
+	elseif($statut=='secours') {
+		$sql="SELECT DISTINCT id, classe FROM classes c
+				ORDER BY c.classe;";
+	}
+	elseif($statut=='autre') {
+		$sql="SELECT DISTINCT id, classe FROM classes c
+				ORDER BY c.classe;";
+	}
+	elseif($statut=='scolarite') {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_scol_classes jsc
+				WHERE jsc.id_classe=c.id
+				AND jsc.login='$login_user'
+				ORDER BY c.classe;";
+	}
+	elseif($statut=='cpe') {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, j_eleves_cpe jecpe
+				WHERE jec.id_classe=c.id
+				AND jec.login=jecpe.e_login
+				AND jecpe.cpe_login='$login_user'
+				ORDER BY c.classe;";
+	}
+
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		while($lig=$res->fetch_object()) {
+			$tab[$lig->id]=$lig->classe;
+		}
+	}
+	$res->close();
+	return $tab;
+}
+
+/** Fonction destinée à tester si un utilisateur est professeur du groupe
+ *
+ * @param string $login Login de l'utilisateur
+ * @param integer $id_groupe Identifiant du groupe
+ *
+ * @return boolean True/False selon que l'utilisateur est ou non prof du groupe
+ */
+function verif_prof_groupe($login,$id_groupe) {
+	if(empty($login) || empty($id_groupe)) {
+		return FALSE;
+		die();
+	}
+
+	$call_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE (id_groupe='".$id_groupe."' and login='" . $login . "')");
+	$nb = mysql_num_rows($call_prof);
+
+	if ($nb != 0) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+/** Fonction destinée à envoyer un mail suite à une proposition de correction d'appréciation
+ *
+ * @param string $corriger_app_login_eleve Login de l'élève
+ * @param integer $corriger_app_id_groupe Identifiant du groupe
+ * @param integer $corriger_app_num_periode Numéro de période
+ * $texte_mail string l'explication à envoyer
+ *
+ * @return $string Chaine pour $msg
+ */
+function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_app_id_groupe, $corriger_app_num_periode, $texte_mail) {
+	$msg="";
+
+	if($texte_mail!="") {
+
+		$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+		if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+			$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+		}
+
+		if($envoi_mail_actif=='y') {
+			$email_destinataires="";
+
+			$sql="SELECT id_classe FROM j_eleves_classes WHERE (login='$corriger_app_login_eleve' AND periode='$corriger_app_num_periode');";
+			$req=mysql_query($sql);
+			if(mysql_num_rows($req)>0) {
+				$correction_id_classe=mysql_result($req,0,"id_classe");
+				$sql="(SELECT DISTINCT email FROM utilisateurs WHERE statut='secours' AND email!='')
+				UNION (SELECT DISTINCT email FROM utilisateurs u, j_scol_classes jsc WHERE u.login=jsc.login AND id_classe='$correction_id_classe');";
+			}
+			else {
+				//$sql="select email from utilisateurs where statut='secours' AND email!='';";
+				$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
+			}
+			//echo "$sql<br />";
+			$req=mysql_query($sql);
+			if(mysql_num_rows($req)>0) {
+				$lig_u=mysql_fetch_object($req);
+				$email_destinataires=$lig_u->email;
+				while($lig_u=mysql_fetch_object($req)) {
+					$email_destinataires=", ".$lig_u->email;
+				}
+
+				$email_declarant="";
+				$nom_declarant="";
+				$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
+				$req=mysql_query($sql);
+				if(mysql_num_rows($req)>0) {
+					$lig_u=mysql_fetch_object($req);
+					$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
+					$email_declarant=$lig_u->email;
+				}
+
+				$email_autres_profs_grp="";
+				// Recherche des autres profs du groupe
+				$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$corriger_app_id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
+				//echo "$sql<br />";
+				$req=mysql_query($sql);
+				if(mysql_num_rows($req)>0) {
+					$lig_u=mysql_fetch_object($req);
+					$email_autres_profs_grp.=$lig_u->email;
+					while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
+				}
+
+				$sujet_mail="Demande de validation de correction d'appréciation";
+	
+				$ajout_header="";
+				if($email_declarant!="") {
+					$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
+					if($email_autres_profs_grp!='') {
+						$ajout_header.=", $email_autres_profs_grp";
+					}
+					$ajout_header.="\r\n";
+					$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
+
+				}
+				elseif($email_autres_profs_grp!='') {
+					$ajout_header.="Cc: $email_autres_profs_grp\r\n";
+				}
+
+				$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
+				$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
+
+				$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
+			}
+			else {
+				$msg.="Aucun compte scolarité avec adresse mail n'est associé à cet(te) élève.<br />Pas de compte secours avec adresse mail non plus.<br />La correction a été soumise, mais elle n'a pas fait l'objet d'un envoi de mail.<br />";
+			}
+		}
+	}
+	return $msg;
+}
+
 ?>

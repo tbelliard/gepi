@@ -52,6 +52,8 @@ if ($utilisateur == null) {
 	die();
 }
 
+$tab_termes_CDT2=get_texte_CDT2();
+
 //récupération de la notice
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_devoir"]) ? $_GET["id_devoir"] :NULL);
 $succes = isset($_POST["succes"]) ? $_POST["succes"] :(isset($_GET["succes"]) ? $_GET["succes"] :NULL);
@@ -90,13 +92,15 @@ if ($ctTravailAFaire != null) {
 		die();
 	}
 
-	//on cherche si il y a une notice pour le groupe à la date précisée
-	$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
-	$criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $today, '=');
-	$criteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $utilisateur->getLogin());
-	$ctTravailAFaires = $groupe->getCahierTexteTravailAFaires($criteria);
-	$ctTravailAFaire = isset($ctTravailAFaires[0]) ? $ctTravailAFaires[0] : NULL;
-	
+	if ($ajout_nouvelle_notice != "oui") {
+		//on cherche si il y a une notice pour le groupe à la date précisée
+		$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
+		$criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $today, '=');
+		$criteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $utilisateur->getLogin());
+		$ctTravailAFaires = $groupe->getCahierTexteTravailAFaires($criteria);
+		$ctTravailAFaire = isset($ctTravailAFaires[0]) ? $ctTravailAFaires[0] : NULL;
+	}
+
 	if ($ctTravailAFaire == null) {
 		//pas de notices, on initialise un nouvel objet
 		$ctTravailAFaire = new CahierTexteTravailAFaire();
@@ -159,7 +163,7 @@ $type_couleur = "t";
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
 echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" HEIGHT=\"16\" WIDTH=\"16\" style=\"border: 0px; vertical-align : middle\" src=\"../images/blank.gif\"  alt=\"Lier\" title=\"Lier la liste avec la liste des de notices\" /></div>&nbsp;";
 
-echo "<div style='float:right; width: 150px; text-align: center;'>\n";
+echo "<div style='float:right; width: 150px; text-align: center;' title=\"".$tab_termes_CDT2['attribut_title_CDT2_Travaux_pour_ce_jour']."\">\n";
 echo "Travaux pour ce jour en";
 $classes=$groupe->getClasses();
 foreach($classes as $classe){
@@ -236,18 +240,18 @@ echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"j
 */
 echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate());
-					\">Voir NP</button>\n";
+					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_Voir_NP']."\">Voir NP</button>\n";
 
 echo "<button style='background-color:lightblue' onclick=\"javascript:
 						getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php',{});
-					\">Banque</button>\n";
+					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_Banque']."\">Banque</button>\n";
 
 if(file_exists("./archives.php")) {
 	// Mon fichier contient juste:
 	/* <?php echo "<iframe src='../documents/archives/index.php' width='100%' height='100%'/>"; ?> */
 	echo "<button style='background-color:bisque' onclick=\"javascript:
 						getWinArchives().setAjaxContent('./archives.php',{});
-					\">Archives</button>\n";
+					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_Archives']."\">Archives</button>\n";
 }
 
 echo "<a href=\"javascript:insere_texte_dans_ckeditor(document.getElementById('div_tableau_eleves').innerHTML)\" title='Insérer un tableau de la liste des élèves dans le texte de la notice'><img src='../images/icons/tableau.png' width='16' height='16' alt='Insérer un tableau de la liste des élèves dans le texte de la notice' /></a>";
@@ -274,6 +278,19 @@ echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[
 
 if (!$ctTravailAFaire->isNew()) {
 	echo " - <b><font color=\"red\">Modification de la notice</font></b>\n";
+	echo " - 
+			<a href=\"#\" onclick=\"javascript:
+				getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_groupe=".$groupe->getId()."&today=".$ctTravailAFaire->getDateCt()."&ajout_nouvelle_notice=oui',
+					{ onComplete:
+						function(transport) {
+							getWinEditionNotice().updateWidth();
+						}
+					}
+				);
+				return false;
+			\">
+			Ajouter une notice
+			</a> - \n";
 	echo " - <a href=\"#\" onclick=\"javascript:
 				$('dupplication_notice').show();
 				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteTravailAFaire&id_ct=".$ctTravailAFaire->getIdCt()."',

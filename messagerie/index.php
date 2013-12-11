@@ -282,6 +282,13 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	// on enregistre le message
 	if ($record == 'yes') {
 		$erreur=false;
+
+		/*
+		echo "\$date_debut=$date_debut<br />";
+		echo "\$date_fin=$date_fin<br />";
+		echo "\$date_decompte=$date_decompte<br />";
+		*/
+
 		if (count($t_login_destinataires)==0)
 			if (isset($_POST['id_mess']))
 				$erreur=!update_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,"");
@@ -297,20 +304,21 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 				else
 					$erreur=!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire) && $erreur;
 			}
-	if (!$erreur) {
-		$msg_OK = "Le message a été enregistré.";
-		unset($contenu_cor);
-		unset($_POST['display_date_debut']);
-		unset($_POST['display_date_fin']);
-		unset($_POST['display_date_decompte']);
-		unset($id_mess);
-		unset($statuts_destinataires);
-		unset($login_destinataire);
-		//unset($matiere_destinataire);
-		unset($id_classe);
-	} else {
-		$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
-	}
+
+		if (!$erreur) {
+			$msg_OK = "Le message a été enregistré.";
+			unset($contenu_cor);
+			unset($_POST['display_date_debut']);
+			unset($_POST['display_date_fin']);
+			unset($_POST['display_date_decompte']);
+			unset($id_mess);
+			unset($statuts_destinataires);
+			unset($login_destinataire);
+			//unset($matiere_destinataire);
+			unset($id_classe);
+		} else {
+			$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".mysql_error();
+		}
 	}
 }
 
@@ -334,7 +342,7 @@ echo "</div>";
 
 echo "<script type=\"text/javascript\" language=\"JavaScript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>\n";
 //-----------------------------------------------------------------------------------
-echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."'>Nouveau message</a></p>\n";
 echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
@@ -490,6 +498,7 @@ if (isset($id_mess)) {
 }
 echo "<table style=\"border:1px solid black\" cellpadding=\"5\" cellspacing=\"0\"><tr><td>\n";
 echo "<form action=\"./index.php#debut_de_page\" method=\"post\" style=\"width: 100%;\" name=\"formulaire\">\n";
+echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>\n";
 echo add_token_field();
 if (isset($id_mess)) echo "<input type=\"hidden\" name=\"id_mess\" value=\"$id_mess\" />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"message\" />\n";
@@ -659,7 +668,10 @@ echo "<tr><td  colspan=\"4\" >\n";
 	while($classe=mysqli_fetch_array($R_classes))
 		{
 		?>
-		<option value="<?php echo $classe['id']; ?>" <?php if (isset($id_classe)) if ($classe['id']==$id_classe) echo "selected"; ?>><?php
+		<option value="<?php echo $classe['id']; ?>" <?php if (isset($id_classe)) if ($classe['id']==$id_classe) echo "selected"; ?> title="Déposer un message sur le Panneau d'affichage
+pour tous les professeurs de la classe de <?php echo $classe['classe'];?>.
+Pour information, le <?php echo getSettingValue('gepi_prof_suivi')?> de la classe est :
+<?php echo liste_des_prof_suivi_de_telle_classe($classe['id']);?>"><?php
 			echo $classe['nom_complet'];
 			if($classe['nom_complet']!=$classe['classe']) {echo " (".$classe['classe'].")";}
 		?></option>
@@ -792,6 +804,7 @@ if (isset($id_mess)) echo "<input type=\"submit\" value=\"Annuler\" style=\"font
 echo "</td></tr>\n";
 
 echo "</table>\n";
+echo "</fieldset>\n";
 echo "</form></td></tr></table>\n";
 
 // Fin de la colonne de droite

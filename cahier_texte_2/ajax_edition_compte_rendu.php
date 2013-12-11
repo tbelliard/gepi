@@ -54,6 +54,8 @@ if ($utilisateur == null) {
 	die();
 }
 
+$tab_termes_CDT2=get_texte_CDT2();
+
 //récupération des parametres
 //id du compte rendu
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
@@ -226,18 +228,18 @@ echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"j
 // Voir les notices privees:
 echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate());
-					\">Voir NP</button>\n";
+					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_Voir_NP']."\">Voir NP</button>\n";
 
 echo "<button style='background-color:lightblue' onclick=\"javascript:
 						getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php',{});
-					\">Banque</button>\n";
+					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_Banque']."\">Banque</button>\n";
 
 if(file_exists("./archives.php")) {
 	// Mon fichier contient juste:
 	/* <?php echo "<iframe src='../documents/archives/index.php' width='100%' height='100%'/>"; ?> */
 	echo "<button style='background-color:bisque' onclick=\"javascript:
 						getWinArchives().setAjaxContent('./archives.php',{});
-					\">Archives</button>\n";
+					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_Archives']."\">Archives</button>\n";
 }
 
 echo "<a href=\"javascript:insere_texte_dans_ckeditor(document.getElementById('div_tableau_eleves').innerHTML)\" title='Insérer un tableau de la liste des élèves dans le texte de la notice'><img src='../images/icons/tableau.png' width='16' height='16' alt='Insérer un tableau de la liste des élèves dans le texte de la notice' /></a>";

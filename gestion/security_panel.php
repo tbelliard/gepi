@@ -362,11 +362,16 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 				echo add_token_in_url()."'>Retirer l'observation</a>";
 			}
 			echo "<br />\n";
-			echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$user_login;
-			if($user_login2!='') {echo "&amp;user_login2=$user_login2";}
-			if(isset($tri)) {echo "&amp;tri=$tri";}
-			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-			echo add_token_in_url()."'>Réinitialiser cumul</a>";
+			if($user['niveau_alerte']!=0) {
+				echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$user_login;
+				if($user_login2!='') {echo "&amp;user_login2=$user_login2";}
+				if(isset($tri)) {echo "&amp;tri=$tri";}
+				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+				echo add_token_in_url()."'>Réinitialiser cumul</a>";
+			}
+			else {
+				echo "<span title='Le score cumulé actuel est nul. Aucune réinitialisation ne changera quoi que ce soit;).' style='color:gray'>Réinitialiser cumul</span>";
+			}
 			echo "</p>\n";
 		} else {
 			echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liée à un utilisateur du système)</p>\n";
@@ -514,10 +519,15 @@ while ($row = mysqli_fetch_object($req)) {
 			echo add_token_in_url()."'>Retirer l'observation</a>";
 		}
 		echo "<br />\n";
-		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login;
-		if(isset($tri)) {echo "&amp;tri=$tri";}
-		if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-		echo add_token_in_url()."'>Réinitialiser cumul</a>";
+		if($user->niveau_alerte!=0) {
+			echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login;
+			if(isset($tri)) {echo "&amp;tri=$tri";}
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Réinitialiser cumul</a>";
+		}
+		else {
+			echo "<span title='Le score cumulé actuel est nul.\nAucune réinitialisation ne changera quoi que ce soit;).' style='color:gray'>Réinitialiser cumul</span>";
+		}
 		echo "</p>\n";
 	} else {
 		echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liée à un utilisateur du système)</p>\n";

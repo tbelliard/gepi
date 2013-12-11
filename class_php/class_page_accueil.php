@@ -189,9 +189,10 @@ class class_page_accueil {
 	$this->chargeAutreNom('bloc_carnet_notes_famille');
 // Relevés de notes cumulées
     if ('eleve' == $this->statutUtilisateur) {
+        $result = FALSE;
             $sql = "SELECT 1=1 FROM `cc_notes_eval` WHERE login ='".$this->loginUtilisateur."'"; 
             $resultat = mysqli_query($mysqli, $sql);  
-            $nb_aid = $resultat->num_rows;
+            $result = $nb_aid = $resultat->num_rows;
         
         // $result += 1;
     } elseif ('responsable' == $this->statutUtilisateur) {
@@ -207,7 +208,7 @@ class class_page_accueil {
                 AND r2.ele_id = e.ele_id
                 AND e.login = ne.login"; 
             $resultat = mysqli_query($mysqli, $sql);  
-            $nb_aid = $resultat->num_rows;
+            $result = $nb_aid = $resultat->num_rows;
         
     } else {
         $result = FALSE;
@@ -2075,7 +2076,8 @@ if(getSettingAOui('active_bulletins')) {
                           WHERE indice_aid = '".$indice_aid."' and id_utilisateur='".$this->loginUtilisateur."'");
                 $nb_result2 = $call_prof2->num_rows;
                 if (($nb_result1 != 0) or ($nb_result2 != 0)) {
-                  $nom_aid = @old_mysql_result($call_data, $i, "nom");
+                  //$nom_aid = @mysql_result($call_data, $i, "nom");
+                  $nom_aid = $obj->nom;
                 if ($nb_result2 != 0)
                     $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
                           $nom_aid,

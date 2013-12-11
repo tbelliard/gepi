@@ -8,7 +8,17 @@
 	<!-- <meta http-equiv="refresh" content="[tbs_refresh.tempsmax]; URL=[tbs_refresh.lien]/logout.php?auto=3&amp;debut_session=[tbs_refresh.debut]&amp;session_id=[tbs_refresh.id_session]" /> -->
 
 
-	<title><?php echo "$titre_page : $tbs_gepiSchoolName" ?></title>
+	<title><?php
+		if((isset($titre_page))&&($titre_page!="")) {
+			echo "$titre_page : $tbs_gepiSchoolName";
+		}
+		elseif((isset($titre_page_title))&&($titre_page_title!="")) {
+			echo "$titre_page_title : $tbs_gepiSchoolName";
+		}
+		else {
+			echo "$tbs_gepiSchoolName";
+		}
+	?></title>
 	
 	
 <!-- ================= Affichage du favicon =================== -->
@@ -231,8 +241,6 @@
 			}
 		//]]>
 	</script>
-
-
 
 
 

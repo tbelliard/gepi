@@ -760,10 +760,10 @@ if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
 	//$col[1][1]="Note sup 10";
 	$col[1][1]="Mode moy";
 	//$col_csv[1][1]="Note sup 10";
-    $col_sup=0;    
-    if(isset($avec_moy_gen_periodes_precedentes)){
-        $col_sup=$periode_num;
-    }
+	$col_sup=0;
+	if(isset($avec_moy_gen_periodes_precedentes)){
+		$col_sup=$periode_num;
+	}
 	for($t=2;$t<=$nb_col+$lignes_groupes+$col_sup;$t++) {$col[$t][1]='-';}
 
 	if ($affiche_categories) {
@@ -1283,6 +1283,7 @@ while($i < $lignes_groupes) {
 	//========================================
 	//================================
 	$col_csv=array();
+	//echo "DEBUG : Initialisation de \$col_csv<br />";
 	if($temoin_graphe=="oui"){
 		if($i==$lignes_groupes-1){
 			for($loop=0;$loop<$nb_lignes_tableau;$loop++){
@@ -2290,6 +2291,11 @@ if(isset($_GET['mode'])) {
 
 		// Hauteur par defaut des lignes de tableau:
 		$h_cell=10;
+		// La hauteur de ligne est-elle imposée?
+		// Par défaut, on tente d'utiliser au mieux la hauteur de la page en modifiant $h_cell plus loin.
+		// Il est possible d'interdire la modification
+		// (cela peut servir, en mettant un $h_cell élevé, en DEBUG à forcer l'affichage sur plusieurs pages).
+		$hauteur_ligne_imposee="n";
 
 		// Largeur des colonnes
 		$largeur_col=array();
@@ -2369,13 +2375,27 @@ echo "\n";
 		$largeur_col[1]=$largeur_col_nom_ele;
 		// $col_csv[1] contient la première colonne du tableau affiché et son indice commence à 0 avec le nom du premier élève ou le coefficient s'il est affiché
 		//for($i=1;$i<=count($col_csv[1]);$i++) {
-		for($i=0;$i<=count($col_csv[1]);$i++) {
+		//for($i=0;$i<=count($col_csv[1]);$i++) {
+		for($i=0;$i<=count($col[1]);$i++) {
 			// Si on n'affiche pas de coefficient, on ne va pas jusqu'à count($col_csv[1]
+
+			$chaine_test="";
 			if(isset($col_csv[1][$i])) {
-//echo "\$col_csv[1][$i]=".$col_csv[1][$i]."\n";
-				$longueur_courante=$pdf->GetStringWidth($col_csv[1][$i]);
+				$chaine_test=$col_csv[1][$i];
+			}
+			elseif(isset($col[1][$i])) {
+				$chaine_test=$col[1][$i];
+			}
+
+			if($chaine_test!="") {
+				//echo "\$col_csv[1][$i]=".$col_csv[1][$i]."\n";
+				//$longueur_courante=$pdf->GetStringWidth($col_csv[1][$i]);
+				//$longueur_courante=$pdf->GetStringWidth($col[1][$i]);
+				$longueur_courante=$pdf->GetStringWidth($chaine_test);
 				if($longueur_courante>$longueur_max_nom_prenom) {
-					$texte_test[1]=$col_csv[1][$i];
+					//$texte_test[1]=$col_csv[1][$i];
+					//$texte_test[1]=$col[1][$i];
+					$texte_test[1]=$chaine_test;
 					$longueur_max_nom_prenom=$longueur_courante;
 				}
 			}
@@ -2470,7 +2490,9 @@ echo "\n";
 		//$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)-1)));
 		// Il faut ajouter les trois lignes Min/Moy/Max
 		//$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)-1+3)));
-		$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)+3)));
+		if($hauteur_ligne_imposee!="y") {
+			$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)+3)));
+		}
 
 		/*
 		$pdf->SetXY(10, 110);
@@ -2483,6 +2505,7 @@ echo "\n";
 		$h_ligne=$h_cell;
 
 		$y2=$y2+$h_ligne_titre_tableau;
+		$y_sous_ligne_titre_tableau_pages_suivantes=$marge_haute+$h_ligne_titre_tableau;
 		$k=1;
 		//for($j=1;$j<count($col[1]);$j++) {
 		for($j=0;$j<count($col[1]);$j++) {
@@ -2497,6 +2520,46 @@ echo "\n";
 				else {
 					$pdf->AddPage();
 					$y2=$y0;
+
+					//===========================
+					// Ligne d'entête du tableau
+					//$pdf->SetXY($x0,$y0);
+					$pdf->SetXY($x0,$y2);
+					$largeur_dispo=$largeur_col_nom_ele;
+					$texte=$ligne1_csv[1];
+
+					$graisse='B';
+					//$alignement='L';
+					$alignement='C';
+					$bordure='LRBT';
+					cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+					$pdf->SetFont($fonte,'B',$taille_police_matiere);
+					$alignement='C';
+					$x2=$x0+$largeur_col_nom_ele;
+					for($i=2;$i<=count($ligne1_csv);$i++) {
+						$pdf->SetXY($x2, $y2);
+						$largeur_dispo=$largeur_col[$i];
+
+						// Cadre de la cellule:
+						$pdf->Cell($largeur_dispo,$h_ligne_titre_tableau, "",'LRBT',2,'');
+
+						// Texte à la verticale:
+						$texte=" ".$ligne1_csv[$i]." ";
+
+						//ajuste_FontSize($texte, $h_ligne_titre_tableau, 12, 'B', 5);
+
+						$pdf->TextWithRotation($x2+Ceil($largeur_dispo/2),$y2+$h_ligne_titre_tableau,$texte,90);
+
+						$x2+=$largeur_dispo;
+					}
+					//===========================
+					// On réinitialise la graisse après la ligne d'entête
+					$graisse='';
+					//===========================
+
+					$x2=$x0;
+					$y2=$y_sous_ligne_titre_tableau_pages_suivantes;
 				}
 			}
 
@@ -2522,6 +2585,7 @@ echo "\n";
 					$texte=" ".$col[$i][$j]." ";
 					//$texte=$col[$i][$j]." ";
 				}
+				//$texte.=$taille_police_col[$i];
 
 				$pdf->SetFont($fonte,$graisse, $taille_police_col[$i]);
 
@@ -2549,6 +2613,12 @@ echo "\n";
 }
 
 //**************** EN-TETE *****************
+// Sans $titre_page, on n'affiche pas l'entête, mais on se retrouve alors sans rien dans le titre de la page dans la barre de menu du navigateur
+// Ou plutôt, on se retrouve avec:
+//          : Collège Tartempion
+// $titre_page="";
+// Ajout d'une variable:
+$titre_page_title="Notes des bulletins";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 

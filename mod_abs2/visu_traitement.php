@@ -224,8 +224,11 @@ $date_max_saisie="";
 $timestamp_min_debut="";
 $timestamp_max_fin="";
 
+$cpt_tour_dans_boucle_saisies=0;
 $tab_id_eleves_traitement=array();
 foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
+    $cpt_tour_dans_boucle_saisies++;
+
     //$saisie = new AbsenceEleveSaisie();
     if ($saisie->getEleve() == null) {
 		if (!$traitement->getAbsenceEleveSaisies()->isFirst()) {
@@ -290,6 +293,7 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 		echo '<br/>';
 		$eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
     }
+
     echo '<div>';
 	/*
 	echo "<pre>";
@@ -349,6 +353,21 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 		echo '<br/>';
     }
 }
+
+if($cpt_tour_dans_boucle_saisies==0) {
+  $sql="SELECT a_saisie_id FROM j_traitements_saisies WHERE a_traitement_id='".$traitement->getPrimaryKey()."';";
+  $res_saisies=mysql_query($sql);
+  if(mysql_num_rows($res_saisies)>0) {
+      echo "<span style='color:red'>Il existe des saisies associées, mais elles ont peut-être été supprimées.</span><br /><span style='color:red; font-weight:bold;'>Liste des saisies&nbsp;:</span> ";
+      $cpt_saisie_cachees=0;
+      while($lig_saisie=mysql_fetch_object($res_saisies)) {
+           if($cpt_saisie_cachees>0) {echo " - ";}
+           echo " <a href='visu_saisie.php?id_saisie=$lig_saisie->a_saisie_id' title='Voir la saisie n°$lig_saisie->a_saisie_id'>$lig_saisie->a_saisie_id</a>";
+           $cpt_saisie_cachees++;
+      }
+  }
+}
+
 if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
     echo '<br/>';
 

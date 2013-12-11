@@ -116,6 +116,8 @@ $oRssFeed->setCopyright('(L) - GEPI '.getSettingValue('version'));
 $oRssFeed->setGenerator('Généré par RSSFeed Class de Hugo "Emacs" HAMON - http://www.apprendre-php.com');
 $oRssFeed->setLanguage('fr');
 
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+
 // Ajout des news au flux
 if ($items["cdt_dev"]["count"] != 0) {
 	for($a = 0; $a < $items["cdt_dev"]["count"] ; $a++)
@@ -137,6 +139,7 @@ if ($items["cdt_dev"]["count"] != 0) {
 		$oRssItem->setTitle($donnees["description"].' - Pour le '.date("d-m-Y", $items["cdt_dev"][$a]["date_ct"]));
 
 		$contenu_courant='-> Travail donné par '.$prof.' : '.$items["cdt_dev"][$a]["contenu"];
+		$tab_autres_docs_joints=array();
 		if(isset($items["cdt_dev"][$a]["doc_joint"])) {
 			//$contenu_courant.="\n";
 			if(count($items["cdt_dev"][$a]["doc_joint"])==1) {
@@ -145,11 +148,73 @@ if ($items["cdt_dev"]["count"] != 0) {
 			else {
 				$contenu_courant.=" - ".count($items["cdt_dev"][$a]["doc_joint"])." documents sont joints : ";
 			}
+			$tab_autres_docs_joints=array();
 			for($loop=0;$loop<count($items["cdt_dev"][$a]["doc_joint"]);$loop++) {
 				//$contenu_courant.="\n".$items["cdt_dev"][$a]["doc_joint"][$loop]['titre'];
 				//$contenu_courant.="\n"."<a href='https://".$_SERVER["SERVER_NAME"].$gepiPath."/".preg_replace("|^../|","",$items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])."'>".$items["cdt_dev"][$a]["doc_joint"][$loop]['titre']."</a>";
 				if($loop>0) {$contenu_courant.=", ";}
-				$contenu_courant.=$items["cdt_dev"][$a]["doc_joint"][$loop]['titre']." (https://".$_SERVER["SERVER_NAME"].$gepiPath."/".preg_replace("|^../|","",$items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement']).")";
+				$url_doc_courant="https://".$_SERVER["SERVER_NAME"].$gepiPath."/".preg_replace("|^../|","",$items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement']);
+				$contenu_courant.=$items["cdt_dev"][$a]["doc_joint"][$loop]['titre']." ($url_doc_courant)";
+
+				$mimeType=finfo_file($finfo, $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement']);
+				if($mimeType=="") {
+					if(preg_match("/.jpg$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="image/jpeg";
+					}
+					elseif(preg_match("/.jpeg$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="image/jpeg";
+					}
+					elseif(preg_match("/.png$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="image/png";
+					}
+					elseif(preg_match("/.gif$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="image/gif";
+					}
+					elseif(preg_match("/.mp3$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="audio/mpeg";
+					}
+					elseif(preg_match("/.wav$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="audio/x-wav";
+					}
+					elseif(preg_match("/.zip$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="application/zip";
+					}
+					elseif(preg_match("/.ggb$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="application/zip";
+					}
+					elseif(preg_match("/.txt$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="text/plain";
+					}
+					elseif(preg_match("/.doc$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="application/msword";
+					}
+					elseif(preg_match("/.pdf$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="application/pdf";
+					}
+					elseif(preg_match("/.xls$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="application/vnd.ms-excel";
+					}
+					elseif(preg_match("/.pps$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="application/vnd.ms-powerpoint";
+					}
+					elseif(preg_match("/.odt$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="application/vnd.oasis.opendocument.text";
+					}
+					elseif(preg_match("/.ods$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+						$mimeType="application/vnd.oasis.opendocument.spreadsheet";
+					}
+				}
+
+				if($mimeType!="") {
+					// Une seule enclosure est supportée par RSS
+					// S'il y a plusieurs doc joints, seul le dernier est proposé...
+					if($loop==0) {
+						$oRssItem->setEnclosure($url_doc_courant, filesize($items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement']), $mimeType);
+					}
+					else {
+						$tab_autres_docs_joints[]=array($url_doc_courant, filesize($items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement']), $mimeType);
+					}
+				}
 			}
 		}
 		$oRssItem->setDescription($contenu_courant);
@@ -163,6 +228,30 @@ if ($items["cdt_dev"]["count"] != 0) {
 		$oRssItem->setPubDate(date("Y-m-d h:i:s", $items["cdt_dev"][$a]["date_ct"]));
 		$oRssFeed->appendItem($oRssItem);
 		$oRssItem = null;
+
+		if(count($tab_autres_docs_joints)>0) {
+			for($loop=0;$loop<count($tab_autres_docs_joints);$loop++) {
+				$oRssItem = new RSSFeedItem();
+				$oRssItem->setTitle($donnees["description"].' - Pour le '.date("d-m-Y", $items["cdt_dev"][$a]["date_ct"]));
+
+				$contenu_courant='-> Travail donné par '.$prof.' : '.$items["cdt_dev"][$a]["contenu"];
+				$contenu_courant='-> Document joint';
+
+				$oRssItem->setEnclosure($tab_autres_docs_joints[$loop][0], $tab_autres_docs_joints[$loop][1], $tab_autres_docs_joints[$loop][2]);
+
+				$oRssItem->setDescription($contenu_courant);
+
+				$oRssItem->setLink($ServerProtocole.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
+				$oRssItem->setGuid($ServerProtocole.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
+				if(!empty($sEmail))
+				{
+					$oRssItem->setAuthor($sEmail, 'ADMIN');
+				}
+				$oRssItem->setPubDate(date("Y-m-d h:i:s", $items["cdt_dev"][$a]["date_ct"]));
+				$oRssFeed->appendItem($oRssItem);
+				$oRssItem = null;
+			}
+		}
 	}
 }elseif($items["cdt_dev"]["count"] == 0){
 

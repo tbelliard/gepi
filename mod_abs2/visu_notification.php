@@ -795,7 +795,18 @@ echo '</tbody>';
 
 echo '</table>';
 
-
+if((getSettingAOui('active_mod_ooo'))&&
+((($_SESSION['statut']=='cpe')&&(getSettingAOui('OOoUploadCpeAbs2')))||
+($_SESSION['statut']=='administrateur'))) {
+	echo "<p><em>NOTE&nbsp;:</em> Le texte des notifications, qu'il soit <span title='Format texte OpenOffice'>ODT</span>, <span title='Format tableur OpenOffice'>ODS</span> ou SMS, est paramétrable dans <a href='../mod_ooo/gerer_modeles_ooo.php' target='_blank'>Modèle OpenOffice</a>.</p>";
+}
+else {
+	echo "<p><em>NOTE&nbsp;:</em> Le texte des notifications, qu'il soit <span title='Format texte OpenOffice'>ODT</span>, <span title='Format tableur OpenOffice'>ODS</span> ou SMS, est paramétrable dans Modèle OpenOffice";
+	if(!getSettingAOui('active_mod_ooo')) {
+		echo " (<em>à condition que le module OOo soit activé</em>)";
+	}
+	echo ".</p>";
+}
 echo "</div>\n";
 
 require_once("../lib/footer.inc.php");

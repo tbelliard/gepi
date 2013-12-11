@@ -23,6 +23,7 @@
 require_once("../lib/initialisations.inc.php");
 
 //**************** EN-TETE *****************
+$titre_page_title="Fiche bienvenue";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 $fiche=isset($_POST["fiche"]) ? $_POST["fiche"] : (isset($_GET["fiche"]) ? $_GET["fiche"] : "personnels");
@@ -97,7 +98,7 @@ if($fiche_demo=="n") {
 
 	echo "<div id='div_compte_rendu_envoi_mail' style='text-align:center;' class='noprint'></div>\n";
 
-	echo "<div id='lien_mail' style='float:right; width:16px; display:none' class='noprint'><a href=\"javascript:afficher_div('div_envoi_FB_par_mail','y',10,10)\" title=\"Envoyer par mail la Fiche Bienvenue de $user_login.\"><img src='../images/icons/courrier_envoi.png' class='icon16' alt='Mail' /></a></div>
+	echo "<div id='lien_mail' style='float:right; width:16px; display:none' class='noprint'><a href=\"javascript:afficher_div('div_envoi_FB_par_mail','y',10,10)\" title=\"Envoyer par mail la Fiche Bienvenue de $user_login.\"><img src='../images/icons/courrier_envoi.png' class='icone16' alt='Mail' /></a></div>
 	<script type='text/javascript'>document.getElementById('lien_mail').style.display=''</script>\n";
 	//echo "</div>\n";
 https://127.0.0.1/steph/gepi_git_trunk/gestion/modele_fiche_information.php?user_login=abele&fiche=eleves
@@ -113,7 +114,7 @@ https://127.0.0.1/steph/gepi_git_trunk/gestion/modele_fiche_information.php?user
 <p>Précisez à quelle adresse vous souhaitez envoyer la fiche bienvenue&nbsp;:<br />
 Mail&nbsp;:&nbsp;<input type='text' name='mail_dest' value='$mail_user' />
 <input type='submit' value='Envoyer' id='button_submit_form_envoi_fb_mail' onclick='afficher_envoi_mail_en_cours()' />
-<img src='../images/spinner.gif' class='icon16' title='Envoi en cours' alt='Envoi en cours' style='display:none' id='img_envoi_fb_mail' />
+<img src='../images/spinner.gif' class='icone16' title='Envoi en cours' alt='Envoi en cours' style='display:none' id='img_envoi_fb_mail' />
 </form>
 <script type='text/javascript'>
 	function afficher_envoi_mail_en_cours() {

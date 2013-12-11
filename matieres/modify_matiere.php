@@ -254,7 +254,7 @@ if (isset($_GET['current_matiere'])) {
 		}
 
 		if(count($tab_profs_associes)>0) {
-			echo "<div style='float:right; width:16px;'><a href='../eleves/recherche.php?is_posted_recherche2b=y&amp;rech_matiere[]=".$current_matiere.add_token_in_url()."' title=\"Extraire la liste des professeurs (qu'ils soient associés à la matière dans des enseignements ou non).\" target='_blank'><img src='../images/group16.png' class='icon16' /></a></div>";
+			echo "<div style='float:right; width:16px;'><a href='../eleves/recherche.php?is_posted_recherche2b=y&amp;rech_matiere[]=".$current_matiere.add_token_in_url()."' title=\"Extraire la liste des professeurs (qu'ils soient associés à la matière dans des enseignements ou non).\" target='_blank'><img src='../images/group16.png' class='icone16' /></a></div>";
 			if(count($tab_profs_associes)>1) {
 				echo "<p class='bold'>Les professeurs associés sont&nbsp;<br />\n";
 			}
@@ -391,7 +391,7 @@ if((isset($current_matiere))&&($current_matiere!="")) {
 		for($loop=0;$loop<count($tab_domaines);$loop++) {
 			$chaine_domaines.="&amp;rech_domaine[]=".$tab_domaines[$loop];
 		}
-		echo "<a href='../eleves/recherche.php?is_posted_recherche2=y&amp;rech_matiere[]=".$current_matiere.$chaine_domaines.add_token_in_url()."' title=\"Extraire la liste des professeurs (associés aux enseignements ci-dessous).\" target='_blank'><img src='../images/group16.png' class='icon16' /></a>";
+		echo "<a href='../eleves/recherche.php?is_posted_recherche2=y&amp;rech_matiere[]=".$current_matiere.$chaine_domaines.add_token_in_url()."' title=\"Extraire la liste des professeurs (associés aux enseignements ci-dessous).\" target='_blank'><img src='../images/group16.png' class='icone16' /></a>";
 		echo "<br />";
 		while($lig_ens=mysqli_fetch_object($res_ens)) {
 

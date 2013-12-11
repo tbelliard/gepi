@@ -71,7 +71,21 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : "";
 // ========== Fin de l'initialisation de la page =============
 
 // On détermine si les variables envoyées sont bonnes ou pas
-$verif_var1 = explode("_t", $var1);
+//$verif_var1 = explode("_t", $var1);
+if(!preg_match("/_t[0-9]*$/", $var1)) {
+	//echo "var1=$var1 est invalide.<br />";
+	log_ajax_app("var1=$var1 est invalide.");
+	die();
+}
+$login_eleve=preg_replace("/_t[0-9]*$/", "", $var1);
+$num_periode=preg_replace("/^".$login_eleve."_t/","", $var1);
+if(!preg_match("/^[0-9]*$/", $num_periode)) {
+	//echo "Le numéro de période $num_periode extrait de var1=$var1 est invalide.<br />";
+	log_ajax_app("Le numéro de période $num_periode extrait de var1=$var1 est invalide.");
+	die();
+}
+$verif_var1[0]=$login_eleve;
+$verif_var1[1]=$num_periode;
 
 // On vérifie que le login de l'élève soit valable et qu'il corresponde à l'enseignement envoyé par var2
 $temoin_eleve=0;
@@ -89,6 +103,7 @@ if($_SESSION['statut']=='professeur') {
 	// On vérifie que le prof logué peut saisir ces appréciations
 	//$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."'");
 	//if($mode!="verif") {
+	//echo "mode=$mode<br />";
 	if($mode!="verif_avis") {
 		// On ne vient pas de la page de saisie d'avis du conseil de classe
 		$verif_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
@@ -128,7 +143,9 @@ if($_SESSION['statut']=='professeur') {
 //echo "\$temoin_prof=$temoin_prof<br />";
 
 if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($_SESSION['statut']=='cpe') || (($temoin_eleve !== 0 AND $temoin_prof !== 0))) {
-	if($mode!="verif_avis") {
+	// Si on a passé mode=verif, c'est un test des lapsus.
+	// Il ne faut pas mettre à jour matieres_appreciations_tempo sans quoi, au chargement de saisie_appreciations.php, en testant les lapsus, on va aussi remettre les anciennes valeurs (vide si on n'avait rien enregistré auparavant ou une appréciation antérieure)
+	if(($mode!="verif_avis")&&($mode!="verif")) {
 		// On ne vient pas de la page de saisie d'avis du conseil de classe
 		// On va enregistrer les appréciations temporaires
 
@@ -199,7 +216,7 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 					while($lig_voc=mysqli_fetch_object($res)) {
 						$tab_voc[]=$lig_voc->terme;
 						$tab_voc_corrige[]=$lig_voc->terme_corrige;
-						log_ajax_app("Tableau des corrections possibles : ".$lig_voc->terme." -> ".$lig_voc->terme_corrige);
+						//log_ajax_app("Tableau des corrections possibles : ".$lig_voc->terme." -> ".$lig_voc->terme_corrige);
 					}
 
 					/*
@@ -215,13 +232,13 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 						if(preg_match("/ ".$tab_voc[$loop]." /i",$appreciation_test)) {
 							if($chaine_retour=="") {$chaine_retour.="<span style='font-weight:bold'>Suspicion de faute de frappe&nbsp;: </span>";}
 							$chaine_retour.=$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]."<br />";
-							log_ajax_app("Suspicion de faute de frappe : ".$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]);
+							//log_ajax_app("Suspicion de faute de frappe : ".$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]);
 						}
 					}
 
 					if($chaine_retour!="") {
 						echo $chaine_retour;
-						log_ajax_app("\$chaine_retour=".$chaine_retour);
+						//log_ajax_app("\$chaine_retour=".$chaine_retour);
 					}
 					else {
 						// et on renvoie une réponse valide

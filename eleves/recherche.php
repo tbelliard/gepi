@@ -66,11 +66,12 @@ function extract_utilisateurs($tab_login) {
 			}
 
 			$tab_result_recherche['personnel'][$cpt_pers]['nom_prenom']=casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
+			$tab_result_recherche['personnel'][$cpt_pers]['civ_nom_prenom']=$lig->civilite." ".$tab_result_recherche['personnel'][$cpt_pers]['nom_prenom'];
 
 			$tab_result_recherche['personnel'][$cpt_pers]['email']=$lig->email;
 			$tab_result_recherche['personnel'][$cpt_pers]['td_email']="";
 			if(check_mail($lig->email)) {
-				$tab_result_recherche['personnel'][$cpt_pers]['td_email']="<a href='mailto:".$lig->email."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI' title='Envoyer un mail à $lig->email'><img src='../images/icons/courrier_envoi.png' class='icon16' alt='Mail' /></a><span id='email_personnel_".$cpt_pers."' style='display:none;'>$lig->email</span>";
+				$tab_result_recherche['personnel'][$cpt_pers]['td_email']="<a href='mailto:".$lig->email."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI' title='Envoyer un mail à $lig->email'><img src='../images/icons/courrier_envoi.png' class='icone16' alt='Mail' /></a><span id='email_personnel_".$cpt_pers."' style='display:none;'>$lig->email</span>";
 			}
 
 			// Compte actif ou non
@@ -120,6 +121,7 @@ function extract_utilisateurs($tab_login) {
 			$tab_result_recherche['personnel'][$cpt_pers]['td_classes']="";
 			if($lig->statut=='professeur') {
 				$tab_classes_prof=get_classes_from_prof($lig->login);
+				$tab_classes_pp=get_tab_prof_suivi("", $lig->login);
 				if(count($tab_classes_prof)>0) {
 					$cpt_classe=0;
 					foreach($tab_classes_prof as $id_classe_prof => $classe_prof) {
@@ -134,6 +136,9 @@ function extract_utilisateurs($tab_login) {
 						}
 						else {
 							$tab_result_recherche['personnel'][$cpt_pers]['td_classes'].=$classe_prof;
+						}
+						if(in_array($id_classe_prof ,$tab_classes_pp)) {
+							$tab_result_recherche['personnel'][$cpt_pers]['td_classes'].=" <img src='../images/bulle_verte.png' title=\"".$tab_result_recherche['personnel'][$cpt_pers]['civ_nom_prenom']." est ".getSettingValue('gepi_prof_suivi')." d'au moins un élève de la classe de ".$classe_prof." sur une des périodes.\" height='9' width='9'>";
 						}
 						$cpt_classe++;
 					}
@@ -349,7 +354,7 @@ if(isset($is_posted_recherche)) {
 					$tab_result_recherche['responsable'][$cpt_resp]['nom_prenom']=casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
 
 					// Le span display none sert dans le tri.
-					$tab_result_recherche['responsable'][$cpt_resp]['td_compte']="<span style='display:none;'>Pas de compte</span><img src='../images/disabled.png' class='icon20' title='Pas de compte' alt='Pas de compte' />";
+					$tab_result_recherche['responsable'][$cpt_resp]['td_compte']="<span style='display:none;'>Pas de compte</span><img src='../images/disabled.png' class='icone20' title='Pas de compte' alt='Pas de compte' />";
 					$tab_result_recherche['responsable'][$cpt_resp]['compte']="";
 					$tab_result_recherche['responsable'][$cpt_resp]['login']="";
 					if($lig->login!="") {
@@ -1009,7 +1014,7 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
              Exemples: (1) Pour rechercher les Mickael, Mickaël et Michael,
                                     il est possible de saisir Mic%ael.
                                (2) La saisie de % comme seul critère permet aussi d'extraire 
-                                    toutes les personnes des catégories choisies."><img src='../images/icons/ico_question_petit.png' class='icon16' alt='Astuce' /></div>
+                                    toutes les personnes des catégories choisies."><img src='../images/icons/ico_question_petit.png' class='icone16' alt='Astuce' /></div>
 		<input type='submit' id='submit_chercher' value='Chercher' />
 		<input type='button' id='button_chercher' value='Chercher' style='display:none' onclick='valider_form_recherche()' />
 	</fieldset>

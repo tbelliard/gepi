@@ -1,9 +1,10 @@
 <?php
+//debug_var();
 // suppression d'un message du panneau d'affichage
 if (isset($_POST['supprimer_message'])) {
 	$r_sql="DELETE FROM `messages` WHERE `id`='".$_POST['supprimer_message']."'";
            
-        $resultat = mysqli_query($mysqli, $sql);
+        $resultat = mysqli_query($mysqli, $r_sql);
 }
 
 
@@ -34,6 +35,7 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
     while ($obj = $appel_messages->fetch_object()) {
         $statuts_destinataires1 = $obj->statuts_destinataires;
         $login_destinataire1 = $obj->login_destinataire;
+        $id_message1 = $obj->id;
         $autre_message = "";
         if ((strpos($statuts_destinataires1, mb_substr($_SESSION['statut'], 0, 1))) || ($_SESSION['login']==$login_destinataire1)) {
             if ($affiche_messages == 'yes') {
@@ -44,7 +46,8 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
             $content = $obj->texte;
             // _DECOMPTE_
             if(strstr($content, '_DECOMPTE_')) {
-                $nb_sec=old_mysql_result($appel_messages, $ind, 'date_decompte')-time();
+                //$nb_sec=mysql_result($appel_messages, $ind, 'date_decompte')-time();
+                $nb_sec=$obj->date_decompte-time();
                 if($nb_sec>0) {
                     $decompte_remplace="";
                 } elseif($nb_sec==0) {
@@ -83,7 +86,7 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
             //$tbs_message[]=array("suite"=>$autre_message,"message"=>$content);
 
             // dans accueil.php
-            if (isset($afficheAccueil) && is_object($afficheAccueil)) $afficheAccueil->message[]=array("suite"=>$autre_message,"message"=>$content);
+            if (isset($afficheAccueil) && is_object($afficheAccueil)) $afficheAccueil->message[]=array("id"=>$id_message1, "suite"=>$autre_message,"message"=>$content);
             // dans accueil_simpl_prof.php
             $texte_messages_simpl_prof .= $content;
         }

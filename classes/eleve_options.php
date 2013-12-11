@@ -436,7 +436,7 @@ while ($i < $nombre_ligne) {
 
 	$texte_alternatif.=" (".$liste_classes_du_groupe.")";
 
-	echo "<a href='../groupes/edit_group.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;mode=groupe' title='$texte_alternatif'>";
+	echo "<a href='../groupes/edit_group.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;mode=groupe' title='$texte_alternatif : Éditer cet enseignement.'>";
 	echo $nom_groupe;
 	echo "<br /><span style='font-size:xx-small;'>$description_groupe</span>";
 	echo "</a>";

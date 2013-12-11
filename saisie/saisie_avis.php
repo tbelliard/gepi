@@ -58,7 +58,13 @@ if (($_SESSION['statut'] == 'cpe') and getSettingValue("GepiRubConseilCpe")!='ye
 }
 
 
-echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('CommentairesTypesScol')))||
+(($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesCpe')))) {
+	echo " | <a href='commentaires_types.php'>Saisie de commentaires-types</a>";
+}
+echo "</p>";
 if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') or ($_SESSION['statut'] == 'cpe')) {
     //$call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 

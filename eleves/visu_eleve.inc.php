@@ -155,6 +155,7 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 		if(mysqli_num_rows($res_ele)>0) {
 			echo "<p>".ucfirst($gepiSettings['denomination_eleves'])." de la classe de ".get_class_from_id($id_classe).":</p>\n";
 
+
 			$tab_txt=array();
 			$tab_lien=array();
 
@@ -296,6 +297,8 @@ else {
 			$onglet="eleve";
 		}
 
+		echo "<span id='champ_select_classe' style='display:none'> : ".champ_select_classe($_SESSION['login'], $_SESSION['statut'], 'select_id_classe', 'select_id_classe', $id_classe, "y", "change_classe_et_submit()")."</span>";
+
 		if($ele_login_prec!=""){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_prec&amp;id_classe=$id_classe";
 			echo $chaine_quitter_page_ou_non;
@@ -338,6 +341,11 @@ else {
 	echo "' />\n";
 	echo "</form>\n";
 
+
+	echo "<form id='form_changement_classe' action='".$_SERVER['PHP_SELF']."' method='post'>
+	<input type='hidden' name='id_classe' id='id_classe_form_changement_classe' value='' />
+</form>\n";
+
 	// Affichage des onglets pour l'élève choisi
 
 	echo "<div id='patience'>
@@ -349,6 +357,17 @@ Patientez pendant l'extraction des données... merci.
 
 	echo "<script type='text/javascript'>
 	document.getElementById('patience').innerHTML=\"Patientez pendant l'extraction des données... merci.\";
+
+	// On affiche le champ si JS est actif
+	if(document.getElementById('champ_select_classe')) {
+		document.getElementById('champ_select_classe').style.display='';
+	}
+
+	function change_classe_et_submit() {
+		id_classe=document.getElementById('select_id_classe').options[document.getElementById('select_id_classe').selectedIndex].value;
+		document.getElementById('id_classe_form_changement_classe').value=id_classe;
+		document.getElementById('form_changement_classe').submit();
+	}
 
 	function passer_a_eleve(ele_login,id_classe) {
 		if(document.getElementById('onglet_courant')) {
@@ -399,7 +418,11 @@ Patientez pendant l'extraction des données... merci.
 		// On ne devrait pas arriver là.
 		echo "<p>L'".$gepiSettings['denomination_eleve']." dont le login serait $ele_login n'est pas dans la table 'eleves'.</p>\n";
 	}
-	else{
+	else {
+		if(getSettingAOui('active_mod_discipline')) {
+			require("../mod_discipline/mod_discipline.lib.php");
+		}
+
 		//================================
 		unset($day);
 		$day = isset($_POST["day"]) ? $_POST["day"] : (isset($_GET["day"]) ? $_GET["day"] : date("d"));
@@ -1172,6 +1195,12 @@ Patientez pendant l'extraction des données... merci.
 		if($onglet!="eleve") {echo " display:none;";}
 		echo "background-color: ".$tab_couleur['eleve']."; ";
 		echo "'>";
+
+		if((getSettingAOui('active_mod_discipline'))&&(acces("/mod_discipline/saisie_incident.php", $_SESSION['statut']))) {
+			//require("../mod_discipline/mod_discipline.lib.php");;
+			echo "<div style='float:right; text-align:center; width: 7em; background-image: url(\"../images/background/opacite50.png\"); border:1px solid black;'><a href='../mod_discipline/saisie_incident.php?ele_login[0]=".$ele_login."&amp;is_posted=y".add_token_in_url()."' title=\"Saisir un nouvel ".$mod_disc_terme_incident." dans le module Discipline\">Saisie<br />".$mod_disc_terme_incident."</a></div>";
+		}
+
 		echo "<h2>Informations sur l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 		//affichage de la date de sortie de l'élève de l'établissement
 		if ($tab_ele['date_sortie']!=0) {
@@ -2495,7 +2524,7 @@ Patientez pendant l'extraction des données... merci.
 			//++++++++++++++++++++++++++++++
 			echo "<div id='lien_mail' style='text-align:right; display:none'><a href=\"javascript:afficher_div('div_envoi_cdt_par_mail','y',10,10)\" title=\"Envoyer par mail *la semaine affichée* du cahier de textes
 (par exemple pour envoyer à un parent d'élève qui a oublié ses compte et mot de passe).
-Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consultation des cahiers de textes.\"><img src='../images/icons/courrier_envoi.png' class='icon16' alt='Mail' /></a></div>
+Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consultation des cahiers de textes.\"><img src='../images/icons/courrier_envoi.png' class='icone16' alt='Mail' /></a></div>
 			<script type='text/javascript'>document.getElementById('lien_mail').style.display=''</script>\n";
 			//echo "</div>\n";
 
@@ -2839,12 +2868,12 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 				echo "<input type='hidden' name='ele_login[0]' value=\"$ele_login\" />\n";
 				echo "<input type='hidden' name='is_posted' value=\"y\" />\n";
 				echo "<input type='hidden' name='Ajouter' value=\"Ajouter\" />\n";
-				echo "<input type='submit' name='Saisir' value=\"Saisir\" title=\"Saisir un nouvel incident\" />\n";
+				echo "<input type='submit' name='Saisir' value=\"Saisir\" title=\"Saisir un nouvel $mod_disc_terme_incident dans le module Discipline\" />\n";
 				echo "</form>\n";
 				echo "</div>\n";
 			}
 
-			echo "<h2>Incidents \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>".ucfirst($mod_disc_terme_incident)."s \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			//=======================
 			//Configuration du calendrier

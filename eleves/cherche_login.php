@@ -74,6 +74,7 @@ if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("..
 
 $nom=isset($_POST['nom']) ? $_POST['nom'] : (isset($_GET['nom']) ? $_GET['nom'] : "");
 $prenom=isset($_POST['prenom']) ? $_POST['prenom'] : (isset($_GET['prenom']) ? $_GET['prenom'] : "");
+$statut_recherche=isset($_POST['statut_recherche']) ? $_POST['statut_recherche'] : (isset($_GET['statut_recherche']) ? $_GET['statut_recherche'] : "eleve");
 
 if(($nom!="")||($prenom!="")) {
 
@@ -153,42 +154,79 @@ if(($nom!="")||($prenom!="")) {
 					echo print_r($info);
 					echo "</pre>";
 					*/
-					echo "<table class='boireaus'>\n";
-					echo "<tr>\n";
-					echo "<th>Login LCS</th>\n";
-					echo "<th>Nom</th>\n";
-					echo "<th>Prénom</th>\n";
-					echo "<th>Naissance</th>\n";
-					echo "</tr>\n";
-					$alt=1;
-					for($i=0;$i<$info["count"];$i++) {
-
-						$tab=explode(",",$info[$i]["gecos"][0]);
-						$jour=mb_substr($tab[1],6,2);
-						$mois=mb_substr($tab[1],4,2);
-						$annee=mb_substr($tab[1],0,4);
-						$naissance=$jour."/".$mois."/".$annee;
-
-						$sexe=$tab[2];
-
-						$alt=$alt*(-1);
-						echo "<tr class='lig$alt'>\n";
-						echo "<td><a href=\"#\" onclick=\"document.getElementById('reg_login').value='".$info[$i]["uid"][0]."';
-															document.getElementById('nom').value='".$info[$i]["sn"][0]."';
-															document.getElementById('prenom').value='".$info[$i]["givenname"][0]."';
-															document.getElementById('birth_day').value='".$jour."';
-															document.getElementById('birth_month').value='".$mois."';
-															document.getElementById('birth_year').value='".$annee."';
-															document.getElementById('reg_email').value='".$info[$i]["mail"][0]."';
-															document.getElementById('elenoet').value='".$info[$i]["employeenumber"][0]."';
-															document.getElementById('reg_sexe$sexe').checked=true;
-															return false;\">".$info[$i]["uid"][0]."</a></td>\n";
-						echo "<td>".$info[$i]["sn"][0]."</td>\n";
-						echo "<td>".$info[$i]["givenname"][0]."</td>\n";
-						echo "<td>".$naissance."</td>\n";
+					if($statut_recherche=="eleve") {
+						echo "<table class='boireaus'>\n";
+						echo "<tr>\n";
+						echo "<th>Login LCS</th>\n";
+						echo "<th>Nom</th>\n";
+						echo "<th>Prénom</th>\n";
+						echo "<th>Naissance</th>\n";
 						echo "</tr>\n";
+						$alt=1;
+						for($i=0;$i<$info["count"];$i++) {
+
+							$tab=explode(",",$info[$i]["gecos"][0]);
+							$jour=mb_substr($tab[1],6,2);
+							$mois=mb_substr($tab[1],4,2);
+							$annee=mb_substr($tab[1],0,4);
+							$naissance=$jour."/".$mois."/".$annee;
+
+							$sexe=$tab[2];
+
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'>\n";
+							echo "<td><a href=\"#\" onclick=\"document.getElementById('reg_login').value='".$info[$i]["uid"][0]."';
+																document.getElementById('nom').value='".$info[$i]["sn"][0]."';
+																document.getElementById('prenom').value='".$info[$i]["givenname"][0]."';
+																document.getElementById('birth_day').value='".$jour."';
+																document.getElementById('birth_month').value='".$mois."';
+																document.getElementById('birth_year').value='".$annee."';
+																document.getElementById('reg_email').value='".$info[$i]["mail"][0]."';
+																document.getElementById('elenoet').value='".$info[$i]["employeenumber"][0]."';
+																document.getElementById('reg_sexe$sexe').checked=true;
+																return false;\">".$info[$i]["uid"][0]."</a></td>\n";
+							echo "<td>".$info[$i]["sn"][0]."</td>\n";
+							echo "<td>".$info[$i]["givenname"][0]."</td>\n";
+							echo "<td>".$naissance."</td>\n";
+							echo "</tr>\n";
+						}
+						echo "</table>\n";
 					}
-					echo "</table>\n";
+					else {
+						echo "<table class='boireaus'>\n";
+						echo "<tr>\n";
+						echo "<th>Login LCS</th>\n";
+						echo "<th>Nom</th>\n";
+						echo "<th>Prénom</th>\n";
+						echo "</tr>\n";
+						$alt=1;
+						for($i=0;$i<$info["count"];$i++) {
+
+							$tab=explode(",",$info[$i]["gecos"][0]);
+							/*
+							$jour=mb_substr($tab[1],6,2);
+							$mois=mb_substr($tab[1],4,2);
+							$annee=mb_substr($tab[1],0,4);
+							$naissance=$jour."/".$mois."/".$annee;
+							*/
+							$sexe=$tab[2];
+
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'>\n";
+							echo "<td><a href=\"#\" onclick=\"document.getElementById('reg_login').value='".$info[$i]["uid"][0]."';
+																document.getElementById('reg_nom').value='".$info[$i]["sn"][0]."';
+																document.getElementById('reg_prenom').value='".$info[$i]["givenname"][0]."';
+																document.getElementById('reg_email').value='".$info[$i]["mail"][0]."';
+																if('$sexe'=='F') {document.getElementById('reg_civilite').selectedIndex=2;} else {document.getElementById('reg_civilite').selectedIndex=1;}
+																//document.getElementById('elenoet').value='".$info[$i]["employeenumber"][0]."';
+																return false;\">".$info[$i]["uid"][0]."</a></td>\n";
+							echo "<td>".$info[$i]["sn"][0]."</td>\n";
+							echo "<td>".$info[$i]["givenname"][0]."</td>\n";
+							//echo "<td>".$naissance."</td>\n";
+							echo "</tr>\n";
+						}
+						echo "</table>\n";
+					}
 				}
 				@ldap_free_result ( $result );
 			}

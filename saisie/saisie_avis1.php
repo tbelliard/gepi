@@ -420,6 +420,13 @@ if(isset($id_class_suiv)){
 if((acces('/impression/avis_pdf.php', $_SESSION['statut']))&&(acces('/saisie/impression_avis.php', $_SESSION['statut']))) {
 	echo "| <a href='../saisie/impression_avis.php' onclick=\"return confirm_abandon(this, change, '$themessage')\">Impression PDF des avis</a>";
 }
+
+if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('CommentairesTypesScol')))||
+(($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesCpe')))) {
+	echo " | <a href='commentaires_types.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie de commentaires-types</a>";
+}
+
 echo "</p>\n";
 
 echo "</form>\n";

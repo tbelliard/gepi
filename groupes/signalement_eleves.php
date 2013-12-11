@@ -73,6 +73,11 @@ $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_
 
 $mode_signalement=isset($_GET['mode_signalement']) ? $_GET['mode_signalement'] : (isset($_POST['mode_signalement']) ? $_POST["mode_signalement"] : "2");
 
+if(($_SESSION['statut']=='professeur')&&(isset($id_groupe))&&(!verif_prof_groupe($_SESSION['login'],$id_groupe))) {
+	header("Location: ../accueil.php?msg=Le groupe n°$id_groupe ne vous est pas associé.");
+	die();
+}
+
 if(!isset($_SESSION['chemin_retour'])) {
 	if($_SESSION['statut']=='professeur') {
 		$_SESSION['chemin_retour']=isset($_GET['chemin_retour']) ? $_GET['chemin_retour'] : (isset($_POST['chemin_retour']) ? $_POST['chemin_retour'] : "../cahier_notes/index.php?id_groupe=$id_groupe");
@@ -683,14 +688,24 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 							$bull_non_vide="n";
 							if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
 								$bull_non_vide="y";
-								echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+								if($_SESSION['statut']=='professeur') {
+									echo "<a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=".$period["num_periode"]."#saisie_app_".$e_login."' target='_blank' title=\"Voir, dans une nouvelle fenêtre, mes saisies dans le bulletin de cet élève.\"><img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' /></a>";
+								}
+								else {
+									echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+								}
 							}
 
 							$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";
 							$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 							$nb_notes_cn=mysqli_num_rows($test_cn);
 							if($nb_notes_cn>0) {
-								echo "<img id='img_cn_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+								if($_SESSION['statut']=='professeur') {
+									echo "<a href='../cahier_notes/index.php??id_groupe=$id_groupe&amp;periode_num=".$period["num_periode"]."' target='_blank' title=\"Voir, dans une nouvelle fenêtre, mes saisies dans le carnet de notes pour cet élève.\"><img id='img_cn_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' /></a>";
+								}
+								else {
+									echo "<img id='img_cn_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+								}
 								//echo "$sql<br />";
 							}
 
@@ -1095,14 +1110,24 @@ if(count($total_eleves)>0) {
 						$bull_non_vide="n";
 						if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
 							$bull_non_vide="y";
-							echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+							if($_SESSION['statut']=='professeur') {
+								echo "<a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=".$period["num_periode"]."#saisie_app_".$e_login."' target='_blank' title=\"Voir, dans une nouvelle fenêtre, mes saisies dans le bulletin de cet élève.\"><img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' /></a>";
+							}
+							else {
+								echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+							}
 						}
 
 						$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";
 						$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 						$nb_notes_cn=mysqli_num_rows($test_cn);
 						if($nb_notes_cn>0) {
-							echo "<img id='img_cn_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+							if($_SESSION['statut']=='professeur') {
+								echo "<a href='../cahier_notes/index.php??id_groupe=$id_groupe&amp;periode_num=".$period["num_periode"]."#saisie_app_".$e_login."' target='_blank' title=\"Voir, dans une nouvelle fenêtre, mes saisies dans le carnet de notes pour cet élève.\"><img id='img_cn_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' /></a>";
+							}
+							else {
+								echo "<img id='img_cn_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+							}
 							//echo "$sql<br />";
 						}
 

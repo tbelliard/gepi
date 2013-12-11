@@ -885,7 +885,12 @@ for($i=0;$i<count($groups);$i++){
 	
 						// Appréciation sur le bulletin:
 						if($class_style!="deverrouille") {
-							echo "<td class='$class_style'>\n";
+							if(acces_exceptionnel_saisie_bull_app_groupe_periode($groups[$i]['id'], $j)) {
+								echo "<td style='background-color:orange;' title='Accès exceptionnellement ouvert'>\n";
+							}
+							else {
+								echo "<td class='$class_style'>\n";
+							}
 						}
 						else {
 							echo "<td>\n";

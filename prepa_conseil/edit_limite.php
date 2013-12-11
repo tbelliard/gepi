@@ -84,6 +84,10 @@ include "../lib/periodes.inc.php";
 include "../lib/bulletin_simple.inc.php";
 include "../lib/bulletin_simple_classe.inc.php";
 //==============================
+if(in_array($_SESSION['statut'], array('administrateur', 'professeur', 'scolarite', 'cpe', 'secours'))) {
+	$javascript_specifique[] = "lib/tablekit";
+	$utilisation_tablekit="ok";
+}
 require_once("../lib/header.inc.php");
 //==============================
 

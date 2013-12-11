@@ -200,6 +200,11 @@ if($_SESSION['statut']=='scolarite') {
 if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
 	echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
 }
+
+if(acces("/bulletin/verif_bulletins.php", $_SESSION['statut'])) {
+	echo " | <a href='verif_bulletins.php' title=\"Vérifier le remplissage des bulletins.\">Vérification bulletins</a>";
+}
+
 echo "</p>\n";
 
 $texte_deverrouiller = urlencode("Déverrouiller");
@@ -333,9 +338,9 @@ if (($classe != 0) AND ($periode !=0)) {
 			echo "<a href=\"javascript:CocheCase(2,".$i.")\">Tout verrouiller partiellement</a><br />\n";
 			echo "<a href=\"javascript:CocheCase(3,".$i.")\">Tout verrouiller  totalement</a>\n";
 			echo "</th>\n";
-			echo "<th><img src=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" width=\"22\" border=0 alt=\"Déverrouiller\" /></th>\n";
-			echo "<th><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller partiellement\" /></th>\n";
-			echo "<th><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller totalement\" /></th>\n";
+			echo "<th><a href=\"javascript:CocheCase(1,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" width=\"22\" border=0 alt=\"Déverrouiller\" /></a></th>\n";
+			echo "<th><a href=\"javascript:CocheCase(2,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller partiellement\" /></a></th>\n";
+			echo "<th><a href=\"javascript:CocheCase(3,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller totalement\" /></a></th>\n";
             if(getSettingValue("active_module_absence")=="2"){
                 echo "<th title=\"Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les date de périodes de cours ci-dessous.\">Date Fin</th>\n";
             }
@@ -467,12 +472,13 @@ Calendar.setup({
 
 		echo "<p><i>Remarques&nbsp;:</i></p>
 <ul>
-	<li><p><span style='margin-left: 3em;'>Si vous ne voyez pas toutes les classes, il se peut que certaines classes ne vous soient pas associées.</span><br /><span style='margin-left: 3em;'>Demandez alors à un compte administrateur de vous associer des classes dans <b>Gestion des bases/Gestion des classes/Paramétrage scolarité</b></span></p></li>";
+	<li><p>Si vous ne voyez pas toutes les classes, il se peut que certaines classes ne vous soient pas associées.<br />Demandez alors à un compte administrateur de vous associer des classes dans <b>Gestion des bases/Gestion des classes/Paramétrage scolarité</b></p></li>";
 		if(getSettingValue("active_module_absence")=="2"){
 			echo "
 	<li><p>Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les date de périodes de cours ci-dessous.</p></li>";
 		}
 		echo "
+	<li><p>Il est possible d'<strong>autoriser exceptionnellement un professeur à saisir</strong> des notes dans des <a href='../cahier_notes/autorisation_exceptionnelle_saisie.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">carnets de notes</a> ou dans les <a href='../bulletin/autorisation_exceptionnelle_saisie_note.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">bulletins</a> ou à saisir des <a href='../bulletin/autorisation_exceptionnelle_saisie_app.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">appréciations dans les bulletins</a> <strong>sans devoir ouvrir la période en saisie pour tous</strong> les professeurs.</p></li>
 </ul>\n";
 
 	}

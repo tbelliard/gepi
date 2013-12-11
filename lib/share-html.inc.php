@@ -2743,9 +2743,9 @@ function img_calendrier_js($id_champ, $id_img) {
  * 
  *
  * @param type $tab_txt tableau des textes
- * @param type $tab_nom_champ tableau des noms des champs chechbox
- * @param type $tab_id_champ tableau des id des champs chechbox
- * @param type $tab_valeur_champ tableau des valeurs des champs chechbox
+ * @param type $tab_nom_champ tableau des noms des champs checkbox
+ * @param type $tab_id_champ tableau des id des champs checkbox
+ * @param type $tab_valeur_champ tableau des valeurs des champs checkbox
  * @param int $nbcol Nombre de colonnes
  * @param type $extra_options Options supplémentaires
  */
@@ -2884,6 +2884,81 @@ function tableau_eleves($tab) {
 		}
 		$retour.="
 </table>";
+	}
+	return $retour;
+}
+
+/**
+ * Fonction destinée à retourner un champ SELECT de classe
+ * 
+ * @param string $login Login de l'utilisateur concerné
+ * @param string $statut Statut de l'utilisateur concerné
+ * @param string $nom_champ Attribut name du champ SELECT
+ * @param string $id_champ Attribut id du champ SELECT
+ * @param integer $id_classe_selected id de la classe pré-sélectionnée
+ * @param string $onchange Chaine javascript à exécuter sur événement onchange
+ */
+function champ_select_classe($login, $statut, $nom_champ, $id_champ, $id_classe_selected='', $avec_option_vide="y", $onchange='') {
+	$retour="";
+
+	$tab=get_classes_from_user($login, $statut);
+
+	if(count($tab)>0) {
+		$retour.="<select";
+		if($nom_champ!="") {
+			$retour.=" name='$nom_champ'";
+		}
+		if($id_champ!="") {
+			$retour.=" id='$id_champ'";
+		}
+		if($onchange!="") {
+			$retour.=" onchange=\"$onchange\"";
+		}
+		$retour.=">\n";
+		if($avec_option_vide=="y") {
+			$retour.="<option value=''>---</option>";
+		}
+		foreach($tab as $id_classe => $classe) {
+			$retour.="<option value='$id_classe'";
+			if(($id_classe_selected!="")&&($id_classe==$id_classe_selected)) {
+				$retour.=" selected='selected'";
+			}
+			$retour.=">".$classe."</option>\n";
+		}
+		$retour.="</select>\n";
+	}
+
+	return $retour;
+}
+
+/**
+ * Fonction destinée à retourner un tableau de textes d'explication concernant le CDT2
+ * On n'inscrit ainsi les textes d'explication qu'à un endroit... et on les appelle dans plusieurs pages
+ */
+function get_texte_CDT2() {
+	$tab=array();
+
+	$tab['attribut_title_CDT2_Voir_NP']="Voir toutes les Notices Privées attachées à cet enseignement.";
+	$tab['attribut_title_CDT2_Banque']="Ouvrir en fenêtre popup une liste (personnalisable) de termes/formules que vous pourrez insérer d'un clic dans vos notices.
+Vous pouvez par exemple vous préparer des formules comme:
+- Exercice n°... page ...
+- Correction de l'exercice n°... page ...
+- Réviser pour un contrôle en classe portant sur...
+C'est une banque dans laquelle vous ne trouverez que ce que vous y aurez mis, ni plus ni moins;).";
+	$tab['attribut_title_CDT2_Archives']="Ouvrir une fenêtre popup pour consulter vos archives de cahiers de textes des années précédentes.";
+	$tab['attribut_title_CDT2_Travaux_pour_ce_jour']="Voir les travaux à faire pour ce jour dans tous les enseignements associés à la classe.
+Cela peut vous permettre d'éviter de placer un contrôle en classe alors qu'il y en a déjà trois de programmés pour ce jour.";
+
+	return $tab;
+}
+
+function liste_des_prof_suivi_de_telle_classe($id_classe) {
+	$retour="";
+
+	$tab=get_tab_prof_suivi($id_classe);
+	for($loop=0;$loop<count($tab);$loop++) {
+		if($loop>0) {$retour.=", ";}
+		$retour.=civ_nom_prenom($tab[$loop]);
 	}
 	return $retour;
 }

@@ -72,6 +72,10 @@ if (!(isset($id_classe))) {
 		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
 	}
 
+	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
+		echo " | <a href='verrouillage.php' title=\"Verrouiller/déverrouiller les périodes de notes en saisie pour telle ou telle classe.\">Verrouillage des saisies</a>";
+	}
+
 	echo "</p>\n";
 
 	echo "<b>Choisissez la classe&nbsp;:</b></p>\n<br />\n";
@@ -209,6 +213,10 @@ if (!(isset($id_classe))) {
 	
 	if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
 		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+	}
+
+	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
+		echo " | <a href='verrouillage.php' title=\"Verrouiller/déverrouiller les périodes de notes en saisie pour telle ou telle classe.\">Verrouillage des saisies</a>";
 	}
 
 	echo "</form>\n";
@@ -515,6 +523,10 @@ if (!(isset($id_classe))) {
 	
 	if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
 		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+	}
+
+	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
+		echo " | <a href='verrouillage.php' title=\"Verrouiller/déverrouiller les périodes de notes en saisie pour telle ou telle classe.\">Verrouillage des saisies</a>";
 	}
 
 	echo "</form>\n";
@@ -1069,6 +1081,8 @@ if (!(isset($id_classe))) {
 	echo "</tr>\n";
 	echo "</table>\n";
 
+	$acces_autorisation_exceptionnelle_modif_cn=acces("/cahier_notes/autorisation_exceptionnelle_saisie.php", $_SESSION['statut']);
+
 	$tab_num_mail=array();
 	if(count($tab_alerte_prof)>0) {
 		$num=0;
@@ -1145,7 +1159,16 @@ if (!(isset($id_classe))) {
 						break;
 					}
 				}
-				echo "<a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>Autoriser exceptionnellement la proposition de saisie bien que la période soit partiellement close.</a>";
+				echo "<p>Autoriser exceptionnellement, bien que la période soit partiellement close, <br />
+<ul>";
+				if($acces_autorisation_exceptionnelle_modif_cn) {
+					echo "
+	<li><a href='../cahier_notes/autorisation_exceptionnelle_saisie.php?id_classe=$id_classe".$ajout."' target='_blank'>la saisie/modification de notes du carnet de notes,</a></li>";
+				}
+				echo "
+	<li><a href='autorisation_exceptionnelle_saisie_note.php?id_classe=$id_classe".$ajout."' target='_blank'>la saisie/modification de notes du bulletin,</a></li>
+	<li><a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>la proposition de saisie d'appréciation(s) sur les bulletins.</a></li>
+</ul>\n";
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
