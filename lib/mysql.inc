@@ -66,6 +66,7 @@ function sql_query1 ($sql)
     return $result;
 }
 
+
 /**
  * Execute an SQL query. 
  * 
