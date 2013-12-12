@@ -493,7 +493,7 @@ if (!extension_loaded('mysql')) {
 		return $row[$field];			
 	}
 	// Correctif :
-	// suivant le type du paramètre $field il faut lire un tableau indicé ou associatif
+	// suivant le type du paramÃ¨tre $field il faut lire un tableau indicÃ© ou associatif
 	function old_mysql_result ($result , $row , $field = 0) {
 		if (mysqli_data_seek($result, $row) === false) return false;
 		if (is_int($field)) $line=mysqli_fetch_array($result); else $line=mysqli_fetch_assoc($result);
