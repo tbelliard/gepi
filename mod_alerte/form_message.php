@@ -479,9 +479,9 @@ if((isset($mode))&&($mode=='afficher_messages_non_lus')) {
 if(peut_poster_message($_SESSION['statut'])) {
 	$tab_user_mae=array();
 	$sql="SELECT value FROM mod_alerte_divers WHERE name='login_exclus';";
-	$res_mae=mysql_query($sql);
-	if(mysql_num_rows($res_mae)>0) {
-		while($lig_mae=mysql_fetch_object($res_mae)) {
+	$res_mae=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mae)>0) {
+		while($lig_mae=mysqli_fetch_object($res_mae)) {
 			$tab_user_mae[]=$lig_mae->value;
 		}
 	}
@@ -556,17 +556,17 @@ if(peut_poster_message($_SESSION['statut'])) {
 							<optgroup label='".$tab_statut[$loop]."'>";
 										while($lig_u=mysqli_fetch_object($res_u)) {
 											if(!in_array($lig_u->login, $tab_user_mae)) {
-											echo "
+												echo "
 								<option value='$lig_u->login'";
 												if(isset($login_dest)) {
 													if(is_array($login_dest)) {
 														if(in_array($lig_u->login, $login_dest)) {
-															echo " selected='selected'";
+															echo " selected";
 														}
 													}
 													else {
 														if($lig_u->login==$login_dest) {
-															echo " selected='selected'";
+															echo " selected";
 														}
 													}
 												}
@@ -694,13 +694,12 @@ for($loop=0;$loop<count($tab_statut);$loop++) {
 
 		while($lig_u=mysqli_fetch_object($res_u)) {
 			if(!in_array($lig_u->login, $tab_user_mae)) {
-			$designation_u="$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2');
-			$texte_infobulle.="<tr class='white_hover'><td style='text-align:left'><input type='checkbox' name='login_dest[]' id='login_dest_$cpt_u' value='$lig_u->login' onchange=\"checkbox_change('login_dest_$cpt_u')\" attribut_statut=\"".$tab_statut[$loop]."\"><label for='login_dest_$cpt_u' id='texte_login_dest_$cpt_u'>$designation_u</label></td></tr>";
-			$chaine_js_login_u.="'$lig_u->login',";
-			$chaine_js_designation_u.="'".preg_replace("/'/", " ", $designation_u)."',";
-			$cpt_u++;
+				$designation_u="$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2');
+				$texte_infobulle.="<tr class='white_hover'><td style='text-align:left'><input type='checkbox' name='login_dest[]' id='login_dest_$cpt_u' value='$lig_u->login' onchange=\"checkbox_change('login_dest_$cpt_u')\" attribut_statut=\"".$tab_statut[$loop]."\"><label for='login_dest_$cpt_u' id='texte_login_dest_$cpt_u'>$designation_u</label></td></tr>";
+				$chaine_js_login_u.="'$lig_u->login',";
+				$chaine_js_designation_u.="'".preg_replace("/'/", " ", $designation_u)."',";
+				$cpt_u++;
 			}
-
 		}
 		$texte_infobulle.="</table></div>";
 	}

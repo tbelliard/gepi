@@ -89,10 +89,10 @@ $tab_modif_app_proposees=array();
 if($_SESSION['statut']=='professeur') {
 	$tab_mes_groupes=array();
 	$sql = "SELECT jgp.id_groupe FROM j_groupes_professeurs jgp WHERE login = '" . $_SESSION['login'] . "';" ;
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
-	//echo "$sql<br />";
 			$tab_mes_groupes[]=$lig->id_groupe;
 
 			$sql="SELECT * FROM matieres_app_corrections WHERE id_groupe='$lig->id_groupe';";
@@ -1112,42 +1112,41 @@ Ce lien est là pour ça.\"><img src='../images/icons/mail.png' width='16' heigh
 	// Les absences
 	// On ne les affiche que si dans le bulletin HTML, on affiche les absences
 	if(getSettingAOui('bull_affiche_absences')) {
-	echo "<span class='bull_simpl'><b>Absences et retards:</b></span>\n";
-	//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
-	echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary='Absences et retards'>\n";
-	$nb=$periode1;
-	while ($nb < $periode2+1) {
-		//On vérifie si le module est activé
-		if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
-		    $current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
-		    $eleve_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
-		    $eleve_abs_nj[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
-		    $eleve_retards[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
-		    $current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
-		    $eleve_app_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
-		} else {
-		    // Initialisations files
-		    require_once("../lib/initialisationsPropel.inc.php");
-		    $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
-		    if ($eleve != null) {
-			$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
-			$eleve_abs[$nb] = $eleve->getDemiJourneesAbsenceParPeriode($nb)->count();
-			$eleve_abs_nj[$nb] = $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($nb)->count();
-			$eleve_retards[$nb] = $eleve->getRetardsParPeriode($nb)->count();
-			$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
-			$eleve_app_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
-		    }
-		}
-		if (($eleve_abs[$nb] !== '') and ($eleve_abs_nj[$nb] !== '')) {
-			$eleve_abs_j[$nb] = $eleve_abs[$nb]-$eleve_abs_nj[$nb];
-		} else {
-			$eleve_abs_j[$nb] = "?";
-		}
-		if ($eleve_abs_nj[$nb] === '') { $eleve_abs_nj[$nb] = "?"; }
-		if ($eleve_retards[$nb] === '') { $eleve_retards[$nb] = "?";}
+		echo "<span class='bull_simpl'><b>Absences et retards:</b></span>\n";
+		//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
+		echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary='Absences et retards'>\n";
+		$nb=$periode1;
+		while ($nb < $periode2+1) {
+			//On vérifie si le module est activé
+			if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
+			    $current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
+			    $eleve_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
+			    $eleve_abs_nj[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
+			    $eleve_retards[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
+			    $current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+			    $eleve_app_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+			} else {
+			    // Initialisations files
+			    require_once("../lib/initialisationsPropel.inc.php");
+			    $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
+			    if ($eleve != null) {
+				$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
+				$eleve_abs[$nb] = $eleve->getDemiJourneesAbsenceParPeriode($nb)->count();
+				$eleve_abs_nj[$nb] = $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($nb)->count();
+				$eleve_retards[$nb] = $eleve->getRetardsParPeriode($nb)->count();
+				$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+				$eleve_app_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+			    }
+			}
+			if (($eleve_abs[$nb] !== '') and ($eleve_abs_nj[$nb] !== '')) {
+				$eleve_abs_j[$nb] = $eleve_abs[$nb]-$eleve_abs_nj[$nb];
+			} else {
+				$eleve_abs_j[$nb] = "?";
+			}
+			if ($eleve_abs_nj[$nb] === '') { $eleve_abs_nj[$nb] = "?"; }
+			if ($eleve_retards[$nb] === '') { $eleve_retards[$nb] = "?";}
 	
-		//====================================
-
+			//====================================
 			// AJOUT: boireaus 20080317
 			if($nb==$periode1) {
 				if($nb==$periode2) {

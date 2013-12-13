@@ -317,7 +317,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			//unset($matiere_destinataire);
 			unset($id_classe);
 		} else {
-			$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".mysql_error();
+			$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 		}
 	}
 }

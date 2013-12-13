@@ -202,7 +202,7 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 				terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
 				PRIMARY KEY (id)
 				) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-			log_ajax_app($sql);
+			//log_ajax_app($sql);
 			$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$create_table) {
 				echo "<span style='color:red'>Erreur lors de la création de la table 'vocabulaire'.</span>";
@@ -210,7 +210,7 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 			else {
 				$sql="SELECT * FROM vocabulaire;";
 				//echo "$sql<br />";
-				log_ajax_app($sql);
+				//log_ajax_app($sql);
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					while($lig_voc=mysqli_fetch_object($res)) {

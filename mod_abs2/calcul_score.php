@@ -150,9 +150,9 @@ if(isset($id_classe)) {
 	if(!isset($num_periode)) {
 		$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 		//echo "$sql<br />";
-		$res_ele=mysql_query($sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		$num_ligne=0;
-		while($lig_ele=mysql_fetch_object($res_ele)) {
+		while($lig_ele=mysqli_fetch_object($res_ele)) {
 			$eleve = EleveQuery::create()->findOneByLogin($lig_ele->login);
 
 			$tab_score[$num_ligne]["login"]=$lig_ele->login;
@@ -219,9 +219,9 @@ if(isset($id_classe)) {
 	else {
 		$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.periode='$num_periode' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 		//echo "$sql<br />";
-		$res_ele=mysql_query($sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		$num_ligne=0;
-		while($lig_ele=mysql_fetch_object($res_ele)) {
+		while($lig_ele=mysqli_fetch_object($res_ele)) {
 			$eleve = EleveQuery::create()->findOneByLogin($lig_ele->login);
 			foreach($eleve->getPeriodeNotes() as $periode_note) {
 				if ($periode_note->getDateDebut() == null) {
@@ -478,11 +478,7 @@ echo "<form id='choix_autre_classe' name='choix_autre_classe' action='".$_SERVER
 <p>La formule utilisée est&nbsp;: $formule</p>\n";
 
 if(!isset($num_periode)) {
-	$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
-	//echo "$sql<br />";
-	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-	while($lig_ele=mysqli_fetch_object($res_ele)) {
-		$eleve = EleveQuery::create()->findOneByLogin($lig_ele->login);
+	for($loop=0;$loop<count($tab_score);$loop++) {
 
 		echo "<table class='boireaus'>\n";
 		echo "<caption>Bilan des absences de <strong>".$tab_score[$loop]["prenom_nom"]."</strong></caption>\n";
@@ -558,103 +554,51 @@ else {
 	echo "<th class='number' title='Cliquez pour trier'>Score</th>\n";
 	echo "</tr>\n";
 
-	$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.periode='$num_periode' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
-	//echo "$sql<br />";
-	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	$alt=1;
-	while($lig_ele=mysqli_fetch_object($res_ele)) {
-		$eleve = EleveQuery::create()->findOneByLogin($lig_ele->login);
-		foreach($eleve->getPeriodeNotes() as $periode_note) {
-			if ($periode_note->getDateDebut() == null) {
-				//periode non commencee
-				continue;
-			}
-			/*
-			echo "<pre>";
-			print_r($periode_note);
-			echo "</pre>";
-			*/
-			if($periode_note->getNumPeriode()==$num_periode) {
-				$alt=$alt*(-1);
-				echo "<tr class='lig$alt white_hover'>\n";
-				echo "<td title=\"".$periode_note->getNomPeriode();
-				echo " du ".$periode_note->getDateDebut('d/m/Y');
-				echo " au ";
-				if ($periode_note->getDateFin() == null) {
-					echo '(non précisé)';
-				} else {
-					echo $periode_note->getDateFin('d/m/Y');
-				}
-				echo "\">";
-				echo $lig_ele->nom." ".$lig_ele->prenom;
-				echo "</td>\n";
-				echo "<td";
-				if($formule_score_abs_scalaire_NBABS==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
-				echo ">";
-				$nb_abs=$eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count();
-				echo $nb_abs;
-				echo "</td>\n";
-				echo "<td";
-				if($formule_score_abs_scalaire_NBNJ==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
-				echo ">";
-				$nb_nj=$eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_note)->count();
-				echo $nb_nj;
-				echo "</td>\n";
-				echo "<td";
-				if($formule_score_abs_scalaire_RET==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
-				echo ">";
-				$nb_ret=$eleve->getRetardsParPeriode($periode_note)->count();
-				echo $nb_ret;
-				echo "</td>\n";
-				/*
-				echo "<td>";
-				// PROBLEME: On n'a plus accès à cette table si on ne remplit pas la table absences.
-				//           Revoir la façon dont on remplit l'appréciation, peut-être donner l'accès à la page absences/saisie_absences.php
-				//           sans permettre la modif des retards/abs/nj)
-				$sql="SELECT * FROM absences WHERE (login='".$lig_ele->login."' AND periode='".$periode_note->getNumPeriode()."');";
-				$current_eleve_absences_query = mysql_query($sql);
-				$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
-				echo $current_eleve_appreciation_absences;
-				echo "</td>\n";
-				*/
+	//$tab_score['eleves'][$num_ligne]["prenom_nom"]
+	for($loop=0;$loop<count($tab_score['eleves']);$loop++) {
+		//$tab_score['nom_periode']
+		//$tab_score["eleves"][$num_ligne]['nb_abs']
 
-				//$chaine=preg_replace("|NBABS|",$nb_abs,preg_replace("|NBNJ|",$nb_nj,preg_replace("|RET|",$nb_ret,$formule_score_abs)));
-				//echo $chaine."=";
-				//echo eval($chaine);
-				$chaine=$formule_score_abs_nb_1;
-				$chaine_title=$formule_score_abs_nb_1;
-				if($formule_score_abs_plus_moins_RET=="+") {
-					$chaine+=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
-					$chaine_title.=" + (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
-				}
-				else {
-					$chaine-=$formule_score_abs_scalaire_RET*pow($nb_ret,$formule_score_abs_puissance_RET);
-					$chaine_title.=" - (".$formule_score_abs_scalaire_RET." * ".$nb_ret."^".$formule_score_abs_puissance_RET.")";
-				}
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt white_hover'>\n";
+		echo "<td title=\"".$tab_score['nom_periode'];
+		echo " du ".$tab_score['du'];
+		echo " au ".$tab_score['au'];
+		echo "\">";
+		echo $tab_score['eleves'][$loop]["prenom_nom"];
+		echo "</td>\n";
+		echo "<td";
+		if($formule_score_abs_scalaire_NBABS==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
+		echo ">";
+		echo $tab_score["eleves"][$loop]['nb_abs'];
+		echo "</td>\n";
+		echo "<td";
+		if($formule_score_abs_scalaire_NBNJ==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
+		echo ">";
+		echo $tab_score["eleves"][$loop]['nb_nj'];
+		echo "</td>\n";
+		echo "<td";
+		if($formule_score_abs_scalaire_RET==0) {echo " style='background-color:grey' title='Ne compte pas dans le score calculé.'";}
+		echo ">";
+		echo $tab_score["eleves"][$loop]['nb_ret'];
+		echo "</td>\n";
+		/*
+		echo "<td>";
+		// PROBLEME: On n'a plus accès à cette table si on ne remplit pas la table absences.
+		//           Revoir la façon dont on remplit l'appréciation, peut-être donner l'accès à la page absences/saisie_absences.php
+		//           sans permettre la modif des retards/abs/nj)
+		$sql="SELECT * FROM absences WHERE (login='".$lig_ele->login."' AND periode='".$periode_note->getNumPeriode()."');";
+		$current_eleve_absences_query = mysql_query($sql);
+		$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+		echo $current_eleve_appreciation_absences;
+		echo "</td>\n";
+		*/
 
-				if($formule_score_abs_plus_moins_NBNJ=="+") {
-					$chaine+=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
-					$chaine_title.=" + (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
-				}
-				else {
-					$chaine-=$formule_score_abs_scalaire_NBNJ*pow($nb_nj,$formule_score_abs_puissance_NBNJ);
-					$chaine_title.=" - (".$formule_score_abs_scalaire_NBNJ." * ".$nb_nj."^".$formule_score_abs_puissance_NBNJ.")";
-				}
-
-				if($formule_score_abs_plus_moins_NBABS=="+") {
-					$chaine+=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
-					$chaine_title.=" + (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
-				}
-				else {
-					$chaine-=$formule_score_abs_scalaire_NBABS*pow($nb_abs,$formule_score_abs_puissance_NBABS);
-					$chaine_title.=" - (".$formule_score_abs_scalaire_NBABS." * ".$nb_abs."^".$formule_score_abs_puissance_NBABS.")";
-				}
-				echo "<td title=\"$chaine_title = $chaine\">";
-				echo $chaine;
-				echo "</td>\n";
-				echo "</tr>\n";
-			}
-		}
+		echo "<td title=\"".$tab_score["eleves"][$loop]['chaine_title']." = ".$tab_score["eleves"][$loop]['chaine']."\">";
+		echo $tab_score["eleves"][$loop]['chaine'];
+		echo "</td>\n";
+		echo "</tr>\n";
 	}
 	echo "</table>
 <script type='text/javascript'>

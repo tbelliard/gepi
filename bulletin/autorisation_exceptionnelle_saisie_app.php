@@ -109,7 +109,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$date_limite_email="$annee/$mois/$jour à $heure:$minute";
-					$sql="INSERT INTO matieres_app_delais SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00';";
+					$sql="INSERT INTO matieres_app_delais SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00', mode='$mode';";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";

@@ -153,8 +153,7 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 		//echo "$sql<br />";
 		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_ele)>0) {
-			echo "<p>".ucfirst($gepiSettings['denomination_eleves'])." de la classe de ".get_class_from_id($id_classe).":</p>\n";
-
+			echo "<p class='bold'>".casse_mot($gepiSettings['denomination_eleves'], 'majf2')." de la classe de ".get_class_from_id($id_classe).":</p>\n";
 
 			$tab_txt=array();
 			$tab_lien=array();

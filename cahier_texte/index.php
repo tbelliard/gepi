@@ -216,8 +216,8 @@ if (isset($id_ct))
 			$sql = "SELECT date_ct FROM ct_entry WHERE id_ct='$id_ct' AND id_login='".$_SESSION['login']."';";
 		}
 		//echo "$sql<br />";
-		$test_proprio=mysql_query($sql);
-		if(mysql_num_rows($test_proprio)==0) {
+		$test_proprio=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_proprio)==0) {
 			unset($id_ct);
 		}
 	}
@@ -303,8 +303,8 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'sup_entry') and $valide_fo
 	$suppression_possible="y";
 	if(getSettingValue("cdt_autoriser_modif_multiprof")!="yes") {
 		$sql="SELECT 1=1 FROM ct_entry WHERE (id_ct='".$_GET['id_ct_del']."' AND id_login='".$_SESSION['login']."')";
-		$res_test=mysql_query($sql);
-		if(mysql_num_rows($res_test)==0) {
+		$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_test)==0) {
 			$suppression_possible="n";
 			$msg="Vous n'êtes pas l'auteur de la notice que vous souhaitez supprimer.<br />";
 		}
@@ -341,18 +341,15 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'sup_devoirs') and $valide_
 
 	if($suppression_possible=='y') {
 	    $architecture= "/documents/cl_dev";
-		$sql = "select id from ct_devoirs_documents where id_ct_devoir='".$_GET['id_ct_del']."' AND emplacement LIKE '%".$architecture."%'";
-		$res = sql_query($sql);
-		if (($res) and (sql_count($res)!=0)) {
-			$msg = "Impossible de supprimer cette notice : Vous devez d'abord supprimer les documents joints";
-		} else {
+	    $sql = "select id from ct_devoirs_documents where id_ct_devoir='".$_GET['id_ct_del']."' AND emplacement LIKE '%".$architecture."%'";
+	    $res = sql_query($sql);
+	    if (($res) and (sql_count($res)!=0)) {
+		  $msg = "Impossible de supprimer cette notice : Vous devez d'abord supprimer les documents joints";
+	    } else {
 		//modif Eric interdire la suppression de notice visée
-		$res = mysqli_query($GLOBALS["mysqli"], "delete from ct_devoirs_entry where (id_ct = '".$_GET['id_ct_del']."' and vise != 'y')");
-			if ($res) $msg = "Suppression réussie";
-		}
-
-
-
+	    $res = mysqli_query($GLOBALS["mysqli"], "delete from ct_devoirs_entry where (id_ct = '".$_GET['id_ct_del']."' and vise != 'y')");
+		  if ($res) $msg = "Suppression réussie";
+	    }
 	}
 
 }
@@ -519,18 +516,27 @@ else {
 	}
 
     if (isset($_GET['info']) or isset($_POST['info'])) {
-      $appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='')");
+      $sql="SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct=''";
+      $sql.=$ajout_req;
+      $sql.=")";
       $infoyes = "&amp;info=yes";
     } elseif (isset($edit_devoir)) {
-      $appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct,vise  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
+      $sql="SELECT contenu, id_ct,vise  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today'";
+      $sql.=$ajout_req;
+      $sql.=")";
       $infoyes = "";
     } elseif (isset($id_ct)) {
-      $appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today' AND id_ct='$id_ct')");
+      $sql="SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today' AND id_ct='$id_ct'";
+      $sql.=$ajout_req;
+      $sql.=")";
       $infoyes = "";
     } else {
-      $appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='$today') ORDER BY heure_entry ASC LIMIT 1");
+      $sql="SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='$today'";
+      $sql.=$ajout_req;
+      $sql.=") ORDER BY heure_entry ASC LIMIT 1";
       $infoyes = "";
     }
+    $appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
     $test_cahier_texte = mysqli_num_rows($appel_cahier_texte);
 }
 
@@ -927,8 +933,8 @@ if((isset($id_ct))&&(is_numeric($id_ct))&&(getSettingValue("cdt_autoriser_modif_
 		$sql = "SELECT date_ct FROM ct_entry WHERE id_ct='$id_ct' AND id_login='".$_SESSION['login']."';";
 	}
 	//echo "$sql<br />";
-	$test_proprio=mysql_query($sql);
-	if(mysql_num_rows($test_proprio)==0) {
+	$test_proprio=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_proprio)==0) {
 		unset($id_ct);
 		$contenu ='';
 	}
@@ -1156,14 +1162,15 @@ if((isset($id_ct))&&(is_numeric($id_ct))&&(getSettingValue("cdt_autoriser_modif_
 */
 //if(isset($id_ct)) {echo "000 id_ct=$id_ct<br />";} else {echo "Pas de id_ct<br />";}
 
-$appel_cahier_texte_liste = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='$today') ORDER BY heure_entry ASC");
-
+$sql="SELECT * FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='$today') ORDER BY heure_entry ASC";
+//echo "$sql<br />";
+$appel_cahier_texte_liste = mysqli_query($GLOBALS["mysqli"], $sql);
 // Si plusieurs notices pour ce jour, on numérote la notice en cours
 //if (mysql_num_rows($appel_cahier__liste) > 1) {
 if (mysqli_num_rows($appel_cahier_texte_liste) > 1) {
     $cpt_compte_rendu_liste = "1";
     while ( $appel_cahier_texte_donne = mysqli_fetch_array($appel_cahier_texte_liste)) {
-        if ($appel_cahier_texte_donne['id_ct'] == $id_ct) {$num_notice = $cpt_compte_rendu_liste;}
+        if ((isset($id_ct))&&($appel_cahier_texte_donne['id_ct'] == $id_ct)) {$num_notice = $cpt_compte_rendu_liste;}
         $cpt_compte_rendu_liste++;
     }
 } else {
