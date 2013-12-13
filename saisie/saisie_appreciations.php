@@ -349,83 +349,9 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 									}
 								}
 							}
-				
-							if($texte_mail!="") {
-				
-								$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-								if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-									$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
-								}
-				
-								if($envoi_mail_actif=='y') {
-									$email_destinataires="";
 
-									$sql="SELECT id_classe FROM j_eleves_classes WHERE (login='$correction_login_eleve' AND periode='$correction_periode');";
-									$req=mysql_query($sql);
-									if(mysql_num_rows($req)>0) {
-										$correction_id_classe=mysql_result($req,0,"id_classe");
-										$sql="(SELECT DISTINCT email FROM utilisateurs WHERE statut='secours' AND email!='')
-										UNION (SELECT DISTINCT email FROM utilisateurs u, j_scol_classes jsc WHERE u.login=jsc.login AND id_classe='$correction_id_classe');";
-									}
-									else {
-										//$sql="select email from utilisateurs where statut='secours' AND email!='';";
-										$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
-									}
-									//echo "$sql<br />";
-									$req=mysql_query($sql);
-									if(mysql_num_rows($req)>0) {
-										$lig_u=mysql_fetch_object($req);
-										$email_destinataires=$lig_u->email;
-										while($lig_u=mysql_fetch_object($req)) {
-											$email_destinataires=", ".$lig_u->email;
-										}
-				
-										$email_declarant="";
-										$nom_declarant="";
-										$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
-										$req=mysql_query($sql);
-										if(mysql_num_rows($req)>0) {
-											$lig_u=mysql_fetch_object($req);
-											$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
-											$email_declarant=$lig_u->email;
-										}
-				
-										$email_autres_profs_grp="";
-										// Recherche des autres profs du groupe
-										$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
-										//echo "$sql<br />";
-										$req=mysql_query($sql);
-										if(mysql_num_rows($req)>0) {
-											$lig_u=mysql_fetch_object($req);
-											$email_autres_profs_grp.=$lig_u->email;
-											while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
-										}
-				
-										$sujet_mail="Demande de validation de correction d'appréciation";
-						
-										$ajout_header="";
-										if($email_declarant!="") {
-											$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
-											if($email_autres_profs_grp!='') {
-												$ajout_header.=", $email_autres_profs_grp";
-											}
-											$ajout_header.="\r\n";
-											$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
-				
-										}
-										elseif($email_autres_profs_grp!='') {
-											$ajout_header.="Cc: $email_autres_profs_grp\r\n";
-										}
-		
-										$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
-										$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
-		
-										$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
-									}
-									else {
-										$msg.="Aucun compte scolarité avec adresse mail n'est associé à cet(te) élève.<br />Pas de compte secours avec adresse mail non plus.<br />La correction a été soumise, mais elle n'a pas fait l'objet d'un envoi de mail.<br />";
-									}
-								}
+							if($texte_mail!="") {
+								$msg.=envoi_mail_proposition_correction($correction_login_eleve, $id_groupe, $correction_periode, $texte_mail);
 							}
 						}
 					}
@@ -531,9 +457,8 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 						}
 					}
 				}
-		
+
 				if($texte_mail!="") {
-		
 					$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 					if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
 						$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
@@ -595,7 +520,7 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 
 							$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
 						}
-					}	
+					}
 				}
 			}
 		}
@@ -2103,6 +2028,8 @@ function affiche_div_correction(eleve_login,num_periode,num_eleve) {
 	document.getElementById('span_correction_periode').innerHTML=num_periode;
 	document.getElementById('correction_app_eleve').value=document.getElementById('reserve_correction_app_eleve_'+num_eleve).value;
 	afficher_div('div_correction','y',-100,20)
+
+	document.getElementById('correction_app_eleve').focus();
 
 	if(change!='no') {
 		alert(\"Des modifications n'ont pas été enregistrées. Si vous validez la proposition de correction sans d'abord enregistrer, les modifications seront perdues.\")

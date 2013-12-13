@@ -189,9 +189,10 @@ class class_page_accueil {
 	$this->chargeAutreNom('bloc_carnet_notes_famille');
 // Relevés de notes cumulées
     if ('eleve' == $this->statutUtilisateur) {
+        $result = FALSE;
             $sql = "SELECT 1=1 FROM `cc_notes_eval` WHERE login ='".$this->loginUtilisateur."'"; 
             $resultat = mysqli_query($mysqli, $sql);  
-            $nb_aid = $resultat->num_rows;
+            $result = $nb_aid = $resultat->num_rows;
         
         // $result += 1;
     } elseif ('responsable' == $this->statutUtilisateur) {
@@ -207,7 +208,7 @@ class class_page_accueil {
                 AND r2.ele_id = e.ele_id
                 AND e.login = ne.login"; 
             $resultat = mysqli_query($mysqli, $sql);  
-            $nb_aid = $resultat->num_rows;
+            $result = $nb_aid = $resultat->num_rows;
         
     } else {
         $result = FALSE;

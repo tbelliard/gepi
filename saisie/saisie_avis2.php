@@ -238,6 +238,8 @@ if (isset($_POST['is_posted'])) {
 $message_enregistrement = "Les modifications ont été enregistrées !";
 $themessage = 'Des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
 $titre_page = "Saisie des avis | Saisie";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
@@ -1005,6 +1007,8 @@ if (isset($fiche)) {
 
 	//echo "\$test_coef=$test_coef<br />";
 	//=====================================
+
+	$affiche_coef=sql_query1("SELECT display_coef FROM classes WHERE id='".$id_classe."';");
 
 	//bulletin($current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
 	bulletin($tab_moy,$current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories,'y');

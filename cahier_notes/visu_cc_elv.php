@@ -45,6 +45,7 @@ function connectMysqli ($dbHost, $dbUser, $dbPass, $dbDb) {
 /* Modification du jeu de résultats en utf8 */
     if (!$connection->set_charset("utf8")) {
         printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $connection->error);
+		die();
     }
     return $connection;
 }
@@ -211,7 +212,7 @@ if ($result = $mysqli->query($query)) {
 /****************************************************************
 			Fin de la récupération des évaluations
 ****************************************************************/
-$mysqli->close();
+//$mysqli->close();
 /***************************************************************/
 
 // tamporisation de sortie
