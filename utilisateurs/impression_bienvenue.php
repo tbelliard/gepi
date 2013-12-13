@@ -698,7 +698,7 @@ Mail&nbsp;:&nbsp;<input type='text' name='mail_dest' value='$mail_user' />
 			}
 			$envoi=envoi_mail($sujet, $message, $destinataire, $header_suppl, "html");
 			if($envoi) {
-				$message="La Fiche Bienvenue a été expédié à l'adresse mail choisie '".$_POST['mail_dest']."'.";
+				$message="La Fiche Bienvenue a été expédiée à l'adresse mail choisie '".$_POST['mail_dest']."'.";
 				echo "<p style='color:green; text-align:center;' class='noprint'>$message</p>
 				<script type='text/javascript'>
 					document.getElementById('div_compte_rendu_envoi_mail').innerHTML=\"<span style='color:green'>$message</span>\";
