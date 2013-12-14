@@ -2690,7 +2690,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 				}
 
-				$pdf->SetFont('DejaVu','',10);
+				$pdf->SetFont('DejaVu','',8);
 
 				// rang de l'élève
 				if( $tab_modele_pdf["active_rang"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
