@@ -200,6 +200,7 @@
 
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi") ? getSettingValue("gepi_prof_suivi") : "professeur principal";
 	$gepi_cpe_suivi=getSettingValue("gepi_cpe_suivi") ? getSettingValue("gepi_cpe_suivi") : "C.P.E.";
+	if($gepi_cpe_suivi=="") {$gepi_cpe_suivi="C.P.E.";}
 
 	$bull_espace_avis=getSettingValue("bull_espace_avis") ? getSettingValue("bull_espace_avis") : 1;
 

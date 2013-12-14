@@ -274,6 +274,7 @@ if (!defined('FPDF_VERSION')) {
 
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi") ? getSettingValue("gepi_prof_suivi") : "professeur principal";
 	$gepi_cpe_suivi=getSettingValue("gepi_cpe_suivi") ? getSettingValue("gepi_cpe_suivi") : "C.P.E.";
+	if($gepi_cpe_suivi=="") {$gepi_cpe_suivi="C.P.E.";}
 	$bull_espace_avis=getSettingValue("bull_espace_avis") ? getSettingValue("bull_espace_avis") : 1;
 
 	$bull_affiche_eleve_une_ligne=getSettingValue("bull_affiche_eleve_une_ligne") ? getSettingValue("bull_affiche_eleve_une_ligne") : "n";

@@ -478,8 +478,17 @@ if (!$requete->num_rows) {
 $requete->close();
 
 
-
-
-
+$result .= "&nbsp;-> Initialisation de 'gepi_cpe_suivi' à la valeur 'C.P.E.' : ";
+$gepi_cpe_suivi=getSettingValue('gepi_cpe_suivi');
+if ($gepi_cpe_suivi=="") {
+	if (!saveSetting("gepi_cpe_suivi", 'C.P.E.')) {
+		$result .= msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= msj_ok("Ok !");
+	}
+} else {
+	$result .= msj_present("déjà faite");
+}
 
 ?>

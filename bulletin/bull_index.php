@@ -1347,6 +1347,7 @@ else {
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
 	// CPE
 	$gepi_cpe_suivi=getSettingValue("gepi_cpe_suivi");
+	if($gepi_cpe_suivi=="") {$gepi_cpe_suivi="C.P.E.";}
 	//=========================================
 	// AID
 	$bull_affiche_aid=getSettingValue("bull_affiche_aid");
