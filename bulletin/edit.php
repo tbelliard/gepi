@@ -362,6 +362,7 @@ echo "}\n";
 	$col_hauteur=getSettingValue("col_hauteur");
 
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
+	$gepi_cpe_suivi=getSettingValue("gepi_cpe_suivi");
 
 	$bull_espace_avis=getSettingValue("bull_espace_avis");
 
@@ -1791,7 +1792,7 @@ echo "'>\n";
                 echo "<i> Nombre de retards : </i><b>$current_eleve_retards</b>";
             }
             //echo "  (C.P.E. chargé du suivi : ". affiche_utilisateur($current_eleve_cperesp_login,$id_classe) . ")";
-        echo "  (C.P.E. chargé";
+        echo "  (".ucfirst($gepi_cpe_suivi)." chargé";
         $sql="SELECT civilite FROM utilisateurs WHERE login='$current_eleve_cperesp_login'";
         $res_civi=mysql_query($sql);
         if(mysql_num_rows($res_civi)>0){

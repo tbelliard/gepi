@@ -110,7 +110,7 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		// Paramètres généraux:
 		// En admin, dans Gestion générale/Configuration générale
 		$gepi_prof_suivi,
-
+		$gepi_cpe_suivi,
 		$RneEtablissement,
 		$gepiSchoolName,
 		$gepiSchoolAdress1,
@@ -878,8 +878,8 @@ width:".$largeur1."%;\n";
 					echo "<i> Nombre de retards&nbsp;: </i><b>".$tab_bull['eleve'][$i]['eleve_retards']."</b>";
 				}
 			}
-
-			echo "  (C.P.E. chargé";
+			// C.P.E.
+			echo "  (".ucfirst($gepi_cpe_suivi)." chargé";
 
 			if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
 				echo "e";
@@ -1132,7 +1132,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		// Paramètres généraux:
 		// En admin, dans Gestion générale/Configuration générale
 		$gepi_prof_suivi,
-
+		$gepi_cpe_suivi,
 		$RneEtablissement,
 		$gepiSchoolName,
 		$gepiSchoolAdress1,
@@ -2690,7 +2690,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 				}
 
-				$pdf->SetFont('DejaVu','',10);
+				$pdf->SetFont('DejaVu','',8);
 
 				// rang de l'élève
 				if( $tab_modele_pdf["active_rang"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
@@ -5515,8 +5515,8 @@ fclose($f);
 					}
 				}
 				$pdf->SetFont('DejaVu','',8);
-
-				$info_absence = $info_absence." (C.P.E. chargé";
+				// C.P.E.
+				$info_absence = $info_absence." (".ucfirst($gepi_cpe_suivi)." chargé";
 				if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
 					$info_absence = $info_absence."e";
 				}
@@ -5997,7 +5997,7 @@ $hauteur_pris_app_abs=0;
 function releve_pdf_20090429($tab_rel,$i) {
 	global $annee_scolaire,
 		$gepi_prof_suivi,
-
+		$gepi_cpe_suivi,
 		$RneEtablissement,
 		$gepiSchoolName,
 		$gepiSchoolAdress1,

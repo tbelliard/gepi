@@ -2065,6 +2065,7 @@ INSERT INTO setting  values ('GepiRubConseilProf', 'yes');
 INSERT INTO setting  values ('GepiRubConseilScol', 'yes');
 INSERT INTO setting  values ('bull_ecart_entete', '0');
 INSERT INTO setting  values ('gepi_prof_suivi', 'professeur principal');
+INSERT INTO setting  values ('gepi_cpe_suivi', 'C.P.E.');
 INSERT INTO setting  values ('GepiProfImprBul', 'no');
 INSERT INTO setting  values ('GepiProfImprBulSettings', 'no');
 INSERT INTO setting  values ('GepiScolImprBulSettings', 'yes');
