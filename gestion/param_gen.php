@@ -462,7 +462,12 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement de gepi_prof_suivi !";
 			}
 		}
-		
+		// Dénomination du cpe de suivi
+		if (isset($_POST['gepi_cpe_suivi'])) {
+			if (!saveSetting("gepi_cpe_suivi", $_POST['gepi_cpe_suivi'])) {
+				$msg .= "Erreur lors de l'enregistrement de gepi_cpe_suivi !";
+			}
+		}
 		// Dénomination des professeurs
 		if (isset($_POST['denomination_professeur'])) {
 			if (!saveSetting("denomination_professeur", $_POST['denomination_professeur'])) {
@@ -1088,7 +1093,14 @@ echo add_token_field();
 			<input type="text" name="gepi_prof_suivi" size="20" value="<?php echo(getSettingValue("gepi_prof_suivi")); ?>" onchange='changement()' />
 		</span>
 	</p>
-	
+	<p class="ligneCaps">
+		<label for='gepi_cpe_suivi' class="cellTab70">
+			Dénomination du C.P.E. chargé du suivi des élèves :
+		</label>
+		<span class="cellTab plusPetit">
+			<input type="text" name="gepi_cpe_suivi" size="20" value="<?php echo(getSettingValue("gepi_cpe_suivi")); ?>" onchange='changement()' />
+		</span>
+	</p>
 	<p class="ligneCaps">
 		<label for='gepi_denom_boite' class="cellTab70">
 			Désignation des boites/conteneurs/emplacements/sous-matières :

@@ -1345,7 +1345,8 @@ else {
 
 	// Prof principal
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
-
+	// CPE
+	$gepi_cpe_suivi=getSettingValue("gepi_cpe_suivi");
 	//=========================================
 	// AID
 	$bull_affiche_aid=getSettingValue("bull_affiche_aid");

@@ -922,6 +922,7 @@ Patientez pendant l'extraction des données... merci.
 		$releve_col_matiere_largeur=getSettingValue("releve_col_matiere_largeur") ? getSettingValue("releve_col_matiere_largeur") : 150;
 
 		$gepi_prof_suivi=getSettingValue("gepi_prof_suivi") ? getSettingValue("gepi_prof_suivi") : "professeur principal";
+		$gepi_cpe_suivi=getSettingValue("gepi_cpe_suivi") ? getSettingValue("gepi_cpe_suivi") : "C.P.E.";
 
 		$releve_affiche_eleve_une_ligne=getSettingValue("releve_affiche_eleve_une_ligne") ? getSettingValue("releve_affiche_eleve_une_ligne") : "n";
 		$releve_mention_nom_court=getSettingValue("releve_mention_nom_court") ? getSettingValue("releve_mention_nom_court") : "y";
@@ -1816,13 +1817,13 @@ Patientez pendant l'extraction des données... merci.
 				}
 				echo "</p>\n";
 
-				echo "<p><strong>CPE chargé(e) du suivi</strong>: ";
+				echo "<p><strong>".ucfirst($gepi_cpe_suivi)." chargé(e) du suivi</strong>: ";
 				if($tab_ele['cpe']['email']!="") {
 					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
 					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
 					echo "<a href='mailto:".$tab_ele['cpe']['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-					echo ",%0d%0aCordialement.' title=\"Envoyer un email au CPE\">";
+					echo ",%0d%0aCordialement.' title=\"Envoyer un email au ".$gepi_cpe_suivi."\">";
 				}
 				echo $tab_ele['cpe']['civ_nom_prenom'];
 				if($tab_ele['cpe']['email']!="") {
