@@ -58,7 +58,7 @@ function extract_utilisateurs($tab_login) {
 				$tab_result_recherche['personnel'][$cpt_pers]['login']=$lig->login;
 
 				if($acces_modify_user) {
-					$tab_result_recherche['personnel'][$cpt_pers]['td_login']="<a href='$gepiPath/utilisateurs/modify_user.php?login=$lig->login' title=\"Modifier les informations utilisateur\">$lig->login</a>";
+					$tab_result_recherche['personnel'][$cpt_pers]['td_login']="<a href='$gepiPath/utilisateurs/modify_user.php?user_login=$lig->login' title=\"Modifier les informations utilisateur\">$lig->login</a>";
 				}
 				else {
 					$tab_result_recherche['personnel'][$cpt_pers]['td_login']=$lig->login;
